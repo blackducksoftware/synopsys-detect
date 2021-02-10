@@ -26,13 +26,13 @@ import java.io.File;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 @DetectableInfo(language = "Objective C", forge = "COCOAPODS and NPMJS", requirementsMarkdown = "Files: Podfile.lock")
 public class PodlockDetectable extends Detectable {
@@ -51,12 +51,9 @@ public class PodlockDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        foundPodlock = fileFinder.findFile(environment.getDirectory(), PODFILE_LOCK_FILENAME);
-        if (foundPodlock == null) {
-            return new FileNotFoundDetectableResult(PODFILE_LOCK_FILENAME);
-        }
-
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        foundPodlock = requirements.file(PODFILE_LOCK_FILENAME);
+        return requirements.result();
     }
 
     @Override

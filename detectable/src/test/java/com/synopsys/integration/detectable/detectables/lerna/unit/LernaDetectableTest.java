@@ -1,6 +1,5 @@
 package com.synopsys.integration.detectable.detectables.lerna.unit;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,6 +15,7 @@ import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectables.lerna.LernaDetectable;
 import com.synopsys.integration.detectable.detectables.lerna.LernaOptions;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmLockfileOptions;
@@ -120,7 +120,7 @@ public class LernaDetectableTest extends DetectableFunctionalTest {
         NpmLockfileOptions npmLockFileOptions = new NpmLockfileOptions(true);
         LernaOptions lernaOptions = new LernaOptions(false);
 
-        return detectableFactory.createLernaDetectable(environment, () -> new File("lerna"), yarnLockOptions, npmLockFileOptions, lernaOptions);
+        return detectableFactory.createLernaDetectable(environment, () -> ExecutableTarget.forCommand("lerna"), yarnLockOptions, npmLockFileOptions, lernaOptions);
     }
 
     @Override

@@ -24,9 +24,13 @@ package com.synopsys.integration.detect.configuration.validation;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -64,7 +68,7 @@ public class DetectConfigurationBootManager {
         Map<String, List<String>> deprecationMessages = new HashMap<>();
         boolean shouldFailFromDeprecations = false;
 
-        List<Property> usedDeprecatedProperties = DetectProperties.allProperties()
+        List<Property> usedDeprecatedProperties = DetectProperties.allProperties().getProperties()
                                                       .stream()
                                                       .filter(property -> property.getPropertyDeprecationInfo() != null)
                                                       .filter(property -> detectConfiguration.wasKeyProvided(property.getKey()))
@@ -88,13 +92,13 @@ public class DetectConfigurationBootManager {
         return new DeprecationResult(additionalNotes, deprecationMessages, shouldFailFromDeprecations);
     }
 
-    public void printConfiguration(Map<String, String> additionalNotes) throws IllegalAccessException {
-        detectConfigurationReporter.printCurrentValues(logger::info, DetectProperties.allProperties(), additionalNotes);
+    public void printConfiguration(SortedMap<String, String> maskedRawPropertyValues, Set<String> propertyKeys, Map<String, String> additionalNotes) throws IllegalAccessException {
+        detectConfigurationReporter.printKnownCurrentValues(logger::info, propertyKeys, maskedRawPropertyValues, additionalNotes);
     }
 
     //Check for options that are just plain bad, ie giving an detector type we don't know about.
     public Optional<DetectUserFriendlyException> validateForPropertyParseErrors() throws IllegalAccessException {
-        Map<String, List<String>> errorMap = detectConfigurationReporter.findPropertyParseErrors(DetectProperties.allProperties());
+        Map<String, List<String>> errorMap = detectConfigurationReporter.findPropertyParseErrors(DetectProperties.allProperties().getProperties());
         if (!errorMap.isEmpty()) {
             Map.Entry<String, List<String>> entry = errorMap.entrySet().iterator().next();
             return Optional.of(new DetectUserFriendlyException(entry.getKey() + ": " + entry.getValue().get(0), ExitCodeType.FAILURE_GENERAL_ERROR));
@@ -103,7 +107,8 @@ public class DetectConfigurationBootManager {
     }
 
     public void printFailingPropertiesMessages(Map<String, List<String>> deprecationMessages) throws IllegalAccessException {
-        detectConfigurationReporter.printPropertyErrors(logger::info, DetectProperties.allProperties(), deprecationMessages);
+        Set<String> sortedPropertyKeys = new HashSet(DetectProperties.allProperties().getPropertyKeys());
+        detectConfigurationReporter.printKnownPropertyErrors(logger::info, sortedPropertyKeys, new TreeMap(deprecationMessages));
 
         logger.warn(StringUtils.repeat("=", 60));
         logger.warn("Configuration is using deprecated properties that must be updated for this major version.");

@@ -39,6 +39,8 @@ import com.synopsys.integration.detect.configuration.DetectUserFriendlyException
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.tool.detector.inspectors.GradleInspectorInstaller;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GradleResolver;
@@ -58,22 +60,22 @@ public class GradleAirGapCreator {
     private final DetectableExecutableRunner executableRunner;
     private final Configuration configuration;
 
-    public GradleAirGapCreator(final GradleResolver gradleResolver, final GradleInspectorInstaller gradleInspectorInstaller, final DetectableExecutableRunner executableRunner, final Configuration configuration) {
+    public GradleAirGapCreator(GradleResolver gradleResolver, GradleInspectorInstaller gradleInspectorInstaller, DetectableExecutableRunner executableRunner, Configuration configuration) {
         this.gradleResolver = gradleResolver;
         this.gradleInspectorInstaller = gradleInspectorInstaller;
         this.executableRunner = executableRunner;
         this.configuration = configuration;
     }
 
-    public void installGradleDependencies(final File gradleTemp, final File gradleTarget, final String inspectorVersion) throws DetectUserFriendlyException {
+    public void installGradleDependencies(File gradleTemp, File gradleTarget, String inspectorVersion) throws DetectUserFriendlyException {
         logger.info("Checking for gradle on the path.");
-        final File gradle;
+        ExecutableTarget gradle;
         try {
             gradle = gradleResolver.resolveGradle(new DetectableEnvironment(gradleTemp));
             if (gradle == null) {
                 throw new DetectUserFriendlyException("Gradle must be on the path to make an Air Gap zip.", ExitCodeType.FAILURE_CONFIGURATION);
             }
-        } catch (final DetectableException e) {
+        } catch (DetectableException e) {
             throw new DetectUserFriendlyException("An error occurred while finding Gradle which is needed to make an Air Gap zip.", e, ExitCodeType.FAILURE_CONFIGURATION);
         }
 
@@ -82,17 +84,17 @@ public class GradleAirGapCreator {
         if (gradleVersion == null) {
             try {
                 gradleVersion = gradleInspectorInstaller.findVersion();
-            } catch (final DetectableException e) {
+            } catch (DetectableException e) {
                 throw new DetectUserFriendlyException("An error occurred while determining which Gradle version to use while making an Air Gap zip.", e, ExitCodeType.FAILURE_CONFIGURATION);
             }
         }
         logger.info("Determined inspector version: " + gradleVersion);
 
-        final File gradleOutput = new File(gradleTemp, "dependencies");
+        File gradleOutput = new File(gradleTemp, "dependencies");
         logger.info("Using temporary gradle dependency directory: " + gradleOutput);
 
-        final File buildGradle = new File(gradleTemp, "build.gradle");
-        final File settingsGradle = new File(gradleTemp, "settings.gradle");
+        File buildGradle = new File(gradleTemp, "build.gradle");
+        File settingsGradle = new File(gradleTemp, "settings.gradle");
         logger.info("Using temporary gradle build file: " + buildGradle);
         logger.info("Using temporary gradle settings file: " + settingsGradle);
         FileUtil.createMissingParentDirectories(buildGradle);
@@ -100,26 +102,26 @@ public class GradleAirGapCreator {
 
         logger.info("Writing to temporary gradle build file.");
         try {
-            final Map<String, String> gradleScriptData = new HashMap<>();
+            Map<String, String> gradleScriptData = new HashMap<>();
             gradleScriptData.put("gradleOutput", StringEscapeUtils.escapeJava(gradleOutput.getCanonicalPath()));
             gradleScriptData.put("gradleVersion", gradleVersion);
 
-            final Template gradleScriptTemplate = configuration.getTemplate("create-gradle-airgap-script.ftl");
-            try (final Writer fileWriter = new FileWriter(buildGradle)) {
+            Template gradleScriptTemplate = configuration.getTemplate("create-gradle-airgap-script.ftl");
+            try (Writer fileWriter = new FileWriter(buildGradle)) {
                 gradleScriptTemplate.process(gradleScriptData, fileWriter);
             }
             FileUtils.writeStringToFile(settingsGradle, "", StandardCharsets.UTF_8);
-        } catch (final IOException | TemplateException e) {
+        } catch (IOException | TemplateException e) {
             throw new DetectUserFriendlyException("An error occurred creating the temporary build.gradle while creating the Air Gap zip.", e, ExitCodeType.FAILURE_CONFIGURATION);
         }
 
         logger.info("Invoking gradle install on temporary directory.");
         try {
-            final ExecutableOutput executableOutput = executableRunner.execute(gradleTemp, gradle, "installDependencies");
+            ExecutableOutput executableOutput = executableRunner.execute(ExecutableUtils.createFromTarget(gradleTemp, gradle, "installDependencies"));
             if (executableOutput.getReturnCode() != 0) {
                 throw new DetectUserFriendlyException("Gradle returned a non-zero exit code while installing Air Gap dependencies.", ExitCodeType.FAILURE_CONFIGURATION);
             }
-        } catch (final ExecutableRunnerException e) {
+        } catch (ExecutableRunnerException e) {
             throw new DetectUserFriendlyException("An error occurred using Gradle to make an Air Gap zip.", e, ExitCodeType.FAILURE_CONFIGURATION);
         }
 
@@ -127,7 +129,7 @@ public class GradleAirGapCreator {
             logger.info("Moving generated dependencies to final gradle folder: " + gradleTarget.getCanonicalPath());
             FileUtils.moveDirectory(gradleOutput, gradleTarget);
             FileUtils.deleteDirectory(gradleTemp);
-        } catch (final IOException e) {
+        } catch (IOException e) {
             throw new DetectUserFriendlyException("An error occurred moving gradle dependencies to Air Gap folder.", ExitCodeType.FAILURE_CONFIGURATION);
         }
     }

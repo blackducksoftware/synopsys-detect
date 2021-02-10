@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,17 +53,17 @@ public class DiagnosticSystem {
     private final DirectoryManager directoryManager;
     private final EventSystem eventSystem;
 
-    public DiagnosticSystem(boolean isExtendedMode, PropertyConfiguration propertyConfiguration, DetectRun detectRun, DetectInfo detectInfo, DirectoryManager directoryManager, EventSystem eventSystem) {
+    public DiagnosticSystem(boolean isExtendedMode, PropertyConfiguration propertyConfiguration, DetectRun detectRun, DetectInfo detectInfo, DirectoryManager directoryManager, EventSystem eventSystem, SortedMap<String, String> maskedRawPropertyValues, Set<String> propertyKeys) {
         this.propertyConfiguration = propertyConfiguration;
         this.detectRun = detectRun;
         this.detectInfo = detectInfo;
         this.directoryManager = directoryManager;
         this.eventSystem = eventSystem;
 
-        init(isExtendedMode);
+        init(isExtendedMode, maskedRawPropertyValues, propertyKeys);
     }
 
-    private void init(boolean isExtendedMode) {
+    private void init(boolean isExtendedMode, SortedMap<String, String> maskedRawPropertyValues, Set<String> propertyKeys) {
         System.out.println();
         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         System.out.println("Diagnostic mode on.");
@@ -87,7 +89,7 @@ public class DiagnosticSystem {
 
         logger.info("Creating configuration diagnostics reports.");
 
-        diagnosticReportHandler.configurationsReport(detectInfo, propertyConfiguration);
+        diagnosticReportHandler.configurationsReport(detectInfo, propertyConfiguration, maskedRawPropertyValues, propertyKeys);
 
         logger.info("Diagnostics is ready.");
     }

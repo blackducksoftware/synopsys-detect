@@ -31,6 +31,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableResolver;
+import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.executable.ExecutableOutput;
@@ -44,7 +46,7 @@ public class DotNetRuntimeFinder {
     private final DetectExecutableResolver executableResolver;
     private final File workingDir;
 
-    public DotNetRuntimeFinder(final DetectableExecutableRunner executableRunner, final DetectExecutableResolver executableResolver, final File workingDir) {
+    public DotNetRuntimeFinder(DetectableExecutableRunner executableRunner, DetectExecutableResolver executableResolver, File workingDir) {
         this.executableRunner = executableRunner;
         this.executableResolver = executableResolver;
         this.workingDir = workingDir;
@@ -52,8 +54,8 @@ public class DotNetRuntimeFinder {
 
     public List<String> listAvailableRuntimes() throws DetectableException {
         try {
-            final ExecutableOutput runtimesOutput = dotnetListRuntimes();
-            final List<String> foundRuntimes = runtimesOutput.getStandardOutputAsList()
+            ExecutableOutput runtimesOutput = dotnetListRuntimes();
+            List<String> foundRuntimes = runtimesOutput.getStandardOutputAsList()
                                                    .stream()
                                                    .map(StringUtils::trimToEmpty)
                                                    .filter(StringUtils::isNotBlank)
@@ -63,15 +65,15 @@ public class DotNetRuntimeFinder {
                 throw new DetectableException("No available dotnet runtimes");
             }
             return foundRuntimes;
-        } catch (final ExecutableRunnerException e) {
+        } catch (ExecutableRunnerException e) {
             throw new DetectableException("Could not determine available dotnet runtimes", e);
         }
     }
 
     private ExecutableOutput dotnetListRuntimes() throws DetectableException, ExecutableRunnerException {
-        final File dotnetExe = executableResolver.resolveDotNet();
+        ExecutableTarget dotnetExe = executableResolver.resolveDotNet();
         if (dotnetExe != null) {
-            return executableRunner.execute(workingDir, dotnetExe, DOTNET_LIST_RUNTIMES_COMMAND);
+            return executableRunner.execute(ExecutableUtils.createFromTarget(workingDir, dotnetExe, DOTNET_LIST_RUNTIMES_COMMAND));
         }
         return executableRunner.execute(workingDir, "dotnet", DOTNET_LIST_RUNTIMES_COMMAND);
     }

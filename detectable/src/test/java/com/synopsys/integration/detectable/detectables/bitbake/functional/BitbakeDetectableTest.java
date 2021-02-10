@@ -16,6 +16,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectableOptions;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
@@ -33,7 +34,7 @@ public class BitbakeDetectableTest extends DetectableFunctionalTest {
     protected void setup() throws IOException {
         addFile("oe-init-build-env");
 
-        final ExecutableOutput bitbakeGOutput = createStandardOutput(
+        ExecutableOutput bitbakeGOutput = createStandardOutput(
             ""
         );
         addExecutableOutput(bitbakeGOutput, "bash", "-c", "source " + getSourceDirectory().toFile().getCanonicalPath() + File.separator + "oe-init-build-env; " + "bitbake " + "-g " + "core-image-minimal");
@@ -51,7 +52,7 @@ public class BitbakeDetectableTest extends DetectableFunctionalTest {
             "}"
         );
 
-        final ExecutableOutput bitbakeShowRecipesOutput = createStandardOutput(
+        ExecutableOutput bitbakeShowRecipesOutput = createStandardOutput(
             "=== Available recipes: ===",
             "acl:",
             "  meta                 2.2.52",
@@ -67,27 +68,27 @@ public class BitbakeDetectableTest extends DetectableFunctionalTest {
 
     @NotNull
     @Override
-    public Detectable create(@NotNull final DetectableEnvironment detectableEnvironment) {
+    public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
         return detectableFactory.createBitbakeDetectable(
             detectableEnvironment,
             new BitbakeDetectableOptions("oe-init-build-env", new ArrayList<>(), Collections.singletonList("core-image-minimal"), 0),
-            () -> new File("bash")
+            () -> ExecutableTarget.forCommand("bash")
         );
     }
 
     @Override
-    public void assertExtraction(@NotNull final Extraction extraction) {
+    public void assertExtraction(@NotNull Extraction extraction) {
         Assertions.assertEquals(1, extraction.getCodeLocations().size());
 
-        final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.YOCTO, extraction.getCodeLocations().get(0).getDependencyGraph());
+        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.YOCTO, extraction.getCodeLocations().get(0).getDependencyGraph());
 
         graphAssert.hasRootSize(4);
 
-        final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        final ExternalId aclExternalId = externalIdFactory.createYoctoExternalId("meta", "acl", "2.2.52-r0");
-        final ExternalId attrExternalId = externalIdFactory.createYoctoExternalId("meta", "attr", "2.4.47-r0");
-        final ExternalId baseFilesExternalId = externalIdFactory.createYoctoExternalId("meta", "base-files", "3.0.14-r89");
-        final ExternalId basePasswdExternalId = externalIdFactory.createYoctoExternalId("meta", "base-passwd", "3.5.29-r0");
+        ExternalIdFactory externalIdFactory = new ExternalIdFactory();
+        ExternalId aclExternalId = externalIdFactory.createYoctoExternalId("meta", "acl", "2.2.52-r0");
+        ExternalId attrExternalId = externalIdFactory.createYoctoExternalId("meta", "attr", "2.4.47-r0");
+        ExternalId baseFilesExternalId = externalIdFactory.createYoctoExternalId("meta", "base-files", "3.0.14-r89");
+        ExternalId basePasswdExternalId = externalIdFactory.createYoctoExternalId("meta", "base-passwd", "3.5.29-r0");
 
         graphAssert.hasRootDependency(aclExternalId);
         graphAssert.hasRootDependency(attrExternalId);

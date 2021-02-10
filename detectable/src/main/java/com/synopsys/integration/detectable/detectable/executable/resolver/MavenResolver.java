@@ -22,11 +22,10 @@
  */
 package com.synopsys.integration.detectable.detectable.executable.resolver;
 
-import java.io.File;
-
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 
 public interface MavenResolver {
-    File resolveMaven(final DetectableEnvironment environment) throws DetectableException;
+    ExecutableTarget resolveMaven(DetectableEnvironment environment) throws DetectableException;
 }

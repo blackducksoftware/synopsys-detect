@@ -20,35 +20,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.yarn.parse;
+package com.synopsys.integration.detectable.detectable.explanation;
 
-public class ParsedYarnLockDependency {
-    private final String name;
-    private final String version;
-    private boolean optional = false;
-
-    public ParsedYarnLockDependency(final String name, final String version) {
-        this.name = name;
-        this.version = version;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public boolean isOptional() {
-        return optional;
-    }
-
-    public void setOptional(boolean value) {
-        optional = value;
-    }
-
-    public YarnLockDependency toDependency() {
-        return new YarnLockDependency(name, version, optional);
-    }
+public abstract class Explanation {
+    public abstract String describeSelf();
 }
+

@@ -47,6 +47,8 @@ import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.nameversion.DetectorNameVersionHandler;
 import com.synopsys.integration.detect.workflow.nameversion.PreferredDetectorNameVersionHandler;
+import com.synopsys.integration.detect.workflow.report.util.DetectorEvaluationUtils;
+import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.status.DetectorStatus;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detect.workflow.status.UnrecognizedPaths;
@@ -135,6 +137,9 @@ public class DetectorTool {
         DetectorAggregateEvaluationResult evaluationResult = detectorEvaluator.evaluate(rootEvaluation);
 
         logger.debug("Finished detectors.");
+
+        printExplanations(rootEvaluation);
+
         Map<DetectorType, StatusType> statusMap = extractStatus(detectorEvaluations);
         publishStatusEvents(statusMap);
         publishFileEvents(detectorEvaluations);
@@ -157,6 +162,30 @@ public class DetectorTool {
         eventSystem.publishEvent(Event.DetectorsComplete, detectorToolResult);
 
         return detectorToolResult;
+    }
+
+    private void printExplanations(DetectorEvaluationTree root) {
+        logger.info(ReportConstants.HEADING);
+        logger.info("Detector Report");
+        logger.info(ReportConstants.HEADING);
+        boolean anyFound = false;
+        for (DetectorEvaluationTree tree : root.asFlatList()) {
+            List<DetectorEvaluation> applicable = DetectorEvaluationUtils.applicableChildren(tree);
+            if (applicable.size() > 0) {
+                anyFound = true;
+                logger.info("\t" + tree.getDirectory() + " (depth " + tree.getDepthFromRoot() + ")");
+                applicable.forEach(evaluation -> {
+                    logger.info("\t\t" + evaluation.getDetectorRule().getDescriptiveName());
+                    evaluation.getAllExplanations().forEach(explanation -> {
+                        logger.info("\t\t\t" + explanation.describeSelf());
+                    });
+                });
+            }
+        }
+        if (!anyFound) {
+            logger.info("No detectors found.");
+        }
+        logger.info(ReportConstants.RUN_SEPARATOR);
     }
 
     private DetectorNameVersionHandler createNameVersionHandler(String projectDetector) {
@@ -246,7 +275,7 @@ public class DetectorTool {
         logger.debug("Publishing file events.");
         for (DetectorEvaluation detectorEvaluation : detectorEvaluations) {
             if (detectorEvaluation.getDetectable() != null) {
-                for (File file : detectorEvaluation.getDetectable().getFoundRelevantFiles()) {
+                for (File file : detectorEvaluation.getAllRelevantFiles()) {
                     eventSystem.publishEvent(Event.CustomerFileOfInterest, file);
                 }
             }

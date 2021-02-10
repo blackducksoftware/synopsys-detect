@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 
 import com.paypal.digraph.parser.GraphParser;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
@@ -59,8 +60,8 @@ public class BitbakeExtractor {
     private final BitbakeRecipesParser bitbakeRecipesParser;
     private final BitbakeRecipesToLayerMapConverter bitbakeRecipesToLayerMap;
 
-    public BitbakeExtractor(final DetectableExecutableRunner executableRunner, final FileFinder fileFinder, final GraphParserTransformer graphParserTransformer, final BitbakeGraphTransformer bitbakeGraphTransformer,
-        final BitbakeRecipesParser bitbakeRecipesParser, final BitbakeRecipesToLayerMapConverter bitbakeRecipesToLayerMap) {
+    public BitbakeExtractor(DetectableExecutableRunner executableRunner, FileFinder fileFinder, GraphParserTransformer graphParserTransformer, BitbakeGraphTransformer bitbakeGraphTransformer,
+        BitbakeRecipesParser bitbakeRecipesParser, BitbakeRecipesToLayerMapConverter bitbakeRecipesToLayerMap) {
         this.executableRunner = executableRunner;
         this.fileFinder = fileFinder;
         this.graphParserTransformer = graphParserTransformer;
@@ -69,28 +70,28 @@ public class BitbakeExtractor {
         this.bitbakeRecipesToLayerMap = bitbakeRecipesToLayerMap;
     }
 
-    public Extraction extract(final File sourceDirectory, final File buildEnvScript, final List<String> sourceArguments, final List<String> packageNames, final Integer searchDepth, final File bash) {
-        final List<CodeLocation> codeLocations = new ArrayList<>();
+    public Extraction extract(File sourceDirectory, File buildEnvScript, List<String> sourceArguments, List<String> packageNames, Integer searchDepth, ExecutableTarget bash) {
+        List<CodeLocation> codeLocations = new ArrayList<>();
 
-        final BitbakeSession bitbakeSession = new BitbakeSession(fileFinder, executableRunner, bitbakeRecipesParser, sourceDirectory, buildEnvScript, sourceArguments, bash);
-        for (final String packageName : packageNames) {
+        BitbakeSession bitbakeSession = new BitbakeSession(fileFinder, executableRunner, bitbakeRecipesParser, sourceDirectory, buildEnvScript, sourceArguments, bash);
+        for (String packageName : packageNames) {
             try {
-                final BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, sourceDirectory, packageName, searchDepth);
-                final List<BitbakeRecipe> bitbakeRecipes = bitbakeSession.executeBitbakeForRecipeLayerCatalog();
-                final Map<String, String> recipeNameToLayersMap = bitbakeRecipesToLayerMap.convert(bitbakeRecipes);
+                BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, sourceDirectory, packageName, searchDepth);
+                List<BitbakeRecipe> bitbakeRecipes = bitbakeSession.executeBitbakeForRecipeLayerCatalog();
+                Map<String, String> recipeNameToLayersMap = bitbakeRecipesToLayerMap.convert(bitbakeRecipes);
 
-                final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeNameToLayersMap);
-                final CodeLocation codeLocation = new CodeLocation(dependencyGraph);
+                DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeNameToLayersMap);
+                CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 
                 codeLocations.add(codeLocation);
 
-            } catch (final IOException | IntegrationException | ExecutableRunnerException | NotImplementedException e) {
+            } catch (IOException | IntegrationException | ExecutableRunnerException | NotImplementedException e) {
                 logger.error(String.format("Failed to extract a Code Location while running Bitbake against package '%s'", packageName));
                 logger.debug(e.getMessage(), e);
             }
         }
 
-        final Extraction extraction;
+        Extraction extraction;
 
         if (codeLocations.isEmpty()) {
             extraction = new Extraction.Builder()
@@ -106,14 +107,14 @@ public class BitbakeExtractor {
         return extraction;
     }
 
-    private BitbakeGraph generateBitbakeGraph(final BitbakeSession bitbakeSession, final File sourceDirectory, final String packageName, final Integer searchDepth) throws ExecutableRunnerException, IOException, IntegrationException {
-        final File taskDependsFile = bitbakeSession.executeBitbakeForDependencies(sourceDirectory, packageName, searchDepth)
+    private BitbakeGraph generateBitbakeGraph(BitbakeSession bitbakeSession, File sourceDirectory, String packageName, Integer searchDepth) throws ExecutableRunnerException, IOException, IntegrationException {
+        File taskDependsFile = bitbakeSession.executeBitbakeForDependencies(sourceDirectory, packageName, searchDepth)
                                          .orElseThrow(() -> new IntegrationException("Failed to find file \"task-depends.dot\"."));
 
         logger.trace(FileUtils.readFileToString(taskDependsFile, Charset.defaultCharset()));
 
-        final InputStream dependsFileInputStream = FileUtils.openInputStream(taskDependsFile);
-        final GraphParser graphParser = new GraphParser(dependsFileInputStream);
+        InputStream dependsFileInputStream = FileUtils.openInputStream(taskDependsFile);
+        GraphParser graphParser = new GraphParser(dependsFileInputStream);
 
         return graphParserTransformer.transform(graphParser);
     }

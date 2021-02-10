@@ -29,10 +29,10 @@ import java.util.List;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.PassedResultBuilder;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.detectable.detectable.explanation.FoundInspector;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspector;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
@@ -41,6 +41,8 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.InspectorNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 @DetectableInfo(language = "C#", forge = "NuGet.org", requirementsMarkdown = "File: a solution file with a .sln extension.")
 public class NugetSolutionDetectable extends Detectable {
@@ -68,7 +70,9 @@ public class NugetSolutionDetectable extends Detectable {
         solutionFiles = fileFinder.findFiles(environment.getDirectory(), SUPPORTED_SOLUTION_PATTERNS);
 
         if (solutionFiles != null && solutionFiles.size() > 0) {
-            return new PassedDetectableResult();
+            PassedResultBuilder passedResultBuilder = new PassedResultBuilder();
+            solutionFiles.forEach(passedResultBuilder::foundFile);
+            return passedResultBuilder.build();
         } else {
             return new FilesNotFoundDetectableResult(SUPPORTED_SOLUTION_PATTERNS);
         }
@@ -82,7 +86,7 @@ public class NugetSolutionDetectable extends Detectable {
             return new InspectorNotFoundDetectableResult("nuget");
         }
 
-        return new PassedDetectableResult();
+        return new PassedDetectableResult(new FoundInspector(inspector.getClass().getSimpleName())); //TODO: Inspector should describe itself.
     }
 
     @Override

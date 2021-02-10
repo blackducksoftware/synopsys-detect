@@ -26,16 +26,20 @@ import java.io.File;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.Requirements;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CondaResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 @DetectableInfo(language = "Python", forge = "Anaconda", requirementsMarkdown = "File: environment.yml. <br /><br /> Executable: conda.")
 public class CondaCliDetectable extends Detectable {
@@ -46,9 +50,9 @@ public class CondaCliDetectable extends Detectable {
     private final CondaCliExtractor condaExtractor;
     private CondaCliDetectableOptions condaCliDetectableOptions;
 
-    private File condaExe;
+    private ExecutableTarget condaExe;
 
-    public CondaCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final CondaResolver condaResolver, final CondaCliExtractor condaExtractor, CondaCliDetectableOptions condaCliDetectableOptions) {
+    public CondaCliDetectable(DetectableEnvironment environment, FileFinder fileFinder, CondaResolver condaResolver, CondaCliExtractor condaExtractor, CondaCliDetectableOptions condaCliDetectableOptions) {
         super(environment);
         this.fileFinder = fileFinder;
         this.condaResolver = condaResolver;
@@ -58,27 +62,20 @@ public class CondaCliDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        final File ymlFile = fileFinder.findFile(environment.getDirectory(), ENVIRONEMNT_YML);
-        if (ymlFile == null) {
-            return new FileNotFoundDetectableResult(ENVIRONEMNT_YML);
-        }
-
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        requirements.file(ENVIRONEMNT_YML);
+        return requirements.result();
     }
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        condaExe = condaResolver.resolveConda();
-
-        if (condaExe == null) {
-            return new ExecutableNotFoundDetectableResult("conda");
-        }
-
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        condaExe = requirements.executable(condaResolver::resolveConda, "conda");
+        return requirements.result();
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         return condaExtractor.extract(environment.getDirectory(), condaExe, extractionEnvironment.getOutputDirectory(), condaCliDetectableOptions.getCondaEnvironmentName().orElse(""));
     }
 

@@ -48,7 +48,7 @@ public class HelpJsonManager {
         List<HelpJsonDetector> buildlessDetectors = createHelpJsonDetectorList(true);
 
         HelpJsonWriter helpJsonWriter = new HelpJsonWriter(gson);
-        helpJsonWriter.writeGsonDocument(fileName, DetectProperties.allProperties(), buildDetectors, buildlessDetectors);
+        helpJsonWriter.writeGsonDocument(fileName, DetectProperties.allProperties().getProperties(), buildDetectors, buildlessDetectors);
     }
 
     private List<HelpJsonDetector> createHelpJsonDetectorList(boolean buildless) {

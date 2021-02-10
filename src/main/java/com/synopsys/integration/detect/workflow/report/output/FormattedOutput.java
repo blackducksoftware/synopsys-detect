@@ -59,5 +59,8 @@ public class FormattedOutput {
 
     @SerializedName("codeLocations")
     public List<FormattedCodeLocationOutput> codeLocations = new ArrayList<>();
+
+    @SerializedName("propertyValues")
+    public Map<String, String> propertyValues = new HashMap<>();
 }
 

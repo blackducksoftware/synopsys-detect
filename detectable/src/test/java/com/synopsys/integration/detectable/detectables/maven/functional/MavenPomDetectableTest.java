@@ -35,6 +35,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.MavenResolver;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenCliExtractorOptions;
@@ -77,8 +78,8 @@ public class MavenPomDetectableTest extends DetectableFunctionalTest {
         class MavenPomResolverTest implements MavenResolver {
 
             @Override
-            public File resolveMaven(DetectableEnvironment environment) throws DetectableException {
-                return new File("maven");
+            public ExecutableTarget resolveMaven(DetectableEnvironment environment) throws DetectableException {
+                return ExecutableTarget.forFile(new File("maven"));
             }
         }
         return detectableFactory

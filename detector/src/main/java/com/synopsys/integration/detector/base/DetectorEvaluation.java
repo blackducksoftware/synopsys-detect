@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detector.base;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +34,7 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Discovery;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
+import com.synopsys.integration.detectable.detectable.explanation.Explanation;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 import com.synopsys.integration.detector.evaluation.SearchEnvironment;
@@ -106,6 +108,17 @@ public class DetectorEvaluation {
 
     public boolean wasDiscoveryException() {
         return isExtractable() && this.discovery != null && this.discovery.getResult() == Discovery.DiscoveryResultType.EXCEPTION;
+    }
+
+    public List<Explanation> getAllExplanations() {
+        List<Explanation> explanations = new ArrayList<>();
+        if (applicable != null) {
+            explanations.addAll(applicable.getExplanations());
+        }
+        if (extractable != null) {
+            explanations.addAll(extractable.getExplanations());
+        }
+        return explanations;
     }
 
     public void setSearchable(DetectorResult searchable) {
@@ -293,5 +306,16 @@ public class DetectorEvaluation {
 
     public DetectorType getDetectorType() {
         return getDetectorRule().getDetectorType();
+    }
+
+    public List<File> getAllRelevantFiles() {//TODO: This technically isn't ALL relevant files, doesn't include Extraction files. Is only the search portions (applicable, extractable).
+        List<File> relevant = new ArrayList<>();
+        if (applicable != null) {
+            relevant.addAll(applicable.getRelevantFiles());
+        }
+        if (extractable != null) {
+            relevant.addAll(extractable.getRelevantFiles());
+        }
+        return relevant;
     }
 }

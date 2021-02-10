@@ -31,6 +31,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.npm.cli.parse.NpmCliParser;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmParseResult;
@@ -45,15 +47,15 @@ public class NpmCliExtractor {
     private final DetectableExecutableRunner executableRunner;
     private final NpmCliParser npmCliParser;
 
-    public NpmCliExtractor(final DetectableExecutableRunner executableRunner, final NpmCliParser npmCliParser) {
+    public NpmCliExtractor(DetectableExecutableRunner executableRunner, NpmCliParser npmCliParser) {
         this.executableRunner = executableRunner;
         this.npmCliParser = npmCliParser;
     }
 
-    public Extraction extract(final File directory, final File npmExe, final NpmCliExtractorOptions npmCliExtractorOptions) {//TODO: Extractor should not use DetectableOptions
+    public Extraction extract(File directory, ExecutableTarget npmExe, NpmCliExtractorOptions npmCliExtractorOptions) {//TODO: Extractor should not use DetectableOptions
 
-        final boolean includeDevDeps = npmCliExtractorOptions.shouldIncludeDevDependencies();
-        final List<String> exeArgs = new ArrayList<>();
+        boolean includeDevDeps = npmCliExtractorOptions.shouldIncludeDevDependencies();
+        List<String> exeArgs = new ArrayList<>();
         exeArgs.add("ls");
         exeArgs.add("-json");
         if (!includeDevDeps) {
@@ -64,14 +66,14 @@ public class NpmCliExtractor {
             .map(arg -> arg.split(" "))
             .ifPresent(additionalArguments -> exeArgs.addAll(Arrays.asList(additionalArguments)));
 
-        final ExecutableOutput npmLsOutput;
+        ExecutableOutput npmLsOutput;
         try {
-            npmLsOutput = executableRunner.execute(directory, npmExe, exeArgs);
-        } catch (final Exception e) {
+            npmLsOutput = executableRunner.execute(ExecutableUtils.createFromTarget(directory, npmExe, exeArgs));
+        } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
-        final String standardOutput = npmLsOutput.getStandardOutput();
-        final String errorOutput = npmLsOutput.getErrorOutput();
+        String standardOutput = npmLsOutput.getStandardOutput();
+        String errorOutput = npmLsOutput.getErrorOutput();
         if (StringUtils.isNotBlank(errorOutput)) {
             logger.error("Error when running npm ls -json command");
             logger.error(errorOutput);
@@ -79,7 +81,7 @@ public class NpmCliExtractor {
         } else if (StringUtils.isNotBlank(standardOutput)) {
             logger.debug("Parsing npm ls file.");
             logger.debug(standardOutput);
-            final NpmParseResult result = npmCliParser.generateCodeLocation(standardOutput);
+            NpmParseResult result = npmCliParser.generateCodeLocation(standardOutput);
             return new Extraction.Builder().success(result.getCodeLocation()).projectName(result.getProjectName()).projectVersion(result.getProjectVersion()).build();
         } else {
             logger.error("Nothing returned from npm ls -json command");

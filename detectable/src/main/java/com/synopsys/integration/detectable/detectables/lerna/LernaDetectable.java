@@ -26,20 +26,19 @@ import java.io.File;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.Requirements;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.LernaResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmPackageLockDetectable;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmShrinkwrapDetectable;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 @DetectableInfo(language = "Node JS", forge = "npmjs", requirementsMarkdown = "File: " + LernaDetectable.PACKAGE_JSON + ", and one of the following: " + LernaDetectable.PACKAGE_LOCK_JSON + ", " + LernaDetectable.SHRINKWRAP_JSON + ", "
                                                                                   + LernaDetectable.YARN_LOCK + ".")
@@ -54,7 +53,7 @@ public class LernaDetectable extends Detectable {
     private final LernaResolver lernaResolver;
     private final LernaExtractor lernaExtractor;
 
-    private File lernaExecutable;
+    private ExecutableTarget lernaExecutable;
     private File packageJson;
 
     public LernaDetectable(DetectableEnvironment environment, FileFinder fileFinder, LernaResolver lernaResolver, LernaExtractor lernaExtractor) {
@@ -66,17 +65,15 @@ public class LernaDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        File lernaJsonFile = fileFinder.findFile(environment.getDirectory(), LERNA_JSON);
-
-        if (lernaJsonFile == null) {
-            return new FileNotFoundDetectableResult(LERNA_JSON);
-        }
-
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        requirements.file(LERNA_JSON);
+        return requirements.result();
     }
 
     @Override
     public DetectableResult extractable() throws DetectableException {
+        Requirements requirements = new Requirements(fileFinder, environment);
+
         // Lerna is used in conjunction with traditional NPM projects or Yarn projects.
         File packageLockFile = fileFinder.findFile(environment.getDirectory(), PACKAGE_LOCK_JSON);
         File shrinkwrapFile = fileFinder.findFile(environment.getDirectory(), SHRINKWRAP_JSON);
@@ -84,18 +81,13 @@ public class LernaDetectable extends Detectable {
         if (packageLockFile == null && shrinkwrapFile == null && yarnLockFile == null) {
             return new FilesNotFoundDetectableResult(PACKAGE_LOCK_JSON, YARN_LOCK);
         }
+        requirements.explainNullableFile(packageLockFile);
+        requirements.explainNullableFile(shrinkwrapFile);
+        requirements.explainNullableFile(yarnLockFile);
 
-        packageJson = fileFinder.findFile(environment.getDirectory(), PACKAGE_JSON);
-        if (packageJson == null) {
-            return new FilesNotFoundDetectableResult(PACKAGE_JSON);
-        }
-
-        lernaExecutable = lernaResolver.resolveLerna();
-        if (lernaExecutable == null) {
-            return new ExecutableNotFoundDetectableResult("lerna");
-        }
-
-        return new PassedDetectableResult();
+        packageJson = requirements.file(PACKAGE_JSON);
+        lernaExecutable = requirements.executable(lernaResolver::resolveLerna, "lerna");
+        return requirements.result();
     }
 
     @Override

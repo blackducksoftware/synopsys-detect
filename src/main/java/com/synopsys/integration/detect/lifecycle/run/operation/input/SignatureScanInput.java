@@ -20,22 +20,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow.blackduck;
+package com.synopsys.integration.detect.lifecycle.run.operation.input;
 
-import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
+import java.io.File;
+import java.util.Optional;
 
-public class BlackDuckRunOptions {
-    private final BlackduckScanMode scanMode;
+import javax.annotation.Nullable;
 
-    public BlackDuckRunOptions(BlackduckScanMode scanMode) {
-        this.scanMode = scanMode;
+import com.synopsys.integration.util.NameVersion;
+
+public class SignatureScanInput {
+    private final NameVersion projectNameVersion;
+    private final File dockerTar;
+
+    public SignatureScanInput(NameVersion projectNameVersion, @Nullable File dockerTar) {
+        this.projectNameVersion = projectNameVersion;
+        this.dockerTar = dockerTar;
     }
 
-    public BlackduckScanMode getScanMode() {
-        return scanMode;
+    public NameVersion getProjectNameVersion() {
+        return projectNameVersion;
     }
 
-    public boolean shouldPerformRapidModeScan() {
-        return BlackduckScanMode.RAPID_MODE == scanMode;
+    public Optional<File> getDockerTar() {
+        return Optional.ofNullable(dockerTar);
     }
 }

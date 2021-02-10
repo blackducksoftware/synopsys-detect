@@ -26,15 +26,14 @@ import java.io.File;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.Requirements;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.MavenResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
@@ -47,10 +46,10 @@ public class MavenPomDetectable extends Detectable {
     private final MavenCliExtractor mavenCliExtractor;
     private final MavenCliExtractorOptions mavenCliExtractorOptions;
 
-    private File mavenExe;
+    private ExecutableTarget mavenExe;
 
-    public MavenPomDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final MavenResolver mavenResolver, final MavenCliExtractor mavenCliExtractor,
-        final MavenCliExtractorOptions mavenCliExtractorOptions) {
+    public MavenPomDetectable(DetectableEnvironment environment, FileFinder fileFinder, MavenResolver mavenResolver, MavenCliExtractor mavenCliExtractor,
+        MavenCliExtractorOptions mavenCliExtractorOptions) {
         super(environment);
         this.fileFinder = fileFinder;
         this.mavenResolver = mavenResolver;
@@ -60,28 +59,20 @@ public class MavenPomDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        final File pom = fileFinder.findFile(environment.getDirectory(), POM_FILENAME);
-
-        if (pom == null) {
-            return new FileNotFoundDetectableResult(POM_FILENAME);
-        }
-
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        requirements.file(POM_FILENAME);
+        return requirements.result();
     }
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        mavenExe = mavenResolver.resolveMaven(environment);
-
-        if (mavenExe == null) {
-            return new ExecutableNotFoundDetectableResult("mvn");
-        }
-
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        mavenExe = requirements.executable(() -> mavenResolver.resolveMaven(environment), "maven");
+        return requirements.result();
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
         return mavenCliExtractor.extract(environment.getDirectory(), mavenExe, mavenCliExtractorOptions);
     }
 
