@@ -1020,6 +1020,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../advanced/aggregation/" title="BDIO aggregation" class="md-nav__link">
+      BDIO aggregation
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../advanced/air-gap/" title="Air gap mode" class="md-nav__link">
       Air gap mode
     </a>
@@ -1177,13 +1189,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-15" type="checkbox" id="nav-9-15">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-16" type="checkbox" id="nav-9-16">
     
-    <label class="md-nav__link" for="nav-9-15">
+    <label class="md-nav__link" for="nav-9-16">
       Package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-15">
+      <label class="md-nav__title" for="nav-9-16">
         Package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -1393,13 +1405,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-16" type="checkbox" id="nav-9-16">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-17" type="checkbox" id="nav-9-17">
     
-    <label class="md-nav__link" for="nav-9-16">
+    <label class="md-nav__link" for="nav-9-17">
       Troubleshooting
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-16">
+      <label class="md-nav__title" for="nav-9-17">
         Troubleshooting
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -2786,6 +2798,8 @@
 <ul>
 <li>Added ability for detectors to explain why they applied. It will appear in the logs at info level and in the status.json.</li>
 <li>Added the property detect.binary.scan.search.depth to define the directory search depth for the binary scanner.</li>
+<li>The status.json file now features a list of the provided Detect property values.</li>
+<li>When Detect is not configured to connect to blackduck or run offline, a link to the Detect help is included in an error message.</li>
 </ul>
 <h3 id="changed-features">Changed features<a class="headerlink" href="#changed-features" title="Permanent link">#</a></h3>
 <ul>
@@ -2796,6 +2810,7 @@
 <li>(IDETECT-1986) Resolved an issue where warnings regarding reflective access appear at the start of Detect.</li>
 <li>(IDETECT-2400) Resolved an issue where 'dependencies' would be removed from arguments to the Gradle build command.</li>
 <li>(IDETECT-2394) Resolved an issue that created inaccurate relationships in the BDIO files when Gemlock files were processed.</li>
+<li>(IDETECT-2404) Resolved an issue where signature scanner arguments passed through detect.blackduck.signature.scanner.arguments that contained space were being improperly parsed.</li>
 </ul>
 <h2 id="version-680">Version 6.8.0<a class="headerlink" href="#version-680" title="Permanent link">#</a></h2>
 <h3 id="new-features_1">New features<a class="headerlink" href="#new-features_1" title="Permanent link">#</a></h3>
