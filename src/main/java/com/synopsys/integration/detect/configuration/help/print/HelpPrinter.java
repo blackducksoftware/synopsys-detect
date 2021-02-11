@@ -176,7 +176,7 @@ public class HelpPrinter {
 
     public void printOptions(final HelpTextWriter writer, final List<Property> options, final String notes) {
         writer.printColumns("Property Name", "Default", "Description");
-        writer.printSeperator();
+        writer.printSeparator();
 
         final List<Property> sorted = options.stream()
                                           .sorted(SORT_BY_GROUP_THEN_KEY)

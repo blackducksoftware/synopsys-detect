@@ -23,7 +23,7 @@ import static com.synopsys.integration.detect.interactive.InteractiveModeDecisio
 import static com.synopsys.integration.detect.interactive.InteractiveModeDecisionTree.SHOULD_CONNECT_TO_BLACKDUCK;
 import static com.synopsys.integration.detect.interactive.InteractiveModeDecisionTree.SHOULD_RUN_SIGNATURE_SCAN;
 import static com.synopsys.integration.detect.interactive.InteractiveModeDecisionTree.SHOULD_SAVE_TO_APPLICATION_PROPERTIES;
-import static com.synopsys.integration.detect.interactive.InteractiveModeDecisionTree.SHOULD_SET_PROJECT_NAME_VERSON;
+import static com.synopsys.integration.detect.interactive.InteractiveModeDecisionTree.SHOULD_SET_PROJECT_NAME_VERSION;
 import static com.synopsys.integration.detect.interactive.SignatureScannerDecisionBranch.SET_SCANNER_HOST_URL;
 import static com.synopsys.integration.detect.interactive.SignatureScannerDecisionBranch.SET_SCANNER_OFFLINE_LOCAL_PATH;
 import static com.synopsys.integration.detect.interactive.SignatureScannerDecisionBranch.SHOULD_DOWNLOAD_CUSTOM_SCANNER;
@@ -102,7 +102,7 @@ public class InteractiveModeDecisionTreeEndToEndTest {
                 Pair.of(SET_PROXY_NTLM_WORKSTATION, EXPECTED_PROXY_NTLM_WORKSTATION),
 
                 Pair.of(SHOULD_TEST_CONNECTION, NO),
-                Pair.of(SHOULD_SET_PROJECT_NAME_VERSON, NO),
+                Pair.of(SHOULD_SET_PROJECT_NAME_VERSION, NO),
                 Pair.of(SHOULD_RUN_SIGNATURE_SCAN, NO),
                 Pair.of(SHOULD_SAVE_TO_APPLICATION_PROPERTIES, NO)
             ),
@@ -134,7 +134,7 @@ public class InteractiveModeDecisionTreeEndToEndTest {
                 Pair.of(SHOULD_CONFIGURE_PROXY, NO),
                 Pair.of(SHOULD_TEST_CONNECTION, NO),
 
-                Pair.of(SHOULD_SET_PROJECT_NAME_VERSON, YES),
+                Pair.of(SHOULD_SET_PROJECT_NAME_VERSION, YES),
                 Pair.of(SET_PROJECT_NAME, EXPECTED_PROJECT_NAME),
                 Pair.of(SET_PROJECT_VERSION, EXPECTED_VERSION_NAME),
 
@@ -166,7 +166,7 @@ public class InteractiveModeDecisionTreeEndToEndTest {
 
                 Pair.of(SHOULD_CONFIGURE_PROXY, NO),
                 Pair.of(SHOULD_TEST_CONNECTION, NO),
-                Pair.of(SHOULD_SET_PROJECT_NAME_VERSON, NO),
+                Pair.of(SHOULD_SET_PROJECT_NAME_VERSION, NO),
                 Pair.of(SHOULD_RUN_SIGNATURE_SCAN, NO),
                 Pair.of(SHOULD_SAVE_TO_APPLICATION_PROPERTIES, NO)
             ),
@@ -195,7 +195,7 @@ public class InteractiveModeDecisionTreeEndToEndTest {
                 Pair.of(SHOULD_TEST_CONNECTION, YES),
                 Pair.of(SHOULD_RETRY_CONNECTION, NO),
 
-                Pair.of(SHOULD_SET_PROJECT_NAME_VERSON, NO),
+                Pair.of(SHOULD_SET_PROJECT_NAME_VERSION, NO),
                 Pair.of(SHOULD_RUN_SIGNATURE_SCAN, NO),
                 Pair.of(SHOULD_SAVE_TO_APPLICATION_PROPERTIES, NO)
             ),
@@ -219,7 +219,7 @@ public class InteractiveModeDecisionTreeEndToEndTest {
                 Pair.of(SHOULD_TRUST_CERTS, YES),
 
                 Pair.of(SHOULD_TEST_CONNECTION, NO),
-                Pair.of(SHOULD_SET_PROJECT_NAME_VERSON, NO),
+                Pair.of(SHOULD_SET_PROJECT_NAME_VERSION, NO),
 
                 Pair.of(SHOULD_RUN_SIGNATURE_SCAN, YES),
                 Pair.of(SHOULD_UPLOAD_TO_BLACK_DUCK, YES),
@@ -249,7 +249,7 @@ public class InteractiveModeDecisionTreeEndToEndTest {
                 Pair.of(SHOULD_TRUST_CERTS, YES),
 
                 Pair.of(SHOULD_TEST_CONNECTION, NO),
-                Pair.of(SHOULD_SET_PROJECT_NAME_VERSON, NO),
+                Pair.of(SHOULD_SET_PROJECT_NAME_VERSION, NO),
 
                 Pair.of(SHOULD_RUN_SIGNATURE_SCAN, YES),
                 Pair.of(SHOULD_UPLOAD_TO_BLACK_DUCK, NO),

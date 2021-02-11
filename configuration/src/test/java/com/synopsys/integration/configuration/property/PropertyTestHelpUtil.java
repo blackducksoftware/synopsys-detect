@@ -34,7 +34,7 @@ import com.synopsys.integration.configuration.property.base.ValuedListProperty;
 import com.synopsys.integration.configuration.property.base.ValuedProperty;
 
 /**
- * Ensure's the Property classes are providing necessary property descriptions for help doc.
+ * Ensures the Property classes are providing necessary property descriptions for help doc.
  */
 public class PropertyTestHelpUtil {
 

@@ -31,6 +31,6 @@ public class PropertyProvided extends Explanation {
 
     @Override
     public String describeSelf() {
-        return "Property provded: " + property;
+        return "Property provided: " + property;
     }
 }

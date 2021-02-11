@@ -101,7 +101,7 @@ public class JobService {
             StringBuilder errorMessageBuilder = new StringBuilder();
             errorMessageBuilder.append(String.format("Job at url %s ended with state %s instead of %s", jobApiUrl, jobState, JobStatus.StateEnum.COMPLETED));
             if (JobStatus.StateEnum.FAILED.equals(jobState)) {
-                // Niether Data nor Attributes can be null because they were validated above -- rotte MAR 2020
+                // Neither Data nor Attributes can be null because they were validated above -- rotte MAR 2020
                 FailureInfo failureInfo = jobResource.getData().getAttributes().getFailureInfo();
                 if (failureInfo != null && StringUtils.isNotBlank(failureInfo.getUserFriendlyFailureReason())) {
                     errorMessageBuilder.append(String.format(" because: %s", failureInfo.getUserFriendlyFailureReason()));

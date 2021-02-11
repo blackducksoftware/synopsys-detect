@@ -23,5 +23,5 @@
 package com.synopsys.integration.detect.workflow.event;
 
 public interface EventListener<T> {
-    void eventOccured(T event);
+    void eventOccurred(T event);
 }
