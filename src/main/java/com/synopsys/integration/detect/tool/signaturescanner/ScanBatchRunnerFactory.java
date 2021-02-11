@@ -33,9 +33,8 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanPathsUtility;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScannerZipInstaller;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.blackduck.http.BlackDuckRequestFactory;
 import com.synopsys.integration.blackduck.http.client.BlackDuckHttpClient;
-import com.synopsys.integration.blackduck.http.client.SignatureScannerCertificateClient;
+import com.synopsys.integration.blackduck.http.client.SignatureScannerClient;
 import com.synopsys.integration.blackduck.keystore.KeyStoreHelper;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
@@ -66,10 +65,9 @@ public class ScanBatchRunnerFactory {
         // will will use the server to download/update the scanner - this is the most likely situation
         BlackDuckHttpClient blackDuckHttpClient = blackDuckServerConfig.createBlackDuckHttpClient(slf4jIntLogger);
         CleanupZipExpander cleanupZipExpander = new CleanupZipExpander(slf4jIntLogger);
-        BlackDuckRequestFactory blackDuckRequestFactory = new BlackDuckRequestFactory();
-        SignatureScannerCertificateClient signatureScannerCertificateClient = new SignatureScannerCertificateClient(blackDuckHttpClient);
-        KeyStoreHelper keyStoreHelper = new KeyStoreHelper(slf4jIntLogger, signatureScannerCertificateClient, blackDuckRequestFactory);
-        ScannerZipInstaller scannerZipInstaller = new ScannerZipInstaller(slf4jIntLogger, blackDuckHttpClient,
+        SignatureScannerClient signatureScannerClient = new SignatureScannerClient(blackDuckHttpClient);
+        KeyStoreHelper keyStoreHelper = new KeyStoreHelper(slf4jIntLogger);
+        ScannerZipInstaller scannerZipInstaller = new ScannerZipInstaller(slf4jIntLogger, signatureScannerClient,
             cleanupZipExpander, scanPathsUtility, keyStoreHelper,
             blackDuckServerConfig.getBlackDuckUrl(), operatingSystemType);
         ScanBatchRunner scanBatchManager = ScanBatchRunner.createComplete(intEnvironmentVariables, scannerZipInstaller, scanPathsUtility, scanCommandRunner);
@@ -91,10 +89,9 @@ public class ScanBatchRunnerFactory {
         }
         // we will use the provided url to download/update the scanner
         CleanupZipExpander cleanupZipExpander = new CleanupZipExpander(slf4jIntLogger);
-        BlackDuckRequestFactory blackDuckRequestFactory = new BlackDuckRequestFactory();
-        SignatureScannerCertificateClient signatureScannerCertificateClient = new SignatureScannerCertificateClient(blackDuckHttpClient);
-        KeyStoreHelper keyStoreHelper = new KeyStoreHelper(slf4jIntLogger, signatureScannerCertificateClient, blackDuckRequestFactory);
-        ScannerZipInstaller scannerZipInstaller = new ScannerZipInstaller(slf4jIntLogger, blackDuckHttpClient, cleanupZipExpander, scanPathsUtility,
+        SignatureScannerClient signatureScannerClient = new SignatureScannerClient(blackDuckHttpClient);
+        KeyStoreHelper keyStoreHelper = new KeyStoreHelper(slf4jIntLogger);
+        ScannerZipInstaller scannerZipInstaller = new ScannerZipInstaller(slf4jIntLogger, signatureScannerClient, cleanupZipExpander, scanPathsUtility,
             keyStoreHelper, url, operatingSystemType);
 
         return ScanBatchRunner.createComplete(intEnvironmentVariables, scannerZipInstaller, scanPathsUtility, scanCommandRunner);
