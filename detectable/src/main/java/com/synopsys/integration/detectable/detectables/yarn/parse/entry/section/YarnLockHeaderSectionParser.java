@@ -49,6 +49,14 @@ public class YarnLockHeaderSectionParser implements YarnLockEntrySectionParser {
     @Override
     public int parseSection(YarnLockEntryBuilder entryBuilder, List<String> yarnLockLines, int lineIndexOfStartOfSection) {
         String line = yarnLockLines.get(lineIndexOfStartOfSection);
+        line = StringUtils.removeEnd(line.trim(), ":").trim();
+        int doubleQuoteCount = StringUtils.countMatches(line, '"');
+        int singleQuoteCount = StringUtils.countMatches(line, '\'');
+        if (line.startsWith("\"") && line.endsWith("\"") && (doubleQuoteCount == 2)) {
+            line = yarnLockLineAnalyzer.unquote(line);
+        } else if (line.startsWith("'") && line.endsWith("'") && (singleQuoteCount == 2)) {
+            line = yarnLockLineAnalyzer.unquote(line);
+        }
         StringTokenizer tokenizer = TokenizerFactory.createHeaderTokenizer(line);
         while (tokenizer.hasMoreTokens()) {
             String rawEntryString = tokenizer.nextToken().trim();
