@@ -49,11 +49,13 @@ public class YarnLockLineAnalyzer {
         return s;
     }
 
-    private boolean isQuoted(String s) {
-        if (s.startsWith("\"") && s.endsWith("\"")) {
-            return true;
-        }
-        return s.startsWith("'") && s.endsWith("'");
+    public boolean isQuoted(String line) {
+        return isSingleQuotedWith(line, "\"") || isSingleQuotedWith(line, "'");
+    }
+
+    private boolean isSingleQuotedWith(String line, String quoteChar) {
+        int quoteCount = StringUtils.countMatches(line, quoteChar);
+        return (quoteCount == 2) && line.startsWith(quoteChar) && line.endsWith(quoteChar);
     }
 
     private int countLeadingSpaces(String line) {

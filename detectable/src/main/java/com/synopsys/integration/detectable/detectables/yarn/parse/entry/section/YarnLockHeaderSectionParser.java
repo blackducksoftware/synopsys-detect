@@ -48,7 +48,9 @@ public class YarnLockHeaderSectionParser implements YarnLockEntrySectionParser {
 
     @Override
     public int parseSection(YarnLockEntryBuilder entryBuilder, List<String> yarnLockLines, int lineIndexOfStartOfSection) {
-        String line = yarnLockLines.get(lineIndexOfStartOfSection);
+        String line = yarnLockLines.get(lineIndexOfStartOfSection).trim();
+        line = StringUtils.removeEnd(line, ":").trim();
+        line = yarnLockLineAnalyzer.unquote(line);
         StringTokenizer tokenizer = TokenizerFactory.createHeaderTokenizer(line);
         while (tokenizer.hasMoreTokens()) {
             String rawEntryString = tokenizer.nextToken().trim();
