@@ -11,7 +11,7 @@ dependencies to the top level of the dependency graph that it builds.
 The yarn.lock file contains necessary details about those
 direct dependencies and all transient dependencies. The details provided by the yarn.lock file
 about each dependency include its (transient) dependencies, enabling ${solution_name}
-to build the complete graph of direct ind transient dependencies. The Yarn detector
+to build the complete graph of direct and transient dependencies. The Yarn detector
 produces a single codelocation with this graph.
 
 ${solution_name} supports projects that use Yarn version 1 or version 2, that do not use Yarn workspaces.

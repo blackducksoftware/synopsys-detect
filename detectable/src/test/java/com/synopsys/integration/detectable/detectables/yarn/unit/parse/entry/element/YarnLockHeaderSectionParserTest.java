@@ -44,6 +44,27 @@ public class YarnLockHeaderSectionParserTest {
     }
 
     @Test
+    void testQuotedList() {
+        String line = "\"color-convert@npm:^1.9.0, color-convert@npm:^1.9.1\":";
+        List<String> lines = Arrays.asList(line);
+        Assertions.assertTrue(yarnLockParser.applies(line));
+
+        YarnLockEntryBuilder builder = new YarnLockEntryBuilder();
+        yarnLockParser.parseSection(builder, lines, 0);
+
+        // Complete the builder requirements and build the entry
+        builder.setVersion("testVersion");
+        YarnLockEntry entry = builder.build();
+
+        List<YarnLockEntryId> ids = entry.getIds();
+        Assertions.assertEquals(2, ids.size());
+        Assertions.assertEquals("color-convert", ids.get(0).getName());
+        Assertions.assertEquals("^1.9.0", ids.get(0).getVersion());
+        Assertions.assertEquals("color-convert", ids.get(1).getName());
+        Assertions.assertEquals("^1.9.1", ids.get(1).getVersion());
+    }
+    
+    @Test
     void testParserHandlesMissingSymbol() {
         String line = "example, example@1";
         List<String> lines = Arrays.asList(line);
