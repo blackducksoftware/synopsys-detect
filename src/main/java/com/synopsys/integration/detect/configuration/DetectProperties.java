@@ -663,6 +663,15 @@ public class DetectProperties {
             .setHelp("The path to the rebar3 executable.")
             .setGroups(DetectGroup.HEX, DetectGroup.GLOBAL);
 
+    public static final DetectProperty<StringListProperty> DETECT_IGNORE =
+        new DetectProperty<>(new StringListProperty("detect.ignore", emptyList()))
+            .setInfo("Detect Ignore", DetectPropertyFromVersion.VERSION_7_0_0)
+            .setHelp("A comma-separated list of directory names, name patterns, or paths that Detect should ignore.",
+                "Subdirectories whose name or path appear in this list will not be searched when determining which detectors to run, and will be excluded from signature scan using the Scan CLI '--exclude' flag. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details."
+            )
+            .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+            .setCategory(DetectCategory.Advanced);
+
     public static final DetectProperty<BooleanProperty> DETECT_IMPACT_ANALYSIS_ENABLED =
         new DetectProperty<>(new BooleanProperty("detect.impact.analysis.enabled", false))
             .setInfo("Vulnerability Impact Analysis Enabled", DetectPropertyFromVersion.VERSION_6_5_0)
@@ -845,6 +854,15 @@ public class DetectProperties {
                 "If set, Detect will use the given directory instead of using the default location of output path plus tools."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .setCategory(DetectCategory.Advanced);
+
+    public static final DetectProperty<StringListProperty> DETECT_PACKAGE_MANAGER_EXCLUSIONS =
+        new DetectProperty<>(new StringListProperty("detect.package.manager.exclusion", emptyList()))
+            .setInfo("Detector Directory Exclusions", DetectPropertyFromVersion.VERSION_7_0_0)
+            .setHelp("A comma-separated list of entries (e.g configurations, scopes, modules, etc) to exclude when parsing package manager outputs.",
+                "As Detect parses outputs from package manager commands (eg. gradle dependencies, mvn dependency:tree), it will exclude entries whose name appear in this list. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details."
+            )
+            .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
     public static final DetectProperty<BooleanProperty> DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES =

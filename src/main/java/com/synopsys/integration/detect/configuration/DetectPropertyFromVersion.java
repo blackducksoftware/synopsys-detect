@@ -43,7 +43,8 @@ public enum DetectPropertyFromVersion {
     VERSION_6_4_0("6.4.0"),
     VERSION_6_5_0("6.5.0"),
     VERSION_6_8_0("6.8.0"),
-    VERSION_6_9_0("6.9.0");
+    VERSION_6_9_0("6.9.0"),
+    VERSION_7_0_0("7.0.0");
 
     private final String version;
 
