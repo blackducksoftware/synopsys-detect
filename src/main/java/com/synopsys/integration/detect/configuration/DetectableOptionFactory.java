@@ -41,6 +41,7 @@ import com.synopsys.integration.configuration.property.base.ValuedProperty;
 import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumUtils;
 import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumValue;
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
+import com.synopsys.integration.detect.PropertyConfigUtils;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetLocatorOptions;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
@@ -149,9 +150,9 @@ public class DetectableOptionFactory {
     }
 
     public GradleInspectorOptions createGradleInspectorOptions() {
-        List<String> excludedProjectNames = getValue(DetectProperties.DETECT_GRADLE_EXCLUDED_PROJECTS);
+        List<String> excludedProjectNames = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_PACKAGE_MANAGER_EXCLUSIONS.getProperty(), DetectProperties.DETECT_GRADLE_EXCLUDED_PROJECTS.getProperty());
         List<String> includedProjectNames = getValue(DetectProperties.DETECT_GRADLE_INCLUDED_PROJECTS);
-        List<String> excludedConfigurationNames = getValue(DetectProperties.DETECT_GRADLE_EXCLUDED_CONFIGURATIONS);
+        List<String> excludedConfigurationNames = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_PACKAGE_MANAGER_EXCLUSIONS.getProperty(), DetectProperties.DETECT_GRADLE_EXCLUDED_CONFIGURATIONS.getProperty());
         List<String> includedConfigurationNames = getValue(DetectProperties.DETECT_GRADLE_INCLUDED_CONFIGURATIONS);
         String configuredGradleInspectorRepositoryUrl = getNullableValue(DetectProperties.DETECT_GRADLE_INSPECTOR_REPOSITORY_URL);
         String customRepository = ArtifactoryConstants.GRADLE_INSPECTOR_MAVEN_REPO;
@@ -173,9 +174,9 @@ public class DetectableOptionFactory {
 
     public MavenCliExtractorOptions createMavenCliOptions() {
         String mavenBuildCommand = getNullableValue(DetectProperties.DETECT_MAVEN_BUILD_COMMAND);
-        List<String> mavenExcludedScopes = getValue(DetectProperties.DETECT_MAVEN_EXCLUDED_SCOPES);
+        List<String> mavenExcludedScopes = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_PACKAGE_MANAGER_EXCLUSIONS.getProperty(), DetectProperties.DETECT_MAVEN_EXCLUDED_SCOPES.getProperty());
         List<String> mavenIncludedScopes = getValue(DetectProperties.DETECT_MAVEN_INCLUDED_SCOPES);
-        List<String> mavenExcludedModules = getValue(DetectProperties.DETECT_MAVEN_EXCLUDED_MODULES);
+        List<String> mavenExcludedModules = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_PACKAGE_MANAGER_EXCLUSIONS.getProperty(), DetectProperties.DETECT_MAVEN_EXCLUDED_MODULES.getProperty());
         List<String> mavenIncludedModules = getValue(DetectProperties.DETECT_MAVEN_INCLUDED_MODULES);
         return new MavenCliExtractorOptions(mavenBuildCommand, mavenExcludedScopes, mavenIncludedScopes, mavenExcludedModules, mavenIncludedModules);
     }
@@ -239,7 +240,7 @@ public class DetectableOptionFactory {
 
     public SbtResolutionCacheDetectableOptions createSbtResolutionCacheDetectableOptions() {
         List<String> includedConfigurations = getValue(DetectProperties.DETECT_SBT_INCLUDED_CONFIGURATIONS);
-        List<String> excludedConfigurations = getValue(DetectProperties.DETECT_SBT_EXCLUDED_CONFIGURATIONS);
+        List<String> excludedConfigurations = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_PACKAGE_MANAGER_EXCLUSIONS.getProperty(), DetectProperties.DETECT_SBT_EXCLUDED_CONFIGURATIONS.getProperty());
         Integer reportDepth = getValue(DetectProperties.DETECT_SBT_REPORT_DEPTH);
         return new SbtResolutionCacheDetectableOptions(includedConfigurations, excludedConfigurations, reportDepth);
     }
@@ -251,7 +252,7 @@ public class DetectableOptionFactory {
 
     public NugetInspectorOptions createNugetInspectorOptions() {
         Boolean ignoreFailures = getValue(DetectProperties.DETECT_NUGET_IGNORE_FAILURE);
-        List<String> excludedModules = getValue(DetectProperties.DETECT_NUGET_EXCLUDED_MODULES);
+        List<String> excludedModules = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_PACKAGE_MANAGER_EXCLUSIONS.getProperty(), DetectProperties.DETECT_NUGET_EXCLUDED_MODULES.getProperty());
         List<String> includedModules = getValue(DetectProperties.DETECT_NUGET_INCLUDED_MODULES);
         List<String> packagesRepoUrl = getValue(DetectProperties.DETECT_NUGET_PACKAGES_REPO_URL);
         Path nugetConfigPath = detectConfiguration.getValue(DetectProperties.DETECT_NUGET_CONFIG_PATH.getProperty()).map(path -> path.resolvePath(pathResolver)).orElse(null);

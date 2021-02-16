@@ -672,6 +672,15 @@ public class DetectProperties {
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
+    public static final DetectProperty<BooleanProperty> DETECT_IGNORE_DEFAULTS =
+        new DetectProperty<>(new BooleanProperty("detect.ignore.defaults", true))
+            .setInfo("Detect Ignore Default Directories", DetectPropertyFromVersion.VERSION_3_2_0)
+            .setHelp("If true, Detect will ignore the default directory names. See the detailed help for more information.",
+                "If true, these directories will be ignored by Detect when searching for detectors and will be excluded from signature scan using the Scan CLI '--exclude' flag: bin, build, .git, .gradle, node_modules, out, packages, target."
+            )
+            .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+            .setCategory(DetectCategory.Advanced);
+
     public static final DetectProperty<BooleanProperty> DETECT_IMPACT_ANALYSIS_ENABLED =
         new DetectProperty<>(new BooleanProperty("detect.impact.analysis.enabled", false))
             .setInfo("Vulnerability Impact Analysis Enabled", DetectPropertyFromVersion.VERSION_6_5_0)
