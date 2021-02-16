@@ -3,14 +3,12 @@ package com.synopsys.integration.detect.workflow.blackduck.developer;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -19,6 +17,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponentResultView;
+import com.synopsys.integration.detect.testutils.TestUtil;
 import com.synopsys.integration.detect.workflow.DetectRun;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -36,8 +35,7 @@ public class BlackDuckRapidModePostActionsTest {
         DirectoryOptions directoryOptions = new DirectoryOptions(null, null, null, scanOutputPath, null);
         DirectoryManager directoryManager = new DirectoryManager(directoryOptions, new DetectRun(""));
 
-        File expectedOutputFile = new File("src/test/resources/workflow/blackduck/rapid_scan_result_file.json");
-        String expectedOutput = FileUtils.readFileToString(expectedOutputFile, StandardCharsets.UTF_8).trim();
+        String expectedOutput = TestUtil.getResourceAsUTF8String("/workflow/blackduck/rapid_scan_result_file.json");
 
         List<DeveloperScanComponentResultView> results = createResults(gson, expectedOutput);
 
@@ -46,7 +44,7 @@ public class BlackDuckRapidModePostActionsTest {
         postActions.perform(nameVersion, results);
 
         File actualOutputFile = createActualOutputFile(directoryManager, nameVersion);
-        String actualOutput = FileUtils.readFileToString(actualOutputFile, StandardCharsets.UTF_8).trim();
+        String actualOutput = TestUtil.getFileAsUTF8String(actualOutputFile).trim();
 
         assertEquals(expectedOutput, actualOutput);
     }

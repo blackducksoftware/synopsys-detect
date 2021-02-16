@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 import org.json.JSONException;
+import org.junit.jupiter.api.Assertions;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import com.google.gson.Gson;
@@ -55,13 +56,29 @@ public class TestUtil {
         }
     }
 
-    public String getResourceAsUTF8String(final String resourcePath) {
+    public static String getResourceAsUTF8String(final String resourcePath) {
         final String data;
         try {
-            data = ResourceUtil.getResourceAsString(getClass(), resourcePath, StandardCharsets.UTF_8.toString());
+            data = ResourceUtil.getResourceAsString(TestUtil.class, resourcePath, StandardCharsets.UTF_8.toString());
+            Assertions.assertNotNull(data, "Could not find resource file: " + resourcePath);
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
+        return normalizeLineEndings(data);
+    }
+
+    public static String getFileAsUTF8String(final File file) throws IOException {
+        String data;
+        try {
+            data = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+            Assertions.assertNotNull(data, "Could not read file: " + file.toString());
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+        return normalizeLineEndings(data);
+    }
+
+    public static String normalizeLineEndings(String data) {
         return Arrays.stream(data.split("\r?\n")).collect(Collectors.joining(System.lineSeparator()));
     }
 
