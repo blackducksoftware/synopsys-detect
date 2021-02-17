@@ -14,9 +14,6 @@ dependencies {
     implementation "com.synopsys.integration:common-gradle-plugin:1.8.1"
     implementation "com.synopsys.integration:blackduck-common:51.1.0"
 
-    implementation('org.springframework:spring-core') {
-        version {
-            strictly '5.3.3'
-        }
-    }
+    // TODO can we use the spring that is defined in the parent project
+    implementation 'org.springframework:spring-core:5.3.3'
 }
