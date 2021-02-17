@@ -7,7 +7,7 @@ ext['groovy.version'] = '3.0.0'
 
 buildscript {
     ext {
-        springBootVersion = '2.2.4.RELEASE'
+        springBootVersion = '2.4.2'
         blackDuckCommonVersion = '52.0.2'
         junitPlatformDefaultTestTags = 'integration, performance, battery'
     }
