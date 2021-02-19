@@ -159,10 +159,12 @@ public class ClangPackageManagerRunnerTest {
 
         if (packageManagerInfo.getPkgInfoArgs().isPresent() && (pkgMgrDetailsQueryResultPattern != null)) {
             List<String> fileSpecificGetDetailsArgs = new ArrayList<>(packageManagerInfo.getPkgInfoArgs().get());
-            if (!archBuried && pkgArch != null) {
-                fileSpecificGetDetailsArgs.add(pkgName + ":" + pkgArch);
-            } else {
+            // Architecture might be available from the initial "who owns this" query, buried in the later-gotten details, or altogether absent
+            // If absent or buried, the detail query should omit arch; otherwise: the detail query should include arch
+            if (archBuried || pkgArch == null) {
                 fileSpecificGetDetailsArgs.add(pkgName);
+            } else {
+                fileSpecificGetDetailsArgs.add(pkgName + ":" + pkgArch);
             }
             String pkgMgrGetDetailsQueryFileOutput = String.format(pkgMgrDetailsQueryResultPattern, dependencyFile);
             ExecutableOutput pkgMgrGetDetailsQueryFileResult = new ExecutableOutput(0, pkgMgrGetDetailsQueryFileOutput, "");

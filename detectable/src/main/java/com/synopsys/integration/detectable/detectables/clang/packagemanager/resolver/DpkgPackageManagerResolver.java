@@ -58,7 +58,7 @@ public class DpkgPackageManagerResolver implements ClangPackageManagerResolver {
             String[] queryPackageOutputParts = packageLine.split("\\s+");
             String[] packageNameArchParts = queryPackageOutputParts[0].split(":");
             String packageName = packageNameArchParts[0].trim();
-            String packageArch = parseArchitecture(packageNameArchParts);
+            String packageArch = parseArchitectureIfPresent(packageNameArchParts);
             logger.debug("File ownership query results: package name: {}, arch: {}", packageName, packageArch);
             Optional<PackageDetails> pkg = versionResolver.resolvePackageDetails(currentPackageManager, executableRunner, workingDirectory, packageName, packageArch);
             if (pkg.isPresent()) {
@@ -70,13 +70,13 @@ public class DpkgPackageManagerResolver implements ClangPackageManagerResolver {
     }
 
     @Nullable
-    private String parseArchitecture(String[] packageNameArchParts) {
-        String packageArch = null;
+    private String parseArchitectureIfPresent(String[] packageNameArchParts) {
         if (packageNameArchParts.length > 1) {
-            packageArch = packageNameArchParts[1].trim();
-            packageArch = StringUtils.substringBefore(packageArch, ",");
+            String packageArch = packageNameArchParts[1].trim();
+            return StringUtils.substringBefore(packageArch, ",");
+        } else {
+            return null;
         }
-        return packageArch;
     }
 
     private boolean valid(String packageLine) throws NotOwnedByAnyPkgException {
