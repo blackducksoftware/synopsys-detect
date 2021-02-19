@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,10 +43,14 @@ public class DpkgPkgDetailsResolver {
     private static final int PKG_INFO_LINE_LABEL_POSITION = 0;
     private static final int PKG_INFO_LINE_VALUE_POSITION = 1;
 
-    public Optional<PackageDetails> resolvePackageDetails(ClangPackageManagerInfo currentPackageManager, DetectableExecutableRunner executableRunner, File workingDirectory, String packageName) {
+    public Optional<PackageDetails> resolvePackageDetails(ClangPackageManagerInfo currentPackageManager, DetectableExecutableRunner executableRunner, File workingDirectory, String packageName, @Nullable String packageArch) {
         try {
             List<String> args = new ArrayList<>(currentPackageManager.getPkgInfoArgs().get());
-            args.add(packageName);
+            String packageArg = packageName;
+            if (packageArch != null) {
+                packageArg = String.format("%s:%s", packageName, packageArch);
+            }
+            args.add(packageArg);
             ExecutableOutput packageInfoOutput = executableRunner.execute(workingDirectory, currentPackageManager.getPkgMgrCmdString(), args);
             return parsePackageDetailsFromInfoOutput(packageName, packageInfoOutput.getStandardOutput());
         } catch (ExecutableRunnerException e) {

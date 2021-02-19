@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,8 +57,13 @@ public class DpkgPackageManagerResolver implements ClangPackageManagerResolver {
             String[] queryPackageOutputParts = packageLine.split("\\s+");
             String[] packageNameArchParts = queryPackageOutputParts[0].split(":");
             String packageName = packageNameArchParts[0].trim();
-            logger.debug(String.format("File ownership query results: package name: %s", packageName));
-            Optional<PackageDetails> pkg = versionResolver.resolvePackageDetails(currentPackageManager, executableRunner, workingDirectory, packageName);
+            String packageArch = null;
+            if (packageNameArchParts.length > 1) {
+                packageArch = packageNameArchParts[1].trim();
+                packageArch = StringUtils.substringBefore(packageArch, ",");
+            }
+            logger.debug(String.format("File ownership query results: package name: %s, arch: %s", packageName, packageArch));
+            Optional<PackageDetails> pkg = versionResolver.resolvePackageDetails(currentPackageManager, executableRunner, workingDirectory, packageName, packageArch);
             if (pkg.isPresent()) {
                 logger.debug(String.format("Adding package: %s", pkg.get()));
                 packageDetailsList.add(pkg.get());

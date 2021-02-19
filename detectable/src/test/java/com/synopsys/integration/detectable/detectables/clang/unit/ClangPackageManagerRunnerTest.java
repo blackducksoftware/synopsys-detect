@@ -40,7 +40,7 @@ public class ClangPackageManagerRunnerTest {
                                        + "Architecture: amd64\n"
                                        + "Version: 1:1.1.5-1\n"
                                        + "Status: install ok installed\n";
-        testSuccessCase(packageManagerInfo, packageResolver, "libxt-dev", "amd64", "1:1.1.5-1", pkgOwnerPattern, pkgDetailsPattern);
+        testSuccessCase(packageManagerInfo, packageResolver, "libxt-dev", "amd64", false, "1:1.1.5-1", pkgOwnerPattern, pkgDetailsPattern);
     }
 
     @Test
@@ -68,7 +68,7 @@ public class ClangPackageManagerRunnerTest {
                                        + "Architecture: amd64\n"
                                        + "Version: 1:1.1.5-1\n"
                                        + "Status: install ok installed\n";
-        testSuccessCase(packageManagerInfo, packageResolver, "libxt-dev", "amd64", "1:1.1.5-1", pkgOwnerPattern, pkgDetailsPattern);
+        testSuccessCase(packageManagerInfo, packageResolver, "libxt-dev", "amd64", true, "1:1.1.5-1", pkgOwnerPattern, pkgDetailsPattern);
     }
 
     @Test
@@ -104,7 +104,7 @@ public class ClangPackageManagerRunnerTest {
         String pkgMgrOwnerQueryResultPattern, String pkgMgrDetailsQueryResultPattern) throws ExecutableRunnerException {
 
         // Test
-        PackageDetailsResult result = runTest(packageManagerInfo, packageResolver, null,
+        PackageDetailsResult result = runTest(packageManagerInfo, packageResolver, null, null, false,
             pkgMgrOwnerQueryResultPattern, pkgMgrDetailsQueryResultPattern, dependencyFile);
 
         // Verify
@@ -113,11 +113,12 @@ public class ClangPackageManagerRunnerTest {
     }
 
     private void testSuccessCase(ClangPackageManagerInfo packageManagerInfo, ClangPackageManagerResolver packageResolver,
-        String pkgName, String pkgArchitecture, String pkgVersion,
+        String pkgName, String pkgArchitecture, boolean archBuried, String pkgVersion,
         String pkgMgrQueryResultPattern, String pkgMgrDetailsQueryResultPattern) throws ExecutableRunnerException {
 
         // Test
-        PackageDetailsResult result = runTest(packageManagerInfo, packageResolver, pkgName,
+        PackageDetailsResult result = runTest(packageManagerInfo, packageResolver, pkgName, pkgArchitecture,
+            archBuried,
             pkgMgrQueryResultPattern, pkgMgrDetailsQueryResultPattern, dependencyFile);
 
         // Verify
@@ -134,7 +135,7 @@ public class ClangPackageManagerRunnerTest {
         String pkgMgrQueryResultPattern, String pkgMgrDetailsQueryResultPattern) throws ExecutableRunnerException {
 
         // Test
-        PackageDetailsResult result = runTest(packageManagerInfo, packageResolver, pkgName,
+        PackageDetailsResult result = runTest(packageManagerInfo, packageResolver, pkgName, pkgArchitecture, false,
             pkgMgrQueryResultPattern, pkgMgrDetailsQueryResultPattern, dependencyFile);
 
         // Verify
@@ -144,6 +145,7 @@ public class ClangPackageManagerRunnerTest {
 
     private PackageDetailsResult runTest(ClangPackageManagerInfo packageManagerInfo, ClangPackageManagerResolver packageResolver,
         String pkgName,
+        String pkgArch, boolean archBuried,
         String pkgMgrOwnerQueryResultPattern, String pkgMgrDetailsQueryResultPattern,
         File dependencyFile)
         throws ExecutableRunnerException {
@@ -157,7 +159,11 @@ public class ClangPackageManagerRunnerTest {
 
         if (packageManagerInfo.getPkgInfoArgs().isPresent() && (pkgMgrDetailsQueryResultPattern != null)) {
             List<String> fileSpecificGetDetailsArgs = new ArrayList<>(packageManagerInfo.getPkgInfoArgs().get());
-            fileSpecificGetDetailsArgs.add(pkgName);
+            if (!archBuried && pkgArch != null) {
+                fileSpecificGetDetailsArgs.add(pkgName + ":" + pkgArch);
+            } else {
+                fileSpecificGetDetailsArgs.add(pkgName);
+            }
             String pkgMgrGetDetailsQueryFileOutput = String.format(pkgMgrDetailsQueryResultPattern, dependencyFile);
             ExecutableOutput pkgMgrGetDetailsQueryFileResult = new ExecutableOutput(0, pkgMgrGetDetailsQueryFileOutput, "");
             Mockito.when(executableRunner.execute(workingDirectory, packageManagerInfo.getPkgMgrCmdString(), fileSpecificGetDetailsArgs)).thenReturn(pkgMgrGetDetailsQueryFileResult);
