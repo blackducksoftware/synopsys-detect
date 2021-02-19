@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,25 +52,31 @@ public class DpkgPackageManagerResolver implements ClangPackageManagerResolver {
         String[] packageLines = ownershipQueryOutput.split("\n");
         for (String packageLine : packageLines) {
             if (!valid(packageLine)) {
-                logger.trace(String.format("Skipping file ownership query output line: %s", packageLine));
+                logger.trace("Skipping file ownership query output line: {}", packageLine);
                 continue;
             }
             String[] queryPackageOutputParts = packageLine.split("\\s+");
             String[] packageNameArchParts = queryPackageOutputParts[0].split(":");
             String packageName = packageNameArchParts[0].trim();
-            String packageArch = null;
-            if (packageNameArchParts.length > 1) {
-                packageArch = packageNameArchParts[1].trim();
-                packageArch = StringUtils.substringBefore(packageArch, ",");
-            }
-            logger.debug(String.format("File ownership query results: package name: %s, arch: %s", packageName, packageArch));
+            String packageArch = parseArchitecture(packageNameArchParts);
+            logger.debug("File ownership query results: package name: {}, arch: {}", packageName, packageArch);
             Optional<PackageDetails> pkg = versionResolver.resolvePackageDetails(currentPackageManager, executableRunner, workingDirectory, packageName, packageArch);
             if (pkg.isPresent()) {
-                logger.debug(String.format("Adding package: %s", pkg.get()));
+                logger.debug("Adding package: {}", pkg.get());
                 packageDetailsList.add(pkg.get());
             }
         }
         return packageDetailsList;
+    }
+
+    @Nullable
+    private String parseArchitecture(String[] packageNameArchParts) {
+        String packageArch = null;
+        if (packageNameArchParts.length > 1) {
+            packageArch = packageNameArchParts[1].trim();
+            packageArch = StringUtils.substringBefore(packageArch, ",");
+        }
+        return packageArch;
     }
 
     private boolean valid(String packageLine) throws NotOwnedByAnyPkgException {
@@ -81,9 +88,6 @@ public class DpkgPackageManagerResolver implements ClangPackageManagerResolver {
             return true;
         }
         // arch not included
-        if (packageLine.matches(".+: .+")) {
-            return true;
-        }
-        return false;
+        return packageLine.matches(".+: .+");
     }
 }

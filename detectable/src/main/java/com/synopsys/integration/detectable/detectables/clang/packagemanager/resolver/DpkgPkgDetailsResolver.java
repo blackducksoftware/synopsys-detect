@@ -46,17 +46,21 @@ public class DpkgPkgDetailsResolver {
     public Optional<PackageDetails> resolvePackageDetails(ClangPackageManagerInfo currentPackageManager, DetectableExecutableRunner executableRunner, File workingDirectory, String packageName, @Nullable String packageArch) {
         try {
             List<String> args = new ArrayList<>(currentPackageManager.getPkgInfoArgs().get());
-            String packageArg = packageName;
-            if (packageArch != null) {
-                packageArg = String.format("%s:%s", packageName, packageArch);
-            }
-            args.add(packageArg);
+            args.add(constructPackageArg(packageName, packageArch));
             ExecutableOutput packageInfoOutput = executableRunner.execute(workingDirectory, currentPackageManager.getPkgMgrCmdString(), args);
             return parsePackageDetailsFromInfoOutput(packageName, packageInfoOutput.getStandardOutput());
         } catch (ExecutableRunnerException e) {
             logger.warn(String.format("Error executing %s to get package info: %s", currentPackageManager.getPkgMgrName(), e.getMessage()));
         }
         return Optional.empty();
+    }
+
+    private String constructPackageArg(String packageName, @Nullable String packageArch) {
+        if (StringUtils.isBlank(packageArch)) {
+            return packageName;
+        } else {
+            return String.format("%s:%s", packageName, packageArch);
+        }
     }
 
     private Optional<PackageDetails> parsePackageDetailsFromInfoOutput(String packageName, String packageInfoOutput) {
@@ -71,8 +75,8 @@ public class DpkgPkgDetailsResolver {
             packageVersion = parseNeededValueFromLineIfPresent(packageName, packageInfoOutputLine, "Version", packageVersion);
         }
         if ((packageVersion == null) || (packageArchitecture == null)) {
-            logger.warn(String.format("Unable to determine all details for package %s (version: %s; architecture: %s); this package will be omitted from the output",
-                packageName, packageVersion, packageArchitecture));
+            logger.warn("Unable to determine all details for package {} (version: {}; architecture: {}); this package will be omitted from the output",
+                packageName, packageVersion, packageArchitecture);
             return Optional.empty();
         }
         return Optional.of(new PackageDetails(packageName, packageVersion, packageArchitecture));
@@ -95,7 +99,7 @@ public class DpkgPkgDetailsResolver {
                     return Optional.of(parsedValue);
                 }
             }
-            logger.warn(String.format("Package %s: %s field value is missing", packageName, targetLabel));
+            logger.warn("Package {}: {} field value is missing", packageName, targetLabel);
         }
         return Optional.empty();
     }
@@ -107,11 +111,11 @@ public class DpkgPkgDetailsResolver {
             if (packageInfoOutputLineParts.length > PKG_INFO_LINE_VALUE_POSITION) {
                 String value = packageInfoOutputLineParts[PKG_INFO_LINE_VALUE_POSITION];
                 if ((value != null) && !value.contains("installed")) {
-                    logger.debug(String.format("Package is not installed; Package %s; Status is: %s", packageName, value));
+                    logger.debug("Package is not installed; Package {}; Status is: {}", packageName, value);
                     return true;
                 }
             } else {
-                logger.warn(String.format("Missing value for Status field for package %s", packageName));
+                logger.warn("Missing value for Status field for package {}", packageName);
             }
         }
         return false;
