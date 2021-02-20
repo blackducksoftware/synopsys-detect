@@ -1748,6 +1748,18 @@
 <td>default: false <br /><br /> Snippet Scanning: If set to true, the signature scanner will, if supported by your Black Duck version, run in snippet scanning mode. <br /><br /> <strong>DEPRECATED: This property is now deprecated. Please use --detect.blackduck.signature.scanner.snippet.matching in the future. NOTE the new property is one of a particular set of values. You will need to consult the documentation for the Signature Scanner in Black Duck for details. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></td>
 </tr>
 <tr>
+<td><a href="../configuration/signature scanner/#directory-name-exclusion-patterns-deprecated">detect.blackduck.signature.scanner.exclusion.name.patterns</a></td>
+<td>default: node_modules <br /><br /> Directory Name Exclusion Patterns: A comma-separated list of directory name patterns for which Detect searches and adds to the signature scanner --exclude flag values. <br /><br /> <strong>DEPRECATED: This property is now deprecated. In future versions of Detect, it will be consolidated with other exclusion properties. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
+</tr>
+<tr>
+<td><a href="../configuration/signature scanner/#exclusion-patterns-search-depth-deprecated">detect.blackduck.signature.scanner.exclusion.pattern.search.depth</a></td>
+<td>default: 4 <br /><br /> Exclusion Patterns Search Depth: Enables you to adjust the depth to which Detect will search when creating signature scanner exclusion patterns. <br /><br /> <strong>DEPRECATED: This property is now deprecated. In future versions of Detect, it will be consolidated with other exclusion properties. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
+</tr>
+<tr>
+<td><a href="../configuration/signature scanner/#exclusion-patterns-deprecated">detect.blackduck.signature.scanner.exclusion.patterns</a></td>
+<td>Exclusion Patterns: A comma-separated list of values (each value is a directory name pattern surrounded by '/' characters) to be used with the Signature Scanner --exclude flag. <br /><br /> <strong>DEPRECATED: This property is now deprecated. In future versions of Detect, it will be consolidated with other exclusion properties. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
+</tr>
+<tr>
 <td><a href="../configuration/signature scanner/#signature-scanner-local-path-40offline41-deprecated">detect.blackduck.signature.scanner.offline.local.path</a></td>
 <td>Signature Scanner Local Path (Offline): To use a local signature scanner and force offline, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli. <br /><br /> <strong>DEPRECATED: This property is being deprecated.  In the future, please use detect.blackduck.signature.scanner.local.path to specify a local signature scanner zip, and blackduck.offline.mode to run offline. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
 </tr>
