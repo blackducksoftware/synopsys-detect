@@ -224,8 +224,12 @@ import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockExtractor;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
 import com.synopsys.integration.detectable.detectables.yarn.YarnPackager;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockLineAnalyzer;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnTransformer;
+import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryParser;
+import com.synopsys.integration.detectable.detectables.yarn.parse.entry.section.YarnLockDependencySpecParser;
+import com.synopsys.integration.detectable.detectables.yarn.parse.entry.section.YarnLockEntrySectionParserSet;
 
 /*
  Entry point for creating detectables using most
@@ -694,7 +698,11 @@ public class DetectableFactory {
     }
 
     private YarnLockParser yarnLockParser() {
-        return new YarnLockParser();
+        YarnLockLineAnalyzer yarnLockLineAnalyzer = new YarnLockLineAnalyzer();
+        YarnLockDependencySpecParser yarnLockDependencySpecParser = new YarnLockDependencySpecParser(yarnLockLineAnalyzer);
+        YarnLockEntrySectionParserSet yarnLockEntryElementParser = new YarnLockEntrySectionParserSet(yarnLockLineAnalyzer, yarnLockDependencySpecParser);
+        YarnLockEntryParser yarnLockEntryParser = new YarnLockEntryParser(yarnLockLineAnalyzer, yarnLockEntryElementParser);
+        return new YarnLockParser(yarnLockEntryParser);
     }
 
     private YarnTransformer yarnTransformer() {

@@ -1,11 +1,20 @@
 # Release notes
 
 ## Version 6.9.0
+### New Features
+* Added ability for detectors to explain why they applied. It will appear in the logs at info level and in the status.json.
+* Added the property detect.binary.scan.search.depth to define the directory search depth for the binary scanner.
+* The status.json file now features a list of the provided Detect property values.
+* When Detect is not configured to connect to blackduck or run offline, a link to the Detect help is included in an error message.
+
 ### Changed features
 * Added the timezone to the date format in the default log message format.
 
 ### Resolved issues
 * (IDETECT-1986) Resolved an issue where warnings regarding reflective access appear at the start of Detect.
+* (IDETECT-2400) Resolved an issue where 'dependencies' would be removed from the value of the detect.gradle.build.command property.
+* (IDETECT-2394) Resolved an issue that created inaccurate relationships in the BDIO files when Gemlock files were processed.
+* (IDETECT-2404) Resolved an issue where signature scanner arguments passed through detect.blackduck.signature.scanner.arguments that contained space were being improperly parsed.
 
 ## Version 6.8.0
 ### New features

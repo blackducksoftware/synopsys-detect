@@ -36,8 +36,6 @@ import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
 public class GoVndrDetectableTest extends DetectableFunctionalTest {
-    private static final String VNDR_CONF_FILENAME = "vendor.conf";
-
     public GoVndrDetectableTest() throws IOException {
         super("vndr");
     }
@@ -53,12 +51,12 @@ public class GoVndrDetectableTest extends DetectableFunctionalTest {
 
     @NotNull
     @Override
-    public Detectable create(@NotNull final DetectableEnvironment detectableEnvironment) {
+    public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
         return detectableFactory.createGoVndrDetectable(detectableEnvironment);
     }
 
     @Override
-    public void assertExtraction(@NotNull final Extraction extraction) {
+    public void assertExtraction(@NotNull Extraction extraction) {
         Assertions.assertEquals(1, extraction.getCodeLocations().size());
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.GOLANG, extraction.getCodeLocations().get(0).getDependencyGraph());

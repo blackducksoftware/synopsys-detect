@@ -54,8 +54,7 @@ import com.synopsys.integration.log.IntLogger;
 
 public abstract class BlackDuckIntegrationTest {
     public static final String TEST_BLACKDUCK_URL_KEY = "TEST_BLACKDUCK_URL";
-    public static final String TEST_BLACKDUCK_USERNAME_KEY = "TEST_BLACKDUCK_USERNAME";
-    public static final String TEST_BLACKDUCK_PASSWORD_KEY = "TEST_BLACKDUCK_PASSWORD";
+    public static final String TEST_BLACKDUCK_API_TOKEN_KEY = "TEST_BLACKDUCK_API_TOKEN_KEY";
 
     protected static IntLogger logger;
     protected static BlackDuckServicesFactory blackDuckServicesFactory;
@@ -71,14 +70,12 @@ public abstract class BlackDuckIntegrationTest {
         logger = new BufferedIntLogger();
 
         Assumptions.assumeTrue(StringUtils.isNotBlank(System.getenv().get(TEST_BLACKDUCK_URL_KEY)));
-        Assumptions.assumeTrue(StringUtils.isNotBlank(System.getenv().get(TEST_BLACKDUCK_USERNAME_KEY)));
-        Assumptions.assumeTrue(StringUtils.isNotBlank(System.getenv().get(TEST_BLACKDUCK_PASSWORD_KEY)));
+        Assumptions.assumeTrue(StringUtils.isNotBlank(System.getenv().get(TEST_BLACKDUCK_API_TOKEN_KEY)));
 
         BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = BlackDuckServerConfig.newBuilder();
         blackDuckServerConfigBuilder.setProperties(System.getenv().entrySet());
         blackDuckServerConfigBuilder.setUrl(System.getenv().get(TEST_BLACKDUCK_URL_KEY));
-        blackDuckServerConfigBuilder.setUsername(System.getenv().get(TEST_BLACKDUCK_USERNAME_KEY));
-        blackDuckServerConfigBuilder.setPassword(System.getenv().get(TEST_BLACKDUCK_PASSWORD_KEY));
+        blackDuckServerConfigBuilder.setApiToken(System.getenv().get(TEST_BLACKDUCK_API_TOKEN_KEY));
         blackDuckServerConfigBuilder.setTrustCert(true);
         blackDuckServerConfigBuilder.setTimeoutInSeconds(5 * 60);
 
@@ -124,8 +121,7 @@ public abstract class BlackDuckIntegrationTest {
         initialArgs.add("--detect.project.name=" + projectName);
         initialArgs.add("--detect.project.version.name=" + projectVersionName);
         initialArgs.add("--blackduck.url=" + System.getenv().get(TEST_BLACKDUCK_URL_KEY));
-        initialArgs.add("--blackduck.username=" + System.getenv().get(TEST_BLACKDUCK_USERNAME_KEY));
-        initialArgs.add("--blackduck.password=" + System.getenv().get(TEST_BLACKDUCK_PASSWORD_KEY));
+        initialArgs.add("--blackduck.api.token=" + System.getenv().get(TEST_BLACKDUCK_API_TOKEN_KEY));
 
         return initialArgs;
     }

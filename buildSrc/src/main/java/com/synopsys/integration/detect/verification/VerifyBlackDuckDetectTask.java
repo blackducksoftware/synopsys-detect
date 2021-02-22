@@ -1,4 +1,4 @@
-/**
+/*
  * buildSrc
  *
  * Copyright (c) 2021 Synopsys, Inc.
@@ -54,7 +54,7 @@ public class VerifyBlackDuckDetectTask extends DefaultTask {
 
         BlackDuckServerConfig blackDuckServerConfig = blackDuckServerConfigBuilder.build();
         BlackDuckServicesFactory blackDuckServicesFactory = blackDuckServerConfig.createBlackDuckServicesFactory(new PrintStreamIntLogger(System.out, com.synopsys.integration.log.LogLevel.INFO));
-        BlackDuckApiClient blackDuckService = blackDuckServicesFactory.getBlackDuckService();
+        BlackDuckApiClient blackDuckService = blackDuckServicesFactory.getBlackDuckApiClient();
         ProjectService projectService = blackDuckServicesFactory.createProjectService();
 
         ProjectVersionWrapper projectVersionWrapper = projectService.getProjectVersion(getProject().getName(), getProject().getVersion().toString()).get();

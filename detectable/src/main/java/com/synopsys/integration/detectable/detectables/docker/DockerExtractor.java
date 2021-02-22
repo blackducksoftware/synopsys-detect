@@ -48,6 +48,8 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.SimpleBdioDocument;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
@@ -87,7 +89,7 @@ public class DockerExtractor {
         this.gson = gson;
     }
 
-    public Extraction extract(File directory, File outputDirectory, File dockerExe, File javaExe, String image, String imageId, String tar, DockerInspectorInfo dockerInspectorInfo,
+    public Extraction extract(File directory, File outputDirectory, ExecutableTarget dockerExe, ExecutableTarget javaExe, String image, String imageId, String tar, DockerInspectorInfo dockerInspectorInfo,
         DockerProperties dockerProperties) {
         try {
             String imageArgument = null;
@@ -117,7 +119,7 @@ public class DockerExtractor {
         }
     }
 
-    private void importTars(List<File> importTars, File directory, Map<String, String> environmentVariables, File dockerExe) {
+    private void importTars(List<File> importTars, File directory, Map<String, String> environmentVariables, ExecutableTarget dockerExe) {
         try {
             for (File imageToImport : importTars) {
                 loadDockerImage(directory, environmentVariables, dockerExe, imageToImport);
@@ -128,21 +130,21 @@ public class DockerExtractor {
         }
     }
 
-    private void loadDockerImage(File directory, Map<String, String> environmentVariables, File dockerExe, File imageToImport) throws IOException, ExecutableRunnerException, IntegrationException {
+    private void loadDockerImage(File directory, Map<String, String> environmentVariables, ExecutableTarget dockerExe, File imageToImport) throws IOException, ExecutableRunnerException, IntegrationException {
         List<String> dockerImportArguments = Arrays.asList(
             "load",
             "-i",
             imageToImport.getCanonicalPath());
-        Executable dockerImportImageExecutable = Executable.create(directory, environmentVariables, dockerExe.toString(), dockerImportArguments);
+        Executable dockerImportImageExecutable = ExecutableUtils.createFromTarget(directory, environmentVariables, dockerExe, dockerImportArguments);
         ExecutableOutput exeOut = executableRunner.execute(dockerImportImageExecutable);
         if (exeOut.getReturnCode() != 0) {
             throw new IntegrationException(String.format("Command %s %s returned %d: %s",
-                dockerExe.getAbsolutePath(), dockerImportArguments,
+                dockerExe.toCommand(), dockerImportArguments,
                 exeOut.getReturnCode(), exeOut.getErrorOutput()));
         }
     }
 
-    private Extraction executeDocker(File outputDirectory, String imageArgument, String suppliedImagePiece, String dockerTarFilePath, File directory, File javaExe, File dockerExe,
+    private Extraction executeDocker(File outputDirectory, String imageArgument, String suppliedImagePiece, String dockerTarFilePath, File directory, ExecutableTarget javaExe, ExecutableTarget dockerExe,
         DockerInspectorInfo dockerInspectorInfo, DockerProperties dockerProperties)
         throws IOException, ExecutableRunnerException {
 
@@ -157,7 +159,7 @@ public class DockerExtractor {
         if (dockerInspectorInfo.hasAirGapImageFiles()) {
             importTars(dockerInspectorInfo.getAirGapInspectorImageTarFiles(), outputDirectory, environmentVariables, dockerExe);
         }
-        Executable dockerExecutable = Executable.create(outputDirectory, environmentVariables, javaExe.getAbsolutePath(), dockerArguments);
+        Executable dockerExecutable = ExecutableUtils.createFromTarget(outputDirectory, environmentVariables, javaExe, dockerArguments);
         executableRunner.execute(dockerExecutable);
 
         File scanFile = null;

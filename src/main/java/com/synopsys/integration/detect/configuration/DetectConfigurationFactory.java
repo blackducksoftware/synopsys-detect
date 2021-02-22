@@ -59,6 +59,7 @@ import com.synopsys.integration.configuration.property.types.path.PathValue;
 import com.synopsys.integration.detect.PropertyConfigUtils;
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;
 import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
+import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DefaultDetectorExcludedDirectories;
 import com.synopsys.integration.detect.configuration.enumeration.DefaultVersionNameScheme;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
@@ -284,8 +285,9 @@ public class DetectConfigurationFactory {
         AggregateMode aggregateMode = getValue(DetectProperties.DETECT_BOM_AGGREGATE_REMEDIATION_MODE);
         List<DetectTool> preferredTools = getValue(DetectProperties.DETECT_PROJECT_TOOL);
         Boolean useBdio2 = getValue(DetectProperties.DETECT_BDIO2_ENABLED);
+        BlackduckScanMode scanMode = getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE);
 
-        return new RunOptions(unmapCodeLocations, aggregateName, aggregateMode, preferredTools, detectToolFilter, useBdio2);
+        return new RunOptions(unmapCodeLocations, aggregateName, aggregateMode, preferredTools, detectToolFilter, useBdio2, scanMode);
     }
 
     public DirectoryOptions createDirectoryOptions() throws IOException {
@@ -466,7 +468,8 @@ public class DetectConfigurationFactory {
         List<String> mutlipleTargets = getValue(DetectProperties.DETECT_BINARY_SCAN_FILE_NAME_PATTERNS);
         String codeLocationPrefix = getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX);
         String codeLocationSuffix = getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX);
-        return new BinaryScanOptions(singleTarget, mutlipleTargets, codeLocationPrefix, codeLocationSuffix);
+        Integer searchDepth = getValue(DetectProperties.DETECT_BINARY_SCAN_SEARCH_DEPTH);
+        return new BinaryScanOptions(singleTarget, mutlipleTargets, codeLocationPrefix, codeLocationSuffix, searchDepth);
     }
 
     public ImpactAnalysisOptions createImpactAnalysisOptions() {
@@ -477,7 +480,7 @@ public class DetectConfigurationFactory {
         return new ImpactAnalysisOptions(enabled, codeLocationPrefix, codeLocationSuffix, outputDirectory);
     }
 
-    public DetectExecutableOptions createExecutablePaths() {
+    public DetectExecutableOptions createDetectExecutableOptions() {
         return new DetectExecutableOptions(
             getValue(DetectProperties.DETECT_PYTHON_PYTHON3),
             getPathOrNull(DetectProperties.DETECT_BASH_PATH.getProperty()),

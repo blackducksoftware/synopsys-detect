@@ -26,16 +26,15 @@ import java.io.File;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.Requirements;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PearResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 @DetectableInfo(language = "PHP", forge = "Pear", requirementsMarkdown = "Files: package.xml.<br/><br/> Executable: pear.")
 public class PearCliDetectable extends Detectable {
@@ -46,10 +45,10 @@ public class PearCliDetectable extends Detectable {
     private final PearCliExtractor pearCliExtractor;
     private final PearCliDetectableOptions pearCliDetectableOptions;
 
-    private File pearExe;
+    private ExecutableTarget pearExe;
     private File packageDotXml;
 
-    public PearCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final PearResolver pearResolver, final PearCliExtractor pearCliExtractor, final PearCliDetectableOptions pearCliDetectableOptions) {
+    public PearCliDetectable(DetectableEnvironment environment, FileFinder fileFinder, PearResolver pearResolver, PearCliExtractor pearCliExtractor, PearCliDetectableOptions pearCliDetectableOptions) {
         super(environment);
         this.fileFinder = fileFinder;
         this.pearResolver = pearResolver;
@@ -59,28 +58,20 @@ public class PearCliDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        packageDotXml = fileFinder.findFile(environment.getDirectory(), PACKAGE_XML_FILENAME);
-
-        if (packageDotXml == null) {
-            return new FileNotFoundDetectableResult(PACKAGE_XML_FILENAME);
-        }
-
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        packageDotXml = requirements.file(PACKAGE_XML_FILENAME);
+        return requirements.result();
     }
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        pearExe = pearResolver.resolvePear();
-
-        if (pearExe == null) {
-            return new ExecutableNotFoundDetectableResult("pear");
-        }
-
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        pearExe = requirements.executable(pearResolver::resolvePear, "pear");
+        return requirements.result();
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         return pearCliExtractor.extract(pearExe, packageDotXml, environment.getDirectory(), pearCliDetectableOptions.onlyGatherRequired());
     }
 

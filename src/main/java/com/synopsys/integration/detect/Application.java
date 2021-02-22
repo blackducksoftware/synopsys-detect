@@ -47,6 +47,7 @@ import com.synopsys.integration.detect.lifecycle.boot.DetectBootResult;
 import com.synopsys.integration.detect.lifecycle.exit.ExitManager;
 import com.synopsys.integration.detect.lifecycle.exit.ExitOptions;
 import com.synopsys.integration.detect.lifecycle.exit.ExitResult;
+import com.synopsys.integration.detect.lifecycle.run.RunContext;
 import com.synopsys.integration.detect.lifecycle.run.RunManager;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.shutdown.CleanupUtility;
@@ -119,7 +120,7 @@ public class Application implements ApplicationRunner {
         boolean printOutput = true;
         boolean shouldForceSuccess = false;
 
-        Optional<DetectBootResult> detectBootResultOptional = bootApplication(detectRun, applicationArguments, eventSystem, detectContext, exitCodeManager);
+        Optional<DetectBootResult> detectBootResultOptional = bootApplication(detectRun, applicationArguments.getSourceArgs(), eventSystem, detectContext, exitCodeManager, gson, detectInfo);
 
         if (detectBootResultOptional.isPresent()) {
             DetectBootResult detectBootResult = detectBootResultOptional.get();
@@ -143,12 +144,15 @@ public class Application implements ApplicationRunner {
         exitApplication(exitManager, startTime, printOutput, shouldForceSuccess);
     }
 
-    private Optional<DetectBootResult> bootApplication(DetectRun detectRun, ApplicationArguments applicationArguments, EventSystem eventSystem, DetectContext detectContext, ExitCodeManager exitCodeManager) {
+    private Optional<DetectBootResult> bootApplication(DetectRun detectRun, String[] sourceArgs, EventSystem eventSystem, DetectContext detectContext, ExitCodeManager exitCodeManager, Gson gson, DetectInfo detectInfo) {
         Optional<DetectBootResult> bootResult = Optional.empty();
         try {
             logger.debug("Detect boot begin.");
-            DetectBoot detectBoot = new DetectBoot(new DetectBootFactory());
-            bootResult = detectBoot.boot(detectRun, applicationArguments.getSourceArgs(), environment, eventSystem, detectContext);
+
+            DetectBootFactory detectBootFactory = new DetectBootFactory(detectRun, detectInfo, gson, eventSystem);
+            DetectBoot detectBoot = detectBootFactory.createDetectBoot(detectBootFactory.createPropertySourcesFromEnvironment(environment), sourceArgs, detectContext);
+            bootResult = detectBoot.boot(detectInfo.getDetectVersion());
+
             logger.debug("Detect boot completed.");
         } catch (Exception e) {
             logger.error("Detect boot failed.");
@@ -160,13 +164,12 @@ public class Application implements ApplicationRunner {
     private void runApplication(DetectContext detectContext, DetectRun detectRun, EventSystem eventSystem, ExitCodeManager exitCodeManager, DetectBootResult detectBootResult) {
         Optional<ProductRunData> optionalProductRunData = detectBootResult.getProductRunData();
         if (detectBootResult.getBootType() == DetectBootResult.BootType.RUN && optionalProductRunData.isPresent()) {
-            logger.debug("Detect will attempt to run.");
-            ProductRunData productRunData = optionalProductRunData.get();
-            RunManager runManager = new RunManager(detectContext);
             try {
-                logger.debug("Detect run begin: {}", detectRun.getRunId());
-                runManager.run(productRunData);
-                logger.debug("Detect run completed.");
+                logger.debug("Detect will attempt to run.");
+                ProductRunData productRunData = optionalProductRunData.get();
+                RunManager runManager = new RunManager();
+                RunContext runContext = new RunContext(detectContext, productRunData);
+                runManager.run(runContext);
             } catch (Exception e) {
                 if (e.getMessage() != null) {
                     logger.error("Detect run failed: {}", e.getMessage());

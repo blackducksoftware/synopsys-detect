@@ -26,13 +26,13 @@ import java.io.File;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 @DetectableInfo(language = "various", forge = "N/A", requirementsMarkdown = "Files: .git/config, .git/HEAD.")
 public class GitParseDetectable extends Detectable {
@@ -54,21 +54,13 @@ public class GitParseDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        final File gitDirectory = fileFinder.findFile(environment.getDirectory(), GIT_DIRECTORY_NAME);
-        if (gitDirectory == null) {
-            return new FileNotFoundDetectableResult(GIT_DIRECTORY_NAME);
-        }
-
-        gitConfigFile = fileFinder.findFile(gitDirectory, GIT_CONFIG_FILENAME);
-        gitHeadFile = fileFinder.findFile(gitDirectory, GIT_HEAD_FILENAME);
-
-        if (gitConfigFile == null) {
-            return new FileNotFoundDetectableResult(GIT_CONFIG_FILENAME);
-        } else if (gitHeadFile == null) {
-            return new FileNotFoundDetectableResult(GIT_HEAD_FILENAME);
-        }
-
-        return new PassedDetectableResult();
+        Requirements requires = new Requirements(fileFinder, environment);
+        File gitDirectory = requires.file(GIT_DIRECTORY_NAME);
+        requires.ifCurrentlyMet(() -> {
+            gitConfigFile = requires.file(gitDirectory, GIT_CONFIG_FILENAME);
+            gitHeadFile = requires.file(gitDirectory, GIT_HEAD_FILENAME);
+        });
+        return requires.result();
     }
 
     @Override

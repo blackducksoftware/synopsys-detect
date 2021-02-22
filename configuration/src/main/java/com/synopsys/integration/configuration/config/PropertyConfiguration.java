@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.util.Assert;
 
@@ -51,7 +52,6 @@ import com.synopsys.integration.configuration.property.base.ValuedProperty;
 import com.synopsys.integration.configuration.source.PropertySource;
 
 public class PropertyConfiguration {
-
     private final Map<String, PropertyResolution> resolutionCache = new HashMap<>();
     private final Map<String, PropertyValue<?>> valueCache = new HashMap<>();
     private final List<PropertySource> orderedPropertySources;
@@ -131,6 +131,11 @@ public class PropertyConfiguration {
         return resolveFromCache(property.getKey()).getResolutionInfo().map(PropertyResolutionInfo::getSource);
     }
 
+    public Optional<String> getPropertySource(@NotNull final String key) {
+        Assert.notNull(key, "You must provide a key");
+        return resolveFromCache(key).getResolutionInfo().map(PropertyResolutionInfo::getSource);
+    }
+
     public Optional<String> getPropertyOrigin(@NotNull final Property property) {
         assertPropertyNotNull(property);
         return resolveFromCache(property.getKey()).getResolutionInfo().map(PropertyResolutionInfo::getOrigin);
@@ -154,7 +159,11 @@ public class PropertyConfiguration {
     //region Advanced Usage
     public Optional<String> getRaw(@NotNull final Property property) {
         assertPropertyNotNull(property, "Must supply a property get raw keys.");
-        final PropertyResolution propertyResolution = resolveFromCache(property.getKey());
+        return resolveKey(property.getKey());
+    }
+
+    private Optional<String> resolveKey(String key) {
+        final PropertyResolution propertyResolution = resolveFromCache(key);
         return propertyResolution.getResolutionInfo().map(PropertyResolutionInfo::getRaw);
     }
 
@@ -170,6 +179,29 @@ public class PropertyConfiguration {
     }
 
     @NotNull
+    public Map<String, String> getRawValueMap(@NotNull final Set<Property> properties) {
+        return getMaskedRawValueMap(properties, key -> false);
+    }
+
+    @NotNull
+    public Map<String, String> getMaskedRawValueMap(@NotNull final Set<Property> properties, Predicate<String> shouldMask) {
+        Map<String, String> rawMap = new HashMap<>();
+        for (Property property : properties) {
+            String rawKey = property.getKey();
+            getRaw(property).ifPresent(rawValue -> rawMap.put(rawKey, maskValue(rawKey, rawValue, shouldMask)));
+        }
+        return rawMap;
+    }
+
+    public String maskValue(String rawKey, String rawValue, Predicate<String> shouldMask) {
+        String maskedValue = rawValue;
+        if (shouldMask.test(rawKey)) {
+            maskedValue = StringUtils.repeat('*', maskedValue.length());
+        }
+        return maskedValue;
+    }
+
+    @NotNull
     public Map<String, String> getRaw(@NotNull final Predicate<String> predicate) {
         Assert.notNull(predicate, "Must supply a predicate to get raw keys");
 
@@ -180,11 +212,7 @@ public class PropertyConfiguration {
 
         final Map<String, String> keyMap = new HashMap<>();
         keys.forEach(key -> {
-            final PropertyResolution resolution = resolveFromCache(key);
-            if (resolution != null && resolution.getResolutionInfo().isPresent()) {
-                final String rawValue = resolution.getResolutionInfo().map(PropertyResolutionInfo::getRaw).get();
-                keyMap.put(key, rawValue);
-            }
+            resolveKey(key).ifPresent(rawValue -> keyMap.put(key, rawValue));
         });
         return keyMap;
     }

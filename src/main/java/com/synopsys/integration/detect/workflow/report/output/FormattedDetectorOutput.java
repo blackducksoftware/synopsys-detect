@@ -65,6 +65,9 @@ public class FormattedDetectorOutput {
     @SerializedName("relevantFiles")
     public List<String> relevantFiles = new ArrayList<>();
 
+    @SerializedName("explanations")
+    public List<String> explanations = new ArrayList<>();
+
     @SerializedName("projectName")
     public String projectName = "";
 

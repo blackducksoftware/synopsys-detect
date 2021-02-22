@@ -68,8 +68,7 @@ public class ValueParseException extends Exception {
     public String getAdditionalMessage() {
         return additionalMessage;
     }
-
-    @Nullable
+    
     public Optional<Exception> getInnerException() {
         return Optional.ofNullable(innerException);
     }

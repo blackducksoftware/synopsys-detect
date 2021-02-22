@@ -38,6 +38,8 @@ import com.synopsys.integration.bdio.model.dependencyid.StringDependencyId;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
+import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntry;
+import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryId;
 import com.synopsys.integration.util.NameVersion;
 
 public class YarnTransformer {
@@ -62,12 +64,11 @@ public class YarnTransformer {
                     if (!productionOnly || !dependency.isOptional()) {
                         graphBuilder.addChildWithParent(stringDependencyId, id);
                     } else {
-                        logger.debug(String.format("Eluding optional dependency: %s", stringDependencyId.getValue()));
+                        logger.debug("Excluding optional dependency: {}", stringDependencyId.getValue());
                     }
                 }
             }
         }
-
         return graphBuilder.build((dependencyId, lazyDependencyInfo) -> {
             Optional<NameVersion> externalDependency = externalDependencies.stream().filter(it -> it.getName().equals(lazyDependencyInfo.getName())).findFirst();
             Optional<ExternalId> externalId = externalDependency.map(it -> externalIdFactory.createNameVersionExternalId(Forge.NPMJS, it.getName(), it.getVersion()));

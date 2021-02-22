@@ -30,26 +30,22 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.NpmPackageJsonParseDetectable;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.NpmPackageJsonParseDetectableOptions;
-import com.synopsys.integration.detectable.detectables.npm.packagejson.PackageJsonExtractor;
 import com.synopsys.integration.detectable.util.MockDetectableEnvironment;
 import com.synopsys.integration.detectable.util.MockFileFinder;
 
 public class NpmPackageJsonParseDetectableTest {
-
     private static final String PACKAGE_JSON_FILENAME = "package.json";
 
     @Test
     public void testApplicable() {
+        DetectableEnvironment environment = MockDetectableEnvironment.empty();
+        FileFinder fileFinder = MockFileFinder.withFileNamed(PACKAGE_JSON_FILENAME);
 
-        final PackageJsonExtractor packageJsonExtractor = null;
+        NpmPackageJsonParseDetectableOptions npmPackageJsonParseDetectableOptions = new NpmPackageJsonParseDetectableOptions(false);
 
-        final DetectableEnvironment environment = MockDetectableEnvironment.empty();
-        final FileFinder fileFinder = MockFileFinder.withFileNamed("package.json");
-
-        final NpmPackageJsonParseDetectableOptions npmPackageJsonParseDetectableOptions = new NpmPackageJsonParseDetectableOptions(false);
-
-        final NpmPackageJsonParseDetectable detectable = new NpmPackageJsonParseDetectable(environment, fileFinder, packageJsonExtractor, npmPackageJsonParseDetectableOptions);
+        NpmPackageJsonParseDetectable detectable = new NpmPackageJsonParseDetectable(environment, fileFinder, null, npmPackageJsonParseDetectableOptions);
 
         assertTrue(detectable.applicable().getPassed());
     }
+
 }

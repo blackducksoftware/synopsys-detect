@@ -26,16 +26,15 @@ import java.io.File;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.Requirements;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.SwiftResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 @DetectableInfo(language = "Swift", forge = "Swift.org", requirementsMarkdown = "File: Package.swift.<br/><br/> Executables: swift.")
 public class SwiftCliDetectable extends Detectable {
@@ -45,9 +44,9 @@ public class SwiftCliDetectable extends Detectable {
     private final SwiftExtractor swiftExtractor;
     private final SwiftResolver swiftResolver;
 
-    private File swiftExecutable;
+    private ExecutableTarget swiftExecutable;
 
-    public SwiftCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final SwiftExtractor swiftExtractor, final SwiftResolver swiftResolver) {
+    public SwiftCliDetectable(DetectableEnvironment environment, FileFinder fileFinder, SwiftExtractor swiftExtractor, SwiftResolver swiftResolver) {
         super(environment);
         this.fileFinder = fileFinder;
         this.swiftExtractor = swiftExtractor;
@@ -56,26 +55,20 @@ public class SwiftCliDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        final File foundPackageSwift = fileFinder.findFile(environment.getDirectory(), PACKAGE_SWIFT_FILENAME);
-        if (foundPackageSwift == null) {
-            return new FileNotFoundDetectableResult(PACKAGE_SWIFT_FILENAME);
-        }
-
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        requirements.file(PACKAGE_SWIFT_FILENAME);
+        return requirements.result();
     }
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        swiftExecutable = swiftResolver.resolveSwift();
-        if (swiftExecutable == null) {
-            return new ExecutableNotFoundDetectableResult("swift");
-        }
-
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        swiftExecutable = requirements.executable(swiftResolver::resolveSwift, "swift");
+        return requirements.result();
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         return swiftExtractor.extract(environment.getDirectory(), swiftExecutable);
     }
 

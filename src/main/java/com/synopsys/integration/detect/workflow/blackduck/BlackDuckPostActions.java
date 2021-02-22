@@ -33,7 +33,8 @@ import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationWaitResult;
 import com.synopsys.integration.blackduck.exception.BlackDuckTimeoutExceededException;
-import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
+import com.synopsys.integration.blackduck.service.dataservice.ProjectBomService;
 import com.synopsys.integration.blackduck.service.dataservice.ReportService;
 import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
@@ -50,12 +51,18 @@ import com.synopsys.integration.util.NameVersion;
 
 public class BlackDuckPostActions {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final BlackDuckServicesFactory blackDuckServicesFactory;
+    private final CodeLocationCreationService codeLocationCreationService;
     private final EventSystem eventSystem;
+    private final BlackDuckApiClient blackDuckApiClient;
+    private final ProjectBomService projectBomService;
+    private final ReportService reportService;
 
-    public BlackDuckPostActions(BlackDuckServicesFactory blackDuckServicesFactory, EventSystem eventSystem) {
-        this.blackDuckServicesFactory = blackDuckServicesFactory;
+    public BlackDuckPostActions(CodeLocationCreationService codeLocationCreationService, EventSystem eventSystem, BlackDuckApiClient blackDuckApiClient, ProjectBomService projectBomService, ReportService reportService) {
+        this.codeLocationCreationService = codeLocationCreationService;
         this.eventSystem = eventSystem;
+        this.blackDuckApiClient = blackDuckApiClient;
+        this.projectBomService = projectBomService;
+        this.reportService = reportService;
     }
 
     public void perform(BlackDuckPostOptions blackDuckPostOptions, CodeLocationWaitData codeLocationWaitData, ProjectVersionWrapper projectVersionWrapper, NameVersion projectNameVersion, long timeoutInSeconds)
@@ -68,7 +75,7 @@ public class BlackDuckPostActions {
                 checkPolicy(blackDuckPostOptions, projectVersionWrapper.getProjectVersionView());
             }
             if (blackDuckPostOptions.shouldGenerateAnyReport()) {
-                generateReports(blackDuckPostOptions, projectVersionWrapper, timeoutInSeconds);
+                generateReports(blackDuckPostOptions, projectVersionWrapper);
             }
         } catch (DetectUserFriendlyException e) {
             throw e;
@@ -85,7 +92,6 @@ public class BlackDuckPostActions {
 
     private void waitForCodeLocations(CodeLocationWaitData codeLocationWaitData, long timeoutInSeconds, NameVersion projectNameVersion) throws DetectUserFriendlyException, InterruptedException, IntegrationException {
         logger.info("Detect must wait for bom tool calculations to finish.");
-        CodeLocationCreationService codeLocationCreationService = blackDuckServicesFactory.createCodeLocationCreationService();
         if (codeLocationWaitData.getExpectedNotificationCount() > 0) {
             //TODO fix this when NotificationTaskRange doesn't include task start time
             //ekerwin - The start time of the task is the earliest time a code location was created.
@@ -108,16 +114,14 @@ public class BlackDuckPostActions {
 
     private void checkPolicy(BlackDuckPostOptions blackDuckPostOptions, ProjectVersionView projectVersionView) throws IntegrationException {
         logger.info("Detect will check policy for violations.");
-        PolicyChecker policyChecker = new PolicyChecker(eventSystem, blackDuckServicesFactory.getBlackDuckApiClient(), blackDuckServicesFactory.createProjectBomService());
+        PolicyChecker policyChecker = new PolicyChecker(eventSystem, blackDuckApiClient, projectBomService);
         policyChecker.checkPolicy(blackDuckPostOptions.getSeveritiesToFailPolicyCheck(), projectVersionView);
     }
 
-    private void generateReports(BlackDuckPostOptions blackDuckPostOptions, ProjectVersionWrapper projectVersionWrapper, long timeoutInSeconds) throws IntegrationException, IOException, InterruptedException {
-        long timeoutInMillisec = 1000L * timeoutInSeconds;
+    private void generateReports(BlackDuckPostOptions blackDuckPostOptions, ProjectVersionWrapper projectVersionWrapper) throws IntegrationException, IOException, InterruptedException {
         ProjectView projectView = projectVersionWrapper.getProjectView();
         ProjectVersionView projectVersionView = projectVersionWrapper.getProjectVersionView();
 
-        ReportService reportService = blackDuckServicesFactory.createReportService(timeoutInMillisec);
         if (blackDuckPostOptions.shouldGenerateRiskReport()) {
             logger.info("Creating risk report pdf");
             File reportDirectory = blackDuckPostOptions.getRiskReportPdfPath().toFile();

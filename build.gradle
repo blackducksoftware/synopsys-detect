@@ -8,7 +8,7 @@ ext['groovy.version'] = '3.0.0'
 buildscript {
     ext {
         springBootVersion = '2.2.4.RELEASE'
-        blackDuckCommonVersion = '51.0.0'
+        blackDuckCommonVersion = '52.0.2'
         junitPlatformDefaultTestTags = 'integration, performance, battery'
     }
 
@@ -21,7 +21,7 @@ buildscript {
 }
 
 group = 'com.synopsys.integration'
-version = '6.9.0-SNAPSHOT'
+version = '7.0.0-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
@@ -208,7 +208,7 @@ task signJar() {
     dependsOn build
     doLast {
         exec {
-            commandLine 'jarsigner', '-tsa', 'http://timestamp.globalsign.com/scripts/timestamp.dll', '-storetype', 'pkcs12', '-storepass', "${jarSigningKeystorePassword}", '-keystore', "${jarSigningKeystorePath}", "${createArtifactName()}", "${jarSigningCertificateAlias}"
+            commandLine 'jarsigner', '-tsa', 'http://tsa.starfieldtech.com/', '-storetype', 'pkcs12', '-storepass', "${jarSigningKeystorePassword}", '-keystore', "${jarSigningKeystorePath}", "${createArtifactName()}", "${jarSigningCertificateAlias}"
         }
     }
 }

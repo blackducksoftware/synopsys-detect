@@ -180,7 +180,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public DetectExecutableResolver detectExecutableResolver() {
-        return new DetectExecutableResolver(directoryExecutableFinder(), systemExecutableFinder(), detectConfigurationFactory.createExecutablePaths());
+        return new DetectExecutableResolver(directoryExecutableFinder(), systemExecutableFinder(), detectConfigurationFactory.createDetectExecutableOptions());
     }
 
     //#region Detectables

@@ -27,79 +27,133 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collections;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
+import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatch;
+import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
+import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanOutput;
+import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanUploadService;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
+import com.synopsys.integration.detect.workflow.file.DirectoryManager;
+import com.synopsys.integration.detectable.detectable.file.WildcardFileFinder;
+import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.util.NameVersion;
 
 public class BlackDuckBinaryScannerToolTest {
 
     @Test
     public void testShouldRunFalsePropertyNotSet() {
-        final BinaryScanOptions binaryScanOptions = new BinaryScanOptions(null, Collections.singletonList(""), "", "");
+        BinaryScanOptions binaryScanOptions = new BinaryScanOptions(null, Collections.singletonList(""), "", "", 0);
 
-        final BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null, null, null, null, binaryScanOptions, null);
-        final boolean shouldRunResponse = tool.shouldRun();
+        BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null, null, null, null, binaryScanOptions, null);
+        boolean shouldRunResponse = tool.shouldRun();
 
         assertFalse(shouldRunResponse);
     }
 
     @Test
     public void testShouldRunTrueFileNonExistent() {
-        final BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("thisisnotafile"), Collections.singletonList(""), "", "");
+        BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("thisisnotafile"), Collections.singletonList(""), "", "", 0);
 
-        final BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null, null, null, null, binaryScanOptions, null);
+        BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null, null, null, null, binaryScanOptions, null);
 
-        final boolean shouldRunResponse = tool.shouldRun();
+        boolean shouldRunResponse = tool.shouldRun();
 
         assertTrue(shouldRunResponse);
     }
 
     @Test
     public void testShouldRunTruePropertySetToDirectory() {
-        final BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("."), Collections.singletonList(""), "", "");
+        BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("."), Collections.singletonList(""), "", "", 0);
 
-        final BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null, null, null, null, binaryScanOptions, null);
+        BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null, null, null, null, binaryScanOptions, null);
 
-        final boolean shouldRunResponse = tool.shouldRun();
+        boolean shouldRunResponse = tool.shouldRun();
 
         assertTrue(shouldRunResponse);
     }
 
     @Test
     public void testShouldRunTrueEverythingCorrect() throws IOException {
-        final File binaryScanFile = Files.createTempFile("test", "binaryScanFile").toFile();
+        File binaryScanFile = Files.createTempFile("test", "binaryScanFile").toFile();
         binaryScanFile.deleteOnExit();
         assertTrue(binaryScanFile.canRead());
         assertTrue(binaryScanFile.exists());
 
-        final BinaryScanOptions binaryScanOptions = new BinaryScanOptions(binaryScanFile.toPath(), Collections.singletonList(""), "", "");
+        BinaryScanOptions binaryScanOptions = new BinaryScanOptions(binaryScanFile.toPath(), Collections.singletonList(""), "", "", 0);
 
-        final BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null, null, null, null, binaryScanOptions, null);
+        BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null, null, null, null, binaryScanOptions, null);
 
-        final boolean shouldRunResponse = tool.shouldRun();
+        boolean shouldRunResponse = tool.shouldRun();
 
         assertTrue(shouldRunResponse);
     }
 
     @Test
     public void testShouldFailOnDirectory() throws DetectUserFriendlyException {
-        final BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("."), Collections.singletonList(""), "", "");
+        BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("."), Collections.singletonList(""), "", "", 0);
 
-        final EventSystem eventSystem = Mockito.mock(EventSystem.class);
+        EventSystem eventSystem = Mockito.mock(EventSystem.class);
 
-        final BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(eventSystem, null, null, null, binaryScanOptions, null);
+        BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(eventSystem, null, null, null, binaryScanOptions, null);
 
-        final NameVersion projectNameVersion = new NameVersion("testName", "testVersion");
+        NameVersion projectNameVersion = new NameVersion("testName", "testVersion");
 
-        final BinaryScanToolResult result = tool.performBinaryScanActions(projectNameVersion);
+        BinaryScanToolResult result = tool.performBinaryScanActions(projectNameVersion);
 
         assertFalse(result.isSuccessful());
+    }
+
+    @Test
+    public void testMultipleTargetPaths() throws DetectUserFriendlyException, IOException, IntegrationException {
+        WildcardFileFinder fileFinder = new WildcardFileFinder();
+        DirectoryManager directoryManager = Mockito.mock(DirectoryManager.class);
+        BinaryScanUploadService uploadService = Mockito.mock(BinaryScanUploadService.class);
+        CodeLocationNameManager codeLocationNameManager = Mockito.mock(CodeLocationNameManager.class);
+        EventSystem eventSystem = Mockito.mock(EventSystem.class);
+        Response response = Mockito.mock(Response.class);
+        Mockito.when(response.isStatusCodeSuccess()).thenReturn(true);
+
+        File rootDirectory = Files.createTempDirectory("BinaryScannerTest").toFile();
+        File subDirectory = new File(rootDirectory, "BinaryScannerSubDirectory");
+        File binaryFile_1 = new File(subDirectory, "binaryTestFile_1.txt");
+        File binaryFile_2 = new File(subDirectory, "binaryTestFile_2.text");
+        FileUtils.write(binaryFile_1, "binary test file 1", StandardCharsets.UTF_8);
+        FileUtils.write(binaryFile_2, "binary test file 2", StandardCharsets.UTF_8);
+        subDirectory.mkdirs();
+        ArrayList<String> targetPaths = new ArrayList<>();
+        targetPaths.add("binaryTestFile_1.txt");
+        targetPaths.add("*.text");
+
+        String codeLocationName = "CodeLocationName";
+        NameVersion projectNameVersion = new NameVersion("testName", "testVersion");
+        BinaryScanOutput binaryScanOutput = BinaryScanOutput.FROM_RESPONSE(projectNameVersion, codeLocationName, response);
+        BinaryScanBatchOutput binaryScanOutputs = new BinaryScanBatchOutput(Collections.singletonList(binaryScanOutput));
+        CodeLocationCreationData<BinaryScanBatchOutput> expectedOutput = new CodeLocationCreationData<BinaryScanBatchOutput>(null, binaryScanOutputs);
+
+        Mockito.when(directoryManager.getSourceDirectory()).thenReturn(rootDirectory);
+        Mockito.when(directoryManager.getBinaryOutputDirectory()).thenReturn(rootDirectory);
+        Mockito.when(codeLocationNameManager.createBinaryScanCodeLocationName(Mockito.any(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
+            .thenReturn(codeLocationName);
+        Mockito.doAnswer(invocation -> expectedOutput).when(uploadService).uploadBinaryScan(Mockito.any(BinaryScanBatch.class));
+
+        BinaryScanOptions binaryScanOptions = new BinaryScanOptions(null, targetPaths, "", "", 3);
+        BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(eventSystem, codeLocationNameManager, directoryManager, fileFinder, binaryScanOptions, uploadService);
+
+        BinaryScanToolResult result = tool.performBinaryScanActions(projectNameVersion);
+
+        assertTrue(result.isSuccessful());
     }
 }

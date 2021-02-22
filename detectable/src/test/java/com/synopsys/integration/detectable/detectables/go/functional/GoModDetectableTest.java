@@ -1,6 +1,5 @@
 package com.synopsys.integration.detectable.detectables.go.functional;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 
@@ -10,6 +9,7 @@ import org.junit.jupiter.api.Assertions;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GoResolver;
 import com.synopsys.integration.detectable.extraction.Extraction;
@@ -18,7 +18,6 @@ import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 import com.synopsys.integration.executable.ExecutableOutput;
 
 public class GoModDetectableTest extends DetectableFunctionalTest {
-
     public GoModDetectableTest() throws IOException {
         super("gomod");
     }
@@ -84,8 +83,8 @@ public class GoModDetectableTest extends DetectableFunctionalTest {
     public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
         class GoResolverTest implements GoResolver {
             @Override
-            public File resolveGo() throws DetectableException {
-                return new File("go");
+            public ExecutableTarget resolveGo() throws DetectableException {
+                return ExecutableTarget.forCommand("go");
             }
         }
         return detectableFactory.createGoModCliDetectable(detectableEnvironment, new GoResolverTest());
@@ -101,4 +100,5 @@ public class GoModDetectableTest extends DetectableFunctionalTest {
         graphAssert.hasRootDependency("github.com/sirupsen/logrus", "v2.0.0");
         graphAssert.hasParentChildRelationship("github.com/sirupsen/logrus", "v2.0.0", "github.com/davecgh/go-spew", "v1.1.1");
     }
+
 }

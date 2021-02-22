@@ -30,6 +30,8 @@ For AirGap, please use our [Artifactory](https://sig-repo.synopsys.com/webapp/#/
 
 ## Documentation
 
-The latest documentation is [here](https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/62423113/Synopsys+Detect).
+The latest quickstart documentation is [here](https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/631275537/Quickstart).
+
+The latest full documentation is [here](https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/62423113/Synopsys+Detect).
 
 Links to other versions can be found [here](https://detect.synopsys.com/docs).
