@@ -23,6 +23,7 @@
 package com.synopsys.integration.detectable.detectables.conan.lockfile;
 
 import java.io.File;
+import java.nio.file.Path;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,6 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectable.explanation.FoundFile;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
@@ -61,9 +61,9 @@ public class ConanLockfileDetectable extends Detectable {
     @Override
     public DetectableResult applicable() {
         if (conanLockfileExtractorOptions.getLockfilePath().isPresent()) {
-            String conanLockFile = conanLockfileExtractorOptions.getLockfilePath().get();
+            Path conanLockFile = conanLockfileExtractorOptions.getLockfilePath().get();
             logger.debug("Conan Lockfile detectable applies because user supplied lockfile path {}", conanLockFile);
-            return new PassedDetectableResult(new FoundFile(conanLockFile)); //TODO: Should lock file be reported as a relevant file?
+            return new PassedDetectableResult(new FoundFile(conanLockFile.toFile())); //TODO: Should lock file be reported as a relevant file?
         }
         Requirements requirements = new Requirements(fileFinder, environment);
         lockfile = requirements.file(CONANLOCKFILE);
@@ -73,20 +73,20 @@ public class ConanLockfileDetectable extends Detectable {
     @Override
     public DetectableResult extractable() throws DetectableException {
         if (conanLockfileExtractorOptions.getLockfilePath().isPresent()) {
-            String givenLockfilePath = conanLockfileExtractorOptions.getLockfilePath().get();
-            File userProvidedLockfile = new File(givenLockfilePath);
+            Path givenLockfilePath = conanLockfileExtractorOptions.getLockfilePath().get();
+            File userProvidedLockfile = givenLockfilePath.toFile();
             if (userProvidedLockfile.exists()) {
                 lockfile = userProvidedLockfile;
             } else {
                 logger.debug("File {} does not exist", givenLockfilePath);
-                return new GivenFileNotFoundDetectableResult(givenLockfilePath);
+                return new GivenFileNotFoundDetectableResult(givenLockfilePath.toString());
             }
         }
         return new PassedDetectableResult();
     }
 
     @Override
-    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         return conanLockfileExtractor.extract(lockfile, conanLockfileExtractorOptions);
     }
 }

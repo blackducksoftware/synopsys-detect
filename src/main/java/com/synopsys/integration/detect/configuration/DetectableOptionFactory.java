@@ -181,7 +181,7 @@ public class DetectableOptionFactory {
     }
 
     public ConanCliExtractorOptions createConanCliOptions() {
-        String lockfilePath = getNullableValue(DetectProperties.DETECT_CONAN_LOCKFILE_PATH);
+        Path lockfilePath = detectConfiguration.getValue(DetectProperties.DETECT_CONAN_LOCKFILE_PATH.getProperty()).map(path -> path.resolvePath(pathResolver)).orElse(null);
         String additionalArguments = getNullableValue(DetectProperties.DETECT_CONAN_ARGUMENTS);
         Boolean includeBuildDependencies = getValue(DetectProperties.DETECT_CONAN_INCLUDE_BUILD_DEPENDENCIES);
         Boolean preferLongFormExternalIds = getValue(DetectProperties.DETECT_CONAN_REQUIRE_PREV_MATCH);
@@ -189,7 +189,7 @@ public class DetectableOptionFactory {
     }
 
     public ConanLockfileExtractorOptions createConanLockfileOptions() {
-        String lockfilePath = getNullableValue(DetectProperties.DETECT_CONAN_LOCKFILE_PATH);
+        Path lockfilePath = detectConfiguration.getValue(DetectProperties.DETECT_CONAN_LOCKFILE_PATH.getProperty()).map(path -> path.resolvePath(pathResolver)).orElse(null);
         Boolean includeBuildDependencies = getValue(DetectProperties.DETECT_CONAN_INCLUDE_BUILD_DEPENDENCIES);
         Boolean preferLongFormExternalIds = getValue(DetectProperties.DETECT_CONAN_REQUIRE_PREV_MATCH);
         return new ConanLockfileExtractorOptions(lockfilePath, includeBuildDependencies, preferLongFormExternalIds);

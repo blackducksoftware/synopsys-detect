@@ -22,21 +22,22 @@
  */
 package com.synopsys.integration.detectable.detectables.conan.lockfile;
 
+import java.nio.file.Path;
 import java.util.Optional;
 
 public class ConanLockfileExtractorOptions {
-    private final String lockfilePath;
+    private final Path lockfilePath;
     private final boolean includeDevDependencies;
     private final boolean preferLongFormExternalIds;
 
-    public ConanLockfileExtractorOptions(String lockfilePath, boolean includeDevDependencies,
+    public ConanLockfileExtractorOptions(Path lockfilePath, boolean includeDevDependencies,
         boolean preferLongFormExternalIds) {
         this.lockfilePath = lockfilePath;
         this.includeDevDependencies = includeDevDependencies;
         this.preferLongFormExternalIds = preferLongFormExternalIds;
     }
 
-    public Optional<String> getLockfilePath() {
+    public Optional<Path> getLockfilePath() {
         return Optional.ofNullable(lockfilePath);
     }
 

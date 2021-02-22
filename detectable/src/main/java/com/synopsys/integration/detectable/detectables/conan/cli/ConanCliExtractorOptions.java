@@ -22,15 +22,16 @@
  */
 package com.synopsys.integration.detectable.detectables.conan.cli;
 
+import java.nio.file.Path;
 import java.util.Optional;
 
 public class ConanCliExtractorOptions {
-    private final String lockfilePath;
+    private final Path lockfilePath;
     private final String additionalArguments;
     private final boolean includeDevDependencies;
     private final boolean preferLongFormExternalIds;
 
-    public ConanCliExtractorOptions(String lockfilePath, String additionalArguments, boolean includeDevDependencies,
+    public ConanCliExtractorOptions(Path lockfilePath, String additionalArguments, boolean includeDevDependencies,
         boolean preferLongFormExternalIds) {
         this.lockfilePath = lockfilePath;
         this.additionalArguments = additionalArguments;
@@ -38,7 +39,7 @@ public class ConanCliExtractorOptions {
         this.preferLongFormExternalIds = preferLongFormExternalIds;
     }
 
-    public Optional<String> getLockfilePath() {
+    public Optional<Path> getLockfilePath() {
         return Optional.ofNullable(lockfilePath);
     }
 
