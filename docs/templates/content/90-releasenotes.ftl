@@ -7,6 +7,7 @@
 
 ### Changed features
 * Added the timezone to the date format in the default log message format.
+* Reverted deprecations for detect.blackduck.signature.scanner.arguments, detect.blackduck.signature.scanner.copyright.search, detect.blackduck.signature.scanner.dry.run, detect.blackduck.signature.scanner.individual.file.matching, detect.blackduck.signature.scanner.license.search, detect.blackduck.signature.scanner.local.path, detect.blackduck.signature.scanner.paths, detect.blackduck.signature.scanner.snippet.matching, detect.blackduck.signature.scanner.upload.source.mode.
 
 ### Resolved issues
 * (IDETECT-1986) Resolved an issue where warnings regarding reflective access appear at the start of Detect.
