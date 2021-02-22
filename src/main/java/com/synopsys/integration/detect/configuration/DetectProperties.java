@@ -296,7 +296,6 @@ public class DetectProperties {
             .setHelp("When set to true, user will be able to scan and discover copyright names in Black Duck. Corresponding Signature Scanner CLI Argument: --copyright-search.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER);
 
-
     public static final DetectProperty<BooleanProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN =
         new DetectProperty<>(new BooleanProperty("detect.blackduck.signature.scanner.dry.run", false))
             .setInfo("Signature Scanner Dry Run", DetectPropertyFromVersion.VERSION_4_2_0)
@@ -1208,6 +1207,18 @@ public class DetectProperties {
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK)
             .setCategory(DetectCategory.Advanced);
 
+    public static final DetectProperty<NullableStringProperty> BLACKDUCK_USERNAME =
+        new DetectProperty<>(new NullableStringProperty("blackduck.username"))
+            .setInfo("Black Duck Username", DetectPropertyFromVersion.VERSION_4_2_0)
+            .setHelp("Black Duck username.")
+            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT);
+
+    public static final DetectProperty<NullableStringProperty> BLACKDUCK_PASSWORD =
+        new DetectProperty<>(new NullableStringProperty("blackduck.password"))
+            .setInfo("Black Duck Password", DetectPropertyFromVersion.VERSION_4_2_0)
+            .setHelp("Black Duck password.")
+            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT);
+
     //#endregion Active Properties
 
     //#region Deprecated Properties
@@ -1748,7 +1759,8 @@ public class DetectProperties {
                 "To use a local signature scanner and force offline, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced)
-            .setDeprecated("This property is being deprecated.  In the future, please use detect.blackduck.signature.scanner.local.path to specify a local signature scanner zip, and blackduck.offline.mode to run offline.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+            .setDeprecated("This property is being deprecated.  In the future, please use detect.blackduck.signature.scanner.local.path to specify a local signature scanner zip, and blackduck.offline.mode to run offline.",
+                DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<NullableStringProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL =
@@ -1859,25 +1871,6 @@ public class DetectProperties {
             .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced)
             .setDeprecated(USABILITY_IMPROVEMENT_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
-
-    // username/password ==> api token
-    public static final String USERNAME_PASSWORD_DEPRECATION_MESSAGE = "This property is being removed. Please use blackduck.api.token in the future.";
-
-    @Deprecated
-    public static final DetectProperty<NullableStringProperty> BLACKDUCK_USERNAME =
-        new DetectProperty<>(new NullableStringProperty("blackduck.username"))
-            .setInfo("Black Duck Username", DetectPropertyFromVersion.VERSION_4_2_0)
-            .setHelp("Black Duck username.")
-            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT)
-            .setDeprecated(USERNAME_PASSWORD_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
-
-    @Deprecated
-    public static final DetectProperty<NullableStringProperty> BLACKDUCK_PASSWORD =
-        new DetectProperty<>(new NullableStringProperty("blackduck.password"))
-            .setInfo("Black Duck Password", DetectPropertyFromVersion.VERSION_4_2_0)
-            .setHelp("Black Duck password.")
-            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT)
-            .setDeprecated(USERNAME_PASSWORD_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
 
     // Accessor to get all properties
     public static Properties allProperties() throws IllegalAccessException {

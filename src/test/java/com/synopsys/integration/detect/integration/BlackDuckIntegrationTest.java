@@ -54,6 +54,8 @@ import com.synopsys.integration.log.IntLogger;
 
 public abstract class BlackDuckIntegrationTest {
     public static final String TEST_BLACKDUCK_URL_KEY = "TEST_BLACKDUCK_URL";
+    public static final String TEST_BLACKDUCK_USERNAME_KEY = "TEST_BLACKDUCK_USERNAME";
+    public static final String TEST_BLACKDUCK_PASSWORD_KEY = "TEST_BLACKDUCK_PASSWORD";
     public static final String TEST_BLACKDUCK_API_TOKEN_KEY = "TEST_BLACKDUCK_API_TOKEN_KEY";
 
     protected static IntLogger logger;
@@ -68,16 +70,23 @@ public abstract class BlackDuckIntegrationTest {
     @BeforeAll
     public static void setup() {
         logger = new BufferedIntLogger();
+        String blackduckApiToken = System.getenv().get(TEST_BLACKDUCK_API_TOKEN_KEY);
+        boolean hasApiToken = StringUtils.isNotBlank(blackduckApiToken);
 
         Assumptions.assumeTrue(StringUtils.isNotBlank(System.getenv().get(TEST_BLACKDUCK_URL_KEY)));
-        Assumptions.assumeTrue(StringUtils.isNotBlank(System.getenv().get(TEST_BLACKDUCK_API_TOKEN_KEY)));
+        if (!hasApiToken) {
+            Assumptions.assumeTrue(StringUtils.isNotBlank(System.getenv().get(TEST_BLACKDUCK_USERNAME_KEY)));
+            Assumptions.assumeTrue(StringUtils.isNotBlank(System.getenv().get(TEST_BLACKDUCK_PASSWORD_KEY)));
+        }
 
         BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = BlackDuckServerConfig.newBuilder();
         blackDuckServerConfigBuilder.setProperties(System.getenv().entrySet());
         blackDuckServerConfigBuilder.setUrl(System.getenv().get(TEST_BLACKDUCK_URL_KEY));
-        blackDuckServerConfigBuilder.setApiToken(System.getenv().get(TEST_BLACKDUCK_API_TOKEN_KEY));
         blackDuckServerConfigBuilder.setTrustCert(true);
         blackDuckServerConfigBuilder.setTimeoutInSeconds(5 * 60);
+        blackDuckServerConfigBuilder.setApiToken(blackduckApiToken);
+        blackDuckServerConfigBuilder.setUsername(System.getenv().get(TEST_BLACKDUCK_USERNAME_KEY));
+        blackDuckServerConfigBuilder.setPassword(System.getenv().get(TEST_BLACKDUCK_PASSWORD_KEY));
 
         blackDuckServicesFactory = blackDuckServerConfigBuilder.build().createBlackDuckServicesFactory(logger);
         blackDuckService = blackDuckServicesFactory.getBlackDuckApiClient();
@@ -117,11 +126,19 @@ public abstract class BlackDuckIntegrationTest {
 
     public static List<String> getInitialArgs(String projectName, String projectVersionName) {
         List<String> initialArgs = new ArrayList<>();
+        String blackduckApiToken = System.getenv().get(TEST_BLACKDUCK_API_TOKEN_KEY);
+        boolean hasApiToken = StringUtils.isNotBlank(blackduckApiToken);
         initialArgs.add("--detect.tools.excluded=POLARIS");
         initialArgs.add("--detect.project.name=" + projectName);
         initialArgs.add("--detect.project.version.name=" + projectVersionName);
         initialArgs.add("--blackduck.url=" + System.getenv().get(TEST_BLACKDUCK_URL_KEY));
-        initialArgs.add("--blackduck.api.token=" + System.getenv().get(TEST_BLACKDUCK_API_TOKEN_KEY));
+        // check if token is null to avoid passing "null" as the api token value.
+        if (hasApiToken) {
+            initialArgs.add("--blackduck.api.token=" + blackduckApiToken);
+        } else {
+            initialArgs.add("--blackduck.username=" + System.getenv().get(TEST_BLACKDUCK_USERNAME_KEY));
+            initialArgs.add("--blackduck.password=" + System.getenv().get(TEST_BLACKDUCK_PASSWORD_KEY));
+        }
 
         return initialArgs;
     }
