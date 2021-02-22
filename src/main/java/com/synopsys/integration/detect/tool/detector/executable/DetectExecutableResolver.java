@@ -51,13 +51,14 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.PipRes
 import com.synopsys.integration.detectable.detectable.executable.resolver.PipenvResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PythonResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.Rebar3Resolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.SbtResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.SwiftResolver;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanResolver;
 
 public class DetectExecutableResolver
     implements JavaResolver, GradleResolver, BashResolver, ConanResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver, BazelResolver,
                    DockerResolver,
-                   DotNetResolver, GitResolver, SwiftResolver, GoResolver, LernaResolver {
+                   DotNetResolver, GitResolver, SwiftResolver, GoResolver, LernaResolver, SbtResolver {
 
     private final DirectoryExecutableFinder directoryExecutableFinder;
     private final SystemPathExecutableFinder systemPathExecutableFinder;
@@ -225,6 +226,11 @@ public class DetectExecutableResolver
     @Override
     public ExecutableTarget resolveLerna() throws DetectableException {
         return ExecutableTarget.forFile(resolveCachedSystemExecutable("lerna", detectExecutableOptions.getLernaUserPath()));
+    }
+
+    @Override
+    public ExecutableTarget resolveSbt() throws DetectableException {
+        return ExecutableTarget.forFile(resolveCachedSystemExecutable("sbt", detectExecutableOptions.getSbtUserPath()));
     }
 
     @Override

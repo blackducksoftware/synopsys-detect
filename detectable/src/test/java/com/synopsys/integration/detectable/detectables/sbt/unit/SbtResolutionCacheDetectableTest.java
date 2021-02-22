@@ -30,9 +30,9 @@ import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
-import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheDetectable;
-import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheDetectableOptions;
-import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheExtractor;
+import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheDetectable;
+import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheDetectableOptions;
+import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheExtractor;
 import com.synopsys.integration.detectable.util.MockDetectableEnvironment;
 import com.synopsys.integration.detectable.util.MockFileFinder;
 

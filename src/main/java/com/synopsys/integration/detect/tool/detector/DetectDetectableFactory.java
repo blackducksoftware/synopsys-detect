@@ -67,7 +67,8 @@ import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryDetectab
 import com.synopsys.integration.detectable.detectables.rebar.RebarDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemlock.GemlockDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectable;
-import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheDetectable;
+import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheDetectable;
+import com.synopsys.integration.detectable.detectables.sbt.plugin.SbtPluginDetectable;
 import com.synopsys.integration.detectable.detectables.swift.SwiftCliDetectable;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
 import com.synopsys.integration.detectable.factory.DetectableFactory;
@@ -240,6 +241,10 @@ public class DetectDetectableFactory {
 
     public RebarDetectable createRebarDetectable(DetectableEnvironment environment) {
         return detectableFactory.createRebarDetectable(environment, detectExecutableResolver);
+    }
+
+    public SbtPluginDetectable createSbtPluginDetectable(DetectableEnvironment environment) {
+        return detectableFactory.createSbtPluginDetectable(environment, detectExecutableResolver);
     }
 
     public SbtResolutionCacheDetectable createSbtResolutionCacheDetectable(DetectableEnvironment environment) {

@@ -28,10 +28,10 @@ import java.util.stream.Collectors;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-import com.synopsys.integration.detectable.detectables.sbt.model.SbtCaller;
-import com.synopsys.integration.detectable.detectables.sbt.model.SbtModule;
-import com.synopsys.integration.detectable.detectables.sbt.model.SbtReport;
-import com.synopsys.integration.detectable.detectables.sbt.model.SbtRevision;
+import com.synopsys.integration.detectable.detectables.sbt.parse.model.SbtCaller;
+import com.synopsys.integration.detectable.detectables.sbt.parse.model.SbtModule;
+import com.synopsys.integration.detectable.detectables.sbt.parse.model.SbtReport;
+import com.synopsys.integration.detectable.detectables.sbt.parse.model.SbtRevision;
 import com.synopsys.integration.detectable.util.XmlUtil;
 
 public class SbtReportParser {

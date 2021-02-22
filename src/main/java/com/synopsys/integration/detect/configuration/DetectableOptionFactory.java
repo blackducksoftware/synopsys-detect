@@ -66,7 +66,7 @@ import com.synopsys.integration.detectable.detectables.pear.PearCliDetectableOpt
 import com.synopsys.integration.detectable.detectables.pip.PipInspectorDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pip.PipenvDetectableOptions;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectableOptions;
-import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheDetectableOptions;
+import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheDetectableOptions;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
 import com.synopsys.integration.log.LogLevel;
 import com.synopsys.integration.rest.proxy.ProxyInfo;

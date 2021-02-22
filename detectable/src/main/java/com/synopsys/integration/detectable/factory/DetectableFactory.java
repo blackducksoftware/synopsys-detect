@@ -51,12 +51,14 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.PipRes
 import com.synopsys.integration.detectable.detectable.executable.resolver.PipenvResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PythonResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.Rebar3Resolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.SbtResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.SwiftResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
+import com.synopsys.integration.detectable.detectable.parse.IndentedTreeParser;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
@@ -213,9 +215,14 @@ import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecP
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseExtractor;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecLineParser;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecParser;
-import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheDetectable;
-import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheDetectableOptions;
-import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheExtractor;
+import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheDetectable;
+import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheDetectableOptions;
+import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheExtractor;
+import com.synopsys.integration.detectable.detectables.sbt.plugin.SbtNode;
+import com.synopsys.integration.detectable.detectables.sbt.plugin.SbtPluginDetectable;
+import com.synopsys.integration.detectable.detectables.sbt.plugin.SbtPluginExtractor;
+import com.synopsys.integration.detectable.detectables.sbt.plugin.SbtPluginLineParser;
+import com.synopsys.integration.detectable.detectables.sbt.plugin.SbtPluginParser;
 import com.synopsys.integration.detectable.detectables.swift.SwiftCliDetectable;
 import com.synopsys.integration.detectable.detectables.swift.SwiftCliParser;
 import com.synopsys.integration.detectable.detectables.swift.SwiftExtractor;
@@ -407,6 +414,10 @@ public class DetectableFactory {
 
     public SbtResolutionCacheDetectable createSbtResolutionCacheDetectable(DetectableEnvironment environment, SbtResolutionCacheDetectableOptions sbtResolutionCacheDetectableOptions) {
         return new SbtResolutionCacheDetectable(environment, fileFinder, sbtResolutionCacheExtractor(), sbtResolutionCacheDetectableOptions);
+    }
+
+    public SbtPluginDetectable createSbtPluginDetectable(DetectableEnvironment environment, SbtResolver sbtResolver) {
+        return new SbtPluginDetectable(environment, fileFinder, sbtResolver, sbtPluginExtractor());
     }
 
     public SwiftCliDetectable createSwiftCliDetectable(DetectableEnvironment environment, SwiftResolver swiftResolver) {
@@ -695,6 +706,18 @@ public class DetectableFactory {
 
     private SbtResolutionCacheExtractor sbtResolutionCacheExtractor() {
         return new SbtResolutionCacheExtractor(fileFinder, externalIdFactory);
+    }
+
+    private SbtPluginLineParser sbtPluginLineParser() {
+        return new SbtPluginLineParser();
+    }
+
+    private SbtPluginParser sbtPluginParser() {
+        return new SbtPluginParser(new IndentedTreeParser<SbtNode>(), sbtPluginLineParser(), externalIdFactory);
+    }
+
+    private SbtPluginExtractor sbtPluginExtractor() {
+        return new SbtPluginExtractor(executableRunner, sbtPluginParser());
     }
 
     private YarnLockParser yarnLockParser() {

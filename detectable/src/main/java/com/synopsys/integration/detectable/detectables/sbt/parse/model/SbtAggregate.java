@@ -20,28 +20,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.sbt.model;
+package com.synopsys.integration.detectable.detectables.sbt.parse.model;
 
-import java.io.File;
+import com.synopsys.integration.util.Stringable;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-
-public class SbtDependencyModule {
-    private File sourcePath;
+public class SbtAggregate extends Stringable {
     private String name;
-    private String version;
     private String org;
-    private DependencyGraph graph;
+    private String version;
 
-    // if this is from a specific configuration
-    private String configuration = null;
-
-    public File getSourcePath() {
-        return sourcePath;
-    }
-
-    public void setSourcePath(final File sourcePath) {
-        this.sourcePath = sourcePath;
+    public SbtAggregate(final String name, final String org, final String version) {
+        this.name = name;
+        this.org = org;
+        this.version = version;
     }
 
     public String getName() {
@@ -52,14 +43,6 @@ public class SbtDependencyModule {
         this.name = name;
     }
 
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(final String version) {
-        this.version = version;
-    }
-
     public String getOrg() {
         return org;
     }
@@ -68,19 +51,11 @@ public class SbtDependencyModule {
         this.org = org;
     }
 
-    public DependencyGraph getGraph() {
-        return graph;
+    public String getVersion() {
+        return version;
     }
 
-    public void setGraph(final DependencyGraph graph) {
-        this.graph = graph;
-    }
-
-    public String getConfiguration() {
-        return configuration;
-    }
-
-    public void setConfiguration(final String configuration) {
-        this.configuration = configuration;
+    public void setVersion(final String version) {
+        this.version = version;
     }
 }

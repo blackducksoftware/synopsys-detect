@@ -20,30 +20,35 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.sbt.model;
+package com.synopsys.integration.detectable.detectables.sbt.plugin;
 
-import java.util.List;
-
-public class SbtModule {
-    private final String organisation;
+public class SbtNode {
     private final String name;
-    private final List<SbtRevision> revisions;
+    private final String group;
+    private final String version;
 
-    public SbtModule(final String organisation, final String name, final List<SbtRevision> revisions) {
-        this.organisation = organisation;
+    private final int level;
+
+    public SbtNode(String name, String group, String version, final int level) {
         this.name = name;
-        this.revisions = revisions;
-    }
-
-    public String getOrganisation() {
-        return organisation;
+        this.group = group;
+        this.version = version;
+        this.level = level;
     }
 
     public String getName() {
         return name;
     }
 
-    public List<SbtRevision> getRevisions() {
-        return revisions;
+    public String getGroup() {
+        return group;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public int getLevel() {
+        return level;
     }
 }

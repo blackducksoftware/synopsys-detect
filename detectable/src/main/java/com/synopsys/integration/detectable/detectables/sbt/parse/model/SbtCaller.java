@@ -20,42 +20,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.sbt.model;
+package com.synopsys.integration.detectable.detectables.sbt.parse.model;
 
-import com.synopsys.integration.util.Stringable;
+public class SbtCaller {
+    private final String organisation;
+    private final String name;
+    private final String revision;
 
-public class SbtAggregate extends Stringable {
-    private String name;
-    private String org;
-    private String version;
-
-    public SbtAggregate(final String name, final String org, final String version) {
+    public SbtCaller(final String organisation, final String name, final String revision) {
+        this.organisation = organisation;
         this.name = name;
-        this.org = org;
-        this.version = version;
+        this.revision = revision;
+    }
+
+    public String getOrganisation() {
+        return organisation;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    public String getOrg() {
-        return org;
-    }
-
-    public void setOrg(final String org) {
-        this.org = org;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(final String version) {
-        this.version = version;
+    public String getRevision() {
+        return revision;
     }
 }

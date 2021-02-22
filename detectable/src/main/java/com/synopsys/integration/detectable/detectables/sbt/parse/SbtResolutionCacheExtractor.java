@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.sbt;
+package com.synopsys.integration.detectable.detectables.sbt.parse;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,10 +42,9 @@ import org.xml.sax.SAXException;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
-import com.synopsys.integration.detectable.detectables.sbt.model.SbtDependencyModule;
-import com.synopsys.integration.detectable.detectables.sbt.model.SbtProject;
-import com.synopsys.integration.detectable.detectables.sbt.model.SbtReport;
-import com.synopsys.integration.detectable.detectables.sbt.parse.SbtReportParser;
+import com.synopsys.integration.detectable.detectables.sbt.parse.model.SbtDependencyModule;
+import com.synopsys.integration.detectable.detectables.sbt.parse.model.SbtProject;
+import com.synopsys.integration.detectable.detectables.sbt.parse.model.SbtReport;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
 

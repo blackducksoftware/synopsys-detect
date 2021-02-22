@@ -20,30 +20,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.sbt;
+package com.synopsys.integration.detectable.detectable.parse;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class SbtResolutionCacheDetectableOptions {
-    private final List<String> includedConfigurations;
-    private final List<String> excludedConfigurations;
-    private final int reportDepth;
+public class IndentedTreeNode {
+    public final String value;
+    public final List<IndentedTreeNode> children;
 
-    public SbtResolutionCacheDetectableOptions(List<String> includedConfigurations, List<String> excludedConfigurations, int reportDepth) {
-        this.includedConfigurations = includedConfigurations;
-        this.excludedConfigurations = excludedConfigurations;
-        this.reportDepth = reportDepth;
-    }
-
-    public List<String> getIncludedConfigurations() {
-        return includedConfigurations;
-    }
-
-    public List<String> getExcludedConfigurations() {
-        return excludedConfigurations;
-    }
-
-    public int getReportDepth() {
-        return reportDepth;
+    public IndentedTreeNode(final String value, IndentedTreeNode... nodes) {
+        this.value = value;
+        children = new ArrayList<>(Arrays.asList(nodes));
     }
 }

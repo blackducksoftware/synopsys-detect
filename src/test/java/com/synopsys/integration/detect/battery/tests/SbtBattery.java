@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detect.battery.BatteryTest;
+import com.synopsys.integration.detect.configuration.DetectProperties;
 
 @Tag("battery")
 public class SbtBattery {
@@ -36,6 +37,16 @@ public class SbtBattery {
         test.sourceFileNamed("build.sbt");
         test.sourceFolderFromExpandedResource("target");
         test.git("https://github.com/sbt/sbt-bintray.git", "master");
+        test.expectBdioResources();
+        test.run();
+    }
+
+    @Test
+    void plugin() {
+        final BatteryTest test = new BatteryTest("sbt-plugin");
+        test.sourceDirectoryNamed("sbt-plugin");
+        test.sourceFileNamed("build.sbt");
+        test.executableFromResourceFiles(DetectProperties.DETECT_SBT_PATH.getProperty(), "sbt-dependencyTree.xout");
         test.expectBdioResources();
         test.run();
     }

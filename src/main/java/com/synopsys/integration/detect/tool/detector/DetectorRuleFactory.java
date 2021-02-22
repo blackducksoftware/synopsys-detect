@@ -58,7 +58,8 @@ import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryDetectab
 import com.synopsys.integration.detectable.detectables.rebar.RebarDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemlock.GemlockDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectable;
-import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheDetectable;
+import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheDetectable;
+import com.synopsys.integration.detectable.detectables.sbt.plugin.SbtPluginDetectable;
 import com.synopsys.integration.detectable.detectables.swift.SwiftCliDetectable;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
 import com.synopsys.integration.detector.base.DetectorType;
@@ -139,7 +140,8 @@ public class DetectorRuleFactory {
         ruleSet.yield(poetry).to(pipEnv);
 
         ruleSet.addDetector(DetectorType.RUBYGEMS, "Gemlock", GemlockDetectable.class, detectableFactory::createGemlockDetectable).defaults().build();
-        ruleSet.addDetector(DetectorType.SBT, "Sbt Resolution Cache", SbtResolutionCacheDetectable.class, detectableFactory::createSbtResolutionCacheDetectable).defaults().build();
+        //ruleSet.addDetector(DetectorType.SBT, "Sbt Resolution Cache", SbtResolutionCacheDetectable.class, detectableFactory::createSbtResolutionCacheDetectable).defaults().build();
+        ruleSet.addDetector(DetectorType.SBT, "Sbt Plugin", SbtPluginDetectable.class, detectableFactory::createSbtPluginDetectable).defaults().build(); //TODO: Yield
         ruleSet.addDetector(DetectorType.PEAR, "Pear", PearCliDetectable.class, detectableFactory::createPearCliDetectable).defaults().build();
 
         ruleSet.addDetector(DetectorType.CLANG, "Clang", ClangDetectable.class, detectableFactory::createClangDetectable).defaults().build();
