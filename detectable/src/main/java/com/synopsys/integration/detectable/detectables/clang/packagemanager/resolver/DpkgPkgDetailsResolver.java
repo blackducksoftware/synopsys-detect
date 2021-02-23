@@ -43,12 +43,12 @@ public class DpkgPkgDetailsResolver {
     private static final int PKG_INFO_LINE_LABEL_POSITION = 0;
     private static final int PKG_INFO_LINE_VALUE_POSITION = 1;
 
-    public Optional<PackageDetails> resolvePackageDetails(ClangPackageManagerInfo currentPackageManager, DetectableExecutableRunner executableRunner, File workingDirectory, String packageName, @Nullable String packageArch) {
+    public Optional<PackageDetails> resolvePackageDetails(ClangPackageManagerInfo currentPackageManager, DetectableExecutableRunner executableRunner, File workingDirectory, NameArchitecture packageNameArchitecture) {
         try {
             List<String> args = new ArrayList<>(currentPackageManager.getPkgInfoArgs().get());
-            args.add(constructPackageArg(packageName, packageArch));
+            args.add(constructPackageArg(packageNameArchitecture.getName(), packageNameArchitecture.getArchitecture().orElse(null)));
             ExecutableOutput packageInfoOutput = executableRunner.execute(workingDirectory, currentPackageManager.getPkgMgrCmdString(), args);
-            return parsePackageDetailsFromInfoOutput(packageName, packageInfoOutput.getStandardOutput());
+            return parsePackageDetailsFromInfoOutput(packageNameArchitecture.getName(), packageInfoOutput.getStandardOutput());
         } catch (ExecutableRunnerException e) {
             logger.warn(String.format("Error executing %s to get package info: %s", currentPackageManager.getPkgMgrName(), e.getMessage()));
         }

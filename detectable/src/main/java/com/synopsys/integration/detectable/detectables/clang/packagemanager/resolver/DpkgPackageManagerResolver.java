@@ -55,12 +55,10 @@ public class DpkgPackageManagerResolver implements ClangPackageManagerResolver {
                 logger.trace("Skipping file ownership query output line: {}", packageLine);
                 continue;
             }
-            String[] queryPackageOutputParts = packageLine.split("\\s+");
-            String[] packageNameArchParts = queryPackageOutputParts[0].split(":");
-            String packageName = packageNameArchParts[0].trim();
-            String packageArch = parseArchitectureIfPresent(packageNameArchParts);
-            logger.debug("File ownership query results: package name: {}, arch: {}", packageName, packageArch);
-            Optional<PackageDetails> pkg = versionResolver.resolvePackageDetails(currentPackageManager, executableRunner, workingDirectory, packageName, packageArch);
+
+            NameArchitecture packageNameArchitecture = parsePackageNameArchitecture(packageLine);
+            logger.debug("File ownership query results: package name: {}, arch: {}", packageNameArchitecture.getName(), packageNameArchitecture.getArchitecture().orElse("<absent>"));
+            Optional<PackageDetails> pkg = versionResolver.resolvePackageDetails(currentPackageManager, executableRunner, workingDirectory, packageNameArchitecture);
             if (pkg.isPresent()) {
                 logger.debug("Adding package: {}", pkg.get());
                 packageDetailsList.add(pkg.get());
@@ -70,12 +68,16 @@ public class DpkgPackageManagerResolver implements ClangPackageManagerResolver {
     }
 
     @Nullable
-    private String parseArchitectureIfPresent(String[] packageNameArchParts) {
+    private NameArchitecture parsePackageNameArchitecture(String packageLine) {
+        String[] queryPackageOutputParts = packageLine.split("\\s+");
+        String[] packageNameArchParts = queryPackageOutputParts[0].split(":");
+        String packageName = packageNameArchParts[0].trim();
         if (packageNameArchParts.length > 1) {
-            String packageArch = packageNameArchParts[1].trim();
-            return StringUtils.substringBefore(packageArch, ",");
+            String architectureToken = packageNameArchParts[1].trim();
+            String packageArchitecture = StringUtils.substringBefore(architectureToken, ",");
+            return new NameArchitecture(packageName, packageArchitecture);
         } else {
-            return null;
+            return new NameArchitecture(packageName, null);
         }
     }
 
