@@ -25,6 +25,7 @@ package com.synopsys.integration.detect.configuration;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -35,6 +36,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandArgumentParser;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.base.NullableProperty;
 import com.synopsys.integration.configuration.property.base.ValuedProperty;
@@ -78,14 +80,16 @@ public class DetectableOptionFactory {
     private final DiagnosticSystem diagnosticSystem;
     private final PathResolver pathResolver;
     private final ProxyInfo proxyInfo;
+    private final ScanCommandArgumentParser commandArgumentParser;
 
     private final Logger logger = LoggerFactory.getLogger(DetectableOptionFactory.class);
 
-    public DetectableOptionFactory(PropertyConfiguration detectConfiguration, @Nullable DiagnosticSystem diagnosticSystem, PathResolver pathResolver, ProxyInfo proxyInfo) {
+    public DetectableOptionFactory(PropertyConfiguration detectConfiguration, @Nullable DiagnosticSystem diagnosticSystem, PathResolver pathResolver, ProxyInfo proxyInfo, ScanCommandArgumentParser commandArgumentParser) {
         this.detectConfiguration = detectConfiguration;
         this.diagnosticSystem = diagnosticSystem;
         this.pathResolver = pathResolver;
         this.proxyInfo = proxyInfo;
+        this.commandArgumentParser = commandArgumentParser;
     }
 
     public BazelDetectableOptions createBazelDetectableOptions() {
@@ -172,12 +176,22 @@ public class DetectableOptionFactory {
     }
 
     public MavenCliExtractorOptions createMavenCliOptions() {
-        String mavenBuildCommand = getNullableValue(DetectProperties.DETECT_MAVEN_BUILD_COMMAND);
+        List<String> mavenBuildCommand = parseMavenBuildCommandArguments(getNullableValue(DetectProperties.DETECT_MAVEN_BUILD_COMMAND));
         List<String> mavenExcludedScopes = getValue(DetectProperties.DETECT_MAVEN_EXCLUDED_SCOPES);
         List<String> mavenIncludedScopes = getValue(DetectProperties.DETECT_MAVEN_INCLUDED_SCOPES);
         List<String> mavenExcludedModules = getValue(DetectProperties.DETECT_MAVEN_EXCLUDED_MODULES);
         List<String> mavenIncludedModules = getValue(DetectProperties.DETECT_MAVEN_INCLUDED_MODULES);
         return new MavenCliExtractorOptions(mavenBuildCommand, mavenExcludedScopes, mavenIncludedScopes, mavenExcludedModules, mavenIncludedModules);
+    }
+
+    private List<String> parseMavenBuildCommandArguments(String mavenBuildCommand) {
+        mavenBuildCommand = mavenBuildCommand.trim();
+        try {
+            return commandArgumentParser.parse(mavenBuildCommand);
+        } catch (Exception e) {
+            logger.error(String.format("Encountered an error while parsing maven build command: %s. Error: %s.", mavenBuildCommand, e.getMessage()));
+            return new LinkedList<>();
+        }
     }
 
     public ConanCliExtractorOptions createConanCliOptions() {

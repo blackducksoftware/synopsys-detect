@@ -26,22 +26,22 @@ import java.util.List;
 import java.util.Optional;
 
 public class MavenCliExtractorOptions {
-    private final String mavenBuildCommand;
+    private final List<String> mavenBuildCommandArguments;
     private final List<String> mavenExcludedScopes;
     private final List<String> mavenIncludedScopes;
     private final List<String> mavenExcludedModules;
     private final List<String> mavenIncludedModules;
 
-    public MavenCliExtractorOptions(String mavenBuildCommand, List<String> mavenExcludedScopes, List<String> mavenIncludedScopes, List<String> mavenExcludedModules, List<String> mavenIncludedModules) {
-        this.mavenBuildCommand = mavenBuildCommand;
+    public MavenCliExtractorOptions(List<String> mavenBuildCommandArguments, List<String> mavenExcludedScopes, List<String> mavenIncludedScopes, List<String> mavenExcludedModules, List<String> mavenIncludedModules) {
+        this.mavenBuildCommandArguments = mavenBuildCommandArguments;
         this.mavenExcludedScopes = mavenExcludedScopes;
         this.mavenIncludedScopes = mavenIncludedScopes;
         this.mavenExcludedModules = mavenExcludedModules;
         this.mavenIncludedModules = mavenIncludedModules;
     }
 
-    public Optional<String> getMavenBuildCommand() {
-        return Optional.ofNullable(mavenBuildCommand);
+    public Optional<List<String>> getMavenBuildCommandArguments() {
+        return Optional.ofNullable(mavenBuildCommandArguments);
     }
 
     public List<String> getMavenExcludedScopes() {

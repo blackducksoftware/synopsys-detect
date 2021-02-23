@@ -23,10 +23,10 @@
 package com.synopsys.integration.detectable.detectables.maven.cli;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -50,17 +50,17 @@ public class MavenCliExtractor {
 
     //TODO: Limit 'extractors' to 'execute' and 'read', delegate all other work.
     public Extraction extract(File directory, ExecutableTarget mavenExe, MavenCliExtractorOptions mavenCliExtractorOptions) throws ExecutableFailedException {
-        String[] mavenCommand = mavenCliExtractorOptions.getMavenBuildCommand()
-                                    .map(cmd -> cmd.replace("dependency:tree", ""))
-                                    .map(String::trim)
-                                    .map(cmd -> cmd.split(" "))
-                                    .orElse(new String[] {});
+        List<String> commandArguments = mavenCliExtractorOptions.getMavenBuildCommandArguments()
+                                     .orElse(new LinkedList<>())
+                                     .stream()
+                                     .map(cmd -> cmd.replace("dependency:tree", ""))
+                                     .map(this::removeQuotes)
+                                     .collect(Collectors.toList());
 
-        List<String> arguments = new ArrayList<>(Arrays.asList(mavenCommand));
-        arguments.add("dependency:tree");
-        arguments.add("-T1"); // Force maven to use a single thread to ensure the tree output is in the correct order.
+        commandArguments.add("dependency:tree");
+        commandArguments.add("-T1"); // Force maven to use a single thread to ensure the tree output is in the correct order.
 
-        ExecutableOutput mvnExecutableResult = executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, mavenExe, arguments));
+        ExecutableOutput mvnExecutableResult = executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, mavenExe, commandArguments));
 
         List<String> mavenOutput = mvnExecutableResult.getStandardOutputAsList();
         List<String> excludedScopes = mavenCliExtractorOptions.getMavenExcludedScopes();
@@ -83,4 +83,16 @@ public class MavenCliExtractor {
         }
         return builder.build();
     }
+
+    // Once string with spaces is in java, quotes are no longer needed
+    private String removeQuotes(String str) {
+        if (str.startsWith("\"")) {
+            str = str.substring(1);
+        }
+        if (str.endsWith("\"")) {
+            str = str.substring(0, str.length() - 1);
+        }
+        return str;
+    }
+
 }
