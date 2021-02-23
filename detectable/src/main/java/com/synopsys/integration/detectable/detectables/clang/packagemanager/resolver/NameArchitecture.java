@@ -20,17 +20,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectable.explanation;
+package com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver;
 
-public class PropertyProvided extends Explanation {
-    private final String property;
+import java.util.Optional;
 
-    public PropertyProvided(String property) {
-        this.property = property;
+import javax.annotation.Nullable;
+
+public class NameArchitecture {
+    private final String name;
+    @Nullable
+    private final String architecture;
+
+    public NameArchitecture(String name, @Nullable String architecture) {
+        this.name = name;
+        this.architecture = architecture;
     }
 
-    @Override
-    public String describeSelf() {
-        return "Property provided: " + property;
+    public String getName() {
+        return name;
+    }
+
+    public Optional<String> getArchitecture() {
+        return Optional.ofNullable(architecture);
     }
 }

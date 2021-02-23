@@ -40,7 +40,7 @@ public class InteractiveModeDecisionTree implements DecisionTree {
     public static final String SHOULD_SAVE_TO_PROFILE = "Would you like save these settings to a profile?";
     public static final String SET_PROFILE_NAME = "What is the profile name?";
     public static final String SHOULD_CONNECT_TO_BLACKDUCK = "Would you like to connect to a Black Duck server?";
-    public static final String SHOULD_SET_PROJECT_NAME_VERSON = "Would you like to provide a project name and version to use?";
+    public static final String SHOULD_SET_PROJECT_NAME_VERSION = "Would you like to provide a project name and version to use?";
     public static final String SET_PROJECT_NAME = "What is the project name?";
     public static final String SET_PROJECT_VERSION = "What is the project version?";
     public static final String SHOULD_RUN_SIGNATURE_SCAN = "Would you like to run a signature scan?";
@@ -65,7 +65,7 @@ public class InteractiveModeDecisionTree implements DecisionTree {
             BlackDuckConnectionDecisionBranch blackDuckConnectionDecisionBranch = new BlackDuckConnectionDecisionBranch(detectInfo, blackDuckConnectivityChecker, existingPropertySources);
             blackDuckConnectionDecisionBranch.traverse(propertySourceBuilder, writer);
 
-            Boolean customDetails = writer.askYesOrNo(SHOULD_SET_PROJECT_NAME_VERSON);
+            Boolean customDetails = writer.askYesOrNo(SHOULD_SET_PROJECT_NAME_VERSION);
             if (customDetails) {
                 propertySourceBuilder.setPropertyFromQuestion(DETECT_PROJECT_NAME, SET_PROJECT_NAME);
                 propertySourceBuilder.setPropertyFromQuestion(DETECT_PROJECT_VERSION_NAME, SET_PROJECT_VERSION);

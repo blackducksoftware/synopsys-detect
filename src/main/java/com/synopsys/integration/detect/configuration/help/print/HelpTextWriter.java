@@ -47,7 +47,7 @@ public class HelpTextWriter {
         pieces.add(headerText);
     }
 
-    public void printSeperator() {
+    public void printSeparator() {
         println(StringUtils.repeat('_', 175));
     }
 

@@ -81,7 +81,7 @@ public class DetectorIssuePublisher {
     private void addFallbackIfNotEmpty(final List<String> messages, final String prefix, final String spacer, final List<DetectorEvaluation> evaluations, final Function<DetectorEvaluation, String> reason) {
         if (evaluations.size() > 0) {
             evaluations.forEach(evaluation -> {
-                final Optional<DetectorEvaluation> fallback = evaluation.getSuccessfullFallback();
+                final Optional<DetectorEvaluation> fallback = evaluation.getSuccessfulFallback();
                 fallback.ifPresent(detectorEvaluation -> {
                     messages.add(prefix + detectorEvaluation.getDetectorRule().getDescriptiveName());
                     messages.add(spacer + "Preferred Detector: " + evaluation.getDetectorRule().getDescriptiveName());

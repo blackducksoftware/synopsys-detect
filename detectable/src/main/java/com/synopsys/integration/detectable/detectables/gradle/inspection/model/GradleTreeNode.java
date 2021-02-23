@@ -50,7 +50,7 @@ public class GradleTreeNode {
 
     public enum NodeType {
         GAV,
-        UNKOWN,
+        UNKNOWN,
         PROJECT
     }
 
@@ -68,6 +68,6 @@ public class GradleTreeNode {
     }
 
     public static GradleTreeNode newUnknown(final int level) {
-        return new GradleTreeNode(NodeType.UNKOWN, level, null, null);
+        return new GradleTreeNode(NodeType.UNKNOWN, level, null, null);
     }
 }

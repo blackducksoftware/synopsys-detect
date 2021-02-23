@@ -45,16 +45,16 @@ public class ExtractionLogger {
         Integer i = detectExtractionEnvironment.getExtractionId().getId();
         String progress = Integer.toString((int) Math.floor((i * 100.0f) / extractionCount));
         logger.debug(String.format("Extracting %d of %d (%s%%)", i + 1, extractionCount, progress));
-        logger.debug(ReportConstants.SEPERATOR);
+        logger.debug(ReportConstants.SEPARATOR);
 
         logger.debug("Starting extraction: " + detectorEvaluation.getDetectorType() + " - " + detectorEvaluation.getDetectorRule().getName());
         logger.debug("Identifier: " + detectExtractionEnvironment.getExtractionId().toUniqueString());
         ObjectPrinter.printObjectPrivate(new DebugLogReportWriter(logger), detectorEvaluation.getDetectable());
-        logger.debug(ReportConstants.SEPERATOR);
+        logger.debug(ReportConstants.SEPARATOR);
     }
 
     public void extractionEnded(DetectorEvaluation detectorEvaluation) {
-        logger.debug(ReportConstants.SEPERATOR);
+        logger.debug(ReportConstants.SEPARATOR);
         logger.debug("Finished extraction: " + detectorEvaluation.getExtraction().getResult().toString());
         logger.debug("Code locations found: " + detectorEvaluation.getExtraction().getCodeLocations().size());
         if (detectorEvaluation.getExtraction().getResult() == Extraction.ExtractionResultType.EXCEPTION) {
@@ -63,6 +63,6 @@ public class ExtractionLogger {
         } else if (detectorEvaluation.getExtraction().getResult() == Extraction.ExtractionResultType.FAILURE) {
             logger.debug(detectorEvaluation.getExtraction().getDescription());
         }
-        logger.debug(ReportConstants.SEPERATOR);
+        logger.debug(ReportConstants.SEPARATOR);
     }
 }

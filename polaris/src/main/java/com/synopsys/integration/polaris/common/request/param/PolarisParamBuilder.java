@@ -93,7 +93,7 @@ public class PolarisParamBuilder {
         }
 
         if (!ParamOperator.NONE.equals(operator)) {
-            final String op = OPERATOR_PREFIX + makeCaseInsensitve(operator.getKey());
+            final String op = OPERATOR_PREFIX + makeCaseInsensitive(operator.getKey());
             keyBuilder.append(getBracketed(op));
         }
 
@@ -104,7 +104,7 @@ public class PolarisParamBuilder {
         throw new IllegalStateException(String.format("The field '%s' is required", fieldName));
     }
 
-    private String makeCaseInsensitve(final String operator) {
+    private String makeCaseInsensitive(final String operator) {
         if (!caseSensitive && (ParamOperator.OPERATOR_EQUALS.equalsKey(operator) || ParamOperator.OPERATOR_SUBSTRING.equalsKey(operator))) {
             return OPERATOR_KEY_INSENSITIVE_PREFIX + operator;
         }
