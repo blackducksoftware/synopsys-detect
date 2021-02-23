@@ -42,11 +42,21 @@ public class SbtBattery {
     }
 
     @Test
-    void plugin() {
-        final BatteryTest test = new BatteryTest("sbt-plugin");
-        test.sourceDirectoryNamed("sbt-plugin");
+    void dependencyGraphPlugin() {
+        final BatteryTest test = new BatteryTest("sbt-dependencygraph-plugin");
+        test.sourceDirectoryNamed("sbt-dependencygraph-plugin");
         test.sourceFileNamed("build.sbt");
-        test.executableFromResourceFiles(DetectProperties.DETECT_SBT_PATH.getProperty(), "sbt-dependencyTree.xout");
+        test.executableFromResourceFiles(DetectProperties.DETECT_SBT_PATH.getProperty(), "sbt-plugins.xout", "sbt-dependencyTree.xout");
+        test.expectBdioResources();
+        test.run();
+    }
+
+    @Test
+    void coursierPlugin() {
+        final BatteryTest test = new BatteryTest("sbt-coursier-plugin");
+        test.sourceDirectoryNamed("sbt-coursier-plugin");
+        test.sourceFileNamed("build.sbt");
+        test.executableFromResourceFiles(DetectProperties.DETECT_SBT_PATH.getProperty(), "sbt-plugins.xout", "sbt-dependencyTree.xout");
         test.expectBdioResources();
         test.run();
     }

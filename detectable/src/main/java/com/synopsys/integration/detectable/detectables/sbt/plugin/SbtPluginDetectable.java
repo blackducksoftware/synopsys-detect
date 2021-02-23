@@ -22,6 +22,9 @@
  */
 package com.synopsys.integration.detectable.detectables.sbt.plugin;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
@@ -29,8 +32,14 @@ import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.SbtResolver;
+import com.synopsys.integration.detectable.detectable.explanation.Explanation;
+import com.synopsys.integration.detectable.detectable.explanation.FoundExecutable;
+import com.synopsys.integration.detectable.detectable.explanation.FoundSbtPlugin;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
+import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.SbtMissingPluginDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
@@ -41,14 +50,18 @@ public class SbtPluginDetectable extends Detectable {
     private final FileFinder fileFinder;
     private final SbtResolver sbtResolver;
     private final SbtPluginExtractor sbtPluginExtractor;
+    private final SbtPluginFinder sbtPluginFinder;
 
     private ExecutableTarget sbt;
+    private SbtPlugin plugin;
 
-    public SbtPluginDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final SbtResolver sbtResolver, final SbtPluginExtractor sbtPluginExtractor) {
+    public SbtPluginDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final SbtResolver sbtResolver, final SbtPluginExtractor sbtPluginExtractor,
+        final SbtPluginFinder sbtPluginFinder) {
         super(environment);
         this.fileFinder = fileFinder;
         this.sbtResolver = sbtResolver;
         this.sbtPluginExtractor = sbtPluginExtractor;
+        this.sbtPluginFinder = sbtPluginFinder;
     }
 
     @Override
@@ -60,14 +73,27 @@ public class SbtPluginDetectable extends Detectable {
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        Requirements requirements = new Requirements(fileFinder, environment);
-        sbt = requirements.executable(sbtResolver::resolveSbt, "sbt");
-        return requirements.result();
+        List<Explanation> explanations = new ArrayList<>();
+        sbt = sbtResolver.resolveSbt();
+        if (sbt == null) {
+            return new ExecutableNotFoundDetectableResult("sbt");
+        } else {
+            explanations.add(new FoundExecutable(sbt));
+        }
+
+        plugin = sbtPluginFinder.findPlugin(environment.getDirectory(), sbt);
+        if (plugin == null) {
+            return new SbtMissingPluginDetectableResult(environment.getDirectory().toString());
+        } else {
+            explanations.add(new FoundSbtPlugin(plugin.getName()));
+        }
+
+        return new PassedDetectableResult(explanations);
     }
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        return sbtPluginExtractor.extract(environment.getDirectory(), sbt);
+        return sbtPluginExtractor.extract(environment.getDirectory(), sbt, plugin);
     }
 
 }

@@ -27,35 +27,26 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.parse.IndentedTreeParser;
 
-public class SbtPluginParser {
+public class SbtPluginOutputParser {
     private final IndentedTreeParser<SbtNode> indentedTreeParser;
-    private final SbtPluginLineParser lineParser;
     private final ExternalIdFactory externalIdFactory;
 
-    public SbtPluginParser(final IndentedTreeParser<SbtNode> indentedTreeParser, final SbtPluginLineParser lineParser, final ExternalIdFactory externalIdFactory) {
+    public SbtPluginOutputParser(final IndentedTreeParser<SbtNode> indentedTreeParser, final ExternalIdFactory externalIdFactory) {
         this.indentedTreeParser = indentedTreeParser;
-        this.lineParser = lineParser;
         this.externalIdFactory = externalIdFactory;
     }
 
-    public List<DependencyGraph> parse(List<String> pluginOutput) {
+    public List<DependencyGraph> parse(SbtPluginLineParser lineParser, List<String> pluginOutput) {
         final List<SbtNode> nodes = pluginOutput.stream()
                                         .map(lineParser::tryParseLine)
                                         .filter(Optional::isPresent)
                                         .map(Optional::get)
                                         .collect(Collectors.toList());
 
-        return indentedTreeParser.parseTrees(nodes, SbtNode::getLevel, this::nodeToDependency);
-    }
-
-    private Dependency nodeToDependency(SbtNode node) {
-        ExternalId externalId = externalIdFactory.createMavenExternalId(node.getGroup(), node.getName(), node.getVersion());
-        return new Dependency(node.getName(), node.getVersion(), externalId);
+        return indentedTreeParser.parseTrees(nodes, SbtNode::getLevel, node -> node.toDependency(externalIdFactory));
     }
 
 }

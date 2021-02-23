@@ -218,11 +218,12 @@ import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.Ge
 import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheDetectable;
 import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheDetectableOptions;
 import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheExtractor;
-import com.synopsys.integration.detectable.detectables.sbt.plugin.SbtNode;
+import com.synopsys.integration.detectable.detectables.sbt.plugin.SbtCoursierPluginLineParser;
+import com.synopsys.integration.detectable.detectables.sbt.plugin.SbtDependencyGraphPluginLineParser;
 import com.synopsys.integration.detectable.detectables.sbt.plugin.SbtPluginDetectable;
 import com.synopsys.integration.detectable.detectables.sbt.plugin.SbtPluginExtractor;
-import com.synopsys.integration.detectable.detectables.sbt.plugin.SbtPluginLineParser;
-import com.synopsys.integration.detectable.detectables.sbt.plugin.SbtPluginParser;
+import com.synopsys.integration.detectable.detectables.sbt.plugin.SbtPluginFinder;
+import com.synopsys.integration.detectable.detectables.sbt.plugin.SbtPluginOutputParser;
 import com.synopsys.integration.detectable.detectables.swift.SwiftCliDetectable;
 import com.synopsys.integration.detectable.detectables.swift.SwiftCliParser;
 import com.synopsys.integration.detectable.detectables.swift.SwiftExtractor;
@@ -417,7 +418,7 @@ public class DetectableFactory {
     }
 
     public SbtPluginDetectable createSbtPluginDetectable(DetectableEnvironment environment, SbtResolver sbtResolver) {
-        return new SbtPluginDetectable(environment, fileFinder, sbtResolver, sbtPluginExtractor());
+        return new SbtPluginDetectable(environment, fileFinder, sbtResolver, sbtPluginExtractor(), createSbtPluginFinder());
     }
 
     public SwiftCliDetectable createSwiftCliDetectable(DetectableEnvironment environment, SwiftResolver swiftResolver) {
@@ -708,12 +709,20 @@ public class DetectableFactory {
         return new SbtResolutionCacheExtractor(fileFinder, externalIdFactory);
     }
 
-    private SbtPluginLineParser sbtPluginLineParser() {
-        return new SbtPluginLineParser();
+    private SbtDependencyGraphPluginLineParser sbtDependencyGraphPluginLineParser() {
+        return new SbtDependencyGraphPluginLineParser();
     }
 
-    private SbtPluginParser sbtPluginParser() {
-        return new SbtPluginParser(new IndentedTreeParser<SbtNode>(), sbtPluginLineParser(), externalIdFactory);
+    private SbtCoursierPluginLineParser sbtCoursierPluginLineParser() {
+        return new SbtCoursierPluginLineParser();
+    }
+
+    private SbtPluginOutputParser sbtPluginParser() {
+        return new SbtPluginOutputParser(new IndentedTreeParser<>(), externalIdFactory);
+    }
+
+    public SbtPluginFinder createSbtPluginFinder() {
+        return new SbtPluginFinder(executableRunner, sbtDependencyGraphPluginLineParser(), sbtCoursierPluginLineParser());
     }
 
     private SbtPluginExtractor sbtPluginExtractor() {

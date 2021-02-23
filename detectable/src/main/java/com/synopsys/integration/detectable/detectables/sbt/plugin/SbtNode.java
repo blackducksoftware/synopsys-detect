@@ -22,6 +22,10 @@
  */
 package com.synopsys.integration.detectable.detectables.sbt.plugin;
 
+import com.synopsys.integration.bdio.model.dependency.Dependency;
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+
 public class SbtNode {
     private final String name;
     private final String group;
@@ -50,5 +54,10 @@ public class SbtNode {
 
     public int getLevel() {
         return level;
+    }
+
+    public Dependency toDependency(ExternalIdFactory externalIdFactory) {
+        ExternalId externalId = externalIdFactory.createMavenExternalId(getGroup(), getName(), getVersion());
+        return new Dependency(getName(), getVersion(), externalId);
     }
 }

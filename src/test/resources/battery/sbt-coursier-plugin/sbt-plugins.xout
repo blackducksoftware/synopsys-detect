@@ -1,0 +1,13 @@
+Java HotSpot(TM) 64-Bit Server VM warning: ignoring option MaxPermSize=256m; support was removed in 8.0
+[info] Loading global plugins from C:\Users\jordanp\.sbt\0.13\plugins
+[info] Updating {file:/C:/Users/jordanp/.sbt/0.13/plugins/}global-plugins...
+[info] Resolving org.fusesource.jansi#jansi;1.4 ...
+[info] Done updating.
+[info] Loading project definition from C:\Users\jordanp\Downloads\sbt-example-master\project
+[info] Set current project to sbt-example (in build file:/C:/Users/jordanp/Downloads/sbt-example-master/)
+In file:/C:/Users/jordanp/Downloads/sbt-example-master/
+        sbt.plugins.IvyPlugin: enabled in sbt-example-master, core, macros
+        sbt.plugins.JvmPlugin: enabled in sbt-example-master, core, macros
+        sbt.plugins.CorePlugin: enabled in sbt-example-master, core, macros
+        sbt.plugins.JUnitXmlReportPlugin: enabled in sbt-example-master, core, macros
+        coursier.CoursierPlugin: enabled in sbt-example-master, core, macros
