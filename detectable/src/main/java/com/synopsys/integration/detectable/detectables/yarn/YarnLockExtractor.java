@@ -40,6 +40,7 @@ import org.apache.commons.io.FileUtils;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
+import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonCurrent;
 import com.synopsys.integration.detectable.extraction.Extraction;
 
 public class YarnLockExtractor {
@@ -53,35 +54,38 @@ public class YarnLockExtractor {
         try {
             String rootPackageJsonText = FileUtils.readFileToString(rootPackageJsonFile, StandardCharsets.UTF_8);
             ////////////////////////////////
+            ////List<PackageJson> workspacePackageJsons = new LinkedList<>();
             List<PackageJson> workspacePackageJsons = new LinkedList<>();
             // TODO gson work used to only happen in yarnPackager
             // Doesn't seem to belong here; maybe a new class for all the gson work?
             // It's the same code here and in yarnPackager
             Gson gson = new Gson();
-            PackageJson rootPackageJson = gson.fromJson(rootPackageJsonText, PackageJson.class);
+            PackageJsonCurrent rootPackageJson = gson.fromJson(rootPackageJsonText, PackageJsonCurrent.class);
             // TODO factor this out:
-            for (String workspaceSubDir : rootPackageJson.workspaceSubdirsPreV1_5_0) {
-                System.out.printf("workspaceSubDir: %s\n", workspaceSubDir);
-                String globString = String.format("glob:%s/%s/package.json", sourceDir.getAbsolutePath(), workspaceSubDir);
-                System.out.printf("globString: %s\n", globString);
-                PathMatcher matcher = FileSystems.getDefault().getPathMatcher(globString);
-                Files.walkFileTree(sourceDir.toPath(), new SimpleFileVisitor<Path>() {
-                    @Override
-                    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                        if (matcher.matches(file)) {
-                            System.out.printf("\t*** Found a match: %s\n", file.toString());
-                            String workspacePackageJsonText = FileUtils.readFileToString(file.toFile(), StandardCharsets.UTF_8);
-                            PackageJson workspacePackageJson = gson.fromJson(workspacePackageJsonText, PackageJson.class);
-                            workspacePackageJsons.add(workspacePackageJson);
+            if (rootPackageJson.workspaces != null) {
+                for (String workspaceSubDir : rootPackageJson.workspaces.workspaceSubdirPatterns) {
+                    System.out.printf("workspaceSubDir: %s\n", workspaceSubDir);
+                    String globString = String.format("glob:%s/%s/package.json", sourceDir.getAbsolutePath(), workspaceSubDir);
+                    System.out.printf("globString: %s\n", globString);
+                    PathMatcher matcher = FileSystems.getDefault().getPathMatcher(globString);
+                    Files.walkFileTree(sourceDir.toPath(), new SimpleFileVisitor<Path>() {
+                        @Override
+                        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                            if (matcher.matches(file)) {
+                                System.out.printf("\t*** Found a match: %s\n", file.toString());
+                                String workspacePackageJsonText = FileUtils.readFileToString(file.toFile(), StandardCharsets.UTF_8);
+                                PackageJson workspacePackageJson = gson.fromJson(workspacePackageJsonText, PackageJson.class);
+                                workspacePackageJsons.add(workspacePackageJson);
+                            }
+                            return FileVisitResult.CONTINUE;
                         }
-                        return FileVisitResult.CONTINUE;
-                    }
 
-                    @Override
-                    public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
-                        return FileVisitResult.CONTINUE;
-                    }
-                });
+                        @Override
+                        public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+                            return FileVisitResult.CONTINUE;
+                        }
+                    });
+                }
             }
             ////////////////////////////////
             List<String> yarnLockLines = FileUtils.readLines(yarnLockFile, StandardCharsets.UTF_8);

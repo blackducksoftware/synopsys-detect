@@ -20,23 +20,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.npm.packagejson.model;
+package com.synopsys.integration.detectable.detectables.yarn.packagejson;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
+import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 
-public class PackageJson {
-    @SerializedName("name")
-    public String name;
+public class PackageJsonPreV1_5_0 extends PackageJson {
 
-    @SerializedName("version")
-    public String version;
-
-    @SerializedName("dependencies")
-    public Map<String, String> dependencies = new HashMap<>();
-
-    @SerializedName("devDependencies")
-    public Map<String, String> devDependencies = new HashMap<>();
+    @SerializedName("workspaces")
+    public List<String> workspaceSubdirPatterns = new LinkedList<>();
 }
