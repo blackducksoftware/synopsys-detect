@@ -233,12 +233,12 @@ public class DetectorEvaluation {
         return "Passed";
     }
 
-    public Optional<DetectorEvaluation> getSuccessfullFallback() {
+    public Optional<DetectorEvaluation> getSuccessfulFallback() {
         if (fallbackTo != null) {
             if (fallbackTo.isExtractable()) {
                 return Optional.of(fallbackTo);
             } else {
-                return fallbackTo.getSuccessfullFallback();
+                return fallbackTo.getSuccessfulFallback();
             }
         }
         return Optional.empty();

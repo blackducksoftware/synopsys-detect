@@ -253,7 +253,7 @@ public class PropertyConfigurationTest {
     }
 
     @Test
-    public void getRawPassthroughMutlipleValues() {
+    public void getRawPassthroughMultipleValues() {
         final PassthroughProperty passthrough = new PassthroughProperty("pass");
         final PropertySource secondarySource = propertySourceOf("secondary", Pair.of("pass.two", "two value"), Pair.of("ignore", "ignore value"));
         final PropertySource primarySource = propertySourceOf("primary", Pair.of("pass.one", "one value"));

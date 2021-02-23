@@ -32,7 +32,7 @@ public class EventSystem {
 
     public <T> void publishEvent(final EventType<T> event, final T payload) {
         for (final EventListener listener : safelyGetListeners(event)) {
-            listener.eventOccured(payload);
+            listener.eventOccurred(payload);
         }
     }
 

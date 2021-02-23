@@ -27,7 +27,7 @@ import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 public abstract class LogReportWriter implements ReportWriter {
     @Override
     public void writeSeparator() {
-        writeLine(ReportConstants.SEPERATOR);
+        writeLine(ReportConstants.SEPARATOR);
     }
 
     @Override

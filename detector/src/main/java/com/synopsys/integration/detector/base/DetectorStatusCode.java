@@ -24,7 +24,7 @@ package com.synopsys.integration.detector.base;
 
 public enum DetectorStatusCode {
     CARGO_LOCKFILE_NOT_FOUND("A Cargo.toml was located in the target project, but the Cargo.lock file was NOT located."),
-    EXCEPTION("An exception occured."),
+    EXCEPTION("An exception occurred."),
     EXCLUDED("Detector type was excluded."),
     EXECUTABLE_FAILED("During extraction, one or more executables did not execute successfully."),
     EXTRACTION_FAILED("During extraction, one or more exceptions were encountered."),

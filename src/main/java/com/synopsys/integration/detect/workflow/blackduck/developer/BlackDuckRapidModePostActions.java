@@ -138,9 +138,9 @@ public class BlackDuckRapidModePostActions {
         }
     }
 
-    private boolean checkVulnerabilityErrorsAndLog(Set<PolicyViolationVulnerabilityView> vulnerabilites) {
+    private boolean checkVulnerabilityErrorsAndLog(Set<PolicyViolationVulnerabilityView> vulnerabilities) {
         boolean hasErrors = false;
-        for (PolicyViolationVulnerabilityView vulnerabilityPolicyViolation : vulnerabilites) {
+        for (PolicyViolationVulnerabilityView vulnerabilityPolicyViolation : vulnerabilities) {
             boolean hasError = StringUtils.isNotBlank(vulnerabilityPolicyViolation.getErrorMessage());
             boolean hasWarning = StringUtils.isNotBlank(vulnerabilityPolicyViolation.getWarningMessage());
             if (hasError) {

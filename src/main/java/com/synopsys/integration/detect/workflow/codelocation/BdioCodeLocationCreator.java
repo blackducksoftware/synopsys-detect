@@ -57,7 +57,7 @@ public class BdioCodeLocationCreator {
         final List<DetectCodeLocation> validDetectCodeLocations = findValidCodeLocations(detectCodeLocations);
         final Map<DetectCodeLocation, String> codeLocationsAndNames = createCodeLocationNameMap(validDetectCodeLocations, directoryManager.getSourceDirectory(), projectNameVersion, prefix, suffix);
 
-        final Map<String, List<DetectCodeLocation>> codeLocationsByName = seperateCodeLocationsByName(codeLocationsAndNames);
+        final Map<String, List<DetectCodeLocation>> codeLocationsByName = separateCodeLocationsByName(codeLocationsAndNames);
 
         final List<BdioCodeLocation> bdioCodeLocations = createBdioCodeLocations(codeLocationsByName);
 
@@ -89,7 +89,7 @@ public class BdioCodeLocationCreator {
         return validCodeLocations;
     }
 
-    private Map<String, List<DetectCodeLocation>> seperateCodeLocationsByName(final Map<DetectCodeLocation, String> detectCodeLocationNameMap) {
+    private Map<String, List<DetectCodeLocation>> separateCodeLocationsByName(final Map<DetectCodeLocation, String> detectCodeLocationNameMap) {
         final Map<String, List<DetectCodeLocation>> codeLocationNameMap = new HashMap<>();
         for (final Map.Entry<DetectCodeLocation, String> detectCodeLocationEntry : detectCodeLocationNameMap.entrySet()) {
             final String codeLocationName = detectCodeLocationEntry.getValue();

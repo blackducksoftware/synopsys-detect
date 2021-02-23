@@ -22,8 +22,6 @@
  */
 package com.synopsys.integration.detectable.detectables.conda;
 
-import java.io.File;
-
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.Requirements;
@@ -35,15 +33,10 @@ import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
-import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
-import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 @DetectableInfo(language = "Python", forge = "Anaconda", requirementsMarkdown = "File: environment.yml. <br /><br /> Executable: conda.")
 public class CondaCliDetectable extends Detectable {
-    public static final String ENVIRONEMNT_YML = "environment.yml";
+    public static final String ENVIRONMENT_YML = "environment.yml";
 
     private final FileFinder fileFinder;
     private CondaResolver condaResolver;
@@ -63,7 +56,7 @@ public class CondaCliDetectable extends Detectable {
     @Override
     public DetectableResult applicable() {
         Requirements requirements = new Requirements(fileFinder, environment);
-        requirements.file(ENVIRONEMNT_YML);
+        requirements.file(ENVIRONMENT_YML);
         return requirements.result();
     }
 
