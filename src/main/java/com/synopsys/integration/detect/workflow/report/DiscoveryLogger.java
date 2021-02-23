@@ -46,16 +46,16 @@ public class DiscoveryLogger {
         Integer i = detectExtractionEnvironment.getExtractionId().getId();
         String progress = Integer.toString((int) Math.floor((i * 100.0f) / discoveryCount));
         logger.debug(String.format("Discovery %d of %d (%s%%)", i + 1, discoveryCount, progress));
-        logger.debug(ReportConstants.SEPERATOR);
+        logger.debug(ReportConstants.SEPARATOR);
 
         logger.debug("Starting discovery: " + detectorEvaluation.getDetectorType() + " - " + detectorEvaluation.getDetectorRule().getName());
         logger.debug("Identifier: " + detectExtractionEnvironment.getExtractionId().toUniqueString());
         ObjectPrinter.printObjectPrivate(new DebugLogReportWriter(logger), detectorEvaluation.getDetectable());
-        logger.debug(ReportConstants.SEPERATOR);
+        logger.debug(ReportConstants.SEPARATOR);
     }
 
     public void discoveryEnded(DetectorEvaluation detectorEvaluation) {
-        logger.debug(ReportConstants.SEPERATOR);
+        logger.debug(ReportConstants.SEPARATOR);
         logger.debug("Finished discovery: " + detectorEvaluation.getDiscovery().getResult().toString());
 
         boolean projectInformationFound = StringUtils.isNotBlank(detectorEvaluation.getDiscovery().getProjectName());
@@ -70,6 +70,6 @@ public class DiscoveryLogger {
         } else if (detectorEvaluation.getDiscovery().getResult() == Discovery.DiscoveryResultType.FAILURE) {
             logger.debug(detectorEvaluation.getDiscovery().getDescription());
         }
-        logger.debug(ReportConstants.SEPERATOR);
+        logger.debug(ReportConstants.SEPARATOR);
     }
 }

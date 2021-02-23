@@ -78,9 +78,9 @@ public class ReportListener {
         eventSystem.registerListener(Event.DiscoveryStarted, this::discoveryStarted);
         eventSystem.registerListener(Event.DiscoveryEnded, this::discoveryEnded);
 
-        eventSystem.registerListener(Event.ExtractionCount, this::exractionCount);
-        eventSystem.registerListener(Event.ExtractionStarted, this::exractionStarted);
-        eventSystem.registerListener(Event.ExtractionEnded, this::exractionEnded);
+        eventSystem.registerListener(Event.ExtractionCount, this::extractionCount);
+        eventSystem.registerListener(Event.ExtractionStarted, this::extractionStarted);
+        eventSystem.registerListener(Event.ExtractionEnded, this::extractionEnded);
 
     }
 
@@ -107,15 +107,15 @@ public class ReportListener {
         discoveryLogger.discoveryEnded(detectorEvaluation);
     }
 
-    public void exractionCount(final Integer count) {
+    public void extractionCount(final Integer count) {
         extractionLogger.setExtractionCount(count);
     }
 
-    public void exractionStarted(final DetectorEvaluation detectorEvaluation) {
+    public void extractionStarted(final DetectorEvaluation detectorEvaluation) {
         extractionLogger.extractionStarted(detectorEvaluation);
     }
 
-    public void exractionEnded(final DetectorEvaluation detectorEvaluation) {
+    public void extractionEnded(final DetectorEvaluation detectorEvaluation) {
         extractionLogger.extractionEnded(detectorEvaluation);
     }
 

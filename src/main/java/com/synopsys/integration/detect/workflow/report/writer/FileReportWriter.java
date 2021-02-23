@@ -82,7 +82,7 @@ public class FileReportWriter implements ReportWriter {
 
     @Override
     public void writeSeparator() {
-        writeLine(ReportConstants.SEPERATOR);
+        writeLine(ReportConstants.SEPARATOR);
     }
 
     @Override

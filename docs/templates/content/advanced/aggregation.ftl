@@ -21,7 +21,7 @@ that (in the default non-aggregated scenario) would have appeared in the codeloc
 top level metadata components, moving the formerly top-level components down a level in the dependency
 graph. The downside to this is that *all* components (including direct dependencies) from the aggregated
 BDIO appear with dependency type *Transitive* in ${blackduck_product_name}. (A fix for this problem
-is planned for a future relelase.)
+is planned for a future release.)
 
 In order to preserve the accuracy of the dependency type field in ${blackduck_product_name}, you can
 set property *detect.bom.aggregate.remediation.mode* to DIRECT, which tells ${solution_name} to keep
