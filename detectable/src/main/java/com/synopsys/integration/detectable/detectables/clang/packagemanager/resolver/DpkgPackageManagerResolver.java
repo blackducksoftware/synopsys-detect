@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,20 +52,33 @@ public class DpkgPackageManagerResolver implements ClangPackageManagerResolver {
         String[] packageLines = ownershipQueryOutput.split("\n");
         for (String packageLine : packageLines) {
             if (!valid(packageLine)) {
-                logger.trace(String.format("Skipping file ownership query output line: %s", packageLine));
+                logger.trace("Skipping file ownership query output line: {}", packageLine);
                 continue;
             }
-            String[] queryPackageOutputParts = packageLine.split("\\s+");
-            String[] packageNameArchParts = queryPackageOutputParts[0].split(":");
-            String packageName = packageNameArchParts[0].trim();
-            logger.debug(String.format("File ownership query results: package name: %s", packageName));
-            Optional<PackageDetails> pkg = versionResolver.resolvePackageDetails(currentPackageManager, executableRunner, workingDirectory, packageName);
+
+            NameArchitecture packageNameArchitecture = parsePackageNameArchitecture(packageLine);
+            logger.debug("File ownership query results: package name: {}, arch: {}", packageNameArchitecture.getName(), packageNameArchitecture.getArchitecture().orElse("<absent>"));
+            Optional<PackageDetails> pkg = versionResolver.resolvePackageDetails(currentPackageManager, executableRunner, workingDirectory, packageNameArchitecture);
             if (pkg.isPresent()) {
-                logger.debug(String.format("Adding package: %s", pkg.get()));
+                logger.debug("Adding package: {}", pkg.get());
                 packageDetailsList.add(pkg.get());
             }
         }
         return packageDetailsList;
+    }
+
+    @Nullable
+    private NameArchitecture parsePackageNameArchitecture(String packageLine) {
+        String[] queryPackageOutputParts = packageLine.split("\\s+");
+        String[] packageNameArchParts = queryPackageOutputParts[0].split(":");
+        String packageName = packageNameArchParts[0].trim();
+        if (packageNameArchParts.length > 1) {
+            String architectureToken = packageNameArchParts[1].trim();
+            String packageArchitecture = StringUtils.substringBefore(architectureToken, ",");
+            return new NameArchitecture(packageName, packageArchitecture);
+        } else {
+            return new NameArchitecture(packageName, null);
+        }
     }
 
     private boolean valid(String packageLine) throws NotOwnedByAnyPkgException {
@@ -75,9 +90,6 @@ public class DpkgPackageManagerResolver implements ClangPackageManagerResolver {
             return true;
         }
         // arch not included
-        if (packageLine.matches(".+: .+")) {
-            return true;
-        }
-        return false;
+        return packageLine.matches(".+: .+");
     }
 }

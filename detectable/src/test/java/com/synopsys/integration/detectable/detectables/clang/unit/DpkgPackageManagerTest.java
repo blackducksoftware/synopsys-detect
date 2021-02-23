@@ -76,9 +76,9 @@ public class DpkgPackageManagerTest {
 
         String pkgMgrVersionOutput = sb.toString();
 
-        final String packageName = "libc6-dev";
+        final String packageNameWithArch = "libc6-dev:amd64";
         DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
-        Mockito.when(executableRunner.execute(null, "dpkg", Arrays.asList("-s", packageName))).thenReturn(new ExecutableOutput(0, pkgMgrVersionOutput, ""));
+        Mockito.when(executableRunner.execute(null, "dpkg", Arrays.asList("-s", packageNameWithArch))).thenReturn(new ExecutableOutput(0, pkgMgrVersionOutput, ""));
 
         DpkgPkgDetailsResolver dpkgVersionResolver = new DpkgPkgDetailsResolver();
         DpkgPackageManagerResolver pkgMgr = new DpkgPackageManagerResolver(dpkgVersionResolver);
@@ -131,9 +131,9 @@ public class DpkgPackageManagerTest {
 
         String pkgMgrVersionOutput = sb.toString();
 
-        final String packageName = "login";
+        final String packageNameWithArch = "login:amd64";
         DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
-        Mockito.when(executableRunner.execute(null, "dpkg", Arrays.asList("-s", packageName))).thenReturn(new ExecutableOutput(0, pkgMgrVersionOutput, ""));
+        Mockito.when(executableRunner.execute(null, "dpkg", Arrays.asList("-s", packageNameWithArch))).thenReturn(new ExecutableOutput(0, pkgMgrVersionOutput, ""));
 
         DpkgPkgDetailsResolver dpkgVersionResolver = new DpkgPkgDetailsResolver();
         DpkgPackageManagerResolver pkgMgr = new DpkgPackageManagerResolver(dpkgVersionResolver);
