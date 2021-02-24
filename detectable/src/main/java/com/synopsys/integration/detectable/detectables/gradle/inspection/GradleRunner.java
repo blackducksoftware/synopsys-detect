@@ -57,7 +57,8 @@ public class GradleRunner {
 
     public void runGradleDependencies(File directory, ExecutableTarget gradleExe, File gradleInspector, @Nullable String gradleCommand, ProxyInfo proxyInfo, File outputDirectory) throws IOException, ExecutableFailedException {
         List<String> arguments = splitUserArguments(gradleCommand);
-        arguments.add("dependencies");
+        // this gradle task is defined in the init script
+        arguments.add("gatherDependencies");
         arguments.add(String.format("--init-script=%s", gradleInspector));
         arguments.add(String.format("-DGRADLEEXTRACTIONDIR=%s", outputDirectory.getCanonicalPath()));
         arguments.add("--info");

@@ -1,10 +1,10 @@
-import java.nio.charset.StandardCharsets
+import java.util.Optional
 
 import org.gradle.api.Task
 import org.gradle.api.execution.TaskExecutionListener
 import org.gradle.api.tasks.TaskState
 
-import com.blackducksoftware.integration.gradle.DependencyGatherer
+import com.blackducksoftware.integration.gradle.DependencyGathererUtil
 
 initscript {
     repositories {
@@ -30,29 +30,46 @@ initscript {
             }
         }
 <#else>
-        classpath 'com.blackducksoftware.integration:integration-gradle-inspector:${gradleInspectorVersion}'
+        classpath 'com.synopsys.integration:integration-gradle-inspector:${gradleInspectorVersion}'
 </#if>
     }
 }
 
-addListener(
-    new TaskExecutionListener() {
-        boolean executed = false;
-        void beforeExecute(Task task) { }
-        void afterExecute(Task task, TaskState state) {
-            if (executed) {
-                return
-            } else {
-                executed = true
-            }
-
-            String outputDirectoryPath = System.getProperty('GRADLEEXTRACTIONDIR')
-            File outputDirectory = new File(outputDirectoryPath)
-            outputDirectory.mkdirs()
-
-            def dependencyGatherer = new DependencyGatherer()
-            def rootProject = task.project
-            dependencyGatherer.createAllDependencyGraphFiles(rootProject, '${excludedProjectNames}', '${includedProjectNames}', '${excludedConfigurationNames}', '${includedConfigurationNames}', outputDirectory)
+gradle.allprojects {
+    task gatherDependencies(type: DefaultTask) {
+        doLast {
+            println "Gathering dependencies for " + project.name
         }
     }
-)
+    afterEvaluate { project ->
+        project.tasks.getByName('dependencies') {
+            ext {
+                excludedProjectNames = '${excludedProjectNames}'
+                includedProjectNames = '${includedProjectNames}'
+                excludedConfigurationNames = '${excludedConfigurationNames}'
+                includedConfigurationNames = '${includedConfigurationNames}'
+                outputDirectoryPath = System.getProperty('GRADLEEXTRACTIONDIR')
+            }
+            doFirst {
+                DependencyGathererUtil dependencyUtil = new DependencyGathererUtil()
+                dependencyUtil.generateRootProjectMetaData(project, outputDirectoryPath)
+                setConfigurations(dependencyUtil.filterConfigurations(project, excludedConfigurationNames, includedConfigurationNames))
+                Optional<File> projectOutputFile = dependencyUtil.getProjectOutputFile(project, outputDirectoryPath, excludedProjectNames, includedProjectNames)
+                if(projectOutputFile.isPresent()) {
+                    File projectFile = dependencyUtil.createProjectOutputFile(projectOutputFile.get())
+                    setOutputFile(projectFile)
+                }
+            }
+
+            doLast {
+                DependencyGathererUtil dependencyUtil = new DependencyGathererUtil()
+                Optional<File> projectFile = dependencyUtil.getProjectOutputFile(project, outputDirectoryPath, excludedProjectNames, includedProjectNames)
+                if(projectFile.isPresent()) {
+                    dependencyUtil.createProjectMetadata(project, projectFile.get())
+                }
+            }
+        }
+        project.gatherDependencies.finalizedBy(project.tasks.getByName('dependencies'))
+        project.gatherDependencies
+    }
+}
