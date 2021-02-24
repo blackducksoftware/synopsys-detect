@@ -53,7 +53,7 @@ public class MavenCliExtractor {
         List<String> commandArguments = mavenCliExtractorOptions.getMavenBuildCommandArguments()
                                      .orElse(new LinkedList<>())
                                      .stream()
-                                     .filter(arg -> arg.equals("dependency:tree"))
+                                     .filter(arg -> !arg.equals("dependency:tree"))
                                      .map(this::removeQuotes)
                                      .collect(Collectors.toList());
 
