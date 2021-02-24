@@ -83,10 +83,11 @@ public class YarnTransformer {
     }
 
     private void addRootNodesToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder,
-        PackageJson rootPackageJson, List<PackageJson> workspacePackageJsons, boolean productionOnly) {
+        PackageJson rootPackageJson, Map<String, PackageJson> workspacePackageJsons, boolean productionOnly) {
         List<PackageJson> allPackageJsons = new LinkedList<>();
         allPackageJsons.add(rootPackageJson);
-        allPackageJsons.addAll(workspacePackageJsons);
+        // TODO Can we filter out the workspace references??
+        allPackageJsons.addAll(workspacePackageJsons.values());
         for (PackageJson curPackageJson : allPackageJsons) {
             System.out.printf("* Processing PackageJson: %s:%s\n", curPackageJson.name, curPackageJson.version);
             for (Map.Entry<String, String> packageDependency : curPackageJson.dependencies.entrySet()) {

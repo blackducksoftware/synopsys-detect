@@ -31,7 +31,7 @@ import com.synopsys.integration.detect.battery.BatteryTest;
 public class YarnBattery {
     @Test
     void lock() {
-        final BatteryTest test = new BatteryTest("yarn-lock");
+        BatteryTest test = new BatteryTest("yarn-lock");
         test.sourceDirectoryNamed("linux-yarn");
         test.sourceFileFromResource("yarn.lock");
         test.sourceFileFromResource("package.json");
@@ -42,10 +42,21 @@ public class YarnBattery {
 
     @Test
     void yarn2lock() {
-        final BatteryTest test = new BatteryTest("yarn2-lock");
+        BatteryTest test = new BatteryTest("yarn2-lock");
         test.sourceDirectoryNamed("yarn2-lock");
         test.sourceFileFromResource("yarn.lock");
         test.sourceFileFromResource("package.json");
+        test.expectBdioResources();
+        test.run();
+    }
+
+    @Test
+    void yarnWorkspaces() {
+        BatteryTest test = new BatteryTest("yarn-workspaces");
+        test.sourceDirectoryNamed("yarn-workspaces");
+        test.sourceFileFromResource("yarn.lock");
+        test.sourceFileFromResource("package.json");
+        test.sourceFileFromResource("packages/plugin-npm/package.json");
         test.expectBdioResources();
         test.run();
     }
