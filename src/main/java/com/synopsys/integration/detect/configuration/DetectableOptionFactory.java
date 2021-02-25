@@ -184,7 +184,10 @@ public class DetectableOptionFactory {
         return new MavenCliExtractorOptions(mavenBuildCommand, mavenExcludedScopes, mavenIncludedScopes, mavenExcludedModules, mavenIncludedModules);
     }
 
-    private List<String> parseMavenBuildCommandArguments(String mavenBuildCommand) {
+    private List<String> parseMavenBuildCommandArguments(@Nullable String mavenBuildCommand) {
+        if (mavenBuildCommand == null) {
+            return new LinkedList<>();
+        }
         mavenBuildCommand = mavenBuildCommand.trim();
         try {
             return commandArgumentParser.parse(mavenBuildCommand);
