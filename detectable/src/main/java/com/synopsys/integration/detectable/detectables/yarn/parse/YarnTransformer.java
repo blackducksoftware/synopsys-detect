@@ -62,6 +62,7 @@ public class YarnTransformer {
                 for (YarnLockDependency dependency : entry.getDependencies()) {
                     StringDependencyId stringDependencyId = new StringDependencyId(dependency.getName() + "@" + dependency.getVersion());
                     if (!productionOnly || !dependency.isOptional()) {
+                        logger.info("Adding {} as child of {}", stringDependencyId.getValue(), id.getValue());
                         graphBuilder.addChildWithParent(stringDependencyId, id);
                     } else {
                         logger.debug("Excluding optional dependency: {}", stringDependencyId.getValue());
@@ -76,10 +77,25 @@ public class YarnTransformer {
             if (externalId.isPresent()) {
                 return externalId.get();
             } else {
-                logger.warn(String.format("Missing yarn dependency. Dependency '%s' is missing from %s.", dependencyId, yarnLockResult.getYarnLockFilePath()));
-                return externalIdFactory.createNameVersionExternalId(Forge.NPMJS, dependencyId.toString());
+                StringDependencyId stringDependencyId = (StringDependencyId) dependencyId;
+                if (isWorkspace(yarnLockResult, dependencyId)) {
+                    logger.info("Including workspace {} in the graph", stringDependencyId.getValue());
+                } else {
+                    logger.warn(String.format("Missing yarn dependency. Dependency '%s' is missing from %s.", stringDependencyId.getValue(), yarnLockResult.getYarnLockFilePath()));
+                }
+                return externalIdFactory.createNameVersionExternalId(Forge.NPMJS, stringDependencyId.getValue());
             }
         });
+    }
+
+    private boolean isWorkspace(YarnLockResult yarnLockResult, com.synopsys.integration.bdio.model.dependencyid.DependencyId dependencyId) {
+        for (String workspaceName : yarnLockResult.getWorkspacePackageJsons().keySet()) {
+            String dependencyIdString = ((StringDependencyId) dependencyId).getValue();
+            if (dependencyIdString.startsWith(workspaceName + "@")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void addRootNodesToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder,
@@ -98,7 +114,7 @@ public class YarnTransformer {
             if (!productionOnly) {
                 for (Map.Entry<String, String> packageDependency : curPackageJson.devDependencies.entrySet()) {
                     StringDependencyId stringDependencyId = new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue());
-                    System.out.printf("stringDependencyId: %s\n", stringDependencyId);
+                    System.out.printf("stringDependencyId [dev]: %s\n", stringDependencyId);
                     graphBuilder.addChildToRoot(stringDependencyId);
                 }
             }
