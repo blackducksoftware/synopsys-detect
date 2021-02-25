@@ -22,7 +22,6 @@
  */
 package com.synopsys.integration.detectable.detectables.yarn.parse;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -57,15 +56,27 @@ public class YarnTransformer {
 
         for (YarnLockEntry entry : yarnLockResult.getYarnLock().getEntries()) {
             for (YarnLockEntryId entryId : entry.getIds()) {
-                StringDependencyId id = new StringDependencyId(entryId.getName() + "@" + entryId.getVersion());
-                graphBuilder.setDependencyInfo(id, entryId.getName(), entry.getVersion(), externalIdFactory.createNameVersionExternalId(Forge.NPMJS, entryId.getName(), entry.getVersion()));
-                for (YarnLockDependency dependency : entry.getDependencies()) {
-                    StringDependencyId stringDependencyId = new StringDependencyId(dependency.getName() + "@" + dependency.getVersion());
-                    if (!productionOnly || !dependency.isOptional()) {
-                        logger.info("Adding {} as child of {}", stringDependencyId.getValue(), id.getValue());
-                        graphBuilder.addChildWithParent(stringDependencyId, id);
+                StringDependencyId entryExternalId = new StringDependencyId(entryId.getName() + "@" + entryId.getVersion());
+                if (entryExternalId.getValue().contains("plugin-npm")) {
+                    System.out.println("Encountered plugin-npm yarn.lock entry");
+                }
+                if (entryExternalId.getValue().contains("ssri")) {
+                    System.out.println("Encountered ssri yarn.lock entry");
+                }
+                graphBuilder.setDependencyInfo(entryExternalId, entryId.getName(), entry.getVersion(), externalIdFactory.createNameVersionExternalId(Forge.NPMJS, entryId.getName(), entry.getVersion()));
+                for (YarnLockDependency entryDependency : entry.getDependencies()) {
+                    StringDependencyId entryDependencyExternalId = new StringDependencyId(entryDependency.getName() + "@" + entryDependency.getVersion());
+                    if (entryDependencyExternalId.getValue().contains("plugin-npm")) {
+                        System.out.printf("Encountered plugin-npm as a dependency of %s in a yarn.lock entry\n", entryExternalId.getValue());
+                    }
+                    if (entryDependencyExternalId.getValue().contains("ssri")) {
+                        System.out.printf("kkkkkkkkkkkkkk Encountered ssri as a dependency of %s in a yarn.lock entry\n", entryExternalId.getValue());
+                    }
+                    if (!productionOnly || !entryDependency.isOptional()) {
+                        logger.info("Adding {} as child of {}", entryDependencyExternalId.getValue(), entryExternalId.getValue());
+                        graphBuilder.addChildWithParent(entryDependencyExternalId, entryExternalId);
                     } else {
-                        logger.debug("Excluding optional dependency: {}", stringDependencyId.getValue());
+                        logger.debug("Excluding optional dependency: {}", entryDependencyExternalId.getValue());
                     }
                 }
             }
@@ -100,24 +111,31 @@ public class YarnTransformer {
 
     private void addRootNodesToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder,
         PackageJson rootPackageJson, Map<String, PackageJson> workspacePackageJsons, boolean productionOnly) {
-        List<PackageJson> allPackageJsons = new LinkedList<>();
-        allPackageJsons.add(rootPackageJson);
+        ///List<PackageJson> allPackageJsons = new LinkedList<>();
+        ///allPackageJsons.add(rootPackageJson);
         // TODO Can we filter out the workspace references??
-        allPackageJsons.addAll(workspacePackageJsons.values());
-        for (PackageJson curPackageJson : allPackageJsons) {
-            System.out.printf("* Processing PackageJson: %s:%s\n", curPackageJson.name, curPackageJson.version);
-            for (Map.Entry<String, String> packageDependency : curPackageJson.dependencies.entrySet()) {
+        ///////// TODO THIS IS WRONG: should not put workspace DEPENDENCIES at root level; just workspaces themselves!
+        ///allPackageJsons.addAll(workspacePackageJsons.values());
+        ///for (PackageJson curPackageJson : allPackageJsons) {
+        System.out.printf("* Processing Root PackageJson: %s:%s\n", rootPackageJson.name, rootPackageJson.version);
+        for (Map.Entry<String, String> packageDependency : rootPackageJson.dependencies.entrySet()) {
+            StringDependencyId stringDependencyId = new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue());
+            System.out.printf("ROOT stringDependencyId: %s\n", stringDependencyId);
+            graphBuilder.addChildToRoot(stringDependencyId);
+        }
+        if (!productionOnly) {
+            for (Map.Entry<String, String> packageDependency : rootPackageJson.devDependencies.entrySet()) {
                 StringDependencyId stringDependencyId = new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue());
-                System.out.printf("stringDependencyId: %s\n", stringDependencyId);
+                System.out.printf("ROOT stringDependencyId [dev]: %s\n", stringDependencyId);
                 graphBuilder.addChildToRoot(stringDependencyId);
             }
-            if (!productionOnly) {
-                for (Map.Entry<String, String> packageDependency : curPackageJson.devDependencies.entrySet()) {
-                    StringDependencyId stringDependencyId = new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue());
-                    System.out.printf("stringDependencyId [dev]: %s\n", stringDependencyId);
-                    graphBuilder.addChildToRoot(stringDependencyId);
-                }
-            }
+        }
+        ///}
+        for (PackageJson curWorkspacePackageJson : workspacePackageJsons.values()) {
+            System.out.printf("* Processing workspace PackageJson: %s:%s\n", curWorkspacePackageJson.name, curWorkspacePackageJson.version);
+            StringDependencyId workspaceStringDependencyId = new StringDependencyId(curWorkspacePackageJson.name + "@" + curWorkspacePackageJson.version);
+            System.out.printf("WORKSPACE stringDependencyId: %s\n", workspaceStringDependencyId);
+            graphBuilder.addChildToRoot(workspaceStringDependencyId);
         }
     }
 }

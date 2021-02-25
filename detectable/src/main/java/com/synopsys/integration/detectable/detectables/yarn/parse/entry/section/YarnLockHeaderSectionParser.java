@@ -49,6 +49,9 @@ public class YarnLockHeaderSectionParser implements YarnLockEntrySectionParser {
     @Override
     public int parseSection(YarnLockEntryBuilder entryBuilder, List<String> yarnLockLines, int lineIndexOfStartOfSection) {
         String line = yarnLockLines.get(lineIndexOfStartOfSection).trim();
+        if (line.contains("plugin-npm")) {
+            System.out.println("Parsing plugin-npm");
+        }
         line = StringUtils.removeEnd(line, ":").trim();
         line = yarnLockLineAnalyzer.unquote(line);
         StringTokenizer tokenizer = TokenizerFactory.createHeaderTokenizer(line);
@@ -67,7 +70,9 @@ public class YarnLockHeaderSectionParser implements YarnLockEntrySectionParser {
     //Notice, this removes the workspace, so "name@workspace:version" will become simply "name@version"
     private YarnLockEntryId parseSingleEntry(String entry) {
         YarnLockEntryId normalEntry = parseSingleEntryNormally(entry);
-        if (normalEntry.getVersion().contains(":")) {
+        if (normalEntry.getVersion().startsWith("npm:")) {
+            String removedPart = StringUtils.substringBefore(normalEntry.getVersion(), ":");
+            System.out.printf("Removing %s from version for component %s\n", removedPart, normalEntry.getName());
             return new YarnLockEntryId(normalEntry.getName(), StringUtils.substringAfter(normalEntry.getVersion(), ":"));
         } else {
             return normalEntry;
