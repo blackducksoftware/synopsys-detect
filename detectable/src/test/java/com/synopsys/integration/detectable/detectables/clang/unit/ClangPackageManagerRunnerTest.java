@@ -40,7 +40,7 @@ public class ClangPackageManagerRunnerTest {
                                        + "Architecture: amd64\n"
                                        + "Version: 1:1.1.5-1\n"
                                        + "Status: install ok installed\n";
-        testSuccessCase(packageManagerInfo, packageResolver, "libxt-dev", "amd64", "1:1.1.5-1", pkgOwnerPattern, pkgDetailsPattern);
+        testSuccessCase(packageManagerInfo, packageResolver, "libxt-dev", "amd64", false, "1:1.1.5-1", pkgOwnerPattern, pkgDetailsPattern);
     }
 
     @Test
@@ -54,7 +54,7 @@ public class ClangPackageManagerRunnerTest {
                                        + "Architecture: amd64\n"
                                        + "Version: 1:1.1.5-1\n"
                                        + "Status: pending\n";
-        testNoResultsCase(packageManagerInfo, packageResolver, "libxt-dev", "amd64", "1:1.1.5-1", pkgOwnerPattern, pkgDetailsPattern);
+        testNoResultsCase(packageManagerInfo, packageResolver, "libxt-dev", "amd64", pkgOwnerPattern, pkgDetailsPattern);
     }
 
     @Test
@@ -68,7 +68,7 @@ public class ClangPackageManagerRunnerTest {
                                        + "Architecture: amd64\n"
                                        + "Version: 1:1.1.5-1\n"
                                        + "Status: install ok installed\n";
-        testSuccessCase(packageManagerInfo, packageResolver, "libxt-dev", "amd64", "1:1.1.5-1", pkgOwnerPattern, pkgDetailsPattern);
+        testSuccessCase(packageManagerInfo, packageResolver, "libxt-dev", "amd64", true, "1:1.1.5-1", pkgOwnerPattern, pkgDetailsPattern);
     }
 
     @Test
@@ -77,7 +77,7 @@ public class ClangPackageManagerRunnerTest {
         ClangPackageManagerInfo packageManagerInfo = factory.rpm();
         ClangPackageManagerResolver packageResolver = new RpmPackageManagerResolver(new Gson());
         String pkgOwnerPattern = "%s is not owned by any package";
-        testNonPkgOwnedIncludeFile(packageManagerInfo, packageResolver, pkgOwnerPattern, null);
+        testNonPkgOwnedIncludeFile(packageManagerInfo, packageResolver, pkgOwnerPattern);
     }
 
     @Test
@@ -87,7 +87,7 @@ public class ClangPackageManagerRunnerTest {
         DpkgPkgDetailsResolver versionResolver = new DpkgPkgDetailsResolver();
         ClangPackageManagerResolver packageResolver = new DpkgPackageManagerResolver(versionResolver);
         String pkgOwnerPattern = "dpkg-query: no path found matching pattern %s";
-        testNonPkgOwnedIncludeFile(packageManagerInfo, packageResolver, pkgOwnerPattern, null);
+        testNonPkgOwnedIncludeFile(packageManagerInfo, packageResolver, pkgOwnerPattern);
     }
 
     @Test
@@ -97,15 +97,15 @@ public class ClangPackageManagerRunnerTest {
         ApkArchitectureResolver archResolver = new ApkArchitectureResolver();
         ClangPackageManagerResolver packageResolver = new ApkPackageManagerResolver(archResolver);
         String pkgOwnerPattern = "ERROR: %s: Could not find owner package";
-        testNonPkgOwnedIncludeFile(packageManagerInfo, packageResolver, pkgOwnerPattern, null);
+        testNonPkgOwnedIncludeFile(packageManagerInfo, packageResolver, pkgOwnerPattern);
     }
 
     private void testNonPkgOwnedIncludeFile(ClangPackageManagerInfo packageManagerInfo, ClangPackageManagerResolver packageResolver,
-        String pkgMgrOwnerQueryResultPattern, String pkgMgrDetailsQueryResultPattern) throws ExecutableRunnerException {
+        String pkgMgrOwnerQueryResultPattern) throws ExecutableRunnerException {
 
         // Test
-        PackageDetailsResult result = runTest(packageManagerInfo, packageResolver, null,
-            pkgMgrOwnerQueryResultPattern, pkgMgrDetailsQueryResultPattern, dependencyFile);
+        PackageDetailsResult result = runTest(packageManagerInfo, packageResolver, null, null, false,
+            pkgMgrOwnerQueryResultPattern, null, dependencyFile);
 
         // Verify
         assertEquals(1, result.getUnRecognizedDependencyFiles().size());
@@ -113,11 +113,12 @@ public class ClangPackageManagerRunnerTest {
     }
 
     private void testSuccessCase(ClangPackageManagerInfo packageManagerInfo, ClangPackageManagerResolver packageResolver,
-        String pkgName, String pkgArchitecture, String pkgVersion,
+        String pkgName, String pkgArchitecture, boolean archBuried, String pkgVersion,
         String pkgMgrQueryResultPattern, String pkgMgrDetailsQueryResultPattern) throws ExecutableRunnerException {
 
         // Test
-        PackageDetailsResult result = runTest(packageManagerInfo, packageResolver, pkgName,
+        PackageDetailsResult result = runTest(packageManagerInfo, packageResolver, pkgName, pkgArchitecture,
+            archBuried,
             pkgMgrQueryResultPattern, pkgMgrDetailsQueryResultPattern, dependencyFile);
 
         // Verify
@@ -130,11 +131,11 @@ public class ClangPackageManagerRunnerTest {
     }
 
     private void testNoResultsCase(ClangPackageManagerInfo packageManagerInfo, ClangPackageManagerResolver packageResolver,
-        String pkgName, String pkgArchitecture, String pkgVersion,
+        String pkgName, String pkgArchitecture,
         String pkgMgrQueryResultPattern, String pkgMgrDetailsQueryResultPattern) throws ExecutableRunnerException {
 
         // Test
-        PackageDetailsResult result = runTest(packageManagerInfo, packageResolver, pkgName,
+        PackageDetailsResult result = runTest(packageManagerInfo, packageResolver, pkgName, pkgArchitecture, false,
             pkgMgrQueryResultPattern, pkgMgrDetailsQueryResultPattern, dependencyFile);
 
         // Verify
@@ -144,6 +145,7 @@ public class ClangPackageManagerRunnerTest {
 
     private PackageDetailsResult runTest(ClangPackageManagerInfo packageManagerInfo, ClangPackageManagerResolver packageResolver,
         String pkgName,
+        String pkgArch, boolean archBuried,
         String pkgMgrOwnerQueryResultPattern, String pkgMgrDetailsQueryResultPattern,
         File dependencyFile)
         throws ExecutableRunnerException {
@@ -157,7 +159,13 @@ public class ClangPackageManagerRunnerTest {
 
         if (packageManagerInfo.getPkgInfoArgs().isPresent() && (pkgMgrDetailsQueryResultPattern != null)) {
             List<String> fileSpecificGetDetailsArgs = new ArrayList<>(packageManagerInfo.getPkgInfoArgs().get());
-            fileSpecificGetDetailsArgs.add(pkgName);
+            // Architecture might be available from the initial "who owns this" query, buried in the later-gotten details, or altogether absent
+            // If absent or buried, the detail query should omit arch; otherwise: the detail query should include arch
+            if (archBuried || pkgArch == null) {
+                fileSpecificGetDetailsArgs.add(pkgName);
+            } else {
+                fileSpecificGetDetailsArgs.add(pkgName + ":" + pkgArch);
+            }
             String pkgMgrGetDetailsQueryFileOutput = String.format(pkgMgrDetailsQueryResultPattern, dependencyFile);
             ExecutableOutput pkgMgrGetDetailsQueryFileResult = new ExecutableOutput(0, pkgMgrGetDetailsQueryFileOutput, "");
             Mockito.when(executableRunner.execute(workingDirectory, packageManagerInfo.getPkgMgrCmdString(), fileSpecificGetDetailsArgs)).thenReturn(pkgMgrGetDetailsQueryFileResult);
@@ -170,7 +178,6 @@ public class ClangPackageManagerRunnerTest {
         ClangPackageManagerRunner runner = new ClangPackageManagerRunner();
 
         // Test
-        PackageDetailsResult result = runner.getPackages(currentPackageManager, workingDirectory, executableRunner, dependencyFile);
-        return result;
+        return runner.getPackages(currentPackageManager, workingDirectory, executableRunner, dependencyFile);
     }
 }

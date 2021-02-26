@@ -11,6 +11,6 @@ dependencies {
     implementation "com.google.code.gson:gson:2.8.6"
     implementation "commons-io:commons-io:2.6"
     implementation "org.apache.commons:commons-lang3:3.0"
-    implementation "com.synopsys.integration:common-gradle-plugin:1.7.0"
+    implementation "com.synopsys.integration:common-gradle-plugin:1.8.1"
     implementation "com.synopsys.integration:blackduck-common:51.1.0"
 }
