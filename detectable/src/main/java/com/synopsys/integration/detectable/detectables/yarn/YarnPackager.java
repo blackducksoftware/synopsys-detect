@@ -33,17 +33,17 @@ public class YarnPackager {
         this.yarnLockOptions = yarnLockOptions;
     }
 
-    public YarnResult generateYarnResult(String rootPackageJsonText,
+    public YarnResult generateYarnResult(String packageJsonText,
         List<String> yarnLockLines, String yarnLockFilePath, List<NameVersion> externalDependencies) {
-        PackageJson rootPackageJson = gson.fromJson(rootPackageJsonText, PackageJson.class);
+        PackageJson packageJson = gson.fromJson(packageJsonText, PackageJson.class);
         YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockLines);
-        YarnLockResult yarnLockResult = new YarnLockResult(rootPackageJson, yarnLockFilePath, yarnLock);
+        YarnLockResult yarnLockResult = new YarnLockResult(packageJson, yarnLockFilePath, yarnLock);
 
         try {
             DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, yarnLockOptions.useProductionOnly(), externalDependencies);
             CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 
-            return YarnResult.success(rootPackageJson.name, rootPackageJson.version, codeLocation);
+            return YarnResult.success(packageJson.name, packageJson.version, codeLocation);
         } catch (MissingExternalIdException exception) {
             return YarnResult.failure(exception);
         }

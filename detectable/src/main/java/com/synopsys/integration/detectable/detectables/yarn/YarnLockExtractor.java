@@ -23,11 +23,11 @@ public class YarnLockExtractor {
         this.yarnPackager = yarnPackager;
     }
 
-    public Extraction extract(File yarnLockFile, File rootPackageJsonFile) {
+    public Extraction extract(File yarnLockFile, File packageJsonFile) {
         try {
-            String rootPackageJsonText = FileUtils.readFileToString(rootPackageJsonFile, StandardCharsets.UTF_8);
+            String packageJsonText = FileUtils.readFileToString(packageJsonFile, StandardCharsets.UTF_8);
             List<String> yarnLockLines = FileUtils.readLines(yarnLockFile, StandardCharsets.UTF_8);
-            YarnResult yarnResult = yarnPackager.generateYarnResult(rootPackageJsonText,
+            YarnResult yarnResult = yarnPackager.generateYarnResult(packageJsonText,
                 yarnLockLines, yarnLockFile.getAbsolutePath(), new ArrayList<>());
 
             if (yarnResult.getException().isPresent()) {
