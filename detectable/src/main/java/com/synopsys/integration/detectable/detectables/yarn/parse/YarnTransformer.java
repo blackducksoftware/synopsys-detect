@@ -37,19 +37,18 @@ public class YarnTransformer {
     public DependencyGraph transform(YarnLockResult yarnLockResult, boolean productionOnly, List<NameVersion> externalDependencies) throws MissingExternalIdException {
         LazyExternalIdDependencyGraphBuilder graphBuilder = new LazyExternalIdDependencyGraphBuilder();
 
-        addRootNodesToGraph(graphBuilder, yarnLockResult.getRootPackageJson(), productionOnly);
+        addRootNodesToGraph(graphBuilder, yarnLockResult.getPackageJson(), productionOnly);
 
         for (YarnLockEntry entry : yarnLockResult.getYarnLock().getEntries()) {
             for (YarnLockEntryId entryId : entry.getIds()) {
-                StringDependencyId entryExternalId = new StringDependencyId(entryId.getName() + "@" + entryId.getVersion());
-                graphBuilder.setDependencyInfo(entryExternalId, entryId.getName(), entry.getVersion(), externalIdFactory.createNameVersionExternalId(Forge.NPMJS, entryId.getName(), entry.getVersion()));
+                StringDependencyId id = new StringDependencyId(entryId.getName() + "@" + entryId.getVersion());
+                graphBuilder.setDependencyInfo(id, entryId.getName(), entry.getVersion(), externalIdFactory.createNameVersionExternalId(Forge.NPMJS, entryId.getName(), entry.getVersion()));
                 for (YarnLockDependency entryDependency : entry.getDependencies()) {
-                    StringDependencyId entryDependencyExternalId = new StringDependencyId(entryDependency.getName() + "@" + entryDependency.getVersion());
+                    StringDependencyId stringDependencyId = new StringDependencyId(entryDependency.getName() + "@" + entryDependency.getVersion());
                     if (!productionOnly || !entryDependency.isOptional()) {
-                        logger.info("Adding {} as child of {}", entryDependencyExternalId.getValue(), entryExternalId.getValue());
-                        graphBuilder.addChildWithParent(entryDependencyExternalId, entryExternalId);
+                        graphBuilder.addChildWithParent(stringDependencyId, id);
                     } else {
-                        logger.debug("Excluding optional dependency: {}", entryDependencyExternalId.getValue());
+                        logger.debug("Excluding optional dependency: {}", stringDependencyId.getValue());
                     }
                 }
             }
@@ -68,19 +67,13 @@ public class YarnTransformer {
         });
     }
 
-    private void addRootNodesToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder,
-        PackageJson rootPackageJson, boolean productionOnly) {
-        System.out.printf("* Processing Root PackageJson: %s:%s\n", rootPackageJson.name, rootPackageJson.version);
-        for (Map.Entry<String, String> packageDependency : rootPackageJson.dependencies.entrySet()) {
-            StringDependencyId stringDependencyId = new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue());
-            System.out.printf("ROOT stringDependencyId: %s\n", stringDependencyId);
-            graphBuilder.addChildToRoot(stringDependencyId);
+    private void addRootNodesToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder, PackageJson packageJson, boolean productionOnly) {
+        for (Map.Entry<String, String> packageDependency : packageJson.dependencies.entrySet()) {
+            graphBuilder.addChildToRoot(new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue()));
         }
         if (!productionOnly) {
-            for (Map.Entry<String, String> packageDependency : rootPackageJson.devDependencies.entrySet()) {
-                StringDependencyId stringDependencyId = new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue());
-                System.out.printf("ROOT stringDependencyId [dev]: %s\n", stringDependencyId);
-                graphBuilder.addChildToRoot(stringDependencyId);
+            for (Map.Entry<String, String> packageDependency : packageJson.devDependencies.entrySet()) {
+                graphBuilder.addChildToRoot(new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue()));
             }
         }
         // TODO

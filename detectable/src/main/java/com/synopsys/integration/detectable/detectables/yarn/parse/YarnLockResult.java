@@ -10,12 +10,12 @@ package com.synopsys.integration.detectable.detectables.yarn.parse;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 
 public class YarnLockResult {
-    private final PackageJson rootPackageJson;
+    private final PackageJson packageJson;
     private final String yarnLockFilePath;
     private final YarnLock yarnLock;
 
-    public YarnLockResult(PackageJson rootPackageJson, String yarnLockFilePath, YarnLock yarnLock) {
-        this.rootPackageJson = rootPackageJson;
+    public YarnLockResult(PackageJson packageJson, String yarnLockFilePath, YarnLock yarnLock) {
+        this.packageJson = packageJson;
         this.yarnLockFilePath = yarnLockFilePath;
         this.yarnLock = yarnLock;
     }
@@ -28,7 +28,7 @@ public class YarnLockResult {
         return yarnLock;
     }
 
-    public PackageJson getRootPackageJson() {
-        return rootPackageJson;
+    public PackageJson getPackageJson() {
+        return packageJson;
     }
 }

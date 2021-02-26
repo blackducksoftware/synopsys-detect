@@ -27,8 +27,7 @@ public class YarnLockExtractor {
         try {
             String packageJsonText = FileUtils.readFileToString(packageJsonFile, StandardCharsets.UTF_8);
             List<String> yarnLockLines = FileUtils.readLines(yarnLockFile, StandardCharsets.UTF_8);
-            YarnResult yarnResult = yarnPackager.generateYarnResult(packageJsonText,
-                yarnLockLines, yarnLockFile.getAbsolutePath(), new ArrayList<>());
+            YarnResult yarnResult = yarnPackager.generateYarnResult(packageJsonText, yarnLockLines, yarnLockFile.getAbsolutePath(), new ArrayList<>());
 
             if (yarnResult.getException().isPresent()) {
                 throw yarnResult.getException().get();
