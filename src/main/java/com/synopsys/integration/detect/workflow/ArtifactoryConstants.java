@@ -11,8 +11,8 @@ public class ArtifactoryConstants {
     public static final String ARTIFACTORY_URL = "https://sig-repo.synopsys.com/";
     public static final String VERSION_PLACEHOLDER = "<VERSION>";
 
-    public static final String GRADLE_INSPECTOR_REPO = "bds-integrations-release/com/blackducksoftware/integration/integration-gradle-inspector";
-    public static final String GRADLE_INSPECTOR_PROPERTY = "GRADLE_INSPECTOR_LATEST_0";
+    public static final String GRADLE_INSPECTOR_REPO = "bds-integrations-release/com/synopsys/integration/integration-gradle-inspector";
+    public static final String GRADLE_INSPECTOR_PROPERTY = "GRADLE_INSPECTOR_LATEST_1";
     public static final String GRADLE_INSPECTOR_MAVEN_REPO = ARTIFACTORY_URL + "bds-integration-public-cache/";
 
     private static final String NUGET_VERSION_SUFFIX = ".nupkg";
