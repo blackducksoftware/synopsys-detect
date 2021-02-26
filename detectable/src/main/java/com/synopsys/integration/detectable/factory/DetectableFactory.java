@@ -699,7 +699,7 @@ public class DetectableFactory {
     }
 
     private YarnLockExtractor yarnLockExtractor(YarnLockOptions yarnLockOptions) {
-        return new YarnLockExtractor(gson, yarnPackager(yarnLockOptions));
+        return new YarnLockExtractor(yarnPackager(yarnLockOptions));
     }
 
     private BitbakeRecipesParser bitbakeRecipesParser() {

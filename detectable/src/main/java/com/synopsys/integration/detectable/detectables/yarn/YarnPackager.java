@@ -36,12 +36,6 @@ public class YarnPackager {
     public YarnResult generateYarnResult(String rootPackageJsonText,
         List<String> yarnLockLines, String yarnLockFilePath, List<NameVersion> externalDependencies) {
         PackageJson rootPackageJson = gson.fromJson(rootPackageJsonText, PackageJson.class);
-        return generateYarnResult(rootPackageJson,
-            yarnLockLines, yarnLockFilePath, externalDependencies);
-    }
-
-    public YarnResult generateYarnResult(PackageJson rootPackageJson,
-        List<String> yarnLockLines, String yarnLockFilePath, List<NameVersion> externalDependencies) {
         YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockLines);
         YarnLockResult yarnLockResult = new YarnLockResult(rootPackageJson, yarnLockFilePath, yarnLock);
 
