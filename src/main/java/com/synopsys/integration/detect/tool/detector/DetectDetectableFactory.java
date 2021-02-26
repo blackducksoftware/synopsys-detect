@@ -9,6 +9,7 @@ package com.synopsys.integration.detect.tool.detector;
 
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableResolver;
+import com.synopsys.integration.detect.tool.detector.parsers.DetectCommandParser;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
@@ -67,9 +68,11 @@ public class DetectDetectableFactory {
     private final NugetInspectorResolver nugetInspectorResolver;
     private final PipInspectorResolver pipInspectorResolver;
 
+    private final DetectCommandParser commandParser;
+
     public DetectDetectableFactory(DetectableFactory detectableFactory, DetectableOptionFactory detectableOptionFactory, DetectExecutableResolver detectExecutableResolver,
         DockerInspectorResolver dockerInspectorResolver, GradleInspectorResolver gradleInspectorResolver, NugetInspectorResolver nugetInspectorResolver,
-        PipInspectorResolver pipInspectorResolver) {
+        PipInspectorResolver pipInspectorResolver, DetectCommandParser commandParser) {
         this.detectableFactory = detectableFactory;
         this.detectableOptionFactory = detectableOptionFactory;
         this.detectExecutableResolver = detectExecutableResolver;
@@ -77,6 +80,7 @@ public class DetectDetectableFactory {
         this.gradleInspectorResolver = gradleInspectorResolver;
         this.nugetInspectorResolver = nugetInspectorResolver;
         this.pipInspectorResolver = pipInspectorResolver;
+        this.commandParser = commandParser;
     }
 
     public DockerDetectable createDockerDetectable(DetectableEnvironment environment) {
@@ -156,11 +160,11 @@ public class DetectDetectableFactory {
     }
 
     public MavenPomDetectable createMavenPomDetectable(DetectableEnvironment environment) {
-        return detectableFactory.createMavenPomDetectable(environment, detectExecutableResolver, detectableOptionFactory.createMavenCliOptions());
+        return detectableFactory.createMavenPomDetectable(environment, detectExecutableResolver, detectableOptionFactory.createMavenCliOptions(), commandParser);
     }
 
     public MavenPomWrapperDetectable createMavenPomWrapperDetectable(DetectableEnvironment environment) {
-        return detectableFactory.createMavenPomWrapperDetectable(environment, detectExecutableResolver, detectableOptionFactory.createMavenCliOptions());
+        return detectableFactory.createMavenPomWrapperDetectable(environment, detectExecutableResolver, detectableOptionFactory.createMavenCliOptions(), commandParser);
     }
 
     public MavenParseDetectable createMavenParseDetectable(DetectableEnvironment environment) {

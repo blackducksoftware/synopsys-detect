@@ -139,6 +139,7 @@ import com.synopsys.integration.detectable.detectables.lerna.LernaExtractor;
 import com.synopsys.integration.detectable.detectables.lerna.LernaOptions;
 import com.synopsys.integration.detectable.detectables.lerna.LernaPackageDiscoverer;
 import com.synopsys.integration.detectable.detectables.lerna.LernaPackager;
+import com.synopsys.integration.detectable.detectable.parser.CommandParser;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenCliExtractor;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenCliExtractorOptions;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenCodeLocationPackager;
@@ -316,12 +317,12 @@ public class DetectableFactory {
         return new GemspecParseDetectable(environment, fileFinder, gemspecExtractor(), gemspecParseDetectableOptions);
     }
 
-    public MavenPomDetectable createMavenPomDetectable(DetectableEnvironment environment, MavenResolver mavenResolver, MavenCliExtractorOptions mavenCliExtractorOptions) {
-        return new MavenPomDetectable(environment, fileFinder, mavenResolver, mavenCliExtractor(), mavenCliExtractorOptions);
+    public MavenPomDetectable createMavenPomDetectable(DetectableEnvironment environment, MavenResolver mavenResolver, MavenCliExtractorOptions mavenCliExtractorOptions, CommandParser commandParser) {
+        return new MavenPomDetectable(environment, fileFinder, mavenResolver, mavenCliExtractor(commandParser), mavenCliExtractorOptions);
     }
 
-    public MavenPomWrapperDetectable createMavenPomWrapperDetectable(DetectableEnvironment environment, MavenResolver mavenResolver, MavenCliExtractorOptions mavenCliExtractorOptions) {
-        return new MavenPomWrapperDetectable(environment, fileFinder, mavenResolver, mavenCliExtractor(), mavenCliExtractorOptions);
+    public MavenPomWrapperDetectable createMavenPomWrapperDetectable(DetectableEnvironment environment, MavenResolver mavenResolver, MavenCliExtractorOptions mavenCliExtractorOptions, CommandParser commandParser) {
+        return new MavenPomWrapperDetectable(environment, fileFinder, mavenResolver, mavenCliExtractor(commandParser), mavenCliExtractorOptions);
     }
 
     public MavenParseDetectable createMavenParseDetectable(DetectableEnvironment environment, MavenParseOptions mavenParseOptions) {
@@ -571,8 +572,8 @@ public class DetectableFactory {
         return new MavenCodeLocationPackager(externalIdFactory);
     }
 
-    private MavenCliExtractor mavenCliExtractor() {
-        return new MavenCliExtractor(executableRunner, mavenCodeLocationPackager());
+    private MavenCliExtractor mavenCliExtractor(CommandParser commandParser) {
+        return new MavenCliExtractor(executableRunner, mavenCodeLocationPackager(), commandParser);
     }
 
     private ConanLockfileExtractor conanLockfileExtractor() {

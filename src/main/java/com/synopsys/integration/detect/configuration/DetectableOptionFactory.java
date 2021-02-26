@@ -162,25 +162,12 @@ public class DetectableOptionFactory {
     }
 
     public MavenCliExtractorOptions createMavenCliOptions() {
-        List<String> mavenBuildCommandArguments = parseMavenBuildCommandArguments(getNullableValue(DetectProperties.DETECT_MAVEN_BUILD_COMMAND));
+        String mavenBuildCommand = getNullableValue(DetectProperties.DETECT_MAVEN_BUILD_COMMAND);
         List<String> mavenExcludedScopes = getValue(DetectProperties.DETECT_MAVEN_EXCLUDED_SCOPES);
         List<String> mavenIncludedScopes = getValue(DetectProperties.DETECT_MAVEN_INCLUDED_SCOPES);
         List<String> mavenExcludedModules = getValue(DetectProperties.DETECT_MAVEN_EXCLUDED_MODULES);
         List<String> mavenIncludedModules = getValue(DetectProperties.DETECT_MAVEN_INCLUDED_MODULES);
-        return new MavenCliExtractorOptions(mavenBuildCommandArguments, mavenExcludedScopes, mavenIncludedScopes, mavenExcludedModules, mavenIncludedModules);
-    }
-
-    private List<String> parseMavenBuildCommandArguments(@Nullable String mavenBuildCommand) {
-        if (mavenBuildCommand == null) {
-            return new LinkedList<>();
-        }
-        mavenBuildCommand = mavenBuildCommand.trim();
-        try {
-            return commandParser.parseCommandString(mavenBuildCommand, new HashMap<>());
-        } catch (Exception e) {
-            logger.error(String.format("Encountered an error while parsing maven build command: %s. Error: %s.", mavenBuildCommand, e.getMessage()));
-            return new LinkedList<>();
-        }
+        return new MavenCliExtractorOptions(mavenBuildCommand, mavenExcludedScopes, mavenIncludedScopes, mavenExcludedModules, mavenIncludedModules);
     }
 
     public ConanCliExtractorOptions createConanCliOptions() {
