@@ -47,7 +47,6 @@ import com.synopsys.integration.detect.tool.detector.inspectors.nuget.OnlineNuge
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.runtime.DotNetRuntimeFinder;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.runtime.DotNetRuntimeManager;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.runtime.DotNetRuntimeParser;
-import com.synopsys.integration.detect.tool.detector.parsers.DetectCommandParser;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScanner;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
@@ -66,7 +65,6 @@ import com.synopsys.integration.detectable.detectable.file.WildcardFileFinder;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
-import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandParser;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptCreator;
 import com.synopsys.integration.detectable.factory.DetectableFactory;
@@ -213,18 +211,13 @@ public class RunBeanConfiguration {
     }
 
     @Bean()
-    public DetectCommandParser detectCommandParser() {
-        return new DetectCommandParser(new CompileCommandParser());
-    }
-
-    @Bean()
     public DetectableFactory detectableFactory() {
         return new DetectableFactory(filteredFileFinder(), executableRunner(), externalIdFactory(), gson);
     }
 
     @Bean()
     public DetectDetectableFactory detectDetectableFactory(NugetInspectorResolver nugetInspectorResolver) throws DetectUserFriendlyException {
-        return new DetectDetectableFactory(detectableFactory(), detectableOptionFactory, detectExecutableResolver(), dockerInspectorResolver(), gradleInspectorResolver(), nugetInspectorResolver, pipInspectorResolver(), detectCommandParser());
+        return new DetectDetectableFactory(detectableFactory(), detectableOptionFactory, detectExecutableResolver(), dockerInspectorResolver(), gradleInspectorResolver(), nugetInspectorResolver, pipInspectorResolver());
     }
 
     //#endregion Detectables

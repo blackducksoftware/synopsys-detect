@@ -8,6 +8,7 @@
 package com.synopsys.integration.detectable.detectables.maven.cli;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,25 +21,25 @@ import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
-import com.synopsys.integration.detectable.detectable.parser.CommandParser;
+import com.synopsys.integration.detectable.detectables.clang.compilecommand.ArgumentParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.executable.ExecutableOutput;
 
 public class MavenCliExtractor {
     private final DetectableExecutableRunner executableRunner;
     private final MavenCodeLocationPackager mavenCodeLocationPackager;
-    private final CommandParser commandParser;
+    private final ArgumentParser argumentParser;
 
-    public MavenCliExtractor(DetectableExecutableRunner executableRunner, MavenCodeLocationPackager mavenCodeLocationPackager, CommandParser commandParser) {
+    public MavenCliExtractor(DetectableExecutableRunner executableRunner, MavenCodeLocationPackager mavenCodeLocationPackager, ArgumentParser argumentParser) {
         this.executableRunner = executableRunner;
         this.mavenCodeLocationPackager = mavenCodeLocationPackager;
-        this.commandParser = commandParser;
+        this.argumentParser = argumentParser;
     }
 
     //TODO: Limit 'extractors' to 'execute' and 'read', delegate all other work.
     public Extraction extract(File directory, ExecutableTarget mavenExe, MavenCliExtractorOptions mavenCliExtractorOptions) throws ExecutableFailedException {
 
-        List<String> commandArguments = commandParser.parse(mavenCliExtractorOptions.getMavenBuildCommand().orElse("")).stream()
+        List<String> commandArguments = argumentParser.parseCommandString(mavenCliExtractorOptions.getMavenBuildCommand().orElse(""), new HashMap<>()).stream()
                                             .filter(arg -> !arg.equals("dependency:tree"))
                                             .collect(Collectors.toList());
 

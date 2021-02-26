@@ -7,6 +7,8 @@
  */
 package com.synopsys.integration.detectable.factory;
 
+import java.util.List;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -59,8 +61,8 @@ import com.synopsys.integration.detectable.detectables.cargo.parse.CargoLockPars
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOptions;
 import com.synopsys.integration.detectable.detectables.clang.ClangExtractor;
+import com.synopsys.integration.detectable.detectables.clang.compilecommand.ArgumentParser;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandDatabaseParser;
-import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandParser;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.ClangPackageDetailsTransformer;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.DependencyFileDetailGenerator;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.DependencyListFileParser;
@@ -139,7 +141,6 @@ import com.synopsys.integration.detectable.detectables.lerna.LernaExtractor;
 import com.synopsys.integration.detectable.detectables.lerna.LernaOptions;
 import com.synopsys.integration.detectable.detectables.lerna.LernaPackageDiscoverer;
 import com.synopsys.integration.detectable.detectables.lerna.LernaPackager;
-import com.synopsys.integration.detectable.detectable.parser.CommandParser;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenCliExtractor;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenCliExtractorOptions;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenCodeLocationPackager;
@@ -317,12 +318,12 @@ public class DetectableFactory {
         return new GemspecParseDetectable(environment, fileFinder, gemspecExtractor(), gemspecParseDetectableOptions);
     }
 
-    public MavenPomDetectable createMavenPomDetectable(DetectableEnvironment environment, MavenResolver mavenResolver, MavenCliExtractorOptions mavenCliExtractorOptions, CommandParser commandParser) {
-        return new MavenPomDetectable(environment, fileFinder, mavenResolver, mavenCliExtractor(commandParser), mavenCliExtractorOptions);
+    public MavenPomDetectable createMavenPomDetectable(DetectableEnvironment environment, MavenResolver mavenResolver, MavenCliExtractorOptions mavenCliExtractorOptions) {
+        return new MavenPomDetectable(environment, fileFinder, mavenResolver, mavenCliExtractor(), mavenCliExtractorOptions);
     }
 
-    public MavenPomWrapperDetectable createMavenPomWrapperDetectable(DetectableEnvironment environment, MavenResolver mavenResolver, MavenCliExtractorOptions mavenCliExtractorOptions, CommandParser commandParser) {
-        return new MavenPomWrapperDetectable(environment, fileFinder, mavenResolver, mavenCliExtractor(commandParser), mavenCliExtractorOptions);
+    public MavenPomWrapperDetectable createMavenPomWrapperDetectable(DetectableEnvironment environment, MavenResolver mavenResolver, MavenCliExtractorOptions mavenCliExtractorOptions) {
+        return new MavenPomWrapperDetectable(environment, fileFinder, mavenResolver, mavenCliExtractor(), mavenCliExtractorOptions);
     }
 
     public MavenParseDetectable createMavenParseDetectable(DetectableEnvironment environment, MavenParseOptions mavenParseOptions) {
@@ -417,7 +418,7 @@ public class DetectableFactory {
     }
 
     private FilePathGenerator filePathGenerator() {
-        return new FilePathGenerator(executableRunner, compileCommandParser(), dependenyListFileParser());
+        return new FilePathGenerator(executableRunner, argumentParser(), dependenyListFileParser());
     }
 
     private DependencyListFileParser dependenyListFileParser() {
@@ -438,10 +439,6 @@ public class DetectableFactory {
 
     private CompileCommandDatabaseParser compileCommandDatabaseParser() {
         return new CompileCommandDatabaseParser(gson);
-    }
-
-    private CompileCommandParser compileCommandParser() {
-        return new CompileCommandParser();
     }
 
     private ClangExtractor clangExtractor() {
@@ -572,8 +569,12 @@ public class DetectableFactory {
         return new MavenCodeLocationPackager(externalIdFactory);
     }
 
-    private MavenCliExtractor mavenCliExtractor(CommandParser commandParser) {
-        return new MavenCliExtractor(executableRunner, mavenCodeLocationPackager(), commandParser);
+    private MavenCliExtractor mavenCliExtractor() {
+        return new MavenCliExtractor(executableRunner, mavenCodeLocationPackager(), argumentParser());
+    }
+
+    private ArgumentParser argumentParser() {
+        return new ArgumentParser();
     }
 
     private ConanLockfileExtractor conanLockfileExtractor() {

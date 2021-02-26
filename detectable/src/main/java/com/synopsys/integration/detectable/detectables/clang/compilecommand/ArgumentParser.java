@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.util.Stringable;
 
-public class CompileCommandParser {
+public class ArgumentParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final char SINGLE_QUOTE_CHAR = '\'';
     private static final char DOUBLE_QUOTE_CHAR = '"';

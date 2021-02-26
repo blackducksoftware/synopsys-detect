@@ -9,9 +9,7 @@ package com.synopsys.integration.detect.configuration;
 
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,7 +34,7 @@ import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOpti
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectableOptions;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOptions;
-import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandParser;
+import com.synopsys.integration.detectable.detectables.clang.compilecommand.ArgumentParser;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliExtractorOptions;
 import com.synopsys.integration.detectable.detectables.conan.lockfile.ConanLockfileExtractorOptions;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectableOptions;
@@ -66,11 +64,11 @@ public class DetectableOptionFactory {
     private final DiagnosticSystem diagnosticSystem;
     private final PathResolver pathResolver;
     private final ProxyInfo proxyInfo;
-    private final CompileCommandParser commandParser;
+    private final ArgumentParser commandParser;
 
     private final Logger logger = LoggerFactory.getLogger(DetectableOptionFactory.class);
 
-    public DetectableOptionFactory(PropertyConfiguration detectConfiguration, @Nullable DiagnosticSystem diagnosticSystem, PathResolver pathResolver, ProxyInfo proxyInfo, CompileCommandParser commandParser) {
+    public DetectableOptionFactory(PropertyConfiguration detectConfiguration, @Nullable DiagnosticSystem diagnosticSystem, PathResolver pathResolver, ProxyInfo proxyInfo, ArgumentParser commandParser) {
         this.detectConfiguration = detectConfiguration;
         this.diagnosticSystem = diagnosticSystem;
         this.pathResolver = pathResolver;

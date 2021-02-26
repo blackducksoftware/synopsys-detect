@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommand;
-import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandParser;
+import com.synopsys.integration.detectable.detectables.clang.compilecommand.ArgumentParser;
 import com.synopsys.integration.executable.Executable;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 
@@ -36,12 +36,12 @@ public class FilePathGenerator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final Random random = new Random();
     private final DetectableExecutableRunner executableRunner;
-    private final CompileCommandParser compileCommandParser;
+    private final ArgumentParser argumentParser;
     private final DependencyListFileParser dependencyListFileParser;
 
-    public FilePathGenerator(DetectableExecutableRunner executableRunner, CompileCommandParser compileCommandParser, DependencyListFileParser dependencyListFileParser) {
+    public FilePathGenerator(DetectableExecutableRunner executableRunner, ArgumentParser argumentParser, DependencyListFileParser dependencyListFileParser) {
         this.executableRunner = executableRunner;
-        this.compileCommandParser = compileCommandParser;
+        this.argumentParser = argumentParser;
         this.dependencyListFileParser = dependencyListFileParser;
     }
 
@@ -64,7 +64,7 @@ public class FilePathGenerator {
         Map<String, String> optionOverrides = new HashMap<>(1);
         optionOverrides.put(COMPILER_OUTPUT_FILE_OPTION, REPLACEMENT_OUTPUT_FILENAME);
         try {
-            List<String> command = compileCommandParser.parseCommand(compileCommand, optionOverrides);
+            List<String> command = argumentParser.parseCommand(compileCommand, optionOverrides);
             command.addAll(Arrays.asList("-M", "-MF", depsMkFile.getAbsolutePath()));
             Executable executable = Executable.create(new File(compileCommand.directory), Collections.emptyMap(), command);
             executableRunner.execute(executable);

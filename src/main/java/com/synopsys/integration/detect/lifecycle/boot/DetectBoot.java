@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandArgumentParser;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.configuration.source.MapPropertySource;
@@ -55,7 +54,7 @@ import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandParser;
+import com.synopsys.integration.detectable.detectables.clang.compilecommand.ArgumentParser;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
 
 import freemarker.template.Configuration;
@@ -189,7 +188,7 @@ public class DetectBoot {
         DetectableOptionFactory detectableOptionFactory;
         try {
             ProxyInfo detectableProxyInfo = detectConfigurationFactory.createBlackDuckProxyInfo();
-            detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem, pathResolver, detectableProxyInfo, new CompileCommandParser());
+            detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem, pathResolver, detectableProxyInfo, new ArgumentParser());
         } catch (DetectUserFriendlyException e) {
             return Optional.of(DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem));
         }

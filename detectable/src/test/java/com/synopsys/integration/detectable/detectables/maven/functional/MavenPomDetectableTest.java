@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
@@ -83,8 +84,9 @@ public class MavenPomDetectableTest extends DetectableFunctionalTest {
                 return ExecutableTarget.forFile(new File("maven"));
             }
         }
+
         return detectableFactory
-                   .createMavenPomDetectable(detectableEnvironment, new MavenPomResolverTest(), new MavenCliExtractorOptions(Arrays.asList("test"), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList()));
+                   .createMavenPomDetectable(detectableEnvironment, new MavenPomResolverTest(), new MavenCliExtractorOptions("test", Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList()));
     }
 
     @Override
