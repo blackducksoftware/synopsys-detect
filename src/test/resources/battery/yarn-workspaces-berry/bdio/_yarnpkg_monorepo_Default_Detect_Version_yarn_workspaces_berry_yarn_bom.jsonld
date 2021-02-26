@@ -1,33 +1,33 @@
 [
   {
     "specVersion": "1.1.0",
-    "spdx:name": "@yarnpkg/monorepo/Default Detect Version/yarn-workspaces yarn/bom",
+    "spdx:name": "@yarnpkg/monorepo/Default Detect Version/yarn-workspaces-berry yarn/bom",
     "creationInfo": {
       "spdx:creator": [
         "Tool: Detect-7.0.0-SNAPSHOT",
         "Tool: IntegrationBdio-22.0.2"
       ],
-      "spdx:created": "2021-02-25T21:04:54.527Z"
+      "spdx:created": "2021-02-26T19:03:02.902Z"
     },
-    "@id": "uuid:41d6741c-9aa7-457f-9283-e1f0b0d285b0",
+    "@id": "uuid:9315ad21-7c6e-4d90-a60b-28b442d815fa",
     "@type": "BillOfMaterials",
     "relationship": []
   },
   {
     "name": "@yarnpkg/monorepo",
     "revision": "Default Detect Version",
-    "@id": "http:detect/yarn-workspaces",
+    "@id": "http:detect/yarn-workspaces-berry",
     "@type": "Project",
     "externalIdentifier": {
       "externalSystemTypeId": "detect",
-      "externalId": "yarn-workspaces",
+      "externalId": "yarn-workspaces-berry",
       "externalIdMetaData": {
         "forge": {
           "name": "detect",
           "separator": "/"
         },
         "pieces": [
-          "yarn-workspaces",
+          "yarn-workspaces-berry",
           null
         ]
       }
