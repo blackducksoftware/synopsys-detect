@@ -57,21 +57,9 @@ public class YarnTransformer {
         for (YarnLockEntry entry : yarnLockResult.getYarnLock().getEntries()) {
             for (YarnLockEntryId entryId : entry.getIds()) {
                 StringDependencyId entryExternalId = new StringDependencyId(entryId.getName() + "@" + entryId.getVersion());
-                if (entryExternalId.getValue().contains("plugin-npm")) {
-                    System.out.println("Encountered plugin-npm yarn.lock entry");
-                }
-                if (entryExternalId.getValue().contains("ssri")) {
-                    System.out.println("Encountered ssri yarn.lock entry");
-                }
                 graphBuilder.setDependencyInfo(entryExternalId, entryId.getName(), entry.getVersion(), externalIdFactory.createNameVersionExternalId(Forge.NPMJS, entryId.getName(), entry.getVersion()));
                 for (YarnLockDependency entryDependency : entry.getDependencies()) {
                     StringDependencyId entryDependencyExternalId = new StringDependencyId(entryDependency.getName() + "@" + entryDependency.getVersion());
-                    if (entryDependencyExternalId.getValue().contains("plugin-npm")) {
-                        System.out.printf("Encountered plugin-npm as a dependency of %s in a yarn.lock entry\n", entryExternalId.getValue());
-                    }
-                    if (entryDependencyExternalId.getValue().contains("ssri")) {
-                        System.out.printf("kkkkkkkkkkkkkk Encountered ssri as a dependency of %s in a yarn.lock entry\n", entryExternalId.getValue());
-                    }
                     if (!productionOnly || !entryDependency.isOptional()) {
                         logger.info("Adding {} as child of {}", entryDependencyExternalId.getValue(), entryExternalId.getValue());
                         graphBuilder.addChildWithParent(entryDependencyExternalId, entryExternalId);
@@ -111,12 +99,6 @@ public class YarnTransformer {
 
     private void addRootNodesToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder,
         PackageJson rootPackageJson, Map<String, PackageJson> workspacePackageJsons, boolean productionOnly) {
-        ///List<PackageJson> allPackageJsons = new LinkedList<>();
-        ///allPackageJsons.add(rootPackageJson);
-        // TODO Can we filter out the workspace references??
-        ///////// TODO THIS IS WRONG: should not put workspace DEPENDENCIES at root level; just workspaces themselves!
-        ///allPackageJsons.addAll(workspacePackageJsons.values());
-        ///for (PackageJson curPackageJson : allPackageJsons) {
         System.out.printf("* Processing Root PackageJson: %s:%s\n", rootPackageJson.name, rootPackageJson.version);
         for (Map.Entry<String, String> packageDependency : rootPackageJson.dependencies.entrySet()) {
             StringDependencyId stringDependencyId = new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue());
@@ -130,12 +112,24 @@ public class YarnTransformer {
                 graphBuilder.addChildToRoot(stringDependencyId);
             }
         }
-        ///}
-        for (PackageJson curWorkspacePackageJson : workspacePackageJsons.values()) {
-            System.out.printf("* Processing workspace PackageJson: %s:%s\n", curWorkspacePackageJson.name, curWorkspacePackageJson.version);
-            StringDependencyId workspaceStringDependencyId = new StringDependencyId(curWorkspacePackageJson.name + "@" + curWorkspacePackageJson.version);
-            System.out.printf("WORKSPACE stringDependencyId: %s\n", workspaceStringDependencyId);
-            graphBuilder.addChildToRoot(workspaceStringDependencyId);
-        }
+        // TODO
+        // v4 yarn.lock files have the root and it's dependencies (including workspaces)
+        // v1 yarn.lock files do not, so the workspaces must be added to the root
+        // Worse: Because v1 yarn.lock files don't define workspaces and their dependencies,
+        // we'd need to mine that info from ALL of the workspace package.json files
+        // What version of yarn did it switch to v4 yarn.lock? Can we support workspaces starting with that version?
+        // Yarn 1 used yarn.lock v1. yarn 2 (from the beginning) has used yarn.lock v4 and included root project.
+        // MY CURRENT THINKING IS: YARN V2 (YARN.LOCK V4) ONLY. Do not add workspaces as root dependencies,
+        // but let the "dependencies" list do that if appropriate.
+        // To be supported: yarn.lock should be v4:
+        // __metadata:
+        //  version: 4
+        //
+        //        for (PackageJson curWorkspacePackageJson : workspacePackageJsons.values()) {
+        //            System.out.printf("* Processing workspace PackageJson: %s:%s\n", curWorkspacePackageJson.name, curWorkspacePackageJson.version);
+        //            StringDependencyId workspaceStringDependencyId = new StringDependencyId(curWorkspacePackageJson.name + "@" + curWorkspacePackageJson.version);
+        //            System.out.printf("WORKSPACE stringDependencyId: %s\n", workspaceStringDependencyId);
+        //            graphBuilder.addChildToRoot(workspaceStringDependencyId);
+        //        }
     }
 }

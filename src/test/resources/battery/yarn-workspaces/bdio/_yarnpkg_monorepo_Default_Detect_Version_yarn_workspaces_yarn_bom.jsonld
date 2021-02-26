@@ -86,10 +86,6 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:npmjs/%40yarnpkg%2Fplugin-npm%402.4.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
         "related": "http:npmjs/%40babel%2Fplugin-proposal-optional-chaining/7.10.1",
         "relationshipType": "DYNAMIC_LINK"
       },
@@ -20570,25 +20566,6 @@
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
-  },
-  {
-    "@id": "http:npmjs/%40yarnpkg%2Fplugin-npm%402.4.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "@yarnpkg/plugin-npm@2.4.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "pieces": [
-          "@yarnpkg/plugin-npm@2.4.0",
-          null
-        ]
-      }
-    },
-    "relationship": []
   },
   {
     "name": "eslint",
