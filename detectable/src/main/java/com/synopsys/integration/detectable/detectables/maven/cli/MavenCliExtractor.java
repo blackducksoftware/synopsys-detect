@@ -54,7 +54,6 @@ public class MavenCliExtractor {
                                      .orElse(new LinkedList<>())
                                      .stream()
                                      .filter(arg -> !arg.equals("dependency:tree"))
-                                     .map(this::removeQuotes)
                                      .collect(Collectors.toList());
 
         commandArguments.add("dependency:tree");
@@ -82,17 +81,6 @@ public class MavenCliExtractor {
             builder.projectVersion(firstWithName.get().getProjectVersion());
         }
         return builder.build();
-    }
-
-    // Once string with spaces is in java, quotes are no longer needed
-    private String removeQuotes(String str) {
-        if (str.startsWith("\"")) {
-            str = str.substring(1);
-        }
-        if (str.endsWith("\"")) {
-            str = str.substring(0, str.length() - 1);
-        }
-        return str;
     }
 
 }
