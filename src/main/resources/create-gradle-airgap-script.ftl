@@ -1,19 +1,19 @@
 repositories {
-    maven {
-        url 'https://sig-repo.synopsys.com/bds-integration-public-cache/'
-    }
+maven {
+url 'https://sig-repo.synopsys.com/bds-integration-public-cache/'
+}
 }
 
 configurations {
-    airGap
+airGap
 }
 
 dependencies {
-    airGap 'com.blackducksoftware.integration:integration-gradle-inspector:${gradleVersion}'
+airGap 'com.synopsys.integration:integration-gradle-inspector:${gradleVersion}'
 }
 
 task installDependencies(type: Copy) {
-    from configurations.airGap
-    include '*.jar'
-    into "${gradleOutput}"
+from configurations.airGap
+include '*.jar'
+into "${gradleOutput}"
 }

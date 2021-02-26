@@ -143,6 +143,7 @@ public class DetectBoot {
         logger.debug("Main boot completed. Deciding what Detect should do.");
 
         if (detectArgumentState.isGenerateAirGapZip()) {
+            logger.info("Generating Air Gap zip.");
             try {
                 DetectOverrideableFilter inspectorFilter = DetectOverrideableFilter.createArgumentValueFilter(detectArgumentState);
                 AirGapCreator airGapCreator = detectBootFactory.createAirGapCreator(detectConfigurationFactory.createConnectionDetails(), detectConfigurationFactory.createDetectExecutableOptions(), freemarkerConfiguration);
