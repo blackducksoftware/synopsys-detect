@@ -37,7 +37,7 @@ public class YarnTransformer {
     public DependencyGraph transform(YarnLockResult yarnLockResult, boolean productionOnly, List<NameVersion> externalDependencies) throws MissingExternalIdException {
         LazyExternalIdDependencyGraphBuilder graphBuilder = new LazyExternalIdDependencyGraphBuilder();
 
-        addRootNodesToGraph(graphBuilder, yarnLockResult.getRootPackageJson(), yarnLockResult.getWorkspacePackageJsons(), productionOnly);
+        addRootNodesToGraph(graphBuilder, yarnLockResult.getRootPackageJson(), productionOnly);
 
         for (YarnLockEntry entry : yarnLockResult.getYarnLock().getEntries()) {
             for (YarnLockEntryId entryId : entry.getIds()) {
@@ -62,28 +62,14 @@ public class YarnTransformer {
                 return externalId.get();
             } else {
                 StringDependencyId stringDependencyId = (StringDependencyId) dependencyId;
-                if (isWorkspace(yarnLockResult, dependencyId)) {
-                    logger.info("Including workspace {} in the graph", stringDependencyId.getValue());
-                } else {
-                    logger.warn(String.format("Missing yarn dependency. Dependency '%s' is missing from %s.", stringDependencyId.getValue(), yarnLockResult.getYarnLockFilePath()));
-                }
+                logger.warn(String.format("Missing yarn dependency. Dependency '%s' is missing from %s.", stringDependencyId.getValue(), yarnLockResult.getYarnLockFilePath()));
                 return externalIdFactory.createNameVersionExternalId(Forge.NPMJS, stringDependencyId.getValue());
             }
         });
     }
 
-    private boolean isWorkspace(YarnLockResult yarnLockResult, com.synopsys.integration.bdio.model.dependencyid.DependencyId dependencyId) {
-        for (String workspaceName : yarnLockResult.getWorkspacePackageJsons().keySet()) {
-            String dependencyIdString = ((StringDependencyId) dependencyId).getValue();
-            if (dependencyIdString.startsWith(workspaceName + "@")) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private void addRootNodesToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder,
-        PackageJson rootPackageJson, Map<String, PackageJson> workspacePackageJsons, boolean productionOnly) {
+        PackageJson rootPackageJson, boolean productionOnly) {
         System.out.printf("* Processing Root PackageJson: %s:%s\n", rootPackageJson.name, rootPackageJson.version);
         for (Map.Entry<String, String> packageDependency : rootPackageJson.dependencies.entrySet()) {
             StringDependencyId stringDependencyId = new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue());

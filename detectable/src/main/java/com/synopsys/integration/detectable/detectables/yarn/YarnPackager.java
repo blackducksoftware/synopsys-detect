@@ -7,9 +7,7 @@
  */
 package com.synopsys.integration.detectable.detectables.yarn;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
@@ -38,14 +36,14 @@ public class YarnPackager {
     public YarnResult generateYarnResult(String rootPackageJsonText,
         List<String> yarnLockLines, String yarnLockFilePath, List<NameVersion> externalDependencies) {
         PackageJson rootPackageJson = gson.fromJson(rootPackageJsonText, PackageJson.class);
-        return generateYarnResult(rootPackageJson, new HashMap<>(0),
+        return generateYarnResult(rootPackageJson,
             yarnLockLines, yarnLockFilePath, externalDependencies);
     }
 
-    public YarnResult generateYarnResult(PackageJson rootPackageJson, Map<String, PackageJson> workspacePackageJsons,
+    public YarnResult generateYarnResult(PackageJson rootPackageJson,
         List<String> yarnLockLines, String yarnLockFilePath, List<NameVersion> externalDependencies) {
         YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockLines);
-        YarnLockResult yarnLockResult = new YarnLockResult(rootPackageJson, workspacePackageJsons, yarnLockFilePath, yarnLock);
+        YarnLockResult yarnLockResult = new YarnLockResult(rootPackageJson, yarnLockFilePath, yarnLock);
 
         try {
             DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, yarnLockOptions.useProductionOnly(), externalDependencies);
