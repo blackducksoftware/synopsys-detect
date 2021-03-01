@@ -2,12 +2,9 @@ import com.synopsys.integration.detect.artifactory.UpdateArtifactoryPropertiesTa
 import com.synopsys.integration.detect.battery.UpdateBatteryTask
 import com.synopsys.integration.detect.verification.VerifyBlackDuckDetectTask
 
-//TODO Remove this when the Spock dependency, Spock 2.0, is officially released. Upgrade to a Spring Boot version that depends on Groovy 3.0.0 and Spock 2.0 by default.
-ext['groovy.version'] = '3.0.0'
-
 buildscript {
     ext {
-        springBootVersion = '2.2.4.RELEASE'
+        springBootVersion = '2.4.3'
         blackDuckCommonVersion = '52.0.2'
         junitPlatformDefaultTestTags = 'integration, performance, battery'
     }
@@ -19,6 +16,9 @@ buildscript {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
     }
 }
+
+//TODO Remove this when the Spock dependency, Spock 2.0, is officially released. Upgrade to a Spring Boot version that depends on Groovy 3.0.0 and Spock 2.0 by default.
+ext['groovy.version'] = '3.0.0'
 
 group = 'com.synopsys.integration'
 version = '7.0.0-SNAPSHOT'
@@ -113,7 +113,7 @@ dependencies {
     testImplementation project(':common-test')
 }
 
-springBoot { mainClassName = 'com.synopsys.integration.detect.Application' }
+springBoot { mainClass = 'com.synopsys.integration.detect.Application' }
 
 tasks['testBattery'].doFirst {
     def batteryPath = new File(createBatteryPath())
