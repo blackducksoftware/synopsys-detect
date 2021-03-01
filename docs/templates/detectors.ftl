@@ -47,7 +47,7 @@ the system PATH to find executables. In some cases as an alternative to the syst
 
 ## Buildless detectors
 
-When in buildless mode, only detectors that do not communicate with external systems are run. Typically these detectors just parse available package mananger files such as *pom.xml* to derive dependency information.
+When in buildless mode, only detectors that do not communicate with external systems are run. Typically these detectors just parse available package manager files such as *pom.xml* to derive dependency information.
 It is generally not recommended to run in buildless mode as the results are not guaranteed to be accurate - for example ${solution_name} may report dependencies with fuzzy versions.
 However if the project can not be built, buildless mode still allows some insight into the dependencies of a project.
 

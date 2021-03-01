@@ -3,22 +3,7 @@
  *
  * Copyright (c) 2021 Synopsys, Inc.
  *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
 package com.synopsys.integration.detect.workflow.report;
 
@@ -78,9 +63,9 @@ public class ReportListener {
         eventSystem.registerListener(Event.DiscoveryStarted, this::discoveryStarted);
         eventSystem.registerListener(Event.DiscoveryEnded, this::discoveryEnded);
 
-        eventSystem.registerListener(Event.ExtractionCount, this::exractionCount);
-        eventSystem.registerListener(Event.ExtractionStarted, this::exractionStarted);
-        eventSystem.registerListener(Event.ExtractionEnded, this::exractionEnded);
+        eventSystem.registerListener(Event.ExtractionCount, this::extractionCount);
+        eventSystem.registerListener(Event.ExtractionStarted, this::extractionStarted);
+        eventSystem.registerListener(Event.ExtractionEnded, this::extractionEnded);
 
     }
 
@@ -107,15 +92,15 @@ public class ReportListener {
         discoveryLogger.discoveryEnded(detectorEvaluation);
     }
 
-    public void exractionCount(final Integer count) {
+    public void extractionCount(final Integer count) {
         extractionLogger.setExtractionCount(count);
     }
 
-    public void exractionStarted(final DetectorEvaluation detectorEvaluation) {
+    public void extractionStarted(final DetectorEvaluation detectorEvaluation) {
         extractionLogger.extractionStarted(detectorEvaluation);
     }
 
-    public void exractionEnded(final DetectorEvaluation detectorEvaluation) {
+    public void extractionEnded(final DetectorEvaluation detectorEvaluation) {
         extractionLogger.extractionEnded(detectorEvaluation);
     }
 
