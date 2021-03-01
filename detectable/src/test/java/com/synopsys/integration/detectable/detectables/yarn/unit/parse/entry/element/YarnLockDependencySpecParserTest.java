@@ -49,4 +49,12 @@ public class YarnLockDependencySpecParserTest {
         assertEquals("xtend", dep.getName());
         assertEquals(">=4.0.0 <4.1.0-0", dep.getVersion());
     }
+
+    @Test
+    void testWorkspaceDependency() {
+        YarnLockDependency dep = parser.parse("\"@yarnpkg/plugin-npm\": \"workspace:^2.4.0\"", true);
+
+        assertEquals("@yarnpkg/plugin-npm", dep.getName());
+        assertEquals("workspace:^2.4.0", dep.getVersion());
+    }
 }

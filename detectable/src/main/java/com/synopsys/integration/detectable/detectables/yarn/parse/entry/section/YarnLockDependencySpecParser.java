@@ -26,7 +26,11 @@ public class YarnLockDependencySpecParser {
     public YarnLockDependency parse(String dependencySpec, boolean optional) {
         StringTokenizer tokenizer = TokenizerFactory.createDependencySpecTokenizer(dependencySpec);
         String name = yarnLockLineAnalyzer.unquote(tokenizer.nextToken());
-        String version = yarnLockLineAnalyzer.unquote(tokenizer.nextToken(":").trim());
+        String version = yarnLockLineAnalyzer.unquote(tokenizer.nextToken("").trim());
+        if (version.startsWith(":")) {
+            version = version.substring(1).trim();
+        }
+        version = yarnLockLineAnalyzer.unquote(version);
         logger.trace("\tdependency: name: {}, version: {} (optional: {})", name, version, optional);
         return new YarnLockDependency(name, version, optional);
     }
