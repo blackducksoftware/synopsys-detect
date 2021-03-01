@@ -26,6 +26,7 @@ public class YarnLockDependencySpecParser {
     public YarnLockDependency parse(String dependencySpec, boolean optional) {
         StringTokenizer tokenizer = TokenizerFactory.createDependencySpecTokenizer(dependencySpec);
         String name = yarnLockLineAnalyzer.unquote(tokenizer.nextToken());
+        // version formats vary; see YarnLockDependencySpecParserTest
         String version = yarnLockLineAnalyzer.unquote(tokenizer.nextToken("").trim());
         if (version.startsWith(":")) {
             version = version.substring(1).trim();
