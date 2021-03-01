@@ -7,6 +7,7 @@
 
 ### Resolved issues
 * (IDETECT-2434) Resolved an issue in the CLANG detector on Ubuntu and Debian systems that caused it to omit a package when that package had been installed on the system from multiple architectures.
+* (IDETECT-2409) Resolved an issue in the Gradle Inspector to support Gradle 6.8.
 
 ## Version 6.9.0
 ### New Features
