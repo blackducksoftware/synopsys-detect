@@ -43,9 +43,9 @@ public class YarnTransformer {
             for (YarnLockEntryId entryId : entry.getIds()) {
                 StringDependencyId id = new StringDependencyId(entryId.getName() + "@" + entryId.getVersion());
                 graphBuilder.setDependencyInfo(id, entryId.getName(), entry.getVersion(), externalIdFactory.createNameVersionExternalId(Forge.NPMJS, entryId.getName(), entry.getVersion()));
-                for (YarnLockDependency entryDependency : entry.getDependencies()) {
-                    StringDependencyId stringDependencyId = new StringDependencyId(entryDependency.getName() + "@" + entryDependency.getVersion());
-                    if (!productionOnly || !entryDependency.isOptional()) {
+                for (YarnLockDependency dependency : entry.getDependencies()) {
+                    StringDependencyId stringDependencyId = new StringDependencyId(dependency.getName() + "@" + dependency.getVersion());
+                    if (!productionOnly || !dependency.isOptional()) {
                         graphBuilder.addChildWithParent(stringDependencyId, id);
                     } else {
                         logger.debug("Excluding optional dependency: {}", stringDependencyId.getValue());
@@ -71,6 +71,7 @@ public class YarnTransformer {
         for (Map.Entry<String, String> packageDependency : packageJson.dependencies.entrySet()) {
             graphBuilder.addChildToRoot(new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue()));
         }
+        
         if (!productionOnly) {
             for (Map.Entry<String, String> packageDependency : packageJson.devDependencies.entrySet()) {
                 graphBuilder.addChildToRoot(new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue()));
