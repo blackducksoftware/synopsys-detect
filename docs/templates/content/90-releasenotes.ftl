@@ -2,6 +2,7 @@
 
 ## Version 7.0.0
 ### New Features
+* Added support for Yarn workspaces for Yarn 2 projects.
 
 ### Changed features
 
