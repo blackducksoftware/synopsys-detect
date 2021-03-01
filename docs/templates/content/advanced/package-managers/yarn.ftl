@@ -18,6 +18,6 @@ ${solution_name} supports projects that use Yarn version 1 or version 2, that do
 
 ## Yarn Workspace Support
 
-${solution_name} supports [Yarn workspaces](https://classic.yarnpkg.com/en/docs/workspaces/) in Yarn 2 projects (projects a yarn.lock file with __metadata.version value of 4).
+${solution_name} supports [Yarn workspaces](https://yarnpkg.com/features/workspaces/#gatsby-focus-wrapper) in Yarn 2 projects (projects a yarn.lock file with __metadata.version value of 4).
 
 ${solution_name} does not support Yarn workspaces in Yarn 1 projects (projects with a yarn.lock file that is "v1" format).
