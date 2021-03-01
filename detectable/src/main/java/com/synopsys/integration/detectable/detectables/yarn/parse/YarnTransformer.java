@@ -60,6 +60,7 @@ public class YarnTransformer {
             if (externalId.isPresent()) {
                 return externalId.get();
             } else {
+                // If we don't construct an external ID here (which seems pointless), an exception will be thrown (which is worse; see IDETECT-1974)
                 StringDependencyId stringDependencyId = (StringDependencyId) dependencyId;
                 logger.warn(String.format("Missing yarn dependency. Dependency '%s' is missing from %s.", stringDependencyId.getValue(), yarnLockResult.getYarnLockFilePath()));
                 return externalIdFactory.createNameVersionExternalId(Forge.NPMJS, stringDependencyId.getValue());
@@ -71,7 +72,7 @@ public class YarnTransformer {
         for (Map.Entry<String, String> packageDependency : packageJson.dependencies.entrySet()) {
             graphBuilder.addChildToRoot(new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue()));
         }
-        
+
         if (!productionOnly) {
             for (Map.Entry<String, String> packageDependency : packageJson.devDependencies.entrySet()) {
                 graphBuilder.addChildToRoot(new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue()));
