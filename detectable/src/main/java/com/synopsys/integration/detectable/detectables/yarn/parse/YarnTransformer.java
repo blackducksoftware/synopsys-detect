@@ -78,24 +78,5 @@ public class YarnTransformer {
                 graphBuilder.addChildToRoot(new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue()));
             }
         }
-        // TODO
-        // v4 yarn.lock files have the root and it's dependencies (including workspaces)
-        // v1 yarn.lock files do not, so the workspaces must be added to the root
-        // Worse: Because v1 yarn.lock files don't define workspaces and their dependencies,
-        // we'd need to mine that info from ALL of the workspace package.json files
-        // What version of yarn did it switch to v4 yarn.lock? Can we support workspaces starting with that version?
-        // Yarn 1 used yarn.lock v1. yarn 2 (from the beginning) has used yarn.lock v4 and included root project.
-        // MY CURRENT THINKING IS: YARN V2 (YARN.LOCK V4) ONLY. Do not add workspaces as root dependencies,
-        // but let the "dependencies" list do that if appropriate.
-        // To be supported: yarn.lock should be v4:
-        // __metadata:
-        //  version: 4
-        //
-        //        for (PackageJson curWorkspacePackageJson : workspacePackageJsons.values()) {
-        //            System.out.printf("* Processing workspace PackageJson: %s:%s\n", curWorkspacePackageJson.name, curWorkspacePackageJson.version);
-        //            StringDependencyId workspaceStringDependencyId = new StringDependencyId(curWorkspacePackageJson.name + "@" + curWorkspacePackageJson.version);
-        //            System.out.printf("WORKSPACE stringDependencyId: %s\n", workspaceStringDependencyId);
-        //            graphBuilder.addChildToRoot(workspaceStringDependencyId);
-        //        }
     }
 }
