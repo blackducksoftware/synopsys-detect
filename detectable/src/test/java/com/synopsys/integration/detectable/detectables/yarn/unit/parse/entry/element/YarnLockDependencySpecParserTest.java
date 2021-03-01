@@ -1,6 +1,10 @@
 package com.synopsys.integration.detectable.detectables.yarn.unit.parse.entry.element;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -20,41 +24,58 @@ public class YarnLockDependencySpecParserTest {
 
     @Test
     public void testNoColon() {
-        YarnLockDependency dep = parser.parse("\"@babel/helper-plugin-utils\" \"^7.8.0\"", true);
-
-        assertEquals("@babel/helper-plugin-utils", dep.getName());
-        assertEquals("^7.8.0", dep.getVersion());
+        Optional<YarnLockDependency> dep = parser.parse("\"@babel/helper-plugin-utils\" \"^7.8.0\"", true);
+        assertTrue(dep.isPresent());
+        YarnLockDependency gottenDep = dep.get();
+        assertEquals("@babel/helper-plugin-utils", gottenDep.getName());
+        assertEquals("^7.8.0", gottenDep.getVersion());
     }
 
     @Test
     public void testWithColon() {
-        YarnLockDependency dep = parser.parse("\"@babel/helper-plugin-utils\": \"^7.8.0\"", true);
-
-        assertEquals("@babel/helper-plugin-utils", dep.getName());
-        assertEquals("^7.8.0", dep.getVersion());
+        Optional<YarnLockDependency> dep = parser.parse("\"@babel/helper-plugin-utils\": \"^7.8.0\"", true);
+        assertTrue(dep.isPresent());
+        YarnLockDependency gottenDep = dep.get();
+        assertEquals("@babel/helper-plugin-utils", gottenDep.getName());
+        assertEquals("^7.8.0", gottenDep.getVersion());
     }
 
     @Test
     public void testUnquotedName() {
-        YarnLockDependency dep = parser.parse("property-expr \"^2.0.0\"", true);
-
-        assertEquals("property-expr", dep.getName());
-        assertEquals("^2.0.0", dep.getVersion());
+        Optional<YarnLockDependency> dep = parser.parse("property-expr \"^2.0.0\"", true);
+        assertTrue(dep.isPresent());
+        YarnLockDependency gottenDep = dep.get();
+        assertEquals("property-expr", gottenDep.getName());
+        assertEquals("^2.0.0", gottenDep.getVersion());
     }
 
     @Test
     void testQuotedMultipleVersion() {
-        YarnLockDependency dep = parser.parse("xtend \">=4.0.0 <4.1.0-0\"", true);
-
-        assertEquals("xtend", dep.getName());
-        assertEquals(">=4.0.0 <4.1.0-0", dep.getVersion());
+        Optional<YarnLockDependency> dep = parser.parse("xtend \">=4.0.0 <4.1.0-0\"", true);
+        assertTrue(dep.isPresent());
+        YarnLockDependency gottenDep = dep.get();
+        assertEquals("xtend", gottenDep.getName());
+        assertEquals(">=4.0.0 <4.1.0-0", gottenDep.getVersion());
     }
 
     @Test
     void testWorkspaceDependency() {
-        YarnLockDependency dep = parser.parse("\"@yarnpkg/plugin-npm\": \"workspace:^2.4.0\"", true);
+        Optional<YarnLockDependency> dep = parser.parse("\"@yarnpkg/plugin-npm\": \"workspace:^2.4.0\"", true);
+        assertTrue(dep.isPresent());
+        YarnLockDependency gottenDep = dep.get();
+        assertEquals("@yarnpkg/plugin-npm", gottenDep.getName());
+        assertEquals("workspace:^2.4.0", gottenDep.getVersion());
+    }
 
-        assertEquals("@yarnpkg/plugin-npm", dep.getName());
-        assertEquals("workspace:^2.4.0", dep.getVersion());
+    @Test
+    void testPatchPortalLink() {
+        Optional<YarnLockDependency> dep = parser.parse("gatsby-plugin-algolia-docsearch: \"portal:./gatsby-plugin-algolia-docsearch\"", true);
+        assertFalse(dep.isPresent());
+
+        dep = parser.parse("gatsby-plugin-algolia-docsearch: \"link:./gatsby-plugin-algolia-docsearch\"", true);
+        assertFalse(dep.isPresent());
+
+        dep = parser.parse("gatsby-plugin-algolia-docsearch: \"patch:./gatsby-plugin-algolia-docsearch\"", true);
+        assertFalse(dep.isPresent());
     }
 }

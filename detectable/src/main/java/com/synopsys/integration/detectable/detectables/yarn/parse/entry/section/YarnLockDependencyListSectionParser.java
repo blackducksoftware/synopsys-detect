@@ -8,6 +8,7 @@
 package com.synopsys.integration.detectable.detectables.yarn.parse.entry.section;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDependency;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockLineAnalyzer;
@@ -48,8 +49,10 @@ public class YarnLockDependencyListSectionParser implements YarnLockEntrySection
             if (depth != 2) {
                 return curLineIndex - 1;
             }
-            YarnLockDependency yarnLockDependency = yarnLockDependencySpecParser.parse(line.trim(), dependenciesAreOptional);
-            entryBuilder.addDependency(yarnLockDependency);
+            Optional<YarnLockDependency> yarnLockDependency = yarnLockDependencySpecParser.parse(line.trim(), dependenciesAreOptional);
+            if (yarnLockDependency.isPresent()) {
+                entryBuilder.addDependency(yarnLockDependency.get());
+            }
         }
         return yarnLockLines.size() - 1;
     }

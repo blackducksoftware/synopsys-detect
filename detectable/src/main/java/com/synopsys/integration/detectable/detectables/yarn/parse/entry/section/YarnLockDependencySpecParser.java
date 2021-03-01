@@ -7,6 +7,9 @@
  */
 package com.synopsys.integration.detectable.detectables.yarn.parse.entry.section;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.StringTokenizer;
 
 import org.slf4j.Logger;
@@ -23,7 +26,7 @@ public class YarnLockDependencySpecParser {
         this.yarnLockLineAnalyzer = yarnLockLineAnalyzer;
     }
 
-    public YarnLockDependency parse(String dependencySpec, boolean optional) {
+    public Optional<YarnLockDependency> parse(String dependencySpec, boolean optional) {
         StringTokenizer tokenizer = TokenizerFactory.createDependencySpecTokenizer(dependencySpec);
         String name = yarnLockLineAnalyzer.unquote(tokenizer.nextToken());
         // version formats vary; see YarnLockDependencySpecParserTest
@@ -33,6 +36,25 @@ public class YarnLockDependencySpecParser {
         }
         version = yarnLockLineAnalyzer.unquote(version);
         logger.trace("\tdependency: name: {}, version: {} (optional: {})", name, version, optional);
-        return new YarnLockDependency(name, version, optional);
+        if (!hasSkippableProtocol(name, version)) {
+            return Optional.of(new YarnLockDependency(name, version, optional));
+        }
+        return Optional.empty();
+    }
+
+    private boolean hasSkippableProtocol(String name, String version) {
+        List<String> skippableProtocols = Arrays.asList("patch", "link", "portal");
+        for (String skippableProtocol : skippableProtocols) {
+            if (protocolMatches(version, skippableProtocol)) {
+                logger.info("{}@{} is a \"{}:\" dependency so will be skipped", name, version, skippableProtocol);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean protocolMatches(String version, String protocol) {
+        String protocolPrefix = protocol + ":";
+        return version.startsWith((protocolPrefix));
     }
 }
