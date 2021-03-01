@@ -46,7 +46,7 @@ public class YarnLockDependencySpecParser {
         List<String> skippableProtocols = Arrays.asList("patch", "link", "portal");
         for (String skippableProtocol : skippableProtocols) {
             if (protocolMatches(version, skippableProtocol)) {
-                logger.info("{}@{} is a \"{}:\" dependency so will be skipped", name, version, skippableProtocol);
+                logger.debug("{}@{} is a \"{}:\" dependency so will be skipped", name, version, skippableProtocol);
                 return true;
             }
         }
