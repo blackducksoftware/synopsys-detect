@@ -19,6 +19,7 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDepend
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockLineAnalyzer;
 
 public class YarnLockDependencySpecParser {
+    private static final List<String> skippableProtocols = Arrays.asList("patch", "link", "portal");
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final YarnLockLineAnalyzer yarnLockLineAnalyzer;
 
@@ -43,7 +44,6 @@ public class YarnLockDependencySpecParser {
     }
 
     private boolean hasSkippableProtocol(String name, String version) {
-        List<String> skippableProtocols = Arrays.asList("patch", "link", "portal");
         for (String skippableProtocol : skippableProtocols) {
             if (protocolMatches(version, skippableProtocol)) {
                 logger.debug("{}@{} is a \"{}:\" dependency so will be skipped", name, version, skippableProtocol);

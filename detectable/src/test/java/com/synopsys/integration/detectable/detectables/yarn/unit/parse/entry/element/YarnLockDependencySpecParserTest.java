@@ -1,11 +1,8 @@
 package com.synopsys.integration.detectable.detectables.yarn.unit.parse.entry.element;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Optional;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +10,7 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDepend
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockLineAnalyzer;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.section.YarnLockDependencySpecParser;
 
-public class YarnLockDependencySpecParserTest {
+class YarnLockDependencySpecParserTest {
     private static YarnLockDependencySpecParser parser;
 
     @BeforeAll
@@ -23,59 +20,47 @@ public class YarnLockDependencySpecParserTest {
     }
 
     @Test
-    public void testNoColon() {
-        Optional<YarnLockDependency> dep = parser.parse("\"@babel/helper-plugin-utils\" \"^7.8.0\"", true);
-        assertTrue(dep.isPresent());
-        YarnLockDependency gottenDep = dep.get();
-        assertEquals("@babel/helper-plugin-utils", gottenDep.getName());
-        assertEquals("^7.8.0", gottenDep.getVersion());
+    void testNoColon() {
+        doValidDependencyTest("\"@babel/helper-plugin-utils\" \"^7.8.0\"", "@babel/helper-plugin-utils", "^7.8.0");
     }
 
     @Test
-    public void testWithColon() {
-        Optional<YarnLockDependency> dep = parser.parse("\"@babel/helper-plugin-utils\": \"^7.8.0\"", true);
-        assertTrue(dep.isPresent());
-        YarnLockDependency gottenDep = dep.get();
-        assertEquals("@babel/helper-plugin-utils", gottenDep.getName());
-        assertEquals("^7.8.0", gottenDep.getVersion());
+    void testWithColon() {
+        doValidDependencyTest("\"@babel/helper-plugin-utils\": \"^7.8.0\"", "@babel/helper-plugin-utils", "^7.8.0");
     }
 
     @Test
-    public void testUnquotedName() {
-        Optional<YarnLockDependency> dep = parser.parse("property-expr \"^2.0.0\"", true);
-        assertTrue(dep.isPresent());
-        YarnLockDependency gottenDep = dep.get();
-        assertEquals("property-expr", gottenDep.getName());
-        assertEquals("^2.0.0", gottenDep.getVersion());
+    void testUnquotedName() {
+        doValidDependencyTest("property-expr \"^2.0.0\"", "property-expr", "^2.0.0");
     }
 
     @Test
     void testQuotedMultipleVersion() {
-        Optional<YarnLockDependency> dep = parser.parse("xtend \">=4.0.0 <4.1.0-0\"", true);
-        assertTrue(dep.isPresent());
-        YarnLockDependency gottenDep = dep.get();
-        assertEquals("xtend", gottenDep.getName());
-        assertEquals(">=4.0.0 <4.1.0-0", gottenDep.getVersion());
+        doValidDependencyTest("xtend \">=4.0.0 <4.1.0-0\"", "xtend", ">=4.0.0 <4.1.0-0");
     }
 
     @Test
     void testWorkspaceDependency() {
-        Optional<YarnLockDependency> dep = parser.parse("\"@yarnpkg/plugin-npm\": \"workspace:^2.4.0\"", true);
-        assertTrue(dep.isPresent());
-        YarnLockDependency gottenDep = dep.get();
-        assertEquals("@yarnpkg/plugin-npm", gottenDep.getName());
-        assertEquals("workspace:^2.4.0", gottenDep.getVersion());
+        doValidDependencyTest("\"@yarnpkg/plugin-npm\": \"workspace:^2.4.0\"", "@yarnpkg/plugin-npm", "workspace:^2.4.0");
     }
 
     @Test
-    void testPatchPortalLink() {
+    void testSkippableProtocols() {
         Optional<YarnLockDependency> dep = parser.parse("gatsby-plugin-algolia-docsearch: \"portal:./gatsby-plugin-algolia-docsearch\"", true);
-        assertFalse(dep.isPresent());
+        Assertions.assertFalse(dep.isPresent());
 
         dep = parser.parse("gatsby-plugin-algolia-docsearch: \"link:./gatsby-plugin-algolia-docsearch\"", true);
-        assertFalse(dep.isPresent());
+        Assertions.assertFalse(dep.isPresent());
 
         dep = parser.parse("gatsby-plugin-algolia-docsearch: \"patch:./gatsby-plugin-algolia-docsearch\"", true);
-        assertFalse(dep.isPresent());
+        Assertions.assertFalse(dep.isPresent());
+    }
+
+    private void doValidDependencyTest(String dependencySpec, String expectedName, String expectedVersion) {
+        Optional<YarnLockDependency> dep = parser.parse(dependencySpec, true);
+        Assertions.assertTrue(dep.isPresent());
+        YarnLockDependency gottenDep = dep.get();
+        Assertions.assertEquals(expectedName, gottenDep.getName());
+        Assertions.assertEquals(expectedVersion, gottenDep.getVersion());
     }
 }
