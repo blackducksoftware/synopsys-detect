@@ -63,7 +63,7 @@ public class YarnBattery {
     }
 
     @Test
-    void yarnWorkspacesBerrySubset() {
+    void yarnWorkspacesExtensive() {
         BatteryTest test = new BatteryTest("yarn-workspaces-berry");
         test.sourceDirectoryNamed("yarn-workspaces-berry");
         test.sourceFileFromResource("yarn.lock");
