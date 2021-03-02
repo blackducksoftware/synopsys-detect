@@ -60,6 +60,7 @@ import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOptions;
 import com.synopsys.integration.detectable.detectables.clang.ClangExtractor;
 import com.synopsys.integration.detectable.detectables.clang.ForgeChooser;
+import com.synopsys.integration.detectable.detectables.clang.ForgeGenerator;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandDatabaseParser;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandParser;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.ClangPackageDetailsTransformer;
@@ -438,7 +439,8 @@ public class DetectableFactory {
     }
 
     private ForgeChooser forgeChooser() {
-        return new ForgeChooser();
+        ForgeGenerator forgeGenerator = new ForgeGenerator();
+        return new ForgeChooser(forgeGenerator);
     }
 
     private LinuxDistro linuxDistro() {

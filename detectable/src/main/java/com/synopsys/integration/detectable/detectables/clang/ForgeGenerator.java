@@ -43,32 +43,17 @@ public class ForgeGenerator {
         linuxDistroNameToKbForgeNameMapping.put(AMAZON_DISTRO_NAME, AMAZON_KB_NAME);
     }
 
-    private ForgeGenerator() {
-    }
-
-    public static Forge createProjectForge(String linuxDistroName) {
-        return createForge(linuxDistroName, false);
-    }
-
-    public static Forge createLayerForge() {
-        return new Forge("/", "DOCKER_INSPECTOR");
-    }
-
-    public static Forge createComponentForge(String linuxDistroName) {
-        return createForge(linuxDistroName, true);
-    }
-
-    private static Forge createForge(String linuxDistroName, boolean doPreferredAliasNamespace) {
+    public Forge createPreferredAliasNamespaceForge(String linuxDistroName) {
         if (StringUtils.isBlank(linuxDistroName)) {
             return new Forge("/", "none");
         }
         String linuxDistroNameLowerCase = linuxDistroName.toLowerCase();
         Optional<String> overriddenKbName = findMatch(linuxDistroNameLowerCase);
         String kbName = overriddenKbName.orElse(linuxDistroNameLowerCase);
-        return new Forge("/", kbName, doPreferredAliasNamespace);
+        return new Forge("/", kbName, true);
     }
 
-    private static Optional<String> findMatch(String linuxDistroNameLowerCase) {
+    private Optional<String> findMatch(String linuxDistroNameLowerCase) {
         for (Map.Entry<String, String> mappingEntry : linuxDistroNameToKbForgeNameMapping.entrySet()) {
             if (linuxDistroNameLowerCase.startsWith(mappingEntry.getKey().toLowerCase())) {
                 return Optional.of(mappingEntry.getValue());

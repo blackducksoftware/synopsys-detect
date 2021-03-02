@@ -17,21 +17,12 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// TODO Perhaps this should move into a lib like integration-common to be used
-// here and by hub-imageinspector-lib
+// TODO Perhaps this should move into a lib like integration-common to be used here and by hub-imageinspector-lib
 public class LinuxDistro {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public Optional<String> extractLinuxDistroNameFromEtcDir(File etcDir) {
-        logger.trace(String.format("/etc directory: %s", etcDir.getAbsolutePath()));
-        if (etcDir.listFiles().length == 0) {
-            logger.warn(String.format("Could not determine the Operating System because the /etc dir (%s) is empty", etcDir.getAbsolutePath()));
-        }
-        return extractLinuxDistroNameFromFiles(etcDir.listFiles());
-    }
-
-    private Optional<String> extractLinuxDistroNameFromFiles(File[] etcFiles) {
-        for (File etcFile : etcFiles) {
+        for (File etcFile : etcDir.listFiles()) {
             if (isLinuxDistroFile(etcFile)) {
                 Optional<String> distroAccordingToThisFile = getLinxDistroName(etcFile);
                 if (distroAccordingToThisFile.isPresent()) {
@@ -43,13 +34,9 @@ public class LinuxDistro {
     }
 
     private boolean isLinuxDistroFile(File candidate) {
-        if ("lsb-release".equals(candidate.getName())) {
-            return true;
-        }
-        if ("os-release".equals(candidate.getName())) {
-            return true;
-        }
-        return "redhat-release".equals(candidate.getName());
+        return "lsb-release".equals(candidate.getName()) ||
+                   "os-release".equals(candidate.getName()) ||
+                   "redhat-release".equals(candidate.getName());
     }
 
     private Optional<String> getLinxDistroName(File etcDirFile) {
@@ -66,7 +53,7 @@ public class LinuxDistro {
     }
 
     private Optional<String> getLinuxDistroNameFromStandardReleaseFile(File etcDirFile) {
-        String linePrefix = null;
+        String linePrefix;
         if ("lsb-release".equals(etcDirFile.getName())) {
             logger.trace("Found lsb-release");
             linePrefix = "DISTRIB_ID=";
@@ -74,18 +61,17 @@ public class LinuxDistro {
             logger.trace("Found os-release");
             linePrefix = "ID=";
         } else {
-            logger.warn(String.format("File %s is not a Linux distribution-identifying file", etcDirFile.getAbsolutePath()));
+            logger.warn("File {} is not a Linux distribution-identifying file", etcDirFile.getAbsolutePath());
             return Optional.empty();
         }
         try {
-            List<String> lines = null;
-            lines = FileUtils.readLines(etcDirFile, StandardCharsets.UTF_8);
+            List<String> lines = FileUtils.readLines(etcDirFile, StandardCharsets.UTF_8);
             for (String line : lines) {
                 line = line.trim();
                 if (line.startsWith(linePrefix)) {
                     String[] parts = line.split("=");
                     String distroName = parts[1].replace("\"", "").toLowerCase();
-                    logger.debug(String.format("Found target image Linux distro name '%s' in file %s", distroName, etcDirFile.getAbsolutePath()));
+                    logger.debug("Found target image Linux distro name '{}' in file {}", distroName, etcDirFile.getAbsolutePath());
                     return Optional.of(distroName);
                 }
             }
@@ -93,15 +79,14 @@ public class LinuxDistro {
             logger.error(String.format("Error reading %s", etcDirFile.getAbsolutePath()));
             return Optional.empty();
         }
-        logger.warn(String.format("Did not find value for %s in %s", linePrefix, etcDirFile.getAbsolutePath()));
+        logger.warn("Did not find value for {} in {}", linePrefix, etcDirFile.getAbsolutePath());
         return Optional.empty();
     }
 
     private Optional<String> getLinuxDistroNameFromRedHatReleaseFile(File etcDirFile) {
         logger.trace("Found redhat-release");
         try {
-            List<String> lines = null;
-            lines = FileUtils.readLines(etcDirFile, StandardCharsets.UTF_8);
+            List<String> lines = FileUtils.readLines(etcDirFile, StandardCharsets.UTF_8);
             if (!lines.isEmpty()) {
                 String line = lines.get(0);
                 if (line.startsWith("Red Hat")) {
@@ -116,14 +101,14 @@ public class LinuxDistro {
                     logger.trace("Contents of redhat-release indicate Fedora");
                     return Optional.of("fedora");
                 }
-                logger.warn(String.format("Found redhat-release file %s but don't understand the contents: '%s'", etcDirFile.getAbsolutePath(), line));
+                logger.warn("Found redhat-release file {} but don't understand the contents: '{}'", etcDirFile.getAbsolutePath(), line);
                 return Optional.empty();
             }
         } catch (IOException e) {
             logger.error(String.format("Error reading %s", etcDirFile.getAbsolutePath()));
             return Optional.empty();
         }
-        logger.warn(String.format("Unable to discern linux distro from %s", etcDirFile.getAbsolutePath()));
+        logger.warn("Unable to discern linux distro from {}", etcDirFile.getAbsolutePath());
         return Optional.empty();
     }
 }
