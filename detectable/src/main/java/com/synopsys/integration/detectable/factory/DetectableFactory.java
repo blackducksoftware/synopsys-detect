@@ -59,12 +59,14 @@ import com.synopsys.integration.detectable.detectables.cargo.parse.CargoLockPars
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOptions;
 import com.synopsys.integration.detectable.detectables.clang.ClangExtractor;
+import com.synopsys.integration.detectable.detectables.clang.ForgeChooser;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandDatabaseParser;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandParser;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.ClangPackageDetailsTransformer;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.DependencyFileDetailGenerator;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.DependencyListFileParser;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.FilePathGenerator;
+import com.synopsys.integration.detectable.detectables.clang.linux.LinuxDistro;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerFactory;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerInfoFactory;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerRunner;
@@ -435,6 +437,14 @@ public class DetectableFactory {
         return new ClangPackageDetailsTransformer(externalIdFactory);
     }
 
+    private ForgeChooser forgeChooser() {
+        return new ForgeChooser();
+    }
+
+    private LinuxDistro linuxDistro() {
+        return new LinuxDistro();
+    }
+
     private CompileCommandDatabaseParser compileCommandDatabaseParser() {
         return new CompileCommandDatabaseParser(gson);
     }
@@ -444,7 +454,7 @@ public class DetectableFactory {
     }
 
     private ClangExtractor clangExtractor() {
-        return new ClangExtractor(executableRunner, dependencyFileDetailGenerator(), clangPackageDetailsTransformer(), compileCommandDatabaseParser());
+        return new ClangExtractor(executableRunner, dependencyFileDetailGenerator(), clangPackageDetailsTransformer(), compileCommandDatabaseParser(), forgeChooser(), linuxDistro());
     }
 
     private PodlockParser podlockParser() {
