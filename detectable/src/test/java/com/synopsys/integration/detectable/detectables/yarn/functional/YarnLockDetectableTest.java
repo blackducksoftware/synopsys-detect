@@ -71,19 +71,19 @@ public class YarnLockDetectableTest extends DetectableFunctionalTest {
 
     @NotNull
     @Override
-    public Detectable create(@NotNull final DetectableEnvironment detectableEnvironment) {
-        return detectableFactory.createYarnLockDetectable(detectableEnvironment, new YarnLockOptions(true));
+    public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
+        return detectableFactory.createYarnLockDetectable(detectableEnvironment, new YarnLockOptions(true, false));
     }
 
     @Override
-    public void assertExtraction(@NotNull final Extraction extraction) {
+    public void assertExtraction(@NotNull Extraction extraction) {
         Assertions.assertEquals(1, extraction.getCodeLocations().size());
-        final CodeLocation codeLocation = extraction.getCodeLocations().get(0);
+        CodeLocation codeLocation = extraction.getCodeLocations().get(0);
 
         Assertions.assertEquals("babel", extraction.getProjectName());
         Assertions.assertEquals("1.2.3", extraction.getProjectVersion());
 
-        final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, codeLocation.getDependencyGraph());
+        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, codeLocation.getDependencyGraph());
         graphAssert.hasRootSize(2);
         graphAssert.hasRootDependency("async", "2.5.0");
         graphAssert.hasRootDependency("lodash", "4.17.4");

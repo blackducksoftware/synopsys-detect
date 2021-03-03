@@ -1159,6 +1159,12 @@ public class DetectProperties {
             .setHelp("Set this to true to only scan production dependencies.")
             .setGroups(DetectGroup.YARN, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
 
+    public static final DetectProperty<BooleanProperty> DETECT_YARN_INCLUDE_ALL_WORKSPACE_DEPENDENCIES =
+        new DetectProperty<>(new BooleanProperty("detect.yarn.include.all.workspace.dependencies", false))
+            .setInfo("Include all workspace dependencies in the results. This is always done for Yarn 1 projects, so the value of this property only affects behavior on Yarn 2 projects", DetectPropertyFromVersion.VERSION_7_0_0)
+            .setHelp("When this property is set to false, in Yarn 2 projects, only the dependencies of the workspaces that the root package.json actually depends on (directly or indirectly) are included in the results.")
+            .setGroups(DetectGroup.YARN, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
+
     public static final DetectProperty<EnumProperty<LogLevel>> LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION =
         new DetectProperty<>(new EnumProperty<>("logging.level.com.synopsys.integration", LogLevel.INFO, LogLevel.class))
             .setInfo("Logging Level", DetectPropertyFromVersion.VERSION_5_3_0)
@@ -1860,7 +1866,7 @@ public class DetectProperties {
 
     // username/password ==> api token
     public static final String BDIO1_DEPRECATION_MESSAGE = "This property is being removed, along with the option to generate BDIO in BDIO1 format. In the future, BDIO2 format will be the only option.";
-    
+
     @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_BDIO2_ENABLED =
         new DetectProperty<>(new BooleanProperty("detect.bdio2.enabled", true))

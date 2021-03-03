@@ -231,7 +231,8 @@ public class DetectableOptionFactory {
 
     public YarnLockOptions createYarnLockOptions() {
         Boolean useProductionOnly = getValue(DetectProperties.DETECT_YARN_PROD_ONLY);
-        return new YarnLockOptions(useProductionOnly);
+        Boolean includeAllWorkspaceDependencies = getValue(DetectProperties.DETECT_YARN_INCLUDE_ALL_WORKSPACE_DEPENDENCIES);
+        return new YarnLockOptions(useProductionOnly, includeAllWorkspaceDependencies);
     }
 
     public NugetInspectorOptions createNugetInspectorOptions() {
