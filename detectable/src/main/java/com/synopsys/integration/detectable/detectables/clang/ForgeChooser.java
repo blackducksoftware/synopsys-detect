@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,13 +38,18 @@ public class ForgeChooser {
             return Arrays.asList(preferredAliasNamespaceForge);
         }
         List<Forge> possibleForges = currentPackageManager.getPackageManagerInfo().getPossibleForges();
+        String forgesList = generateNameList(possibleForges);
+        logger.warn("Unable to determine the Linux distro name of the host operating system; will generate components for: {}", forgesList);
+        return possibleForges;
+    }
+
+    @NotNull
+    private String generateNameList(List<Forge> forges) {
         StringBuilder sb = new StringBuilder();
-        possibleForges.stream().map(Forge::getName).forEach(name -> {
+        forges.stream().map(Forge::getName).forEach(name -> {
             sb.append(name);
             sb.append(" ");
         });
-        String forgesList = sb.toString();
-        logger.warn("Unable to determine the Linux distro name of the host operating system; will generate components for: {}", forgesList);
-        return possibleForges;
+        return sb.toString();
     }
 }
