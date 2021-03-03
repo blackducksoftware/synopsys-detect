@@ -1033,13 +1033,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bdio-2-enabled" class="md-nav__link">
-    BDIO 2 Enabled
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#detector-search-depth" class="md-nav__link">
     Detector Search Depth
   </a>
@@ -1203,6 +1196,13 @@
         <li class="md-nav__item">
   <a href="#detect-bom-tool-search-continue-deprecated" class="md-nav__link">
     Detect Bom Tool Search Continue (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bdio-2-enabled-deprecated" class="md-nav__link">
+    BDIO 2 Enabled (Deprecated)
   </a>
   
 </li>
@@ -1599,13 +1599,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bdio-2-enabled" class="md-nav__link">
-    BDIO 2 Enabled
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#detector-search-depth" class="md-nav__link">
     Detector Search Depth
   </a>
@@ -1773,6 +1766,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#bdio-2-enabled-deprecated" class="md-nav__link">
+    BDIO 2 Enabled (Deprecated)
+  </a>
+  
+</li>
+      
       
       
       
@@ -1864,54 +1864,6 @@
 <tr>
 <td>Default Value</td>
 <td></td>
-</tr>
-<tr>
-<td>Comma Separated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensitive</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Example</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<h2 id="bdio-2-enabled">BDIO 2 Enabled<a class="headerlink" href="#bdio-2-enabled" title="Permanent link">#</a></h2>
-<pre><code>--detect.bdio2.enabled=false
-</code></pre>
-
-<p>The version of BDIO files to generate.</p>
-<p>If set to false, BDIO version 1 will be generated. If set to true, BDIO version 2 will be generated.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>6.1.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Boolean</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>false</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -3028,6 +2980,51 @@
 <tr>
 <td>Default Value</td>
 <td>false</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="bdio-2-enabled-deprecated">BDIO 2 Enabled (Deprecated)<a class="headerlink" href="#bdio-2-enabled-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.bdio2.enabled=true
+</code></pre>
+
+<p>The version of BDIO files to generate.</p>
+<p>If set to false, BDIO version 1 will be generated. If set to true, BDIO version 2 will be generated.</p>
+<p><strong>DEPRECATED: This property is being removed, along with the option to generate BDIO in BDIO1 format. In the future, BDIO2 format will be the only option. It will cause failure in 8.0.0 and be removed in 9.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>6.1.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Boolean</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>true</td>
 </tr>
 <tr>
 <td>Comma Separated</td>

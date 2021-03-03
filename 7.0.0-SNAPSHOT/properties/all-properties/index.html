@@ -2357,10 +2357,6 @@
 <td>BDIO Output Directory: The path to the output directory for all BDIO files. <br /><br /></td>
 </tr>
 <tr>
-<td><a href="../configuration/paths/#bdio-2-enabled">detect.bdio2.enabled</a></td>
-<td>default: false <br /><br /> BDIO 2 Enabled: The version of BDIO files to generate. <br /><br /></td>
-</tr>
-<tr>
 <td><a href="../configuration/paths/#detector-search-depth">detect.detector.search.depth</a></td>
 <td>default: 0 <br /><br /> Detector Search Depth: Depth of subdirectories within the source directory to which Detect will search for files that indicate whether a detector applies. <br /><br /></td>
 </tr>
@@ -2455,6 +2451,10 @@
 <tr>
 <td><a href="../configuration/paths/#detect-bom-tool-search-continue-deprecated">detect.bom.tool.search.continue</a> <br /> (Deprecated)</td>
 <td>default: false <br /><br /> Detect Bom Tool Search Continue: If true, the bom tool search will continue to look for nested bom tools of the same type to the maximum search depth, see the detailed help for more information. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.detector.search.continue in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></td>
+</tr>
+<tr>
+<td><a href="../configuration/paths/#bdio-2-enabled-deprecated">detect.bdio2.enabled</a> <br /> (Deprecated)</td>
+<td>default: true <br /><br /> BDIO 2 Enabled: The version of BDIO files to generate. <br /><br /> <strong>DEPRECATED: This property is being removed, along with the option to generate BDIO in BDIO1 format. In the future, BDIO2 format will be the only option. It will cause failure in 8.0.0 and be removed in 9.0.0.</strong></td>
 </tr>
 </tbody>
 </table>
