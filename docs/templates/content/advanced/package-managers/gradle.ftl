@@ -17,9 +17,11 @@ The Gradle inspector detector also requires either gradlew or gradle:
 1. ${solution_name} looks for gradlew in the source directory (top level). You can override this by setting the Gradle path property. If not overridden and not found:
 1. ${solution_name} looks for gradle on $PATH.
 
-The Gradle inspector detector runs `gradlew dependencies` to get a list of the project's dependencies, and then parses the output.
+The Gradle inspector detector runs `gradlew gatherDependencies` to get a list of the project's dependencies, and then parses the output.
 
-It consumes the output of `gradlew dependencies` with the help of a Gradle script (`init-detect.gradle`), which it usually downloads automatically. The file init-detect.gradle has a dependency DependencyGatherer that comes from https://github.com/blackducksoftware/integration-gradle-inspector. Filtering (including/excluding projects and configurations) is performed by this Gradle/Groovy code on the output of the `gradlew dependencies` command.
+The inspector defines the custom task 'gatherDependencies' with the help of a Gradle script (`init-detect.gradle`), which it usually downloads automatically. The file init-detect.gradle has a dependency DependencyDataUtil that comes from https://github.com/blackducksoftware/integration-gradle-inspector. Filtering (including/excluding projects and configurations) is performed by this Gradle/Groovy code to control the output of the `dependencies` Gradle task invoked by the 'gradlew gatherDependencies' command.
+
+The init-detect.gradle script configures each project with the custom 'gatherDependencies' task, which will invoke the 'dependencies' Gradle task on each project. This ensures the same output as previous versions is produced. The inspector consumes the output of `gradlew gatherDependencies` task.
 
 <a name="gradleinspectorwithproxy"></a>
 ###Running the Gradle inspector with a proxy

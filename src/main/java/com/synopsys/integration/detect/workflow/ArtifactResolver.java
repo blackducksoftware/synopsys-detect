@@ -43,8 +43,8 @@ public class ArtifactResolver {
      * Communicates with Artifactory to find the location of an artifact.
      * Will either return the url of the given artifactory property or will calculate url the given version would point to.
      * @param artifactoryBaseUrl      The base url of artifactory, such as http://int-jfrog01.dc1.lan:8081/artifactory/
-     * @param repositoryUrl           The url of the repository with the artifact, such as bds-integrations-release/com/blackducksoftware/integration/integration-gradle-inspector
-     * @param propertyKey             The property to find, such as DETECT_GRADLE_INSPECTOR_LATEST_0
+     * @param repositoryUrl           The url of the repository with the artifact, such as bds-integrations-release/com/synopsys/integration/integration-gradle-inspector
+     * @param propertyKey             The property to find, such as DETECT_GRADLE_INSPECTOR_LATEST_1
      * @param overrideVersion         The version to use, if provided, overrides the property tag.
      * @param overrideArtifactPattern The pattern to use when the override version is provided of the full artifact location.
      * @return the location of the artifact
@@ -68,7 +68,7 @@ public class ArtifactResolver {
     /**
      * Communicates with Artifactory to find the actual version of an artifact.
      * @param artifactoryBaseUrl The base url of artifactory, such as http://int-jfrog01.dc1.lan:8081/artifactory/
-     * @param repositoryUrl      The url of the repository with the artifact, such as bds-integrations-release/com/blackducksoftware/integration/integration-gradle-inspector
+     * @param repositoryUrl      The url of the repository with the artifact, such as bds-integrations-release/com/synopsys/integration/integration-gradle-inspector
      * @param propertyKey        The property to find, such as DETECT_GRADLE_INSPECTOR_LATEST_0
      * @return the calculated version of the artifact
      */

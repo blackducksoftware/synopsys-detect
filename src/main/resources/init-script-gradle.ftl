@@ -1,10 +1,10 @@
-import java.nio.charset.StandardCharsets
+import java.util.Optional
 
 import org.gradle.api.Task
 import org.gradle.api.execution.TaskExecutionListener
 import org.gradle.api.tasks.TaskState
 
-import com.blackducksoftware.integration.gradle.DependencyGatherer
+import com.blackducksoftware.integration.gradle.DependencyDataUtil
 
 initscript {
     repositories {
@@ -30,29 +30,55 @@ initscript {
             }
         }
 <#else>
-        classpath 'com.blackducksoftware.integration:integration-gradle-inspector:${gradleInspectorVersion}'
+        classpath 'com.synopsys.integration:integration-gradle-inspector:${gradleInspectorVersion}'
 </#if>
     }
 }
 
-addListener(
-    new TaskExecutionListener() {
-        boolean executed = false;
-        void beforeExecute(Task task) { }
-        void afterExecute(Task task, TaskState state) {
-            if (executed) {
-                return
-            } else {
-                executed = true
-            }
-
-            String outputDirectoryPath = System.getProperty('GRADLEEXTRACTIONDIR')
-            File outputDirectory = new File(outputDirectoryPath)
-            outputDirectory.mkdirs()
-
-            def dependencyGatherer = new DependencyGatherer()
-            def rootProject = task.project
-            dependencyGatherer.createAllDependencyGraphFiles(rootProject, '${excludedProjectNames}', '${includedProjectNames}', '${excludedConfigurationNames}', '${includedConfigurationNames}', outputDirectory)
+gradle.allprojects {
+    // add a new task to each project to start the process of getting the dependencies
+    task gatherDependencies(type: DefaultTask) {
+        doLast {
+            println "Gathering dependencies for " + project.name
         }
     }
-)
+    afterEvaluate { project ->
+        // after a project has been evaluated modify the dependencies task for that project to output to a specific file.
+        project.tasks.getByName('dependencies') {
+            ext {
+                excludedProjectNames = '${excludedProjectNames}'
+                includedProjectNames = '${includedProjectNames}'
+                excludedConfigurationNames = '${excludedConfigurationNames}'
+                includedConfigurationNames = '${includedConfigurationNames}'
+                outputDirectoryPath = System.getProperty('GRADLEEXTRACTIONDIR')
+            }
+            doFirst {
+                DependencyDataUtil dependencyUtil = new DependencyDataUtil()
+                dependencyUtil.generateRootProjectMetaData(project, outputDirectoryPath)
+
+                // this will be empty if the project should not be included.
+                Optional<File> projectOutputFile = dependencyUtil.getProjectOutputFile(project, outputDirectoryPath, excludedProjectNames, includedProjectNames)
+                if(projectOutputFile.isPresent()) {
+                    File projectFile = dependencyUtil.createProjectOutputFile(projectOutputFile.get())
+
+                    // modify the configurations for the dependency task and the output file
+                    setConfigurations(dependencyUtil.filterConfigurations(project, excludedConfigurationNames, includedConfigurationNames))
+                    setOutputFile(projectFile)
+                }
+            }
+
+            doLast {
+                DependencyDataUtil dependencyUtil = new DependencyDataUtil()
+
+                // this will be empty if this project should not be included.
+                Optional<File> projectFile = dependencyUtil.getProjectOutputFile(project, outputDirectoryPath, excludedProjectNames, includedProjectNames)
+                if(projectFile.isPresent()) {
+                    dependencyUtil.appendProjectMetadata(project, projectFile.get())
+                }
+            }
+        }
+        // this forces the dependencies task to be run which will write the content to the modified output file
+        project.gatherDependencies.finalizedBy(project.tasks.getByName('dependencies'))
+        project.gatherDependencies
+    }
+}

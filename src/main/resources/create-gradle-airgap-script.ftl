@@ -9,7 +9,7 @@ configurations {
 }
 
 dependencies {
-    airGap 'com.blackducksoftware.integration:integration-gradle-inspector:${gradleVersion}'
+    airGap 'com.synopsys.integration:integration-gradle-inspector:${gradleVersion}'
 }
 
 task installDependencies(type: Copy) {
