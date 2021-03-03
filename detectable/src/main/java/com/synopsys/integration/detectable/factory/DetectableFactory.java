@@ -7,8 +7,6 @@
  */
 package com.synopsys.integration.detectable.factory;
 
-import java.util.List;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -61,7 +59,7 @@ import com.synopsys.integration.detectable.detectables.cargo.parse.CargoLockPars
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOptions;
 import com.synopsys.integration.detectable.detectables.clang.ClangExtractor;
-import com.synopsys.integration.detectable.detectables.clang.compilecommand.ArgumentParser;
+import com.synopsys.integration.detectable.detectable.parser.CommandParser;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandDatabaseParser;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.ClangPackageDetailsTransformer;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.DependencyFileDetailGenerator;
@@ -418,7 +416,7 @@ public class DetectableFactory {
     }
 
     private FilePathGenerator filePathGenerator() {
-        return new FilePathGenerator(executableRunner, argumentParser(), dependenyListFileParser());
+        return new FilePathGenerator(executableRunner, commandParser(), dependenyListFileParser());
     }
 
     private DependencyListFileParser dependenyListFileParser() {
@@ -570,11 +568,11 @@ public class DetectableFactory {
     }
 
     private MavenCliExtractor mavenCliExtractor() {
-        return new MavenCliExtractor(executableRunner, mavenCodeLocationPackager(), argumentParser());
+        return new MavenCliExtractor(executableRunner, mavenCodeLocationPackager(), commandParser());
     }
 
-    private ArgumentParser argumentParser() {
-        return new ArgumentParser();
+    private CommandParser commandParser() {
+        return new CommandParser();
     }
 
     private ConanLockfileExtractor conanLockfileExtractor() {
