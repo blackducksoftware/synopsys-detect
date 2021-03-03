@@ -84,7 +84,6 @@ gradle.allprojects {
 }
 
 // ## START methods invoked by tasks above
-// Freemarker should not parse this section because of the special characters used in the string templates
 <#noparse>
 def generateRootProjectMetaData(Project project, String outputDirectoryPath) {
     File outputDirectory = createTaskOutputDirectory(outputDirectoryPath)
