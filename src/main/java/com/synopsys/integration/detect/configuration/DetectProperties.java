@@ -1,24 +1,9 @@
-/**
+/*
  * synopsys-detect
  *
  * Copyright (c) 2021 Synopsys, Inc.
  *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
 package com.synopsys.integration.detect.configuration;
 
@@ -232,12 +217,6 @@ public class DetectProperties {
         new DetectProperty<>(new NullablePathProperty("detect.bdio.output.path"))
             .setInfo("BDIO Output Directory", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("The path to the output directory for all BDIO files.", "If not set, the BDIO files are placed in a 'BDIO' subdirectory of the output directory.")
-            .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL);
-
-    public static final DetectProperty<BooleanProperty> DETECT_BDIO2_ENABLED =
-        new DetectProperty<>(new BooleanProperty("detect.bdio2.enabled", false))
-            .setInfo("BDIO 2 Enabled", DetectPropertyFromVersion.VERSION_6_1_0)
-            .setHelp("The version of BDIO files to generate.", "If set to false, BDIO version 1 will be generated. If set to true, BDIO version 2 will be generated.")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL);
 
     public static final DetectProperty<NullablePathProperty> DETECT_BINARY_SCAN_FILE =
@@ -1889,6 +1868,17 @@ public class DetectProperties {
             .setHelp("Black Duck password.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT)
             .setDeprecated(USERNAME_PASSWORD_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    // username/password ==> api token
+    public static final String BDIO1_DEPRECATION_MESSAGE = "This property is being removed, along with the option to generate BDIO in BDIO1 format. In the future, BDIO2 format will be the only option.";
+    
+    @Deprecated
+    public static final DetectProperty<BooleanProperty> DETECT_BDIO2_ENABLED =
+        new DetectProperty<>(new BooleanProperty("detect.bdio2.enabled", true))
+            .setInfo("BDIO 2 Enabled", DetectPropertyFromVersion.VERSION_6_1_0)
+            .setHelp("The version of BDIO files to generate.", "If set to false, BDIO version 1 will be generated. If set to true, BDIO version 2 will be generated.")
+            .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .setDeprecated(BDIO1_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT, DetectMajorVersion.NINE);
 
     // Accessor to get all properties
     public static Properties allProperties() throws IllegalAccessException {

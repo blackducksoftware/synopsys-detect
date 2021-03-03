@@ -42,7 +42,7 @@ import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureS
 //import com.synopsys.integration.detect.configuration.help.DetectOptionManager;
 //import com.synopsys.integration.detect.configuration.enumeration.OperatingSystemType;
 
-public class DetectConfigrationTest {
+public class DetectConfigurationTest {
 
     @Test
     public void testPhoneHomePassthroughProperties() {

@@ -1,24 +1,9 @@
-/**
+/*
  * detectable
  *
  * Copyright (c) 2021 Synopsys, Inc.
  *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
 package com.synopsys.integration.detectable.detectables.clang;
 
@@ -53,32 +38,32 @@ public class ClangExtractor {
     private final ClangPackageDetailsTransformer clangPackageDetailsTransformer;
     private final CompileCommandDatabaseParser compileCommandDatabaseParser;
 
-    public ClangExtractor(final DetectableExecutableRunner executableRunner, final DependencyFileDetailGenerator dependencyFileDetailGenerator,
-        final ClangPackageDetailsTransformer clangPackageDetailsTransformer, final CompileCommandDatabaseParser compileCommandDatabaseParser) {
+    public ClangExtractor(DetectableExecutableRunner executableRunner, DependencyFileDetailGenerator dependencyFileDetailGenerator,
+        ClangPackageDetailsTransformer clangPackageDetailsTransformer, CompileCommandDatabaseParser compileCommandDatabaseParser) {
         this.executableRunner = executableRunner;
         this.dependencyFileDetailGenerator = dependencyFileDetailGenerator;
         this.clangPackageDetailsTransformer = clangPackageDetailsTransformer;
         this.compileCommandDatabaseParser = compileCommandDatabaseParser;
     }
 
-    public Extraction extract(final ClangPackageManager currentPackageManager, final ClangPackageManagerRunner packageManagerRunner, final File sourceDirectory, final File outputDirectory, final File jsonCompilationDatabaseFile,
-        final boolean cleanup) {
+    public Extraction extract(ClangPackageManager currentPackageManager, ClangPackageManagerRunner packageManagerRunner, File sourceDirectory, File outputDirectory, File jsonCompilationDatabaseFile,
+        boolean cleanup) {
         try {
             logger.debug(String.format("Analyzing %s", jsonCompilationDatabaseFile.getAbsolutePath()));
             logger.debug(String.format("extract() called; compileCommandsJsonFilePath: %s", jsonCompilationDatabaseFile.getAbsolutePath()));
 
-            final List<CompileCommand> compileCommands = compileCommandDatabaseParser.parseCompileCommandDatabase(jsonCompilationDatabaseFile);
-            final Set<File> dependencyFileDetails = dependencyFileDetailGenerator.fromCompileCommands(compileCommands, outputDirectory, cleanup);
-            final PackageDetailsResult results = packageManagerRunner.getAllPackages(currentPackageManager, sourceDirectory, executableRunner, dependencyFileDetails);
+            List<CompileCommand> compileCommands = compileCommandDatabaseParser.parseCompileCommandDatabase(jsonCompilationDatabaseFile);
+            Set<File> dependencyFileDetails = dependencyFileDetailGenerator.fromCompileCommands(compileCommands, outputDirectory, cleanup);
+            PackageDetailsResult results = packageManagerRunner.getAllPackages(currentPackageManager, sourceDirectory, executableRunner, dependencyFileDetails);
 
             logger.trace("Found : " + results.getFoundPackages() + " packages.");
             logger.trace("Found : " + results.getUnRecognizedDependencyFiles() + " non-package files.");
 
-            final List<Forge> packageForges = currentPackageManager.getPackageManagerInfo().getForges();
-            final CodeLocation codeLocation = clangPackageDetailsTransformer.toCodeLocation(packageForges, results.getFoundPackages());
+            List<Forge> packageForges = currentPackageManager.getPackageManagerInfo().getForges();
+            CodeLocation codeLocation = clangPackageDetailsTransformer.toCodeLocation(packageForges, results.getFoundPackages());
 
             logFileCollection("Unrecognized dependency files (all)", results.getUnRecognizedDependencyFiles());
-            final List<File> unrecognizedIncludeFiles = results.getUnRecognizedDependencyFiles().stream()
+            List<File> unrecognizedIncludeFiles = results.getUnRecognizedDependencyFiles().stream()
                                                             .filter(file -> !isFileUnderDir(sourceDirectory, file))
                                                             .collect(Collectors.toList());
             logFileCollection(String.format("Unrecognized dependency files that are outside the compile_commands.json directory (%s) and will be collected", sourceDirectory), unrecognizedIncludeFiles);
@@ -86,31 +71,31 @@ public class ClangExtractor {
             return new Extraction.Builder()
                        .unrecognizedPaths(unrecognizedIncludeFiles)
                        .success(codeLocation).build();
-        } catch (final Exception e) {
+        } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
     }
 
-    public boolean isFileUnderDir(final File dir, final File file) {
+    public boolean isFileUnderDir(File dir, File file) {
         try {
-            final String dirPath = dir.getCanonicalPath();
-            final String filePath = file.getCanonicalPath();
+            String dirPath = dir.getCanonicalPath();
+            String filePath = file.getCanonicalPath();
             if (filePath.startsWith(dirPath)) {
                 return true;
             }
             return false;
-        } catch (final IOException e) {
+        } catch (IOException e) {
             logger.warn(String.format("Error getting canonical path for either %s or %s", dir.getAbsolutePath(), file.getAbsolutePath()));
             return false;
         }
     }
 
-    private void logFileCollection(final String description, Collection<File> files) {
+    private void logFileCollection(String description, Collection<File> files) {
         if (files == null) {
             files = new ArrayList<>(0);
         }
         logger.debug(String.format("%s (%d files):", description, files.size()));
-        for (final File file : files) {
+        for (File file : files) {
             logger.debug(String.format("\t%s", file.getAbsolutePath()));
         }
     }

@@ -1,24 +1,9 @@
-/**
+/*
  * detectable
  *
  * Copyright (c) 2021 Synopsys, Inc.
  *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
 package com.synopsys.integration.detectable.detectables.clang.packagemanager;
 
@@ -28,18 +13,18 @@ import java.util.Optional;
 import com.synopsys.integration.bdio.model.Forge;
 
 public class ClangPackageManagerInfo {
-    private String pkgMgrName;
-    private String pkgMgrCmdString;
-    private List<Forge> forges;
-    private Forge defaultForge;
-    private List<String> checkPresenceCommandArgs;
-    private String checkPresenceCommandOutputExpectedText;
-    private List<String> pkgMgrGetOwnerCmdArgs;
-    private List<String> pkgArchitectureArgs;
-    private List<String> pkgInfoArgs;
+    private final String pkgMgrName;
+    private final String pkgMgrCmdString;
+    private final List<Forge> forges;
+    private final Forge defaultForge;
+    private final List<String> checkPresenceCommandArgs;
+    private final String checkPresenceCommandOutputExpectedText;
+    private final List<String> pkgMgrGetOwnerCmdArgs;
+    private final List<String> pkgArchitectureArgs;
+    private final List<String> pkgInfoArgs;
 
-    public ClangPackageManagerInfo(final String pkgMgrName, final String pkgMgrCmdString, final List<Forge> forges, final Forge defaultForge, final List<String> checkPresenceCommandArgs,
-        final String checkPresenceCommandOutputExpectedText, final List<String> pkgMgrGetOwnerCmdArgs, final List<String> pkgArchitectureArgs, final List<String> pkgInfoArgs) {
+    public ClangPackageManagerInfo(String pkgMgrName, String pkgMgrCmdString, List<Forge> forges, Forge defaultForge, List<String> checkPresenceCommandArgs,
+        String checkPresenceCommandOutputExpectedText, List<String> pkgMgrGetOwnerCmdArgs, List<String> pkgArchitectureArgs, List<String> pkgInfoArgs) {
         this.pkgMgrName = pkgMgrName;
         this.pkgMgrCmdString = pkgMgrCmdString;
         this.forges = forges;

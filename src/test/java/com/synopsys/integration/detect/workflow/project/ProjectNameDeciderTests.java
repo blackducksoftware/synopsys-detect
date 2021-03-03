@@ -100,7 +100,7 @@ public class ProjectNameDeciderTests {
     }
 
     @Test
-    public void choosesShallowestPrefferred() {
+    public void choosesShallowestPreferred() {
         final List<DetectorProjectInfo> possibilities = new ArrayList<>();
 
         final int lowestDepth = 0;

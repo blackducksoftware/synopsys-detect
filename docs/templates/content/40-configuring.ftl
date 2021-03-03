@@ -91,7 +91,7 @@ bash <(curl -s -L https://detect.synopsys.com/detect.sh) --spring.profiles.activ
 This capability is provided by Spring Boot. For more information, refer to
 [Spring Boot's profile mechanism](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-profiles).
 
-## Additional configration methods and details
+## Additional configuration methods and details
 
 ${solution_name} reads property values using
 [Spring Boot's externalized configuration mechanism](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config),
@@ -133,7 +133,7 @@ including:
 
 * On the command line; for example, --blackduck.password={your password}.
 * As an environment variable value; for example, export BLACKDUCK_PASSWORD={your password}.
-* In a configration (.properties) file; for example, ./application.properties.
+* In a configuration (.properties) file; for example, ./application.properties.
 
 Values provided on the command line may be visible to other users that can view process details.
 Setting sensitive values using environment variables is usually considered more secure.
