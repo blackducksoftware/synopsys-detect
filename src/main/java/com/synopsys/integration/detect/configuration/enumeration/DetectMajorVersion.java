@@ -33,6 +33,7 @@ public class DetectMajorVersion extends ProductMajorVersion {
     public static final DetectMajorVersion SIX = new DetectMajorVersion(6);
     public static final DetectMajorVersion SEVEN = new DetectMajorVersion(7);
     public static final DetectMajorVersion EIGHT = new DetectMajorVersion(8);
+    public static final DetectMajorVersion NINE = new DetectMajorVersion(9);
 
     public DetectMajorVersion(final Integer intValue) {
         super(intValue);

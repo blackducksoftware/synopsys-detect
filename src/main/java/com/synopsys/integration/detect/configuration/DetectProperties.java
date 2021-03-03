@@ -76,6 +76,7 @@ import com.synopsys.integration.log.LogLevel;
 public class DetectProperties {
     private static final String POLARIS_CLI_DEPRECATION_MESSAGE = "This property is being removed. Detect will no longer invoke the Polaris CLI.";
     private static final String EXCLUSION_PROPERTY_DEPRECATION_MESSAGE = "This property is now deprecated. In future versions of Detect, it will be consolidated with other exclusion properties.";
+    private static final String SBT_REPORT_DEPRECATION_MESSAGE = "This property is being removed. Sbt will no longer parse report files but instead will use a dependency resolution plugin. Please install the appropriate plugin in the future.";
 
     private DetectProperties() {
     }
@@ -1117,20 +1118,23 @@ public class DetectProperties {
             .setInfo("SBT Configurations Excluded", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("The names of the sbt configurations to exclude.", "This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.SBT, DetectGroup.SOURCE_SCAN)
-            .setCategory(DetectCategory.Advanced);
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(SBT_REPORT_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT, DetectMajorVersion.NINE);
 
     public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_SBT_INCLUDED_CONFIGURATIONS =
         new DetectProperty<>(new CaseSensitiveStringListProperty("detect.sbt.included.configurations"))
             .setInfo("SBT Configurations Included", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("The names of the sbt configurations to include.", "This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.SBT, DetectGroup.SOURCE_SCAN)
-            .setCategory(DetectCategory.Advanced);
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(SBT_REPORT_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT, DetectMajorVersion.NINE);
 
     public static final DetectProperty<IntegerProperty> DETECT_SBT_REPORT_DEPTH =
         new DetectProperty<>(new IntegerProperty("detect.sbt.report.search.depth", 3))
             .setInfo("SBT Report Search Depth", DetectPropertyFromVersion.VERSION_4_3_0)
             .setHelp("Depth the sbt detector will use to search for report files.")
-            .setGroups(DetectGroup.SBT, DetectGroup.SOURCE_SCAN);
+            .setGroups(DetectGroup.SBT, DetectGroup.SOURCE_SCAN)
+            .setDeprecated(SBT_REPORT_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT, DetectMajorVersion.NINE);
 
     public static final DetectProperty<NullablePathProperty> DETECT_SCAN_OUTPUT_PATH =
         new DetectProperty<>(new NullablePathProperty("detect.scan.output.path"))
