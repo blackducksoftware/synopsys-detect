@@ -1,24 +1,9 @@
-/**
+/*
  * synopsys-detect
  *
  * Copyright (c) 2021 Synopsys, Inc.
  *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
 package com.synopsys.integration.detect.configuration;
 
@@ -302,27 +287,6 @@ public class DetectProperties {
             .setInfo("Signature Scanner Dry Run", DetectPropertyFromVersion.VERSION_4_2_0)
             .setHelp("If set to true, the signature scanner results are not uploaded to Black Duck, and the scanner results are written to disk via the Signature Scanner CLI argument: --dryRunWriteDir.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL);
-
-    public static final DetectProperty<StringListProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS =
-        new DetectProperty<>(
-            new StringListProperty("detect.blackduck.signature.scanner.exclusion.name.patterns", singletonList("node_modules")))
-            .setInfo("Directory Name Exclusion Patterns", DetectPropertyFromVersion.VERSION_4_2_0)
-            .setHelp("A comma-separated list of directory name patterns for which Detect searches and adds to the signature scanner --exclude flag values.",
-                "This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details. Detect will recursively search within the scan targets for files/directories that match these patterns and will create the corresponding exclusion patterns (paths relative to the scan target directory) for the signature scanner (Black Duck scan CLI). Please note that the signature scanner will only exclude directories; matched filenames will be passed to the signature scanner but will have no effect. These patterns will be added to the patterns provided by detect.blackduck.signature.scanner.exclusion.patterns and passed as --exclude values. For example: suppose you are running in bash on Linux, and have a subdirectory named blackduck-common that you want to exclude. Any of the following would exclude it: --detect.blackduck.signature.scanner.exclusion.name.patterns=blackduck-common, --detect.blackduck.signature.scanner.exclusion.name.patterns='blackduck-common', --detect.blackduck.signature.scanner.exclusion.name.patterns='blackduck-*'. Use this property when you want Detect to convert the given patterns to actual paths. Use detect.blackduck.signature.scanner.exclusion.patterns to pass patterns directly to the signature scanner as-is.")
-            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN);
-
-    public static final DetectProperty<IntegerProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERN_SEARCH_DEPTH =
-        new DetectProperty<>(new IntegerProperty("detect.blackduck.signature.scanner.exclusion.pattern.search.depth", 4))
-            .setInfo("Exclusion Patterns Search Depth", DetectPropertyFromVersion.VERSION_5_0_0)
-            .setHelp("Enables you to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.")
-            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN);
-
-    public static final DetectProperty<StringListProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERNS =
-        new DetectProperty<>(new StringListProperty("detect.blackduck.signature.scanner.exclusion.patterns", emptyList()))
-            .setInfo("Exclusion Patterns", DetectPropertyFromVersion.VERSION_4_2_0)
-            .setHelp("A comma-separated list of values (each value is a directory name pattern surrounded by '/' characters) to be used with the Signature Scanner --exclude flag.",
-                "Each pattern provided is passed to the signature scanner (Black Duck scan CLI) as a value for an --exclude option. The signature scanner requires that these exclusion patterns start and end with a forward slash (/), and may not contain double asterisks (**). These patterns will be added to the paths created from detect.blackduck.signature.scanner.exclusion.name.patterns and passed as --exclude values. Use this property to pass patterns directly to the signature scanner as-is. For example: suppose you are running in bash on Linux, and have a subdirectory named blackduck-common that you want to exclude from signature scanning. Any of the following would exclude it: --detect.blackduck.signature.scanner.exclusion.patterns=/blackduck-common/, --detect.blackduck.signature.scanner.exclusion.patterns='/blackduck-common/', --detect.blackduck.signature.scanner.exclusion.patterns='/blackduck-*/'. Use detect.blackduck.signature.scanner.exclusion.name.patterns when you want Detect to convert the given patterns to actual paths.")
-            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<ExtendedEnumProperty<ExtendedIndividualFileMatchingMode, IndividualFileMatching>> DETECT_BLACKDUCK_SIGNATURE_SCANNER_INDIVIDUAL_FILE_MATCHING =
         new DetectProperty<>(new ExtendedEnumProperty<>("detect.blackduck.signature.scanner.individual.file.matching", ExtendedEnumValue.ofExtendedValue(ExtendedIndividualFileMatchingMode.NONE), ExtendedIndividualFileMatchingMode.class,
@@ -1760,6 +1724,33 @@ public class DetectProperties {
                 DetectMajorVersion.SIX,
                 DetectMajorVersion.SEVEN
             );
+
+    @Deprecated
+    public static final DetectProperty<StringListProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS =
+        new DetectProperty<>(
+            new StringListProperty("detect.blackduck.signature.scanner.exclusion.name.patterns", singletonList("node_modules")))
+            .setInfo("Directory Name Exclusion Patterns", DetectPropertyFromVersion.VERSION_4_2_0)
+            .setHelp("A comma-separated list of directory name patterns for which Detect searches and adds to the signature scanner --exclude flag values.",
+                "This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details. Detect will recursively search within the scan targets for files/directories that match these patterns and will create the corresponding exclusion patterns (paths relative to the scan target directory) for the signature scanner (Black Duck scan CLI). Please note that the signature scanner will only exclude directories; matched filenames will be passed to the signature scanner but will have no effect. These patterns will be added to the patterns provided by detect.blackduck.signature.scanner.exclusion.patterns and passed as --exclude values. For example: suppose you are running in bash on Linux, and have a subdirectory named blackduck-common that you want to exclude. Any of the following would exclude it: --detect.blackduck.signature.scanner.exclusion.name.patterns=blackduck-common, --detect.blackduck.signature.scanner.exclusion.name.patterns='blackduck-common', --detect.blackduck.signature.scanner.exclusion.name.patterns='blackduck-*'. Use this property when you want Detect to convert the given patterns to actual paths. Use detect.blackduck.signature.scanner.exclusion.patterns to pass patterns directly to the signature scanner as-is.")
+            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN)
+            .setDeprecated(EXCLUSION_PROPERTY_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<IntegerProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERN_SEARCH_DEPTH =
+        new DetectProperty<>(new IntegerProperty("detect.blackduck.signature.scanner.exclusion.pattern.search.depth", 4))
+            .setInfo("Exclusion Patterns Search Depth", DetectPropertyFromVersion.VERSION_5_0_0)
+            .setHelp("Enables you to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.")
+            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN)
+            .setDeprecated(EXCLUSION_PROPERTY_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<StringListProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERNS =
+        new DetectProperty<>(new StringListProperty("detect.blackduck.signature.scanner.exclusion.patterns", emptyList()))
+            .setInfo("Exclusion Patterns", DetectPropertyFromVersion.VERSION_4_2_0)
+            .setHelp("A comma-separated list of values (each value is a directory name pattern surrounded by '/' characters) to be used with the Signature Scanner --exclude flag.",
+                "Each pattern provided is passed to the signature scanner (Black Duck scan CLI) as a value for an --exclude option. The signature scanner requires that these exclusion patterns start and end with a forward slash (/), and may not contain double asterisks (**). These patterns will be added to the paths created from detect.blackduck.signature.scanner.exclusion.name.patterns and passed as --exclude values. Use this property to pass patterns directly to the signature scanner as-is. For example: suppose you are running in bash on Linux, and have a subdirectory named blackduck-common that you want to exclude from signature scanning. Any of the following would exclude it: --detect.blackduck.signature.scanner.exclusion.patterns=/blackduck-common/, --detect.blackduck.signature.scanner.exclusion.patterns='/blackduck-common/', --detect.blackduck.signature.scanner.exclusion.patterns='/blackduck-*/'. Use detect.blackduck.signature.scanner.exclusion.name.patterns when you want Detect to convert the given patterns to actual paths.")
+            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN)
+            .setDeprecated(EXCLUSION_PROPERTY_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<NullablePathProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH =

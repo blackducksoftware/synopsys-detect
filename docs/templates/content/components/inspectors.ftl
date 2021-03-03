@@ -23,7 +23,7 @@ The Docker Inspector is available as a Java jar or shell script for Linux or Mac
 
 If you are online, then Synopsys Artifactory is used to download the Docker Inspector jar file. 
 
-If you are offline, the Docker Inspector jar file and required Docker image tar files are sourced from the provided path to the Docker Inspetor air gap files.
+If you are offline, the Docker Inspector jar file and required Docker image tar files are sourced from the provided path to the Docker Inspector air gap files.
 ${solution_name} loads the Docker images (container-based services that Docker Inspector depends on) from the provided image tar files so they are available to the Docker Inspector.
 
 In both cases, the Docker Inspector jar is run which (by default) uses your Docker engine to start and stop the container-based services.

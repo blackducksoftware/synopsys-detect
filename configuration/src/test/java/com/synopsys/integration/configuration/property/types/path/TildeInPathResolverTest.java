@@ -37,17 +37,17 @@ public class TildeInPathResolverTest {
     @DisabledOnOs(WINDOWS) // Due to backslashes being flipped.
     public void testResolvingTilde() {
         final TildeInPathResolver resolver = new TildeInPathResolver("/Users/ekerwin");
-        final Path resolved = resolver.resolvePath("~/Documents/source/funtional/detect");
+        final Path resolved = resolver.resolvePath("~/Documents/source/functional/detect");
 
         Assertions.assertNotNull(resolved, "Resolved path should not be null.");
-        Assertions.assertEquals("/Users/ekerwin/Documents/source/funtional/detect", resolved.toString(), "Tilde's should be resolved on Unix operating systems.");
+        Assertions.assertEquals("/Users/ekerwin/Documents/source/functional/detect", resolved.toString(), "Tilde's should be resolved on Unix operating systems.");
     }
 
     @Test
     @DisabledOnOs(WINDOWS) // Due to backslashes being flipped.
     public void testResolvingTildeInTheMiddleOfAPath() {
         final TildeInPathResolver resolver = new TildeInPathResolver("/Users/ekerwin");
-        final String filePath = "/Documents/~source/~/funtional/detect";
+        final String filePath = "/Documents/~source/~/functional/detect";
         final Path resolved = resolver.resolvePath(filePath);
 
         Assertions.assertNotNull(resolved, "Resolved path should not be null.");

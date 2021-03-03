@@ -1,5 +1,15 @@
 # Release notes
 
+## Version 7.0.0
+### New Features
+
+### Changed features
+
+### Resolved issues
+* (IDETECT-2434) Resolved an issue in the CLANG detector on Ubuntu and Debian systems that caused it to omit a package when that package had been installed on the system from multiple architectures.
+* (IDETECT-2409) Resolved an issue in the Gradle Inspector to support Gradle 6.8.
+* (IDETECT-2413) Resolved an issue to upgrade internal dependencies to support JDK 15.
+
 ## Version 6.9.0
 ### New Features
 * Added ability for detectors to explain why they applied. It will appear in the logs at info level and in the status.json.
@@ -12,7 +22,7 @@
 
 ### Resolved issues
 * (IDETECT-1986) Resolved an issue where warnings regarding reflective access appear at the start of Detect.
-* (IDETECT-2400) Resolved an issue where 'dependencies' would be removed from arguments to the Gradle build command.
+* (IDETECT-2400) Resolved an issue where 'dependencies' would be removed from the value of the detect.gradle.build.command property.
 * (IDETECT-2394) Resolved an issue that created inaccurate relationships in the BDIO files when Gemlock files were processed.
 * (IDETECT-2404) Resolved an issue where signature scanner arguments passed through detect.blackduck.signature.scanner.arguments that contained space were being improperly parsed.
 
