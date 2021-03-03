@@ -5,6 +5,7 @@
 * Added support for Yarn workspaces for Yarn 2 projects.
 
 ### Changed features
+* The default BDIO format for communicating dependency graphs to Black Duck has been changed from BDIO1 to BDIO2.
 
 ### Resolved issues
 * (IDETECT-2434) Resolved an issue in the CLANG detector on Ubuntu and Debian systems that caused it to omit a package when that package had been installed on the system from multiple architectures.

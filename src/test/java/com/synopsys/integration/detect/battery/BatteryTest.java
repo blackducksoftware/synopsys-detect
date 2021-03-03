@@ -112,8 +112,8 @@ public final class BatteryTest {
 
     /**
      * NOTE: The order in which you provide the names of executable output resource files must match the order in which their corresponding commands are invoked at runtime.
-     *      ex) The GoModCliExtractor invokes the command 'go list' before the command 'go version', so go-list.xout must be ordered before go-version.xout in resourceFiles when constructing
-     *          a battery test for the go mod detectable.
+     * ex) The GoModCliExtractor invokes the command 'go list' before the command 'go version', so go-list.xout must be ordered before go-version.xout in resourceFiles when constructing
+     * a battery test for the go mod detectable.
      */
     public void executableFromResourceFiles(Property detectProperty, String... resourceFiles) {
         ResourceTypingExecutableCreator creator = new ResourceTypingExecutableCreator(prefixResources(resourceFiles));
@@ -211,6 +211,7 @@ public final class BatteryTest {
         properties.put(DetectProperties.DETECT_CLEANUP.getProperty(), "false");
         properties.put(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION.getProperty(), "INFO"); // Leave at INFO for Travis. Long logs cause build to fail.
         properties.put(DetectProperties.DETECT_SOURCE_PATH.getProperty(), sourceDirectory.getCanonicalPath());
+        properties.put(DetectProperties.DETECT_BDIO2_ENABLED.getProperty(), "false");
         for (Map.Entry<Property, String> entry : properties.entrySet()) {
             detectArguments.add("--" + entry.getKey().getKey() + "=" + entry.getValue());
         }
