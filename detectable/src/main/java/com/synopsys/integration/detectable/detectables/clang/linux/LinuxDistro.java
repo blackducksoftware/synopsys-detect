@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,8 +72,10 @@ public class LinuxDistro {
                 if (line.startsWith(linePrefix)) {
                     String[] parts = line.split("=");
                     String distroName = parts[1].replace("\"", "").toLowerCase();
-                    logger.debug("Found target image Linux distro name '{}' in file {}", distroName, etcDirFile.getAbsolutePath());
-                    return Optional.of(distroName);
+                    if (StringUtils.isNotBlank(distroName)) {
+                        logger.debug("Found target image Linux distro name '{}' in file {}", distroName, etcDirFile.getAbsolutePath());
+                        return Optional.of(distroName);
+                    }
                 }
             }
         } catch (IOException e) {

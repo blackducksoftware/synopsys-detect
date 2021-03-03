@@ -25,7 +25,6 @@ import com.synopsys.integration.detectable.detectables.clang.compilecommand.Comp
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandDatabaseParser;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.ClangPackageDetailsTransformer;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.DependencyFileDetailGenerator;
-import com.synopsys.integration.detectable.detectables.clang.linux.LinuxDistro;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManager;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerRunner;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.PackageDetailsResult;
@@ -39,17 +38,15 @@ public class ClangExtractor {
     private final ClangPackageDetailsTransformer clangPackageDetailsTransformer;
     private final CompileCommandDatabaseParser compileCommandDatabaseParser;
     private final ForgeChooser forgeChooser;
-    private final LinuxDistro linuxDistro;
 
     public ClangExtractor(DetectableExecutableRunner executableRunner, DependencyFileDetailGenerator dependencyFileDetailGenerator,
         ClangPackageDetailsTransformer clangPackageDetailsTransformer, CompileCommandDatabaseParser compileCommandDatabaseParser,
-        ForgeChooser forgeChooser, LinuxDistro linuxDistro) {
+        ForgeChooser forgeChooser) {
         this.executableRunner = executableRunner;
         this.dependencyFileDetailGenerator = dependencyFileDetailGenerator;
         this.clangPackageDetailsTransformer = clangPackageDetailsTransformer;
         this.compileCommandDatabaseParser = compileCommandDatabaseParser;
         this.forgeChooser = forgeChooser;
-        this.linuxDistro = linuxDistro;
     }
 
     public Extraction extract(ClangPackageManager currentPackageManager, ClangPackageManagerRunner packageManagerRunner, File sourceDirectory, File outputDirectory, File jsonCompilationDatabaseFile,
@@ -65,7 +62,7 @@ public class ClangExtractor {
             logger.trace("Found : " + results.getFoundPackages() + " packages.");
             logger.trace("Found : " + results.getUnRecognizedDependencyFiles() + " non-package files.");
 
-            List<Forge> packageForges = forgeChooser.determineForges(currentPackageManager, linuxDistro);
+            List<Forge> packageForges = forgeChooser.determineForges(currentPackageManager);
             CodeLocation codeLocation = clangPackageDetailsTransformer.toCodeLocation(packageForges, results.getFoundPackages());
 
             logFileCollection("Unrecognized dependency files (all)", results.getUnRecognizedDependencyFiles());

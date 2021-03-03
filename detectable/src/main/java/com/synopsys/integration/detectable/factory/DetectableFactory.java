@@ -440,11 +440,8 @@ public class DetectableFactory {
 
     private ForgeChooser forgeChooser() {
         ForgeGenerator forgeGenerator = new ForgeGenerator();
-        return new ForgeChooser(forgeGenerator);
-    }
-
-    private LinuxDistro linuxDistro() {
-        return new LinuxDistro();
+        LinuxDistro linuxDistro = new LinuxDistro();
+        return new ForgeChooser(forgeGenerator, linuxDistro);
     }
 
     private CompileCommandDatabaseParser compileCommandDatabaseParser() {
@@ -456,7 +453,7 @@ public class DetectableFactory {
     }
 
     private ClangExtractor clangExtractor() {
-        return new ClangExtractor(executableRunner, dependencyFileDetailGenerator(), clangPackageDetailsTransformer(), compileCommandDatabaseParser(), forgeChooser(), linuxDistro());
+        return new ClangExtractor(executableRunner, dependencyFileDetailGenerator(), clangPackageDetailsTransformer(), compileCommandDatabaseParser(), forgeChooser());
     }
 
     private PodlockParser podlockParser() {

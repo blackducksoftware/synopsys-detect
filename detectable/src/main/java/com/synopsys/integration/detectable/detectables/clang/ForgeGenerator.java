@@ -11,8 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.synopsys.integration.bdio.model.Forge;
 
 // TODO belongs in libraries; should be used here and by hub-imageinspector-lib
@@ -44,9 +42,6 @@ public class ForgeGenerator {
     }
 
     public Forge createPreferredAliasNamespaceForge(String linuxDistroName) {
-        if (StringUtils.isBlank(linuxDistroName)) {
-            return new Forge("/", "none");
-        }
         String linuxDistroNameLowerCase = linuxDistroName.toLowerCase();
         Optional<String> overriddenKbName = findMatch(linuxDistroNameLowerCase);
         String kbName = overriddenKbName.orElse(linuxDistroNameLowerCase);
