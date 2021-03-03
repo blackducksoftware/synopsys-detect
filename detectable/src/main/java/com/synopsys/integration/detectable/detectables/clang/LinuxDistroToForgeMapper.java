@@ -13,8 +13,8 @@ import java.util.Optional;
 
 import com.synopsys.integration.bdio.model.Forge;
 
-// TODO belongs in libraries; should be used here and by hub-imageinspector-lib
-public class ForgeGenerator {
+// This might move into the libraries; it's also used by by hub-imageinspector-lib
+public class LinuxDistroToForgeMapper {
     private static final String REDHAT_KB_NAME = "redhat";
     private static final String REDHAT_DISTRO_NAME = "rhel";
 

@@ -23,9 +23,9 @@ import com.synopsys.integration.detectable.detectables.clang.packagemanager.Clan
 public class ForgeChooser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final LinuxDistro linuxDistro;
-    private final ForgeGenerator forgeGenerator;
+    private final LinuxDistroToForgeMapper forgeGenerator;
 
-    public ForgeChooser(ForgeGenerator forgeGenerator, LinuxDistro linuxDistro) {
+    public ForgeChooser(LinuxDistroToForgeMapper forgeGenerator, LinuxDistro linuxDistro) {
         this.linuxDistro = linuxDistro;
         this.forgeGenerator = forgeGenerator;
     }
@@ -38,13 +38,13 @@ public class ForgeChooser {
             return Arrays.asList(preferredAliasNamespaceForge);
         }
         List<Forge> possibleForges = currentPackageManager.getPackageManagerInfo().getPossibleForges();
-        String forgesList = generateNameList(possibleForges);
+        String forgesList = generateNamesString(possibleForges);
         logger.warn("Unable to determine the Linux distro name of the host operating system; will generate components for: {}", forgesList);
         return possibleForges;
     }
 
     @NotNull
-    private String generateNameList(List<Forge> forges) {
+    private String generateNamesString(List<Forge> forges) {
         StringBuilder sb = new StringBuilder();
         forges.stream().map(Forge::getName).forEach(name -> {
             sb.append(name);

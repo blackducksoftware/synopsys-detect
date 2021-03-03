@@ -12,7 +12,7 @@ import org.mockito.Mockito;
 
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.detectables.clang.ForgeChooser;
-import com.synopsys.integration.detectable.detectables.clang.ForgeGenerator;
+import com.synopsys.integration.detectable.detectables.clang.LinuxDistroToForgeMapper;
 import com.synopsys.integration.detectable.detectables.clang.linux.LinuxDistro;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManager;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerInfo;
@@ -21,7 +21,7 @@ public class ForgeChooserTest {
 
     @Test
     void testDistroIdentified() {
-        ForgeGenerator forgeGenerator = Mockito.mock(ForgeGenerator.class);
+        LinuxDistroToForgeMapper forgeGenerator = Mockito.mock(LinuxDistroToForgeMapper.class);
         LinuxDistro linuxDistro = Mockito.mock(LinuxDistro.class);
         ForgeChooser forgeChooser = new ForgeChooser(forgeGenerator, linuxDistro);
         ClangPackageManager currentPackageManager = Mockito.mock(ClangPackageManager.class);
@@ -37,7 +37,7 @@ public class ForgeChooserTest {
 
     @Test
     void testDistroNotIdentified() {
-        ForgeGenerator forgeGenerator = Mockito.mock(ForgeGenerator.class);
+        LinuxDistroToForgeMapper forgeGenerator = Mockito.mock(LinuxDistroToForgeMapper.class);
         LinuxDistro linuxDistro = Mockito.mock(LinuxDistro.class);
         ForgeChooser forgeChooser = new ForgeChooser(forgeGenerator, linuxDistro);
         ClangPackageManager currentPackageManager = Mockito.mock(ClangPackageManager.class);

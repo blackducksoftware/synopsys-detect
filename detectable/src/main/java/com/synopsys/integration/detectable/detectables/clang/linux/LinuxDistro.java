@@ -18,7 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// TODO Perhaps this should move into a lib like integration-common to be used here and by hub-imageinspector-lib
+// This might move into the libraries; it's also used by by hub-imageinspector-lib
 public class LinuxDistro {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
