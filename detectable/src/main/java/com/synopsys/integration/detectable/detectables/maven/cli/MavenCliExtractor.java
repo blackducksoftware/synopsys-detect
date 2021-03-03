@@ -21,25 +21,25 @@ import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
-import com.synopsys.integration.detectable.detectables.clang.compilecommand.ArgumentParser;
+import com.synopsys.integration.detectable.detectable.parser.CommandParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.executable.ExecutableOutput;
 
 public class MavenCliExtractor {
     private final DetectableExecutableRunner executableRunner;
     private final MavenCodeLocationPackager mavenCodeLocationPackager;
-    private final ArgumentParser argumentParser;
+    private final CommandParser commandParser;
 
-    public MavenCliExtractor(DetectableExecutableRunner executableRunner, MavenCodeLocationPackager mavenCodeLocationPackager, ArgumentParser argumentParser) {
+    public MavenCliExtractor(DetectableExecutableRunner executableRunner, MavenCodeLocationPackager mavenCodeLocationPackager, CommandParser commandParser) {
         this.executableRunner = executableRunner;
         this.mavenCodeLocationPackager = mavenCodeLocationPackager;
-        this.argumentParser = argumentParser;
+        this.commandParser = commandParser;
     }
 
     //TODO: Limit 'extractors' to 'execute' and 'read', delegate all other work.
     public Extraction extract(File directory, ExecutableTarget mavenExe, MavenCliExtractorOptions mavenCliExtractorOptions) throws ExecutableFailedException {
 
-        List<String> commandArguments = argumentParser.parseCommandString(mavenCliExtractorOptions.getMavenBuildCommand().orElse(""), new HashMap<>()).stream()
+        List<String> commandArguments = commandParser.parseCommandString(mavenCliExtractorOptions.getMavenBuildCommand().orElse(""), new HashMap<>()).stream()
                                             .filter(arg -> !arg.equals("dependency:tree"))
                                             .collect(Collectors.toList());
 

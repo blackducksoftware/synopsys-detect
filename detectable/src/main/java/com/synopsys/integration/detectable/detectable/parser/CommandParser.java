@@ -5,7 +5,7 @@
  *
  * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
-package com.synopsys.integration.detectable.detectables.clang.compilecommand;
+package com.synopsys.integration.detectable.detectable.parser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +17,10 @@ import org.apache.commons.text.matcher.StringMatcherFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommand;
 import com.synopsys.integration.util.Stringable;
 
-public class ArgumentParser {
+public class CommandParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final char SINGLE_QUOTE_CHAR = '\'';
     private static final char DOUBLE_QUOTE_CHAR = '"';

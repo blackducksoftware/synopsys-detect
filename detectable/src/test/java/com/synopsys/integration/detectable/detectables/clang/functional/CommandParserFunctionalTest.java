@@ -35,11 +35,11 @@ import com.google.gson.Gson;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommand;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandDatabaseParser;
-import com.synopsys.integration.detectable.detectables.clang.compilecommand.ArgumentParser;
+import com.synopsys.integration.detectable.detectable.parser.CommandParser;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 
 @FunctionalTest
-public class ArgumentParserFunctionalTest {
+public class CommandParserFunctionalTest {
     @Test
     public void testCanParseCommandDatabase() throws IOException {
         CompileCommandDatabaseParser compileCommandDatabaseParser = new CompileCommandDatabaseParser(new Gson());
@@ -61,9 +61,9 @@ public class ArgumentParserFunctionalTest {
         List<CompileCommand> compileCommands = compileCommandDatabaseParser.parseCompileCommandDatabase(FunctionalTestFiles.asFile("/clang/compile_commands_args.json"));
 
         CompileCommand first = compileCommands.get(0);
-        ArgumentParser argumentParser = new ArgumentParser();
+        CommandParser commandParser = new CommandParser();
 
-        List<String> result = argumentParser.parseCommand(first, Collections.emptyMap());
+        List<String> result = commandParser.parseCommand(first, Collections.emptyMap());
 
         assertEquals(66, result.size());
         int i = 0;
@@ -94,9 +94,9 @@ public class ArgumentParserFunctionalTest {
         List<CompileCommand> compileCommands = compileCommandDatabaseParser.parseCompileCommandDatabase(FunctionalTestFiles.asFile("/clang/compile_commands_nestedquoting_small.json"));
 
         CompileCommand first = compileCommands.get(0);
-        ArgumentParser argumentParser = new ArgumentParser();
+        CommandParser commandParser = new CommandParser();
 
-        List<String> result = argumentParser.parseCommand(first, Collections.emptyMap());
+        List<String> result = commandParser.parseCommand(first, Collections.emptyMap());
 
         assertEquals(15, result.size());
         int i = 0;

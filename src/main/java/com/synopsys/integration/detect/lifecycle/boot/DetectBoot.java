@@ -54,7 +54,7 @@ import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.detectable.detectables.clang.compilecommand.ArgumentParser;
+import com.synopsys.integration.detectable.detectable.parser.CommandParser;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
 
 import freemarker.template.Configuration;
@@ -188,7 +188,7 @@ public class DetectBoot {
         DetectableOptionFactory detectableOptionFactory;
         try {
             ProxyInfo detectableProxyInfo = detectConfigurationFactory.createBlackDuckProxyInfo();
-            detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem, pathResolver, detectableProxyInfo, new ArgumentParser());
+            detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem, pathResolver, detectableProxyInfo, new CommandParser());
         } catch (DetectUserFriendlyException e) {
             return Optional.of(DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem));
         }

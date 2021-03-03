@@ -34,7 +34,7 @@ import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOpti
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectableOptions;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOptions;
-import com.synopsys.integration.detectable.detectables.clang.compilecommand.ArgumentParser;
+import com.synopsys.integration.detectable.detectable.parser.CommandParser;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliExtractorOptions;
 import com.synopsys.integration.detectable.detectables.conan.lockfile.ConanLockfileExtractorOptions;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectableOptions;
@@ -64,11 +64,11 @@ public class DetectableOptionFactory {
     private final DiagnosticSystem diagnosticSystem;
     private final PathResolver pathResolver;
     private final ProxyInfo proxyInfo;
-    private final ArgumentParser commandParser;
+    private final CommandParser commandParser;
 
     private final Logger logger = LoggerFactory.getLogger(DetectableOptionFactory.class);
 
-    public DetectableOptionFactory(PropertyConfiguration detectConfiguration, @Nullable DiagnosticSystem diagnosticSystem, PathResolver pathResolver, ProxyInfo proxyInfo, ArgumentParser commandParser) {
+    public DetectableOptionFactory(PropertyConfiguration detectConfiguration, @Nullable DiagnosticSystem diagnosticSystem, PathResolver pathResolver, ProxyInfo proxyInfo, CommandParser commandParser) {
         this.detectConfiguration = detectConfiguration;
         this.diagnosticSystem = diagnosticSystem;
         this.pathResolver = pathResolver;
