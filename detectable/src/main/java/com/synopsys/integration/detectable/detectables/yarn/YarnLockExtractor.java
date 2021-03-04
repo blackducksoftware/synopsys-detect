@@ -14,20 +14,29 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
 
 public class YarnLockExtractor {
+    private final YarnLockParser yarnLockParser;
     private final YarnPackager yarnPackager;
+    private final YarnLockOptions yarnLockOptions;
 
-    public YarnLockExtractor(YarnPackager yarnPackager) {
+    public YarnLockExtractor(YarnLockParser yarnLockParser, YarnPackager yarnPackager, YarnLockOptions yarnLockOptions) {
+        this.yarnLockParser = yarnLockParser;
         this.yarnPackager = yarnPackager;
+        this.yarnLockOptions = yarnLockOptions;
     }
 
     public Extraction extract(File yarnLockFile, File packageJsonFile) {
         try {
-            String packageJsonText = FileUtils.readFileToString(packageJsonFile, StandardCharsets.UTF_8);
             List<String> yarnLockLines = FileUtils.readLines(yarnLockFile, StandardCharsets.UTF_8);
-            YarnResult yarnResult = yarnPackager.generateYarnResult(packageJsonText, yarnLockLines, yarnLockFile.getAbsolutePath(), new ArrayList<>());
+            YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockLines);
+
+            String packageJsonText = FileUtils.readFileToString(packageJsonFile, StandardCharsets.UTF_8);
+            YarnResult yarnResult = yarnPackager.generateYarnResult(packageJsonText, yarnLock, yarnLockFile.getAbsolutePath(), new ArrayList<>(),
+                yarnLockOptions.useProductionOnly());
 
             if (yarnResult.getException().isPresent()) {
                 throw yarnResult.getException().get();

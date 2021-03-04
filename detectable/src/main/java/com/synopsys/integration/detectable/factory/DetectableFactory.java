@@ -402,7 +402,7 @@ public class DetectableFactory {
         return new YarnLockDetectable(environment, fileFinder, yarnLockExtractor(yarnLockOptions));
     }
 
-    public LernaDetectable createLernaDetectable(DetectableEnvironment environment, LernaResolver lernaResolver, YarnLockOptions yarnLockOptions, NpmLockfileOptions npmLockfileOptions, LernaOptions lernaOptions) {
+    public LernaDetectable createLernaDetectable(DetectableEnvironment environment, LernaResolver lernaResolver, NpmLockfileOptions npmLockfileOptions, YarnLockOptions yarnLockOptions, LernaOptions lernaOptions) {
         return new LernaDetectable(environment, fileFinder, lernaResolver, lernaExtractor(npmLockfileOptions, yarnLockOptions, lernaOptions));
     }
 
@@ -694,12 +694,12 @@ public class DetectableFactory {
         return new YarnTransformer(externalIdFactory);
     }
 
-    private YarnPackager yarnPackager(YarnLockOptions yarnLockOptions) {
-        return new YarnPackager(gson, yarnLockParser(), yarnTransformer(), yarnLockOptions);
+    private YarnPackager yarnPackager() {
+        return new YarnPackager(gson, yarnTransformer());
     }
 
     private YarnLockExtractor yarnLockExtractor(YarnLockOptions yarnLockOptions) {
-        return new YarnLockExtractor(yarnPackager(yarnLockOptions));
+        return new YarnLockExtractor(yarnLockParser(), yarnPackager(), yarnLockOptions);
     }
 
     private BitbakeRecipesParser bitbakeRecipesParser() {
@@ -807,7 +807,7 @@ public class DetectableFactory {
     }
 
     private LernaPackager lernaPackager(NpmLockfileOptions npmLockfileOptions, YarnLockOptions yarnLockOptions, LernaOptions lernaOptions) {
-        return new LernaPackager(fileFinder, npmLockfilePackager(), npmLockfileOptions, yarnPackager(yarnLockOptions), lernaOptions);
+        return new LernaPackager(fileFinder, yarnLockParser(), yarnLockOptions, npmLockfilePackager(), npmLockfileOptions, yarnPackager(), lernaOptions);
     }
 
     private LernaExtractor lernaExtractor(NpmLockfileOptions npmLockfileOptions, YarnLockOptions yarnLockOptions, LernaOptions lernaOptions) {

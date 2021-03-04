@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
-import org.mockito.Mockito;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -116,11 +115,11 @@ public class LernaDetectableTest extends DetectableFunctionalTest {
     @NotNull
     @Override
     public Detectable create(@NotNull DetectableEnvironment environment) {
-        YarnLockOptions yarnLockOptions = Mockito.mock(YarnLockOptions.class);
         NpmLockfileOptions npmLockFileOptions = new NpmLockfileOptions(true);
+        YarnLockOptions yarnLockOptions = new YarnLockOptions(false, false);
         LernaOptions lernaOptions = new LernaOptions(false);
 
-        return detectableFactory.createLernaDetectable(environment, () -> ExecutableTarget.forCommand("lerna"), yarnLockOptions, npmLockFileOptions, lernaOptions);
+        return detectableFactory.createLernaDetectable(environment, () -> ExecutableTarget.forCommand("lerna"), npmLockFileOptions, yarnLockOptions, lernaOptions);
     }
 
     @Override
