@@ -15,10 +15,10 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
+import com.synopsys.integration.detectable.detectables.yarn.YarnTransformer;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDependency;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockResult;
-import com.synopsys.integration.detectable.detectables.yarn.parse.YarnTransformer;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntry;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryId;
 

@@ -5,7 +5,7 @@
  *
  * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
-package com.synopsys.integration.detectable.detectables.yarn.parse;
+package com.synopsys.integration.detectable.detectables.yarn;
 
 import java.util.List;
 import java.util.Map;
@@ -22,6 +22,8 @@ import com.synopsys.integration.bdio.model.dependencyid.StringDependencyId;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDependency;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockResult;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntry;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryId;
 import com.synopsys.integration.util.NameVersion;

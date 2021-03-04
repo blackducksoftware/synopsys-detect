@@ -16,7 +16,6 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockResult;
-import com.synopsys.integration.detectable.detectables.yarn.parse.YarnTransformer;
 import com.synopsys.integration.util.NameVersion;
 
 public class YarnPackager {
