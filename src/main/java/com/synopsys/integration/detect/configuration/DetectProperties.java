@@ -229,13 +229,13 @@ public class DetectProperties {
         new DetectProperty<>(new StringListProperty("detect.binary.scan.file.name.patterns", emptyList()))
             .setInfo("Binary Scan Filename Patterns", DetectPropertyFromVersion.VERSION_6_0_0)
             .setHelp(
-                "If specified, all files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified. The depth of the search is 0 (subdirectories are not searched). This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
+                "If specified, all files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified. Search depth is controlled by property detect.binary.scan.search.depth. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.BINARY_SCANNER, DetectGroup.SOURCE_PATH);
 
     public static final DetectProperty<IntegerProperty> DETECT_BINARY_SCAN_SEARCH_DEPTH =
         new DetectProperty<>(new IntegerProperty("detect.binary.scan.search.depth", 0))
             .setInfo("Binary Scan Search Depth", DetectPropertyFromVersion.VERSION_6_9_0)
-            .setHelp("The depth at which Detect will search for files to scan with the Binary Scanner.")
+            .setHelp("When binary scan filename patterns are being used to search for binary files to scan, this property sets the depth at which Detect will search for files (that match those patterns) to upload for binary scan analysis.")
             .setGroups(DetectGroup.BINARY_SCANNER, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<StringProperty> DETECT_BITBAKE_BUILD_ENV_NAME =
