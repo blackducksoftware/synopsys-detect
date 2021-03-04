@@ -1991,11 +1991,11 @@
 </tr>
 <tr>
 <td><a href="../configuration/binary scanner/#binary-scan-filename-patterns">detect.binary.scan.file.name.patterns</a></td>
-<td>Binary Scan Filename Patterns: If specified, all files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified. The depth of the search is 0 (subdirectories are not searched). This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> &gt; <i>Property wildcard support</i> page for more details. <br /><br /></td>
+<td>Binary Scan Filename Patterns: If specified, all files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified. Search depth is controlled by property detect.binary.scan.search.depth. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> &gt; <i>Property wildcard support</i> page for more details. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../configuration/binary scanner/#binary-scan-search-depth">detect.binary.scan.search.depth</a></td>
-<td>default: 0 <br /><br /> Binary Scan Search Depth: The depth at which Detect will search for files to scan with the Binary Scanner. <br /><br /></td>
+<td>default: 0 <br /><br /> Binary Scan Search Depth: When binary scan filename patterns are being used to search for binary files to scan, this property sets the depth at which Detect will search for files (that match those patterns) to upload for binary scan analysis. <br /><br /></td>
 </tr>
 </tbody>
 </table>
