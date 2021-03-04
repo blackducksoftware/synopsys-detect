@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,9 +30,11 @@ import com.synopsys.integration.detectable.detectables.lerna.model.LernaResult;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmLockfileOptions;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmParseResult;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.parse.NpmLockfilePackager;
+import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
 import com.synopsys.integration.detectable.detectables.yarn.YarnPackager;
 import com.synopsys.integration.detectable.detectables.yarn.YarnResult;
+import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonReader;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
 import com.synopsys.integration.util.NameVersion;
@@ -40,6 +43,7 @@ public class LernaPackager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final FileFinder fileFinder;
+    private final PackageJsonReader packageJsonReader;
     private final YarnLockParser yarnLockParser;
     private final YarnLockOptions yarnLockOptions;
     private final NpmLockfilePackager npmLockfileParser;
@@ -47,9 +51,11 @@ public class LernaPackager {
     private final YarnPackager yarnPackager;
     private final LernaOptions lernaOptions;
 
-    public LernaPackager(FileFinder fileFinder, YarnLockParser yarnLockParser, YarnLockOptions yarnLockOptions, NpmLockfilePackager npmLockfileParser, NpmLockfileOptions npmLockfileOptions, YarnPackager yarnPackager,
+    public LernaPackager(FileFinder fileFinder, PackageJsonReader packageJsonReader, YarnLockParser yarnLockParser, YarnLockOptions yarnLockOptions, NpmLockfilePackager npmLockfileParser, NpmLockfileOptions npmLockfileOptions,
+        YarnPackager yarnPackager,
         LernaOptions lernaOptions) {
         this.fileFinder = fileFinder;
+        this.packageJsonReader = packageJsonReader;
         this.yarnLockParser = yarnLockParser;
         this.yarnLockOptions = yarnLockOptions;
         this.npmLockfileParser = npmLockfileParser;
@@ -146,7 +152,8 @@ public class LernaPackager {
             return LernaResult.success(npmParseResult.getProjectName(), npmParseResult.getProjectVersion(), Collections.singletonList(npmParseResult.getCodeLocation()));
         } else if (lockFile.getYarnLockContents().isPresent()) {
             YarnLock yarnLock = yarnLockParser.parseYarnLock(lockFile.getYarnLockContents().get());
-            YarnResult yarnResult = yarnPackager.generateYarnResult(packageJsonContents, yarnLock, directory.getAbsolutePath(), externalPackages, yarnLockOptions.useProductionOnly());
+            PackageJson rootPackageJson = packageJsonReader.read(packageJsonContents);
+            YarnResult yarnResult = yarnPackager.generateYarnResult(rootPackageJson, new LinkedList<>(), yarnLock, directory.getAbsolutePath(), externalPackages, yarnLockOptions.useProductionOnly());
 
             if (yarnResult.getException().isPresent()) {
                 return LernaResult.failure(yarnResult.getException().get());

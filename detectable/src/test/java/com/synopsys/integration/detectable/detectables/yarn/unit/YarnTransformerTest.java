@@ -3,6 +3,7 @@ package com.synopsys.integration.detectable.detectables.yarn.unit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
@@ -23,7 +24,7 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLock
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryId;
 
 @UnitTest
-public class YarnTransformerTest {
+class YarnTransformerTest {
     @Test
     void doesntThrowOnMissingExternalId() throws MissingExternalIdException {
         // Ensure components not defined in the graph doesn't cause an exception to be thrown. See IDETECT-1974.
@@ -39,7 +40,7 @@ public class YarnTransformerTest {
         List<YarnLockDependency> validYarnLockDependencies = Collections.singletonList(new YarnLockDependency("yarn", "^1.22.4", false));
         List<YarnLockEntry> yarnLockEntries = Collections.singletonList(new YarnLockEntry(false, validYarnLockEntryIds, "1.0", validYarnLockDependencies));
         YarnLock yarnLock = new YarnLock(null, false, yarnLockEntries);
-        YarnLockResult yarnLockResult = new YarnLockResult(packageJson, "yarn.lock", yarnLock);
+        YarnLockResult yarnLockResult = new YarnLockResult(packageJson, new LinkedList<>(), "yarn.lock", yarnLock);
 
         // This should not throw an exception.
         DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, new ArrayList<>());

@@ -39,7 +39,7 @@ public class YarnTransformer {
     public DependencyGraph transform(YarnLockResult yarnLockResult, boolean productionOnly, List<NameVersion> externalDependencies) throws MissingExternalIdException {
         LazyExternalIdDependencyGraphBuilder graphBuilder = new LazyExternalIdDependencyGraphBuilder();
 
-        addRootNodesToGraph(graphBuilder, yarnLockResult.getPackageJson(), productionOnly);
+        addRootNodesToGraph(graphBuilder, yarnLockResult.getRootPackageJson(), productionOnly);
 
         for (YarnLockEntry entry : yarnLockResult.getYarnLock().getEntries()) {
             for (YarnLockEntryId entryId : entry.getIds()) {

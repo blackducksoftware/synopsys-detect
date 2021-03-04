@@ -17,10 +17,8 @@ import com.synopsys.integration.detectable.detectables.npm.packagejson.model.Pac
 
 public class PackageJsonReader {
     private final Gson gson;
-    private final GsonBuilder gsonBuilder;
 
-    public PackageJsonReader(GsonBuilder gsonBuilder, Gson gson) {
-        this.gsonBuilder = gsonBuilder;
+    public PackageJsonReader(Gson gson) {
         this.gson = gson;
     }
 
@@ -29,6 +27,7 @@ public class PackageJsonReader {
     }
 
     public List<String> extractWorkspaceDirPatterns(String packageJsonText) {
+        GsonBuilder gsonBuilder = gson.newBuilder();
         Map<String, Object> packageJsonMap = gsonBuilder.create().fromJson(packageJsonText, Map.class);
         Object workspacesObject = packageJsonMap.get("workspaces");
         List<String> workspaceSubdirPatterns = new LinkedList<>();

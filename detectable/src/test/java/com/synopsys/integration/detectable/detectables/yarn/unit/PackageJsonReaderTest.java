@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonReader;
 
@@ -18,9 +17,8 @@ public class PackageJsonReaderTest {
 
     @BeforeAll
     static void setup() {
-        GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = new Gson();
-        packageJsonReader = new PackageJsonReader(gsonBuilder, gson);
+        packageJsonReader = new PackageJsonReader(gson);
     }
 
     @Test

@@ -210,6 +210,8 @@ import com.synopsys.integration.detectable.detectables.yarn.YarnLockExtractor;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
 import com.synopsys.integration.detectable.detectables.yarn.YarnPackager;
 import com.synopsys.integration.detectable.detectables.yarn.YarnTransformer;
+import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonFiles;
+import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonReader;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockLineAnalyzer;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryParser;
@@ -695,11 +697,19 @@ public class DetectableFactory {
     }
 
     private YarnPackager yarnPackager() {
-        return new YarnPackager(gson, yarnTransformer());
+        return new YarnPackager(yarnTransformer());
+    }
+
+    private PackageJsonFiles packageJsonFiles() {
+        return new PackageJsonFiles(packageJsonReader());
+    }
+
+    private PackageJsonReader packageJsonReader() {
+        return new PackageJsonReader(gson);
     }
 
     private YarnLockExtractor yarnLockExtractor(YarnLockOptions yarnLockOptions) {
-        return new YarnLockExtractor(yarnLockParser(), yarnPackager(), yarnLockOptions);
+        return new YarnLockExtractor(yarnLockParser(), yarnPackager(), packageJsonFiles(), yarnLockOptions);
     }
 
     private BitbakeRecipesParser bitbakeRecipesParser() {
@@ -807,7 +817,7 @@ public class DetectableFactory {
     }
 
     private LernaPackager lernaPackager(NpmLockfileOptions npmLockfileOptions, YarnLockOptions yarnLockOptions, LernaOptions lernaOptions) {
-        return new LernaPackager(fileFinder, yarnLockParser(), yarnLockOptions, npmLockfilePackager(), npmLockfileOptions, yarnPackager(), lernaOptions);
+        return new LernaPackager(fileFinder, packageJsonReader(), yarnLockParser(), yarnLockOptions, npmLockfilePackager(), npmLockfileOptions, yarnPackager(), lernaOptions);
     }
 
     private LernaExtractor lernaExtractor(NpmLockfileOptions npmLockfileOptions, YarnLockOptions yarnLockOptions, LernaOptions lernaOptions) {
