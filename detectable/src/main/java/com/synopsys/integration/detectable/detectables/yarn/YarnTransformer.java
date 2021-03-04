@@ -7,6 +7,7 @@
  */
 package com.synopsys.integration.detectable.detectables.yarn;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -39,7 +40,7 @@ public class YarnTransformer {
     public DependencyGraph transform(YarnLockResult yarnLockResult, boolean productionOnly, List<NameVersion> externalDependencies) throws MissingExternalIdException {
         LazyExternalIdDependencyGraphBuilder graphBuilder = new LazyExternalIdDependencyGraphBuilder();
 
-        addRootNodesToGraph(graphBuilder, yarnLockResult.getRootPackageJson(), productionOnly);
+        addRootNodesToGraph(graphBuilder, yarnLockResult.getRootPackageJson(), yarnLockResult.getWorkspacePackageJsons(), productionOnly);
 
         for (YarnLockEntry entry : yarnLockResult.getYarnLock().getEntries()) {
             for (YarnLockEntryId entryId : entry.getIds()) {
@@ -70,14 +71,18 @@ public class YarnTransformer {
         });
     }
 
-    private void addRootNodesToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder, PackageJson packageJson, boolean productionOnly) {
-        for (Map.Entry<String, String> packageDependency : packageJson.dependencies.entrySet()) {
-            graphBuilder.addChildToRoot(new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue()));
-        }
-
-        if (!productionOnly) {
-            for (Map.Entry<String, String> packageDependency : packageJson.devDependencies.entrySet()) {
+    private void addRootNodesToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder, PackageJson rootPackageJson, List<PackageJson> workspacePackageJsons, boolean productionOnly) {
+        List<PackageJson> allPackageJsons = new LinkedList<>();
+        allPackageJsons.add(rootPackageJson);
+        allPackageJsons.addAll(workspacePackageJsons);
+        for (PackageJson curPackageJson : allPackageJsons) {
+            for (Map.Entry<String, String> packageDependency : curPackageJson.dependencies.entrySet()) {
                 graphBuilder.addChildToRoot(new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue()));
+            }
+            if (!productionOnly) {
+                for (Map.Entry<String, String> packageDependency : curPackageJson.devDependencies.entrySet()) {
+                    graphBuilder.addChildToRoot(new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue()));
+                }
             }
         }
     }

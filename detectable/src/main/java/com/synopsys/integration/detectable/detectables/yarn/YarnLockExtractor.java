@@ -8,12 +8,14 @@
 package com.synopsys.integration.detectable.detectables.yarn;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,16 +39,20 @@ public class YarnLockExtractor {
         this.yarnLockOptions = yarnLockOptions;
     }
 
-    public Extraction extract(File yarnLockFile, File packageJsonFile) {
+    public Extraction extract(File projectDir, File yarnLockFile, File rootPackageJsonFile) {
         try {
-            String packageJsonText = FileUtils.readFileToString(packageJsonFile, StandardCharsets.UTF_8);
             List<String> yarnLockLines = FileUtils.readLines(yarnLockFile, StandardCharsets.UTF_8);
             YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockLines);
+            PackageJson rootPackageJson = packageJsonFiles.read(rootPackageJsonFile);
             // Yarn 1 projects: yarn.lock does not contain an entry for the project, so we have to guess at deps based on package.json files
             boolean addAllWorkspaceDependenciesAsDirect = yarnLockOptions.includeAllWorkspaceDependencies() || !yarnLock.isYarn2Project();
-            PackageJson rootPackageJson = packageJsonFiles.read(packageJsonFile);
-            List<PackageJson> workspacePackageJsons = new LinkedList<>();
-            YarnResult yarnResult = yarnPackager.generateYarnResult(rootPackageJson, workspacePackageJsons, yarnLock, yarnLockFile.getAbsolutePath(), new ArrayList<>(),
+            List<PackageJson> workspacePackageJsonsToProcess;
+            if (addAllWorkspaceDependenciesAsDirect) {
+                workspacePackageJsonsToProcess = getWorkspacePackageJsons(projectDir, rootPackageJsonFile);
+            } else {
+                workspacePackageJsonsToProcess = new LinkedList<>();
+            }
+            YarnResult yarnResult = yarnPackager.generateYarnResult(rootPackageJson, workspacePackageJsonsToProcess, yarnLock, yarnLockFile.getAbsolutePath(), new ArrayList<>(),
                 yarnLockOptions.useProductionOnly());
 
             if (yarnResult.getException().isPresent()) {
@@ -61,5 +67,11 @@ public class YarnLockExtractor {
         } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
+    }
+
+    @NotNull
+    private List<PackageJson> getWorkspacePackageJsons(File projectDir, File packageJsonFile) throws IOException {
+        List<String> workspaceDirPatterns = packageJsonFiles.extractWorkspaceDirPatterns(packageJsonFile);
+        return packageJsonFiles.readWorkspaceFiles(projectDir, workspaceDirPatterns);
     }
 }

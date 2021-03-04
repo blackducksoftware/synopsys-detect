@@ -51,6 +51,6 @@ public class YarnLockDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
-        return yarnLockExtractor.extract(yarnLock, packageJson);
+        return yarnLockExtractor.extract(environment.getDirectory(), yarnLock, packageJson);
     }
 }

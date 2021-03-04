@@ -24,9 +24,9 @@ public class YarnPackager {
         this.yarnTransformer = yarnTransformer;
     }
 
-    public YarnResult generateYarnResult(PackageJson rootPackageJson, List<PackageJson> workspacePackageJsons, YarnLock yarnLock, String yarnLockFilePath, List<NameVersion> externalDependencies,
+    public YarnResult generateYarnResult(PackageJson rootPackageJson, List<PackageJson> workspacePackageJsonsToProcess, YarnLock yarnLock, String yarnLockFilePath, List<NameVersion> externalDependencies,
         boolean useProductionOnly) {
-        YarnLockResult yarnLockResult = new YarnLockResult(rootPackageJson, workspacePackageJsons, yarnLockFilePath, yarnLock);
+        YarnLockResult yarnLockResult = new YarnLockResult(rootPackageJson, workspacePackageJsonsToProcess, yarnLockFilePath, yarnLock);
 
         try {
             DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, useProductionOnly, externalDependencies);

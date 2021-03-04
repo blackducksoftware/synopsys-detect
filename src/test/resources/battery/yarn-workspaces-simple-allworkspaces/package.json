@@ -1,0 +1,13 @@
+{
+  "name": "simple",
+  "version": "1.0.0",
+  "workspaces": {
+    "packages": [
+      "mypkgs/*"
+    ]
+  },
+  "dependencies": {
+    "semver": "^7.3.4",
+    "workspace-b": "1.0.0"
+  }
+}
