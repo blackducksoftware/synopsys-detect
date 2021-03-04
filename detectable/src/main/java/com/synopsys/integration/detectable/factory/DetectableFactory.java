@@ -43,7 +43,6 @@ import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorR
 import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
-import com.synopsys.integration.detectable.detectable.parse.IndentedTreeParser;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
@@ -200,15 +199,17 @@ import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecP
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseExtractor;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecLineParser;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecParser;
-import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheDetectable;
-import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheDetectableOptions;
+import com.synopsys.integration.detectable.detectables.sbt.SbtDetectable;
+import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotExtractor;
+import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotGraphNodeParser;
+import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotGraphTransformer;
+import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotOutputParser;
+import com.synopsys.integration.detectable.detectables.sbt.dot.SbtGraphParserTransformer;
+import com.synopsys.integration.detectable.detectables.sbt.dot.SbtPluginFinder;
+import com.synopsys.integration.detectable.detectables.sbt.dot.SbtProjectMatcher;
+import com.synopsys.integration.detectable.detectables.sbt.dot.SbtProjectParser;
 import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheExtractor;
-import com.synopsys.integration.detectable.detectables.sbt.plugin.SbtCoursierPluginLineParser;
-import com.synopsys.integration.detectable.detectables.sbt.plugin.SbtDependencyGraphPluginLineParser;
-import com.synopsys.integration.detectable.detectables.sbt.plugin.SbtPluginDetectable;
-import com.synopsys.integration.detectable.detectables.sbt.plugin.SbtPluginExtractor;
-import com.synopsys.integration.detectable.detectables.sbt.plugin.SbtPluginFinder;
-import com.synopsys.integration.detectable.detectables.sbt.plugin.SbtPluginOutputParser;
+import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheOptions;
 import com.synopsys.integration.detectable.detectables.swift.SwiftCliDetectable;
 import com.synopsys.integration.detectable.detectables.swift.SwiftCliParser;
 import com.synopsys.integration.detectable.detectables.swift.SwiftExtractor;
@@ -398,12 +399,8 @@ public class DetectableFactory {
         return new RebarDetectable(environment, fileFinder, rebar3Resolver, rebarExtractor());
     }
 
-    public SbtResolutionCacheDetectable createSbtResolutionCacheDetectable(DetectableEnvironment environment, SbtResolutionCacheDetectableOptions sbtResolutionCacheDetectableOptions) {
-        return new SbtResolutionCacheDetectable(environment, fileFinder, sbtResolutionCacheExtractor(), sbtResolutionCacheDetectableOptions);
-    }
-
-    public SbtPluginDetectable createSbtPluginDetectable(DetectableEnvironment environment, SbtResolver sbtResolver) {
-        return new SbtPluginDetectable(environment, fileFinder, sbtResolver, sbtPluginExtractor(), createSbtPluginFinder());
+    public SbtDetectable createSbtDetectable(DetectableEnvironment environment, SbtResolver sbtResolver, SbtResolutionCacheOptions sbtResolutionCacheOptions) {
+        return new SbtDetectable(environment, fileFinder, sbtResolutionCacheExtractor(), sbtResolutionCacheOptions, sbtResolver, sbtDotExtractor(), sbtPluginFinder());
     }
 
     public SwiftCliDetectable createSwiftCliDetectable(DetectableEnvironment environment, SwiftResolver swiftResolver) {
@@ -694,24 +691,36 @@ public class DetectableFactory {
         return new SbtResolutionCacheExtractor(fileFinder, externalIdFactory);
     }
 
-    private SbtDependencyGraphPluginLineParser sbtDependencyGraphPluginLineParser() {
-        return new SbtDependencyGraphPluginLineParser();
+    public SbtPluginFinder sbtPluginFinder() {
+        return new SbtPluginFinder(executableRunner);
     }
 
-    private SbtCoursierPluginLineParser sbtCoursierPluginLineParser() {
-        return new SbtCoursierPluginLineParser();
+    private SbtDotExtractor sbtDotExtractor() {
+        return new SbtDotExtractor(executableRunner, sbtDotOutputParser(), sbtProjectParser(), sbtDotGraphTransformer());
     }
 
-    private SbtPluginOutputParser sbtPluginParser() {
-        return new SbtPluginOutputParser(new IndentedTreeParser<>(), externalIdFactory);
+    private SbtDotOutputParser sbtDotOutputParser() {
+        return new SbtDotOutputParser();
     }
 
-    public SbtPluginFinder createSbtPluginFinder() {
-        return new SbtPluginFinder(executableRunner, sbtDependencyGraphPluginLineParser(), sbtCoursierPluginLineParser());
+    private SbtProjectParser sbtProjectParser() {
+        return new SbtProjectParser();
     }
 
-    private SbtPluginExtractor sbtPluginExtractor() {
-        return new SbtPluginExtractor(executableRunner, sbtPluginParser());
+    private SbtProjectMatcher sbtProjectMatcher() {
+        return new SbtProjectMatcher(sbtDotGraphNodeParser());
+    }
+
+    private SbtDotGraphNodeParser sbtDotGraphNodeParser() {
+        return new SbtDotGraphNodeParser(externalIdFactory);
+    }
+
+    private SbtGraphParserTransformer sbtGraphParserTransformer() {
+        return new SbtGraphParserTransformer(sbtDotGraphNodeParser());
+    }
+
+    private SbtDotGraphTransformer sbtDotGraphTransformer() {
+        return new SbtDotGraphTransformer(sbtProjectMatcher(), sbtGraphParserTransformer(), externalIdFactory);
     }
 
     private YarnLockParser yarnLockParser() {

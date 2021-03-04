@@ -9,12 +9,12 @@ package com.synopsys.integration.detectable.detectables.sbt.parse;
 
 import java.util.List;
 
-public class SbtResolutionCacheDetectableOptions {
+public class SbtResolutionCacheOptions {
     private final List<String> includedConfigurations;
     private final List<String> excludedConfigurations;
     private final int reportDepth;
 
-    public SbtResolutionCacheDetectableOptions(List<String> includedConfigurations, List<String> excludedConfigurations, int reportDepth) {
+    public SbtResolutionCacheOptions(List<String> includedConfigurations, List<String> excludedConfigurations, int reportDepth) {
         this.includedConfigurations = includedConfigurations;
         this.excludedConfigurations = excludedConfigurations;
         this.reportDepth = reportDepth;

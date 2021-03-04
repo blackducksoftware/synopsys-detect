@@ -13,14 +13,14 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 
-public class DotGraphTransformer {
-    private final ProjectMatcher projectMatcher;
-    private final GraphParserTransformer graphParserTransformer;
+public class SbtDotGraphTransformer {
+    private final SbtProjectMatcher sbtProjectMatcher;
+    private final SbtGraphParserTransformer sbtGraphParserTransformer;
     private final ExternalIdFactory externalIdFactory;
 
-    public DotGraphTransformer(final ProjectMatcher projectMatcher, final GraphParserTransformer graphParserTransformer, final ExternalIdFactory externalIdFactory) {
-        this.projectMatcher = projectMatcher;
-        this.graphParserTransformer = graphParserTransformer;
+    public SbtDotGraphTransformer(final SbtProjectMatcher sbtProjectMatcher, final SbtGraphParserTransformer sbtGraphParserTransformer, final ExternalIdFactory externalIdFactory) {
+        this.sbtProjectMatcher = sbtProjectMatcher;
+        this.sbtGraphParserTransformer = sbtGraphParserTransformer;
         this.externalIdFactory = externalIdFactory;
     }
 
@@ -28,8 +28,8 @@ public class DotGraphTransformer {
         List<CodeLocation> codeLocations = new ArrayList<>();
         for (File dotGraph : dotFiles) {
             GraphParser graphParser = new GraphParser(FileUtils.openInputStream(dotGraph));
-            ProjectMatch matchingProject = projectMatcher.determineProjectID(graphParser, allProjects);
-            DependencyGraph graph = graphParserTransformer.transformDotToGraph(graphParser, matchingProject.getNodeIdsAtRoot());
+            SbtProjectMatch matchingProject = sbtProjectMatcher.determineProjectID(graphParser, allProjects);
+            DependencyGraph graph = sbtGraphParserTransformer.transformDotToGraph(graphParser, matchingProject.getNodeIdsAtRoot());
 
             ExternalId projectExternalId = null;
             if (matchingProject.getRelatedProject() != null) {

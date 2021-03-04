@@ -34,11 +34,11 @@ import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 
-public class GraphParserTransformer {
+public class SbtGraphParserTransformer {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final SbtDotGraphNodeParser sbtDotGraphNodeParser;
 
-    public GraphParserTransformer(final SbtDotGraphNodeParser sbtDotGraphNodeParser) {
+    public SbtGraphParserTransformer(final SbtDotGraphNodeParser sbtDotGraphNodeParser) {
         this.sbtDotGraphNodeParser = sbtDotGraphNodeParser;
     }
 

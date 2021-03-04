@@ -40,17 +40,17 @@ public class SbtDotExtractor {
     private final DetectableExecutableRunner executableRunner;
     private final SbtDotOutputParser sbtDotOutputParser;
     private final SbtProjectParser sbtProjectParser;
-    private final DotGraphTransformer dotGraphTransformer;
+    private final SbtDotGraphTransformer dotGraphTransformer;
 
     public SbtDotExtractor(DetectableExecutableRunner executableRunner, final SbtDotOutputParser sbtDotOutputParser, final SbtProjectParser sbtProjectParser,
-        final DotGraphTransformer dotGraphTransformer) {
+        final SbtDotGraphTransformer dotGraphTransformer) {
         this.executableRunner = executableRunner;
         this.sbtDotOutputParser = sbtDotOutputParser;
         this.sbtProjectParser = sbtProjectParser;
         this.dotGraphTransformer = dotGraphTransformer;
     }
 
-    public Extraction extract(File directory, ExecutableTarget sbt) throws DetectableException {
+    public Extraction extract(File directory, ExecutableTarget sbt) {
         try {
             Executable projectExecutable = ExecutableUtils.createFromTarget(directory, sbt, "\"print projectID\"");
             ExecutableOutput projectOutput = executableRunner.executeSuccessfully(projectExecutable);
@@ -71,7 +71,7 @@ public class SbtDotExtractor {
             return builder.build();
         } catch (ExecutableFailedException e) {
             return Extraction.fromFailedExecutable(e);
-        } catch (IOException e) {
+        } catch (IOException | DetectableException e) {
             return new Extraction.Builder().exception(e).build();
         }
     }

@@ -37,15 +37,15 @@ import com.paypal.digraph.parser.GraphElement;
 import com.paypal.digraph.parser.GraphParser;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 
-public class ProjectMatcher {
+public class SbtProjectMatcher {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final SbtDotGraphNodeParser sbtDotGraphNodeParser;
 
-    public ProjectMatcher(final SbtDotGraphNodeParser sbtDotGraphNodeParser) {
+    public SbtProjectMatcher(final SbtDotGraphNodeParser sbtDotGraphNodeParser) {
         this.sbtDotGraphNodeParser = sbtDotGraphNodeParser;
     }
 
-    public ProjectMatch determineProjectID(GraphParser graphParser, List<SbtProject> projects) {
+    public SbtProjectMatch determineProjectID(GraphParser graphParser, List<SbtProject> projects) {
         Set<String> nodeIdsUsedInDestination = graphParser.getEdges().values().stream()
                                                    .map(GraphEdge::getNode2)
                                                    .map(GraphElement::getId)
@@ -63,9 +63,9 @@ public class ProjectMatcher {
                                                        .findFirst();
 
             if (matchingProject.isPresent()) {
-                return ProjectMatch.FoundMatch(nodeId, matchingProject.get());
+                return SbtProjectMatch.FoundMatch(nodeId, matchingProject.get());
             }
         }
-        return ProjectMatch.NoMatch(nodeIdsUsedInDestination);
+        return SbtProjectMatch.NoMatch(nodeIdsUsedInDestination);
     }
 }
