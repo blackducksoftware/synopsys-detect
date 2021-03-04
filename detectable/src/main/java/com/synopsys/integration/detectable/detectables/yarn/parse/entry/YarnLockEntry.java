@@ -12,14 +12,20 @@ import java.util.List;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDependency;
 
 public class YarnLockEntry {
+    private final boolean metadataEntry;
     private final List<YarnLockEntryId> ids;
     private final String version;
     private final List<YarnLockDependency> dependencies;
 
-    public YarnLockEntry(List<YarnLockEntryId> ids, String version, List<YarnLockDependency> dependencies) {
+    public YarnLockEntry(boolean metadataEntry, List<YarnLockEntryId> ids, String version, List<YarnLockDependency> dependencies) {
+        this.metadataEntry = metadataEntry;
         this.ids = ids;
         this.version = version;
         this.dependencies = dependencies;
+    }
+
+    public boolean isMetadataEntry() {
+        return metadataEntry;
     }
 
     public List<YarnLockEntryId> getIds() {

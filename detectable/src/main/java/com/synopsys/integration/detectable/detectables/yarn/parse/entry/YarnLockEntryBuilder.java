@@ -16,12 +16,18 @@ import java.util.Optional;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDependency;
 
 public class YarnLockEntryBuilder {
+    private boolean metadataEntry = false;
     private final List<YarnLockEntryId> ids = new LinkedList<>();
     private String version;
     private final Map<String, YarnLockDependency> dependencies = new HashMap<>();
 
     public YarnLockEntryBuilder addId(YarnLockEntryId id) {
         ids.add(id);
+        return this;
+    }
+
+    public YarnLockEntryBuilder setMetadataEntry(boolean value) {
+        this.metadataEntry = value;
         return this;
     }
 
@@ -40,20 +46,20 @@ public class YarnLockEntryBuilder {
     }
 
     public boolean valid() {
-        return !ids.isEmpty() && (version != null);
+        return (metadataEntry && (version != null)) || (!ids.isEmpty() && (version != null));
     }
 
     public YarnLockEntry build() {
         if (!valid()) {
             throw new UnsupportedOperationException("Attempted to build an incomplete yarn.lock entry");
         }
-        return new YarnLockEntry(ids, version, new LinkedList<>(dependencies.values()));
+        return new YarnLockEntry(metadataEntry, ids, version, new LinkedList<>(dependencies.values()));
     }
 
     public Optional<YarnLockEntry> buildIfValid() {
         if (!valid()) {
             return Optional.empty();
         }
-        return Optional.of(new YarnLockEntry(ids, version, new LinkedList<>(dependencies.values())));
+        return Optional.of(new YarnLockEntry(metadataEntry, ids, version, new LinkedList<>(dependencies.values())));
     }
 }

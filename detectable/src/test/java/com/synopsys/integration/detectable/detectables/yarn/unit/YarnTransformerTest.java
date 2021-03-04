@@ -37,8 +37,8 @@ public class YarnTransformerTest {
 
         List<YarnLockEntryId> validYarnLockEntryIds = Collections.singletonList(new YarnLockEntryId("foo", "fuzzyVersion-1.0"));
         List<YarnLockDependency> validYarnLockDependencies = Collections.singletonList(new YarnLockDependency("yarn", "^1.22.4", false));
-        List<YarnLockEntry> yarnLockEntries = Collections.singletonList(new YarnLockEntry(validYarnLockEntryIds, "1.0", validYarnLockDependencies));
-        YarnLock yarnLock = new YarnLock(yarnLockEntries);
+        List<YarnLockEntry> yarnLockEntries = Collections.singletonList(new YarnLockEntry(false, validYarnLockEntryIds, "1.0", validYarnLockDependencies));
+        YarnLock yarnLock = new YarnLock(null, yarnLockEntries);
         YarnLockResult yarnLockResult = new YarnLockResult(packageJson, "yarn.lock", yarnLock);
 
         // This should not throw an exception.

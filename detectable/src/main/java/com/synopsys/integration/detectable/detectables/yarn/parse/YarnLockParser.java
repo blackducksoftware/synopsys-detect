@@ -10,12 +10,16 @@ package com.synopsys.integration.detectable.detectables.yarn.parse;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntry;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryParseResult;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryParser;
 
 public class YarnLockParser {
     private final YarnLockEntryParser yarnLockEntryParser;
+    @Nullable
+    private String yarnLockFileFormatVersion = null;
 
     public YarnLockParser(YarnLockEntryParser yarnLockEntryParser) {
         this.yarnLockEntryParser = yarnLockEntryParser;
@@ -26,10 +30,17 @@ public class YarnLockParser {
         int lineIndex = 0;
         while (lineIndex < yarnLockFileAsList.size()) {
             YarnLockEntryParseResult entryParseResult = yarnLockEntryParser.parseNextEntry(yarnLockFileAsList, lineIndex);
-            entryParseResult.getYarnLockEntry().ifPresent(entries::add);
+            if (entryParseResult.getYarnLockEntry().isPresent()) {
+                YarnLockEntry entry = entryParseResult.getYarnLockEntry().get();
+                if (entry.isMetadataEntry()) {
+                    yarnLockFileFormatVersion = entry.getVersion();
+                } else {
+                    entries.add(entry);
+                }
+            }
             lineIndex = entryParseResult.getLastParsedLineIndex();
             lineIndex++;
         }
-        return new YarnLock(entries);
+        return new YarnLock(yarnLockFileFormatVersion, entries);
     }
 }
