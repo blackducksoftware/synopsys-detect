@@ -12,11 +12,16 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntry;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryParseResult;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryParser;
 
 public class YarnLockParser {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final YarnLockEntryParser yarnLockEntryParser;
     @Nullable
     private String yarnLockFileFormatVersion = null;
@@ -41,6 +46,11 @@ public class YarnLockParser {
             lineIndex = entryParseResult.getLastParsedLineIndex();
             lineIndex++;
         }
-        return new YarnLock(yarnLockFileFormatVersion, entries);
+        return new YarnLock(yarnLockFileFormatVersion, isYarn2Project(yarnLockFileFormatVersion), entries);
+    }
+
+    private boolean isYarn2Project(String yarnLockFileFormatVersion) {
+        logger.debug("yarn.lock file format version: {}", yarnLockFileFormatVersion);
+        return StringUtils.isNotBlank(yarnLockFileFormatVersion) && ("4".equals(yarnLockFileFormatVersion));
     }
 }

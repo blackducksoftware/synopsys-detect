@@ -13,12 +13,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
 
 public class YarnLockExtractor {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final YarnLockParser yarnLockParser;
     private final YarnPackager yarnPackager;
     private final YarnLockOptions yarnLockOptions;
@@ -33,7 +36,6 @@ public class YarnLockExtractor {
         try {
             List<String> yarnLockLines = FileUtils.readLines(yarnLockFile, StandardCharsets.UTF_8);
             YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockLines);
-
             String packageJsonText = FileUtils.readFileToString(packageJsonFile, StandardCharsets.UTF_8);
             YarnResult yarnResult = yarnPackager.generateYarnResult(packageJsonText, yarnLock, yarnLockFile.getAbsolutePath(), new ArrayList<>(),
                 yarnLockOptions.useProductionOnly());
@@ -51,5 +53,4 @@ public class YarnLockExtractor {
             return new Extraction.Builder().exception(e).build();
         }
     }
-
 }
