@@ -31,7 +31,7 @@ import java.util.Map;
 
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 
-import com.synopsys.integration.detectable.detectable.file.FileFinder;
+import com.synopsys.integration.common.util.finder.FileFinder;
 
 public class MockFileFinder implements FileFinder {
 

@@ -29,7 +29,7 @@ import java.util.Collections;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.detectable.file.FileFinder;
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheDetectable;
 import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheDetectableOptions;
 import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheExtractor;
