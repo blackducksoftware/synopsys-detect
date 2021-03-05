@@ -39,10 +39,10 @@ public class StringTypingExecutableCreator extends TypingExecutableCreator {
     }
 
     @Override
-    public List<String> getFilePaths(final File mockDirectory, final AtomicInteger commandCount) throws IOException {
+    public List<String> getFilePaths(final BatteryExecutableInfo executableInfo, final AtomicInteger commandCount) throws IOException {
         final List<String> filePaths = new ArrayList<>();
         for (final String text : toType) {
-            final File commandTextFile = new File(mockDirectory, "cmd-" + commandCount.getAndIncrement() + ".txt");
+            final File commandTextFile = new File(executableInfo.getMockDirectory(), "cmd-" + commandCount.getAndIncrement() + ".txt");
             FileUtils.writeStringToFile(commandTextFile, text, Charset.defaultCharset());
             filePaths.add(commandTextFile.getCanonicalPath());
         }

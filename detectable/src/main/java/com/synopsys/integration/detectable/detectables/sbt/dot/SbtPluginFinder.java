@@ -27,7 +27,7 @@ public class SbtPluginFinder {
         return determineInstalledPlugin(pluginOutput);
     }
 
-    private boolean determineInstalledPlugin(List<String> pluginOutput) {
+    public boolean determineInstalledPlugin(List<String> pluginOutput) {
         if (pluginOutput.stream().anyMatch(line -> line.contains(DEPENDENCY_GRAPH_PLUGIN_NAME))) {
             return true;
         } else {

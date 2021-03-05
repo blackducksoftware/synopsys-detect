@@ -202,12 +202,10 @@ import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.Ge
 import com.synopsys.integration.detectable.detectables.sbt.SbtDetectable;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotExtractor;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotGraphNodeParser;
-import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotGraphTransformer;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotOutputParser;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtGraphParserTransformer;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtPluginFinder;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtProjectMatcher;
-import com.synopsys.integration.detectable.detectables.sbt.dot.SbtProjectParser;
 import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheExtractor;
 import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheOptions;
 import com.synopsys.integration.detectable.detectables.swift.SwiftCliDetectable;
@@ -696,15 +694,11 @@ public class DetectableFactory {
     }
 
     private SbtDotExtractor sbtDotExtractor() {
-        return new SbtDotExtractor(executableRunner, sbtDotOutputParser(), sbtProjectParser(), sbtDotGraphTransformer());
+        return new SbtDotExtractor(executableRunner, sbtDotOutputParser(), sbtProjectMatcher(), sbtGraphParserTransformer(), sbtDotGraphNodeParser());
     }
 
     private SbtDotOutputParser sbtDotOutputParser() {
         return new SbtDotOutputParser();
-    }
-
-    private SbtProjectParser sbtProjectParser() {
-        return new SbtProjectParser();
     }
 
     private SbtProjectMatcher sbtProjectMatcher() {
@@ -717,10 +711,6 @@ public class DetectableFactory {
 
     private SbtGraphParserTransformer sbtGraphParserTransformer() {
         return new SbtGraphParserTransformer(sbtDotGraphNodeParser());
-    }
-
-    private SbtDotGraphTransformer sbtDotGraphTransformer() {
-        return new SbtDotGraphTransformer(sbtProjectMatcher(), sbtGraphParserTransformer(), externalIdFactory);
     }
 
     private YarnLockParser yarnLockParser() {

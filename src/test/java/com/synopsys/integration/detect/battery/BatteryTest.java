@@ -68,6 +68,7 @@ public final class BatteryTest {
     private final List<String> emptyFileNames = new ArrayList<>();
     private final List<String> resourceFileNames = new ArrayList<>();
     private final List<String> resourceZipNames = new ArrayList<>();
+    private String resourceZipIntoSource = null;
     private boolean shouldExpectBdioResources = false;
     private String sourceDirectoryName = "source";
 
@@ -148,6 +149,10 @@ public final class BatteryTest {
 
     public void sourceFileNamed(String filename) {
         emptyFileNames.add(filename);
+    }
+
+    public void addDirectlyToSourceFolderFromExpandedResource(String filename) {
+        resourceZipIntoSource = filename;
     }
 
     public void sourceFolderFromExpandedResource(String filename) {
@@ -325,6 +330,7 @@ public final class BatteryTest {
         mockDirectory = new File(testDirectory, "mock");
         outputDirectory = new File(testDirectory, "output");
         bdioDirectory = new File(testDirectory, "bdio");
+        //ah ha
         sourceDirectory = new File(testDirectory, sourceDirectoryName);
 
         Assertions.assertTrue(outputDirectory.mkdirs());
@@ -393,6 +399,11 @@ public final class BatteryTest {
             File zipFile = BatteryFiles.asFile("/" + resourcePrefix + "/" + resourceZipFileName + ".zip");
             File target = new File(sourceDirectory, resourceZipFileName);
             ZipUtil.unpack(zipFile, target);
+        }
+
+        if (resourceZipIntoSource != null) {
+            File zipFile = BatteryFiles.asFile("/" + resourcePrefix + "/" + resourceZipIntoSource + ".zip");
+            ZipUtil.unpack(zipFile, sourceDirectory);
         }
     }
 

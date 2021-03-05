@@ -22,8 +22,6 @@
  */
 package com.synopsys.integration.detectable.detectables.sbt.dot;
 
-import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,13 +40,13 @@ public class SbtGraphParserTransformer {
         this.sbtDotGraphNodeParser = sbtDotGraphNodeParser;
     }
 
-    public DependencyGraph transformDotToGraph(GraphParser graphParser, Set<String> rootNodes) {
+    public DependencyGraph transformDotToGraph(GraphParser graphParser, String projectNodeId) {
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
         for (GraphEdge graphEdge : graphParser.getEdges().values()) {
             Dependency parent = sbtDotGraphNodeParser.nodeToDependency(graphEdge.getNode1().getId());
             Dependency child = sbtDotGraphNodeParser.nodeToDependency(graphEdge.getNode2().getId());
-            if (rootNodes.contains(graphEdge.getNode1().getId())) {
+            if (projectNodeId.equals(graphEdge.getNode1().getId())) {
                 graph.addChildToRoot(child);
             } else {
                 graph.addChildWithParent(child, parent);

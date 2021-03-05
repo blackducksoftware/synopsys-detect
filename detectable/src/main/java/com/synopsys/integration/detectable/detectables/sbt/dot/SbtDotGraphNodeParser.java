@@ -39,10 +39,18 @@ public class SbtDotGraphNodeParser {
 
     public Dependency nodeToDependency(String id) {
         String[] pieces = id.trim().split(":");
-        String group = pieces[0];
-        String name = pieces[1];
-        String version = pieces[2];
+        String group = unquote(pieces[0]);
+        String name = unquote(pieces[1]);
+        String version = unquote(pieces[2]);
         ExternalId externalId = externalIdFactory.createMavenExternalId(group, name, version);
         return new Dependency(name, version, externalId);
+    }
+
+    public String unquote(String item) {
+        if (item.startsWith("\""))
+            item = item.substring(1);
+        if (item.endsWith("\""))
+            item = item.substring(0, item.length() - 1);
+        return item;
     }
 }

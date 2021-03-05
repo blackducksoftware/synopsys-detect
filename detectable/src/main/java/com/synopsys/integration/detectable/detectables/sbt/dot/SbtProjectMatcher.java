@@ -23,8 +23,6 @@
 package com.synopsys.integration.detectable.detectables.sbt.dot;
 
 import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -35,7 +33,7 @@ import org.slf4j.LoggerFactory;
 import com.paypal.digraph.parser.GraphEdge;
 import com.paypal.digraph.parser.GraphElement;
 import com.paypal.digraph.parser.GraphParser;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 
 public class SbtProjectMatcher {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -45,7 +43,7 @@ public class SbtProjectMatcher {
         this.sbtDotGraphNodeParser = sbtDotGraphNodeParser;
     }
 
-    public SbtProjectMatch determineProjectID(GraphParser graphParser, List<SbtProject> projects) {
+    public String determineProjectNodeID(GraphParser graphParser) throws DetectableException {
         Set<String> nodeIdsUsedInDestination = graphParser.getEdges().values().stream()
                                                    .map(GraphEdge::getNode2)
                                                    .map(GraphElement::getId)
@@ -54,18 +52,9 @@ public class SbtProjectMatcher {
         Set<String> nodeIdsWithNoDestination = SetUtils.difference(allNodeIds, nodeIdsUsedInDestination);
 
         if (nodeIdsWithNoDestination.size() == 1) {
-            String nodeId = nodeIdsWithNoDestination.stream().findFirst().get();
-            ExternalId nodeExternalId = sbtDotGraphNodeParser.nodeToDependency(nodeId).getExternalId();
-            Optional<SbtProject> matchingProject = projects.stream()
-                                                       .filter(project -> project.getGroup().equals(nodeExternalId.getGroup()))
-                                                       .filter(project -> project.getName().equals(nodeExternalId.getName()))
-                                                       .filter(project -> project.getVersion().equals(nodeExternalId.getVersion()))
-                                                       .findFirst();
-
-            if (matchingProject.isPresent()) {
-                return SbtProjectMatch.FoundMatch(nodeId, matchingProject.get());
-            }
+            return nodeIdsWithNoDestination.stream().findFirst().get();
+        } else {
+            throw new DetectableException("Unable to determine which node was the project in an SBT graph. Please contact support. Possibilities are: " + String.join(",", nodeIdsWithNoDestination));
         }
-        return SbtProjectMatch.NoMatch(nodeIdsUsedInDestination);
     }
 }
