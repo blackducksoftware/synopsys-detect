@@ -65,8 +65,8 @@ public class PackageJsonFiles {
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                     if (matcher.matches(file)) {
                         logger.info("\tFound a match: {}", file);
-                        PackageJson p = read(file.toFile());
-                        workspacePackageJsons.add(p);
+                        PackageJson packageJson = read(file.toFile());
+                        workspacePackageJsons.add(packageJson);
                     }
                     return FileVisitResult.CONTINUE;
                 }

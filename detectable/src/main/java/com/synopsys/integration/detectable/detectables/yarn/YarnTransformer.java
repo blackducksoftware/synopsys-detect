@@ -71,10 +71,13 @@ public class YarnTransformer {
         });
     }
 
-    private void addRootNodesToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder, PackageJson rootPackageJson, List<PackageJson> workspacePackageJsons, boolean productionOnly) {
+    // TODO REMOVE THIS:
+    private void addRootNodesToGraphORIG(LazyExternalIdDependencyGraphBuilder graphBuilder, PackageJson rootPackageJson, List<PackageJson> workspacePackageJsons, boolean productionOnly) {
         List<PackageJson> allPackageJsons = new LinkedList<>();
         allPackageJsons.add(rootPackageJson);
         allPackageJsons.addAll(workspacePackageJsons);
+        /////// TODO THIS IS WRONG!! IT'S ADDING DEPENDENCIES OF package.jsons, but FOR WORKSPACES:
+        // NEED TO ADD THE WORKSPACES THEMSELVES!!!!!!!
         for (PackageJson curPackageJson : allPackageJsons) {
             for (Map.Entry<String, String> packageDependency : curPackageJson.dependencies.entrySet()) {
                 graphBuilder.addChildToRoot(new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue()));
@@ -84,6 +87,42 @@ public class YarnTransformer {
                     graphBuilder.addChildToRoot(new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue()));
                 }
             }
+        }
+    }
+
+    // TODO the workspace jsons were in a map indexed by name
+    // may need that to tie their dependencies back to them (which is not happening now)
+    // Ah... the yarn.lock does not define dependencies for workspaces (in v1)
+    // So... should we add each workspace's dependencies at the top level?
+    // Or add the workspaces at the top level (like this does now) and then tie their dependencies
+    // (from the workspace package.json files) to them?
+    private void addRootNodesToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder,
+        PackageJson rootPackageJson, List<PackageJson> workspacePackageJsons, boolean productionOnly) {
+        ///List<PackageJson> allPackageJsons = new LinkedList<>();
+        ///allPackageJsons.add(rootPackageJson);
+        // TODO Can we filter out the workspace references??
+        ///////// TODO THIS IS WRONG: should not put workspace DEPENDENCIES at root level; just workspaces themselves!
+        ///allPackageJsons.addAll(workspacePackageJsons.values());
+        ///for (PackageJson curPackageJson : allPackageJsons) {
+        System.out.printf("* Processing Root PackageJson: %s:%s\n", rootPackageJson.name, rootPackageJson.version);
+        for (Map.Entry<String, String> packageDependency : rootPackageJson.dependencies.entrySet()) {
+            StringDependencyId stringDependencyId = new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue());
+            System.out.printf("ROOT stringDependencyId: %s\n", stringDependencyId);
+            graphBuilder.addChildToRoot(stringDependencyId);
+        }
+        if (!productionOnly) {
+            for (Map.Entry<String, String> packageDependency : rootPackageJson.devDependencies.entrySet()) {
+                StringDependencyId stringDependencyId = new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue());
+                System.out.printf("ROOT stringDependencyId [dev]: %s\n", stringDependencyId);
+                graphBuilder.addChildToRoot(stringDependencyId);
+            }
+        }
+        ///}
+        for (PackageJson curWorkspacePackageJson : workspacePackageJsons) {
+            System.out.printf("* Processing workspace PackageJson: %s:%s\n", curWorkspacePackageJson.name, curWorkspacePackageJson.version);
+            StringDependencyId workspaceStringDependencyId = new StringDependencyId(curWorkspacePackageJson.name + "@" + curWorkspacePackageJson.version);
+            System.out.printf("WORKSPACE stringDependencyId: %s\n", workspaceStringDependencyId);
+            graphBuilder.addChildToRoot(workspaceStringDependencyId);
         }
     }
 }
