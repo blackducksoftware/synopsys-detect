@@ -2,6 +2,7 @@
 
 ## Version 7.0.0
 ### New Features
+* Added support for the dependency graph SBT plugin. Resolution cache generation is no longer a requirement of the SBT detector.
 
 ### Changed features
 
