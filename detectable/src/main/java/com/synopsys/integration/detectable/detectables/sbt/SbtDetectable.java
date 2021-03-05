@@ -51,7 +51,7 @@ import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 //Even though this is technically two differenct extractors it's been combined because one of the approaches is deprecated. In the future only the plugin approach will be taken.
-@DetectableInfo(language = "Scala", forge = "Maven Central", requirementsMarkdown = "File: build.sbt.")
+@DetectableInfo(language = "Scala", forge = "Maven Central", requirementsMarkdown = "File: build.sbt. Plugin: Dependency Graph")
 public class SbtDetectable extends Detectable {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     public static final String BUILD_SBT_FILENAME = "build.sbt";
@@ -125,7 +125,7 @@ public class SbtDetectable extends Detectable {
             }
             return sbtPluginExtractor.extract(environment.getDirectory(), sbt);
         } else {
-            logger.warn("No SBT plugin was found, will attempt to parse report files. This approach is deprecated and a plugin should be installed.");
+            logger.warn("No SBT plugin was found, will attempt to parse report files. This approach is deprecated and a plugin should be installed. ");
             return sbtResolutionCacheExtractor.extract(environment.getDirectory(), sbtResolutionCacheOptions);
         }
     }
