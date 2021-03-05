@@ -80,6 +80,6 @@ public interface FileFinder {
     }
 
     @NotNull
-    List<File> findFiles(File directoryToSearch, final List<String> filenamePatterns, int depth, boolean findInsideMatchingDirectories);
+    List<File> findFiles(File directoryToSearch, List<String> filenamePatterns, int depth, boolean findInsideMatchingDirectories);
 
 }
