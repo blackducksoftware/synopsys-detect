@@ -1160,9 +1160,10 @@ public class DetectProperties {
             .setGroups(DetectGroup.YARN, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<BooleanProperty> DETECT_YARN_INCLUDE_ALL_WORKSPACE_DEPENDENCIES =
-        new DetectProperty<>(new BooleanProperty("detect.yarn.include.all.workspace.dependencies", false))
-            .setInfo("Include all workspace dependencies in the results. This is always done for Yarn 1 projects, so the value of this property only affects behavior on Yarn 2 projects", DetectPropertyFromVersion.VERSION_7_0_0)
-            .setHelp("When this property is set to false, in Yarn 2 projects, only the dependencies of the workspaces that the root package.json actually depends on (directly or indirectly) are included in the results.")
+        new DetectProperty<>(new BooleanProperty("detect.yarn.include.all.workspaces", false))
+            .setInfo("Include All Workspace Dependencies", DetectPropertyFromVersion.VERSION_7_0_0)
+            .setHelp(
+                "When this property is set to false, in Yarn 2 projects, only the dependencies of the workspaces that the root package.json actually depends on (directly or indirectly) are included in the results. When this property is set to true, every workspace and its dependencies will be included in the results whether the root project declares a dependency on it or not. Inclusion of all workspaces is always done for Yarn 1 projects, so the value of this property only affects behavior on Yarn 2 projects")
             .setGroups(DetectGroup.YARN, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<EnumProperty<LogLevel>> LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION =

@@ -70,7 +70,7 @@ public class YarnBattery {
         test.sourceFileFromResource("package.json");
         test.sourceFileFromResource("mypkgs/workspace-a/package.json");
         test.sourceFileFromResource("mypkgs/workspace-b/package.json");
-        test.property("detect.yarn.include.all.workspace.dependencies", "true");
+        test.property("detect.yarn.include.all.workspaces", "true");
         test.expectBdioResources();
         test.run();
     }
