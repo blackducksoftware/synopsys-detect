@@ -45,16 +45,18 @@ public class YarnLockExtractor {
             List<String> yarnLockLines = FileUtils.readLines(yarnLockFile, StandardCharsets.UTF_8);
             YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockLines);
             PackageJson rootPackageJson = packageJsonFiles.read(rootPackageJsonFile);
+            // TODO THIS IS WRONG/CHANGING:
             // Yarn 1 projects: yarn.lock does not contain an entry for the project, so we have to guess at deps based on package.json files
-            boolean addAllWorkspaceDependenciesAsDirect = yarnLockOptions.includeAllWorkspaceDependencies() || !yarnLock.isYarn2Project();
+            boolean addAllWorkspaceDependenciesAsDirect = yarnLockOptions.includeAllWorkspaceDependencies();
+            boolean getWorkspaceDependenciesFromWorkspacePackageJson = !yarnLock.isYarn2Project();
             Map<String, PackageJson> workspacePackageJsonsToProcess;
-            if (addAllWorkspaceDependenciesAsDirect) {
+            if (addAllWorkspaceDependenciesAsDirect || getWorkspaceDependenciesFromWorkspacePackageJson) {
                 workspacePackageJsonsToProcess = getWorkspacePackageJsons(projectDir, rootPackageJsonFile);
             } else {
                 workspacePackageJsonsToProcess = new HashMap<>();
             }
             YarnResult yarnResult = yarnPackager.generateYarnResult(rootPackageJson, workspacePackageJsonsToProcess, yarnLock, yarnLockFile.getAbsolutePath(), new ArrayList<>(),
-                yarnLockOptions.useProductionOnly(), !yarnLock.isYarn2Project());
+                yarnLockOptions.useProductionOnly(), addAllWorkspaceDependenciesAsDirect, getWorkspaceDependenciesFromWorkspacePackageJson);
 
             if (yarnResult.getException().isPresent()) {
                 throw yarnResult.getException().get();

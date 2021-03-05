@@ -26,11 +26,11 @@ public class YarnPackager {
     }
 
     public YarnResult generateYarnResult(PackageJson rootPackageJson, Map<String, PackageJson> workspacePackageJsonsToProcess, YarnLock yarnLock, String yarnLockFilePath, List<NameVersion> externalDependencies,
-        boolean useProductionOnly, boolean addWorkspaceDependencies) {
+        boolean useProductionOnly, boolean addWorkspaceDependencies, boolean getWorkspaceDependenciesFromWorkspacePackageJson) {
         YarnLockResult yarnLockResult = new YarnLockResult(rootPackageJson, workspacePackageJsonsToProcess, yarnLockFilePath, yarnLock);
 
         try {
-            DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, useProductionOnly, addWorkspaceDependencies, externalDependencies);
+            DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, useProductionOnly, addWorkspaceDependencies, getWorkspaceDependenciesFromWorkspacePackageJson, externalDependencies);
             CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 
             return YarnResult.success(rootPackageJson.name, rootPackageJson.version, codeLocation);

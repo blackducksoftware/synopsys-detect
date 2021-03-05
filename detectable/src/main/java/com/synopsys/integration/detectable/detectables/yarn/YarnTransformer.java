@@ -36,10 +36,12 @@ public class YarnTransformer {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph transform(YarnLockResult yarnLockResult, boolean productionOnly, boolean addWorkspaceDependencies, List<NameVersion> externalDependencies) throws MissingExternalIdException {
+    public DependencyGraph transform(YarnLockResult yarnLockResult, boolean productionOnly, boolean addWorkspaceDependencies, boolean getWorkspaceDependenciesFromWorkspacePackageJson,
+        List<NameVersion> externalDependencies) throws MissingExternalIdException {
         LazyExternalIdDependencyGraphBuilder graphBuilder = new LazyExternalIdDependencyGraphBuilder();
 
-        addRootNodesToGraph(graphBuilder, yarnLockResult.getRootPackageJson(), yarnLockResult.getWorkspacePackageJsons(), productionOnly, addWorkspaceDependencies);
+        addRootNodesToGraph(graphBuilder, yarnLockResult.getRootPackageJson(), yarnLockResult.getWorkspacePackageJsons(), productionOnly,
+            addWorkspaceDependencies, getWorkspaceDependenciesFromWorkspacePackageJson);
 
         for (YarnLockEntry entry : yarnLockResult.getYarnLock().getEntries()) {
             for (YarnLockEntryId entryId : entry.getIds()) {
@@ -88,7 +90,7 @@ public class YarnTransformer {
         }
         return false;
     }
-    
+
     // TODO the workspace jsons were in a map indexed by name
     // may need that to tie their dependencies back to them (which is not happening now)
     // Ah... the yarn.lock does not define dependencies for workspaces (in v1)
@@ -97,7 +99,7 @@ public class YarnTransformer {
     // (from the workspace package.json files) to them?
     private void addRootNodesToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder,
         PackageJson rootPackageJson, Map<String, PackageJson> workspacePackageJsons, boolean productionOnly,
-        boolean addWorkspaceDependencies) {
+        boolean addWorkspaceDependencies, boolean getWorkspaceDependenciesFromWorkspacePackageJson) {
         ///List<PackageJson> allPackageJsons = new LinkedList<>();
         ///allPackageJsons.add(rootPackageJson);
         // TODO Can we filter out the workspace references??
@@ -122,9 +124,12 @@ public class YarnTransformer {
             System.out.printf("* Processing workspace PackageJson: %s:%s\n", curWorkspacePackageJson.name, curWorkspacePackageJson.version);
             StringDependencyId workspaceStringDependencyId = new StringDependencyId(curWorkspacePackageJson.name + "@" + curWorkspacePackageJson.version);
             System.out.printf("WORKSPACE stringDependencyId: %s\n", workspaceStringDependencyId);
-            graphBuilder.addChildToRoot(workspaceStringDependencyId);
-            // TODO IF addWorkspaceDependencies (that is, if YARN 1): also add it's dependencies as children!!!!!!!!
+            // TODO move above lines into this if:
             if (addWorkspaceDependencies) {
+                graphBuilder.addChildToRoot(workspaceStringDependencyId);
+            }
+            // TODO IF addWorkspaceDependencies (that is, if YARN 1): also add it's dependencies as children!!!!!!!!
+            if (getWorkspaceDependenciesFromWorkspacePackageJson) {
                 for (Map.Entry<String, String> depOfWorkspace : curWorkspacePackageJson.dependencies.entrySet()) {
                     System.out.printf("Parent: %s; Child: %s\n", workspaceStringDependencyId.getValue(), depOfWorkspace.getKey());
                     StringDependencyId workspaceDependency = new StringDependencyId(depOfWorkspace.getKey() + "@" + depOfWorkspace.getValue());

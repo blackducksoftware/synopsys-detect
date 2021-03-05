@@ -153,7 +153,7 @@ public class LernaPackager {
         } else if (lockFile.getYarnLockContents().isPresent()) {
             YarnLock yarnLock = yarnLockParser.parseYarnLock(lockFile.getYarnLockContents().get());
             PackageJson rootPackageJson = packageJsonReader.read(packageJsonContents);
-            YarnResult yarnResult = yarnPackager.generateYarnResult(rootPackageJson, new HashMap<>(), yarnLock, directory.getAbsolutePath(), externalPackages, yarnLockOptions.useProductionOnly(), false);
+            YarnResult yarnResult = yarnPackager.generateYarnResult(rootPackageJson, new HashMap<>(), yarnLock, directory.getAbsolutePath(), externalPackages, yarnLockOptions.useProductionOnly(), false, false);
 
             if (yarnResult.getException().isPresent()) {
                 return LernaResult.failure(yarnResult.getException().get());
