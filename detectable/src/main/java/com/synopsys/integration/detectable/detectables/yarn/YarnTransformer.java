@@ -7,7 +7,6 @@
  */
 package com.synopsys.integration.detectable.detectables.yarn;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -89,26 +88,7 @@ public class YarnTransformer {
         }
         return false;
     }
-
-    // TODO REMOVE THIS:
-    private void addRootNodesToGraphORIG(LazyExternalIdDependencyGraphBuilder graphBuilder, PackageJson rootPackageJson, List<PackageJson> workspacePackageJsons, boolean productionOnly) {
-        List<PackageJson> allPackageJsons = new LinkedList<>();
-        allPackageJsons.add(rootPackageJson);
-        allPackageJsons.addAll(workspacePackageJsons);
-        /////// TODO THIS IS WRONG!! IT'S ADDING DEPENDENCIES OF package.jsons, but FOR WORKSPACES:
-        // NEED TO ADD THE WORKSPACES THEMSELVES!!!!!!!
-        for (PackageJson curPackageJson : allPackageJsons) {
-            for (Map.Entry<String, String> packageDependency : curPackageJson.dependencies.entrySet()) {
-                graphBuilder.addChildToRoot(new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue()));
-            }
-            if (!productionOnly) {
-                for (Map.Entry<String, String> packageDependency : curPackageJson.devDependencies.entrySet()) {
-                    graphBuilder.addChildToRoot(new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue()));
-                }
-            }
-        }
-    }
-
+    
     // TODO the workspace jsons were in a map indexed by name
     // may need that to tie their dependencies back to them (which is not happening now)
     // Ah... the yarn.lock does not define dependencies for workspaces (in v1)

@@ -7,9 +7,9 @@
         "Tool: Detect-7.0.0-SNAPSHOT",
         "Tool: IntegrationBdio-22.0.2"
       ],
-      "spdx:created": "2021-03-04T23:33:30.429Z"
+      "spdx:created": "2021-03-05T19:04:32.954Z"
     },
-    "@id": "uuid:504374a1-92af-4ae0-b5a0-36072d489a80",
+    "@id": "uuid:1793700a-d3ac-4de7-b89f-ba8a2d5e7b76",
     "@type": "BillOfMaterials",
     "relationship": []
   },
@@ -34,10 +34,6 @@
     },
     "relationship": [
       {
-        "related": "http:npmjs/eslint/6.8.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
         "related": "http:npmjs/semver/7.3.4",
         "relationshipType": "DYNAMIC_LINK"
       },
@@ -47,6 +43,135 @@
       },
       {
         "related": "http:npmjs/workspace-a/0.0.0-use.local",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "semver",
+    "revision": "7.3.4",
+    "@id": "http:npmjs/semver/7.3.4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "semver/7.3.4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "semver",
+          "7.3.4"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/lru-cache/6.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "lru-cache",
+    "revision": "6.0.0",
+    "@id": "http:npmjs/lru-cache/6.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "lru-cache/6.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "lru-cache",
+          "6.0.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/yallist/4.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "yallist",
+    "revision": "4.0.0",
+    "@id": "http:npmjs/yallist/4.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "yallist/4.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "yallist",
+          "4.0.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "workspace-b",
+    "revision": "0.0.0-use.local",
+    "@id": "http:npmjs/workspace-b/0.0.0-use.local",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "workspace-b/0.0.0-use.local",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "workspace-b",
+          "0.0.0-use.local"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/workspace-a/0.0.0-use.local",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/cross-env/5.0.5",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "workspace-a",
+    "revision": "0.0.0-use.local",
+    "@id": "http:npmjs/workspace-a/0.0.0-use.local",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "workspace-a/0.0.0-use.local",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "workspace-a",
+          "0.0.0-use.local"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/eslint/6.8.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -3444,139 +3569,6 @@
     "relationship": [
       {
         "related": "http:npmjs/estraverse/5.2.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "semver",
-    "revision": "7.3.4",
-    "@id": "http:npmjs/semver/7.3.4",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "semver/7.3.4",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "pieces": [
-          "semver",
-          "7.3.4"
-        ]
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/lru-cache/6.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "lru-cache",
-    "revision": "6.0.0",
-    "@id": "http:npmjs/lru-cache/6.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "lru-cache/6.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "pieces": [
-          "lru-cache",
-          "6.0.0"
-        ]
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/yallist/4.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "yallist",
-    "revision": "4.0.0",
-    "@id": "http:npmjs/yallist/4.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "yallist/4.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "pieces": [
-          "yallist",
-          "4.0.0"
-        ]
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "workspace-b",
-    "revision": "0.0.0-use.local",
-    "@id": "http:npmjs/workspace-b/0.0.0-use.local",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "workspace-b/0.0.0-use.local",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "pieces": [
-          "workspace-b",
-          "0.0.0-use.local"
-        ]
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/workspace-a/0.0.0-use.local",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/cross-env/5.0.5",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "workspace-a",
-    "revision": "0.0.0-use.local",
-    "@id": "http:npmjs/workspace-a/0.0.0-use.local",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "workspace-a/0.0.0-use.local",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "pieces": [
-          "workspace-a",
-          "0.0.0-use.local"
-        ]
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/eslint/6.8.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/cross-env/5.0.5",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
