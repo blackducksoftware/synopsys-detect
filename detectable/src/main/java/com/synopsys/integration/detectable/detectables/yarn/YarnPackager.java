@@ -8,6 +8,7 @@
 package com.synopsys.integration.detectable.detectables.yarn;
 
 import java.util.List;
+import java.util.Map;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
@@ -24,12 +25,12 @@ public class YarnPackager {
         this.yarnTransformer = yarnTransformer;
     }
 
-    public YarnResult generateYarnResult(PackageJson rootPackageJson, List<PackageJson> workspacePackageJsonsToProcess, YarnLock yarnLock, String yarnLockFilePath, List<NameVersion> externalDependencies,
-        boolean useProductionOnly) {
+    public YarnResult generateYarnResult(PackageJson rootPackageJson, Map<String, PackageJson> workspacePackageJsonsToProcess, YarnLock yarnLock, String yarnLockFilePath, List<NameVersion> externalDependencies,
+        boolean useProductionOnly, boolean addWorkspaceDependencies) {
         YarnLockResult yarnLockResult = new YarnLockResult(rootPackageJson, workspacePackageJsonsToProcess, yarnLockFilePath, yarnLock);
 
         try {
-            DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, useProductionOnly, externalDependencies);
+            DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, useProductionOnly, addWorkspaceDependencies, externalDependencies);
             CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 
             return YarnResult.success(rootPackageJson.name, rootPackageJson.version, codeLocation);

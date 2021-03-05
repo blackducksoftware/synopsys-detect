@@ -3,7 +3,6 @@ package com.synopsys.integration.detectable.detectables.yarn.unit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
@@ -40,10 +39,10 @@ class YarnTransformerTest {
         List<YarnLockDependency> validYarnLockDependencies = Collections.singletonList(new YarnLockDependency("yarn", "^1.22.4", false));
         List<YarnLockEntry> yarnLockEntries = Collections.singletonList(new YarnLockEntry(false, validYarnLockEntryIds, "1.0", validYarnLockDependencies));
         YarnLock yarnLock = new YarnLock(null, false, yarnLockEntries);
-        YarnLockResult yarnLockResult = new YarnLockResult(packageJson, new LinkedList<>(), "yarn.lock", yarnLock);
+        YarnLockResult yarnLockResult = new YarnLockResult(packageJson, new HashMap<>(), "yarn.lock", yarnLock);
 
         // This should not throw an exception.
-        DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, new ArrayList<>());
+        DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, false, new ArrayList<>());
 
         // Sanity check.
         Assertions.assertNotNull(dependencyGraph, "The dependency graph should not be null.");
@@ -51,4 +50,6 @@ class YarnTransformerTest {
         ExternalId fooExternalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "foo", "1.0");
         Assertions.assertTrue(dependencyGraph.hasDependency(fooExternalId), "Missing the only expected dependency.");
     }
+
+    // TODO add a test for yarn 1 workspaces??
 }

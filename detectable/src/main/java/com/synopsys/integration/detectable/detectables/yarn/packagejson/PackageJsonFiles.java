@@ -17,8 +17,10 @@ import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -53,8 +55,8 @@ public class PackageJsonFiles {
         return packageJsonReader.extractWorkspaceDirPatterns(packageJsonText);
     }
 
-    public List<PackageJson> readWorkspaceFiles(File projectDir, List<String> workspaceSubdirPatterns) throws IOException {
-        List<PackageJson> workspacePackageJsons = new LinkedList<>();
+    public Map<String, PackageJson> readWorkspaceFiles(File projectDir, List<String> workspaceSubdirPatterns) throws IOException {
+        Map<String, PackageJson> workspacePackageJsons = new HashMap<>();
         for (String workspaceSubdirPattern : workspaceSubdirPatterns) {
             logger.info("workspaceSubdirPattern: {}", workspaceSubdirPattern);
             String globString = String.format("glob:%s/%s/package.json", projectDir.getAbsolutePath(), workspaceSubdirPattern);
@@ -66,7 +68,7 @@ public class PackageJsonFiles {
                     if (matcher.matches(file)) {
                         logger.info("\tFound a match: {}", file);
                         PackageJson packageJson = read(file.toFile());
-                        workspacePackageJsons.add(packageJson);
+                        workspacePackageJsons.put(packageJson.name, packageJson);
                     }
                     return FileVisitResult.CONTINUE;
                 }

@@ -11,8 +11,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
@@ -46,14 +47,14 @@ public class YarnLockExtractor {
             PackageJson rootPackageJson = packageJsonFiles.read(rootPackageJsonFile);
             // Yarn 1 projects: yarn.lock does not contain an entry for the project, so we have to guess at deps based on package.json files
             boolean addAllWorkspaceDependenciesAsDirect = yarnLockOptions.includeAllWorkspaceDependencies() || !yarnLock.isYarn2Project();
-            List<PackageJson> workspacePackageJsonsToProcess;
+            Map<String, PackageJson> workspacePackageJsonsToProcess;
             if (addAllWorkspaceDependenciesAsDirect) {
                 workspacePackageJsonsToProcess = getWorkspacePackageJsons(projectDir, rootPackageJsonFile);
             } else {
-                workspacePackageJsonsToProcess = new LinkedList<>();
+                workspacePackageJsonsToProcess = new HashMap<>();
             }
             YarnResult yarnResult = yarnPackager.generateYarnResult(rootPackageJson, workspacePackageJsonsToProcess, yarnLock, yarnLockFile.getAbsolutePath(), new ArrayList<>(),
-                yarnLockOptions.useProductionOnly());
+                yarnLockOptions.useProductionOnly(), !yarnLock.isYarn2Project());
 
             if (yarnResult.getException().isPresent()) {
                 throw yarnResult.getException().get();
@@ -70,7 +71,7 @@ public class YarnLockExtractor {
     }
 
     @NotNull
-    private List<PackageJson> getWorkspacePackageJsons(File projectDir, File packageJsonFile) throws IOException {
+    private Map<String, PackageJson> getWorkspacePackageJsons(File projectDir, File packageJsonFile) throws IOException {
         List<String> workspaceDirPatterns = packageJsonFiles.extractWorkspaceDirPatterns(packageJsonFile);
         return packageJsonFiles.readWorkspaceFiles(projectDir, workspaceDirPatterns);
     }
