@@ -10,6 +10,7 @@ package com.synopsys.integration.detect.lifecycle.run;
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
@@ -42,6 +43,7 @@ public class RunContext {
     private final CodeLocationConverter codeLocationConverter;
     private final Gson gson;
     private final Gson htmlEscapeDisabledGson;
+    private final FileFinder fileFinder;
 
     public RunContext(DetectContext detectContext, ProductRunData productRunData) {
         this.detectContext = detectContext;
@@ -61,6 +63,7 @@ public class RunContext {
         gson = detectContext.getBean(Gson.class);
         // Can't have more than one instance of Gson registered at the moment.  It causes problems resolving the beans for the application if there is more than one Gson.
         this.htmlEscapeDisabledGson = BlackDuckServicesFactory.createDefaultGsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+        fileFinder = detectContext.getBean(FileFinder.class);
     }
 
     public DetectContext getDetectContext() {
@@ -129,5 +132,9 @@ public class RunContext {
 
     public Gson getHtmlEscapeDisabledGson() {
         return htmlEscapeDisabledGson;
+    }
+
+    public FileFinder getFileFinder() {
+        return fileFinder;
     }
 }

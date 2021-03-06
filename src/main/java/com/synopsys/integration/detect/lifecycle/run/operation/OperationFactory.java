@@ -7,10 +7,15 @@
  */
 package com.synopsys.integration.detect.lifecycle.run.operation;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.util.function.Predicate;
+
 import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.bdio2.Bdio2Factory;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.run.RunContext;
@@ -27,6 +32,7 @@ import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.Project
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.ProjectDecisionOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.SignatureScanOperation;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
+import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
 import com.synopsys.integration.detect.tool.impactanalysis.BlackDuckImpactAnalysisTool;
 import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisOptions;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisBatchRunner;
@@ -68,7 +74,7 @@ public class OperationFactory {
 
     public final DetectorOperation createDetectorOperation() {
         return new DetectorOperation(runContext.getDetectConfiguration(), runContext.getDetectConfigurationFactory(), runContext.getDirectoryManager(), runContext.getEventSystem(), runContext.getDetectDetectableFactory(),
-            runContext.getExtractionEnvironmentProvider(), runContext.getCodeLocationConverter());
+            runContext.getExtractionEnvironmentProvider(), runContext.getCodeLocationConverter(), runContext.getFileFinder());
     }
 
     public final RapidScanOperation createRapidScanOperation() {
@@ -89,7 +95,7 @@ public class OperationFactory {
         BlackDuckRunData blackDuckRunData = runContext.getProductRunData().getBlackDuckRunData();
         BinaryScanOptions binaryScanOptions = runContext.getDetectConfigurationFactory().createBinaryScanOptions();
 
-        return new BinaryScanOperation(blackDuckRunData, binaryScanOptions, runContext.getEventSystem(), runContext.getDirectoryManager(), runContext.getCodeLocationNameManager());
+        return new BinaryScanOperation(blackDuckRunData, binaryScanOptions, runContext.getEventSystem(), runContext.getDirectoryManager(), runContext.getCodeLocationNameManager(), runContext.getFileFinder());
     }
 
     public final BdioUploadOperation createBdioUploadOperation() {
@@ -142,7 +148,10 @@ public class OperationFactory {
     public final SignatureScanOperation createSignatureScanOperation() throws DetectUserFriendlyException {
         BlackDuckRunData blackDuckRunData = runContext.getProductRunData().getBlackDuckRunData();
         BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = runContext.getDetectConfigurationFactory().createBlackDuckSignatureScannerOptions();
-        BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, runContext.getDetectContext());
+        Path sourcePath = runContext.getDirectoryManager().getSourceDirectory().toPath();
+        DetectExcludedDirectoryFilter fileFilter = runContext.getDetectConfigurationFactory().createDetectDirectoryFileFilter(sourcePath);
+        Predicate<File> collectExcludedDirectoriesPredicate = file -> fileFilter.isExcluded(file);
+        BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, runContext.getDetectContext(), collectExcludedDirectoriesPredicate);
 
         return new SignatureScanOperation(blackDuckRunData, blackDuckSignatureScannerTool, runContext.getEventSystem());
     }

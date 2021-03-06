@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Predicate;
 
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -44,10 +45,12 @@ public class BlackDuckSignatureScannerTool {
     private final Logger logger = LoggerFactory.getLogger(BlackDuckSignatureScannerTool.class);
     private final DetectContext detectContext;
     private final BlackDuckSignatureScannerOptions signatureScannerOptions;
+    private final Predicate<File> fileFilter;
 
-    public BlackDuckSignatureScannerTool(BlackDuckSignatureScannerOptions signatureScannerOptions, DetectContext detectContext) {
+    public BlackDuckSignatureScannerTool(BlackDuckSignatureScannerOptions signatureScannerOptions, DetectContext detectContext, Predicate<File> fileFilter) {
         this.signatureScannerOptions = signatureScannerOptions;
         this.detectContext = detectContext;
+        this.fileFilter = fileFilter;
     }
 
     // TODO: Don't accept an Optional as a parameter.
@@ -69,7 +72,7 @@ public class BlackDuckSignatureScannerTool {
         ScanBatchRunner scanBatchRunner = createScanBatchRunner(blackDuckServerConfig, localScannerInstallPath.orElse(null), scanBatchRunnerFactory, installDirectory, connectionFactory, detectInfo);
 
         try {
-            BlackDuckSignatureScanner blackDuckSignatureScanner = detectContext.getBean(BlackDuckSignatureScanner.class, signatureScannerOptions, scanBatchRunner, blackDuckServerConfig, codeLocationNameManager);
+            BlackDuckSignatureScanner blackDuckSignatureScanner = detectContext.getBean(BlackDuckSignatureScanner.class, signatureScannerOptions, scanBatchRunner, blackDuckServerConfig, codeLocationNameManager, fileFilter);
             return runScanner(blackDuckSignatureScanner, codeLocationCreationService, blackDuckServerConfig, projectNameVersion, installDirectory, dockerTar.orElse(null));
         } catch (IOException | IntegrationException e) {
             logger.error(String.format("Signature scan failed: %s", e.getMessage()));

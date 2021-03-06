@@ -10,6 +10,7 @@ package com.synopsys.integration.detect.lifecycle.run.operation;
 import java.nio.file.Path;
 import java.util.List;
 
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
@@ -44,9 +45,10 @@ public class DetectorOperation {
     private DetectDetectableFactory detectDetectableFactory;
     private ExtractionEnvironmentProvider extractionEnvironmentProvider;
     private CodeLocationConverter codeLocationConverter;
+    private FileFinder fileFinder;
 
     public DetectorOperation(PropertyConfiguration detectConfiguration, DetectConfigurationFactory detectConfigurationFactory, DirectoryManager directoryManager, EventSystem eventSystem,
-        DetectDetectableFactory detectDetectableFactory, ExtractionEnvironmentProvider extractionEnvironmentProvider, CodeLocationConverter codeLocationConverter) {
+        DetectDetectableFactory detectDetectableFactory, ExtractionEnvironmentProvider extractionEnvironmentProvider, CodeLocationConverter codeLocationConverter, FileFinder fileFinder) {
         this.detectConfiguration = detectConfiguration;
         this.detectConfigurationFactory = detectConfigurationFactory;
         this.directoryManager = directoryManager;
@@ -54,6 +56,7 @@ public class DetectorOperation {
         this.detectDetectableFactory = detectDetectableFactory;
         this.extractionEnvironmentProvider = extractionEnvironmentProvider;
         this.codeLocationConverter = codeLocationConverter;
+        this.fileFinder = fileFinder;
     }
 
     public boolean execute(RunResult runResult) throws DetectUserFriendlyException, IntegrationException {
@@ -65,12 +68,12 @@ public class DetectorOperation {
         DetectorRuleSet detectRuleSet = detectorRuleFactory.createRules(detectDetectableFactory, buildless);
 
         Path sourcePath = directoryManager.getSourceDirectory().toPath();
-        DetectorFinderOptions finderOptions = detectConfigurationFactory.createSearchOptions(sourcePath);
+        DetectorFinderOptions finderOptions = detectConfigurationFactory.createDetectFinderOptions(sourcePath);
         DetectorEvaluationOptions detectorEvaluationOptions = detectConfigurationFactory.createDetectorEvaluationOptions();
 
         DetectorIssuePublisher detectorIssuePublisher = new DetectorIssuePublisher();
         DetectorTool detectorTool = new DetectorTool(new DetectorFinder(), extractionEnvironmentProvider, eventSystem, codeLocationConverter, detectorIssuePublisher);
-        DetectorToolResult detectorToolResult = detectorTool.performDetectors(directoryManager.getSourceDirectory(), detectRuleSet, finderOptions, detectorEvaluationOptions, projectBomTool, requiredDetectors);
+        DetectorToolResult detectorToolResult = detectorTool.performDetectors(directoryManager.getSourceDirectory(), detectRuleSet, finderOptions, detectorEvaluationOptions, projectBomTool, requiredDetectors, fileFinder);
 
         detectorToolResult.getBomToolProjectNameVersion().ifPresent(it -> runResult.addToolNameVersion(DetectTool.DETECTOR, new NameVersion(it.getName(), it.getVersion())));
         runResult.addDetectCodeLocations(detectorToolResult.getBomToolCodeLocations());

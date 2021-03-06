@@ -5,7 +5,7 @@
  *
  * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
-package com.synopsys.integration.detect.tool.detector.file;
+package com.synopsys.integration.detect.util.finder;
 
 import java.io.File;
 import java.nio.file.FileSystems;
@@ -17,13 +17,13 @@ import java.util.function.Predicate;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 
-public class DetectDetectorFileFilter implements Predicate<File> {
+public class DetectExcludedDirectoryFilter implements Predicate<File> {
     private final Path sourcePath;
     private final List<String> excludedDirectories;
     private final List<String> excludedDirectoryPaths;
     private final WildcardFileFilter fileFilter;
 
-    public DetectDetectorFileFilter(final Path sourcePath, final List<String> excludedDirectories, final List<String> excludedDirectoryPaths, final List<String> excludedDirectoryNamePatterns) {
+    public DetectExcludedDirectoryFilter(final Path sourcePath, final List<String> excludedDirectories, final List<String> excludedDirectoryPaths, final List<String> excludedDirectoryNamePatterns) {
         this.sourcePath = sourcePath;
         this.excludedDirectories = excludedDirectories;
         this.excludedDirectoryPaths = excludedDirectoryPaths;

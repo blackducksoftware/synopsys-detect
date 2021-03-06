@@ -23,6 +23,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectInfoUtility;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
@@ -134,7 +135,7 @@ public class Application implements ApplicationRunner {
         try {
             logger.debug("Detect boot begin.");
 
-            DetectBootFactory detectBootFactory = new DetectBootFactory(detectRun, detectInfo, gson, eventSystem);
+            DetectBootFactory detectBootFactory = new DetectBootFactory(detectRun, detectInfo, gson, eventSystem, detectContext.getBean(FileFinder.class));
             DetectBoot detectBoot = detectBootFactory.createDetectBoot(detectBootFactory.createPropertySourcesFromEnvironment(environment), sourceArgs, detectContext);
             bootResult = detectBoot.boot(detectInfo.getDetectVersion());
 

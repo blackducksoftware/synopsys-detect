@@ -53,8 +53,7 @@ import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions
 import com.synopsys.integration.detect.lifecycle.run.RunOptions;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableOptions;
-import com.synopsys.integration.detect.tool.detector.file.DetectDetectorFileFilter;
-import com.synopsys.integration.detect.tool.detector.file.FilteredFileFinder;
+import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
 import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndividualFileMatchingMode;
@@ -69,7 +68,7 @@ import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOp
 import com.synopsys.integration.detect.workflow.file.DirectoryOptions;
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeOptions;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
-import com.synopsys.integration.detectable.detectable.file.FileFinder;
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
@@ -293,16 +292,7 @@ public class DetectConfigurationFactory {
         return new AirGapOptions(dockerOverride, gradleOverride, nugetOverride);
     }
 
-    public FileFinder createFilteredFileFinder(Path sourcePath) {
-        List<String> userProvidedExcludedFiles = getValue(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_FILES);
-        return new FilteredFileFinder(userProvidedExcludedFiles);
-    }
-
-    public DetectorFinderOptions createSearchOptions(Path sourcePath) {
-        //Normal settings
-        Integer maxDepth = getValue(DetectProperties.DETECT_DETECTOR_SEARCH_DEPTH);
-
-        //File Filter
+    public DetectExcludedDirectoryFilter createDetectDirectoryFileFilter(Path sourcePath) {
         List<String> userProvidedExcludedDirectories = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_IGNORE.getProperty(), DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION.getProperty());
         List<String> excludedDirectoryPatterns = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_IGNORE.getProperty(), DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS.getProperty());
         List<String> excludedDirectoryPaths = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_IGNORE.getProperty(), DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_PATHS.getProperty());
@@ -315,7 +305,13 @@ public class DetectConfigurationFactory {
             excludedDirectories.addAll(defaultExcluded);
         }
 
-        DetectDetectorFileFilter fileFilter = new DetectDetectorFileFilter(sourcePath, excludedDirectories, excludedDirectoryPaths, excludedDirectoryPatterns);
+        return new DetectExcludedDirectoryFilter(sourcePath, excludedDirectories, excludedDirectoryPaths, excludedDirectoryPatterns);
+    }
+
+    public DetectorFinderOptions createDetectFinderOptions(Path sourcePath) {
+        //Normal settings
+        Integer maxDepth = getValue(DetectProperties.DETECT_DETECTOR_SEARCH_DEPTH);
+        DetectExcludedDirectoryFilter fileFilter = createDetectDirectoryFileFilter(sourcePath);
 
         return new DetectorFinderOptions(fileFilter, maxDepth);
     }

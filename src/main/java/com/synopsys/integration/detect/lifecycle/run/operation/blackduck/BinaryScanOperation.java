@@ -12,6 +12,7 @@ import java.util.Optional;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
@@ -20,7 +21,6 @@ import com.synopsys.integration.detect.tool.binaryscanner.BlackDuckBinaryScanner
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.detectable.detectable.file.WildcardFileFinder;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
@@ -31,20 +31,22 @@ public class BinaryScanOperation {
     private final EventSystem eventSystem;
     private final DirectoryManager directoryManager;
     private final CodeLocationNameManager codeLocationNameManager;
+    private final FileFinder fileFinder;
 
     public BinaryScanOperation(BlackDuckRunData blackDuckRunData, BinaryScanOptions binaryScanOptions, EventSystem eventSystem, DirectoryManager directoryManager,
-        CodeLocationNameManager codeLocationNameManager) {
+        CodeLocationNameManager codeLocationNameManager, FileFinder fileFinder) {
         this.blackDuckRunData = blackDuckRunData;
         this.binaryScanOptions = binaryScanOptions;
         this.eventSystem = eventSystem;
         this.directoryManager = directoryManager;
         this.codeLocationNameManager = codeLocationNameManager;
+        this.fileFinder = fileFinder;
     }
 
     public Optional<CodeLocationCreationData<BinaryScanBatchOutput>> execute(NameVersion projectNameVersion) throws DetectUserFriendlyException, IntegrationException {
         Optional<CodeLocationCreationData<BinaryScanBatchOutput>> operationResult = Optional.empty();
         BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
-        BlackDuckBinaryScannerTool binaryScannerTool = new BlackDuckBinaryScannerTool(eventSystem, codeLocationNameManager, directoryManager, new WildcardFileFinder(), binaryScanOptions,
+        BlackDuckBinaryScannerTool binaryScannerTool = new BlackDuckBinaryScannerTool(eventSystem, codeLocationNameManager, directoryManager, fileFinder, binaryScanOptions,
             blackDuckServicesFactory.createBinaryScanUploadService());
         if (binaryScannerTool.shouldRun()) {
             BinaryScanToolResult result = binaryScannerTool.performBinaryScanActions(projectNameVersion);

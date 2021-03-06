@@ -58,7 +58,7 @@ public class BlackDuckSignatureScannerToolTest {
         BlackDuckSignatureScanner blackDuckSignatureScanner = Mockito.mock(BlackDuckSignatureScanner.class);
 
         DetectContext detectContext = Mockito.mock(DetectContext.class);
-        Mockito.when(detectContext.getBean(any(Class.class), any(BlackDuckSignatureScannerOptions.class), any(ScanBatchRunner.class), any(), any())).thenReturn(blackDuckSignatureScanner);
+        Mockito.when(detectContext.getBean(any(Class.class), any(BlackDuckSignatureScannerOptions.class), any(ScanBatchRunner.class), any(), any(), any())).thenReturn(blackDuckSignatureScanner);
         Mockito.when(detectContext.getBean(DirectoryManager.class)).thenReturn(directoryManager);
         Mockito.when(detectContext.getBean(CodeLocationNameManager.class)).thenReturn(codeLocationNameManager);
         Mockito.when(detectContext.getBean(ConnectionFactory.class)).thenReturn(null);
@@ -69,7 +69,7 @@ public class BlackDuckSignatureScannerToolTest {
         ScanBatchOutput scanBatchOutput = new ScanBatchOutput(Collections.singletonList(ScanCommandOutput.SUCCESS(projectNameVersion, null, null, scanCommand, null)));
         Mockito.when(blackDuckSignatureScanner.performScanActions(projectNameVersion, signatureScannerInstallationDirectory, null)).thenReturn(scanBatchOutput);
 
-        BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, detectContext);
+        BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, detectContext, null);
 
         testOnline(blackDuckSignatureScannerTool, scanBatchOutput, projectNameVersion);
     }

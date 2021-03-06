@@ -12,9 +12,12 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +29,7 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatc
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanTarget;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
@@ -38,7 +42,6 @@ import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectIssueType;
 import com.synopsys.integration.detect.workflow.status.SignatureScanStatus;
 import com.synopsys.integration.detect.workflow.status.StatusType;
-import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
@@ -46,24 +49,26 @@ public class BlackDuckSignatureScanner {
     private final Logger logger = LoggerFactory.getLogger(BlackDuckSignatureScanner.class);
 
     private final DirectoryManager directoryManager;
-    private final FileFinder fileFinder;
     private final CodeLocationNameManager codeLocationNameManager;
     private final BlackDuckSignatureScannerOptions signatureScannerOptions;
     private final EventSystem eventSystem;
     private final ScanBatchRunner scanJobManager;
+    private final FileFinder fileFinder;
+    private final Predicate<File> fileFilter;
 
     //When OFFLINE, this should be NULL. No other changes required for offline (in this class).
     private final BlackDuckServerConfig blackDuckServerConfig;
 
-    public BlackDuckSignatureScanner(DirectoryManager directoryManager, FileFinder fileFinder, CodeLocationNameManager codeLocationNameManager,
-        BlackDuckSignatureScannerOptions signatureScannerOptions, EventSystem eventSystem, ScanBatchRunner scanJobManager, BlackDuckServerConfig blackDuckServerConfig) {
+    public BlackDuckSignatureScanner(DirectoryManager directoryManager, CodeLocationNameManager codeLocationNameManager,
+        BlackDuckSignatureScannerOptions signatureScannerOptions, EventSystem eventSystem, ScanBatchRunner scanJobManager, BlackDuckServerConfig blackDuckServerConfig, FileFinder fileFinder, Predicate<File> fileFilter) {
         this.directoryManager = directoryManager;
-        this.fileFinder = fileFinder;
         this.codeLocationNameManager = codeLocationNameManager;
         this.signatureScannerOptions = signatureScannerOptions;
         this.eventSystem = eventSystem;
         this.scanJobManager = scanJobManager;
         this.blackDuckServerConfig = blackDuckServerConfig;
+        this.fileFinder = fileFinder;
+        this.fileFilter = fileFilter;
     }
 
     public ScanBatchOutput performScanActions(NameVersion projectNameVersion, File installDirectory, File dockerTarFile) throws IntegrationException, IOException, DetectUserFriendlyException {
@@ -166,16 +171,26 @@ public class BlackDuckSignatureScanner {
 
     private SignatureScanPath createScanPath(Path path, Integer maxDepth, List<String> signatureScannerExclusionNamePatterns, List<String> providedExclusionPatterns) {
         File target = path.toFile();
-        ExclusionPatternCreator exclusionPatternCreator = new ExclusionPatternCreator(fileFinder, target);
+        ExclusionPatternCreator exclusionPatternCreator = new ExclusionPatternCreator(fileFinder, fileFilter, target);
 
-        Set<String> scanExclusionPatterns = exclusionPatternCreator.determineExclusionPatterns(maxDepth, signatureScannerExclusionNamePatterns);
-        if (null != providedExclusionPatterns) {
-            scanExclusionPatterns.addAll(providedExclusionPatterns);
-        }
+        Set<String> scanExclusionPatterns = new HashSet<>();
+
+        // First add explicit exclusions that are correctly formatted
+        //TODO- do I rly need to check that they're formatted?  what's the real harm in just passing them along?
+        scanExclusionPatterns.addAll(providedExclusionPatterns.stream()
+                                         .filter(this::isCorrectlyFormattedExclusion)
+                                         .collect(Collectors.toSet()));
+
+        scanExclusionPatterns.addAll(exclusionPatternCreator.determineExclusionPatterns(maxDepth, signatureScannerExclusionNamePatterns));
+
         SignatureScanPath signatureScanPath = new SignatureScanPath();
         signatureScanPath.setTargetPath(target);
         signatureScanPath.getExclusions().addAll(scanExclusionPatterns);
         return signatureScanPath;
+    }
+
+    private boolean isCorrectlyFormattedExclusion(String exclusion) {
+        return exclusion.startsWith("/") && exclusion.endsWith("/") && !exclusion.contains("**");
     }
 
     protected ScanBatchBuilder createDefaultScanBatchBuilder(NameVersion projectNameVersion, File installDirectory, List<SignatureScanPath> signatureScanPaths, File dockerTarFile) {
