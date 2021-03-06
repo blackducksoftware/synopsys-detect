@@ -18,6 +18,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import com.google.gson.Gson;
+import com.synopsys.integration.common.util.finder.FileFinder;
+import com.synopsys.integration.common.util.finder.WildcardFileFinder;
 import com.synopsys.integration.configuration.source.MapPropertySource;
 import com.synopsys.integration.configuration.source.PropertySource;
 import com.synopsys.integration.detect.configuration.DetectInfo;
@@ -44,7 +46,8 @@ public class DetectBootTest {
         DetectInfo detectInfo = new DetectInfo(EXPECTED_VERSION_TEXT, EXPECTED_MAJOR_VERSION, CURRENT_OS);
         Gson gson = new Gson();
         EventSystem eventSystem = new EventSystem();
-        detectBootFactory = new DetectBootFactory(detectRun, detectInfo, gson, eventSystem);
+        FileFinder fileFinder = new WildcardFileFinder();
+        detectBootFactory = new DetectBootFactory(detectRun, detectInfo, gson, eventSystem, fileFinder);
 
         detectContext = new DetectContext(detectRun);
         detectContext.registerBean(detectInfo);
