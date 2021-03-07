@@ -39,6 +39,20 @@ public class SbtPluginFinderTest {
     }
 
     @Test
+    public void pluginInternalFoundNormally() {
+        SbtPluginFinder parser = new SbtPluginFinder(null);
+        List<String> input = Arrays.asList("[info] welcome to sbt 1.4.7 (Oracle Corporation Java 1.8.0_161)", //standard sbt preamble
+            "[info] loading settings for project scalafmt-build from plugins.sbt ...",
+            "[info] loading project definition from C:\\Users\\jordanp\\Downloads\\scalafmt-master\\scalafmt\\project",
+            "[info] loading settings for project scalafmt from build.sbt ...",
+            "[info] set current project to scalafmtRoot (in build file:/C:/Users/jordanp/Downloads/scalafmt-master/scalafmt/)",
+            "In build /C:/Users/jordanp/Downloads/scalafmt-master/scalafmt/:",
+            "  Enabled plugins in benchmarks:",
+            "    sbt.plugins.DependencyTreePlugin"); //plugin we should find.
+        Assertions.assertTrue(parser.determineInstalledPlugin(input), "Plugin should have been found!");
+    }
+
+    @Test
     public void pluginNotFoundNormally() {
         SbtPluginFinder parser = new SbtPluginFinder(null);
         List<String> input = Arrays.asList("[info] welcome to sbt 1.4.7 (Oracle Corporation Java 1.8.0_161)", //standard sbt preamble
