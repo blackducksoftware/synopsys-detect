@@ -26,7 +26,7 @@ import org.xml.sax.SAXException;
 
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.file.FileFinder;
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectables.sbt.parse.model.SbtDependencyModule;
 import com.synopsys.integration.detectable.detectables.sbt.parse.model.SbtProject;
 import com.synopsys.integration.detectable.detectables.sbt.parse.model.SbtReport;
