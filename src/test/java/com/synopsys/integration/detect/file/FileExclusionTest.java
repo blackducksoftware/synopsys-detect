@@ -85,9 +85,4 @@ public class FileExclusionTest {
         Assert.assertEquals(4, finder.findFiles(sourceFile, "*", 2).size());
     }
 
-    @Test
-    public void testFirstFileExcluded() throws IOException {
-        FileFinder finder = fileFinderFromProperty(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_FILES.getProperty(), firstFileDotTxt);
-       Assert.assertEquals(3, finder.findFiles(sourceFile, "*", 2).size());
-    }
 }
