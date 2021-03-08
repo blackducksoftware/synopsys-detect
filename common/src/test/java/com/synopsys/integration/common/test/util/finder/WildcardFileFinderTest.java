@@ -28,16 +28,16 @@ import static org.junit.jupiter.api.condition.OS.WINDOWS;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Predicate;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 
@@ -47,14 +47,19 @@ public class WildcardFileFinderTest {
 
     private static Path initialDirectoryPath;
 
-    @BeforeAll
-    public static void setup() throws IOException {
+    @BeforeEach
+    public void setup() throws IOException {
         initialDirectoryPath = Files.createTempDirectory("WildcardFileFinderTest");
     }
 
-    @AfterAll
-    public static void cleanup() {
-        initialDirectoryPath.toFile().delete();
+    @AfterEach
+    public void cleanup() throws IOException {
+        try {
+            Files.delete(initialDirectoryPath);
+        } catch (DirectoryNotEmptyException e) {
+            FileUtils.deleteDirectory(initialDirectoryPath.toFile());
+
+        }
     }
 
     @Test
@@ -84,7 +89,6 @@ public class WildcardFileFinderTest {
     @Test
     public void testFindWithPredicate() throws IOException {
         File initialDirectory = initialDirectoryPath.toFile();
-        Map<File, Integer> fileIdMap = new HashMap<>();
 
         File subDir1 = new File(initialDirectory, "sub1");
         subDir1.mkdirs();
@@ -96,14 +100,11 @@ public class WildcardFileFinderTest {
         File subDirChild2 = new File(subDir2, "child");
         subDirChild2.createNewFile();
 
-        fileIdMap.put(subDirChild1, 4);
-        fileIdMap.put(subDirChild2, 5);
-
         WildcardFileFinder fileFinder = new WildcardFileFinder();
-        Predicate<File> filter = file -> file.getName().startsWith("sub") || fileIdMap.get(file).equals(4);
+        Predicate<File> filter = file -> file.getName().startsWith("sub");
         List<File> foundFiles = fileFinder.findFiles(initialDirectoryPath.toFile(), filter, 10);
 
-        assertEquals(3, foundFiles.size());
+        assertEquals(2, foundFiles.size());
         assertFalse(foundFiles.contains(subDirChild2));
     }
 }
