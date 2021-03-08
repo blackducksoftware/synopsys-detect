@@ -652,6 +652,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../../../advanced/package-managers/sbt/" title="SBT support" class="md-nav__link">
+      SBT support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../../../advanced/package-managers/yarn/" title="Yarn support" class="md-nav__link">
       Yarn support
     </a>
@@ -1343,22 +1355,22 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#sbt-report-search-depth" class="md-nav__link">
-    SBT Report Search Depth
+  <a href="#sbt-configurations-excluded-deprecated" class="md-nav__link">
+    SBT Configurations Excluded (Deprecated)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#sbt-configurations-excluded-advanced" class="md-nav__link">
-    SBT Configurations Excluded (Advanced)
+  <a href="#sbt-configurations-included-deprecated" class="md-nav__link">
+    SBT Configurations Included (Deprecated)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#sbt-configurations-included-advanced" class="md-nav__link">
-    SBT Configurations Included (Advanced)
+  <a href="#sbt-report-search-depth-deprecated" class="md-nav__link">
+    SBT Report Search Depth (Deprecated)
   </a>
   
 </li>
@@ -1417,22 +1429,22 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#sbt-report-search-depth" class="md-nav__link">
-    SBT Report Search Depth
+  <a href="#sbt-configurations-excluded-deprecated" class="md-nav__link">
+    SBT Configurations Excluded (Deprecated)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#sbt-configurations-excluded-advanced" class="md-nav__link">
-    SBT Configurations Excluded (Advanced)
+  <a href="#sbt-configurations-included-deprecated" class="md-nav__link">
+    SBT Configurations Included (Deprecated)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#sbt-configurations-included-advanced" class="md-nav__link">
-    SBT Configurations Included (Advanced)
+  <a href="#sbt-report-search-depth-deprecated" class="md-nav__link">
+    SBT Report Search Depth (Deprecated)
   </a>
   
 </li>
@@ -1455,11 +1467,102 @@
                 
                 
                 <h1 id="sbt">sbt<a class="headerlink" href="#sbt" title="Permanent link">#</a></h1>
-<h2 id="sbt-report-search-depth">SBT Report Search Depth<a class="headerlink" href="#sbt-report-search-depth" title="Permanent link">#</a></h2>
+<h2 id="sbt-configurations-excluded-deprecated">SBT Configurations Excluded (Deprecated)<a class="headerlink" href="#sbt-configurations-excluded-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.sbt.excluded.configurations
+</code></pre>
+
+<p>The names of the sbt configurations to exclude.</p>
+<p>This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> &gt; <i>Property wildcard support</i> page for more details.</p>
+<p><strong>DEPRECATED: This property is being removed. Sbt will no longer parse report files but instead will use a dependency resolution plugin. Please install the appropriate plugin in the future. It will cause failure in 8.0.0 and be removed in 9.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String List</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="sbt-configurations-included-deprecated">SBT Configurations Included (Deprecated)<a class="headerlink" href="#sbt-configurations-included-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.sbt.included.configurations
+</code></pre>
+
+<p>The names of the sbt configurations to include.</p>
+<p>This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> &gt; <i>Property wildcard support</i> page for more details.</p>
+<p><strong>DEPRECATED: This property is being removed. Sbt will no longer parse report files but instead will use a dependency resolution plugin. Please install the appropriate plugin in the future. It will cause failure in 8.0.0 and be removed in 9.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String List</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="sbt-report-search-depth-deprecated">SBT Report Search Depth (Deprecated)<a class="headerlink" href="#sbt-report-search-depth-deprecated" title="Permanent link">#</a></h2>
 <pre><code>--detect.sbt.report.search.depth=3
 </code></pre>
 
 <p>Depth the sbt detector will use to search for report files.</p>
+<p><strong>DEPRECATED: This property is being removed. Sbt will no longer parse report files but instead will use a dependency resolution plugin. Please install the appropriate plugin in the future. It will cause failure in 8.0.0 and be removed in 9.0.0.</strong></p>
 <table>
 <thead>
 <tr>
@@ -1495,106 +1598,6 @@
 <tr>
 <td>Strict</td>
 <td>No</td>
-</tr>
-<tr>
-<td>Example</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<h2 id="sbt-configurations-excluded-advanced">SBT Configurations Excluded (Advanced)<a class="headerlink" href="#sbt-configurations-excluded-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.sbt.excluded.configurations
-</code></pre>
-
-<p>The names of the sbt configurations to exclude.</p>
-<p>This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> &gt; <i>Property wildcard support</i> page for more details.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String List</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Separated</td>
-<td>Yes</td>
-</tr>
-<tr>
-<td>Case Sensitive</td>
-<td>Yes</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Example</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<h2 id="sbt-configurations-included-advanced">SBT Configurations Included (Advanced)<a class="headerlink" href="#sbt-configurations-included-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.sbt.included.configurations
-</code></pre>
-
-<p>The names of the sbt configurations to include.</p>
-<p>This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> &gt; <i>Property wildcard support</i> page for more details.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String List</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Separated</td>
-<td>Yes</td>
-</tr>
-<tr>
-<td>Case Sensitive</td>
-<td>Yes</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Example</td>
-<td></td>
 </tr>
 </tbody>
 </table>

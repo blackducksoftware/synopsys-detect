@@ -648,6 +648,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../../advanced/package-managers/sbt/" title="SBT support" class="md-nav__link">
+      SBT support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../../advanced/package-managers/yarn/" title="Yarn support" class="md-nav__link">
       Yarn support
     </a>
@@ -1386,16 +1398,16 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../detectors/sbt/#sbt-report-search-depth">detect.sbt.report.search.depth</a></td>
-<td>default: 3 <br /><br /> SBT Report Search Depth: Depth the sbt detector will use to search for report files. <br /><br /></td>
+<td><a href="../detectors/sbt/#sbt-configurations-excluded-deprecated">detect.sbt.excluded.configurations</a> <br /> (Deprecated)</td>
+<td>SBT Configurations Excluded: The names of the sbt configurations to exclude. <br /><br /> <strong>DEPRECATED: This property is being removed. Sbt will no longer parse report files but instead will use a dependency resolution plugin. Please install the appropriate plugin in the future. It will cause failure in 8.0.0 and be removed in 9.0.0.</strong></td>
 </tr>
 <tr>
-<td><a href="../detectors/sbt/#sbt-configurations-excluded-advanced">detect.sbt.excluded.configurations</a> <br /> (Advanced)</td>
-<td>SBT Configurations Excluded: The names of the sbt configurations to exclude. <br /><br /></td>
+<td><a href="../detectors/sbt/#sbt-configurations-included-deprecated">detect.sbt.included.configurations</a> <br /> (Deprecated)</td>
+<td>SBT Configurations Included: The names of the sbt configurations to include. <br /><br /> <strong>DEPRECATED: This property is being removed. Sbt will no longer parse report files but instead will use a dependency resolution plugin. Please install the appropriate plugin in the future. It will cause failure in 8.0.0 and be removed in 9.0.0.</strong></td>
 </tr>
 <tr>
-<td><a href="../detectors/sbt/#sbt-configurations-included-advanced">detect.sbt.included.configurations</a> <br /> (Advanced)</td>
-<td>SBT Configurations Included: The names of the sbt configurations to include. <br /><br /></td>
+<td><a href="../detectors/sbt/#sbt-report-search-depth-deprecated">detect.sbt.report.search.depth</a> <br /> (Deprecated)</td>
+<td>default: 3 <br /><br /> SBT Report Search Depth: Depth the sbt detector will use to search for report files. <br /><br /> <strong>DEPRECATED: This property is being removed. Sbt will no longer parse report files but instead will use a dependency resolution plugin. Please install the appropriate plugin in the future. It will cause failure in 8.0.0 and be removed in 9.0.0.</strong></td>
 </tr>
 </tbody>
 </table>
@@ -2375,6 +2387,10 @@
 <tr>
 <td><a href="../configuration/paths/#swift-executable">detect.swift.path</a></td>
 <td>Swift Executable: Path of the swift executable. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../configuration/paths/#sbt-executable">detect.sbt.path</a></td>
+<td>Sbt Executable: Path to the Sbt executable. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../configuration/paths/#scan-output-path">detect.scan.output.path</a></td>
