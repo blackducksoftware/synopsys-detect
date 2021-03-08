@@ -5,7 +5,7 @@
  *
  * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
-package com.synopsys.integration.detectable.detectables.sbt;
+package com.synopsys.integration.detectable.detectables.sbt.parse;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,10 +27,9 @@ import org.xml.sax.SAXException;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
-import com.synopsys.integration.detectable.detectables.sbt.model.SbtDependencyModule;
-import com.synopsys.integration.detectable.detectables.sbt.model.SbtProject;
-import com.synopsys.integration.detectable.detectables.sbt.model.SbtReport;
-import com.synopsys.integration.detectable.detectables.sbt.parse.SbtReportParser;
+import com.synopsys.integration.detectable.detectables.sbt.parse.model.SbtDependencyModule;
+import com.synopsys.integration.detectable.detectables.sbt.parse.model.SbtProject;
+import com.synopsys.integration.detectable.detectables.sbt.parse.model.SbtReport;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
 
@@ -52,12 +51,12 @@ public class SbtResolutionCacheExtractor {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public Extraction extract(File directory, SbtResolutionCacheDetectableOptions sbtResolutionCacheDetectableOptions) { //TODO: Extractor should not use DetectableOptions
+    public Extraction extract(File directory, SbtResolutionCacheOptions sbtResolutionCacheOptions) { //TODO: Extractor should not use DetectableOptions
         try {
             // TODO: Handle null better.
-            List<String> included = sbtResolutionCacheDetectableOptions.getIncludedConfigurations();
-            List<String> excluded = sbtResolutionCacheDetectableOptions.getExcludedConfigurations();
-            int depth = sbtResolutionCacheDetectableOptions.getReportDepth();
+            List<String> included = sbtResolutionCacheOptions.getIncludedConfigurations();
+            List<String> excluded = sbtResolutionCacheOptions.getExcludedConfigurations();
+            int depth = sbtResolutionCacheOptions.getReportDepth();
 
             SbtProject project = extractProject(directory, depth, included, excluded);
 

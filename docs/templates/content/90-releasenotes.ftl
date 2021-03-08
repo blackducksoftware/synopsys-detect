@@ -2,6 +2,7 @@
 
 ## Version 7.0.0
 ### New Features
+* Added support for the dependency graph SBT plugin. Resolution cache generation is no longer a requirement of the SBT detector.
 
 ### Changed features
 * The default BDIO format for communicating dependency graphs to Black Duck has been changed from BDIO1 to BDIO2.

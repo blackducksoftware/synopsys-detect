@@ -80,15 +80,28 @@ public class DetectorNameVersionHandler {
     }
 
     private NameVersionDecision decideProjectNameVersionArbitrarily(List<DetectorProjectInfo> allPossibilities) {
-        List<DetectorProjectInfo> normalPossibilities = Bds.of(allPossibilities)
+        List<DetectorProjectInfo> nonLowPossibilities = Bds.of(allPossibilities)
                                                             .filterNot(it -> lowPriorityDetectorTypes.contains(it.getDetectorType()))
                                                             .toList();
 
-        List<DetectorProjectInfo> chosenPossibilities;
-        if (normalPossibilities.isEmpty()) {
-            chosenPossibilities = allPossibilities;
+        List<DetectorProjectInfo> possibilities;
+        if (nonLowPossibilities.isEmpty()) {
+            possibilities = allPossibilities;
         } else {
-            chosenPossibilities = normalPossibilities;
+            possibilities = nonLowPossibilities;
+        }
+
+        //When arbitrarily picking, we should prefer a name/version that has both name/version non-empty - this increases the odds of using a populated project/version which is preferred.
+        List<DetectorProjectInfo> hasBothProjectAndVersionPossibilities = Bds.of(possibilities)
+                                                                              .filter(p -> StringUtils.isNotEmpty(p.getNameVersion().getName()))
+                                                                              .filter(p -> StringUtils.isNotEmpty(p.getNameVersion().getVersion()))
+                                                                              .toList();
+
+        List<DetectorProjectInfo> chosenPossibilities;
+        if (hasBothProjectAndVersionPossibilities.size() > 0) {
+            chosenPossibilities = hasBothProjectAndVersionPossibilities;
+        } else {
+            chosenPossibilities = possibilities;
         }
 
         Optional<DetectorProjectInfo> chosenDetectorProjectInfo = chosenPossibilities.stream().min(Comparator.comparing(p -> p.getNameVersion().getName()));
