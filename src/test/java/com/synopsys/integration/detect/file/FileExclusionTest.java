@@ -40,8 +40,8 @@ import com.synopsys.integration.configuration.property.types.path.SimplePathReso
 import com.synopsys.integration.configuration.util.ConfigTestUtils;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detectable.detectable.file.FileFinder;
-import com.synopsys.integration.detectable.detectable.file.WildcardFileFinder;
+import com.synopsys.integration.common.util.finder.FileFinder;
+import com.synopsys.integration.common.util.finder.WildcardFileFinder;
 
 public class FileExclusionTest {
     File sourceFile;
