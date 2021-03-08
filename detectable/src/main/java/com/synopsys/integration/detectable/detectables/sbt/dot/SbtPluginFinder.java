@@ -16,6 +16,7 @@ import com.synopsys.integration.executable.ExecutableOutput;
 public class SbtPluginFinder {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     public static final String DEPENDENCY_GRAPH_PLUGIN_NAME = "net.virtualvoid.sbt.graph.DependencyGraphPlugin";
+    public static final String DEPENDENCY_GRAPH_SBT_INTERNAL_PLUGIN_NAME = "sbt.plugins.DependencyTreePlugin";
     private final DetectableExecutableRunner executableRunner;
 
     public SbtPluginFinder(final DetectableExecutableRunner executableRunner) {
@@ -28,7 +29,8 @@ public class SbtPluginFinder {
     }
 
     public boolean determineInstalledPlugin(List<String> pluginOutput) {
-        if (pluginOutput.stream().anyMatch(line -> line.contains(DEPENDENCY_GRAPH_PLUGIN_NAME))) {
+        if (pluginOutput.stream().anyMatch(line ->
+                line.contains(DEPENDENCY_GRAPH_PLUGIN_NAME) || line.contains(DEPENDENCY_GRAPH_SBT_INTERNAL_PLUGIN_NAME))) {
             return true;
         } else {
             return false;
