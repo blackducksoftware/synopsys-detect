@@ -34,8 +34,8 @@ public class ExclusionPatternCreator {
         this.scanTarget = scanTarget;
     }
 
-    public Set<String> determineExclusionPatterns(final int maxDepth, final List<String> signatureScannerExclusionNamePatterns) {
-        if (CollectionUtils.isEmpty(signatureScannerExclusionNamePatterns) && scanTarget.isDirectory()) {
+    public Set<String> determineExclusionPatterns(final int maxDepth, final List<String> exclusionPatterns) {
+        if (CollectionUtils.isEmpty(exclusionPatterns) && scanTarget.isDirectory()) {
             return Collections.emptySet();
         }
         final Set<String> scanExclusionPatterns = new HashSet<>();

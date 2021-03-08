@@ -33,7 +33,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.Disabled;
 
 import com.synopsys.integration.common.util.finder.WildcardFileFinder;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
@@ -79,10 +78,6 @@ public class FileExclusionTest {
         Assert.assertEquals(4, finder.findFiles(sourceFile, "*", 2).size());
     }
 
-    @Test
-    public void testDefaultsFindAll() throws IOException {
-        FileFinder finder = fileFinderFromProperty(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS.getProperty(), "true");
-        Assert.assertEquals(4, finder.findFiles(sourceFile, "*", 2).size());
-    }
+
 
 }

@@ -176,7 +176,6 @@ public class BlackDuckSignatureScanner {
         Set<String> scanExclusionPatterns = new HashSet<>();
 
         // First add explicit exclusions that are correctly formatted
-        //TODO- do I rly need to check that they're formatted?  what's the real harm in just passing them along?
         scanExclusionPatterns.addAll(providedExclusionPatterns.stream()
                                          .filter(this::isCorrectlyFormattedExclusion)
                                          .collect(Collectors.toSet()));
