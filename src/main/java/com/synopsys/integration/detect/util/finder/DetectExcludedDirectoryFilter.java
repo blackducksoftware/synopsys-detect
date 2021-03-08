@@ -8,9 +8,7 @@
 package com.synopsys.integration.detect.util.finder;
 
 import java.io.File;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.nio.file.PathMatcher;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -45,9 +43,7 @@ public class DetectExcludedDirectoryFilter implements Predicate<File> {
         for (final String excludedDirectory : excludedDirectoryPaths) {
             final Path excludedDirectoryPath = new File(excludedDirectory).toPath();
             final Path relativeDirectoryPath = sourcePath.relativize(file.toPath());
-            PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:" + excludedDirectory);
-
-            if (relativeDirectoryPath.endsWith(excludedDirectoryPath) || pathMatcher.matches(file.toPath())) {
+            if (relativeDirectoryPath.endsWith(excludedDirectoryPath)) {
                 return true;
             }
         }
