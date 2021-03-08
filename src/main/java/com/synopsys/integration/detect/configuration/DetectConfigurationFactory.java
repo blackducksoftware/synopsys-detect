@@ -69,7 +69,7 @@ import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOp
 import com.synopsys.integration.detect.workflow.file.DirectoryOptions;
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeOptions;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
-import com.synopsys.integration.common.util.finder.FileFinder;
+import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
@@ -303,12 +303,12 @@ public class DetectConfigurationFactory {
         Integer maxDepth = getValue(DetectProperties.DETECT_DETECTOR_SEARCH_DEPTH);
 
         //File Filter
-        List<String> userProvidedExcludedDirectories = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_IGNORE.getProperty(), DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION.getProperty());
-        List<String> excludedDirectoryPatterns = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_IGNORE.getProperty(), DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS.getProperty());
-        List<String> excludedDirectoryPaths = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_IGNORE.getProperty(), DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_PATHS.getProperty());
+        List<String> userProvidedExcludedDirectories = getValue(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION);
+        List<String> excludedDirectoryPatterns = getValue(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS);
+        List<String> excludedDirectoryPaths = getValue(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_PATHS);
 
         List<String> excludedDirectories = new ArrayList<>(userProvidedExcludedDirectories);
-        if (PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_IGNORE_DEFAULTS.getProperty(), DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS.getProperty())) {
+        if (detectConfiguration.getValueOrDefault(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS.getProperty())) {
             List<String> defaultExcluded = Arrays.stream(DefaultDetectorExcludedDirectories.values())
                                                .map(DefaultDetectorExcludedDirectories::getDirectoryName)
                                                .collect(Collectors.toList());
@@ -382,9 +382,9 @@ public class DetectConfigurationFactory {
         } else {
             signatureScannerPaths = emptyList();
         }
-        List<String> exclusionPatterns = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_IGNORE.getProperty(), DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERNS.getProperty(),
+        List<String> exclusionPatterns = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERNS.getProperty(),
             DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_PATTERNS.getProperty()).orElse(emptyList());
-        List<String> exclusionNamePatterns = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_IGNORE.getProperty(), DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS.getProperty(),
+        List<String> exclusionNamePatterns = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS.getProperty(),
             DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS.getProperty());
 
         Integer scanMemory = PropertyConfigUtils
