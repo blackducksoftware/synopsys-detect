@@ -4,22 +4,26 @@ ${solution_name} runs the dependecyDot task when it finds the following in your 
 
 * build.sbt
 
-The SBT detector only requires a compatible dependency graph plugin. Specifically it requires that the  dependencyDot task be available and runs.
+The SBT detector requires a compatible dependency graph plugin and the "depedencyDot" task to generate dependency graphs for SBT projects. The plugin generates dot file graphs for each project and ${solution_name} parses each dot graph into it's own code location.
 
-The [dependency graph plugin](https://classic.yarnpkg.com/en/docs/workspaces/) ${solution_name} uses can be installed [globally](https://www.scala-sbt.org/1.x/docs/Using-Plugins.html) or per project.
+Starting with SBT 1.4.0, a dependency graph plugin comes with SBT and can be enabled by adding ```addDependencyTreePlugin``` to "project/plugins.sbt".
 
-To install the plugin globally add the following to "$HOME/.sbt/1.0/plugins/build.sbt"
+For older versions of SBT, a [dependency graph plugin](https://github.com/sbt/sbt-dependency-graph) can be installed [globally](https://www.scala-sbt.org/1.x/docs/Using-Plugins.html) or per project.
+
+To install the plugin globally add the following to "$HOME/.sbt/1.0/plugins/build.sbt" where "1.0" is replaced by your SBT version.
 ```
 addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.10.0-RC1")
 ```
-To install the plugin to a single project, add the same line to "/project/plugins.sbt" where project is a folder alongside the build.sbt.
 
-You can verify the plugin is installed by running "sbt plugins" and verifying "" appears in the output. ${solution_name} will perform this check when SBT applies.
+To install the plugin to a single project, add the same line to "src/project/plugins.sbt" where src is your project's source directory.
+
+${solution_name} verfies the plugin is installed by running "sbt plugins" and looking for any of the following plugin names in the output. You can also perform this check yourself by running the same command.
 ```
+sbt.plugins.DependencyTreePlugin
 net.virtualvoid.sbt.graph.DependencyGraphPlugin
 ```
 
-The SBT detector runs the "dependencyDot" task which generates "target/configuration-dependencies.dot" for each project. It creates a code location for each of these files.
-If the dot files are not generated in target, the incorrect project folder may be found. This doesn't affect results but could affect the project and version chosen.
+The plugins include a "dependencyDot" task which generates "target/configuration-dependencies.dot" for each project.
+In some cases, the dot files are not generated in "./target" and while those graphs will still be found and results are not affected, it could affect the project and version chosen and code location's directory.
 
 **NOTE: Older SBT projects that generate a resolution cache are still supported but are being deprecated. You must install the plugin for SBT to continue working uninterrupted.
