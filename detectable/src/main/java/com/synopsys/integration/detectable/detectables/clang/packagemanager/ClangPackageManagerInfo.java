@@ -13,18 +13,18 @@ import java.util.Optional;
 import com.synopsys.integration.bdio.model.Forge;
 
 public class ClangPackageManagerInfo {
-    private String pkgMgrName;
-    private String pkgMgrCmdString;
-    private List<Forge> forges;
-    private Forge defaultForge;
-    private List<String> checkPresenceCommandArgs;
-    private String checkPresenceCommandOutputExpectedText;
-    private List<String> pkgMgrGetOwnerCmdArgs;
-    private List<String> pkgArchitectureArgs;
-    private List<String> pkgInfoArgs;
+    private final String pkgMgrName;
+    private final String pkgMgrCmdString;
+    private final List<Forge> forges;
+    private final Forge defaultForge;
+    private final List<String> checkPresenceCommandArgs;
+    private final String checkPresenceCommandOutputExpectedText;
+    private final List<String> pkgMgrGetOwnerCmdArgs;
+    private final List<String> pkgArchitectureArgs;
+    private final List<String> pkgInfoArgs;
 
-    public ClangPackageManagerInfo(final String pkgMgrName, final String pkgMgrCmdString, final List<Forge> forges, final Forge defaultForge, final List<String> checkPresenceCommandArgs,
-        final String checkPresenceCommandOutputExpectedText, final List<String> pkgMgrGetOwnerCmdArgs, final List<String> pkgArchitectureArgs, final List<String> pkgInfoArgs) {
+    public ClangPackageManagerInfo(String pkgMgrName, String pkgMgrCmdString, List<Forge> forges, Forge defaultForge, List<String> checkPresenceCommandArgs,
+        String checkPresenceCommandOutputExpectedText, List<String> pkgMgrGetOwnerCmdArgs, List<String> pkgArchitectureArgs, List<String> pkgInfoArgs) {
         this.pkgMgrName = pkgMgrName;
         this.pkgMgrCmdString = pkgMgrCmdString;
         this.forges = forges;

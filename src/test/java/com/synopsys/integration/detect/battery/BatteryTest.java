@@ -68,6 +68,7 @@ public final class BatteryTest {
     private final List<String> emptyFileNames = new ArrayList<>();
     private final List<String> resourceFileNames = new ArrayList<>();
     private final List<String> resourceZipNames = new ArrayList<>();
+    private String resourceZipIntoSource = null;
     private boolean shouldExpectBdioResources = false;
     private String sourceDirectoryName = "source";
 
@@ -112,8 +113,8 @@ public final class BatteryTest {
 
     /**
      * NOTE: The order in which you provide the names of executable output resource files must match the order in which their corresponding commands are invoked at runtime.
-     *      ex) The GoModCliExtractor invokes the command 'go list' before the command 'go version', so go-list.xout must be ordered before go-version.xout in resourceFiles when constructing
-     *          a battery test for the go mod detectable.
+     * ex) The GoModCliExtractor invokes the command 'go list' before the command 'go version', so go-list.xout must be ordered before go-version.xout in resourceFiles when constructing
+     * a battery test for the go mod detectable.
      */
     public void executableFromResourceFiles(Property detectProperty, String... resourceFiles) {
         ResourceTypingExecutableCreator creator = new ResourceTypingExecutableCreator(prefixResources(resourceFiles));
@@ -148,6 +149,10 @@ public final class BatteryTest {
 
     public void sourceFileNamed(String filename) {
         emptyFileNames.add(filename);
+    }
+
+    public void addDirectlyToSourceFolderFromExpandedResource(String filename) {
+        resourceZipIntoSource = filename;
     }
 
     public void sourceFolderFromExpandedResource(String filename) {
@@ -211,6 +216,7 @@ public final class BatteryTest {
         properties.put(DetectProperties.DETECT_CLEANUP.getProperty(), "false");
         properties.put(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION.getProperty(), "INFO"); // Leave at INFO for Travis. Long logs cause build to fail.
         properties.put(DetectProperties.DETECT_SOURCE_PATH.getProperty(), sourceDirectory.getCanonicalPath());
+        properties.put(DetectProperties.DETECT_BDIO2_ENABLED.getProperty(), "false");
         for (Map.Entry<Property, String> entry : properties.entrySet()) {
             detectArguments.add("--" + entry.getKey().getKey() + "=" + entry.getValue());
         }
@@ -324,6 +330,7 @@ public final class BatteryTest {
         mockDirectory = new File(testDirectory, "mock");
         outputDirectory = new File(testDirectory, "output");
         bdioDirectory = new File(testDirectory, "bdio");
+        //ah ha
         sourceDirectory = new File(testDirectory, sourceDirectoryName);
 
         Assertions.assertTrue(outputDirectory.mkdirs());
@@ -392,6 +399,11 @@ public final class BatteryTest {
             File zipFile = BatteryFiles.asFile("/" + resourcePrefix + "/" + resourceZipFileName + ".zip");
             File target = new File(sourceDirectory, resourceZipFileName);
             ZipUtil.unpack(zipFile, target);
+        }
+
+        if (resourceZipIntoSource != null) {
+            File zipFile = BatteryFiles.asFile("/" + resourcePrefix + "/" + resourceZipIntoSource + ".zip");
+            ZipUtil.unpack(zipFile, sourceDirectory);
         }
     }
 

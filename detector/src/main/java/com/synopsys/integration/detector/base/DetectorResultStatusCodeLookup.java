@@ -29,6 +29,7 @@ import com.synopsys.integration.detectable.detectable.result.NpmNodeModulesNotFo
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PoetryLockfileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PropertyInsufficientDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.SbtMissingPluginDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.WrongOperatingSystemResult;
 import com.synopsys.integration.detector.result.ExcludedDetectorResult;
 import com.synopsys.integration.detector.result.FailedDetectorResult;
@@ -78,6 +79,7 @@ public class DetectorResultStatusCodeLookup {
         map.put(PassedDetectableResult.class, DetectorStatusCode.PASSED);
         map.put(PoetryLockfileNotFoundDetectableResult.class, DetectorStatusCode.POETRY_LOCKFILE_NOT_FOUND);
         map.put(PropertyInsufficientDetectableResult.class, DetectorStatusCode.PROPERTY_INSUFFICIENT);
+        map.put(SbtMissingPluginDetectableResult.class, DetectorStatusCode.SBT_PLUGIN_MISSING);
         map.put(WrongOperatingSystemResult.class, DetectorStatusCode.WRONG_OPERATING_SYSTEM_RESULT);
         map.put(YieldedDetectorResult.class, DetectorStatusCode.YIELDED);
 

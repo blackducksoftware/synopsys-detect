@@ -5,7 +5,7 @@
  *
  * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
-package com.synopsys.integration.detectable.detectables.sbt;
+package com.synopsys.integration.detectable.detectables.sbt.parse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +15,8 @@ import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.detectables.sbt.model.SbtDependencyModule;
-import com.synopsys.integration.detectable.detectables.sbt.model.SbtReport;
+import com.synopsys.integration.detectable.detectables.sbt.parse.model.SbtDependencyModule;
+import com.synopsys.integration.detectable.detectables.sbt.parse.model.SbtReport;
 
 public class SbtDependencyResolver {
     private final Logger logger = LoggerFactory.getLogger(SbtDependencyResolver.class);
