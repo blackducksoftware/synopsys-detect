@@ -1,0 +1,117 @@
+[
+  {
+    "specVersion": "1.1.0",
+    "spdx:name": "scalafmtroot_2.13/2.7.5-SNAPSHOT/scalafmt-dynamic/org.scalameta/scalafmt-dynamic_2.13/2.7.5-SNAPSHOT sbt/bom",
+    "creationInfo": {
+      "spdx:creator": [
+        "Tool: Detect-7.0.0-SNAPSHOT",
+        "Tool: IntegrationBdio-22.0.2"
+      ],
+      "spdx:created": "2021-03-05T17:53:34.125052600Z"
+    },
+    "@id": "uuid:fa74c5c9-a5fd-4d71-ad93-4102c7b92a9f",
+    "@type": "BillOfMaterials",
+    "relationship": []
+  },
+  {
+    "name": "scalafmtroot_2.13",
+    "revision": "2.7.5-SNAPSHOT",
+    "@id": "http:maven/org.scalameta/scalafmt-dynamic_2.13/2.7.5-SNAPSHOT",
+    "@type": "Project",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scalameta:scalafmt-dynamic_2.13:2.7.5-SNAPSHOT",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "scalafmt-dynamic_2.13",
+          "2.7.5-SNAPSHOT"
+        ],
+        "prefix": "org.scalameta"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scalameta/scalafmt-interfaces/2.7.5-SNAPSHOT",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/com.typesafe/config/1.4.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/io.get-coursier/interface/0.0.17",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "scalafmt-interfaces",
+    "revision": "2.7.5-SNAPSHOT",
+    "@id": "http:maven/org.scalameta/scalafmt-interfaces/2.7.5-SNAPSHOT",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scalameta:scalafmt-interfaces:2.7.5-SNAPSHOT",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "scalafmt-interfaces",
+          "2.7.5-SNAPSHOT"
+        ],
+        "prefix": "org.scalameta"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "config",
+    "revision": "1.4.1",
+    "@id": "http:maven/com.typesafe/config/1.4.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.typesafe:config:1.4.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "config",
+          "1.4.1"
+        ],
+        "prefix": "com.typesafe"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "interface",
+    "revision": "0.0.17",
+    "@id": "http:maven/io.get-coursier/interface/0.0.17",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "io.get-coursier:interface:0.0.17",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "interface",
+          "0.0.17"
+        ],
+        "prefix": "io.get-coursier"
+      }
+    },
+    "relationship": []
+  }
+]

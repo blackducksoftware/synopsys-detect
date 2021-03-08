@@ -5,19 +5,17 @@
  *
  * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
-package com.synopsys.integration.detectable.detectables.sbt.model;
+package com.synopsys.integration.detectable.detectables.sbt.parse.model;
 
-import java.util.List;
-
-public class SbtModule {
+public class SbtCaller {
     private final String organisation;
     private final String name;
-    private final List<SbtRevision> revisions;
+    private final String revision;
 
-    public SbtModule(final String organisation, final String name, final List<SbtRevision> revisions) {
+    public SbtCaller(final String organisation, final String name, final String revision) {
         this.organisation = organisation;
         this.name = name;
-        this.revisions = revisions;
+        this.revision = revision;
     }
 
     public String getOrganisation() {
@@ -28,7 +26,7 @@ public class SbtModule {
         return name;
     }
 
-    public List<SbtRevision> getRevisions() {
-        return revisions;
+    public String getRevision() {
+        return revision;
     }
 }

@@ -5,7 +5,7 @@
  *
  * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
-package com.synopsys.integration.detectable.detectables.sbt;
+package com.synopsys.integration.detectable.detectables.sbt.parse;
 
 import java.util.List;
 import java.util.Set;
@@ -17,8 +17,8 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.bdio.graph.DependencyGraphCombiner;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
-import com.synopsys.integration.detectable.detectables.sbt.model.SbtAggregate;
-import com.synopsys.integration.detectable.detectables.sbt.model.SbtDependencyModule;
+import com.synopsys.integration.detectable.detectables.sbt.parse.model.SbtAggregate;
+import com.synopsys.integration.detectable.detectables.sbt.parse.model.SbtDependencyModule;
 
 public class SbtModuleAggregator {
     private final Logger logger = LoggerFactory.getLogger(SbtModuleAggregator.class);

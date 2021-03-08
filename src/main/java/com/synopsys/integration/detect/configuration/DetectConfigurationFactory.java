@@ -484,6 +484,7 @@ public class DetectConfigurationFactory {
             getPathOrNull(DetectProperties.DETECT_GIT_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_GO_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_SWIFT_PATH.getProperty()),
+            getPathOrNull(DetectProperties.DETECT_SBT_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_LERNA_PATH.getProperty())
         );
     }

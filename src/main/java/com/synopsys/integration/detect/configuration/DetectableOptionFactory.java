@@ -52,7 +52,7 @@ import com.synopsys.integration.detectable.detectables.pear.PearCliDetectableOpt
 import com.synopsys.integration.detectable.detectables.pip.PipInspectorDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pip.PipenvDetectableOptions;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectableOptions;
-import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheDetectableOptions;
+import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheOptions;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
 import com.synopsys.integration.log.LogLevel;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
@@ -223,11 +223,11 @@ public class DetectableOptionFactory {
         return new GemspecParseDetectableOptions(includeRuntimeDependencies, includeDevDeopendencies);
     }
 
-    public SbtResolutionCacheDetectableOptions createSbtResolutionCacheDetectableOptions() {
+    public SbtResolutionCacheOptions createSbtResolutionCacheDetectableOptions() {
         List<String> includedConfigurations = getValue(DetectProperties.DETECT_SBT_INCLUDED_CONFIGURATIONS);
         List<String> excludedConfigurations = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_PACKAGE_MANAGER_EXCLUSIONS.getProperty(), DetectProperties.DETECT_SBT_EXCLUDED_CONFIGURATIONS.getProperty());
         Integer reportDepth = getValue(DetectProperties.DETECT_SBT_REPORT_DEPTH);
-        return new SbtResolutionCacheDetectableOptions(includedConfigurations, excludedConfigurations, reportDepth);
+        return new SbtResolutionCacheOptions(includedConfigurations, excludedConfigurations, reportDepth);
     }
 
     public YarnLockOptions createYarnLockOptions() {
