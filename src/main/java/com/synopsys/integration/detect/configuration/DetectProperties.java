@@ -1871,7 +1871,7 @@ public class DetectProperties {
 
     // username/password ==> api token
     public static final String BDIO1_DEPRECATION_MESSAGE = "This property is being removed, along with the option to generate BDIO in BDIO1 format. In the future, BDIO2 format will be the only option.";
-    
+
     @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_BDIO2_ENABLED =
         new DetectProperty<>(new BooleanProperty("detect.bdio2.enabled", true))

@@ -31,7 +31,7 @@ import org.mockito.Mockito;
 
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BazelResolver;
-import com.synopsys.integration.detectable.detectable.file.FileFinder;
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;

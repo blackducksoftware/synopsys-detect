@@ -69,7 +69,7 @@ import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOp
 import com.synopsys.integration.detect.workflow.file.DirectoryOptions;
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeOptions;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
-import com.synopsys.integration.detectable.detectable.file.FileFinder;
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;

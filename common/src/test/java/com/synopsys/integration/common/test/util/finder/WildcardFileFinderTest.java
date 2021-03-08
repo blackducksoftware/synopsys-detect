@@ -20,40 +20,49 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.file.impl;
+package com.synopsys.integration.common.test.util.finder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.condition.OS.WINDOWS;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 
-import com.synopsys.integration.detectable.annotations.UnitTest;
-import com.synopsys.integration.detectable.detectable.file.WildcardFileFinder;
+import com.synopsys.integration.common.util.finder.WildcardFileFinder;
 
 public class WildcardFileFinderTest {
 
     private static Path initialDirectoryPath;
 
-    @BeforeAll
-    public static void setup() throws IOException {
-        initialDirectoryPath = Files.createTempDirectory("DetectorFinderTest");
+    @BeforeEach
+    public void setup() throws IOException {
+        initialDirectoryPath = Files.createTempDirectory("WildcardFileFinderTest");
     }
 
-    @AfterAll
-    public static void cleanup() {
-        initialDirectoryPath.toFile().delete();
+    @AfterEach
+    public void cleanup() throws IOException {
+        try {
+            Files.delete(initialDirectoryPath);
+        } catch (DirectoryNotEmptyException e) {
+            FileUtils.deleteDirectory(initialDirectoryPath.toFile());
+
+        }
     }
 
-    @UnitTest
+    @Test
     @DisabledOnOs(WINDOWS)
     public void testSymlinksNotFollowed() throws IOException {
         // Create a subDir with a symlink that loops back to its parent
@@ -75,5 +84,27 @@ public class WildcardFileFinderTest {
 
         // make sure symlink not followed during dir traversal
         assertEquals(4, foundFiles.size());
+    }
+
+    @Test
+    public void testFindWithPredicate() throws IOException {
+        File initialDirectory = initialDirectoryPath.toFile();
+
+        File subDir1 = new File(initialDirectory, "sub1");
+        subDir1.mkdirs();
+        File subDirChild1 = new File(subDir1, "child");
+        subDirChild1.createNewFile();
+
+        File subDir2 = new File(initialDirectory, "sub2");
+        subDir2.mkdirs();
+        File subDirChild2 = new File(subDir2, "child");
+        subDirChild2.createNewFile();
+
+        WildcardFileFinder fileFinder = new WildcardFileFinder();
+        Predicate<File> filter = file -> file.getName().startsWith("sub");
+        List<File> foundFiles = fileFinder.findFiles(initialDirectoryPath.toFile(), filter, 10);
+
+        assertEquals(2, foundFiles.size());
+        assertFalse(foundFiles.contains(subDirChild2));
     }
 }
