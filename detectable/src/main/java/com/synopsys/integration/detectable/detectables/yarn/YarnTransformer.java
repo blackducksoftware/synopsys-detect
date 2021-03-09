@@ -10,6 +10,7 @@ package com.synopsys.integration.detectable.detectables.yarn;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,53 +92,43 @@ public class YarnTransformer {
         return false;
     }
 
-    // TODO the workspace jsons were in a map indexed by name
-    // may need that to tie their dependencies back to them (which is not happening now)
-    // Ah... the yarn.lock does not define dependencies for workspaces (in v1)
-    // So... should we add each workspace's dependencies at the top level?
-    // Or add the workspaces at the top level (like this does now) and then tie their dependencies
-    // (from the workspace package.json files) to them?
     private void addRootNodesToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder,
         PackageJson rootPackageJson, Map<String, PackageJson> workspacePackageJsons, boolean productionOnly,
-        boolean addWorkspaceDependencies, boolean getWorkspaceDependenciesFromWorkspacePackageJson) {
-        ///List<PackageJson> allPackageJsons = new LinkedList<>();
-        ///allPackageJsons.add(rootPackageJson);
-        // TODO Can we filter out the workspace references??
-        ///////// TODO THIS IS WRONG: should not put workspace DEPENDENCIES at root level; just workspaces themselves!
-        ///allPackageJsons.addAll(workspacePackageJsons.values());
-        ///for (PackageJson curPackageJson : allPackageJsons) {
-        System.out.printf("* Processing Root PackageJson: %s:%s\n", rootPackageJson.name, rootPackageJson.version);
-        for (Map.Entry<String, String> packageDependency : rootPackageJson.dependencies.entrySet()) {
-            StringDependencyId stringDependencyId = new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue());
-            System.out.printf("ROOT stringDependencyId: %s\n", stringDependencyId);
-            graphBuilder.addChildToRoot(stringDependencyId);
-        }
+        boolean addWorkspacesToRoot, boolean getWorkspaceDependenciesFromWorkspacePackageJson) {
+        logger.debug("Adding root dependencies from root PackageJson: {}:{}", rootPackageJson.name, rootPackageJson.version);
+        addRootDependenciesToGraph(graphBuilder, rootPackageJson.dependencies.entrySet());
         if (!productionOnly) {
-            for (Map.Entry<String, String> packageDependency : rootPackageJson.devDependencies.entrySet()) {
-                StringDependencyId stringDependencyId = new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue());
-                System.out.printf("ROOT stringDependencyId [dev]: %s\n", stringDependencyId);
-                graphBuilder.addChildToRoot(stringDependencyId);
-            }
+            logger.debug("\tAlso adding dev dependencies");
+            addRootDependenciesToGraph(graphBuilder, rootPackageJson.devDependencies.entrySet());
         }
-        ///}
         for (PackageJson curWorkspacePackageJson : workspacePackageJsons.values()) {
-            System.out.printf("* Processing workspace PackageJson: %s:%s\n", curWorkspacePackageJson.name, curWorkspacePackageJson.version);
-            StringDependencyId workspaceStringDependencyId = new StringDependencyId(curWorkspacePackageJson.name + "@" + curWorkspacePackageJson.version);
-            System.out.printf("WORKSPACE stringDependencyId: %s\n", workspaceStringDependencyId);
-            // TODO move above lines into this if:
-            if (addWorkspaceDependencies) {
-                graphBuilder.addChildToRoot(workspaceStringDependencyId);
+            StringDependencyId workspaceId = new StringDependencyId(curWorkspacePackageJson.name + "@" + curWorkspacePackageJson.version);
+            if (addWorkspacesToRoot) {
+                logger.debug("Adding root dependency representing workspace from workspace PackageJson: {}:{} ({})", curWorkspacePackageJson.name, curWorkspacePackageJson.version, workspaceId);
+                graphBuilder.addChildToRoot(workspaceId);
             }
-            // TODO IF addWorkspaceDependencies (that is, if YARN 1): also add it's dependencies as children!!!!!!!!
             if (getWorkspaceDependenciesFromWorkspacePackageJson) {
-                for (Map.Entry<String, String> depOfWorkspace : curWorkspacePackageJson.dependencies.entrySet()) {
-                    System.out.printf("Parent: %s; Child: %s\n", workspaceStringDependencyId.getValue(), depOfWorkspace.getKey());
-                    StringDependencyId workspaceDependency = new StringDependencyId(depOfWorkspace.getKey() + "@" + depOfWorkspace.getValue());
-                    graphBuilder.addChildWithParent(workspaceDependency, workspaceStringDependencyId);
+                addWorkspaceChildrenToGraph(graphBuilder, workspaceId, curWorkspacePackageJson.dependencies.entrySet());
+                if (!productionOnly) {
+                    addWorkspaceChildrenToGraph(graphBuilder, workspaceId, curWorkspacePackageJson.devDependencies.entrySet());
                 }
             }
+        }
+    }
 
-            // CONDITIONALLY DEV DEPS TOO
+    private void addWorkspaceChildrenToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder, StringDependencyId workspaceId, Set<Map.Entry<String, String>> workspaceDependenciesToAdd) {
+        for (Map.Entry<String, String> depOfWorkspace : workspaceDependenciesToAdd) {
+            StringDependencyId depOfWorkspaceId = new StringDependencyId(depOfWorkspace.getKey() + "@" + depOfWorkspace.getValue());
+            logger.debug("Adding dependency of workspace ({}) as child of workspace {}", depOfWorkspaceId, workspaceId);
+            graphBuilder.addChildWithParent(depOfWorkspaceId, workspaceId);
+        }
+    }
+
+    private void addRootDependenciesToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder, Set<Map.Entry<String, String>> rootDependenciesToAdd) {
+        for (Map.Entry<String, String> rootDependency : rootDependenciesToAdd) {
+            StringDependencyId stringDependencyId = new StringDependencyId(rootDependency.getKey() + "@" + rootDependency.getValue());
+            logger.debug("Adding root dependency to graph: stringDependencyId: {}", stringDependencyId);
+            graphBuilder.addChildToRoot(stringDependencyId);
         }
     }
 }
