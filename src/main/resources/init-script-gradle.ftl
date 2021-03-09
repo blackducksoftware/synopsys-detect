@@ -38,6 +38,7 @@ initscript {
     }
 }
 
+ExcludedIncludedFilter projectFilter = ExcludedIncludedWildcardFilter.fromCommaSeparatedStrings('${excludedProjectNames}', '${includedProjectNames}')
 gradle.allprojects {
     // add a new task to each project to start the process of getting the dependencies
     task gatherDependencies(type: DefaultTask) {
@@ -58,10 +59,9 @@ gradle.allprojects {
             doFirst {
                 generateRootProjectMetaData(project, outputDirectoryPath)
 
-                // this will be empty if the project should not be included.
-                Optional<File> projectOutputFile = findProjectOutputFile(project, outputDirectoryPath, excludedProjectNames, includedProjectNames)
-                if(projectOutputFile.isPresent()) {
-                    File projectFile = createProjectOutputFile(projectOutputFile.get())
+                if(projectFilter.shouldInclude(project.name)) {
+                    File projectOutputFile = findProjectOutputFile(project, outputDirectoryPath)
+                    File projectFile = createProjectOutputFile(projectOutputFile)
 
                     // modify the configurations for the dependency task and the output file
                     setConfigurations(filterConfigurations(project, excludedConfigurationNames, includedConfigurationNames))
@@ -70,10 +70,9 @@ gradle.allprojects {
             }
 
             doLast {
-                // this will be empty if this project should not be included.
-                Optional<File> projectFile = findProjectOutputFile(project, outputDirectoryPath, excludedProjectNames, includedProjectNames)
-                if(projectFile.isPresent()) {
-                    appendProjectMetadata(project, projectFile.get())
+                if(projectFilter.shouldInclude(project.name)) {
+                    File projectFile = findProjectOutputFile(project, outputDirectoryPath)
+                    appendProjectMetadata(project, projectFile)
                 }
             }
         }
@@ -84,6 +83,7 @@ gradle.allprojects {
 }
 
 // ## START methods invoked by tasks above
+<#-- Do not parse with Freemarker because Groovy variable replacement in template strings is the same as Freemarker template syntax. -->
 <#noparse>
 def generateRootProjectMetaData(Project project, String outputDirectoryPath) {
     File outputDirectory = createTaskOutputDirectory(outputDirectoryPath)
@@ -111,19 +111,14 @@ def generateRootProjectMetaData(Project project, String outputDirectoryPath) {
     }
 }
 
-def findProjectOutputFile(Project project, String outputDirectoryPath, String excludedProjectNames, String includedProjectNames) {
-    Optional<File> projectOutputFile = Optional.empty()
-    ExcludedIncludedFilter projectFilter = ExcludedIncludedWildcardFilter.fromCommaSeparatedStrings(excludedProjectNames, includedProjectNames)
-    // check if the project should be included.  If it should be included then return the file that will contain dependency data
-    if (projectFilter.shouldInclude(project.name)) {
-        File outputDirectory = createTaskOutputDirectory(outputDirectoryPath)
-        String name = project.name.toString()
+def findProjectOutputFile(Project project, String outputDirectoryPath) {
+    File outputDirectory = createTaskOutputDirectory(outputDirectoryPath)
+    String name = project.name.toString()
 
-        String nameForFile = new IntegrationEscapeUtil().replaceWithUnderscore(name)
-        File outputFile = new File(outputDirectory, "${nameForFile}_dependencyGraph.txt")
-        projectOutputFile = Optional.of(outputFile)
-    }
-    projectOutputFile
+    String nameForFile = new IntegrationEscapeUtil().replaceWithUnderscore(name)
+    File outputFile = new File(outputDirectory, "${nameForFile}_dependencyGraph.txt")
+
+    outputFile
 }
 
 def filterConfigurations(Project project, String excludedConfigurationNames, String includedConfigurationNames) {
