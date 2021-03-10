@@ -7,9 +7,9 @@
         "Tool: Detect-7.0.0-SNAPSHOT",
         "Tool: IntegrationBdio-22.0.2"
       ],
-      "spdx:created": "2021-03-05T22:29:26.251Z"
+      "spdx:created": "2021-03-10T23:08:51.376Z"
     },
-    "@id": "uuid:dc8603d5-68c8-4375-a58f-08da9273c79a",
+    "@id": "uuid:b1eea82a-6489-4fc9-8853-8152966d0515",
     "@type": "BillOfMaterials",
     "relationship": []
   },
@@ -86,10 +86,35 @@
     },
     "relationship": [
       {
+        "related": "http:npmjs/%40types%2Fjest/24.9.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
         "related": "http:npmjs/cross-env/5.0.5",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
+  },
+  {
+    "name": "@types/jest",
+    "revision": "24.9.0",
+    "@id": "http:npmjs/%40types%2Fjest/24.9.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "@types/jest/24.9.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "@types/jest",
+          "24.9.0"
+        ]
+      }
+    },
+    "relationship": []
   },
   {
     "name": "cross-env",

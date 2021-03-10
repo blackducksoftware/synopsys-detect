@@ -74,7 +74,7 @@ public class YarnTransformer {
                 if (isWorkspace(yarnLockResult, dependencyId)) {
                     logger.info("Including workspace {} in the graph", stringDependencyId.getValue());
                 } else {
-                    logger.warn(String.format("Missing yarn dependency. Dependency '%s' is missing from %s.", stringDependencyId.getValue(), yarnLockResult.getYarnLockFilePath()));
+                    logger.warn(String.format("Missing yarn dependency. '%s' is neither a defined workspace nor a dependency defined in %s.", stringDependencyId.getValue(), yarnLockResult.getYarnLockFilePath()));
                 }
                 return externalIdFactory.createNameVersionExternalId(Forge.NPMJS, stringDependencyId.getValue());
                 //////////////////////
