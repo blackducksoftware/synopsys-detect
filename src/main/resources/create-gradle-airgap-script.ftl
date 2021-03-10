@@ -9,7 +9,7 @@ configurations {
 }
 
 dependencies {
-    airGap 'com.synopsys.integration:integration-gradle-inspector:${gradleVersion}'
+    airGap 'com.synopsys.integration:integration-common:24.2.1'
 }
 
 task installDependencies(type: Copy) {

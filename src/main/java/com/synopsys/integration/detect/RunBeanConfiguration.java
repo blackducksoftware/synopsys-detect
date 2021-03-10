@@ -36,7 +36,6 @@ import com.synopsys.integration.detect.tool.detector.executable.SystemPathExecut
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryDockerInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryGradleInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
-import com.synopsys.integration.detect.tool.detector.inspectors.GradleInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.LocalPipInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.AirgapNugetInspectorLocator;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.LocatorNugetInspectorResolver;
@@ -177,8 +176,7 @@ public class RunBeanConfiguration {
 
     @Bean()
     public GradleInspectorResolver gradleInspectorResolver() throws DetectUserFriendlyException {
-        GradleInspectorInstaller gradleInspectorInstaller = new GradleInspectorInstaller(artifactResolver());
-        return new ArtifactoryGradleInspectorResolver(gradleInspectorInstaller, configuration, detectableOptionFactory.createGradleInspectorOptions().getGradleInspectorScriptOptions(), airGapManager(), directoryManager);
+        return new ArtifactoryGradleInspectorResolver(configuration, detectableOptionFactory.createGradleInspectorOptions().getGradleInspectorScriptOptions(), airGapManager(), directoryManager);
     }
 
     @Bean()
