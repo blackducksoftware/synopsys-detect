@@ -2,9 +2,20 @@
 
 An inspector is typically a plugin that a ${solution_name} detector uses to access the internal resources of a package manager through its API.
 
-There are currently three inspectors that ${solution_name} might download.
+There are currently three inspectors that ${solution_name} might download and one inspector it has internally.
 
 If ${solution_name} decides that your package manager needs an external inspector, you must either be online or have the applicable air gap files.
+
+## Gradle inspector
+
+The Gradle inspector library is no longer used in the init script. Another library is added as a dependency to a temporary Gradle script file that is executed by the ${solution_name} Gradle detector. 
+
+If you are online, then Synopsys Artifactory is added as a Maven repository and the library is downloaded by Gradle.
+If you are offline, the air gap library jar files are added as classpath file dependencies.
+
+In both cases, the ${solution_name} Gradle detector executes the custom Gradle script mentioned above, which invokes a custom Gradle task.
+
+The source code for the library is located at [GitHub](https://github.com/blackducksoftware/integration-common).
 
 ## Docker Inspector
 
