@@ -1483,23 +1483,23 @@
 <p>There are currently three inspectors that Synopsys Detect might download and one inspector it has internally.</p>
 <p>If Synopsys Detect decides that your package manager needs an external inspector, you must either be online or have the applicable air gap files.</p>
 <h2 id="gradle-inspector">Gradle inspector<a class="headerlink" href="#gradle-inspector" title="Permanent link">#</a></h2>
-<p>The Gradle inspector is added as a dependency to a temporary Gradle script file that is executed by the Synopsys Detect Gradle detector. </p>
-<p>If you are online, then Synopsys Artifactory is added as a Maven repository and the inspector is downloaded by Gradle.
-If you are offline, the air gap inspector jar files are added as classpath file dependencies.</p>
-<p>In both cases, the Synopsys Detect Gradle detector executes the custom Gradle script mentioned above, which invokes the Gradle inspector's task.  </p>
-<p>The source code for the Gradle inspector is located at <a href="https://github.com/blackducksoftware/integration-gradle-inspector">GitHub</a>.</p>
+<p>The Gradle inspector library is no longer used in the init script. Another library is added as a dependency to a temporary Gradle script file that is executed by the Synopsys Detect Gradle detector. </p>
+<p>If you are online, then Synopsys Artifactory is added as a Maven repository and the library is downloaded by Gradle.
+If you are offline, the air gap library jar files are added as classpath file dependencies.</p>
+<p>In both cases, the Synopsys Detect Gradle detector executes the custom Gradle script mentioned above, which invokes a custom Gradle task.</p>
+<p>The source code for the library is located at <a href="https://github.com/blackducksoftware/integration-common">GitHub</a>.</p>
 <h2 id="docker-inspector">Docker Inspector<a class="headerlink" href="#docker-inspector" title="Permanent link">#</a></h2>
-<p>The Docker Inspector is available as a Java jar or shell script for Linux or Mac. </p>
-<p>If you are online, then Synopsys Artifactory is used to download the Docker Inspector jar file. </p>
+<p>The Docker Inspector is available as a Java jar or shell script for Linux or Mac.</p>
+<p>If you are online, then Synopsys Artifactory is used to download the Docker Inspector jar file.</p>
 <p>If you are offline, the Docker Inspector jar file and required Docker image tar files are sourced from the provided path to the Docker Inspector air gap files.
 Synopsys Detect loads the Docker images (container-based services that Docker Inspector depends on) from the provided image tar files so they are available to the Docker Inspector.</p>
 <p>In both cases, the Docker Inspector jar is run which (by default) uses your Docker engine to start and stop the container-based services.</p>
 <p>The source code for Docker Inspector is located at <a href="https://github.com/blackducksoftware/blackduck-docker-inspector">GitHub</a>.</p>
 <h2 id="nuget-inspector">NuGet Inspector<a class="headerlink" href="#nuget-inspector" title="Permanent link">#</a></h2>
-<p>The NuGet inspector is available as an independent executable for Windows or as a dotnet application for all dotnet supported operating systems. </p>
+<p>The NuGet inspector is available as an independent executable for Windows or as a dotnet application for all dotnet supported operating systems.</p>
 <p>If you are online, then Synopsys Artifactory is used to download the applicable NuGet package which is then unzipped and the runtime files are located.
 If you are offline, the air gap inspector runtime files are located at the provided path.</p>
-<p>In both cases, the located executable is run which communicates with NuGet and the dotnet build system. </p>
+<p>In both cases, the located executable is run which communicates with NuGet and the dotnet build system.</p>
 <p>The source code for the NuGet executable inspector is located at <a href="https://github.com/blackducksoftware/integration-nuget-inspector">GitHub</a>.
 The source code for the NuGet dotnet inspector is located at <a href="https://github.com/blackducksoftware/blackduck-nuget-inspector">GitHub</a>.</p>
 <h2 id="python-inspector">Python Inspector<a class="headerlink" href="#python-inspector" title="Permanent link">#</a></h2>
