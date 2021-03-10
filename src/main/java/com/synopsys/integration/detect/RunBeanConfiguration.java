@@ -9,6 +9,7 @@ package com.synopsys.integration.detect;
 
 import java.io.File;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import javax.xml.parsers.DocumentBuilder;
 
@@ -90,13 +91,6 @@ public class RunBeanConfiguration {
     public DocumentBuilder documentBuilder;
     @Autowired
     public DetectableOptionFactory detectableOptionFactory;
-    /*
-    @Autowired
-    public DetectFileFinderFactory fileFinderFactory;
-    @Autowired
-    public DetectFileFilterFactory fileFilterFactory;
-
-     */
 
     @Bean
     public ExternalIdFactory externalIdFactory() {
@@ -227,7 +221,7 @@ public class RunBeanConfiguration {
     @Lazy
     @Bean()
     public BlackDuckSignatureScanner blackDuckSignatureScanner(BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, ScanBatchRunner scanBatchRunner, BlackDuckServerConfig blackDuckServerConfig,
-        CodeLocationNameManager codeLocationNameManager, DetectExcludedDirectoryFilter fileFilter) {
+        CodeLocationNameManager codeLocationNameManager, Predicate<File> fileFilter) {
         return new BlackDuckSignatureScanner(directoryManager, codeLocationNameManager, blackDuckSignatureScannerOptions, eventSystem, scanBatchRunner, blackDuckServerConfig, fileFinder(), fileFilter);
     }
 

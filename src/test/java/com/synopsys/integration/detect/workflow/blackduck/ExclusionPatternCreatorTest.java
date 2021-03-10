@@ -44,6 +44,7 @@ public class ExclusionPatternCreatorTest {
 
     static Stream<Arguments> inputPatternsToExclusionsProvider() {
         // Stream of single input patterns and the list of patterns that they should resolve to
+        // NOTE: recognition of path patterns is dependent on filter's implementation of path matching (glob vs regex)
         return Stream.of(
             arguments(Collections.singletonList("**ub2"), Arrays.asList("/sub1/sub1Sub2/", "/sub2/")),
             arguments(Collections.singletonList("**root/sub1/sub1*"), Arrays.asList("/sub1/sub1Sub1/", "/sub1/sub1Sub2/")),

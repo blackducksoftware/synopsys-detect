@@ -45,7 +45,7 @@ public class RunContext {
     private final Gson htmlEscapeDisabledGson;
     private final FileFinder fileFinder;
 
-    public RunContext(DetectContext detectContext, ProductRunData productRunData) {
+    public RunContext(DetectContext detectContext, ProductRunData productRunData, FileFinder fileFinder) {
         this.detectContext = detectContext;
         this.productRunData = productRunData;
         detectConfiguration = detectContext.getBean(PropertyConfiguration.class);
@@ -63,7 +63,7 @@ public class RunContext {
         gson = detectContext.getBean(Gson.class);
         // Can't have more than one instance of Gson registered at the moment.  It causes problems resolving the beans for the application if there is more than one Gson.
         this.htmlEscapeDisabledGson = BlackDuckServicesFactory.createDefaultGsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-        fileFinder = detectContext.getBean(FileFinder.class);
+        this.fileFinder = fileFinder;
     }
 
     public DetectContext getDetectContext() {
