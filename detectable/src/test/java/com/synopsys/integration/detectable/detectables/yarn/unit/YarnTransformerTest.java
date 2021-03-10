@@ -44,6 +44,8 @@ class YarnTransformerTest {
         yarnTransformer = new YarnTransformer(externalIdFactory);
     }
 
+    // Not yet covered by these tests: yarn 1 workspaces' dev dependencies specified in workspace package.json
+
     @Test
     void testExcludeDevDependencies() throws MissingExternalIdException {
         YarnLockResult yarnLockResult = buildTestYarnLockResult(noWorkspaces, noWorkspaces, true, false);
@@ -82,11 +84,8 @@ class YarnTransformerTest {
         assertTrue(dependencyGraph.hasDependency(yarnExternalId));
     }
 
-    // TODO V1 tests too
-    // TODO add tests where all workspaces are added as deps
-
     @Test
-    void testYarn2WorkspacesFollowDependencies() throws MissingExternalIdException {
+    void testYarn2WorkspacesJustDependencies() throws MissingExternalIdException {
         List<NameVersion> workspacesThatAreDependencies = new LinkedList<>();
         workspacesThatAreDependencies.add(new NameVersion("workspace-isdep", "1.0.0"));
         List<NameVersion> workspacesThatAreNotDependencies = new LinkedList<>();
@@ -105,7 +104,7 @@ class YarnTransformerTest {
     }
 
     @Test
-    void testYarn2WorkspacesFullRepo() throws MissingExternalIdException {
+    void testYarn2WorkspacesAll() throws MissingExternalIdException {
         List<NameVersion> workspacesThatAreDependencies = new LinkedList<>();
         workspacesThatAreDependencies.add(new NameVersion("workspace-isdep", "1.0.0"));
         List<NameVersion> workspacesThatAreNotDependencies = new LinkedList<>();
@@ -132,20 +131,61 @@ class YarnTransformerTest {
         assertEquals(workspacesThatAreNotDependencies.get(0).getVersion(), actualWorkspaceDep.getVersion());
     }
 
-    // TODO populate these tests
-
     @Test
-    void testYarn2WorkspacesAddAllWorkspaces() throws MissingExternalIdException {
+    void testYarn1WorkspacesJustDependencies() throws MissingExternalIdException {
+        List<NameVersion> workspacesThatAreDependencies = new LinkedList<>();
+        workspacesThatAreDependencies.add(new NameVersion("workspace-isdep", "1.0.0"));
+        List<NameVersion> workspacesThatAreNotDependencies = new LinkedList<>();
+        workspacesThatAreNotDependencies.add(new NameVersion("workspace-notdep", "1.0.0"));
+        YarnLockResult yarnLockResult = buildTestYarnLockResult(workspacesThatAreDependencies, workspacesThatAreNotDependencies, false, false);
 
+        DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, false, true, workspacesThatAreDependencies);
+
+        assertEquals(3, dependencyGraph.getRootDependencies().size());
+        String targetWorkspaceId = workspacesThatAreDependencies.get(0).getName() + "@" + workspacesThatAreDependencies.get(0).getVersion();
+        boolean foundWorkspaceDep = false;
+        boolean foundWorkspaceDevDep = false;
+        for (Dependency workspaceCandidate : dependencyGraph.getRootDependencies()) {
+            if (targetWorkspaceId.equals(workspaceCandidate.getExternalId().getName())) {
+                Set<Dependency> actualWorkspaceDeps = dependencyGraph.getChildrenForParent(workspaceCandidate);
+                for (Dependency actualWorkspaceDep : actualWorkspaceDeps) {
+                    if (actualWorkspaceDep.getExternalId().getName().equals(workspacesThatAreDependencies.get(0).getName() + WORKSPACE_DEP_SUFFIX)) {
+                        assertEquals(workspacesThatAreDependencies.get(0).getVersion(), actualWorkspaceDep.getVersion());
+                        foundWorkspaceDep = true;
+                    } else if (actualWorkspaceDep.getExternalId().getName().equals(workspacesThatAreDependencies.get(0).getName() + "-dev" + WORKSPACE_DEP_SUFFIX)) {
+                        assertEquals(workspacesThatAreDependencies.get(0).getVersion(), actualWorkspaceDep.getVersion());
+                        foundWorkspaceDevDep = true;
+                    }
+                }
+            }
+        }
+        assertTrue(foundWorkspaceDep);
+        assertTrue(foundWorkspaceDevDep);
     }
 
     @Test
-    void testYarn1WorkspacesFollowDependencies() throws MissingExternalIdException {
+    void testYarn1WorkspacesAll() throws MissingExternalIdException {
+        List<NameVersion> workspacesThatAreDependencies = new LinkedList<>();
+        workspacesThatAreDependencies.add(new NameVersion("workspace-isdep", "1.0.0"));
+        List<NameVersion> workspacesThatAreNotDependencies = new LinkedList<>();
+        workspacesThatAreNotDependencies.add(new NameVersion("workspace-notdep", "1.0.0"));
+        YarnLockResult yarnLockResult = buildTestYarnLockResult(workspacesThatAreDependencies, workspacesThatAreNotDependencies, false, true);
 
-    }
+        DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, true, true, workspacesThatAreDependencies);
 
-    @Test
-    void testYarn1WorkspacesAddAllWorkspaces() throws MissingExternalIdException {
+        assertEquals(4, dependencyGraph.getRootDependencies().size());
+        String targetWorkspaceId = workspacesThatAreNotDependencies.get(0).getName() + "@" + workspacesThatAreNotDependencies.get(0).getVersion();
+        boolean foundWorkspaceDep = false;
+        for (Dependency workspaceCandidate : dependencyGraph.getRootDependencies()) {
+            if (targetWorkspaceId.equals(workspaceCandidate.getExternalId().getName())) {
+                Set<Dependency> actualWorkspaceDeps = dependencyGraph.getChildrenForParent(workspaceCandidate);
+                Dependency actualWorkspaceDep = actualWorkspaceDeps.iterator().next();
+                assertEquals(workspacesThatAreNotDependencies.get(0).getName() + WORKSPACE_DEP_SUFFIX, actualWorkspaceDep.getName());
+                assertEquals(workspacesThatAreNotDependencies.get(0).getVersion(), actualWorkspaceDep.getVersion());
+                foundWorkspaceDep = true;
+            }
+        }
+        assertTrue(foundWorkspaceDep);
     }
 
     @Test
@@ -172,7 +212,6 @@ class YarnTransformerTest {
         assertTrue(dependencyGraph.hasDependency(fooExternalId), "Missing the only expected dependency.");
     }
 
-    // TODO should be able to pass workspaces that ARE deps, and workspaces that are NOT deps
     @NotNull
     private YarnLockResult buildTestYarnLockResult(List<NameVersion> workspacesThatAreDependencies, List<NameVersion> workspacesThatAreNotDependencies, boolean yarn2project, boolean includeAllWorkspaceDependencies) {
         PackageJson packageJson = new PackageJson();
@@ -195,7 +234,6 @@ class YarnTransformerTest {
             List<YarnLockDependency> projectDependencies = new LinkedList<>();
             projectDependencies.add(new YarnLockDependency("foo", "fooFuzzyVersion-1.0", false));
             projectDependencies.add(new YarnLockDependency("bar", "barFuzzyVersion-1.0", false));
-            // TODO add workspaces here as deps of project
             for (NameVersion workspaceThatIsDependency : workspacesThatAreDependencies) {
                 projectDependencies.add(new YarnLockDependency(workspaceThatIsDependency.getName(), workspaceThatIsDependency.getVersion(), false));
             }
@@ -206,9 +244,9 @@ class YarnTransformerTest {
         allWorkspaces.addAll(workspacesThatAreNotDependencies);
         for (NameVersion workspace : allWorkspaces) {
             String workspaceDepName = workspace.getName() + WORKSPACE_DEP_SUFFIX;
-            /// TODO later? workspacePackageJson.devDependencies.put("wksp dev dep", "version");
+            String workspaceDevDepName = workspace.getName() + "-dev" + WORKSPACE_DEP_SUFFIX;
             if (!yarn2project || includeAllWorkspaceDependencies) {
-                addWorkspacePackageJson(workspacePackageJsons, workspace, workspaceDepName);
+                addWorkspacePackageJson(workspacePackageJsons, workspace, workspaceDepName, workspaceDevDepName);
             }
             if (yarn2project) {
                 addWorkspaceToYarnLockEntries(yarnLockEntries, workspace, workspaceDepName);
@@ -238,12 +276,13 @@ class YarnTransformerTest {
         yarnLockEntries.add(new YarnLockEntry(false, wkspDepIds, workspace.getVersion(), new LinkedList<>()));
     }
 
-    private void addWorkspacePackageJson(Map<String, PackageJson> workspacePackageJsons, NameVersion workspace, String workspaceDepName) {
+    private void addWorkspacePackageJson(Map<String, PackageJson> workspacePackageJsons, NameVersion workspace, String workspaceDepName, String workspaceDevDepName) {
         PackageJson workspacePackageJson = new PackageJson();
         workspacePackageJson.name = workspace.getName();
         workspacePackageJson.version = workspace.getVersion();
         workspacePackageJson.dependencies = new HashMap<>();
         workspacePackageJson.dependencies.put(workspaceDepName, workspace.getVersion());
+        workspacePackageJson.devDependencies.put(workspaceDevDepName, workspace.getVersion());
         workspacePackageJsons.put(workspace.getName(), workspacePackageJson);
     }
 }
