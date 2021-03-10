@@ -50,7 +50,7 @@ public abstract class TypingExecutableCreator extends BatteryExecutableCreator {
 
         final Map<String, Object> model = new HashMap<>();
         model.put("dataFile", dataFile.getCanonicalPath());
-        model.put("files", Lists.newArrayList(getFilePaths(executableInfo.getMockDirectory(), commandCount)));
+        model.put("files", Lists.newArrayList(getFilePaths(executableInfo, commandCount)));
         final File commandFile;
         if (SystemUtils.IS_OS_WINDOWS) {
             commandFile = new File(executableInfo.getMockDirectory(), "exe-" + id + ".bat");
@@ -64,5 +64,5 @@ public abstract class TypingExecutableCreator extends BatteryExecutableCreator {
         return commandFile;
     }
 
-    public abstract List<String> getFilePaths(File mockDirectory, AtomicInteger commandCount) throws IOException;
+    public abstract List<String> getFilePaths(BatteryExecutableInfo executableInfo, AtomicInteger commandCount) throws IOException, TemplateException;
 }

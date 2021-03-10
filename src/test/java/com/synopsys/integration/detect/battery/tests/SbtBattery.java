@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detect.battery.BatteryTest;
+import com.synopsys.integration.detect.configuration.DetectProperties;
 
 @Tag("battery")
 public class SbtBattery {
@@ -36,6 +37,18 @@ public class SbtBattery {
         test.sourceFileNamed("build.sbt");
         test.sourceFolderFromExpandedResource("target");
         test.git("https://github.com/sbt/sbt-bintray.git", "master");
+        test.executable(DetectProperties.DETECT_SBT_PATH.getProperty(), ""); //empty == no plugins installed
+        test.expectBdioResources();
+        test.run();
+    }
+
+    @Test
+    void dotPlugin() {
+        final BatteryTest test = new BatteryTest("sbt-dot");
+        test.sourceDirectoryNamed("sbt-dot");
+        test.sourceFileNamed("build.sbt");
+        test.addDirectlyToSourceFolderFromExpandedResource("dots");
+        test.executableFromResourceFiles(DetectProperties.DETECT_SBT_PATH.getProperty(), "sbt-plugins.xout", "sbt-dependencyDot.ftl");
         test.expectBdioResources();
         test.run();
     }

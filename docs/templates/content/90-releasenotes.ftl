@@ -2,9 +2,11 @@
 
 ## Version 7.0.0
 ### New Features
+* Added support for the dependency graph SBT plugin. Resolution cache generation is no longer a requirement of the SBT detector.
 
 ### Changed features
 * (IDETECT-2409) Gradle detector no longer uses the gradle inspector. Only the init script is required.
+* The default BDIO format for communicating dependency graphs to Black Duck has been changed from BDIO1 to BDIO2.
 
 ### Resolved issues
 * (IDETECT-2434) Resolved an issue in the CLANG detector on Ubuntu and Debian systems that caused it to omit a package when that package had been installed on the system from multiple architectures.

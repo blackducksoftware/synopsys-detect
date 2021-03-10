@@ -31,11 +31,12 @@ public class DetectExecutableOptions {
     private final Path gitUserPath;
     private final Path goUserPath;
     private final Path swiftUserPath;
+    private final Path sbtUserPath;
     private final Path lernaUserPath;
 
     public DetectExecutableOptions(boolean isPython3, Path bashUserPath, Path bazelUserPath, Path conanUserPath, Path condaUserPath, Path cpanUserPath, Path cpanmUserPath, Path gradleUserPath, Path mavenUserPath,
         Path npmUserPath, Path pearUserPath, Path pipUserPath, Path pipenvUserPath, Path pythonUserPath, Path rebarUserPath, Path javaUserPath, Path dockerUserPath,
-        Path dotnetUserPath, Path gitUserPath, Path goUserPath, Path swiftUserPath, Path lernaUserPath) {
+        Path dotnetUserPath, Path gitUserPath, Path goUserPath, Path swiftUserPath, Path sbtUserPath, Path lernaUserPath) {
         this.isPython3 = isPython3;
         this.bashUserPath = bashUserPath;
         this.bazelUserPath = bazelUserPath;
@@ -57,6 +58,7 @@ public class DetectExecutableOptions {
         this.gitUserPath = gitUserPath;
         this.goUserPath = goUserPath;
         this.swiftUserPath = swiftUserPath;
+        this.sbtUserPath = sbtUserPath;
         this.lernaUserPath = lernaUserPath;
     }
 
@@ -146,5 +148,9 @@ public class DetectExecutableOptions {
 
     public Path getPipUserPath() {
         return pipUserPath;
+    }
+
+    public Path getSbtUserPath() {
+        return sbtUserPath;
     }
 }
