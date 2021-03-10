@@ -5,12 +5,13 @@
 * Added support for the dependency graph SBT plugin. Resolution cache generation is no longer a requirement of the SBT detector.
 
 ### Changed features
-* (IDETECT-2409) Gradle detector no longer uses the gradle inspector. Only the init script is required.
+* Gradle detector no longer uses the gradle inspector. Only the init script is required.
 * The default BDIO format for communicating dependency graphs to Black Duck has been changed from BDIO1 to BDIO2.
 
 ### Resolved issues
 * (IDETECT-2434) Resolved an issue in the CLANG detector on Ubuntu and Debian systems that caused it to omit a package when that package had been installed on the system from multiple architectures.
 * (IDETECT-2413) Resolved an issue to upgrade internal dependencies to support JDK 15.
+* (IDETECT-2409) Resolved an issue to allow Gradle detector to support Gradle 6.8.
 
 ## Version 6.9.0
 ### New Features
