@@ -624,8 +624,8 @@ public class DetectProperties {
     public static final DetectProperty<StringListProperty> DETECT_IGNORE =
         new DetectProperty<>(new StringListProperty("detect.ignore", emptyList()))
             .setInfo("Detect Ignore", DetectPropertyFromVersion.VERSION_7_0_0)
-            .setHelp("A comma-separated list of directory names, name patterns, or paths that Detect should ignore.",
-                "Subdirectories whose name or path appear in this list will not be searched when determining which detectors to run, and will be excluded from signature scan using the Scan CLI '--exclude' flag. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details."
+            .setHelp("A comma-separated list of names, name patterns, relative paths, or path patterns of directories that Detect should ignore.",
+                "Subdirectories whose name or path is resolved from the patterns in this list will not be searched when determining which detectors to run, and will be excluded from signature scan using the Scan CLI '--exclude' flag. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);

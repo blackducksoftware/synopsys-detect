@@ -308,7 +308,7 @@ public class DetectConfigurationFactory {
         return new DetectExcludedDirectoryFilter(sourcePath, excludedDirectories, excludedDirectoryPaths, excludedDirectoryPatterns);
     }
 
-    public DetectorFinderOptions createDetectFinderOptions(Path sourcePath) {
+    public DetectorFinderOptions createDetectorFinderOptions(Path sourcePath) {
         //Normal settings
         Integer maxDepth = getValue(DetectProperties.DETECT_DETECTOR_SEARCH_DEPTH);
         DetectExcludedDirectoryFilter fileFilter = createDetectDirectoryFileFilter(sourcePath);

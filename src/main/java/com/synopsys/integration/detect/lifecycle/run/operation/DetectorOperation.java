@@ -68,7 +68,7 @@ public class DetectorOperation {
         DetectorRuleSet detectRuleSet = detectorRuleFactory.createRules(detectDetectableFactory, buildless);
 
         Path sourcePath = directoryManager.getSourceDirectory().toPath();
-        DetectorFinderOptions finderOptions = detectConfigurationFactory.createDetectFinderOptions(sourcePath);
+        DetectorFinderOptions finderOptions = detectConfigurationFactory.createDetectorFinderOptions(sourcePath);
         DetectorEvaluationOptions detectorEvaluationOptions = detectConfigurationFactory.createDetectorEvaluationOptions();
 
         DetectorIssuePublisher detectorIssuePublisher = new DetectorIssuePublisher();
