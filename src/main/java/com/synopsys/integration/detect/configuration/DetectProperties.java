@@ -631,7 +631,7 @@ public class DetectProperties {
 
     public static final DetectProperty<BooleanProperty> DETECT_IGNORE_DEFAULTS =
         new DetectProperty<>(new BooleanProperty("detect.ignore.defaults", true))
-            .setInfo("Detect Ignore Default Directories", DetectPropertyFromVersion.VERSION_3_2_0)
+            .setInfo("Detect Ignore Default Directories", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp("If true, Detect will ignore the default directory names. See the detailed help for more information.",
                 "If true, these directories will be ignored by Detect when searching for detectors and will be excluded from signature scan using the Scan CLI '--exclude' flag: bin, build, .git, .gradle, node_modules, out, packages, target."
             )
@@ -640,7 +640,7 @@ public class DetectProperties {
 
     public static final DetectProperty<IntegerProperty> DETECT_IGNORE_SEARCH_DEPTH =
         new DetectProperty<>(new IntegerProperty("detect.ignore.search.depth", 4))
-            .setInfo("Detect Ignore Search Depth", DetectPropertyFromVersion.VERSION_5_0_0)
+            .setInfo("Detect Ignore Search Depth", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp("Enables you to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN);
 
