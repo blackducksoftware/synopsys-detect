@@ -3,6 +3,8 @@
 ## Version 7.0.0
 ### New Features
 * Added support for the dependency graph SBT plugin. Resolution cache generation is no longer a requirement of the SBT detector.
+* Added the properties [detect.ignore](../properties/configuration/paths/#detect-ignore-advanced), [detect.ignore.defaults](../properties/configuration/paths/#detect-ignore-default-directories-advanced), and [detect.ignore.search.depth](../properties/configuration/signature scanner/#detect-ignore-search-depth) to handle exclusions for detector search and signature scanning.
+* Added ability to specify excluded directory paths using [glob patterns](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)).
 
 ### Changed features
 * The default BDIO format for communicating dependency graphs to Black Duck has been changed from BDIO1 to BDIO2.
