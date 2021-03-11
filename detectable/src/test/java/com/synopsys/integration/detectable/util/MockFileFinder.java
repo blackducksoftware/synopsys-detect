@@ -28,10 +28,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.jetbrains.annotations.NotNull;
 
-import com.synopsys.integration.detectable.detectable.file.FileFinder;
+import com.synopsys.integration.common.util.finder.FileFinder;
 
 public class MockFileFinder implements FileFinder {
 
@@ -72,22 +74,33 @@ public class MockFileFinder implements FileFinder {
     }
 
     @Override
-    public List<File> findFiles(final File directoryToSearch, final List<String> filenamePatterns, final int depth, boolean findInsideMatchingDirectories) {
+    public @NotNull List<File> findFiles(final File directoryToSearch, final Predicate<File> filter, final int depth, final boolean findInsideMatchingDirectories) {
         List<File> found = new ArrayList<>();
         for (int i = 0; i <= depth; i++) {
             if (files.containsKey(i)) {
                 List<File> possibles = files.get(i);
-                for (String pattern : filenamePatterns) {
-                    FileFilter fileFilter = new WildcardFileFilter(pattern);
-                    for (File possible : possibles) {
-                        if (fileFilter.accept(possible)) {
-                            found.add(possible);
-                        }
+                for (File possible : possibles) {
+                    if (filter.test(possible)) {
+                        found.add(possible);
                     }
-
                 }
             }
         }
         return found;
+    }
+
+    @Override
+    public List<File> findFiles(final File directoryToSearch, final List<String> filenamePatterns, final int depth, boolean findInsideMatchingDirectories) {
+        Predicate<File> filter = file -> {
+            for (String pattern : filenamePatterns) {
+                WildcardFileFilter wildcardFileFilter = new WildcardFileFilter(pattern);
+                if (wildcardFileFilter.accept(file)) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        return findFiles(directoryToSearch, filter, depth, findInsideMatchingDirectories);
     }
 }

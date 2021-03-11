@@ -39,19 +39,18 @@ public class GradleInspectorScriptCreator {
     }
 
     public File createOfflineGradleInspector(File templateFile, GradleInspectorScriptOptions scriptOptions, String airGapLibraryPaths) throws DetectableException {
-        return createGradleInspector(templateFile, scriptOptions, null, airGapLibraryPaths);
+        return createGradleInspector(templateFile, scriptOptions, airGapLibraryPaths);
     }
 
-    public File createOnlineGradleInspector(File templateFile, GradleInspectorScriptOptions scriptOptions, String resolvedOnlineInspectorVersion) throws DetectableException {
-        return createGradleInspector(templateFile, scriptOptions, resolvedOnlineInspectorVersion, null);
+    public File createOnlineGradleInspector(File templateFile, GradleInspectorScriptOptions scriptOptions) throws DetectableException {
+        return createGradleInspector(templateFile, scriptOptions, null);
     }
 
-    private File createGradleInspector(File templateFile, GradleInspectorScriptOptions scriptOptions, String resolvedOnlineInspectorVersion, String airGapLibraryPaths) throws DetectableException {
+    private File createGradleInspector(File templateFile, GradleInspectorScriptOptions scriptOptions, String airGapLibraryPaths) throws DetectableException {
         logger.debug("Generating the gradle script file.");
         Map<String, String> gradleScriptData = new HashMap<>();
 
         gradleScriptData.put("airGapLibsPath", StringEscapeUtils.escapeJava(Optional.ofNullable(airGapLibraryPaths).orElse("")));
-        gradleScriptData.put("gradleInspectorVersion", StringEscapeUtils.escapeJava(Optional.ofNullable(resolvedOnlineInspectorVersion).orElse("")));
         gradleScriptData.put("excludedProjectNames", toCommaSeparatedString(scriptOptions.getExcludedProjectNames()));
         gradleScriptData.put("includedProjectNames", toCommaSeparatedString(scriptOptions.getIncludedProjectNames()));
         gradleScriptData.put("excludedConfigurationNames", toCommaSeparatedString(scriptOptions.getExcludedConfigurationNames()));

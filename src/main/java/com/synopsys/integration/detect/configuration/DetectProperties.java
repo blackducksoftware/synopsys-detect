@@ -61,6 +61,7 @@ import com.synopsys.integration.log.LogLevel;
 public class DetectProperties {
     private static final String POLARIS_CLI_DEPRECATION_MESSAGE = "This property is being removed. Detect will no longer invoke the Polaris CLI.";
     private static final String EXCLUSION_PROPERTY_DEPRECATION_MESSAGE = "This property is now deprecated. In future versions of Detect, it will be consolidated with other exclusion properties.";
+    private static final String SBT_REPORT_DEPRECATION_MESSAGE = "This property is being removed. Sbt will no longer parse report files but instead will use a dependency resolution plugin. Please install the appropriate plugin in the future.";
 
     private DetectProperties() {
     }
@@ -598,16 +599,6 @@ public class DetectProperties {
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
-    public static final DetectProperty<NullableStringProperty> DETECT_GRADLE_INSPECTOR_VERSION =
-        new DetectProperty<>(new NullableStringProperty("detect.gradle.inspector.version"))
-            .setInfo("Gradle Inspector Version", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp(
-                "The version of the Gradle Inspector that Detect should use. By default, Detect will try to automatically determine the correct Gradle Inspector version.",
-                "The Detect Gradle detector uses a separate program, the Gradle Inspector, to discover dependencies from Gradle projects. Detect automatically downloads the Gradle Inspector as needed. Use the property to use a specific version of the Gradle Inspector."
-            )
-            .setGroups(DetectGroup.GRADLE, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced);
-
     public static final DetectProperty<NullablePathProperty> DETECT_GRADLE_PATH =
         new DetectProperty<>(new NullablePathProperty("detect.gradle.path"))
             .setInfo("Gradle Executable", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -1084,25 +1075,35 @@ public class DetectProperties {
             .setHelp("If set to true, development dependencies will be included when parsing *.gemspec files.")
             .setGroups(DetectGroup.RUBY, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
 
+    public static final DetectProperty<NullablePathProperty> DETECT_SBT_PATH =
+        new DetectProperty<>(new NullablePathProperty("detect.sbt.path"))
+            .setInfo("Sbt Executable", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("Path to the Sbt executable.", "If set, Detect will use the given Sbt executable instead of searching for one.")
+            .setExample("C:\\Program Files (x86)\\sbt\\bin\\sbt.bat")
+            .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL);
+
     public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_SBT_EXCLUDED_CONFIGURATIONS =
         new DetectProperty<>(new CaseSensitiveStringListProperty("detect.sbt.excluded.configurations"))
             .setInfo("SBT Configurations Excluded", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("The names of the sbt configurations to exclude.", "This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.SBT, DetectGroup.SOURCE_SCAN)
-            .setCategory(DetectCategory.Advanced);
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(SBT_REPORT_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT, DetectMajorVersion.NINE);
 
     public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_SBT_INCLUDED_CONFIGURATIONS =
         new DetectProperty<>(new CaseSensitiveStringListProperty("detect.sbt.included.configurations"))
             .setInfo("SBT Configurations Included", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("The names of the sbt configurations to include.", "This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.SBT, DetectGroup.SOURCE_SCAN)
-            .setCategory(DetectCategory.Advanced);
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(SBT_REPORT_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT, DetectMajorVersion.NINE);
 
     public static final DetectProperty<IntegerProperty> DETECT_SBT_REPORT_DEPTH =
         new DetectProperty<>(new IntegerProperty("detect.sbt.report.search.depth", 3))
             .setInfo("SBT Report Search Depth", DetectPropertyFromVersion.VERSION_4_3_0)
             .setHelp("Depth the sbt detector will use to search for report files.")
-            .setGroups(DetectGroup.SBT, DetectGroup.SOURCE_SCAN);
+            .setGroups(DetectGroup.SBT, DetectGroup.SOURCE_SCAN)
+            .setDeprecated(SBT_REPORT_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT, DetectMajorVersion.NINE);
 
     public static final DetectProperty<NullablePathProperty> DETECT_SCAN_OUTPUT_PATH =
         new DetectProperty<>(new NullablePathProperty("detect.scan.output.path"))
@@ -1875,6 +1876,21 @@ public class DetectProperties {
             .setHelp("The version of BDIO files to generate.", "If set to false, BDIO version 1 will be generated. If set to true, BDIO version 2 will be generated.")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .setDeprecated(BDIO1_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT, DetectMajorVersion.NINE);
+
+    @Deprecated
+    public static final DetectProperty<NullableStringProperty> DETECT_GRADLE_INSPECTOR_VERSION =
+        new DetectProperty<>(new NullableStringProperty("detect.gradle.inspector.version"))
+            .setInfo("Gradle Inspector Version", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp(
+                "The version of the Gradle Inspector that Detect should use. By default, Detect will try to automatically determine the correct Gradle Inspector version.",
+                "The Detect Gradle detector uses a separate program, the Gradle Inspector, to discover dependencies from Gradle projects. Detect automatically downloads the Gradle Inspector as needed. Use the property to use a specific version of the Gradle Inspector."
+            )
+            .setGroups(DetectGroup.GRADLE, DetectGroup.GLOBAL)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(
+                "This property is being removed because it no longer provides functionality. The gradle inspector library is no longer used to gather Gradle dependencies. The init script generated by Detect has all the necessary functionality.",
+                DetectMajorVersion.EIGHT,
+                DetectMajorVersion.NINE);
 
     // Accessor to get all properties
     public static Properties allProperties() throws IllegalAccessException {
