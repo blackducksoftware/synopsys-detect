@@ -53,26 +53,28 @@ public class OperationFactory {
     }
 
     public final PolarisOperation createPolarisOperation() {
-        return new PolarisOperation(runContext.getProductRunData(), runContext.getDetectConfiguration(), runContext.getDirectoryManager(), runContext.getEventSystem());
+        return new PolarisOperation(runContext.getProductRunData(), runContext.getDetectConfiguration(), runContext.getDirectoryManager(), runContext.getEventSystem(), runContext.getStatusEventPublisher());
     }
 
     public final DockerOperation createDockerOperation() {
-        return new DockerOperation(runContext.getDirectoryManager(), runContext.getEventSystem(), runContext.getDetectDetectableFactory(), runContext.getExtractionEnvironmentProvider(),
+        return new DockerOperation(runContext.getDirectoryManager(), runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getDetectDetectableFactory(), runContext.getExtractionEnvironmentProvider(),
             runContext.getCodeLocationConverter());
     }
 
     public final BazelOperation createBazelOperation() {
-        return new BazelOperation(runContext.getDirectoryManager(), runContext.getEventSystem(), runContext.getDetectDetectableFactory(), runOptions.getDetectToolFilter(), runContext.getExtractionEnvironmentProvider(),
+        return new BazelOperation(runContext.getDirectoryManager(), runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getDetectDetectableFactory(), runOptions.getDetectToolFilter(),
+            runContext.getExtractionEnvironmentProvider(),
             runContext.getCodeLocationConverter());
     }
 
     public final DetectorOperation createDetectorOperation() {
         return new DetectorOperation(runContext.getDetectConfiguration(), runContext.getDetectConfigurationFactory(), runContext.getDirectoryManager(), runContext.getEventSystem(), runContext.getDetectDetectableFactory(),
-            runContext.getExtractionEnvironmentProvider(), runContext.getCodeLocationConverter());
+            runContext.getExtractionEnvironmentProvider(), runContext.getCodeLocationConverter(), runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getDetectorEventPublisher());
     }
 
     public final RapidScanOperation createRapidScanOperation() {
-        return new RapidScanOperation(runContext.getHtmlEscapeDisabledGson(), runContext.getEventSystem(), runContext.getDirectoryManager(), runContext.getDetectConfigurationFactory().findTimeoutInSeconds());
+        return new RapidScanOperation(runContext.getHtmlEscapeDisabledGson(), runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getDirectoryManager(),
+            runContext.getDetectConfigurationFactory().findTimeoutInSeconds());
     }
 
     public final AggregateOptionsOperation createAggregateOptionsOperation() {
@@ -82,22 +84,22 @@ public class OperationFactory {
     public final BdioFileGenerationOperation createBdioFileGenerationOperation() {
         BdioManager bdioManager = new BdioManager(runContext.getDetectInfo(), new SimpleBdioFactory(), new ExternalIdFactory(), new Bdio2Factory(), new IntegrationEscapeUtil(), runContext.getCodeLocationNameManager(),
             runContext.getBdioCodeLocationCreator(), runContext.getDirectoryManager());
-        return new BdioFileGenerationOperation(runOptions, runContext.getDetectConfigurationFactory().createBdioOptions(), bdioManager, runContext.getEventSystem());
+        return new BdioFileGenerationOperation(runOptions, runContext.getDetectConfigurationFactory().createBdioOptions(), bdioManager, runContext.getCodeLocationEventPublisher());
     }
 
     public final BinaryScanOperation createBinaryScanOperation() {
         BlackDuckRunData blackDuckRunData = runContext.getProductRunData().getBlackDuckRunData();
         BinaryScanOptions binaryScanOptions = runContext.getDetectConfigurationFactory().createBinaryScanOptions();
 
-        return new BinaryScanOperation(blackDuckRunData, binaryScanOptions, runContext.getEventSystem(), runContext.getDirectoryManager(), runContext.getCodeLocationNameManager());
+        return new BinaryScanOperation(blackDuckRunData, binaryScanOptions, runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getDirectoryManager(), runContext.getCodeLocationNameManager());
     }
 
     public final BdioUploadOperation createBdioUploadOperation() {
-        return new BdioUploadOperation();
+        return new BdioUploadOperation(runContext.getStatusEventPublisher());
     }
 
     public final CodeLocationResultCalculationOperation createCodeLocationResultCalculationOperation() {
-        return new CodeLocationResultCalculationOperation(new CodeLocationResultCalculator(), runContext.getEventSystem());
+        return new CodeLocationResultCalculationOperation(new CodeLocationResultCalculator(), runContext.getCodeLocationEventPublisher());
     }
 
     public final FullScanPostProcessingOperation createFullScanPostProcessingOperation() {
@@ -105,7 +107,7 @@ public class OperationFactory {
         BlackDuckPostOptions blackDuckPostOptions = detectConfigurationFactory.createBlackDuckPostOptions();
         Long timeoutInSeconds = detectConfigurationFactory.findTimeoutInSeconds();
 
-        return new FullScanPostProcessingOperation(runOptions.getDetectToolFilter(), blackDuckPostOptions, runContext.getEventSystem(), timeoutInSeconds);
+        return new FullScanPostProcessingOperation(runOptions.getDetectToolFilter(), blackDuckPostOptions, runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), timeoutInSeconds);
     }
 
     public final ImpactAnalysisOperation createImpactAnalysisOperation() {
@@ -119,9 +121,10 @@ public class OperationFactory {
             ImpactAnalysisUploadService impactAnalysisUploadService = new ImpactAnalysisUploadService(impactAnalysisBatchRunner, blackDuckServicesFactory.createCodeLocationCreationService());
             blackDuckImpactAnalysisTool = BlackDuckImpactAnalysisTool
                                               .ONLINE(runContext.getDirectoryManager(), runContext.getCodeLocationNameManager(), impactAnalysisOptions, blackDuckServicesFactory.getBlackDuckApiClient(), impactAnalysisUploadService,
-                                                  blackDuckServicesFactory.createCodeLocationService(), runContext.getEventSystem());
+                                                  blackDuckServicesFactory.createCodeLocationService(), runContext.getStatusEventPublisher(), runContext.getExitCodePublisher());
         } else {
-            blackDuckImpactAnalysisTool = BlackDuckImpactAnalysisTool.OFFLINE(runContext.getDirectoryManager(), runContext.getCodeLocationNameManager(), impactAnalysisOptions, runContext.getEventSystem());
+            blackDuckImpactAnalysisTool = BlackDuckImpactAnalysisTool
+                                              .OFFLINE(runContext.getDirectoryManager(), runContext.getCodeLocationNameManager(), impactAnalysisOptions, runContext.getStatusEventPublisher(), runContext.getExitCodePublisher());
         }
         return new ImpactAnalysisOperation(blackDuckImpactAnalysisTool);
     }
@@ -130,7 +133,7 @@ public class OperationFactory {
         DetectProjectServiceOptions options = runContext.getDetectConfigurationFactory().createDetectProjectServiceOptions();
         DetectCustomFieldService detectCustomFieldService = new DetectCustomFieldService();
 
-        return new ProjectCreationOperation(runOptions, options, detectCustomFieldService);
+        return new ProjectCreationOperation(runOptions, options, detectCustomFieldService, runContext.getStatusEventPublisher());
     }
 
     public final ProjectDecisionOperation createProjectDecisionOperation() {

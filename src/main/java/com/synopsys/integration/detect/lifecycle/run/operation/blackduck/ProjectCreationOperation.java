@@ -18,6 +18,7 @@ import com.synopsys.integration.detect.workflow.blackduck.DetectCodeLocationUnma
 import com.synopsys.integration.detect.workflow.blackduck.DetectCustomFieldService;
 import com.synopsys.integration.detect.workflow.blackduck.DetectProjectService;
 import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOptions;
+import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
@@ -26,19 +27,21 @@ public class ProjectCreationOperation {
     private final RunOptions runOptions;
     private final DetectProjectServiceOptions detectProjectServiceOptions;
     private final DetectCustomFieldService detectCustomFieldService;
+    private final StatusEventPublisher statusEventPublisher;
 
     public ProjectCreationOperation(RunOptions runOptions, DetectProjectServiceOptions detectProjectServiceOptions,
-        DetectCustomFieldService detectCustomFieldService) {
+        DetectCustomFieldService detectCustomFieldService, StatusEventPublisher statusEventPublisher) {
         this.runOptions = runOptions;
         this.detectProjectServiceOptions = detectProjectServiceOptions;
         this.detectCustomFieldService = detectCustomFieldService;
+        this.statusEventPublisher = statusEventPublisher;
     }
 
     public ProjectVersionWrapper execute(BlackDuckServicesFactory blackDuckServicesFactory, NameVersion projectNameVersion) throws DetectUserFriendlyException, IntegrationException {
         DetectProjectService detectProjectService = new DetectProjectService(blackDuckServicesFactory.getBlackDuckApiClient(), blackDuckServicesFactory.createProjectService(),
             blackDuckServicesFactory.createProjectBomService(), blackDuckServicesFactory.createProjectUsersService(), blackDuckServicesFactory.createTagService(), detectProjectServiceOptions,
-            blackDuckServicesFactory.createProjectMappingService(), detectCustomFieldService);
-        DetectCodeLocationUnmapService detectCodeLocationUnmapService = new DetectCodeLocationUnmapService(blackDuckServicesFactory.getBlackDuckApiClient(), blackDuckServicesFactory.createCodeLocationService());
+            blackDuckServicesFactory.createProjectMappingService(), detectCustomFieldService, statusEventPublisher);
+        DetectCodeLocationUnmapService detectCodeLocationUnmapService = new DetectCodeLocationUnmapService(blackDuckServicesFactory.getBlackDuckApiClient(), blackDuckServicesFactory.createCodeLocationService(), statusEventPublisher);
 
         ProjectVersionWrapper projectVersionWrapper = detectProjectService.createOrUpdateBlackDuckProject(projectNameVersion);
         if (null != projectVersionWrapper && runOptions.shouldUnmapCodeLocations()) {

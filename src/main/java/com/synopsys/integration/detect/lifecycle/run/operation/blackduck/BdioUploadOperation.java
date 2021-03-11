@@ -23,10 +23,16 @@ import com.synopsys.integration.detect.configuration.DetectUserFriendlyException
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.blackduck.DetectBdioUploadService;
+import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class BdioUploadOperation {
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final StatusEventPublisher statusEventPublisher;
+
+    public BdioUploadOperation(StatusEventPublisher statusEventPublisher) {
+        this.statusEventPublisher = statusEventPublisher;
+    }
 
     public Optional<CodeLocationCreationData<UploadBatchOutput>> execute(BlackDuckRunData blackDuckRunData, BdioResult bdioResult) throws DetectUserFriendlyException, IntegrationException {
         Optional<CodeLocationCreationData<UploadBatchOutput>> result = Optional.empty();
@@ -38,7 +44,7 @@ public class BdioUploadOperation {
                 BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
                 BdioUploadService bdioUploadService = blackDuckServicesFactory.createBdioUploadService();
                 Bdio2UploadService bdio2UploadService = blackDuckServicesFactory.createBdio2UploadService();
-                DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService();
+                DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService(statusEventPublisher);
                 logger.info(String.format("Created %d BDIO files.", uploadTargetList.size()));
                 logger.debug("Uploading BDIO files.");
                 result = Optional.of(detectBdioUploadService.uploadBdioFiles(bdioResult, bdioUploadService,

@@ -18,6 +18,9 @@ import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.dataservice.CodeLocationService;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.workflow.status.Status;
+import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
+import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class DetectCodeLocationUnmapService {
@@ -25,21 +28,24 @@ public class DetectCodeLocationUnmapService {
 
     private final BlackDuckApiClient blackDuckService;
     private final CodeLocationService codeLocationService;
+    private final StatusEventPublisher statusEventPublisher;
 
-    public DetectCodeLocationUnmapService(final BlackDuckApiClient blackDuckService, final CodeLocationService codeLocationService) {
+    public DetectCodeLocationUnmapService(BlackDuckApiClient blackDuckService, CodeLocationService codeLocationService, StatusEventPublisher statusEventPublisher) {
         this.blackDuckService = blackDuckService;
         this.codeLocationService = codeLocationService;
+        this.statusEventPublisher = statusEventPublisher;
     }
 
-    public void unmapCodeLocations(final ProjectVersionView projectVersionView) throws DetectUserFriendlyException {
+    public void unmapCodeLocations(ProjectVersionView projectVersionView) throws DetectUserFriendlyException {
         try {
-            final List<CodeLocationView> codeLocationViews = blackDuckService.getAllResponses(projectVersionView, ProjectVersionView.CODELOCATIONS_LINK_RESPONSE);
+            List<CodeLocationView> codeLocationViews = blackDuckService.getAllResponses(projectVersionView, ProjectVersionView.CODELOCATIONS_LINK_RESPONSE);
 
-            for (final CodeLocationView codeLocationView : codeLocationViews) {
+            for (CodeLocationView codeLocationView : codeLocationViews) {
                 codeLocationService.unmapCodeLocation(codeLocationView);
             }
             logger.info("Successfully unmapped (" + codeLocationViews.size() + ") code locations.");
-        } catch (final IntegrationException e) {
+        } catch (IntegrationException e) {
+            statusEventPublisher.publishStatusSummary(new Status("BLACK_DUCK_CODE_LOCATION_UNMAP", StatusType.FAILURE));
             throw new DetectUserFriendlyException(String.format("There was a problem unmapping Code Locations: %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }
 

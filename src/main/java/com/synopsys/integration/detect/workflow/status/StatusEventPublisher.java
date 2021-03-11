@@ -10,7 +10,7 @@ package com.synopsys.integration.detect.workflow.status;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 
 public interface StatusEventPublisher {
-    void publisStatusSummary(Status status);
+    void publishStatusSummary(Status status);
 
     void publishIssue(DetectIssue issue);
 

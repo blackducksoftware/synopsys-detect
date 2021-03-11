@@ -13,26 +13,25 @@ import com.synopsys.integration.detect.lifecycle.run.operation.input.BdioInput;
 import com.synopsys.integration.detect.workflow.bdio.BdioManager;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
-import com.synopsys.integration.detect.workflow.event.Event;
-import com.synopsys.integration.detect.workflow.event.EventSystem;
+import com.synopsys.integration.detect.workflow.codelocation.CodeLocationEventPublisher;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class BdioFileGenerationOperation {
     private final RunOptions runOptions;
     private final BdioOptions bdioOptions;
     private final BdioManager bdioManager;
-    private final EventSystem eventSystem;
+    private final CodeLocationEventPublisher codeLocationEventPublisher;
 
-    public BdioFileGenerationOperation(RunOptions runOptions, BdioOptions bdioOptions, BdioManager bdioManager, EventSystem eventSystem) {
+    public BdioFileGenerationOperation(RunOptions runOptions, BdioOptions bdioOptions, BdioManager bdioManager, CodeLocationEventPublisher codeLocationEventPublisher) {
         this.runOptions = runOptions;
         this.bdioOptions = bdioOptions;
         this.bdioManager = bdioManager;
-        this.eventSystem = eventSystem;
+        this.codeLocationEventPublisher = codeLocationEventPublisher;
     }
 
     public BdioResult execute(BdioInput bdioInput) throws DetectUserFriendlyException, IntegrationException {
         BdioResult bdioResult = bdioManager.createBdioFiles(bdioOptions, bdioInput.getAggregateOptions(), bdioInput.getNameVersion(), bdioInput.getCodeLocations(), runOptions.shouldUseBdio2());
-        eventSystem.publishEvent(Event.DetectCodeLocationNamesCalculated, bdioResult.getCodeLocationNamesResult());
+        codeLocationEventPublisher.publishDetectCodeLocationNamesCalculated(bdioResult.getCodeLocationNamesResult());
         return bdioResult;
     }
 }

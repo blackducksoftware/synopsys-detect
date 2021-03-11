@@ -26,23 +26,28 @@ import com.synopsys.integration.blackduck.api.manual.view.PolicyViolationLicense
 import com.synopsys.integration.blackduck.api.manual.view.PolicyViolationVulnerabilityView;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
-import com.synopsys.integration.detect.workflow.event.Event;
-import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DetectFileUtils;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
+import com.synopsys.integration.detect.workflow.status.Status;
+import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
+import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 
 public class BlackDuckRapidModePostActions {
+    private static final String STATUS_DESCRIPTION_KEY = "BLACK_DUCK_RAPID_SCAN_RESULTS";
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Gson gson;
-    private final EventSystem eventSystem;
+    private final StatusEventPublisher statusEventPublisher;
+    private final ExitCodePublisher exitCodePublisher;
     private final DirectoryManager directoryManager;
 
-    public BlackDuckRapidModePostActions(Gson gson, EventSystem eventSystem, DirectoryManager directoryManager) {
+    public BlackDuckRapidModePostActions(Gson gson, StatusEventPublisher statusEventPublisher, ExitCodePublisher exitCodePublisher, DirectoryManager directoryManager) {
         this.gson = gson;
-        this.eventSystem = eventSystem;
+        this.statusEventPublisher = statusEventPublisher;
+        this.exitCodePublisher = exitCodePublisher;
         this.directoryManager = directoryManager;
     }
 
@@ -86,7 +91,7 @@ public class BlackDuckRapidModePostActions {
         }
 
         if (!violatedPolicyComponentNames.isEmpty()) {
-            eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_POLICY_VIOLATION, createViolationMessage(violatedPolicyComponentNames)));
+            exitCodePublisher.publishExitCode(new ExitCodeRequest(ExitCodeType.FAILURE_POLICY_VIOLATION, createViolationMessage(violatedPolicyComponentNames)));
         }
     }
 
@@ -109,6 +114,7 @@ public class BlackDuckRapidModePostActions {
         try {
             DetectFileUtils.writeToFile(jsonScanFile, jsonString);
         } catch (IOException ex) {
+            statusEventPublisher.publishStatusSummary(new Status(STATUS_DESCRIPTION_KEY, StatusType.FAILURE));
             throw new DetectUserFriendlyException("Cannot create rapid scan output file", ex, ExitCodeType.FAILURE_UNKNOWN_ERROR);
         }
     }

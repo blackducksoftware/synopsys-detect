@@ -19,7 +19,7 @@ public class DetectStatusEventPublisher implements StatusEventPublisher {
     }
 
     @Override
-    public void publisStatusSummary(Status status) {
+    public void publishStatusSummary(Status status) {
         eventSystem.publishEvent(Event.StatusSummary, status);
     }
 

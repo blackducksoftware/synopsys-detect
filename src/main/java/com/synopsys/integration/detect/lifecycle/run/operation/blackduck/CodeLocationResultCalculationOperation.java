@@ -11,22 +11,21 @@ import com.synopsys.integration.detect.configuration.DetectUserFriendlyException
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationResultCalculator;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationResults;
-import com.synopsys.integration.detect.workflow.event.Event;
-import com.synopsys.integration.detect.workflow.event.EventSystem;
+import com.synopsys.integration.detect.workflow.codelocation.CodeLocationEventPublisher;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class CodeLocationResultCalculationOperation {
     private final CodeLocationResultCalculator codeLocationResultCalculator;
-    private final EventSystem eventSystem;
+    private final CodeLocationEventPublisher codeLocationEventPublisher;
 
-    public CodeLocationResultCalculationOperation(CodeLocationResultCalculator codeLocationResultCalculator, EventSystem eventSystem) {
+    public CodeLocationResultCalculationOperation(CodeLocationResultCalculator codeLocationResultCalculator, CodeLocationEventPublisher codeLocationEventPublisher) {
         this.codeLocationResultCalculator = codeLocationResultCalculator;
-        this.eventSystem = eventSystem;
+        this.codeLocationEventPublisher = codeLocationEventPublisher;
     }
 
     public CodeLocationResults execute(CodeLocationAccumulator codeLocationAccumulator) throws DetectUserFriendlyException, IntegrationException {
         CodeLocationResults codeLocationResults = codeLocationResultCalculator.calculateCodeLocationResults(codeLocationAccumulator);
-        eventSystem.publishEvent(Event.CodeLocationsCompleted, codeLocationResults.getAllCodeLocationNames());
+        codeLocationEventPublisher.publishCodeLocationsCompleted(codeLocationResults.getAllCodeLocationNames());
         return codeLocationResults;
     }
 }

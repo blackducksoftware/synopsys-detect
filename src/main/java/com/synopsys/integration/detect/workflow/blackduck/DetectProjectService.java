@@ -35,11 +35,15 @@ import com.synopsys.integration.blackduck.service.model.ProjectSyncModel;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.workflow.status.Status;
+import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
+import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.util.NameVersion;
 
 public class DetectProjectService {
+    private static final String STATUS_DESCRIPTION_KEY = "BLACK_DUCK_PROJECT_UPDATE";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final BlackDuckApiClient blackDuckApiClient;
@@ -50,9 +54,11 @@ public class DetectProjectService {
     private final DetectProjectServiceOptions detectProjectServiceOptions;
     private final ProjectMappingService projectMappingService;
     private final DetectCustomFieldService detectCustomFieldService;
+    private final StatusEventPublisher statusEventPublisher;
 
-    public DetectProjectService(BlackDuckApiClient blackDuckApiClient, ProjectService projectService, ProjectBomService projectBomService, ProjectUsersService projectUsersService, TagService tagService, DetectProjectServiceOptions detectProjectServiceOptions, ProjectMappingService projectMappingService,
-        DetectCustomFieldService detectCustomFieldService) {
+    public DetectProjectService(BlackDuckApiClient blackDuckApiClient, ProjectService projectService, ProjectBomService projectBomService, ProjectUsersService projectUsersService, TagService tagService,
+        DetectProjectServiceOptions detectProjectServiceOptions, ProjectMappingService projectMappingService,
+        DetectCustomFieldService detectCustomFieldService, StatusEventPublisher statusEventPublisher) {
         this.blackDuckApiClient = blackDuckApiClient;
         this.projectService = projectService;
         this.projectBomService = projectBomService;
@@ -61,6 +67,7 @@ public class DetectProjectService {
         this.detectProjectServiceOptions = detectProjectServiceOptions;
         this.projectMappingService = projectMappingService;
         this.detectCustomFieldService = detectCustomFieldService;
+        this.statusEventPublisher = statusEventPublisher;
     }
 
     public ProjectVersionWrapper createOrUpdateBlackDuckProject(NameVersion projectNameVersion) throws IntegrationException, DetectUserFriendlyException {
@@ -99,6 +106,7 @@ public class DetectProjectService {
             String projectName = projectVersionWrapper.getProjectView().getName();
             String projectVersionName = projectVersionWrapper.getProjectVersionView().getVersionName();
             if (StringUtils.isBlank(parentProjectName) || StringUtils.isBlank(parentVersionName)) {
+                statusEventPublisher.publishStatusSummary(new Status(STATUS_DESCRIPTION_KEY, StatusType.FAILURE));
                 throw new DetectUserFriendlyException("Both the parent project name and the parent project version name must be specified if either is specified.", ExitCodeType.FAILURE_CONFIGURATION);
             }
             try {
@@ -121,6 +129,7 @@ public class DetectProjectService {
                     throw new DetectUserFriendlyException("Unable to find parent project or parent project version on the server.", ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
                 }
             } catch (IntegrationException e) {
+                statusEventPublisher.publishStatusSummary(new Status(STATUS_DESCRIPTION_KEY, StatusType.FAILURE));
                 throw new DetectUserFriendlyException("Unable to add project to parent.", e, ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
             }
         }
@@ -225,6 +234,7 @@ public class DetectProjectService {
                 return Optional.empty();
             }
         } catch (IntegrationException e) {
+            statusEventPublisher.publishStatusSummary(new Status(STATUS_DESCRIPTION_KEY, StatusType.FAILURE));
             throw new DetectUserFriendlyException(String.format("Error finding project/version (%s/%s) to clone, or getting its release url.", cloneProjectName, cloneProjectVersionName), e, ExitCodeType.FAILURE_CONFIGURATION);
         }
     }
@@ -247,6 +257,7 @@ public class DetectProjectService {
                 return Optional.empty();
             }
         } catch (IntegrationException e) {
+            statusEventPublisher.publishStatusSummary(new Status(STATUS_DESCRIPTION_KEY, StatusType.FAILURE));
             throw new DetectUserFriendlyException("Error finding latest version to clone, or getting its release url.", e, ExitCodeType.FAILURE_CONFIGURATION);
         }
     }
@@ -261,6 +272,7 @@ public class DetectProjectService {
             logger.debug("Populating project 'Application ID'");
             projectMappingService.populateApplicationId(projectView, applicationId);
         } catch (IntegrationException e) {
+            statusEventPublisher.publishStatusSummary(new Status(STATUS_DESCRIPTION_KEY, StatusType.FAILURE));
             throw new DetectUserFriendlyException(String.format("Unable to set Application ID for project: %s", projectView.getName()), e, ExitCodeType.FAILURE_CONFIGURATION);
         }
     }

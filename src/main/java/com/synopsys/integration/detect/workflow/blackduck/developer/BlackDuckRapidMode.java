@@ -22,16 +22,22 @@ import com.synopsys.integration.detect.configuration.DetectUserFriendlyException
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
+import com.synopsys.integration.detect.workflow.status.Status;
+import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
+import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.rest.exception.IntegrationRestException;
 
 public class BlackDuckRapidMode {
     public static final int DEFAULT_WAIT_INTERVAL_IN_SECONDS = 1;
+    private static final String STATUS_DESCRIPTION_KEY = "BLACK_DUCK_RAPID_SCAN";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private BlackDuckRunData blackDuckRunData;
-    private RapidScanService rapidScanService;
-    private Long timeoutInSeconds;
+    private final StatusEventPublisher statusEventPublisher;
+    private final BlackDuckRunData blackDuckRunData;
+    private final RapidScanService rapidScanService;
+    private final Long timeoutInSeconds;
 
-    public BlackDuckRapidMode(BlackDuckRunData blackDuckRunData, RapidScanService rapidScanService, Long timeoutInSeconds) {
+    public BlackDuckRapidMode(StatusEventPublisher statusEventPublisher, BlackDuckRunData blackDuckRunData, RapidScanService rapidScanService, Long timeoutInSeconds) {
+        this.statusEventPublisher = statusEventPublisher;
         this.blackDuckRunData = blackDuckRunData;
         this.rapidScanService = rapidScanService;
         this.timeoutInSeconds = timeoutInSeconds;
@@ -51,12 +57,16 @@ public class BlackDuckRapidMode {
             }
             logger.debug("Rapid scan result count: {}", results.size());
         } catch (IllegalArgumentException e) {
+            statusEventPublisher.publishStatusSummary(new Status(STATUS_DESCRIPTION_KEY, StatusType.FAILURE));
             throw new DetectUserFriendlyException(String.format("Your Black Duck configuration is not valid: %s", e.getMessage()), e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
         } catch (IntegrationRestException e) {
+            statusEventPublisher.publishStatusSummary(new Status(STATUS_DESCRIPTION_KEY, StatusType.FAILURE));
             throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
         } catch (BlackDuckIntegrationException e) {
+            statusEventPublisher.publishStatusSummary(new Status(STATUS_DESCRIPTION_KEY, StatusType.FAILURE));
             throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_TIMEOUT);
         } catch (Exception e) {
+            statusEventPublisher.publishStatusSummary(new Status(STATUS_DESCRIPTION_KEY, StatusType.FAILURE));
             throw new DetectUserFriendlyException(String.format("There was a problem: %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }
         return results;

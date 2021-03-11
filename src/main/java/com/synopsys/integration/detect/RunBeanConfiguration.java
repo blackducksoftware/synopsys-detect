@@ -32,7 +32,9 @@ import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
 import com.synopsys.integration.detect.lifecycle.shutdown.DefaultExitCodePublisher;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
+import com.synopsys.integration.detect.tool.detector.DefaultDetectorEventPublisher;
 import com.synopsys.integration.detect.tool.detector.DetectDetectableFactory;
+import com.synopsys.integration.detect.tool.detector.DetectorEventPublisher;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
 import com.synopsys.integration.detect.tool.detector.executable.DirectoryExecutableFinder;
@@ -58,10 +60,12 @@ import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detect.workflow.airgap.AirGapOptions;
 import com.synopsys.integration.detect.workflow.airgap.AirGapPathFinder;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationCreator;
+import com.synopsys.integration.detect.workflow.codelocation.CodeLocationEventPublisher;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameGenerator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
+import com.synopsys.integration.detect.workflow.project.ProjectEventPublisher;
 import com.synopsys.integration.detect.workflow.status.DetectStatusEventPublisher;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
@@ -171,6 +175,33 @@ public class RunBeanConfiguration {
         return new DetectExecutableResolver(directoryExecutableFinder(), systemExecutableFinder(), detectConfigurationFactory.createDetectExecutableOptions());
     }
 
+    //#region EventPublishers
+    @Bean
+    public StatusEventPublisher statusEventPublisher() {
+        return new DetectStatusEventPublisher(eventSystem);
+    }
+
+    @Bean
+    public ExitCodePublisher exitCodePublisher() {
+        return new DefaultExitCodePublisher(eventSystem);
+    }
+
+    @Bean
+    public DetectorEventPublisher detectorEventPublisher() {
+        return new DefaultDetectorEventPublisher(eventSystem);
+    }
+
+    @Bean
+    public CodeLocationEventPublisher codeLocationEventPublisher() {
+        return new CodeLocationEventPublisher(eventSystem);
+    }
+
+    @Bean
+    public ProjectEventPublisher projectEventPublisher() {
+        return new ProjectEventPublisher(eventSystem);
+    }
+    //#endregion EventPublishers
+
     //#region Detectables
     @Bean
     public DockerInspectorResolver dockerInspectorResolver() throws DetectUserFriendlyException {
@@ -220,16 +251,6 @@ public class RunBeanConfiguration {
     @Bean()
     public DetectDetectableFactory detectDetectableFactory(NugetInspectorResolver nugetInspectorResolver) throws DetectUserFriendlyException {
         return new DetectDetectableFactory(detectableFactory(), detectableOptionFactory, detectExecutableResolver(), dockerInspectorResolver(), gradleInspectorResolver(), nugetInspectorResolver, pipInspectorResolver());
-    }
-
-    @Bean
-    public StatusEventPublisher statusEventPublisher() {
-        return new DetectStatusEventPublisher(eventSystem);
-    }
-
-    @Bean
-    public ExitCodePublisher exitCodePublisher() {
-        return new DefaultExitCodePublisher(eventSystem);
     }
 
     //#endregion Detectables

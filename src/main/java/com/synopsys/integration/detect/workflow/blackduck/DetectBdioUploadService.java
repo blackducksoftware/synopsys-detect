@@ -21,10 +21,18 @@ import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
+import com.synopsys.integration.detect.workflow.status.Status;
+import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
+import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class DetectBdioUploadService {
     private final Logger logger = LoggerFactory.getLogger(DetectBdioUploadService.class);
+    private final StatusEventPublisher statusEventPublisher;
+
+    public DetectBdioUploadService(StatusEventPublisher statusEventPublisher) {
+        this.statusEventPublisher = statusEventPublisher;
+    }
 
     public CodeLocationCreationData<UploadBatchOutput> uploadBdioFiles(BdioResult bdioResult, BdioUploadService bdioUploadService, Bdio2UploadService bdio2UploadService) throws DetectUserFriendlyException, IntegrationException {
         UploadBatch uploadBatch = new UploadBatch();
@@ -44,6 +52,7 @@ public class DetectBdioUploadService {
             if (uploadOutput.getResult() == Result.FAILURE) {
                 logger.error(String.format("Failed to upload code location: %s", uploadOutput.getCodeLocationName()));
                 logger.error(String.format("Reason: %s", uploadOutput.getErrorMessage().orElse("Unknown reason.")));
+                statusEventPublisher.publishStatusSummary(new Status("BLACK_DUCK_BDIO_UPLOAD", StatusType.FAILURE));
                 throw new DetectUserFriendlyException("An error occurred uploading a bdio file.", uploadOutput.getException().orElse(null), ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
             }
         }

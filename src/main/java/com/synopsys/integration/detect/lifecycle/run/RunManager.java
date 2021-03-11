@@ -38,9 +38,8 @@ import com.synopsys.integration.detect.workflow.bdio.AggregateOptions;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationResults;
-import com.synopsys.integration.detect.workflow.event.Event;
-import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
+import com.synopsys.integration.detect.workflow.project.ProjectEventPublisher;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
@@ -54,7 +53,7 @@ public class RunManager {
         OperationFactory operationFactory = new OperationFactory(runContext);
         RunOptions runOptions = runContext.createRunOptions();
         DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
-        EventSystem eventSystem = runContext.getEventSystem();
+        ProjectEventPublisher projectEventPublisher = runContext.getProjectEventPublisher();
 
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (runContext.getProductRunData().shouldUsePolarisProduct()) {
@@ -63,7 +62,7 @@ public class RunManager {
             logger.info("Polaris tools will not be run.");
         }
 
-        UniversalToolsResult universalToolsResult = runUniversalProjectTools(operationFactory, runOptions, detectToolFilter, eventSystem, runResult);
+        UniversalToolsResult universalToolsResult = runUniversalProjectTools(operationFactory, runOptions, detectToolFilter, projectEventPublisher, runResult);
 
         if (productRunData.shouldUseBlackDuckProduct()) {
             AggregateOptions aggregateOptions = operationFactory.createAggregateOptionsOperation().execute(universalToolsResult.anyFailed());
@@ -83,7 +82,7 @@ public class RunManager {
         OperationFactory operationFactory,
         RunOptions runOptions,
         DetectToolFilter detectToolFilter,
-        EventSystem eventSystem,
+        ProjectEventPublisher projectEventPublisher,
         RunResult runResult
     ) throws DetectUserFriendlyException, IntegrationException {
         boolean anythingFailed = false;
@@ -91,7 +90,7 @@ public class RunManager {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (!runOptions.shouldPerformRapidModeScan() && detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
             logger.info("Will include the Docker tool.");
-            DetectableToolResult detectableToolResult = operationFactory.createDockerOperation().execute(runResult);
+            DetectableToolResult detectableToolResult = operationFactory.createDockerOperation().execute();
             runResult.addDetectableToolResult(detectableToolResult);
             anythingFailed = anythingFailed || detectableToolResult.isFailure();
             logger.info("Docker actions finished.");
@@ -131,7 +130,7 @@ public class RunManager {
         logger.info(String.format("Project name: %s", projectNameVersion.getName()));
         logger.info(String.format("Project version: %s", projectNameVersion.getVersion()));
 
-        eventSystem.publishEvent(Event.ProjectNameVersionChosen, projectNameVersion);
+        projectEventPublisher.publishProjectNameVersionChosen(projectNameVersion);
 
         if (anythingFailed) {
             return UniversalToolsResult.failure(projectNameVersion);
