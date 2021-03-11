@@ -29,7 +29,9 @@ import com.synopsys.integration.detect.lifecycle.run.operation.input.FullScanPos
 import com.synopsys.integration.detect.lifecycle.run.operation.input.ImpactAnalysisInput;
 import com.synopsys.integration.detect.lifecycle.run.operation.input.RapidScanInput;
 import com.synopsys.integration.detect.lifecycle.run.operation.input.SignatureScanInput;
+import com.synopsys.integration.detect.tool.DetectableToolResult;
 import com.synopsys.integration.detect.tool.UniversalToolsResult;
+import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
 import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisToolResult;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.AggregateOptions;
@@ -89,7 +91,9 @@ public class RunManager {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (!runOptions.shouldPerformRapidModeScan() && detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
             logger.info("Will include the Docker tool.");
-            anythingFailed = anythingFailed || operationFactory.createDockerOperation().execute(runResult);
+            DetectableToolResult detectableToolResult = operationFactory.createDockerOperation().execute(runResult);
+            runResult.addDetectableToolResult(detectableToolResult);
+            anythingFailed = anythingFailed || detectableToolResult.isFailure();
             logger.info("Docker actions finished.");
         } else {
             logger.info("Docker tool will not be run.");
@@ -98,16 +102,20 @@ public class RunManager {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (!runOptions.shouldPerformRapidModeScan() && detectToolFilter.shouldInclude(DetectTool.BAZEL)) {
             logger.info("Will include the Bazel tool.");
-            anythingFailed = anythingFailed || operationFactory.createBazelOperation().execute(runResult);
+            DetectableToolResult detectableToolResult = operationFactory.createBazelOperation().execute();
+            runResult.addDetectableToolResult(detectableToolResult);
+            anythingFailed = anythingFailed || detectableToolResult.isFailure();
             logger.info("Bazel actions finished.");
         } else {
             logger.info("Bazel tool will not be run.");
         }
-
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.DETECTOR)) {
             logger.info("Will include the detector tool.");
-            anythingFailed = anythingFailed || operationFactory.createDetectorOperation().execute(runResult);
+            DetectorToolResult detectorToolResult = operationFactory.createDetectorOperation().execute();
+            detectorToolResult.getBomToolProjectNameVersion().ifPresent(it -> runResult.addToolNameVersion(DetectTool.DETECTOR, new NameVersion(it.getName(), it.getVersion())));
+            runResult.addDetectCodeLocations(detectorToolResult.getBomToolCodeLocations());
+            anythingFailed = anythingFailed || detectorToolResult.anyDetectorsFailed();
             logger.info("Detector actions finished.");
         } else {
             logger.info("Detector tool will not be run.");

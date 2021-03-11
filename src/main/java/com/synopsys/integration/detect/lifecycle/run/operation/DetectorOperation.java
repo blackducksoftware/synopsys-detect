@@ -14,9 +14,7 @@ import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
-import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
-import com.synopsys.integration.detect.lifecycle.run.RunResult;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
 import com.synopsys.integration.detect.tool.detector.DetectDetectableFactory;
@@ -34,7 +32,6 @@ import com.synopsys.integration.detector.finder.DetectorFinder;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.util.NameVersion;
 
 public class DetectorOperation {
     private PropertyConfiguration detectConfiguration;
@@ -56,7 +53,7 @@ public class DetectorOperation {
         this.codeLocationConverter = codeLocationConverter;
     }
 
-    public boolean execute(RunResult runResult) throws DetectUserFriendlyException, IntegrationException {
+    public DetectorToolResult execute() throws DetectUserFriendlyException, IntegrationException {
         String projectBomTool = detectConfiguration.getValueOrEmpty(DetectProperties.DETECT_PROJECT_DETECTOR.getProperty()).orElse(null);
         List<DetectorType> requiredDetectors = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_REQUIRED_DETECTOR_TYPES.getProperty());
         boolean buildless = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_BUILDLESS.getProperty());
@@ -72,13 +69,9 @@ public class DetectorOperation {
         DetectorTool detectorTool = new DetectorTool(new DetectorFinder(), extractionEnvironmentProvider, eventSystem, codeLocationConverter, detectorIssuePublisher);
         DetectorToolResult detectorToolResult = detectorTool.performDetectors(directoryManager.getSourceDirectory(), detectRuleSet, finderOptions, detectorEvaluationOptions, projectBomTool, requiredDetectors);
 
-        detectorToolResult.getBomToolProjectNameVersion().ifPresent(it -> runResult.addToolNameVersion(DetectTool.DETECTOR, new NameVersion(it.getName(), it.getVersion())));
-        runResult.addDetectCodeLocations(detectorToolResult.getBomToolCodeLocations());
-        boolean anythingFailed = false;
-        if (!detectorToolResult.getFailedDetectorTypes().isEmpty()) {
+        if (detectorToolResult.anyDetectorsFailed()) {
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR, "A detector failed."));
-            anythingFailed = true;
         }
-        return anythingFailed;
+        return detectorToolResult;
     }
 }

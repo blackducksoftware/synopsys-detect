@@ -35,14 +35,12 @@ public class DockerOperation {
         this.codeLocationConverter = codeLocationConverter;
     }
 
-    public boolean execute(RunResult runResult) throws DetectUserFriendlyException, IntegrationException {
+    public DetectableToolResult execute(RunResult runResult) throws DetectUserFriendlyException, IntegrationException {
         DetectableTool detectableTool = new DetectableTool(detectDetectableFactory::createDockerDetectable,
             extractionEnvironmentProvider, codeLocationConverter, "DOCKER", DetectTool.DOCKER,
             eventSystem);
 
         DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
-
-        runResult.addDetectableToolResult(detectableToolResult);
-        return detectableToolResult.isFailure();
+        return detectableToolResult;
     }
 }
