@@ -639,6 +639,12 @@ public class DetectProperties {
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
+    public static final DetectProperty<IntegerProperty> DETECT_IGNORE_SEARCH_DEPTH =
+        new DetectProperty<>(new IntegerProperty("detect.ignore.search.depth", 4))
+            .setInfo("Detect Ignore Search Depth", DetectPropertyFromVersion.VERSION_5_0_0)
+            .setHelp("Enables you to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.")
+            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN);
+
     public static final DetectProperty<BooleanProperty> DETECT_IMPACT_ANALYSIS_ENABLED =
         new DetectProperty<>(new BooleanProperty("detect.impact.analysis.enabled", false))
             .setInfo("Vulnerability Impact Analysis Enabled", DetectPropertyFromVersion.VERSION_6_5_0)
