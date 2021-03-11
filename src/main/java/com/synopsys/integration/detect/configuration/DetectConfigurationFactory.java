@@ -292,13 +292,13 @@ public class DetectConfigurationFactory {
         return new AirGapOptions(dockerOverride, gradleOverride, nugetOverride);
     }
 
-    public DetectExcludedDirectoryFilter createDetectDirectoryFileFilter(Path sourcePath) {
+    public DetectExcludedDirectoryFilter createDetectDirectoryFileFilter(Path sourcePath, boolean excludeDefaults) {
         List<String> userProvidedExcludedDirectories = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_IGNORE.getProperty(), DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION.getProperty());
         List<String> excludedDirectoryPatterns = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_IGNORE.getProperty(), DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS.getProperty());
         List<String> excludedDirectoryPaths = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_IGNORE.getProperty(), DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_PATHS.getProperty());
 
         List<String> excludedDirectories = new ArrayList<>(userProvidedExcludedDirectories);
-        if (PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_IGNORE_DEFAULTS.getProperty(), DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS.getProperty())) {
+        if (excludeDefaults && PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_IGNORE_DEFAULTS.getProperty(), DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS.getProperty())) {
             List<String> defaultExcluded = Arrays.stream(DefaultDetectorExcludedDirectories.values())
                                                .map(DefaultDetectorExcludedDirectories::getDirectoryName)
                                                .collect(Collectors.toList());
@@ -311,7 +311,7 @@ public class DetectConfigurationFactory {
     public DetectorFinderOptions createDetectorFinderOptions(Path sourcePath) {
         //Normal settings
         Integer maxDepth = getValue(DetectProperties.DETECT_DETECTOR_SEARCH_DEPTH);
-        DetectExcludedDirectoryFilter fileFilter = createDetectDirectoryFileFilter(sourcePath);
+        DetectExcludedDirectoryFilter fileFilter = createDetectDirectoryFileFilter(sourcePath, true);
 
         return new DetectorFinderOptions(fileFilter, maxDepth);
     }

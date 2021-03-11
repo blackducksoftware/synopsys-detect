@@ -149,7 +149,7 @@ public class OperationFactory {
         BlackDuckRunData blackDuckRunData = runContext.getProductRunData().getBlackDuckRunData();
         BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = runContext.getDetectConfigurationFactory().createBlackDuckSignatureScannerOptions();
         Path sourcePath = runContext.getDirectoryManager().getSourceDirectory().toPath();
-        DetectExcludedDirectoryFilter fileFilter = runContext.getDetectConfigurationFactory().createDetectDirectoryFileFilter(sourcePath);
+        DetectExcludedDirectoryFilter fileFilter = runContext.getDetectConfigurationFactory().createDetectDirectoryFileFilter(sourcePath, false);
         Predicate<File> collectExcludedDirectoriesPredicate = file -> fileFilter.isExcluded(file);
         BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, runContext.getDetectContext(), collectExcludedDirectoriesPredicate);
 
