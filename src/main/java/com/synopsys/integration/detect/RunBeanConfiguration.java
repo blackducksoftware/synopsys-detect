@@ -30,11 +30,9 @@ import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
-import com.synopsys.integration.detect.lifecycle.shutdown.DefaultExitCodePublisher;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.tool.detector.DefaultDetectorEventPublisher;
 import com.synopsys.integration.detect.tool.detector.DetectDetectableFactory;
-import com.synopsys.integration.detect.tool.detector.DetectorEventPublisher;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
 import com.synopsys.integration.detect.tool.detector.executable.DirectoryExecutableFinder;
@@ -66,7 +64,6 @@ import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameMan
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.project.ProjectEventPublisher;
-import com.synopsys.integration.detect.workflow.status.DetectStatusEventPublisher;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
@@ -178,16 +175,16 @@ public class RunBeanConfiguration {
     //#region EventPublishers
     @Bean
     public StatusEventPublisher statusEventPublisher() {
-        return new DetectStatusEventPublisher(eventSystem);
+        return new StatusEventPublisher(eventSystem);
     }
 
     @Bean
     public ExitCodePublisher exitCodePublisher() {
-        return new DefaultExitCodePublisher(eventSystem);
+        return new ExitCodePublisher(eventSystem);
     }
 
     @Bean
-    public DetectorEventPublisher detectorEventPublisher() {
+    public DefaultDetectorEventPublisher detectorEventPublisher() {
         return new DefaultDetectorEventPublisher(eventSystem);
     }
 

@@ -22,7 +22,6 @@ import com.google.gson.JsonElement;
 import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponentResultView;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.workflow.DetectRun;
-import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.file.DirectoryOptions;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
@@ -34,7 +33,6 @@ public class BlackDuckRapidModePostActionsTest {
     @Test
     public void testJsonFileGenerated() throws Exception {
         Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-        EventSystem eventSystem = Mockito.mock(EventSystem.class);
         StatusEventPublisher statusEventPublisher = Mockito.mock(StatusEventPublisher.class);
         ExitCodePublisher exitCodePublisher = Mockito.mock(ExitCodePublisher.class);
         Path scanOutputPath = Files.createTempDirectory("rapid_scan_output_path");

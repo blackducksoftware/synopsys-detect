@@ -105,7 +105,6 @@ public class BlackDuckBinaryScannerToolTest {
     public void testShouldFailOnDirectory() throws DetectUserFriendlyException {
         BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("."), Collections.singletonList(""), "", "", 0);
 
-        EventSystem eventSystem = Mockito.mock(EventSystem.class);
         StatusEventPublisher statusEventPublisher = Mockito.mock(StatusEventPublisher.class);
         ExitCodePublisher exitCodePublisher = Mockito.mock(ExitCodePublisher.class);
 

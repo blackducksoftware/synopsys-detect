@@ -7,6 +7,17 @@
  */
 package com.synopsys.integration.detect.lifecycle.shutdown;
 
-public interface ExitCodePublisher {
-    void publishExitCode(ExitCodeRequest exitCodeRequest);
+import com.synopsys.integration.detect.workflow.event.Event;
+import com.synopsys.integration.detect.workflow.event.EventSystem;
+
+public class ExitCodePublisher {
+    private EventSystem eventSystem;
+
+    public ExitCodePublisher(EventSystem eventSystem) {
+        this.eventSystem = eventSystem;
+    }
+
+    public void publishExitCode(ExitCodeRequest exitCodeRequest) {
+        eventSystem.publishEvent(Event.ExitCode, exitCodeRequest);
+    }
 }
