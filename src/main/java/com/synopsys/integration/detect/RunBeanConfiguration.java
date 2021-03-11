@@ -256,7 +256,7 @@ public class RunBeanConfiguration {
     @Bean()
     public BlackDuckSignatureScanner blackDuckSignatureScanner(BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, ScanBatchRunner scanBatchRunner, BlackDuckServerConfig blackDuckServerConfig,
         CodeLocationNameManager codeLocationNameManager) {
-        return new BlackDuckSignatureScanner(directoryManager, fullFileFinder(), codeLocationNameManager, blackDuckSignatureScannerOptions, eventSystem, scanBatchRunner, blackDuckServerConfig);
+        return new BlackDuckSignatureScanner(directoryManager, fullFileFinder(), codeLocationNameManager, blackDuckSignatureScannerOptions, scanBatchRunner, blackDuckServerConfig, statusEventPublisher(), exitCodePublisher());
     }
 
 }

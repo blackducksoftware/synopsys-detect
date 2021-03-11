@@ -147,7 +147,7 @@ public class OperationFactory {
         BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = runContext.getDetectConfigurationFactory().createBlackDuckSignatureScannerOptions();
         BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, runContext.getDetectContext());
 
-        return new SignatureScanOperation(blackDuckRunData, blackDuckSignatureScannerTool, runContext.getEventSystem());
+        return new SignatureScanOperation(blackDuckRunData, blackDuckSignatureScannerTool, runContext.getStatusEventPublisher(), runContext.getExitCodePublisher());
     }
 
 }
