@@ -160,8 +160,7 @@ class YarnTransformerTest {
             }
         }
         assertTrue(foundWorkspaceDep);
-        // TODO don't know why dev dep isn't found; this scenario works in battery test (and in the real world)
-        //assertTrue(foundWorkspaceDevDep);
+        assertTrue(foundWorkspaceDevDep);
     }
 
     @Test
@@ -253,6 +252,7 @@ class YarnTransformerTest {
                 addWorkspaceToYarnLockEntries(yarnLockEntries, workspace, workspaceDepName);
             }
             addDependencyOfWorkspaceToYarnLockEntries(yarnLockEntries, workspace, workspaceDepName);
+            addDependencyOfWorkspaceToYarnLockEntries(yarnLockEntries, workspace, workspaceDevDepName);
         }
         yarnLockEntries.add(new YarnLockEntry(false, yarnLockEntryIdsFoo, "1.0", dependencyRefToYarn));
         yarnLockEntries.add(new YarnLockEntry(false, yarnLockEntryIdsBar, "1.0", dependencyRefToYarn));
