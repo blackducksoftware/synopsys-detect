@@ -1263,7 +1263,7 @@ public class DetectProperties {
             .setHelp("A comma-separated list of file names to exclude from detector search.")
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
-            .setDeprecated("This property is deprecated.  Detect no longer supports the exclusion of individual files.  If you wish to exclude certain detectors, please use --detect.excluded.detector.types,", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+            .setDeprecated("This property is deprecated.  Detect no longer supports the exclusion of individual files.  If you wish to exclude certain detectors, please use --detect.excluded.detector.types.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS =
@@ -1741,7 +1741,7 @@ public class DetectProperties {
             .setInfo("Exclusion Patterns Search Depth", DetectPropertyFromVersion.VERSION_5_0_0)
             .setHelp("Enables you to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN)
-            .setDeprecated("This property is deprecated.  Please use --detect.ignore.search.depth to adjust the depth to which Detect will search when creating signature scanner exclusion patterns", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+            .setDeprecated("This property is deprecated.  Please use --detect.ignore.search.depth to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<StringListProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERNS =
