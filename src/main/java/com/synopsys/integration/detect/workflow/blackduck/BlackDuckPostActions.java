@@ -9,6 +9,7 @@ package com.synopsys.integration.detect.workflow.blackduck;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +30,11 @@ import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationWaitData;
 import com.synopsys.integration.detect.workflow.blackduck.policy.PolicyChecker;
 import com.synopsys.integration.detect.workflow.result.ReportDetectResult;
+import com.synopsys.integration.detect.workflow.status.DetectIssue;
+import com.synopsys.integration.detect.workflow.status.DetectIssueType;
+import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
+import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.exception.IntegrationRestException;
 import com.synopsys.integration.util.NameVersion;
@@ -55,26 +60,45 @@ public class BlackDuckPostActions {
 
     public void perform(BlackDuckPostOptions blackDuckPostOptions, CodeLocationWaitData codeLocationWaitData, ProjectVersionWrapper projectVersionWrapper, NameVersion projectNameVersion, long timeoutInSeconds)
         throws DetectUserFriendlyException {
+        String lastOperationKey = null;
         try {
             if (blackDuckPostOptions.shouldWaitForResults()) {
+                lastOperationKey = "BLACK_DUCK_CODE_LOCATION_WAIT";
                 waitForCodeLocations(codeLocationWaitData, timeoutInSeconds, projectNameVersion);
+                statusEventPublisher.publishStatusSummary(new Status(lastOperationKey, StatusType.SUCCESS));
             }
             if (blackDuckPostOptions.shouldPerformPolicyCheck()) {
+                lastOperationKey = "BLACK_DUCK_POLICY_CHECK";
                 checkPolicy(blackDuckPostOptions, projectVersionWrapper.getProjectVersionView());
+                statusEventPublisher.publishStatusSummary(new Status(lastOperationKey, StatusType.SUCCESS));
             }
             if (blackDuckPostOptions.shouldGenerateAnyReport()) {
+                lastOperationKey = "BLACK_DUCK_REPORT_GENERATION";
                 generateReports(blackDuckPostOptions, projectVersionWrapper);
+                statusEventPublisher.publishStatusSummary(new Status(lastOperationKey, StatusType.SUCCESS));
             }
         } catch (DetectUserFriendlyException e) {
+            statusEventPublisher.publishStatusSummary(new Status(lastOperationKey, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, Arrays.asList(e.getMessage())));
             throw e;
         } catch (IllegalArgumentException e) {
-            throw new DetectUserFriendlyException(String.format("Your Black Duck configuration is not valid: %s", e.getMessage()), e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
+            String errorReason = String.format("Your Black Duck configuration is not valid: %s", e.getMessage());
+            statusEventPublisher.publishStatusSummary(new Status(lastOperationKey, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, Arrays.asList(errorReason)));
+            throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
         } catch (IntegrationRestException e) {
+            statusEventPublisher.publishStatusSummary(new Status(lastOperationKey, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, Arrays.asList(e.getMessage())));
             throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
         } catch (BlackDuckTimeoutExceededException e) {
+            statusEventPublisher.publishStatusSummary(new Status(lastOperationKey, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, Arrays.asList(e.getMessage())));
             throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_TIMEOUT);
         } catch (Exception e) {
-            throw new DetectUserFriendlyException(String.format("There was a problem: %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
+            String errorReason = String.format("There was a problem: %s", e.getMessage());
+            statusEventPublisher.publishStatusSummary(new Status(lastOperationKey, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, Arrays.asList(errorReason)));
+            throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }
     }
 

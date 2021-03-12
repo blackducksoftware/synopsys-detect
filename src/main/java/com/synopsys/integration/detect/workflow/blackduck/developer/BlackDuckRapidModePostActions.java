@@ -10,6 +10,7 @@ package com.synopsys.integration.detect.workflow.blackduck.developer;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -30,6 +31,8 @@ import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.workflow.file.DetectFileUtils;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
+import com.synopsys.integration.detect.workflow.status.DetectIssue;
+import com.synopsys.integration.detect.workflow.status.DetectIssueType;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detect.workflow.status.StatusType;
@@ -37,7 +40,7 @@ import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 
 public class BlackDuckRapidModePostActions {
-    private static final String STATUS_DESCRIPTION_KEY = "BLACK_DUCK_RAPID_SCAN_RESULTS";
+    private static final String STATUS_KEY = "BLACK_DUCK_RAPID_SCAN_RESULTS";
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Gson gson;
     private final StatusEventPublisher statusEventPublisher;
@@ -93,6 +96,7 @@ public class BlackDuckRapidModePostActions {
         if (!violatedPolicyComponentNames.isEmpty()) {
             exitCodePublisher.publishExitCode(new ExitCodeRequest(ExitCodeType.FAILURE_POLICY_VIOLATION, createViolationMessage(violatedPolicyComponentNames)));
         }
+        statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.SUCCESS));
     }
 
     private void generateJSONScanOutput(NameVersion projectNameVersion, List<DeveloperScanComponentResultView> results) throws DetectUserFriendlyException {
@@ -114,8 +118,10 @@ public class BlackDuckRapidModePostActions {
         try {
             DetectFileUtils.writeToFile(jsonScanFile, jsonString);
         } catch (IOException ex) {
-            statusEventPublisher.publishStatusSummary(new Status(STATUS_DESCRIPTION_KEY, StatusType.FAILURE));
-            throw new DetectUserFriendlyException("Cannot create rapid scan output file", ex, ExitCodeType.FAILURE_UNKNOWN_ERROR);
+            String errorReason = "Cannot create rapid scan output file";
+            statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, Arrays.asList(errorReason, ex.getMessage())));
+            throw new DetectUserFriendlyException(errorReason, ex, ExitCodeType.FAILURE_UNKNOWN_ERROR);
         }
     }
 

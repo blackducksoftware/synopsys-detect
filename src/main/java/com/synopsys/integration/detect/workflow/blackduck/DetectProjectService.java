@@ -7,6 +7,7 @@
  */
 package com.synopsys.integration.detect.workflow.blackduck;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +36,8 @@ import com.synopsys.integration.blackduck.service.model.ProjectSyncModel;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.workflow.status.DetectIssue;
+import com.synopsys.integration.detect.workflow.status.DetectIssueType;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detect.workflow.status.StatusType;
@@ -43,7 +46,7 @@ import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.util.NameVersion;
 
 public class DetectProjectService {
-    private static final String STATUS_DESCRIPTION_KEY = "BLACK_DUCK_PROJECT_UPDATE";
+    private static final String STATUS_KEY = "BLACK_DUCK_PROJECT_UPDATE";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final BlackDuckApiClient blackDuckApiClient;
@@ -73,30 +76,37 @@ public class DetectProjectService {
     public ProjectVersionWrapper createOrUpdateBlackDuckProject(NameVersion projectNameVersion) throws IntegrationException, DetectUserFriendlyException {
         ProjectSyncModel projectSyncModel = createProjectSyncModel(projectNameVersion);
         boolean forceUpdate = detectProjectServiceOptions.isForceProjectVersionUpdate();
-        ProjectVersionWrapper projectVersionWrapper = projectService.syncProjectAndVersion(projectSyncModel, forceUpdate);
+        try {
+            ProjectVersionWrapper projectVersionWrapper = projectService.syncProjectAndVersion(projectSyncModel, forceUpdate);
 
-        mapToParentProjectVersion(detectProjectServiceOptions.getParentProjectName(), detectProjectServiceOptions.getParentProjectVersion(), projectVersionWrapper);
+            mapToParentProjectVersion(detectProjectServiceOptions.getParentProjectName(), detectProjectServiceOptions.getParentProjectVersion(), projectVersionWrapper);
 
-        setApplicationId(projectVersionWrapper.getProjectView(), detectProjectServiceOptions.getApplicationId());
-        CustomFieldDocument customFieldDocument = detectProjectServiceOptions.getCustomFields();
-        if (customFieldDocument != null && (customFieldDocument.getProject().size() > 0 || customFieldDocument.getVersion().size() > 0)) {
-            logger.debug("Will update the following custom fields and values.");
-            for (CustomFieldElement element : customFieldDocument.getProject()) {
-                logger.debug(String.format("Project field '%s' will be set to '%s'.", element.getLabel(), String.join(",", element.getValue())));
+            setApplicationId(projectVersionWrapper.getProjectView(), detectProjectServiceOptions.getApplicationId());
+            CustomFieldDocument customFieldDocument = detectProjectServiceOptions.getCustomFields();
+            if (customFieldDocument != null && (customFieldDocument.getProject().size() > 0 || customFieldDocument.getVersion().size() > 0)) {
+                logger.debug("Will update the following custom fields and values.");
+                for (CustomFieldElement element : customFieldDocument.getProject()) {
+                    logger.debug(String.format("Project field '%s' will be set to '%s'.", element.getLabel(), String.join(",", element.getValue())));
+                }
+                for (CustomFieldElement element : customFieldDocument.getVersion()) {
+                    logger.debug(String.format("Version field '%s' will be set to '%s'.", element.getLabel(), String.join(",", element.getValue())));
+                }
+
+                detectCustomFieldService.updateCustomFields(projectVersionWrapper, customFieldDocument, blackDuckApiClient);
+                logger.info("Successfully updated (" + (customFieldDocument.getVersion().size() + customFieldDocument.getProject().size()) + ") custom fields.");
+            } else {
+                logger.debug("No custom fields to set.");
             }
-            for (CustomFieldElement element : customFieldDocument.getVersion()) {
-                logger.debug(String.format("Version field '%s' will be set to '%s'.", element.getLabel(), String.join(",", element.getValue())));
-            }
 
-            detectCustomFieldService.updateCustomFields(projectVersionWrapper, customFieldDocument, blackDuckApiClient);
-            logger.info("Successfully updated (" + (customFieldDocument.getVersion().size() + customFieldDocument.getProject().size()) + ") custom fields.");
-        } else {
-            logger.debug("No custom fields to set.");
+            addUserGroupsToProject(projectUsersService, projectVersionWrapper, detectProjectServiceOptions.getGroups());
+            addTagsToProject(tagService, projectVersionWrapper, detectProjectServiceOptions.getTags());
+            statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.SUCCESS));
+            return projectVersionWrapper;
+        } catch (IntegrationException ex) {
+            statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, Arrays.asList(ex.getMessage())));
+            throw ex;
         }
-
-        addUserGroupsToProject(projectUsersService, projectVersionWrapper, detectProjectServiceOptions.getGroups());
-        addTagsToProject(tagService, projectVersionWrapper, detectProjectServiceOptions.getTags());
-        return projectVersionWrapper;
     }
 
     private void mapToParentProjectVersion(String parentProjectName, String parentVersionName, ProjectVersionWrapper projectVersionWrapper)
@@ -106,8 +116,10 @@ public class DetectProjectService {
             String projectName = projectVersionWrapper.getProjectView().getName();
             String projectVersionName = projectVersionWrapper.getProjectVersionView().getVersionName();
             if (StringUtils.isBlank(parentProjectName) || StringUtils.isBlank(parentVersionName)) {
-                statusEventPublisher.publishStatusSummary(new Status(STATUS_DESCRIPTION_KEY, StatusType.FAILURE));
-                throw new DetectUserFriendlyException("Both the parent project name and the parent project version name must be specified if either is specified.", ExitCodeType.FAILURE_CONFIGURATION);
+                String errorReason = "Both the parent project name and the parent project version name must be specified if either is specified.";
+                statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
+                statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, Arrays.asList(errorReason)));
+                throw new DetectUserFriendlyException(errorReason, ExitCodeType.FAILURE_CONFIGURATION);
             }
             try {
                 Optional<ProjectVersionWrapper> parentWrapper = projectService.getProjectVersion(parentProjectName, parentVersionName);
@@ -129,8 +141,10 @@ public class DetectProjectService {
                     throw new DetectUserFriendlyException("Unable to find parent project or parent project version on the server.", ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
                 }
             } catch (IntegrationException e) {
-                statusEventPublisher.publishStatusSummary(new Status(STATUS_DESCRIPTION_KEY, StatusType.FAILURE));
-                throw new DetectUserFriendlyException("Unable to add project to parent.", e, ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
+                String errorReason = "Unable to add project to parent.";
+                statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
+                statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, Arrays.asList(errorReason, e.getMessage())));
+                throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
             }
         }
 
@@ -234,8 +248,10 @@ public class DetectProjectService {
                 return Optional.empty();
             }
         } catch (IntegrationException e) {
-            statusEventPublisher.publishStatusSummary(new Status(STATUS_DESCRIPTION_KEY, StatusType.FAILURE));
-            throw new DetectUserFriendlyException(String.format("Error finding project/version (%s/%s) to clone, or getting its release url.", cloneProjectName, cloneProjectVersionName), e, ExitCodeType.FAILURE_CONFIGURATION);
+            String errorReason = String.format("Error finding project/version (%s/%s) to clone, or getting its release url.", cloneProjectName, cloneProjectVersionName);
+            statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, Arrays.asList(errorReason, e.getMessage())));
+            throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_CONFIGURATION);
         }
     }
 
@@ -257,8 +273,10 @@ public class DetectProjectService {
                 return Optional.empty();
             }
         } catch (IntegrationException e) {
-            statusEventPublisher.publishStatusSummary(new Status(STATUS_DESCRIPTION_KEY, StatusType.FAILURE));
-            throw new DetectUserFriendlyException("Error finding latest version to clone, or getting its release url.", e, ExitCodeType.FAILURE_CONFIGURATION);
+            String errorReason = "Error finding latest version to clone, or getting its release url.";
+            statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, Arrays.asList(errorReason, e.getMessage())));
+            throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_CONFIGURATION);
         }
     }
 
@@ -272,8 +290,10 @@ public class DetectProjectService {
             logger.debug("Populating project 'Application ID'");
             projectMappingService.populateApplicationId(projectView, applicationId);
         } catch (IntegrationException e) {
-            statusEventPublisher.publishStatusSummary(new Status(STATUS_DESCRIPTION_KEY, StatusType.FAILURE));
-            throw new DetectUserFriendlyException(String.format("Unable to set Application ID for project: %s", projectView.getName()), e, ExitCodeType.FAILURE_CONFIGURATION);
+            String errorReason = String.format("Unable to set Application ID for project: %s", projectView.getName());
+            statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, Arrays.asList(errorReason, e.getMessage())));
+            throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_CONFIGURATION);
         }
     }
 }

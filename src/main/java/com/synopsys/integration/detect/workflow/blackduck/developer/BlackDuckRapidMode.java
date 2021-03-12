@@ -7,6 +7,7 @@
  */
 package com.synopsys.integration.detect.workflow.blackduck.developer;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,6 +23,8 @@ import com.synopsys.integration.detect.configuration.DetectUserFriendlyException
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
+import com.synopsys.integration.detect.workflow.status.DetectIssue;
+import com.synopsys.integration.detect.workflow.status.DetectIssueType;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detect.workflow.status.StatusType;
@@ -29,7 +32,7 @@ import com.synopsys.integration.rest.exception.IntegrationRestException;
 
 public class BlackDuckRapidMode {
     public static final int DEFAULT_WAIT_INTERVAL_IN_SECONDS = 1;
-    private static final String STATUS_DESCRIPTION_KEY = "BLACK_DUCK_RAPID_SCAN";
+    private static final String STATUS_KEY = "BLACK_DUCK_RAPID_SCAN";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final StatusEventPublisher statusEventPublisher;
     private final BlackDuckRunData blackDuckRunData;
@@ -56,18 +59,25 @@ public class BlackDuckRapidMode {
                 results.addAll(rapidScanService.performDeveloperScan(uploadTarget.getUploadFile(), timeoutInSeconds, DEFAULT_WAIT_INTERVAL_IN_SECONDS));
             }
             logger.debug("Rapid scan result count: {}", results.size());
+            statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.SUCCESS));
         } catch (IllegalArgumentException e) {
-            statusEventPublisher.publishStatusSummary(new Status(STATUS_DESCRIPTION_KEY, StatusType.FAILURE));
-            throw new DetectUserFriendlyException(String.format("Your Black Duck configuration is not valid: %s", e.getMessage()), e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
+            String errorReason = String.format("Your Black Duck configuration is not valid: %s", e.getMessage());
+            statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, Arrays.asList(errorReason)));
+            throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
         } catch (IntegrationRestException e) {
-            statusEventPublisher.publishStatusSummary(new Status(STATUS_DESCRIPTION_KEY, StatusType.FAILURE));
+            statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, Arrays.asList(e.getMessage())));
             throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
         } catch (BlackDuckIntegrationException e) {
-            statusEventPublisher.publishStatusSummary(new Status(STATUS_DESCRIPTION_KEY, StatusType.FAILURE));
+            statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, Arrays.asList(e.getMessage())));
             throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_TIMEOUT);
         } catch (Exception e) {
-            statusEventPublisher.publishStatusSummary(new Status(STATUS_DESCRIPTION_KEY, StatusType.FAILURE));
-            throw new DetectUserFriendlyException(String.format("There was a problem: %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
+            String errorReason = String.format("There was a problem: %s", e.getMessage());
+            statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, Arrays.asList(errorReason)));
+            throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }
         return results;
     }
