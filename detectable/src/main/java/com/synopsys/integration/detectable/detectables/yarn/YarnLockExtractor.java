@@ -45,8 +45,6 @@ public class YarnLockExtractor {
             List<String> yarnLockLines = FileUtils.readLines(yarnLockFile, StandardCharsets.UTF_8);
             YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockLines);
             PackageJson rootPackageJson = packageJsonFiles.read(rootPackageJsonFile);
-            // TODO THIS IS WRONG/CHANGING:
-            // Yarn 1 projects: yarn.lock does not contain an entry for the project, so we have to guess at deps based on package.json files
             boolean addAllWorkspaceDependenciesAsDirect = yarnLockOptions.includeAllWorkspaceDependencies();
             boolean getWorkspaceDependenciesFromWorkspacePackageJson = !yarnLock.isYarn2Project();
             Map<String, PackageJson> workspacePackageJsonsToProcess;

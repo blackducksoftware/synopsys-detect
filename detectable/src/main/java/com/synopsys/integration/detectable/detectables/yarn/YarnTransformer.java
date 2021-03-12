@@ -65,19 +65,13 @@ public class YarnTransformer {
             if (externalId.isPresent()) {
                 return externalId.get();
             } else {
-                // If we don't construct an external ID here (which seems pointless), an exception will be thrown (which is worse; see IDETECT-1974)
-                //                StringDependencyId stringDependencyId = (StringDependencyId) dependencyId;
-                //                logger.warn(String.format("Missing yarn dependency. Dependency '%s' is missing from %s.", stringDependencyId.getValue(), yarnLockResult.getYarnLockFilePath()));
-                //                return externalIdFactory.createNameVersionExternalId(Forge.NPMJS, stringDependencyId.getValue());
-                /////////////////////
                 StringDependencyId stringDependencyId = (StringDependencyId) dependencyId;
                 if (isWorkspace(yarnLockResult, dependencyId)) {
-                    logger.info("Including workspace {} in the graph", stringDependencyId.getValue());
+                    logger.debug("Including workspace {} in the graph", stringDependencyId.getValue());
                 } else {
                     logger.warn(String.format("Missing yarn dependency. '%s' is neither a defined workspace nor a dependency defined in %s.", stringDependencyId.getValue(), yarnLockResult.getYarnLockFilePath()));
                 }
                 return externalIdFactory.createNameVersionExternalId(Forge.NPMJS, stringDependencyId.getValue());
-                //////////////////////
             }
         });
     }
