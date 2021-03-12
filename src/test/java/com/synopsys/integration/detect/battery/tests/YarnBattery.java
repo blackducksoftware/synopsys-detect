@@ -31,7 +31,7 @@ import com.synopsys.integration.detect.battery.BatteryTest;
 public class YarnBattery {
     @Test
     void lock() {
-        BatteryTest test = new BatteryTest("yarn-lock");
+        BatteryTest test = new BatteryTest("yarn-lock", "yarn/yarn-lock");
         test.sourceDirectoryNamed("linux-yarn");
         test.sourceFileFromResource("yarn.lock");
         test.sourceFileFromResource("package.json");
@@ -42,7 +42,7 @@ public class YarnBattery {
 
     @Test
     void yarn2lock() {
-        BatteryTest test = new BatteryTest("yarn2-lock");
+        BatteryTest test = new BatteryTest("yarn2-lock", "yarn/yarn2-lock");
         test.sourceDirectoryNamed("yarn2-lock");
         test.sourceFileFromResource("yarn.lock");
         test.sourceFileFromResource("package.json");
@@ -52,7 +52,7 @@ public class YarnBattery {
 
     @Test
     void yarnWorkspacesSimple() {
-        BatteryTest test = new BatteryTest("yarn-workspaces-simple");
+        BatteryTest test = new BatteryTest("yarn-workspaces-simple", "yarn/yarn-workspaces-simple");
         test.sourceDirectoryNamed("yarn-workspaces-simple");
         test.sourceFileFromResource("yarn.lock");
         test.sourceFileFromResource("package.json");
@@ -64,7 +64,7 @@ public class YarnBattery {
 
     @Test
     void yarnWorkspacesSimpleIncludingAllWorkspaces() {
-        BatteryTest test = new BatteryTest("yarn-workspaces-simple-allworkspaces");
+        BatteryTest test = new BatteryTest("yarn-workspaces-simple-allworkspaces", "yarn/yarn-workspaces-simple-allworkspaces");
         test.sourceDirectoryNamed("yarn-workspaces-simple-allworkspaces");
         test.sourceFileFromResource("yarn.lock");
         test.sourceFileFromResource("package.json");
@@ -77,7 +77,7 @@ public class YarnBattery {
 
     @Test
     void yarnWorkspacesExtensive() {
-        BatteryTest test = new BatteryTest("yarn-workspaces-berry");
+        BatteryTest test = new BatteryTest("yarn-workspaces-berry", "yarn/yarn-workspaces-berry");
         test.sourceDirectoryNamed("yarn-workspaces-berry");
         test.sourceFileFromResource("yarn.lock");
         test.sourceFileFromResource("package.json");
@@ -88,7 +88,7 @@ public class YarnBattery {
 
     @Test
     void yarnYarn1WorkspacesAddAll() {
-        BatteryTest test = new BatteryTest("yarn1-workspaces");
+        BatteryTest test = new BatteryTest("yarn1-workspaces", "yarn/yarn1-workspaces");
         test.sourceDirectoryNamed("yarn1-workspaces");
         test.sourceFileFromResource("yarn.lock");
         test.sourceFileFromResource("package.json");
@@ -101,7 +101,7 @@ public class YarnBattery {
 
     @Test
     void yarnYarn1WorkspacesWithWorkspaceDep() {
-        BatteryTest test = new BatteryTest("yarn1-workspaces-workspacedep");
+        BatteryTest test = new BatteryTest("yarn1-workspaces-workspacedep", "yarn/yarn1-workspaces-workspacedep");
         test.sourceDirectoryNamed("yarn1-workspaces-workspacedep");
         test.sourceFileFromResource("yarn.lock");
         test.sourceFileFromResource("package.json");
