@@ -31,7 +31,7 @@ import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class DetectBdioUploadService {
-    private static final String STATUS_KEY = "BLACK_DUCK_BDIO_UPLOAD";
+    private static final String STATUS_KEY = "Black Duck BDIO Upload";
     private final Logger logger = LoggerFactory.getLogger(DetectBdioUploadService.class);
     private final StatusEventPublisher statusEventPublisher;
 

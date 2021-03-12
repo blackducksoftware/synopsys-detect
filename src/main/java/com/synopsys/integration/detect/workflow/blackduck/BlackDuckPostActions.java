@@ -63,17 +63,18 @@ public class BlackDuckPostActions {
         String lastOperationKey = null;
         try {
             if (blackDuckPostOptions.shouldWaitForResults()) {
-                lastOperationKey = "BLACK_DUCK_CODE_LOCATION_WAIT";
+                lastOperationKey = "Black Duck Wait for Code Locations";
                 waitForCodeLocations(codeLocationWaitData, timeoutInSeconds, projectNameVersion);
                 statusEventPublisher.publishStatusSummary(new Status(lastOperationKey, StatusType.SUCCESS));
+
             }
             if (blackDuckPostOptions.shouldPerformPolicyCheck()) {
-                lastOperationKey = "BLACK_DUCK_POLICY_CHECK";
+                lastOperationKey = "Black Duck Policy Check";
                 checkPolicy(blackDuckPostOptions, projectVersionWrapper.getProjectVersionView());
                 statusEventPublisher.publishStatusSummary(new Status(lastOperationKey, StatusType.SUCCESS));
             }
             if (blackDuckPostOptions.shouldGenerateAnyReport()) {
-                lastOperationKey = "BLACK_DUCK_REPORT_GENERATION";
+                lastOperationKey = "Black Duck Report Generation";
                 generateReports(blackDuckPostOptions, projectVersionWrapper);
                 statusEventPublisher.publishStatusSummary(new Status(lastOperationKey, StatusType.SUCCESS));
             }

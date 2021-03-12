@@ -32,7 +32,7 @@ import com.synopsys.integration.rest.exception.IntegrationRestException;
 
 public class BlackDuckRapidMode {
     public static final int DEFAULT_WAIT_INTERVAL_IN_SECONDS = 1;
-    private static final String STATUS_KEY = "BLACK_DUCK_RAPID_SCAN";
+    private static final String STATUS_KEY = "Black Duck Rapid Scan";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final StatusEventPublisher statusEventPublisher;
     private final BlackDuckRunData blackDuckRunData;

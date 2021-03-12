@@ -27,7 +27,7 @@ import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class DetectCodeLocationUnmapService {
-    private static final String STATUS_KEY = "BLACK_DUCK_CODE_LOCATION_UNMAP";
+    private static final String STATUS_KEY = "Black Duck Unmap Code Locations";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final BlackDuckApiClient blackDuckService;

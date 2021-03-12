@@ -46,7 +46,7 @@ import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.util.NameVersion;
 
 public class DetectProjectService {
-    private static final String STATUS_KEY = "BLACK_DUCK_PROJECT_UPDATE";
+    private static final String STATUS_KEY = "Black Duck Project Update";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final BlackDuckApiClient blackDuckApiClient;

@@ -40,7 +40,7 @@ import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 
 public class BlackDuckRapidModePostActions {
-    private static final String STATUS_KEY = "BLACK_DUCK_RAPID_SCAN_RESULTS";
+    private static final String STATUS_KEY = "Black Duck Rapid Scan Result Processing";
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Gson gson;
     private final StatusEventPublisher statusEventPublisher;
