@@ -95,16 +95,21 @@ public class YarnTransformer {
             logger.debug("\tAlso adding dev dependencies");
             addRootDependenciesToGraph(graphBuilder, rootPackageJson.devDependencies.entrySet());
         }
-        for (PackageJson curWorkspacePackageJson : workspacePackageJsons.values()) {
-            StringDependencyId workspaceId = new StringDependencyId(curWorkspacePackageJson.name + "@" + curWorkspacePackageJson.version);
-            if (addWorkspacesToRoot) {
-                logger.debug("Adding root dependency representing workspace from workspace PackageJson: {}:{} ({})", curWorkspacePackageJson.name, curWorkspacePackageJson.version, workspaceId);
-                graphBuilder.addChildToRoot(workspaceId);
-            }
-            if (getWorkspaceDependenciesFromWorkspacePackageJson) {
-                addWorkspaceChildrenToGraph(graphBuilder, workspaceId, curWorkspacePackageJson.dependencies.entrySet());
-                if (!productionOnly) {
-                    addWorkspaceChildrenToGraph(graphBuilder, workspaceId, curWorkspacePackageJson.devDependencies.entrySet());
+
+        // TODO here: be selective about which workspaces to add
+        // ExcludedIncludedWildcardFilter modulesFilter = ExcludedIncludedWildcardFilter.fromCollections(excludedModules, includedModules);
+        if (addWorkspacesToRoot || getWorkspaceDependenciesFromWorkspacePackageJson) {
+            for (PackageJson curWorkspacePackageJson : workspacePackageJsons.values()) {
+                StringDependencyId workspaceId = new StringDependencyId(curWorkspacePackageJson.name + "@" + curWorkspacePackageJson.version);
+                if (addWorkspacesToRoot) {
+                    logger.debug("Adding root dependency representing workspace from workspace PackageJson: {}:{} ({})", curWorkspacePackageJson.name, curWorkspacePackageJson.version, workspaceId);
+                    graphBuilder.addChildToRoot(workspaceId);
+                }
+                if (getWorkspaceDependenciesFromWorkspacePackageJson) {
+                    addWorkspaceChildrenToGraph(graphBuilder, workspaceId, curWorkspacePackageJson.dependencies.entrySet());
+                    if (!productionOnly) {
+                        addWorkspaceChildrenToGraph(graphBuilder, workspaceId, curWorkspacePackageJson.devDependencies.entrySet());
+                    }
                 }
             }
         }

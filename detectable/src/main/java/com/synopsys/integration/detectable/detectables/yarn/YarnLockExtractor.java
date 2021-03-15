@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,12 +46,8 @@ public class YarnLockExtractor {
             PackageJson rootPackageJson = packageJsonFiles.read(rootPackageJsonFile);
             boolean addAllWorkspaceDependenciesAsDirect = yarnLockOptions.includeAllWorkspaceDependencies();
             boolean getWorkspaceDependenciesFromWorkspacePackageJson = !yarnLock.isYarn2Project();
-            Map<String, PackageJson> workspacePackageJsonsToProcess;
-            if (addAllWorkspaceDependenciesAsDirect || getWorkspaceDependenciesFromWorkspacePackageJson) {
-                workspacePackageJsonsToProcess = getWorkspacePackageJsons(projectDir, rootPackageJsonFile);
-            } else {
-                workspacePackageJsonsToProcess = new HashMap<>();
-            }
+            Map<String, PackageJson> workspacePackageJsonsToProcess = getWorkspacePackageJsons(projectDir, rootPackageJsonFile);
+
             YarnResult yarnResult = yarnPackager.generateYarnResult(rootPackageJson, workspacePackageJsonsToProcess, yarnLock, yarnLockFile.getAbsolutePath(), new ArrayList<>(),
                 yarnLockOptions.useProductionOnly(), addAllWorkspaceDependenciesAsDirect, getWorkspaceDependenciesFromWorkspacePackageJson);
 

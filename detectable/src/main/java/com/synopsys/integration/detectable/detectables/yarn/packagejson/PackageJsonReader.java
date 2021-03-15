@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 
 public class PackageJsonReader {
@@ -32,8 +31,8 @@ public class PackageJsonReader {
     }
 
     public List<String> extractWorkspaceDirPatterns(String packageJsonText) {
-        GsonBuilder gsonBuilder = gson.newBuilder();
-        Map<String, Object> packageJsonMap = gsonBuilder.create().fromJson(packageJsonText, Map.class);
+        Map<String, Object> packageJsonMap = gson.fromJson(packageJsonText, Map.class);
+        // TODO: alternative: pass it a TypeAdapter
         Object workspacesObject = packageJsonMap.get(WORKSPACES_OBJECT_KEY);
         List<String> workspaceSubdirPatterns = new LinkedList<>();
         if (workspacesObject != null) {
