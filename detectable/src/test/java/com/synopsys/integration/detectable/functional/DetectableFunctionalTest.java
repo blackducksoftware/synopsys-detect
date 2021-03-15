@@ -40,7 +40,7 @@ import org.junit.jupiter.api.Test;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.common.util.finder.WildcardFileFinder;
+import com.synopsys.integration.common.util.finder.SimpleFileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -82,7 +82,7 @@ public abstract class DetectableFunctionalTest {
 
         this.executableRunner = new FunctionalDetectableExecutableRunner();
 
-        final FileFinder fileFinder = new WildcardFileFinder();
+        final FileFinder fileFinder = new SimpleFileFinder();
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final Gson gson = new GsonBuilder().setPrettyPrinting().create();
         this.detectableFactory = new DetectableFactory(fileFinder, executableRunner, externalIdFactory, gson);

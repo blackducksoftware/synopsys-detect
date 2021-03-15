@@ -77,7 +77,6 @@ public class BlackDuckBinaryScannerTool {
     }
 
     public BinaryScanToolResult performBinaryScanActions(NameVersion projectNameVersion) throws DetectUserFriendlyException {
-
         File binaryUpload = null;
         Optional<Path> singleTargetFilePath = binaryScanOptions.getSingleTargetFilePath();
         if (singleTargetFilePath.isPresent()) {

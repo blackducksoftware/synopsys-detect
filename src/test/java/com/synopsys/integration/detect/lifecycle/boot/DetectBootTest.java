@@ -19,7 +19,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.common.util.finder.FileFinder;
-import com.synopsys.integration.common.util.finder.WildcardFileFinder;
+import com.synopsys.integration.common.util.finder.SimpleFileFinder;
 import com.synopsys.integration.configuration.source.MapPropertySource;
 import com.synopsys.integration.configuration.source.PropertySource;
 import com.synopsys.integration.detect.configuration.DetectInfo;
@@ -46,7 +46,7 @@ public class DetectBootTest {
         DetectInfo detectInfo = new DetectInfo(EXPECTED_VERSION_TEXT, EXPECTED_MAJOR_VERSION, CURRENT_OS);
         Gson gson = new Gson();
         EventSystem eventSystem = new EventSystem();
-        FileFinder fileFinder = new WildcardFileFinder();
+        FileFinder fileFinder = new SimpleFileFinder();
         detectBootFactory = new DetectBootFactory(detectRun, detectInfo, gson, eventSystem, fileFinder);
 
         detectContext = new DetectContext(detectRun);

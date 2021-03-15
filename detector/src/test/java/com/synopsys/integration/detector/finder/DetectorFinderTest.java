@@ -44,7 +44,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 
-import com.synopsys.integration.common.util.finder.WildcardFileFinder;
+import com.synopsys.integration.common.util.finder.SimpleFileFinder;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
 
@@ -86,7 +86,7 @@ public class DetectorFinderTest {
         final DetectorFinderOptions options = new DetectorFinderOptions(fileFilter, maximumDepth);
 
         final DetectorFinder finder = new DetectorFinder();
-        final Optional<DetectorEvaluationTree> tree = finder.findDetectors(initialDirectory, detectorRuleSet, options, new WildcardFileFinder());
+        final Optional<DetectorEvaluationTree> tree = finder.findDetectors(initialDirectory, detectorRuleSet, options, new SimpleFileFinder());
 
         // make sure both dirs were found
         final Set<DetectorEvaluationTree> testDirs = tree.get().getChildren();
@@ -125,7 +125,7 @@ public class DetectorFinderTest {
         final DetectorFinderOptions options = new DetectorFinderOptions(fileFilter, maximumDepth);
 
         final DetectorFinder finder = new DetectorFinder();
-        final Optional<DetectorEvaluationTree> tree = finder.findDetectors(initialDirectory, detectorRuleSet, options, new WildcardFileFinder());
+        final Optional<DetectorEvaluationTree> tree = finder.findDetectors(initialDirectory, detectorRuleSet, options, new SimpleFileFinder());
 
         // make sure the symlink was omitted from results
         //        final Set<DetectorEvaluationTree> subDirResults = tree.get().getChildren().iterator().next().getChildren();

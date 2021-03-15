@@ -24,7 +24,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.common.util.finder.FileFinder;
-import com.synopsys.integration.common.util.finder.WildcardFileFinder;
+import com.synopsys.integration.common.util.finder.SimpleFileFinder;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectInfoUtility;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
@@ -101,13 +101,13 @@ public class Application implements ApplicationRunner {
 
         Gson gson = BlackDuckServicesFactory.createDefaultGsonBuilder().setPrettyPrinting().create();
         DetectInfo detectInfo = DetectInfoUtility.createDefaultDetectInfo();
+        FileFinder fileFinder = new SimpleFileFinder();
         detectContext.registerBean(gson);
         detectContext.registerBean(detectInfo);
+        detectContext.registerBean(fileFinder);
 
         boolean printOutput = true;
         boolean shouldForceSuccess = false;
-
-        FileFinder fileFinder = new WildcardFileFinder();
 
         Optional<DetectBootResult> detectBootResultOptional = bootApplication(detectRun, applicationArguments.getSourceArgs(), eventSystem, detectContext, exitCodeManager, gson, detectInfo, fileFinder);
 

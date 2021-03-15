@@ -40,7 +40,7 @@ import org.mockito.ArgumentMatcher;
 import org.mockito.Mockito;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.common.util.finder.WildcardFileFinder;
+import com.synopsys.integration.common.util.finder.SimpleFileFinder;
 import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumValue;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.ExcludeIncludeEnumFilter;
@@ -88,7 +88,7 @@ public class DetectorToolTest {
         DetectorEvaluationOptions evaluationOptions = Mockito.mock(DetectorEvaluationOptions.class);
         final String projectBomTool = "testBomTool";
 
-        tool.performDetectors(directory, detectorRuleSet, detectorFinderOptions, evaluationOptions, projectBomTool, new ArrayList<>(), new WildcardFileFinder());
+        tool.performDetectors(directory, detectorRuleSet, detectorFinderOptions, evaluationOptions, projectBomTool, new ArrayList<>(), new SimpleFileFinder());
 
         Mockito.verify(eventSystem).publishEvent(Mockito.any(EventType.class), Mockito.argThat(new FailureExitCodeRequestMatcher()));
     }
@@ -181,7 +181,7 @@ public class DetectorToolTest {
         DetectorEvaluationTree evaluationTree = createEvaluationTree(extraction, extractionResult, directory, rule, detectorRuleSet);
         Mockito.when(detectorFinder.findDetectors(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(Optional.of(evaluationTree));
 
-        return tool.performDetectors(directory, detectorRuleSet, detectorFinderOptions, evaluationOptions, projectBomTool, new ArrayList<>(), new WildcardFileFinder());
+        return tool.performDetectors(directory, detectorRuleSet, detectorFinderOptions, evaluationOptions, projectBomTool, new ArrayList<>(), new SimpleFileFinder());
     }
 
     private GoModCliDetectable createDetectable(Extraction extraction, DetectableResult extractionResult) throws DetectableException {

@@ -16,7 +16,7 @@ import java.util.function.Predicate;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.jetbrains.annotations.NotNull;
 
-public class WildcardFileFinder implements FileFinder {
+public class SimpleFileFinder implements FileFinder {
     @NotNull
     @Override
     public List<File> findFiles(final File directoryToSearch, final Predicate<File> filter, final int depth, final boolean findInsideMatchingDirectories) {
@@ -44,16 +44,6 @@ public class WildcardFileFinder implements FileFinder {
         }
 
         return foundFiles;
-    }
-
-    @NotNull
-    @Override
-    public List<File> findFiles(final File directoryToSearch, final List<String> filenamePatterns, final int depth, final boolean findInsideMatchingDirectories) {
-        Predicate<File> wildcardFilter = file -> {
-            WildcardFileFilter filter = new WildcardFileFilter(filenamePatterns);
-            return filter.accept(file);
-        };
-        return findFiles(directoryToSearch, wildcardFilter, depth, findInsideMatchingDirectories);
     }
 
 }

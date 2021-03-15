@@ -41,15 +41,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 
-import com.synopsys.integration.common.util.finder.WildcardFileFinder;
+import com.synopsys.integration.common.util.finder.SimpleFileFinder;
 
-public class WildcardFileFinderTest {
+public class SimpleFileFinderTest {
 
     private static Path initialDirectoryPath;
 
     @BeforeEach
     public void setup() throws IOException {
-        initialDirectoryPath = Files.createTempDirectory("WildcardFileFinderTest");
+        initialDirectoryPath = Files.createTempDirectory("SimpleFileFinderTest");
     }
 
     @AfterEach
@@ -78,7 +78,7 @@ public class WildcardFileFinderTest {
         final File regularFile = new File(subDir, "regularFile");
         regularFile.createNewFile();
 
-        final WildcardFileFinder finder = new WildcardFileFinder();
+        final SimpleFileFinder finder = new SimpleFileFinder();
         final List<String> filenamePatterns = Arrays.asList("sub", "linkToInitial", "regularDir", "regularFile");
         final List<File> foundFiles = finder.findFiles(initialDirectoryPath.toFile(), filenamePatterns, 10);
 
@@ -100,7 +100,7 @@ public class WildcardFileFinderTest {
         File subDirChild2 = new File(subDir2, "child");
         subDirChild2.createNewFile();
 
-        WildcardFileFinder fileFinder = new WildcardFileFinder();
+        SimpleFileFinder fileFinder = new SimpleFileFinder();
         Predicate<File> filter = file -> file.getName().startsWith("sub");
         List<File> foundFiles = fileFinder.findFiles(initialDirectoryPath.toFile(), filter, 10);
 

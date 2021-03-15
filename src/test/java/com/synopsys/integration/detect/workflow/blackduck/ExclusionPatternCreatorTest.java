@@ -4,8 +4,6 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -17,7 +15,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import com.synopsys.integration.common.util.finder.WildcardFileFinder;
+import com.synopsys.integration.common.util.finder.SimpleFileFinder;
 import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
 
 public class ExclusionPatternCreatorTest {
@@ -38,7 +36,7 @@ public class ExclusionPatternCreatorTest {
         sub2Sub1.mkdir();
 
         DetectExcludedDirectoryFilter filter = new DetectExcludedDirectoryFilter(root.toPath(), providedPatterns, providedPatterns, providedPatterns);
-        ExclusionPatternCreator exclusionPatternCreator = new ExclusionPatternCreator(new WildcardFileFinder(), file -> filter.isExcluded(file), root);
+        ExclusionPatternCreator exclusionPatternCreator = new ExclusionPatternCreator(new SimpleFileFinder(), file -> filter.isExcluded(file), root);
         assertEqualCollections(resultingExclusions, exclusionPatternCreator.determineExclusionPatterns(3, providedPatterns));
     }
 

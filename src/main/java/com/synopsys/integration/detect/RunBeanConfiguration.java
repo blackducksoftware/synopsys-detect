@@ -34,7 +34,6 @@ import com.synopsys.integration.detect.tool.detector.executable.DetectExecutable
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
 import com.synopsys.integration.detect.tool.detector.executable.DirectoryExecutableFinder;
 import com.synopsys.integration.detect.tool.detector.executable.SystemPathExecutableFinder;
-import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryDockerInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryGradleInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
@@ -63,7 +62,6 @@ import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.common.util.finder.FileFinder;
-import com.synopsys.integration.common.util.finder.WildcardFileFinder;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
@@ -91,15 +89,12 @@ public class RunBeanConfiguration {
     public DocumentBuilder documentBuilder;
     @Autowired
     public DetectableOptionFactory detectableOptionFactory;
+    @Autowired
+    public FileFinder fileFinder;
 
     @Bean
     public ExternalIdFactory externalIdFactory() {
         return new ExternalIdFactory();
-    }
-
-    @Bean
-    public FileFinder fileFinder() {
-        return new WildcardFileFinder();
     }
 
     @Bean
@@ -151,7 +146,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public DirectoryExecutableFinder directoryExecutableFinder() {
-        return DirectoryExecutableFinder.forCurrentOperatingSystem(fileFinder());
+        return DirectoryExecutableFinder.forCurrentOperatingSystem(fileFinder);
     }
 
     @Bean
@@ -168,7 +163,7 @@ public class RunBeanConfiguration {
     @Bean
     public DockerInspectorResolver dockerInspectorResolver() throws DetectUserFriendlyException {
         DockerInspectorInstaller dockerInspectorInstaller = new DockerInspectorInstaller(artifactResolver());
-        return new ArtifactoryDockerInspectorResolver(directoryManager, airGapManager(), fileFinder(), dockerInspectorInstaller, detectableOptionFactory.createDockerDetectableOptions());
+        return new ArtifactoryDockerInspectorResolver(directoryManager, airGapManager(), fileFinder, dockerInspectorInstaller, detectableOptionFactory.createDockerDetectableOptions());
     }
 
     @Bean()
@@ -193,7 +188,7 @@ public class RunBeanConfiguration {
         DetectExecutableResolver executableResolver = detectExecutableResolver();
         DotNetRuntimeFinder runtimeFinder = new DotNetRuntimeFinder(executableRunner, executableResolver, directoryManager.getPermanentDirectory());
         DotNetRuntimeManager dotNetRuntimeManager = new DotNetRuntimeManager(runtimeFinder, new DotNetRuntimeParser());
-        return new LocatorNugetInspectorResolver(executableResolver, executableRunner, detectInfo, fileFinder(), installerOptions.getNugetInspectorName(), installerOptions.getPackagesRepoUrl(), locator, dotNetRuntimeManager);
+        return new LocatorNugetInspectorResolver(executableResolver, executableRunner, detectInfo, fileFinder, installerOptions.getNugetInspectorName(), installerOptions.getPackagesRepoUrl(), locator, dotNetRuntimeManager);
     }
 
     @Bean()
@@ -208,7 +203,7 @@ public class RunBeanConfiguration {
 
     @Bean()
     public DetectableFactory detectableFactory() {
-        return new DetectableFactory(fileFinder(), executableRunner(), externalIdFactory(), gson);
+        return new DetectableFactory(fileFinder, executableRunner(), externalIdFactory(), gson);
     }
 
     @Bean()
@@ -222,7 +217,7 @@ public class RunBeanConfiguration {
     @Bean()
     public BlackDuckSignatureScanner blackDuckSignatureScanner(BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, ScanBatchRunner scanBatchRunner, BlackDuckServerConfig blackDuckServerConfig,
         CodeLocationNameManager codeLocationNameManager, Predicate<File> fileFilter) {
-        return new BlackDuckSignatureScanner(directoryManager, codeLocationNameManager, blackDuckSignatureScannerOptions, eventSystem, scanBatchRunner, blackDuckServerConfig, fileFinder(), fileFilter);
+        return new BlackDuckSignatureScanner(directoryManager, codeLocationNameManager, blackDuckSignatureScannerOptions, eventSystem, scanBatchRunner, blackDuckServerConfig, fileFinder, fileFilter);
     }
 
 }
