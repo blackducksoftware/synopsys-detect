@@ -40,6 +40,7 @@ public class YarnLockKeyValuePairSectionParser implements YarnLockEntrySectionPa
         }
         StringTokenizer tokenizer = TokenizerFactory.createKeyValueTokenizer(sectionFirstLine);
         String parsedKey = tokenizer.nextToken();
+        parsedKey = yarnLockLineAnalyzer.unquote(parsedKey);
         return targetKey.equalsIgnoreCase(parsedKey) && tokenizer.hasMoreTokens();
     }
 
