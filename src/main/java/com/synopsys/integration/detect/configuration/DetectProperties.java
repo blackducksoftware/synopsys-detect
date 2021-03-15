@@ -642,6 +642,22 @@ public class DetectProperties {
             .setHelp("Path to the java executable.", "If set, Detect will use the given java executable instead of searching for one.")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL);
 
+    public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_LERNA_EXCLUDED_PACKAGES =
+        new DetectProperty<>(new CaseSensitiveStringListProperty("detect.maven.excluded.modules"))
+            .setInfo("Lerna Packages Excluded", DetectPropertyFromVersion.VERSION_7_0_0)
+            .setHelp("A comma-separated list of Lerna packages to exclude.",
+                "As Detect parses the output of lerna ls --all --json, Detect will exclude any Lerna packages specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
+            .setGroups(DetectGroup.LERNA, DetectGroup.SOURCE_SCAN)
+            .setCategory(DetectCategory.Advanced);
+
+    public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_LERNA_INCLUDED_PACKAGES =
+        new DetectProperty<>(new CaseSensitiveStringListProperty("detect.maven.excluded.modules"))
+            .setInfo("Lerna Packages Included", DetectPropertyFromVersion.VERSION_7_0_0)
+            .setHelp("A comma-separated list of Lerna packages to include.",
+                "As Detect parses the output of lerna ls --all --json2, if this property is set, Detect will include only those Lerna packages specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
+            .setGroups(DetectGroup.LERNA, DetectGroup.SOURCE_SCAN)
+            .setCategory(DetectCategory.Advanced);
+
     public static final DetectProperty<NullablePathProperty> DETECT_LERNA_PATH =
         new DetectProperty<>(new NullablePathProperty("detect.lerna.path"))
             .setInfo("Lerna Executable", DetectPropertyFromVersion.VERSION_6_0_0)
