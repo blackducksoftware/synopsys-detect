@@ -44,7 +44,7 @@ public class LernaPackageDiscoverer {
 
         return lernaPackages.stream()
                    .filter(Objects::nonNull)
-                   .filter(lernaPackage -> excludedIncludedFilter.willInclude(lernaPackage.getName()))
+                   .filter(lernaPackage -> excludedIncludedFilter.shouldInclude(lernaPackage.getName()))
                    .collect(Collectors.toList());
     }
 }
