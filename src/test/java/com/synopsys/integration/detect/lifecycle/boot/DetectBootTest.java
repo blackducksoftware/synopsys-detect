@@ -52,6 +52,7 @@ public class DetectBootTest {
         detectContext = new DetectContext(detectRun);
         detectContext.registerBean(detectInfo);
         detectContext.registerBean(gson);
+        detectContext.registerBean(fileFinder);
 
     }
 
