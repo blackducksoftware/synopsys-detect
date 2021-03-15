@@ -21,13 +21,13 @@ import com.synopsys.integration.detect.configuration.DetectUserFriendlyException
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectIssueType;
-import com.synopsys.integration.detect.workflow.status.Status;
+import com.synopsys.integration.detect.workflow.status.Operation;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class DetectCodeLocationUnmapService {
-    private static final String STATUS_KEY = "Black Duck Unmap Code Locations";
+    private static final String OPERATION_NAME = "Black Duck Unmap Code Locations";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final BlackDuckApiClient blackDuckService;
@@ -48,11 +48,11 @@ public class DetectCodeLocationUnmapService {
                 codeLocationService.unmapCodeLocation(codeLocationView);
             }
             logger.info("Successfully unmapped (" + codeLocationViews.size() + ") code locations.");
-            statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.SUCCESS));
+            statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.SUCCESS));
         } catch (IntegrationException e) {
             String errorMessage = String.format("There was a problem unmapping Code Locations: %s", e.getMessage());
-            statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, Arrays.asList(errorMessage)));
+            statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, OPERATION_NAME, Arrays.asList(errorMessage)));
             throw new DetectUserFriendlyException(errorMessage, e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }
 

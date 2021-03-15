@@ -29,4 +29,8 @@ public class StatusEventPublisher {
     public void publishDetectResult(DetectResult detectResult) {
         eventSystem.publishEvent(Event.ResultProduced, detectResult);
     }
+
+    public void publishOperation(Operation detectOperation) {
+        eventSystem.publishEvent(Event.DetectOperation, detectOperation);
+    }
 }

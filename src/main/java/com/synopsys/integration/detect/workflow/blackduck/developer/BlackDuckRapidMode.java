@@ -25,14 +25,14 @@ import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectIssueType;
-import com.synopsys.integration.detect.workflow.status.Status;
+import com.synopsys.integration.detect.workflow.status.Operation;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.rest.exception.IntegrationRestException;
 
 public class BlackDuckRapidMode {
     public static final int DEFAULT_WAIT_INTERVAL_IN_SECONDS = 1;
-    private static final String STATUS_KEY = "Black Duck Rapid Scan";
+    private static final String OPERATION_NAME = "Black Duck Rapid Scan";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final StatusEventPublisher statusEventPublisher;
     private final BlackDuckRunData blackDuckRunData;
@@ -59,24 +59,24 @@ public class BlackDuckRapidMode {
                 results.addAll(rapidScanService.performDeveloperScan(uploadTarget.getUploadFile(), timeoutInSeconds, DEFAULT_WAIT_INTERVAL_IN_SECONDS));
             }
             logger.debug("Rapid scan result count: {}", results.size());
-            statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.SUCCESS));
+            statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.SUCCESS));
         } catch (IllegalArgumentException e) {
             String errorReason = String.format("Your Black Duck configuration is not valid: %s", e.getMessage());
-            statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, Arrays.asList(errorReason)));
+            statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, OPERATION_NAME, Arrays.asList(errorReason)));
             throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
         } catch (IntegrationRestException e) {
-            statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, Arrays.asList(e.getMessage())));
+            statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, OPERATION_NAME, Arrays.asList(e.getMessage())));
             throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
         } catch (BlackDuckIntegrationException e) {
-            statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, Arrays.asList(e.getMessage())));
+            statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, OPERATION_NAME, Arrays.asList(e.getMessage())));
             throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_TIMEOUT);
         } catch (Exception e) {
             String errorReason = String.format("There was a problem: %s", e.getMessage());
-            statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, Arrays.asList(errorReason)));
+            statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, OPERATION_NAME, Arrays.asList(errorReason)));
             throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }
         return results;

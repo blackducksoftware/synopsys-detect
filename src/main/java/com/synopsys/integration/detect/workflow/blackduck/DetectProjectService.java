@@ -38,7 +38,7 @@ import com.synopsys.integration.detect.configuration.DetectUserFriendlyException
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectIssueType;
-import com.synopsys.integration.detect.workflow.status.Status;
+import com.synopsys.integration.detect.workflow.status.Operation;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.exception.IntegrationException;
@@ -46,7 +46,7 @@ import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.util.NameVersion;
 
 public class DetectProjectService {
-    private static final String STATUS_KEY = "Black Duck Project Update";
+    private static final String OPERATION_NAME = "Black Duck Project Update";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final BlackDuckApiClient blackDuckApiClient;
@@ -100,11 +100,11 @@ public class DetectProjectService {
 
             addUserGroupsToProject(projectUsersService, projectVersionWrapper, detectProjectServiceOptions.getGroups());
             addTagsToProject(tagService, projectVersionWrapper, detectProjectServiceOptions.getTags());
-            statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.SUCCESS));
+            statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.SUCCESS));
             return projectVersionWrapper;
         } catch (IntegrationException ex) {
-            statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, Arrays.asList(ex.getMessage())));
+            statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, OPERATION_NAME, Arrays.asList(ex.getMessage())));
             throw ex;
         }
     }
@@ -117,8 +117,8 @@ public class DetectProjectService {
             String projectVersionName = projectVersionWrapper.getProjectVersionView().getVersionName();
             if (StringUtils.isBlank(parentProjectName) || StringUtils.isBlank(parentVersionName)) {
                 String errorReason = "Both the parent project name and the parent project version name must be specified if either is specified.";
-                statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
-                statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, Arrays.asList(errorReason)));
+                statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.FAILURE));
+                statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, OPERATION_NAME, Arrays.asList(errorReason)));
                 throw new DetectUserFriendlyException(errorReason, ExitCodeType.FAILURE_CONFIGURATION);
             }
             try {
@@ -142,8 +142,8 @@ public class DetectProjectService {
                 }
             } catch (IntegrationException e) {
                 String errorReason = "Unable to add project to parent.";
-                statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
-                statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, Arrays.asList(errorReason, e.getMessage())));
+                statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.FAILURE));
+                statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, OPERATION_NAME, Arrays.asList(errorReason, e.getMessage())));
                 throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
             }
         }
@@ -249,8 +249,8 @@ public class DetectProjectService {
             }
         } catch (IntegrationException e) {
             String errorReason = String.format("Error finding project/version (%s/%s) to clone, or getting its release url.", cloneProjectName, cloneProjectVersionName);
-            statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, Arrays.asList(errorReason, e.getMessage())));
+            statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, OPERATION_NAME, Arrays.asList(errorReason, e.getMessage())));
             throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_CONFIGURATION);
         }
     }
@@ -274,8 +274,8 @@ public class DetectProjectService {
             }
         } catch (IntegrationException e) {
             String errorReason = "Error finding latest version to clone, or getting its release url.";
-            statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, Arrays.asList(errorReason, e.getMessage())));
+            statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, OPERATION_NAME, Arrays.asList(errorReason, e.getMessage())));
             throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_CONFIGURATION);
         }
     }
@@ -291,8 +291,8 @@ public class DetectProjectService {
             projectMappingService.populateApplicationId(projectView, applicationId);
         } catch (IntegrationException e) {
             String errorReason = String.format("Unable to set Application ID for project: %s", projectView.getName());
-            statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, Arrays.asList(errorReason, e.getMessage())));
+            statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, OPERATION_NAME, Arrays.asList(errorReason, e.getMessage())));
             throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_CONFIGURATION);
         }
     }

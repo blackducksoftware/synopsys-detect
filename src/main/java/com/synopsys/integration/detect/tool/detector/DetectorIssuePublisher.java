@@ -24,37 +24,37 @@ import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
 public class DetectorIssuePublisher {
 
-    public void publishEvents(final EventSystem eventSystem, final DetectorEvaluationTree rootEvaluationTree) {
+    public void publishEvents(EventSystem eventSystem, DetectorEvaluationTree rootEvaluationTree) {
         publishEvents(eventSystem, rootEvaluationTree.asFlatList());
     }
 
-    private void publishEvents(final EventSystem eventSystem, final List<DetectorEvaluationTree> trees) {
-        final String spacer = "\t\t";
-        for (final DetectorEvaluationTree tree : trees) {
-            final List<DetectorEvaluation> excepted = DetectorEvaluationUtils.filteredChildren(tree, DetectorEvaluation::wasExtractionException);
-            final List<DetectorEvaluation> failed = DetectorEvaluationUtils.filteredChildren(tree, DetectorEvaluation::wasExtractionFailure);
-            final List<DetectorEvaluation> notExtractable = DetectorEvaluationUtils.filteredChildren(tree, evaluation -> evaluation.isApplicable() && !evaluation.isExtractable());
-            final List<DetectorEvaluation> extractableFailed = notExtractable.stream().filter(it -> !it.isFallbackExtractable() && !it.isPreviousExtractable()).collect(Collectors.toList());
+    private void publishEvents(EventSystem eventSystem, List<DetectorEvaluationTree> trees) {
+        final String spacer = "\t";
+        for (DetectorEvaluationTree tree : trees) {
+            List<DetectorEvaluation> excepted = DetectorEvaluationUtils.filteredChildren(tree, DetectorEvaluation::wasExtractionException);
+            List<DetectorEvaluation> failed = DetectorEvaluationUtils.filteredChildren(tree, DetectorEvaluation::wasExtractionFailure);
+            List<DetectorEvaluation> notExtractable = DetectorEvaluationUtils.filteredChildren(tree, evaluation -> evaluation.isApplicable() && !evaluation.isExtractable());
+            List<DetectorEvaluation> extractableFailed = notExtractable.stream().filter(it -> !it.isFallbackExtractable() && !it.isPreviousExtractable()).collect(Collectors.toList());
             //For now, log only ones that used fallback.
-            final List<DetectorEvaluation> extractableFailedButFallback = notExtractable.stream().filter(DetectorEvaluation::isFallbackExtractable).collect(Collectors.toList());
+            List<DetectorEvaluation> extractableFailedButFallback = notExtractable.stream().filter(DetectorEvaluation::isFallbackExtractable).collect(Collectors.toList());
             //List<DetectorEvaluation> extractable_failed_but_skipped = notExtractable.stream().filter(it -> it.isPreviousExtractable()).collect(Collectors.toList());
 
-            final List<String> messages = new ArrayList<>();
+            List<String> messages = new ArrayList<>();
 
-            addFallbackIfNotEmpty(messages, "\tUsed Fallback: ", spacer, extractableFailedButFallback, DetectorEvaluation::getExtractabilityMessage);
+            addFallbackIfNotEmpty(messages, "Used Fallback: ", spacer, extractableFailedButFallback, DetectorEvaluation::getExtractabilityMessage);
             //writeEvaluationsIfNotEmpty(writer, "\tSkipped: ", spacer, extractable_failed_but_skipped, DetectorEvaluation::getExtractabilityMessage);
-            addIfNotEmpty(messages, "\tNot Extractable: ", spacer, extractableFailed, DetectorEvaluation::getExtractabilityMessage);
-            addIfNotEmpty(messages, "\tFailure: ", spacer, failed, detectorEvaluation -> detectorEvaluation.getExtraction().getDescription());
-            addIfNotEmpty(messages, "\tException: ", spacer, excepted, detectorEvaluation -> ExceptionUtil.oneSentenceDescription(detectorEvaluation.getExtraction().getError()));
+            addIfNotEmpty(messages, "Not Extractable: ", spacer, extractableFailed, DetectorEvaluation::getExtractabilityMessage);
+            addIfNotEmpty(messages, "Failure: ", spacer, failed, detectorEvaluation -> detectorEvaluation.getExtraction().getDescription());
+            addIfNotEmpty(messages, "Exception: ", spacer, excepted, detectorEvaluation -> ExceptionUtil.oneSentenceDescription(detectorEvaluation.getExtraction().getError()));
 
             if (messages.size() > 0) {
                 messages.add(0, tree.getDirectory().toString());
-                eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.DETECTOR, messages));
+                eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.DETECTOR, "Detector Issue", messages));
             }
         }
     }
 
-    private void addIfNotEmpty(final List<String> messages, final String prefix, final String spacer, final List<DetectorEvaluation> evaluations, final Function<DetectorEvaluation, String> reason) {
+    private void addIfNotEmpty(List<String> messages, String prefix, String spacer, List<DetectorEvaluation> evaluations, Function<DetectorEvaluation, String> reason) {
         if (evaluations.size() > 0) {
             evaluations.forEach(evaluation -> {
                 messages.add(prefix + evaluation.getDetectorRule().getDescriptiveName());
@@ -63,10 +63,10 @@ public class DetectorIssuePublisher {
         }
     }
 
-    private void addFallbackIfNotEmpty(final List<String> messages, final String prefix, final String spacer, final List<DetectorEvaluation> evaluations, final Function<DetectorEvaluation, String> reason) {
+    private void addFallbackIfNotEmpty(List<String> messages, String prefix, String spacer, List<DetectorEvaluation> evaluations, Function<DetectorEvaluation, String> reason) {
         if (evaluations.size() > 0) {
             evaluations.forEach(evaluation -> {
-                final Optional<DetectorEvaluation> fallback = evaluation.getSuccessfulFallback();
+                Optional<DetectorEvaluation> fallback = evaluation.getSuccessfulFallback();
                 fallback.ifPresent(detectorEvaluation -> {
                     messages.add(prefix + detectorEvaluation.getDetectorRule().getDescriptiveName());
                     messages.add(spacer + "Preferred Detector: " + evaluation.getDetectorRule().getDescriptiveName());

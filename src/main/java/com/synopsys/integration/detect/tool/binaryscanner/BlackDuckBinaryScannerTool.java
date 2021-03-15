@@ -38,6 +38,7 @@ import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameMan
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectIssueType;
+import com.synopsys.integration.detect.workflow.status.Operation;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detect.workflow.status.StatusType;
@@ -47,6 +48,7 @@ import com.synopsys.integration.util.NameVersion;
 public class BlackDuckBinaryScannerTool {
     private final Logger logger = LoggerFactory.getLogger(BlackDuckBinaryScannerTool.class);
     private static final String STATUS_KEY = "BINARY_SCAN";
+    private static final String OPERATION_NAME = "Black Duck Binary Scan";
 
     private final CodeLocationNameManager codeLocationNameManager;
     private final DirectoryManager directoryManager;
@@ -110,7 +112,8 @@ public class BlackDuckBinaryScannerTool {
         } else {
             logger.warn("Binary scan file did not exist, is not a file or can't be read.");
             statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.BINARY_SCAN, Arrays.asList("Binary scan file did not exist, is not a file or can't be read.")));
+            statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.BINARY_SCAN, OPERATION_NAME, Arrays.asList("Binary scan file did not exist, is not a file or can't be read.")));
             exitCodePublisher.publishExitCode(new ExitCodeRequest(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, STATUS_KEY));
             return BinaryScanToolResult.FAILURE();
         }
@@ -132,11 +135,13 @@ public class BlackDuckBinaryScannerTool {
             throwExceptionForError(binaryScanBatchOutput);
 
             logger.info("Successfully uploaded binary scan file: " + codeLocationName);
+            statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.SUCCESS));
             statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.SUCCESS));
             return codeLocationCreationData;
         } catch (IntegrationException e) {
             statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, Arrays.asList(e.getMessage())));
+            statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, OPERATION_NAME, Arrays.asList(e.getMessage())));
             throw new DetectUserFriendlyException("Failed to upload binary scan file.", e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
         }
     }

@@ -14,24 +14,35 @@ import com.synopsys.integration.detect.workflow.bdio.BdioManager;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationEventPublisher;
-import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.detect.workflow.status.Operation;
+import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
+import com.synopsys.integration.detect.workflow.status.StatusType;
 
 public class BdioFileGenerationOperation {
+    private final String OPERATION_NAME = "BDIO File Generation";
     private final RunOptions runOptions;
     private final BdioOptions bdioOptions;
     private final BdioManager bdioManager;
     private final CodeLocationEventPublisher codeLocationEventPublisher;
+    private final StatusEventPublisher statusEventPublisher;
 
-    public BdioFileGenerationOperation(RunOptions runOptions, BdioOptions bdioOptions, BdioManager bdioManager, CodeLocationEventPublisher codeLocationEventPublisher) {
+    public BdioFileGenerationOperation(RunOptions runOptions, BdioOptions bdioOptions, BdioManager bdioManager, CodeLocationEventPublisher codeLocationEventPublisher, StatusEventPublisher statusEventPublisher) {
         this.runOptions = runOptions;
         this.bdioOptions = bdioOptions;
         this.bdioManager = bdioManager;
         this.codeLocationEventPublisher = codeLocationEventPublisher;
+        this.statusEventPublisher = statusEventPublisher;
     }
 
-    public BdioResult execute(BdioInput bdioInput) throws DetectUserFriendlyException, IntegrationException {
-        BdioResult bdioResult = bdioManager.createBdioFiles(bdioOptions, bdioInput.getAggregateOptions(), bdioInput.getNameVersion(), bdioInput.getCodeLocations(), runOptions.shouldUseBdio2());
-        codeLocationEventPublisher.publishDetectCodeLocationNamesCalculated(bdioResult.getCodeLocationNamesResult());
-        return bdioResult;
+    public BdioResult execute(BdioInput bdioInput) throws DetectUserFriendlyException {
+        try {
+            BdioResult bdioResult = bdioManager.createBdioFiles(bdioOptions, bdioInput.getAggregateOptions(), bdioInput.getNameVersion(), bdioInput.getCodeLocations(), runOptions.shouldUseBdio2());
+            codeLocationEventPublisher.publishDetectCodeLocationNamesCalculated(bdioResult.getCodeLocationNamesResult());
+            statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.SUCCESS));
+            return bdioResult;
+        } catch (DetectUserFriendlyException ex) {
+            statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.FAILURE));
+            throw ex;
+        }
     }
 }

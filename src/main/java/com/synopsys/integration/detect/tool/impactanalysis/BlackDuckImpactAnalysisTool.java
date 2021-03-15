@@ -11,7 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
@@ -43,6 +43,7 @@ import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameMan
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectIssueType;
+import com.synopsys.integration.detect.workflow.status.Operation;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detect.workflow.status.StatusType;
@@ -53,6 +54,7 @@ import com.synopsys.method.analyzer.core.MethodUseAnalyzer;
 
 public class BlackDuckImpactAnalysisTool {
     public static final String STATUS_KEY = "IMPACT_ANALYSIS";
+    public static final String OPERATION_NAME = "Black Duck Impact Analysis";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -133,11 +135,13 @@ public class BlackDuckImpactAnalysisTool {
             CodeLocationCreationData<ImpactAnalysisBatchOutput> codeLocationCreationData = uploadImpactAnalysis(impactAnalysisPath, projectNameAndVersion, codeLocationName);
             ImpactAnalysisToolResult impactAnalysisToolResult = mapCodeLocations(impactAnalysisPath, codeLocationCreationData, projectVersionWrapper);
             statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.SUCCESS));
+            statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.SUCCESS));
             return impactAnalysisToolResult;
         } catch (IntegrationException exception) {
             logger.error(String.format("Failed to upload and map the Impact Analysis code location: %s", exception.getMessage()));
             statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, Collections.singletonList(exception.getMessage())));
+            statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, OPERATION_NAME, Arrays.asList(exception.getMessage())));
             throw new DetectUserFriendlyException("Failed to upload impact analysis file.", exception, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
         }
     }
@@ -213,7 +217,8 @@ public class BlackDuckImpactAnalysisTool {
     private ImpactAnalysisToolResult failImpactAnalysis(String issueMessage) {
         logger.warn(issueMessage);
         statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
-        statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.IMPACT_ANALYSIS, Collections.singletonList(issueMessage)));
+        statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.FAILURE));
+        statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.IMPACT_ANALYSIS, OPERATION_NAME, Arrays.asList(issueMessage)));
         exitCodePublisher.publishExitCode(new ExitCodeRequest(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, STATUS_KEY));
         return ImpactAnalysisToolResult.FAILURE();
     }

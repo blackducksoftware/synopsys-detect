@@ -7,6 +7,7 @@
  */
 package com.synopsys.integration.detect.workflow.status;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -17,7 +18,7 @@ import com.synopsys.integration.log.IntLogger;
 
 public class DetectStatusLogger {
 
-    public void logDetectStatus(IntLogger logger, List<Status> statusSummaries, List<DetectResult> detectResults, List<DetectIssue> detectIssues, ExitCodeType exitCodeType) {
+    public void logDetectStatus(IntLogger logger, List<Status> statusSummaries, List<DetectResult> detectResults, List<DetectIssue> detectIssues, List<Operation> detectOperations, ExitCodeType exitCodeType) {
         logger.info("");
         logger.info("");
 
@@ -29,6 +30,9 @@ public class DetectStatusLogger {
         logger.info("");
         logger.info("===============================");
         logger.info("");
+        logger.debug("=== Additional Information ===");
+        logDetectOperations(logger, detectOperations);
+
     }
 
     private void logDetectIssues(IntLogger logger, List<DetectIssue> detectIssues) {
@@ -46,11 +50,14 @@ public class DetectStatusLogger {
     }
 
     private void logIssuesInGroup(IntLogger logger, String groupHeading, Predicate<DetectIssue> issueFilter, List<DetectIssue> detectIssues) {
-        List<DetectIssue> detectors = detectIssues.stream().filter(issueFilter).collect(Collectors.toList());
-        if (!detectors.isEmpty()) {
+        List<DetectIssue> detectIssueList = detectIssues.stream().filter(issueFilter).collect(Collectors.toList());
+        if (!detectIssueList.isEmpty()) {
             logger.info(groupHeading);
-            detectors.stream().flatMap(issue -> issue.getMessages().stream()).forEach(line -> logger.info("\t" + line));
-            logger.info("");
+            for (DetectIssue issue : detectIssueList) {
+                logger.info("\t" + issue.getTitle());
+                issue.getMessages().forEach(message -> logger.info("\t\t" + message));
+                logger.info("");
+            }
         }
     }
 
@@ -86,5 +93,21 @@ public class DetectStatusLogger {
 
             previousSummaryClass = status.getClass();
         }
+    }
+
+    private void logDetectOperations(IntLogger logger, List<Operation> operations) {
+        List<Operation> sortedOperations = operations.stream()
+                                               .sorted(Comparator.comparing(Operation::getExecutionTime)
+                                                           .thenComparing(Operation::getDescriptionKey))
+                                               .collect(Collectors.toList());
+        logger.debug("====== Detect Operations ======");
+
+        for (Operation operation : sortedOperations) {
+            logger.debug("");
+            logger.debug(String.format("%s: %s (%s)", operation.getDescriptionKey(), operation.getStatusType().toString(), Operation.formatExecutionTime(operation.getExecutionTime())));
+        }
+        logger.debug("");
+        logger.debug("===============================");
+        logger.debug("");
     }
 }

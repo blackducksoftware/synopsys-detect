@@ -33,14 +33,14 @@ import com.synopsys.integration.detect.workflow.file.DetectFileUtils;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectIssueType;
-import com.synopsys.integration.detect.workflow.status.Status;
+import com.synopsys.integration.detect.workflow.status.Operation;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 
 public class BlackDuckRapidModePostActions {
-    private static final String STATUS_KEY = "Black Duck Rapid Scan Result Processing";
+    private static final String OPERATION_NAME = "Black Duck Rapid Scan Result Processing";
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Gson gson;
     private final StatusEventPublisher statusEventPublisher;
@@ -96,7 +96,7 @@ public class BlackDuckRapidModePostActions {
         if (!violatedPolicyComponentNames.isEmpty()) {
             exitCodePublisher.publishExitCode(new ExitCodeRequest(ExitCodeType.FAILURE_POLICY_VIOLATION, createViolationMessage(violatedPolicyComponentNames)));
         }
-        statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.SUCCESS));
+        statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.SUCCESS));
     }
 
     private void generateJSONScanOutput(NameVersion projectNameVersion, List<DeveloperScanComponentResultView> results) throws DetectUserFriendlyException {
@@ -119,8 +119,8 @@ public class BlackDuckRapidModePostActions {
             DetectFileUtils.writeToFile(jsonScanFile, jsonString);
         } catch (IOException ex) {
             String errorReason = "Cannot create rapid scan output file";
-            statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, Arrays.asList(errorReason, ex.getMessage())));
+            statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, OPERATION_NAME, Arrays.asList(errorReason, ex.getMessage())));
             throw new DetectUserFriendlyException(errorReason, ex, ExitCodeType.FAILURE_UNKNOWN_ERROR);
         }
     }

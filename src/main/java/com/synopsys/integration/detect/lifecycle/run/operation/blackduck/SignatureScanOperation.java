@@ -20,13 +20,12 @@ import com.synopsys.integration.detect.configuration.DetectUserFriendlyException
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.input.SignatureScanInput;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
+import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScanner;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerTool;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerToolResult;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectIssueType;
-import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
-import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class SignatureScanOperation {
@@ -56,8 +55,7 @@ public class SignatureScanOperation {
         if (signatureScannerToolResult.getResult() == Result.SUCCESS && signatureScannerToolResult.getCreationData().isPresent()) {
             result = signatureScannerToolResult.getCreationData();
         } else if (signatureScannerToolResult.getResult() != Result.SUCCESS) {
-            statusEventPublisher.publishStatusSummary(new Status("SIGNATURE_SCAN", StatusType.FAILURE));
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.SIGNATURE_SCANNER, Arrays.asList(signatureScannerToolResult.getResult().toString())));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.SIGNATURE_SCANNER, BlackDuckSignatureScanner.OPERATION_NAME, Arrays.asList(signatureScannerToolResult.getResult().toString())));
         }
         return result;
     }

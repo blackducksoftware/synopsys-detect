@@ -78,13 +78,13 @@ public class OperationFactory {
     }
 
     public final AggregateOptionsOperation createAggregateOptionsOperation() {
-        return new AggregateOptionsOperation(runOptions);
+        return new AggregateOptionsOperation(runOptions, runContext.getStatusEventPublisher());
     }
 
     public final BdioFileGenerationOperation createBdioFileGenerationOperation() {
         BdioManager bdioManager = new BdioManager(runContext.getDetectInfo(), new SimpleBdioFactory(), new ExternalIdFactory(), new Bdio2Factory(), new IntegrationEscapeUtil(), runContext.getCodeLocationNameManager(),
             runContext.getBdioCodeLocationCreator(), runContext.getDirectoryManager());
-        return new BdioFileGenerationOperation(runOptions, runContext.getDetectConfigurationFactory().createBdioOptions(), bdioManager, runContext.getCodeLocationEventPublisher());
+        return new BdioFileGenerationOperation(runOptions, runContext.getDetectConfigurationFactory().createBdioOptions(), bdioManager, runContext.getCodeLocationEventPublisher(), runContext.getStatusEventPublisher());
     }
 
     public final BinaryScanOperation createBinaryScanOperation() {
@@ -99,7 +99,7 @@ public class OperationFactory {
     }
 
     public final CodeLocationResultCalculationOperation createCodeLocationResultCalculationOperation() {
-        return new CodeLocationResultCalculationOperation(new CodeLocationResultCalculator(), runContext.getCodeLocationEventPublisher());
+        return new CodeLocationResultCalculationOperation(new CodeLocationResultCalculator(), runContext.getCodeLocationEventPublisher(), runContext.getStatusEventPublisher());
     }
 
     public final FullScanPostProcessingOperation createFullScanPostProcessingOperation() {
@@ -139,7 +139,7 @@ public class OperationFactory {
     public final ProjectDecisionOperation createProjectDecisionOperation() {
         ProjectNameVersionOptions projectNameVersionOptions = runContext.getDetectConfigurationFactory().createProjectNameVersionOptions(runContext.getDirectoryManager().getSourceDirectory().getName());
         ProjectNameVersionDecider projectNameVersionDecider = new ProjectNameVersionDecider(projectNameVersionOptions);
-        return new ProjectDecisionOperation(runOptions, projectNameVersionDecider);
+        return new ProjectDecisionOperation(runOptions, projectNameVersionDecider, runContext.getStatusEventPublisher());
     }
 
     public final SignatureScanOperation createSignatureScanOperation() throws DetectUserFriendlyException {

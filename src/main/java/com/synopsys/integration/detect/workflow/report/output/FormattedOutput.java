@@ -47,5 +47,9 @@ public class FormattedOutput {
 
     @SerializedName("propertyValues")
     public Map<String, String> propertyValues = new HashMap<>();
+
+    @SerializedName("operations")
+    public List<FormattedOperationOutput> operations = new ArrayList();
+
 }
 

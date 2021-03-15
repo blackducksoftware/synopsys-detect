@@ -35,6 +35,7 @@ import com.synopsys.integration.detect.workflow.nameversion.PreferredDetectorNam
 import com.synopsys.integration.detect.workflow.report.util.DetectorEvaluationUtils;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.status.DetectorStatus;
+import com.synopsys.integration.detect.workflow.status.Operation;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detect.workflow.status.UnrecognizedPaths;
@@ -256,7 +257,10 @@ public class DetectorTool {
     }
 
     private void publishStatusEvents(Map<DetectorType, StatusType> statusMap) {
-        statusMap.forEach((detectorType, statusType) -> statusEventPublisher.publishStatusSummary(new DetectorStatus(detectorType, statusType)));
+        statusMap.forEach((detectorType, statusType) -> {
+            statusEventPublisher.publishStatusSummary(new DetectorStatus(detectorType, statusType));
+            statusEventPublisher.publishOperation(new Operation("Detector " + detectorType.name(), statusType));
+        });
         if (statusMap.containsValue(StatusType.FAILURE)) {
             exitCodePublisher.publishExitCode(new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR, "One or more detectors were not successful."));
         }

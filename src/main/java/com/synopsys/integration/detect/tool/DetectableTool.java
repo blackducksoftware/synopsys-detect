@@ -27,6 +27,7 @@ import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.project.DetectToolProjectInfo;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectIssueType;
+import com.synopsys.integration.detect.workflow.status.Operation;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detect.workflow.status.StatusType;
@@ -91,7 +92,8 @@ public class DetectableTool {
         if (!extractable.getPassed()) {
             logger.error("Was not extractable: " + extractable.toDescription());
             statusEventPublisher.publishStatusSummary(new Status(name, StatusType.FAILURE));
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.DETECTOR, Arrays.asList(extractable.toDescription())));
+            statusEventPublisher.publishOperation(new Operation(name, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.DETECTOR, name, Arrays.asList(extractable.toDescription())));
             exitCodePublisher.publishExitCode(new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, extractable.toDescription()));
             return DetectableToolResult.failed(extractable);
         }
@@ -109,12 +111,14 @@ public class DetectableTool {
         if (!extraction.isSuccess()) {
             logger.error("Extraction was not success.");
             statusEventPublisher.publishStatusSummary(new Status(name, StatusType.FAILURE));
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.DETECTOR, Arrays.asList(extraction.getDescription())));
+            statusEventPublisher.publishOperation(new Operation(name, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.DETECTOR, name, Arrays.asList(extraction.getDescription())));
             exitCodePublisher.publishExitCode(new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, extractable.toDescription()));
             return DetectableToolResult.failed();
         } else {
             logger.debug("Extraction success.");
             statusEventPublisher.publishStatusSummary(new Status(name, StatusType.SUCCESS));
+            statusEventPublisher.publishOperation(new Operation(name, StatusType.SUCCESS));
         }
 
         Map<CodeLocation, DetectCodeLocation> detectCodeLocationMap = codeLocationConverter.toDetectCodeLocation(sourcePath, extraction, sourcePath, name);

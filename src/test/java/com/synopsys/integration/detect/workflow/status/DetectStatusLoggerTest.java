@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,8 +31,25 @@ public class DetectStatusLoggerTest {
         List<Status> statusSummaries = createStatus();
         List<DetectResult> detectResults = createResults();
         List<DetectIssue> detectIssues = createIssues();
-        statusLogger.logDetectStatus(loggerActual, statusSummaries, detectResults, detectIssues, ExitCodeType.SUCCESS);
+        List<Operation> detectOperations = createOperations();
+        statusLogger.logDetectStatus(loggerActual, statusSummaries, detectResults, detectIssues, detectOperations, ExitCodeType.SUCCESS);
         String actualOutput = loggerActual.getOutputString(LogLevel.INFO);
+        assertEquals(expectedOutput.trim().replaceAll("\r?\n", "\n"), actualOutput.trim().replaceAll("\r?\n", "\n"));
+    }
+
+    @Test
+    public void testDebugContent() throws IOException {
+        File expectedOutputFile = new File("src/test/resources/workflow/status/expectedDebugStatusLoggerOutput.txt");
+        String expectedOutput = FileUtils.readFileToString(expectedOutputFile, StandardCharsets.UTF_8);
+        BufferedIntLogger loggerActual = new BufferedIntLogger();
+
+        DetectStatusLogger statusLogger = new DetectStatusLogger();
+        List<Status> statusSummaries = createStatus();
+        List<DetectResult> detectResults = createResults();
+        List<DetectIssue> detectIssues = createIssues();
+        List<Operation> detectOperations = createOperations();
+        statusLogger.logDetectStatus(loggerActual, statusSummaries, detectResults, detectIssues, detectOperations, ExitCodeType.SUCCESS);
+        String actualOutput = loggerActual.getOutputString(LogLevel.DEBUG);
         assertEquals(expectedOutput.trim().replaceAll("\r?\n", "\n"), actualOutput.trim().replaceAll("\r?\n", "\n"));
     }
 
@@ -73,10 +91,20 @@ public class DetectStatusLoggerTest {
 
     private DetectIssue createIssue(DetectIssueType type, String messagePrefix) {
         ArrayList<String> messages = new ArrayList<>();
+        String title = String.format("%s Detect Issue", messagePrefix);
         String primaryMessage = String.format("%s primary message: %s", messagePrefix, type.name());
         String secondaryMessage = String.format("%s secondary message: %s", messagePrefix, type.name());
         messages.add(primaryMessage);
         messages.add(secondaryMessage);
-        return new DetectIssue(type, messages);
+        return new DetectIssue(type, title, messages);
+    }
+
+    private List<Operation> createOperations() {
+        ArrayList<Operation> statusSummaries = new ArrayList<>();
+        Operation operation = new Operation(Instant.EPOCH, "description 1", StatusType.SUCCESS);
+        statusSummaries.add(operation);
+        operation = new Operation(Instant.EPOCH, "description 2", StatusType.FAILURE);
+        statusSummaries.add(operation);
+        return statusSummaries;
     }
 }

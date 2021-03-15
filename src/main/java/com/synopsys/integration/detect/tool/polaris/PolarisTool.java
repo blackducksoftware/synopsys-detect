@@ -20,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
+import com.synopsys.integration.detect.workflow.status.Operation;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detect.workflow.status.StatusType;
@@ -90,18 +91,22 @@ public class PolarisTool {
                 ExecutableOutput output = executableRunner.execute(swipExecutable);
                 if (output.getReturnCode() == 0) {
                     statusEventPublisher.publishStatusSummary(new Status(POLARIS_DESCRIPTION_KEY, StatusType.SUCCESS));
+                    statusEventPublisher.publishOperation(new Operation(POLARIS_DESCRIPTION_KEY, StatusType.FAILURE));
                 } else {
                     logger.error("Polaris returned a non-zero exit code.");
                     statusEventPublisher.publishStatusSummary(new Status(POLARIS_DESCRIPTION_KEY, StatusType.FAILURE));
+                    statusEventPublisher.publishOperation(new Operation(POLARIS_DESCRIPTION_KEY, StatusType.FAILURE));
                 }
 
             } catch (ExecutableRunnerException e) {
                 statusEventPublisher.publishStatusSummary(new Status(POLARIS_DESCRIPTION_KEY, StatusType.FAILURE));
+                statusEventPublisher.publishOperation(new Operation(POLARIS_DESCRIPTION_KEY, StatusType.FAILURE));
                 logger.error("Couldn't run the executable: " + e.getMessage());
             }
         } else {
             logger.error("Check the logs - the Polaris CLI could not be found.");
             statusEventPublisher.publishStatusSummary(new Status(POLARIS_DESCRIPTION_KEY, StatusType.FAILURE));
+            statusEventPublisher.publishOperation(new Operation(POLARIS_DESCRIPTION_KEY, StatusType.FAILURE));
         }
     }
 

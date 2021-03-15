@@ -1,22 +1,31 @@
 ======== Detect Issues ========
 
 DETECTORS:
-	Junit Test Issue Set 1 primary message: DETECTOR
-	Junit Test Issue Set 1 secondary message: DETECTOR
-	Junit Test Issue Set 2 primary message: DETECTOR
-	Junit Test Issue Set 2 secondary message: DETECTOR
+	Junit Test Issue Set 1 Detect Issue
+		Junit Test Issue Set 1 primary message: DETECTOR
+		Junit Test Issue Set 1 secondary message: DETECTOR
+
+	Junit Test Issue Set 2 Detect Issue
+		Junit Test Issue Set 2 primary message: DETECTOR
+		Junit Test Issue Set 2 secondary message: DETECTOR
 
 EXCEPTIONS:
-	Junit Test Issue Set 1 primary message: EXCEPTION
-	Junit Test Issue Set 1 secondary message: EXCEPTION
-	Junit Test Issue Set 2 primary message: EXCEPTION
-	Junit Test Issue Set 2 secondary message: EXCEPTION
+	Junit Test Issue Set 1 Detect Issue
+		Junit Test Issue Set 1 primary message: EXCEPTION
+		Junit Test Issue Set 1 secondary message: EXCEPTION
+
+	Junit Test Issue Set 2 Detect Issue
+		Junit Test Issue Set 2 primary message: EXCEPTION
+		Junit Test Issue Set 2 secondary message: EXCEPTION
 
 DEPRECATIONS:
-	Junit Test Issue Set 1 primary message: DEPRECATION
-	Junit Test Issue Set 1 secondary message: DEPRECATION
-	Junit Test Issue Set 2 primary message: DEPRECATION
-	Junit Test Issue Set 2 secondary message: DEPRECATION
+	Junit Test Issue Set 1 Detect Issue
+		Junit Test Issue Set 1 primary message: DEPRECATION
+		Junit Test Issue Set 1 secondary message: DEPRECATION
+
+	Junit Test Issue Set 2 Detect Issue
+		Junit Test Issue Set 2 primary message: DEPRECATION
+		Junit Test Issue Set 2 secondary message: DEPRECATION
 
 ======== Detect Result ========
 
