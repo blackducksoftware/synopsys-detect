@@ -14,7 +14,7 @@ If no lockfile is present at the root of the project, Lerna extraction will fail
 
 ## Extracting from package-lock.json
 
-The Lerna detect will execute the same code as the [NPM package lock detector](../../../advanced/package-managers/npm/#npm-package-lock).
+The Lerna detector will execute the same code as the [NPM package lock detector](../../../advanced/package-managers/npm/#npm-package-lock).
 
 The [NPM package lock detector](../../../properties/detectors/npm/) related properties also apply.
 
@@ -22,7 +22,7 @@ Since the Lerna detector is currently not using the NPM Cli, only the [detect.np
 
 ## Extracting from npm-shrinkwrap.json
 
-The Lerna detect will execute the same code as the [NPM shrinkwrap detector](../../../advanced/package-managers/npm/#npm-shrinkwrap).
+The Lerna detector will execute the same code as the [NPM shrinkwrap detector](../../../advanced/package-managers/npm/#npm-shrinkwrap).
 
 The [NPM shrinkwrap detector](../../../properties/detectors/npm/) related properties also apply.
 
@@ -30,7 +30,7 @@ Since the Lerna detector is currently not using the NPM Cli, only the [detect.np
 
 ## Extracting from yarn.lock
 
-The Lerna detect will execute the same code as the [Yarn detector](../../../advanced/package-managers/yarn/#yarn-support).
+The Lerna detector will execute the same code as the [Yarn detector](../../../advanced/package-managers/yarn/#yarn-support).
 
 The [Yarn detector related properties](../../../properties/detectors/yarn/) also apply.
 
