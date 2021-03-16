@@ -13,6 +13,7 @@
 * (IDETECT-1986) Resolved an issue where warnings regarding reflective access appear at the start of Detect.
 * (IDETECT-2400) Resolved an issue where 'dependencies' would be removed from the value of the detect.gradle.build.command property.
 * (IDETECT-2394) Resolved an issue that created inaccurate relationships in the BDIO files when Gemlock files were processed.
+* (IDETECT-2525) Resolved an issue with the Yarn detector that caused component version information to be missing when the yarn.lock file contained quoted field keys.
 
 ## Version 6.8.0
 ### New features
