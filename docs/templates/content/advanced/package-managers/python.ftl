@@ -68,7 +68,7 @@ The Poetry detector discovers dependencies of Python projects.
 The Poetry detector attempts to run on your project if either of the following is true:
 
 1. A poetry.lock file is found.
-2. A pyproject.toml file is found.
+2. A pyproject.toml file containing a tool.poetry section is found.
 
 The Poetry detector parses poetry.lock for dependency information. If the detector discovers a pyproject.toml file but not a poetry.lock file, it will prompt the user to generate a poetry.lock by running `poetry install` and then run Detect again.
-If the Poetry detector extracts the project's name and version from the pyproject.toml file.  If it does not find a pyproject.toml file, it will defer to values derived by git, from the project's directory, or defaults.
+The Poetry detector extracts the project's name and version from the pyproject.toml file.  If it does not find a pyproject.toml file, it will defer to values derived by git, from the project's directory, or defaults.
