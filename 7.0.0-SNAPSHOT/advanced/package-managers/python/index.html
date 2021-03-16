@@ -1528,10 +1528,10 @@ pip install -r requirements.txt
 <p>The Poetry detector attempts to run on your project if either of the following is true:</p>
 <ol>
 <li>A poetry.lock file is found.</li>
-<li>A pyproject.toml file is found.</li>
+<li>A pyproject.toml file containing a tool.poetry section is found.</li>
 </ol>
 <p>The Poetry detector parses poetry.lock for dependency information. If the detector discovers a pyproject.toml file but not a poetry.lock file, it will prompt the user to generate a poetry.lock by running <code>poetry install</code> and then run Detect again.
-If the Poetry detector extracts the project's name and version from the pyproject.toml file.  If it does not find a pyproject.toml file, it will defer to values derived by git, from the project's directory, or defaults.</p>
+The Poetry detector extracts the project's name and version from the pyproject.toml file.  If it does not find a pyproject.toml file, it will defer to values derived by git, from the project's directory, or defaults.</p>
                 
                   
                 

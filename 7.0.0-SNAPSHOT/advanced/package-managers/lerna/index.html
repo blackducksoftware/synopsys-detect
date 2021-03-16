@@ -1503,15 +1503,15 @@ Supported lockfile types are package-lock.json, npm-shrinkwrap.json, and yarn.lo
 <p>If no lockfile is present in the package, it will be assumed that all the dependencies defined within the package's package.json file will be resolved in the lockfile at the root of the project.
 If no lockfile is present at the root of the project, Lerna extraction will fail.</p>
 <h2 id="extracting-from-package-lockjson">Extracting from package-lock.json<a class="headerlink" href="#extracting-from-package-lockjson" title="Permanent link">#</a></h2>
-<p>The Lerna detect will execute the same code as the <a href="../../../advanced/package-managers/npm/#npm-package-lock">NPM package lock detector</a>.</p>
+<p>The Lerna detector will execute the same code as the <a href="../../../advanced/package-managers/npm/#npm-package-lock">NPM package lock detector</a>.</p>
 <p>The <a href="../../../properties/detectors/npm/">NPM package lock detector</a> related properties also apply.</p>
 <p>Since the Lerna detector is currently not using the NPM Cli, only the <a href="../../../properties/detectors/npm/#include-npm-development-dependencies">detect.npm.include.dev.dependencies</a> property applies.</p>
 <h2 id="extracting-from-npm-shrinkwrapjson">Extracting from npm-shrinkwrap.json<a class="headerlink" href="#extracting-from-npm-shrinkwrapjson" title="Permanent link">#</a></h2>
-<p>The Lerna detect will execute the same code as the <a href="../../../advanced/package-managers/npm/#npm-shrinkwrap">NPM shrinkwrap detector</a>.</p>
+<p>The Lerna detector will execute the same code as the <a href="../../../advanced/package-managers/npm/#npm-shrinkwrap">NPM shrinkwrap detector</a>.</p>
 <p>The <a href="../../../properties/detectors/npm/">NPM shrinkwrap detector</a> related properties also apply.</p>
 <p>Since the Lerna detector is currently not using the NPM Cli, only the <a href="../../../properties/detectors/npm/#include-npm-development-dependencies">detect.npm.include.dev.dependencies</a> property applies.</p>
 <h2 id="extracting-from-yarnlock">Extracting from yarn.lock<a class="headerlink" href="#extracting-from-yarnlock" title="Permanent link">#</a></h2>
-<p>The Lerna detect will execute the same code as the <a href="../../../advanced/package-managers/yarn/#yarn-support">Yarn detector</a>.</p>
+<p>The Lerna detector will execute the same code as the <a href="../../../advanced/package-managers/yarn/#yarn-support">Yarn detector</a>.</p>
 <p>The <a href="../../../properties/detectors/yarn/">Yarn detector related properties</a> also apply.</p>
 <h2 id="private-packages">Private packages<a class="headerlink" href="#private-packages" title="Permanent link">#</a></h2>
 <p>With the <a href="../../../properties/detectors/lerna/#include-lerna-packages-defined-as-private46">detect.lerna.include.private</a> property, users can specify whether or not to include private packages as defined by Lerna.</p>

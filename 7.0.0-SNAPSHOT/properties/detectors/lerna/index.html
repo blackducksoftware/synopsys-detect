@@ -1260,6 +1260,20 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#lerna-packages-excluded-advanced" class="md-nav__link">
+    Lerna Packages Excluded (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lerna-packages-included-advanced" class="md-nav__link">
+    Lerna Packages Included (Advanced)
+  </a>
+  
+</li>
+      
       
       
       
@@ -1435,6 +1449,20 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#lerna-packages-excluded-advanced" class="md-nav__link">
+    Lerna Packages Excluded (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lerna-packages-included-advanced" class="md-nav__link">
+    Lerna Packages Included (Advanced)
+  </a>
+  
+</li>
+      
       
       
       
@@ -1532,6 +1560,102 @@
 <tr>
 <td>Case Sensitive</td>
 <td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Example</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="lerna-packages-excluded-advanced">Lerna Packages Excluded (Advanced)<a class="headerlink" href="#lerna-packages-excluded-advanced" title="Permanent link">#</a></h2>
+<pre><code>--detect.lerna.excluded.packages
+</code></pre>
+
+<p>A comma-separated list of Lerna packages to exclude.</p>
+<p>As Detect parses the output of lerna ls --all --json, Detect will exclude any Lerna packages specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> &gt; <i>Property wildcard support</i> page for more details.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>7.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String List</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Example</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="lerna-packages-included-advanced">Lerna Packages Included (Advanced)<a class="headerlink" href="#lerna-packages-included-advanced" title="Permanent link">#</a></h2>
+<pre><code>--detect.lerna.included.packages
+</code></pre>
+
+<p>A comma-separated list of Lerna packages to include.</p>
+<p>As Detect parses the output of lerna ls --all --json2, if this property is set, Detect will include only those Lerna packages specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> &gt; <i>Property wildcard support</i> page for more details.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>7.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String List</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>Yes</td>
 </tr>
 <tr>
 <td>Acceptable Values</td>
