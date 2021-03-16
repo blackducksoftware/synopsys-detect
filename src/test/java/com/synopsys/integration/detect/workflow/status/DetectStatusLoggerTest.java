@@ -100,11 +100,11 @@ public class DetectStatusLoggerTest {
     }
 
     private List<Operation> createOperations() {
-        ArrayList<Operation> statusSummaries = new ArrayList<>();
-        Operation operation = new Operation(Instant.EPOCH, "description 1", StatusType.SUCCESS);
-        statusSummaries.add(operation);
-        operation = new Operation(Instant.EPOCH, "description 2", StatusType.FAILURE);
-        statusSummaries.add(operation);
-        return statusSummaries;
+        ArrayList<Operation> operations = new ArrayList<>();
+        Operation operation = new Operation(Instant.EPOCH, null, "description 1", StatusType.SUCCESS);
+        operations.add(operation);
+        operation = new Operation(Instant.EPOCH, null, "description 2", StatusType.FAILURE);
+        operations.add(operation);
+        return operations;
     }
 }

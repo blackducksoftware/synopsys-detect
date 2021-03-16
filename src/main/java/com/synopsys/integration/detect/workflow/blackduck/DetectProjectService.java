@@ -7,7 +7,6 @@
  */
 package com.synopsys.integration.detect.workflow.blackduck;
 
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -36,11 +35,7 @@ import com.synopsys.integration.blackduck.service.model.ProjectSyncModel;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
-import com.synopsys.integration.detect.workflow.status.DetectIssue;
-import com.synopsys.integration.detect.workflow.status.DetectIssueType;
-import com.synopsys.integration.detect.workflow.status.Operation;
-import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
-import com.synopsys.integration.detect.workflow.status.StatusType;
+import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.util.NameVersion;
@@ -57,11 +52,11 @@ public class DetectProjectService {
     private final DetectProjectServiceOptions detectProjectServiceOptions;
     private final ProjectMappingService projectMappingService;
     private final DetectCustomFieldService detectCustomFieldService;
-    private final StatusEventPublisher statusEventPublisher;
+    private final OperationSystem operationSystem;
 
     public DetectProjectService(BlackDuckApiClient blackDuckApiClient, ProjectService projectService, ProjectBomService projectBomService, ProjectUsersService projectUsersService, TagService tagService,
         DetectProjectServiceOptions detectProjectServiceOptions, ProjectMappingService projectMappingService,
-        DetectCustomFieldService detectCustomFieldService, StatusEventPublisher statusEventPublisher) {
+        DetectCustomFieldService detectCustomFieldService, OperationSystem operationSystem) {
         this.blackDuckApiClient = blackDuckApiClient;
         this.projectService = projectService;
         this.projectBomService = projectBomService;
@@ -70,10 +65,11 @@ public class DetectProjectService {
         this.detectProjectServiceOptions = detectProjectServiceOptions;
         this.projectMappingService = projectMappingService;
         this.detectCustomFieldService = detectCustomFieldService;
-        this.statusEventPublisher = statusEventPublisher;
+        this.operationSystem = operationSystem;
     }
 
     public ProjectVersionWrapper createOrUpdateBlackDuckProject(NameVersion projectNameVersion) throws IntegrationException, DetectUserFriendlyException {
+        operationSystem.beginOperation(OPERATION_NAME);
         ProjectSyncModel projectSyncModel = createProjectSyncModel(projectNameVersion);
         boolean forceUpdate = detectProjectServiceOptions.isForceProjectVersionUpdate();
         try {
@@ -100,11 +96,10 @@ public class DetectProjectService {
 
             addUserGroupsToProject(projectUsersService, projectVersionWrapper, detectProjectServiceOptions.getGroups());
             addTagsToProject(tagService, projectVersionWrapper, detectProjectServiceOptions.getTags());
-            statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.SUCCESS));
+            operationSystem.completeWithSuccess(OPERATION_NAME);
             return projectVersionWrapper;
         } catch (IntegrationException ex) {
-            statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.FAILURE));
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, OPERATION_NAME, Arrays.asList(ex.getMessage())));
+            operationSystem.completeWithError(OPERATION_NAME, ex.getMessage());
             throw ex;
         }
     }
@@ -117,8 +112,7 @@ public class DetectProjectService {
             String projectVersionName = projectVersionWrapper.getProjectVersionView().getVersionName();
             if (StringUtils.isBlank(parentProjectName) || StringUtils.isBlank(parentVersionName)) {
                 String errorReason = "Both the parent project name and the parent project version name must be specified if either is specified.";
-                statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.FAILURE));
-                statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, OPERATION_NAME, Arrays.asList(errorReason)));
+                operationSystem.completeWithError(OPERATION_NAME, errorReason);
                 throw new DetectUserFriendlyException(errorReason, ExitCodeType.FAILURE_CONFIGURATION);
             }
             try {
@@ -142,8 +136,7 @@ public class DetectProjectService {
                 }
             } catch (IntegrationException e) {
                 String errorReason = "Unable to add project to parent.";
-                statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.FAILURE));
-                statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, OPERATION_NAME, Arrays.asList(errorReason, e.getMessage())));
+                operationSystem.completeWithError(OPERATION_NAME, errorReason, e.getMessage());
                 throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
             }
         }
@@ -249,8 +242,7 @@ public class DetectProjectService {
             }
         } catch (IntegrationException e) {
             String errorReason = String.format("Error finding project/version (%s/%s) to clone, or getting its release url.", cloneProjectName, cloneProjectVersionName);
-            statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.FAILURE));
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, OPERATION_NAME, Arrays.asList(errorReason, e.getMessage())));
+            operationSystem.completeWithError(OPERATION_NAME, errorReason, e.getMessage());
             throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_CONFIGURATION);
         }
     }
@@ -274,8 +266,7 @@ public class DetectProjectService {
             }
         } catch (IntegrationException e) {
             String errorReason = "Error finding latest version to clone, or getting its release url.";
-            statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.FAILURE));
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, OPERATION_NAME, Arrays.asList(errorReason, e.getMessage())));
+            operationSystem.completeWithError(OPERATION_NAME, errorReason, e.getMessage());
             throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_CONFIGURATION);
         }
     }
@@ -291,8 +282,7 @@ public class DetectProjectService {
             projectMappingService.populateApplicationId(projectView, applicationId);
         } catch (IntegrationException e) {
             String errorReason = String.format("Unable to set Application ID for project: %s", projectView.getName());
-            statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.FAILURE));
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, OPERATION_NAME, Arrays.asList(errorReason, e.getMessage())));
+            operationSystem.completeWithError(OPERATION_NAME, errorReason, e.getMessage());
             throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_CONFIGURATION);
         }
     }

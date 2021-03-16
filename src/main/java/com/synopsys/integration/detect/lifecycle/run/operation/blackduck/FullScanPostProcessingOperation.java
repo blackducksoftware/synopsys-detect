@@ -21,6 +21,7 @@ import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostActions;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
 import com.synopsys.integration.detect.workflow.result.BlackDuckBomDetectResult;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
+import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.HttpUrl;
@@ -30,20 +31,22 @@ public class FullScanPostProcessingOperation {
     private final BlackDuckPostOptions blackDuckPostOptions;
     private final StatusEventPublisher statusEventPublisher;
     private final ExitCodePublisher exitCodePublisher;
+    private final OperationSystem operationSystem;
     private final Long detectTimeoutInSeconds;
 
     public FullScanPostProcessingOperation(DetectToolFilter detectToolFilter, BlackDuckPostOptions blackDuckPostOptions,
-        StatusEventPublisher statusEventPublisher, ExitCodePublisher exitCodePublisher, Long detectTimeoutInSeconds) {
+        StatusEventPublisher statusEventPublisher, ExitCodePublisher exitCodePublisher, OperationSystem operationSystem, Long detectTimeoutInSeconds) {
         this.detectToolFilter = detectToolFilter;
         this.blackDuckPostOptions = blackDuckPostOptions;
         this.statusEventPublisher = statusEventPublisher;
         this.exitCodePublisher = exitCodePublisher;
+        this.operationSystem = operationSystem;
         this.detectTimeoutInSeconds = detectTimeoutInSeconds;
     }
 
     public void execute(BlackDuckServicesFactory blackDuckServicesFactory, FullScanPostProcessingInput postProcessingInput) throws DetectUserFriendlyException, IntegrationException {
         BlackDuckPostActions blackDuckPostActions = new BlackDuckPostActions(blackDuckServicesFactory.createCodeLocationCreationService(), statusEventPublisher, exitCodePublisher, blackDuckServicesFactory.getBlackDuckApiClient(),
-            blackDuckServicesFactory.createProjectBomService(), blackDuckServicesFactory.createReportService(detectTimeoutInSeconds * 1000));
+            blackDuckServicesFactory.createProjectBomService(), blackDuckServicesFactory.createReportService(detectTimeoutInSeconds * 1000), operationSystem);
         blackDuckPostActions
             .perform(blackDuckPostOptions, postProcessingInput.getCodeLocationResults().getCodeLocationWaitData(), postProcessingInput.getProjectVersionWrapper(), postProcessingInput.getProjectNameVersion(), detectTimeoutInSeconds);
 

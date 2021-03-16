@@ -36,7 +36,7 @@ import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameMan
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectIssueType;
-import com.synopsys.integration.detect.workflow.status.Operation;
+import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.detect.workflow.status.SignatureScanStatus;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detect.workflow.status.StatusType;
@@ -54,13 +54,14 @@ public class BlackDuckSignatureScanner {
     private final ScanBatchRunner scanJobManager;
     private final StatusEventPublisher statusEventPublisher;
     private final ExitCodePublisher exitCodePublisher;
+    private final OperationSystem operationSystem;
 
     //When OFFLINE, this should be NULL. No other changes required for offline (in this class).
     private final BlackDuckServerConfig blackDuckServerConfig;
 
     public BlackDuckSignatureScanner(DirectoryManager directoryManager, FileFinder fileFinder, CodeLocationNameManager codeLocationNameManager,
         BlackDuckSignatureScannerOptions signatureScannerOptions, ScanBatchRunner scanJobManager, BlackDuckServerConfig blackDuckServerConfig, StatusEventPublisher statusEventPublisher,
-        ExitCodePublisher exitCodePublisher) {
+        ExitCodePublisher exitCodePublisher, OperationSystem operationSystem) {
         this.directoryManager = directoryManager;
         this.fileFinder = fileFinder;
         this.codeLocationNameManager = codeLocationNameManager;
@@ -69,10 +70,12 @@ public class BlackDuckSignatureScanner {
         this.blackDuckServerConfig = blackDuckServerConfig;
         this.statusEventPublisher = statusEventPublisher;
         this.exitCodePublisher = exitCodePublisher;
+        this.operationSystem = operationSystem;
 
     }
 
     public ScanBatchOutput performScanActions(NameVersion projectNameVersion, File installDirectory, File dockerTarFile) throws IntegrationException, IOException, DetectUserFriendlyException {
+        operationSystem.beginOperation(OPERATION_NAME);
         List<SignatureScanPath> signatureScanPaths = determinePathsAndExclusions(projectNameVersion, signatureScannerOptions.getMaxDepth(), dockerTarFile);
 
         ScanBatchBuilder scanJobBuilder = createDefaultScanBatchBuilder(projectNameVersion, installDirectory, signatureScanPaths, dockerTarFile);
@@ -81,6 +84,7 @@ public class BlackDuckSignatureScanner {
         try {
             scanJob = scanJobBuilder.build();
         } catch (IllegalArgumentException e) {
+            operationSystem.completeWithFailure(OPERATION_NAME);
             throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_CONFIGURATION);
         }
 
@@ -120,7 +124,7 @@ public class BlackDuckSignatureScanner {
     private void publishResults(SignatureScannerReport signatureScannerReport) {
         if (signatureScannerReport.isSuccessful()) {
             statusEventPublisher.publishStatusSummary(new SignatureScanStatus(signatureScannerReport.getSignatureScanPath().getTargetCanonicalPath(), StatusType.SUCCESS));
-            statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.SUCCESS));
+            operationSystem.completeWithSuccess(OPERATION_NAME);
             return;
         }
 
@@ -140,7 +144,7 @@ public class BlackDuckSignatureScanner {
         }
 
         statusEventPublisher.publishStatusSummary(new SignatureScanStatus(signatureScannerReport.getSignatureScanPath().getTargetCanonicalPath(), StatusType.FAILURE));
-        statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.FAILURE));
+        operationSystem.completeWithFailure(OPERATION_NAME);
     }
 
     private List<SignatureScanPath> determinePathsAndExclusions(NameVersion projectNameVersion, Integer maxDepth, File dockerTarFile) throws IOException {

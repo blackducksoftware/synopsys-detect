@@ -10,7 +10,6 @@ package com.synopsys.integration.detect.workflow.blackduck.developer;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -30,11 +29,8 @@ import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.workflow.file.DetectFileUtils;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.detect.workflow.status.DetectIssue;
-import com.synopsys.integration.detect.workflow.status.DetectIssueType;
-import com.synopsys.integration.detect.workflow.status.Operation;
+import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
-import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 
@@ -45,15 +41,18 @@ public class BlackDuckRapidModePostActions {
     private final StatusEventPublisher statusEventPublisher;
     private final ExitCodePublisher exitCodePublisher;
     private final DirectoryManager directoryManager;
+    private final OperationSystem operationSystem;
 
-    public BlackDuckRapidModePostActions(Gson gson, StatusEventPublisher statusEventPublisher, ExitCodePublisher exitCodePublisher, DirectoryManager directoryManager) {
+    public BlackDuckRapidModePostActions(Gson gson, StatusEventPublisher statusEventPublisher, ExitCodePublisher exitCodePublisher, DirectoryManager directoryManager, OperationSystem operationSystem) {
         this.gson = gson;
         this.statusEventPublisher = statusEventPublisher;
         this.exitCodePublisher = exitCodePublisher;
         this.directoryManager = directoryManager;
+        this.operationSystem = operationSystem;
     }
 
     public void perform(NameVersion projectNameVersion, List<DeveloperScanComponentResultView> results) throws DetectUserFriendlyException {
+        operationSystem.beginOperation(OPERATION_NAME);
         Set<String> violatedPolicyComponentNames = new LinkedHashSet<>();
         generateJSONScanOutput(projectNameVersion, results);
         for (DeveloperScanComponentResultView resultView : results) {
@@ -95,7 +94,7 @@ public class BlackDuckRapidModePostActions {
         if (!violatedPolicyComponentNames.isEmpty()) {
             exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_POLICY_VIOLATION, createViolationMessage(violatedPolicyComponentNames));
         }
-        statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.SUCCESS));
+        operationSystem.completeWithSuccess(OPERATION_NAME);
     }
 
     private void generateJSONScanOutput(NameVersion projectNameVersion, List<DeveloperScanComponentResultView> results) throws DetectUserFriendlyException {
@@ -118,8 +117,7 @@ public class BlackDuckRapidModePostActions {
             DetectFileUtils.writeToFile(jsonScanFile, jsonString);
         } catch (IOException ex) {
             String errorReason = "Cannot create rapid scan output file";
-            statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.FAILURE));
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, OPERATION_NAME, Arrays.asList(errorReason, ex.getMessage())));
+            operationSystem.completeWithError(OPERATION_NAME, errorReason, ex.getMessage());
             throw new DetectUserFriendlyException(errorReason, ex, ExitCodeType.FAILURE_UNKNOWN_ERROR);
         }
     }

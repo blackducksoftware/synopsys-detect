@@ -20,6 +20,7 @@ import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.workflow.blackduck.developer.BlackDuckRapidMode;
 import com.synopsys.integration.detect.workflow.blackduck.developer.BlackDuckRapidModePostActions;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
+import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.exception.IntegrationException;
 
@@ -28,20 +29,22 @@ public class RapidScanOperation {
     private final StatusEventPublisher statusEventPublisher;
     private final ExitCodePublisher exitCodePublisher;
     private final DirectoryManager directoryManager;
+    private final OperationSystem operationSystem;
     private final Long timeoutInSeconds;
 
-    public RapidScanOperation(Gson gson, StatusEventPublisher statusEventPublisher, ExitCodePublisher exitCodePublisher, DirectoryManager directoryManager, Long timeoutInSeconds) {
+    public RapidScanOperation(Gson gson, StatusEventPublisher statusEventPublisher, ExitCodePublisher exitCodePublisher, DirectoryManager directoryManager, OperationSystem operationSystem, Long timeoutInSeconds) {
         this.gson = gson;
         this.statusEventPublisher = statusEventPublisher;
         this.exitCodePublisher = exitCodePublisher;
         this.directoryManager = directoryManager;
+        this.operationSystem = operationSystem;
         this.timeoutInSeconds = timeoutInSeconds;
     }
 
     public void execute(BlackDuckRunData blackDuckRunData, BlackDuckServicesFactory blackDuckServicesFactory, RapidScanInput input) throws DetectUserFriendlyException, IntegrationException {
         RapidScanService developerScanService = blackDuckServicesFactory.createRapidScanService();
-        BlackDuckRapidMode rapidScanMode = new BlackDuckRapidMode(statusEventPublisher, blackDuckRunData, developerScanService, timeoutInSeconds);
-        BlackDuckRapidModePostActions postActions = new BlackDuckRapidModePostActions(gson, statusEventPublisher, exitCodePublisher, directoryManager);
+        BlackDuckRapidMode rapidScanMode = new BlackDuckRapidMode(statusEventPublisher, blackDuckRunData, developerScanService, timeoutInSeconds, operationSystem);
+        BlackDuckRapidModePostActions postActions = new BlackDuckRapidModePostActions(gson, statusEventPublisher, exitCodePublisher, directoryManager, operationSystem);
 
         List<DeveloperScanComponentResultView> results = rapidScanMode.run(input.getBdioResult());
         postActions.perform(input.getProjectNameVersion(), results);

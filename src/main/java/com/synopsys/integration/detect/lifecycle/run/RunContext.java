@@ -27,6 +27,7 @@ import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameMan
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.project.ProjectEventPublisher;
+import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
 
@@ -52,6 +53,7 @@ public class RunContext {
     private final DetectorEventPublisher detectorEventPublisher;
     private final CodeLocationEventPublisher codeLocationEventPublisher;
     private final ProjectEventPublisher projectEventPublisher;
+    private final OperationSystem operationSystem;
 
     public RunContext(DetectContext detectContext, ProductRunData productRunData) {
         this.detectContext = detectContext;
@@ -71,6 +73,7 @@ public class RunContext {
         detectorEventPublisher = detectContext.getBean(DetectorEventPublisher.class);
         codeLocationEventPublisher = detectContext.getBean(CodeLocationEventPublisher.class);
         projectEventPublisher = detectContext.getBean(ProjectEventPublisher.class);
+        operationSystem = detectContext.getBean(OperationSystem.class);
         extractionEnvironmentProvider = new ExtractionEnvironmentProvider(directoryManager);
         codeLocationConverter = new CodeLocationConverter(new ExternalIdFactory());
         gson = detectContext.getBean(Gson.class);
@@ -164,5 +167,9 @@ public class RunContext {
 
     public ProjectEventPublisher getProjectEventPublisher() {
         return projectEventPublisher;
+    }
+
+    public OperationSystem getOperationSystem() {
+        return operationSystem;
     }
 }

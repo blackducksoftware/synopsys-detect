@@ -23,15 +23,15 @@ import com.synopsys.integration.detect.configuration.DetectUserFriendlyException
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.blackduck.DetectBdioUploadService;
-import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
+import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class BdioUploadOperation {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final StatusEventPublisher statusEventPublisher;
+    private final OperationSystem operationSystem;
 
-    public BdioUploadOperation(StatusEventPublisher statusEventPublisher) {
-        this.statusEventPublisher = statusEventPublisher;
+    public BdioUploadOperation(OperationSystem operationSystem) {
+        this.operationSystem = operationSystem;
     }
 
     public Optional<CodeLocationCreationData<UploadBatchOutput>> execute(BlackDuckRunData blackDuckRunData, BdioResult bdioResult) throws DetectUserFriendlyException, IntegrationException {
@@ -44,7 +44,7 @@ public class BdioUploadOperation {
                 BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
                 BdioUploadService bdioUploadService = blackDuckServicesFactory.createBdioUploadService();
                 Bdio2UploadService bdio2UploadService = blackDuckServicesFactory.createBdio2UploadService();
-                DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService(statusEventPublisher);
+                DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService(operationSystem);
                 logger.info(String.format("Created %d BDIO files.", uploadTargetList.size()));
                 logger.debug("Uploading BDIO files.");
                 result = Optional.of(detectBdioUploadService.uploadBdioFiles(bdioResult, bdioUploadService,
