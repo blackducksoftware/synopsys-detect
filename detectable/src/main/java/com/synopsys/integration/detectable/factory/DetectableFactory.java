@@ -61,6 +61,7 @@ import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOptions;
 import com.synopsys.integration.detectable.detectables.clang.ClangExtractor;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandDatabaseParser;
+import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandParser;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.ClangPackageDetailsTransformer;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.DependencyFileDetailGenerator;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.DependencyListFileParser;
@@ -416,7 +417,7 @@ public class DetectableFactory {
     }
 
     private FilePathGenerator filePathGenerator() {
-        return new FilePathGenerator(executableRunner, commandParser(), dependenyListFileParser());
+        return new FilePathGenerator(executableRunner, compileCommandParser(), dependenyListFileParser());
     }
 
     private DependencyListFileParser dependenyListFileParser() {
@@ -573,6 +574,10 @@ public class DetectableFactory {
 
     private CommandParser commandParser() {
         return new CommandParser();
+    }
+
+    private CompileCommandParser compileCommandParser() {
+        return new CompileCommandParser(commandParser());
     }
 
     private ConanLockfileExtractor conanLockfileExtractor() {
