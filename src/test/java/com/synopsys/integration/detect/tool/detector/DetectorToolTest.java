@@ -93,7 +93,7 @@ public class DetectorToolTest {
 
         tool.performDetectors(directory, detectorRuleSet, detectorFinderOptions, evaluationOptions, projectBomTool, new ArrayList<>());
 
-        Mockito.verify(exitCodePublisher).publishExitCode(Mockito.argThat(new FailureExitCodeRequestMatcher()));
+        Mockito.verify(exitCodePublisher).publishExitCode(Mockito.any(ExitCodeType.class), Mockito.anyString());
     }
 
     @Test

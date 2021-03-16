@@ -21,6 +21,10 @@ public class DetectStatusLogger {
     public void logDetectStatus(IntLogger logger, List<Status> statusSummaries, List<DetectResult> detectResults, List<DetectIssue> detectIssues, List<Operation> detectOperations, ExitCodeType exitCodeType) {
         logger.info("");
         logger.info("");
+        logger.debug("=== Additional  Information ===");
+        logger.debug("");
+        logDetectOperations(logger, detectOperations);
+        logger.debug("");
 
         logDetectIssues(logger, detectIssues);
         logDetectResults(logger, detectResults);
@@ -30,10 +34,6 @@ public class DetectStatusLogger {
         logger.info("");
         logger.info("===============================");
         logger.info("");
-        logger.debug("=== Additional  Information ===");
-        logger.debug("");
-        logDetectOperations(logger, detectOperations);
-
     }
 
     private void logDetectIssues(IntLogger logger, List<DetectIssue> detectIssues) {
@@ -102,10 +102,9 @@ public class DetectStatusLogger {
                                                            .thenComparing(Operation::getDescriptionKey))
                                                .collect(Collectors.toList());
         logger.debug("====== Detect Operations ======");
-
+        logger.debug("");
         for (Operation operation : sortedOperations) {
-            logger.debug("");
-            logger.debug(String.format("%s: %s (%s)", operation.getDescriptionKey(), operation.getStatusType().toString(), Operation.formatExecutionTime(operation.getExecutionTime())));
+            logger.debug(String.format("%s: %s", operation.getDescriptionKey(), operation.getStatusType().toString()));
         }
         logger.debug("");
         logger.debug("===============================");

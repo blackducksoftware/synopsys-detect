@@ -28,7 +28,6 @@ import com.synopsys.integration.blackduck.api.manual.view.PolicyViolationVulnera
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
-import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.workflow.file.DetectFileUtils;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
@@ -94,7 +93,7 @@ public class BlackDuckRapidModePostActions {
         }
 
         if (!violatedPolicyComponentNames.isEmpty()) {
-            exitCodePublisher.publishExitCode(new ExitCodeRequest(ExitCodeType.FAILURE_POLICY_VIOLATION, createViolationMessage(violatedPolicyComponentNames)));
+            exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_POLICY_VIOLATION, createViolationMessage(violatedPolicyComponentNames));
         }
         statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.SUCCESS));
     }

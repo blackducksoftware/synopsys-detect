@@ -25,7 +25,6 @@ import com.synopsys.integration.blackduck.service.model.PolicyStatusDescription;
 import com.synopsys.integration.common.util.Bdo;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
-import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class PolicyChecker {
@@ -49,7 +48,7 @@ public class PolicyChecker {
 
             if (arePolicySeveritiesViolated(policyStatusDescription.get(), policySeverities)) {
                 fetchAndLogPolicyViolations(projectVersionView);
-                exitCodePublisher.publishExitCode(new ExitCodeRequest(ExitCodeType.FAILURE_POLICY_VIOLATION, policyStatusDescription.get().getPolicyStatusMessage()));
+                exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_POLICY_VIOLATION, policyStatusDescription.get().getPolicyStatusMessage());
             }
         } else {
             String availableLinks = StringUtils.join(projectVersionView.getAvailableLinks(), ", ");

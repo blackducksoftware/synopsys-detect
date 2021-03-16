@@ -35,7 +35,6 @@ import com.synopsys.integration.detect.workflow.nameversion.PreferredDetectorNam
 import com.synopsys.integration.detect.workflow.report.util.DetectorEvaluationUtils;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.status.DetectorStatus;
-import com.synopsys.integration.detect.workflow.status.Operation;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detect.workflow.status.UnrecognizedPaths;
@@ -91,7 +90,7 @@ public class DetectorTool {
         if (!possibleRootEvaluation.isPresent()) {
             logger.error("The source directory could not be searched for detectors - detector tool failed.");
             logger.error("Please ensure the provided source path is a directory and detect has access.");
-            exitCodePublisher.publishExitCode(new ExitCodeRequest(ExitCodeType.FAILURE_CONFIGURATION, "Detector tool failed to run on the configured source path."));
+            exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_CONFIGURATION, "Detector tool failed to run on the configured source path.");
             return new DetectorToolResult();
         }
 
@@ -257,12 +256,10 @@ public class DetectorTool {
     }
 
     private void publishStatusEvents(Map<DetectorType, StatusType> statusMap) {
-        statusMap.forEach((detectorType, statusType) -> {
-            statusEventPublisher.publishStatusSummary(new DetectorStatus(detectorType, statusType));
-            statusEventPublisher.publishOperation(new Operation("Detector " + detectorType.name(), statusType));
-        });
+        statusMap.forEach((detectorType, statusType) ->
+                              statusEventPublisher.publishStatusSummary(new DetectorStatus(detectorType, statusType)));
         if (statusMap.containsValue(StatusType.FAILURE)) {
-            exitCodePublisher.publishExitCode(new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR, "One or more detectors were not successful."));
+            exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_DETECTOR, "One or more detectors were not successful.");
         }
     }
 

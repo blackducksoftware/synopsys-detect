@@ -32,7 +32,6 @@ import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
-import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.util.DetectZipUtil;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -114,7 +113,7 @@ public class BlackDuckBinaryScannerTool {
             statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
             statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.FAILURE));
             statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.BINARY_SCAN, OPERATION_NAME, Arrays.asList("Binary scan file did not exist, is not a file or can't be read.")));
-            exitCodePublisher.publishExitCode(new ExitCodeRequest(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, STATUS_KEY));
+            exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, STATUS_KEY);
             return BinaryScanToolResult.FAILURE();
         }
     }

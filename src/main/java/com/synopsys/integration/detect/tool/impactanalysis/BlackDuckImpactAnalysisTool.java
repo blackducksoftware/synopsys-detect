@@ -33,7 +33,6 @@ import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
-import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysis;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisBatchOutput;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisOutput;
@@ -219,7 +218,7 @@ public class BlackDuckImpactAnalysisTool {
         statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
         statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.FAILURE));
         statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.IMPACT_ANALYSIS, OPERATION_NAME, Arrays.asList(issueMessage)));
-        exitCodePublisher.publishExitCode(new ExitCodeRequest(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, STATUS_KEY));
+        exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, STATUS_KEY);
         return ImpactAnalysisToolResult.FAILURE();
     }
 }

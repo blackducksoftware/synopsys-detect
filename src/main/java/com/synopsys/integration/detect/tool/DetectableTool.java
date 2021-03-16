@@ -94,7 +94,7 @@ public class DetectableTool {
             statusEventPublisher.publishStatusSummary(new Status(name, StatusType.FAILURE));
             statusEventPublisher.publishOperation(new Operation(name, StatusType.FAILURE));
             statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.DETECTOR, name, Arrays.asList(extractable.toDescription())));
-            exitCodePublisher.publishExitCode(new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, extractable.toDescription()));
+            exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_GENERAL_ERROR, extractable.toDescription());
             return DetectableToolResult.failed(extractable);
         }
 

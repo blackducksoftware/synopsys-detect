@@ -60,44 +60,44 @@ public class BlackDuckPostActions {
 
     public void perform(BlackDuckPostOptions blackDuckPostOptions, CodeLocationWaitData codeLocationWaitData, ProjectVersionWrapper projectVersionWrapper, NameVersion projectNameVersion, long timeoutInSeconds)
         throws DetectUserFriendlyException {
-        String lastOperationKey = null;
+        String currentOperationKey = null;
         try {
             if (blackDuckPostOptions.shouldWaitForResults()) {
-                lastOperationKey = "Black Duck Wait for Code Locations";
+                currentOperationKey = "Black Duck Wait for Code Locations";
                 waitForCodeLocations(codeLocationWaitData, timeoutInSeconds, projectNameVersion);
-                statusEventPublisher.publishOperation(new Operation(lastOperationKey, StatusType.SUCCESS));
+                statusEventPublisher.publishOperation(new Operation(currentOperationKey, StatusType.SUCCESS));
             }
             if (blackDuckPostOptions.shouldPerformPolicyCheck()) {
-                lastOperationKey = "Black Duck Policy Check";
+                currentOperationKey = "Black Duck Policy Check";
                 checkPolicy(blackDuckPostOptions, projectVersionWrapper.getProjectVersionView());
-                statusEventPublisher.publishOperation(new Operation(lastOperationKey, StatusType.SUCCESS));
+                statusEventPublisher.publishOperation(new Operation(currentOperationKey, StatusType.SUCCESS));
             }
             if (blackDuckPostOptions.shouldGenerateAnyReport()) {
-                lastOperationKey = "Black Duck Report Generation";
+                currentOperationKey = "Black Duck Report Generation";
                 generateReports(blackDuckPostOptions, projectVersionWrapper);
-                statusEventPublisher.publishOperation(new Operation(lastOperationKey, StatusType.SUCCESS));
+                statusEventPublisher.publishOperation(new Operation(currentOperationKey, StatusType.SUCCESS));
             }
         } catch (DetectUserFriendlyException e) {
-            statusEventPublisher.publishOperation(new Operation(lastOperationKey, StatusType.FAILURE));
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, lastOperationKey, Arrays.asList(e.getMessage())));
+            statusEventPublisher.publishOperation(new Operation(currentOperationKey, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, currentOperationKey, Arrays.asList(e.getMessage())));
             throw e;
         } catch (IllegalArgumentException e) {
             String errorReason = String.format("Your Black Duck configuration is not valid: %s", e.getMessage());
-            statusEventPublisher.publishOperation(new Operation(lastOperationKey, StatusType.FAILURE));
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, lastOperationKey, Arrays.asList(errorReason)));
+            statusEventPublisher.publishOperation(new Operation(currentOperationKey, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, currentOperationKey, Arrays.asList(errorReason)));
             throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
         } catch (IntegrationRestException e) {
-            statusEventPublisher.publishOperation(new Operation(lastOperationKey, StatusType.FAILURE));
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, lastOperationKey, Arrays.asList(e.getMessage())));
+            statusEventPublisher.publishOperation(new Operation(currentOperationKey, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, currentOperationKey, Arrays.asList(e.getMessage())));
             throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
         } catch (BlackDuckTimeoutExceededException e) {
-            statusEventPublisher.publishOperation(new Operation(lastOperationKey, StatusType.FAILURE));
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, lastOperationKey, Arrays.asList(e.getMessage())));
+            statusEventPublisher.publishOperation(new Operation(currentOperationKey, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, currentOperationKey, Arrays.asList(e.getMessage())));
             throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_TIMEOUT);
         } catch (Exception e) {
             String errorReason = String.format("There was a problem: %s", e.getMessage());
-            statusEventPublisher.publishOperation(new Operation(lastOperationKey, StatusType.FAILURE));
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, lastOperationKey, Arrays.asList(errorReason)));
+            statusEventPublisher.publishOperation(new Operation(currentOperationKey, StatusType.FAILURE));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, currentOperationKey, Arrays.asList(errorReason)));
             throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }
     }
