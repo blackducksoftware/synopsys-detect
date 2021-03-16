@@ -13,22 +13,21 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.synopsys.integration.detect.workflow.event.Event;
-import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.report.ExceptionUtil;
 import com.synopsys.integration.detect.workflow.report.util.DetectorEvaluationUtils;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectIssueType;
+import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
 public class DetectorIssuePublisher {
 
-    public void publishEvents(EventSystem eventSystem, DetectorEvaluationTree rootEvaluationTree) {
-        publishEvents(eventSystem, rootEvaluationTree.asFlatList());
+    public void publishEvents(StatusEventPublisher statusEventPublisher, DetectorEvaluationTree rootEvaluationTree) {
+        publishEvents(statusEventPublisher, rootEvaluationTree.asFlatList());
     }
 
-    private void publishEvents(EventSystem eventSystem, List<DetectorEvaluationTree> trees) {
+    private void publishEvents(StatusEventPublisher statusEventPublisher, List<DetectorEvaluationTree> trees) {
         final String spacer = "\t";
         for (DetectorEvaluationTree tree : trees) {
             List<DetectorEvaluation> excepted = DetectorEvaluationUtils.filteredChildren(tree, DetectorEvaluation::wasExtractionException);
@@ -49,7 +48,7 @@ public class DetectorIssuePublisher {
 
             if (messages.size() > 0) {
                 messages.add(0, tree.getDirectory().toString());
-                eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.DETECTOR, "Detector Issue", messages));
+                statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.DETECTOR, "Detector Issue", messages));
             }
         }
     }

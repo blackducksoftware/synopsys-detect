@@ -30,7 +30,8 @@ public class DetectStatusLogger {
         logger.info("");
         logger.info("===============================");
         logger.info("");
-        logger.debug("=== Additional Information ===");
+        logger.debug("=== Additional  Information ===");
+        logger.debug("");
         logDetectOperations(logger, detectOperations);
 
     }
