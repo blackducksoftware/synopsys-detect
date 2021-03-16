@@ -8,9 +8,7 @@
 package com.synopsys.integration.common.util.parse;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.text.StringTokenizer;
 import org.apache.commons.text.matcher.StringMatcherFactory;
@@ -32,38 +30,16 @@ public class CommandParser {
     private static final String ENCODED_TAB_CHAR = "%09";
 
     public List<String> parseCommandString(String commandString) {
-        return parseCommandString(commandString, new HashMap<>());
-    }
-
-    public List<String> parseCommandString(String commandString, Map<String, String> optionOverrides) {
         logger.trace(String.format("origCommand         : %s", commandString));
         String quotesRemovedCommand = encodeQuotedWhitespace(commandString);
         logger.trace(String.format("quotesRemovedCommand: %s", quotesRemovedCommand));
         StringTokenizer tokenizer = new StringTokenizer(quotesRemovedCommand);
         tokenizer.setQuoteMatcher(StringMatcherFactory.INSTANCE.quoteMatcher());
         List<String> commandList = new ArrayList<>();
-        String lastPart = "";
-        int partIndex = 0;
         while (tokenizer.hasNext()) {
             String token = tokenizer.nextToken();
             String part = restoreWhitespace(token);
-            if (partIndex > 0) {
-                String optionValueOverride = null;
-                for (Map.Entry<String, String> optionToOverride : optionOverrides.entrySet()) {
-                    if (optionToOverride.getKey().equals(lastPart)) {
-                        optionValueOverride = optionToOverride.getValue();
-                    }
-                }
-                if (optionValueOverride != null) {
-                    commandList.add(optionValueOverride);
-                } else {
-                    commandList.add(part);
-                }
-            } else {
-                commandList.add(part);
-            }
-            lastPart = part;
-            partIndex++;
+            commandList.add(part);
         }
         return commandList;
     }

@@ -37,7 +37,7 @@ import com.synopsys.integration.detectable.detectables.clang.compilecommand.Comp
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandParser;
 
 @UnitTest
-public class CommandParserTest {
+public class CompileCommandParserTest {
     @Test
     public void testGetCompilerCmd() {
         CompileCommand sampleCommand = new CompileCommand();
