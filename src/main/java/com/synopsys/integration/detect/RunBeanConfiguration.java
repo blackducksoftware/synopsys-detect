@@ -31,8 +31,8 @@ import com.synopsys.integration.detect.configuration.DetectUserFriendlyException
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
-import com.synopsys.integration.detect.tool.detector.DefaultDetectorEventPublisher;
 import com.synopsys.integration.detect.tool.detector.DetectDetectableFactory;
+import com.synopsys.integration.detect.tool.detector.DetectorEventPublisher;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
 import com.synopsys.integration.detect.tool.detector.executable.DirectoryExecutableFinder;
@@ -184,8 +184,8 @@ public class RunBeanConfiguration {
     }
 
     @Bean
-    public DefaultDetectorEventPublisher detectorEventPublisher() {
-        return new DefaultDetectorEventPublisher(eventSystem);
+    public DetectorEventPublisher detectorEventPublisher() {
+        return new DetectorEventPublisher(eventSystem);
     }
 
     @Bean
