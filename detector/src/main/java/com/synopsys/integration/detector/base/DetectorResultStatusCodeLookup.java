@@ -1,24 +1,9 @@
-/**
+/*
  * detector
  *
  * Copyright (c) 2021 Synopsys, Inc.
  *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
 package com.synopsys.integration.detector.base;
 
@@ -44,6 +29,7 @@ import com.synopsys.integration.detectable.detectable.result.NpmNodeModulesNotFo
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PoetryLockfileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PropertyInsufficientDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.SbtMissingPluginDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.SectionNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.WrongOperatingSystemResult;
 import com.synopsys.integration.detector.result.ExcludedDetectorResult;
@@ -95,6 +81,7 @@ public class DetectorResultStatusCodeLookup {
         map.put(PoetryLockfileNotFoundDetectableResult.class, DetectorStatusCode.POETRY_LOCKFILE_NOT_FOUND);
         map.put(PropertyInsufficientDetectableResult.class, DetectorStatusCode.PROPERTY_INSUFFICIENT);
         map.put(SectionNotFoundDetectableResult.class, DetectorStatusCode.SECTION_NOT_FOUND);
+        map.put(SbtMissingPluginDetectableResult.class, DetectorStatusCode.SBT_PLUGIN_MISSING);
         map.put(WrongOperatingSystemResult.class, DetectorStatusCode.WRONG_OPERATING_SYSTEM_RESULT);
         map.put(YieldedDetectorResult.class, DetectorStatusCode.YIELDED);
 

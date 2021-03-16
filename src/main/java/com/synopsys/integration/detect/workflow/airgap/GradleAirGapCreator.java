@@ -1,24 +1,9 @@
-/**
+/*
  * synopsys-detect
  *
  * Copyright (c) 2021 Synopsys, Inc.
  *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
 package com.synopsys.integration.detect.workflow.airgap;
 
@@ -37,7 +22,6 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
-import com.synopsys.integration.detect.tool.detector.inspectors.GradleInspectorInstaller;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
@@ -56,13 +40,11 @@ public class GradleAirGapCreator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final GradleResolver gradleResolver;
-    private final GradleInspectorInstaller gradleInspectorInstaller;
     private final DetectableExecutableRunner executableRunner;
     private final Configuration configuration;
 
-    public GradleAirGapCreator(GradleResolver gradleResolver, GradleInspectorInstaller gradleInspectorInstaller, DetectableExecutableRunner executableRunner, Configuration configuration) {
+    public GradleAirGapCreator(GradleResolver gradleResolver, DetectableExecutableRunner executableRunner, Configuration configuration) {
         this.gradleResolver = gradleResolver;
-        this.gradleInspectorInstaller = gradleInspectorInstaller;
         this.executableRunner = executableRunner;
         this.configuration = configuration;
     }
@@ -79,17 +61,6 @@ public class GradleAirGapCreator {
             throw new DetectUserFriendlyException("An error occurred while finding Gradle which is needed to make an Air Gap zip.", e, ExitCodeType.FAILURE_CONFIGURATION);
         }
 
-        logger.info("Determining inspector version.");
-        String gradleVersion = inspectorVersion;
-        if (gradleVersion == null) {
-            try {
-                gradleVersion = gradleInspectorInstaller.findVersion();
-            } catch (DetectableException e) {
-                throw new DetectUserFriendlyException("An error occurred while determining which Gradle version to use while making an Air Gap zip.", e, ExitCodeType.FAILURE_CONFIGURATION);
-            }
-        }
-        logger.info("Determined inspector version: " + gradleVersion);
-
         File gradleOutput = new File(gradleTemp, "dependencies");
         logger.info("Using temporary gradle dependency directory: " + gradleOutput);
 
@@ -104,7 +75,6 @@ public class GradleAirGapCreator {
         try {
             Map<String, String> gradleScriptData = new HashMap<>();
             gradleScriptData.put("gradleOutput", StringEscapeUtils.escapeJava(gradleOutput.getCanonicalPath()));
-            gradleScriptData.put("gradleVersion", gradleVersion);
 
             Template gradleScriptTemplate = configuration.getTemplate("create-gradle-airgap-script.ftl");
             try (Writer fileWriter = new FileWriter(buildGradle)) {

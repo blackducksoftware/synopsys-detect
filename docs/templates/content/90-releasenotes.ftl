@@ -1,5 +1,19 @@
 # Release notes
 
+## Version 7.0.0
+### New Features
+* Added support for the dependency graph SBT plugin. Resolution cache generation is no longer a requirement of the SBT detector.
+* Added properties [detect.lerna.excluded.packages](../properties/detectors/lerna/#lerna-packages-excluded-advanced) and [detect.lerna.included.packages](../properties/detectors/lerna/#lerna-packages-included-advanced) to exclude and include specific Lerna packages.
+
+### Changed features
+* Gradle detector no longer uses the gradle inspector. Only the init script is required.
+* The default BDIO format for communicating dependency graphs to Black Duck has been changed from BDIO1 to BDIO2.
+
+### Resolved issues
+* (IDETECT-2434) Resolved an issue in the CLANG detector on Ubuntu and Debian systems that caused it to omit a package when that package had been installed on the system from multiple architectures.
+* (IDETECT-2413) Resolved an issue to upgrade internal dependencies to support JDK 15.
+* (IDETECT-2409) Resolved an issue to allow Gradle detector to support Gradle 6.8.
+
 ## Version 6.9.0
 ### New Features
 * Added ability for detectors to explain why they applied. It will appear in the logs at info level and in the status.json.
@@ -12,7 +26,7 @@
 
 ### Resolved issues
 * (IDETECT-1986) Resolved an issue where warnings regarding reflective access appear at the start of Detect.
-* (IDETECT-2400) Resolved an issue where 'dependencies' would be removed from arguments to the Gradle build command.
+* (IDETECT-2400) Resolved an issue where 'dependencies' would be removed from the value of the detect.gradle.build.command property.
 * (IDETECT-2394) Resolved an issue that created inaccurate relationships in the BDIO files when Gemlock files were processed.
 * (IDETECT-2404) Resolved an issue where signature scanner arguments passed through detect.blackduck.signature.scanner.arguments that contained space were being improperly parsed.
 

@@ -1,30 +1,15 @@
-/**
+/*
  * detector
  *
  * Copyright (c) 2021 Synopsys, Inc.
  *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
 package com.synopsys.integration.detector.base;
 
 public enum DetectorStatusCode {
     CARGO_LOCKFILE_NOT_FOUND("A Cargo.toml was located in the target project, but the Cargo.lock file was NOT located."),
-    EXCEPTION("An exception occured."),
+    EXCEPTION("An exception occurred."),
     EXCLUDED("Detector type was excluded."),
     EXECUTABLE_FAILED("During extraction, one or more executables did not execute successfully."),
     EXTRACTION_FAILED("During extraction, one or more exceptions were encountered."),
@@ -44,6 +29,7 @@ public enum DetectorStatusCode {
     POETRY_LOCKFILE_NOT_FOUND("A pyproject.toml was located in the target project, but the Poetry.lock file was NOT located."),
     PROPERTY_INSUFFICIENT("The properties are insufficient to run."),
     SECTION_NOT_FOUND("A necessary section was not found within a file within the target project."),
+    SBT_PLUGIN_MISSING("A dependency graph plugin must be installed for the SBT detector to run."),
     UNKNOWN_DETECTOR_RESULT("There was an unknown result."),
     WRONG_OPERATING_SYSTEM_RESULT("Cannot run on the used operating system."),
     YIELDED("Yielded to other detectors.");

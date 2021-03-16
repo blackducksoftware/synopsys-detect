@@ -1,24 +1,9 @@
-/**
+/*
  * detectable
  *
  * Copyright (c) 2021 Synopsys, Inc.
  *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
 package com.synopsys.integration.detectable.factory;
 
@@ -51,8 +36,9 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.PipRes
 import com.synopsys.integration.detectable.detectable.executable.resolver.PipenvResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PythonResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.Rebar3Resolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.SbtResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.SwiftResolver;
-import com.synopsys.integration.detectable.detectable.file.FileFinder;
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
@@ -214,9 +200,15 @@ import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecP
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseExtractor;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecLineParser;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecParser;
-import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheDetectable;
-import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheDetectableOptions;
-import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheExtractor;
+import com.synopsys.integration.detectable.detectables.sbt.SbtDetectable;
+import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotExtractor;
+import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotGraphNodeParser;
+import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotOutputParser;
+import com.synopsys.integration.detectable.detectables.sbt.dot.SbtGraphParserTransformer;
+import com.synopsys.integration.detectable.detectables.sbt.dot.SbtPluginFinder;
+import com.synopsys.integration.detectable.detectables.sbt.dot.SbtProjectMatcher;
+import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheExtractor;
+import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheOptions;
 import com.synopsys.integration.detectable.detectables.swift.SwiftCliDetectable;
 import com.synopsys.integration.detectable.detectables.swift.SwiftCliParser;
 import com.synopsys.integration.detectable.detectables.swift.SwiftExtractor;
@@ -406,8 +398,8 @@ public class DetectableFactory {
         return new RebarDetectable(environment, fileFinder, rebar3Resolver, rebarExtractor());
     }
 
-    public SbtResolutionCacheDetectable createSbtResolutionCacheDetectable(DetectableEnvironment environment, SbtResolutionCacheDetectableOptions sbtResolutionCacheDetectableOptions) {
-        return new SbtResolutionCacheDetectable(environment, fileFinder, sbtResolutionCacheExtractor(), sbtResolutionCacheDetectableOptions);
+    public SbtDetectable createSbtDetectable(DetectableEnvironment environment, SbtResolver sbtResolver, SbtResolutionCacheOptions sbtResolutionCacheOptions) {
+        return new SbtDetectable(environment, fileFinder, sbtResolutionCacheExtractor(), sbtResolutionCacheOptions, sbtResolver, sbtDotExtractor(), sbtPluginFinder());
     }
 
     public SwiftCliDetectable createSwiftCliDetectable(DetectableEnvironment environment, SwiftResolver swiftResolver) {
@@ -702,6 +694,30 @@ public class DetectableFactory {
         return new SbtResolutionCacheExtractor(fileFinder, externalIdFactory);
     }
 
+    public SbtPluginFinder sbtPluginFinder() {
+        return new SbtPluginFinder(executableRunner);
+    }
+
+    private SbtDotExtractor sbtDotExtractor() {
+        return new SbtDotExtractor(executableRunner, sbtDotOutputParser(), sbtProjectMatcher(), sbtGraphParserTransformer(), sbtDotGraphNodeParser());
+    }
+
+    private SbtDotOutputParser sbtDotOutputParser() {
+        return new SbtDotOutputParser();
+    }
+
+    private SbtProjectMatcher sbtProjectMatcher() {
+        return new SbtProjectMatcher(sbtDotGraphNodeParser());
+    }
+
+    private SbtDotGraphNodeParser sbtDotGraphNodeParser() {
+        return new SbtDotGraphNodeParser(externalIdFactory);
+    }
+
+    private SbtGraphParserTransformer sbtGraphParserTransformer() {
+        return new SbtGraphParserTransformer(sbtDotGraphNodeParser());
+    }
+
     private YarnLockParser yarnLockParser() {
         YarnLockLineAnalyzer yarnLockLineAnalyzer = new YarnLockLineAnalyzer();
         YarnLockDependencySpecParser yarnLockDependencySpecParser = new YarnLockDependencySpecParser(yarnLockLineAnalyzer);
@@ -831,7 +847,7 @@ public class DetectableFactory {
     }
 
     private LernaExtractor lernaExtractor(NpmLockfileOptions npmLockfileOptions, YarnLockOptions yarnLockOptions, LernaOptions lernaOptions) {
-        return new LernaExtractor(lernaPackageDiscoverer(), lernaPackager(npmLockfileOptions, yarnLockOptions, lernaOptions));
+        return new LernaExtractor(lernaPackageDiscoverer(), lernaPackager(npmLockfileOptions, yarnLockOptions, lernaOptions), lernaOptions);
     }
     //#endregion Utility
 

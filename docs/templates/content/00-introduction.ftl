@@ -51,7 +51,7 @@ ${solution_name} processing is divided into three phases:
 
 ### Initialization phase
 
-During the initialization phase, ${solution_name} performs verification checks on the user-provided configration, checks to see if it
+During the initialization phase, ${solution_name} performs verification checks on the user-provided configuration, checks to see if it
 can connect to any external systems needed for the run, and creates any required directories.
 
 ### Run phase

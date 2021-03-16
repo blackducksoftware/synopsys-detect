@@ -1,24 +1,9 @@
-/**
+/*
  * synopsys-detect
  *
  * Copyright (c) 2021 Synopsys, Inc.
  *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
 package com.synopsys.integration.detect.configuration;
 
@@ -66,7 +51,7 @@ import com.synopsys.integration.detectable.detectables.pear.PearCliDetectableOpt
 import com.synopsys.integration.detectable.detectables.pip.PipInspectorDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pip.PipenvDetectableOptions;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectableOptions;
-import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheDetectableOptions;
+import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheOptions;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
 import com.synopsys.integration.log.LogLevel;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
@@ -168,7 +153,9 @@ public class DetectableOptionFactory {
 
     public LernaOptions createLernaOptions() {
         Boolean includePrivate = getValue(DetectProperties.DETECT_LERNA_INCLUDE_PRIVATE);
-        return new LernaOptions(includePrivate);
+        List<String> excludedPackages = getValue(DetectProperties.DETECT_LERNA_EXCLUDED_PACKAGES);
+        List<String> includedPackages = getValue(DetectProperties.DETECT_LERNA_INCLUDED_PACKAGES);
+        return new LernaOptions(includePrivate, excludedPackages, includedPackages);
     }
 
     public MavenCliExtractorOptions createMavenCliOptions() {
@@ -237,11 +224,11 @@ public class DetectableOptionFactory {
         return new GemspecParseDetectableOptions(includeRuntimeDependencies, includeDevDeopendencies);
     }
 
-    public SbtResolutionCacheDetectableOptions createSbtResolutionCacheDetectableOptions() {
+    public SbtResolutionCacheOptions createSbtResolutionCacheDetectableOptions() {
         List<String> includedConfigurations = getValue(DetectProperties.DETECT_SBT_INCLUDED_CONFIGURATIONS);
         List<String> excludedConfigurations = getValue(DetectProperties.DETECT_SBT_EXCLUDED_CONFIGURATIONS);
         Integer reportDepth = getValue(DetectProperties.DETECT_SBT_REPORT_DEPTH);
-        return new SbtResolutionCacheDetectableOptions(includedConfigurations, excludedConfigurations, reportDepth);
+        return new SbtResolutionCacheOptions(includedConfigurations, excludedConfigurations, reportDepth);
     }
 
     public YarnLockOptions createYarnLockOptions() {

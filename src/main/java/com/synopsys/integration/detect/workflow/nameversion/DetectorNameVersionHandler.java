@@ -1,24 +1,9 @@
-/**
+/*
  * synopsys-detect
  *
  * Copyright (c) 2021 Synopsys, Inc.
  *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
 package com.synopsys.integration.detect.workflow.nameversion;
 
@@ -95,15 +80,28 @@ public class DetectorNameVersionHandler {
     }
 
     private NameVersionDecision decideProjectNameVersionArbitrarily(List<DetectorProjectInfo> allPossibilities) {
-        List<DetectorProjectInfo> normalPossibilities = Bds.of(allPossibilities)
+        List<DetectorProjectInfo> nonLowPossibilities = Bds.of(allPossibilities)
                                                             .filterNot(it -> lowPriorityDetectorTypes.contains(it.getDetectorType()))
                                                             .toList();
 
-        List<DetectorProjectInfo> chosenPossibilities;
-        if (normalPossibilities.isEmpty()) {
-            chosenPossibilities = allPossibilities;
+        List<DetectorProjectInfo> possibilities;
+        if (nonLowPossibilities.isEmpty()) {
+            possibilities = allPossibilities;
         } else {
-            chosenPossibilities = normalPossibilities;
+            possibilities = nonLowPossibilities;
+        }
+
+        //When arbitrarily picking, we should prefer a name/version that has both name/version non-empty - this increases the odds of using a populated project/version which is preferred.
+        List<DetectorProjectInfo> hasBothProjectAndVersionPossibilities = Bds.of(possibilities)
+                                                                              .filter(p -> StringUtils.isNotEmpty(p.getNameVersion().getName()))
+                                                                              .filter(p -> StringUtils.isNotEmpty(p.getNameVersion().getVersion()))
+                                                                              .toList();
+
+        List<DetectorProjectInfo> chosenPossibilities;
+        if (hasBothProjectAndVersionPossibilities.size() > 0) {
+            chosenPossibilities = hasBothProjectAndVersionPossibilities;
+        } else {
+            chosenPossibilities = possibilities;
         }
 
         Optional<DetectorProjectInfo> chosenDetectorProjectInfo = chosenPossibilities.stream().min(Comparator.comparing(p -> p.getNameVersion().getName()));
