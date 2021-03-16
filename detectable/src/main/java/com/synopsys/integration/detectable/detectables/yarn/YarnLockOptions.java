@@ -11,20 +11,24 @@ import java.util.List;
 
 public class YarnLockOptions {
     private final boolean useProductionOnly;
-    // By default, detector will follow declared dependencies, which may lead it to include some or all workspaces
-    // To override that behavior, to force workspaces out or in, use:
+    private final boolean monoRepoMode;
     private final List<String> excludedWorkspaceNamePatterns;
     private final List<String> includedWorkspaceNamePatterns;
 
-    public YarnLockOptions(boolean useProductionOnly,
+    public YarnLockOptions(boolean useProductionOnly, boolean monoRepoMode,
         List<String> excludedWorkspaceNamePatterns, List<String> includedWorkspaceNamePatterns) {
         this.useProductionOnly = useProductionOnly;
+        this.monoRepoMode = monoRepoMode;
         this.excludedWorkspaceNamePatterns = excludedWorkspaceNamePatterns;
         this.includedWorkspaceNamePatterns = includedWorkspaceNamePatterns;
     }
 
     public boolean useProductionOnly() {
         return useProductionOnly;
+    }
+
+    public boolean monoRepoMode() {
+        return monoRepoMode;
     }
 
     public List<String> getExcludedWorkspaceNamePatterns() {

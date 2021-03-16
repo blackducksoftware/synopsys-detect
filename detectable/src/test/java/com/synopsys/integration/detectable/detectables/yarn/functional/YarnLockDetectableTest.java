@@ -24,6 +24,7 @@ package com.synopsys.integration.detectable.detectables.yarn.functional;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
@@ -72,7 +73,7 @@ public class YarnLockDetectableTest extends DetectableFunctionalTest {
     @NotNull
     @Override
     public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
-        return detectableFactory.createYarnLockDetectable(detectableEnvironment, new YarnLockOptions(true, false));
+        return detectableFactory.createYarnLockDetectable(detectableEnvironment, new YarnLockOptions(true, false, new ArrayList<>(0), new ArrayList<>(0)));
     }
 
     @Override

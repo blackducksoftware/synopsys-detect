@@ -1159,7 +1159,16 @@ public class DetectProperties {
             .setInfo("Include Yarn Production Dependencies Only", DetectPropertyFromVersion.VERSION_4_0_0)
             .setHelp("Set this to true to only scan production dependencies.")
             .setGroups(DetectGroup.YARN, DetectGroup.SOURCE_SCAN);
-    
+
+    public static final DetectProperty<BooleanProperty> DETECT_YARN_MONOREPO_MODE =
+        new DetectProperty<>(new BooleanProperty("detect.yarn.monorepo.mode", false))
+            .setInfo("Yarn Monorepo Mode", DetectPropertyFromVersion.VERSION_7_0_0)
+            .setHelp(
+                "If true: Dependencies of workspaces (all by default; a subset if using exclude/include filter) will be added as direct dependencies regardless of whether or not the root project declares those workspaces as dependencies. "
+                    +
+                    "If false: Detect follows dependencies starting at the root, but optionally limits results based on the workspaces you select using the exclude/include filter.")
+            .setGroups(DetectGroup.YARN, DetectGroup.SOURCE_SCAN);
+
     public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_YARN_EXCLUDED_WORKSPACES =
         new DetectProperty<>(new CaseSensitiveStringListProperty("detect.yarn.excluded.workspaces"))
             .setInfo("Yarn Exclude Workspaces", DetectPropertyFromVersion.VERSION_7_0_0)

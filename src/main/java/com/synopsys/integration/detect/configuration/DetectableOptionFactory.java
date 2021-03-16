@@ -231,8 +231,10 @@ public class DetectableOptionFactory {
 
     public YarnLockOptions createYarnLockOptions() {
         Boolean useProductionOnly = getValue(DetectProperties.DETECT_YARN_PROD_ONLY);
-        Boolean includeAllWorkspaceDependencies = getValue(DetectProperties.DETECT_YARN_INCLUDE_ALL_WORKSPACE_DEPENDENCIES);
-        return new YarnLockOptions(useProductionOnly, includeAllWorkspaceDependencies);
+        Boolean monoRepoMode = getValue(DetectProperties.DETECT_YARN_MONOREPO_MODE);
+        List<String> excludedWorkspaces = getValue(DetectProperties.DETECT_YARN_EXCLUDED_WORKSPACES);
+        List<String> includedWorkspaces = getValue(DetectProperties.DETECT_YARN_INCLUDED_WORKSPACES);
+        return new YarnLockOptions(useProductionOnly, monoRepoMode, excludedWorkspaces, includedWorkspaces);
     }
 
     public NugetInspectorOptions createNugetInspectorOptions() {

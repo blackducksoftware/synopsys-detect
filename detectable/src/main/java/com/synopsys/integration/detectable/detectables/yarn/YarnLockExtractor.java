@@ -44,12 +44,12 @@ public class YarnLockExtractor {
             List<String> yarnLockLines = FileUtils.readLines(yarnLockFile, StandardCharsets.UTF_8);
             YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockLines);
             PackageJson rootPackageJson = packageJsonFiles.read(rootPackageJsonFile);
-            boolean addAllWorkspaceDependenciesAsDirect = yarnLockOptions.includeAllWorkspaceDependencies();
+            boolean addAllLevel1WorkspaceDependenciesAsDirect = yarnLockOptions.monoRepoMode();
             boolean getWorkspaceDependenciesFromWorkspacePackageJson = !yarnLock.isYarn2Project();
             Map<String, PackageJson> workspacePackageJsonsToProcess = getWorkspacePackageJsons(projectDir, rootPackageJsonFile);
 
             YarnResult yarnResult = yarnPackager.generateYarnResult(rootPackageJson, workspacePackageJsonsToProcess, yarnLock, yarnLockFile.getAbsolutePath(), new ArrayList<>(),
-                yarnLockOptions.useProductionOnly(), addAllWorkspaceDependenciesAsDirect, getWorkspaceDependenciesFromWorkspacePackageJson);
+                yarnLockOptions.useProductionOnly(), addAllLevel1WorkspaceDependenciesAsDirect, getWorkspaceDependenciesFromWorkspacePackageJson);
 
             if (yarnResult.getException().isPresent()) {
                 throw yarnResult.getException().get();

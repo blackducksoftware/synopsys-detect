@@ -3,6 +3,7 @@ package com.synopsys.integration.detectable.detectables.lerna.unit;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -116,7 +117,7 @@ public class LernaDetectableTest extends DetectableFunctionalTest {
     @Override
     public Detectable create(@NotNull DetectableEnvironment environment) {
         NpmLockfileOptions npmLockFileOptions = new NpmLockfileOptions(true);
-        YarnLockOptions yarnLockOptions = new YarnLockOptions(false, false);
+        YarnLockOptions yarnLockOptions = new YarnLockOptions(false, false, new ArrayList<>(0), new ArrayList<>(0));
         LernaOptions lernaOptions = new LernaOptions(false);
 
         return detectableFactory.createLernaDetectable(environment, () -> ExecutableTarget.forCommand("lerna"), npmLockFileOptions, yarnLockOptions, lernaOptions);
