@@ -32,10 +32,11 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
+import com.synopsys.integration.common.util.parse.CommandParser;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommand;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandDatabaseParser;
-import com.synopsys.integration.detectable.detectable.parser.CommandParser;
+import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandParser;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 
 @FunctionalTest
@@ -61,7 +62,7 @@ public class CommandParserFunctionalTest {
         List<CompileCommand> compileCommands = compileCommandDatabaseParser.parseCompileCommandDatabase(FunctionalTestFiles.asFile("/clang/compile_commands_args.json"));
 
         CompileCommand first = compileCommands.get(0);
-        CommandParser commandParser = new CommandParser();
+        CompileCommandParser commandParser = new CompileCommandParser(new CommandParser());
 
         List<String> result = commandParser.parseCommand(first, Collections.emptyMap());
 
@@ -94,7 +95,7 @@ public class CommandParserFunctionalTest {
         List<CompileCommand> compileCommands = compileCommandDatabaseParser.parseCompileCommandDatabase(FunctionalTestFiles.asFile("/clang/compile_commands_nestedquoting_small.json"));
 
         CompileCommand first = compileCommands.get(0);
-        CommandParser commandParser = new CommandParser();
+        CompileCommandParser commandParser = new CompileCommandParser(new CommandParser());
 
         List<String> result = commandParser.parseCommand(first, Collections.emptyMap());
 

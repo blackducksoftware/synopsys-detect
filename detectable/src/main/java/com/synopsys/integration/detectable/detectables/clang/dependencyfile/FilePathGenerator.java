@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommand;
-import com.synopsys.integration.detectable.detectable.parser.CommandParser;
+import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandParser;
 import com.synopsys.integration.executable.Executable;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 
@@ -36,10 +36,10 @@ public class FilePathGenerator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final Random random = new Random();
     private final DetectableExecutableRunner executableRunner;
-    private final CommandParser commandParser;
+    private final CompileCommandParser commandParser;
     private final DependencyListFileParser dependencyListFileParser;
 
-    public FilePathGenerator(DetectableExecutableRunner executableRunner, CommandParser commandParser, DependencyListFileParser dependencyListFileParser) {
+    public FilePathGenerator(DetectableExecutableRunner executableRunner, CompileCommandParser commandParser, DependencyListFileParser dependencyListFileParser) {
         this.executableRunner = executableRunner;
         this.commandParser = commandParser;
         this.dependencyListFileParser = dependencyListFileParser;

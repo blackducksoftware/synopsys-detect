@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.common.util.parse.CommandParser;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.base.NullableProperty;
 import com.synopsys.integration.configuration.property.base.ValuedProperty;
@@ -34,7 +35,6 @@ import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOpti
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectableOptions;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOptions;
-import com.synopsys.integration.detectable.detectable.parser.CommandParser;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliExtractorOptions;
 import com.synopsys.integration.detectable.detectables.conan.lockfile.ConanLockfileExtractorOptions;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectableOptions;

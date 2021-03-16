@@ -16,6 +16,7 @@ import org.xml.sax.SAXException;
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.BdioTransformer;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.common.util.parse.CommandParser;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BashResolver;
@@ -59,7 +60,6 @@ import com.synopsys.integration.detectable.detectables.cargo.parse.CargoLockPars
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOptions;
 import com.synopsys.integration.detectable.detectables.clang.ClangExtractor;
-import com.synopsys.integration.detectable.detectable.parser.CommandParser;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandDatabaseParser;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.ClangPackageDetailsTransformer;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.DependencyFileDetailGenerator;

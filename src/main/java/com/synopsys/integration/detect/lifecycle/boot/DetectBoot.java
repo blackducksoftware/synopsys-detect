@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.common.util.parse.CommandParser;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.configuration.source.MapPropertySource;
@@ -54,7 +55,6 @@ import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.detectable.detectable.parser.CommandParser;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
 
 import freemarker.template.Configuration;
