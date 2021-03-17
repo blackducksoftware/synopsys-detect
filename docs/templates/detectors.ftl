@@ -6,7 +6,7 @@ Each package manager ecosystem is assigned a detector type. Each detector type m
 
 ## Detector Search
 
-Detectors first check to see if they apply to your project by looking for hints such as files that exist in your project directory 
+Detectors first check to see if they apply to your project by looking for hints such as files that exist in your project directory
 or properties you have set.
 
 By default, detectors only search the project directory. In some cases, such as when your project contains sub-projects,

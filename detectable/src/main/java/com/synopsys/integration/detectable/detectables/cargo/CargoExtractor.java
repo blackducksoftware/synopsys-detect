@@ -15,11 +15,13 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Optional;
 
+import org.jetbrains.annotations.Nullable;
 import org.tomlj.Toml;
 import org.tomlj.TomlParseResult;
 import org.tomlj.TomlTable;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.detectable.detectable.util.TomlFileUtils;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -38,7 +40,7 @@ public class CargoExtractor {
         this.cargoLockParser = cargoLockParser;
     }
 
-    public Extraction extract(File cargoLock, Optional<File> cargoToml) {
+    public Extraction extract(File cargoLock, @Nullable File cargoToml) {
         try {
             String cargoLockAsString = getFileAsString(cargoLock, StandardCharsets.UTF_8);
             DependencyGraph graph = cargoLockParser.parseLockFile(cargoLockAsString);
@@ -63,9 +65,9 @@ public class CargoExtractor {
         return String.join(System.lineSeparator(), goLockAsList);
     }
 
-    private Optional<NameVersion> extractNameVersionFromCargoToml(Optional<File> cargoToml) throws IOException {
-        if (cargoToml.isPresent()) {
-            TomlParseResult cargoTomlObject = Toml.parse(getFileAsString(cargoToml.get(), Charset.defaultCharset()));
+    private Optional<NameVersion> extractNameVersionFromCargoToml(@Nullable File cargoToml) throws IOException {
+        if (cargoToml != null) {
+            TomlParseResult cargoTomlObject = TomlFileUtils.parseFile(cargoToml);
             if (cargoTomlObject.get(PACKAGE_KEY) != null) {
                 TomlTable cargoTomlPackageInfo = cargoTomlObject.getTable(PACKAGE_KEY);
                 if (cargoTomlPackageInfo.get(NAME_KEY) != null && cargoTomlPackageInfo.get(VERSION_KEY) != null) {

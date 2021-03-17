@@ -13,6 +13,8 @@ The values of the following ${solution_name} properties can utilize filename glo
 * detect.gradle.included.projects
 * detect.gradle.excluded.projects
 * detect.binary.scan.file.name.patterns
+* detect.lerna.included.packages
+* detect.lerna.excluded.packages
 * detect.excluded.directories
 
 The supported wildcards and their effect are:
