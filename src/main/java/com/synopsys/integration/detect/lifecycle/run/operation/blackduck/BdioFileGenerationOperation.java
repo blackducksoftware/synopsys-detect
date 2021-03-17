@@ -39,7 +39,7 @@ public class BdioFileGenerationOperation {
             operationSystem.completeWithSuccess(OPERATION_NAME);
             return bdioResult;
         } catch (DetectUserFriendlyException ex) {
-            operationSystem.completeWithFailure(OPERATION_NAME);
+            operationSystem.completeWithError(OPERATION_NAME, ex.getMessage());
             throw ex;
         }
     }

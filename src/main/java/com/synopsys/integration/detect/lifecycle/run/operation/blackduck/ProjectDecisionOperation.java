@@ -31,7 +31,7 @@ public class ProjectDecisionOperation {
 
     public NameVersion execute(List<DetectToolProjectInfo> detectToolProjectInfoList) throws DetectUserFriendlyException, IntegrationException {
         NameVersion projectNameVersion = projectNameVersionDecider.decideProjectNameVersion(runOptions.getPreferredTools(), detectToolProjectInfoList);
-        operationSystem.beginOperation(OPERATION_NAME);
+        operationSystem.completeWithSuccess(OPERATION_NAME);
         return projectNameVersion;
     }
 }
