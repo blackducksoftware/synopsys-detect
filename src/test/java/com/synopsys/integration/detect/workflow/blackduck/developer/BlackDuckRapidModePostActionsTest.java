@@ -24,6 +24,7 @@ import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.workflow.DetectRun;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.file.DirectoryOptions;
+import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
@@ -35,6 +36,7 @@ public class BlackDuckRapidModePostActionsTest {
         Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
         StatusEventPublisher statusEventPublisher = Mockito.mock(StatusEventPublisher.class);
         ExitCodePublisher exitCodePublisher = Mockito.mock(ExitCodePublisher.class);
+        OperationSystem operationSystem = Mockito.mock(OperationSystem.class);
         Path scanOutputPath = Files.createTempDirectory("rapid_scan_output_path");
         DirectoryOptions directoryOptions = new DirectoryOptions(null, null, null, scanOutputPath, null);
         DirectoryManager directoryManager = new DirectoryManager(directoryOptions, new DetectRun(""));
@@ -44,7 +46,7 @@ public class BlackDuckRapidModePostActionsTest {
 
         List<DeveloperScanComponentResultView> results = createResults(gson, expectedOutput);
 
-        BlackDuckRapidModePostActions postActions = new BlackDuckRapidModePostActions(gson, statusEventPublisher, exitCodePublisher, directoryManager);
+        BlackDuckRapidModePostActions postActions = new BlackDuckRapidModePostActions(gson, statusEventPublisher, exitCodePublisher, directoryManager, operationSystem);
         NameVersion nameVersion = new NameVersion("rapid_scan_post_action", "test");
         postActions.perform(nameVersion, results);
 

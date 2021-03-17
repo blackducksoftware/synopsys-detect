@@ -10,7 +10,6 @@ package com.synopsys.integration.detect.tool.binaryscanner;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -35,9 +34,7 @@ import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.util.DetectZipUtil;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.detect.workflow.status.DetectIssue;
-import com.synopsys.integration.detect.workflow.status.DetectIssueType;
-import com.synopsys.integration.detect.workflow.status.Operation;
+import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detect.workflow.status.StatusType;
@@ -56,10 +53,11 @@ public class BlackDuckBinaryScannerTool {
     private final StatusEventPublisher statusEventPublisher;
     private final ExitCodePublisher exitCodePublisher;
     private final BinaryScanUploadService uploadService;
+    private final OperationSystem operationSystem;
 
     public BlackDuckBinaryScannerTool(StatusEventPublisher statusEventPublisher, ExitCodePublisher exitCodePublisher, CodeLocationNameManager codeLocationNameManager, DirectoryManager directoryManager, FileFinder fileFinder,
         BinaryScanOptions binaryScanOptions,
-        BinaryScanUploadService uploadService) {
+        BinaryScanUploadService uploadService, OperationSystem operationSystem) {
         this.codeLocationNameManager = codeLocationNameManager;
         this.directoryManager = directoryManager;
         this.fileFinder = fileFinder;
@@ -67,6 +65,7 @@ public class BlackDuckBinaryScannerTool {
         this.uploadService = uploadService;
         this.statusEventPublisher = statusEventPublisher;
         this.exitCodePublisher = exitCodePublisher;
+        this.operationSystem = operationSystem;
     }
 
     public boolean shouldRun() {
@@ -81,7 +80,7 @@ public class BlackDuckBinaryScannerTool {
     }
 
     public BinaryScanToolResult performBinaryScanActions(NameVersion projectNameVersion) throws DetectUserFriendlyException {
-
+        operationSystem.beginOperation(OPERATION_NAME);
         File binaryUpload = null;
         Optional<Path> singleTargetFilePath = binaryScanOptions.getSingleTargetFilePath();
         if (singleTargetFilePath.isPresent()) {
@@ -98,6 +97,7 @@ public class BlackDuckBinaryScannerTool {
                     logger.info("Binary scan created the following zip for upload: " + zip.toPath());
                     binaryUpload = zip;
                 } catch (IOException e) {
+                    operationSystem.completeWithFailure(OPERATION_NAME);
                     throw new DetectUserFriendlyException("Unable to create binary scan archive for upload.", e, ExitCodeType.FAILURE_UNKNOWN_ERROR);
                 }
             }
@@ -111,8 +111,7 @@ public class BlackDuckBinaryScannerTool {
         } else {
             logger.warn("Binary scan file did not exist, is not a file or can't be read.");
             statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
-            statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.FAILURE));
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.BINARY_SCAN, OPERATION_NAME, Arrays.asList("Binary scan file did not exist, is not a file or can't be read.")));
+            operationSystem.completeWithError(OPERATION_NAME, "Binary scan file did not exist, is not a file or can't be read.");
             exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, STATUS_KEY);
             return BinaryScanToolResult.FAILURE();
         }
@@ -134,13 +133,12 @@ public class BlackDuckBinaryScannerTool {
             throwExceptionForError(binaryScanBatchOutput);
 
             logger.info("Successfully uploaded binary scan file: " + codeLocationName);
-            statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.SUCCESS));
+            operationSystem.completeWithSuccess(OPERATION_NAME);
             statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.SUCCESS));
             return codeLocationCreationData;
         } catch (IntegrationException e) {
             statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
-            statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.FAILURE));
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, OPERATION_NAME, Arrays.asList(e.getMessage())));
+            operationSystem.completeWithError(OPERATION_NAME, e.getMessage());
             throw new DetectUserFriendlyException("Failed to upload binary scan file.", e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
         }
     }

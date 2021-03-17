@@ -7,8 +7,6 @@
  */
 package com.synopsys.integration.detect.workflow.blackduck;
 
-import java.util.Arrays;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,23 +21,20 @@ import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
-import com.synopsys.integration.detect.workflow.status.DetectIssue;
-import com.synopsys.integration.detect.workflow.status.DetectIssueType;
-import com.synopsys.integration.detect.workflow.status.Operation;
-import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
-import com.synopsys.integration.detect.workflow.status.StatusType;
+import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class DetectBdioUploadService {
     private static final String OPERATION_NAME = "Black Duck BDIO Upload";
     private final Logger logger = LoggerFactory.getLogger(DetectBdioUploadService.class);
-    private final StatusEventPublisher statusEventPublisher;
+    private final OperationSystem operationSystem;
 
-    public DetectBdioUploadService(StatusEventPublisher statusEventPublisher) {
-        this.statusEventPublisher = statusEventPublisher;
+    public DetectBdioUploadService(OperationSystem operationSystem) {
+        this.operationSystem = operationSystem;
     }
 
     public CodeLocationCreationData<UploadBatchOutput> uploadBdioFiles(BdioResult bdioResult, BdioUploadService bdioUploadService, Bdio2UploadService bdio2UploadService) throws DetectUserFriendlyException, IntegrationException {
+
         UploadBatch uploadBatch = new UploadBatch();
         for (UploadTarget uploadTarget : bdioResult.getUploadTargets()) {
             logger.debug(String.format("Uploading %s", uploadTarget.getUploadFile().getName()));
@@ -55,8 +50,7 @@ public class DetectBdioUploadService {
             }
         } catch (IntegrationException ex) {
             logger.error("Error uploading bdio files", ex);
-            statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.FAILURE));
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, OPERATION_NAME, Arrays.asList(ex.getMessage())));
+            operationSystem.completeWithError(OPERATION_NAME, ex.getMessage());
             throw ex;
         }
 
@@ -64,12 +58,11 @@ public class DetectBdioUploadService {
             if (uploadOutput.getResult() == Result.FAILURE) {
                 logger.error(String.format("Failed to upload code location: %s", uploadOutput.getCodeLocationName()));
                 logger.error(String.format("Reason: %s", uploadOutput.getErrorMessage().orElse("Unknown reason.")));
-                statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.FAILURE));
-                statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, OPERATION_NAME, Arrays.asList(uploadOutput.getException().map(Exception::getMessage).orElse(""))));
+                operationSystem.completeWithError(uploadOutput.getException().map(Exception::getMessage).orElse(""));
                 throw new DetectUserFriendlyException("An error occurred uploading a bdio file.", uploadOutput.getException().orElse(null), ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
             }
         }
-        statusEventPublisher.publishOperation(new Operation(OPERATION_NAME, StatusType.SUCCESS));
+        operationSystem.completeWithSuccess(OPERATION_NAME);
 
         return response;
     }

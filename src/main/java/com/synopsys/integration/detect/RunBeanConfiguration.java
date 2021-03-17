@@ -64,6 +64,7 @@ import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameMan
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.project.ProjectEventPublisher;
+import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
@@ -252,11 +253,17 @@ public class RunBeanConfiguration {
 
     //#endregion Detectables
 
+    @Bean
+    public OperationSystem operationSystem() {
+        return new OperationSystem(statusEventPublisher());
+    }
+
     @Lazy
     @Bean()
     public BlackDuckSignatureScanner blackDuckSignatureScanner(BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, ScanBatchRunner scanBatchRunner, BlackDuckServerConfig blackDuckServerConfig,
         CodeLocationNameManager codeLocationNameManager) {
-        return new BlackDuckSignatureScanner(directoryManager, fullFileFinder(), codeLocationNameManager, blackDuckSignatureScannerOptions, scanBatchRunner, blackDuckServerConfig, statusEventPublisher(), exitCodePublisher());
+        return new BlackDuckSignatureScanner(directoryManager, fullFileFinder(), codeLocationNameManager, blackDuckSignatureScannerOptions, scanBatchRunner, blackDuckServerConfig, statusEventPublisher(), exitCodePublisher(),
+            operationSystem());
     }
 
 }

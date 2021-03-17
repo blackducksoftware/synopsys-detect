@@ -98,13 +98,13 @@ public class DetectStatusLogger {
 
     private void logDetectOperations(IntLogger logger, List<Operation> operations) {
         List<Operation> sortedOperations = operations.stream()
-                                               .sorted(Comparator.comparing(Operation::getExecutionTime)
-                                                           .thenComparing(Operation::getDescriptionKey))
+                                               .sorted(Comparator.comparing(Operation::getStartTime)
+                                                           .thenComparing(Operation::getName))
                                                .collect(Collectors.toList());
         logger.debug("====== Detect Operations ======");
         logger.debug("");
         for (Operation operation : sortedOperations) {
-            logger.debug(String.format("%s: %s", operation.getDescriptionKey(), operation.getStatusType().toString()));
+            logger.debug(String.format("%s: %s", operation.getName(), operation.getStatusType().toString()));
         }
         logger.debug("");
         logger.debug("===============================");

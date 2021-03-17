@@ -53,18 +53,18 @@ public class OperationFactory {
     }
 
     public final PolarisOperation createPolarisOperation() {
-        return new PolarisOperation(runContext.getProductRunData(), runContext.getDetectConfiguration(), runContext.getDirectoryManager(), runContext.getEventSystem(), runContext.getStatusEventPublisher());
+        return new PolarisOperation(runContext.getProductRunData(), runContext.getDetectConfiguration(), runContext.getDirectoryManager(), runContext.getEventSystem(), runContext.getStatusEventPublisher(), runContext.getOperationSystem());
     }
 
     public final DockerOperation createDockerOperation() {
         return new DockerOperation(runContext.getDirectoryManager(), runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getDetectDetectableFactory(), runContext.getExtractionEnvironmentProvider(),
-            runContext.getCodeLocationConverter());
+            runContext.getCodeLocationConverter(), runContext.getOperationSystem());
     }
 
     public final BazelOperation createBazelOperation() {
         return new BazelOperation(runContext.getDirectoryManager(), runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getDetectDetectableFactory(), runOptions.getDetectToolFilter(),
             runContext.getExtractionEnvironmentProvider(),
-            runContext.getCodeLocationConverter());
+            runContext.getCodeLocationConverter(), runContext.getOperationSystem());
     }
 
     public final DetectorOperation createDetectorOperation() {
@@ -73,33 +73,34 @@ public class OperationFactory {
     }
 
     public final RapidScanOperation createRapidScanOperation() {
-        return new RapidScanOperation(runContext.getHtmlEscapeDisabledGson(), runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getDirectoryManager(),
+        return new RapidScanOperation(runContext.getHtmlEscapeDisabledGson(), runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getDirectoryManager(), runContext.getOperationSystem(),
             runContext.getDetectConfigurationFactory().findTimeoutInSeconds());
     }
 
     public final AggregateOptionsOperation createAggregateOptionsOperation() {
-        return new AggregateOptionsOperation(runOptions, runContext.getStatusEventPublisher());
+        return new AggregateOptionsOperation(runOptions, runContext.getOperationSystem());
     }
 
     public final BdioFileGenerationOperation createBdioFileGenerationOperation() {
         BdioManager bdioManager = new BdioManager(runContext.getDetectInfo(), new SimpleBdioFactory(), new ExternalIdFactory(), new Bdio2Factory(), new IntegrationEscapeUtil(), runContext.getCodeLocationNameManager(),
             runContext.getBdioCodeLocationCreator(), runContext.getDirectoryManager());
-        return new BdioFileGenerationOperation(runOptions, runContext.getDetectConfigurationFactory().createBdioOptions(), bdioManager, runContext.getCodeLocationEventPublisher(), runContext.getStatusEventPublisher());
+        return new BdioFileGenerationOperation(runOptions, runContext.getDetectConfigurationFactory().createBdioOptions(), bdioManager, runContext.getCodeLocationEventPublisher(), runContext.getOperationSystem());
     }
 
     public final BinaryScanOperation createBinaryScanOperation() {
         BlackDuckRunData blackDuckRunData = runContext.getProductRunData().getBlackDuckRunData();
         BinaryScanOptions binaryScanOptions = runContext.getDetectConfigurationFactory().createBinaryScanOptions();
 
-        return new BinaryScanOperation(blackDuckRunData, binaryScanOptions, runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getDirectoryManager(), runContext.getCodeLocationNameManager());
+        return new BinaryScanOperation(blackDuckRunData, binaryScanOptions, runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getDirectoryManager(), runContext.getCodeLocationNameManager(),
+            runContext.getOperationSystem());
     }
 
     public final BdioUploadOperation createBdioUploadOperation() {
-        return new BdioUploadOperation(runContext.getStatusEventPublisher());
+        return new BdioUploadOperation(runContext.getOperationSystem());
     }
 
     public final CodeLocationResultCalculationOperation createCodeLocationResultCalculationOperation() {
-        return new CodeLocationResultCalculationOperation(new CodeLocationResultCalculator(), runContext.getCodeLocationEventPublisher(), runContext.getStatusEventPublisher());
+        return new CodeLocationResultCalculationOperation(new CodeLocationResultCalculator(), runContext.getCodeLocationEventPublisher(), runContext.getOperationSystem());
     }
 
     public final FullScanPostProcessingOperation createFullScanPostProcessingOperation() {
@@ -107,7 +108,7 @@ public class OperationFactory {
         BlackDuckPostOptions blackDuckPostOptions = detectConfigurationFactory.createBlackDuckPostOptions();
         Long timeoutInSeconds = detectConfigurationFactory.findTimeoutInSeconds();
 
-        return new FullScanPostProcessingOperation(runOptions.getDetectToolFilter(), blackDuckPostOptions, runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), timeoutInSeconds);
+        return new FullScanPostProcessingOperation(runOptions.getDetectToolFilter(), blackDuckPostOptions, runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getOperationSystem(), timeoutInSeconds);
     }
 
     public final ImpactAnalysisOperation createImpactAnalysisOperation() {
@@ -121,10 +122,11 @@ public class OperationFactory {
             ImpactAnalysisUploadService impactAnalysisUploadService = new ImpactAnalysisUploadService(impactAnalysisBatchRunner, blackDuckServicesFactory.createCodeLocationCreationService());
             blackDuckImpactAnalysisTool = BlackDuckImpactAnalysisTool
                                               .ONLINE(runContext.getDirectoryManager(), runContext.getCodeLocationNameManager(), impactAnalysisOptions, blackDuckServicesFactory.getBlackDuckApiClient(), impactAnalysisUploadService,
-                                                  blackDuckServicesFactory.createCodeLocationService(), runContext.getStatusEventPublisher(), runContext.getExitCodePublisher());
+                                                  blackDuckServicesFactory.createCodeLocationService(), runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getOperationSystem());
         } else {
             blackDuckImpactAnalysisTool = BlackDuckImpactAnalysisTool
-                                              .OFFLINE(runContext.getDirectoryManager(), runContext.getCodeLocationNameManager(), impactAnalysisOptions, runContext.getStatusEventPublisher(), runContext.getExitCodePublisher());
+                                              .OFFLINE(runContext.getDirectoryManager(), runContext.getCodeLocationNameManager(), impactAnalysisOptions, runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(),
+                                                  runContext.getOperationSystem());
         }
         return new ImpactAnalysisOperation(blackDuckImpactAnalysisTool);
     }
@@ -133,13 +135,13 @@ public class OperationFactory {
         DetectProjectServiceOptions options = runContext.getDetectConfigurationFactory().createDetectProjectServiceOptions();
         DetectCustomFieldService detectCustomFieldService = new DetectCustomFieldService();
 
-        return new ProjectCreationOperation(runOptions, options, detectCustomFieldService, runContext.getStatusEventPublisher());
+        return new ProjectCreationOperation(runOptions, options, detectCustomFieldService, runContext.getOperationSystem());
     }
 
     public final ProjectDecisionOperation createProjectDecisionOperation() {
         ProjectNameVersionOptions projectNameVersionOptions = runContext.getDetectConfigurationFactory().createProjectNameVersionOptions(runContext.getDirectoryManager().getSourceDirectory().getName());
         ProjectNameVersionDecider projectNameVersionDecider = new ProjectNameVersionDecider(projectNameVersionOptions);
-        return new ProjectDecisionOperation(runOptions, projectNameVersionDecider, runContext.getStatusEventPublisher());
+        return new ProjectDecisionOperation(runOptions, projectNameVersionDecider, runContext.getOperationSystem());
     }
 
     public final SignatureScanOperation createSignatureScanOperation() throws DetectUserFriendlyException {

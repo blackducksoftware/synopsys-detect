@@ -74,7 +74,8 @@ public class FormattedOutputManager {
                                      .map(issue -> new FormattedIssueOutput(issue.getType().name(), issue.getTitle(), issue.getMessages()))
                                      .toList();
         formattedOutput.operations = Bds.of(detectOperations)
-                                         .map(operation -> new FormattedOperationOutput(Operation.formatExecutionTime(operation.getExecutionTime()), operation.getDescriptionKey(), operation.getStatusType().name()))
+                                         .map(operation -> new FormattedOperationOutput(Operation.formatTimestamp(operation.getStartTime()), Operation.formatTimestamp(operation.getEndTime().orElse(null)), operation.getName(),
+                                             operation.getStatusType().name()))
                                          .toList();
 
         if (detectorToolResult != null) {
