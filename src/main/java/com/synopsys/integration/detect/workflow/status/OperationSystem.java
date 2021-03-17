@@ -8,11 +8,11 @@
 package com.synopsys.integration.detect.workflow.status;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class OperationSystem {
-    private final Map<String, Operation> operationMap = new HashMap<>();
+    private final Map<String, Operation> operationMap = new ConcurrentHashMap<>();
     private final StatusEventPublisher statusEventPublisher;
 
     public OperationSystem(StatusEventPublisher statusEventPublisher) {
