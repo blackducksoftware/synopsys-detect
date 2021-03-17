@@ -43,7 +43,7 @@ public class OperationSystemTest {
         OperationSystem operationSystem = new OperationSystem(statusEventPublisher);
         String operationName = "myOperation";
         operationSystem.beginOperation(operationName);
-        operationSystem.finalizeOperations();
+        operationSystem.publishOperations();
         assertTrue(detectIssues.isEmpty());
         assertFalse(detectOperations.isEmpty());
         Operation publishedOperation = detectOperations.get(0);
@@ -59,7 +59,7 @@ public class OperationSystemTest {
         String operationName = "myOperation";
         operationSystem.completeWithFailure(operationName);
         operationSystem.beginOperation(operationName);
-        operationSystem.finalizeOperations();
+        operationSystem.publishOperations();
         Operation completedOperation = detectOperations.get(0);
         Operation startedOperation = detectOperations.get(1);
         assertOperationWithFailure(operationName, completedOperation);
@@ -75,7 +75,7 @@ public class OperationSystemTest {
         String operationName = "myOperation";
         operationSystem.beginOperation(operationName);
         operationSystem.completeWithSuccess(operationName);
-        operationSystem.finalizeOperations();
+        operationSystem.publishOperations();
         Operation publishedOperation = detectOperations.get(0);
         assertOperationWithSuccess(operationName, publishedOperation);
     }
@@ -86,7 +86,7 @@ public class OperationSystemTest {
         String operationName = "myOperation";
         operationSystem.beginOperation(operationName);
         operationSystem.completeWithFailure(operationName);
-        operationSystem.finalizeOperations();
+        operationSystem.publishOperations();
         Operation publishedOperation = detectOperations.get(0);
         assertOperationWithFailure(operationName, publishedOperation);
     }
@@ -97,7 +97,7 @@ public class OperationSystemTest {
         String operationName = "myOperation";
         operationSystem.beginOperation(operationName);
         operationSystem.completeWithError(operationName, "Unit test error message");
-        operationSystem.finalizeOperations();
+        operationSystem.publishOperations();
         Operation publishedOperation = detectOperations.get(0);
         assertOperationWithError(operationName, publishedOperation);
     }
@@ -107,7 +107,7 @@ public class OperationSystemTest {
         OperationSystem operationSystem = new OperationSystem(statusEventPublisher);
         String operationName = "myOperation";
         operationSystem.completeWithSuccess(operationName);
-        operationSystem.finalizeOperations();
+        operationSystem.publishOperations();
         Operation publishedOperation = detectOperations.get(0);
         assertOperationWithSuccess(operationName, publishedOperation);
     }
@@ -117,7 +117,7 @@ public class OperationSystemTest {
         OperationSystem operationSystem = new OperationSystem(statusEventPublisher);
         String operationName = "myOperation";
         operationSystem.completeWithFailure(operationName);
-        operationSystem.finalizeOperations();
+        operationSystem.publishOperations();
         Operation publishedOperation = detectOperations.get(0);
         assertOperationWithFailure(operationName, publishedOperation);
     }
@@ -127,7 +127,7 @@ public class OperationSystemTest {
         OperationSystem operationSystem = new OperationSystem(statusEventPublisher);
         String operationName = "myOperation";
         operationSystem.completeWithError(operationName, "Unit test error message");
-        operationSystem.finalizeOperations();
+        operationSystem.publishOperations();
         Operation publishedOperation = detectOperations.get(0);
         assertOperationWithError(operationName, publishedOperation);
     }

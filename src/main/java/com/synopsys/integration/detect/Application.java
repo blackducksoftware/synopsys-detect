@@ -166,7 +166,7 @@ public class Application implements ApplicationRunner {
                 logger.debug("An exception was thrown during the detect run.", e);
                 exitCodeManager.requestExitCode(e);
             }
-            operationSystem.finalizeOperations();
+            operationSystem.publishOperations();
         } else {
             logger.debug("Detect will NOT attempt to run.");
             detectBootResult.getException().ifPresent(exitCodeManager::requestExitCode);

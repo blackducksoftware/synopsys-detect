@@ -39,11 +39,11 @@ public class OperationSystem {
         operation.error(errorMessages);
     }
 
-    public void finalizeOperations() {
-        operationMap.values().forEach(this::finalizeOperation);
+    public void publishOperations() {
+        operationMap.values().forEach(this::publishOperation);
     }
 
-    public void finalizeOperation(Operation operation) {
+    public void publishOperation(Operation operation) {
         if (operation.getErrorMessages().length > 0) {
             statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, operation.getName(), Arrays.asList(operation.getErrorMessages())));
         }
@@ -53,7 +53,7 @@ public class OperationSystem {
     private Operation startOperation(String operationName) {
         Operation currentOperation = operationMap.computeIfAbsent(operationName, this::createNewOperation);
         if (currentOperation.getEndTime().isPresent()) {
-            finalizeOperation(currentOperation);
+            publishOperation(currentOperation);
             currentOperation = createNewOperation(operationName);
             operationMap.put(operationName, currentOperation);
         }
