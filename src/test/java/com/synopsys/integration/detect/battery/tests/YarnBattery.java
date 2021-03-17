@@ -62,6 +62,7 @@ public class YarnBattery {
         test.run();
     }
 
+    // TODO rework to use filter
     @Test
     void yarnWorkspacesSimpleIncludingAllWorkspaces() {
         BatteryTest test = new BatteryTest("yarn-workspaces-simple-allworkspaces", "yarn/yarn-workspaces-simple-allworkspaces");
@@ -71,6 +72,19 @@ public class YarnBattery {
         test.sourceFileFromResource("mypkgs/workspace-a/package.json");
         test.sourceFileFromResource("mypkgs/workspace-b/package.json");
         test.property("detect.yarn.monorepo.mode", "true");
+        test.expectBdioResources();
+        test.run();
+    }
+
+    @Test
+    void yarnWorkspacesSimpleSelectWorkspace() {
+        BatteryTest test = new BatteryTest("yarn-workspaces-simple-selectwksp", "yarn/yarn-workspaces-simple-selectwksp");
+        test.sourceDirectoryNamed("yarn-workspaces-simple-selectwksp");
+        test.sourceFileFromResource("yarn.lock");
+        test.sourceFileFromResource("package.json");
+        test.sourceFileFromResource("mypkgs/workspace-a/package.json");
+        test.sourceFileFromResource("mypkgs/workspace-b/package.json");
+        test.property("detect.yarn.included.workspaces", "workspace-a-pkgname");
         test.expectBdioResources();
         test.run();
     }
