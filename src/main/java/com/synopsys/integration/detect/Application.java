@@ -49,7 +49,6 @@ import com.synopsys.integration.detect.workflow.report.output.FormattedOutputMan
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectIssueType;
 import com.synopsys.integration.detect.workflow.status.DetectStatusManager;
-import com.synopsys.integration.detect.workflow.status.OperationSystem;
 
 public class Application implements ApplicationRunner {
     private final Logger logger = LoggerFactory.getLogger(Application.class);
@@ -150,23 +149,12 @@ public class Application implements ApplicationRunner {
     private void runApplication(DetectContext detectContext, DetectRun detectRun, EventSystem eventSystem, ExitCodeManager exitCodeManager, DetectBootResult detectBootResult) {
         Optional<ProductRunData> optionalProductRunData = detectBootResult.getProductRunData();
         if (detectBootResult.getBootType() == DetectBootResult.BootType.RUN && optionalProductRunData.isPresent()) {
-            OperationSystem operationSystem = detectContext.getBean(OperationSystem.class);
-            try {
-                logger.debug("Detect will attempt to run.");
-                ProductRunData productRunData = optionalProductRunData.get();
-                RunManager runManager = new RunManager();
-                RunContext runContext = new RunContext(detectContext, productRunData);
-                runManager.run(runContext);
-            } catch (Exception e) {
-                if (e.getMessage() != null) {
-                    logger.error("Detect run failed: {}", e.getMessage());
-                } else {
-                    logger.error("Detect run failed: {}", e.getClass().getSimpleName());
-                }
-                logger.debug("An exception was thrown during the detect run.", e);
-                exitCodeManager.requestExitCode(e);
-            }
-            operationSystem.publishOperations();
+            logger.debug("Detect will attempt to run.");
+            ProductRunData productRunData = optionalProductRunData.get();
+            RunManager runManager = new RunManager(exitCodeManager);
+            RunContext runContext = new RunContext(detectContext, productRunData);
+            runManager.run(runContext);
+
         } else {
             logger.debug("Detect will NOT attempt to run.");
             detectBootResult.getException().ifPresent(exitCodeManager::requestExitCode);
