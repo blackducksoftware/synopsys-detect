@@ -13,6 +13,7 @@
 * (IDETECT-2434) Resolved an issue in the CLANG detector on Ubuntu and Debian systems that caused it to omit a package when that package had been installed on the system from multiple architectures.
 * (IDETECT-2413) Resolved an issue to upgrade internal dependencies to support JDK 15.
 * (IDETECT-2409) Resolved an issue to allow Gradle detector to support Gradle 6.8.
+* (IDETECT-2099) Resolved an issue to improve the error logging by creating Detect issues that are logged in the console and appear in the status.json file for exceptions that occur during the run of Detect.
 
 ## Version 6.9.0
 ### New Features
