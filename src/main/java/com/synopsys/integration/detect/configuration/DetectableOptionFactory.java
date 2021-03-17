@@ -153,7 +153,9 @@ public class DetectableOptionFactory {
 
     public LernaOptions createLernaOptions() {
         Boolean includePrivate = getValue(DetectProperties.DETECT_LERNA_INCLUDE_PRIVATE);
-        return new LernaOptions(includePrivate);
+        List<String> excludedPackages = getValue(DetectProperties.DETECT_LERNA_EXCLUDED_PACKAGES);
+        List<String> includedPackages = getValue(DetectProperties.DETECT_LERNA_INCLUDED_PACKAGES);
+        return new LernaOptions(includePrivate, excludedPackages, includedPackages);
     }
 
     public MavenCliExtractorOptions createMavenCliOptions() {

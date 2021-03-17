@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
@@ -97,8 +98,7 @@ public class LernaExternalDetectableTest extends DetectableFunctionalTest {
     public Detectable create(@NotNull DetectableEnvironment environment) {
         NpmLockfileOptions npmLockFileOptions = new NpmLockfileOptions(true);
         YarnLockOptions yarnLockOptions = new YarnLockOptions(false, false, new ArrayList<>(0), new ArrayList<>(0));
-        LernaOptions lernaOptions = new LernaOptions(false);
-
+        LernaOptions lernaOptions = new LernaOptions(false, new LinkedList<>(), new LinkedList<>());
         return detectableFactory.createLernaDetectable(environment, () -> ExecutableTarget.forCommand("lerna"), npmLockFileOptions, yarnLockOptions, lernaOptions);
     }
 

@@ -75,7 +75,7 @@ public class YarnBattery {
         test.expectBdioResources();
         test.run();
     }
-
+    
     @Test
     void yarnWorkspacesSimpleSelectWorkspace() {
         BatteryTest test = new BatteryTest("yarn-workspaces-simple-selectwksp", "yarn/yarn-workspaces-simple-selectwksp");
