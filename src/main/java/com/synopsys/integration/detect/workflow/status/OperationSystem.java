@@ -24,18 +24,18 @@ public class OperationSystem {
     }
 
     public void completeWithSuccess(String operationName) {
-        Operation operation = getOrCreateOperation(operationName);
+        Operation operation = operationMap.computeIfAbsent(operationName, this::createNewOperation);
         operation.success();
     }
 
     public void completeWithFailure(String operationName) {
-        Operation operation = getOrCreateOperation(operationName);
+        Operation operation = operationMap.computeIfAbsent(operationName, this::createNewOperation);
         operation.fail();
 
     }
 
     public void completeWithError(String operationName, String... errorMessages) {
-        Operation operation = getOrCreateOperation(operationName);
+        Operation operation = operationMap.computeIfAbsent(operationName, this::createNewOperation);
         operation.error(errorMessages);
     }
 
@@ -58,16 +58,6 @@ public class OperationSystem {
             operationMap.put(operationName, currentOperation);
         }
         return currentOperation;
-    }
-
-    private Operation getOrCreateOperation(String operationName) {
-        Operation operation;
-        if (!operationMap.containsKey(operationName)) {
-            operation = startOperation(operationName);
-        } else {
-            operation = operationMap.get(operationName);
-        }
-        return operation;
     }
 
     private Operation createNewOperation(String operationName) {
