@@ -21,6 +21,8 @@ import com.synopsys.integration.bdio.BdioTransformer;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.synopsys.integration.common.util.finder.FileFinder;
+import com.synopsys.integration.common.util.finder.WildcardFileFinder;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
@@ -28,7 +30,9 @@ import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
+import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.tool.detector.DetectDetectableFactory;
+import com.synopsys.integration.detect.tool.detector.DetectorEventPublisher;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
 import com.synopsys.integration.detect.tool.detector.executable.DirectoryExecutableFinder;
@@ -54,13 +58,15 @@ import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detect.workflow.airgap.AirGapOptions;
 import com.synopsys.integration.detect.workflow.airgap.AirGapPathFinder;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationCreator;
+import com.synopsys.integration.detect.workflow.codelocation.CodeLocationEventPublisher;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameGenerator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
+import com.synopsys.integration.detect.workflow.project.ProjectEventPublisher;
+import com.synopsys.integration.detect.workflow.status.OperationSystem;
+import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
-import com.synopsys.integration.common.util.finder.FileFinder;
-import com.synopsys.integration.common.util.finder.WildcardFileFinder;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
@@ -167,6 +173,33 @@ public class RunBeanConfiguration {
         return new DetectExecutableResolver(directoryExecutableFinder(), systemExecutableFinder(), detectConfigurationFactory.createDetectExecutableOptions());
     }
 
+    //#region EventPublishers
+    @Bean
+    public StatusEventPublisher statusEventPublisher() {
+        return new StatusEventPublisher(eventSystem);
+    }
+
+    @Bean
+    public ExitCodePublisher exitCodePublisher() {
+        return new ExitCodePublisher(eventSystem);
+    }
+
+    @Bean
+    public DetectorEventPublisher detectorEventPublisher() {
+        return new DetectorEventPublisher(eventSystem);
+    }
+
+    @Bean
+    public CodeLocationEventPublisher codeLocationEventPublisher() {
+        return new CodeLocationEventPublisher(eventSystem);
+    }
+
+    @Bean
+    public ProjectEventPublisher projectEventPublisher() {
+        return new ProjectEventPublisher(eventSystem);
+    }
+    //#endregion EventPublishers
+
     //#region Detectables
     @Bean
     public DockerInspectorResolver dockerInspectorResolver() throws DetectUserFriendlyException {
@@ -220,11 +253,17 @@ public class RunBeanConfiguration {
 
     //#endregion Detectables
 
+    @Bean
+    public OperationSystem operationSystem() {
+        return new OperationSystem(statusEventPublisher());
+    }
+
     @Lazy
     @Bean()
     public BlackDuckSignatureScanner blackDuckSignatureScanner(BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, ScanBatchRunner scanBatchRunner, BlackDuckServerConfig blackDuckServerConfig,
         CodeLocationNameManager codeLocationNameManager) {
-        return new BlackDuckSignatureScanner(directoryManager, fullFileFinder(), codeLocationNameManager, blackDuckSignatureScannerOptions, eventSystem, scanBatchRunner, blackDuckServerConfig);
+        return new BlackDuckSignatureScanner(directoryManager, fullFileFinder(), codeLocationNameManager, blackDuckSignatureScannerOptions, scanBatchRunner, blackDuckServerConfig, statusEventPublisher(), exitCodePublisher(),
+            operationSystem());
     }
 
 }

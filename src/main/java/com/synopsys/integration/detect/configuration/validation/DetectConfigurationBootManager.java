@@ -67,7 +67,7 @@ public class DetectConfigurationBootManager {
             additionalNotes.put(propertyKey, "\t *** DEPRECATED ***");
 
             deprecationMessages.put(propertyKey, Collections.singletonList(deprecationMessage));
-            DetectIssue.publish(eventSystem, DetectIssueType.DEPRECATION, propertyKey, "\t" + deprecationMessage);
+            DetectIssue.publish(eventSystem, DetectIssueType.DEPRECATION, propertyKey, deprecationMessage);
 
             if (!shouldFailFromDeprecations && detectInfo.getDetectMajorVersion() >= deprecationInfo.getFailInVersion().getIntValue()) {
                 shouldFailFromDeprecations = true;
