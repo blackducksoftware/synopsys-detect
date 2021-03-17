@@ -3,7 +3,7 @@
 ## Version 7.0.0
 ### New Features
 * Added support for the dependency graph SBT plugin. Resolution cache generation is no longer a requirement of the SBT detector.
-* Added the properties [detect.ignore](../properties/configuration/paths/#detect-ignore-advanced), [detect.ignore.defaults](../properties/configuration/paths/#detect-ignore-default-directories-advanced), and [detect.ignore.search.depth](../properties/configuration/signature scanner/#detect-ignore-search-depth) to handle exclusions for detector search and signature scanning.
+* Added the properties [detect.excluded.directories](../properties/configuration/paths/#detect-excluded-directories-advanced), [detect.exclude.default.directories](../properties/configuration/paths/#detect-exclude-default-directories-advanced), and [detect.excluded.directory.search.depth](../properties/configuration/signature scanner/#detect-excluded-directory-search-depth) to handle exclusions for detector search and signature scanning.
 * Added ability to specify excluded directory paths using [glob patterns](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)).
 
 ### Changed features

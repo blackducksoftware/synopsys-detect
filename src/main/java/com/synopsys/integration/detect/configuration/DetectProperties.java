@@ -620,27 +620,27 @@ public class DetectProperties {
             .setHelp("The path to the rebar3 executable.")
             .setGroups(DetectGroup.HEX, DetectGroup.GLOBAL);
 
-    public static final DetectProperty<StringListProperty> DETECT_IGNORE =
-        new DetectProperty<>(new StringListProperty("detect.ignore", emptyList()))
-            .setInfo("Detect Ignore", DetectPropertyFromVersion.VERSION_7_0_0)
-            .setHelp("A comma-separated list of names, name patterns, relative paths, or path patterns of directories that Detect should ignore.",
+    public static final DetectProperty<StringListProperty> DETECT_EXCLUDED_DIRECTORIES =
+        new DetectProperty<>(new StringListProperty("detect.excluded.directories", emptyList()))
+            .setInfo("Detect Excluded Directories", DetectPropertyFromVersion.VERSION_7_0_0)
+            .setHelp("A comma-separated list of names, name patterns, relative paths, or path patterns of directories that Detect should exclude.",
                 "Subdirectories whose name or path is resolved from the patterns in this list will not be searched when determining which detectors to run, and will be excluded from signature scan using the Scan CLI '--exclude' flag. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
-    public static final DetectProperty<BooleanProperty> DETECT_IGNORE_DEFAULTS =
-        new DetectProperty<>(new BooleanProperty("detect.ignore.defaults", true))
-            .setInfo("Detect Ignore Default Directories", DetectPropertyFromVersion.VERSION_7_0_0)
-            .setHelp("If true, Detect will ignore the default directory names. See the detailed help for more information.",
-                "If true, these directories will be ignored by Detect when searching for detectors and will be excluded from signature scan using the Scan CLI '--exclude' flag: bin, build, .git, .gradle, node_modules, out, packages, target."
+    public static final DetectProperty<BooleanProperty> DETECT_EXCLUDE_DEFAULT_DIRECTORIES =
+        new DetectProperty<>(new BooleanProperty("detect.exclude.default.directories", true))
+            .setInfo("Detect Exclude Default Directories", DetectPropertyFromVersion.VERSION_7_0_0)
+            .setHelp("If true, Detect will exclude the default directory names. See the detailed help for more information.",
+                "If true, these directories will be excluded by Detect when searching for detectors and will be excluded from signature scan using the Scan CLI '--exclude' flag: bin, build, .git, .gradle, node_modules, out, packages, target."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
-    public static final DetectProperty<IntegerProperty> DETECT_IGNORE_SEARCH_DEPTH =
-        new DetectProperty<>(new IntegerProperty("detect.ignore.search.depth", 4))
-            .setInfo("Detect Ignore Search Depth", DetectPropertyFromVersion.VERSION_7_0_0)
+    public static final DetectProperty<IntegerProperty> DETECT_EXCLUDED_DIRECTORY_SEARCH_DEPTH =
+        new DetectProperty<>(new IntegerProperty("detect.excluded.directory.search.depth", 4))
+            .setInfo("Detect Excluded Directory Search Depth", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp("Enables you to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN);
 
@@ -1263,7 +1263,8 @@ public class DetectProperties {
             .setHelp("A comma-separated list of file names to exclude from detector search.")
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
-            .setDeprecated("This property is deprecated.  Detect no longer supports the exclusion of individual files.  If you wish to exclude certain detectors, please use --detect.excluded.detector.types.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+            .setDeprecated("This property is deprecated.  Detect no longer supports the exclusion of individual files.  If you wish to exclude certain detectors, please use --detect.excluded.detector.types.", DetectMajorVersion.SEVEN,
+                DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS =
@@ -1733,7 +1734,8 @@ public class DetectProperties {
             .setHelp("A comma-separated list of directory name patterns for which Detect searches and adds to the signature scanner --exclude flag values.",
                 "This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details. Detect will recursively search within the scan targets for files/directories that match these patterns and will create the corresponding exclusion patterns (paths relative to the scan target directory) for the signature scanner (Black Duck scan CLI). Please note that the signature scanner will only exclude directories; matched filenames will be passed to the signature scanner but will have no effect. These patterns will be added to the patterns provided by detect.blackduck.signature.scanner.exclusion.patterns and passed as --exclude values. For example: suppose you are running in bash on Linux, and have a subdirectory named blackduck-common that you want to exclude. Any of the following would exclude it: --detect.blackduck.signature.scanner.exclusion.name.patterns=blackduck-common, --detect.blackduck.signature.scanner.exclusion.name.patterns='blackduck-common', --detect.blackduck.signature.scanner.exclusion.name.patterns='blackduck-*'. Use this property when you want Detect to convert the given patterns to actual paths. Use detect.blackduck.signature.scanner.exclusion.patterns to pass patterns directly to the signature scanner as-is.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN)
-            .setDeprecated("This property is now deprecated.  Please use --detect.ignore to specify directory name patterns for which Detect searches and adds to the signature scanner as --exclude flag values.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+            .setDeprecated("This property is now deprecated.  Please use --detect.ignore to specify directory name patterns for which Detect searches and adds to the signature scanner as --exclude flag values.", DetectMajorVersion.SEVEN,
+                DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<IntegerProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERN_SEARCH_DEPTH =
@@ -1741,7 +1743,8 @@ public class DetectProperties {
             .setInfo("Exclusion Patterns Search Depth", DetectPropertyFromVersion.VERSION_5_0_0)
             .setHelp("Enables you to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN)
-            .setDeprecated("This property is deprecated.  Please use --detect.ignore.search.depth to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+            .setDeprecated("This property is deprecated.  Please use --detect.ignore.search.depth to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.", DetectMajorVersion.SEVEN,
+                DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<StringListProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERNS =
