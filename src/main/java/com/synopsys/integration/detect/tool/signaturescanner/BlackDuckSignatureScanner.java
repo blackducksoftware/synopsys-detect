@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +75,7 @@ public class BlackDuckSignatureScanner {
 
     }
 
-    public ScanBatchOutput performScanActions(NameVersion projectNameVersion, File installDirectory, File dockerTarFile) throws IntegrationException, IOException, DetectUserFriendlyException {
+    public ScanBatchOutput performScanActions(NameVersion projectNameVersion, File installDirectory, @Nullable File dockerTarFile) throws IntegrationException, IOException, DetectUserFriendlyException {
         operationSystem.beginOperation(OPERATION_NAME);
         List<SignatureScanPath> signatureScanPaths = determinePathsAndExclusions(projectNameVersion, signatureScannerOptions.getMaxDepth(), dockerTarFile);
 
@@ -147,7 +148,7 @@ public class BlackDuckSignatureScanner {
         operationSystem.completeWithFailure(OPERATION_NAME);
     }
 
-    private List<SignatureScanPath> determinePathsAndExclusions(NameVersion projectNameVersion, Integer maxDepth, File dockerTarFile) throws IOException {
+    private List<SignatureScanPath> determinePathsAndExclusions(NameVersion projectNameVersion, Integer maxDepth, @Nullable File dockerTarFile) throws IOException {
         List<Path> providedSignatureScanPaths = signatureScannerOptions.getSignatureScannerPaths();
         boolean userProvidedScanTargets = null != providedSignatureScanPaths && !providedSignatureScanPaths.isEmpty();
         List<String> providedExclusionPatterns = signatureScannerOptions.getExclusionPatterns();
@@ -190,7 +191,7 @@ public class BlackDuckSignatureScanner {
         return signatureScanPath;
     }
 
-    protected ScanBatchBuilder createDefaultScanBatchBuilder(NameVersion projectNameVersion, File installDirectory, List<SignatureScanPath> signatureScanPaths, File dockerTarFile) {
+    protected ScanBatchBuilder createDefaultScanBatchBuilder(NameVersion projectNameVersion, File installDirectory, List<SignatureScanPath> signatureScanPaths, @Nullable File dockerTarFile) {
         ScanBatchBuilder scanJobBuilder = new ScanBatchBuilder();
         scanJobBuilder.scanMemoryInMegabytes(signatureScannerOptions.getScanMemory());
         scanJobBuilder.installDirectory(installDirectory);

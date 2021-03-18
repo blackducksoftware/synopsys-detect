@@ -51,7 +51,8 @@ public class SignatureScanOperation {
             codeLocationCreationService = blackDuckServicesFactory.createCodeLocationCreationService();
             blackDuckServerConfig = blackDuckRunData.getBlackDuckServerConfig();
         }
-        SignatureScannerToolResult signatureScannerToolResult = signatureScannerTool.runScanTool(codeLocationCreationService, blackDuckServerConfig, signatureScanInput.getProjectNameVersion(), signatureScanInput.getDockerTar());
+        SignatureScannerToolResult signatureScannerToolResult = signatureScannerTool
+                                                                    .runScanTool(codeLocationCreationService, blackDuckServerConfig, signatureScanInput.getProjectNameVersion(), signatureScanInput.getDockerTar().orElse(null));
         if (signatureScannerToolResult.getResult() == Result.SUCCESS && signatureScannerToolResult.getCreationData().isPresent()) {
             result = signatureScannerToolResult.getCreationData();
         } else if (signatureScannerToolResult.getResult() != Result.SUCCESS) {
