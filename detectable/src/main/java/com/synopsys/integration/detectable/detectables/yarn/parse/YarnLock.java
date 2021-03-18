@@ -30,6 +30,7 @@ public class YarnLock {
         return Optional.ofNullable(fileFormatVersion);
     }
 
+    // TODO should reverse the flag; it should be isYarn1Project, otherwise we'll have a problem when Yarn 3 comes out
     public boolean isYarn2Project() {
         return yarn2Project;
     }

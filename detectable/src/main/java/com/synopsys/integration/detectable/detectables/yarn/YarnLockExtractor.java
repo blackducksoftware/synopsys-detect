@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,8 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonFiles;
+import com.synopsys.integration.detectable.detectables.yarn.packagejson.WorkspacePackageJson;
+import com.synopsys.integration.detectable.detectables.yarn.packagejson.WorkspacePackageJsons;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
@@ -44,18 +47,18 @@ public class YarnLockExtractor {
         try {
             List<String> yarnLockLines = FileUtils.readLines(yarnLockFile, StandardCharsets.UTF_8);
             YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockLines);
-            PackageJson rootPackageJson = packageJsonFiles.read(rootPackageJsonFile);
-            // TODO should reverse the flag; it should be isYarn1Project, otherwise we'll have a problem when Yarn 3 comes out
             boolean getWorkspaceDependenciesFromWorkspacePackageJson = !yarnLock.isYarn2Project();
+            PackageJson rootPackageJson = packageJsonFiles.read(rootPackageJsonFile);
+            Map<String, WorkspacePackageJson> locatedWorkspacePackageJsons = collectPackageJsons(projectDir);
+            Map<String, PackageJson> workspacePackageJsons = WorkspacePackageJsons.toPackageJsons(locatedWorkspacePackageJsons);
+
             ExcludedIncludedWildcardFilter workspacesFilter;
             if (yarnLockOptions.getExcludedWorkspaceNamePatterns().isEmpty() && yarnLockOptions.getIncludedWorkspaceNamePatterns().isEmpty()) {
                 workspacesFilter = null; // Just follow dependencies
             } else {
                 workspacesFilter = ExcludedIncludedWildcardFilter.fromCollections(yarnLockOptions.getExcludedWorkspaceNamePatterns(), yarnLockOptions.getIncludedWorkspaceNamePatterns());
             }
-            Map<String, PackageJson> workspacePackageJsonsToProcess = getWorkspacePackageJsons(projectDir, rootPackageJsonFile);
-
-            YarnResult yarnResult = yarnPackager.generateYarnResult(rootPackageJson, workspacePackageJsonsToProcess, yarnLock, yarnLockFile.getAbsolutePath(), new ArrayList<>(),
+            YarnResult yarnResult = yarnPackager.generateYarnResult(rootPackageJson, workspacePackageJsons, yarnLock, yarnLockFile.getAbsolutePath(), new ArrayList<>(),
                 yarnLockOptions.useProductionOnly(), getWorkspaceDependenciesFromWorkspacePackageJson, workspacesFilter);
 
             if (yarnResult.getException().isPresent()) {
@@ -73,8 +76,13 @@ public class YarnLockExtractor {
     }
 
     @NotNull
-    private Map<String, PackageJson> getWorkspacePackageJsons(File projectDir, File packageJsonFile) throws IOException {
-        List<String> workspaceDirPatterns = packageJsonFiles.extractWorkspaceDirPatterns(packageJsonFile);
-        return packageJsonFiles.readWorkspaceFiles(projectDir, workspaceDirPatterns);
+    private Map<String, WorkspacePackageJson> collectPackageJsons(File dir) throws IOException {
+        Map<String, WorkspacePackageJson> curLevelWorkspacePackageJsons = packageJsonFiles.readWorkspacePackageJsonFiles(dir);
+        Map<String, WorkspacePackageJson> allWorkspacePackageJsons = new HashMap<>(curLevelWorkspacePackageJsons);
+        for (WorkspacePackageJson workspacePackageJson : curLevelWorkspacePackageJsons.values()) {
+            Map<String, WorkspacePackageJson> treeBranchWorkspacePackageJsons = packageJsonFiles.readWorkspacePackageJsonFiles(workspacePackageJson.getPackageJsonFile().getParentFile());
+            allWorkspacePackageJsons.putAll(treeBranchWorkspacePackageJsons);
+        }
+        return allWorkspacePackageJsons;
     }
 }

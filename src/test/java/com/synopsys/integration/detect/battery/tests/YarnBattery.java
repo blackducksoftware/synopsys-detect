@@ -98,7 +98,7 @@ public class YarnBattery {
         test.expectBdioResources();
         test.run();
     }
-    
+
     @Test
     void yarnYarn1WorkspacesAddAll() {
         BatteryTest test = new BatteryTest("yarn1-workspaces", "yarn/yarn1-workspaces");
@@ -120,6 +120,18 @@ public class YarnBattery {
         test.sourceFileFromResource("package.json");
         test.sourceFileFromResource("workspace-a/package.json");
         test.sourceFileFromResource("workspace-b/package.json");
+        test.expectBdioResources();
+        test.run();
+    }
+
+    @Test
+    void yarnYarn2WorkspacesHierarchy() {
+        BatteryTest test = new BatteryTest("yarn2-workspace-hierarchy", "yarn/yarn2-workspace-hierarchy");
+        test.sourceDirectoryNamed("yarn2-workspace-hierarchy");
+        test.sourceFileFromResource("yarn.lock");
+        test.sourceFileFromResource("package.json");
+        test.sourceFileFromResource("workspace-a/package.json");
+        test.sourceFileFromResource("workspace-a/child-workspace/package.json");
         test.expectBdioResources();
         test.run();
     }
