@@ -45,10 +45,11 @@ public class YarnLockExtractor {
 
     public Extraction extract(File projectDir, File yarnLockFile, File rootPackageJsonFile) {
         try {
+            PackageJson rootPackageJson = packageJsonFiles.read(rootPackageJsonFile);
+            logger.debug("Extracting Yarn project {} in {}", rootPackageJson.name, projectDir.getAbsolutePath());
             List<String> yarnLockLines = FileUtils.readLines(yarnLockFile, StandardCharsets.UTF_8);
             YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockLines);
             boolean getWorkspaceDependenciesFromWorkspacePackageJson = yarnLock.isYarn1Project();
-            PackageJson rootPackageJson = packageJsonFiles.read(rootPackageJsonFile);
             Map<String, WorkspacePackageJson> locatedWorkspacePackageJsons = collectPackageJsons(projectDir);
             Map<String, PackageJson> workspacePackageJsons = WorkspacePackageJsons.toPackageJsons(locatedWorkspacePackageJsons);
 

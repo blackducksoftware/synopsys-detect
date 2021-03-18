@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.graph.builder.LazyBuilderMissingExternalIdHandler;
 import com.synopsys.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
 import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.bdio.model.Forge;
@@ -60,7 +61,11 @@ public class YarnTransformer {
                 }
             }
         }
-        return graphBuilder.build((dependencyId, lazyDependencyInfo) -> {
+        return graphBuilder.build(getLazyBuilderHandler(externalDependencies, yarnLockResult));
+    }
+
+    private LazyBuilderMissingExternalIdHandler getLazyBuilderHandler(List<NameVersion> externalDependencies, YarnLockResult yarnLockResult) {
+        return (dependencyId, lazyDependencyInfo) -> {
             Optional<NameVersion> externalDependency = externalDependencies.stream().filter(it -> it.getName().equals(lazyDependencyInfo.getName())).findFirst();
             Optional<ExternalId> externalId = externalDependency.map(it -> externalIdFactory.createNameVersionExternalId(Forge.NPMJS, it.getName(), it.getVersion()));
 
@@ -71,11 +76,11 @@ public class YarnTransformer {
                 if (isWorkspace(yarnLockResult, dependencyId)) {
                     logger.debug("Including workspace {} in the graph", stringDependencyId.getValue());
                 } else {
-                    logger.warn(String.format("Missing yarn dependency. '%s' is neither a defined workspace nor a dependency defined in %s.", stringDependencyId.getValue(), yarnLockResult.getYarnLockFilePath()));
+                    logger.warn("Missing yarn dependency. '{}' is neither a defined workspace nor a dependency defined in {}.", stringDependencyId.getValue(), yarnLockResult.getYarnLockFilePath());
                 }
                 return externalIdFactory.createNameVersionExternalId(Forge.NPMJS, stringDependencyId.getValue());
             }
-        });
+        };
     }
 
     private boolean isWorkspace(YarnLockResult yarnLockResult, com.synopsys.integration.bdio.model.dependencyid.DependencyId dependencyId) {
@@ -94,25 +99,34 @@ public class YarnTransformer {
         @Nullable ExcludedIncludedWildcardFilter workspacesFilter) {
         logger.debug("Adding root dependencies from root PackageJson: {}:{}", rootPackageJson.name, rootPackageJson.version);
         if ((workspacesFilter == null) || workspacesFilter.willInclude(rootPackageJson.name)) {
-            addRootDependenciesToGraph(graphBuilder, rootPackageJson.dependencies.entrySet());
-            if (!productionOnly) {
-                logger.debug("\tAlso adding dev dependencies");
-                addRootDependenciesToGraph(graphBuilder, rootPackageJson.devDependencies.entrySet());
-            }
+            populateGraphWithRootDependencies(graphBuilder, rootPackageJson, productionOnly);
         }
-        
         if ((workspacesFilter != null) || getWorkspaceDependenciesFromWorkspacePackageJson) {
-            for (PackageJson curWorkspacePackageJson : workspacePackageJsons.values()) {
-                StringDependencyId workspaceId = new StringDependencyId(curWorkspacePackageJson.name + "@" + curWorkspacePackageJson.version);
-                if ((workspacesFilter != null) && workspacesFilter.willInclude(curWorkspacePackageJson.name)) {
-                    logger.debug("Adding root dependency representing workspace from workspace PackageJson: {}:{} ({})", curWorkspacePackageJson.name, curWorkspacePackageJson.version, workspaceId);
-                    graphBuilder.addChildToRoot(workspaceId);
-                }
-                if (getWorkspaceDependenciesFromWorkspacePackageJson) {
-                    addWorkspaceChildrenToGraph(graphBuilder, workspaceId, curWorkspacePackageJson.dependencies.entrySet());
-                    if (!productionOnly) {
-                        addWorkspaceChildrenToGraph(graphBuilder, workspaceId, curWorkspacePackageJson.devDependencies.entrySet());
-                    }
+            populateGraphFromWorkspacePackageJsons(graphBuilder, workspacePackageJsons, productionOnly, getWorkspaceDependenciesFromWorkspacePackageJson, workspacesFilter);
+        }
+    }
+
+    private void populateGraphWithRootDependencies(LazyExternalIdDependencyGraphBuilder graphBuilder, PackageJson rootPackageJson, boolean productionOnly) {
+        addRootDependenciesToGraph(graphBuilder, rootPackageJson.dependencies.entrySet());
+        if (!productionOnly) {
+            logger.debug("\tAlso adding dev dependencies");
+            addRootDependenciesToGraph(graphBuilder, rootPackageJson.devDependencies.entrySet());
+        }
+    }
+
+    private void populateGraphFromWorkspacePackageJsons(LazyExternalIdDependencyGraphBuilder graphBuilder, Map<String, PackageJson> workspacePackageJsons, boolean productionOnly,
+        boolean getWorkspaceDependenciesFromWorkspacePackageJson,
+        @Nullable ExcludedIncludedWildcardFilter workspacesFilter) {
+        for (PackageJson curWorkspacePackageJson : workspacePackageJsons.values()) {
+            StringDependencyId workspaceId = new StringDependencyId(curWorkspacePackageJson.name + "@" + curWorkspacePackageJson.version);
+            if ((workspacesFilter != null) && workspacesFilter.willInclude(curWorkspacePackageJson.name)) {
+                logger.debug("Adding root dependency representing workspace from workspace PackageJson: {}:{} ({})", curWorkspacePackageJson.name, curWorkspacePackageJson.version, workspaceId);
+                graphBuilder.addChildToRoot(workspaceId);
+            }
+            if (getWorkspaceDependenciesFromWorkspacePackageJson) {
+                addWorkspaceChildrenToGraph(graphBuilder, workspaceId, curWorkspacePackageJson.dependencies.entrySet());
+                if (!productionOnly) {
+                    addWorkspaceChildrenToGraph(graphBuilder, workspaceId, curWorkspacePackageJson.devDependencies.entrySet());
                 }
             }
         }

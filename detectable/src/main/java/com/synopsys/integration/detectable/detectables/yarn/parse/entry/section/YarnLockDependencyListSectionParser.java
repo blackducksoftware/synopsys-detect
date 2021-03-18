@@ -50,9 +50,7 @@ public class YarnLockDependencyListSectionParser implements YarnLockEntrySection
                 return curLineIndex - 1;
             }
             Optional<YarnLockDependency> yarnLockDependency = yarnLockDependencySpecParser.parse(line.trim(), dependenciesAreOptional);
-            if (yarnLockDependency.isPresent()) {
-                entryBuilder.addDependency(yarnLockDependency.get());
-            }
+            yarnLockDependency.ifPresent(entryBuilder::addDependency);
         }
         return yarnLockLines.size() - 1;
     }

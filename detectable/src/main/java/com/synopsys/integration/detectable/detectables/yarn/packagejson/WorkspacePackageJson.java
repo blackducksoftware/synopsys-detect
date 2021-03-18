@@ -10,9 +10,8 @@ package com.synopsys.integration.detectable.detectables.yarn.packagejson;
 import java.io.File;
 
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
-import com.synopsys.integration.util.Stringable;
 
-public class WorkspacePackageJson extends Stringable {
+public class WorkspacePackageJson {
     private final File packageJsonFile;
     private final PackageJson packageJson;
 

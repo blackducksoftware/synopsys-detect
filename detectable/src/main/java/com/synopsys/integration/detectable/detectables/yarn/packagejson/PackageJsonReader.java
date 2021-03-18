@@ -39,12 +39,12 @@ public class PackageJsonReader {
             logger.trace("workspacesObject type: {}", workspacesObject.getClass().getName());
             if (workspacesObject instanceof Map) {
                 logger.trace("workspacesObject is a Map");
-                YarnPackageJsonWorkspacesAsObject rootPackageJsonCurrent = gson.fromJson(packageJsonText, YarnPackageJsonWorkspacesAsObject.class);
-                workspaceSubdirPatterns.addAll(rootPackageJsonCurrent.workspaces.workspaceSubdirPatterns);
+                YarnPackageJsonWorkspacesAsObject rootPackageJsonNewSyntax = gson.fromJson(packageJsonText, YarnPackageJsonWorkspacesAsObject.class);
+                workspaceSubdirPatterns.addAll(rootPackageJsonNewSyntax.workspaces.workspaceSubdirPatterns);
             } else if (workspacesObject instanceof List) {
                 logger.trace("workspacesObject is a List");
-                YarnPackageJsonWorkspacesAsList rootPackageJsonPreV1_5_0 = gson.fromJson(packageJsonText, YarnPackageJsonWorkspacesAsList.class);
-                workspaceSubdirPatterns.addAll(rootPackageJsonPreV1_5_0.workspaceSubdirPatterns);
+                YarnPackageJsonWorkspacesAsList rootPackageJsonOldSyntax = gson.fromJson(packageJsonText, YarnPackageJsonWorkspacesAsList.class);
+                workspaceSubdirPatterns.addAll(rootPackageJsonOldSyntax.workspaceSubdirPatterns);
             } else {
                 logger.warn("package.json 'workspaces' object is an unrecognized format; workspace declarations will be ignored");
             }

@@ -14,6 +14,8 @@ import com.synopsys.integration.detectable.detectables.npm.packagejson.model.Pac
 
 public class WorkspacePackageJsons {
 
+    private WorkspacePackageJsons() {}
+
     public static Map<String, PackageJson> toPackageJsons(Map<String, WorkspacePackageJson> workspacePackageJsons) {
         Map<String, PackageJson> packageJsons = new HashMap<>(workspacePackageJsons.size());
         for (Map.Entry<String, WorkspacePackageJson> entry : workspacePackageJsons.entrySet()) {
