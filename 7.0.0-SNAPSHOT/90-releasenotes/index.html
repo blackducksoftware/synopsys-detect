@@ -2889,6 +2889,7 @@
 <li>(IDETECT-2434) Resolved an issue in the CLANG detector on Ubuntu and Debian systems that caused it to omit a package when that package had been installed on the system from multiple architectures.</li>
 <li>(IDETECT-2413) Resolved an issue to upgrade internal dependencies to support JDK 15.</li>
 <li>(IDETECT-2409) Resolved an issue to allow Gradle detector to support Gradle 6.8.</li>
+<li>(IDETECT-2099) Resolved an issue to improve the error logging by creating Detect issues that are logged in the console and appear in the status.json file for exceptions that occur during the run of Detect.</li>
 </ul>
 <h2 id="version-690">Version 6.9.0<a class="headerlink" href="#version-690" title="Permanent link">#</a></h2>
 <h3 id="new-features_1">New Features<a class="headerlink" href="#new-features_1" title="Permanent link">#</a></h3>
@@ -2901,6 +2902,7 @@
 <h3 id="changed-features_1">Changed features<a class="headerlink" href="#changed-features_1" title="Permanent link">#</a></h3>
 <ul>
 <li>Added the timezone to the date format in the default log message format.</li>
+<li>Reverted deprecations for detect.blackduck.signature.scanner.arguments, detect.blackduck.signature.scanner.copyright.search, detect.blackduck.signature.scanner.dry.run, detect.blackduck.signature.scanner.individual.file.matching, detect.blackduck.signature.scanner.license.search, detect.blackduck.signature.scanner.local.path, detect.blackduck.signature.scanner.paths, detect.blackduck.signature.scanner.snippet.matching, detect.blackduck.signature.scanner.upload.source.mode.</li>
 </ul>
 <h3 id="resolved-issues_1">Resolved issues<a class="headerlink" href="#resolved-issues_1" title="Permanent link">#</a></h3>
 <ul>
@@ -2908,6 +2910,7 @@
 <li>(IDETECT-2400) Resolved an issue where 'dependencies' would be removed from the value of the detect.gradle.build.command property.</li>
 <li>(IDETECT-2394) Resolved an issue that created inaccurate relationships in the BDIO files when Gemlock files were processed.</li>
 <li>(IDETECT-2404) Resolved an issue where signature scanner arguments passed through detect.blackduck.signature.scanner.arguments that contained space were being improperly parsed.</li>
+<li>(IDETECT-2525) Resolved an issue with the Yarn detector that caused component version information to be missing when the yarn.lock file contained quoted field keys.</li>
 </ul>
 <h2 id="version-680">Version 6.8.0<a class="headerlink" href="#version-680" title="Permanent link">#</a></h2>
 <h3 id="new-features_2">New features<a class="headerlink" href="#new-features_2" title="Permanent link">#</a></h3>
