@@ -9,28 +9,41 @@ package com.synopsys.integration.detectable;
 
 import java.io.File;
 
-public class ExecutableTarget {
-    private File fileTarget;
-    private String stringTarget;
+import org.jetbrains.annotations.Nullable;
 
-    private ExecutableTarget(final File fileTarget, final String stringTarget) {
+public class ExecutableTarget {
+    private @Nullable File fileTarget;
+    private @Nullable String stringTarget;
+
+    private ExecutableTarget(@Nullable final File fileTarget, @Nullable final String stringTarget) {
         this.fileTarget = fileTarget;
         this.stringTarget = stringTarget;
     }
 
-    public static ExecutableTarget forFile(File targetFile) { //For example "C:\bin\git.exe"
+    @Nullable
+    public static ExecutableTarget forFile(@Nullable File targetFile) { //For example "C:\bin\git.exe"
+        if (targetFile == null)
+            return null;
         return new ExecutableTarget(targetFile, null);
     }
 
-    public static ExecutableTarget forCommand(String command) { //For example "git".
+    @Nullable
+    public static ExecutableTarget forCommand(@Nullable String command) { //For example "git".
+        if (command == null)
+            return null;
         return new ExecutableTarget(null, command);
     }
 
+    @Nullable
     public String toCommand() {
         if (stringTarget != null) {
             return stringTarget;
         }
 
-        return fileTarget.getAbsolutePath();
+        if (fileTarget != null) {
+            return fileTarget.getAbsolutePath();
+        }
+
+        return null;
     }
 }

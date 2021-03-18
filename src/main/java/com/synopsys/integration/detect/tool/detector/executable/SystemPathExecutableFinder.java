@@ -10,6 +10,7 @@ package com.synopsys.integration.detect.tool.detector.executable;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -27,7 +28,8 @@ public class SystemPathExecutableFinder {
 
     public File findExecutable(final String executable) {
         final String systemPath = System.getenv("PATH");
-        List<File> systemPathLocations = Arrays.stream(systemPath.split(File.pathSeparator))
+        String[] pathStrings = Optional.ofNullable(systemPath).map(path -> path.split(File.pathSeparator)).orElse(new String[] {});
+        List<File> systemPathLocations = Arrays.stream(pathStrings)
                                              .map(File::new)
                                              .collect(Collectors.toList());
 
