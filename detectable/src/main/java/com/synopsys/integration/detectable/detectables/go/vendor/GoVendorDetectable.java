@@ -42,7 +42,7 @@ public class GoVendorDetectable extends Detectable {
     @Override
     public DetectableResult applicable() {
         Requirements requirements = new Requirements(fileFinder, environment);
-        File vendorDir = requirements.file(VENDOR_JSON_DIRNAME);
+        File vendorDir = requirements.directory(VENDOR_JSON_DIRNAME);
         vendorJson = requirements.file(vendorDir, VENDOR_JSON_FILENAME);
         return requirements.result();
     }
