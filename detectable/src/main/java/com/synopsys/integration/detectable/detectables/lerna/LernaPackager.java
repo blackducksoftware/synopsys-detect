@@ -22,8 +22,8 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.common.util.finder.FileFinder;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.lerna.lockfile.LernaLockFileResult;
 import com.synopsys.integration.detectable.detectables.lerna.model.LernaPackage;
 import com.synopsys.integration.detectable.detectables.lerna.model.LernaResult;
@@ -37,6 +37,7 @@ import com.synopsys.integration.detectable.detectables.yarn.YarnResult;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonReader;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
+import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
 import com.synopsys.integration.util.NameVersion;
 
 public class LernaPackager {
@@ -153,7 +154,8 @@ public class LernaPackager {
         } else if (lockFile.getYarnLockContents().isPresent()) {
             YarnLock yarnLock = yarnLockParser.parseYarnLock(lockFile.getYarnLockContents().get());
             PackageJson rootPackageJson = packageJsonReader.read(packageJsonContents);
-            YarnResult yarnResult = yarnPackager.generateYarnResult(rootPackageJson, new HashMap<>(), yarnLock, directory.getAbsolutePath(), externalPackages, yarnLockOptions.useProductionOnly(), false, false);
+            YarnResult yarnResult = yarnPackager
+                                        .generateYarnResult(rootPackageJson, new HashMap<>(), yarnLock, directory.getAbsolutePath(), externalPackages, yarnLockOptions.useProductionOnly(), false, ExcludedIncludedWildcardFilter.EMPTY);
 
             if (yarnResult.getException().isPresent()) {
                 return LernaResult.failure(yarnResult.getException().get());

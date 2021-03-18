@@ -24,6 +24,7 @@ import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJ
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
 
 public class YarnLockExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -44,12 +45,18 @@ public class YarnLockExtractor {
             List<String> yarnLockLines = FileUtils.readLines(yarnLockFile, StandardCharsets.UTF_8);
             YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockLines);
             PackageJson rootPackageJson = packageJsonFiles.read(rootPackageJsonFile);
-            boolean addAllLevel1WorkspaceDependenciesAsDirect = yarnLockOptions.monoRepoMode();
+            // TODO should reverse the flag; it should be isYarn1Project, otherwise we'll have a problem when Yarn 3 comes out
             boolean getWorkspaceDependenciesFromWorkspacePackageJson = !yarnLock.isYarn2Project();
+            ExcludedIncludedWildcardFilter workspacesFilter;
+            if (yarnLockOptions.getExcludedWorkspaceNamePatterns().isEmpty() && yarnLockOptions.getIncludedWorkspaceNamePatterns().isEmpty()) {
+                workspacesFilter = null; // Just follow dependencies
+            } else {
+                workspacesFilter = ExcludedIncludedWildcardFilter.fromCollections(yarnLockOptions.getExcludedWorkspaceNamePatterns(), yarnLockOptions.getIncludedWorkspaceNamePatterns());
+            }
             Map<String, PackageJson> workspacePackageJsonsToProcess = getWorkspacePackageJsons(projectDir, rootPackageJsonFile);
 
             YarnResult yarnResult = yarnPackager.generateYarnResult(rootPackageJson, workspacePackageJsonsToProcess, yarnLock, yarnLockFile.getAbsolutePath(), new ArrayList<>(),
-                yarnLockOptions.useProductionOnly(), addAllLevel1WorkspaceDependenciesAsDirect, getWorkspaceDependenciesFromWorkspacePackageJson);
+                yarnLockOptions.useProductionOnly(), getWorkspaceDependenciesFromWorkspacePackageJson, workspacesFilter);
 
             if (yarnResult.getException().isPresent()) {
                 throw yarnResult.getException().get();

@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +28,7 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDepend
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockResult;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntry;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryId;
+import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
 import com.synopsys.integration.util.NameVersion;
 
 public class YarnTransformer {
@@ -37,12 +39,12 @@ public class YarnTransformer {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph transform(YarnLockResult yarnLockResult, boolean productionOnly, boolean addWorkspaceDependencies, boolean getWorkspaceDependenciesFromWorkspacePackageJson,
-        List<NameVersion> externalDependencies) throws MissingExternalIdException {
+    public DependencyGraph transform(YarnLockResult yarnLockResult, boolean productionOnly, boolean getWorkspaceDependenciesFromWorkspacePackageJson,
+        List<NameVersion> externalDependencies, @Nullable ExcludedIncludedWildcardFilter workspaceFilter) throws MissingExternalIdException {
         LazyExternalIdDependencyGraphBuilder graphBuilder = new LazyExternalIdDependencyGraphBuilder();
 
         addRootNodesToGraph(graphBuilder, yarnLockResult.getRootPackageJson(), yarnLockResult.getWorkspacePackageJsons(), productionOnly,
-            addWorkspaceDependencies, getWorkspaceDependenciesFromWorkspacePackageJson);
+            getWorkspaceDependenciesFromWorkspacePackageJson, workspaceFilter);
 
         for (YarnLockEntry entry : yarnLockResult.getYarnLock().getEntries()) {
             for (YarnLockEntryId entryId : entry.getIds()) {
@@ -88,20 +90,22 @@ public class YarnTransformer {
 
     private void addRootNodesToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder,
         PackageJson rootPackageJson, Map<String, PackageJson> workspacePackageJsons, boolean productionOnly,
-        boolean addWorkspacesToRoot, boolean getWorkspaceDependenciesFromWorkspacePackageJson) {
+        boolean getWorkspaceDependenciesFromWorkspacePackageJson,
+        @Nullable ExcludedIncludedWildcardFilter workspacesFilter) {
         logger.debug("Adding root dependencies from root PackageJson: {}:{}", rootPackageJson.name, rootPackageJson.version);
-        addRootDependenciesToGraph(graphBuilder, rootPackageJson.dependencies.entrySet());
-        if (!productionOnly) {
-            logger.debug("\tAlso adding dev dependencies");
-            addRootDependenciesToGraph(graphBuilder, rootPackageJson.devDependencies.entrySet());
+        if ((workspacesFilter == null) || workspacesFilter.willInclude(rootPackageJson.name)) {
+            addRootDependenciesToGraph(graphBuilder, rootPackageJson.dependencies.entrySet());
+            if (!productionOnly) {
+                logger.debug("\tAlso adding dev dependencies");
+                addRootDependenciesToGraph(graphBuilder, rootPackageJson.devDependencies.entrySet());
+            }
         }
 
-        // TODO here: be selective about which workspaces to add
-        // ExcludedIncludedWildcardFilter modulesFilter = ExcludedIncludedWildcardFilter.fromCollections(excludedModules, includedModules);
-        if (addWorkspacesToRoot || getWorkspaceDependenciesFromWorkspacePackageJson) {
+        // TODO here: be selective about which workspaces to add; TODO SHOULD add ONLY-dep workspace children here!!!!!!!!
+        if ((workspacesFilter != null) || getWorkspaceDependenciesFromWorkspacePackageJson) {
             for (PackageJson curWorkspacePackageJson : workspacePackageJsons.values()) {
                 StringDependencyId workspaceId = new StringDependencyId(curWorkspacePackageJson.name + "@" + curWorkspacePackageJson.version);
-                if (addWorkspacesToRoot) {
+                if ((workspacesFilter != null) && workspacesFilter.willInclude(curWorkspacePackageJson.name)) {
                     logger.debug("Adding root dependency representing workspace from workspace PackageJson: {}:{} ({})", curWorkspacePackageJson.name, curWorkspacePackageJson.version, workspaceId);
                     graphBuilder.addChildToRoot(workspaceId);
                 }

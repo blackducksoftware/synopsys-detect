@@ -73,7 +73,7 @@ public class YarnLockDetectableTest extends DetectableFunctionalTest {
     @NotNull
     @Override
     public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
-        return detectableFactory.createYarnLockDetectable(detectableEnvironment, new YarnLockOptions(true, false, new ArrayList<>(0), new ArrayList<>(0)));
+        return detectableFactory.createYarnLockDetectable(detectableEnvironment, new YarnLockOptions(true, new ArrayList<>(0), new ArrayList<>(0)));
     }
 
     @Override

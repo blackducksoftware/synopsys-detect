@@ -10,12 +10,15 @@ package com.synopsys.integration.detectable.detectables.yarn;
 import java.util.List;
 import java.util.Map;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockResult;
+import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
 import com.synopsys.integration.util.NameVersion;
 
 public class YarnPackager {
@@ -26,11 +29,12 @@ public class YarnPackager {
     }
 
     public YarnResult generateYarnResult(PackageJson rootPackageJson, Map<String, PackageJson> workspacePackageJsonsToProcess, YarnLock yarnLock, String yarnLockFilePath, List<NameVersion> externalDependencies,
-        boolean useProductionOnly, boolean addWorkspaceDependencies, boolean getWorkspaceDependenciesFromWorkspacePackageJson) {
+        boolean useProductionOnly, boolean getWorkspaceDependenciesFromWorkspacePackageJson, @Nullable ExcludedIncludedWildcardFilter workspaceFilter) {
         YarnLockResult yarnLockResult = new YarnLockResult(rootPackageJson, workspacePackageJsonsToProcess, yarnLockFilePath, yarnLock);
 
         try {
-            DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, useProductionOnly, addWorkspaceDependencies, getWorkspaceDependenciesFromWorkspacePackageJson, externalDependencies);
+            DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, useProductionOnly, getWorkspaceDependenciesFromWorkspacePackageJson, externalDependencies,
+                workspaceFilter);
             CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 
             return YarnResult.success(rootPackageJson.name, rootPackageJson.version, codeLocation);

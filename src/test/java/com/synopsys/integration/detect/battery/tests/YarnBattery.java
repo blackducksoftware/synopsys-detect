@@ -62,7 +62,6 @@ public class YarnBattery {
         test.run();
     }
 
-    // TODO rework to use filter
     @Test
     void yarnWorkspacesSimpleIncludingAllWorkspaces() {
         BatteryTest test = new BatteryTest("yarn-workspaces-simple-allworkspaces", "yarn/yarn-workspaces-simple-allworkspaces");
@@ -71,11 +70,11 @@ public class YarnBattery {
         test.sourceFileFromResource("package.json");
         test.sourceFileFromResource("mypkgs/workspace-a/package.json");
         test.sourceFileFromResource("mypkgs/workspace-b/package.json");
-        test.property("detect.yarn.monorepo.mode", "true");
+        test.property("detect.yarn.included.workspaces", "*");
         test.expectBdioResources();
         test.run();
     }
-    
+
     @Test
     void yarnWorkspacesSimpleSelectWorkspace() {
         BatteryTest test = new BatteryTest("yarn-workspaces-simple-selectwksp", "yarn/yarn-workspaces-simple-selectwksp");
@@ -84,7 +83,7 @@ public class YarnBattery {
         test.sourceFileFromResource("package.json");
         test.sourceFileFromResource("mypkgs/workspace-a/package.json");
         test.sourceFileFromResource("mypkgs/workspace-b/package.json");
-        test.property("detect.yarn.included.workspaces", "workspace-a-pkgname");
+        test.property("detect.yarn.included.workspaces", "workspace-a");
         test.expectBdioResources();
         test.run();
     }
@@ -99,7 +98,7 @@ public class YarnBattery {
         test.expectBdioResources();
         test.run();
     }
-
+    
     @Test
     void yarnYarn1WorkspacesAddAll() {
         BatteryTest test = new BatteryTest("yarn1-workspaces", "yarn/yarn1-workspaces");
@@ -108,7 +107,7 @@ public class YarnBattery {
         test.sourceFileFromResource("package.json");
         test.sourceFileFromResource("workspace-a/package.json");
         test.sourceFileFromResource("workspace-b/package.json");
-        test.property("detect.yarn.monorepo.mode", "true");
+        test.property("detect.yarn.included.workspaces", "*");
         test.expectBdioResources();
         test.run();
     }

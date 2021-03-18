@@ -3,6 +3,7 @@ package com.synopsys.integration.detectable.detectables.yarn.unit;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -29,6 +30,7 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDepend
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockResult;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntry;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryId;
+import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
 import com.synopsys.integration.util.NameVersion;
 
 @UnitTest
@@ -50,7 +52,7 @@ class YarnTransformerTest {
     void testExcludeDevDependencies() throws MissingExternalIdException {
         YarnLockResult yarnLockResult = buildTestYarnLockResult(noWorkspaces, noWorkspaces, true, false);
 
-        DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, true, false, false, new LinkedList<>());
+        DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, true, false, new ArrayList<>(0), ExcludedIncludedWildcardFilter.EMPTY);
 
         assertEquals(1, dependencyGraph.getRootDependencies().size());
 
@@ -68,7 +70,7 @@ class YarnTransformerTest {
     void testIncludeDevDependencies() throws MissingExternalIdException {
         YarnLockResult yarnLockResult = buildTestYarnLockResult(noWorkspaces, noWorkspaces, true, false);
 
-        DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, false, false, new LinkedList<>());
+        DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, false, new ArrayList<>(0), ExcludedIncludedWildcardFilter.EMPTY);
 
         assertEquals(2, dependencyGraph.getRootDependencies().size());
 
@@ -92,7 +94,7 @@ class YarnTransformerTest {
         workspacesThatAreNotDependencies.add(new NameVersion("workspace-notdep", "1.0.0"));
         YarnLockResult yarnLockResult = buildTestYarnLockResult(workspacesThatAreDependencies, workspacesThatAreNotDependencies, true, false);
 
-        DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, false, false, workspacesThatAreDependencies);
+        DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, false, workspacesThatAreDependencies, ExcludedIncludedWildcardFilter.EMPTY);
 
         assertEquals(3, dependencyGraph.getRootDependencies().size());
         ExternalId workspaceExternalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, workspacesThatAreDependencies.get(0).getName(),
@@ -113,7 +115,7 @@ class YarnTransformerTest {
         List<NameVersion> allWorkspaces = new LinkedList<>(workspacesThatAreDependencies);
         allWorkspaces.addAll(workspacesThatAreNotDependencies);
 
-        DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, true, false, allWorkspaces);
+        DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, true, allWorkspaces, ExcludedIncludedWildcardFilter.EMPTY);
 
         assertEquals(4, dependencyGraph.getRootDependencies().size());
         ExternalId workspaceExternalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, workspacesThatAreDependencies.get(0).getName(),
@@ -130,7 +132,7 @@ class YarnTransformerTest {
         assertEquals(workspacesThatAreNotDependencies.get(0).getName() + WORKSPACE_DEP_SUFFIX, actualWorkspaceDep.getName());
         assertEquals(workspacesThatAreNotDependencies.get(0).getVersion(), actualWorkspaceDep.getVersion());
     }
-
+    
     @Test
     void testYarn1WorkspacesJustDependencies() throws MissingExternalIdException {
         List<NameVersion> workspacesThatAreDependencies = new LinkedList<>();
@@ -139,7 +141,7 @@ class YarnTransformerTest {
         workspacesThatAreNotDependencies.add(new NameVersion("workspace-notdep", "1.0.0"));
         YarnLockResult yarnLockResult = buildTestYarnLockResult(workspacesThatAreDependencies, workspacesThatAreNotDependencies, false, false);
 
-        DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, false, true, workspacesThatAreDependencies);
+        DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, true, workspacesThatAreDependencies, null);
 
         assertEquals(3, dependencyGraph.getRootDependencies().size());
         String targetWorkspaceId = workspacesThatAreDependencies.get(0).getName() + "@" + workspacesThatAreDependencies.get(0).getVersion();
@@ -171,7 +173,7 @@ class YarnTransformerTest {
         workspacesThatAreNotDependencies.add(new NameVersion("workspace-notdep", "1.0.0"));
         YarnLockResult yarnLockResult = buildTestYarnLockResult(workspacesThatAreDependencies, workspacesThatAreNotDependencies, false, true);
 
-        DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, true, true, workspacesThatAreDependencies);
+        DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, true, workspacesThatAreDependencies, ExcludedIncludedWildcardFilter.EMPTY);
 
         assertEquals(4, dependencyGraph.getRootDependencies().size());
         String targetWorkspaceId = workspacesThatAreNotDependencies.get(0).getName() + "@" + workspacesThatAreNotDependencies.get(0).getVersion();
@@ -203,7 +205,7 @@ class YarnTransformerTest {
         YarnLockResult yarnLockResult = new YarnLockResult(packageJson, new HashMap<>(), "yarn.lock", yarnLock);
 
         // This should not throw an exception.
-        DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, false, false, new LinkedList<>());
+        DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, false, new ArrayList<>(0), ExcludedIncludedWildcardFilter.EMPTY);
 
         // Sanity check.
         Assertions.assertNotNull(dependencyGraph, "The dependency graph should not be null.");
