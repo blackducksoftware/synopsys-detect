@@ -18,11 +18,11 @@ import java.nio.file.PathMatcher;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,54 +37,13 @@ public class PackageJsonFiles {
         this.packageJsonReader = packageJsonReader;
     }
 
-    public List<PackageJson> read(List<File> packageJsonFiles) throws IOException {
-        List<PackageJson> packageJsons = new LinkedList<>();
-        for (File packageJsonFile : packageJsonFiles) {
-            packageJsons.add(read(packageJsonFile));
-        }
-        return packageJsons;
-    }
-
     public PackageJson read(File packageJsonFile) throws IOException {
         logger.info("Reading package.json file: {}", packageJsonFile.getAbsolutePath());
         String packageJsonText = FileUtils.readFileToString(packageJsonFile, StandardCharsets.UTF_8);
         return packageJsonReader.read(packageJsonText);
     }
 
-    public List<String> extractWorkspaceDirPatterns(File packageJsonFile) throws IOException {
-        String packageJsonText = FileUtils.readFileToString(packageJsonFile, StandardCharsets.UTF_8);
-        return packageJsonReader.extractWorkspaceDirPatterns(packageJsonText);
-    }
-
-    // TODO This should go away:
-    public Map<String, PackageJson> readWorkspaceFiles(File projectDir, List<String> workspaceSubdirPatterns) throws IOException {
-        Map<String, PackageJson> workspacePackageJsons = new HashMap<>();
-        for (String workspaceSubdirPattern : workspaceSubdirPatterns) {
-            logger.info("workspaceSubdirPattern: {}", workspaceSubdirPattern);
-            String globString = String.format("glob:%s/%s/package.json", projectDir.getAbsolutePath(), workspaceSubdirPattern);
-            logger.info("workspace subdir globString: {}", globString);
-            PathMatcher matcher = FileSystems.getDefault().getPathMatcher(globString);
-            Files.walkFileTree(projectDir.toPath(), new SimpleFileVisitor<Path>() {
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    if (matcher.matches(file)) {
-                        logger.info("\tFound a match: {}", file);
-                        PackageJson packageJson = read(file.toFile());
-                        workspacePackageJsons.put(packageJson.name, packageJson);
-                    }
-                    return FileVisitResult.CONTINUE;
-                }
-
-                @Override
-                public FileVisitResult visitFileFailed(Path file, IOException exc) {
-                    return FileVisitResult.CONTINUE;
-                }
-            });
-        }
-        logger.info("Found {} matching workspace package.json files", workspacePackageJsons.size());
-        return workspacePackageJsons;
-    }
-
+    @NotNull
     public Map<String, WorkspacePackageJson> readWorkspacePackageJsonFiles(File workspaceDir) throws IOException {
         File packageJsonFile = new File(workspaceDir, YarnLockDetectable.YARN_PACKAGE_JSON);
         List<String> workspaceDirPatterns = extractWorkspaceDirPatterns(packageJsonFile);
@@ -115,5 +74,11 @@ public class PackageJsonFiles {
         }
         logger.info("Found {} matching workspace package.json files", workspacePackageJsons.size());
         return workspacePackageJsons;
+    }
+
+    @NotNull
+    private List<String> extractWorkspaceDirPatterns(File packageJsonFile) throws IOException {
+        String packageJsonText = FileUtils.readFileToString(packageJsonFile, StandardCharsets.UTF_8);
+        return packageJsonReader.extractWorkspaceDirPatterns(packageJsonText);
     }
 }

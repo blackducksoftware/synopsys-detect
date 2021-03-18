@@ -46,11 +46,11 @@ public class YarnLockParser {
             lineIndex = entryParseResult.getLastParsedLineIndex();
             lineIndex++;
         }
-        return new YarnLock(yarnLockFileFormatVersion, isYarn2Project(yarnLockFileFormatVersion), entries);
+        return new YarnLock(yarnLockFileFormatVersion, isYarn1Project(yarnLockFileFormatVersion), entries);
     }
 
-    private boolean isYarn2Project(String yarnLockFileFormatVersion) {
+    private boolean isYarn1Project(String yarnLockFileFormatVersion) {
         logger.debug("yarn.lock file format version: {}", yarnLockFileFormatVersion);
-        return StringUtils.isNotBlank(yarnLockFileFormatVersion) && ("4".equals(yarnLockFileFormatVersion));
+        return StringUtils.isBlank(yarnLockFileFormatVersion) || ("1".equals(yarnLockFileFormatVersion));
     }
 }

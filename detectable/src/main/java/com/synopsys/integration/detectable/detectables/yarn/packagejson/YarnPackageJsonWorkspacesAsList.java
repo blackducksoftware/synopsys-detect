@@ -7,13 +7,14 @@
  */
 package com.synopsys.integration.detectable.detectables.yarn.packagejson;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import com.google.gson.annotations.SerializedName;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 
-// TODO give this class a more descriptive name (describe how workspace is represented, not version)
-//// also: this is Yarn specific, so include that in the name
-public class PackageJsonCurrent extends PackageJson {
+public class YarnPackageJsonWorkspacesAsList extends PackageJson {
 
     @SerializedName("workspaces")
-    public Workspaces workspaces;
+    public List<String> workspaceSubdirPatterns = new LinkedList<>();
 }

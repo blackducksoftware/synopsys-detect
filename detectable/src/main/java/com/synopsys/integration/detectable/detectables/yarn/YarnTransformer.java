@@ -100,8 +100,7 @@ public class YarnTransformer {
                 addRootDependenciesToGraph(graphBuilder, rootPackageJson.devDependencies.entrySet());
             }
         }
-
-        // TODO here: be selective about which workspaces to add; TODO SHOULD add ONLY-dep workspace children here!!!!!!!!
+        
         if ((workspacesFilter != null) || getWorkspaceDependenciesFromWorkspacePackageJson) {
             for (PackageJson curWorkspacePackageJson : workspacePackageJsons.values()) {
                 StringDependencyId workspaceId = new StringDependencyId(curWorkspacePackageJson.name + "@" + curWorkspacePackageJson.version);

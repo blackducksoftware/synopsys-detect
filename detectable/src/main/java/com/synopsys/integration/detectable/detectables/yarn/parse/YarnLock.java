@@ -17,12 +17,12 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLock
 public class YarnLock {
     @Nullable
     private final String fileFormatVersion;
-    private final boolean yarn2Project;
+    private final boolean yarn1Project;
     private final List<YarnLockEntry> entries;
 
-    public YarnLock(@Nullable String fileFormatVersion, boolean yarn2Project, List<YarnLockEntry> entries) {
+    public YarnLock(@Nullable String fileFormatVersion, boolean yarn1Project, List<YarnLockEntry> entries) {
         this.fileFormatVersion = fileFormatVersion;
-        this.yarn2Project = yarn2Project;
+        this.yarn1Project = yarn1Project;
         this.entries = entries;
     }
 
@@ -30,9 +30,8 @@ public class YarnLock {
         return Optional.ofNullable(fileFormatVersion);
     }
 
-    // TODO should reverse the flag; it should be isYarn1Project, otherwise we'll have a problem when Yarn 3 comes out
-    public boolean isYarn2Project() {
-        return yarn2Project;
+    public boolean isYarn1Project() {
+        return yarn1Project;
     }
 
     public List<YarnLockEntry> getEntries() {
