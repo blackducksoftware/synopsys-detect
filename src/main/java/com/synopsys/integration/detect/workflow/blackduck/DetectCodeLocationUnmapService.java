@@ -18,29 +18,37 @@ import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.dataservice.CodeLocationService;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class DetectCodeLocationUnmapService {
+    private static final String OPERATION_NAME = "Black Duck Unmap Code Locations";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final BlackDuckApiClient blackDuckService;
     private final CodeLocationService codeLocationService;
+    private final OperationSystem operationSystem;
 
-    public DetectCodeLocationUnmapService(final BlackDuckApiClient blackDuckService, final CodeLocationService codeLocationService) {
+    public DetectCodeLocationUnmapService(BlackDuckApiClient blackDuckService, CodeLocationService codeLocationService, OperationSystem operationSystem) {
         this.blackDuckService = blackDuckService;
         this.codeLocationService = codeLocationService;
+        this.operationSystem = operationSystem;
     }
 
-    public void unmapCodeLocations(final ProjectVersionView projectVersionView) throws DetectUserFriendlyException {
+    public void unmapCodeLocations(ProjectVersionView projectVersionView) throws DetectUserFriendlyException {
+        operationSystem.beginOperation(OPERATION_NAME);
         try {
-            final List<CodeLocationView> codeLocationViews = blackDuckService.getAllResponses(projectVersionView, ProjectVersionView.CODELOCATIONS_LINK_RESPONSE);
+            List<CodeLocationView> codeLocationViews = blackDuckService.getAllResponses(projectVersionView, ProjectVersionView.CODELOCATIONS_LINK_RESPONSE);
 
-            for (final CodeLocationView codeLocationView : codeLocationViews) {
+            for (CodeLocationView codeLocationView : codeLocationViews) {
                 codeLocationService.unmapCodeLocation(codeLocationView);
             }
             logger.info("Successfully unmapped (" + codeLocationViews.size() + ") code locations.");
-        } catch (final IntegrationException e) {
-            throw new DetectUserFriendlyException(String.format("There was a problem unmapping Code Locations: %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
+            operationSystem.completeWithSuccess(OPERATION_NAME);
+        } catch (IntegrationException e) {
+            String errorMessage = String.format("There was a problem unmapping Code Locations: %s", e.getMessage());
+            operationSystem.completeWithError(OPERATION_NAME, errorMessage);
+            throw new DetectUserFriendlyException(errorMessage, e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }
 
     }

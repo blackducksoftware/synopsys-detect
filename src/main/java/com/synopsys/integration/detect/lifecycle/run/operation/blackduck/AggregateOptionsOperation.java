@@ -13,16 +13,21 @@ import com.synopsys.integration.detect.configuration.DetectUserFriendlyException
 import com.synopsys.integration.detect.lifecycle.run.RunOptions;
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
 import com.synopsys.integration.detect.workflow.bdio.AggregateOptions;
+import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class AggregateOptionsOperation {
+    private static final String OPERATION_NAME = "Detect Aggregate Options Decision";
     private final RunOptions runOptions;
+    private final OperationSystem operationSystem;
 
-    public AggregateOptionsOperation(RunOptions runOptions) {
+    public AggregateOptionsOperation(RunOptions runOptions, OperationSystem operationSystem) {
         this.runOptions = runOptions;
+        this.operationSystem = operationSystem;
     }
 
     public AggregateOptions execute(Boolean anythingFailedPrior) throws DetectUserFriendlyException, IntegrationException {
+        operationSystem.beginOperation(OPERATION_NAME);
         String aggregateName = runOptions.getAggregateName().orElse(null);
         AggregateMode aggregateMode = runOptions.getAggregateMode();
         AggregateOptions aggregateOptions;
@@ -35,6 +40,7 @@ public class AggregateOptionsOperation {
         } else {
             aggregateOptions = AggregateOptions.doNotAggregate();
         }
+        operationSystem.completeWithSuccess(OPERATION_NAME);
 
         return aggregateOptions;
     }

@@ -15,14 +15,20 @@ import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
+import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
 import com.synopsys.integration.detect.tool.detector.DetectDetectableFactory;
+import com.synopsys.integration.detect.tool.detector.DetectorEventPublisher;
 import com.synopsys.integration.detect.tool.detector.extraction.ExtractionEnvironmentProvider;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationCreator;
+import com.synopsys.integration.detect.workflow.codelocation.CodeLocationEventPublisher;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameGenerator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
+import com.synopsys.integration.detect.workflow.project.ProjectEventPublisher;
+import com.synopsys.integration.detect.workflow.status.OperationSystem;
+import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
 
 public class RunContext {
@@ -42,6 +48,12 @@ public class RunContext {
     private final CodeLocationConverter codeLocationConverter;
     private final Gson gson;
     private final Gson htmlEscapeDisabledGson;
+    private final StatusEventPublisher statusEventPublisher;
+    private final ExitCodePublisher exitCodePublisher;
+    private final DetectorEventPublisher detectorEventPublisher;
+    private final CodeLocationEventPublisher codeLocationEventPublisher;
+    private final ProjectEventPublisher projectEventPublisher;
+    private final OperationSystem operationSystem;
 
     public RunContext(DetectContext detectContext, ProductRunData productRunData) {
         this.detectContext = detectContext;
@@ -56,6 +68,12 @@ public class RunContext {
         detectInfo = detectContext.getBean(DetectInfo.class);
         nugetInspectorResolver = detectContext.getBean(NugetInspectorResolver.class);
         detectDetectableFactory = detectContext.getBean(DetectDetectableFactory.class, nugetInspectorResolver);
+        statusEventPublisher = detectContext.getBean(StatusEventPublisher.class);
+        exitCodePublisher = detectContext.getBean(ExitCodePublisher.class);
+        detectorEventPublisher = detectContext.getBean(DetectorEventPublisher.class);
+        codeLocationEventPublisher = detectContext.getBean(CodeLocationEventPublisher.class);
+        projectEventPublisher = detectContext.getBean(ProjectEventPublisher.class);
+        operationSystem = detectContext.getBean(OperationSystem.class);
         extractionEnvironmentProvider = new ExtractionEnvironmentProvider(directoryManager);
         codeLocationConverter = new CodeLocationConverter(new ExternalIdFactory());
         gson = detectContext.getBean(Gson.class);
@@ -129,5 +147,29 @@ public class RunContext {
 
     public Gson getHtmlEscapeDisabledGson() {
         return htmlEscapeDisabledGson;
+    }
+
+    public StatusEventPublisher getStatusEventPublisher() {
+        return statusEventPublisher;
+    }
+
+    public ExitCodePublisher getExitCodePublisher() {
+        return exitCodePublisher;
+    }
+
+    public DetectorEventPublisher getDetectorEventPublisher() {
+        return detectorEventPublisher;
+    }
+
+    public CodeLocationEventPublisher getCodeLocationEventPublisher() {
+        return codeLocationEventPublisher;
+    }
+
+    public ProjectEventPublisher getProjectEventPublisher() {
+        return projectEventPublisher;
+    }
+
+    public OperationSystem getOperationSystem() {
+        return operationSystem;
     }
 }

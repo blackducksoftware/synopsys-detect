@@ -29,59 +29,78 @@ import com.synopsys.integration.detect.lifecycle.run.operation.input.FullScanPos
 import com.synopsys.integration.detect.lifecycle.run.operation.input.ImpactAnalysisInput;
 import com.synopsys.integration.detect.lifecycle.run.operation.input.RapidScanInput;
 import com.synopsys.integration.detect.lifecycle.run.operation.input.SignatureScanInput;
+import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeManager;
+import com.synopsys.integration.detect.tool.DetectableToolResult;
 import com.synopsys.integration.detect.tool.UniversalToolsResult;
+import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
 import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisToolResult;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.AggregateOptions;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationResults;
-import com.synopsys.integration.detect.workflow.event.Event;
-import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
+import com.synopsys.integration.detect.workflow.project.ProjectEventPublisher;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
+import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
 public class RunManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private ExitCodeManager exitCodeManager;
 
-    public RunResult run(RunContext runContext) throws DetectUserFriendlyException, IntegrationException {
-        RunResult runResult = new RunResult();
-        ProductRunData productRunData = runContext.getProductRunData();
-        OperationFactory operationFactory = new OperationFactory(runContext);
-        RunOptions runOptions = runContext.createRunOptions();
-        DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
-        EventSystem eventSystem = runContext.getEventSystem();
+    public RunManager(ExitCodeManager exitCodeManager) {
+        this.exitCodeManager = exitCodeManager;
+    }
 
-        logger.info(ReportConstants.RUN_SEPARATOR);
-        if (runContext.getProductRunData().shouldUsePolarisProduct()) {
-            runPolarisProduct(operationFactory, detectToolFilter, runOptions);
-        } else {
-            logger.info("Polaris tools will not be run.");
+    public void run(RunContext runContext) {
+        try {
+            RunResult runResult = new RunResult();
+            ProductRunData productRunData = runContext.getProductRunData();
+            OperationFactory operationFactory = new OperationFactory(runContext);
+            RunOptions runOptions = runContext.createRunOptions();
+            DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
+            ProjectEventPublisher projectEventPublisher = runContext.getProjectEventPublisher();
+
+            logger.info(ReportConstants.RUN_SEPARATOR);
+            if (runContext.getProductRunData().shouldUsePolarisProduct()) {
+                runPolarisProduct(operationFactory, detectToolFilter, runOptions);
+            } else {
+                logger.info("Polaris tools will not be run.");
+            }
+
+            UniversalToolsResult universalToolsResult = runUniversalProjectTools(operationFactory, runOptions, detectToolFilter, projectEventPublisher, runResult);
+
+            if (productRunData.shouldUseBlackDuckProduct()) {
+                AggregateOptions aggregateOptions = operationFactory.createAggregateOptionsOperation().execute(universalToolsResult.anyFailed());
+                runBlackDuckProduct(productRunData.getBlackDuckRunData(), operationFactory, runOptions, detectToolFilter, runResult,
+                    universalToolsResult.getNameVersion(), aggregateOptions);
+            } else {
+                logger.info("Black Duck tools will not be run.");
+            }
+
+            logger.info("All tools have finished.");
+            logger.info(ReportConstants.RUN_SEPARATOR);
+        } catch (Exception e) {
+            if (e.getMessage() != null) {
+                logger.error("Detect run failed: {}", e.getMessage());
+            } else {
+                logger.error("Detect run failed: {}", e.getClass().getSimpleName());
+            }
+            logger.debug("An exception was thrown during the detect run.", e);
+            exitCodeManager.requestExitCode(e);
+        } finally {
+            OperationSystem operationSystem = runContext.getOperationSystem();
+            operationSystem.publishOperations();
         }
-
-        UniversalToolsResult universalToolsResult = runUniversalProjectTools(operationFactory, runOptions, detectToolFilter, eventSystem, runResult);
-
-        if (productRunData.shouldUseBlackDuckProduct()) {
-            AggregateOptions aggregateOptions = operationFactory.createAggregateOptionsOperation().execute(universalToolsResult.anyFailed());
-            runBlackDuckProduct(productRunData.getBlackDuckRunData(), operationFactory, runOptions, detectToolFilter, runResult,
-                universalToolsResult.getNameVersion(), aggregateOptions);
-        } else {
-            logger.info("Black Duck tools will not be run.");
-        }
-
-        logger.info("All tools have finished.");
-        logger.info(ReportConstants.RUN_SEPARATOR);
-
-        return runResult;
     }
 
     private UniversalToolsResult runUniversalProjectTools(
         OperationFactory operationFactory,
         RunOptions runOptions,
         DetectToolFilter detectToolFilter,
-        EventSystem eventSystem,
+        ProjectEventPublisher projectEventPublisher,
         RunResult runResult
     ) throws DetectUserFriendlyException, IntegrationException {
         boolean anythingFailed = false;
@@ -89,7 +108,9 @@ public class RunManager {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (!runOptions.shouldPerformRapidModeScan() && detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
             logger.info("Will include the Docker tool.");
-            anythingFailed = anythingFailed || operationFactory.createDockerOperation().execute(runResult);
+            DetectableToolResult detectableToolResult = operationFactory.createDockerOperation().execute();
+            runResult.addDetectableToolResult(detectableToolResult);
+            anythingFailed = anythingFailed || detectableToolResult.isFailure();
             logger.info("Docker actions finished.");
         } else {
             logger.info("Docker tool will not be run.");
@@ -98,16 +119,20 @@ public class RunManager {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (!runOptions.shouldPerformRapidModeScan() && detectToolFilter.shouldInclude(DetectTool.BAZEL)) {
             logger.info("Will include the Bazel tool.");
-            anythingFailed = anythingFailed || operationFactory.createBazelOperation().execute(runResult);
+            DetectableToolResult detectableToolResult = operationFactory.createBazelOperation().execute();
+            runResult.addDetectableToolResult(detectableToolResult);
+            anythingFailed = anythingFailed || detectableToolResult.isFailure();
             logger.info("Bazel actions finished.");
         } else {
             logger.info("Bazel tool will not be run.");
         }
-
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.DETECTOR)) {
             logger.info("Will include the detector tool.");
-            anythingFailed = anythingFailed || operationFactory.createDetectorOperation().execute(runResult);
+            DetectorToolResult detectorToolResult = operationFactory.createDetectorOperation().execute();
+            detectorToolResult.getBomToolProjectNameVersion().ifPresent(it -> runResult.addToolNameVersion(DetectTool.DETECTOR, new NameVersion(it.getName(), it.getVersion())));
+            runResult.addDetectCodeLocations(detectorToolResult.getBomToolCodeLocations());
+            anythingFailed = anythingFailed || detectorToolResult.anyDetectorsFailed();
             logger.info("Detector actions finished.");
         } else {
             logger.info("Detector tool will not be run.");
@@ -123,7 +148,7 @@ public class RunManager {
         logger.info(String.format("Project name: %s", projectNameVersion.getName()));
         logger.info(String.format("Project version: %s", projectNameVersion.getVersion()));
 
-        eventSystem.publishEvent(Event.ProjectNameVersionChosen, projectNameVersion);
+        projectEventPublisher.publishProjectNameVersionChosen(projectNameVersion);
 
         if (anythingFailed) {
             return UniversalToolsResult.failure(projectNameVersion);

@@ -19,6 +19,7 @@ import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocationN
 import com.synopsys.integration.detect.workflow.profiling.DetectorTimings;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
+import com.synopsys.integration.detect.workflow.status.Operation;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.UnrecognizedPaths;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
@@ -55,4 +56,5 @@ public class Event {
     public static final EventType<ExecutedExecutable> Executable = new EventType<>(ExecutedExecutable.class);
     public static final EventType<UnrecognizedPaths> UnrecognizedPaths = new EventType<>(UnrecognizedPaths.class);
     public static final EventType<SortedMap<String, String>> RawMaskedPropertyValuesCollected = new EventType(SortedMap.class);
+    public static final EventType<Operation> DetectOperation = new EventType(Operation.class);
 }

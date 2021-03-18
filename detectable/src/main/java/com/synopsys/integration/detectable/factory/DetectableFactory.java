@@ -189,6 +189,7 @@ import com.synopsys.integration.detectable.detectables.pip.parser.PipenvTransfor
 import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryDetectable;
 import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryExtractor;
 import com.synopsys.integration.detectable.detectables.pip.poetry.parser.PoetryLockParser;
+import com.synopsys.integration.detectable.detectables.pip.poetry.parser.ToolPoetrySectionParser;
 import com.synopsys.integration.detectable.detectables.rebar.RebarDetectable;
 import com.synopsys.integration.detectable.detectables.rebar.RebarExtractor;
 import com.synopsys.integration.detectable.detectables.rebar.parse.Rebar3TreeParser;
@@ -390,7 +391,7 @@ public class DetectableFactory {
     }
 
     public PoetryDetectable createPoetryDetectable(DetectableEnvironment environment) {
-        return new PoetryDetectable(environment, fileFinder, poetryExtractor());
+        return new PoetryDetectable(environment, fileFinder, poetryExtractor(), toolPoetrySectionParser());
     }
 
     public RebarDetectable createRebarDetectable(DetectableEnvironment environment, Rebar3Resolver rebar3Resolver) {
@@ -681,6 +682,10 @@ public class DetectableFactory {
         return new PoetryExtractor(new PoetryLockParser());
     }
 
+    private ToolPoetrySectionParser toolPoetrySectionParser() {
+        return new ToolPoetrySectionParser();
+    }
+
     private GemlockExtractor gemlockExtractor() {
         return new GemlockExtractor(externalIdFactory);
     }
@@ -842,7 +847,7 @@ public class DetectableFactory {
     }
 
     private LernaExtractor lernaExtractor(NpmLockfileOptions npmLockfileOptions, YarnLockOptions yarnLockOptions, LernaOptions lernaOptions) {
-        return new LernaExtractor(lernaPackageDiscoverer(), lernaPackager(npmLockfileOptions, yarnLockOptions, lernaOptions));
+        return new LernaExtractor(lernaPackageDiscoverer(), lernaPackager(npmLockfileOptions, yarnLockOptions, lernaOptions), lernaOptions);
     }
     //#endregion Utility
 

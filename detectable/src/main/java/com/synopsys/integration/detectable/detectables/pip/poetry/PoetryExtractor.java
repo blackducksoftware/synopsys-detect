@@ -16,8 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
-import org.tomlj.Toml;
-import org.tomlj.TomlParseResult;
+import org.jetbrains.annotations.Nullable;
 import org.tomlj.TomlTable;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
@@ -27,10 +26,8 @@ import com.synopsys.integration.detectable.detectables.pip.poetry.parser.PoetryL
 import com.synopsys.integration.util.NameVersion;
 
 public class PoetryExtractor {
-
     private static final String NAME_KEY = "name";
     private static final String VERSION_KEY = "version";
-    private static final String TOOL_KEY = "tool.poetry";
 
     private final PoetryLockParser poetryLockParser;
 
@@ -38,12 +35,12 @@ public class PoetryExtractor {
         this.poetryLockParser = poetryLockParser;
     }
 
-    public Extraction extract(File poetryLock, Optional<File> pyprojectToml) {
+    public Extraction extract(File poetryLock, @Nullable TomlTable toolDotPoetrySection) {
         try {
             final DependencyGraph graph = poetryLockParser.parseLockFile(FileUtils.readFileToString(poetryLock, StandardCharsets.UTF_8));
             final CodeLocation codeLocation = new CodeLocation(graph);
 
-            Optional<NameVersion> poetryNameVersion = extractNameVersionFromPyProjectToml(pyprojectToml);
+            Optional<NameVersion> poetryNameVersion = extractNameVersionFromToolDotPoetrySection(toolDotPoetrySection);
             if (poetryNameVersion.isPresent()) {
                 return new Extraction.Builder()
                            .success(codeLocation)
@@ -62,16 +59,13 @@ public class PoetryExtractor {
         return String.join(System.lineSeparator(), goLockAsList);
     }
 
-    private Optional<NameVersion> extractNameVersionFromPyProjectToml(Optional<File> pyprojectToml) throws IOException {
-        if (pyprojectToml.isPresent()) {
-            TomlParseResult cargoTomlObject = Toml.parse(getFileAsString(pyprojectToml.get(), Charset.defaultCharset()));
-            if (cargoTomlObject.get(TOOL_KEY) != null) {
-                TomlTable cargoTomlPackageInfo = cargoTomlObject.getTable(TOOL_KEY);
-                if (cargoTomlPackageInfo.get(NAME_KEY) != null && cargoTomlPackageInfo.get(VERSION_KEY) != null) {
-                    return Optional.of(new NameVersion(cargoTomlPackageInfo.getString(NAME_KEY), cargoTomlPackageInfo.getString(VERSION_KEY)));
-                }
+    private Optional<NameVersion> extractNameVersionFromToolDotPoetrySection(@Nullable TomlTable toolDotPoetry) {
+        if (toolDotPoetry != null) {
+            if (toolDotPoetry.get(NAME_KEY) != null && toolDotPoetry.get(VERSION_KEY) != null) {
+                return Optional.of(new NameVersion(toolDotPoetry.getString(NAME_KEY), toolDotPoetry.getString(VERSION_KEY)));
             }
         }
         return Optional.empty();
     }
+
 }

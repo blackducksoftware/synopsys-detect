@@ -25,11 +25,12 @@ import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationWaitData;
 import com.synopsys.integration.detect.workflow.blackduck.policy.PolicyChecker;
-import com.synopsys.integration.detect.workflow.event.Event;
-import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.result.ReportDetectResult;
+import com.synopsys.integration.detect.workflow.status.OperationSystem;
+import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.exception.IntegrationRestException;
 import com.synopsys.integration.util.NameVersion;
@@ -37,41 +38,64 @@ import com.synopsys.integration.util.NameVersion;
 public class BlackDuckPostActions {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final CodeLocationCreationService codeLocationCreationService;
-    private final EventSystem eventSystem;
+    private final StatusEventPublisher statusEventPublisher;
+    private final ExitCodePublisher exitCodePublisher;
     private final BlackDuckApiClient blackDuckApiClient;
     private final ProjectBomService projectBomService;
     private final ReportService reportService;
+    private final OperationSystem operationSystem;
 
-    public BlackDuckPostActions(CodeLocationCreationService codeLocationCreationService, EventSystem eventSystem, BlackDuckApiClient blackDuckApiClient, ProjectBomService projectBomService, ReportService reportService) {
+    public BlackDuckPostActions(CodeLocationCreationService codeLocationCreationService, StatusEventPublisher statusEventPublisher, ExitCodePublisher exitCodePublisher, BlackDuckApiClient blackDuckApiClient,
+        ProjectBomService projectBomService, ReportService reportService, OperationSystem operationSystem) {
         this.codeLocationCreationService = codeLocationCreationService;
-        this.eventSystem = eventSystem;
+        this.statusEventPublisher = statusEventPublisher;
+        this.exitCodePublisher = exitCodePublisher;
         this.blackDuckApiClient = blackDuckApiClient;
         this.projectBomService = projectBomService;
         this.reportService = reportService;
+        this.operationSystem = operationSystem;
     }
 
     public void perform(BlackDuckPostOptions blackDuckPostOptions, CodeLocationWaitData codeLocationWaitData, ProjectVersionWrapper projectVersionWrapper, NameVersion projectNameVersion, long timeoutInSeconds)
         throws DetectUserFriendlyException {
+
+        String currentOperationKey = null;
         try {
             if (blackDuckPostOptions.shouldWaitForResults()) {
+                currentOperationKey = "Black Duck Wait for Code Locations";
+                operationSystem.beginOperation(currentOperationKey);
                 waitForCodeLocations(codeLocationWaitData, timeoutInSeconds, projectNameVersion);
+                operationSystem.completeWithSuccess(currentOperationKey);
             }
             if (blackDuckPostOptions.shouldPerformPolicyCheck()) {
+                currentOperationKey = "Black Duck Policy Check";
+                operationSystem.beginOperation(currentOperationKey);
                 checkPolicy(blackDuckPostOptions, projectVersionWrapper.getProjectVersionView());
+                operationSystem.completeWithSuccess(currentOperationKey);
             }
             if (blackDuckPostOptions.shouldGenerateAnyReport()) {
+                currentOperationKey = "Black Duck Report Generation";
+                operationSystem.beginOperation(currentOperationKey);
                 generateReports(blackDuckPostOptions, projectVersionWrapper);
+                operationSystem.completeWithSuccess(currentOperationKey);
             }
         } catch (DetectUserFriendlyException e) {
+            operationSystem.completeWithError(currentOperationKey, e.getMessage());
             throw e;
         } catch (IllegalArgumentException e) {
-            throw new DetectUserFriendlyException(String.format("Your Black Duck configuration is not valid: %s", e.getMessage()), e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
+            String errorReason = String.format("Your Black Duck configuration is not valid: %s", e.getMessage());
+            operationSystem.completeWithError(currentOperationKey, errorReason);
+            throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
         } catch (IntegrationRestException e) {
+            operationSystem.completeWithError(currentOperationKey, e.getMessage());
             throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
         } catch (BlackDuckTimeoutExceededException e) {
+            operationSystem.completeWithError(currentOperationKey, e.getMessage());
             throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_TIMEOUT);
         } catch (Exception e) {
-            throw new DetectUserFriendlyException(String.format("There was a problem: %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
+            String errorReason = String.format("There was a problem: %s", e.getMessage());
+            operationSystem.completeWithError(currentOperationKey, errorReason);
+            throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }
     }
 
@@ -99,7 +123,7 @@ public class BlackDuckPostActions {
 
     private void checkPolicy(BlackDuckPostOptions blackDuckPostOptions, ProjectVersionView projectVersionView) throws IntegrationException {
         logger.info("Detect will check policy for violations.");
-        PolicyChecker policyChecker = new PolicyChecker(eventSystem, blackDuckApiClient, projectBomService);
+        PolicyChecker policyChecker = new PolicyChecker(exitCodePublisher, blackDuckApiClient, projectBomService);
         policyChecker.checkPolicy(blackDuckPostOptions.getSeveritiesToFailPolicyCheck(), projectVersionView);
     }
 
@@ -119,7 +143,7 @@ public class BlackDuckPostActions {
             File createdPdf = reportService.createReportPdfFile(reportDirectory, projectView, projectVersionView, detectFontLoader::loadFont, detectFontLoader::loadBoldFont);
 
             logger.info(String.format("Created risk report pdf: %s", createdPdf.getCanonicalPath()));
-            eventSystem.publishEvent(Event.ResultProduced, new ReportDetectResult("Risk Report", createdPdf.getCanonicalPath()));
+            statusEventPublisher.publishDetectResult(new ReportDetectResult("Risk Report", createdPdf.getCanonicalPath()));
         }
 
         if (blackDuckPostOptions.shouldGenerateNoticesReport()) {
@@ -133,7 +157,7 @@ public class BlackDuckPostActions {
             File noticesFile = reportService.createNoticesReportFile(noticesDirectory, projectView, projectVersionView);
             logger.info(String.format("Created notices report: %s", noticesFile.getCanonicalPath()));
 
-            eventSystem.publishEvent(Event.ResultProduced, new ReportDetectResult("Notices Report", noticesFile.getCanonicalPath()));
+            statusEventPublisher.publishDetectResult(new ReportDetectResult("Notices Report", noticesFile.getCanonicalPath()));
 
         }
     }

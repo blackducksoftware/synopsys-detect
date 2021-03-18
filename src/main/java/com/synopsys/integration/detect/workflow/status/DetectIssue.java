@@ -22,15 +22,21 @@ public class DetectIssue {
         return messages;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
     private final DetectIssueType type;
     private final List<String> messages;
+    private final String title;
 
-    public DetectIssue(final DetectIssueType type, final List<String> messages) {
+    public DetectIssue(DetectIssueType type, String title, List<String> messages) {
         this.type = type;
+        this.title = title;
         this.messages = messages;
     }
 
-    public static void publish(final EventSystem eventSystem, final DetectIssueType type, final String... messages) {
-        eventSystem.publishEvent(Event.Issue, new DetectIssue(type, Arrays.asList(messages)));
+    public static void publish(EventSystem eventSystem, DetectIssueType type, String title, String... messages) {
+        eventSystem.publishEvent(Event.Issue, new DetectIssue(type, title, Arrays.asList(messages)));
     }
 }

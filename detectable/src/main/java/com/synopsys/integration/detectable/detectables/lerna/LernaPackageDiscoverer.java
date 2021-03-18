@@ -22,6 +22,7 @@ import com.synopsys.integration.detectable.detectable.executable.DetectableExecu
 import com.synopsys.integration.detectable.detectables.lerna.model.LernaPackage;
 import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunnerException;
+import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
 
 public class LernaPackageDiscoverer {
     private final DetectableExecutableRunner executableRunner;
@@ -32,16 +33,18 @@ public class LernaPackageDiscoverer {
         this.gson = gson;
     }
 
-    public List<LernaPackage> discoverLernaPackages(File workingDirectory, ExecutableTarget lernaExecutable) throws ExecutableRunnerException {
+    public List<LernaPackage> discoverLernaPackages(File workingDirectory, ExecutableTarget lernaExecutable, List<String> excludedPackages, List<String> includedPackages) throws ExecutableRunnerException {
         ExecutableOutput lernaLsExecutableOutput = executableRunner.execute(ExecutableUtils.createFromTarget(workingDirectory, lernaExecutable, "ls", "--all", "--json"));
         String lernaLsOutput = lernaLsExecutableOutput.getStandardOutput();
 
         Type lernaPackageListType = new TypeToken<ArrayList<LernaPackage>>() {
         }.getType();
         List<LernaPackage> lernaPackages = gson.fromJson(lernaLsOutput, lernaPackageListType);
+        ExcludedIncludedWildcardFilter excludedIncludedFilter = ExcludedIncludedWildcardFilter.fromCollections(excludedPackages, includedPackages);
 
         return lernaPackages.stream()
                    .filter(Objects::nonNull)
+                   .filter(lernaPackage -> excludedIncludedFilter.shouldInclude(lernaPackage.getName()))
                    .collect(Collectors.toList());
     }
 }

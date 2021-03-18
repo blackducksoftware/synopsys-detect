@@ -44,9 +44,11 @@ import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanO
 import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanUploadService;
 import com.synopsys.integration.common.util.finder.WildcardFileFinder;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
-import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
+import com.synopsys.integration.detect.workflow.status.OperationSystem;
+import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.util.NameVersion;
@@ -56,8 +58,7 @@ public class BlackDuckBinaryScannerToolTest {
     @Test
     public void testShouldRunFalsePropertyNotSet() {
         BinaryScanOptions binaryScanOptions = new BinaryScanOptions(null, Collections.singletonList(""), "", "", 0);
-
-        BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null, null, null, null, binaryScanOptions, null);
+        BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null, null, null, null, null, binaryScanOptions, null, null);
         boolean shouldRunResponse = tool.shouldRun();
 
         assertFalse(shouldRunResponse);
@@ -66,8 +67,7 @@ public class BlackDuckBinaryScannerToolTest {
     @Test
     public void testShouldRunTrueFileNonExistent() {
         BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("thisisnotafile"), Collections.singletonList(""), "", "", 0);
-
-        BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null, null, null, null, binaryScanOptions, null);
+        BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null, null, null, null, null, binaryScanOptions, null, null);
 
         boolean shouldRunResponse = tool.shouldRun();
 
@@ -78,7 +78,7 @@ public class BlackDuckBinaryScannerToolTest {
     public void testShouldRunTruePropertySetToDirectory() {
         BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("."), Collections.singletonList(""), "", "", 0);
 
-        BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null, null, null, null, binaryScanOptions, null);
+        BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null, null, null, null, null, binaryScanOptions, null, null);
 
         boolean shouldRunResponse = tool.shouldRun();
 
@@ -94,7 +94,7 @@ public class BlackDuckBinaryScannerToolTest {
 
         BinaryScanOptions binaryScanOptions = new BinaryScanOptions(binaryScanFile.toPath(), Collections.singletonList(""), "", "", 0);
 
-        BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null, null, null, null, binaryScanOptions, null);
+        BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null, null, null, null, null, binaryScanOptions, null, null);
 
         boolean shouldRunResponse = tool.shouldRun();
 
@@ -105,9 +105,11 @@ public class BlackDuckBinaryScannerToolTest {
     public void testShouldFailOnDirectory() throws DetectUserFriendlyException {
         BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("."), Collections.singletonList(""), "", "", 0);
 
-        EventSystem eventSystem = Mockito.mock(EventSystem.class);
+        StatusEventPublisher statusEventPublisher = Mockito.mock(StatusEventPublisher.class);
+        ExitCodePublisher exitCodePublisher = Mockito.mock(ExitCodePublisher.class);
+        OperationSystem operationSystem = Mockito.mock(OperationSystem.class);
 
-        BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(eventSystem, null, null, null, binaryScanOptions, null);
+        BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(statusEventPublisher, exitCodePublisher, null, null, null, binaryScanOptions, null, operationSystem);
 
         NameVersion projectNameVersion = new NameVersion("testName", "testVersion");
 
@@ -122,7 +124,9 @@ public class BlackDuckBinaryScannerToolTest {
         DirectoryManager directoryManager = Mockito.mock(DirectoryManager.class);
         BinaryScanUploadService uploadService = Mockito.mock(BinaryScanUploadService.class);
         CodeLocationNameManager codeLocationNameManager = Mockito.mock(CodeLocationNameManager.class);
-        EventSystem eventSystem = Mockito.mock(EventSystem.class);
+        StatusEventPublisher statusEventPublisher = Mockito.mock(StatusEventPublisher.class);
+        ExitCodePublisher exitCodePublisher = Mockito.mock(ExitCodePublisher.class);
+        OperationSystem operationSystem = Mockito.mock(OperationSystem.class);
         Response response = Mockito.mock(Response.class);
         Mockito.when(response.isStatusCodeSuccess()).thenReturn(true);
 
@@ -150,7 +154,7 @@ public class BlackDuckBinaryScannerToolTest {
         Mockito.doAnswer(invocation -> expectedOutput).when(uploadService).uploadBinaryScan(Mockito.any(BinaryScanBatch.class));
 
         BinaryScanOptions binaryScanOptions = new BinaryScanOptions(null, targetPaths, "", "", 3);
-        BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(eventSystem, codeLocationNameManager, directoryManager, fileFinder, binaryScanOptions, uploadService);
+        BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(statusEventPublisher, exitCodePublisher, codeLocationNameManager, directoryManager, fileFinder, binaryScanOptions, uploadService, operationSystem);
 
         BinaryScanToolResult result = tool.performBinaryScanActions(projectNameVersion);
 

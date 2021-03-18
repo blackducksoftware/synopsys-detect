@@ -600,16 +600,6 @@ public class DetectProperties {
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
-    public static final DetectProperty<NullableStringProperty> DETECT_GRADLE_INSPECTOR_VERSION =
-        new DetectProperty<>(new NullableStringProperty("detect.gradle.inspector.version"))
-            .setInfo("Gradle Inspector Version", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp(
-                "The version of the Gradle Inspector that Detect should use. By default, Detect will try to automatically determine the correct Gradle Inspector version.",
-                "The Detect Gradle detector uses a separate program, the Gradle Inspector, to discover dependencies from Gradle projects. Detect automatically downloads the Gradle Inspector as needed. Use the property to use a specific version of the Gradle Inspector."
-            )
-            .setGroups(DetectGroup.GRADLE, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced);
-
     public static final DetectProperty<NullablePathProperty> DETECT_GRADLE_PATH =
         new DetectProperty<>(new NullablePathProperty("detect.gradle.path"))
             .setInfo("Gradle Executable", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -652,6 +642,22 @@ public class DetectProperties {
             .setInfo("Java Executable", DetectPropertyFromVersion.VERSION_5_0_0)
             .setHelp("Path to the java executable.", "If set, Detect will use the given java executable instead of searching for one.")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL);
+
+    public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_LERNA_EXCLUDED_PACKAGES =
+        new DetectProperty<>(new CaseSensitiveStringListProperty("detect.lerna.excluded.packages"))
+            .setInfo("Lerna Packages Excluded", DetectPropertyFromVersion.VERSION_7_0_0)
+            .setHelp("A comma-separated list of Lerna packages to exclude.",
+                "As Detect parses the output of lerna ls --all --json, Detect will exclude any Lerna packages specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
+            .setGroups(DetectGroup.LERNA, DetectGroup.SOURCE_SCAN)
+            .setCategory(DetectCategory.Advanced);
+
+    public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_LERNA_INCLUDED_PACKAGES =
+        new DetectProperty<>(new CaseSensitiveStringListProperty("detect.lerna.included.packages"))
+            .setInfo("Lerna Packages Included", DetectPropertyFromVersion.VERSION_7_0_0)
+            .setHelp("A comma-separated list of Lerna packages to include.",
+                "As Detect parses the output of lerna ls --all --json2, if this property is set, Detect will include only those Lerna packages specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
+            .setGroups(DetectGroup.LERNA, DetectGroup.SOURCE_SCAN)
+            .setCategory(DetectCategory.Advanced);
 
     public static final DetectProperty<NullablePathProperty> DETECT_LERNA_PATH =
         new DetectProperty<>(new NullablePathProperty("detect.lerna.path"))
@@ -1888,6 +1894,21 @@ public class DetectProperties {
             .setHelp("The version of BDIO files to generate.", "If set to false, BDIO version 1 will be generated. If set to true, BDIO version 2 will be generated.")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .setDeprecated(BDIO1_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT, DetectMajorVersion.NINE);
+
+    @Deprecated
+    public static final DetectProperty<NullableStringProperty> DETECT_GRADLE_INSPECTOR_VERSION =
+        new DetectProperty<>(new NullableStringProperty("detect.gradle.inspector.version"))
+            .setInfo("Gradle Inspector Version", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp(
+                "The version of the Gradle Inspector that Detect should use. By default, Detect will try to automatically determine the correct Gradle Inspector version.",
+                "The Detect Gradle detector uses a separate program, the Gradle Inspector, to discover dependencies from Gradle projects. Detect automatically downloads the Gradle Inspector as needed. Use the property to use a specific version of the Gradle Inspector."
+            )
+            .setGroups(DetectGroup.GRADLE, DetectGroup.GLOBAL)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(
+                "This property is being removed because it no longer provides functionality. The gradle inspector library is no longer used to gather Gradle dependencies. The init script generated by Detect has all the necessary functionality.",
+                DetectMajorVersion.EIGHT,
+                DetectMajorVersion.NINE);
 
     // Accessor to get all properties
     public static Properties allProperties() throws IllegalAccessException {
