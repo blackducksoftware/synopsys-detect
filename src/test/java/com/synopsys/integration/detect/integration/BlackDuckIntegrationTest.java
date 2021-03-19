@@ -29,9 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 
 import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
@@ -68,9 +66,6 @@ public abstract class BlackDuckIntegrationTest {
     @BeforeAll
     public static void setup() {
         logger = new BufferedIntLogger();
-
-        Assumptions.assumeTrue(StringUtils.isNotBlank(System.getenv().get(BLACKDUCK_URL)));
-        Assumptions.assumeTrue(StringUtils.isNotBlank(System.getenv().get(BLACKDUCK_API_TOKEN)));
 
         BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = BlackDuckServerConfig.newBuilder();
         blackDuckServerConfigBuilder.setProperties(System.getenv().entrySet());
