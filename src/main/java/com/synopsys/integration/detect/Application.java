@@ -149,25 +149,16 @@ public class Application implements ApplicationRunner {
     private void runApplication(DetectContext detectContext, DetectRun detectRun, EventSystem eventSystem, ExitCodeManager exitCodeManager, DetectBootResult detectBootResult) {
         Optional<ProductRunData> optionalProductRunData = detectBootResult.getProductRunData();
         if (detectBootResult.getBootType() == DetectBootResult.BootType.RUN && optionalProductRunData.isPresent()) {
-            try {
-                logger.debug("Detect will attempt to run.");
-                ProductRunData productRunData = optionalProductRunData.get();
-                RunManager runManager = new RunManager();
-                RunContext runContext = new RunContext(detectContext, productRunData);
-                runManager.run(runContext);
-            } catch (Exception e) {
-                if (e.getMessage() != null) {
-                    logger.error("Detect run failed: {}", e.getMessage());
-                } else {
-                    logger.error("Detect run failed: {}", e.getClass().getSimpleName());
-                }
-                logger.debug("An exception was thrown during the detect run.", e);
-                exitCodeManager.requestExitCode(e);
-            }
+            logger.debug("Detect will attempt to run.");
+            ProductRunData productRunData = optionalProductRunData.get();
+            RunManager runManager = new RunManager(exitCodeManager);
+            RunContext runContext = new RunContext(detectContext, productRunData);
+            runManager.run(runContext);
+
         } else {
             logger.debug("Detect will NOT attempt to run.");
             detectBootResult.getException().ifPresent(exitCodeManager::requestExitCode);
-            detectBootResult.getException().ifPresent(e -> DetectIssue.publish(eventSystem, DetectIssueType.EXCEPTION, e.getMessage()));
+            detectBootResult.getException().ifPresent(e -> DetectIssue.publish(eventSystem, DetectIssueType.EXCEPTION, "Detect Boot Error", e.getMessage()));
         }
     }
 

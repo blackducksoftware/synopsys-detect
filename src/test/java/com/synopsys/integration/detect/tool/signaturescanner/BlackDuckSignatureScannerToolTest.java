@@ -4,10 +4,8 @@ import static org.mockito.ArgumentMatchers.any;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -83,7 +81,7 @@ public class BlackDuckSignatureScannerToolTest {
         CodeLocationCreationData<ScanBatchOutput> codeLocationCreationData = new CodeLocationCreationData<>(notificationTaskRange, scanBatchOutput);
 
         SignatureScannerToolResult expected = SignatureScannerToolResult.createOnlineResult(codeLocationCreationData);
-        SignatureScannerToolResult actual = blackDuckSignatureScannerTool.runScanTool(codeLocationCreationService, blackDuckServerConfig, projectNameVersion, Optional.empty());
+        SignatureScannerToolResult actual = blackDuckSignatureScannerTool.runScanTool(codeLocationCreationService, blackDuckServerConfig, projectNameVersion, null);
         Assertions.assertTrue(areEqualResults(expected, actual));
     }
 
@@ -112,7 +110,7 @@ public class BlackDuckSignatureScannerToolTest {
     private boolean areEqualResults(SignatureScannerToolResult result1, SignatureScannerToolResult result2) {
         boolean equalCreationData = (!result1.getCreationData().isPresent() && !result2.getCreationData().isPresent()) ||
                                         result1.getCreationData().isPresent() && result2.getCreationData().isPresent()
-                                        && areEqualCreationData(result1.getCreationData().get(), result2.getCreationData().get());
+                                            && areEqualCreationData(result1.getCreationData().get(), result2.getCreationData().get());
         boolean equalOutputs = result1.getScanBatchOutput().equals(result2.getScanBatchOutput());
         boolean equalResults = result1.getResult().equals(result2.getResult());
 

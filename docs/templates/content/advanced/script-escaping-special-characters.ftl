@@ -15,7 +15,7 @@ escape the character with a backslash. The backslash should precede the escaped 
 
 For example:
 
-detect.sh --detect.project.name=Project\!Test
+detect.sh --detect.project.name=Project\\!Test
 
 ## Running the PowerShell script (${powershell_script_name}) on Windows
 

@@ -87,7 +87,7 @@ public class ConanCliExtractor {
         exeArgs.add("info");
         conanCliExtractorOptions.getLockfilePath().ifPresent(lockfilePath -> {
             exeArgs.add("--lockfile");
-            exeArgs.add(lockfilePath);
+            exeArgs.add(lockfilePath.toString());
         });
         conanCliExtractorOptions.getAdditionalArguments().ifPresent(argsString -> {
             String[] additionalArgs = argsString.split(" +");
