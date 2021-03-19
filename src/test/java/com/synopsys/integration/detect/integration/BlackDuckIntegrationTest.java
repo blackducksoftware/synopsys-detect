@@ -53,8 +53,8 @@ import com.synopsys.integration.log.BufferedIntLogger;
 import com.synopsys.integration.log.IntLogger;
 
 public abstract class BlackDuckIntegrationTest {
-    public static final String TEST_BLACKDUCK_URL_KEY = "TEST_BLACKDUCK_URL";
-    public static final String TEST_BLACKDUCK_API_TOKEN_KEY = "TEST_BLACKDUCK_API_TOKEN_KEY";
+    public static final String BLACKDUCK_URL = "BLACKDUCK_URL";
+    public static final String BLACKDUCK_API_TOKEN = "BLACKDUCK_API_TOKEN";
 
     protected static IntLogger logger;
     protected static BlackDuckServicesFactory blackDuckServicesFactory;
@@ -69,13 +69,13 @@ public abstract class BlackDuckIntegrationTest {
     public static void setup() {
         logger = new BufferedIntLogger();
 
-        Assumptions.assumeTrue(StringUtils.isNotBlank(System.getenv().get(TEST_BLACKDUCK_URL_KEY)));
-        Assumptions.assumeTrue(StringUtils.isNotBlank(System.getenv().get(TEST_BLACKDUCK_API_TOKEN_KEY)));
+        Assumptions.assumeTrue(StringUtils.isNotBlank(System.getenv().get(BLACKDUCK_URL)));
+        Assumptions.assumeTrue(StringUtils.isNotBlank(System.getenv().get(BLACKDUCK_API_TOKEN)));
 
         BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = BlackDuckServerConfig.newBuilder();
         blackDuckServerConfigBuilder.setProperties(System.getenv().entrySet());
-        blackDuckServerConfigBuilder.setUrl(System.getenv().get(TEST_BLACKDUCK_URL_KEY));
-        blackDuckServerConfigBuilder.setApiToken(System.getenv().get(TEST_BLACKDUCK_API_TOKEN_KEY));
+        blackDuckServerConfigBuilder.setUrl(System.getenv().get(BLACKDUCK_URL));
+        blackDuckServerConfigBuilder.setApiToken(System.getenv().get(BLACKDUCK_API_TOKEN));
         blackDuckServerConfigBuilder.setTrustCert(true);
         blackDuckServerConfigBuilder.setTimeoutInSeconds(5 * 60);
 
@@ -120,8 +120,8 @@ public abstract class BlackDuckIntegrationTest {
         initialArgs.add("--detect.tools.excluded=POLARIS");
         initialArgs.add("--detect.project.name=" + projectName);
         initialArgs.add("--detect.project.version.name=" + projectVersionName);
-        initialArgs.add("--blackduck.url=" + System.getenv().get(TEST_BLACKDUCK_URL_KEY));
-        initialArgs.add("--blackduck.api.token=" + System.getenv().get(TEST_BLACKDUCK_API_TOKEN_KEY));
+        initialArgs.add("--blackduck.url=" + System.getenv().get(BLACKDUCK_URL));
+        initialArgs.add("--blackduck.api.token=" + System.getenv().get(BLACKDUCK_API_TOKEN));
 
         return initialArgs;
     }
