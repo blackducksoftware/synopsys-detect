@@ -50,7 +50,7 @@ public class YarnLockExtractor {
             List<String> yarnLockLines = FileUtils.readLines(yarnLockFile, StandardCharsets.UTF_8);
             YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockLines);
             boolean getWorkspaceDependenciesFromWorkspacePackageJson = yarnLock.isYarn1Project();
-            WorkspaceData locatedWorkspacePackageJsons = collectPackageJsons(projectDir);
+            WorkspaceData workspaceData = collectPackageJsons(projectDir);
 
             ExcludedIncludedWildcardFilter workspacesFilter;
             if (yarnLockOptions.getExcludedWorkspaceNamePatterns().isEmpty() && yarnLockOptions.getIncludedWorkspaceNamePatterns().isEmpty()) {
@@ -58,7 +58,7 @@ public class YarnLockExtractor {
             } else {
                 workspacesFilter = ExcludedIncludedWildcardFilter.fromCollections(yarnLockOptions.getExcludedWorkspaceNamePatterns(), yarnLockOptions.getIncludedWorkspaceNamePatterns());
             }
-            YarnResult yarnResult = yarnPackager.generateYarnResult(rootPackageJson, locatedWorkspacePackageJsons, yarnLock, yarnLockFile.getAbsolutePath(), new ArrayList<>(),
+            YarnResult yarnResult = yarnPackager.generateYarnResult(rootPackageJson, workspaceData, yarnLock, yarnLockFile.getAbsolutePath(), new ArrayList<>(),
                 yarnLockOptions.useProductionOnly(), getWorkspaceDependenciesFromWorkspacePackageJson, workspacesFilter);
 
             if (yarnResult.getException().isPresent()) {

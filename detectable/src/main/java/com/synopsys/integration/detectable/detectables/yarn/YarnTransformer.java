@@ -154,17 +154,24 @@ public class YarnTransformer {
                 graphBuilder.addChildToRoot(workspaceId);
             }
             if (getWorkspaceDependenciesFromWorkspacePackageJson) {
-                addWorkspaceChildrenToGraph(graphBuilder, workspaceId, curWorkspace.getWorkspacePackageJson().getPackageJson().dependencies.entrySet());
+                addWorkspaceChildrenToGraph(graphBuilder, workspaceData, workspaceId, curWorkspace.getWorkspacePackageJson().getPackageJson().dependencies.entrySet());
                 if (!productionOnly) {
-                    addWorkspaceChildrenToGraph(graphBuilder, workspaceId, curWorkspace.getWorkspacePackageJson().getPackageJson().devDependencies.entrySet());
+                    addWorkspaceChildrenToGraph(graphBuilder, workspaceData, workspaceId, curWorkspace.getWorkspacePackageJson().getPackageJson().devDependencies.entrySet());
                 }
             }
         }
     }
 
-    private void addWorkspaceChildrenToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder, StringDependencyId workspaceId, Set<Map.Entry<String, String>> workspaceDependenciesToAdd) {
+    private void addWorkspaceChildrenToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder, WorkspaceData workspaceData, StringDependencyId workspaceId, Set<Map.Entry<String, String>> workspaceDependenciesToAdd) {
         for (Map.Entry<String, String> depOfWorkspace : workspaceDependenciesToAdd) {
-            StringDependencyId depOfWorkspaceId = new StringDependencyId(depOfWorkspace.getKey() + "@" + depOfWorkspace.getValue());
+            // TODO this is feeling redundant
+            StringDependencyId depOfWorkspaceId;
+            Optional<Workspace> workspace = workspaceData.lookup(depOfWorkspace.getKey(), depOfWorkspace.getValue());
+            if (workspace.isPresent()) {
+                depOfWorkspaceId = workspace.get().generateDependencyId();
+            } else {
+                depOfWorkspaceId = new StringDependencyId(depOfWorkspace.getKey() + "@" + depOfWorkspace.getValue());
+            }
             logger.debug("Adding dependency of workspace ({}) as child of workspace {}", depOfWorkspaceId, workspaceId);
             graphBuilder.addChildWithParent(depOfWorkspaceId, workspaceId);
         }

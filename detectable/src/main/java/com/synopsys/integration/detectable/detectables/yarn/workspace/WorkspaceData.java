@@ -67,6 +67,7 @@ public class WorkspaceData {
         for (Map.Entry<String, Workspace> candidateWorkspace : workspacesByName.entrySet()) {
             String dependencyIdString = ((StringDependencyId) dependencyId).getValue();
             if (dependencyIdString.startsWith(candidateWorkspace.getKey() + "@")) {
+                // TODO this should happen inside Workspace
                 if (!dependencyIdString.equals(candidateWorkspace.getValue().generateDependencyId())) {
                     logger.warn("Dependency ID {} looks like workspace {}, but expected the Dependency ID to be {}",
                         dependencyId, candidateWorkspace.getKey(), candidateWorkspace.getValue().generateDependencyId());

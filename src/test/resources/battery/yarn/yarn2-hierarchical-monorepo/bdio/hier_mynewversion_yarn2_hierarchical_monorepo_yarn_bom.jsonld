@@ -7,9 +7,9 @@
         "Tool: Detect-7.0.0-SNAPSHOT",
         "Tool: IntegrationBdio-22.0.2"
       ],
-      "spdx:created": "2021-03-19T18:30:32.184Z"
+      "spdx:created": "2021-03-20T22:43:22.036Z"
     },
-    "@id": "uuid:0f11f150-a617-4fb6-b01c-158c1b34590e",
+    "@id": "uuid:3abd22d8-e917-4452-9910-d353928c3c90",
     "@type": "BillOfMaterials",
     "relationship": []
   },
@@ -34,19 +34,19 @@
     },
     "relationship": [
       {
-        "related": "http:npmjs/nondep-workspace/0.0.0-use.local",
+        "related": "http:npmjs/nondep-workspace/1.0.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
   },
   {
     "name": "nondep-workspace",
-    "revision": "0.0.0-use.local",
-    "@id": "http:npmjs/nondep-workspace/0.0.0-use.local",
+    "revision": "1.0.0",
+    "@id": "http:npmjs/nondep-workspace/1.0.0",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "npmjs",
-      "externalId": "nondep-workspace/0.0.0-use.local",
+      "externalId": "nondep-workspace/1.0.0",
       "externalIdMetaData": {
         "forge": {
           "name": "npmjs",
@@ -54,7 +54,7 @@
         },
         "pieces": [
           "nondep-workspace",
-          "0.0.0-use.local"
+          "1.0.0"
         ]
       }
     },

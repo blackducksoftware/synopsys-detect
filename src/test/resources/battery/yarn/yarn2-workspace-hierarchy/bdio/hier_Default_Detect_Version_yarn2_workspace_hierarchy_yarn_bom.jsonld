@@ -7,9 +7,9 @@
         "Tool: Detect-7.0.0-SNAPSHOT",
         "Tool: IntegrationBdio-22.0.2"
       ],
-      "spdx:created": "2021-03-18T21:14:44.916Z"
+      "spdx:created": "2021-03-20T22:40:50.305Z"
     },
-    "@id": "uuid:faeeefc9-01e8-4979-827d-23934078c24a",
+    "@id": "uuid:8c4a7350-4cfb-44ec-9b67-bfda3624313c",
     "@type": "BillOfMaterials",
     "relationship": []
   },
@@ -34,19 +34,19 @@
     },
     "relationship": [
       {
-        "related": "http:npmjs/workspace-a/0.0.0-use.local",
+        "related": "http:npmjs/workspace-a/1.0.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
   },
   {
     "name": "workspace-a",
-    "revision": "0.0.0-use.local",
-    "@id": "http:npmjs/workspace-a/0.0.0-use.local",
+    "revision": "1.0.0",
+    "@id": "http:npmjs/workspace-a/1.0.0",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "npmjs",
-      "externalId": "workspace-a/0.0.0-use.local",
+      "externalId": "workspace-a/1.0.0",
       "externalIdMetaData": {
         "forge": {
           "name": "npmjs",
@@ -54,25 +54,25 @@
         },
         "pieces": [
           "workspace-a",
-          "0.0.0-use.local"
+          "1.0.0"
         ]
       }
     },
     "relationship": [
       {
-        "related": "http:npmjs/child-workspace/0.0.0-use.local",
+        "related": "http:npmjs/child-workspace/1.0.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
   },
   {
     "name": "child-workspace",
-    "revision": "0.0.0-use.local",
-    "@id": "http:npmjs/child-workspace/0.0.0-use.local",
+    "revision": "1.0.0",
+    "@id": "http:npmjs/child-workspace/1.0.0",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "npmjs",
-      "externalId": "child-workspace/0.0.0-use.local",
+      "externalId": "child-workspace/1.0.0",
       "externalIdMetaData": {
         "forge": {
           "name": "npmjs",
@@ -80,7 +80,7 @@
         },
         "pieces": [
           "child-workspace",
-          "0.0.0-use.local"
+          "1.0.0"
         ]
       }
     },
