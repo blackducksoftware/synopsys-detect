@@ -122,14 +122,14 @@ class YarnTransformerTest {
 
         assertEquals(4, dependencyGraph.getRootDependencies().size());
         ExternalId workspaceExternalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, workspacesThatAreDependencies.get(0).getName(),
-            workspacesThatAreDependencies.get(0).getVersion());
+            generateWorkspaceVersion(workspacesThatAreDependencies.get(0).getName()));
         Set<Dependency> actualWorkspaceDeps = dependencyGraph.getChildrenForParent(workspaceExternalId);
         Dependency actualWorkspaceDep = actualWorkspaceDeps.iterator().next();
         assertEquals(workspacesThatAreDependencies.get(0).getName() + WORKSPACE_DEP_SUFFIX, actualWorkspaceDep.getName());
         assertEquals(workspacesThatAreDependencies.get(0).getVersion(), actualWorkspaceDep.getVersion());
 
         workspaceExternalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, workspacesThatAreNotDependencies.get(0).getName(),
-            workspacesThatAreNotDependencies.get(0).getVersion());
+            generateWorkspaceVersion(workspacesThatAreNotDependencies.get(0).getName()));
         actualWorkspaceDeps = dependencyGraph.getChildrenForParent(workspaceExternalId);
         actualWorkspaceDep = actualWorkspaceDeps.iterator().next();
         assertEquals(workspacesThatAreNotDependencies.get(0).getName() + WORKSPACE_DEP_SUFFIX, actualWorkspaceDep.getName());
@@ -147,7 +147,7 @@ class YarnTransformerTest {
         DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, true, workspacesThatAreDependencies, null);
 
         assertEquals(3, dependencyGraph.getRootDependencies().size());
-        String targetWorkspaceId = workspacesThatAreDependencies.get(0).getName() + "@" + workspacesThatAreDependencies.get(0).getVersion();
+        String targetWorkspaceId = generateWorkspaceIdString(workspacesThatAreDependencies.get(0).getName());
         boolean foundWorkspaceDep = false;
         boolean foundWorkspaceDevDep = false;
         for (Dependency workspaceCandidate : dependencyGraph.getRootDependencies()) {
@@ -179,7 +179,7 @@ class YarnTransformerTest {
         DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, true, workspacesThatAreDependencies, ExcludedIncludedWildcardFilter.EMPTY);
 
         assertEquals(4, dependencyGraph.getRootDependencies().size());
-        String targetWorkspaceId = workspacesThatAreNotDependencies.get(0).getName() + "@" + workspacesThatAreNotDependencies.get(0).getVersion();
+        String targetWorkspaceId = generateWorkspaceIdString(workspacesThatAreNotDependencies.get(0).getName());
         boolean foundWorkspaceDep = false;
         for (Dependency workspaceCandidate : dependencyGraph.getRootDependencies()) {
             if (targetWorkspaceId.equals(workspaceCandidate.getExternalId().getName())) {
@@ -294,5 +294,14 @@ class YarnTransformerTest {
         WorkspacePackageJson locatedWorkspacePackageJson = new WorkspacePackageJson(null, workspacePackageJson, "packages/" + workspaceNameVersion.getName());
         Workspace workspace = new Workspace(locatedWorkspacePackageJson);
         workspacesByName.put(workspaceNameVersion.getName(), workspace);
+    }
+
+    private String generateWorkspaceIdString(String workspaceName) {
+        return workspaceName + "@" + generateWorkspaceVersion(workspaceName);
+
+    }
+
+    private String generateWorkspaceVersion(String workspaceName) {
+        return "workspace:packages/" + workspaceName;
     }
 }

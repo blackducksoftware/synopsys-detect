@@ -50,6 +50,12 @@ public class YarnTransformer {
             getWorkspaceDependenciesFromWorkspacePackageJson, workspaceFilter);
 
         for (YarnLockEntry entry : yarnLockResult.getYarnLock().getEntries()) {
+            if (entry.getIds().get(0).getName().contains("workspace")) {
+                System.out.println("Found a workspace");
+            }
+            if (entry.getIds().get(0).getName().contains("semver")) {
+                System.out.println("Found semver");
+            }
             Optional<Workspace> workspace = yarnLockResult.getWorkspaceData().lookup(entry);
             if (workspace.isPresent()) {
                 StringDependencyId id = workspace.get().generateDependencyId();
@@ -58,7 +64,14 @@ public class YarnTransformer {
                 // TODO this is duplicate of code below:
                 for (YarnLockDependency dependency : entry.getDependencies()) {
                     // TODO what if this is a workspace??
-                    StringDependencyId stringDependencyId = new StringDependencyId(dependency.getName() + "@" + dependency.getVersion());
+                    // TODO this feels repetetive
+                    StringDependencyId stringDependencyId;
+                    Optional<Workspace> dependencyWorkspace = yarnLockResult.getWorkspaceData().lookup(dependency);
+                    if (dependencyWorkspace.isPresent()) {
+                        stringDependencyId = dependencyWorkspace.get().generateDependencyId();
+                    } else {
+                        stringDependencyId = new StringDependencyId(dependency.getName() + "@" + dependency.getVersion());
+                    }
                     if (!productionOnly || !dependency.isOptional()) {
                         graphBuilder.addChildWithParent(stringDependencyId, id);
                     } else {
@@ -70,7 +83,7 @@ public class YarnTransformer {
                 for (YarnLockEntryId entryId : entry.getIds()) {
                     StringDependencyId id = new StringDependencyId(entryId.getName() + "@" + entryId.getVersion());
                     ////////// TODO this may be what's wrong kkkk; kkk deps (below) might be workspaces too!!
-                    graphBuilder.setDependencyInfo(id, entryId.getName(), entryId.getVersion(), externalIdFactory.createNameVersionExternalId(Forge.NPMJS, entryId.getName(), entryId.getVersion()));
+                    graphBuilder.setDependencyInfo(id, entryId.getName(), entry.getVersion(), externalIdFactory.createNameVersionExternalId(Forge.NPMJS, entryId.getName(), entry.getVersion()));
                     for (YarnLockDependency dependency : entry.getDependencies()) {
                         // TODO what if this is a workspace??
                         StringDependencyId stringDependencyId = new StringDependencyId(dependency.getName() + "@" + dependency.getVersion());

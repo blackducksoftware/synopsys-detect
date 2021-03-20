@@ -10,8 +10,9 @@ package com.synopsys.integration.detectable.detectables.yarn.parse.entry;
 import java.util.List;
 
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDependency;
+import com.synopsys.integration.util.Stringable;
 
-public class YarnLockEntry {
+public class YarnLockEntry extends Stringable {
     private final boolean metadataEntry;
     private final List<YarnLockEntryId> ids;
     private final String version;

@@ -1,3 +1,10 @@
+/*
+ * detectable
+ *
+ * Copyright (c) 2021 Synopsys, Inc.
+ *
+ * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
+ */
 package com.synopsys.integration.detectable.detectables.yarn.workspace;
 
 import org.slf4j.Logger;
@@ -32,7 +39,10 @@ public class Workspace {
     }
 
     public ExternalId generateExternalId() {
-        String version = "workspace:" + workspacePackageJson.getDirRelativePath();
+        // TODO not sure which
+        //String version = "workspace:" + workspacePackageJson.getDirRelativePath();
+        String version = workspacePackageJson.getPackageJson().version;
+        // TODO I could avoid false positives by changing the Forge here!
         return externalIdFactory.createNameVersionExternalId(Forge.NPMJS, workspacePackageJson.getPackageJson().name, version);
     }
 

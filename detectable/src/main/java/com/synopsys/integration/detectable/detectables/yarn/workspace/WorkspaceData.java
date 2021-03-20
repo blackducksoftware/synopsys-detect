@@ -1,3 +1,10 @@
+/*
+ * detectable
+ *
+ * Copyright (c) 2021 Synopsys, Inc.
+ *
+ * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
+ */
 package com.synopsys.integration.detectable.detectables.yarn.workspace;
 
 import java.util.Collection;
@@ -9,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.model.dependencyid.StringDependencyId;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDependency;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntry;
 
 // TODO name?
@@ -24,6 +32,16 @@ public class WorkspaceData {
 
     public Collection<Workspace> getWorkspaces() {
         return workspacesByName.values();
+    }
+
+    // TODO use a lambda to make these share code
+    public Optional<Workspace> lookup(YarnLockDependency yarnLockDependency) {
+        for (Workspace candidateWorkspace : workspacesByName.values()) {
+            if (candidateWorkspace.matches(yarnLockDependency)) {
+                return Optional.of(candidateWorkspace);
+            }
+        }
+        return Optional.empty();
     }
 
     public Optional<Workspace> lookup(YarnLockEntry yarnLockEntry) {
