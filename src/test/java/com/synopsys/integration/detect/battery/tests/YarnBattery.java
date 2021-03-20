@@ -135,5 +135,19 @@ public class YarnBattery {
         test.expectBdioResources();
         test.run();
     }
+
+    @Test
+    void yarnYarn2WorkspacesHierarchyMonorepo() {
+        BatteryTest test = new BatteryTest("yarn2-hierarchical-monorepo", "yarn/yarn2-hierarchical-monorepo");
+        test.sourceDirectoryNamed("yarn2-hierarchical-monorepo");
+        test.sourceFileFromResource("yarn.lock");
+        test.sourceFileFromResource("package.json");
+        test.sourceFileFromResource("workspace-a/package.json");
+        test.sourceFileFromResource("workspace-a/child-workspace/package.json");
+        test.sourceFileFromResource("nondep-workspace/package.json");
+        test.property("detect.yarn.included.workspaces", "nondep-work*");
+        test.expectBdioResources();
+        test.run();
+    }
 }
 

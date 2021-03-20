@@ -14,10 +14,12 @@ import com.synopsys.integration.detectable.detectables.npm.packagejson.model.Pac
 public class WorkspacePackageJson {
     private final File packageJsonFile;
     private final PackageJson packageJson;
+    private final String dirRelativePath;
 
-    public WorkspacePackageJson(File packageJsonFile, PackageJson packageJson) {
+    public WorkspacePackageJson(File packageJsonFile, PackageJson packageJson, String dirRelativePath) {
         this.packageJsonFile = packageJsonFile;
         this.packageJson = packageJson;
+        this.dirRelativePath = dirRelativePath;
     }
 
     public File getPackageJsonFile() {
@@ -26,5 +28,9 @@ public class WorkspacePackageJson {
 
     public PackageJson getPackageJson() {
         return packageJson;
+    }
+    
+    public String getDirRelativePath() {
+        return dirRelativePath;
     }
 }

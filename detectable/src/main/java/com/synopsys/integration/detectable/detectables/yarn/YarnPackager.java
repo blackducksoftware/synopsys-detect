@@ -8,7 +8,6 @@
 package com.synopsys.integration.detectable.detectables.yarn;
 
 import java.util.List;
-import java.util.Map;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -18,6 +17,7 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockResult;
+import com.synopsys.integration.detectable.detectables.yarn.workspace.WorkspaceData;
 import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
 import com.synopsys.integration.util.NameVersion;
 
@@ -28,7 +28,8 @@ public class YarnPackager {
         this.yarnTransformer = yarnTransformer;
     }
 
-    public YarnResult generateYarnResult(PackageJson rootPackageJson, Map<String, PackageJson> workspacePackageJsonsToProcess, YarnLock yarnLock, String yarnLockFilePath, List<NameVersion> externalDependencies,
+    // TODO workspacePackageJsonsToProcess is a dumb name
+    public YarnResult generateYarnResult(PackageJson rootPackageJson, WorkspaceData workspacePackageJsonsToProcess, YarnLock yarnLock, String yarnLockFilePath, List<NameVersion> externalDependencies,
         boolean useProductionOnly, boolean getWorkspaceDependenciesFromWorkspacePackageJson, @Nullable ExcludedIncludedWildcardFilter workspaceFilter) {
         YarnLockResult yarnLockResult = new YarnLockResult(rootPackageJson, workspacePackageJsonsToProcess, yarnLockFilePath, yarnLock);
 

@@ -7,19 +7,18 @@
  */
 package com.synopsys.integration.detectable.detectables.yarn.parse;
 
-import java.util.Map;
-
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
+import com.synopsys.integration.detectable.detectables.yarn.workspace.WorkspaceData;
 
 public class YarnLockResult {
     private final PackageJson rootPackageJson;
-    private final Map<String, PackageJson> workspacePackageJsons;
+    private final WorkspaceData workspaceData;
     private final String yarnLockFilePath;
     private final YarnLock yarnLock;
 
-    public YarnLockResult(PackageJson rootPackageJson, Map<String, PackageJson> workspacePackageJsons, String yarnLockFilePath, YarnLock yarnLock) {
+    public YarnLockResult(PackageJson rootPackageJson, WorkspaceData workspaceData, String yarnLockFilePath, YarnLock yarnLock) {
         this.rootPackageJson = rootPackageJson;
-        this.workspacePackageJsons = workspacePackageJsons;
+        this.workspaceData = workspaceData;
         this.yarnLockFilePath = yarnLockFilePath;
         this.yarnLock = yarnLock;
     }
@@ -36,7 +35,7 @@ public class YarnLockResult {
         return rootPackageJson;
     }
 
-    public Map<String, PackageJson> getWorkspacePackageJsons() {
-        return workspacePackageJsons;
+    public WorkspaceData getWorkspaceData() {
+        return workspaceData;
     }
 }

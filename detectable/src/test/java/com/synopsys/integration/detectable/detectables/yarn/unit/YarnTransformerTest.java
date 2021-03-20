@@ -25,11 +25,14 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.YarnTransformer;
+import com.synopsys.integration.detectable.detectables.yarn.packagejson.WorkspacePackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDependency;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockResult;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntry;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryId;
+import com.synopsys.integration.detectable.detectables.yarn.workspace.Workspace;
+import com.synopsys.integration.detectable.detectables.yarn.workspace.WorkspaceData;
 import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
 import com.synopsys.integration.util.NameVersion;
 
@@ -202,7 +205,7 @@ class YarnTransformerTest {
         List<YarnLockDependency> validYarnLockDependencies = Collections.singletonList(new YarnLockDependency("yarn", "^1.22.4", false));
         List<YarnLockEntry> yarnLockEntries = Collections.singletonList(new YarnLockEntry(false, validYarnLockEntryIds, "1.0", validYarnLockDependencies));
         YarnLock yarnLock = new YarnLock(null, true, yarnLockEntries);
-        YarnLockResult yarnLockResult = new YarnLockResult(packageJson, new HashMap<>(), "yarn.lock", yarnLock);
+        YarnLockResult yarnLockResult = new YarnLockResult(packageJson, WorkspaceData.EMPTY, "yarn.lock", yarnLock);
 
         // This should not throw an exception.
         DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, false, new ArrayList<>(0), ExcludedIncludedWildcardFilter.EMPTY);
@@ -241,14 +244,14 @@ class YarnTransformerTest {
             }
             yarnLockEntries.add(new YarnLockEntry(false, projectEntryIds, "1.0.0", projectDependencies));
         }
-        Map<String, PackageJson> workspacePackageJsons = new HashMap<>();
+        Map<String, Workspace> workspacesByName = new HashMap<>();
         List<NameVersion> allWorkspaces = new LinkedList<>(workspacesThatAreDependencies);
         allWorkspaces.addAll(workspacesThatAreNotDependencies);
         for (NameVersion workspace : allWorkspaces) {
             String workspaceDepName = workspace.getName() + WORKSPACE_DEP_SUFFIX;
             String workspaceDevDepName = workspace.getName() + "-dev" + WORKSPACE_DEP_SUFFIX;
             if (yarn1project || includeAllWorkspaceDependencies) {
-                addWorkspacePackageJson(workspacePackageJsons, workspace, workspaceDepName, workspaceDevDepName);
+                addWorkspacePackageJson(workspacesByName, workspace, workspaceDepName, workspaceDevDepName);
             }
             if (!yarn1project) {
                 addWorkspaceToYarnLockEntries(yarnLockEntries, workspace, workspaceDepName);
@@ -264,8 +267,8 @@ class YarnTransformerTest {
             yarnLockVersion = "4";
         }
         YarnLock yarnLock = new YarnLock(yarnLockVersion, yarn1project, yarnLockEntries);
-        YarnLockResult yarnLockResult = new YarnLockResult(packageJson, workspacePackageJsons, "yarn.lock", yarnLock);
-        return yarnLockResult;
+        WorkspaceData workspaceData = new WorkspaceData(workspacesByName);
+        return new YarnLockResult(packageJson, workspaceData, "yarn.lock", yarnLock);
     }
 
     private void addWorkspaceToYarnLockEntries(List<YarnLockEntry> yarnLockEntries, NameVersion workspace, String workspaceDepName) {
@@ -279,13 +282,17 @@ class YarnTransformerTest {
         yarnLockEntries.add(new YarnLockEntry(false, wkspDepIds, workspace.getVersion(), new LinkedList<>()));
     }
 
-    private void addWorkspacePackageJson(Map<String, PackageJson> workspacePackageJsons, NameVersion workspace, String workspaceDepName, String workspaceDevDepName) {
+    private void addWorkspacePackageJson(Map<String, Workspace> workspacesByName, NameVersion workspaceNameVersion, String workspaceDepName, String workspaceDevDepName) {
         PackageJson workspacePackageJson = new PackageJson();
-        workspacePackageJson.name = workspace.getName();
-        workspacePackageJson.version = workspace.getVersion();
+        workspacePackageJson.name = workspaceNameVersion.getName();
+        workspacePackageJson.version = workspaceNameVersion.getVersion();
         workspacePackageJson.dependencies = new HashMap<>();
-        workspacePackageJson.dependencies.put(workspaceDepName, workspace.getVersion());
-        workspacePackageJson.devDependencies.put(workspaceDevDepName, workspace.getVersion());
-        workspacePackageJsons.put(workspace.getName(), workspacePackageJson);
+        workspacePackageJson.dependencies.put(workspaceDepName, workspaceNameVersion.getVersion());
+        workspacePackageJson.devDependencies.put(workspaceDevDepName, workspaceNameVersion.getVersion());
+        // TODO naming needs improving
+        // TODO if I can get away with null here, why is it even in this object?
+        WorkspacePackageJson locatedWorkspacePackageJson = new WorkspacePackageJson(null, workspacePackageJson, "packages/" + workspaceNameVersion.getName());
+        Workspace workspace = new Workspace(locatedWorkspacePackageJson);
+        workspacesByName.put(workspaceNameVersion.getName(), workspace);
     }
 }
