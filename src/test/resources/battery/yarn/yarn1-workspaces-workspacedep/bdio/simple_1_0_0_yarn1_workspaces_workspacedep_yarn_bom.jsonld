@@ -7,9 +7,9 @@
         "Tool: Detect-7.0.0-SNAPSHOT",
         "Tool: IntegrationBdio-22.0.2"
       ],
-      "spdx:created": "2021-03-20T22:38:53.163Z"
+      "spdx:created": "2021-03-21T23:13:46.262Z"
     },
-    "@id": "uuid:9fe61ad7-869c-42ec-80f4-44bd17e3047f",
+    "@id": "uuid:b5fa8cac-5580-48b9-92a1-597501f949f3",
     "@type": "BillOfMaterials",
     "relationship": []
   },
@@ -34,31 +34,33 @@
     },
     "relationship": [
       {
-        "related": "http:npmjs/workspace-b%40workspace%3Aworkspace-b",
+        "related": "http:detect-yarn-workspace/workspace-b/1.0.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
   },
   {
-    "@id": "http:npmjs/workspace-b%40workspace%3Aworkspace-b",
+    "name": "workspace-b",
+    "revision": "1.0.0",
+    "@id": "http:detect-yarn-workspace/workspace-b/1.0.0",
     "@type": "Component",
     "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "workspace-b@workspace:workspace-b",
+      "externalSystemTypeId": "detect-yarn-workspace",
+      "externalId": "workspace-b/1.0.0",
       "externalIdMetaData": {
         "forge": {
-          "name": "npmjs",
+          "name": "detect-yarn-workspace",
           "separator": "/"
         },
         "pieces": [
-          "workspace-b@workspace:workspace-b",
-          null
+          "workspace-b",
+          "1.0.0"
         ]
       }
     },
     "relationship": [
       {
-        "related": "http:npmjs/workspace-a%40workspace%3Aworkspace-a",
+        "related": "http:detect-yarn-workspace/workspace-a/1.0.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -68,19 +70,21 @@
     ]
   },
   {
-    "@id": "http:npmjs/workspace-a%40workspace%3Aworkspace-a",
+    "name": "workspace-a",
+    "revision": "1.0.0",
+    "@id": "http:detect-yarn-workspace/workspace-a/1.0.0",
     "@type": "Component",
     "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "workspace-a@workspace:workspace-a",
+      "externalSystemTypeId": "detect-yarn-workspace",
+      "externalId": "workspace-a/1.0.0",
       "externalIdMetaData": {
         "forge": {
-          "name": "npmjs",
+          "name": "detect-yarn-workspace",
           "separator": "/"
         },
         "pieces": [
-          "workspace-a@workspace:workspace-a",
-          null
+          "workspace-a",
+          "1.0.0"
         ]
       }
     },

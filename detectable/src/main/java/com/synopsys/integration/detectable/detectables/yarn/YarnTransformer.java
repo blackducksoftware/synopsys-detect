@@ -179,6 +179,9 @@ public class YarnTransformer {
             Optional<Workspace> workspace = workspaceData.lookup(depOfWorkspace.getKey(), depOfWorkspace.getValue());
             if (workspace.isPresent()) {
                 depOfWorkspaceId = workspace.get().generateDependencyId();
+                // TODO boy this feels like the 10th place I've done this...
+                ExternalId externalId = workspace.get().generateExternalId();
+                graphBuilder.setDependencyInfo(depOfWorkspaceId, workspace.get().getWorkspacePackageJson().getPackageJson().name, workspace.get().getWorkspacePackageJson().getPackageJson().version, externalId);
             } else { // TODO this should be a method; it's repeated a lot
                 depOfWorkspaceId = new StringDependencyId(depOfWorkspace.getKey() + "@" + depOfWorkspace.getValue());
             }
@@ -194,6 +197,9 @@ public class YarnTransformer {
             Optional<Workspace> workspace = workspaceData.lookup(rootDependency.getKey(), rootDependency.getValue());
             if (workspace.isPresent()) {
                 stringDependencyId = workspace.get().generateDependencyId();
+                ExternalId externalId = workspace.get().generateExternalId();
+                graphBuilder.setDependencyInfo(stringDependencyId, workspace.get().getWorkspacePackageJson().getPackageJson().name, workspace.get().getWorkspacePackageJson().getPackageJson().version, externalId);
+
                 // TODO remove: stringDependencyId = new StringDependencyId(rootDependency.getKey() + "@workspace:" + workspace.get().getWorkspacePackageJson().getDirRelativePath());
             } else {
                 stringDependencyId = new StringDependencyId(rootDependency.getKey() + "@" + rootDependency.getValue());

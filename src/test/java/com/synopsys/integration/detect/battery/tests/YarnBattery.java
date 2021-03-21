@@ -22,8 +22,6 @@
  */
 package com.synopsys.integration.detect.battery.tests;
 
-import static org.junit.jupiter.api.Assertions.fail;
-
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -124,7 +122,6 @@ public class YarnBattery {
         test.sourceFileFromResource("workspace-b/package.json");
         test.expectBdioResources();
         test.run();
-        fail(); // TODO produces bad BDIO
     }
 
     @Test
