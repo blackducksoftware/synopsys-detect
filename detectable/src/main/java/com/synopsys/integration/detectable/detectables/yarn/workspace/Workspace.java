@@ -39,11 +39,12 @@ public class Workspace {
     }
 
     public ExternalId generateExternalId() {
-        // TODO not sure which
-        //String version = "workspace:" + workspacePackageJson.getDirRelativePath();
         String version = workspacePackageJson.getPackageJson().version;
-        // TODO I could avoid false positives by changing the Forge here!
-        return externalIdFactory.createNameVersionExternalId(Forge.NPMJS, workspacePackageJson.getPackageJson().name, version);
+        // TODO could avoid false positives by changing the Forge here!
+        //Forge workspaceMetaForge = Forge.NPMJS;
+        // TODO make this a static class field
+        Forge workspaceMetaForge = new Forge("/", "detect-yarn-workspace");
+        return externalIdFactory.createNameVersionExternalId(workspaceMetaForge, workspacePackageJson.getPackageJson().name, version);
     }
 
     public boolean matches(YarnLockEntry yarnLockEntry) {

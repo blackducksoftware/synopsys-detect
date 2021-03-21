@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -121,15 +122,16 @@ class YarnTransformerTest {
         DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, true, allWorkspaces, ExcludedIncludedWildcardFilter.EMPTY);
 
         assertEquals(4, dependencyGraph.getRootDependencies().size());
-        ExternalId workspaceExternalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, workspacesThatAreDependencies.get(0).getName(),
-            generateWorkspaceVersion(workspacesThatAreDependencies.get(0).getName()));
+        // TODO make this a static class field
+        Forge worspaceForge = new Forge("/", "detect-yarn-workspace");
+        ExternalId workspaceExternalId = externalIdFactory.createNameVersionExternalId(worspaceForge, workspacesThatAreDependencies.get(0).getName(),
+            workspacesThatAreDependencies.get(0).getVersion());
         Set<Dependency> actualWorkspaceDeps = dependencyGraph.getChildrenForParent(workspaceExternalId);
         Dependency actualWorkspaceDep = actualWorkspaceDeps.iterator().next();
         assertEquals(workspacesThatAreDependencies.get(0).getName() + WORKSPACE_DEP_SUFFIX, actualWorkspaceDep.getName());
         assertEquals(workspacesThatAreDependencies.get(0).getVersion(), actualWorkspaceDep.getVersion());
-
-        workspaceExternalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, workspacesThatAreNotDependencies.get(0).getName(),
-            generateWorkspaceVersion(workspacesThatAreNotDependencies.get(0).getName()));
+        workspaceExternalId = externalIdFactory.createNameVersionExternalId(worspaceForge, workspacesThatAreNotDependencies.get(0).getName(),
+            workspacesThatAreNotDependencies.get(0).getVersion());
         actualWorkspaceDeps = dependencyGraph.getChildrenForParent(workspaceExternalId);
         actualWorkspaceDep = actualWorkspaceDeps.iterator().next();
         assertEquals(workspacesThatAreNotDependencies.get(0).getName() + WORKSPACE_DEP_SUFFIX, actualWorkspaceDep.getName());
@@ -272,8 +274,10 @@ class YarnTransformerTest {
     }
 
     private void addWorkspaceToYarnLockEntries(List<YarnLockEntry> yarnLockEntries, NameVersion workspace, String workspaceDepName) {
-        List<YarnLockDependency> dependencyRefsToWkspDeps = Collections.singletonList(new YarnLockDependency(workspaceDepName, workspace.getVersion(), false));
-        List<YarnLockEntryId> yarnLockEntryIdsWkspEntryIds = Collections.singletonList(new YarnLockEntryId(workspace.getName(), workspace.getVersion()));
+        List<YarnLockDependency> dependencyRefsToWkspDeps = Arrays.asList(new YarnLockDependency(workspaceDepName, workspace.getVersion(), false));
+        List<YarnLockEntryId> yarnLockEntryIdsWkspEntryIds = Arrays.asList(
+            new YarnLockEntryId(workspace.getName(), workspace.getVersion()),
+            new YarnLockEntryId(workspace.getName(), "workspace:packages/" + workspace.getName()));
         yarnLockEntries.add(new YarnLockEntry(false, yarnLockEntryIdsWkspEntryIds, workspace.getVersion(), dependencyRefsToWkspDeps));
     }
 
@@ -289,8 +293,6 @@ class YarnTransformerTest {
         workspacePackageJson.dependencies = new HashMap<>();
         workspacePackageJson.dependencies.put(workspaceDepName, workspaceNameVersion.getVersion());
         workspacePackageJson.devDependencies.put(workspaceDevDepName, workspaceNameVersion.getVersion());
-        // TODO naming needs improving
-        // TODO if I can get away with null here, why is it even in this object?
         WorkspacePackageJson locatedWorkspacePackageJson = new WorkspacePackageJson(null, workspacePackageJson, "packages/" + workspaceNameVersion.getName());
         Workspace workspace = new Workspace(locatedWorkspacePackageJson);
         workspacesByName.put(workspaceNameVersion.getName(), workspace);

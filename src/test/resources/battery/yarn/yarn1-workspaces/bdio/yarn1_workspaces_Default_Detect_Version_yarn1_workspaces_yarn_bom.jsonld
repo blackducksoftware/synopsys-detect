@@ -7,9 +7,9 @@
         "Tool: Detect-7.0.0-SNAPSHOT",
         "Tool: IntegrationBdio-22.0.2"
       ],
-      "spdx:created": "2021-03-20T22:36:00.437Z"
+      "spdx:created": "2021-03-21T21:46:07.270Z"
     },
-    "@id": "uuid:65054533-a7da-4868-850b-9b24d8dd3020",
+    "@id": "uuid:77d31594-3b40-4a78-aefd-ad778309f8d0",
     "@type": "BillOfMaterials",
     "relationship": []
   },
@@ -34,57 +34,31 @@
     },
     "relationship": [
       {
-        "related": "http:npmjs/workspace-b%40workspace%3Aworkspace-b",
+        "related": "http:detect-yarn-workspace/workspace-a/1.0.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:npmjs/workspace-a%40workspace%3Aworkspace-a",
+        "related": "http:detect-yarn-workspace/workspace-b/1.0.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
   },
   {
-    "@id": "http:npmjs/workspace-b%40workspace%3Aworkspace-b",
+    "name": "workspace-a",
+    "revision": "1.0.0",
+    "@id": "http:detect-yarn-workspace/workspace-a/1.0.0",
     "@type": "Component",
     "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "workspace-b@workspace:workspace-b",
+      "externalSystemTypeId": "detect-yarn-workspace",
+      "externalId": "workspace-a/1.0.0",
       "externalIdMetaData": {
         "forge": {
-          "name": "npmjs",
+          "name": "detect-yarn-workspace",
           "separator": "/"
         },
         "pieces": [
-          "workspace-b@workspace:workspace-b",
-          null
-        ]
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/workspace-a%40workspace%3Aworkspace-a",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/cross-env/5.0.5",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "@id": "http:npmjs/workspace-a%40workspace%3Aworkspace-a",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "workspace-a@workspace:workspace-a",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "pieces": [
-          "workspace-a@workspace:workspace-a",
-          null
+          "workspace-a",
+          "1.0.0"
         ]
       }
     },
@@ -345,5 +319,35 @@
       }
     },
     "relationship": []
+  },
+  {
+    "name": "workspace-b",
+    "revision": "1.0.0",
+    "@id": "http:detect-yarn-workspace/workspace-b/1.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "detect-yarn-workspace",
+      "externalId": "workspace-b/1.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "detect-yarn-workspace",
+          "separator": "/"
+        },
+        "pieces": [
+          "workspace-b",
+          "1.0.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:detect-yarn-workspace/workspace-a/1.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/cross-env/5.0.5",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
   }
 ]

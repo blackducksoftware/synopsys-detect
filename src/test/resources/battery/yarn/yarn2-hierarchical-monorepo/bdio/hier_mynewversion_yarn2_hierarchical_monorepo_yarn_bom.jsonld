@@ -7,9 +7,9 @@
         "Tool: Detect-7.0.0-SNAPSHOT",
         "Tool: IntegrationBdio-22.0.2"
       ],
-      "spdx:created": "2021-03-20T22:43:22.036Z"
+      "spdx:created": "2021-03-21T21:54:32.025Z"
     },
-    "@id": "uuid:3abd22d8-e917-4452-9910-d353928c3c90",
+    "@id": "uuid:34276b67-e6f9-4254-8735-718627dc20a7",
     "@type": "BillOfMaterials",
     "relationship": []
   },
@@ -34,7 +34,7 @@
     },
     "relationship": [
       {
-        "related": "http:npmjs/nondep-workspace/1.0.0",
+        "related": "http:detect-yarn-workspace/nondep-workspace/1.0.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -42,14 +42,14 @@
   {
     "name": "nondep-workspace",
     "revision": "1.0.0",
-    "@id": "http:npmjs/nondep-workspace/1.0.0",
+    "@id": "http:detect-yarn-workspace/nondep-workspace/1.0.0",
     "@type": "Component",
     "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
+      "externalSystemTypeId": "detect-yarn-workspace",
       "externalId": "nondep-workspace/1.0.0",
       "externalIdMetaData": {
         "forge": {
-          "name": "npmjs",
+          "name": "detect-yarn-workspace",
           "separator": "/"
         },
         "pieces": [

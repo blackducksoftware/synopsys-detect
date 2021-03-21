@@ -7,9 +7,9 @@
         "Tool: Detect-7.0.0-SNAPSHOT",
         "Tool: IntegrationBdio-22.0.2"
       ],
-      "spdx:created": "2021-03-20T21:41:57.999Z"
+      "spdx:created": "2021-03-21T20:51:10.785Z"
     },
-    "@id": "uuid:db6086c9-5565-461f-9ea3-2125ac62c833",
+    "@id": "uuid:1be3c8c2-420a-4818-bb9d-4aef4fdcacbd",
     "@type": "BillOfMaterials",
     "relationship": []
   },
@@ -34,7 +34,7 @@
     },
     "relationship": [
       {
-        "related": "http:npmjs/workspace-b/1.0.0",
+        "related": "http:detect-yarn-workspace/workspace-a/1.0.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -42,37 +42,7 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:npmjs/workspace-a/1.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "workspace-b",
-    "revision": "1.0.0",
-    "@id": "http:npmjs/workspace-b/1.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "workspace-b/1.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "pieces": [
-          "workspace-b",
-          "1.0.0"
-        ]
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/workspace-a/1.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/cross-env/5.0.5",
+        "related": "http:detect-yarn-workspace/workspace-b/1.0.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -80,14 +50,14 @@
   {
     "name": "workspace-a",
     "revision": "1.0.0",
-    "@id": "http:npmjs/workspace-a/1.0.0",
+    "@id": "http:detect-yarn-workspace/workspace-a/1.0.0",
     "@type": "Component",
     "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
+      "externalSystemTypeId": "detect-yarn-workspace",
       "externalId": "workspace-a/1.0.0",
       "externalIdMetaData": {
         "forge": {
-          "name": "npmjs",
+          "name": "detect-yarn-workspace",
           "separator": "/"
         },
         "pieces": [
@@ -3729,5 +3699,35 @@
       }
     },
     "relationship": []
+  },
+  {
+    "name": "workspace-b",
+    "revision": "1.0.0",
+    "@id": "http:detect-yarn-workspace/workspace-b/1.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "detect-yarn-workspace",
+      "externalId": "workspace-b/1.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "detect-yarn-workspace",
+          "separator": "/"
+        },
+        "pieces": [
+          "workspace-b",
+          "1.0.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:detect-yarn-workspace/workspace-a/1.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/cross-env/5.0.5",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
   }
 ]

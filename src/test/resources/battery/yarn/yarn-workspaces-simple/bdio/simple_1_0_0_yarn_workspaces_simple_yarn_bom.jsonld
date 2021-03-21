@@ -7,9 +7,9 @@
         "Tool: Detect-7.0.0-SNAPSHOT",
         "Tool: IntegrationBdio-22.0.2"
       ],
-      "spdx:created": "2021-03-20T21:35:45.138Z"
+      "spdx:created": "2021-03-21T21:56:37.389Z"
     },
-    "@id": "uuid:e735ceb3-c3e0-436b-a225-7d51693e6253",
+    "@id": "uuid:bd3c0ab9-078c-455a-8109-ec738486fa32",
     "@type": "BillOfMaterials",
     "relationship": []
   },
@@ -34,26 +34,99 @@
     },
     "relationship": [
       {
-        "related": "http:npmjs/workspace-b/1.0.0",
+        "related": "http:npmjs/semver/7.3.4",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:npmjs/semver/7.3.4",
+        "related": "http:detect-yarn-workspace/workspace-b/1.0.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
   },
   {
-    "name": "workspace-b",
-    "revision": "1.0.0",
-    "@id": "http:npmjs/workspace-b/1.0.0",
+    "name": "semver",
+    "revision": "7.3.4",
+    "@id": "http:npmjs/semver/7.3.4",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "npmjs",
-      "externalId": "workspace-b/1.0.0",
+      "externalId": "semver/7.3.4",
       "externalIdMetaData": {
         "forge": {
           "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "semver",
+          "7.3.4"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/lru-cache/6.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "lru-cache",
+    "revision": "6.0.0",
+    "@id": "http:npmjs/lru-cache/6.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "lru-cache/6.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "lru-cache",
+          "6.0.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/yallist/4.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "yallist",
+    "revision": "4.0.0",
+    "@id": "http:npmjs/yallist/4.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "yallist/4.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "yallist",
+          "4.0.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "workspace-b",
+    "revision": "1.0.0",
+    "@id": "http:detect-yarn-workspace/workspace-b/1.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "detect-yarn-workspace",
+      "externalId": "workspace-b/1.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "detect-yarn-workspace",
           "separator": "/"
         },
         "pieces": [
@@ -64,7 +137,7 @@
     },
     "relationship": [
       {
-        "related": "http:npmjs/workspace-a/1.0.0",
+        "related": "http:detect-yarn-workspace/workspace-a/1.0.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -76,14 +149,14 @@
   {
     "name": "workspace-a",
     "revision": "1.0.0",
-    "@id": "http:npmjs/workspace-a/1.0.0",
+    "@id": "http:detect-yarn-workspace/workspace-a/1.0.0",
     "@type": "Component",
     "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
+      "externalSystemTypeId": "detect-yarn-workspace",
       "externalId": "workspace-a/1.0.0",
       "externalIdMetaData": {
         "forge": {
-          "name": "npmjs",
+          "name": "detect-yarn-workspace",
           "separator": "/"
         },
         "pieces": [
@@ -3648,79 +3721,6 @@
         "pieces": [
           "is-windows",
           "1.0.2"
-        ]
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "semver",
-    "revision": "7.3.4",
-    "@id": "http:npmjs/semver/7.3.4",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "semver/7.3.4",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "pieces": [
-          "semver",
-          "7.3.4"
-        ]
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/lru-cache/6.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "lru-cache",
-    "revision": "6.0.0",
-    "@id": "http:npmjs/lru-cache/6.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "lru-cache/6.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "pieces": [
-          "lru-cache",
-          "6.0.0"
-        ]
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/yallist/4.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "yallist",
-    "revision": "4.0.0",
-    "@id": "http:npmjs/yallist/4.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "yallist/4.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "pieces": [
-          "yallist",
-          "4.0.0"
         ]
       }
     },
