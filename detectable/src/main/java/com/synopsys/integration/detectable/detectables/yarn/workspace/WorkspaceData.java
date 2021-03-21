@@ -62,7 +62,7 @@ public class WorkspaceData {
         return Optional.empty();
     }
 
-    public boolean isWorkspace(StringDependencyId dependencyId) {
+    public Optional<Workspace> lookup(StringDependencyId dependencyId) {
         // TODO not sure this is ideal yet
         for (Map.Entry<String, Workspace> candidateWorkspace : workspacesByName.entrySet()) {
             String dependencyIdString = ((StringDependencyId) dependencyId).getValue();
@@ -72,9 +72,9 @@ public class WorkspaceData {
                     logger.warn("Dependency ID {} looks like workspace {}, but expected the Dependency ID to be {}",
                         dependencyId, candidateWorkspace.getKey(), candidateWorkspace.getValue().generateDependencyId());
                 }
-                return true;
+                return Optional.of(candidateWorkspace.getValue());
             }
         }
-        return false;
+        return Optional.empty();
     }
 }

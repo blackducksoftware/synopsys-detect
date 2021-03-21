@@ -149,11 +149,11 @@ class YarnTransformerTest {
         DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, true, workspacesThatAreDependencies, null);
 
         assertEquals(3, dependencyGraph.getRootDependencies().size());
-        String targetWorkspaceId = generateWorkspaceIdString(workspacesThatAreDependencies.get(0).getName());
+        String targetWorkspaceName = workspacesThatAreDependencies.get(0).getName();
         boolean foundWorkspaceDep = false;
         boolean foundWorkspaceDevDep = false;
         for (Dependency workspaceCandidate : dependencyGraph.getRootDependencies()) {
-            if (targetWorkspaceId.equals(workspaceCandidate.getExternalId().getName())) {
+            if (targetWorkspaceName.equals(workspaceCandidate.getExternalId().getName())) {
                 Set<Dependency> actualWorkspaceDeps = dependencyGraph.getChildrenForParent(workspaceCandidate);
                 for (Dependency actualWorkspaceDep : actualWorkspaceDeps) {
                     if (actualWorkspaceDep.getExternalId().getName().equals(workspacesThatAreDependencies.get(0).getName() + WORKSPACE_DEP_SUFFIX)) {
@@ -181,10 +181,10 @@ class YarnTransformerTest {
         DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, true, workspacesThatAreDependencies, ExcludedIncludedWildcardFilter.EMPTY);
 
         assertEquals(4, dependencyGraph.getRootDependencies().size());
-        String targetWorkspaceId = generateWorkspaceIdString(workspacesThatAreNotDependencies.get(0).getName());
+        String targetWorkspaceName = workspacesThatAreNotDependencies.get(0).getName();
         boolean foundWorkspaceDep = false;
         for (Dependency workspaceCandidate : dependencyGraph.getRootDependencies()) {
-            if (targetWorkspaceId.equals(workspaceCandidate.getExternalId().getName())) {
+            if (targetWorkspaceName.equals(workspaceCandidate.getExternalId().getName())) {
                 Set<Dependency> actualWorkspaceDeps = dependencyGraph.getChildrenForParent(workspaceCandidate);
                 Dependency actualWorkspaceDep = actualWorkspaceDeps.iterator().next();
                 assertEquals(workspacesThatAreNotDependencies.get(0).getName() + WORKSPACE_DEP_SUFFIX, actualWorkspaceDep.getName());

@@ -116,8 +116,10 @@ public class YarnTransformer {
                 return externalId.get();
             } else {
                 StringDependencyId stringDependencyId = (StringDependencyId) dependencyId;
-                if (yarnLockResult.getWorkspaceData().isWorkspace(stringDependencyId)) {
-                    logger.warn("Including workspace {} in the graph", stringDependencyId.getValue());
+                Optional<Workspace> workspace = yarnLockResult.getWorkspaceData().lookup(stringDependencyId);
+                if (workspace.isPresent()) {
+                    logger.warn("Workspace {} wasn't define when the graph was built; adding it during build step", stringDependencyId.getValue());
+                    return workspace.get().generateExternalId();
                 } else {
                     logger.warn("Missing yarn dependency. '{}' is neither a defined workspace nor a dependency defined in {}.", stringDependencyId.getValue(), yarnLockResult.getYarnLockFilePath());
                 }
