@@ -14,8 +14,8 @@
 * (IDETECT-2400) Resolved an issue where 'dependencies' would be removed from the value of the detect.gradle.build.command property.
 * (IDETECT-2394) Resolved an issue that created inaccurate relationships in the BDIO files when Gemlock files were processed.
 * (IDETECT-2525) Resolved an issue with the Yarn detector that caused component version information to be missing when the yarn.lock file contained quoted field keys.
-* (IDETECT-2254) Resolved an issue with the Yarn detector where components would not be included from all workspaces.
-* (IDETECT-2471) Resolved an issue where a missing Git executable in certain situations causes an exception. 
+* (IDETECT-2254) Resolved an issue with the Yarn detector that caused certain components to be omitted from some Yarn 2 projects.
+* (IDETECT-2471) Resolved an issue where a missing Git executable in certain situations causes an exception.
 
 
 ## Version 6.8.0
