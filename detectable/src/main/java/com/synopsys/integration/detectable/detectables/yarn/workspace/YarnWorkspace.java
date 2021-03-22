@@ -23,8 +23,8 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLock
 
 public class YarnWorkspace {
     private static final String WORKSPACE_VERSION_PREFIX = "workspace:";
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final Forge WORKSPACE_FORGE = new Forge("/", "detect-yarn-workspace");
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExternalIdFactory externalIdFactory;
     private final WorkspacePackageJson packageJson;
 
@@ -59,14 +59,14 @@ public class YarnWorkspace {
         return matches(yarnLockDependency.getName(), yarnLockDependency.getVersion());
     }
 
-    public boolean matches(StringDependencyId stringDependencyId) {
+    public boolean matches(StringDependencyId givenDependencyId) {
         String thisWorkspaceName = packageJson.getPackageJson().name;
-        String givenDependencyIdString = stringDependencyId.getValue();
+        String givenDependencyIdString = givenDependencyId.getValue();
         if (givenDependencyIdString.startsWith(thisWorkspaceName + YarnTransformer.STRING_ID_NAME_VERSION_SEPARATOR)) {
-            StringDependencyId thisWorkspaceId = generateDependencyId();
-            if (!givenDependencyIdString.equals(thisWorkspaceId)) {
+            StringDependencyId thisWorkspaceDependencyId = generateDependencyId();
+            if (!givenDependencyId.equals(thisWorkspaceDependencyId)) {
                 logger.warn("Dependency ID {} looks like workspace {}, but expected the Dependency ID to be {}",
-                    stringDependencyId, thisWorkspaceName, thisWorkspaceId);
+                    givenDependencyId, thisWorkspaceName, thisWorkspaceDependencyId);
             }
             return true;
         }

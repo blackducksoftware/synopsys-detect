@@ -13,18 +13,12 @@ import com.synopsys.integration.detectable.detectables.yarn.workspace.YarnWorksp
 public class YarnLockResult {
     private final PackageJson rootPackageJson;
     private final YarnWorkspaces workspaceData;
-    private final String yarnLockFilePath;
     private final YarnLock yarnLock;
 
-    public YarnLockResult(PackageJson rootPackageJson, YarnWorkspaces workspaceData, String yarnLockFilePath, YarnLock yarnLock) {
+    public YarnLockResult(PackageJson rootPackageJson, YarnWorkspaces workspaceData, YarnLock yarnLock) {
         this.rootPackageJson = rootPackageJson;
         this.workspaceData = workspaceData;
-        this.yarnLockFilePath = yarnLockFilePath;
         this.yarnLock = yarnLock;
-    }
-
-    public String getYarnLockFilePath() {
-        return yarnLockFilePath;
     }
 
     public YarnLock getYarnLock() {

@@ -58,7 +58,7 @@ public class YarnLockExtractor {
             } else {
                 workspacesFilter = ExcludedIncludedWildcardFilter.fromCollections(yarnLockOptions.getExcludedWorkspaceNamePatterns(), yarnLockOptions.getIncludedWorkspaceNamePatterns());
             }
-            YarnResult yarnResult = yarnPackager.generateYarnResult(rootPackageJson, workspaceData, yarnLock, yarnLockFile.getAbsolutePath(), new ArrayList<>(),
+            YarnResult yarnResult = yarnPackager.generateYarnResult(rootPackageJson, workspaceData, yarnLock, new ArrayList<>(),
                 yarnLockOptions.useProductionOnly(), getWorkspaceDependenciesFromWorkspacePackageJson, workspacesFilter);
 
             if (yarnResult.getException().isPresent()) {

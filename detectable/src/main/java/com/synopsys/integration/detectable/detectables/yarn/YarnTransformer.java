@@ -83,15 +83,10 @@ public class YarnTransformer {
         }
     }
 
-    private StringDependencyId generateComponentDependencyId(String name, String version) {
-        return new StringDependencyId(name + STRING_ID_NAME_VERSION_SEPARATOR + version);
-    }
-
     private LazyBuilderMissingExternalIdHandler getLazyBuilderHandler(List<NameVersion> externalDependencies, YarnLockResult yarnLockResult) {
         return (dependencyId, lazyDependencyInfo) -> {
             Optional<NameVersion> externalDependency = externalDependencies.stream().filter(it -> it.getName().equals(lazyDependencyInfo.getName())).findFirst();
             Optional<ExternalId> externalId = externalDependency.map(it -> generateComponentExternalId(it.getName(), it.getVersion()));
-
             if (externalId.isPresent()) {
                 return externalId.get();
             } else {
@@ -99,10 +94,10 @@ public class YarnTransformer {
                 StringDependencyId stringDependencyId = (StringDependencyId) dependencyId;
                 Optional<YarnWorkspace> workspace = yarnLockResult.getWorkspaceData().lookup(stringDependencyId);
                 if (workspace.isPresent()) {
-                    logger.warn("Workspace {} wasn't define when the graph was built; adding it during build step", stringDependencyId.getValue());
+                    logger.warn("Workspace {} wasn't defined during data collection for the graph build; adding it during build step", stringDependencyId.getValue());
                     lazilyGeneratedExternalId = workspace.get().generateExternalId();
                 } else {
-                    logger.warn("Missing yarn dependency. '{}' is neither a defined workspace nor a dependency defined in {}.", stringDependencyId.getValue(), yarnLockResult.getYarnLockFilePath());
+                    logger.warn("Missing yarn dependency. '{}' is neither a defined workspace nor a dependency defined in yarn.lock.", stringDependencyId.getValue());
                     lazilyGeneratedExternalId = generateComponentExternalId(stringDependencyId);
                 }
                 return lazilyGeneratedExternalId;
@@ -126,7 +121,6 @@ public class YarnTransformer {
     private void populateGraphWithRootDependencies(LazyExternalIdDependencyGraphBuilder graphBuilder, PackageJson rootPackageJson, boolean productionOnly, YarnWorkspaces workspaceData) {
         addRootDependenciesToGraph(graphBuilder, rootPackageJson.dependencies, workspaceData);
         if (!productionOnly) {
-            logger.debug("\tAlso adding dev dependencies");
             addRootDependenciesToGraph(graphBuilder, rootPackageJson.devDependencies, workspaceData);
         }
     }
@@ -181,6 +175,10 @@ public class YarnTransformer {
             stringDependencyId = generateComponentDependencyId(rootDependency.getKey(), rootDependency.getValue());
         }
         return stringDependencyId;
+    }
+
+    private StringDependencyId generateComponentDependencyId(String name, String version) {
+        return new StringDependencyId(name + STRING_ID_NAME_VERSION_SEPARATOR + version);
     }
 
     private ExternalId generateComponentExternalId(String name, String version) {

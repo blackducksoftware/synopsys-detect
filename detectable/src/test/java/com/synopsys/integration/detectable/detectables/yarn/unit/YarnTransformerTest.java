@@ -207,7 +207,7 @@ class YarnTransformerTest {
         List<YarnLockDependency> validYarnLockDependencies = Collections.singletonList(new YarnLockDependency("yarn", "^1.22.4", false));
         List<YarnLockEntry> yarnLockEntries = Collections.singletonList(new YarnLockEntry(false, validYarnLockEntryIds, "1.0", validYarnLockDependencies));
         YarnLock yarnLock = new YarnLock(null, true, yarnLockEntries);
-        YarnLockResult yarnLockResult = new YarnLockResult(packageJson, YarnWorkspaces.EMPTY, "yarn.lock", yarnLock);
+        YarnLockResult yarnLockResult = new YarnLockResult(packageJson, YarnWorkspaces.EMPTY, yarnLock);
 
         // This should not throw an exception.
         DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, false, new ArrayList<>(0), ExcludedIncludedWildcardFilter.EMPTY);
@@ -270,7 +270,7 @@ class YarnTransformerTest {
         }
         YarnLock yarnLock = new YarnLock(yarnLockVersion, yarn1project, yarnLockEntries);
         YarnWorkspaces workspaceData = new YarnWorkspaces(workspacesByName);
-        return new YarnLockResult(packageJson, workspaceData, "yarn.lock", yarnLock);
+        return new YarnLockResult(packageJson, workspaceData, yarnLock);
     }
 
     private void addWorkspaceToYarnLockEntries(List<YarnLockEntry> yarnLockEntries, NameVersion workspace, String workspaceDepName) {
