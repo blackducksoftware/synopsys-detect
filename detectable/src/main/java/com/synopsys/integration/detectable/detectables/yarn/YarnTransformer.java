@@ -60,7 +60,7 @@ public class YarnTransformer {
             if (workspace.isPresent()) {
                 StringDependencyId id = workspace.get().generateDependencyId();
                 ExternalId externalId = workspace.get().generateExternalId();
-                graphBuilder.setDependencyInfo(id, workspace.get().getWorkspacePackageJson().getPackageJson().name, workspace.get().getWorkspacePackageJson().getPackageJson().version, externalId);
+                graphBuilder.setDependencyInfo(id, workspace.get().getPackageJson().getPackageJson().name, workspace.get().getPackageJson().getPackageJson().version, externalId);
                 // TODO this is duplicate of code below:
                 for (YarnLockDependency dependency : entry.getDependencies()) {
                     // TODO this feels repetetive
@@ -150,18 +150,18 @@ public class YarnTransformer {
         @Nullable ExcludedIncludedWildcardFilter workspacesFilter) {
         for (YarnWorkspace curWorkspace : workspaceData.getWorkspaces()) {
             StringDependencyId workspaceId = curWorkspace.generateDependencyId();
-            if ((workspacesFilter != null) && workspacesFilter.willInclude(curWorkspace.getWorkspacePackageJson().getPackageJson().name)) {
-                logger.debug("Adding root dependency representing workspace included by filter from workspace PackageJson: {}:{} ({})", curWorkspace.getWorkspacePackageJson().getPackageJson().name,
-                    curWorkspace.getWorkspacePackageJson().getPackageJson().version,
+            if ((workspacesFilter != null) && workspacesFilter.willInclude(curWorkspace.getPackageJson().getPackageJson().name)) {
+                logger.debug("Adding root dependency representing workspace included by filter from workspace PackageJson: {}:{} ({})", curWorkspace.getPackageJson().getPackageJson().name,
+                    curWorkspace.getPackageJson().getPackageJson().version,
                     workspaceId);
                 graphBuilder.addChildToRoot(workspaceId);
                 ExternalId externalId = curWorkspace.generateExternalId();
-                graphBuilder.setDependencyInfo(workspaceId, curWorkspace.getWorkspacePackageJson().getPackageJson().name, curWorkspace.getWorkspacePackageJson().getPackageJson().version, externalId);
+                graphBuilder.setDependencyInfo(workspaceId, curWorkspace.getPackageJson().getPackageJson().name, curWorkspace.getPackageJson().getPackageJson().version, externalId);
             }
             if (getWorkspaceDependenciesFromWorkspacePackageJson) {
-                addWorkspaceChildrenToGraph(graphBuilder, workspaceData, workspaceId, curWorkspace.getWorkspacePackageJson().getPackageJson().dependencies.entrySet());
+                addWorkspaceChildrenToGraph(graphBuilder, workspaceData, workspaceId, curWorkspace.getPackageJson().getPackageJson().dependencies.entrySet());
                 if (!productionOnly) {
-                    addWorkspaceChildrenToGraph(graphBuilder, workspaceData, workspaceId, curWorkspace.getWorkspacePackageJson().getPackageJson().devDependencies.entrySet());
+                    addWorkspaceChildrenToGraph(graphBuilder, workspaceData, workspaceId, curWorkspace.getPackageJson().getPackageJson().devDependencies.entrySet());
                 }
             }
         }
@@ -176,7 +176,7 @@ public class YarnTransformer {
                 depOfWorkspaceId = workspace.get().generateDependencyId();
                 // TODO boy this feels like the 10th place I've done this...
                 ExternalId externalId = workspace.get().generateExternalId();
-                graphBuilder.setDependencyInfo(depOfWorkspaceId, workspace.get().getWorkspacePackageJson().getPackageJson().name, workspace.get().getWorkspacePackageJson().getPackageJson().version, externalId);
+                graphBuilder.setDependencyInfo(depOfWorkspaceId, workspace.get().getPackageJson().getPackageJson().name, workspace.get().getPackageJson().getPackageJson().version, externalId);
             } else { // TODO this should be a method; it's repeated a lot
                 depOfWorkspaceId = new StringDependencyId(depOfWorkspace.getKey() + "@" + depOfWorkspace.getValue());
             }
@@ -193,7 +193,7 @@ public class YarnTransformer {
             if (workspace.isPresent()) {
                 stringDependencyId = workspace.get().generateDependencyId();
                 ExternalId externalId = workspace.get().generateExternalId();
-                graphBuilder.setDependencyInfo(stringDependencyId, workspace.get().getWorkspacePackageJson().getPackageJson().name, workspace.get().getWorkspacePackageJson().getPackageJson().version, externalId);
+                graphBuilder.setDependencyInfo(stringDependencyId, workspace.get().getPackageJson().getPackageJson().name, workspace.get().getPackageJson().getPackageJson().version, externalId);
             } else {
                 stringDependencyId = new StringDependencyId(rootDependency.getKey() + "@" + rootDependency.getValue());
             }

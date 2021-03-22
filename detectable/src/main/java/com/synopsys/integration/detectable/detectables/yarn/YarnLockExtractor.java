@@ -11,9 +11,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
@@ -77,12 +77,11 @@ public class YarnLockExtractor {
 
     @NotNull
     private YarnWorkspaces collectPackageJsons(File dir) throws IOException {
-        Map<String, YarnWorkspace> curLevelWorkspaces = packageJsonFiles.readWorkspacePackageJsonFiles(dir);
-        Map<String, YarnWorkspace> allWorkspaces = new HashMap<>(curLevelWorkspaces);
-        for (YarnWorkspace workspace : curLevelWorkspaces.values()) {
-            // TODO is this the right place to get the parent dir??
-            Map<String, YarnWorkspace> treeBranchWorkspacePackageJsons = packageJsonFiles.readWorkspacePackageJsonFiles(workspace.getWorkspacePackageJson().getPackageJsonFile().getParentFile());
-            allWorkspaces.putAll(treeBranchWorkspacePackageJsons);
+        Collection<YarnWorkspace> curLevelWorkspaces = packageJsonFiles.readWorkspacePackageJsonFiles(dir);
+        Collection<YarnWorkspace> allWorkspaces = new LinkedList<>(curLevelWorkspaces);
+        for (YarnWorkspace workspace : curLevelWorkspaces) {
+            Collection<YarnWorkspace> treeBranchWorkspacePackageJsons = packageJsonFiles.readWorkspacePackageJsonFiles(workspace.getPackageJson().getDir());
+            allWorkspaces.addAll(treeBranchWorkspacePackageJsons);
         }
         return new YarnWorkspaces(allWorkspaces);
     }

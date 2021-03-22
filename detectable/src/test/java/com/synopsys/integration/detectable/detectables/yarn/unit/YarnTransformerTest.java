@@ -5,11 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
@@ -246,7 +246,7 @@ class YarnTransformerTest {
             }
             yarnLockEntries.add(new YarnLockEntry(false, projectEntryIds, "1.0.0", projectDependencies));
         }
-        Map<String, YarnWorkspace> workspacesByName = new HashMap<>();
+        Collection<YarnWorkspace> workspacesByName = new LinkedList<>();
         List<NameVersion> allWorkspaces = new LinkedList<>(workspacesThatAreDependencies);
         allWorkspaces.addAll(workspacesThatAreNotDependencies);
         for (NameVersion workspace : allWorkspaces) {
@@ -286,7 +286,7 @@ class YarnTransformerTest {
         yarnLockEntries.add(new YarnLockEntry(false, wkspDepIds, workspace.getVersion(), new LinkedList<>()));
     }
 
-    private void addWorkspacePackageJson(Map<String, YarnWorkspace> workspacesByName, NameVersion workspaceNameVersion, String workspaceDepName, String workspaceDevDepName) {
+    private void addWorkspacePackageJson(Collection<YarnWorkspace> workspacesByName, NameVersion workspaceNameVersion, String workspaceDepName, String workspaceDevDepName) {
         PackageJson workspacePackageJson = new PackageJson();
         workspacePackageJson.name = workspaceNameVersion.getName();
         workspacePackageJson.version = workspaceNameVersion.getVersion();
@@ -295,12 +295,7 @@ class YarnTransformerTest {
         workspacePackageJson.devDependencies.put(workspaceDevDepName, workspaceNameVersion.getVersion());
         WorkspacePackageJson locatedWorkspacePackageJson = new WorkspacePackageJson(null, workspacePackageJson, "packages/" + workspaceNameVersion.getName());
         YarnWorkspace workspace = new YarnWorkspace(new ExternalIdFactory(), locatedWorkspacePackageJson);
-        workspacesByName.put(workspaceNameVersion.getName(), workspace);
-    }
-
-    private String generateWorkspaceIdString(String workspaceName) {
-        return workspaceName + "@" + generateWorkspaceVersion(workspaceName);
-
+        workspacesByName.add(workspace);
     }
 
     private String generateWorkspaceVersion(String workspaceName) {

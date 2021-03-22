@@ -23,32 +23,32 @@ public class YarnWorkspace {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final Forge WORKSPACE_FORGE = new Forge("/", "detect-yarn-workspace");
     private final ExternalIdFactory externalIdFactory;
-    private final WorkspacePackageJson workspacePackageJson;
+    private final WorkspacePackageJson packageJson;
 
-    public YarnWorkspace(ExternalIdFactory externalIdFactory, WorkspacePackageJson workspacePackageJson) {
+    public YarnWorkspace(ExternalIdFactory externalIdFactory, WorkspacePackageJson packageJson) {
         this.externalIdFactory = externalIdFactory;
-        this.workspacePackageJson = workspacePackageJson;
+        this.packageJson = packageJson;
     }
 
-    public WorkspacePackageJson getWorkspacePackageJson() {
-        return workspacePackageJson;
+    public WorkspacePackageJson getPackageJson() {
+        return packageJson;
     }
 
     public StringDependencyId generateDependencyId() {
-        return new StringDependencyId(workspacePackageJson.getPackageJson().name + "@workspace:" + workspacePackageJson.getDirRelativePath());
+        return new StringDependencyId(packageJson.getPackageJson().name + "@workspace:" + packageJson.getDirRelativePath());
     }
 
     public ExternalId generateExternalId() {
-        String version = workspacePackageJson.getPackageJson().version;
-        return externalIdFactory.createNameVersionExternalId(WORKSPACE_FORGE, workspacePackageJson.getPackageJson().name, version);
+        String version = packageJson.getPackageJson().version;
+        return externalIdFactory.createNameVersionExternalId(WORKSPACE_FORGE, packageJson.getPackageJson().name, version);
     }
 
     public boolean matches(YarnLockEntry yarnLockEntry) {
         for (YarnLockEntryId yarnLockEntryId : yarnLockEntry.getIds()) {
-            if (workspacePackageJson.getPackageJson().name.equals(yarnLockEntryId.getName())) {
-                if (!workspacePackageJson.getPackageJson().version.equals(yarnLockEntryId.getVersion())) {
+            if (packageJson.getPackageJson().name.equals(yarnLockEntryId.getName())) {
+                if (!packageJson.getPackageJson().version.equals(yarnLockEntryId.getVersion())) {
                     logger.warn("yarn.lock entry ID {} has the same name as a workspace, but the version is {} (vs. {}). Considering them the same anyway.",
-                        yarnLockEntryId.getName(), yarnLockEntryId.getVersion(), workspacePackageJson.getPackageJson().version);
+                        yarnLockEntryId.getName(), yarnLockEntryId.getVersion(), packageJson.getPackageJson().version);
                 }
                 return true;
             }
@@ -58,10 +58,24 @@ public class YarnWorkspace {
 
     // TODO this method should use the one below
     public boolean matches(YarnLockDependency yarnLockDependency) {
-        if (workspacePackageJson.getPackageJson().name.equals(yarnLockDependency.getName())) {
-            if (!workspacePackageJson.getPackageJson().version.equals(yarnLockDependency.getVersion())) {
+        if (packageJson.getPackageJson().name.equals(yarnLockDependency.getName())) {
+            if (!packageJson.getPackageJson().version.equals(yarnLockDependency.getVersion())) {
                 logger.warn("yarn.lock dependency {} has the same name as a workspace, but the version is {} (vs. {}). Considering them the same anyway.",
-                    yarnLockDependency.getName(), yarnLockDependency.getVersion(), workspacePackageJson.getPackageJson().version);
+                    yarnLockDependency.getName(), yarnLockDependency.getVersion(), packageJson.getPackageJson().version);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public boolean matches(StringDependencyId stringDependencyId) {
+        String thisWorkspaceName = packageJson.getPackageJson().name;
+        String givenDependencyIdString = stringDependencyId.getValue();
+        if (givenDependencyIdString.startsWith(thisWorkspaceName + "@")) {
+            StringDependencyId thisWorkspaceId = generateDependencyId();
+            if (!givenDependencyIdString.equals(thisWorkspaceId)) {
+                logger.warn("Dependency ID {} looks like workspace {}, but expected the Dependency ID to be {}",
+                    stringDependencyId, thisWorkspaceName, thisWorkspaceId);
             }
             return true;
         }
@@ -69,10 +83,10 @@ public class YarnWorkspace {
     }
 
     public boolean matches(String name, String version) {
-        if (workspacePackageJson.getPackageJson().name.equals(name)) {
-            if (!workspacePackageJson.getPackageJson().version.equals(version)) {
+        if (packageJson.getPackageJson().name.equals(name)) {
+            if (!packageJson.getPackageJson().version.equals(version)) {
                 logger.warn("yarn.lock dependency {} has the same name as a workspace, but the version is {} (vs. {}). Considering them the same anyway.",
-                    name, version, workspacePackageJson.getPackageJson().version);
+                    name, version, packageJson.getPackageJson().version);
             }
             return true;
         }

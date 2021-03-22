@@ -17,9 +17,9 @@ import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
@@ -48,11 +48,11 @@ public class PackageJsonFiles {
     }
 
     @NotNull
-    public Map<String, YarnWorkspace> readWorkspacePackageJsonFiles(File workspaceDir) throws IOException {
+    public Collection<YarnWorkspace> readWorkspacePackageJsonFiles(File workspaceDir) throws IOException {
         File packageJsonFile = new File(workspaceDir, YarnLockDetectable.YARN_PACKAGE_JSON);
         List<String> workspaceDirPatterns = extractWorkspaceDirPatterns(packageJsonFile);
-
-        Map<String, YarnWorkspace> workspacesByName = new HashMap<>();
+        
+        Collection<YarnWorkspace> workspaces = new LinkedList<>();
         for (String workspaceSubdirPattern : workspaceDirPatterns) {
             logger.info("workspaceSubdirPattern: {}", workspaceSubdirPattern);
             String globString = String.format("glob:%s/%s/package.json", workspaceDir.getAbsolutePath(), workspaceSubdirPattern);
@@ -67,7 +67,7 @@ public class PackageJsonFiles {
                         Path rel = workspaceDir.toPath().relativize(file.getParent());
                         WorkspacePackageJson workspacePackageJson = new WorkspacePackageJson(file.toFile(), packageJson, rel.toString());
                         YarnWorkspace workspace = new YarnWorkspace(externalIdFactory, workspacePackageJson);
-                        workspacesByName.put(packageJson.name, workspace);
+                        workspaces.add(workspace);
                     }
                     return FileVisitResult.CONTINUE;
                 }
@@ -78,8 +78,8 @@ public class PackageJsonFiles {
                 }
             });
         }
-        logger.info("Found {} matching workspace package.json files", workspacesByName.size());
-        return workspacesByName;
+        logger.info("Found {} matching workspace package.json files", workspaces.size());
+        return workspaces;
     }
 
     @NotNull

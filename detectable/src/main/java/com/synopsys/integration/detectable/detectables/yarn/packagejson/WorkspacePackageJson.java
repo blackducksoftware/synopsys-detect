@@ -12,24 +12,28 @@ import java.io.File;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 
 public class WorkspacePackageJson {
-    private final File packageJsonFile;
+    private final File file;
     private final PackageJson packageJson;
     private final String dirRelativePath;
 
     public WorkspacePackageJson(File packageJsonFile, PackageJson packageJson, String dirRelativePath) {
-        this.packageJsonFile = packageJsonFile;
+        this.file = packageJsonFile;
         this.packageJson = packageJson;
         this.dirRelativePath = dirRelativePath;
     }
 
-    public File getPackageJsonFile() {
-        return packageJsonFile;
+    public File getFile() {
+        return file;
+    }
+
+    public File getDir() {
+        return file.getParentFile();
     }
 
     public PackageJson getPackageJson() {
         return packageJson;
     }
-    
+
     public String getDirRelativePath() {
         return dirRelativePath;
     }
