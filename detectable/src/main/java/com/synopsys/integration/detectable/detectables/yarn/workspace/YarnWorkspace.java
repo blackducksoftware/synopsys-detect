@@ -19,14 +19,14 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDepend
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntry;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryId;
 
-public class Workspace {
+public class YarnWorkspace {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Forge WORKSPACE_FORGE = new Forge("/", "detect-yarn-workspace");
     private final ExternalIdFactory externalIdFactory;
     private final WorkspacePackageJson workspacePackageJson;
 
-    public Workspace(/*ExternalIdFactory externalIdFactory, */WorkspacePackageJson workspacePackageJson) {
-        // TODO inject this:
-        this.externalIdFactory = new ExternalIdFactory();
+    public YarnWorkspace(ExternalIdFactory externalIdFactory, WorkspacePackageJson workspacePackageJson) {
+        this.externalIdFactory = externalIdFactory;
         this.workspacePackageJson = workspacePackageJson;
     }
 
@@ -40,11 +40,7 @@ public class Workspace {
 
     public ExternalId generateExternalId() {
         String version = workspacePackageJson.getPackageJson().version;
-        // TODO could avoid false positives by changing the Forge here!
-        //Forge workspaceMetaForge = Forge.NPMJS;
-        // TODO make this a static class field
-        Forge workspaceMetaForge = new Forge("/", "detect-yarn-workspace");
-        return externalIdFactory.createNameVersionExternalId(workspaceMetaForge, workspacePackageJson.getPackageJson().name, version);
+        return externalIdFactory.createNameVersionExternalId(WORKSPACE_FORGE, workspacePackageJson.getPackageJson().name, version);
     }
 
     public boolean matches(YarnLockEntry yarnLockEntry) {

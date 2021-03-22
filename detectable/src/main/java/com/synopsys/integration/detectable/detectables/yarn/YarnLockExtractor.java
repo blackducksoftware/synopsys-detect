@@ -24,8 +24,8 @@ import com.synopsys.integration.detectable.detectables.npm.packagejson.model.Pac
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonFiles;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
-import com.synopsys.integration.detectable.detectables.yarn.workspace.Workspace;
-import com.synopsys.integration.detectable.detectables.yarn.workspace.WorkspaceData;
+import com.synopsys.integration.detectable.detectables.yarn.workspace.YarnWorkspace;
+import com.synopsys.integration.detectable.detectables.yarn.workspace.YarnWorkspaces;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
 
@@ -50,7 +50,7 @@ public class YarnLockExtractor {
             List<String> yarnLockLines = FileUtils.readLines(yarnLockFile, StandardCharsets.UTF_8);
             YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockLines);
             boolean getWorkspaceDependenciesFromWorkspacePackageJson = yarnLock.isYarn1Project();
-            WorkspaceData workspaceData = collectPackageJsons(projectDir);
+            YarnWorkspaces workspaceData = collectPackageJsons(projectDir);
 
             ExcludedIncludedWildcardFilter workspacesFilter;
             if (yarnLockOptions.getExcludedWorkspaceNamePatterns().isEmpty() && yarnLockOptions.getIncludedWorkspaceNamePatterns().isEmpty()) {
@@ -76,14 +76,14 @@ public class YarnLockExtractor {
     }
 
     @NotNull
-    private WorkspaceData collectPackageJsons(File dir) throws IOException {
-        Map<String, Workspace> curLevelWorkspaces = packageJsonFiles.readWorkspacePackageJsonFiles(dir);
-        Map<String, Workspace> allWorkspaces = new HashMap<>(curLevelWorkspaces);
-        for (Workspace workspace : curLevelWorkspaces.values()) {
+    private YarnWorkspaces collectPackageJsons(File dir) throws IOException {
+        Map<String, YarnWorkspace> curLevelWorkspaces = packageJsonFiles.readWorkspacePackageJsonFiles(dir);
+        Map<String, YarnWorkspace> allWorkspaces = new HashMap<>(curLevelWorkspaces);
+        for (YarnWorkspace workspace : curLevelWorkspaces.values()) {
             // TODO is this the right place to get the parent dir??
-            Map<String, Workspace> treeBranchWorkspacePackageJsons = packageJsonFiles.readWorkspacePackageJsonFiles(workspace.getWorkspacePackageJson().getPackageJsonFile().getParentFile());
+            Map<String, YarnWorkspace> treeBranchWorkspacePackageJsons = packageJsonFiles.readWorkspacePackageJsonFiles(workspace.getWorkspacePackageJson().getPackageJsonFile().getParentFile());
             allWorkspaces.putAll(treeBranchWorkspacePackageJsons);
         }
-        return new WorkspaceData(allWorkspaces);
+        return new YarnWorkspaces(allWorkspaces);
     }
 }

@@ -17,7 +17,7 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockResult;
-import com.synopsys.integration.detectable.detectables.yarn.workspace.WorkspaceData;
+import com.synopsys.integration.detectable.detectables.yarn.workspace.YarnWorkspaces;
 import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
 import com.synopsys.integration.util.NameVersion;
 
@@ -27,11 +27,10 @@ public class YarnPackager {
     public YarnPackager(YarnTransformer yarnTransformer) {
         this.yarnTransformer = yarnTransformer;
     }
-
-    // TODO workspacePackageJsonsToProcess is a dumb name
-    public YarnResult generateYarnResult(PackageJson rootPackageJson, WorkspaceData workspacePackageJsonsToProcess, YarnLock yarnLock, String yarnLockFilePath, List<NameVersion> externalDependencies,
+    
+    public YarnResult generateYarnResult(PackageJson rootPackageJson, YarnWorkspaces yarnWorkspaces, YarnLock yarnLock, String yarnLockFilePath, List<NameVersion> externalDependencies,
         boolean useProductionOnly, boolean getWorkspaceDependenciesFromWorkspacePackageJson, @Nullable ExcludedIncludedWildcardFilter workspaceFilter) {
-        YarnLockResult yarnLockResult = new YarnLockResult(rootPackageJson, workspacePackageJsonsToProcess, yarnLockFilePath, yarnLock);
+        YarnLockResult yarnLockResult = new YarnLockResult(rootPackageJson, yarnWorkspaces, yarnLockFilePath, yarnLock);
 
         try {
             DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, useProductionOnly, getWorkspaceDependenciesFromWorkspacePackageJson, externalDependencies,

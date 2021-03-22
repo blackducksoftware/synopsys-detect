@@ -32,8 +32,8 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDepend
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockResult;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntry;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryId;
-import com.synopsys.integration.detectable.detectables.yarn.workspace.Workspace;
-import com.synopsys.integration.detectable.detectables.yarn.workspace.WorkspaceData;
+import com.synopsys.integration.detectable.detectables.yarn.workspace.YarnWorkspace;
+import com.synopsys.integration.detectable.detectables.yarn.workspace.YarnWorkspaces;
 import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
 import com.synopsys.integration.util.NameVersion;
 
@@ -207,7 +207,7 @@ class YarnTransformerTest {
         List<YarnLockDependency> validYarnLockDependencies = Collections.singletonList(new YarnLockDependency("yarn", "^1.22.4", false));
         List<YarnLockEntry> yarnLockEntries = Collections.singletonList(new YarnLockEntry(false, validYarnLockEntryIds, "1.0", validYarnLockDependencies));
         YarnLock yarnLock = new YarnLock(null, true, yarnLockEntries);
-        YarnLockResult yarnLockResult = new YarnLockResult(packageJson, WorkspaceData.EMPTY, "yarn.lock", yarnLock);
+        YarnLockResult yarnLockResult = new YarnLockResult(packageJson, YarnWorkspaces.EMPTY, "yarn.lock", yarnLock);
 
         // This should not throw an exception.
         DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, false, new ArrayList<>(0), ExcludedIncludedWildcardFilter.EMPTY);
@@ -246,7 +246,7 @@ class YarnTransformerTest {
             }
             yarnLockEntries.add(new YarnLockEntry(false, projectEntryIds, "1.0.0", projectDependencies));
         }
-        Map<String, Workspace> workspacesByName = new HashMap<>();
+        Map<String, YarnWorkspace> workspacesByName = new HashMap<>();
         List<NameVersion> allWorkspaces = new LinkedList<>(workspacesThatAreDependencies);
         allWorkspaces.addAll(workspacesThatAreNotDependencies);
         for (NameVersion workspace : allWorkspaces) {
@@ -269,7 +269,7 @@ class YarnTransformerTest {
             yarnLockVersion = "4";
         }
         YarnLock yarnLock = new YarnLock(yarnLockVersion, yarn1project, yarnLockEntries);
-        WorkspaceData workspaceData = new WorkspaceData(workspacesByName);
+        YarnWorkspaces workspaceData = new YarnWorkspaces(workspacesByName);
         return new YarnLockResult(packageJson, workspaceData, "yarn.lock", yarnLock);
     }
 
@@ -286,7 +286,7 @@ class YarnTransformerTest {
         yarnLockEntries.add(new YarnLockEntry(false, wkspDepIds, workspace.getVersion(), new LinkedList<>()));
     }
 
-    private void addWorkspacePackageJson(Map<String, Workspace> workspacesByName, NameVersion workspaceNameVersion, String workspaceDepName, String workspaceDevDepName) {
+    private void addWorkspacePackageJson(Map<String, YarnWorkspace> workspacesByName, NameVersion workspaceNameVersion, String workspaceDepName, String workspaceDevDepName) {
         PackageJson workspacePackageJson = new PackageJson();
         workspacePackageJson.name = workspaceNameVersion.getName();
         workspacePackageJson.version = workspaceNameVersion.getVersion();
@@ -294,7 +294,7 @@ class YarnTransformerTest {
         workspacePackageJson.dependencies.put(workspaceDepName, workspaceNameVersion.getVersion());
         workspacePackageJson.devDependencies.put(workspaceDevDepName, workspaceNameVersion.getVersion());
         WorkspacePackageJson locatedWorkspacePackageJson = new WorkspacePackageJson(null, workspacePackageJson, "packages/" + workspaceNameVersion.getName());
-        Workspace workspace = new Workspace(locatedWorkspacePackageJson);
+        YarnWorkspace workspace = new YarnWorkspace(new ExternalIdFactory(), locatedWorkspacePackageJson);
         workspacesByName.put(workspaceNameVersion.getName(), workspace);
     }
 

@@ -36,7 +36,7 @@ import com.synopsys.integration.detectable.detectables.yarn.YarnResult;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonReader;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
-import com.synopsys.integration.detectable.detectables.yarn.workspace.WorkspaceData;
+import com.synopsys.integration.detectable.detectables.yarn.workspace.YarnWorkspaces;
 import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
 import com.synopsys.integration.util.NameVersion;
 
@@ -155,7 +155,7 @@ public class LernaPackager {
             YarnLock yarnLock = yarnLockParser.parseYarnLock(lockFile.getYarnLockContents().get());
             PackageJson rootPackageJson = packageJsonReader.read(packageJsonContents);
             YarnResult yarnResult = yarnPackager
-                                        .generateYarnResult(rootPackageJson, WorkspaceData.EMPTY, yarnLock, directory.getAbsolutePath(), externalPackages, yarnLockOptions.useProductionOnly(), false, ExcludedIncludedWildcardFilter.EMPTY);
+                                        .generateYarnResult(rootPackageJson, YarnWorkspaces.EMPTY, yarnLock, directory.getAbsolutePath(), externalPackages, yarnLockOptions.useProductionOnly(), false, ExcludedIncludedWildcardFilter.EMPTY);
 
             if (yarnResult.getException().isPresent()) {
                 return LernaResult.failure(yarnResult.getException().get());

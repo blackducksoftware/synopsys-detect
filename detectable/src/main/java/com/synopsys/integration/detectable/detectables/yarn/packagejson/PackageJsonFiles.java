@@ -26,15 +26,18 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
-import com.synopsys.integration.detectable.detectables.yarn.workspace.Workspace;
+import com.synopsys.integration.detectable.detectables.yarn.workspace.YarnWorkspace;
 
 public class PackageJsonFiles {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final ExternalIdFactory externalIdFactory;
     private final PackageJsonReader packageJsonReader;
 
-    public PackageJsonFiles(PackageJsonReader packageJsonReader) {
+    public PackageJsonFiles(ExternalIdFactory externalIdFactory, PackageJsonReader packageJsonReader) {
+        this.externalIdFactory = externalIdFactory;
         this.packageJsonReader = packageJsonReader;
     }
 
@@ -45,11 +48,11 @@ public class PackageJsonFiles {
     }
 
     @NotNull
-    public Map<String, Workspace> readWorkspacePackageJsonFiles(File workspaceDir) throws IOException {
+    public Map<String, YarnWorkspace> readWorkspacePackageJsonFiles(File workspaceDir) throws IOException {
         File packageJsonFile = new File(workspaceDir, YarnLockDetectable.YARN_PACKAGE_JSON);
         List<String> workspaceDirPatterns = extractWorkspaceDirPatterns(packageJsonFile);
 
-        Map<String, Workspace> workspacesByName = new HashMap<>();
+        Map<String, YarnWorkspace> workspacesByName = new HashMap<>();
         for (String workspaceSubdirPattern : workspaceDirPatterns) {
             logger.info("workspaceSubdirPattern: {}", workspaceSubdirPattern);
             String globString = String.format("glob:%s/%s/package.json", workspaceDir.getAbsolutePath(), workspaceSubdirPattern);
@@ -63,7 +66,7 @@ public class PackageJsonFiles {
                         PackageJson packageJson = read(file.toFile());
                         Path rel = workspaceDir.toPath().relativize(file.getParent());
                         WorkspacePackageJson workspacePackageJson = new WorkspacePackageJson(file.toFile(), packageJson, rel.toString());
-                        Workspace workspace = new Workspace(workspacePackageJson);
+                        YarnWorkspace workspace = new YarnWorkspace(externalIdFactory, workspacePackageJson);
                         workspacesByName.put(packageJson.name, workspace);
                     }
                     return FileVisitResult.CONTINUE;

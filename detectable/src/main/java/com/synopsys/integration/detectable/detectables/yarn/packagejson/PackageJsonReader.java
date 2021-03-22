@@ -32,7 +32,7 @@ public class PackageJsonReader {
 
     public List<String> extractWorkspaceDirPatterns(String packageJsonText) {
         Map<String, Object> packageJsonMap = gson.fromJson(packageJsonText, Map.class);
-        // TODO: alternative: pass it a TypeAdapter
+        // Possible alt. approach: pass it a TypeAdapter
         Object workspacesObject = packageJsonMap.get(WORKSPACES_OBJECT_KEY);
         List<String> workspaceSubdirPatterns = new LinkedList<>();
         if (workspacesObject != null) {
