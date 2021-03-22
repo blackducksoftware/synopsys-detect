@@ -36,6 +36,7 @@ import com.synopsys.integration.util.NameVersion;
 
 public class YarnTransformer {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    public static final String STRING_ID_NAME_VERSION_SEPARATOR = "@";
     private final ExternalIdFactory externalIdFactory;
 
     public YarnTransformer(ExternalIdFactory externalIdFactory) {
@@ -50,76 +51,61 @@ public class YarnTransformer {
             getWorkspaceDependenciesFromWorkspacePackageJson, workspaceFilter);
 
         for (YarnLockEntry entry : yarnLockResult.getYarnLock().getEntries()) {
-            if (entry.getIds().get(0).getName().contains("workspace")) {
-                System.out.println("Found a workspace");
-            }
-            if (entry.getIds().get(0).getName().contains("semver")) {
-                System.out.println("Found semver");
-            }
             Optional<YarnWorkspace> workspace = yarnLockResult.getWorkspaceData().lookup(entry);
             if (workspace.isPresent()) {
-                StringDependencyId id = workspace.get().generateDependencyId();
-                ExternalId externalId = workspace.get().generateExternalId();
-                graphBuilder.setDependencyInfo(id, workspace.get().getPackageJson().getPackageJson().name, workspace.get().getPackageJson().getPackageJson().version, externalId);
-                // TODO this is duplicate of code below:
-                for (YarnLockDependency dependency : entry.getDependencies()) {
-                    // TODO this feels repetetive
-                    StringDependencyId stringDependencyId;
-                    Optional<YarnWorkspace> dependencyWorkspace = yarnLockResult.getWorkspaceData().lookup(dependency);
-                    if (dependencyWorkspace.isPresent()) {
-                        stringDependencyId = dependencyWorkspace.get().generateDependencyId();
-                    } else {
-                        stringDependencyId = new StringDependencyId(dependency.getName() + "@" + dependency.getVersion());
-                    }
-                    if (!productionOnly || !dependency.isOptional()) {
-                        graphBuilder.addChildWithParent(stringDependencyId, id);
-                    } else {
-                        logger.debug("Excluding optional dependency: {}", stringDependencyId.getValue());
-                    }
-                }
-                ////////////////
+                StringDependencyId id = workspace.get().createDependency(graphBuilder);
+                addYarnLockDependenciesToGraph(yarnLockResult, productionOnly, graphBuilder, entry, id);
             } else {
                 for (YarnLockEntryId entryId : entry.getIds()) {
-                    StringDependencyId id = new StringDependencyId(entryId.getName() + "@" + entryId.getVersion());
-                    graphBuilder.setDependencyInfo(id, entryId.getName(), entry.getVersion(), externalIdFactory.createNameVersionExternalId(Forge.NPMJS, entryId.getName(), entry.getVersion()));
-                    for (YarnLockDependency dependency : entry.getDependencies()) {
-                        // TODO This code appears lots of places now
-                        StringDependencyId stringDependencyId;
-                        Optional<YarnWorkspace> dependencyWorkspace = yarnLockResult.getWorkspaceData().lookup(dependency);
-                        if (dependencyWorkspace.isPresent()) {
-                            stringDependencyId = dependencyWorkspace.get().generateDependencyId();
-                        } else {
-                            stringDependencyId = new StringDependencyId(dependency.getName() + "@" + dependency.getVersion());
-                        }
-                        if (!productionOnly || !dependency.isOptional()) {
-                            graphBuilder.addChildWithParent(stringDependencyId, id);
-                        } else {
-                            logger.debug("Excluding optional dependency: {}", stringDependencyId.getValue());
-                        }
-                    }
+                    StringDependencyId id = generateComponentDependencyId(entryId.getName(), entryId.getVersion());
+                    graphBuilder.setDependencyInfo(id, entryId.getName(), entry.getVersion(), generateComponentExternalId(entryId.getName(), entry.getVersion()));
+                    addYarnLockDependenciesToGraph(yarnLockResult, productionOnly, graphBuilder, entry, id);
                 }
             }
         }
         return graphBuilder.build(getLazyBuilderHandler(externalDependencies, yarnLockResult));
     }
 
+    private void addYarnLockDependenciesToGraph(YarnLockResult yarnLockResult, boolean productionOnly, LazyExternalIdDependencyGraphBuilder graphBuilder, YarnLockEntry entry, StringDependencyId id) {
+        for (YarnLockDependency dependency : entry.getDependencies()) {
+            Optional<YarnWorkspace> dependencyWorkspace = yarnLockResult.getWorkspaceData().lookup(dependency);
+            StringDependencyId stringDependencyId;
+            if (dependencyWorkspace.isPresent()) {
+                stringDependencyId = dependencyWorkspace.get().generateDependencyId();
+            } else {
+                stringDependencyId = generateComponentDependencyId(dependency.getName(), dependency.getVersion());
+            }
+            if (!productionOnly || !dependency.isOptional()) {
+                graphBuilder.addChildWithParent(stringDependencyId, id);
+            } else {
+                logger.debug("Excluding optional dependency: {}", stringDependencyId.getValue());
+            }
+        }
+    }
+
+    private StringDependencyId generateComponentDependencyId(String name, String version) {
+        return new StringDependencyId(name + STRING_ID_NAME_VERSION_SEPARATOR + version);
+    }
+
     private LazyBuilderMissingExternalIdHandler getLazyBuilderHandler(List<NameVersion> externalDependencies, YarnLockResult yarnLockResult) {
         return (dependencyId, lazyDependencyInfo) -> {
             Optional<NameVersion> externalDependency = externalDependencies.stream().filter(it -> it.getName().equals(lazyDependencyInfo.getName())).findFirst();
-            Optional<ExternalId> externalId = externalDependency.map(it -> externalIdFactory.createNameVersionExternalId(Forge.NPMJS, it.getName(), it.getVersion()));
+            Optional<ExternalId> externalId = externalDependency.map(it -> generateComponentExternalId(it.getName(), it.getVersion()));
 
             if (externalId.isPresent()) {
                 return externalId.get();
             } else {
+                ExternalId lazilyGeneratedExternalId;
                 StringDependencyId stringDependencyId = (StringDependencyId) dependencyId;
                 Optional<YarnWorkspace> workspace = yarnLockResult.getWorkspaceData().lookup(stringDependencyId);
                 if (workspace.isPresent()) {
                     logger.warn("Workspace {} wasn't define when the graph was built; adding it during build step", stringDependencyId.getValue());
-                    return workspace.get().generateExternalId();
+                    lazilyGeneratedExternalId = workspace.get().generateExternalId();
                 } else {
                     logger.warn("Missing yarn dependency. '{}' is neither a defined workspace nor a dependency defined in {}.", stringDependencyId.getValue(), yarnLockResult.getYarnLockFilePath());
+                    lazilyGeneratedExternalId = generateComponentExternalId(stringDependencyId);
                 }
-                return externalIdFactory.createNameVersionExternalId(Forge.NPMJS, stringDependencyId.getValue());
+                return lazilyGeneratedExternalId;
             }
         };
     }
@@ -169,17 +155,7 @@ public class YarnTransformer {
 
     private void addWorkspaceChildrenToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder, YarnWorkspaces workspaceData, StringDependencyId workspaceId, Set<Map.Entry<String, String>> workspaceDependenciesToAdd) {
         for (Map.Entry<String, String> depOfWorkspace : workspaceDependenciesToAdd) {
-            // TODO this is feeling redundant
-            StringDependencyId depOfWorkspaceId;
-            Optional<YarnWorkspace> workspace = workspaceData.lookup(depOfWorkspace.getKey(), depOfWorkspace.getValue());
-            if (workspace.isPresent()) {
-                depOfWorkspaceId = workspace.get().generateDependencyId();
-                // TODO boy this feels like the 10th place I've done this...
-                ExternalId externalId = workspace.get().generateExternalId();
-                graphBuilder.setDependencyInfo(depOfWorkspaceId, workspace.get().getPackageJson().getPackageJson().name, workspace.get().getPackageJson().getPackageJson().version, externalId);
-            } else { // TODO this should be a method; it's repeated a lot
-                depOfWorkspaceId = new StringDependencyId(depOfWorkspace.getKey() + "@" + depOfWorkspace.getValue());
-            }
+            StringDependencyId depOfWorkspaceId = deriveIdForDependency(graphBuilder, workspaceData, depOfWorkspace);
             logger.debug("Adding dependency of workspace ({}) as child of workspace {}", depOfWorkspaceId, workspaceId);
             graphBuilder.addChildWithParent(depOfWorkspaceId, workspaceId);
         }
@@ -188,17 +164,30 @@ public class YarnTransformer {
     private void addRootDependenciesToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder, Map<String, String> rootDependenciesToAdd, YarnWorkspaces workspaceData) {
         for (Map.Entry<String, String> rootDependency : rootDependenciesToAdd.entrySet()) {
             StringDependencyId stringDependencyId;
-            /// TODO this code is duplicated
-            Optional<YarnWorkspace> workspace = workspaceData.lookup(rootDependency.getKey(), rootDependency.getValue());
-            if (workspace.isPresent()) {
-                stringDependencyId = workspace.get().generateDependencyId();
-                ExternalId externalId = workspace.get().generateExternalId();
-                graphBuilder.setDependencyInfo(stringDependencyId, workspace.get().getPackageJson().getPackageJson().name, workspace.get().getPackageJson().getPackageJson().version, externalId);
-            } else {
-                stringDependencyId = new StringDependencyId(rootDependency.getKey() + "@" + rootDependency.getValue());
-            }
+            stringDependencyId = deriveIdForDependency(graphBuilder, workspaceData, rootDependency);
             logger.debug("Adding root dependency to graph: stringDependencyId: {}", stringDependencyId);
             graphBuilder.addChildToRoot(stringDependencyId);
         }
+    }
+
+    private StringDependencyId deriveIdForDependency(LazyExternalIdDependencyGraphBuilder graphBuilder, YarnWorkspaces workspaceData, Map.Entry<String, String> rootDependency) {
+        StringDependencyId stringDependencyId;
+        Optional<YarnWorkspace> workspace = workspaceData.lookup(rootDependency.getKey(), rootDependency.getValue());
+        if (workspace.isPresent()) {
+            stringDependencyId = workspace.get().generateDependencyId();
+            ExternalId externalId = workspace.get().generateExternalId();
+            graphBuilder.setDependencyInfo(stringDependencyId, workspace.get().getPackageJson().getPackageJson().name, workspace.get().getPackageJson().getPackageJson().version, externalId);
+        } else {
+            stringDependencyId = generateComponentDependencyId(rootDependency.getKey(), rootDependency.getValue());
+        }
+        return stringDependencyId;
+    }
+
+    private ExternalId generateComponentExternalId(String name, String version) {
+        return externalIdFactory.createNameVersionExternalId(Forge.NPMJS, name, version);
+    }
+
+    private ExternalId generateComponentExternalId(StringDependencyId dependencyId) {
+        return externalIdFactory.createNameVersionExternalId(Forge.NPMJS, dependencyId.getValue());
     }
 }

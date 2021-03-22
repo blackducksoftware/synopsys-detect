@@ -10,16 +10,19 @@ package com.synopsys.integration.detectable.detectables.yarn.workspace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependencyid.StringDependencyId;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.detectables.yarn.YarnTransformer;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.WorkspacePackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDependency;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntry;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryId;
 
 public class YarnWorkspace {
+    private static final String WORKSPACE_VERSION_PREFIX = "workspace:";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final Forge WORKSPACE_FORGE = new Forge("/", "detect-yarn-workspace");
     private final ExternalIdFactory externalIdFactory;
@@ -35,7 +38,7 @@ public class YarnWorkspace {
     }
 
     public StringDependencyId generateDependencyId() {
-        return new StringDependencyId(packageJson.getPackageJson().name + "@workspace:" + packageJson.getDirRelativePath());
+        return new StringDependencyId(packageJson.getPackageJson().name + YarnTransformer.STRING_ID_NAME_VERSION_SEPARATOR + WORKSPACE_VERSION_PREFIX + packageJson.getDirRelativePath());
     }
 
     public ExternalId generateExternalId() {
@@ -45,33 +48,21 @@ public class YarnWorkspace {
 
     public boolean matches(YarnLockEntry yarnLockEntry) {
         for (YarnLockEntryId yarnLockEntryId : yarnLockEntry.getIds()) {
-            if (packageJson.getPackageJson().name.equals(yarnLockEntryId.getName())) {
-                if (!packageJson.getPackageJson().version.equals(yarnLockEntryId.getVersion())) {
-                    logger.warn("yarn.lock entry ID {} has the same name as a workspace, but the version is {} (vs. {}). Considering them the same anyway.",
-                        yarnLockEntryId.getName(), yarnLockEntryId.getVersion(), packageJson.getPackageJson().version);
-                }
+            if (matches(yarnLockEntryId.getName(), yarnLockEntryId.getVersion())) {
                 return true;
             }
         }
         return false;
     }
 
-    // TODO this method should use the one below
     public boolean matches(YarnLockDependency yarnLockDependency) {
-        if (packageJson.getPackageJson().name.equals(yarnLockDependency.getName())) {
-            if (!packageJson.getPackageJson().version.equals(yarnLockDependency.getVersion())) {
-                logger.warn("yarn.lock dependency {} has the same name as a workspace, but the version is {} (vs. {}). Considering them the same anyway.",
-                    yarnLockDependency.getName(), yarnLockDependency.getVersion(), packageJson.getPackageJson().version);
-            }
-            return true;
-        }
-        return false;
+        return matches(yarnLockDependency.getName(), yarnLockDependency.getVersion());
     }
 
     public boolean matches(StringDependencyId stringDependencyId) {
         String thisWorkspaceName = packageJson.getPackageJson().name;
         String givenDependencyIdString = stringDependencyId.getValue();
-        if (givenDependencyIdString.startsWith(thisWorkspaceName + "@")) {
+        if (givenDependencyIdString.startsWith(thisWorkspaceName + YarnTransformer.STRING_ID_NAME_VERSION_SEPARATOR)) {
             StringDependencyId thisWorkspaceId = generateDependencyId();
             if (!givenDependencyIdString.equals(thisWorkspaceId)) {
                 logger.warn("Dependency ID {} looks like workspace {}, but expected the Dependency ID to be {}",
@@ -91,5 +82,11 @@ public class YarnWorkspace {
             return true;
         }
         return false;
+    }
+
+    public StringDependencyId createDependency(LazyExternalIdDependencyGraphBuilder graphBuilder) {
+        StringDependencyId id = generateDependencyId();
+        graphBuilder.setDependencyInfo(id, getPackageJson().getPackageJson().name, getPackageJson().getPackageJson().version, generateExternalId());
+        return id;
     }
 }
