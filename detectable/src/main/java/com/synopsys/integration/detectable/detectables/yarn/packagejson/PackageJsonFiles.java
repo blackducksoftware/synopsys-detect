@@ -27,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
 import com.synopsys.integration.detectable.detectables.yarn.workspace.YarnWorkspace;
 
@@ -41,8 +40,8 @@ public class PackageJsonFiles {
         this.packageJsonReader = packageJsonReader;
     }
 
-    public PackageJson read(File packageJsonFile) throws IOException {
-        logger.info("Reading package.json file: {}", packageJsonFile.getAbsolutePath());
+    public NullSafePackageJson read(File packageJsonFile) throws IOException {
+        logger.trace("\tReading package.json file: {}", packageJsonFile.getAbsolutePath());
         String packageJsonText = FileUtils.readFileToString(packageJsonFile, StandardCharsets.UTF_8);
         return packageJsonReader.read(packageJsonText);
     }
@@ -51,19 +50,19 @@ public class PackageJsonFiles {
     public Collection<YarnWorkspace> readWorkspacePackageJsonFiles(File workspaceDir) throws IOException {
         File packageJsonFile = new File(workspaceDir, YarnLockDetectable.YARN_PACKAGE_JSON);
         List<String> workspaceDirPatterns = extractWorkspaceDirPatterns(packageJsonFile);
-        
+
         Collection<YarnWorkspace> workspaces = new LinkedList<>();
         for (String workspaceSubdirPattern : workspaceDirPatterns) {
-            logger.info("workspaceSubdirPattern: {}", workspaceSubdirPattern);
+            logger.trace("workspaceSubdirPattern: {}", workspaceSubdirPattern);
             String globString = String.format("glob:%s/%s/package.json", workspaceDir.getAbsolutePath(), workspaceSubdirPattern);
-            logger.info("workspace subdir globString: {}", globString);
+            logger.trace("workspace subdir globString: {}", globString);
             PathMatcher matcher = FileSystems.getDefault().getPathMatcher(globString);
             Files.walkFileTree(workspaceDir.toPath(), new SimpleFileVisitor<Path>() {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                     if (matcher.matches(file)) {
-                        logger.info("\tFound a match: {}", file);
-                        PackageJson packageJson = read(file.toFile());
+                        logger.trace("\tFound a match: {}", file);
+                        NullSafePackageJson packageJson = read(file.toFile());
                         Path rel = workspaceDir.toPath().relativize(file.getParent());
                         WorkspacePackageJson workspacePackageJson = new WorkspacePackageJson(file.toFile(), packageJson, rel.toString());
                         YarnWorkspace workspace = new YarnWorkspace(externalIdFactory, workspacePackageJson);
@@ -78,7 +77,9 @@ public class PackageJsonFiles {
                 }
             });
         }
-        logger.info("Found {} matching workspace package.json files", workspaces.size());
+        if (!workspaceDirPatterns.isEmpty()) {
+            logger.debug("Found {} matching workspace package.json files for workspaces listed in {}", workspaces.size(), packageJsonFile.getAbsolutePath());
+        }
         return workspaces;
     }
 

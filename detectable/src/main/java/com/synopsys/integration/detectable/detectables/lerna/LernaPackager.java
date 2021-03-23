@@ -29,10 +29,10 @@ import com.synopsys.integration.detectable.detectables.lerna.model.LernaResult;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmLockfileOptions;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmParseResult;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.parse.NpmLockfilePackager;
-import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
 import com.synopsys.integration.detectable.detectables.yarn.YarnPackager;
 import com.synopsys.integration.detectable.detectables.yarn.YarnResult;
+import com.synopsys.integration.detectable.detectables.yarn.packagejson.NullSafePackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonReader;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
@@ -153,7 +153,7 @@ public class LernaPackager {
             return LernaResult.success(npmParseResult.getProjectName(), npmParseResult.getProjectVersion(), Collections.singletonList(npmParseResult.getCodeLocation()));
         } else if (lockFile.getYarnLockContents().isPresent()) {
             YarnLock yarnLock = yarnLockParser.parseYarnLock(lockFile.getYarnLockContents().get());
-            PackageJson rootPackageJson = packageJsonReader.read(packageJsonContents);
+            NullSafePackageJson rootPackageJson = packageJsonReader.read(packageJsonContents);
             YarnResult yarnResult = yarnPackager
                                         .generateYarnResult(rootPackageJson, YarnWorkspaces.EMPTY, yarnLock, externalPackages, yarnLockOptions.useProductionOnly(), false, ExcludedIncludedWildcardFilter.EMPTY);
 

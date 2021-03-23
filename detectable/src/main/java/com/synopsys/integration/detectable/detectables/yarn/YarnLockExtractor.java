@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
+import com.synopsys.integration.detectable.detectables.yarn.packagejson.NullSafePackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonFiles;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
@@ -45,8 +45,8 @@ public class YarnLockExtractor {
 
     public Extraction extract(File projectDir, File yarnLockFile, File rootPackageJsonFile) {
         try {
-            PackageJson rootPackageJson = packageJsonFiles.read(rootPackageJsonFile);
-            logger.debug("Extracting Yarn project {} in {}", rootPackageJson.name, projectDir.getAbsolutePath());
+            NullSafePackageJson rootPackageJson = packageJsonFiles.read(rootPackageJsonFile);
+            logger.debug("Extracting Yarn project {} in {}", rootPackageJson.getName().orElse("null"), projectDir.getAbsolutePath());
             List<String> yarnLockLines = FileUtils.readLines(yarnLockFile, StandardCharsets.UTF_8);
             YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockLines);
             boolean getWorkspaceDependenciesFromWorkspacePackageJson = yarnLock.isYarn1Project();
@@ -80,7 +80,7 @@ public class YarnLockExtractor {
         Collection<YarnWorkspace> curLevelWorkspaces = packageJsonFiles.readWorkspacePackageJsonFiles(dir);
         Collection<YarnWorkspace> allWorkspaces = new LinkedList<>(curLevelWorkspaces);
         for (YarnWorkspace workspace : curLevelWorkspaces) {
-            Collection<YarnWorkspace> treeBranchWorkspacePackageJsons = packageJsonFiles.readWorkspacePackageJsonFiles(workspace.getPackageJson().getDir());
+            Collection<YarnWorkspace> treeBranchWorkspacePackageJsons = packageJsonFiles.readWorkspacePackageJsonFiles(workspace.getWorkspacePackageJson().getDir());
             allWorkspaces.addAll(treeBranchWorkspacePackageJsons);
         }
         return new YarnWorkspaces(allWorkspaces);

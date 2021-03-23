@@ -9,14 +9,12 @@ package com.synopsys.integration.detectable.detectables.yarn.packagejson;
 
 import java.io.File;
 
-import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
-
 public class WorkspacePackageJson {
     private final File file;
-    private final PackageJson packageJson;
+    private final NullSafePackageJson packageJson;
     private final String dirRelativePath;
 
-    public WorkspacePackageJson(File packageJsonFile, PackageJson packageJson, String dirRelativePath) {
+    public WorkspacePackageJson(File packageJsonFile, NullSafePackageJson packageJson, String dirRelativePath) {
         this.file = packageJsonFile;
         this.packageJson = packageJson;
         this.dirRelativePath = dirRelativePath;
@@ -30,7 +28,7 @@ public class WorkspacePackageJson {
         return file.getParentFile();
     }
 
-    public PackageJson getPackageJson() {
+    public NullSafePackageJson getPackageJson() {
         return packageJson;
     }
 

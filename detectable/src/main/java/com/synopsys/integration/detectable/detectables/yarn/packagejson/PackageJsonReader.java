@@ -26,8 +26,9 @@ public class PackageJsonReader {
         this.gson = gson;
     }
 
-    public PackageJson read(String packageJsonText) {
-        return gson.fromJson(packageJsonText, PackageJson.class);
+    public NullSafePackageJson read(String packageJsonText) {
+        PackageJson rawPackageJson = gson.fromJson(packageJsonText, PackageJson.class);
+        return new NullSafePackageJson(rawPackageJson);
     }
 
     public List<String> extractWorkspaceDirPatterns(String packageJsonText) {

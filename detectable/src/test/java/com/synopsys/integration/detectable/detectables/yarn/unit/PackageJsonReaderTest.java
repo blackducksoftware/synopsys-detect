@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
+import com.synopsys.integration.detectable.detectables.yarn.packagejson.NullSafePackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonReader;
 
 public class PackageJsonReaderTest {
@@ -23,11 +23,11 @@ public class PackageJsonReaderTest {
 
     @Test
     void testSimpleRead() {
-        PackageJson packageJson = packageJsonReader.read(getPackageJsonTextNewFormat());
+        NullSafePackageJson packageJson = packageJsonReader.read(getPackageJsonTextNewFormat());
 
-        assertEquals("simple", packageJson.name);
-        assertEquals("1.0.0", packageJson.version);
-        assertEquals(2, packageJson.dependencies.size());
+        assertEquals("simple", packageJson.getName().orElse(null));
+        assertEquals("1.0.0", packageJson.getVersion().orElse(null));
+        assertEquals(2, packageJson.getDependencies().size());
     }
 
     @Test

@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
+import com.synopsys.integration.detectable.detectables.yarn.packagejson.NullSafePackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockResult;
 import com.synopsys.integration.detectable.detectables.yarn.workspace.YarnWorkspaces;
@@ -27,8 +27,8 @@ public class YarnPackager {
     public YarnPackager(YarnTransformer yarnTransformer) {
         this.yarnTransformer = yarnTransformer;
     }
-    
-    public YarnResult generateYarnResult(PackageJson rootPackageJson, YarnWorkspaces yarnWorkspaces, YarnLock yarnLock, List<NameVersion> externalDependencies,
+
+    public YarnResult generateYarnResult(NullSafePackageJson rootPackageJson, YarnWorkspaces yarnWorkspaces, YarnLock yarnLock, List<NameVersion> externalDependencies,
         boolean useProductionOnly, boolean getWorkspaceDependenciesFromWorkspacePackageJson, @Nullable ExcludedIncludedWildcardFilter workspaceFilter) {
         YarnLockResult yarnLockResult = new YarnLockResult(rootPackageJson, yarnWorkspaces, yarnLock);
 
@@ -37,7 +37,7 @@ public class YarnPackager {
                 workspaceFilter);
             CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 
-            return YarnResult.success(rootPackageJson.name, rootPackageJson.version, codeLocation);
+            return YarnResult.success(rootPackageJson.getName().orElse(null), rootPackageJson.getVersion().orElse(null), codeLocation);
         } catch (MissingExternalIdException exception) {
             return YarnResult.failure(exception);
         }
