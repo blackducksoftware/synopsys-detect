@@ -28,12 +28,12 @@ public class YarnPackager {
         this.yarnTransformer = yarnTransformer;
     }
 
-    public YarnResult generateYarnResult(NullSafePackageJson rootPackageJson, YarnWorkspaces yarnWorkspaces, YarnLock yarnLock, List<NameVersion> externalDependencies,
+    public YarnResult generateCodeLocation(NullSafePackageJson rootPackageJson, YarnWorkspaces yarnWorkspaces, YarnLock yarnLock, List<NameVersion> externalDependencies,
         boolean useProductionOnly, boolean getWorkspaceDependenciesFromWorkspacePackageJson, @Nullable ExcludedIncludedWildcardFilter workspaceFilter) {
         YarnLockResult yarnLockResult = new YarnLockResult(rootPackageJson, yarnWorkspaces, yarnLock);
 
         try {
-            DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, useProductionOnly, getWorkspaceDependenciesFromWorkspacePackageJson, externalDependencies,
+            DependencyGraph dependencyGraph = yarnTransformer.generateDependencyGraph(yarnLockResult, useProductionOnly, getWorkspaceDependenciesFromWorkspacePackageJson, externalDependencies,
                 workspaceFilter);
             CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 

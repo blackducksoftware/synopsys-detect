@@ -57,7 +57,7 @@ class YarnTransformerTest {
     void testExcludeDevDependencies() throws MissingExternalIdException {
         YarnLockResult yarnLockResult = buildTestYarnLockResult(noWorkspaces, noWorkspaces, false, false);
 
-        DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, true, false, new ArrayList<>(0), ExcludedIncludedWildcardFilter.EMPTY);
+        DependencyGraph dependencyGraph = yarnTransformer.generateDependencyGraph(yarnLockResult, true, false, new ArrayList<>(0), ExcludedIncludedWildcardFilter.EMPTY);
 
         assertEquals(1, dependencyGraph.getRootDependencies().size());
 
@@ -75,7 +75,7 @@ class YarnTransformerTest {
     void testIncludeDevDependencies() throws MissingExternalIdException {
         YarnLockResult yarnLockResult = buildTestYarnLockResult(noWorkspaces, noWorkspaces, false, false);
 
-        DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, false, new ArrayList<>(0), ExcludedIncludedWildcardFilter.EMPTY);
+        DependencyGraph dependencyGraph = yarnTransformer.generateDependencyGraph(yarnLockResult, false, false, new ArrayList<>(0), ExcludedIncludedWildcardFilter.EMPTY);
 
         assertEquals(2, dependencyGraph.getRootDependencies().size());
 
@@ -99,7 +99,7 @@ class YarnTransformerTest {
         workspacesThatAreNotDependencies.add(new NameVersion("workspace-notdep", "1.0.0"));
         YarnLockResult yarnLockResult = buildTestYarnLockResult(workspacesThatAreDependencies, workspacesThatAreNotDependencies, false, false);
 
-        DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, false, workspacesThatAreDependencies, ExcludedIncludedWildcardFilter.EMPTY);
+        DependencyGraph dependencyGraph = yarnTransformer.generateDependencyGraph(yarnLockResult, false, false, workspacesThatAreDependencies, ExcludedIncludedWildcardFilter.EMPTY);
 
         assertEquals(3, dependencyGraph.getRootDependencies().size());
         ExternalId workspaceExternalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, workspacesThatAreDependencies.get(0).getName(),
@@ -120,7 +120,7 @@ class YarnTransformerTest {
         List<NameVersion> allWorkspaces = new LinkedList<>(workspacesThatAreDependencies);
         allWorkspaces.addAll(workspacesThatAreNotDependencies);
 
-        DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, true, allWorkspaces, ExcludedIncludedWildcardFilter.EMPTY);
+        DependencyGraph dependencyGraph = yarnTransformer.generateDependencyGraph(yarnLockResult, false, true, allWorkspaces, ExcludedIncludedWildcardFilter.EMPTY);
 
         assertEquals(4, dependencyGraph.getRootDependencies().size());
         // TODO make this a static class field
@@ -147,7 +147,7 @@ class YarnTransformerTest {
         workspacesThatAreNotDependencies.add(new NameVersion("workspace-notdep", "1.0.0"));
         YarnLockResult yarnLockResult = buildTestYarnLockResult(workspacesThatAreDependencies, workspacesThatAreNotDependencies, true, false);
 
-        DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, true, workspacesThatAreDependencies, null);
+        DependencyGraph dependencyGraph = yarnTransformer.generateDependencyGraph(yarnLockResult, false, true, workspacesThatAreDependencies, null);
 
         assertEquals(3, dependencyGraph.getRootDependencies().size());
         String targetWorkspaceName = workspacesThatAreDependencies.get(0).getName();
@@ -179,7 +179,7 @@ class YarnTransformerTest {
         workspacesThatAreNotDependencies.add(new NameVersion("workspace-notdep", "1.0.0"));
         YarnLockResult yarnLockResult = buildTestYarnLockResult(workspacesThatAreDependencies, workspacesThatAreNotDependencies, true, true);
 
-        DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, true, workspacesThatAreDependencies, ExcludedIncludedWildcardFilter.EMPTY);
+        DependencyGraph dependencyGraph = yarnTransformer.generateDependencyGraph(yarnLockResult, false, true, workspacesThatAreDependencies, ExcludedIncludedWildcardFilter.EMPTY);
 
         assertEquals(4, dependencyGraph.getRootDependencies().size());
         String targetWorkspaceName = workspacesThatAreNotDependencies.get(0).getName();
@@ -212,7 +212,7 @@ class YarnTransformerTest {
         YarnLockResult yarnLockResult = new YarnLockResult(packageJson, YarnWorkspaces.EMPTY, yarnLock);
 
         // This should not throw an exception.
-        DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, false, new ArrayList<>(0), ExcludedIncludedWildcardFilter.EMPTY);
+        DependencyGraph dependencyGraph = yarnTransformer.generateDependencyGraph(yarnLockResult, false, false, new ArrayList<>(0), ExcludedIncludedWildcardFilter.EMPTY);
 
         // Sanity check.
         Assertions.assertNotNull(dependencyGraph, "The dependency graph should not be null.");

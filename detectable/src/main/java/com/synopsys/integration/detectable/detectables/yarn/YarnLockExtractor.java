@@ -18,6 +18,7 @@ import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,18 +50,12 @@ public class YarnLockExtractor {
             NullSafePackageJson rootPackageJson = packageJsonFiles.read(rootPackageJsonFile);
             String projectName = rootPackageJson.getName().orElse("null");
             logger.debug("Extracting Yarn project {} in {}", projectName, projectDir.getAbsolutePath());
-            List<String> yarnLockLines = FileUtils.readLines(yarnLockFile, StandardCharsets.UTF_8);
-            YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockLines);
+            YarnLock yarnLock = readYarnLock(yarnLockFile);
             boolean getWorkspaceDependenciesFromWorkspacePackageJson = yarnLock.isYarn1Project();
-            YarnWorkspaces workspaceData = collectPackageJsons(projectDir);
+            YarnWorkspaces workspaceData = collectWorkspaceData(projectDir);
+            ExcludedIncludedWildcardFilter workspacesFilter = deriveExcludedIncludedWildcardFilter();
 
-            ExcludedIncludedWildcardFilter workspacesFilter;
-            if (yarnLockOptions.getExcludedWorkspaceNamePatterns().isEmpty() && yarnLockOptions.getIncludedWorkspaceNamePatterns().isEmpty()) {
-                workspacesFilter = null; // Just follow dependencies
-            } else {
-                workspacesFilter = ExcludedIncludedWildcardFilter.fromCollections(yarnLockOptions.getExcludedWorkspaceNamePatterns(), yarnLockOptions.getIncludedWorkspaceNamePatterns());
-            }
-            YarnResult yarnResult = yarnPackager.generateYarnResult(rootPackageJson, workspaceData, yarnLock, new ArrayList<>(),
+            YarnResult yarnResult = yarnPackager.generateCodeLocation(rootPackageJson, workspaceData, yarnLock, new ArrayList<>(),
                 yarnLockOptions.useProductionOnly(), getWorkspaceDependenciesFromWorkspacePackageJson, workspacesFilter);
 
             Optional<Exception> yarnException = yarnResult.getException();
@@ -78,8 +73,25 @@ public class YarnLockExtractor {
         }
     }
 
+    private YarnLock readYarnLock(File yarnLockFile) throws IOException {
+        List<String> yarnLockLines = FileUtils.readLines(yarnLockFile, StandardCharsets.UTF_8);
+        YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockLines);
+        return yarnLock;
+    }
+
+    @Nullable
+    private ExcludedIncludedWildcardFilter deriveExcludedIncludedWildcardFilter() {
+        ExcludedIncludedWildcardFilter workspacesFilter;
+        if (yarnLockOptions.getExcludedWorkspaceNamePatterns().isEmpty() && yarnLockOptions.getIncludedWorkspaceNamePatterns().isEmpty()) {
+            workspacesFilter = null; // Just follow dependencies
+        } else {
+            workspacesFilter = ExcludedIncludedWildcardFilter.fromCollections(yarnLockOptions.getExcludedWorkspaceNamePatterns(), yarnLockOptions.getIncludedWorkspaceNamePatterns());
+        }
+        return workspacesFilter;
+    }
+
     @NotNull
-    private YarnWorkspaces collectPackageJsons(File dir) throws IOException {
+    private YarnWorkspaces collectWorkspaceData(File dir) throws IOException {
         Collection<YarnWorkspace> curLevelWorkspaces = packageJsonFiles.readWorkspacePackageJsonFiles(dir);
         Collection<YarnWorkspace> allWorkspaces = new LinkedList<>(curLevelWorkspaces);
         for (YarnWorkspace workspace : curLevelWorkspaces) {
