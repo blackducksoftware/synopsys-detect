@@ -48,8 +48,6 @@ public class BdioUploadOperation {
                 Bdio2UploadService bdio2UploadService = blackDuckServicesFactory.createBdio2UploadService();
                 IntelligentPersistenceService intelligentPersistenceScanService = blackDuckServicesFactory.createIntelligentPersistenceService();
                 DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService(operationSystem);
-                logger.info(String.format("Created %d BDIO files.", uploadTargetList.size()));
-                logger.debug("Uploading BDIO files.");
                 result = Optional.of(detectBdioUploadService.uploadBdioFiles(runOptions, bdioResult, bdioUploadService, bdio2UploadService, intelligentPersistenceScanService));
             }
         } else {
