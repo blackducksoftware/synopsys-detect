@@ -27,11 +27,19 @@ public class NullSafePackageJson {
         return Optional.of(rawPackageJson.name);
     }
 
+    public String getNameString() {
+        return getName().orElse("");
+    }
+
     public Optional<String> getVersion() {
         if (rawPackageJson.version == null) {
             return Optional.empty();
         }
         return Optional.of(rawPackageJson.version);
+    }
+
+    public String getVersionString() {
+        return getVersion().orElse("");
     }
 
     public Map<String, String> getDependencies() {

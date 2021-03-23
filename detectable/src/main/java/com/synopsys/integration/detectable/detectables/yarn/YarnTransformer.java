@@ -109,7 +109,7 @@ public class YarnTransformer {
         NullSafePackageJson rootPackageJson, YarnWorkspaces workspaceData, boolean productionOnly,
         boolean getWorkspaceDependenciesFromWorkspacePackageJson,
         @Nullable ExcludedIncludedWildcardFilter workspacesFilter) {
-        logger.debug("Adding root dependencies from root PackageJson: {}:{}", rootPackageJson.getName().orElse("null"), rootPackageJson.getVersion().orElse("null"));
+        logger.debug("Adding root dependencies from root PackageJson: {}:{}", rootPackageJson.getNameString(), rootPackageJson.getVersionString());
         if ((workspacesFilter == null) || workspacesFilter.willInclude(rootPackageJson.getName().orElse(null))) {
             populateGraphWithRootDependencies(graphBuilder, rootPackageJson, productionOnly, workspaceData);
         }

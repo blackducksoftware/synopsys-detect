@@ -45,6 +45,10 @@ public class YarnWorkspace {
         return workspacePackageJson.getPackageJson().getVersion();
     }
 
+    public String getVersionString() {
+        return workspacePackageJson.getPackageJson().getVersion().orElse("");
+    }
+
     public Map<String, String> getDependencies() {
         return workspacePackageJson.getPackageJson().getDependencies();
     }
@@ -97,11 +101,17 @@ public class YarnWorkspace {
         if (getName().orElse("").equals(name)) {
             if (!version.startsWith(WORKSPACE_VERSION_PREFIX) && !versionMatches(version)) {
                 logger.warn("yarn.lock dependency {} has the same name as a workspace, but the version is {} (vs. {}). Considering them the same anyway.",
-                    name, version, getVersion().orElse("null"));
+                    name, version, getVersionString());
             }
             return true;
         }
         return false;
+    }
+
+    public StringDependencyId createDependency(LazyExternalIdDependencyGraphBuilder graphBuilder) {
+        StringDependencyId id = generateDependencyId();
+        graphBuilder.setDependencyInfo(id, getName().orElse(null), getVersion().orElse(null), generateExternalId());
+        return id;
     }
 
     private boolean versionMatches(String version) {
@@ -109,11 +119,5 @@ public class YarnWorkspace {
             return true;
         }
         return version.equals(getVersion().orElse(null));
-    }
-
-    public StringDependencyId createDependency(LazyExternalIdDependencyGraphBuilder graphBuilder) {
-        StringDependencyId id = generateDependencyId();
-        graphBuilder.setDependencyInfo(id, getName().orElse(null), getVersion().orElse(null), generateExternalId());
-        return id;
     }
 }

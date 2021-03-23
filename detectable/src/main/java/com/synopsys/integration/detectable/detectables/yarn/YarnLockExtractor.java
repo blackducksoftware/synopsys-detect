@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
@@ -46,7 +47,8 @@ public class YarnLockExtractor {
     public Extraction extract(File projectDir, File yarnLockFile, File rootPackageJsonFile) {
         try {
             NullSafePackageJson rootPackageJson = packageJsonFiles.read(rootPackageJsonFile);
-            logger.debug("Extracting Yarn project {} in {}", rootPackageJson.getName().orElse("null"), projectDir.getAbsolutePath());
+            String projectName = rootPackageJson.getName().orElse("null");
+            logger.debug("Extracting Yarn project {} in {}", projectName, projectDir.getAbsolutePath());
             List<String> yarnLockLines = FileUtils.readLines(yarnLockFile, StandardCharsets.UTF_8);
             YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockLines);
             boolean getWorkspaceDependenciesFromWorkspacePackageJson = yarnLock.isYarn1Project();
@@ -61,8 +63,9 @@ public class YarnLockExtractor {
             YarnResult yarnResult = yarnPackager.generateYarnResult(rootPackageJson, workspaceData, yarnLock, new ArrayList<>(),
                 yarnLockOptions.useProductionOnly(), getWorkspaceDependenciesFromWorkspacePackageJson, workspacesFilter);
 
-            if (yarnResult.getException().isPresent()) {
-                throw yarnResult.getException().get();
+            Optional<Exception> yarnException = yarnResult.getException();
+            if (yarnException.isPresent()) {
+                throw yarnException.get();
             }
 
             return new Extraction.Builder()
