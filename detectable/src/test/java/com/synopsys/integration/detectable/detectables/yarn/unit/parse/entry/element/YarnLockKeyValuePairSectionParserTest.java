@@ -42,6 +42,11 @@ public class YarnLockKeyValuePairSectionParserTest {
         doTest("  version: \"test.version.value\"", "test.version.value");
     }
 
+    @Test
+    void testQuotedKey() {
+        doTest("  \"version\" \"0.2.1\"", "0.2.1");
+    }
+
     private void doTest(String line, String versionValue) {
         Assertions.assertTrue(yarnLockKeyValuePairElementParser.applies(line));
 

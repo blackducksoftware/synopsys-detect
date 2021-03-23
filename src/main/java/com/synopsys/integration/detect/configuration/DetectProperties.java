@@ -199,8 +199,8 @@ public class DetectProperties {
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
             .setExample("\"--profile clang --profile cmake_316\"");
 
-    public static final DetectProperty<NullableStringProperty> DETECT_CONAN_LOCKFILE_PATH =
-        new DetectProperty<>(new NullableStringProperty("detect.conan.lockfile.path"))
+    public static final DetectProperty<NullablePathProperty> DETECT_CONAN_LOCKFILE_PATH =
+        new DetectProperty<>(new NullablePathProperty("detect.conan.lockfile.path"))
             .setInfo("Conan Lockfile", DetectPropertyFromVersion.VERSION_6_8_0)
             .setHelp("The path to the conan lockfile to apply when running 'conan info' to get the dependency graph. If set, Detect will execute the command 'conan info --lockfile {lockfile} .'")
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
