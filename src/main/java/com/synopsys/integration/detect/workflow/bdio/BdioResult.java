@@ -9,7 +9,7 @@ package com.synopsys.integration.detect.workflow.bdio;
 
 import java.util.List;
 
-import com.synopsys.integration.blackduck.codelocation.bdio.UploadTarget;
+import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocationNamesResult;
 
 public class BdioResult {

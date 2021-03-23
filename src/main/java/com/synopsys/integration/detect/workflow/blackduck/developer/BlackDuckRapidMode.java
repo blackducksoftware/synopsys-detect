@@ -15,8 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponentResultView;
-import com.synopsys.integration.blackduck.codelocation.bdio.UploadBatch;
-import com.synopsys.integration.blackduck.codelocation.bdio.UploadTarget;
+import com.synopsys.integration.blackduck.codelocation.upload.UploadBatch;
+import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
 import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationException;
 import com.synopsys.integration.blackduck.scan.RapidScanService;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;

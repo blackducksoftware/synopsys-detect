@@ -12,13 +12,13 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.Result;
-import com.synopsys.integration.blackduck.codelocation.bdio.UploadBatch;
-import com.synopsys.integration.blackduck.codelocation.bdio.UploadBatchOutput;
-import com.synopsys.integration.blackduck.codelocation.bdio.UploadOutput;
-import com.synopsys.integration.blackduck.codelocation.bdio.UploadTarget;
 import com.synopsys.integration.blackduck.codelocation.bdio2legacy.Bdio2UploadService;
 import com.synopsys.integration.blackduck.codelocation.bdiolegacy.BdioUploadService;
 import com.synopsys.integration.blackduck.codelocation.intelligentpersistence.IntelligentPersistenceService;
+import com.synopsys.integration.blackduck.codelocation.upload.UploadBatch;
+import com.synopsys.integration.blackduck.codelocation.upload.UploadBatchOutput;
+import com.synopsys.integration.blackduck.codelocation.upload.UploadOutput;
+import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
