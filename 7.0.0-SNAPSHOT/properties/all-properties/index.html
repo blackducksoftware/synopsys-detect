@@ -1552,7 +1552,7 @@
 </tr>
 <tr>
 <td><a href="../configuration/project/#clone-project-categories-advanced">detect.project.clone.categories</a> <br /> (Advanced)</td>
-<td>default: COMPONENT_DATA,VULN_DATA <br /><br />  Acceptable Values: COMPONENT_DATA, CUSTOM_FIELD_DATA, LICENSE_TERM_FULFILLMENT, VULN_DATA <br /><br />Clone Project Categories: An override for the Project Clone Categories that are used when cloning a version. If the project already exists, make sure to use --detect.project.version.update to make sure these are set. <br /><br /></td>
+<td>default: COMPONENT_DATA,VULN_DATA <br /><br />  Acceptable Values: COMPONENT_DATA, CUSTOM_FIELD_DATA, LICENSE_TERM_FULFILLMENT, VULN_DATA <br /><br />Clone Project Categories: The value of this property is used to set the 'Cloning' settings on created Black Duck projects. If property detect.project.version.update is set to true, the value of this property is used to set the 'Cloning' settings on updated Black Duck projects. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../configuration/project/#scan-name-prefix-advanced">detect.project.codelocation.prefix</a> <br /> (Advanced)</td>
@@ -1639,7 +1639,7 @@
 </tr>
 <tr>
 <td><a href="../configuration/blackduck server/#detect-scan-mode-advanced">detect.blackduck.scan.mode</a> <br /> (Advanced)</td>
-<td>default: INTELLIGENT <br /><br />  Acceptable Values: RAPID, INTELLIGENT <br /><br />Detect Scan Mode: Set the Black Duck scanning mode of Detect <br /><br /></td>
+<td>default: LEGACY <br /><br />  Acceptable Values: LEGACY, RAPID, INTELLIGENT <br /><br />Detect Scan Mode: Set the Black Duck scanning mode of Detect <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../configuration/blackduck server/#black-duck-timeout-deprecated">blackduck.timeout</a> <br /> (Deprecated)</td>

@@ -512,13 +512,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#code-locations" class="md-nav__link">
-    Code Locations
-  </a>
-  
-</li>
-      
       
       
       
@@ -1522,13 +1515,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#code-locations" class="md-nav__link">
-    Code Locations
-  </a>
-  
-</li>
-      
       
       
       
@@ -1564,6 +1550,7 @@
 &quot;results&quot;: [ List of Results, see details below. ]
 &quot;unrecognizedPaths&quot;: [ List of Unrecognized Paths, see details below. ]
 &quot;codeLocations&quot;: [ List of code locations produced, see details below. ]
+&quot;propertyValues&quot;: [ List of property values passed to Synopsys Detect. ]
 }
 </code></pre>
 
@@ -1722,16 +1709,17 @@
 
 <h2 id="unrecognized-paths">Unrecognized Paths<a class="headerlink" href="#unrecognized-paths" title="Permanent link">#</a></h2>
 <p>For those detectors that support it (currently, only CLANG), a list of file paths to dependencies that
-(a) were not recognized by the package manager, and (b) reside outside the source directory.</p>
-<pre><code>{
-&quot;&lt;Detector type&gt;&quot;: [ A list of file paths to unrecognized dependencies ]
+(a) were not recognized by the package manager, and (b) reside outside the source directory.
+<code>{
+"
+&lt;Detector type&gt;": [ A list of file paths to unrecognized dependencies ]
+    }</code></p>
+<pre><code>## Code Locations
+````
+{
+"codeLocationName": The name of a code location produced by this run of Synopsys Detect.
 }
-</code></pre>
-
-<h2 id="code-locations">Code Locations<a class="headerlink" href="#code-locations" title="Permanent link">#</a></h2>
-<pre><code>{
-&quot;codeLocationName&quot;: The name of a code location produced by this run of Synopsys Detect.
-}
+````
 </code></pre>
                 
                   

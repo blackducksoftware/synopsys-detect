@@ -2086,11 +2086,11 @@
 </tbody>
 </table>
 <h2 id="detect-scan-mode-advanced">Detect Scan Mode (Advanced)<a class="headerlink" href="#detect-scan-mode-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.blackduck.scan.mode=RAPID,INTELLIGENT 
+<pre><code>--detect.blackduck.scan.mode=LEGACY,RAPID,INTELLIGENT 
 </code></pre>
 
 <p>Set the Black Duck scanning mode of Detect</p>
-<p>Set the scanning mode of Detect to control how Detect will send data to Black Duck.  The scan results are not persisted in Black Duck if RAPID is selected.  The RAPID value supports a Black Duck rapid scan feature that is meant to be used with a later Black Duck version.  If RAPID is selected, then Detect also requires --detect.bdio2.enabled=true and --blackduck.offline.mode=false to perform a RAPID scan.</p>
+<p>Set the scanning mode of Detect to control how Detect will send data to Black Duck.  The scan results are not persisted in Black Duck if RAPID is selected.  The RAPID value supports a Black Duck rapid scan feature that is meant to be used with a later Black Duck version.  If RAPID is selected, then Detect also requires --detect.bdio2.enabled=true and --blackduck.offline.mode=false to perform a RAPID scan.  If INTELLIGENT is selected, then Detect also requires --detect.bdio2.enabled=true to perform an INTELLIGENT scan.</p>
 <table>
 <thead>
 <tr>
@@ -2109,7 +2109,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>INTELLIGENT</td>
+<td>LEGACY</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2121,7 +2121,7 @@
 </tr>
 <tr>
 <td>Acceptable Values</td>
-<td>RAPID, INTELLIGENT</td>
+<td>LEGACY, RAPID, INTELLIGENT</td>
 </tr>
 <tr>
 <td>Strict</td>
