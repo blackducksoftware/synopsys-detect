@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.synopsys.integration.detectable.detectable.file.WildcardFileFinder;
+import com.synopsys.integration.common.util.finder.WildcardFileFinder;
 
 public class FilteredFileFinder extends WildcardFileFinder {
     private final List<String> excludedFileNames;

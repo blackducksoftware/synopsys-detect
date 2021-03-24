@@ -28,6 +28,8 @@ public enum DetectorStatusCode {
     PASSED("Detector passed."),
     POETRY_LOCKFILE_NOT_FOUND("A pyproject.toml was located in the target project, but the Poetry.lock file was NOT located."),
     PROPERTY_INSUFFICIENT("The properties are insufficient to run."),
+    SECTION_NOT_FOUND("A necessary section was not found within a file within the target project."),
+    SBT_PLUGIN_MISSING("A dependency graph plugin must be installed for the SBT detector to run."),
     UNKNOWN_DETECTOR_RESULT("There was an unknown result."),
     WRONG_OPERATING_SYSTEM_RESULT("Cannot run on the used operating system."),
     YIELDED("Yielded to other detectors.");

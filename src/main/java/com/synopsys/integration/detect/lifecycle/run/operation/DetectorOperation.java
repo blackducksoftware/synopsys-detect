@@ -14,12 +14,12 @@ import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
-import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
-import com.synopsys.integration.detect.lifecycle.run.RunResult;
+import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
 import com.synopsys.integration.detect.tool.detector.DetectDetectableFactory;
+import com.synopsys.integration.detect.tool.detector.DetectorEventPublisher;
 import com.synopsys.integration.detect.tool.detector.DetectorIssuePublisher;
 import com.synopsys.integration.detect.tool.detector.DetectorRuleFactory;
 import com.synopsys.integration.detect.tool.detector.DetectorTool;
@@ -28,25 +28,30 @@ import com.synopsys.integration.detect.tool.detector.extraction.ExtractionEnviro
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
+import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.finder.DetectorFinder;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.util.NameVersion;
 
 public class DetectorOperation {
-    private PropertyConfiguration detectConfiguration;
-    private DetectConfigurationFactory detectConfigurationFactory;
-    private DirectoryManager directoryManager;
-    private EventSystem eventSystem;
-    private DetectDetectableFactory detectDetectableFactory;
-    private ExtractionEnvironmentProvider extractionEnvironmentProvider;
-    private CodeLocationConverter codeLocationConverter;
+    private final PropertyConfiguration detectConfiguration;
+    private final DetectConfigurationFactory detectConfigurationFactory;
+    private final DirectoryManager directoryManager;
+    private final EventSystem eventSystem;
+    private final DetectDetectableFactory detectDetectableFactory;
+    private final ExtractionEnvironmentProvider extractionEnvironmentProvider;
+    private final CodeLocationConverter codeLocationConverter;
+    private final StatusEventPublisher statusEventPublisher;
+    private final ExitCodePublisher exitCodePublisher;
+    private final DetectorEventPublisher detectorEventPublisher;
 
     public DetectorOperation(PropertyConfiguration detectConfiguration, DetectConfigurationFactory detectConfigurationFactory, DirectoryManager directoryManager, EventSystem eventSystem,
-        DetectDetectableFactory detectDetectableFactory, ExtractionEnvironmentProvider extractionEnvironmentProvider, CodeLocationConverter codeLocationConverter) {
+        DetectDetectableFactory detectDetectableFactory, ExtractionEnvironmentProvider extractionEnvironmentProvider, CodeLocationConverter codeLocationConverter, StatusEventPublisher statusEventPublisher,
+        ExitCodePublisher exitCodePublisher,
+        DetectorEventPublisher detectorEventPublisher) {
         this.detectConfiguration = detectConfiguration;
         this.detectConfigurationFactory = detectConfigurationFactory;
         this.directoryManager = directoryManager;
@@ -54,9 +59,12 @@ public class DetectorOperation {
         this.detectDetectableFactory = detectDetectableFactory;
         this.extractionEnvironmentProvider = extractionEnvironmentProvider;
         this.codeLocationConverter = codeLocationConverter;
+        this.statusEventPublisher = statusEventPublisher;
+        this.exitCodePublisher = exitCodePublisher;
+        this.detectorEventPublisher = detectorEventPublisher;
     }
 
-    public boolean execute(RunResult runResult) throws DetectUserFriendlyException, IntegrationException {
+    public DetectorToolResult execute() throws DetectUserFriendlyException, IntegrationException {
         String projectBomTool = detectConfiguration.getValueOrEmpty(DetectProperties.DETECT_PROJECT_DETECTOR.getProperty()).orElse(null);
         List<DetectorType> requiredDetectors = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_REQUIRED_DETECTOR_TYPES.getProperty());
         boolean buildless = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_BUILDLESS.getProperty());
@@ -69,16 +77,12 @@ public class DetectorOperation {
         DetectorEvaluationOptions detectorEvaluationOptions = detectConfigurationFactory.createDetectorEvaluationOptions();
 
         DetectorIssuePublisher detectorIssuePublisher = new DetectorIssuePublisher();
-        DetectorTool detectorTool = new DetectorTool(new DetectorFinder(), extractionEnvironmentProvider, eventSystem, codeLocationConverter, detectorIssuePublisher);
+        DetectorTool detectorTool = new DetectorTool(new DetectorFinder(), extractionEnvironmentProvider, eventSystem, codeLocationConverter, detectorIssuePublisher, statusEventPublisher, exitCodePublisher, detectorEventPublisher);
         DetectorToolResult detectorToolResult = detectorTool.performDetectors(directoryManager.getSourceDirectory(), detectRuleSet, finderOptions, detectorEvaluationOptions, projectBomTool, requiredDetectors);
 
-        detectorToolResult.getBomToolProjectNameVersion().ifPresent(it -> runResult.addToolNameVersion(DetectTool.DETECTOR, new NameVersion(it.getName(), it.getVersion())));
-        runResult.addDetectCodeLocations(detectorToolResult.getBomToolCodeLocations());
-        boolean anythingFailed = false;
-        if (!detectorToolResult.getFailedDetectorTypes().isEmpty()) {
+        if (detectorToolResult.anyDetectorsFailed()) {
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR, "A detector failed."));
-            anythingFailed = true;
         }
-        return anythingFailed;
+        return detectorToolResult;
     }
 }

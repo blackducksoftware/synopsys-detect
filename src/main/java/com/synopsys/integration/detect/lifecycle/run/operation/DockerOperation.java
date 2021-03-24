@@ -9,40 +9,43 @@ package com.synopsys.integration.detect.lifecycle.run.operation;
 
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
-import com.synopsys.integration.detect.lifecycle.run.RunResult;
+import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.tool.DetectableTool;
 import com.synopsys.integration.detect.tool.DetectableToolResult;
 import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
 import com.synopsys.integration.detect.tool.detector.DetectDetectableFactory;
 import com.synopsys.integration.detect.tool.detector.extraction.ExtractionEnvironmentProvider;
-import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
+import com.synopsys.integration.detect.workflow.status.OperationSystem;
+import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class DockerOperation {
-    private DirectoryManager directoryManager;
-    private EventSystem eventSystem;
-    private DetectDetectableFactory detectDetectableFactory;
-    private ExtractionEnvironmentProvider extractionEnvironmentProvider;
-    private CodeLocationConverter codeLocationConverter;
+    private final DirectoryManager directoryManager;
+    private final StatusEventPublisher statusEventPublisher;
+    private final ExitCodePublisher exitCodePublisher;
+    private final DetectDetectableFactory detectDetectableFactory;
+    private final ExtractionEnvironmentProvider extractionEnvironmentProvider;
+    private final CodeLocationConverter codeLocationConverter;
+    private final OperationSystem operationSystem;
 
-    public DockerOperation(DirectoryManager directoryManager, EventSystem eventSystem, DetectDetectableFactory detectDetectableFactory,
-        ExtractionEnvironmentProvider extractionEnvironmentProvider, CodeLocationConverter codeLocationConverter) {
+    public DockerOperation(DirectoryManager directoryManager, StatusEventPublisher statusEventPublisher, ExitCodePublisher exitCodePublisher, DetectDetectableFactory detectDetectableFactory,
+        ExtractionEnvironmentProvider extractionEnvironmentProvider, CodeLocationConverter codeLocationConverter, OperationSystem operationSystem) {
         this.directoryManager = directoryManager;
-        this.eventSystem = eventSystem;
+        this.statusEventPublisher = statusEventPublisher;
+        this.exitCodePublisher = exitCodePublisher;
         this.detectDetectableFactory = detectDetectableFactory;
         this.extractionEnvironmentProvider = extractionEnvironmentProvider;
         this.codeLocationConverter = codeLocationConverter;
+        this.operationSystem = operationSystem;
     }
 
-    public boolean execute(RunResult runResult) throws DetectUserFriendlyException, IntegrationException {
+    public DetectableToolResult execute() throws DetectUserFriendlyException, IntegrationException {
         DetectableTool detectableTool = new DetectableTool(detectDetectableFactory::createDockerDetectable,
             extractionEnvironmentProvider, codeLocationConverter, "DOCKER", DetectTool.DOCKER,
-            eventSystem);
+            statusEventPublisher, exitCodePublisher, operationSystem);
 
         DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
-
-        runResult.addDetectableToolResult(detectableToolResult);
-        return detectableToolResult.isFailure();
+        return detectableToolResult;
     }
 }

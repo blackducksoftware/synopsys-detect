@@ -13,7 +13,7 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
-import com.synopsys.integration.detectable.detectable.file.FileFinder;
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
@@ -40,7 +40,7 @@ public class GitParseDetectable extends Detectable {
     @Override
     public DetectableResult applicable() {
         Requirements requires = new Requirements(fileFinder, environment);
-        File gitDirectory = requires.file(GIT_DIRECTORY_NAME);
+        File gitDirectory = requires.directory(GIT_DIRECTORY_NAME);
         requires.ifCurrentlyMet(() -> {
             gitConfigFile = requires.file(gitDirectory, GIT_CONFIG_FILENAME);
             gitHeadFile = requires.file(gitDirectory, GIT_HEAD_FILENAME);

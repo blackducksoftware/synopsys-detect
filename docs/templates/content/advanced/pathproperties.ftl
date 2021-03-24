@@ -7,9 +7,10 @@ from which ${solution_name} is executed (e.g. ../bin/conan).
 The format of the file path (the directory separator character, whether or not a drive letter prefix is supported, etc.)
 is dictated by the operating system on which ${solution_name} is running.
 
-Path property value examples:
+Path property value examples (applicable when executing the ${solution_name} .jar directly):
 
 * Linux/Mac: --detect.conan.path="/usr/bin/conan"
 * Windows: --detect.npm.path="C:\Program Files\nodejs\npm.cmd"
 
-
+When running ${solution_name} using one of the scripts, remember to also apply quoting and escaping rules that
+apply. For more information refer to [Quoting and escaping shell script arguments](../script-escaping-special-characters/).

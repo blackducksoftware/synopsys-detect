@@ -25,16 +25,17 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.tool.detector.extraction.ExtractionEnvironmentProvider;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
-import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.nameversion.DetectorNameVersionHandler;
 import com.synopsys.integration.detect.workflow.nameversion.PreferredDetectorNameVersionHandler;
 import com.synopsys.integration.detect.workflow.report.util.DetectorEvaluationUtils;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.status.DetectorStatus;
+import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detect.workflow.status.UnrecognizedPaths;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
@@ -57,14 +58,20 @@ public class DetectorTool {
     private final EventSystem eventSystem;
     private final CodeLocationConverter codeLocationConverter;
     private final DetectorIssuePublisher detectorIssuePublisher;
+    private final StatusEventPublisher statusEventPublisher;
+    private final ExitCodePublisher exitCodePublisher;
+    private final DetectorEventPublisher detectorEventPublisher;
 
     public DetectorTool(DetectorFinder detectorFinder, ExtractionEnvironmentProvider extractionEnvironmentProvider, EventSystem eventSystem, CodeLocationConverter codeLocationConverter,
-        DetectorIssuePublisher detectorIssuePublisher) {
+        DetectorIssuePublisher detectorIssuePublisher, StatusEventPublisher statusEventPublisher, ExitCodePublisher exitCodePublisher, DetectorEventPublisher detectorEventPublisher) {
         this.detectorFinder = detectorFinder;
         this.extractionEnvironmentProvider = extractionEnvironmentProvider;
         this.eventSystem = eventSystem;
         this.codeLocationConverter = codeLocationConverter;
         this.detectorIssuePublisher = detectorIssuePublisher;
+        this.statusEventPublisher = statusEventPublisher;
+        this.exitCodePublisher = exitCodePublisher;
+        this.detectorEventPublisher = detectorEventPublisher;
     }
 
     public DetectorToolResult performDetectors(File directory, DetectorRuleSet detectorRuleSet, DetectorFinderOptions detectorFinderOptions, DetectorEvaluationOptions evaluationOptions, String projectDetector,
@@ -83,7 +90,7 @@ public class DetectorTool {
         if (!possibleRootEvaluation.isPresent()) {
             logger.error("The source directory could not be searched for detectors - detector tool failed.");
             logger.error("Please ensure the provided source path is a directory and detect has access.");
-            eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_CONFIGURATION, "Detector tool failed to run on the configured source path."));
+            exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_CONFIGURATION, "Detector tool failed to run on the configured source path.");
             return new DetectorToolResult();
         }
 
@@ -99,25 +106,25 @@ public class DetectorTool {
         detectorEvaluator.setDetectorEvaluatorListener(eventBroadcaster);
 
         detectorEvaluator.registerPostApplicableCallback(detectorAggregateEvaluationResult -> {
-            eventSystem.publishEvent(Event.ApplicableCompleted, detectorAggregateEvaluationResult.getApplicableDetectorTypes());
-            eventSystem.publishEvent(Event.SearchCompleted, detectorAggregateEvaluationResult.getEvaluationTree());
+            detectorEventPublisher.publishApplicableCompleted(detectorAggregateEvaluationResult.getApplicableDetectorTypes());
+            detectorEventPublisher.publishSearchCompleted(detectorAggregateEvaluationResult.getEvaluationTree());
             logger.info("");
         });
 
         detectorEvaluator.registerPostExtractableCallback(detectorAggregateEvaluationResult -> {
-            eventSystem.publishEvent(Event.PreparationsCompleted, detectorAggregateEvaluationResult.getEvaluationTree());
+            detectorEventPublisher.publishPreparationsCompleted(detectorAggregateEvaluationResult.getEvaluationTree());
             logger.debug("Counting detectors that will be evaluated.");
 
             Integer extractionCount = detectorAggregateEvaluationResult.getExtractionCount();
-            eventSystem.publishEvent(Event.ExtractionCount, extractionCount);
-            eventSystem.publishEvent(Event.DiscoveryCount, extractionCount); //right now discovery and extraction are the same. -jp 8/14/19
+            detectorEventPublisher.publishExtractionCount(extractionCount);
+            detectorEventPublisher.publishDiscoveryCount(extractionCount); //right now discovery and extraction are the same. -jp 8/14/19
 
             logger.debug("Total number of detectors: {}", extractionCount);
         });
 
-        detectorEvaluator.registerPostDiscoveryCallback(detectorAggregateEvaluationResult -> eventSystem.publishEvent(Event.DiscoveriesCompleted, detectorAggregateEvaluationResult.getEvaluationTree()));
+        detectorEvaluator.registerPostDiscoveryCallback(detectorAggregateEvaluationResult -> detectorEventPublisher.publishDiscoveriesCompleted(detectorAggregateEvaluationResult.getEvaluationTree()));
 
-        detectorEvaluator.registerPostExtractionCallback(detectorAggregateEvaluationResult -> eventSystem.publishEvent(Event.ExtractionsCompleted, detectorAggregateEvaluationResult.getEvaluationTree()));
+        detectorEvaluator.registerPostExtractionCallback(detectorAggregateEvaluationResult -> detectorEventPublisher.publishExtractionsCompleted(detectorAggregateEvaluationResult.getEvaluationTree()));
 
         DetectorAggregateEvaluationResult evaluationResult = detectorEvaluator.evaluate(rootEvaluation);
 
@@ -128,7 +135,7 @@ public class DetectorTool {
         Map<DetectorType, StatusType> statusMap = extractStatus(detectorEvaluations);
         publishStatusEvents(statusMap);
         publishFileEvents(detectorEvaluations);
-        detectorIssuePublisher.publishEvents(eventSystem, rootEvaluation);
+        detectorIssuePublisher.publishEvents(statusEventPublisher, rootEvaluation);
         publishMissingDetectorEvents(requiredDetectors, evaluationResult.getApplicableDetectorTypes());
 
         Map<CodeLocation, DetectCodeLocation> codeLocationMap = createCodeLocationMap(detectorEvaluations, directory);
@@ -144,7 +151,7 @@ public class DetectorTool {
 
         //Completed.
         logger.debug("Finished running detectors.");
-        eventSystem.publishEvent(Event.DetectorsComplete, detectorToolResult);
+        detectorEventPublisher.publishDetectorsComplete(detectorToolResult);
 
         return detectorToolResult;
     }
@@ -156,14 +163,13 @@ public class DetectorTool {
         boolean anyFound = false;
         for (DetectorEvaluationTree tree : root.asFlatList()) {
             List<DetectorEvaluation> applicable = DetectorEvaluationUtils.applicableChildren(tree);
-            if (applicable.size() > 0) {
+            if (!applicable.isEmpty()) {
                 anyFound = true;
                 logger.info("\t" + tree.getDirectory() + " (depth " + tree.getDepthFromRoot() + ")");
                 applicable.forEach(evaluation -> {
                     logger.info("\t\t" + evaluation.getDetectorRule().getDescriptiveName());
-                    evaluation.getAllExplanations().forEach(explanation -> {
-                        logger.info("\t\t\t" + explanation.describeSelf());
-                    });
+                    evaluation.getAllExplanations().forEach(explanation ->
+                                                                logger.info("\t\t\t" + explanation.describeSelf()));
                 });
             }
         }
@@ -250,9 +256,10 @@ public class DetectorTool {
     }
 
     private void publishStatusEvents(Map<DetectorType, StatusType> statusMap) {
-        statusMap.forEach((detectorType, statusType) -> eventSystem.publishEvent(Event.StatusSummary, new DetectorStatus(detectorType, statusType)));
+        statusMap.forEach((detectorType, statusType) ->
+                              statusEventPublisher.publishStatusSummary(new DetectorStatus(detectorType, statusType)));
         if (statusMap.containsValue(StatusType.FAILURE)) {
-            eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR, "One or more detectors were not successful."));
+            exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_DETECTOR, "One or more detectors were not successful.");
         }
     }
 
@@ -261,16 +268,16 @@ public class DetectorTool {
         for (DetectorEvaluation detectorEvaluation : detectorEvaluations) {
             if (detectorEvaluation.getDetectable() != null) {
                 for (File file : detectorEvaluation.getAllRelevantFiles()) {
-                    eventSystem.publishEvent(Event.CustomerFileOfInterest, file);
+                    detectorEventPublisher.publishCustomerFileOfInterest(file);
                 }
             }
             if (detectorEvaluation.getExtraction() != null) {
                 for (File file : detectorEvaluation.getExtraction().getRelevantFiles()) {
-                    eventSystem.publishEvent(Event.CustomerFileOfInterest, file);
+                    detectorEventPublisher.publishCustomerFileOfInterest(file);
                 }
                 List<File> paths = detectorEvaluation.getExtraction().getUnrecognizedPaths();
                 if (paths != null && !paths.isEmpty()) {
-                    eventSystem.publishEvent(Event.UnrecognizedPaths, new UnrecognizedPaths(detectorEvaluation.getDetectorType().toString(), paths));
+                    detectorEventPublisher.publishUnrecognizedPaths(new UnrecognizedPaths(detectorEvaluation.getDetectorType().toString(), paths));
                 }
             }
         }
@@ -283,7 +290,7 @@ public class DetectorTool {
         if (!missingDetectors.isEmpty()) {
             String missingDetectorDisplay = missingDetectors.stream().map(Enum::toString).collect(Collectors.joining(","));
             logger.error("One or more required detector types were not found: {}", missingDetectorDisplay);
-            eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR_REQUIRED));
+            exitCodePublisher.publishExitCode(new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR_REQUIRED));
         }
     }
 }

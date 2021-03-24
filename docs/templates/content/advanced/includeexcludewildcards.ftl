@@ -14,6 +14,8 @@ The values of the following ${solution_name} properties can utilize filename glo
 * detect.gradle.excluded.projects
 * detect.blackduck.signature.scanner.exclusion.name.patterns
 * detect.binary.scan.file.name.patterns
+* detect.lerna.included.packages
+* detect.lerna.excluded.packages
 
 The supported wildcards and their effect are:
 

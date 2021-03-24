@@ -8,6 +8,7 @@
 package com.synopsys.integration.detect.configuration.enumeration;
 
 public enum BlackduckScanMode {
+    LEGACY,
     RAPID,
     INTELLIGENT
 }

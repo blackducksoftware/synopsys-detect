@@ -11,7 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
@@ -32,19 +32,19 @@ import com.synopsys.integration.blackduck.service.dataservice.CodeLocationServic
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
-import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
+import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysis;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisBatchOutput;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisOutput;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisUploadService;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisUploadView;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
-import com.synopsys.integration.detect.workflow.event.Event;
-import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectIssueType;
+import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.detect.workflow.status.Status;
+import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.HttpUrl;
@@ -53,36 +53,44 @@ import com.synopsys.method.analyzer.core.MethodUseAnalyzer;
 
 public class BlackDuckImpactAnalysisTool {
     public static final String STATUS_KEY = "IMPACT_ANALYSIS";
+    public static final String OPERATION_NAME = "Black Duck Impact Analysis";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final DirectoryManager directoryManager;
     private final CodeLocationNameManager codeLocationNameManager;
     private final ImpactAnalysisOptions impactAnalysisOptions;
-    private final EventSystem eventSystem;
+    private final StatusEventPublisher statusEventPublisher;
+    private final ExitCodePublisher exitCodePublisher;
     private final ImpactAnalysisUploadService impactAnalysisUploadService;
     private final BlackDuckApiClient blackDuckService;
     private final CodeLocationService codeLocationService; // TODO: Use this when upgrading to blackduck-common:49.2.0
     private final boolean online;
+    private final OperationSystem operationSystem;
 
     public static BlackDuckImpactAnalysisTool ONLINE(DirectoryManager directoryManager, CodeLocationNameManager codeLocationNameManager, ImpactAnalysisOptions impactAnalysisOptions, BlackDuckApiClient blackDuckApiClient,
-        ImpactAnalysisUploadService impactAnalysisService, CodeLocationService codeLocationService, EventSystem eventSystem) {
-        return new BlackDuckImpactAnalysisTool(directoryManager, codeLocationNameManager, impactAnalysisOptions, eventSystem, impactAnalysisService, blackDuckApiClient, codeLocationService, true);
+        ImpactAnalysisUploadService impactAnalysisService, CodeLocationService codeLocationService, StatusEventPublisher statusEventPublisher, ExitCodePublisher exitCodePublisher, OperationSystem operationSystem) {
+        return new BlackDuckImpactAnalysisTool(directoryManager, codeLocationNameManager, impactAnalysisOptions, statusEventPublisher, exitCodePublisher, impactAnalysisService, blackDuckApiClient, codeLocationService, operationSystem,
+            true);
     }
 
-    public static BlackDuckImpactAnalysisTool OFFLINE(DirectoryManager directoryManager, CodeLocationNameManager codeLocationNameManager, ImpactAnalysisOptions impactAnalysisOptions, EventSystem eventSystem) {
-        return new BlackDuckImpactAnalysisTool(directoryManager, codeLocationNameManager, impactAnalysisOptions, eventSystem, null, null, null, false);
+    public static BlackDuckImpactAnalysisTool OFFLINE(DirectoryManager directoryManager, CodeLocationNameManager codeLocationNameManager, ImpactAnalysisOptions impactAnalysisOptions, StatusEventPublisher statusEventPublisher,
+        ExitCodePublisher exitCodePublisher, OperationSystem operationSystem) {
+        return new BlackDuckImpactAnalysisTool(directoryManager, codeLocationNameManager, impactAnalysisOptions, statusEventPublisher, exitCodePublisher, null, null, null, operationSystem, false);
     }
 
-    private BlackDuckImpactAnalysisTool(DirectoryManager directoryManager, CodeLocationNameManager codeLocationNameManager, ImpactAnalysisOptions impactAnalysisOptions, EventSystem eventSystem,
-        ImpactAnalysisUploadService impactAnalysisUploadService, BlackDuckApiClient blackDuckService, CodeLocationService codeLocationService, boolean online) {
+    private BlackDuckImpactAnalysisTool(DirectoryManager directoryManager, CodeLocationNameManager codeLocationNameManager, ImpactAnalysisOptions impactAnalysisOptions, StatusEventPublisher statusEventPublisher,
+        ExitCodePublisher exitCodePublisher,
+        ImpactAnalysisUploadService impactAnalysisUploadService, BlackDuckApiClient blackDuckService, CodeLocationService codeLocationService, OperationSystem operationSystem, boolean online) {
         this.directoryManager = directoryManager;
         this.codeLocationNameManager = codeLocationNameManager;
         this.impactAnalysisOptions = impactAnalysisOptions;
-        this.eventSystem = eventSystem;
+        this.statusEventPublisher = statusEventPublisher;
+        this.exitCodePublisher = exitCodePublisher;
         this.impactAnalysisUploadService = impactAnalysisUploadService;
         this.blackDuckService = blackDuckService;
         this.codeLocationService = codeLocationService;
+        this.operationSystem = operationSystem;
         this.online = online;
     }
 
@@ -96,6 +104,7 @@ public class BlackDuckImpactAnalysisTool {
      */
     @NotNull
     public ImpactAnalysisToolResult performImpactAnalysisActions(NameVersion projectNameAndVersion, @Nullable ProjectVersionWrapper projectVersionWrapper) throws DetectUserFriendlyException {
+        operationSystem.beginOperation(OPERATION_NAME);
         File sourceDirectory = directoryManager.getSourceDirectory();
         String projectName = projectNameAndVersion.getName();
         String projectVersionName = projectNameAndVersion.getVersion();
@@ -128,12 +137,13 @@ public class BlackDuckImpactAnalysisTool {
         try {
             CodeLocationCreationData<ImpactAnalysisBatchOutput> codeLocationCreationData = uploadImpactAnalysis(impactAnalysisPath, projectNameAndVersion, codeLocationName);
             ImpactAnalysisToolResult impactAnalysisToolResult = mapCodeLocations(impactAnalysisPath, codeLocationCreationData, projectVersionWrapper);
-            eventSystem.publishEvent(Event.StatusSummary, new Status(STATUS_KEY, StatusType.SUCCESS));
+            statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.SUCCESS));
+            operationSystem.completeWithSuccess(OPERATION_NAME);
             return impactAnalysisToolResult;
         } catch (IntegrationException exception) {
             logger.error(String.format("Failed to upload and map the Impact Analysis code location: %s", exception.getMessage()));
-            eventSystem.publishEvent(Event.StatusSummary, new Status(STATUS_KEY, StatusType.FAILURE));
-            eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.EXCEPTION, Collections.singletonList(exception.getMessage())));
+            statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
+            operationSystem.completeWithError(OPERATION_NAME, exception.getMessage());
             throw new DetectUserFriendlyException("Failed to upload impact analysis file.", exception, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
         }
     }
@@ -208,9 +218,10 @@ public class BlackDuckImpactAnalysisTool {
 
     private ImpactAnalysisToolResult failImpactAnalysis(String issueMessage) {
         logger.warn(issueMessage);
-        eventSystem.publishEvent(Event.StatusSummary, new Status(STATUS_KEY, StatusType.FAILURE));
-        eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.IMPACT_ANALYSIS, Collections.singletonList(issueMessage)));
-        eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, STATUS_KEY));
+        statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
+        operationSystem.completeWithFailure(OPERATION_NAME);
+        statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.IMPACT_ANALYSIS, OPERATION_NAME, Arrays.asList(issueMessage)));
+        exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, STATUS_KEY);
         return ImpactAnalysisToolResult.FAILURE();
     }
 }

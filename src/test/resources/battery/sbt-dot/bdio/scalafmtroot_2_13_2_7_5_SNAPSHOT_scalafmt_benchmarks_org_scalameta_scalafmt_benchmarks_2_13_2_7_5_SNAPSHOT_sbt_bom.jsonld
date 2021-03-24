@@ -1,0 +1,1389 @@
+[
+  {
+    "specVersion": "1.1.0",
+    "spdx:name": "scalafmtroot_2.13/2.7.5-SNAPSHOT/scalafmt-benchmarks/org.scalameta/scalafmt-benchmarks_2.13/2.7.5-SNAPSHOT sbt/bom",
+    "creationInfo": {
+      "spdx:creator": [
+        "Tool: Detect-7.0.0-SNAPSHOT",
+        "Tool: IntegrationBdio-22.0.2"
+      ],
+      "spdx:created": "2021-03-05T17:53:34.831325100Z"
+    },
+    "@id": "uuid:7ea150a2-cf3e-4bd0-860a-0b7082220620",
+    "@type": "BillOfMaterials",
+    "relationship": []
+  },
+  {
+    "name": "scalafmtroot_2.13",
+    "revision": "2.7.5-SNAPSHOT",
+    "@id": "http:maven/org.scalameta/scalafmt-benchmarks_2.13/2.7.5-SNAPSHOT",
+    "@type": "Project",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scalameta:scalafmt-benchmarks_2.13:2.7.5-SNAPSHOT",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "scalafmt-benchmarks_2.13",
+          "2.7.5-SNAPSHOT"
+        ],
+        "prefix": "org.scalameta"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.openjdk.jmh/jmh-core/1.25",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scalameta/testkit_2.13/4.4.10",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.openjdk.jmh/jmh-generator-bytecode/1.25",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.openjdk.jmh/jmh-generator-reflection/1.25",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scalameta/scalafmt-core_2.13/2.7.5-SNAPSHOT",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "jmh-core",
+    "revision": "1.25",
+    "@id": "http:maven/org.openjdk.jmh/jmh-core/1.25",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.openjdk.jmh:jmh-core:1.25",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "jmh-core",
+          "1.25"
+        ],
+        "prefix": "org.openjdk.jmh"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/net.sf.jopt-simple/jopt-simple/4.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.apache.commons/commons-math3/3.2",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "jopt-simple",
+    "revision": "4.6",
+    "@id": "http:maven/net.sf.jopt-simple/jopt-simple/4.6",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "net.sf.jopt-simple:jopt-simple:4.6",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "jopt-simple",
+          "4.6"
+        ],
+        "prefix": "net.sf.jopt-simple"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "commons-math3",
+    "revision": "3.2",
+    "@id": "http:maven/org.apache.commons/commons-math3/3.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.apache.commons:commons-math3:3.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "commons-math3",
+          "3.2"
+        ],
+        "prefix": "org.apache.commons"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "testkit_2.13",
+    "revision": "4.4.10",
+    "@id": "http:maven/org.scalameta/testkit_2.13/4.4.10",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scalameta:testkit_2.13:4.4.10",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "testkit_2.13",
+          "4.4.10"
+        ],
+        "prefix": "org.scalameta"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/commons-io/commons-io/2.8.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scalameta/scalameta_2.13/4.4.10",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.rauschig/jarchivelib/1.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/com.lihaoyi/geny_2.13/0.6.5",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scalameta/munit_2.13/0.7.22",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang.modules/scala-parallel-collections_2.13/1.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/com.googlecode.java-diff-utils/diffutils/1.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "commons-io",
+    "revision": "2.8.0",
+    "@id": "http:maven/commons-io/commons-io/2.8.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "commons-io:commons-io:2.8.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "commons-io",
+          "2.8.0"
+        ],
+        "prefix": "commons-io"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "scalameta_2.13",
+    "revision": "4.4.10",
+    "@id": "http:maven/org.scalameta/scalameta_2.13/4.4.10",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scalameta:scalameta_2.13:4.4.10",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "scalameta_2.13",
+          "4.4.10"
+        ],
+        "prefix": "org.scalameta"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-lang/scalap/2.13.3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scalameta/parsers_2.13/4.4.10",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "scalap",
+    "revision": "2.13.3",
+    "@id": "http:maven/org.scala-lang/scalap/2.13.3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-lang:scalap:2.13.3",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "scalap",
+          "2.13.3"
+        ],
+        "prefix": "org.scala-lang"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-lang/scala-compiler/2.13.3",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "scala-compiler",
+    "revision": "2.13.3",
+    "@id": "http:maven/org.scala-lang/scala-compiler/2.13.3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-lang:scala-compiler:2.13.3",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "scala-compiler",
+          "2.13.3"
+        ],
+        "prefix": "org.scala-lang"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.jline/jline/3.15.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/net.java.dev.jna/jna/5.3.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-reflect/2.13.3",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "jline",
+    "revision": "3.15.0",
+    "@id": "http:maven/org.jline/jline/3.15.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.jline:jline:3.15.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "jline",
+          "3.15.0"
+        ],
+        "prefix": "org.jline"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "jna",
+    "revision": "5.3.1",
+    "@id": "http:maven/net.java.dev.jna/jna/5.3.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "net.java.dev.jna:jna:5.3.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "jna",
+          "5.3.1"
+        ],
+        "prefix": "net.java.dev.jna"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "scala-reflect",
+    "revision": "2.13.3",
+    "@id": "http:maven/org.scala-lang/scala-reflect/2.13.3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-lang:scala-reflect:2.13.3",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "scala-reflect",
+          "2.13.3"
+        ],
+        "prefix": "org.scala-lang"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "parsers_2.13",
+    "revision": "4.4.10",
+    "@id": "http:maven/org.scalameta/parsers_2.13/4.4.10",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scalameta:parsers_2.13:4.4.10",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "parsers_2.13",
+          "4.4.10"
+        ],
+        "prefix": "org.scalameta"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scalameta/trees_2.13/4.4.10",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "trees_2.13",
+    "revision": "4.4.10",
+    "@id": "http:maven/org.scalameta/trees_2.13/4.4.10",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scalameta:trees_2.13:4.4.10",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "trees_2.13",
+          "4.4.10"
+        ],
+        "prefix": "org.scalameta"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scalameta/common_2.13/4.4.10",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/com.thesamet.scalapb/scalapb-runtime_2.13/0.10.11",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scalameta/fastparse_2.13/1.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "common_2.13",
+    "revision": "4.4.10",
+    "@id": "http:maven/org.scalameta/common_2.13/4.4.10",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scalameta:common_2.13:4.4.10",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "common_2.13",
+          "4.4.10"
+        ],
+        "prefix": "org.scalameta"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/com.lihaoyi/sourcecode_2.13/0.2.3",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "sourcecode_2.13",
+    "revision": "0.2.3",
+    "@id": "http:maven/com.lihaoyi/sourcecode_2.13/0.2.3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.lihaoyi:sourcecode_2.13:0.2.3",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "sourcecode_2.13",
+          "0.2.3"
+        ],
+        "prefix": "com.lihaoyi"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "scalapb-runtime_2.13",
+    "revision": "0.10.11",
+    "@id": "http:maven/com.thesamet.scalapb/scalapb-runtime_2.13/0.10.11",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.thesamet.scalapb:scalapb-runtime_2.13:0.10.11",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "scalapb-runtime_2.13",
+          "0.10.11"
+        ],
+        "prefix": "com.thesamet.scalapb"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/com.google.protobuf/protobuf-java/3.11.4",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/com.thesamet.scalapb/lenses_2.13/0.10.11",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/com.lihaoyi/fastparse_2.13/2.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang.modules/scala-collection-compat_2.13/2.3.2",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "protobuf-java",
+    "revision": "3.11.4",
+    "@id": "http:maven/com.google.protobuf/protobuf-java/3.11.4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.google.protobuf:protobuf-java:3.11.4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "protobuf-java",
+          "3.11.4"
+        ],
+        "prefix": "com.google.protobuf"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "lenses_2.13",
+    "revision": "0.10.11",
+    "@id": "http:maven/com.thesamet.scalapb/lenses_2.13/0.10.11",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.thesamet.scalapb:lenses_2.13:0.10.11",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "lenses_2.13",
+          "0.10.11"
+        ],
+        "prefix": "com.thesamet.scalapb"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-lang.modules/scala-collection-compat_2.13/2.3.2",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "scala-collection-compat_2.13",
+    "revision": "2.3.2",
+    "@id": "http:maven/org.scala-lang.modules/scala-collection-compat_2.13/2.3.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-lang.modules:scala-collection-compat_2.13:2.3.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "scala-collection-compat_2.13",
+          "2.3.2"
+        ],
+        "prefix": "org.scala-lang.modules"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "fastparse_2.13",
+    "revision": "2.3.0",
+    "@id": "http:maven/com.lihaoyi/fastparse_2.13/2.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.lihaoyi:fastparse_2.13:2.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "fastparse_2.13",
+          "2.3.0"
+        ],
+        "prefix": "com.lihaoyi"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/com.lihaoyi/sourcecode_2.13/0.2.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/com.lihaoyi/geny_2.13/0.6.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "sourcecode_2.13",
+    "revision": "0.2.1",
+    "@id": "http:maven/com.lihaoyi/sourcecode_2.13/0.2.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.lihaoyi:sourcecode_2.13:0.2.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "sourcecode_2.13",
+          "0.2.1"
+        ],
+        "prefix": "com.lihaoyi"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/com.lihaoyi/sourcecode_2.13/0.2.3",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "geny_2.13",
+    "revision": "0.6.0",
+    "@id": "http:maven/com.lihaoyi/geny_2.13/0.6.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.lihaoyi:geny_2.13:0.6.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "geny_2.13",
+          "0.6.0"
+        ],
+        "prefix": "com.lihaoyi"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/com.lihaoyi/geny_2.13/0.6.5",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "geny_2.13",
+    "revision": "0.6.5",
+    "@id": "http:maven/com.lihaoyi/geny_2.13/0.6.5",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.lihaoyi:geny_2.13:0.6.5",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "geny_2.13",
+          "0.6.5"
+        ],
+        "prefix": "com.lihaoyi"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "fastparse_2.13",
+    "revision": "1.0.1",
+    "@id": "http:maven/org.scalameta/fastparse_2.13/1.0.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scalameta:fastparse_2.13:1.0.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "fastparse_2.13",
+          "1.0.1"
+        ],
+        "prefix": "org.scalameta"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scalameta/fastparse-utils_2.13/1.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/com.lihaoyi/sourcecode_2.13/0.1.7",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "fastparse-utils_2.13",
+    "revision": "1.0.1",
+    "@id": "http:maven/org.scalameta/fastparse-utils_2.13/1.0.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scalameta:fastparse-utils_2.13:1.0.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "fastparse-utils_2.13",
+          "1.0.1"
+        ],
+        "prefix": "org.scalameta"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/com.lihaoyi/sourcecode_2.13/0.1.7",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "sourcecode_2.13",
+    "revision": "0.1.7",
+    "@id": "http:maven/com.lihaoyi/sourcecode_2.13/0.1.7",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.lihaoyi:sourcecode_2.13:0.1.7",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "sourcecode_2.13",
+          "0.1.7"
+        ],
+        "prefix": "com.lihaoyi"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/com.lihaoyi/sourcecode_2.13/0.2.3",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "jarchivelib",
+    "revision": "1.1.0",
+    "@id": "http:maven/org.rauschig/jarchivelib/1.1.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.rauschig:jarchivelib:1.1.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "jarchivelib",
+          "1.1.0"
+        ],
+        "prefix": "org.rauschig"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.apache.commons/commons-compress/1.20",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "commons-compress",
+    "revision": "1.20",
+    "@id": "http:maven/org.apache.commons/commons-compress/1.20",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.apache.commons:commons-compress:1.20",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "commons-compress",
+          "1.20"
+        ],
+        "prefix": "org.apache.commons"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "munit_2.13",
+    "revision": "0.7.22",
+    "@id": "http:maven/org.scalameta/munit_2.13/0.7.22",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scalameta:munit_2.13:0.7.22",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "munit_2.13",
+          "0.7.22"
+        ],
+        "prefix": "org.scalameta"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/junit/junit/4.13.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scalameta/junit-interface/0.7.22",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "junit",
+    "revision": "4.13.1",
+    "@id": "http:maven/junit/junit/4.13.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "junit:junit:4.13.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "junit",
+          "4.13.1"
+        ],
+        "prefix": "junit"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/junit/junit/4.13.2",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "junit",
+    "revision": "4.13.2",
+    "@id": "http:maven/junit/junit/4.13.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "junit:junit:4.13.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "junit",
+          "4.13.2"
+        ],
+        "prefix": "junit"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.hamcrest/hamcrest-core/1.3",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "hamcrest-core",
+    "revision": "1.3",
+    "@id": "http:maven/org.hamcrest/hamcrest-core/1.3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.hamcrest:hamcrest-core:1.3",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "hamcrest-core",
+          "1.3"
+        ],
+        "prefix": "org.hamcrest"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "junit-interface",
+    "revision": "0.7.22",
+    "@id": "http:maven/org.scalameta/junit-interface/0.7.22",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scalameta:junit-interface:0.7.22",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "junit-interface",
+          "0.7.22"
+        ],
+        "prefix": "org.scalameta"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-sbt/test-interface/1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/junit/junit/4.13.2",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "test-interface",
+    "revision": "1.0",
+    "@id": "http:maven/org.scala-sbt/test-interface/1.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:test-interface:1.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "test-interface",
+          "1.0"
+        ],
+        "prefix": "org.scala-sbt"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "scala-parallel-collections_2.13",
+    "revision": "1.0.0",
+    "@id": "http:maven/org.scala-lang.modules/scala-parallel-collections_2.13/1.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-lang.modules:scala-parallel-collections_2.13:1.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "scala-parallel-collections_2.13",
+          "1.0.0"
+        ],
+        "prefix": "org.scala-lang.modules"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "diffutils",
+    "revision": "1.3.0",
+    "@id": "http:maven/com.googlecode.java-diff-utils/diffutils/1.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.googlecode.java-diff-utils:diffutils:1.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "diffutils",
+          "1.3.0"
+        ],
+        "prefix": "com.googlecode.java-diff-utils"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "jmh-generator-bytecode",
+    "revision": "1.25",
+    "@id": "http:maven/org.openjdk.jmh/jmh-generator-bytecode/1.25",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.openjdk.jmh:jmh-generator-bytecode:1.25",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "jmh-generator-bytecode",
+          "1.25"
+        ],
+        "prefix": "org.openjdk.jmh"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.openjdk.jmh/jmh-core/1.25",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.openjdk.jmh/jmh-generator-reflection/1.25",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.openjdk.jmh/jmh-generator-asm/1.25",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "jmh-generator-reflection",
+    "revision": "1.25",
+    "@id": "http:maven/org.openjdk.jmh/jmh-generator-reflection/1.25",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.openjdk.jmh:jmh-generator-reflection:1.25",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "jmh-generator-reflection",
+          "1.25"
+        ],
+        "prefix": "org.openjdk.jmh"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.openjdk.jmh/jmh-core/1.25",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "jmh-generator-asm",
+    "revision": "1.25",
+    "@id": "http:maven/org.openjdk.jmh/jmh-generator-asm/1.25",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.openjdk.jmh:jmh-generator-asm:1.25",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "jmh-generator-asm",
+          "1.25"
+        ],
+        "prefix": "org.openjdk.jmh"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.openjdk.jmh/jmh-core/1.25",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.openjdk.jmh/jmh-generator-reflection/1.25",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.ow2.asm/asm/5.0.3",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "asm",
+    "revision": "5.0.3",
+    "@id": "http:maven/org.ow2.asm/asm/5.0.3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.ow2.asm:asm:5.0.3",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "asm",
+          "5.0.3"
+        ],
+        "prefix": "org.ow2.asm"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "scalafmt-core_2.13",
+    "revision": "2.7.5-SNAPSHOT",
+    "@id": "http:maven/org.scalameta/scalafmt-core_2.13/2.7.5-SNAPSHOT",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scalameta:scalafmt-core_2.13:2.7.5-SNAPSHOT",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "scalafmt-core_2.13",
+          "2.7.5-SNAPSHOT"
+        ],
+        "prefix": "org.scalameta"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/com.geirsson/metaconfig-core_2.13/0.9.10",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scalameta/scalameta_2.13/4.4.10",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/com.geirsson/metaconfig-typesafe-config_2.13/0.9.10",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang.modules/scala-parallel-collections_2.13/1.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-reflect/2.13.3",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "metaconfig-core_2.13",
+    "revision": "0.9.10",
+    "@id": "http:maven/com.geirsson/metaconfig-core_2.13/0.9.10",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.geirsson:metaconfig-core_2.13:0.9.10",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "metaconfig-core_2.13",
+          "0.9.10"
+        ],
+        "prefix": "com.geirsson"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/com.lihaoyi/pprint_2.13/0.5.9",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang.modules/scala-collection-compat_2.13/2.1.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.typelevel/paiges-core_2.13/0.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "pprint_2.13",
+    "revision": "0.5.9",
+    "@id": "http:maven/com.lihaoyi/pprint_2.13/0.5.9",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.lihaoyi:pprint_2.13:0.5.9",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "pprint_2.13",
+          "0.5.9"
+        ],
+        "prefix": "com.lihaoyi"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/com.lihaoyi/sourcecode_2.13/0.2.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/com.lihaoyi/fansi_2.13/0.2.9",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "fansi_2.13",
+    "revision": "0.2.9",
+    "@id": "http:maven/com.lihaoyi/fansi_2.13/0.2.9",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.lihaoyi:fansi_2.13:0.2.9",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "fansi_2.13",
+          "0.2.9"
+        ],
+        "prefix": "com.lihaoyi"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/com.lihaoyi/sourcecode_2.13/0.2.1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "scala-collection-compat_2.13",
+    "revision": "2.1.2",
+    "@id": "http:maven/org.scala-lang.modules/scala-collection-compat_2.13/2.1.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-lang.modules:scala-collection-compat_2.13:2.1.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "scala-collection-compat_2.13",
+          "2.1.2"
+        ],
+        "prefix": "org.scala-lang.modules"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-lang.modules/scala-collection-compat_2.13/2.3.2",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "paiges-core_2.13",
+    "revision": "0.3.0",
+    "@id": "http:maven/org.typelevel/paiges-core_2.13/0.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.typelevel:paiges-core_2.13:0.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "paiges-core_2.13",
+          "0.3.0"
+        ],
+        "prefix": "org.typelevel"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "metaconfig-typesafe-config_2.13",
+    "revision": "0.9.10",
+    "@id": "http:maven/com.geirsson/metaconfig-typesafe-config_2.13/0.9.10",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.geirsson:metaconfig-typesafe-config_2.13:0.9.10",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "metaconfig-typesafe-config_2.13",
+          "0.9.10"
+        ],
+        "prefix": "com.geirsson"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/com.geirsson/metaconfig-core_2.13/0.9.10",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/com.typesafe/config/1.2.1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "config",
+    "revision": "1.2.1",
+    "@id": "http:maven/com.typesafe/config/1.2.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.typesafe:config:1.2.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "config",
+          "1.2.1"
+        ],
+        "prefix": "com.typesafe"
+      }
+    },
+    "relationship": []
+  }
+]
