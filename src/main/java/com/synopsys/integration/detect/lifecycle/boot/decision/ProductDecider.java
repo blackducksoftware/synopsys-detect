@@ -98,8 +98,8 @@ public class ProductDecider {
         } else if (offline) {
             logger.debug("Black Duck will run: Black Duck offline mode was set to true.");
             return BlackDuckDecision.runOffline();
-        } else if (runOptions.shouldPerformRapidModeScan() && !runOptions.shouldUseBdio2()) {
-            logger.debug("Black Duck will NOT run: Detect will not generate BDIO2 files and Black Duck {} scan is enabled which requires BDIO2 file generation", BlackduckScanMode.RAPID.name());
+        } else if ((runOptions.getScanMode() == BlackduckScanMode.RAPID || runOptions.getScanMode() == BlackduckScanMode.INTELLIGENT) && !runOptions.shouldUseBdio2()) {
+            logger.debug("Black Duck will NOT run: Detect will not generate BDIO2 files and Black Duck {} scan is enabled which requires BDIO2 file generation", runOptions.getScanMode().name());
             return BlackDuckDecision.skip();
         } else if (signatureScannerHostUrl.isPresent()) {
             logger.info("A Black Duck signature scanner url was provided, which requires Black Duck offline mode.");

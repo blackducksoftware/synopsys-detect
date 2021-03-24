@@ -4,8 +4,8 @@ import com.synopsys.integration.detect.verification.VerifyBlackDuckDetectTask
 
 buildscript {
     ext {
-        springBootVersion = '2.2.4.RELEASE'
-        blackDuckCommonVersion = '52.0.2'
+        springBootVersion = '2.4.3'
+        blackDuckCommonVersion = '54.0.0'
         junitPlatformDefaultTestTags = 'integration, performance, battery'
     }
 
@@ -113,7 +113,7 @@ dependencies {
     testImplementation project(':common-test')
 }
 
-springBoot { mainClassName = 'com.synopsys.integration.detect.Application' }
+springBoot { mainClass = 'com.synopsys.integration.detect.Application' }
 
 tasks['testBattery'].doFirst {
     def batteryPath = new File(createBatteryPath())
