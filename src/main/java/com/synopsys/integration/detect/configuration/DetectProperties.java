@@ -1306,15 +1306,15 @@ public class DetectProperties {
     @Deprecated
     public static final DetectProperty<NullableStringProperty> BLACKDUCK_HUB_URL =
         new DetectProperty<>(new NullableStringProperty("blackduck.hub.url"))
-            .setInfo("Blackduck Hub Url", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("URL of the Hub server.")
+            .setInfo("Black Duck Url", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("URL of the Black Duck server.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER)
             .setDeprecated("This property is changing. Please use --blackduck.url in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
 
     @Deprecated
     public static final DetectProperty<IntegerProperty> BLACKDUCK_HUB_TIMEOUT =
         new DetectProperty<>(new IntegerProperty("blackduck.hub.timeout", 120))
-            .setInfo("Blackduck Hub Timeout", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setInfo("Black Duck Timeout", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("The time to wait for rest connections to complete in seconds.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER)
             .setDeprecated("This property is changing. Please use --blackduck.timeout in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
@@ -1322,31 +1322,31 @@ public class DetectProperties {
     @Deprecated
     public static final DetectProperty<NullableStringProperty> BLACKDUCK_HUB_USERNAME =
         new DetectProperty<>(new NullableStringProperty("blackduck.hub.username"))
-            .setInfo("Blackduck Hub Username", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("Hub username.")
+            .setInfo("Black Duck Username", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("Black Duck username.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER)
             .setDeprecated("This property is being removed. Please use --blackduck.api.token in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
 
     @Deprecated
     public static final DetectProperty<NullableStringProperty> BLACKDUCK_HUB_PASSWORD =
         new DetectProperty<>(new NullableStringProperty("blackduck.hub.password"))
-            .setInfo("Blackduck Hub Password", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("Hub password.")
+            .setInfo("Black Duck Password", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("Black Duck password.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER)
             .setDeprecated("This property is being removed. Please use --blackduck.api.token in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
 
     @Deprecated
     public static final DetectProperty<NullableStringProperty> BLACKDUCK_HUB_API_TOKEN =
         new DetectProperty<>(new NullableStringProperty("blackduck.hub.api.token"))
-            .setInfo("Blackduck Hub Api Token", DetectPropertyFromVersion.VERSION_3_1_0)
-            .setHelp("Hub API Token.")
+            .setInfo("Black Duck Api Token", DetectPropertyFromVersion.VERSION_3_1_0)
+            .setHelp("Black Duck API Token.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER)
             .setDeprecated("This property is changing. Please use --blackduck.api.token in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
 
     @Deprecated
     public static final DetectProperty<NullableStringProperty> BLACKDUCK_HUB_PROXY_HOST =
         new DetectProperty<>(new NullableStringProperty("blackduck.hub.proxy.host"))
-            .setInfo("Blackduck Hub Proxy Host", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setInfo("Black Duck Proxy Host", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("Proxy host.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.PROXY)
             .setDeprecated("This property is changing. Please use --blackduck.proxy.host in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
@@ -1354,7 +1354,7 @@ public class DetectProperties {
     @Deprecated
     public static final DetectProperty<NullableStringProperty> BLACKDUCK_HUB_PROXY_PORT =
         new DetectProperty<>(new NullableStringProperty("blackduck.hub.proxy.port"))
-            .setInfo("Blackduck Hub Proxy Port", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setInfo("Black Duck Proxy Port", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("Proxy port.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.PROXY)
             .setDeprecated("This property is changing. Please use --blackduck.proxy.port in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
@@ -1362,7 +1362,7 @@ public class DetectProperties {
     @Deprecated
     public static final DetectProperty<NullableStringProperty> BLACKDUCK_HUB_PROXY_USERNAME =
         new DetectProperty<>(new NullableStringProperty("blackduck.hub.proxy.username"))
-            .setInfo("Blackduck Hub Proxy Username", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setInfo("Black Duck Proxy Username", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("Proxy username.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.PROXY)
             .setDeprecated("This property is changing. Please use --blackduck.proxy.username in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
@@ -1370,7 +1370,7 @@ public class DetectProperties {
     @Deprecated
     public static final DetectProperty<NullableStringProperty> BLACKDUCK_HUB_PROXY_PASSWORD =
         new DetectProperty<>(new NullableStringProperty("blackduck.hub.proxy.password"))
-            .setInfo("Blackduck Hub Proxy Password", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setInfo("Black Duck Proxy Password", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("Proxy password.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.PROXY)
             .setDeprecated("This property is changing. Please use --blackduck.proxy.password in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
@@ -1378,7 +1378,7 @@ public class DetectProperties {
     @Deprecated
     public static final DetectProperty<NullableStringProperty> BLACKDUCK_HUB_PROXY_NTLM_DOMAIN =
         new DetectProperty<>(new NullableStringProperty("blackduck.hub.proxy.ntlm.domain"))
-            .setInfo("Blackduck Hub Proxy Ntlm Domain", DetectPropertyFromVersion.VERSION_3_1_0)
+            .setInfo("Black Duck Proxy Ntlm Domain", DetectPropertyFromVersion.VERSION_3_1_0)
             .setHelp("NTLM Proxy domain.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.PROXY)
             .setDeprecated("This property is changing. Please use --blackduck.proxy.ntlm.domain in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
@@ -1386,7 +1386,7 @@ public class DetectProperties {
     @Deprecated
     public static final DetectProperty<StringListProperty> BLACKDUCK_HUB_PROXY_IGNORED_HOSTS =
         new DetectProperty<>(new StringListProperty("blackduck.hub.proxy.ignored.hosts", emptyList()))
-            .setInfo("Blackduck Hub Proxy Ignored Hosts", DetectPropertyFromVersion.VERSION_3_2_0)
+            .setInfo("Black Duck Proxy Ignored Hosts", DetectPropertyFromVersion.VERSION_3_2_0)
             .setHelp("A comma-separated list of host patterns that should not use the proxy.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.PROXY)
             .setDeprecated("This property is changing. Please use --blackduck.proxy.ignored.hosts in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
@@ -1394,7 +1394,7 @@ public class DetectProperties {
     @Deprecated
     public static final DetectProperty<NullableStringProperty> BLACKDUCK_HUB_PROXY_NTLM_WORKSTATION =
         new DetectProperty<>(new NullableStringProperty("blackduck.hub.proxy.ntlm.workstation"))
-            .setInfo("Blackduck Hub Proxy Ntlm Workstation", DetectPropertyFromVersion.VERSION_3_1_0)
+            .setInfo("Black Duck Proxy Ntlm Workstation", DetectPropertyFromVersion.VERSION_3_1_0)
             .setHelp("NTLM Proxy workstation.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.PROXY)
             .setDeprecated("This property is changing. Please use --blackduck.proxy.ntlm.workstation in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
@@ -1402,7 +1402,7 @@ public class DetectProperties {
     @Deprecated
     public static final DetectProperty<BooleanProperty> BLACKDUCK_HUB_TRUST_CERT =
         new DetectProperty<>(new BooleanProperty("blackduck.hub.trust.cert", false))
-            .setInfo("Blackduck Hub Trust Cert", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setInfo("Black Duck Trust Cert", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("If true, automatically trusts the certificate for the current run of Detect only.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER)
             .setDeprecated("This property is changing. Please use --blackduck.trust.cert in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
@@ -1410,16 +1410,16 @@ public class DetectProperties {
     @Deprecated
     public static final DetectProperty<BooleanProperty> BLACKDUCK_HUB_OFFLINE_MODE =
         new DetectProperty<>(new BooleanProperty("blackduck.hub.offline.mode", false))
-            .setInfo("Blackduck Hub Offline Mode", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("This disables any Hub communication. If true, Detect does not upload BDIO files, does not check policies, and does not download and install the signature scanner.")
+            .setInfo("Black Duck Offline Mode", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("This disables any Black Duck communication. If true, Detect does not upload BDIO files, does not check policies, and does not download and install the signature scanner.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.OFFLINE)
             .setDeprecated("This property is changing. Please use --blackduck.offline.mode in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
 
     @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_DISABLE_WITHOUT_HUB =
         new DetectProperty<>(new BooleanProperty("detect.disable.without.hub", false))
-            .setInfo("Detect Disable Without Hub", DetectPropertyFromVersion.VERSION_4_0_0)
-            .setHelp("If true, during initialization Detect will check for Hub connectivity and exit with status code 0 if it cannot connect.")
+            .setInfo("Detect Disable Without Black Duck", DetectPropertyFromVersion.VERSION_4_0_0)
+            .setHelp("If true, during initialization Detect will check for Black Duck connectivity and exit with status code 0 if it cannot connect.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER)
             .setDeprecated("This property is changing. Please use --detect.ignore.connection.failures in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
 
@@ -1552,23 +1552,23 @@ public class DetectProperties {
     @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_HUB_SIGNATURE_SCANNER_DRY_RUN =
         new DetectProperty<>(new BooleanProperty("detect.hub.signature.scanner.dry.run", false))
-            .setInfo("Detect Hub Signature Scanner Dry Run", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("If set to true, the signature scanner results will not be uploaded to the Hub and the scanner results will be written to disk.")
+            .setInfo("Black Duck Signature Scanner Dry Run", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("If set to true, the signature scanner results will not be uploaded to Black Duck and the scanner results will be written to disk.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER)
             .setDeprecated("This property is changing. Please use --detect.blackduck.signature.scanner.dry.run in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
 
     @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_HUB_SIGNATURE_SCANNER_SNIPPET_MODE =
         new DetectProperty<>(new BooleanProperty("detect.hub.signature.scanner.snippet.mode", false))
-            .setInfo("Detect Hub Signature Scanner Snippet Mode", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("If set to true, the signature scanner will, if supported by your Hub version, run in snippet scanning mode.")
+            .setInfo("Black Duck Signature Scanner Snippet Mode", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("If set to true, the signature scanner will, if supported by your Black Duck version, run in snippet scanning mode.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER)
             .setDeprecated("This property is changing. Please use --detect.blackduck.signature.scanner.snippet.mode in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
 
     @Deprecated
     public static final DetectProperty<StringListProperty> DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_PATTERNS =
         new DetectProperty<>(new StringListProperty("detect.hub.signature.scanner.exclusion.patterns", emptyList()))
-            .setInfo("Detect Hub Signature Scanner Exclusion Patterns", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setInfo("Black Duck Signature Scanner Exclusion Patterns", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("A comma-separated list of values to be used with the Signature Scanner --exclude flag.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER)
             .setDeprecated("This property is changing. Please use --detect.blackduck.signature.scanner.exclusion.patterns in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
@@ -1576,7 +1576,7 @@ public class DetectProperties {
     @Deprecated
     public static final DetectProperty<PathListProperty> DETECT_HUB_SIGNATURE_SCANNER_PATHS =
         new DetectProperty<>(new PathListProperty("detect.hub.signature.scanner.paths", emptyList()))
-            .setInfo("Detect Hub Signature Scanner Paths", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setInfo("Black Duck Signature Scanner Paths", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("These paths and only these paths will be scanned.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER)
             .setDeprecated("This property is changing. Please use --detect.blackduck.signature.scanner.paths in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
@@ -1584,7 +1584,7 @@ public class DetectProperties {
     @Deprecated
     public static final DetectProperty<StringListProperty> DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS =
         new DetectProperty<>(new StringListProperty("detect.hub.signature.scanner.exclusion.name.patterns", Arrays.asList("node_modules")))
-            .setInfo("Detect Hub Signature Scanner Exclusion Name Patterns", DetectPropertyFromVersion.VERSION_4_0_0)
+            .setInfo("Black Duck Signature Scanner Exclusion Name Patterns", DetectPropertyFromVersion.VERSION_4_0_0)
             .setHelp(
                 "A comma-separated list of directory name patterns Detect will search for and add to the Signature Scanner --exclude flag values.",
                 "Detect will recursively search within the scan targets for files/directories that match these file name patterns and will create the corresponding exclusion patterns for the signature scanner. "
@@ -1597,7 +1597,7 @@ public class DetectProperties {
     @Deprecated
     public static final DetectProperty<IntegerProperty> DETECT_HUB_SIGNATURE_SCANNER_MEMORY =
         new DetectProperty<>(new IntegerProperty("detect.hub.signature.scanner.memory", 4096))
-            .setInfo("Detect Hub Signature Scanner Memory", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setInfo("Black Duck Signature Scanner Memory", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("The memory for the scanner to use.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER)
             .setDeprecated("This property is changing. Please use --detect.blackduck.signature.scanner.memory in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
@@ -1605,15 +1605,15 @@ public class DetectProperties {
     @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_HUB_SIGNATURE_SCANNER_DISABLED =
         new DetectProperty<>(new BooleanProperty("detect.hub.signature.scanner.disabled", false))
-            .setInfo("Detect Hub Signature Scanner Disabled", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("Set to true to disable the Hub Signature Scanner.")
+            .setInfo("Black Duck Signature Scanner Disabled", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("Set to true to disable the Black Duck Signature Scanner.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER)
             .setDeprecated("This property is changing. Please use --detect.tools in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
 
     @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED =
         new DetectProperty<>(new BooleanProperty("detect.blackduck.signature.scanner.disabled", false))
-            .setInfo("Detect Blackduck Signature Scanner Disabled", DetectPropertyFromVersion.VERSION_4_2_0)
+            .setInfo("Black DuckSignature Scanner Disabled", DetectPropertyFromVersion.VERSION_4_2_0)
             .setHelp("Set to true to disable the Black Duck Signature Scanner.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.BLACKDUCK)
             .setDeprecated("This property is changing. Please use --detect.tools in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
@@ -1621,7 +1621,7 @@ public class DetectProperties {
     @Deprecated
     public static final DetectProperty<NullablePathProperty> DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH =
         new DetectProperty<>(new NullablePathProperty("detect.hub.signature.scanner.offline.local.path"))
-            .setInfo("Detect Hub Signature Scanner Offline Local Path", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setInfo("Black Duck Signature Scanner Offline Local Path", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "To use a local signature scanner and force offline, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.OFFLINE)
@@ -1630,7 +1630,7 @@ public class DetectProperties {
     @Deprecated
     public static final DetectProperty<NullablePathProperty> DETECT_HUB_SIGNATURE_SCANNER_LOCAL_PATH =
         new DetectProperty<>(new NullablePathProperty("detect.hub.signature.scanner.local.path"))
-            .setInfo("Detect Hub Signature Scanner Local Path", DetectPropertyFromVersion.VERSION_4_2_0)
+            .setInfo("Black Duck Signature Scanner Local Path", DetectPropertyFromVersion.VERSION_4_2_0)
             .setHelp(
                 "To use a local signature scanner, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.OFFLINE)
@@ -1639,8 +1639,8 @@ public class DetectProperties {
     @Deprecated
     public static final DetectProperty<NullableStringProperty> DETECT_HUB_SIGNATURE_SCANNER_HOST_URL =
         new DetectProperty<>(new NullableStringProperty("detect.hub.signature.scanner.host.url"))
-            .setInfo("Detect Hub Signature Scanner Host Url", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Hub's urls for different operating systems.")
+            .setInfo("Black Duck Signature Scanner Host Url", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Black Duck's urls for different operating systems.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER)
             .setDeprecated("This property is changing. Please use --detect.blackduck.signature.scanner.host.url in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
 
@@ -1660,7 +1660,7 @@ public class DetectProperties {
     @Deprecated
     public static final DetectProperty<IntegerProperty> DETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS =
         new DetectProperty<>(new IntegerProperty("detect.hub.signature.scanner.parallel.processors", 1))
-            .setInfo("Detect Hub Signature Scanner Parallel Processors", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setInfo("Black Duck Signature Scanner Parallel Processors", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("The number of scans to run in parallel, defaults to 1, but if you specify -1, the number of processors on the machine will be used.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER)
             .setDeprecated("This property is changing. Please use --detect.parallel.processors in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
@@ -1668,8 +1668,8 @@ public class DetectProperties {
     @Deprecated
     public static final DetectProperty<NullableStringProperty> DETECT_HUB_SIGNATURE_SCANNER_ARGUMENTS =
         new DetectProperty<>(new NullableStringProperty("detect.hub.signature.scanner.arguments"))
-            .setInfo("Detect Hub Signature Scanner Arguments", DetectPropertyFromVersion.VERSION_4_0_0)
-            .setHelp("Additional arguments to use when running the Hub signature scanner.")
+            .setInfo("Black Duck Signature Scanner Arguments", DetectPropertyFromVersion.VERSION_4_0_0)
+            .setHelp("Additional arguments to use when running the Black Duck signature scanner.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER)
             .setDeprecated("This property is changing. Please use --detect.blackduck.signature.scanner.arguments in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
 
