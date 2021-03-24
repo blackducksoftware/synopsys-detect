@@ -7,11 +7,14 @@
  */
 package com.synopsys.integration.detect.workflow.result;
 
+import java.util.Collections;
+import java.util.List;
+
 public class ReportDetectResult implements DetectResult {
     private final String reportName;
     private final String filePath;
 
-    public ReportDetectResult(final String reportName, final String filePath) {
+    public ReportDetectResult(String reportName, String filePath) {
         this.reportName = reportName;
         this.filePath = filePath;
     }
@@ -24,5 +27,10 @@ public class ReportDetectResult implements DetectResult {
     @Override
     public String getResultMessage() {
         return String.format("%s: %s", reportName, filePath);
+    }
+
+    @Override
+    public List<String> getResultSubMessages() {
+        return Collections.emptyList();
     }
 }
