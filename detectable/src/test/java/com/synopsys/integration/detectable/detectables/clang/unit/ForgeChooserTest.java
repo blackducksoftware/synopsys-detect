@@ -2,7 +2,6 @@ package com.synopsys.integration.detectable.detectables.clang.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +25,7 @@ public class ForgeChooserTest {
         ForgeChooser forgeChooser = new ForgeChooser(forgeGenerator, linuxDistro);
         ClangPackageManager currentPackageManager = Mockito.mock(ClangPackageManager.class);
 
-        Mockito.when(linuxDistro.extractLinuxDistroNameFromEtcDir(new File("/etc"))).thenReturn(Optional.of("ubuntu"));
+        Mockito.when(linuxDistro.extractLinuxDistroNameFromEtcDir()).thenReturn(Optional.of("ubuntu"));
         Forge createdForge = Mockito.mock(Forge.class);
         Mockito.when(forgeGenerator.createPreferredAliasNamespaceForge("ubuntu")).thenReturn(createdForge);
         List<Forge> chosenForges = forgeChooser.determineForges(currentPackageManager);
@@ -42,7 +41,7 @@ public class ForgeChooserTest {
         ForgeChooser forgeChooser = new ForgeChooser(forgeGenerator, linuxDistro);
         ClangPackageManager currentPackageManager = Mockito.mock(ClangPackageManager.class);
 
-        Mockito.when(linuxDistro.extractLinuxDistroNameFromEtcDir(new File("/etc"))).thenReturn(Optional.empty());
+        Mockito.when(linuxDistro.extractLinuxDistroNameFromEtcDir()).thenReturn(Optional.empty());
         ClangPackageManagerInfo packageManagerInfo = Mockito.mock(ClangPackageManagerInfo.class);
         Mockito.when(currentPackageManager.getPackageManagerInfo()).thenReturn(packageManagerInfo);
         Forge possibleForge1 = Mockito.mock(Forge.class);

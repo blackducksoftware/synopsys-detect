@@ -22,6 +22,11 @@ import org.slf4j.LoggerFactory;
 public class LinuxDistro {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    public Optional<String> extractLinuxDistroNameFromEtcDir() {
+        File etcDir = new File("/etc");
+        return extractLinuxDistroNameFromEtcDir(etcDir);
+    }
+
     public Optional<String> extractLinuxDistroNameFromEtcDir(File etcDir) {
         for (File etcFile : etcDir.listFiles()) {
             if (isLinuxDistroFile(etcFile)) {

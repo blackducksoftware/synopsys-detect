@@ -7,8 +7,7 @@
  */
 package com.synopsys.integration.detectable.detectables.clang;
 
-import java.io.File;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,10 +31,10 @@ public class ForgeChooser {
 
     public List<Forge> determineForges(ClangPackageManager currentPackageManager) {
 
-        Optional<String> actualLinuxDistro = linuxDistro.extractLinuxDistroNameFromEtcDir(new File("/etc"));
+        Optional<String> actualLinuxDistro = linuxDistro.extractLinuxDistroNameFromEtcDir();
         if (actualLinuxDistro.isPresent()) {
             Forge preferredAliasNamespaceForge = forgeGenerator.createPreferredAliasNamespaceForge(actualLinuxDistro.get());
-            return Arrays.asList(preferredAliasNamespaceForge);
+            return Collections.singletonList(preferredAliasNamespaceForge);
         }
         List<Forge> possibleForges = currentPackageManager.getPackageManagerInfo().getPossibleForges();
         String forgesList = generateNamesString(possibleForges);
