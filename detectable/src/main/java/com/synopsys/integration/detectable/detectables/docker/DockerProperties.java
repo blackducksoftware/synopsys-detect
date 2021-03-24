@@ -40,6 +40,7 @@ public class DockerProperties {
         // DI 8.1.0 and newer will provide both; Detect will prefer squashedimage
         dockerProperties.setProperty("output.include.containerfilesystem", "true");
         dockerProperties.setProperty("output.include.squashedimage", "true");
+        dockerProperties.setProperty("bdio2.enabled", "false"); // soon DI will return BDIO2 by default, which Detect can't consume
         dockerDetectableOptions.getDockerPlatformTopLayerId().ifPresent(id -> dockerProperties.setProperty("docker.platform.top.layer.id", id));
 
         Map<String, String> additionalDockerProperties = dockerDetectableOptions.getAdditionalDockerProperties();
