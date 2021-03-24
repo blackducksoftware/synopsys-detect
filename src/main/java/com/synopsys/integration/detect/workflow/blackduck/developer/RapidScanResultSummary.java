@@ -83,7 +83,7 @@ public class RapidScanResultSummary {
         private int licenseErrors;
         private int licenseWarnings;
 
-        private Set<String> policyViolations;
+        private Set<String> violatedPolicyNames;
         private Set<String> componentsViolatingPolicy;
         private Set<String> componentsViolatingPolicyWarnings;
 
@@ -95,7 +95,7 @@ public class RapidScanResultSummary {
             this.licenseErrors = 0;
             this.licenseWarnings = 0;
 
-            this.policyViolations = new LinkedHashSet<>();
+            this.violatedPolicyNames = new LinkedHashSet<>();
             this.componentsViolatingPolicy = new LinkedHashSet<>();
             this.componentsViolatingPolicyWarnings = new LinkedHashSet<>();
         }
@@ -124,8 +124,8 @@ public class RapidScanResultSummary {
             licenseWarnings += count;
         }
 
-        public void addPolicyViolationErrors(Set<String> policyNames) {
-            policyViolations.addAll(policyNames);
+        public void addViolatedPolicyNames(Set<String> policyNames) {
+            violatedPolicyNames.addAll(policyNames);
         }
 
         public void addComponentsViolatingPolicy(String componentName) {
@@ -138,7 +138,7 @@ public class RapidScanResultSummary {
 
         public RapidScanResultSummary build() {
             return new RapidScanResultSummary(this.policyErrors, this.policyWarnings, this.securityErrors, this.securityWarnings,
-                this.licenseErrors, this.licenseWarnings, policyViolations, componentsViolatingPolicy,
+                this.licenseErrors, this.licenseWarnings, violatedPolicyNames, componentsViolatingPolicy,
                 componentsViolatingPolicyWarnings);
         }
     }

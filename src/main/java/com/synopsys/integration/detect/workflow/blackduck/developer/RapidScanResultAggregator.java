@@ -8,6 +8,7 @@
 package com.synopsys.integration.detect.workflow.blackduck.developer;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -21,8 +22,54 @@ import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponent
 import com.synopsys.integration.blackduck.api.manual.view.PolicyViolationLicenseView;
 import com.synopsys.integration.blackduck.api.manual.view.PolicyViolationVulnerabilityView;
 
-public class RapidScanResultConverter {
-    public Map<String, RapidScanComponentDetail> convert(List<DeveloperScanComponentResultView> results) {
+public class RapidScanResultAggregator {
+    public RapidScanAggregateResult aggregateData(List<DeveloperScanComponentResultView> results) {
+        Collection<RapidScanComponentDetail> componentDetails = aggregateComponentData(results);
+        List<RapidScanComponentDetail> sortedByComponent = componentDetails.stream()
+                                                               .sorted(Comparator.comparing(RapidScanComponentDetail::getComponentIdentifier))
+                                                               .collect(Collectors.toList());
+        Map<RapidScanDetailGroup, RapidScanComponentGroupDetail> aggregatedDetails = new HashMap<>();
+        RapidScanResultSummary.Builder summaryBuilder = new RapidScanResultSummary.Builder();
+        for (RapidScanComponentDetail detail : sortedByComponent) {
+            aggregateSummaryData(summaryBuilder, detail);
+            RapidScanDetailGroup securityGroupName = detail.getSecurityDetails().getGroup();
+            RapidScanDetailGroup licenseGroupName = detail.getLicenseDetails().getGroup();
+            RapidScanDetailGroup componentGroupName = detail.getComponentDetails().getGroup();
+
+            RapidScanComponentGroupDetail aggregatedSecurityDetail = aggregatedDetails.computeIfAbsent(detail.getSecurityDetails().getGroup(), ignoredKey -> new RapidScanComponentGroupDetail(securityGroupName));
+            RapidScanComponentGroupDetail aggregatedLicenseDetail = aggregatedDetails.computeIfAbsent(detail.getLicenseDetails().getGroup(), ignoredKey -> new RapidScanComponentGroupDetail(licenseGroupName));
+            RapidScanComponentGroupDetail aggregatedComponentDetail = aggregatedDetails.computeIfAbsent(detail.getComponentDetails().getGroup(), ignoredKey -> new RapidScanComponentGroupDetail(componentGroupName));
+
+            aggregatedComponentDetail.addErrors(detail.getComponentDetails().getErrorMessages());
+            aggregatedComponentDetail.addWarnings(detail.getComponentDetails().getWarningMessages());
+            aggregatedSecurityDetail.addErrors(detail.getSecurityDetails().getErrorMessages());
+            aggregatedSecurityDetail.addWarnings(detail.getSecurityDetails().getWarningMessages());
+            aggregatedLicenseDetail.addErrors(detail.getLicenseDetails().getErrorMessages());
+            aggregatedLicenseDetail.addWarnings(detail.getLicenseDetails().getWarningMessages());
+        }
+
+        return new RapidScanAggregateResult(summaryBuilder.build(), aggregatedDetails.get(RapidScanDetailGroup.POLICY), aggregatedDetails.get(RapidScanDetailGroup.SECURITY), aggregatedDetails.get(RapidScanDetailGroup.LICENSE));
+    }
+
+    private void aggregateSummaryData(RapidScanResultSummary.Builder summaryBuilder, RapidScanComponentDetail detail) {
+        String formattedComponentName = String.format("%s %s (%s)", detail.getComponent(), detail.getVersion(), detail.getComponentIdentifier());
+        if (detail.hasWarnings()) {
+            summaryBuilder.addComponentsViolatingPolicy(formattedComponentName);
+        }
+        if (detail.hasErrors()) {
+            summaryBuilder.addComponentViolatingPolicyWarnings(formattedComponentName);
+        }
+
+        summaryBuilder.addViolatedPolicyNames(detail.getComponentDetails().getPolicyNames());
+        summaryBuilder.addPolicyViolations(detail.getComponentErrorCount());
+        summaryBuilder.addSecurityErrors(detail.getSecurityErrorCount());
+        summaryBuilder.addLicenseErrors(detail.getLicenseErrorCount());
+        summaryBuilder.addPolicyViolationWarnings(detail.getComponentWarningCount());
+        summaryBuilder.addSecurityWarnings(detail.getSecurityWarningCount());
+        summaryBuilder.addLicenseWarnings(detail.getLicenseWarningCount());
+    }
+
+    private Collection<RapidScanComponentDetail> aggregateComponentData(List<DeveloperScanComponentResultView> results) {
         Map<String, RapidScanComponentDetail> componentDetails = new HashMap<>();
         for (DeveloperScanComponentResultView resultView : results) {
             String componentName = resultView.getComponentName();
@@ -69,29 +116,7 @@ public class RapidScanResultConverter {
                 addLicenseData(licenseViolations, licenseGroupDetail);
             }
         }
-        return componentDetails;
-    }
-
-    public RapidScanResultSummary convertToSummary(Collection<RapidScanComponentDetail> details) {
-        RapidScanResultSummary.Builder builder = new RapidScanResultSummary.Builder();
-        for (RapidScanComponentDetail detail : details) {
-            String formattedComponentName = String.format("%s %s (%s)", detail.getComponent(), detail.getVersion(), detail.getComponentIdentifier());
-            if (detail.hasWarnings()) {
-                builder.addComponentsViolatingPolicy(formattedComponentName);
-            }
-            if (detail.hasErrors()) {
-                builder.addComponentViolatingPolicyWarnings(formattedComponentName);
-            }
-            builder.addPolicyViolationErrors(detail.getComponentDetails().getPolicyNames());
-            builder.addPolicyViolations(detail.getComponentErrors());
-            builder.addSecurityErrors(detail.getSecurityErrors());
-            builder.addLicenseErrors(detail.getLicenseErrors());
-            builder.addPolicyViolationWarnings(detail.getComponentWarnings());
-            builder.addSecurityWarnings(detail.getSecurityWarnings());
-            builder.addLicenseWarnings(detail.getLicenseWarnings());
-        }
-
-        return builder.build();
+        return componentDetails.values();
     }
 
     private RapidScanComponentDetail createDetail(DeveloperScanComponentResultView view) {

@@ -10,12 +10,9 @@ package com.synopsys.integration.detect.workflow.blackduck.developer;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +37,7 @@ public class BlackDuckRapidModePostActions {
     private final ExitCodePublisher exitCodePublisher;
     private final DirectoryManager directoryManager;
     private final OperationSystem operationSystem;
-    private final RapidScanResultConverter rapidScanResultConverter;
+    private final RapidScanResultAggregator rapidScanResultAggregator;
 
     public BlackDuckRapidModePostActions(Gson gson, StatusEventPublisher statusEventPublisher, ExitCodePublisher exitCodePublisher, DirectoryManager directoryManager, OperationSystem operationSystem) {
         this.gson = gson;
@@ -48,18 +45,18 @@ public class BlackDuckRapidModePostActions {
         this.exitCodePublisher = exitCodePublisher;
         this.directoryManager = directoryManager;
         this.operationSystem = operationSystem;
-        this.rapidScanResultConverter = new RapidScanResultConverter();
+        this.rapidScanResultAggregator = new RapidScanResultAggregator();
     }
 
     public void perform(NameVersion projectNameVersion, List<DeveloperScanComponentResultView> results) throws DetectUserFriendlyException {
         operationSystem.beginOperation(OPERATION_NAME);
         File jsonFile = generateJSONScanOutput(projectNameVersion, results);
-        Map<String, RapidScanComponentDetail> componentDetails = rapidScanResultConverter.convert(results);
-        RapidScanResultSummary summary = rapidScanResultConverter.convertToSummary(componentDetails.values());
-        List<String> summaryMessages = createResultMessages(summary);
+        RapidScanAggregateResult aggregateResult = rapidScanResultAggregator.aggregateData(results);
         logger.info("{}:", RapidScanDetectResult.RAPID_SCAN_RESULT_DETAILS_HEADING);
-        logDetailedInformation(componentDetails);
+        logDetailedInformation(aggregateResult);
         try {
+            RapidScanResultSummary summary = aggregateResult.getSummary();
+            List<String> summaryMessages = createResultMessages(summary);
             statusEventPublisher.publishDetectResult(new RapidScanDetectResult(jsonFile.getCanonicalPath(), summaryMessages));
             if (summary.hasErrors()) {
                 exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_POLICY_VIOLATION, createViolationMessage(summary.getPolicyViolationNames()));
@@ -71,31 +68,11 @@ public class BlackDuckRapidModePostActions {
         }
     }
 
-    private void logDetailedInformation(Map<String, RapidScanComponentDetail> componentDetails) {
-        List<String> sortedKeys = componentDetails.keySet().stream()
-                                      .sorted()
-                                      .collect(Collectors.toList());
-        Map<RapidScanDetailGroup, RapidScanComponentGroupDetail> aggregatedDetails = new HashMap<>();
-        for (String key : sortedKeys) {
-            RapidScanComponentDetail detail = componentDetails.get(key);
-            RapidScanDetailGroup securityGroupName = detail.getSecurityDetails().getGroup();
-            RapidScanDetailGroup licenseGroupName = detail.getLicenseDetails().getGroup();
-            RapidScanDetailGroup componentGroupName = detail.getComponentDetails().getGroup();
-            RapidScanComponentGroupDetail aggregatedSecurityDetail = aggregatedDetails.computeIfAbsent(detail.getSecurityDetails().getGroup(), ignoredKey -> new RapidScanComponentGroupDetail(securityGroupName));
-            RapidScanComponentGroupDetail aggregatedLicenseDetail = aggregatedDetails.computeIfAbsent(detail.getLicenseDetails().getGroup(), ignoredKey -> new RapidScanComponentGroupDetail(licenseGroupName));
-            RapidScanComponentGroupDetail aggregatedComponentDetail = aggregatedDetails.computeIfAbsent(detail.getComponentDetails().getGroup(), ignoredKey -> new RapidScanComponentGroupDetail(componentGroupName));
-            aggregatedComponentDetail.addErrors(detail.getComponentDetails().getErrorMessages());
-            aggregatedComponentDetail.addWarnings(detail.getComponentDetails().getWarningMessages());
-            aggregatedSecurityDetail.addErrors(detail.getSecurityDetails().getErrorMessages());
-            aggregatedSecurityDetail.addWarnings(detail.getSecurityDetails().getWarningMessages());
-            aggregatedLicenseDetail.addErrors(detail.getLicenseDetails().getErrorMessages());
-            aggregatedLicenseDetail.addWarnings(detail.getLicenseDetails().getWarningMessages());
-        }
-
+    private void logDetailedInformation(RapidScanAggregateResult aggregateResult) {
         // now log aggregated data
-        logGroupDetail(aggregatedDetails.get(RapidScanDetailGroup.POLICY));
-        logGroupDetail(aggregatedDetails.get(RapidScanDetailGroup.SECURITY));
-        logGroupDetail(aggregatedDetails.get(RapidScanDetailGroup.LICENSE));
+        logGroupDetail(aggregateResult.getComponentDetails());
+        logGroupDetail(aggregateResult.getSecurityDetails());
+        logGroupDetail(aggregateResult.getLicenseDetails());
     }
 
     private void logGroupDetail(RapidScanComponentGroupDetail groupDetail) {
@@ -139,14 +116,17 @@ public class BlackDuckRapidModePostActions {
     }
 
     private List<String> createResultMessages(RapidScanResultSummary summary) {
+        String policyGroupName = RapidScanDetailGroup.POLICY.getDisplayName();
+        String securityGroupName = RapidScanDetailGroup.SECURITY.getDisplayName();
+        String licenseGroupName = RapidScanDetailGroup.LICENSE.getDisplayName();
         List<String> resultMessages = new LinkedList<>();
         resultMessages.add("");
-        resultMessages.add(String.format("\tPolicy Errors = %d", summary.getPolicyErrorCount()));
-        resultMessages.add(String.format("\tPolicy Warning = %d", summary.getPolicyWarningCount()));
-        resultMessages.add(String.format("\tSecurity Errors = %d", summary.getSecurityErrorCount()));
-        resultMessages.add(String.format("\tSecurity Warnings = %d", summary.getSecurityWarningCount()));
-        resultMessages.add(String.format("\tLicense Errors = %d", summary.getLicenseErrorCount()));
-        resultMessages.add(String.format("\tLicense Warnings = %d", summary.getLicenseWarningCount()));
+        resultMessages.add(String.format("\t%s Errors = %d", policyGroupName, summary.getPolicyErrorCount()));
+        resultMessages.add(String.format("\t%s Warning = %d", policyGroupName, summary.getPolicyWarningCount()));
+        resultMessages.add(String.format("\t%s Errors = %d", securityGroupName, summary.getSecurityErrorCount()));
+        resultMessages.add(String.format("\t%s Warnings = %d", securityGroupName, summary.getSecurityWarningCount()));
+        resultMessages.add(String.format("\t%s Errors = %d", licenseGroupName, summary.getLicenseErrorCount()));
+        resultMessages.add(String.format("\t%s Warnings = %d", licenseGroupName, summary.getLicenseWarningCount()));
         resultMessages.add("");
         resultMessages.add("\tPolicies Violated:");
         summary.getPolicyViolationNames().forEach(policy -> resultMessages.add(String.format("\t\t%s", policy)));

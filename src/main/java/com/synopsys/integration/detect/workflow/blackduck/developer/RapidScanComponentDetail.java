@@ -57,27 +57,27 @@ public class RapidScanComponentDetail {
         return licenseDetails;
     }
 
-    public int getComponentErrors() {
+    public int getComponentErrorCount() {
         return getGroupErrorCount(componentDetails);
     }
 
-    public int getComponentWarnings() {
+    public int getComponentWarningCount() {
         return getGroupWarningCount(componentDetails);
     }
 
-    public int getSecurityErrors() {
+    public int getSecurityErrorCount() {
         return getGroupErrorCount(securityDetails);
     }
 
-    public int getSecurityWarnings() {
+    public int getSecurityWarningCount() {
         return getGroupWarningCount(securityDetails);
     }
 
-    public int getLicenseErrors() {
+    public int getLicenseErrorCount() {
         return getGroupErrorCount(licenseDetails);
     }
 
-    public int getLicenseWarnings() {
+    public int getLicenseWarningCount() {
         return getGroupWarningCount(licenseDetails);
     }
 
