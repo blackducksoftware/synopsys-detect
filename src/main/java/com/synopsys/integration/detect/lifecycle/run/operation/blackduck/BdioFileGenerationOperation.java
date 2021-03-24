@@ -34,7 +34,7 @@ public class BdioFileGenerationOperation {
 
     public BdioResult execute(BdioInput bdioInput) throws DetectUserFriendlyException {
         try {
-            BdioResult bdioResult = bdioManager.createBdioFiles(bdioOptions, bdioInput.getAggregateOptions(), bdioInput.getNameVersion(), bdioInput.getCodeLocations(), runOptions.shouldUseBdio2());
+            BdioResult bdioResult = bdioManager.createBdioFiles(bdioOptions, bdioInput.getAggregateDecision(), bdioInput.getNameVersion(), bdioInput.getCodeLocations(), runOptions.shouldUseBdio2());
             codeLocationEventPublisher.publishDetectCodeLocationNamesCalculated(bdioResult.getCodeLocationNamesResult());
             operationSystem.completeWithSuccess(OPERATION_NAME);
             return bdioResult;

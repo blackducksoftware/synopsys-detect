@@ -169,14 +169,14 @@ public class RunManager {
     }
 
     private void runBlackDuckProduct(BlackDuckRunData blackDuckRunData, OperationFactory operationFactory, RunOptions runOptions, DetectToolFilter detectToolFilter, RunResult runResult, NameVersion projectNameVersion,
-        AggregateOptions aggregateOptions)
+        AggregateDecision aggregateDecision)
         throws IntegrationException, DetectUserFriendlyException {
 
         logger.debug("Black Duck tools will run.");
 
         ProjectVersionWrapper projectVersionWrapper = null;
 
-        BdioInput bdioInput = new BdioInput(aggregateOptions, projectNameVersion, runResult.getDetectCodeLocations());
+        BdioInput bdioInput = new BdioInput(aggregateDecision, projectNameVersion, runResult.getDetectCodeLocations());
         BdioResult bdioResult = operationFactory.createBdioFileGenerationOperation().execute(bdioInput);
         if (runOptions.shouldPerformRapidModeScan() && blackDuckRunData.isOnline()) {
             logger.info(ReportConstants.RUN_SEPARATOR);

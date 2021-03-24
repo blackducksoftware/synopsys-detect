@@ -16,7 +16,7 @@ import com.synopsys.integration.detect.configuration.DetectUserFriendlyException
 import com.synopsys.integration.detect.lifecycle.run.RunContext;
 import com.synopsys.integration.detect.lifecycle.run.RunOptions;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
-import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.AggregateOptionsOperation;
+import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.AggregateDecisionOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BdioFileGenerationOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BdioUploadOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BinaryScanOperation;
@@ -77,8 +77,8 @@ public class OperationFactory {
             runContext.getDetectConfigurationFactory().findTimeoutInSeconds());
     }
 
-    public final AggregateOptionsOperation createAggregateOptionsOperation() {
-        return new AggregateOptionsOperation(runOptions, runContext.getOperationSystem());
+    public final AggregateDecisionOperation createAggregateOptionsOperation() {
+        return new AggregateDecisionOperation(runOptions, runContext.getOperationSystem());
     }
 
     public final BdioFileGenerationOperation createBdioFileGenerationOperation() {

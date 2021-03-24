@@ -9,23 +9,23 @@ package com.synopsys.integration.detect.lifecycle.run.operation.input;
 
 import java.util.List;
 
-import com.synopsys.integration.detect.workflow.bdio.AggregateOptions;
+import com.synopsys.integration.detect.workflow.bdio.AggregateDecision;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.util.NameVersion;
 
 public class BdioInput {
-    private final AggregateOptions aggregateOptions;
+    private final AggregateDecision aggregateDecision;
     private final NameVersion nameVersion;
     private final List<DetectCodeLocation> codeLocations;
 
-    public BdioInput(AggregateOptions aggregateOptions, NameVersion nameVersion, List<DetectCodeLocation> codeLocations) {
-        this.aggregateOptions = aggregateOptions;
+    public BdioInput(AggregateDecision aggregateDecision, NameVersion nameVersion, List<DetectCodeLocation> codeLocations) {
+        this.aggregateDecision = aggregateDecision;
         this.nameVersion = nameVersion;
         this.codeLocations = codeLocations;
     }
 
-    public AggregateOptions getAggregateOptions() {
-        return aggregateOptions;
+    public AggregateDecision getAggregateDecision() {
+        return aggregateDecision;
     }
 
     public NameVersion getNameVersion() {
