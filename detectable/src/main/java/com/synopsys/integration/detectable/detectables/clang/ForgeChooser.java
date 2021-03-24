@@ -10,6 +10,7 @@ package com.synopsys.integration.detectable.detectables.clang;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -44,11 +45,8 @@ public class ForgeChooser {
 
     @NotNull
     private String generateNamesString(List<Forge> forges) {
-        StringBuilder sb = new StringBuilder();
-        forges.stream().map(Forge::getName).forEach(name -> {
-            sb.append(name);
-            sb.append(" ");
-        });
-        return sb.toString();
+        return forges.stream()
+                   .map(Forge::getName)
+                   .collect(Collectors.joining(" "));
     }
 }
