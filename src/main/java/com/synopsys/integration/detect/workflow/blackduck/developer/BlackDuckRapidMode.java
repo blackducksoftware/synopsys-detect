@@ -15,9 +15,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponentResultView;
-import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
-import com.synopsys.integration.blackduck.developermode.RapidScanService;
+import com.synopsys.integration.blackduck.codelocation.upload.UploadBatch;
+import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
 import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationException;
+import com.synopsys.integration.blackduck.scan.RapidScanService;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
@@ -54,9 +55,12 @@ public class BlackDuckRapidMode {
 
         List<DeveloperScanComponentResultView> results = new LinkedList<>();
         try {
+            UploadBatch uploadBatch = new UploadBatch();
             for (UploadTarget uploadTarget : bdioResult.getUploadTargets()) {
-                results.addAll(rapidScanService.performDeveloperScan(uploadTarget.getUploadFile(), timeoutInSeconds, DEFAULT_WAIT_INTERVAL_IN_SECONDS));
+                logger.debug(String.format("Uploading %s", uploadTarget.getUploadFile().getName()));
+                uploadBatch.addUploadTarget(uploadTarget);
             }
+            results.addAll(rapidScanService.performScan(uploadBatch, timeoutInSeconds, DEFAULT_WAIT_INTERVAL_IN_SECONDS));
             logger.debug("Rapid scan result count: {}", results.size());
             operationSystem.completeWithSuccess(OPERATION_NAME);
         } catch (IllegalArgumentException e) {
