@@ -37,13 +37,16 @@ public class ClangExtractor {
     private final DependencyFileDetailGenerator dependencyFileDetailGenerator;
     private final ClangPackageDetailsTransformer clangPackageDetailsTransformer;
     private final CompileCommandDatabaseParser compileCommandDatabaseParser;
+    private final ForgeChooser forgeChooser;
 
     public ClangExtractor(DetectableExecutableRunner executableRunner, DependencyFileDetailGenerator dependencyFileDetailGenerator,
-        ClangPackageDetailsTransformer clangPackageDetailsTransformer, CompileCommandDatabaseParser compileCommandDatabaseParser) {
+        ClangPackageDetailsTransformer clangPackageDetailsTransformer, CompileCommandDatabaseParser compileCommandDatabaseParser,
+        ForgeChooser forgeChooser) {
         this.executableRunner = executableRunner;
         this.dependencyFileDetailGenerator = dependencyFileDetailGenerator;
         this.clangPackageDetailsTransformer = clangPackageDetailsTransformer;
         this.compileCommandDatabaseParser = compileCommandDatabaseParser;
+        this.forgeChooser = forgeChooser;
     }
 
     public Extraction extract(ClangPackageManager currentPackageManager, ClangPackageManagerRunner packageManagerRunner, File sourceDirectory, File outputDirectory, File jsonCompilationDatabaseFile,
@@ -59,13 +62,13 @@ public class ClangExtractor {
             logger.trace("Found : " + results.getFoundPackages() + " packages.");
             logger.trace("Found : " + results.getUnRecognizedDependencyFiles() + " non-package files.");
 
-            List<Forge> packageForges = currentPackageManager.getPackageManagerInfo().getForges();
+            List<Forge> packageForges = forgeChooser.determineForges(currentPackageManager);
             CodeLocation codeLocation = clangPackageDetailsTransformer.toCodeLocation(packageForges, results.getFoundPackages());
 
             logFileCollection("Unrecognized dependency files (all)", results.getUnRecognizedDependencyFiles());
             List<File> unrecognizedIncludeFiles = results.getUnRecognizedDependencyFiles().stream()
-                                                            .filter(file -> !isFileUnderDir(sourceDirectory, file))
-                                                            .collect(Collectors.toList());
+                                                      .filter(file -> !isFileUnderDir(sourceDirectory, file))
+                                                      .collect(Collectors.toList());
             logFileCollection(String.format("Unrecognized dependency files that are outside the compile_commands.json directory (%s) and will be collected", sourceDirectory), unrecognizedIncludeFiles);
 
             return new Extraction.Builder()
