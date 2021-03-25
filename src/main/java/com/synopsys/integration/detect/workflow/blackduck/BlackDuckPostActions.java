@@ -92,6 +92,12 @@ public class BlackDuckPostActions {
         } catch (BlackDuckTimeoutExceededException e) {
             operationSystem.completeWithError(currentOperationKey, e.getMessage());
             throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_TIMEOUT);
+        } catch (InterruptedException e) {
+            String errorReason = String.format("There was a problem: %s", e.getMessage());
+            operationSystem.completeWithError(currentOperationKey, errorReason);
+            // Restore interrupted state...
+            Thread.currentThread().interrupt();
+            throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_GENERAL_ERROR);
         } catch (Exception e) {
             String errorReason = String.format("There was a problem: %s", e.getMessage());
             operationSystem.completeWithError(currentOperationKey, errorReason);

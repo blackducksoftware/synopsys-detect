@@ -7,6 +7,8 @@
  */
 package com.synopsys.integration.detect.workflow.blackduck.developer.aggregate;
 
+import com.synopsys.integration.log.IntLogger;
+
 public class RapidScanAggregateResult {
     private final RapidScanResultSummary summary;
     private final RapidScanComponentGroupDetail componentDetails;
@@ -25,15 +27,23 @@ public class RapidScanAggregateResult {
         return summary;
     }
 
-    public RapidScanComponentGroupDetail getComponentDetails() {
-        return componentDetails;
+    public void logResult(IntLogger logger) {
+        logGroupDetail(logger, componentDetails);
+        logGroupDetail(logger, securityDetails);
+        logGroupDetail(logger, licenseDetails);
     }
 
-    public RapidScanComponentGroupDetail getSecurityDetails() {
-        return securityDetails;
-    }
-
-    public RapidScanComponentGroupDetail getLicenseDetails() {
-        return licenseDetails;
+    private void logGroupDetail(IntLogger logger, RapidScanComponentGroupDetail groupDetail) {
+        String groupName = groupDetail.getGroupName();
+        logger.info("");
+        logger.info(String.format("\t%s Errors: ", groupName));
+        for (String message : groupDetail.getErrorMessages()) {
+            logger.info(String.format("\t\t%s", message));
+        }
+        logger.info("");
+        logger.info(String.format("\t%s Warnings: ", groupName));
+        for (String message : groupDetail.getWarningMessages()) {
+            logger.info(String.format("\t\t%s", message));
+        }
     }
 }

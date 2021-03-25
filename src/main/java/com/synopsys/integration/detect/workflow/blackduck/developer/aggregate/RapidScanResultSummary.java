@@ -136,6 +136,24 @@ public class RapidScanResultSummary {
             componentsViolatingPolicyWarnings.add(componentName);
         }
 
+        public void addDetailData(RapidScanComponentDetail detail) {
+            String formattedComponentName = String.format("%s %s (%s)", detail.getComponent(), detail.getVersion(), detail.getComponentIdentifier());
+            if (detail.hasWarnings()) {
+                addComponentsViolatingPolicy(formattedComponentName);
+            }
+            if (detail.hasErrors()) {
+                addComponentViolatingPolicyWarnings(formattedComponentName);
+            }
+
+            addViolatedPolicyNames(detail.getComponentDetails().getPolicyNames());
+            addPolicyViolations(detail.getComponentErrorCount());
+            addSecurityErrors(detail.getSecurityErrorCount());
+            addLicenseErrors(detail.getLicenseErrorCount());
+            addPolicyViolationWarnings(detail.getComponentWarningCount());
+            addSecurityWarnings(detail.getSecurityWarningCount());
+            addLicenseWarnings(detail.getLicenseWarningCount());
+        }
+
         public RapidScanResultSummary build() {
             return new RapidScanResultSummary(this.policyErrors, this.policyWarnings, this.securityErrors, this.securityWarnings,
                 this.licenseErrors, this.licenseWarnings, violatedPolicyNames, componentsViolatingPolicy,

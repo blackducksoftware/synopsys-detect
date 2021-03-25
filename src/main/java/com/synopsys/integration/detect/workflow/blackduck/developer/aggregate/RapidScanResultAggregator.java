@@ -11,12 +11,11 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponentResultView;
 import com.synopsys.integration.blackduck.api.manual.view.PolicyViolationLicenseView;
@@ -31,7 +30,7 @@ public class RapidScanResultAggregator {
         Map<RapidScanDetailGroup, RapidScanComponentGroupDetail> aggregatedDetails = new HashMap<>();
         RapidScanResultSummary.Builder summaryBuilder = new RapidScanResultSummary.Builder();
         for (RapidScanComponentDetail detail : sortedByComponent) {
-            aggregateSummaryData(summaryBuilder, detail);
+            summaryBuilder.addDetailData(detail);
             RapidScanDetailGroup securityGroupName = detail.getSecurityDetails().getGroup();
             RapidScanDetailGroup licenseGroupName = detail.getLicenseDetails().getGroup();
             RapidScanDetailGroup componentGroupName = detail.getComponentDetails().getGroup();
@@ -51,34 +50,18 @@ public class RapidScanResultAggregator {
         return new RapidScanAggregateResult(summaryBuilder.build(), aggregatedDetails.get(RapidScanDetailGroup.POLICY), aggregatedDetails.get(RapidScanDetailGroup.SECURITY), aggregatedDetails.get(RapidScanDetailGroup.LICENSE));
     }
 
-    private void aggregateSummaryData(RapidScanResultSummary.Builder summaryBuilder, RapidScanComponentDetail detail) {
-        String formattedComponentName = String.format("%s %s (%s)", detail.getComponent(), detail.getVersion(), detail.getComponentIdentifier());
-        if (detail.hasWarnings()) {
-            summaryBuilder.addComponentsViolatingPolicy(formattedComponentName);
-        }
-        if (detail.hasErrors()) {
-            summaryBuilder.addComponentViolatingPolicyWarnings(formattedComponentName);
-        }
-
-        summaryBuilder.addViolatedPolicyNames(detail.getComponentDetails().getPolicyNames());
-        summaryBuilder.addPolicyViolations(detail.getComponentErrorCount());
-        summaryBuilder.addSecurityErrors(detail.getSecurityErrorCount());
-        summaryBuilder.addLicenseErrors(detail.getLicenseErrorCount());
-        summaryBuilder.addPolicyViolationWarnings(detail.getComponentWarningCount());
-        summaryBuilder.addSecurityWarnings(detail.getSecurityWarningCount());
-        summaryBuilder.addLicenseWarnings(detail.getLicenseWarningCount());
-    }
-
-    private Collection<RapidScanComponentDetail> aggregateComponentData(List<DeveloperScanComponentResultView> results) {
-        Map<String, RapidScanComponentDetail> componentDetails = new HashMap<>();
+    private List<RapidScanComponentDetail> aggregateComponentData(List<DeveloperScanComponentResultView> results) {
+        // the key is the component identifier
+        List<RapidScanComponentDetail> componentDetails = new LinkedList<>();
         for (DeveloperScanComponentResultView resultView : results) {
             String componentName = resultView.getComponentName();
-            RapidScanComponentDetail componentDetail = componentDetails.computeIfAbsent(componentName,
-                ignoredKey -> createDetail(resultView));
+            RapidScanComponentDetail componentDetail = createDetail(resultView);
+            componentDetails.add(componentDetail);
             RapidScanComponentGroupDetail componentGroupDetail = componentDetail.getComponentDetails();
             RapidScanComponentGroupDetail securityGroupDetail = componentDetail.getSecurityDetails();
             RapidScanComponentGroupDetail licenseGroupDetail = componentDetail.getLicenseDetails();
 
+            // violating policy names is a super set of policy names so we have to remove the vulnerability and license.
             Set<String> policyNames = new LinkedHashSet<>(resultView.getViolatingPolicyNames());
             Set<PolicyViolationVulnerabilityView> vulnerabilityViolations = resultView.getPolicyViolationVulnerabilities();
             Set<PolicyViolationLicenseView> licenseViolations = resultView.getPolicyViolationLicenses();
@@ -97,26 +80,11 @@ public class RapidScanResultAggregator {
             componentGroupDetail.addPolicies(policyNames);
             securityGroupDetail.addPolicies(vulnerabilityPolicyNames);
             licenseGroupDetail.addPolicies(licensePolicyNames);
-
-            boolean hasComponentErrors = StringUtils.isNotBlank(resultView.getErrorMessage());
-            boolean hasComponentWarnings = StringUtils.isNotBlank(resultView.getWarningMessage());
-            if (hasComponentErrors) {
-                componentGroupDetail.addError(resultView.getErrorMessage());
-            }
-
-            if (hasComponentWarnings) {
-                componentGroupDetail.addWarning(resultView.getWarningMessage());
-            }
-
-            if (!vulnerabilityPolicyNames.isEmpty()) {
-                addVulnerabilityData(vulnerabilityViolations, securityGroupDetail);
-            }
-
-            if (!licensePolicyNames.isEmpty()) {
-                addLicenseData(licenseViolations, licenseGroupDetail);
-            }
+            componentGroupDetail.addMessages(resultView::getErrorMessage, resultView::getWarningMessage);
+            addVulnerabilityData(vulnerabilityViolations, securityGroupDetail);
+            addLicenseData(licenseViolations, licenseGroupDetail);
         }
-        return componentDetails.values();
+        return componentDetails;
     }
 
     private RapidScanComponentDetail createDetail(DeveloperScanComponentResultView view) {
@@ -132,29 +100,13 @@ public class RapidScanResultAggregator {
 
     private void addVulnerabilityData(Set<PolicyViolationVulnerabilityView> vulnerabilities, RapidScanComponentGroupDetail securityDetail) {
         for (PolicyViolationVulnerabilityView vulnerabilityPolicyViolation : vulnerabilities) {
-            boolean hasError = StringUtils.isNotBlank(vulnerabilityPolicyViolation.getErrorMessage());
-            boolean hasWarning = StringUtils.isNotBlank(vulnerabilityPolicyViolation.getWarningMessage());
-            if (hasError) {
-                securityDetail.addError(vulnerabilityPolicyViolation.getErrorMessage());
-            }
-
-            if (hasWarning) {
-                securityDetail.addWarning(vulnerabilityPolicyViolation.getWarningMessage());
-            }
+            securityDetail.addMessages(vulnerabilityPolicyViolation::getErrorMessage, vulnerabilityPolicyViolation::getWarningMessage);
         }
     }
 
     private void addLicenseData(Set<PolicyViolationLicenseView> licenses, RapidScanComponentGroupDetail licenseDetail) {
         for (PolicyViolationLicenseView licensePolicyViolation : licenses) {
-            boolean hasError = StringUtils.isNotBlank(licensePolicyViolation.getErrorMessage());
-            boolean hasWarning = StringUtils.isNotBlank(licensePolicyViolation.getWarningMessage());
-            if (hasError) {
-                licenseDetail.addError(licensePolicyViolation.getErrorMessage());
-            }
-
-            if (hasWarning) {
-                licenseDetail.addWarning(licensePolicyViolation.getWarningMessage());
-            }
+            licenseDetail.addMessages(licensePolicyViolation::getErrorMessage, licensePolicyViolation::getWarningMessage);
         }
     }
 }

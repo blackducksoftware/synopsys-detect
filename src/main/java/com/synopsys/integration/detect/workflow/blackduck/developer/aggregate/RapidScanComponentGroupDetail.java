@@ -9,6 +9,9 @@ package com.synopsys.integration.detect.workflow.blackduck.developer.aggregate;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.function.Supplier;
+
+import org.apache.commons.lang3.StringUtils;
 
 public class RapidScanComponentGroupDetail {
     private RapidScanDetailGroup group;
@@ -68,4 +71,14 @@ public class RapidScanComponentGroupDetail {
         this.policyNames.addAll(policyNames);
     }
 
+    public void addMessages(Supplier<String> errorSupplier, Supplier<String> warningSupplier) {
+        String errorMessage = errorSupplier.get();
+        String warningMessage = warningSupplier.get();
+        if (StringUtils.isNotBlank(errorMessage)) {
+            addError(errorMessage);
+        }
+        if (StringUtils.isNotBlank(warningMessage)) {
+            addWarning(warningMessage);
+        }
+    }
 }
