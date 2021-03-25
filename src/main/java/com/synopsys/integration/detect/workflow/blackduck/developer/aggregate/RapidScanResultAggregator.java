@@ -5,7 +5,7 @@
  *
  * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
-package com.synopsys.integration.detect.workflow.blackduck.developer;
+package com.synopsys.integration.detect.workflow.blackduck.developer.aggregate;
 
 import java.util.Collection;
 import java.util.Comparator;

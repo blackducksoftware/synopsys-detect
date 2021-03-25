@@ -22,6 +22,12 @@ import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponent
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
+import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanAggregateResult;
+import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanComponentGroupDetail;
+import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanDetailGroup;
+import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanDetectResult;
+import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultAggregator;
+import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultSummary;
 import com.synopsys.integration.detect.workflow.file.DetectFileUtils;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.status.OperationSystem;
