@@ -128,7 +128,7 @@ public class BlackDuckRapidModePostActions {
         List<String> resultMessages = new LinkedList<>();
         resultMessages.add("");
         resultMessages.add(String.format("\t%s Errors = %d", policyGroupName, summary.getPolicyErrorCount()));
-        resultMessages.add(String.format("\t%s Warning = %d", policyGroupName, summary.getPolicyWarningCount()));
+        resultMessages.add(String.format("\t%s Warnings = %d", policyGroupName, summary.getPolicyWarningCount()));
         resultMessages.add(String.format("\t%s Errors = %d", securityGroupName, summary.getSecurityErrorCount()));
         resultMessages.add(String.format("\t%s Warnings = %d", securityGroupName, summary.getSecurityWarningCount()));
         resultMessages.add(String.format("\t%s Errors = %d", licenseGroupName, summary.getLicenseErrorCount()));
