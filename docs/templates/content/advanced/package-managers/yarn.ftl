@@ -28,8 +28,9 @@ or included.
 
 ## Monorepo support
 
-If your root project contains workspaces but does not depend on any of them, you can
+If your root project contains workspaces but does not depend on them, you can
 use the workspace include filter to force some or all of the workspaces to be included.
+To include all workspaces in a monorepo, set detect.yarn.included.workspaces="*".
 
 ## Using the workspace exclude and include filters
 
