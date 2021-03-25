@@ -17,11 +17,13 @@ public class BlackDuckRunData {
     private final PhoneHomeManager phoneHomeManager;
     private final BlackDuckServerConfig blackDuckServerConfig;
     private final BlackDuckServicesFactory blackDuckServicesFactory;
+    private final Boolean isRapid;
 
-    protected BlackDuckRunData(PhoneHomeManager phoneHomeManager, BlackDuckServerConfig blackDuckServerConfig, BlackDuckServicesFactory blackDuckServicesFactory) {
+    protected BlackDuckRunData(PhoneHomeManager phoneHomeManager, BlackDuckServerConfig blackDuckServerConfig, BlackDuckServicesFactory blackDuckServicesFactory, final Boolean isRapid) {
         this.phoneHomeManager = phoneHomeManager;
         this.blackDuckServerConfig = blackDuckServerConfig;
         this.blackDuckServicesFactory = blackDuckServicesFactory;
+        this.isRapid = isRapid;
     }
 
     public boolean isOnline() {
@@ -41,15 +43,18 @@ public class BlackDuckRunData {
     }
 
     public static BlackDuckRunData offline() {
-        return new BlackDuckRunData(null, null, null);
+        return new BlackDuckRunData(null, null, null, false);
     }
 
-    public static BlackDuckRunData online(BlackDuckServicesFactory blackDuckServicesFactory, PhoneHomeManager phoneHomeManager, BlackDuckServerConfig blackDuckServerConfig) {
-        return new BlackDuckRunData(phoneHomeManager, blackDuckServerConfig, blackDuckServicesFactory);
+    public static BlackDuckRunData online(boolean isRapid, BlackDuckServicesFactory blackDuckServicesFactory, PhoneHomeManager phoneHomeManager, BlackDuckServerConfig blackDuckServerConfig) {
+        return new BlackDuckRunData(phoneHomeManager, blackDuckServerConfig, blackDuckServicesFactory, isRapid);
     }
 
-    public static BlackDuckRunData onlineNoPhoneHome(BlackDuckServicesFactory blackDuckServicesFactory, BlackDuckServerConfig blackDuckServerConfig) {
-        return new BlackDuckRunData(null, blackDuckServerConfig, blackDuckServicesFactory);
+    public static BlackDuckRunData onlineNoPhoneHome(boolean isRapid, BlackDuckServicesFactory blackDuckServicesFactory, BlackDuckServerConfig blackDuckServerConfig) {
+        return new BlackDuckRunData(null, blackDuckServerConfig, blackDuckServicesFactory, isRapid);
     }
 
+    public Boolean isRapid() {
+        return isRapid;
+    }
 }

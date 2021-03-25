@@ -94,10 +94,6 @@ public class BlackDuckImpactAnalysisTool {
         this.online = online;
     }
 
-    public boolean shouldRun() {
-        return Boolean.TRUE.equals(impactAnalysisOptions.isEnabled());
-    }
-
     /**
      * @param projectNameAndVersion is the Black Duck project name and version.
      * @param projectVersionWrapper is Nullable, but is a pre-requisite for code location mapping.

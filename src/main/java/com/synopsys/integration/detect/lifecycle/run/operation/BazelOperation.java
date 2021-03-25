@@ -14,7 +14,6 @@ import com.synopsys.integration.detect.tool.DetectableToolResult;
 import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
 import com.synopsys.integration.detect.tool.detector.DetectDetectableFactory;
 import com.synopsys.integration.detect.tool.detector.extraction.ExtractionEnvironmentProvider;
-import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
@@ -28,7 +27,7 @@ public class BazelOperation {
     private final CodeLocationConverter codeLocationConverter;
     private final OperationSystem operationSystem;
 
-    public BazelOperation(DirectoryManager directoryManager, StatusEventPublisher statusEventPublisher, ExitCodePublisher exitCodePublisher, DetectDetectableFactory detectDetectableFactory, DetectToolFilter detectToolFilter,
+    public BazelOperation(DirectoryManager directoryManager, StatusEventPublisher statusEventPublisher, ExitCodePublisher exitCodePublisher, DetectDetectableFactory detectDetectableFactory,
         ExtractionEnvironmentProvider extractionEnvironmentProvider, CodeLocationConverter codeLocationConverter, OperationSystem operationSystem) {
         this.directoryManager = directoryManager;
         this.statusEventPublisher = statusEventPublisher;

@@ -44,7 +44,6 @@ import com.synopsys.integration.detect.lifecycle.DetectContext;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecision;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBoot;
-import com.synopsys.integration.detect.lifecycle.run.AggregateOptions;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.util.filter.DetectOverrideableFilter;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
@@ -166,8 +165,7 @@ public class DetectBoot {
 
         ProductRunData productRunData;
         try {
-            AggregateOptions aggregateOptions = detectConfigurationFactory.createAggregateOptions();
-            DetectToolFilter detectToolFilter = aggregateOptions.getDetectToolFilter();
+            DetectToolFilter detectToolFilter = detectConfigurationFactory.createToolFilter();
             ProductDecider productDecider = new ProductDecider();
             ProductDecision productDecision = productDecider.decide(detectConfigurationFactory, directoryManager.getUserHome(), detectToolFilter);
 

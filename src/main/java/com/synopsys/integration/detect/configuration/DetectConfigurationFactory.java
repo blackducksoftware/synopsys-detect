@@ -260,11 +260,12 @@ public class DetectConfigurationFactory {
         Optional<Boolean> sigScanDisabled = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED.getProperty(),
             DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_DISABLED.getProperty());
         Optional<Boolean> polarisEnabled = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_SWIP_ENABLED.getProperty());
+        Optional<Boolean> impactEnabled = Optional.of(detectConfiguration.getValue(DetectProperties.DETECT_IMPACT_ANALYSIS_ENABLED.getProperty()));
 
         List<FilterableEnumValue<DetectTool>> includedTools = getValue(DetectProperties.DETECT_TOOLS);
         List<FilterableEnumValue<DetectTool>> excludedTools = getValue(DetectProperties.DETECT_TOOLS_EXCLUDED);
         ExcludeIncludeEnumFilter filter = new ExcludeIncludeEnumFilter(excludedTools, includedTools);
-        DetectToolFilter detectToolFilter = new DetectToolFilter(filter, sigScanDisabled, polarisEnabled);
+        return new DetectToolFilter(filter, sigScanDisabled, polarisEnabled, impactEnabled);
     }
 
     public AggregateOptions createAggregateOptions() {
@@ -272,11 +273,6 @@ public class DetectConfigurationFactory {
         AggregateMode aggregateMode = getValue(DetectProperties.DETECT_BOM_AGGREGATE_REMEDIATION_MODE);
 
         return new AggregateOptions(aggregateName, aggregateMode);
-    }
-
-    @Nullable
-    public Path createSourceDirectoryOverride() {
-        return getPathOrNull(DetectProperties.DETECT_SOURCE_PATH.getProperty());
     }
 
     public BlackduckScanMode createScanMode() {
@@ -287,13 +283,18 @@ public class DetectConfigurationFactory {
         return getValue(DetectProperties.DETECT_TARGET);
     }
 
+    public List<DetectTool> createPreferredProjectTools() {
+        return getValue(DetectProperties.DETECT_PROJECT_TOOL);
+    }
+
     public DirectoryOptions createDirectoryOptions() throws IOException {
+        Path sourcePath = getPathOrNull(DetectProperties.DETECT_SOURCE_PATH.getProperty());
         Path outputPath = getPathOrNull(DetectProperties.DETECT_OUTPUT_PATH.getProperty());
         Path bdioPath = getPathOrNull(DetectProperties.DETECT_BDIO_OUTPUT_PATH.getProperty());
         Path scanPath = getPathOrNull(DetectProperties.DETECT_SCAN_OUTPUT_PATH.getProperty());
         Path toolsOutputPath = getPathOrNull(DetectProperties.DETECT_TOOLS_OUTPUT_PATH.getProperty());
 
-        return new DirectoryOptions(outputPath, bdioPath, scanPath, toolsOutputPath);
+        return new DirectoryOptions(sourcePath, outputPath, bdioPath, scanPath, toolsOutputPath);
     }
 
     public AirGapOptions createAirGapOptions() {
@@ -345,7 +346,8 @@ public class DetectConfigurationFactory {
     public BdioOptions createBdioOptions() {
         String prefix = getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX);
         String suffix = getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX);
-        return new BdioOptions(prefix, suffix);
+        Boolean useBdio2 = getValue(DetectProperties.DETECT_BDIO2_ENABLED);
+        return new BdioOptions(useBdio2, prefix, suffix);
     }
 
     public ProjectNameVersionOptions createProjectNameVersionOptions(String sourceDirectoryName) {
@@ -355,6 +357,10 @@ public class DetectConfigurationFactory {
         DefaultVersionNameScheme defaultProjectVersionScheme = getValue(DetectProperties.DETECT_DEFAULT_PROJECT_VERSION_SCHEME);
         String defaultProjectVersionFormat = getValue(DetectProperties.DETECT_DEFAULT_PROJECT_VERSION_TIMEFORMAT);
         return new ProjectNameVersionOptions(sourceDirectoryName, overrideProjectName, overrideProjectVersionName, defaultProjectVersionText, defaultProjectVersionScheme, defaultProjectVersionFormat);
+    }
+
+    public boolean createShouldUnmapCodeLocations() {
+        return getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_UNMAP);
     }
 
     public DetectProjectServiceOptions createDetectProjectServiceOptions() throws DetectUserFriendlyException {
@@ -469,11 +475,10 @@ public class DetectConfigurationFactory {
     }
 
     public ImpactAnalysisOptions createImpactAnalysisOptions() {
-        Boolean enabled = detectConfiguration.getValue(DetectProperties.DETECT_IMPACT_ANALYSIS_ENABLED.getProperty());
         Path outputDirectory = getPathOrNull(DetectProperties.DETECT_IMPACT_ANALYSIS_OUTPUT_PATH.getProperty());
         String codeLocationPrefix = getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX);
         String codeLocationSuffix = getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX);
-        return new ImpactAnalysisOptions(enabled, codeLocationPrefix, codeLocationSuffix, outputDirectory);
+        return new ImpactAnalysisOptions(codeLocationPrefix, codeLocationSuffix, outputDirectory);
     }
 
     public DetectExecutableOptions createDetectExecutableOptions() {

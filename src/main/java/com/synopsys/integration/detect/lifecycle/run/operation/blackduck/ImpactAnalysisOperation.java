@@ -35,8 +35,4 @@ public class ImpactAnalysisOperation {
 
         return impactAnalysisToolResult;
     }
-
-    public boolean shouldImpactAnalysisToolRun() {
-        return blackDuckImpactAnalysisTool.shouldRun();
-    }
 }

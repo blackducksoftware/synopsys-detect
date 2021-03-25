@@ -64,6 +64,7 @@ public class DirectoryManager {
 
     private final File userHome;
     private final File runDirectory;
+    private final File sourceDirectory;
 
     private final Map<OutputDirectory, File> outputDirectories = new HashMap<>();
     private final Map<RunDirectory, File> runDirectories = new HashMap<>();
@@ -71,6 +72,11 @@ public class DirectoryManager {
     private final Map<ExtractionId, File> extractionDirectories = new HashMap<>();
 
     public DirectoryManager(DirectoryOptions directoryOptions, DetectRun detectRun) {
+        sourceDirectory = directoryOptions.getSourcePathOverride()
+                              .map(Path::toFile)
+                              .orElse(new File(System.getProperty("user.dir")));
+        logger.info("Source directory: " + sourceDirectory.getAbsolutePath());
+
         userHome = new File(System.getProperty("user.home"));
 
         File outputDirectory = directoryOptions.getOutputPathOverride()
@@ -131,6 +137,10 @@ public class DirectoryManager {
             extractionDirectories.put(extractionId, newDirectory);
             return newDirectory;
         }
+    }
+
+    public File getSourceDirectory() {
+        return sourceDirectory;
     }
 
     public File getBdioOutputDirectory() {
@@ -210,5 +220,4 @@ public class DirectoryManager {
     public File getPermanentDirectory(String name) { // shared across all invocations of detect (scan cli)
         return new File(getOutputDirectory(OutputDirectory.TOOLS), name);
     }
-
 }

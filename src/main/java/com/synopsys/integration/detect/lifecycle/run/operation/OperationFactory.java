@@ -62,7 +62,7 @@ public class OperationFactory {
     }
 
     public final BazelOperation createBazelOperation() {
-        return new BazelOperation(runContext.getDirectoryManager(), runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getDetectDetectableFactory(), aggregateOptions.getDetectToolFilter(),
+        return new BazelOperation(runContext.getDirectoryManager(), runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getDetectDetectableFactory(),
             runContext.getExtractionEnvironmentProvider(),
             runContext.getCodeLocationConverter(), runContext.getOperationSystem());
     }
@@ -84,7 +84,9 @@ public class OperationFactory {
     public final BdioFileGenerationOperation createBdioFileGenerationOperation() {
         BdioManager bdioManager = new BdioManager(runContext.getDetectInfo(), new SimpleBdioFactory(), new ExternalIdFactory(), new Bdio2Factory(), new IntegrationEscapeUtil(), runContext.getCodeLocationNameManager(),
             runContext.getBdioCodeLocationCreator(), runContext.getDirectoryManager());
-        return new BdioFileGenerationOperation(aggregateOptions, runContext.getDetectConfigurationFactory().createBdioOptions(), bdioManager, runContext.getCodeLocationEventPublisher(), runContext.getOperationSystem());
+
+        return new BdioFileGenerationOperation(runContext.getDetectConfigurationFactory().createBdioOptions(), bdioManager, runContext.getCodeLocationEventPublisher(),
+            runContext.getOperationSystem());
     }
 
     public final BinaryScanOperation createBinaryScanOperation() {
@@ -108,7 +110,8 @@ public class OperationFactory {
         BlackDuckPostOptions blackDuckPostOptions = detectConfigurationFactory.createBlackDuckPostOptions();
         Long timeoutInSeconds = detectConfigurationFactory.findTimeoutInSeconds();
 
-        return new FullScanPostProcessingOperation(aggregateOptions.getDetectToolFilter(), blackDuckPostOptions, runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getOperationSystem(), timeoutInSeconds);
+        return new FullScanPostProcessingOperation(detectConfigurationFactory.createToolFilter(), blackDuckPostOptions, runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getOperationSystem(),
+            timeoutInSeconds);
     }
 
     public final ImpactAnalysisOperation createImpactAnalysisOperation() {
@@ -135,13 +138,13 @@ public class OperationFactory {
         DetectProjectServiceOptions options = runContext.getDetectConfigurationFactory().createDetectProjectServiceOptions();
         DetectCustomFieldService detectCustomFieldService = new DetectCustomFieldService();
 
-        return new ProjectCreationOperation(aggregateOptions, options, detectCustomFieldService, runContext.getOperationSystem());
+        return new ProjectCreationOperation(runContext.getDetectConfigurationFactory().createShouldUnmapCodeLocations(), options, detectCustomFieldService, runContext.getOperationSystem());
     }
 
     public final ProjectDecisionOperation createProjectDecisionOperation() {
         ProjectNameVersionOptions projectNameVersionOptions = runContext.getDetectConfigurationFactory().createProjectNameVersionOptions(runContext.getDirectoryManager().getSourceDirectory().getName());
         ProjectNameVersionDecider projectNameVersionDecider = new ProjectNameVersionDecider(projectNameVersionOptions);
-        return new ProjectDecisionOperation(aggregateOptions, projectNameVersionDecider, runContext.getOperationSystem());
+        return new ProjectDecisionOperation(projectNameVersionDecider, runContext.getOperationSystem(), runContext.getDetectConfigurationFactory().createPreferredProjectTools());
     }
 
     public final SignatureScanOperation createSignatureScanOperation() throws DetectUserFriendlyException {

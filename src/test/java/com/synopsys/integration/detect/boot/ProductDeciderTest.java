@@ -38,9 +38,9 @@ import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.PolarisDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
-import com.synopsys.integration.detect.lifecycle.run.AggregateOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
+import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.polaris.common.configuration.PolarisServerConfigBuilder;
 
 class ProductDeciderTest {
@@ -49,42 +49,39 @@ class ProductDeciderTest {
     @Test
     public void shouldRunPolarisWhenConfigValid() {
         File userHome = Mockito.mock(File.class);
-        AggregateOptions aggregateOptions = createTestRunOptions(false, BlackduckScanMode.INTELLIGENT);
         DetectToolFilter detectToolFilter = mockToolFilterForPolaris(true);
         DetectConfigurationFactory detectConfigurationFactory = mockDetectConfigurationFactoryForPolaris(true);
 
-        PolarisDecision polarisDecision = new ProductDecider().determinePolaris(detectConfigurationFactory, userHome, detectToolFilter, aggregateOptions);
+        PolarisDecision polarisDecision = new ProductDecider().determinePolaris(detectConfigurationFactory, userHome, detectToolFilter, BlackDuckDecision.runOnline(false));
         Assertions.assertTrue(polarisDecision.shouldRun());
     }
 
     @Test
     public void shouldNotRunPolarisWhenConfigInvalid() {
         File userHome = Mockito.mock(File.class);
-        AggregateOptions aggregateOptions = createTestRunOptions(false, BlackduckScanMode.INTELLIGENT);
         DetectToolFilter detectToolFilter = mockToolFilterForPolaris(true);
         DetectConfigurationFactory detectConfigurationFactory = mockDetectConfigurationFactoryForPolaris(false);
 
-        PolarisDecision polarisDecision = new ProductDecider().determinePolaris(detectConfigurationFactory, userHome, detectToolFilter, aggregateOptions);
+        PolarisDecision polarisDecision = new ProductDecider().determinePolaris(detectConfigurationFactory, userHome, detectToolFilter, BlackDuckDecision.runOnline(false));
         Assertions.assertFalse(polarisDecision.shouldRun());
     }
 
     @Test
     public void shouldNotRunPolarisWhenExcluded() {
         File userHome = Mockito.mock(File.class);
-        AggregateOptions aggregateOptions = createTestRunOptions(false, BlackduckScanMode.INTELLIGENT);
         DetectToolFilter detectToolFilter = mockToolFilterForPolaris(false);
         DetectConfigurationFactory detectConfigurationFactory = mockDetectConfigurationFactoryForPolaris(true);
 
-        PolarisDecision polarisDecision = new ProductDecider().determinePolaris(detectConfigurationFactory, userHome, detectToolFilter, aggregateOptions);
+        PolarisDecision polarisDecision = new ProductDecider().determinePolaris(detectConfigurationFactory, userHome, detectToolFilter, BlackDuckDecision.runOnline(false));
         Assertions.assertFalse(polarisDecision.shouldRun());
     }
 
     @Test
     public void shouldRunBlackDuckOfflineWhenOverride() {
-        AggregateOptions aggregateOptions = createTestRunOptions(false, BlackduckScanMode.INTELLIGENT);
+        BdioOptions aggregateOptions = createBdioOptions(false);
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, null);
         BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = blackDuckSignatureScannerOptions(null, null);
-        BlackDuckDecision productDecision = new ProductDecider().determineBlackDuck(blackDuckConnectionDetails, blackDuckSignatureScannerOptions, aggregateOptions);
+        BlackDuckDecision productDecision = new ProductDecider().determineBlackDuck(blackDuckConnectionDetails, blackDuckSignatureScannerOptions, BlackduckScanMode.INTELLIGENT, aggregateOptions);
 
         Assertions.assertTrue(productDecision.shouldRun());
         Assertions.assertTrue(productDecision.isOffline());
@@ -92,10 +89,10 @@ class ProductDeciderTest {
 
     @Test
     public void shouldRunBlackDuckOfflineWhenInstallUrl() {
-        AggregateOptions aggregateOptions = createTestRunOptions(false, BlackduckScanMode.INTELLIGENT);
+        BdioOptions aggregateOptions = createBdioOptions(false);
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, null);
         BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = blackDuckSignatureScannerOptions(null, VALID_URL);
-        BlackDuckDecision productDecision = new ProductDecider().determineBlackDuck(blackDuckConnectionDetails, blackDuckSignatureScannerOptions, aggregateOptions);
+        BlackDuckDecision productDecision = new ProductDecider().determineBlackDuck(blackDuckConnectionDetails, blackDuckSignatureScannerOptions, BlackduckScanMode.INTELLIGENT, aggregateOptions);
 
         Assertions.assertTrue(productDecision.shouldRun());
         Assertions.assertTrue(productDecision.isOffline());
@@ -103,10 +100,10 @@ class ProductDeciderTest {
 
     @Test
     public void shouldRunBlackDuckOfflineWhenInstallPath() {
-        AggregateOptions aggregateOptions = createTestRunOptions(false, BlackduckScanMode.INTELLIGENT);
+        BdioOptions aggregateOptions = createBdioOptions(false);
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, null);
         BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = blackDuckSignatureScannerOptions(Mockito.mock(Path.class), null);
-        BlackDuckDecision productDecision = new ProductDecider().determineBlackDuck(blackDuckConnectionDetails, blackDuckSignatureScannerOptions, aggregateOptions);
+        BlackDuckDecision productDecision = new ProductDecider().determineBlackDuck(blackDuckConnectionDetails, blackDuckSignatureScannerOptions, BlackduckScanMode.INTELLIGENT, aggregateOptions);
 
         Assertions.assertTrue(productDecision.shouldRun());
         Assertions.assertTrue(productDecision.isOffline());
@@ -114,10 +111,10 @@ class ProductDeciderTest {
 
     @Test
     public void shouldRunBlackDuckOnline() {
-        AggregateOptions aggregateOptions = createTestRunOptions(false, BlackduckScanMode.INTELLIGENT);
+        BdioOptions aggregateOptions = createBdioOptions(false);
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(false, VALID_URL);
         BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = blackDuckSignatureScannerOptions(null, null);
-        BlackDuckDecision productDecision = new ProductDecider().determineBlackDuck(blackDuckConnectionDetails, blackDuckSignatureScannerOptions, aggregateOptions);
+        BlackDuckDecision productDecision = new ProductDecider().determineBlackDuck(blackDuckConnectionDetails, blackDuckSignatureScannerOptions, BlackduckScanMode.INTELLIGENT, aggregateOptions);
 
         Assertions.assertTrue(productDecision.shouldRun());
         Assertions.assertFalse(productDecision.isOffline());
@@ -128,44 +125,43 @@ class ProductDeciderTest {
         File userHome = Mockito.mock(File.class);
         DetectToolFilter detectToolFilter = mockToolFilterForPolaris(true);
         DetectConfigurationFactory detectConfigurationFactory = mockDetectConfigurationFactoryForPolaris(true);
-        AggregateOptions aggregateOptions = createTestRunOptions(false, BlackduckScanMode.RAPID);
 
-        PolarisDecision polarisDecision = new ProductDecider().determinePolaris(detectConfigurationFactory, userHome, detectToolFilter, aggregateOptions);
+        PolarisDecision polarisDecision = new ProductDecider().determinePolaris(detectConfigurationFactory, userHome, detectToolFilter, BlackDuckDecision.runOnline(true));
         Assertions.assertFalse(polarisDecision.shouldRun());
     }
 
     @Test
     public void shouldNotRunBlackduckRapidModeAndOffline() {
-        AggregateOptions aggregateOptions = createTestRunOptions(false, BlackduckScanMode.RAPID);
+        BdioOptions aggregateOptions = createBdioOptions(false);
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, null);
         BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = blackDuckSignatureScannerOptions(Mockito.mock(Path.class), null);
-        BlackDuckDecision productDecision = new ProductDecider().determineBlackDuck(blackDuckConnectionDetails, blackDuckSignatureScannerOptions, aggregateOptions);
+        BlackDuckDecision productDecision = new ProductDecider().determineBlackDuck(blackDuckConnectionDetails, blackDuckSignatureScannerOptions, BlackduckScanMode.RAPID, aggregateOptions);
 
         Assertions.assertFalse(productDecision.shouldRun());
     }
 
     @Test
     public void shouldNotRunBlackduckRapidModeAndBDIO2Disabled() {
-        AggregateOptions aggregateOptions = createTestRunOptions(false, BlackduckScanMode.RAPID);
+        BdioOptions aggregateOptions = createBdioOptions(false);
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(false, null);
         BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = blackDuckSignatureScannerOptions(Mockito.mock(Path.class), null);
-        BlackDuckDecision productDecision = new ProductDecider().determineBlackDuck(blackDuckConnectionDetails, blackDuckSignatureScannerOptions, aggregateOptions);
+        BlackDuckDecision productDecision = new ProductDecider().determineBlackDuck(blackDuckConnectionDetails, blackDuckSignatureScannerOptions, BlackduckScanMode.RAPID, aggregateOptions);
 
         Assertions.assertFalse(productDecision.shouldRun());
     }
 
     @Test
     public void shouldRunBlackduckRapidModeAndBDIO2Enabled() {
-        AggregateOptions aggregateOptions = createTestRunOptions(true, BlackduckScanMode.RAPID);
+        BdioOptions aggregateOptions = createBdioOptions(true);
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(false, null);
         BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = blackDuckSignatureScannerOptions(Mockito.mock(Path.class), null);
-        BlackDuckDecision productDecision = new ProductDecider().determineBlackDuck(blackDuckConnectionDetails, blackDuckSignatureScannerOptions, aggregateOptions);
+        BlackDuckDecision productDecision = new ProductDecider().determineBlackDuck(blackDuckConnectionDetails, blackDuckSignatureScannerOptions, BlackduckScanMode.RAPID, aggregateOptions);
 
         Assertions.assertTrue(productDecision.shouldRun());
     }
 
-    private AggregateOptions createTestRunOptions(boolean useBdio2, BlackduckScanMode scanMode) {
-        return new AggregateOptions(false, null, null, null, null, useBdio2, scanMode);
+    private BdioOptions createBdioOptions(boolean useBdio2) {
+        return new BdioOptions(useBdio2, null, null);
     }
 
     private DetectToolFilter mockToolFilterForPolaris(boolean includesPolaris) {

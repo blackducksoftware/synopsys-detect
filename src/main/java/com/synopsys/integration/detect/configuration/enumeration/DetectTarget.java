@@ -8,6 +8,6 @@
 package com.synopsys.integration.detect.configuration.enumeration;
 
 public enum DetectTarget {
-    DIRECTORY,
+    SOURCE,
     IMAGE
 }

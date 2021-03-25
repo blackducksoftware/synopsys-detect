@@ -8,7 +8,6 @@
 package com.synopsys.integration.detect.lifecycle.run.operation.blackduck;
 
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
-import com.synopsys.integration.detect.lifecycle.run.AggregateOptions;
 import com.synopsys.integration.detect.lifecycle.run.operation.input.BdioInput;
 import com.synopsys.integration.detect.workflow.bdio.BdioManager;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
@@ -18,14 +17,12 @@ import com.synopsys.integration.detect.workflow.status.OperationSystem;
 
 public class BdioFileGenerationOperation {
     private final String OPERATION_NAME = "BDIO File Generation";
-    private final AggregateOptions aggregateOptions;
     private final BdioOptions bdioOptions;
     private final BdioManager bdioManager;
     private final CodeLocationEventPublisher codeLocationEventPublisher;
     private final OperationSystem operationSystem;
 
-    public BdioFileGenerationOperation(AggregateOptions aggregateOptions, BdioOptions bdioOptions, BdioManager bdioManager, CodeLocationEventPublisher codeLocationEventPublisher, OperationSystem operationSystem) {
-        this.aggregateOptions = aggregateOptions;
+    public BdioFileGenerationOperation(BdioOptions bdioOptions, BdioManager bdioManager, CodeLocationEventPublisher codeLocationEventPublisher, OperationSystem operationSystem) {
         this.bdioOptions = bdioOptions;
         this.bdioManager = bdioManager;
         this.codeLocationEventPublisher = codeLocationEventPublisher;
@@ -34,7 +31,7 @@ public class BdioFileGenerationOperation {
 
     public BdioResult execute(BdioInput bdioInput) throws DetectUserFriendlyException {
         try {
-            BdioResult bdioResult = bdioManager.createBdioFiles(bdioOptions, bdioInput.getAggregateDecision(), bdioInput.getNameVersion(), bdioInput.getCodeLocations(), aggregateOptions.shouldUseBdio2());
+            BdioResult bdioResult = bdioManager.createBdioFiles(bdioOptions, bdioInput.getAggregateDecision(), bdioInput.getNameVersion(), bdioInput.getCodeLocations(), bdioOptions.isBdio2Enabled());
             codeLocationEventPublisher.publishDetectCodeLocationNamesCalculated(bdioResult.getCodeLocationNamesResult());
             operationSystem.completeWithSuccess(OPERATION_NAME);
             return bdioResult;

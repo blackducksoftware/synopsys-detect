@@ -16,12 +16,14 @@ public class DetectToolFilter {
     private final ExcludeIncludeEnumFilter<DetectTool> excludedIncludedFilter;
     private final Optional<Boolean> deprecatedSigScanDisabled;
     private final Optional<Boolean> deprecatedPolarisEnabled;
+    private final Optional<Boolean> impactEnabled;
 
-    public DetectToolFilter(ExcludeIncludeEnumFilter<DetectTool> excludedIncludedFilter, final Optional<Boolean> deprecatedSigScanDisabled, final Optional<Boolean> deprecatedPolarisEnabled) {
+    public DetectToolFilter(ExcludeIncludeEnumFilter<DetectTool> excludedIncludedFilter, final Optional<Boolean> deprecatedSigScanDisabled, final Optional<Boolean> deprecatedPolarisEnabled, Optional<Boolean> impactEnabled) {
         this.excludedIncludedFilter = excludedIncludedFilter;
 
         this.deprecatedSigScanDisabled = deprecatedSigScanDisabled;
         this.deprecatedPolarisEnabled = deprecatedPolarisEnabled;
+        this.impactEnabled = impactEnabled;
     }
 
     public boolean shouldInclude(final DetectTool detectTool) {
@@ -30,6 +32,8 @@ public class DetectToolFilter {
             return !deprecatedSigScanDisabled.get();
         } else if (detectTool == DetectTool.POLARIS && deprecatedPolarisEnabled.isPresent()) {
             return deprecatedPolarisEnabled.get();
+        } else if (detectTool == DetectTool.IMPACT_ANALYSIS && impactEnabled.isPresent()) {
+            return impactEnabled.get();
         }
 
         return excludedIncludedFilter.shouldInclude(detectTool);

@@ -39,7 +39,8 @@ public class ProductBoot {
     private final ProductBootFactory productBootFactory;
     private final ProductBootOptions productBootOptions;
 
-    public ProductBoot(BlackDuckConnectivityChecker blackDuckConnectivityChecker, PolarisConnectivityChecker polarisConnectivityChecker, AnalyticsConfigurationService analyticsConfigurationService, ProductBootFactory productBootFactory, ProductBootOptions productBootOptions) {
+    public ProductBoot(BlackDuckConnectivityChecker blackDuckConnectivityChecker, PolarisConnectivityChecker polarisConnectivityChecker, AnalyticsConfigurationService analyticsConfigurationService, ProductBootFactory productBootFactory,
+        ProductBootOptions productBootOptions) {
         this.blackDuckConnectivityChecker = blackDuckConnectivityChecker;
         this.polarisConnectivityChecker = polarisConnectivityChecker;
         this.analyticsConfigurationService = analyticsConfigurationService;
@@ -49,7 +50,9 @@ public class ProductBoot {
 
     public ProductRunData boot(ProductDecision productDecision) throws DetectUserFriendlyException {
         if (!productDecision.willRunAny()) {
-            throw new DetectUserFriendlyException("Your environment was not sufficiently configured to run Black Duck or Polaris. Please configure your environment for at least one product.  See online help at: https://detect.synopsys.com/doc/", ExitCodeType.FAILURE_CONFIGURATION);
+            throw new DetectUserFriendlyException(
+                "Your environment was not sufficiently configured to run Black Duck or Polaris. Please configure your environment for at least one product.  See online help at: https://detect.synopsys.com/doc/",
+                ExitCodeType.FAILURE_CONFIGURATION);
 
         }
 
@@ -69,7 +72,8 @@ public class ProductBoot {
     }
 
     @Nullable
-    private BlackDuckRunData getBlackDuckRunData(ProductDecision productDecision, ProductBootFactory productBootFactory, BlackDuckConnectivityChecker blackDuckConnectivityChecker, ProductBootOptions productBootOptions, AnalyticsConfigurationService analyticsConfigurationService) throws DetectUserFriendlyException {
+    private BlackDuckRunData getBlackDuckRunData(ProductDecision productDecision, ProductBootFactory productBootFactory, BlackDuckConnectivityChecker blackDuckConnectivityChecker, ProductBootOptions productBootOptions,
+        AnalyticsConfigurationService analyticsConfigurationService) throws DetectUserFriendlyException {
         BlackDuckDecision blackDuckDecision = productDecision.getBlackDuckDecision();
 
         if (!blackDuckDecision.shouldRun()) {
@@ -89,10 +93,10 @@ public class ProductBoot {
 
             if (shouldUsePhoneHome(analyticsConfigurationService, blackDuckServicesFactory.getBlackDuckApiClient())) {
                 PhoneHomeManager phoneHomeManager = productBootFactory.createPhoneHomeManager(blackDuckServicesFactory);
-                return BlackDuckRunData.online(blackDuckServicesFactory, phoneHomeManager, blackDuckConnectivityResult.getBlackDuckServerConfig());
+                return BlackDuckRunData.online(blackDuckDecision.isRapid(), blackDuckServicesFactory, phoneHomeManager, blackDuckConnectivityResult.getBlackDuckServerConfig());
             } else {
                 logger.debug("Skipping phone home due to Black Duck global settings.");
-                return BlackDuckRunData.onlineNoPhoneHome(blackDuckServicesFactory, blackDuckConnectivityResult.getBlackDuckServerConfig());
+                return BlackDuckRunData.onlineNoPhoneHome(blackDuckDecision.isRapid(), blackDuckServicesFactory, blackDuckConnectivityResult.getBlackDuckServerConfig());
             }
         } else {
             if (productBootOptions.isIgnoreConnectionFailures()) {

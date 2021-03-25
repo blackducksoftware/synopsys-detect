@@ -7,20 +7,29 @@
  */
 package com.synopsys.integration.detect.workflow.file;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
 
+import org.jetbrains.annotations.Nullable;
+
 public class DirectoryOptions {
+    private final Path sourcePath;
     private final Path outputPath;
     private final Path bdioOutputPath;
     private final Path scanOutputPath;
     private final Path toolsOutputPath;
 
-    public DirectoryOptions(Path outputPath, Path bdioOutputPath, Path scanOutputPath, Path toolsOutputPath) {
-        this.outputPath = outputPath;
-        this.bdioOutputPath = bdioOutputPath;
-        this.scanOutputPath = scanOutputPath;
-        this.toolsOutputPath = toolsOutputPath;
+    public DirectoryOptions(Path sourcePath, Path outputPath, Path bdioOutputPath, Path scanOutputPath, Path toolsOutputPath) throws IOException {
+        this.sourcePath = toRealPath(sourcePath);
+        this.outputPath = toRealPath(outputPath);
+        this.bdioOutputPath = toRealPath(bdioOutputPath);
+        this.scanOutputPath = toRealPath(scanOutputPath);
+        this.toolsOutputPath = toRealPath(toolsOutputPath);
+    }
+
+    public Optional<Path> getSourcePathOverride() {
+        return Optional.ofNullable(sourcePath);
     }
 
     public Optional<Path> getOutputPathOverride() {
@@ -37,5 +46,13 @@ public class DirectoryOptions {
 
     public Optional<Path> getToolsOutputPath() {
         return Optional.ofNullable(toolsOutputPath);
+    }
+
+    @Nullable
+    private Path toRealPath(@Nullable Path rawPath) throws IOException {
+        if (rawPath == null) {
+            return null;
+        }
+        return rawPath.toAbsolutePath();
     }
 }

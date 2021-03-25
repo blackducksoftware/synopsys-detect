@@ -1139,7 +1139,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.PATHS, DetectGroup.SOURCE_PATH);
 
     public static final DetectProperty<EnumProperty<DetectTarget>> DETECT_TARGET =
-        new DetectProperty<>(new EnumProperty<>("detect.target", DetectTarget.DIRECTORY, DetectTarget.class))
+        new DetectProperty<>(new EnumProperty<>("detect.target.type", DetectTarget.SOURCE, DetectTarget.class))
             .setInfo("Detect Target", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp("Informs detect of what is being scanned which allows improved user experience when scanning different types of targets.",
                 "Changes the behaviour of detect to better suite what is being scanned. For example, when IMAGE is selected, detect will not pick a source directory, will automatically disable the DETECTOR tool and run BINARY/SIGNATURE SCAN on the provided image.")
