@@ -35,13 +35,16 @@ public class AirGapCreator {
     private final GradleAirGapCreator gradleAirGapCreator;
     private final NugetAirGapCreator nugetAirGapCreator;
     private final DockerAirGapCreator dockerAirGapCreator;
+    private final DetectFontAirGapCreator detectFontAirGapCreator;
 
-    public AirGapCreator(AirGapPathFinder airGapPathFinder, EventSystem eventSystem, GradleAirGapCreator gradleAirGapCreator, NugetAirGapCreator nugetAirGapCreator, DockerAirGapCreator dockerAirGapCreator) {
+    public AirGapCreator(AirGapPathFinder airGapPathFinder, EventSystem eventSystem, GradleAirGapCreator gradleAirGapCreator, NugetAirGapCreator nugetAirGapCreator, DockerAirGapCreator dockerAirGapCreator,
+        DetectFontAirGapCreator detectFontAirGapCreator) {
         this.airGapPathFinder = airGapPathFinder;
         this.eventSystem = eventSystem;
         this.gradleAirGapCreator = gradleAirGapCreator;
         this.nugetAirGapCreator = nugetAirGapCreator;
         this.dockerAirGapCreator = dockerAirGapCreator;
+        this.detectFontAirGapCreator = detectFontAirGapCreator;
     }
 
     public File createAirGapZip(DetectFilter inspectorFilter, File outputPath, String airGapSuffix, String gradleInspectorVersion) throws DetectUserFriendlyException {
@@ -101,6 +104,10 @@ public class AirGapCreator {
 
     public void installAllAirGapDependencies(File zipFolder, DetectFilter inspectorFilter, String gradleInspectorVersion) throws DetectUserFriendlyException {
         logger.info(ReportConstants.RUN_SEPARATOR);
+
+        logger.info("Installing font dependencies.");
+        File fontFolder = airGapPathFinder.createRelativeFontsFile(zipFolder);
+        detectFontAirGapCreator.installFonts(fontFolder);
 
         if (inspectorFilter.shouldInclude(AirGapInspectors.GRADLE.name())) {
             logger.info("Will include GRADLE inspector.");
