@@ -10,7 +10,7 @@
 * The default BDIO format for communicating dependency graphs to Black Duck has been changed from BDIO1 to BDIO2.
 
 ### Resolved issues
-* (IDETECT-2527) Resolved an issue in the Go Mod detector to extract and process data even if go mod why fails to run.
+* (IDETECT-2527) Resolved an issue in the Go Mod detector to extract and process data even if 'go mod why' command fails to run.
 * (IDETECT-2434) Resolved an issue in the CLANG detector on Ubuntu and Debian systems that caused it to omit a package when that package had been installed on the system from multiple architectures.
 * (IDETECT-2362) The CLANG detector now uses the KB preferred alias namespace feature for improved match accuracy.
 * (IDETECT-2413) Resolved an issue to upgrade internal dependencies to support JDK 15.
