@@ -26,6 +26,7 @@ import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.file.DirectoryOptions;
 import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
+import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 
@@ -33,6 +34,7 @@ public class BlackDuckRapidModePostActionsTest {
 
     @Test
     public void testJsonFileGenerated() throws Exception {
+        IntLogger logger = Mockito.mock(IntLogger.class);
         Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
         StatusEventPublisher statusEventPublisher = Mockito.mock(StatusEventPublisher.class);
         ExitCodePublisher exitCodePublisher = Mockito.mock(ExitCodePublisher.class);
@@ -46,7 +48,7 @@ public class BlackDuckRapidModePostActionsTest {
 
         List<DeveloperScanComponentResultView> results = createResults(gson, expectedOutput);
 
-        BlackDuckRapidModePostActions postActions = new BlackDuckRapidModePostActions(gson, statusEventPublisher, exitCodePublisher, directoryManager, operationSystem);
+        BlackDuckRapidModePostActions postActions = new BlackDuckRapidModePostActions(logger, gson, statusEventPublisher, exitCodePublisher, directoryManager, operationSystem);
         NameVersion nameVersion = new NameVersion("rapid_scan_post_action", "test");
         postActions.perform(nameVersion, results);
 
