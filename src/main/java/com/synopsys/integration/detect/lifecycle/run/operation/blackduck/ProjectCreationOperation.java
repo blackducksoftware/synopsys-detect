@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
-import com.synopsys.integration.detect.lifecycle.run.RunOptions;
+import com.synopsys.integration.detect.lifecycle.run.AggregateOptions;
 import com.synopsys.integration.detect.workflow.blackduck.DetectCodeLocationUnmapService;
 import com.synopsys.integration.detect.workflow.blackduck.DetectCustomFieldService;
 import com.synopsys.integration.detect.workflow.blackduck.DetectProjectService;
@@ -24,14 +24,14 @@ import com.synopsys.integration.util.NameVersion;
 
 public class ProjectCreationOperation {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final RunOptions runOptions;
+    private final AggregateOptions aggregateOptions;
     private final DetectProjectServiceOptions detectProjectServiceOptions;
     private final DetectCustomFieldService detectCustomFieldService;
     private final OperationSystem operationSystem;
 
-    public ProjectCreationOperation(RunOptions runOptions, DetectProjectServiceOptions detectProjectServiceOptions,
+    public ProjectCreationOperation(AggregateOptions aggregateOptions, DetectProjectServiceOptions detectProjectServiceOptions,
         DetectCustomFieldService detectCustomFieldService, OperationSystem operationSystem) {
-        this.runOptions = runOptions;
+        this.aggregateOptions = aggregateOptions;
         this.detectProjectServiceOptions = detectProjectServiceOptions;
         this.detectCustomFieldService = detectCustomFieldService;
         this.operationSystem = operationSystem;
@@ -44,7 +44,7 @@ public class ProjectCreationOperation {
         DetectCodeLocationUnmapService detectCodeLocationUnmapService = new DetectCodeLocationUnmapService(blackDuckServicesFactory.getBlackDuckApiClient(), blackDuckServicesFactory.createCodeLocationService(), operationSystem);
 
         ProjectVersionWrapper projectVersionWrapper = detectProjectService.createOrUpdateBlackDuckProject(projectNameVersion);
-        if (null != projectVersionWrapper && runOptions.shouldUnmapCodeLocations()) {
+        if (null != projectVersionWrapper && aggregateOptions.shouldUnmapCodeLocations()) {
             logger.debug("Unmapping code locations.");
             detectCodeLocationUnmapService.unmapCodeLocations(projectVersionWrapper.getProjectVersionView());
         } else {

@@ -20,6 +20,7 @@ import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
+import com.synopsys.integration.detect.lifecycle.boot.decision.ToolDecision;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
@@ -35,7 +36,7 @@ import com.synopsys.integration.detect.tool.UniversalToolsResult;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
 import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisToolResult;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
-import com.synopsys.integration.detect.workflow.bdio.AggregateOptions;
+import com.synopsys.integration.detect.workflow.bdio.AggregateDecision;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationResults;
@@ -59,23 +60,22 @@ public class RunManager {
             RunResult runResult = new RunResult();
             ProductRunData productRunData = runContext.getProductRunData();
             OperationFactory operationFactory = new OperationFactory(runContext);
-            RunOptions runOptions = runContext.createRunOptions();
-            DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
             ProjectEventPublisher projectEventPublisher = runContext.getProjectEventPublisher();
 
             logger.info(ReportConstants.RUN_SEPARATOR);
+            //execute
             if (runContext.getProductRunData().shouldUsePolarisProduct()) {
-                runPolarisProduct(operationFactory, detectToolFilter, runOptions);
+                runPolarisProduct(operationFactory, detectToolFilter, aggregateOptions);
             } else {
                 logger.info("Polaris tools will not be run.");
             }
 
-            UniversalToolsResult universalToolsResult = runUniversalProjectTools(operationFactory, runOptions, detectToolFilter, projectEventPublisher, runResult);
+            UniversalToolsResult universalToolsResult = runUniversalProjectTools(operationFactory, aggregateOptions, detectToolFilter, projectEventPublisher, runResult);
 
             if (productRunData.shouldUseBlackDuckProduct()) {
-                AggregateOptions aggregateOptions = operationFactory.createAggregateOptionsOperation().execute(universalToolsResult.anyFailed());
-                runBlackDuckProduct(productRunData.getBlackDuckRunData(), operationFactory, runOptions, detectToolFilter, runResult,
-                    universalToolsResult.getNameVersion(), aggregateOptions);
+                AggregateDecision aggregateDecision = operationFactory.createAggregateOptionsOperation().execute(universalToolsResult.anyFailed());
+                runBlackDuckProduct(productRunData.getBlackDuckRunData(), operationFactory, aggregateOptions, detectToolFilter, runResult,
+                    universalToolsResult.getNameVersion(), aggregateDecision);
             } else {
                 logger.info("Black Duck tools will not be run.");
             }
@@ -98,15 +98,16 @@ public class RunManager {
 
     private UniversalToolsResult runUniversalProjectTools(
         OperationFactory operationFactory,
-        RunOptions runOptions,
+        AggregateOptions aggregateOptions,
         DetectToolFilter detectToolFilter,
         ProjectEventPublisher projectEventPublisher,
-        RunResult runResult
+        RunResult runResult,
+        ToolDecision toolDecision
     ) throws DetectUserFriendlyException, IntegrationException {
         boolean anythingFailed = false;
 
         logger.info(ReportConstants.RUN_SEPARATOR);
-        if (!runOptions.shouldPerformRapidModeScan() && detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
+        if (toolDecision.shouldRunDocker()) {
             logger.info("Will include the Docker tool.");
             DetectableToolResult detectableToolResult = operationFactory.createDockerOperation().execute();
             runResult.addDetectableToolResult(detectableToolResult);
@@ -117,7 +118,7 @@ public class RunManager {
         }
 
         logger.info(ReportConstants.RUN_SEPARATOR);
-        if (!runOptions.shouldPerformRapidModeScan() && detectToolFilter.shouldInclude(DetectTool.BAZEL)) {
+        if (toolDecision.shouldRunBazel(DetectTool.BAZEL)) {
             logger.info("Will include the Bazel tool.");
             DetectableToolResult detectableToolResult = operationFactory.createBazelOperation().execute();
             runResult.addDetectableToolResult(detectableToolResult);
@@ -127,7 +128,7 @@ public class RunManager {
             logger.info("Bazel tool will not be run.");
         }
         logger.info(ReportConstants.RUN_SEPARATOR);
-        if (detectToolFilter.shouldInclude(DetectTool.DETECTOR)) {
+        if (toolDecision.shouldRunDetectors()) {
             logger.info("Will include the detector tool.");
             DetectorToolResult detectorToolResult = operationFactory.createDetectorOperation().execute();
             detectorToolResult.getBomToolProjectNameVersion().ifPresent(it -> runResult.addToolNameVersion(DetectTool.DETECTOR, new NameVersion(it.getName(), it.getVersion())));
@@ -157,9 +158,9 @@ public class RunManager {
         }
     }
 
-    private void runPolarisProduct(OperationFactory operationFactory, DetectToolFilter detectToolFilter, RunOptions runOptions) {
+    private void runPolarisProduct(OperationFactory operationFactory, DetectToolFilter detectToolFilter, AggregateOptions aggregateOptions) {
         logger.info(ReportConstants.RUN_SEPARATOR);
-        if (detectToolFilter.shouldInclude(DetectTool.POLARIS) && !runOptions.shouldPerformRapidModeScan()) {
+        if (detectToolFilter.shouldInclude(DetectTool.POLARIS) && !aggregateOptions.shouldPerformRapidModeScan()) {
             logger.info("Will include the Polaris tool.");
             operationFactory.createPolarisOperation().execute();
             logger.info("Polaris actions finished.");
@@ -168,7 +169,7 @@ public class RunManager {
         }
     }
 
-    private void runBlackDuckProduct(BlackDuckRunData blackDuckRunData, OperationFactory operationFactory, RunOptions runOptions, DetectToolFilter detectToolFilter, RunResult runResult, NameVersion projectNameVersion,
+    private void runBlackDuckProduct(BlackDuckRunData blackDuckRunData, OperationFactory operationFactory, AggregateOptions aggregateOptions, DetectToolFilter detectToolFilter, RunResult runResult, NameVersion projectNameVersion,
         AggregateDecision aggregateDecision)
         throws IntegrationException, DetectUserFriendlyException {
 
@@ -178,7 +179,7 @@ public class RunManager {
 
         BdioInput bdioInput = new BdioInput(aggregateDecision, projectNameVersion, runResult.getDetectCodeLocations());
         BdioResult bdioResult = operationFactory.createBdioFileGenerationOperation().execute(bdioInput);
-        if (runOptions.shouldPerformRapidModeScan() && blackDuckRunData.isOnline()) {
+        if (aggregateOptions.shouldPerformRapidModeScan() && blackDuckRunData.isOnline()) {
             logger.info(ReportConstants.RUN_SEPARATOR);
             RapidScanInput rapidScanInput = new RapidScanInput(projectNameVersion, bdioResult);
             operationFactory.createRapidScanOperation().execute(blackDuckRunData, blackDuckRunData.getBlackDuckServicesFactory(), rapidScanInput);

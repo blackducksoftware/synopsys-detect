@@ -32,6 +32,7 @@ import com.synopsys.integration.blackduck.api.manual.temporary.enumeration.Proje
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.IndividualFileMatching;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.base.NullableProperty;
 import com.synopsys.integration.configuration.property.base.ValuedProperty;
@@ -47,10 +48,11 @@ import com.synopsys.integration.detect.configuration.connection.ConnectionDetail
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DefaultDetectorExcludedDirectories;
 import com.synopsys.integration.detect.configuration.enumeration.DefaultVersionNameScheme;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTarget;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions;
-import com.synopsys.integration.detect.lifecycle.run.RunOptions;
+import com.synopsys.integration.detect.lifecycle.run.AggregateOptions;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableOptions;
 import com.synopsys.integration.detect.tool.detector.file.DetectDetectorFileFilter;
@@ -69,7 +71,6 @@ import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOp
 import com.synopsys.integration.detect.workflow.file.DirectoryOptions;
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeOptions;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
@@ -254,7 +255,7 @@ public class DetectConfigurationFactory {
         return new PhoneHomeOptions(phoneHomePassthrough);
     }
 
-    public RunOptions createRunOptions() {
+    public DetectToolFilter createToolFilter() {
         // This is because it is double deprecated so we must check if either property is set.
         Optional<Boolean> sigScanDisabled = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED.getProperty(),
             DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_DISABLED.getProperty());
@@ -264,25 +265,35 @@ public class DetectConfigurationFactory {
         List<FilterableEnumValue<DetectTool>> excludedTools = getValue(DetectProperties.DETECT_TOOLS_EXCLUDED);
         ExcludeIncludeEnumFilter filter = new ExcludeIncludeEnumFilter(excludedTools, includedTools);
         DetectToolFilter detectToolFilter = new DetectToolFilter(filter, sigScanDisabled, polarisEnabled);
+    }
 
-        Boolean unmapCodeLocations = getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_UNMAP);
+    public AggregateOptions createAggregateOptions() {
         String aggregateName = getNullableValue(DetectProperties.DETECT_BOM_AGGREGATE_NAME);
         AggregateMode aggregateMode = getValue(DetectProperties.DETECT_BOM_AGGREGATE_REMEDIATION_MODE);
-        List<DetectTool> preferredTools = getValue(DetectProperties.DETECT_PROJECT_TOOL);
-        Boolean useBdio2 = getValue(DetectProperties.DETECT_BDIO2_ENABLED);
-        BlackduckScanMode scanMode = getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE);
 
-        return new RunOptions(unmapCodeLocations, aggregateName, aggregateMode, preferredTools, detectToolFilter, useBdio2, scanMode);
+        return new AggregateOptions(aggregateName, aggregateMode);
+    }
+
+    @Nullable
+    public Path createSourceDirectoryOverride() {
+        return getPathOrNull(DetectProperties.DETECT_SOURCE_PATH.getProperty());
+    }
+
+    public BlackduckScanMode createScanMode() {
+        return getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE);
+    }
+
+    public DetectTarget createDetectTarget() {
+        return getValue(DetectProperties.DETECT_TARGET);
     }
 
     public DirectoryOptions createDirectoryOptions() throws IOException {
-        Path sourcePath = getPathOrNull(DetectProperties.DETECT_SOURCE_PATH.getProperty());
         Path outputPath = getPathOrNull(DetectProperties.DETECT_OUTPUT_PATH.getProperty());
         Path bdioPath = getPathOrNull(DetectProperties.DETECT_BDIO_OUTPUT_PATH.getProperty());
         Path scanPath = getPathOrNull(DetectProperties.DETECT_SCAN_OUTPUT_PATH.getProperty());
         Path toolsOutputPath = getPathOrNull(DetectProperties.DETECT_TOOLS_OUTPUT_PATH.getProperty());
 
-        return new DirectoryOptions(sourcePath, outputPath, bdioPath, scanPath, toolsOutputPath);
+        return new DirectoryOptions(outputPath, bdioPath, scanPath, toolsOutputPath);
     }
 
     public AirGapOptions createAirGapOptions() {

@@ -10,7 +10,7 @@ package com.synopsys.integration.detect.lifecycle.run.operation.blackduck;
 import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
-import com.synopsys.integration.detect.lifecycle.run.RunOptions;
+import com.synopsys.integration.detect.lifecycle.run.AggregateOptions;
 import com.synopsys.integration.detect.workflow.bdio.AggregateDecision;
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
 import com.synopsys.integration.detect.workflow.status.OperationSystem;
@@ -18,18 +18,18 @@ import com.synopsys.integration.exception.IntegrationException;
 
 public class AggregateDecisionOperation {
     private static final String OPERATION_NAME = "Detect Aggregate Options Decision";
-    private final RunOptions runOptions;
+    private final AggregateOptions aggregateOptions;
     private final OperationSystem operationSystem;
 
-    public AggregateDecisionOperation(RunOptions runOptions, OperationSystem operationSystem) {
-        this.runOptions = runOptions;
+    public AggregateDecisionOperation(AggregateOptions aggregateOptions, OperationSystem operationSystem) {
+        this.aggregateOptions = aggregateOptions;
         this.operationSystem = operationSystem;
     }
 
     public AggregateDecision execute(Boolean anythingFailedPrior) throws DetectUserFriendlyException, IntegrationException {
         operationSystem.beginOperation(OPERATION_NAME);
-        String aggregateName = runOptions.getAggregateName().orElse(null);
-        AggregateMode aggregateMode = runOptions.getAggregateMode();
+        String aggregateName = aggregateOptions.getAggregateName().orElse(null);
+        AggregateMode aggregateMode = aggregateOptions.getAggregateMode();
         AggregateDecision aggregateDecision;
         if (StringUtils.isNotBlank(aggregateName)) {
             if (anythingFailedPrior) {
