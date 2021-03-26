@@ -63,7 +63,7 @@ public class FormattedOutputManager {
         formattedOutput.detectVersion = detectInfo.getDetectVersion();
 
         formattedOutput.results = Bds.of(detectResults)
-                                      .map(result -> new FormattedResultOutput(result.getResultLocation(), result.getResultMessage()))
+                                      .map(result -> new FormattedResultOutput(result.getResultLocation(), result.getResultMessage(), result.getResultSubMessages()))
                                       .toList();
 
         formattedOutput.status = Bds.of(statusSummaries)

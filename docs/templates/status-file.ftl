@@ -19,6 +19,7 @@ The file includes status codes, issues encountered and results produced. As addi
 "results": [ List of Results, see details below. ]
 "unrecognizedPaths": [ List of Unrecognized Paths, see details below. ]
 "codeLocations": [ List of code locations produced, see details below. ]
+"propertyValues": [ List of property values passed to ${solution_name}. ]
 }
 ```
 
@@ -82,13 +83,14 @@ For those detectors that support it (currently, only CLANG), a list of file path
 (a) were not recognized by the package manager, and (b) reside outside the source directory.
 ````
 {
-"<Detector type>": [ A list of file paths to unrecognized dependencies ]
-}
-````
+"
+<Detector type>": [ A list of file paths to unrecognized dependencies ]
+    }
+    ````
 
-## Code Locations
-````
-{
-"codeLocationName": The name of a code location produced by this run of ${solution_name}.
-}
-````
+    ## Code Locations
+    ````
+    {
+    "codeLocationName": The name of a code location produced by this run of ${solution_name}.
+    }
+    ````

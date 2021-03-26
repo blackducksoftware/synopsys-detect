@@ -15,19 +15,19 @@ import com.synopsys.integration.bdio.model.Forge;
 public class ClangPackageManagerInfo {
     private final String pkgMgrName;
     private final String pkgMgrCmdString;
-    private final List<Forge> forges;
+    private final List<Forge> possibleForges;
     private final Forge defaultForge;
     private final List<String> checkPresenceCommandArgs;
     private final String checkPresenceCommandOutputExpectedText;
     private final List<String> pkgMgrGetOwnerCmdArgs;
     private final List<String> pkgArchitectureArgs;
     private final List<String> pkgInfoArgs;
-
-    public ClangPackageManagerInfo(String pkgMgrName, String pkgMgrCmdString, List<Forge> forges, Forge defaultForge, List<String> checkPresenceCommandArgs,
+    
+    public ClangPackageManagerInfo(String pkgMgrName, String pkgMgrCmdString, List<Forge> possibleForges, Forge defaultForge, List<String> checkPresenceCommandArgs,
         String checkPresenceCommandOutputExpectedText, List<String> pkgMgrGetOwnerCmdArgs, List<String> pkgArchitectureArgs, List<String> pkgInfoArgs) {
         this.pkgMgrName = pkgMgrName;
         this.pkgMgrCmdString = pkgMgrCmdString;
-        this.forges = forges;
+        this.possibleForges = possibleForges;
         this.defaultForge = defaultForge;
         this.checkPresenceCommandArgs = checkPresenceCommandArgs;
         this.checkPresenceCommandOutputExpectedText = checkPresenceCommandOutputExpectedText;
@@ -44,8 +44,8 @@ public class ClangPackageManagerInfo {
         return pkgMgrCmdString;
     }
 
-    public List<Forge> getForges() {
-        return forges;
+    public List<Forge> getPossibleForges() {
+        return possibleForges;
     }
 
     public Forge getDefaultForge() {
