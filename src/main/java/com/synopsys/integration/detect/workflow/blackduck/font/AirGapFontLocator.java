@@ -8,39 +8,31 @@
 package com.synopsys.integration.detect.workflow.blackduck.font;
 
 import java.io.File;
-import java.nio.file.Path;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
-import com.synopsys.integration.detect.workflow.airgap.AirGapPathFinder;
+import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 
 public class AirGapFontLocator implements DetectFontLocator {
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final AirGapInspectorPaths airGapPaths;
 
-    public AirGapFontLocator() {
-    }
-
-    private Path determineInspectorAirGapPath(File detectJar, AirGapPathFinder airGapPathFinder, String inspectorName) {
-        if (detectJar != null) {
-            try {
-                return airGapPathFinder.createRelativeFontsFile(detectJar.getParentFile()).toPath();
-            } catch (Exception e) {
-                logger.debug("Exception encountered when guessing air gap path for fonts, returning the detect property instead");
-                logger.debug(e.getMessage());
-            }
-        }
-        return airGapPathFinder.createRelativeFontsFile(new File(".")).toPath();
+    public AirGapFontLocator(AirGapInspectorPaths airGapPaths) {
+        this.airGapPaths = airGapPaths;
     }
 
     @Override
     public File locateRegularFontFile() throws DetectUserFriendlyException {
-        return null;
+        return locateFontFile(DetectFontLocator.FONT_FILE_NAME_REGULAR);
     }
 
     @Override
     public File locateBoldFontFile() throws DetectUserFriendlyException {
-        return null;
+        return locateFontFile(DetectFontLocator.FONT_FILE_NAME_BOLD);
+    }
+
+    private File locateFontFile(String childName) throws DetectUserFriendlyException {
+        return airGapPaths.getNugetInspectorAirGapFile()
+                   .map(fontAirGapPath -> new File(fontAirGapPath, childName))
+                   .orElseThrow(() -> new DetectUserFriendlyException(String.format("Could not get the font file %s from the air gap path", childName), ExitCodeType.FAILURE_GENERAL_ERROR));
     }
 }

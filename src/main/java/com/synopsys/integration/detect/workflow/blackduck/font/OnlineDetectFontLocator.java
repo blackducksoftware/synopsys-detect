@@ -14,9 +14,6 @@ import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 
 public class OnlineDetectFontLocator implements DetectFontLocator {
-    public static final String FONT_FILE_NAME_REGULAR = "NotoSansCJKtc-Regular.ttf";
-    public static final String FONT_FILE_NAME_BOLD = "NotoSansCJKtc-Bold.ttf";
-
     private final DetectFontInstaller detectFontInstaller;
     private final DirectoryManager directoryManager;
 
@@ -27,18 +24,22 @@ public class OnlineDetectFontLocator implements DetectFontLocator {
 
     @Override
     public File locateRegularFontFile() throws DetectUserFriendlyException {
-        return locateFontFile(FONT_FILE_NAME_REGULAR);
+        return locateFontFile(DetectFontLocator.FONT_FILE_NAME_REGULAR);
     }
 
     @Override
     public File locateBoldFontFile() throws DetectUserFriendlyException {
-        return locateFontFile(FONT_FILE_NAME_BOLD);
+        return locateFontFile(DetectFontLocator.FONT_FILE_NAME_BOLD);
     }
 
-    private File locateFontFile(String fontName) throws DetectUserFriendlyException {
+    private File locateFontFile(String fontFileName) throws DetectUserFriendlyException {
         try {
-            File nugetDirectory = directoryManager.getPermanentDirectory("fonts");
-            return detectFontInstaller.installFonts(nugetDirectory);
+            File fontsDirectory = directoryManager.getPermanentDirectory("fonts");
+            File fontFile = new File(fontsDirectory, fontFileName);
+            if (!fontFile.exists()) {
+                detectFontInstaller.installFonts(fontsDirectory);
+            }
+            return fontFile;
         } catch (Exception e) {
             throw new DetectUserFriendlyException("Unable to install the fonts from Artifactory.", e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }
