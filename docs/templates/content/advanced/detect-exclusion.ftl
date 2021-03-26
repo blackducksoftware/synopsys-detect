@@ -8,6 +8,11 @@ Use [detect.excluded.directories](../../properties/configuration/paths/#detect-e
 
 This property accepts explicit directory names, as well as globbing-style wildcard patterns. See [here](../includeexcludewildcards/#property-wildcard-support) for more info.
 
+Examples
+
+* --detect.excluded.directories=foo excludes /root/foo
+* --detect.excluded.directories=*bar excludes /root/bar and /root/foobar
+
 ### Exclude directories by path
 
 This property accepts explicit paths relative to the project's root, or you may specify glob-style patterns.
