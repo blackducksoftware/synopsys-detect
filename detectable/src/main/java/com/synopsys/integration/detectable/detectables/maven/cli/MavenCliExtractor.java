@@ -8,14 +8,14 @@
 package com.synopsys.integration.detectable.detectables.maven.cli;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.common.util.Bds;
+import com.synopsys.integration.common.util.parse.CommandParser;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
@@ -27,25 +27,25 @@ import com.synopsys.integration.executable.ExecutableOutput;
 public class MavenCliExtractor {
     private final DetectableExecutableRunner executableRunner;
     private final MavenCodeLocationPackager mavenCodeLocationPackager;
+    private final CommandParser commandParser;
 
-    public MavenCliExtractor(DetectableExecutableRunner executableRunner, MavenCodeLocationPackager mavenCodeLocationPackager) {
+    public MavenCliExtractor(DetectableExecutableRunner executableRunner, MavenCodeLocationPackager mavenCodeLocationPackager, CommandParser commandParser) {
         this.executableRunner = executableRunner;
         this.mavenCodeLocationPackager = mavenCodeLocationPackager;
+        this.commandParser = commandParser;
     }
 
     //TODO: Limit 'extractors' to 'execute' and 'read', delegate all other work.
     public Extraction extract(File directory, ExecutableTarget mavenExe, MavenCliExtractorOptions mavenCliExtractorOptions) throws ExecutableFailedException {
-        String[] mavenCommand = mavenCliExtractorOptions.getMavenBuildCommand()
-                                    .map(cmd -> cmd.replace("dependency:tree", ""))
-                                    .map(String::trim)
-                                    .map(cmd -> cmd.split(" "))
-                                    .orElse(new String[] {});
 
-        List<String> arguments = new ArrayList<>(Arrays.asList(mavenCommand));
-        arguments.add("dependency:tree");
-        arguments.add("-T1"); // Force maven to use a single thread to ensure the tree output is in the correct order.
+        List<String> commandArguments = commandParser.parseCommandString(mavenCliExtractorOptions.getMavenBuildCommand().orElse("")).stream()
+                                            .filter(arg -> !arg.equals("dependency:tree"))
+                                            .collect(Collectors.toList());
 
-        ExecutableOutput mvnExecutableResult = executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, mavenExe, arguments));
+        commandArguments.add("dependency:tree");
+        commandArguments.add("-T1"); // Force maven to use a single thread to ensure the tree output is in the correct order.
+
+        ExecutableOutput mvnExecutableResult = executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, mavenExe, commandArguments));
 
         List<String> mavenOutput = mvnExecutableResult.getStandardOutputAsList();
         List<String> excludedScopes = mavenCliExtractorOptions.getMavenExcludedScopes();
@@ -68,4 +68,5 @@ public class MavenCliExtractor {
         }
         return builder.build();
     }
+
 }
