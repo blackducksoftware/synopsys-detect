@@ -289,9 +289,7 @@ public class DetectConfigurationFactory {
         Path gradleOverride = getPathOrNull(DetectProperties.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH.getProperty());
         Path nugetOverride = getPathOrNull(DetectProperties.DETECT_NUGET_INSPECTOR_AIR_GAP_PATH.getProperty());
         Path dockerOverride = getPathOrNull(DetectProperties.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH.getProperty());
-        //FIXME add property for font override path;
-        Path fontsOverride = null;
-        return new AirGapOptions(dockerOverride, gradleOverride, nugetOverride, fontsOverride);
+        return new AirGapOptions(dockerOverride, gradleOverride, nugetOverride);
     }
 
     public FileFinder createFilteredFileFinder(Path sourcePath) {

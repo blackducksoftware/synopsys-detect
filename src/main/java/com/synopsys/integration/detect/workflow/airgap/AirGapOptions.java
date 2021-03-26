@@ -14,13 +14,11 @@ public class AirGapOptions {
     private final Path dockerInspectorPathOverride;
     private final Path gradleInspectorPathOverride;
     private final Path nugetInspectorPathOverride;
-    private final Path fontsPathOverride;
 
-    public AirGapOptions(Path dockerInspectorPathOverride, Path gradleInspectorPathOverride, Path nugetInspectorPathOverride, Path fontsPathOverride) {
+    public AirGapOptions(Path dockerInspectorPathOverride, Path gradleInspectorPathOverride, Path nugetInspectorPathOverride) {
         this.dockerInspectorPathOverride = dockerInspectorPathOverride;
         this.gradleInspectorPathOverride = gradleInspectorPathOverride;
         this.nugetInspectorPathOverride = nugetInspectorPathOverride;
-        this.fontsPathOverride = fontsPathOverride;
     }
 
     public Optional<Path> getDockerInspectorPathOverride() {
@@ -33,9 +31,5 @@ public class AirGapOptions {
 
     public Optional<Path> getNugetInspectorPathOverride() {
         return Optional.ofNullable(nugetInspectorPathOverride);
-    }
-
-    public Optional<Path> getFontsPathOverride() {
-        return Optional.ofNullable(fontsPathOverride);
     }
 }

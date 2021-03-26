@@ -31,7 +31,7 @@ public class AirGapFontLocator implements DetectFontLocator {
     }
 
     private File locateFontFile(String childName) throws DetectUserFriendlyException {
-        return airGapPaths.getNugetInspectorAirGapFile()
+        return airGapPaths.getFontsAirGapFile()
                    .map(fontAirGapPath -> new File(fontAirGapPath, childName))
                    .orElseThrow(() -> new DetectUserFriendlyException(String.format("Could not get the font file %s from the air gap path", childName), ExitCodeType.FAILURE_GENERAL_ERROR));
     }
