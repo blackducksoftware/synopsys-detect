@@ -20,7 +20,6 @@ The file includes status codes, issues encountered and results produced. As addi
 "unrecognizedPaths": [ List of Unrecognized Paths, see details below. ]
 "codeLocations": [ List of code locations produced, see details below. ]
 "propertyValues": { An object representing all provided properties, see details below. }
-"operations": [ List of operations executed, see details below. ]
 }
 ```
 
@@ -88,20 +87,6 @@ so pass-through properties like docker and dynamic properties like custom fields
     "key": "value",
     "boolean-key": "true"
   }
-```
-
-##Operations
-
-A list of every operation detect executed and it's status. Each piece of detect is seperated into an operation and each of these operations is timestamped and given a status.
-This allows insight into what exactly detect did, how long it took and whether that piece succeeded or failed. 
-
-```
-{
-  "startTimestamp": "2021-03-29 15:20:09.833",
-  "endTimestamp": "2021-03-29 15:20:09.833",
-  "descriptionKey": "Some Operation Name",
-  "status": "SUCCESS"
-}
 ```
 
 ##Unrecognized Paths
