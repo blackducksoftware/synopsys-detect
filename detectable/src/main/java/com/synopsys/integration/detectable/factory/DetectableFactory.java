@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import com.synopsys.integration.bdio.BdioTransformer;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.common.util.finder.FileFinder;
+import com.synopsys.integration.common.util.parse.CommandParser;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BashResolver;
@@ -458,10 +459,6 @@ public class DetectableFactory {
         return new CompileCommandDatabaseParser(gson);
     }
 
-    private CompileCommandParser compileCommandParser() {
-        return new CompileCommandParser();
-    }
-
     private ClangExtractor clangExtractor() {
         return new ClangExtractor(executableRunner, dependencyFileDetailGenerator(), clangPackageDetailsTransformer(), compileCommandDatabaseParser(), forgeChooser());
     }
@@ -591,7 +588,15 @@ public class DetectableFactory {
     }
 
     private MavenCliExtractor mavenCliExtractor() {
-        return new MavenCliExtractor(executableRunner, mavenCodeLocationPackager());
+        return new MavenCliExtractor(executableRunner, mavenCodeLocationPackager(), commandParser());
+    }
+
+    private CommandParser commandParser() {
+        return new CommandParser();
+    }
+
+    private CompileCommandParser compileCommandParser() {
+        return new CompileCommandParser(commandParser());
     }
 
     private ConanLockfileExtractor conanLockfileExtractor() {

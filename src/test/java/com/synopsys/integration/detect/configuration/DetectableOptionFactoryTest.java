@@ -57,7 +57,7 @@ class DetectableOptionFactoryTest {
     private Set<WorkspaceRule> doBazelDependencyRulesTest(List<FilterableEnumValue<WorkspaceRule>> userProvidedRulesValue) {
         PropertyConfiguration detectConfiguration = Mockito.mock(PropertyConfiguration.class);
         DetectableOptionFactory factory = new DetectableOptionFactory(detectConfiguration,
-            null, null, null);
+            null, null, null, null);
         Mockito.when(detectConfiguration.getValue(DetectProperties.DETECT_BAZEL_DEPENDENCY_RULE.getProperty()))
             .thenReturn(userProvidedRulesValue);
         BazelDetectableOptions options = factory.createBazelDetectableOptions();
