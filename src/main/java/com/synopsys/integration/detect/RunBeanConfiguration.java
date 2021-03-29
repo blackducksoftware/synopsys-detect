@@ -266,8 +266,8 @@ public class RunBeanConfiguration {
     @Bean
     public DetectFontLoader detectFontLoader() throws DetectUserFriendlyException {
         DetectFontLocator locator;
-        Optional<File> nugetAirGapPath = airGapManager().getNugetInspectorAirGapFile();
-        if (nugetAirGapPath.isPresent()) {
+        Optional<File> fontAirGapPath = airGapManager().getNugetInspectorAirGapFile();
+        if (fontAirGapPath.isPresent()) {
             locator = new AirGapFontLocator(airGapManager());
         } else {
             locator = new OnlineDetectFontLocator(detectFontInstaller(), directoryManager);
