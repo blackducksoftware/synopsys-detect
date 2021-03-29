@@ -19,7 +19,8 @@ The file includes status codes, issues encountered and results produced. As addi
 "results": [ List of Results, see details below. ]
 "unrecognizedPaths": [ List of Unrecognized Paths, see details below. ]
 "codeLocations": [ List of code locations produced, see details below. ]
-"propertyValues": [ List of property values passed to ${solution_name}. ]
+"propertyValues": { An object representing all provided properties, see details below. }
+"operations": [ List of operations executed, see details below. ]
 }
 ```
 
@@ -74,6 +75,32 @@ A result is a URL or file path to output produced by the ${solution_name} run: a
 {
 "location": The path to the result.
 "message": A string describing the result.
+}
+```
+
+##Property Values
+
+A map of every property key to it's string value that detect found. These are only properties to which detect has a known key, 
+so pass-through properties like docker and dynamic properties like custom fields are not included. Passwords and other sensitive fields are masked.
+
+```
+  "propertyValues": {
+    "key": "value",
+    "boolean-key": "true"
+  }
+```
+
+##Operations
+
+A list of every operation detect executed and it's status. Each piece of detect is seperated into an operation and each of these operations is timestamped and given a status.
+This allows insight into what exactly detect did, how long it took and whether that piece succeeded or failed. 
+
+```
+{
+  "startTimestamp": "2021-03-29 15:20:09.833",
+  "endTimestamp": "2021-03-29 15:20:09.833",
+  "descriptionKey": "Some Operation Name",
+  "status": "SUCCESS"
 }
 ```
 
