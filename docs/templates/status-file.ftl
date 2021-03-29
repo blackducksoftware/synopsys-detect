@@ -41,6 +41,7 @@ The file includes status codes, issues encountered and results produced. As addi
 "projectName": The project name this detectable found.
 "projectVersion": The project version this detectable found.
 "codeLocationCount": The number of code locations this detector produced.
+"explanations": [ A human readable list of strings describing why this detector ran such as "Found file: <path>". ]
 }
 ```
 ###Detector Status Codes
