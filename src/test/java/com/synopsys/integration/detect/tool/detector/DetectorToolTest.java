@@ -282,7 +282,7 @@ public class DetectorToolTest {
         List<FilterableEnumValue<DetectorType>> included = Collections.singletonList(FilterableEnumValue.value(DetectorType.GO_MOD));
         ExcludeIncludeEnumFilter detectorFilter = new ExcludeIncludeEnumFilter(excluded, included);
 
-        return new DetectorEvaluationOptions(false, (rule -> detectorFilter.shouldInclude(rule.getDetectorType())));
+        return new DetectorEvaluationOptions(false, false, (rule -> detectorFilter.shouldInclude(rule.getDetectorType())));
 
     }
 

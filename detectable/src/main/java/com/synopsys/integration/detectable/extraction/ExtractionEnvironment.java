@@ -11,15 +11,10 @@ import java.io.File;
 
 public class ExtractionEnvironment {
     private final File outputDirectory;
-    private boolean followSymLinks;
 
     public ExtractionEnvironment(File outputDirectory) {this.outputDirectory = outputDirectory;}
 
     public File getOutputDirectory() {
         return outputDirectory;
-    }
-
-    public boolean followSymLinks() {
-        return followSymLinks;
     }
 }

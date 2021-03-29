@@ -29,11 +29,11 @@ import com.synopsys.integration.detector.rule.DetectorRuleSet;
 public class DetectorFinder {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public Optional<DetectorEvaluationTree> findDetectors(final File initialDirectory, final DetectorRuleSet detectorRuleSet, final DetectorFinderOptions options) throws DetectorFinderDirectoryListException {
+    public Optional<DetectorEvaluationTree> findDetectors(File initialDirectory, DetectorRuleSet detectorRuleSet, DetectorFinderOptions options) throws DetectorFinderDirectoryListException {
         return findDetectors(initialDirectory, detectorRuleSet, 0, options);
     }
 
-    private Optional<DetectorEvaluationTree> findDetectors(final File directory, final DetectorRuleSet detectorRuleSet, final int depth, final DetectorFinderOptions options)
+    private Optional<DetectorEvaluationTree> findDetectors(File directory, DetectorRuleSet detectorRuleSet, int depth, DetectorFinderOptions options)
         throws DetectorFinderDirectoryListException {
 
         if (depth > options.getMaximumDepth()) {
@@ -41,35 +41,59 @@ public class DetectorFinder {
             return Optional.empty();
         }
 
-        if (null == directory || Files.isSymbolicLink(directory.toPath()) || !directory.isDirectory()) {
-            final String directoryString = Optional.ofNullable(directory).map(File::toString).orElse("null");
+        String directoryString = Optional.ofNullable(directory).map(File::toString).orElse("null");
+        if (null == directory || !directory.isDirectory()) {
             logger.trace("Skipping file as it is not a directory: " + directoryString);
             return Optional.empty();
         }
 
-        logger.debug("Traversing directory: " + directory.getPath()); //TODO: Finding the perfect log level here is important. At INFO, we log a lot during a deep traversal but if we don't we might look stuck.
-        final List<DetectorEvaluation> evaluations = detectorRuleSet.getOrderedDetectorRules().stream()
-                                                         .map(DetectorEvaluation::new)
-                                                         .collect(Collectors.toList());
+        if (Files.isSymbolicLink(directory.toPath())) {
+            if (!options.followSymLinks()) {
+                logger.info("Skipping file as it is a symbolic link and following symbolic links has been disabled: " + directoryString);
+                return Optional.empty();
+            } else {
+                logger.info("Following symbolic link: " + directoryString);
+                Path linkTarget;
+                try {
+                    linkTarget = directory.toPath().toRealPath();
+                } catch (IOException e) {
+                    logger.debug("Symbolic link: " + directoryString + " does not point to a valid directory; skipping it");
+                    return Optional.empty();
+                }
+                if (!Files.isDirectory(linkTarget)) {
+                    logger.debug("Symbolic link: " + directoryString + " does not point to a valid directory; skipping it");
+                    return Optional.empty();
+                }
+                directory = linkTarget.toFile();
+            }
+        }
 
-        final Set<DetectorEvaluationTree> children = new HashSet<>();
+        logger.info("Traversing directory: " + directory.getPath()); //TODO: Finding the perfect log level here is important. At INFO, we log a lot during a deep traversal but if we don't we might look stuck.
+        // TODO why not do this only once?
+        List<DetectorEvaluation> evaluations = detectorRuleSet.getOrderedDetectorRules().stream()
+                                                   .map(DetectorEvaluation::new)
+                                                   .collect(Collectors.toList());
 
-        final List<File> subDirectories = findFilteredSubDirectories(directory, options.getFileFilter());
-        for (final File subDirectory : subDirectories) {
-            final Optional<DetectorEvaluationTree> childEvaluationSet = findDetectors(subDirectory, detectorRuleSet, depth + 1, options);
+        Set<DetectorEvaluationTree> children = new HashSet<>();
+
+        List<File> subDirectories = findFilteredSubDirectories(directory, options.getFileFilter());
+        logger.info("filteredSubDirectories: {}", subDirectories.toString());
+
+        for (File subDirectory : subDirectories) {
+            Optional<DetectorEvaluationTree> childEvaluationSet = findDetectors(subDirectory, detectorRuleSet, depth + 1, options);
             childEvaluationSet.ifPresent(children::add);
         }
 
         return Optional.of(new DetectorEvaluationTree(directory, depth, detectorRuleSet, evaluations, children));
     }
 
-    private List<File> findFilteredSubDirectories(final File directory, final Predicate<File> filePredicate) throws DetectorFinderDirectoryListException {
-        try (final Stream<Path> pathStream = Files.list(directory.toPath())) {
+    private List<File> findFilteredSubDirectories(File directory, Predicate<File> filePredicate) throws DetectorFinderDirectoryListException {
+        try (Stream<Path> pathStream = Files.list(directory.toPath())) {
             return pathStream.map(Path::toFile)
                        .filter(File::isDirectory)
                        .filter(filePredicate)
                        .collect(Collectors.toList());
-        } catch (final IOException e) {
+        } catch (IOException e) {
             throw new DetectorFinderDirectoryListException(String.format("Could not get the subdirectories for %s. %s", directory.getAbsolutePath(), e.getMessage()), e);
         }
     }

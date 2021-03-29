@@ -38,6 +38,7 @@ import java.util.function.Predicate;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
@@ -80,9 +81,7 @@ public class DetectorFinderTest {
         subSubDir2.mkdir();
 
         DetectorRuleSet detectorRuleSet = new DetectorRuleSet(new ArrayList<>(0), new HashMap<>(0), new HashMap<>());
-        Predicate<File> fileFilter = f -> true;
-        final int maximumDepth = 10;
-        DetectorFinderOptions options = new DetectorFinderOptions(fileFilter, maximumDepth, false);
+        DetectorFinderOptions options = createFinderOptions(true);
 
         DetectorFinder finder = new DetectorFinder();
         Optional<DetectorEvaluationTree> tree = finder.findDetectors(initialDirectory, detectorRuleSet, options);
@@ -107,21 +106,10 @@ public class DetectorFinderTest {
     public void testSymLinksNotFollowed() throws IOException, DetectorFinderDirectoryListException {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
-        // Create a subDir with a symlink that loops back to its parent
-        File initialDirectory = initialDirectoryPath.toFile();
-        File subDir = new File(initialDirectory, "testSymLinksNotFollowed");
-        subDir.mkdirs();
-        File link = new File(subDir, "linkToInitial");
-        Path linkPath = link.toPath();
-        Files.createSymbolicLink(linkPath, initialDirectoryPath);
-
-        File regularDir = new File(subDir, "regularDir");
-        regularDir.mkdir();
+        File initialDirectory = createDirWithSymLink("testSymLinksNotFollowed");
 
         DetectorRuleSet detectorRuleSet = new DetectorRuleSet(new ArrayList<>(0), new HashMap<>(0), new HashMap<>(0));
-        Predicate<File> fileFilter = f -> true;
-        final int maximumDepth = 10;
-        DetectorFinderOptions options = new DetectorFinderOptions(fileFilter, maximumDepth, false);
+        DetectorFinderOptions options = createFinderOptions(false);
 
         DetectorFinder finder = new DetectorFinder();
         Optional<DetectorEvaluationTree> tree = finder.findDetectors(initialDirectory, detectorRuleSet, options);
@@ -141,6 +129,58 @@ public class DetectorFinderTest {
         assertEquals(1, subDirResults.size());
         String subDirContentsName = subDirResults.iterator().next().getDirectory().getName();
         assertEquals("regularDir", subDirContentsName);
+    }
+
+    @Test
+    @DisabledOnOs(WINDOWS) //TODO: See if we can fix on windows.
+    public void testSymLinksFollowed() throws IOException, DetectorFinderDirectoryListException {
+        Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
+
+        File initialDirectory = createDirWithSymLink("testSymLinksFollowed");
+
+        DetectorRuleSet detectorRuleSet = new DetectorRuleSet(new ArrayList<>(0), new HashMap<>(0), new HashMap<>(0));
+        DetectorFinderOptions options = createFinderOptions(true);
+
+        DetectorFinder finder = new DetectorFinder();
+        Optional<DetectorEvaluationTree> tree = finder.findDetectors(initialDirectory, detectorRuleSet, options);
+
+        // make sure the symlink was omitted from results
+        //        final Set<DetectorEvaluationTree> subDirResults = tree.get().getChildren().iterator().next().getChildren();
+        Set<DetectorEvaluationTree> testDirs = tree.get().getChildren();
+        DetectorEvaluationTree symLinkTestDir = null;
+        for (DetectorEvaluationTree testDir : testDirs) {
+            if (testDir.getDirectory().getName().equals("testSymLinksNotFollowed")) {
+                symLinkTestDir = testDir;
+                break;
+            }
+        }
+        Set<DetectorEvaluationTree> subDirResults = symLinkTestDir.getChildren();
+
+        assertEquals(2, subDirResults.size());
+        //String subDirContentsName = subDirResults.iterator().next().getDirectory().getName();
+        //assertEquals("regularDir", subDirContentsName);
+    }
+
+    @NotNull
+    private DetectorFinderOptions createFinderOptions(boolean followSymLinks) {
+        Predicate<File> fileFilter = f -> true;
+        final int maximumDepth = 10;
+        return new DetectorFinderOptions(fileFilter, maximumDepth, followSymLinks);
+    }
+
+    @NotNull
+    private File createDirWithSymLink(String dirName) throws IOException {
+        // Create a subDir with a symlink that loops back to its parent
+        File initialDirectory = initialDirectoryPath.toFile();
+        File subDir = new File(initialDirectory, dirName);
+        subDir.mkdirs();
+        File link = new File(subDir, "linkToInitial");
+        Path linkPath = link.toPath();
+        Files.createSymbolicLink(linkPath, initialDirectoryPath);
+
+        File regularDir = new File(subDir, "regularDir");
+        regularDir.mkdir();
+        return initialDirectory;
     }
 
 }

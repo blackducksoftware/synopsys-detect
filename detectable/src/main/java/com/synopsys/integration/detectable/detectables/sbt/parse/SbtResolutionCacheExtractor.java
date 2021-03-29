@@ -51,14 +51,14 @@ public class SbtResolutionCacheExtractor {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public Extraction extract(File directory, SbtResolutionCacheOptions sbtResolutionCacheOptions, boolean followSymLinks) { //TODO: Extractor should not use DetectableOptions
+    public Extraction extract(File directory, SbtResolutionCacheOptions sbtResolutionCacheOptions) { //TODO: Extractor should not use DetectableOptions
         try {
             // TODO: Handle null better.
             List<String> included = sbtResolutionCacheOptions.getIncludedConfigurations();
             List<String> excluded = sbtResolutionCacheOptions.getExcludedConfigurations();
             int depth = sbtResolutionCacheOptions.getReportDepth();
 
-            SbtProject project = extractProject(directory, followSymLinks, depth, included, excluded);
+            SbtProject project = extractProject(directory, sbtResolutionCacheOptions.isFollowSymLinks(), depth, included, excluded);
 
             List<CodeLocation> codeLocations = new ArrayList<>();
 

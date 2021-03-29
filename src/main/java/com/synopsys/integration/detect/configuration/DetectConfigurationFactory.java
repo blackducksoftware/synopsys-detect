@@ -328,7 +328,7 @@ public class DetectConfigurationFactory {
         List<FilterableEnumValue<DetectorType>> included = getValue(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES);
         ExcludeIncludeEnumFilter detectorFilter = new ExcludeIncludeEnumFilter(excluded, included);
 
-        return new DetectorEvaluationOptions(forceNestedSearch, (rule -> detectorFilter.shouldInclude(rule.getDetectorType())));
+        return new DetectorEvaluationOptions(forceNestedSearch, getFollowSymLinks(), (rule -> detectorFilter.shouldInclude(rule.getDetectorType())));
     }
 
     public BdioOptions createBdioOptions() {

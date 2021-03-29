@@ -111,7 +111,7 @@ public class SbtDetectable extends Detectable {
             return sbtPluginExtractor.extract(environment.getDirectory(), sbt);
         } else {
             logger.warn("No SBT plugin was found, will attempt to parse report files. This approach is deprecated and a plugin should be installed. ");
-            return sbtResolutionCacheExtractor.extract(environment.getDirectory(), sbtResolutionCacheOptions, extractionEnvironment.followSymLinks());
+            return sbtResolutionCacheExtractor.extract(environment.getDirectory(), sbtResolutionCacheOptions);
         }
     }
 

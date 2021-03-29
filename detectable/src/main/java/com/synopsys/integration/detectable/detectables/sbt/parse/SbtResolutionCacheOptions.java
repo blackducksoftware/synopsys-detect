@@ -13,11 +13,13 @@ public class SbtResolutionCacheOptions {
     private final List<String> includedConfigurations;
     private final List<String> excludedConfigurations;
     private final int reportDepth;
+    private final boolean followSymLinks;
 
-    public SbtResolutionCacheOptions(List<String> includedConfigurations, List<String> excludedConfigurations, int reportDepth) {
+    public SbtResolutionCacheOptions(List<String> includedConfigurations, List<String> excludedConfigurations, int reportDepth, boolean followSymLinks) {
         this.includedConfigurations = includedConfigurations;
         this.excludedConfigurations = excludedConfigurations;
         this.reportDepth = reportDepth;
+        this.followSymLinks = followSymLinks;
     }
 
     public List<String> getIncludedConfigurations() {
@@ -30,5 +32,9 @@ public class SbtResolutionCacheOptions {
 
     public int getReportDepth() {
         return reportDepth;
+    }
+
+    public boolean isFollowSymLinks() {
+        return followSymLinks;
     }
 }
