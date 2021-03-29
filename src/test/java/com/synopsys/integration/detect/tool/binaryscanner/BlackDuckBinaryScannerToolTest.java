@@ -56,52 +56,6 @@ import com.synopsys.integration.util.NameVersion;
 public class BlackDuckBinaryScannerToolTest {
 
     @Test
-    public void testShouldRunFalsePropertyNotSet() {
-        BinaryScanOptions binaryScanOptions = new BinaryScanOptions(null, Collections.singletonList(""), "", "", 0);
-        BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null, null, null, null, null, binaryScanOptions, null, null);
-        boolean shouldRunResponse = tool.shouldRun();
-
-        assertFalse(shouldRunResponse);
-    }
-
-    @Test
-    public void testShouldRunTrueFileNonExistent() {
-        BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("thisisnotafile"), Collections.singletonList(""), "", "", 0);
-        BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null, null, null, null, null, binaryScanOptions, null, null);
-
-        boolean shouldRunResponse = tool.shouldRun();
-
-        assertTrue(shouldRunResponse);
-    }
-
-    @Test
-    public void testShouldRunTruePropertySetToDirectory() {
-        BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("."), Collections.singletonList(""), "", "", 0);
-
-        BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null, null, null, null, null, binaryScanOptions, null, null);
-
-        boolean shouldRunResponse = tool.shouldRun();
-
-        assertTrue(shouldRunResponse);
-    }
-
-    @Test
-    public void testShouldRunTrueEverythingCorrect() throws IOException {
-        File binaryScanFile = Files.createTempFile("test", "binaryScanFile").toFile();
-        binaryScanFile.deleteOnExit();
-        assertTrue(binaryScanFile.canRead());
-        assertTrue(binaryScanFile.exists());
-
-        BinaryScanOptions binaryScanOptions = new BinaryScanOptions(binaryScanFile.toPath(), Collections.singletonList(""), "", "", 0);
-
-        BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null, null, null, null, null, binaryScanOptions, null, null);
-
-        boolean shouldRunResponse = tool.shouldRun();
-
-        assertTrue(shouldRunResponse);
-    }
-
-    @Test
     public void testShouldFailOnDirectory() throws DetectUserFriendlyException {
         BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("."), Collections.singletonList(""), "", "", 0);
 
@@ -113,7 +67,7 @@ public class BlackDuckBinaryScannerToolTest {
 
         NameVersion projectNameVersion = new NameVersion("testName", "testVersion");
 
-        BinaryScanToolResult result = tool.performBinaryScanActions(projectNameVersion);
+        BinaryScanToolResult result = tool.performBinaryScanActions(null, projectNameVersion);
 
         assertFalse(result.isSuccessful());
     }
@@ -156,7 +110,7 @@ public class BlackDuckBinaryScannerToolTest {
         BinaryScanOptions binaryScanOptions = new BinaryScanOptions(null, targetPaths, "", "", 3);
         BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(statusEventPublisher, exitCodePublisher, codeLocationNameManager, directoryManager, fileFinder, binaryScanOptions, uploadService, operationSystem);
 
-        BinaryScanToolResult result = tool.performBinaryScanActions(projectNameVersion);
+        BinaryScanToolResult result = tool.performBinaryScanActions(null, projectNameVersion);
 
         assertTrue(result.isSuccessful());
     }

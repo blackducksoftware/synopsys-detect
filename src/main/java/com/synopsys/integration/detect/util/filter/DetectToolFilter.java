@@ -20,14 +20,12 @@ public class DetectToolFilter {
 
     public DetectToolFilter(ExcludeIncludeEnumFilter<DetectTool> excludedIncludedFilter, final Optional<Boolean> deprecatedSigScanDisabled, final Optional<Boolean> deprecatedPolarisEnabled, Optional<Boolean> impactEnabled) {
         this.excludedIncludedFilter = excludedIncludedFilter;
-
         this.deprecatedSigScanDisabled = deprecatedSigScanDisabled;
         this.deprecatedPolarisEnabled = deprecatedPolarisEnabled;
         this.impactEnabled = impactEnabled;
     }
 
     public boolean shouldInclude(final DetectTool detectTool) {
-
         if (detectTool == DetectTool.SIGNATURE_SCAN && deprecatedSigScanDisabled.isPresent()) {
             return !deprecatedSigScanDisabled.get();
         } else if (detectTool == DetectTool.POLARIS && deprecatedPolarisEnabled.isPresent()) {

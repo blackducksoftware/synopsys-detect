@@ -7,27 +7,27 @@
  */
 package com.synopsys.integration.detect.lifecycle.run.operation.input;
 
-import java.io.File;
 import java.util.Optional;
 
 import javax.annotation.Nullable;
 
+import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.util.NameVersion;
 
 public class SignatureScanInput {
     private final NameVersion projectNameVersion;
-    private final File dockerTar;
+    private final DockerTargetData dockerTargetData;
 
-    public SignatureScanInput(NameVersion projectNameVersion, @Nullable File dockerTar) {
+    public SignatureScanInput(NameVersion projectNameVersion, @Nullable DockerTargetData dockerTargetData) {
         this.projectNameVersion = projectNameVersion;
-        this.dockerTar = dockerTar;
+        this.dockerTargetData = dockerTargetData;
     }
 
     public NameVersion getProjectNameVersion() {
         return projectNameVersion;
     }
 
-    public Optional<File> getDockerTar() {
-        return Optional.ofNullable(dockerTar);
+    public Optional<DockerTargetData> getDockerTargetData() {
+        return Optional.ofNullable(dockerTargetData);
     }
 }

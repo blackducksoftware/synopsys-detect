@@ -202,7 +202,7 @@ public class RunManager {
             logger.info(ReportConstants.RUN_SEPARATOR);
             if (detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN)) {
                 logger.info("Will include the signature scanner tool.");
-                SignatureScanInput signatureScanInput = new SignatureScanInput(projectNameVersion, runResult.getDockerTar().orElse(null));
+                SignatureScanInput signatureScanInput = new SignatureScanInput(projectNameVersion, runResult.getDockerTargetData().orElse(null));
                 Optional<CodeLocationCreationData<ScanBatchOutput>> signatureScanResult = operationFactory.createSignatureScanOperation().execute(signatureScanInput);
                 signatureScanResult.ifPresent(codeLocationAccumulator::addWaitableCodeLocation);
                 logger.info("Signature scanner actions finished.");
@@ -214,7 +214,7 @@ public class RunManager {
             if (detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN)) {
                 logger.info("Will include the binary scanner tool.");
                 if (blackDuckRunData.isOnline()) {
-                    Optional<CodeLocationCreationData<BinaryScanBatchOutput>> binaryScanResult = operationFactory.createBinaryScanOperation().execute(projectNameVersion);
+                    Optional<CodeLocationCreationData<BinaryScanBatchOutput>> binaryScanResult = operationFactory.createBinaryScanOperation().execute(projectNameVersion, runResult.getDockerTargetData().orElse(null));
                     binaryScanResult.ifPresent(codeLocationAccumulator::addWaitableCodeLocation);
                 }
                 logger.info("Binary scanner actions finished.");

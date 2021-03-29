@@ -16,6 +16,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +31,7 @@ import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationExceptio
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.util.DetectZipUtil;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
@@ -68,42 +70,53 @@ public class BlackDuckBinaryScannerTool {
         this.operationSystem = operationSystem;
     }
 
-    public boolean shouldRun() {
-        if (binaryScanOptions.getSingleTargetFilePath().isPresent()) {
-            logger.info("Binary scan will upload the single provided binary file path.");
-            return true;
-        } else if (binaryScanOptions.getMultipleTargetFileNamePatterns().stream().anyMatch(StringUtils::isNotBlank)) {
-            logger.info("Binary scan will upload all files in the source directory that match the provided name patterns.");
-            return true;
+    private File zipFilesForUpload(List<File> multipleTargets) throws DetectUserFriendlyException {
+        try {
+            final String zipPath = "binary-upload.zip";
+            File zip = new File(directoryManager.getBinaryOutputDirectory(), zipPath);
+            Map<String, Path> uploadTargets = multipleTargets.stream().collect(Collectors.toMap(File::getName, File::toPath));
+            DetectZipUtil.zip(zip, uploadTargets);
+            logger.info("Binary scan created the following zip for upload: " + zip.toPath());
+            return zip;
+        } catch (IOException e) {
+            operationSystem.completeWithFailure(OPERATION_NAME);
+            throw new DetectUserFriendlyException("Unable to create binary scan archive for upload.", e, ExitCodeType.FAILURE_UNKNOWN_ERROR);
         }
-        return false;
     }
 
-    public BinaryScanToolResult performBinaryScanActions(NameVersion projectNameVersion) throws DetectUserFriendlyException {
-        operationSystem.beginOperation(OPERATION_NAME);
+    public BinaryScanToolResult performBinaryScanActions(@Nullable DockerTargetData dockerTargetData, NameVersion projectNameVersion) throws DetectUserFriendlyException {
         File binaryUpload = null;
         Optional<Path> singleTargetFilePath = binaryScanOptions.getSingleTargetFilePath();
         if (singleTargetFilePath.isPresent()) {
+            logger.info("Binary upload will upload single file.");
             binaryUpload = singleTargetFilePath.get().toFile();
         } else if (binaryScanOptions.getMultipleTargetFileNamePatterns().stream().anyMatch(StringUtils::isNotBlank)) {
             List<File> multipleTargets = fileFinder.findFiles(directoryManager.getSourceDirectory(), binaryScanOptions.getMultipleTargetFileNamePatterns(), binaryScanOptions.getSearchDepth());
-            if (multipleTargets != null && multipleTargets.size() > 0) {
+            if (multipleTargets.size() > 0) {
                 logger.info("Binary scan found {} files to archive for binary scan upload.", multipleTargets.size());
-                try {
-                    final String zipPath = "binary-upload.zip";
-                    File zip = new File(directoryManager.getBinaryOutputDirectory(), zipPath);
-                    Map<String, Path> uploadTargets = multipleTargets.stream().collect(Collectors.toMap(File::getName, File::toPath));
-                    DetectZipUtil.zip(zip, uploadTargets);
-                    logger.info("Binary scan created the following zip for upload: " + zip.toPath());
-                    binaryUpload = zip;
-                } catch (IOException e) {
-                    operationSystem.completeWithFailure(OPERATION_NAME);
-                    throw new DetectUserFriendlyException("Unable to create binary scan archive for upload.", e, ExitCodeType.FAILURE_UNKNOWN_ERROR);
-                }
+                binaryUpload = zipFilesForUpload(multipleTargets);
+            } else {
+                logger.warn("Binary scanner did not find any files matching pattern.");
+                statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
+                operationSystem.completeWithError(OPERATION_NAME, "Binary scan file did not exist, is not a file or can't be read.");
+                exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, STATUS_KEY);
+                return BinaryScanToolResult.FAILURE();
             }
+        } else if (dockerTargetData != null && dockerTargetData.getContainerFilesystem().isPresent()) {
+            logger.info("Binary upload will docker container file system.");
+            binaryUpload = dockerTargetData.getContainerFilesystem().get();
+        } else if (dockerTargetData != null && dockerTargetData.getProvidedImageTar().isPresent()) {
+            logger.info("Binary upload will docker provided image tar.");
+            binaryUpload = dockerTargetData.getProvidedImageTar().get();
         }
 
-        if (binaryUpload != null && binaryUpload.isFile() && binaryUpload.canRead()) {
+        if (binaryUpload == null) {
+            logger.info("Binary scanner found nothing to upload.");
+            return BinaryScanToolResult.SKIPPED();
+        }
+
+        operationSystem.beginOperation(OPERATION_NAME);
+        if (binaryUpload.isFile() && binaryUpload.canRead()) {
             String name = projectNameVersion.getName();
             String version = projectNameVersion.getVersion();
             CodeLocationCreationData<BinaryScanBatchOutput> codeLocationCreationData = uploadBinaryScanFile(uploadService, binaryUpload, name, version);
