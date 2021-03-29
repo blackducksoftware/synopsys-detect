@@ -18,12 +18,13 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 
 public class DetectExcludedDirectoryFilter implements Predicate<File> {
+    private static final String PATH_MATCHER_SYNTAX = "glob:%s";
     private final Path sourcePath;
     private final List<String> excludedDirectories;
     private final List<String> excludedDirectoryPaths;
     private final WildcardFileFilter fileFilter;
 
-    public DetectExcludedDirectoryFilter(final Path sourcePath, final List<String> excludedDirectories, final List<String> excludedDirectoryPaths, final List<String> excludedDirectoryNamePatterns) {
+    public DetectExcludedDirectoryFilter(Path sourcePath, List<String> excludedDirectories, List<String> excludedDirectoryPaths, List<String> excludedDirectoryNamePatterns) {
         this.sourcePath = sourcePath;
         this.excludedDirectories = excludedDirectories;
         this.excludedDirectoryPaths = excludedDirectoryPaths;
@@ -31,27 +32,32 @@ public class DetectExcludedDirectoryFilter implements Predicate<File> {
     }
 
     @Override
-    public boolean test(final File file) {
+    public boolean test(File file) {
         return !isExcluded(file);
     }
 
-    public boolean isExcluded(final File file) {
-        for (final String excludedDirectory : excludedDirectories) {
+    public boolean isExcluded(File file) {
+        for (String excludedDirectory : excludedDirectories) {
+            // TODO - does this check ever return true when the path loop does not?
             if (FilenameUtils.wildcardMatchOnSystem(file.getName(), excludedDirectory)) {
                 return true;
             }
         }
 
-        for (final String excludedDirectory : excludedDirectoryPaths) {
-            final Path excludedDirectoryPath = new File(excludedDirectory).toPath();
-            final Path relativeDirectoryPath = sourcePath.relativize(file.toPath());
-            PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:" + excludedDirectory);
+        // TODO - can this be the only check?
+        for (String excludedDirectory : excludedDirectoryPaths) {
+            Path excludedDirectoryPath = new File(excludedDirectory).toPath();
+            Path relativeDirectoryPath = sourcePath.relativize(file.toPath());
+            PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher(String.format(PATH_MATCHER_SYNTAX, excludedDirectory));
 
             if (relativeDirectoryPath.endsWith(excludedDirectoryPath) || pathMatcher.matches(file.toPath())) {
                 return true;
             }
         }
 
+        //TODO - would this line ever return true?
         return fileFilter.accept(file); //returns TRUE if it matches one of the file filters.
     }
+
+    //TODO - break each check into public methods, make isExcluded just check each &&
 }

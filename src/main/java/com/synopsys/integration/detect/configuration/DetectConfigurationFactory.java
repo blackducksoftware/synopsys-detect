@@ -292,14 +292,11 @@ public class DetectConfigurationFactory {
     }
 
     public DetectExcludedDirectoryFilter createDetectDirectoryFileFilter(Path sourcePath, boolean excludeDefaults) {
-        List<String> userProvidedExcludedDirectories = PropertyConfigUtils
-                                                           .getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_EXCLUDED_DIRECTORIES.getProperty(), DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION.getProperty());
-        List<String> excludedDirectoryPatterns = PropertyConfigUtils
-                                                     .getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_EXCLUDED_DIRECTORIES.getProperty(), DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS.getProperty());
-        List<String> excludedDirectoryPaths = PropertyConfigUtils
-                                                  .getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_EXCLUDED_DIRECTORIES.getProperty(), DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_PATHS.getProperty());
+        //TODO- consolidate these three values into one since we don't need to
+        List<String> directoryExclusionPatterns = PropertyConfigUtils
+                                                      .getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_EXCLUDED_DIRECTORIES.getProperty(), DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION.getProperty());
 
-        List<String> excludedDirectories = new ArrayList<>(userProvidedExcludedDirectories);
+        List<String> excludedDirectories = new ArrayList<>(directoryExclusionPatterns);
         if (excludeDefaults && PropertyConfigUtils
                                    .getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_EXCLUDE_DEFAULT_DIRECTORIES.getProperty(), DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS.getProperty())) {
             List<String> defaultExcluded = Arrays.stream(DefaultDetectorExcludedDirectories.values())

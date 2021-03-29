@@ -2,7 +2,7 @@
 
 ## Directory Exclusions
 
-Use [detect.excluded.directories](../../properties/configuration/paths/#detect-excluded-directories-advanced) to exclude directories from search when looking for detectors, and when finding paths to pass to the signature scanner as values for a '--exclude' flag.
+Use [detect.excluded.directories](../../properties/configuration/paths/#detect-excluded-directories-advanced) to exclude directories from search when looking for detectors, and when finding paths to pass to the signature scanner as values for an '--exclude' flag.
 
 ### Exclude directories by name
 
