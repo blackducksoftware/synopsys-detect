@@ -33,7 +33,6 @@ import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.PolarisDecision;
-import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecision;
 import com.synopsys.integration.detect.lifecycle.boot.product.BlackDuckConnectivityChecker;
 import com.synopsys.integration.detect.lifecycle.boot.product.BlackDuckConnectivityResult;
 import com.synopsys.integration.detect.lifecycle.boot.product.PolarisConnectivityChecker;
@@ -140,8 +139,6 @@ public class ProductBootTest {
         ProductBootFactory productBootFactory = Mockito.mock(ProductBootFactory.class);
         Mockito.when(productBootFactory.createPhoneHomeManager(Mockito.any())).thenReturn(null);
 
-        ProductDecision productDecision = new ProductDecision(blackDuckDecision, polarisDecision);
-
         BlackDuckConnectivityChecker blackDuckConnectivityChecker = Mockito.mock(BlackDuckConnectivityChecker.class);
         Mockito.when(blackDuckConnectivityChecker.determineConnectivity(Mockito.any())).thenReturn(blackDuckconnectivityResult);
 
@@ -153,6 +150,6 @@ public class ProductBootTest {
 
         ProductBoot productBoot = new ProductBoot(blackDuckConnectivityChecker, polarisConnectivityChecker, analyticsConfigurationService, productBootFactory, productBootOptions);
 
-        return productBoot.boot(productDecision);
+        return productBoot.boot(polarisDecision, blackDuckDecision, null);
     }
 }

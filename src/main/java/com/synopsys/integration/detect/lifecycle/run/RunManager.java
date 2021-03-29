@@ -60,7 +60,7 @@ public class RunManager {
             ProductRunData productRunData = runContext.getProductRunData();
             OperationFactory operationFactory = new OperationFactory(runContext);
             ProjectEventPublisher projectEventPublisher = runContext.getProjectEventPublisher();
-            DetectToolFilter detectToolFilter = runContext.getDetectConfigurationFactory().createToolFilter();
+            DetectToolFilter detectToolFilter = productRunData.getDetectToolFilter();
 
             logger.info(ReportConstants.RUN_SEPARATOR);
             if (runContext.getProductRunData().shouldUsePolarisProduct()) {
@@ -242,7 +242,7 @@ public class RunManager {
                 logger.info("Will perform Black Duck post actions.");
                 BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
                 FullScanPostProcessingInput fullScanPostProcessingInput = new FullScanPostProcessingInput(projectNameVersion, bdioResult, codeLocationResults, projectVersionWrapper);
-                operationFactory.createFullScanPostProcessingOperation().execute(blackDuckServicesFactory, fullScanPostProcessingInput);
+                operationFactory.createFullScanPostProcessingOperation(detectToolFilter).execute(blackDuckServicesFactory, fullScanPostProcessingInput);
                 logger.info("Black Duck actions have finished.");
             } else {
                 logger.debug("Will not perform Black Duck post actions: Detect is not online.");

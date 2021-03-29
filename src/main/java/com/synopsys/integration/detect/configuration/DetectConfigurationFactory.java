@@ -51,6 +51,7 @@ import com.synopsys.integration.detect.configuration.enumeration.DefaultVersionN
 import com.synopsys.integration.detect.configuration.enumeration.DetectTarget;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.lifecycle.boot.decision.RunDecision;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions;
 import com.synopsys.integration.detect.lifecycle.run.AggregateOptions;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
@@ -255,7 +256,8 @@ public class DetectConfigurationFactory {
         return new PhoneHomeOptions(phoneHomePassthrough);
     }
 
-    public DetectToolFilter createToolFilter() {
+    //TODO: Should not return the tool, but return an options object someone else uses to make the tool.
+    public DetectToolFilter createToolFilter(RunDecision runDecision) {
         // This is because it is double deprecated so we must check if either property is set.
         Optional<Boolean> sigScanDisabled = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED.getProperty(),
             DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_DISABLED.getProperty());
@@ -265,7 +267,7 @@ public class DetectConfigurationFactory {
         List<FilterableEnumValue<DetectTool>> includedTools = getValue(DetectProperties.DETECT_TOOLS);
         List<FilterableEnumValue<DetectTool>> excludedTools = getValue(DetectProperties.DETECT_TOOLS_EXCLUDED);
         ExcludeIncludeEnumFilter filter = new ExcludeIncludeEnumFilter(excludedTools, includedTools);
-        return new DetectToolFilter(filter, sigScanDisabled, polarisEnabled, impactEnabled);
+        return new DetectToolFilter(filter, sigScanDisabled, polarisEnabled, impactEnabled, runDecision);
     }
 
     public AggregateOptions createAggregateOptions() {

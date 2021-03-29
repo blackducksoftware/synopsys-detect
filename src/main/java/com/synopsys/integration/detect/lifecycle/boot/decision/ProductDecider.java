@@ -40,7 +40,6 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.builder.BuilderStatus;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
-import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
@@ -52,16 +51,7 @@ import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig
 public class ProductDecider {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public ProductDecision decide(DetectConfigurationFactory detectConfigurationFactory, File userHome, DetectToolFilter detectToolFilter) throws DetectUserFriendlyException {
-        BlackDuckConnectionDetails blackDuckConnectionDetails = detectConfigurationFactory.createBlackDuckConnectionDetails();
-        BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions();
-        BdioOptions bdioOptions = detectConfigurationFactory.createBdioOptions();
-        BlackDuckDecision blackDuckDecision = determineBlackDuck(blackDuckConnectionDetails, blackDuckSignatureScannerOptions, detectConfigurationFactory.createScanMode(), bdioOptions);
-        PolarisDecision polarisDecision = determinePolaris(detectConfigurationFactory, userHome, detectToolFilter, blackDuckDecision);
-        return new ProductDecision(blackDuckDecision, polarisDecision);
-    }
-
-    public PolarisDecision determinePolaris(DetectConfigurationFactory detectConfigurationFactory, File userHome, DetectToolFilter detectToolFilter, BlackDuckDecision blackDuckDecision) {
+    public PolarisDecision decidePolaris(DetectConfigurationFactory detectConfigurationFactory, File userHome, DetectToolFilter detectToolFilter, BlackDuckDecision blackDuckDecision) {
         if (!detectToolFilter.shouldInclude(DetectTool.POLARIS)) {
             logger.debug("Polaris will NOT run because it is excluded.");
             return PolarisDecision.skip();
@@ -88,7 +78,7 @@ public class ProductDecider {
         }
     }
 
-    public BlackDuckDecision determineBlackDuck(BlackDuckConnectionDetails blackDuckConnectionDetails, BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, BlackduckScanMode scanMode, BdioOptions bdioOptions) {
+    public BlackDuckDecision decideBlackDuck(BlackDuckConnectionDetails blackDuckConnectionDetails, BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, BlackduckScanMode scanMode, BdioOptions bdioOptions) {
         boolean offline = blackDuckConnectionDetails.getOffline();
         Optional<String> blackDuckUrl = blackDuckConnectionDetails.getBlackDuckUrl();
         Optional<String> signatureScannerHostUrl = blackDuckSignatureScannerOptions.getUserProvidedScannerInstallUrl();

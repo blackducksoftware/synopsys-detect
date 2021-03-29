@@ -33,6 +33,7 @@ import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysi
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisUploadService;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerTool;
+import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.BdioManager;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
 import com.synopsys.integration.detect.workflow.blackduck.DetectCustomFieldService;
@@ -105,12 +106,12 @@ public class OperationFactory {
         return new CodeLocationResultCalculationOperation(new CodeLocationResultCalculator(), runContext.getCodeLocationEventPublisher(), runContext.getOperationSystem());
     }
 
-    public final FullScanPostProcessingOperation createFullScanPostProcessingOperation() {
+    public final FullScanPostProcessingOperation createFullScanPostProcessingOperation(DetectToolFilter detectToolFilter) {
         DetectConfigurationFactory detectConfigurationFactory = runContext.getDetectConfigurationFactory();
         BlackDuckPostOptions blackDuckPostOptions = detectConfigurationFactory.createBlackDuckPostOptions();
         Long timeoutInSeconds = detectConfigurationFactory.findTimeoutInSeconds();
 
-        return new FullScanPostProcessingOperation(detectConfigurationFactory.createToolFilter(), blackDuckPostOptions, runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getOperationSystem(),
+        return new FullScanPostProcessingOperation(detectToolFilter, blackDuckPostOptions, runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getOperationSystem(),
             timeoutInSeconds);
     }
 
