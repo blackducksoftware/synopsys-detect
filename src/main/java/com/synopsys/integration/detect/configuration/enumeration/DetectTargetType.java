@@ -7,7 +7,7 @@
  */
 package com.synopsys.integration.detect.configuration.enumeration;
 
-public enum DetectTarget {
+public enum DetectTargetType {
     SOURCE,
     IMAGE
 }

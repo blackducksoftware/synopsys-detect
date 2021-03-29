@@ -48,7 +48,7 @@ import com.synopsys.integration.detect.configuration.connection.ConnectionDetail
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DefaultDetectorExcludedDirectories;
 import com.synopsys.integration.detect.configuration.enumeration.DefaultVersionNameScheme;
-import com.synopsys.integration.detect.configuration.enumeration.DetectTarget;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.boot.decision.RunDecision;
@@ -281,8 +281,8 @@ public class DetectConfigurationFactory {
         return getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE);
     }
 
-    public DetectTarget createDetectTarget() {
-        return getValue(DetectProperties.DETECT_TARGET);
+    public DetectTargetType createDetectTarget() {
+        return getValue(DetectProperties.DETECT_TARGET_TYPE);
     }
 
     public List<DetectTool> createPreferredProjectTools() {

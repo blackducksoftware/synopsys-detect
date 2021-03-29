@@ -34,7 +34,7 @@ import com.synopsys.integration.detect.configuration.DetectPropertyUtil;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
-import com.synopsys.integration.detect.configuration.enumeration.DetectTarget;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
 import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
 import com.synopsys.integration.detect.configuration.help.json.HelpJsonManager;
 import com.synopsys.integration.detect.configuration.help.print.HelpPrinter;
@@ -172,7 +172,7 @@ public class DetectBoot {
             ProductDecider productDecider = new ProductDecider();
             BlackDuckDecision blackDuckDecision = productDecider.decideBlackDuck(detectConfigurationFactory.createBlackDuckConnectionDetails(), detectConfigurationFactory.createBlackDuckSignatureScannerOptions(),
                 detectConfigurationFactory.createScanMode(), detectConfigurationFactory.createBdioOptions());
-            RunDecision runDecision = new RunDecision(blackDuckDecision.isRapid(), detectConfigurationFactory.createDetectTarget() == DetectTarget.IMAGE); //TODO: Move to proper decision home. -jp
+            RunDecision runDecision = new RunDecision(blackDuckDecision.isRapid(), detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE); //TODO: Move to proper decision home. -jp
             DetectToolFilter detectToolFilter = detectConfigurationFactory.createToolFilter(runDecision);
             PolarisDecision polarisDecision = productDecider.decidePolaris(detectConfigurationFactory, directoryManager.getUserHome(), detectToolFilter, blackDuckDecision);
 

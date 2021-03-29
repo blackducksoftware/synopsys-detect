@@ -48,7 +48,7 @@ import com.synopsys.integration.detect.configuration.enumeration.DefaultVersionN
 import com.synopsys.integration.detect.configuration.enumeration.DetectCategory;
 import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
 import com.synopsys.integration.detect.configuration.enumeration.DetectMajorVersion;
-import com.synopsys.integration.detect.configuration.enumeration.DetectTarget;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndividualFileMatchingMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
@@ -1138,8 +1138,8 @@ public class DetectProperties {
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.SOURCE_PATH);
 
-    public static final DetectProperty<EnumProperty<DetectTarget>> DETECT_TARGET =
-        new DetectProperty<>(new EnumProperty<>("detect.target.type", DetectTarget.SOURCE, DetectTarget.class))
+    public static final DetectProperty<EnumProperty<DetectTargetType>> DETECT_TARGET_TYPE =
+        new DetectProperty<>(new EnumProperty<>("detect.target.type", DetectTargetType.SOURCE, DetectTargetType.class))
             .setInfo("Detect Target", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp("Informs detect of what is being scanned which allows improved user experience when scanning different types of targets.",
                 "Changes the behaviour of detect to better suite what is being scanned. For example, when IMAGE is selected, detect will not pick a source directory, will automatically disable the DETECTOR tool and run BINARY/SIGNATURE SCAN on the provided image.")
