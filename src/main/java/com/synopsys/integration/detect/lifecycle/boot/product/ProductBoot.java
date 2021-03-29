@@ -92,10 +92,10 @@ public class ProductBoot {
 
             if (shouldUsePhoneHome(analyticsConfigurationService, blackDuckServicesFactory.getBlackDuckApiClient())) {
                 PhoneHomeManager phoneHomeManager = productBootFactory.createPhoneHomeManager(blackDuckServicesFactory);
-                return BlackDuckRunData.online(blackDuckDecision.isRapid(), blackDuckServicesFactory, phoneHomeManager, blackDuckConnectivityResult.getBlackDuckServerConfig());
+                return BlackDuckRunData.online(blackDuckDecision.scanMode(), blackDuckServicesFactory, phoneHomeManager, blackDuckConnectivityResult.getBlackDuckServerConfig());
             } else {
                 logger.debug("Skipping phone home due to Black Duck global settings.");
-                return BlackDuckRunData.onlineNoPhoneHome(blackDuckDecision.isRapid(), blackDuckServicesFactory, blackDuckConnectivityResult.getBlackDuckServerConfig());
+                return BlackDuckRunData.onlineNoPhoneHome(blackDuckDecision.scanMode(), blackDuckServicesFactory, blackDuckConnectivityResult.getBlackDuckServerConfig());
             }
         } else {
             if (productBootOptions.isIgnoreConnectionFailures()) {

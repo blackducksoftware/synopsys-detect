@@ -1,7 +1,7 @@
 buildscript {
     ext {
         springBootVersion = '2.4.3'
-        blackDuckCommonVersion = '52.0.2'
+        blackDuckCommonVersion = '54.0.0'
     }
     apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-repositories.gradle', to: buildscript
     apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-dependencies.gradle', to: buildscript

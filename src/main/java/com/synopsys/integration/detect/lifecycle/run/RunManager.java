@@ -13,9 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
-import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOutput;
 import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchOutput;
+import com.synopsys.integration.blackduck.codelocation.upload.UploadBatchOutput;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
@@ -176,7 +176,8 @@ public class RunManager {
 
         BdioInput bdioInput = new BdioInput(aggregateDecision, projectNameVersion, runResult.getDetectCodeLocations());
         BdioResult bdioResult = operationFactory.createBdioFileGenerationOperation().execute(bdioInput);
-        if (blackDuckRunData.isRapid()) {
+        if (blackDuckRunData.isRapid() && blackDuckRunData.isOnline()) {
+            blackDuckRunData.getPhoneHomeManager().ifPresent(PhoneHomeManager::startPhoneHome);
             logger.info(ReportConstants.RUN_SEPARATOR);
             RapidScanInput rapidScanInput = new RapidScanInput(projectNameVersion, bdioResult);
             operationFactory.createRapidScanOperation().execute(blackDuckRunData, blackDuckRunData.getBlackDuckServicesFactory(), rapidScanInput);
@@ -194,7 +195,7 @@ public class RunManager {
             logger.debug("Processing Detect Code Locations.");
 
             CodeLocationAccumulator codeLocationAccumulator = new CodeLocationAccumulator<>();
-            Optional<CodeLocationCreationData<UploadBatchOutput>> uploadResult = operationFactory.createBdioUploadOperation().execute(blackDuckRunData, bdioResult);
+            Optional<CodeLocationCreationData<UploadBatchOutput>> uploadResult = operationFactory.createBdioUploadOperation().execute(blackDuckRunData.getScanMode(), blackDuckRunData, bdioResult);
             uploadResult.ifPresent(codeLocationAccumulator::addWaitableCodeLocation);
 
             logger.debug("Completed Detect Code Location processing.");

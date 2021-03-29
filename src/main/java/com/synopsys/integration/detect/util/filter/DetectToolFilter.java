@@ -15,7 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.configuration.ExcludeIncludeEnumFilter;
+import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
+import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.RunDecision;
 
 /**
@@ -34,15 +36,17 @@ public class DetectToolFilter {
     private final Optional<Boolean> deprecatedPolarisEnabled;
     private final Optional<Boolean> impactEnabled;
     private RunDecision runDecision;
+    private BlackDuckDecision blackDuckDecision;
     private List<DetectTool> rapidTools = Arrays.asList(DetectTool.DETECTOR, DetectTool.SIGNATURE_SCAN);
 
     public DetectToolFilter(ExcludeIncludeEnumFilter<DetectTool> excludedIncludedFilter, final Optional<Boolean> deprecatedSigScanDisabled, final Optional<Boolean> deprecatedPolarisEnabled, Optional<Boolean> impactEnabled,
-        final RunDecision runDecision) {
+        final RunDecision runDecision, final BlackDuckDecision blackDuckDecision) {
         this.excludedIncludedFilter = excludedIncludedFilter;
         this.deprecatedSigScanDisabled = deprecatedSigScanDisabled;
         this.deprecatedPolarisEnabled = deprecatedPolarisEnabled;
         this.impactEnabled = impactEnabled;
         this.runDecision = runDecision;
+        this.blackDuckDecision = blackDuckDecision;
     }
 
     public boolean shouldInclude(final DetectTool detectTool) { //Only turn tools OFF, turning a tool ON prevents the user from being able to turn an undesired tool OFF.
@@ -59,7 +63,7 @@ public class DetectToolFilter {
                 return false;
             }
         }
-        if (runDecision.isRapid()) {
+        if (blackDuckDecision.scanMode() == BlackduckScanMode.RAPID) {
             if (!rapidTools.contains(detectTool)) {
                 return false;
             }

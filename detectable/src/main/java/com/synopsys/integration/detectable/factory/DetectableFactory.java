@@ -16,6 +16,7 @@ import org.xml.sax.SAXException;
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.BdioTransformer;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.common.util.parse.CommandParser;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BashResolver;
@@ -60,12 +61,15 @@ import com.synopsys.integration.detectable.detectables.cargo.parse.CargoLockPars
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOptions;
 import com.synopsys.integration.detectable.detectables.clang.ClangExtractor;
+import com.synopsys.integration.detectable.detectables.clang.ForgeChooser;
+import com.synopsys.integration.detectable.detectables.clang.LinuxDistroToForgeMapper;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandDatabaseParser;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandParser;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.ClangPackageDetailsTransformer;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.DependencyFileDetailGenerator;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.DependencyListFileParser;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.FilePathGenerator;
+import com.synopsys.integration.detectable.detectables.clang.linux.LinuxDistro;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerFactory;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerInfoFactory;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerRunner;
@@ -443,16 +447,18 @@ public class DetectableFactory {
         return new ClangPackageDetailsTransformer(externalIdFactory);
     }
 
+    private ForgeChooser forgeChooser() {
+        LinuxDistroToForgeMapper forgeGenerator = new LinuxDistroToForgeMapper();
+        LinuxDistro linuxDistro = new LinuxDistro();
+        return new ForgeChooser(forgeGenerator, linuxDistro);
+    }
+
     private CompileCommandDatabaseParser compileCommandDatabaseParser() {
         return new CompileCommandDatabaseParser(gson);
     }
 
-    private CompileCommandParser compileCommandParser() {
-        return new CompileCommandParser();
-    }
-
     private ClangExtractor clangExtractor() {
-        return new ClangExtractor(executableRunner, dependencyFileDetailGenerator(), clangPackageDetailsTransformer(), compileCommandDatabaseParser());
+        return new ClangExtractor(executableRunner, dependencyFileDetailGenerator(), clangPackageDetailsTransformer(), compileCommandDatabaseParser(), forgeChooser());
     }
 
     private PodlockParser podlockParser() {
@@ -580,7 +586,15 @@ public class DetectableFactory {
     }
 
     private MavenCliExtractor mavenCliExtractor() {
-        return new MavenCliExtractor(executableRunner, mavenCodeLocationPackager());
+        return new MavenCliExtractor(executableRunner, mavenCodeLocationPackager(), commandParser());
+    }
+
+    private CommandParser commandParser() {
+        return new CommandParser();
+    }
+
+    private CompileCommandParser compileCommandParser() {
+        return new CompileCommandParser(commandParser());
     }
 
     private ConanLockfileExtractor conanLockfileExtractor() {

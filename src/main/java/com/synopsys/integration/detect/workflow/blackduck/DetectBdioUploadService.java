@@ -12,13 +12,15 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.Result;
-import com.synopsys.integration.blackduck.codelocation.bdio2upload.Bdio2UploadService;
-import com.synopsys.integration.blackduck.codelocation.bdioupload.BdioUploadService;
-import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatch;
-import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOutput;
-import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadOutput;
-import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
+import com.synopsys.integration.blackduck.codelocation.bdio2legacy.Bdio2UploadService;
+import com.synopsys.integration.blackduck.codelocation.bdiolegacy.BdioUploadService;
+import com.synopsys.integration.blackduck.codelocation.intelligentpersistence.IntelligentPersistenceService;
+import com.synopsys.integration.blackduck.codelocation.upload.UploadBatch;
+import com.synopsys.integration.blackduck.codelocation.upload.UploadBatchOutput;
+import com.synopsys.integration.blackduck.codelocation.upload.UploadOutput;
+import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.status.OperationSystem;
@@ -33,18 +35,18 @@ public class DetectBdioUploadService {
         this.operationSystem = operationSystem;
     }
 
-    public CodeLocationCreationData<UploadBatchOutput> uploadBdioFiles(BdioResult bdioResult, BdioUploadService bdioUploadService, Bdio2UploadService bdio2UploadService) throws DetectUserFriendlyException, IntegrationException {
+    public CodeLocationCreationData<UploadBatchOutput> uploadBdioFiles(BlackduckScanMode scanMode, BdioResult bdioResult, BdioUploadService bdioUploadService, Bdio2UploadService bdio2UploadService,
+        IntelligentPersistenceService intelligentPersistenceScanService) throws DetectUserFriendlyException, IntegrationException {
 
-        UploadBatch uploadBatch = new UploadBatch();
-        for (UploadTarget uploadTarget : bdioResult.getUploadTargets()) {
-            logger.debug(String.format("Uploading %s", uploadTarget.getUploadFile().getName()));
-            uploadBatch.addUploadTarget(uploadTarget);
-        }
-
+        UploadBatch uploadBatch = createBatch(bdioResult);
         CodeLocationCreationData<UploadBatchOutput> response;
         try {
             if (bdioResult.isBdio2()) {
-                response = bdio2UploadService.uploadBdio(uploadBatch);
+                if (scanMode == BlackduckScanMode.INTELLIGENT) {
+                    response = intelligentPersistenceScanService.uploadBdio(uploadBatch);
+                } else {
+                    response = bdio2UploadService.uploadBdio(uploadBatch);
+                }
             } else {
                 response = bdioUploadService.uploadBdio(uploadBatch);
             }
@@ -53,7 +55,22 @@ public class DetectBdioUploadService {
             operationSystem.completeWithError(OPERATION_NAME, ex.getMessage());
             throw ex;
         }
+        checkForUploadFailure(response);
+        operationSystem.completeWithSuccess(OPERATION_NAME);
 
+        return response;
+    }
+
+    private UploadBatch createBatch(BdioResult bdioResult) {
+        UploadBatch uploadBatch = new UploadBatch();
+        for (UploadTarget uploadTarget : bdioResult.getUploadTargets()) {
+            logger.debug(String.format("Uploading %s", uploadTarget.getUploadFile().getName()));
+            uploadBatch.addUploadTarget(uploadTarget);
+        }
+        return uploadBatch;
+    }
+
+    private void checkForUploadFailure(CodeLocationCreationData<UploadBatchOutput> response) throws DetectUserFriendlyException {
         for (UploadOutput uploadOutput : response.getOutput()) {
             if (uploadOutput.getResult() == Result.FAILURE) {
                 logger.error(String.format("Failed to upload code location: %s", uploadOutput.getCodeLocationName()));
@@ -62,9 +79,5 @@ public class DetectBdioUploadService {
                 throw new DetectUserFriendlyException("An error occurred uploading a bdio file.", uploadOutput.getException().orElse(null), ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
             }
         }
-        operationSystem.completeWithSuccess(OPERATION_NAME);
-
-        return response;
     }
-
 }

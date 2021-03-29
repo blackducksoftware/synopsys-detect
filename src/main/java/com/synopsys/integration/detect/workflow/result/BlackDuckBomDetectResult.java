@@ -7,10 +7,13 @@
  */
 package com.synopsys.integration.detect.workflow.result;
 
+import java.util.Collections;
+import java.util.List;
+
 public class BlackDuckBomDetectResult implements DetectResult {
     private final String projectComponentsLink;
 
-    public BlackDuckBomDetectResult(final String projectComponentsLink) {
+    public BlackDuckBomDetectResult(String projectComponentsLink) {
         this.projectComponentsLink = projectComponentsLink;
     }
 
@@ -22,5 +25,10 @@ public class BlackDuckBomDetectResult implements DetectResult {
     @Override
     public String getResultMessage() {
         return String.format("Black Duck Project BOM: %s", projectComponentsLink);
+    }
+
+    @Override
+    public List<String> getResultSubMessages() {
+        return Collections.emptyList();
     }
 }

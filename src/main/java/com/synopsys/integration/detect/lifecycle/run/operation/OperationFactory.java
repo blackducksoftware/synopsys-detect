@@ -9,7 +9,7 @@ package com.synopsys.integration.detect.lifecycle.run.operation;
 
 import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.blackduck.bdio2.Bdio2Factory;
+import com.synopsys.integration.blackduck.bdio2.util.Bdio2Factory;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;

@@ -9,16 +9,10 @@ package com.synopsys.integration.detect.lifecycle.boot.decision;
 
 //Basically this is the placeholder for these decisions. Eventually a more fully formed decision will be made. -jp 3/29/20
 public class RunDecision {
-    private final boolean isRapid;
     private final boolean isDockerMode;
 
-    public RunDecision(final boolean isRapid, final boolean isDockerMode) {
-        this.isRapid = isRapid;
+    public RunDecision(final boolean isDockerMode) {
         this.isDockerMode = isDockerMode;
-    }
-
-    public boolean isRapid() {
-        return isRapid;
     }
 
     public boolean isDockerMode() {

@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.common.util.parse.CommandParser;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.configuration.source.MapPropertySource;
@@ -172,8 +173,8 @@ public class DetectBoot {
             ProductDecider productDecider = new ProductDecider();
             BlackDuckDecision blackDuckDecision = productDecider.decideBlackDuck(detectConfigurationFactory.createBlackDuckConnectionDetails(), detectConfigurationFactory.createBlackDuckSignatureScannerOptions(),
                 detectConfigurationFactory.createScanMode(), detectConfigurationFactory.createBdioOptions());
-            RunDecision runDecision = new RunDecision(blackDuckDecision.isRapid(), detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE); //TODO: Move to proper decision home. -jp
-            DetectToolFilter detectToolFilter = detectConfigurationFactory.createToolFilter(runDecision);
+            RunDecision runDecision = new RunDecision(detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE); //TODO: Move to proper decision home. -jp
+            DetectToolFilter detectToolFilter = detectConfigurationFactory.createToolFilter(runDecision, blackDuckDecision);
             PolarisDecision polarisDecision = productDecider.decidePolaris(detectConfigurationFactory, directoryManager.getUserHome(), detectToolFilter, blackDuckDecision);
 
             logger.debug("Decided what products will be run. Starting product boot.");
@@ -192,7 +193,7 @@ public class DetectBoot {
         DetectableOptionFactory detectableOptionFactory;
         try {
             ProxyInfo detectableProxyInfo = detectConfigurationFactory.createBlackDuckProxyInfo();
-            detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem, pathResolver, detectableProxyInfo);
+            detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem, pathResolver, detectableProxyInfo, new CommandParser());
         } catch (DetectUserFriendlyException e) {
             return Optional.of(DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem));
         }
