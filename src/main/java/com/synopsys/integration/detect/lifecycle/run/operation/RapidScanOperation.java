@@ -43,8 +43,8 @@ public class RapidScanOperation {
 
     public void execute(BlackDuckRunData blackDuckRunData, BlackDuckServicesFactory blackDuckServicesFactory, RapidScanInput input) throws DetectUserFriendlyException, IntegrationException {
         RapidScanService developerScanService = blackDuckServicesFactory.createRapidScanService();
-        BlackDuckRapidMode rapidScanMode = new BlackDuckRapidMode(statusEventPublisher, blackDuckRunData, developerScanService, timeoutInSeconds, operationSystem);
-        BlackDuckRapidModePostActions postActions = new BlackDuckRapidModePostActions(gson, statusEventPublisher, exitCodePublisher, directoryManager, operationSystem);
+        BlackDuckRapidMode rapidScanMode = new BlackDuckRapidMode(blackDuckRunData, developerScanService, timeoutInSeconds, operationSystem);
+        BlackDuckRapidModePostActions postActions = new BlackDuckRapidModePostActions(blackDuckServicesFactory.getLogger(), gson, statusEventPublisher, exitCodePublisher, directoryManager, operationSystem);
 
         List<DeveloperScanComponentResultView> results = rapidScanMode.run(input.getBdioResult());
         postActions.perform(input.getProjectNameVersion(), results);

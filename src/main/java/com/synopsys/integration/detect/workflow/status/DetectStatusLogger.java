@@ -68,6 +68,9 @@ public class DetectStatusLogger {
             logger.info("");
             for (DetectResult detectResult : detectResults) {
                 logger.info(detectResult.getResultMessage());
+                if (!detectResult.getResultSubMessages().isEmpty()) {
+                    detectResult.getResultSubMessages().forEach(subMessage -> logger.info(String.format("\t%s", subMessage)));
+                }
             }
             logger.info("");
         }

@@ -7,154 +7,50 @@
  */
 package com.synopsys.integration.detectable.detectables.clang.compilecommand;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.StringTokenizer;
-import org.apache.commons.text.matcher.StringMatcherFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.util.Stringable;
+import com.synopsys.integration.common.util.parse.CommandParser;
 
 public class CompileCommandParser {
+    private final CommandParser commandParser;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private static final char SINGLE_QUOTE_CHAR = '\'';
-    private static final char DOUBLE_QUOTE_CHAR = '"';
-    private static final char ESCAPE_CHAR = '\\';
-    private static final char TAB_CHAR = '\t';
-    private static final char SPACE_CHAR = ' ';
-    private static final String SPACE_CHAR_AS_STRING = " ";
-    private static final String TAB_CHAR_AS_STRING = "\t";
-    private static final String ENCODED_SPACE_CHAR = "%20";
-    private static final String ENCODED_TAB_CHAR = "%09";
+
+    public CompileCommandParser(CommandParser commandParser) {
+        this.commandParser = commandParser;
+    }
 
     public List<String> parseCommand(CompileCommand compileCommand, Map<String, String> optionOverrides) {
-
         String commandString = compileCommand.command;
         if (StringUtils.isBlank(commandString)) {
             commandString = String.join(" ", compileCommand.arguments);
         }
-        List<String> commandList = parseCommandString(commandString, optionOverrides);
-        return commandList;
+        List<String> options = commandParser.parseCommandString(commandString);
+
+        try {
+            performOverrides(options, optionOverrides);
+        } catch (OverrideOptionWithNoValueException e) {
+            logger.debug(String.format("Failed option override in command %s:  %s", commandString, e.getMessage()));
+        }
+
+        return options;
     }
 
-    public List<String> parseCommandString(String commandString, Map<String, String> optionOverrides) {
-        logger.trace(String.format("origCompileCommand         : %s", commandString));
-        String quotesRemovedCompileCommand = encodeQuotedWhitespace(commandString);
-        logger.trace(String.format("quotesRemovedCompileCommand: %s", quotesRemovedCompileCommand));
-        StringTokenizer tokenizer = new StringTokenizer(quotesRemovedCompileCommand);
-        tokenizer.setQuoteMatcher(StringMatcherFactory.INSTANCE.quoteMatcher());
-        List<String> commandList = new ArrayList<>();
-        String lastPart = "";
-        int partIndex = 0;
-        while (tokenizer.hasNext()) {
-            String token = tokenizer.nextToken();
-            String part = restoreWhitespace(token);
-            if (partIndex > 0) {
-                String optionValueOverride = null;
-                for (Map.Entry<String, String> optionToOverride : optionOverrides.entrySet()) {
-                    if (optionToOverride.getKey().equals(lastPart)) {
-                        optionValueOverride = optionToOverride.getValue();
-                    }
-                }
-                if (optionValueOverride != null) {
-                    commandList.add(optionValueOverride);
+    private static void performOverrides(List<String> options, Map<String, String> optionOverrides) throws OverrideOptionWithNoValueException {
+        for (Map.Entry<String, String> override : optionOverrides.entrySet()) {
+            String optionToOverride = override.getKey();
+            if (options.contains(optionToOverride)) {
+                int indexOfOptionToOverride = options.indexOf(optionToOverride);
+                if (indexOfOptionToOverride < options.size() - 1) {
+                    options.set(indexOfOptionToOverride + 1, override.getValue());
                 } else {
-                    commandList.add(part);
+                    throw new OverrideOptionWithNoValueException(String.format("Option %s could not be overrode since it does not have a value", optionToOverride));
                 }
-            } else {
-                commandList.add(part);
             }
-            lastPart = part;
-            partIndex++;
-        }
-        return commandList;
-    }
-
-    private String restoreWhitespace(String givenString) {
-        String newString = givenString
-                               .replace(ENCODED_SPACE_CHAR, SPACE_CHAR_AS_STRING)
-                               .replace(ENCODED_TAB_CHAR, TAB_CHAR_AS_STRING);
-        logger.trace(String.format("restoreWhitespace() changed %s to %s", givenString, newString));
-        return newString;
-    }
-
-    private String encodeQuotedWhitespace(String givenString) {
-        StringBuilder newString = new StringBuilder();
-        ParserState parserState = new ParserState();
-        for (int i = 0; i < givenString.length(); i++) {
-            char c = givenString.charAt(i);
-            if (parserState.getQuoteType() != QuoteType.NONE) {
-                processQuotedChar(parserState, c, newString);
-            } else {
-                processNonQuotedChar(parserState, c, newString);
-            }
-            parserState.setLastCharWasEscapeChar(c == ESCAPE_CHAR);
-        }
-        logger.trace(String.format("escapeQuotedWhitespace() changed %s to %s", givenString, newString.toString()));
-        return newString.toString();
-    }
-
-    private void processQuotedChar(ParserState parserState, char c, StringBuilder newString) {
-        // Currently inside a quoted substring
-        if ((!parserState.isLastCharEscapeChar() && (c == SINGLE_QUOTE_CHAR) && (parserState.getQuoteType() == QuoteType.SINGLE)) ||
-                (!parserState.isLastCharEscapeChar() && (c == DOUBLE_QUOTE_CHAR) && (parserState.getQuoteType() == QuoteType.DOUBLE)) ||
-                (parserState.isLastCharEscapeChar() && (c == DOUBLE_QUOTE_CHAR) && parserState.getQuoteType() == QuoteType.ESCAPED_DOUBLE)) {
-            // Close quote
-            parserState.setQuoteType(QuoteType.NONE);
-            newString.append(c);
-        } else if (c == SPACE_CHAR) {
-            newString.append(ENCODED_SPACE_CHAR);
-        } else if (c == TAB_CHAR) {
-            newString.append(ENCODED_TAB_CHAR);
-        } else {
-            newString.append(c);
-        }
-    }
-
-    private void processNonQuotedChar(ParserState parserState, char c, StringBuilder newString) {
-        if (!parserState.isLastCharEscapeChar() && (c == SINGLE_QUOTE_CHAR)) {
-            parserState.setQuoteType(QuoteType.SINGLE);
-            newString.append(c);
-        } else if (!parserState.isLastCharEscapeChar() && (c == DOUBLE_QUOTE_CHAR)) {
-            parserState.setQuoteType(QuoteType.DOUBLE);
-            newString.append(c);
-        } else if (parserState.isLastCharEscapeChar() && (c == DOUBLE_QUOTE_CHAR)) {
-            parserState.setQuoteType(QuoteType.ESCAPED_DOUBLE);
-            newString.append(c);
-        } else {
-            newString.append(c);
-        }
-    }
-
-    private enum QuoteType {
-        NONE,
-        SINGLE,
-        DOUBLE,
-        ESCAPED_DOUBLE
-    }
-
-    private static class ParserState extends Stringable {
-        private boolean lastCharWasEscapeChar = false;
-        private QuoteType quoteType = QuoteType.NONE;
-
-        public boolean isLastCharEscapeChar() {
-            return lastCharWasEscapeChar;
-        }
-
-        public QuoteType getQuoteType() {
-            return quoteType;
-        }
-
-        public void setLastCharWasEscapeChar(boolean lastCharWasEscapeChar) {
-            this.lastCharWasEscapeChar = lastCharWasEscapeChar;
-        }
-
-        public void setQuoteType(QuoteType quoteType) {
-            this.quoteType = quoteType;
         }
     }
 }
