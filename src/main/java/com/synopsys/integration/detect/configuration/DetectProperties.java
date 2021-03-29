@@ -1196,6 +1196,14 @@ public class DetectProperties {
             .setHelp("If set to true, Detect will wait for Synopsys products until results are available or the detect.report.timeout is exceeded.")
             .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL);
 
+    public static final DetectProperty<BooleanProperty> DETECT_FOLLOW_SYMLINKS =
+        new DetectProperty<>(new BooleanProperty("detect.follow.symbolic.links", true))
+            .setInfo("Follow Symbolic Links", DetectPropertyFromVersion.VERSION_7_0_0)
+            // TODO detect.blackduck.signature.scanner.exclusion.name.patterns is deprected!
+            .setHelp(
+                "If set to true, Detect will follow symbolic links when performing the detector search, when searching for files that detectors need, and when searching for patterns provided via property detect.blackduck.signature.scanner.exclusion.name.patterns.")
+            .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL);
+
     public static final DetectProperty<EnumProperty<BlackduckScanMode>> DETECT_BLACKDUCK_SCAN_MODE =
         new DetectProperty<>(new EnumProperty<>("detect.blackduck.scan.mode", BlackduckScanMode.LEGACY, BlackduckScanMode.class))
             .setInfo("Detect Scan Mode", DetectPropertyFromVersion.VERSION_6_9_0)

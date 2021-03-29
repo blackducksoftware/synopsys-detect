@@ -10,11 +10,16 @@ package com.synopsys.integration.detectable.extraction;
 import java.io.File;
 
 public class ExtractionEnvironment {
-    private File outputDirectory;
+    private final File outputDirectory;
+    private boolean followSymLinks;
 
-    public ExtractionEnvironment(final File outputDirectory) {this.outputDirectory = outputDirectory;}
+    public ExtractionEnvironment(File outputDirectory) {this.outputDirectory = outputDirectory;}
 
     public File getOutputDirectory() {
         return outputDirectory;
+    }
+
+    public boolean followSymLinks() {
+        return followSymLinks;
     }
 }

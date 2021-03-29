@@ -18,14 +18,14 @@ import com.synopsys.integration.common.util.finder.WildcardFileFinder;
 public class FilteredFileFinder extends WildcardFileFinder {
     private final List<String> excludedFileNames;
 
-    public FilteredFileFinder(final List<String> excludedFileNames) {
+    public FilteredFileFinder(List<String> excludedFileNames) {
         this.excludedFileNames = excludedFileNames;
     }
 
     @NotNull
     @Override
-    public List<File> findFiles(final File directoryToSearch, final List<String> filenamePatterns, final int depth, final boolean findInsideMatchingDirectories) {
-        return super.findFiles(directoryToSearch, filenamePatterns, depth, findInsideMatchingDirectories).stream()
+    public List<File> findFiles(File directoryToSearch, List<String> filenamePatterns, boolean followSymLinks, int depth, boolean findInsideMatchingDirectories) {
+        return super.findFiles(directoryToSearch, filenamePatterns, followSymLinks, depth, findInsideMatchingDirectories).stream()
                    .filter(file -> !excludedFileNames.contains(file.getName()))
                    .collect(Collectors.toList());
     }

@@ -13,10 +13,12 @@ import java.util.function.Predicate;
 public class DetectorFinderOptions {
     private final Predicate<File> fileFilter;
     private final int maximumDepth;
+    private final boolean followSymLinks;
 
-    public DetectorFinderOptions(final Predicate<File> fileFilter, final int maximumDepth) {
+    public DetectorFinderOptions(Predicate<File> fileFilter, int maximumDepth, boolean followSymLinks) {
         this.fileFilter = fileFilter;
         this.maximumDepth = maximumDepth;
+        this.followSymLinks = followSymLinks;
     }
 
     public Predicate<File> getFileFilter() {
@@ -25,5 +27,9 @@ public class DetectorFinderOptions {
 
     public int getMaximumDepth() {
         return maximumDepth;
+    }
+
+    public boolean followSymLinks() {
+        return followSymLinks;
     }
 }

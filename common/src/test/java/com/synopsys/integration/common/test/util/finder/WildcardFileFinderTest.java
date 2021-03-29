@@ -62,25 +62,27 @@ public class WildcardFileFinderTest {
         }
     }
 
+    // TODO need a test for symlinks ARE followed
+
     @Test
     @DisabledOnOs(WINDOWS)
     public void testSymlinksNotFollowed() throws IOException {
         // Create a subDir with a symlink that loops back to its parent
-        final File initialDirectory = initialDirectoryPath.toFile();
-        final File subDir = new File(initialDirectory, "sub");
+        File initialDirectory = initialDirectoryPath.toFile();
+        File subDir = new File(initialDirectory, "sub");
         subDir.mkdirs();
-        final File link = new File(subDir, "linkToInitial");
-        final Path linkPath = link.toPath();
+        File link = new File(subDir, "linkToInitial");
+        Path linkPath = link.toPath();
         Files.createSymbolicLink(linkPath, initialDirectoryPath);
 
-        final File regularDir = new File(subDir, "regularDir");
+        File regularDir = new File(subDir, "regularDir");
         regularDir.mkdir();
-        final File regularFile = new File(subDir, "regularFile");
+        File regularFile = new File(subDir, "regularFile");
         regularFile.createNewFile();
 
-        final WildcardFileFinder finder = new WildcardFileFinder();
-        final List<String> filenamePatterns = Arrays.asList("sub", "linkToInitial", "regularDir", "regularFile");
-        final List<File> foundFiles = finder.findFiles(initialDirectoryPath.toFile(), filenamePatterns, 10);
+        WildcardFileFinder finder = new WildcardFileFinder();
+        List<String> filenamePatterns = Arrays.asList("sub", "linkToInitial", "regularDir", "regularFile");
+        List<File> foundFiles = finder.findFiles(initialDirectoryPath.toFile(), filenamePatterns, false, 10);
 
         // make sure symlink not followed during dir traversal
         assertEquals(4, foundFiles.size());
@@ -102,7 +104,7 @@ public class WildcardFileFinderTest {
 
         WildcardFileFinder fileFinder = new WildcardFileFinder();
         Predicate<File> filter = file -> file.getName().startsWith("sub");
-        List<File> foundFiles = fileFinder.findFiles(initialDirectoryPath.toFile(), filter, 10);
+        List<File> foundFiles = fileFinder.findFiles(initialDirectoryPath.toFile(), filter, false, 10);
 
         assertEquals(2, foundFiles.size());
         assertFalse(foundFiles.contains(subDirChild2));

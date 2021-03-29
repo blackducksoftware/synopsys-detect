@@ -34,14 +34,14 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.synopsys.integration.common.util.finder.FileFinder;
+import com.synopsys.integration.common.util.finder.WildcardFileFinder;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.types.path.SimplePathResolver;
 import com.synopsys.integration.configuration.util.ConfigTestUtils;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.common.util.finder.FileFinder;
-import com.synopsys.integration.common.util.finder.WildcardFileFinder;
 
 public class FileExclusionTest {
     File sourceFile;
@@ -74,18 +74,18 @@ public class FileExclusionTest {
     @Test
     public void testSimpleFindsAll() throws IOException {
         FileFinder finder = new WildcardFileFinder();
-        Assert.assertEquals(4, finder.findFiles(sourceFile, "*", 2).size());
+        Assert.assertEquals(4, finder.findFiles(sourceFile, "*", true, 2).size());
     }
 
     @Test
     public void testDefaultsFindAll() throws IOException {
         FileFinder finder = fileFinderFromProperty(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS.getProperty(), "true");
-        Assert.assertEquals(4, finder.findFiles(sourceFile, "*", 2).size());
+        Assert.assertEquals(4, finder.findFiles(sourceFile, "*", true, 2).size());
     }
 
     @Test
     public void testFirstFileExcluded() throws IOException {
         FileFinder finder = fileFinderFromProperty(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_FILES.getProperty(), firstFileDotTxt);
-        Assert.assertEquals(3, finder.findFiles(sourceFile, "*", 2).size());
+        Assert.assertEquals(3, finder.findFiles(sourceFile, "*", true, 2).size());
     }
 }

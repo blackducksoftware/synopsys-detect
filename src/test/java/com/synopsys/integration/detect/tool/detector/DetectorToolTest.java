@@ -274,7 +274,7 @@ public class DetectorToolTest {
     private DetectorFinderOptions createFinderOptions() {
         Predicate<File> fileFilter = f -> true;
         final int maximumDepth = 10;
-        return new DetectorFinderOptions(fileFilter, maximumDepth);
+        return new DetectorFinderOptions(fileFilter, maximumDepth, false);
     }
 
     private DetectorEvaluationOptions createEvaluationOptions() {

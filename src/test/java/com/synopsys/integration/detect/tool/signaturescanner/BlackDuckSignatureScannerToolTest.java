@@ -45,7 +45,7 @@ public class BlackDuckSignatureScannerToolTest {
 
     @Test
     public void testRunScanTool() throws DetectUserFriendlyException, IOException, IntegrationException {
-        BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = new BlackDuckSignatureScannerOptions(null, null, null, null, null, null, null, 1, null, null, false, null, null, null, null, null, null, null);
+        BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = new BlackDuckSignatureScannerOptions(null, null, null, null, null, null, null, 1, null, null, false, null, null, null, null, null, null, null, null);
 
         File signatureScannerInstallationDirectory = new File(new File("").getAbsolutePath()); // get absolute reference to the current directory
         DirectoryOptions directoryOptions = new DirectoryOptions(null, null, null, null, signatureScannerInstallationDirectory.toPath());

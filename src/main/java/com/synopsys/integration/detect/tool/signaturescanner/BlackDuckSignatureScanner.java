@@ -77,7 +77,7 @@ public class BlackDuckSignatureScanner {
 
     public ScanBatchOutput performScanActions(NameVersion projectNameVersion, File installDirectory, @Nullable File dockerTarFile) throws IntegrationException, IOException, DetectUserFriendlyException {
         operationSystem.beginOperation(OPERATION_NAME);
-        List<SignatureScanPath> signatureScanPaths = determinePathsAndExclusions(projectNameVersion, signatureScannerOptions.getMaxDepth(), dockerTarFile);
+        List<SignatureScanPath> signatureScanPaths = determinePathsAndExclusions(projectNameVersion, signatureScannerOptions.followSymLinks(), signatureScannerOptions.getMaxDepth(), dockerTarFile);
 
         ScanBatchBuilder scanJobBuilder = createDefaultScanBatchBuilder(projectNameVersion, installDirectory, signatureScanPaths, dockerTarFile);
         scanJobBuilder.fromBlackDuckServerConfig(blackDuckServerConfig);//when offline, we must still call this with 'null' as a workaround for library issues, so offline scanner must be created with this set to null.
@@ -148,7 +148,7 @@ public class BlackDuckSignatureScanner {
         operationSystem.completeWithFailure(OPERATION_NAME);
     }
 
-    private List<SignatureScanPath> determinePathsAndExclusions(NameVersion projectNameVersion, Integer maxDepth, @Nullable File dockerTarFile) throws IOException {
+    private List<SignatureScanPath> determinePathsAndExclusions(NameVersion projectNameVersion, boolean followSymLinks, Integer maxDepth, @Nullable File dockerTarFile) throws IOException {
         List<Path> providedSignatureScanPaths = signatureScannerOptions.getSignatureScannerPaths();
         boolean userProvidedScanTargets = null != providedSignatureScanPaths && !providedSignatureScanPaths.isEmpty();
         List<String> providedExclusionPatterns = signatureScannerOptions.getExclusionPatterns();
@@ -158,11 +158,11 @@ public class BlackDuckSignatureScanner {
         if (null != projectNameVersion.getName() && null != projectNameVersion.getVersion() && userProvidedScanTargets) {
             for (Path path : providedSignatureScanPaths) {
                 logger.info(String.format("Registering explicit scan path %s", path));
-                SignatureScanPath scanPath = createScanPath(path, maxDepth, signatureScannerExclusionNamePatterns, providedExclusionPatterns);
+                SignatureScanPath scanPath = createScanPath(path, followSymLinks, maxDepth, signatureScannerExclusionNamePatterns, providedExclusionPatterns);
                 signatureScanPaths.add(scanPath);
             }
         } else if (dockerTarFile != null) {
-            SignatureScanPath scanPath = createScanPath(dockerTarFile.getCanonicalFile().toPath(), maxDepth, signatureScannerExclusionNamePatterns, providedExclusionPatterns);
+            SignatureScanPath scanPath = createScanPath(dockerTarFile.getCanonicalFile().toPath(), followSymLinks, maxDepth, signatureScannerExclusionNamePatterns, providedExclusionPatterns);
             signatureScanPaths.add(scanPath);
         } else {
             Path sourcePath = directoryManager.getSourceDirectory().getAbsoluteFile().toPath();
@@ -171,17 +171,17 @@ public class BlackDuckSignatureScanner {
             } else {
                 logger.info(String.format("No scan targets provided - registering the source path %s to scan", sourcePath));
             }
-            SignatureScanPath scanPath = createScanPath(sourcePath, maxDepth, signatureScannerExclusionNamePatterns, providedExclusionPatterns);
+            SignatureScanPath scanPath = createScanPath(sourcePath, followSymLinks, maxDepth, signatureScannerExclusionNamePatterns, providedExclusionPatterns);
             signatureScanPaths.add(scanPath);
         }
         return signatureScanPaths;
     }
 
-    private SignatureScanPath createScanPath(Path path, Integer maxDepth, List<String> signatureScannerExclusionNamePatterns, List<String> providedExclusionPatterns) {
+    private SignatureScanPath createScanPath(Path path, boolean followSymLinks, Integer maxDepth, List<String> signatureScannerExclusionNamePatterns, List<String> providedExclusionPatterns) {
         File target = path.toFile();
         ExclusionPatternCreator exclusionPatternCreator = new ExclusionPatternCreator(fileFinder, target);
 
-        Set<String> scanExclusionPatterns = exclusionPatternCreator.determineExclusionPatterns(maxDepth, signatureScannerExclusionNamePatterns);
+        Set<String> scanExclusionPatterns = exclusionPatternCreator.determineExclusionPatterns(followSymLinks, maxDepth, signatureScannerExclusionNamePatterns);
         if (null != providedExclusionPatterns) {
             scanExclusionPatterns.addAll(providedExclusionPatterns);
         }

@@ -19,26 +19,26 @@ import org.jetbrains.annotations.NotNull;
 public class WildcardFileFinder implements FileFinder {
     @NotNull
     @Override
-    public List<File> findFiles(final File directoryToSearch, final Predicate<File> filter, final int depth, final boolean findInsideMatchingDirectories) {
-        final List<File> foundFiles = new ArrayList<>();
+    public List<File> findFiles(File directoryToSearch, Predicate<File> filter, boolean followSymLinks, int depth, boolean findInsideMatchingDirectories) {
+        List<File> foundFiles = new ArrayList<>();
         if (depth < 0) {
             return foundFiles;
         }
         if (Files.isSymbolicLink(directoryToSearch.toPath())) {
             return foundFiles;
         }
-        final File[] allFiles = directoryToSearch.listFiles();
+        File[] allFiles = directoryToSearch.listFiles();
         if (allFiles == null) {
             return foundFiles;
         }
-        for (final File file : allFiles) {
-            final boolean matches = filter.test(file);
+        for (File file : allFiles) {
+            boolean matches = filter.test(file);
             if (matches) {
                 foundFiles.add(file);
             }
             if (!matches || findInsideMatchingDirectories) {
                 if (file.isDirectory() && !Files.isSymbolicLink(file.toPath())) {
-                    foundFiles.addAll(findFiles(file, filter, depth - 1, findInsideMatchingDirectories));
+                    foundFiles.addAll(findFiles(file, filter, followSymLinks, depth - 1, findInsideMatchingDirectories));
                 }
             }
         }
@@ -48,12 +48,12 @@ public class WildcardFileFinder implements FileFinder {
 
     @NotNull
     @Override
-    public List<File> findFiles(final File directoryToSearch, final List<String> filenamePatterns, final int depth, final boolean findInsideMatchingDirectories) {
+    public List<File> findFiles(File directoryToSearch, List<String> filenamePatterns, boolean followSymLinks, int depth, boolean findInsideMatchingDirectories) {
         Predicate<File> wildcardFilter = file -> {
             WildcardFileFilter filter = new WildcardFileFilter(filenamePatterns);
             return filter.accept(file);
         };
-        return findFiles(directoryToSearch, wildcardFilter, depth, findInsideMatchingDirectories);
+        return findFiles(directoryToSearch, wildcardFilter, followSymLinks, depth, findInsideMatchingDirectories);
     }
 
 }

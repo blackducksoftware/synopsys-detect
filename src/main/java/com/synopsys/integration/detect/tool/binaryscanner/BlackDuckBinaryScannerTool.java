@@ -86,7 +86,7 @@ public class BlackDuckBinaryScannerTool {
         if (singleTargetFilePath.isPresent()) {
             binaryUpload = singleTargetFilePath.get().toFile();
         } else if (binaryScanOptions.getMultipleTargetFileNamePatterns().stream().anyMatch(StringUtils::isNotBlank)) {
-            List<File> multipleTargets = fileFinder.findFiles(directoryManager.getSourceDirectory(), binaryScanOptions.getMultipleTargetFileNamePatterns(), binaryScanOptions.getSearchDepth());
+            List<File> multipleTargets = fileFinder.findFiles(directoryManager.getSourceDirectory(), binaryScanOptions.getMultipleTargetFileNamePatterns(), false, binaryScanOptions.getSearchDepth());
             if (multipleTargets != null && multipleTargets.size() > 0) {
                 logger.info("Binary scan found {} files to archive for binary scan upload.", multipleTargets.size());
                 try {

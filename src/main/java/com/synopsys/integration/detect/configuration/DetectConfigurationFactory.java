@@ -32,6 +32,7 @@ import com.synopsys.integration.blackduck.api.manual.temporary.enumeration.Proje
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.IndividualFileMatching;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.base.NullableProperty;
 import com.synopsys.integration.configuration.property.base.ValuedProperty;
@@ -69,7 +70,6 @@ import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOp
 import com.synopsys.integration.detect.workflow.file.DirectoryOptions;
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeOptions;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
@@ -317,7 +317,7 @@ public class DetectConfigurationFactory {
 
         DetectDetectorFileFilter fileFilter = new DetectDetectorFileFilter(sourcePath, excludedDirectories, excludedDirectoryPaths, excludedDirectoryPatterns);
 
-        return new DetectorFinderOptions(fileFilter, maxDepth);
+        return new DetectorFinderOptions(fileFilter, maxDepth, getFollowSymLinks());
     }
 
     public DetectorEvaluationOptions createDetectorEvaluationOptions() {
@@ -394,6 +394,7 @@ public class DetectConfigurationFactory {
         Boolean uploadSource = getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_UPLOAD_SOURCE_MODE);
         Boolean licenseSearch = getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LICENSE_SEARCH);
         Boolean copyrightSearch = getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_COPYRIGHT_SEARCH);
+        Boolean followSymLinks = getFollowSymLinks();
         String codeLocationPrefix = getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX);
         String codeLocationSuffix = getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX);
         String additionalArguments = PropertyConfigUtils
@@ -432,7 +433,8 @@ public class DetectConfigurationFactory {
             maxDepth,
             findIndividualFileMatching(),
             licenseSearch,
-            copyrightSearch
+            copyrightSearch,
+            followSymLinks
         );
     }
 
@@ -505,4 +507,7 @@ public class DetectConfigurationFactory {
         return detectConfiguration.getValue(detectProperty.getProperty());
     }
 
+    private boolean getFollowSymLinks() {
+        return getValue(DetectProperties.DETECT_FOLLOW_SYMLINKS);
+    }
 }

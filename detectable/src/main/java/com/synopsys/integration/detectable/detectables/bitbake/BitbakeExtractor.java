@@ -22,10 +22,10 @@ import org.slf4j.LoggerFactory;
 
 import com.paypal.digraph.parser.GraphParser;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeRecipe;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
@@ -55,13 +55,13 @@ public class BitbakeExtractor {
         this.bitbakeRecipesToLayerMap = bitbakeRecipesToLayerMap;
     }
 
-    public Extraction extract(File sourceDirectory, File buildEnvScript, List<String> sourceArguments, List<String> packageNames, Integer searchDepth, ExecutableTarget bash) {
+    public Extraction extract(File sourceDirectory, File buildEnvScript, List<String> sourceArguments, List<String> packageNames, boolean followSymLinks, Integer searchDepth, ExecutableTarget bash) {
         List<CodeLocation> codeLocations = new ArrayList<>();
 
         BitbakeSession bitbakeSession = new BitbakeSession(fileFinder, executableRunner, bitbakeRecipesParser, sourceDirectory, buildEnvScript, sourceArguments, bash);
         for (String packageName : packageNames) {
             try {
-                BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, sourceDirectory, packageName, searchDepth);
+                BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, sourceDirectory, packageName, followSymLinks, searchDepth);
                 List<BitbakeRecipe> bitbakeRecipes = bitbakeSession.executeBitbakeForRecipeLayerCatalog();
                 Map<String, String> recipeNameToLayersMap = bitbakeRecipesToLayerMap.convert(bitbakeRecipes);
 
@@ -92,9 +92,9 @@ public class BitbakeExtractor {
         return extraction;
     }
 
-    private BitbakeGraph generateBitbakeGraph(BitbakeSession bitbakeSession, File sourceDirectory, String packageName, Integer searchDepth) throws ExecutableRunnerException, IOException, IntegrationException {
-        File taskDependsFile = bitbakeSession.executeBitbakeForDependencies(sourceDirectory, packageName, searchDepth)
-                                         .orElseThrow(() -> new IntegrationException("Failed to find file \"task-depends.dot\"."));
+    private BitbakeGraph generateBitbakeGraph(BitbakeSession bitbakeSession, File sourceDirectory, String packageName, boolean followSymLinks, Integer searchDepth) throws ExecutableRunnerException, IOException, IntegrationException {
+        File taskDependsFile = bitbakeSession.executeBitbakeForDependencies(sourceDirectory, packageName, followSymLinks, searchDepth)
+                                   .orElseThrow(() -> new IntegrationException("Failed to find file \"task-depends.dot\"."));
 
         logger.trace(FileUtils.readFileToString(taskDependsFile, Charset.defaultCharset()));
 

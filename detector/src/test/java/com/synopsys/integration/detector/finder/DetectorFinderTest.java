@@ -59,7 +59,7 @@ public class DetectorFinderTest {
     public static void cleanup() {
         try {
             FileUtils.deleteDirectory(initialDirectoryPath.toFile());
-        } catch (final IOException e) {
+        } catch (IOException e) {
             // ignore
         }
     }
@@ -69,36 +69,36 @@ public class DetectorFinderTest {
     public void testSimple() throws DetectorFinderDirectoryListException {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
-        final File initialDirectory = initialDirectoryPath.toFile();
-        final File subDir = new File(initialDirectory, "testSimple");
+        File initialDirectory = initialDirectoryPath.toFile();
+        File subDir = new File(initialDirectory, "testSimple");
         subDir.mkdirs();
 
-        final File subSubDir1 = new File(subDir, "subSubDir1");
+        File subSubDir1 = new File(subDir, "subSubDir1");
         subSubDir1.mkdir();
 
-        final File subSubDir2 = new File(subDir, "subSubDir2");
+        File subSubDir2 = new File(subDir, "subSubDir2");
         subSubDir2.mkdir();
 
-        final DetectorRuleSet detectorRuleSet = new DetectorRuleSet(new ArrayList<>(0), new HashMap<>(0), new HashMap<>());
-        final Predicate<File> fileFilter = f -> true;
+        DetectorRuleSet detectorRuleSet = new DetectorRuleSet(new ArrayList<>(0), new HashMap<>(0), new HashMap<>());
+        Predicate<File> fileFilter = f -> true;
         final int maximumDepth = 10;
-        final DetectorFinderOptions options = new DetectorFinderOptions(fileFilter, maximumDepth);
+        DetectorFinderOptions options = new DetectorFinderOptions(fileFilter, maximumDepth, false);
 
-        final DetectorFinder finder = new DetectorFinder();
-        final Optional<DetectorEvaluationTree> tree = finder.findDetectors(initialDirectory, detectorRuleSet, options);
+        DetectorFinder finder = new DetectorFinder();
+        Optional<DetectorEvaluationTree> tree = finder.findDetectors(initialDirectory, detectorRuleSet, options);
 
         // make sure both dirs were found
-        final Set<DetectorEvaluationTree> testDirs = tree.get().getChildren();
+        Set<DetectorEvaluationTree> testDirs = tree.get().getChildren();
         DetectorEvaluationTree simpleTestDir = null;
-        for (final DetectorEvaluationTree testDir : testDirs) {
+        for (DetectorEvaluationTree testDir : testDirs) {
             if (testDir.getDirectory().getName().equals("testSimple")) {
                 simpleTestDir = testDir;
                 break;
             }
         }
-        final Set<DetectorEvaluationTree> subDirResults = simpleTestDir.getChildren();
+        Set<DetectorEvaluationTree> subDirResults = simpleTestDir.getChildren();
         assertEquals(2, subDirResults.size());
-        final String subDirContentsName = subDirResults.iterator().next().getDirectory().getName();
+        String subDirContentsName = subDirResults.iterator().next().getDirectory().getName();
         assertTrue(subDirContentsName.startsWith("subSubDir"));
     }
 
@@ -108,38 +108,38 @@ public class DetectorFinderTest {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
         // Create a subDir with a symlink that loops back to its parent
-        final File initialDirectory = initialDirectoryPath.toFile();
-        final File subDir = new File(initialDirectory, "testSymLinksNotFollowed");
+        File initialDirectory = initialDirectoryPath.toFile();
+        File subDir = new File(initialDirectory, "testSymLinksNotFollowed");
         subDir.mkdirs();
-        final File link = new File(subDir, "linkToInitial");
-        final Path linkPath = link.toPath();
+        File link = new File(subDir, "linkToInitial");
+        Path linkPath = link.toPath();
         Files.createSymbolicLink(linkPath, initialDirectoryPath);
 
-        final File regularDir = new File(subDir, "regularDir");
+        File regularDir = new File(subDir, "regularDir");
         regularDir.mkdir();
 
-        final DetectorRuleSet detectorRuleSet = new DetectorRuleSet(new ArrayList<>(0), new HashMap<>(0), new HashMap<>(0));
-        final Predicate<File> fileFilter = f -> true;
+        DetectorRuleSet detectorRuleSet = new DetectorRuleSet(new ArrayList<>(0), new HashMap<>(0), new HashMap<>(0));
+        Predicate<File> fileFilter = f -> true;
         final int maximumDepth = 10;
-        final DetectorFinderOptions options = new DetectorFinderOptions(fileFilter, maximumDepth);
+        DetectorFinderOptions options = new DetectorFinderOptions(fileFilter, maximumDepth, false);
 
-        final DetectorFinder finder = new DetectorFinder();
-        final Optional<DetectorEvaluationTree> tree = finder.findDetectors(initialDirectory, detectorRuleSet, options);
+        DetectorFinder finder = new DetectorFinder();
+        Optional<DetectorEvaluationTree> tree = finder.findDetectors(initialDirectory, detectorRuleSet, options);
 
         // make sure the symlink was omitted from results
         //        final Set<DetectorEvaluationTree> subDirResults = tree.get().getChildren().iterator().next().getChildren();
-        final Set<DetectorEvaluationTree> testDirs = tree.get().getChildren();
+        Set<DetectorEvaluationTree> testDirs = tree.get().getChildren();
         DetectorEvaluationTree symLinkTestDir = null;
-        for (final DetectorEvaluationTree testDir : testDirs) {
+        for (DetectorEvaluationTree testDir : testDirs) {
             if (testDir.getDirectory().getName().equals("testSymLinksNotFollowed")) {
                 symLinkTestDir = testDir;
                 break;
             }
         }
-        final Set<DetectorEvaluationTree> subDirResults = symLinkTestDir.getChildren();
+        Set<DetectorEvaluationTree> subDirResults = symLinkTestDir.getChildren();
 
         assertEquals(1, subDirResults.size());
-        final String subDirContentsName = subDirResults.iterator().next().getDirectory().getName();
+        String subDirContentsName = subDirResults.iterator().next().getDirectory().getName();
         assertEquals("regularDir", subDirContentsName);
     }
 
