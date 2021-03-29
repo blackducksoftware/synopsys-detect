@@ -10,8 +10,10 @@ This property accepts explicit directory names, as well as globbing-style wildca
 
 Examples
 
-* --detect.excluded.directories=foo excludes /root/foo
-* --detect.excluded.directories=*bar excludes /root/bar and /root/foobar
+| Value | Excluded | Not Excluded |
+| --- | --- | --- |
+|`foo` | /root/foo | /root/foobar
+| `*bar` | /root/bar & /root/foobar | |
 
 ### Exclude directories by path
 
@@ -19,9 +21,16 @@ This property accepts explicit paths relative to the project's root, or you may 
 
 Examples
 
-* --detect.excluded.directories=bar excludes /root/bar but not /root/foo/bar
-* --detect.excluded.directories=**/foo/bar excludes /root/dir/foo/bar, /root/otherDir/foo/bar but not /foo/bar/dir
-* --detect.excluded.directories=/root/d*/* excludes /root/dir/foo, /root/directory/bar but not /root/dir/foo/bar
+| Value | Excluded | Not Excluded |
+| --- | --- | --- |
+| `foo/bar` | /root/foo/bar | /root/dir/foo/bar |
+| `**/foo/bar` | /root/dir/foo/bar & /root/directory/foo/bar | |
+| `/root/d*/*` | /root/dir/foo & /root/directory/bar | |
+
+When specifying path patterns:
+
+* Use '*' to match 0 or more directory name characters (will not cross directory boundaries).
+* Use '**' to match 0 or more directory path characters (will cross directory boundaries).
 
 ${solution_name} uses FileSystem::getPatchMatcher and its glob syntax implementation to exclude path patterns. See [here](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)) for more info.
 
