@@ -24,16 +24,13 @@ package com.synopsys.integration.configuration.property.types.path;
 
 import java.nio.file.Paths;
 
-import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
 public class SimplePathResolverTest {
     @Test
     public void resolvePathTest() {
-        Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS); //drive paths don't work on windows, resolves to C:\ -jp
         final PathResolver simplePathResolver = new SimplePathResolver();
-        Assertions.assertEquals(Paths.get("/simple/test"), simplePathResolver.resolvePath("/simple/test"));
+        Assertions.assertEquals(Paths.get("/simple/test").toAbsolutePath(), simplePathResolver.resolvePath("/simple/test"));
     }
 }
