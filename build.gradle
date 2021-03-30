@@ -5,12 +5,15 @@ import com.synopsys.integration.detect.verification.VerifyBlackDuckDetectTask
 buildscript {
     ext {
         springBootVersion = '2.4.3'
-        blackDuckCommonVersion = '52.0.2'
+        blackDuckCommonVersion = '54.0.0'
         junitPlatformDefaultTestTags = 'integration, performance, battery'
     }
 
     apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-repositories.gradle', to: buildscript
-    apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-dependencies.gradle', to: buildscript
+    ////////// START BUILDSCRIPT DEPENDENCY //////////
+dependencies { classpath "com.synopsys.integration:common-gradle-plugin:1.8.1" }
+
+////////// END BUILDSCRIPT DEPENDENCY //////////
 
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"

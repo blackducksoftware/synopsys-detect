@@ -31,6 +31,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+import com.synopsys.integration.common.util.parse.CommandParser;
 import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommand;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandParser;
@@ -42,8 +43,8 @@ public class CompileCommandParserTest {
         CompileCommand sampleCommand = new CompileCommand();
         sampleCommand.command = "g++ -DDOUBLEQUOTED=\"A value for the compiler\" -DSINGLEQUOTED='Another value for the compiler' file.c -o file.o";
 
-        CompileCommandParser compileCommandParser = new CompileCommandParser();
-        List<String> compilerCommand = compileCommandParser.parseCommand(sampleCommand, Collections.emptyMap());
+        CompileCommandParser commandParser = new CompileCommandParser(new CommandParser());
+        List<String> compilerCommand = commandParser.parseCommand(sampleCommand, Collections.emptyMap());
 
         assertEquals("g++", compilerCommand.get(0));
     }
@@ -56,8 +57,8 @@ public class CompileCommandParserTest {
         Map<String, String> optionOverrides = new HashMap<>();
         optionOverrides.put("-o", "/dev/null");
 
-        CompileCommandParser compileCommandParser = new CompileCommandParser();
-        List<String> result = compileCommandParser.parseCommand(sampleCommand, optionOverrides);
+        CompileCommandParser commandParser = new CompileCommandParser(new CommandParser());
+        List<String> result = commandParser.parseCommand(sampleCommand, optionOverrides);
 
         for (String part : result) {
             System.out.printf("compiler arg: %s\n", part);
@@ -78,8 +79,8 @@ public class CompileCommandParserTest {
         CompileCommand command = new CompileCommand();
         command.command = "/usr/bin/clang++-3.6 -DCMAKE_BUILD_TYPE=\\\"Debug\\\" -DCMAKE_CC_FLAGS=\"\\\" -ggdb -Wstrict-aliasing=2 -pedantic -fPIC --std=c11\\\"\"  -c ./pb.cc";
 
-        CompileCommandParser compileCommandParser = new CompileCommandParser();
-        List<String> result = compileCommandParser.parseCommand(command, Collections.emptyMap());
+        CompileCommandParser commandParser = new CompileCommandParser(new CommandParser());
+        List<String> result = commandParser.parseCommand(command, Collections.emptyMap());
 
         assertEquals(5, result.size());
         int i = 0;
@@ -95,8 +96,8 @@ public class CompileCommandParserTest {
         CompileCommand command = new CompileCommand();
         command.command = "X=\"\\\" a  b\\\"\"";
 
-        CompileCommandParser compileCommandParser = new CompileCommandParser();
-        List<String> result = compileCommandParser.parseCommand(command, Collections.emptyMap());
+        CompileCommandParser commandParser = new CompileCommandParser(new CommandParser());
+        List<String> result = commandParser.parseCommand(command, Collections.emptyMap());
 
         assertEquals(1, result.size());
         int i = 0;
@@ -110,8 +111,8 @@ public class CompileCommandParserTest {
         command.command = "X=\\\"'a' 'b'\\\"";
         command.file = "test.cc";
 
-        CompileCommandParser compileCommandParser = new CompileCommandParser();
-        List<String> result = compileCommandParser.parseCommand(command, Collections.emptyMap());
+        CompileCommandParser commandParser = new CompileCommandParser(new CommandParser());
+        List<String> result = commandParser.parseCommand(command, Collections.emptyMap());
         assertEquals(1, result.size());
         assertEquals("X=\\\"'a' 'b'\\\"", result.get(0));
     }

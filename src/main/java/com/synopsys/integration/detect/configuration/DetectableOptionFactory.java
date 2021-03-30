@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.common.util.parse.CommandParser;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.base.NullableProperty;
 import com.synopsys.integration.configuration.property.base.ValuedProperty;
@@ -63,14 +64,16 @@ public class DetectableOptionFactory {
     private final DiagnosticSystem diagnosticSystem;
     private final PathResolver pathResolver;
     private final ProxyInfo proxyInfo;
+    private final CommandParser commandParser;
 
     private final Logger logger = LoggerFactory.getLogger(DetectableOptionFactory.class);
 
-    public DetectableOptionFactory(PropertyConfiguration detectConfiguration, @Nullable DiagnosticSystem diagnosticSystem, PathResolver pathResolver, ProxyInfo proxyInfo) {
+    public DetectableOptionFactory(PropertyConfiguration detectConfiguration, @Nullable DiagnosticSystem diagnosticSystem, PathResolver pathResolver, ProxyInfo proxyInfo, CommandParser commandParser) {
         this.detectConfiguration = detectConfiguration;
         this.diagnosticSystem = diagnosticSystem;
         this.pathResolver = pathResolver;
         this.proxyInfo = proxyInfo;
+        this.commandParser = commandParser;
     }
 
     public BazelDetectableOptions createBazelDetectableOptions() {
@@ -168,7 +171,7 @@ public class DetectableOptionFactory {
     }
 
     public ConanCliExtractorOptions createConanCliOptions() {
-        String lockfilePath = getNullableValue(DetectProperties.DETECT_CONAN_LOCKFILE_PATH);
+        Path lockfilePath = detectConfiguration.getValue(DetectProperties.DETECT_CONAN_LOCKFILE_PATH.getProperty()).map(path -> path.resolvePath(pathResolver)).orElse(null);
         String additionalArguments = getNullableValue(DetectProperties.DETECT_CONAN_ARGUMENTS);
         Boolean includeBuildDependencies = getValue(DetectProperties.DETECT_CONAN_INCLUDE_BUILD_DEPENDENCIES);
         Boolean preferLongFormExternalIds = getValue(DetectProperties.DETECT_CONAN_REQUIRE_PREV_MATCH);
@@ -176,7 +179,7 @@ public class DetectableOptionFactory {
     }
 
     public ConanLockfileExtractorOptions createConanLockfileOptions() {
-        String lockfilePath = getNullableValue(DetectProperties.DETECT_CONAN_LOCKFILE_PATH);
+        Path lockfilePath = detectConfiguration.getValue(DetectProperties.DETECT_CONAN_LOCKFILE_PATH.getProperty()).map(path -> path.resolvePath(pathResolver)).orElse(null);
         Boolean includeBuildDependencies = getValue(DetectProperties.DETECT_CONAN_INCLUDE_BUILD_DEPENDENCIES);
         Boolean preferLongFormExternalIds = getValue(DetectProperties.DETECT_CONAN_REQUIRE_PREV_MATCH);
         return new ConanLockfileExtractorOptions(lockfilePath, includeBuildDependencies, preferLongFormExternalIds);
@@ -233,7 +236,9 @@ public class DetectableOptionFactory {
 
     public YarnLockOptions createYarnLockOptions() {
         Boolean useProductionOnly = getValue(DetectProperties.DETECT_YARN_PROD_ONLY);
-        return new YarnLockOptions(useProductionOnly);
+        List<String> excludedWorkspaces = getValue(DetectProperties.DETECT_YARN_EXCLUDED_WORKSPACES);
+        List<String> includedWorkspaces = getValue(DetectProperties.DETECT_YARN_INCLUDED_WORKSPACES);
+        return new YarnLockOptions(useProductionOnly, excludedWorkspaces, includedWorkspaces);
     }
 
     public NugetInspectorOptions createNugetInspectorOptions() {

@@ -19,10 +19,10 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detect.workflow.event.Event;
-import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
+import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.detect.workflow.status.Status;
+import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.executable.Executable;
@@ -38,42 +38,45 @@ public class PolarisTool {
 
     private final DirectoryManager directoryManager;
     private final DetectableExecutableRunner executableRunner;
-    private final EventSystem eventSystem;
+    private final StatusEventPublisher statusEventPublisher;
     private final PropertyConfiguration detectConfiguration;
     private final PolarisServerConfig polarisServerConfig;
+    private final OperationSystem operationSystem;
 
-    public PolarisTool(final EventSystem eventSystem, final DirectoryManager directoryManager, final DetectableExecutableRunner executableRunner, final PropertyConfiguration detectConfiguration,
-        final PolarisServerConfig polarisServerConfig) {
+    public PolarisTool(StatusEventPublisher statusEventPublisher, DirectoryManager directoryManager, DetectableExecutableRunner executableRunner, PropertyConfiguration detectConfiguration,
+        PolarisServerConfig polarisServerConfig, OperationSystem operationSystem) {
         this.directoryManager = directoryManager;
         this.executableRunner = executableRunner;
-        this.eventSystem = eventSystem;
+        this.statusEventPublisher = statusEventPublisher;
         this.detectConfiguration = detectConfiguration;
         this.polarisServerConfig = polarisServerConfig;
+        this.operationSystem = operationSystem;
     }
 
-    public void runPolaris(final IntLogger logger, final File projectDirectory) {
+    public void runPolaris(IntLogger logger, File projectDirectory) {
+        operationSystem.beginOperation(POLARIS_DESCRIPTION_KEY);
         logger.info("Polaris determined it should attempt to run.");
-        final String polarisUrl = detectConfiguration.getValueOrEmpty(DetectProperties.POLARIS_URL.getProperty()).orElse(null);
+        String polarisUrl = detectConfiguration.getValueOrEmpty(DetectProperties.POLARIS_URL.getProperty()).orElse(null);
         logger.info("Will use the following polaris url: " + polarisUrl);
 
-        final AccessTokenPolarisHttpClient polarisHttpClient = polarisServerConfig.createPolarisHttpClient(logger);
-        final File toolsDirectory = directoryManager.getPermanentDirectory();
+        AccessTokenPolarisHttpClient polarisHttpClient = polarisServerConfig.createPolarisHttpClient(logger);
+        File toolsDirectory = directoryManager.getPermanentDirectory();
 
-        final PolarisDownloadUtility polarisDownloadUtility = PolarisDownloadUtility.fromPolaris(logger, polarisHttpClient, toolsDirectory);
-        final Optional<String> polarisCliPath = polarisDownloadUtility.getOrDownloadPolarisCliExecutable();
+        PolarisDownloadUtility polarisDownloadUtility = PolarisDownloadUtility.fromPolaris(logger, polarisHttpClient, toolsDirectory);
+        Optional<String> polarisCliPath = polarisDownloadUtility.getOrDownloadPolarisCliExecutable();
 
         //TODO this should be revised to use PolarisCliExecutable and PolarisCliRunner
         if (polarisCliPath.isPresent()) {
-            final Map<String, String> environmentVariables = new HashMap<>();
+            Map<String, String> environmentVariables = new HashMap<>();
             environmentVariables.put("COVERITY_UNSUPPORTED", "1");
             environmentVariables.put("POLARIS_USER_INPUT_TIMEOUT_MINUTES", "1");
             polarisServerConfig.populateEnvironmentVariables(environmentVariables::put);
 
             logger.info("Found polaris cli: " + polarisCliPath.get());
 
-            final String additionalArgs = detectConfiguration.getValueOrEmpty(DetectProperties.POLARIS_ARGUMENTS.getProperty()).orElse(null);
-            final String commandOverride = detectConfiguration.getValueOrEmpty(DetectProperties.POLARIS_COMMAND.getProperty()).orElse(null);
-            final List<String> arguments = new ArrayList<>();
+            String additionalArgs = detectConfiguration.getValueOrEmpty(DetectProperties.POLARIS_ARGUMENTS.getProperty()).orElse(null);
+            String commandOverride = detectConfiguration.getValueOrEmpty(DetectProperties.POLARIS_COMMAND.getProperty()).orElse(null);
+            List<String> arguments = new ArrayList<>();
             if (StringUtils.isNotBlank(commandOverride)) {
                 if (StringUtils.isNotBlank(additionalArgs)) {
                     logger.error("The provided polaris command will be used and the additional polaris arguments will be discarded. You should only set command or arguments, not both.");
@@ -86,23 +89,27 @@ public class PolarisTool {
                 arguments.add("analyze");
             }
 
-            final Executable swipExecutable = Executable.create(projectDirectory, environmentVariables, polarisCliPath.get(), arguments);
+            Executable swipExecutable = Executable.create(projectDirectory, environmentVariables, polarisCliPath.get(), arguments);
             try {
-                final ExecutableOutput output = executableRunner.execute(swipExecutable);
+                ExecutableOutput output = executableRunner.execute(swipExecutable);
                 if (output.getReturnCode() == 0) {
-                    eventSystem.publishEvent(Event.StatusSummary, new Status(POLARIS_DESCRIPTION_KEY, StatusType.SUCCESS));
+                    statusEventPublisher.publishStatusSummary(new Status(POLARIS_DESCRIPTION_KEY, StatusType.SUCCESS));
+                    operationSystem.completeWithSuccess(POLARIS_DESCRIPTION_KEY);
                 } else {
                     logger.error("Polaris returned a non-zero exit code.");
-                    eventSystem.publishEvent(Event.StatusSummary, new Status(POLARIS_DESCRIPTION_KEY, StatusType.FAILURE));
+                    statusEventPublisher.publishStatusSummary(new Status(POLARIS_DESCRIPTION_KEY, StatusType.FAILURE));
+                    operationSystem.completeWithFailure(POLARIS_DESCRIPTION_KEY);
                 }
 
-            } catch (final ExecutableRunnerException e) {
-                eventSystem.publishEvent(Event.StatusSummary, new Status(POLARIS_DESCRIPTION_KEY, StatusType.FAILURE));
+            } catch (ExecutableRunnerException e) {
+                statusEventPublisher.publishStatusSummary(new Status(POLARIS_DESCRIPTION_KEY, StatusType.FAILURE));
+                operationSystem.completeWithFailure(POLARIS_DESCRIPTION_KEY);
                 logger.error("Couldn't run the executable: " + e.getMessage());
             }
         } else {
             logger.error("Check the logs - the Polaris CLI could not be found.");
-            eventSystem.publishEvent(Event.StatusSummary, new Status(POLARIS_DESCRIPTION_KEY, StatusType.FAILURE));
+            statusEventPublisher.publishStatusSummary(new Status(POLARIS_DESCRIPTION_KEY, StatusType.FAILURE));
+            operationSystem.completeWithFailure(POLARIS_DESCRIPTION_KEY);
         }
     }
 

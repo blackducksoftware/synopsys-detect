@@ -27,10 +27,10 @@ import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.SimpleBdioDocument;
 import com.synopsys.integration.bdio.model.SpdxCreator;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.blackduck.bdio2.Bdio2Document;
-import com.synopsys.integration.blackduck.bdio2.Bdio2Factory;
-import com.synopsys.integration.blackduck.bdio2.Bdio2Writer;
-import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
+import com.synopsys.integration.blackduck.bdio2.model.Bdio2Document;
+import com.synopsys.integration.blackduck.bdio2.util.Bdio2Factory;
+import com.synopsys.integration.blackduck.bdio2.util.Bdio2Writer;
+import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
@@ -45,14 +45,14 @@ public class CodeLocationBdioCreator {
     private final Bdio2Factory bdio2Factory;
     private final DetectInfo detectInfo;
 
-    public CodeLocationBdioCreator(final DetectBdioWriter detectBdioWriter, final SimpleBdioFactory simpleBdioFactory, final Bdio2Factory bdio2Factory, final DetectInfo detectInfo) {
+    public CodeLocationBdioCreator(DetectBdioWriter detectBdioWriter, SimpleBdioFactory simpleBdioFactory, Bdio2Factory bdio2Factory, DetectInfo detectInfo) {
         this.detectBdioWriter = detectBdioWriter;
         this.simpleBdioFactory = simpleBdioFactory;
         this.bdio2Factory = bdio2Factory;
         this.detectInfo = detectInfo;
     }
 
-    public List<UploadTarget> createBdioFiles(final File bdioOutput, final List<BdioCodeLocation> bdioCodeLocations, final NameVersion projectNameVersion, boolean bdio2) throws DetectUserFriendlyException {
+    public List<UploadTarget> createBdioFiles(File bdioOutput, List<BdioCodeLocation> bdioCodeLocations, NameVersion projectNameVersion, boolean bdio2) throws DetectUserFriendlyException {
         if (bdio2) {
             return createBdio2Files(bdioOutput, bdioCodeLocations, projectNameVersion);
         } else {
@@ -60,15 +60,15 @@ public class CodeLocationBdioCreator {
         }
     }
 
-    private List<UploadTarget> createBdio1Files(final File bdioOutput, final List<BdioCodeLocation> bdioCodeLocations, final NameVersion projectNameVersion) throws DetectUserFriendlyException {
-        final List<UploadTarget> uploadTargets = new ArrayList<>();
-        for (final BdioCodeLocation bdioCodeLocation : bdioCodeLocations) {
-            final String codeLocationName = bdioCodeLocation.getCodeLocationName();
-            final ExternalId externalId = bdioCodeLocation.getDetectCodeLocation().getExternalId();
-            final DependencyGraph dependencyGraph = bdioCodeLocation.getDetectCodeLocation().getDependencyGraph();
+    private List<UploadTarget> createBdio1Files(File bdioOutput, List<BdioCodeLocation> bdioCodeLocations, NameVersion projectNameVersion) throws DetectUserFriendlyException {
+        List<UploadTarget> uploadTargets = new ArrayList<>();
+        for (BdioCodeLocation bdioCodeLocation : bdioCodeLocations) {
+            String codeLocationName = bdioCodeLocation.getCodeLocationName();
+            ExternalId externalId = bdioCodeLocation.getDetectCodeLocation().getExternalId();
+            DependencyGraph dependencyGraph = bdioCodeLocation.getDetectCodeLocation().getDependencyGraph();
 
-            final File bdioOutputFile = new File(bdioOutput, bdioCodeLocation.getBdioName() + ".jsonld");
-            final SimpleBdioDocument simpleBdioDocument = simpleBdioFactory.createSimpleBdioDocument(codeLocationName, projectNameVersion.getName(), projectNameVersion.getVersion(), externalId, dependencyGraph);
+            File bdioOutputFile = new File(bdioOutput, bdioCodeLocation.getBdioName() + ".jsonld");
+            SimpleBdioDocument simpleBdioDocument = simpleBdioFactory.createSimpleBdioDocument(codeLocationName, projectNameVersion.getName(), projectNameVersion.getVersion(), externalId, dependencyGraph);
 
             detectBdioWriter.writeBdioFile(bdioOutputFile, simpleBdioDocument);
             uploadTargets.add(UploadTarget.createDefault(projectNameVersion, codeLocationName, bdioOutputFile));
@@ -77,34 +77,34 @@ public class CodeLocationBdioCreator {
         return uploadTargets;
     }
 
-    private List<UploadTarget> createBdio2Files(final File bdioOutput, final List<BdioCodeLocation> bdioCodeLocations, final NameVersion projectNameVersion) throws DetectUserFriendlyException {
-        final List<UploadTarget> uploadTargets = new ArrayList<>();
-        for (final BdioCodeLocation bdioCodeLocation : bdioCodeLocations) {
-            final String codeLocationName = bdioCodeLocation.getCodeLocationName();
-            final ExternalId externalId = bdioCodeLocation.getDetectCodeLocation().getExternalId();
-            final DependencyGraph dependencyGraph = bdioCodeLocation.getDetectCodeLocation().getDependencyGraph();
+    private List<UploadTarget> createBdio2Files(File bdioOutput, List<BdioCodeLocation> bdioCodeLocations, NameVersion projectNameVersion) throws DetectUserFriendlyException {
+        List<UploadTarget> uploadTargets = new ArrayList<>();
+        for (BdioCodeLocation bdioCodeLocation : bdioCodeLocations) {
+            String codeLocationName = bdioCodeLocation.getCodeLocationName();
+            ExternalId externalId = bdioCodeLocation.getDetectCodeLocation().getExternalId();
+            DependencyGraph dependencyGraph = bdioCodeLocation.getDetectCodeLocation().getDependencyGraph();
 
             // Bdio 2
-            final ProductList.Builder productListBuilder = new ProductList.Builder();
-            final String detectVersion = detectInfo.getDetectVersion();
-            final SpdxCreator detectCreator = SpdxCreator.createToolSpdxCreator("Detect", detectVersion);
-            final Product product = new Product.Builder().name(detectCreator.getIdentifier()).build();
+            ProductList.Builder productListBuilder = new ProductList.Builder();
+            String detectVersion = detectInfo.getDetectVersion();
+            SpdxCreator detectCreator = SpdxCreator.createToolSpdxCreator("Detect", detectVersion);
+            Product product = new Product.Builder().name(detectCreator.getIdentifier()).build();
             productListBuilder.addProduct(product);
 
-            final BdioMetadata bdioMetadata = bdio2Factory.createBdioMetadata(codeLocationName, ZonedDateTime.now(), productListBuilder);
-            final Project bdio2Project = bdio2Factory.createProject(externalId, projectNameVersion.getName(), projectNameVersion.getVersion());
-            final Bdio2Document bdio2Document = bdio2Factory.createBdio2Document(bdioMetadata, bdio2Project, dependencyGraph);
+            BdioMetadata bdioMetadata = bdio2Factory.createBdioMetadata(codeLocationName, ZonedDateTime.now(), productListBuilder);
+            Project bdio2Project = bdio2Factory.createProject(externalId, projectNameVersion.getName(), projectNameVersion.getVersion());
+            Bdio2Document bdio2Document = bdio2Factory.createBdio2Document(bdioMetadata, bdio2Project, dependencyGraph);
 
-            final Bdio2Writer bdio2Writer = new Bdio2Writer();
-            final File bdio2OutputFile = new File(bdioOutput, bdioCodeLocation.getBdioName() + ".bdio");
+            Bdio2Writer bdio2Writer = new Bdio2Writer();
+            File bdio2OutputFile = new File(bdioOutput, bdioCodeLocation.getBdioName() + ".bdio");
 
             try {
-                final OutputStream outputStream = new FileOutputStream(bdio2OutputFile);
+                OutputStream outputStream = new FileOutputStream(bdio2OutputFile);
                 bdio2Writer.writeBdioDocument(outputStream, bdio2Document);
                 logger.debug(String.format("BDIO Generated: %s", bdio2OutputFile.getAbsolutePath()));
 
                 uploadTargets.add(UploadTarget.createDefault(projectNameVersion, codeLocationName, bdio2OutputFile));
-            } catch (final IOException e) {
+            } catch (IOException e) {
                 throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_GENERAL_ERROR);
             }
         }

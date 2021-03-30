@@ -20,10 +20,13 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponentResultView;
+import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.workflow.DetectRun;
-import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.file.DirectoryOptions;
+import com.synopsys.integration.detect.workflow.status.OperationSystem;
+import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
+import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 
@@ -31,8 +34,11 @@ public class BlackDuckRapidModePostActionsTest {
 
     @Test
     public void testJsonFileGenerated() throws Exception {
+        IntLogger logger = Mockito.mock(IntLogger.class);
         Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-        EventSystem eventSystem = Mockito.mock(EventSystem.class);
+        StatusEventPublisher statusEventPublisher = Mockito.mock(StatusEventPublisher.class);
+        ExitCodePublisher exitCodePublisher = Mockito.mock(ExitCodePublisher.class);
+        OperationSystem operationSystem = Mockito.mock(OperationSystem.class);
         Path scanOutputPath = Files.createTempDirectory("rapid_scan_output_path");
         DirectoryOptions directoryOptions = new DirectoryOptions(null, null, null, scanOutputPath, null);
         DirectoryManager directoryManager = new DirectoryManager(directoryOptions, new DetectRun(""));
@@ -42,7 +48,7 @@ public class BlackDuckRapidModePostActionsTest {
 
         List<DeveloperScanComponentResultView> results = createResults(gson, expectedOutput);
 
-        BlackDuckRapidModePostActions postActions = new BlackDuckRapidModePostActions(gson, eventSystem, directoryManager);
+        BlackDuckRapidModePostActions postActions = new BlackDuckRapidModePostActions(logger, gson, statusEventPublisher, exitCodePublisher, directoryManager, operationSystem);
         NameVersion nameVersion = new NameVersion("rapid_scan_post_action", "test");
         postActions.perform(nameVersion, results);
 

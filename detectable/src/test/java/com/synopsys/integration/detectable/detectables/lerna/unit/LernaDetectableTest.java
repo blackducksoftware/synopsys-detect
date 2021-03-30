@@ -3,13 +3,13 @@ package com.synopsys.integration.detectable.detectables.lerna.unit;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
-import org.mockito.Mockito;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -117,11 +117,10 @@ public class LernaDetectableTest extends DetectableFunctionalTest {
     @NotNull
     @Override
     public Detectable create(@NotNull DetectableEnvironment environment) {
-        YarnLockOptions yarnLockOptions = Mockito.mock(YarnLockOptions.class);
         NpmLockfileOptions npmLockFileOptions = new NpmLockfileOptions(true);
+        YarnLockOptions yarnLockOptions = new YarnLockOptions(false, new ArrayList<>(0), new ArrayList<>(0));
         LernaOptions lernaOptions = new LernaOptions(false, new LinkedList<>(), new LinkedList<>());
-
-        return detectableFactory.createLernaDetectable(environment, () -> ExecutableTarget.forCommand("lerna"), yarnLockOptions, npmLockFileOptions, lernaOptions);
+        return detectableFactory.createLernaDetectable(environment, () -> ExecutableTarget.forCommand("lerna"), npmLockFileOptions, yarnLockOptions, lernaOptions);
     }
 
     @Override

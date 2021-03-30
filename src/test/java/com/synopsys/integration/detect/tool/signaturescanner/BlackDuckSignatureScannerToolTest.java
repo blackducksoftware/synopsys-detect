@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -82,7 +81,7 @@ public class BlackDuckSignatureScannerToolTest {
         CodeLocationCreationData<ScanBatchOutput> codeLocationCreationData = new CodeLocationCreationData<>(notificationTaskRange, scanBatchOutput);
 
         SignatureScannerToolResult expected = SignatureScannerToolResult.createOnlineResult(codeLocationCreationData);
-        SignatureScannerToolResult actual = blackDuckSignatureScannerTool.runScanTool(codeLocationCreationService, blackDuckServerConfig, projectNameVersion, Optional.empty());
+        SignatureScannerToolResult actual = blackDuckSignatureScannerTool.runScanTool(codeLocationCreationService, blackDuckServerConfig, projectNameVersion, null);
         Assertions.assertTrue(areEqualResults(expected, actual));
     }
 

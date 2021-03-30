@@ -19,6 +19,7 @@ The file includes status codes, issues encountered and results produced. As addi
 "results": [ List of Results, see details below. ]
 "unrecognizedPaths": [ List of Unrecognized Paths, see details below. ]
 "codeLocations": [ List of code locations produced, see details below. ]
+"propertyValues": { An object representing all provided properties, see details below. }
 }
 ```
 
@@ -40,55 +41,70 @@ The file includes status codes, issues encountered and results produced. As addi
 "projectName": The project name this detectable found.
 "projectVersion": The project version this detectable found.
 "codeLocationCount": The number of code locations this detector produced.
-}
-```
-###Detector Status Codes
+"explanations": [ A human readable list of strings describing why this detector ran such as "Found file:
+<path>". ]
+    }
+    ```
+    ###Detector Status Codes
 
-| Status Code | Description |
-| --- | --- |
-<#list statusCodes as statusCode>
-    | ${statusCode.statusCode} | ${statusCode.statusCodeDescription} |
-</#list>
+    | Status Code | Description |
+    | --- | --- |
+    <#list statusCodes as statusCode>
+        | ${statusCode.statusCode} | ${statusCode.statusCodeDescription} |
+    </#list>
 
-##Status
-```
-{
-"key": The normalized key this status element describes such as "GIT".
-"status": "SUCCESS" or "FAILURE"
-}
-```
+    ##Status
+    ```
+    {
+    "key": The normalized key this status element describes such as "GIT".
+    "status": "SUCCESS" or "FAILURE"
+    }
+    ```
 
-##Issues
-```
-{
-"type": A key describing the type of issue, currently "EXCEPTION", "DEPRECATION" or "DETECTOR".
-"messages": A list of a strings describing the issue.
-}
-```
+    ##Issues
+    ```
+    {
+    "type": A key describing the type of issue, currently "EXCEPTION", "DEPRECATION" or "DETECTOR".
+    "messages": A list of a strings describing the issue.
+    }
+    ```
 
-##Results
+    ##Results
 
-A result is a URL or file path to output produced by the ${solution_name} run: a Black Duck Bill Of Materials, Risk Report, Notices Report, or Air Gap zip.
-```
-{
-"location": The path to the result.
-"message": A string describing the result.
-}
-```
+    A result is a URL or file path to output produced by the ${solution_name} run: a Black Duck Bill Of Materials, Risk Report, Notices Report, or Air Gap zip.
+    ```
+    {
+    "location": The path to the result.
+    "message": A string describing the result.
+    }
+    ```
 
-##Unrecognized Paths
+    ##Property Values
 
-For those detectors that support it (currently, only CLANG), a list of file paths to dependencies that
-(a) were not recognized by the package manager, and (b) reside outside the source directory.
-````
-{
-"<Detector type>": [ A list of file paths to unrecognized dependencies ]
-}
-````
+    A map of every property key to it's string value that detect found. These are only properties to which detect has a known key,
+    so pass-through properties like docker and dynamic properties like custom fields are not included. Passwords and other sensitive fields are masked.
 
-## Code Locations
-````
-{
-"codeLocationName": The name of a code location produced by this run of ${solution_name}.
-}
-````
+    ```
+    "propertyValues": {
+    "key": "value",
+    "boolean-key": "true"
+    }
+    ```
+
+    ##Unrecognized Paths
+
+    For those detectors that support it (currently, only CLANG), a list of file paths to dependencies that
+    (a) were not recognized by the package manager, and (b) reside outside the source directory.
+    ````
+    {
+    "
+    <Detector type>": [ A list of file paths to unrecognized dependencies ]
+        }
+        ````
+
+        ## Code Locations
+        ````
+        {
+        "codeLocationName": The name of a code location produced by this run of ${solution_name}.
+        }
+        ````

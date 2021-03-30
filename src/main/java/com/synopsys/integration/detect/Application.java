@@ -116,7 +116,7 @@ public class Application implements ApplicationRunner {
             printOutput = detectBootResult.shouldPrintOutput();
             shouldForceSuccess = detectBootResult.shouldForceSuccess();
 
-            runApplication(detectContext, detectRun, eventSystem, exitCodeManager, detectBootResult, fileFinder);
+            runApplication(detectContext, eventSystem, exitCodeManager, detectBootResult, fileFinder);
 
             //Create status output file.
             logger.info("");
@@ -133,7 +133,8 @@ public class Application implements ApplicationRunner {
         exitApplication(exitManager, startTime, printOutput, shouldForceSuccess);
     }
 
-    private Optional<DetectBootResult> bootApplication(DetectRun detectRun, String[] sourceArgs, EventSystem eventSystem, DetectContext detectContext, ExitCodeManager exitCodeManager, Gson gson, DetectInfo detectInfo, FileFinder fileFinder) {
+    private Optional<DetectBootResult> bootApplication(DetectRun detectRun, String[] sourceArgs, EventSystem eventSystem, DetectContext detectContext, ExitCodeManager exitCodeManager, Gson gson, DetectInfo detectInfo,
+        FileFinder fileFinder) {
         Optional<DetectBootResult> bootResult = Optional.empty();
         try {
             logger.debug("Detect boot begin.");
@@ -150,28 +151,19 @@ public class Application implements ApplicationRunner {
         return bootResult;
     }
 
-    private void runApplication(DetectContext detectContext, DetectRun detectRun, EventSystem eventSystem, ExitCodeManager exitCodeManager, DetectBootResult detectBootResult, FileFinder fileFinder) {
+    private void runApplication(DetectContext detectContext, EventSystem eventSystem, ExitCodeManager exitCodeManager, DetectBootResult detectBootResult, FileFinder fileFinder) {
         Optional<ProductRunData> optionalProductRunData = detectBootResult.getProductRunData();
         if (detectBootResult.getBootType() == DetectBootResult.BootType.RUN && optionalProductRunData.isPresent()) {
-            try {
-                logger.debug("Detect will attempt to run.");
-                ProductRunData productRunData = optionalProductRunData.get();
-                RunManager runManager = new RunManager();
-                RunContext runContext = new RunContext(detectContext, productRunData, fileFinder);
-                runManager.run(runContext);
-            } catch (Exception e) {
-                if (e.getMessage() != null) {
-                    logger.error("Detect run failed: {}", e.getMessage());
-                } else {
-                    logger.error("Detect run failed: {}", e.getClass().getSimpleName());
-                }
-                logger.debug("An exception was thrown during the detect run.", e);
-                exitCodeManager.requestExitCode(e);
-            }
+            logger.debug("Detect will attempt to run.");
+            ProductRunData productRunData = optionalProductRunData.get();
+            RunManager runManager = new RunManager(exitCodeManager);
+            RunContext runContext = new RunContext(detectContext, productRunData, fileFinder);
+            runManager.run(runContext);
+
         } else {
             logger.debug("Detect will NOT attempt to run.");
             detectBootResult.getException().ifPresent(exitCodeManager::requestExitCode);
-            detectBootResult.getException().ifPresent(e -> DetectIssue.publish(eventSystem, DetectIssueType.EXCEPTION, e.getMessage()));
+            detectBootResult.getException().ifPresent(e -> DetectIssue.publish(eventSystem, DetectIssueType.EXCEPTION, "Detect Boot Error", e.getMessage()));
         }
     }
 

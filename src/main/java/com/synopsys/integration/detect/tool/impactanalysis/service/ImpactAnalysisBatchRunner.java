@@ -53,6 +53,10 @@ public class ImpactAnalysisBatchRunner {
                 ImpactAnalysisOutput uploadOutput = future.get();
                 uploadOutputs.add(uploadOutput);
             }
+        } catch (InterruptedException e) {
+            // Restore interrupted state...
+            Thread.currentThread().interrupt();
+            throw new BlackDuckIntegrationException(String.format("Encountered a problem uploading a impact analysis file: %s", e.getMessage()), e);
         } catch (Exception e) {
             throw new BlackDuckIntegrationException(String.format("Encountered a problem uploading a impact analysis file: %s", e.getMessage()), e);
         }
