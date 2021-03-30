@@ -9,11 +9,15 @@ package com.synopsys.integration.detect.workflow.blackduck.font;
 
 import java.io.File;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 
 public class OnlineDetectFontLocator implements DetectFontLocator {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private final DetectFontInstaller detectFontInstaller;
     private final DirectoryManager directoryManager;
 
@@ -36,6 +40,7 @@ public class OnlineDetectFontLocator implements DetectFontLocator {
         try {
             File fontsDirectory = directoryManager.getPermanentDirectory("fonts");
             File fontFile = new File(fontsDirectory, fontFileName);
+            logger.debug("Locating font file {}", fontFile.getAbsolutePath());
             if (!fontFile.exists()) {
                 detectFontInstaller.installFonts(fontsDirectory);
             }

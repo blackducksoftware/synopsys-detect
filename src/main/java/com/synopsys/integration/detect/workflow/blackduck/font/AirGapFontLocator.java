@@ -9,11 +9,15 @@ package com.synopsys.integration.detect.workflow.blackduck.font;
 
 import java.io.File;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 
 public class AirGapFontLocator implements DetectFontLocator {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private final AirGapInspectorPaths airGapPaths;
 
     public AirGapFontLocator(AirGapInspectorPaths airGapPaths) {
@@ -31,8 +35,10 @@ public class AirGapFontLocator implements DetectFontLocator {
     }
 
     private File locateFontFile(String childName) throws DetectUserFriendlyException {
-        return airGapPaths.getFontsAirGapFile()
-                   .map(fontAirGapPath -> new File(fontAirGapPath, childName))
-                   .orElseThrow(() -> new DetectUserFriendlyException(String.format("Could not get the font file %s from the air gap path", childName), ExitCodeType.FAILURE_GENERAL_ERROR));
+        File fontFile = airGapPaths.getFontsAirGapFile()
+                            .map(fontAirGapPath -> new File(fontAirGapPath, childName))
+                            .orElseThrow(() -> new DetectUserFriendlyException(String.format("Could not get the font file %s from the air gap path", childName), ExitCodeType.FAILURE_GENERAL_ERROR));
+        logger.debug("Locating font file {}", fontFile.getAbsolutePath());
+        return fontFile;
     }
 }
