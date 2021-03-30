@@ -393,6 +393,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../../../advanced/reports/" title="Risk Report Generation" class="md-nav__link">
+      Risk Report Generation
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../../../advanced/scan-naming/" title="Code location (scan) naming" class="md-nav__link">
       Code location (scan) naming
     </a>
@@ -466,13 +478,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-16" type="checkbox" id="nav-9-16">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-17" type="checkbox" id="nav-9-17">
     
-    <label class="md-nav__link" for="nav-9-16">
+    <label class="md-nav__link" for="nav-9-17">
       Package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-16">
+      <label class="md-nav__title" for="nav-9-17">
         Package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -694,13 +706,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-17" type="checkbox" id="nav-9-17">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-18" type="checkbox" id="nav-9-18">
     
-    <label class="md-nav__link" for="nav-9-17">
+    <label class="md-nav__link" for="nav-9-18">
       Troubleshooting
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-17">
+      <label class="md-nav__title" for="nav-9-18">
         Troubleshooting
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -1373,6 +1385,20 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#yarn-exclude-workspaces-advanced" class="md-nav__link">
+    Yarn Exclude Workspaces (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#yarn-include-workspaces-advanced" class="md-nav__link">
+    Yarn Include Workspaces (Advanced)
+  </a>
+  
+</li>
+      
       
       
       
@@ -1417,6 +1443,20 @@
         <li class="md-nav__item">
   <a href="#include-yarn-production-dependencies-only" class="md-nav__link">
     Include Yarn Production Dependencies Only
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#yarn-exclude-workspaces-advanced" class="md-nav__link">
+    Yarn Exclude Workspaces (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#yarn-include-workspaces-advanced" class="md-nav__link">
+    Yarn Include Workspaces (Advanced)
   </a>
   
 </li>
@@ -1483,6 +1523,102 @@
 <tr>
 <td>Example</td>
 <td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="yarn-exclude-workspaces-advanced">Yarn Exclude Workspaces (Advanced)<a class="headerlink" href="#yarn-exclude-workspaces-advanced" title="Permanent link">#</a></h2>
+<pre><code>--detect.yarn.excluded.workspaces
+</code></pre>
+
+<p>A comma-separated list of Yarn workspaces to exclude.</p>
+<p>As Detect examines the Yarn project for dependencies, Detect will skip any Yarn workspaces specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> &gt; <i>Property wildcard support</i> page for more details.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>7.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String List</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Example</td>
+<td>workspace-a,workspace-b</td>
+</tr>
+</tbody>
+</table>
+<h2 id="yarn-include-workspaces-advanced">Yarn Include Workspaces (Advanced)<a class="headerlink" href="#yarn-include-workspaces-advanced" title="Permanent link">#</a></h2>
+<pre><code>--detect.yarn.included.workspaces
+</code></pre>
+
+<p>A comma-separated list of Yarn workspaces to include.</p>
+<p>As Detect examines the Yarn project for dependencies, if this property is set, Detect will include only those Yarn workspaces specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> &gt; <i>Property wildcard support</i> page for more details.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>7.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String List</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Example</td>
+<td>workspace-a,workspace-b</td>
 </tr>
 </tbody>
 </table>

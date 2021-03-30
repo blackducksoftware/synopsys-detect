@@ -1150,6 +1150,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../advanced/reports/" title="Risk Report Generation" class="md-nav__link">
+      Risk Report Generation
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../advanced/scan-naming/" title="Code location (scan) naming" class="md-nav__link">
       Code location (scan) naming
     </a>
@@ -1223,13 +1235,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-16" type="checkbox" id="nav-9-16">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-17" type="checkbox" id="nav-9-17">
     
-    <label class="md-nav__link" for="nav-9-16">
+    <label class="md-nav__link" for="nav-9-17">
       Package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-16">
+      <label class="md-nav__title" for="nav-9-17">
         Package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -1451,13 +1463,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-17" type="checkbox" id="nav-9-17">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-18" type="checkbox" id="nav-9-18">
     
-    <label class="md-nav__link" for="nav-9-17">
+    <label class="md-nav__link" for="nav-9-18">
       Troubleshooting
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-17">
+      <label class="md-nav__title" for="nav-9-18">
         Troubleshooting
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -2876,6 +2888,7 @@
 <h2 id="version-700">Version 7.0.0<a class="headerlink" href="#version-700" title="Permanent link">#</a></h2>
 <h3 id="new-features">New Features<a class="headerlink" href="#new-features" title="Permanent link">#</a></h3>
 <ul>
+<li>Added support for Yarn workspaces.</li>
 <li>Added support for the dependency graph SBT plugin. Resolution cache generation is no longer a requirement of the SBT detector.</li>
 <li>Added properties <a href="../properties/detectors/lerna/#lerna-packages-excluded-advanced">detect.lerna.excluded.packages</a> and <a href="../properties/detectors/lerna/#lerna-packages-included-advanced">detect.lerna.included.packages</a> to exclude and include specific Lerna packages.</li>
 </ul>
@@ -2883,6 +2896,7 @@
 <ul>
 <li>Gradle detector no longer uses the gradle inspector. Only the init script is required.</li>
 <li>The default BDIO format for communicating dependency graphs to Black Duck has been changed from BDIO1 to BDIO2.</li>
+<li>Risk report generation will download fonts from Artifactory or use the font files in the fonts directory in the air gap zip of detect.</li>
 </ul>
 <h3 id="resolved-issues">Resolved issues<a class="headerlink" href="#resolved-issues" title="Permanent link">#</a></h3>
 <ul>
@@ -2913,6 +2927,8 @@
 <li>(IDETECT-2394) Resolved an issue that created inaccurate relationships in the BDIO files when Gemlock files were processed.</li>
 <li>(IDETECT-2404) Resolved an issue where signature scanner arguments passed through detect.blackduck.signature.scanner.arguments that contained space were being improperly parsed.</li>
 <li>(IDETECT-2525) Resolved an issue with the Yarn detector that caused component version information to be missing when the yarn.lock file contained quoted field keys.</li>
+<li>(IDETECT-2254) Resolved an issue with the Yarn detector that caused certain components to be omitted from some Yarn 2 projects.</li>
+<li>(IDETECT-2471) Resolved an issue where a missing Git executable in certain situations causes an exception.</li>
 </ul>
 <h2 id="version-680">Version 6.8.0<a class="headerlink" href="#version-680" title="Permanent link">#</a></h2>
 <h3 id="new-features_2">New features<a class="headerlink" href="#new-features_2" title="Permanent link">#</a></h3>

@@ -395,6 +395,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../../reports/" title="Risk Report Generation" class="md-nav__link">
+      Risk Report Generation
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../../scan-naming/" title="Code location (scan) naming" class="md-nav__link">
       Code location (scan) naming
     </a>
@@ -470,13 +482,13 @@
 
   <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-16" type="checkbox" id="nav-9-16" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-17" type="checkbox" id="nav-9-17" checked>
     
-    <label class="md-nav__link" for="nav-9-16">
+    <label class="md-nav__link" for="nav-9-17">
       Package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-16">
+      <label class="md-nav__title" for="nav-9-17">
         Package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -696,7 +708,21 @@
       
         <li class="md-nav__item">
   <a href="#yarn-workspace-support" class="md-nav__link">
-    Yarn Workspace Support
+    Yarn workspace support
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monorepo-support" class="md-nav__link">
+    Monorepo support
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-the-workspace-exclude-and-include-filters" class="md-nav__link">
+    Using the workspace exclude and include filters
   </a>
   
 </li>
@@ -736,13 +762,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-17" type="checkbox" id="nav-9-17">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-18" type="checkbox" id="nav-9-18">
     
-    <label class="md-nav__link" for="nav-9-17">
+    <label class="md-nav__link" for="nav-9-18">
       Troubleshooting
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-17">
+      <label class="md-nav__title" for="nav-9-18">
         Troubleshooting
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -1416,7 +1442,21 @@
       
         <li class="md-nav__item">
   <a href="#yarn-workspace-support" class="md-nav__link">
-    Yarn Workspace Support
+    Yarn workspace support
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monorepo-support" class="md-nav__link">
+    Monorepo support
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-the-workspace-exclude-and-include-filters" class="md-nav__link">
+    Using the workspace exclude and include filters
   </a>
   
 </li>
@@ -1444,17 +1484,30 @@
 <li>yarn.lock</li>
 <li>package.json</li>
 </ul>
-<p>The Yarn detector reads both files to derive project and dependency information.
+<p>The Yarn detector reads both files (see <em>Yarn workspace support</em> below for information on
+other files the Yarn detector might read)
+to derive project and dependency information.
+The yarn.lock file must be up-to-date before Synopsys Detect runs.
 The package.json file specifies the direct dependencies for the project. Synopsys Detect adds these
 dependencies to the top level of the dependency graph that it builds.
 The yarn.lock file contains necessary details about those
-direct dependencies and all transient dependencies. The details provided by the yarn.lock file
-about each dependency include its (transient) dependencies, enabling Synopsys Detect
+direct dependencies and their transient dependencies, enabling Synopsys Detect
 to build the complete graph of direct and transient dependencies. The Yarn detector
 produces a single codelocation with this graph.</p>
-<p>Synopsys Detect supports projects that use Yarn version 1 or version 2, that do not use Yarn workspaces.</p>
-<h2 id="yarn-workspace-support">Yarn Workspace Support<a class="headerlink" href="#yarn-workspace-support" title="Permanent link">#</a></h2>
-<p>Synopsys Detect does not currently support projects that use Yarn workspaces as defined <a href="https://classic.yarnpkg.com/en/docs/workspaces/">here</a>.</p>
+<p>Synopsys Detect supports projects that use Yarn version 1 or version 2.</p>
+<h2 id="yarn-workspace-support">Yarn workspace support<a class="headerlink" href="#yarn-workspace-support" title="Permanent link">#</a></h2>
+<p>Synopsys Detect supports Yarn projects that use workspaces.
+By default, only workspaces that are dependencies of the
+root project (directly or indirectly) are included in the produced dependency graph.
+The workspace exclude/include filters can be used to force workspaces to be excluded
+or included.</p>
+<h2 id="monorepo-support">Monorepo support<a class="headerlink" href="#monorepo-support" title="Permanent link">#</a></h2>
+<p>If your root project contains workspaces but does not depend on them, you can
+use the workspace include filter to force some or all of the workspaces to be included.
+To include all workspaces in a monorepo, set detect.yarn.included.workspaces="*".</p>
+<h2 id="using-the-workspace-exclude-and-include-filters">Using the workspace exclude and include filters<a class="headerlink" href="#using-the-workspace-exclude-and-include-filters" title="Permanent link">#</a></h2>
+<p>When using the workspace exclude and include filters, specify workspaces by
+name (workspace package.json name field value), not by directory path.</p>
                 
                   
                 

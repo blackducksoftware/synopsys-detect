@@ -395,6 +395,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../reports/" title="Risk Report Generation" class="md-nav__link">
+      Risk Report Generation
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../scan-naming/" title="Code location (scan) naming" class="md-nav__link">
       Code location (scan) naming
     </a>
@@ -469,47 +481,6 @@
     Detector
   </a>
   
-    <nav class="md-nav">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#detector-status-codes" class="md-nav__link">
-    Detector Status Codes
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#status" class="md-nav__link">
-    Status
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#issues" class="md-nav__link">
-    Issues
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#results" class="md-nav__link">
-    Results
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#unrecognized-paths" class="md-nav__link">
-    Unrecognized Paths
-  </a>
-  
 </li>
       
       
@@ -554,13 +525,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-16" type="checkbox" id="nav-9-16">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-17" type="checkbox" id="nav-9-17">
     
-    <label class="md-nav__link" for="nav-9-16">
+    <label class="md-nav__link" for="nav-9-17">
       Package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-16">
+      <label class="md-nav__title" for="nav-9-17">
         Package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -782,13 +753,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-17" type="checkbox" id="nav-9-17">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-18" type="checkbox" id="nav-9-18">
     
-    <label class="md-nav__link" for="nav-9-17">
+    <label class="md-nav__link" for="nav-9-18">
       Troubleshooting
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-17">
+      <label class="md-nav__title" for="nav-9-18">
         Troubleshooting
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -1472,47 +1443,6 @@
     Detector
   </a>
   
-    <nav class="md-nav">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#detector-status-codes" class="md-nav__link">
-    Detector Status Codes
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#status" class="md-nav__link">
-    Status
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#issues" class="md-nav__link">
-    Issues
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#results" class="md-nav__link">
-    Results
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#unrecognized-paths" class="md-nav__link">
-    Unrecognized Paths
-  </a>
-  
 </li>
       
       
@@ -1550,176 +1480,114 @@
 &quot;results&quot;: [ List of Results, see details below. ]
 &quot;unrecognizedPaths&quot;: [ List of Unrecognized Paths, see details below. ]
 &quot;codeLocations&quot;: [ List of code locations produced, see details below. ]
-&quot;propertyValues&quot;: [ List of property values passed to Synopsys Detect. ]
+&quot;propertyValues&quot;: { An object representing all provided properties, see details below. }
 }
 </code></pre>
 
 <h2 id="detector">Detector<a class="headerlink" href="#detector" title="Permanent link">#</a></h2>
-<pre><code>{
-&quot;folder&quot;: The folder the detector applied to.
-&quot;detectorType&quot;: The normalized detector type such as &quot;GIT&quot;.
-&quot;detectorName&quot;: A shorthand name of the detector such as &quot;Git Cli&quot;.
-&quot;descriptiveName&quot;: The long form name of the detector such as &quot;GIT - Git Cli&quot;.
-&quot;discoverable&quot;:  A boolean indicating whether or not the detector was able to discover project information.
-&quot;extracted&quot;: A boolean indicating whether or not the detector was able to extract dependencies.
-&quot;status&quot;: An enum indicating whether the detector was successful, failed, or deferred to another detector.
-&quot;statusCode&quot;: A code specifying the nature of the detector's failure, or PASSED if the detector was successful. See below for a complete list of possible status codes.
-&quot;statusReason&quot;: A human readable description of the status code.
-&quot;relevantFiles&quot;: [ A list of files relevant to the detector. ]
-&quot;discoveryReason&quot;: A human readable description of the discovery result.
-&quot;extractedReason&quot;: A human readable description of the extraction result.
-&quot;projectName&quot;: The project name this detectable found.
-&quot;projectVersion&quot;: The project version this detectable found.
-&quot;codeLocationCount&quot;: The number of code locations this detector produced.
-}
-</code></pre>
+<p><code>{
+"folder": The folder the detector applied to.
+"detectorType": The normalized detector type such as "GIT".
+"detectorName": A shorthand name of the detector such as "Git Cli".
+"descriptiveName": The long form name of the detector such as "GIT - Git Cli".
+"discoverable":  A boolean indicating whether or not the detector was able to discover project information.
+"extracted": A boolean indicating whether or not the detector was able to extract dependencies.
+"status": An enum indicating whether the detector was successful, failed, or deferred to another detector.
+"statusCode": A code specifying the nature of the detector's failure, or PASSED if the detector was successful. See below for a complete list of possible status codes.
+"statusReason": A human readable description of the status code.
+"relevantFiles": [ A list of files relevant to the detector. ]
+"discoveryReason": A human readable description of the discovery result.
+"extractedReason": A human readable description of the extraction result.
+"projectName": The project name this detectable found.
+"projectVersion": The project version this detectable found.
+"codeLocationCount": The number of code locations this detector produced.
+"explanations": [ A human readable list of strings describing why this detector ran such as "Found file:
+&lt;path&gt;". ]
+    }</code>
+    ###Detector Status Codes</p>
+<pre><code>| Status Code | Description |
+| --- | --- |
+    | CARGO_LOCKFILE_NOT_FOUND | A Cargo.toml was located in the target project, but the Cargo.lock file was NOT located. |
+    | EXCEPTION | An exception occurred. |
+    | EXCLUDED | Detector type was excluded. |
+    | EXECUTABLE_FAILED | During extraction, one or more executables did not execute successfully. |
+    | EXECUTABLE_NOT_FOUND | The necessary executable was not found. |
+    | EXTRACTION_FAILED | During extraction, one or more exceptions were encountered. |
+    | FAILED | Detector failed. |
+    | FALLBACK_NOT_NEEDED | The fallback detector was not needed, as its preceding detector passed. |
+    | FILES_NOT_FOUND | Necessary files were not found within the target project. |
+    | FILE_NOT_FOUND | A file was not found within the target project. |
+    | FORCED_NESTED_PASSED | Forced to pass because nested forced by user. |
+    | GO_PKG_LOCKFILE_NOT_FOUND | A Gopkg.toml was located in the target project, but the Gopkg.lock file was NOT located. |
+    | INSPECTOR_NOT_FOUND | The necessary inspector was not found |
+    | MAX_DEPTH_EXCEEDED | Max depth was exceeded. |
+    | NOT_NESTABLE | Not nestable and a detector already applied in parent directory. |
+    | NOT_SELF_NESTABLE | Nestable but this detector already applied in a parent directory. |
+    | NPM_NODE_MODULES_NOT_FOUND | A package.json was located in the target project, but the node_modules folder was NOT located. |
+    | PASSED | Detector passed. |
+    | POETRY_LOCKFILE_NOT_FOUND | A pyproject.toml was located in the target project, but the Poetry.lock file was NOT located. |
+    | PROPERTY_INSUFFICIENT | The properties are insufficient to run. |
+    | SBT_PLUGIN_MISSING | A dependency graph plugin must be installed for the SBT detector to run. |
+    | SECTION_NOT_FOUND | A necessary section was not found within a file within the target project. |
+    | UNKNOWN_DETECTOR_RESULT | There was an unknown result. |
+    | WRONG_OPERATING_SYSTEM_RESULT | Cannot run on the used operating system. |
+    | YIELDED | Yielded to other detectors. |
 
-<h3 id="detector-status-codes">Detector Status Codes<a class="headerlink" href="#detector-status-codes" title="Permanent link">#</a></h3>
-<table>
-<thead>
-<tr>
-<th>Status Code</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>CARGO_LOCKFILE_NOT_FOUND</td>
-<td>A Cargo.toml was located in the target project, but the Cargo.lock file was NOT located.</td>
-</tr>
-<tr>
-<td>EXCEPTION</td>
-<td>An exception occurred.</td>
-</tr>
-<tr>
-<td>EXCLUDED</td>
-<td>Detector type was excluded.</td>
-</tr>
-<tr>
-<td>EXECUTABLE_FAILED</td>
-<td>During extraction, one or more executables did not execute successfully.</td>
-</tr>
-<tr>
-<td>EXECUTABLE_NOT_FOUND</td>
-<td>The necessary executable was not found.</td>
-</tr>
-<tr>
-<td>EXTRACTION_FAILED</td>
-<td>During extraction, one or more exceptions were encountered.</td>
-</tr>
-<tr>
-<td>FAILED</td>
-<td>Detector failed.</td>
-</tr>
-<tr>
-<td>FALLBACK_NOT_NEEDED</td>
-<td>The fallback detector was not needed, as its preceding detector passed.</td>
-</tr>
-<tr>
-<td>FILES_NOT_FOUND</td>
-<td>Necessary files were not found within the target project.</td>
-</tr>
-<tr>
-<td>FILE_NOT_FOUND</td>
-<td>A file was not found within the target project.</td>
-</tr>
-<tr>
-<td>FORCED_NESTED_PASSED</td>
-<td>Forced to pass because nested forced by user.</td>
-</tr>
-<tr>
-<td>GO_PKG_LOCKFILE_NOT_FOUND</td>
-<td>A Gopkg.toml was located in the target project, but the Gopkg.lock file was NOT located.</td>
-</tr>
-<tr>
-<td>INSPECTOR_NOT_FOUND</td>
-<td>The necessary inspector was not found</td>
-</tr>
-<tr>
-<td>MAX_DEPTH_EXCEEDED</td>
-<td>Max depth was exceeded.</td>
-</tr>
-<tr>
-<td>NOT_NESTABLE</td>
-<td>Not nestable and a detector already applied in parent directory.</td>
-</tr>
-<tr>
-<td>NOT_SELF_NESTABLE</td>
-<td>Nestable but this detector already applied in a parent directory.</td>
-</tr>
-<tr>
-<td>NPM_NODE_MODULES_NOT_FOUND</td>
-<td>A package.json was located in the target project, but the node_modules folder was NOT located.</td>
-</tr>
-<tr>
-<td>PASSED</td>
-<td>Detector passed.</td>
-</tr>
-<tr>
-<td>POETRY_LOCKFILE_NOT_FOUND</td>
-<td>A pyproject.toml was located in the target project, but the Poetry.lock file was NOT located.</td>
-</tr>
-<tr>
-<td>PROPERTY_INSUFFICIENT</td>
-<td>The properties are insufficient to run.</td>
-</tr>
-<tr>
-<td>SBT_PLUGIN_MISSING</td>
-<td>A dependency graph plugin must be installed for the SBT detector to run.</td>
-</tr>
-<tr>
-<td>SECTION_NOT_FOUND</td>
-<td>A necessary section was not found within a file within the target project.</td>
-</tr>
-<tr>
-<td>UNKNOWN_DETECTOR_RESULT</td>
-<td>There was an unknown result.</td>
-</tr>
-<tr>
-<td>WRONG_OPERATING_SYSTEM_RESULT</td>
-<td>Cannot run on the used operating system.</td>
-</tr>
-<tr>
-<td>YIELDED</td>
-<td>Yielded to other detectors.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="status">Status<a class="headerlink" href="#status" title="Permanent link">#</a></h2>
-<pre><code>{
-&quot;key&quot;: The normalized key this status element describes such as &quot;GIT&quot;.
-&quot;status&quot;: &quot;SUCCESS&quot; or &quot;FAILURE&quot;
+##Status
+```
+{
+"key": The normalized key this status element describes such as "GIT".
+"status": "SUCCESS" or "FAILURE"
 }
-</code></pre>
+```
 
-<h2 id="issues">Issues<a class="headerlink" href="#issues" title="Permanent link">#</a></h2>
-<pre><code>{
-&quot;type&quot;: A key describing the type of issue, currently &quot;EXCEPTION&quot;, &quot;DEPRECATION&quot; or &quot;DETECTOR&quot;.
-&quot;messages&quot;: A list of a strings describing the issue.
+##Issues
+```
+{
+"type": A key describing the type of issue, currently "EXCEPTION", "DEPRECATION" or "DETECTOR".
+"messages": A list of a strings describing the issue.
 }
-</code></pre>
+```
 
-<h2 id="results">Results<a class="headerlink" href="#results" title="Permanent link">#</a></h2>
-<p>A result is a URL or file path to output produced by the Synopsys Detect run: a Black Duck Bill Of Materials, Risk Report, Notices Report, or Air Gap zip.</p>
-<pre><code>{
-&quot;location&quot;: The path to the result.
-&quot;message&quot;: A string describing the result.
+##Results
+
+A result is a URL or file path to output produced by the Synopsys Detect run: a Black Duck Bill Of Materials, Risk Report, Notices Report, or Air Gap zip.
+```
+{
+"location": The path to the result.
+"message": A string describing the result.
 }
-</code></pre>
+```
 
-<h2 id="unrecognized-paths">Unrecognized Paths<a class="headerlink" href="#unrecognized-paths" title="Permanent link">#</a></h2>
-<p>For those detectors that support it (currently, only CLANG), a list of file paths to dependencies that
+##Property Values
+
+A map of every property key to it's string value that detect found. These are only properties to which detect has a known key,
+so pass-through properties like docker and dynamic properties like custom fields are not included. Passwords and other sensitive fields are masked.
+
+```
+"propertyValues": {
+"key": "value",
+"boolean-key": "true"
+}
+```
+
+##Unrecognized Paths
+
+For those detectors that support it (currently, only CLANG), a list of file paths to dependencies that
 (a) were not recognized by the package manager, and (b) reside outside the source directory.
-<code>{
-"
-&lt;Detector type&gt;": [ A list of file paths to unrecognized dependencies ]
-    }</code></p>
-<pre><code>## Code Locations
 ````
 {
-"codeLocationName": The name of a code location produced by this run of Synopsys Detect.
-}
-````
+"
+&lt;Detector type&gt;": [ A list of file paths to unrecognized dependencies ]
+    }
+    ````
+
+    ## Code Locations
+    ````
+    {
+    "codeLocationName": The name of a code location produced by this run of Synopsys Detect.
+    }
+    ````
 </code></pre>
                 
                   
