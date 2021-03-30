@@ -15,7 +15,7 @@ public class AirGapOptions {
     private final Path gradleInspectorPathOverride;
     private final Path nugetInspectorPathOverride;
 
-    public AirGapOptions(final Path dockerInspectorPathOverride, final Path gradleInspectorPathOverride, final Path nugetInspectorPathOverride) {
+    public AirGapOptions(Path dockerInspectorPathOverride, Path gradleInspectorPathOverride, Path nugetInspectorPathOverride) {
         this.dockerInspectorPathOverride = dockerInspectorPathOverride;
         this.gradleInspectorPathOverride = gradleInspectorPathOverride;
         this.nugetInspectorPathOverride = nugetInspectorPathOverride;

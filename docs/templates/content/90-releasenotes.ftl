@@ -8,6 +8,7 @@
 ### Changed features
 * Gradle detector no longer uses the gradle inspector. Only the init script is required.
 * The default BDIO format for communicating dependency graphs to Black Duck has been changed from BDIO1 to BDIO2.
+* Risk report generation will download fonts from Artifactory or use the font files in the fonts directory in the air gap zip of detect.
 
 ### Resolved issues
 * (IDETECT-2527) Resolved an issue in the Go Mod detector to extract and process data even if 'go mod why' command fails to run.

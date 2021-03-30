@@ -19,6 +19,7 @@ import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostActions;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
+import com.synopsys.integration.detect.workflow.blackduck.DetectFontLoader;
 import com.synopsys.integration.detect.workflow.result.BlackDuckBomDetectResult;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.detect.workflow.status.OperationSystem;
@@ -33,20 +34,22 @@ public class FullScanPostProcessingOperation {
     private final ExitCodePublisher exitCodePublisher;
     private final OperationSystem operationSystem;
     private final Long detectTimeoutInSeconds;
+    private final DetectFontLoader detectFontLoader;
 
     public FullScanPostProcessingOperation(DetectToolFilter detectToolFilter, BlackDuckPostOptions blackDuckPostOptions,
-        StatusEventPublisher statusEventPublisher, ExitCodePublisher exitCodePublisher, OperationSystem operationSystem, Long detectTimeoutInSeconds) {
+        StatusEventPublisher statusEventPublisher, ExitCodePublisher exitCodePublisher, OperationSystem operationSystem, Long detectTimeoutInSeconds, DetectFontLoader detectFontLoader) {
         this.detectToolFilter = detectToolFilter;
         this.blackDuckPostOptions = blackDuckPostOptions;
         this.statusEventPublisher = statusEventPublisher;
         this.exitCodePublisher = exitCodePublisher;
         this.operationSystem = operationSystem;
         this.detectTimeoutInSeconds = detectTimeoutInSeconds;
+        this.detectFontLoader = detectFontLoader;
     }
 
     public void execute(BlackDuckServicesFactory blackDuckServicesFactory, FullScanPostProcessingInput postProcessingInput) throws DetectUserFriendlyException, IntegrationException {
         BlackDuckPostActions blackDuckPostActions = new BlackDuckPostActions(blackDuckServicesFactory.createCodeLocationCreationService(), statusEventPublisher, exitCodePublisher, blackDuckServicesFactory.getBlackDuckApiClient(),
-            blackDuckServicesFactory.createProjectBomService(), blackDuckServicesFactory.createReportService(detectTimeoutInSeconds * 1000), operationSystem);
+            blackDuckServicesFactory.createProjectBomService(), blackDuckServicesFactory.createReportService(detectTimeoutInSeconds * 1000), operationSystem, detectFontLoader);
         blackDuckPostActions
             .perform(blackDuckPostOptions, postProcessingInput.getCodeLocationResults().getCodeLocationWaitData(), postProcessingInput.getProjectVersionWrapper(), postProcessingInput.getProjectNameVersion(), detectTimeoutInSeconds);
 
