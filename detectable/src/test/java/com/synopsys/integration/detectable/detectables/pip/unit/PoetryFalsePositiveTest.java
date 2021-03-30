@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
-import com.synopsys.integration.common.util.finder.WildcardFileFinder;
+import com.synopsys.integration.common.util.finder.SimpleFileFinder;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryDetectable;
 import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryExtractor;
@@ -18,7 +18,7 @@ import com.synopsys.integration.detectable.detectables.pip.poetry.parser.ToolPoe
 public class PoetryFalsePositiveTest {
     @Test
     public void testApplicableNoFalsePositive() throws URISyntaxException {
-        FileFinder fileFinder = Mockito.mock(WildcardFileFinder.class);
+        FileFinder fileFinder = Mockito.mock(SimpleFileFinder.class);
         File currentDirectory = new File(System.getProperty("user.dir"));
         File pyprojectToml = new File(getClass().getClassLoader().getResource("detectables/unit/pip/poetry/false_positive_pyproject.toml").toURI());
         Mockito.when(fileFinder.findFile(currentDirectory, "pyproject.toml")).thenReturn(pyprojectToml);

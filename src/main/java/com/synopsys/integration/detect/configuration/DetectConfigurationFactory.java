@@ -291,27 +291,29 @@ public class DetectConfigurationFactory {
         return new AirGapOptions(dockerOverride, gradleOverride, nugetOverride);
     }
 
-    public DetectExcludedDirectoryFilter createDetectDirectoryFileFilter(Path sourcePath, boolean excludeDefaults) {
-        //TODO- consolidate these three values into one since we don't need to
-        List<String> directoryExclusionPatterns = PropertyConfigUtils
-                                                      .getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_EXCLUDED_DIRECTORIES.getProperty(), DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION.getProperty());
+    public DetectExcludedDirectoryFilter createDetectDirectoryFileFilter(Path sourcePath) {
+        List<String> directoryExclusionPatterns = collectDirectoryExclusions();
 
-        List<String> excludedDirectories = new ArrayList<>(directoryExclusionPatterns);
-        if (excludeDefaults && PropertyConfigUtils
-                                   .getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_EXCLUDE_DEFAULT_DIRECTORIES.getProperty(), DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS.getProperty())) {
+        return new DetectExcludedDirectoryFilter(sourcePath, directoryExclusionPatterns);
+    }
+
+    private List<String> collectDirectoryExclusions() {
+        List<String> directoryExclusionPatterns = new ArrayList(getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES));
+
+        if (getValue(DetectProperties.DETECT_EXCLUDE_DEFAULT_DIRECTORIES)) {
             List<String> defaultExcluded = Arrays.stream(DefaultDetectorExcludedDirectories.values())
                                                .map(DefaultDetectorExcludedDirectories::getDirectoryName)
                                                .collect(Collectors.toList());
-            excludedDirectories.addAll(defaultExcluded);
+            directoryExclusionPatterns.addAll(defaultExcluded);
         }
 
-        return new DetectExcludedDirectoryFilter(sourcePath, excludedDirectories, excludedDirectoryPaths, excludedDirectoryPatterns);
+        return directoryExclusionPatterns;
     }
 
     public DetectorFinderOptions createDetectorFinderOptions(Path sourcePath) {
         //Normal settings
         Integer maxDepth = getValue(DetectProperties.DETECT_DETECTOR_SEARCH_DEPTH);
-        DetectExcludedDirectoryFilter fileFilter = createDetectDirectoryFileFilter(sourcePath, true);
+        DetectExcludedDirectoryFilter fileFilter = createDetectDirectoryFileFilter(sourcePath);
 
         return new DetectorFinderOptions(fileFilter, maxDepth);
     }
@@ -378,12 +380,7 @@ public class DetectConfigurationFactory {
         } else {
             signatureScannerPaths = emptyList();
         }
-        List<String> exclusionPatterns = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_EXCLUDED_DIRECTORIES.getProperty(),
-            DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERNS.getProperty(),
-            DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_PATTERNS.getProperty()).orElse(emptyList());
-        List<String> exclusionNamePatterns = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_EXCLUDED_DIRECTORIES.getProperty(),
-            DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS.getProperty(),
-            DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS.getProperty());
+        List<String> exclusionPatterns = collectDirectoryExclusions();
 
         Integer scanMemory = PropertyConfigUtils
                                  .getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_MEMORY.getProperty(), DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_MEMORY.getProperty());
@@ -397,8 +394,7 @@ public class DetectConfigurationFactory {
         String additionalArguments = PropertyConfigUtils
                                          .getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS.getProperty(), DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_ARGUMENTS.getProperty())
                                          .orElse(null);
-        Integer maxDepth = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_EXCLUDED_DIRECTORY_SEARCH_DEPTH.getProperty(),
-            DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERN_SEARCH_DEPTH.getProperty());
+        Integer maxDepth = getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORY_SEARCH_DEPTH);
         Path offlineLocalScannerInstallPath = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH.getProperty(),
             DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH.getProperty()).map(path -> path.resolvePath(pathResolver)).orElse(null);
         Path onlineLocalScannerInstallPath = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH.getProperty(),
@@ -416,7 +412,6 @@ public class DetectConfigurationFactory {
         return new BlackDuckSignatureScannerOptions(
             signatureScannerPaths,
             exclusionPatterns,
-            exclusionNamePatterns,
             offlineLocalScannerInstallPath,
             onlineLocalScannerInstallPath,
             userProvidedScannerInstallUrl,

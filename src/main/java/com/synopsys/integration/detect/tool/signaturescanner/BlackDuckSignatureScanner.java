@@ -143,18 +143,17 @@ public class BlackDuckSignatureScanner {
     private List<SignatureScanPath> determinePathsAndExclusions(NameVersion projectNameVersion, Integer maxDepth, File dockerTarFile) throws IOException {
         List<Path> providedSignatureScanPaths = signatureScannerOptions.getSignatureScannerPaths();
         boolean userProvidedScanTargets = null != providedSignatureScanPaths && !providedSignatureScanPaths.isEmpty();
-        List<String> providedExclusionPatterns = signatureScannerOptions.getExclusionPatterns();
-        List<String> signatureScannerExclusionNamePatterns = signatureScannerOptions.getExclusionNamePatterns();
+        List<String> exclusionPatterns = signatureScannerOptions.getExclusionPatterns();
 
         List<SignatureScanPath> signatureScanPaths = new ArrayList<>();
         if (null != projectNameVersion.getName() && null != projectNameVersion.getVersion() && userProvidedScanTargets) {
             for (Path path : providedSignatureScanPaths) {
                 logger.info(String.format("Registering explicit scan path %s", path));
-                SignatureScanPath scanPath = createScanPath(path, maxDepth, signatureScannerExclusionNamePatterns, providedExclusionPatterns);
+                SignatureScanPath scanPath = createScanPath(path, maxDepth, exclusionPatterns);
                 signatureScanPaths.add(scanPath);
             }
         } else if (dockerTarFile != null) {
-            SignatureScanPath scanPath = createScanPath(dockerTarFile.getCanonicalFile().toPath(), maxDepth, signatureScannerExclusionNamePatterns, providedExclusionPatterns);
+            SignatureScanPath scanPath = createScanPath(dockerTarFile.getCanonicalFile().toPath(), maxDepth, exclusionPatterns);
             signatureScanPaths.add(scanPath);
         } else {
             Path sourcePath = directoryManager.getSourceDirectory().getAbsoluteFile().toPath();
@@ -163,24 +162,24 @@ public class BlackDuckSignatureScanner {
             } else {
                 logger.info(String.format("No scan targets provided - registering the source path %s to scan", sourcePath));
             }
-            SignatureScanPath scanPath = createScanPath(sourcePath, maxDepth, signatureScannerExclusionNamePatterns, providedExclusionPatterns);
+            SignatureScanPath scanPath = createScanPath(sourcePath, maxDepth, exclusionPatterns);
             signatureScanPaths.add(scanPath);
         }
         return signatureScanPaths;
     }
 
-    private SignatureScanPath createScanPath(Path path, Integer maxDepth, List<String> signatureScannerExclusionNamePatterns, List<String> providedExclusionPatterns) {
+    private SignatureScanPath createScanPath(Path path, Integer maxDepth, List<String> exclusionPatterns) {
         File target = path.toFile();
         ExclusionPatternCreator exclusionPatternCreator = new ExclusionPatternCreator(fileFinder, fileFilter, target);
 
         Set<String> scanExclusionPatterns = new HashSet<>();
 
         // First add explicit exclusions that are correctly formatted
-        scanExclusionPatterns.addAll(providedExclusionPatterns.stream()
+        scanExclusionPatterns.addAll(exclusionPatterns.stream()
                                          .filter(this::isCorrectlyFormattedExclusion)
                                          .collect(Collectors.toSet()));
 
-        scanExclusionPatterns.addAll(exclusionPatternCreator.determineExclusionPatterns(maxDepth, signatureScannerExclusionNamePatterns));
+        scanExclusionPatterns.addAll(exclusionPatternCreator.determineExclusionPatterns(maxDepth, exclusionPatterns));
 
         SignatureScanPath signatureScanPath = new SignatureScanPath();
         signatureScanPath.setTargetPath(target);
