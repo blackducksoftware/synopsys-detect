@@ -2,6 +2,7 @@
 
 ## Version 7.0.0
 ### New Features
+* Added support for Yarn workspaces.
 * Added support for the dependency graph SBT plugin. Resolution cache generation is no longer a requirement of the SBT detector.
 * Added properties [detect.lerna.excluded.packages](../properties/detectors/lerna/#lerna-packages-excluded-advanced) and [detect.lerna.included.packages](../properties/detectors/lerna/#lerna-packages-included-advanced) to exclude and include specific Lerna packages.
 

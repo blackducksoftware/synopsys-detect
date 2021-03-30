@@ -21,29 +21,44 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.common.util.finder.FileFinder;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.lerna.lockfile.LernaLockFileResult;
 import com.synopsys.integration.detectable.detectables.lerna.model.LernaPackage;
 import com.synopsys.integration.detectable.detectables.lerna.model.LernaResult;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmLockfileOptions;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmParseResult;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.parse.NpmLockfilePackager;
+import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
 import com.synopsys.integration.detectable.detectables.yarn.YarnPackager;
 import com.synopsys.integration.detectable.detectables.yarn.YarnResult;
+import com.synopsys.integration.detectable.detectables.yarn.packagejson.NullSafePackageJson;
+import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonReader;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
+import com.synopsys.integration.detectable.detectables.yarn.workspace.YarnWorkspaces;
+import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
 import com.synopsys.integration.util.NameVersion;
 
 public class LernaPackager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final FileFinder fileFinder;
+    private final PackageJsonReader packageJsonReader;
+    private final YarnLockParser yarnLockParser;
+    private final YarnLockOptions yarnLockOptions;
     private final NpmLockfilePackager npmLockfileParser;
     private final NpmLockfileOptions npmLockfileOptions;
     private final YarnPackager yarnPackager;
     private final LernaOptions lernaOptions;
 
-    public LernaPackager(FileFinder fileFinder, NpmLockfilePackager npmLockfileParser, NpmLockfileOptions npmLockfileOptions, YarnPackager yarnPackager, LernaOptions lernaOptions) {
+    public LernaPackager(FileFinder fileFinder, PackageJsonReader packageJsonReader, YarnLockParser yarnLockParser, YarnLockOptions yarnLockOptions, NpmLockfilePackager npmLockfileParser, NpmLockfileOptions npmLockfileOptions,
+        YarnPackager yarnPackager,
+        LernaOptions lernaOptions) {
         this.fileFinder = fileFinder;
+        this.packageJsonReader = packageJsonReader;
+        this.yarnLockParser = yarnLockParser;
+        this.yarnLockOptions = yarnLockOptions;
         this.npmLockfileParser = npmLockfileParser;
         this.npmLockfileOptions = npmLockfileOptions;
         this.yarnPackager = yarnPackager;
@@ -68,7 +83,7 @@ public class LernaPackager {
                         .forEach(codeLocations::add);
                 } else if (lernaResult.isFailure()) {
                     String extractionErrorMessage = lernaResult.getException().map(Throwable::getMessage).orElse("Error message not found.");
-                    logger.warn(String.format("Failed to extract lerna package: %s", extractionErrorMessage));
+                    logger.warn("Failed to extract lerna package: {}", extractionErrorMessage);
                     lernaResult.getException().ifPresent(exception -> logger.debug("Lerna Extraction Failure", exception));
                 }
             }
@@ -81,11 +96,11 @@ public class LernaPackager {
         String lernaPackageDetails = String.format("%s:%s at %s", lernaPackage.getName(), lernaPackage.getVersion(), lernaPackage.getLocation());
 
         if (!lernaOptions.shouldIncludePrivatePackages() && lernaPackage.isPrivate()) {
-            logger.debug(String.format("Skipping extraction of private lerna package %s.", lernaPackageDetails));
+            logger.debug("Skipping extraction of private lerna package {}.", lernaPackageDetails);
             return null;
         }
 
-        logger.debug(String.format("Now extracting Lerna package %s.", lernaPackageDetails));
+        logger.debug("Now extracting Lerna package {}.", lernaPackageDetails);
         File lernaPackageDirectory = new File(lernaPackage.getLocation());
         LernaLockFileResult lockFile = findLockFiles(lernaPackageDirectory);
         File packagesPackageJson = fileFinder.findFile(lernaPackageDirectory, LernaDetectable.PACKAGE_JSON);
@@ -137,7 +152,10 @@ public class LernaPackager {
                                                 .parse(packageJsonContents, lockFile.getNpmLockContents().get(), npmLockfileOptions.shouldIncludeDeveloperDependencies(), externalPackages);
             return LernaResult.success(npmParseResult.getProjectName(), npmParseResult.getProjectVersion(), Collections.singletonList(npmParseResult.getCodeLocation()));
         } else if (lockFile.getYarnLockContents().isPresent()) {
-            YarnResult yarnResult = yarnPackager.generateYarnResult(packageJsonContents, lockFile.getYarnLockContents().get(), directory.getAbsolutePath(), externalPackages);
+            YarnLock yarnLock = yarnLockParser.parseYarnLock(lockFile.getYarnLockContents().get());
+            NullSafePackageJson rootPackageJson = packageJsonReader.read(packageJsonContents);
+            YarnResult yarnResult = yarnPackager
+                                        .generateCodeLocation(rootPackageJson, YarnWorkspaces.EMPTY, yarnLock, externalPackages, yarnLockOptions.useProductionOnly(), false, ExcludedIncludedWildcardFilter.EMPTY);
 
             if (yarnResult.getException().isPresent()) {
                 return LernaResult.failure(yarnResult.getException().get());

@@ -1175,7 +1175,25 @@ public class DetectProperties {
         new DetectProperty<>(new BooleanProperty("detect.yarn.prod.only", false))
             .setInfo("Include Yarn Production Dependencies Only", DetectPropertyFromVersion.VERSION_4_0_0)
             .setHelp("Set this to true to only scan production dependencies.")
-            .setGroups(DetectGroup.YARN, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
+            .setGroups(DetectGroup.YARN, DetectGroup.SOURCE_SCAN);
+
+    public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_YARN_EXCLUDED_WORKSPACES =
+        new DetectProperty<>(new CaseSensitiveStringListProperty("detect.yarn.excluded.workspaces"))
+            .setInfo("Yarn Exclude Workspaces", DetectPropertyFromVersion.VERSION_7_0_0)
+            .setHelp("A comma-separated list of Yarn workspaces to exclude.",
+                "As Detect examines the Yarn project for dependencies, Detect will skip any Yarn workspaces specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
+            .setGroups(DetectGroup.YARN, DetectGroup.SOURCE_SCAN)
+            .setCategory(DetectCategory.Advanced)
+            .setExample("workspace-a,workspace-b");
+
+    public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_YARN_INCLUDED_WORKSPACES =
+        new DetectProperty<>(new CaseSensitiveStringListProperty("detect.yarn.included.workspaces"))
+            .setInfo("Yarn Include Workspaces", DetectPropertyFromVersion.VERSION_7_0_0)
+            .setHelp("A comma-separated list of Yarn workspaces to include.",
+                "As Detect examines the Yarn project for dependencies, if this property is set, Detect will include only those Yarn workspaces specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
+            .setGroups(DetectGroup.YARN, DetectGroup.SOURCE_SCAN)
+            .setCategory(DetectCategory.Advanced)
+            .setExample("workspace-a,workspace-b");
 
     public static final DetectProperty<EnumProperty<LogLevel>> LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION =
         new DetectProperty<>(new EnumProperty<>("logging.level.com.synopsys.integration", LogLevel.INFO, LogLevel.class))

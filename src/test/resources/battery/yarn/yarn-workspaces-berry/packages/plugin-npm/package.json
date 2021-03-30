@@ -1,0 +1,39 @@
+{
+  "name": "@yarnpkg/plugin-npm",
+  "version": "2.4.0",
+  "license": "BSD-2-Clause",
+  "main": "./sources/index.ts",
+  "dependencies": {
+    "enquirer": "^2.3.6",
+    "semver": "^7.1.2",
+    "ssri": "^6.0.1",
+    "tslib": "^1.13.0"
+  },
+  "peerDependencies": {
+    "@yarnpkg/core": "^2.4.0",
+    "@yarnpkg/plugin-pack": "^2.2.3"
+  },
+  "devDependencies": {
+    "@types/semver": "^7.1.0",
+    "@types/ssri": "^6.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com/yarnpkg/berry.git",
+    "directory": "packages/plugin-npm"
+  },
+  "scripts": {
+    "postpack": "rm -rf lib",
+    "prepack": "run build:compile \"$(pwd)\""
+  },
+  "publishConfig": {
+    "main": "./lib/index.js",
+    "typings": "./lib/index.d.ts"
+  },
+  "files": [
+    "/lib/**/*"
+  ],
+  "engines": {
+    "node": ">=10.19.0"
+  }
+}

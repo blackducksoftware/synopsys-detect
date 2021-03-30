@@ -34,6 +34,8 @@ The Lerna detector will execute the same code as the [Yarn detector](../../../ad
 
 The [Yarn detector related properties](../../../properties/detectors/yarn/) also apply.
 
+Yarn workspaces are not currently supported by the Lerna detector.
+
 ## Private packages
 
 With the [detect.lerna.include.private](../../../properties/detectors/lerna/#include-lerna-packages-defined-as-private46) property, users can specify whether or not to include private packages as defined by Lerna.
