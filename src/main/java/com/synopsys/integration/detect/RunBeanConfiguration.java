@@ -57,6 +57,11 @@ import com.synopsys.integration.detect.workflow.DetectRun;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detect.workflow.airgap.AirGapOptions;
 import com.synopsys.integration.detect.workflow.airgap.AirGapPathFinder;
+import com.synopsys.integration.detect.workflow.blackduck.DetectFontLoader;
+import com.synopsys.integration.detect.workflow.blackduck.font.AirGapFontLocator;
+import com.synopsys.integration.detect.workflow.blackduck.font.DetectFontInstaller;
+import com.synopsys.integration.detect.workflow.blackduck.font.DetectFontLocator;
+import com.synopsys.integration.detect.workflow.blackduck.font.OnlineDetectFontLocator;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationCreator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationEventPublisher;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameGenerator;
@@ -256,6 +261,23 @@ public class RunBeanConfiguration {
     @Bean
     public OperationSystem operationSystem() {
         return new OperationSystem(statusEventPublisher());
+    }
+
+    @Bean
+    public DetectFontLoader detectFontLoader() throws DetectUserFriendlyException {
+        DetectFontLocator locator;
+        Optional<File> fontAirGapPath = airGapManager().getNugetInspectorAirGapFile();
+        if (fontAirGapPath.isPresent()) {
+            locator = new AirGapFontLocator(airGapManager());
+        } else {
+            locator = new OnlineDetectFontLocator(detectFontInstaller(), directoryManager);
+        }
+        return new DetectFontLoader(locator);
+    }
+
+    @Bean
+    public DetectFontInstaller detectFontInstaller() throws DetectUserFriendlyException {
+        return new DetectFontInstaller(artifactResolver());
     }
 
     @Lazy

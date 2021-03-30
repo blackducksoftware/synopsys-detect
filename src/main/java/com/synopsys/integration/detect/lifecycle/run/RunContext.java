@@ -20,6 +20,7 @@ import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
 import com.synopsys.integration.detect.tool.detector.DetectDetectableFactory;
 import com.synopsys.integration.detect.tool.detector.DetectorEventPublisher;
 import com.synopsys.integration.detect.tool.detector.extraction.ExtractionEnvironmentProvider;
+import com.synopsys.integration.detect.workflow.blackduck.DetectFontLoader;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationCreator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationEventPublisher;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameGenerator;
@@ -54,6 +55,7 @@ public class RunContext {
     private final CodeLocationEventPublisher codeLocationEventPublisher;
     private final ProjectEventPublisher projectEventPublisher;
     private final OperationSystem operationSystem;
+    private final DetectFontLoader detectFontLoader;
 
     public RunContext(DetectContext detectContext, ProductRunData productRunData) {
         this.detectContext = detectContext;
@@ -74,6 +76,7 @@ public class RunContext {
         codeLocationEventPublisher = detectContext.getBean(CodeLocationEventPublisher.class);
         projectEventPublisher = detectContext.getBean(ProjectEventPublisher.class);
         operationSystem = detectContext.getBean(OperationSystem.class);
+        detectFontLoader = detectContext.getBean(DetectFontLoader.class);
         extractionEnvironmentProvider = new ExtractionEnvironmentProvider(directoryManager);
         codeLocationConverter = new CodeLocationConverter(new ExternalIdFactory());
         gson = detectContext.getBean(Gson.class);
@@ -171,5 +174,9 @@ public class RunContext {
 
     public OperationSystem getOperationSystem() {
         return operationSystem;
+    }
+
+    public DetectFontLoader getDetectFontLoader() {
+        return detectFontLoader;
     }
 }

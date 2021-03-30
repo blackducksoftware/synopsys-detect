@@ -44,9 +44,10 @@ public class BlackDuckPostActions {
     private final ProjectBomService projectBomService;
     private final ReportService reportService;
     private final OperationSystem operationSystem;
+    private final DetectFontLoader detectFontLoader;
 
     public BlackDuckPostActions(CodeLocationCreationService codeLocationCreationService, StatusEventPublisher statusEventPublisher, ExitCodePublisher exitCodePublisher, BlackDuckApiClient blackDuckApiClient,
-        ProjectBomService projectBomService, ReportService reportService, OperationSystem operationSystem) {
+        ProjectBomService projectBomService, ReportService reportService, OperationSystem operationSystem, DetectFontLoader detectFontLoader) {
         this.codeLocationCreationService = codeLocationCreationService;
         this.statusEventPublisher = statusEventPublisher;
         this.exitCodePublisher = exitCodePublisher;
@@ -54,6 +55,7 @@ public class BlackDuckPostActions {
         this.projectBomService = projectBomService;
         this.reportService = reportService;
         this.operationSystem = operationSystem;
+        this.detectFontLoader = detectFontLoader;
     }
 
     public void perform(BlackDuckPostOptions blackDuckPostOptions, CodeLocationWaitData codeLocationWaitData, ProjectVersionWrapper projectVersionWrapper, NameVersion projectNameVersion, long timeoutInSeconds)
@@ -145,7 +147,7 @@ public class BlackDuckPostActions {
                 logger.warn(String.format("Failed to create risk report pdf directory: %s", blackDuckPostOptions.getRiskReportPdfPath().toString()));
             }
 
-            DetectFontLoader detectFontLoader = new DetectFontLoader();
+            //DetectFontLoader detectFontLoader = new DetectFontLoader();
             File createdPdf = reportService.createReportPdfFile(reportDirectory, projectView, projectVersionView, detectFontLoader::loadFont, detectFontLoader::loadBoldFont);
 
             logger.info(String.format("Created risk report pdf: %s", createdPdf.getCanonicalPath()));

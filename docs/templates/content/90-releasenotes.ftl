@@ -9,6 +9,7 @@
 ### Changed features
 * Gradle detector no longer uses the gradle inspector. Only the init script is required.
 * The default BDIO format for communicating dependency graphs to Black Duck has been changed from BDIO1 to BDIO2.
+* Risk report generation will download fonts from Artifactory or use the font files in the fonts directory in the air gap zip of detect.
 
 ### Resolved issues
 * (IDETECT-2527) Resolved an issue in the Go Mod detector to extract and process data even if 'go mod why' command fails to run.
@@ -35,6 +36,9 @@
 * (IDETECT-2394) Resolved an issue that created inaccurate relationships in the BDIO files when Gemlock files were processed.
 * (IDETECT-2404) Resolved an issue where signature scanner arguments passed through detect.blackduck.signature.scanner.arguments that contained space were being improperly parsed.
 * (IDETECT-2525) Resolved an issue with the Yarn detector that caused component version information to be missing when the yarn.lock file contained quoted field keys.
+* (IDETECT-2254) Resolved an issue with the Yarn detector that caused certain components to be omitted from some Yarn 2 projects.
+* (IDETECT-2471) Resolved an issue where a missing Git executable in certain situations causes an exception.
+
 
 ## Version 6.8.0
 ### New features
