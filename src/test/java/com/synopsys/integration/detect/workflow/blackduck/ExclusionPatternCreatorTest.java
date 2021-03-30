@@ -3,7 +3,6 @@ package com.synopsys.integration.detect.workflow.blackduck;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -21,21 +20,21 @@ import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter
 public class ExclusionPatternCreatorTest {
     @ParameterizedTest
     @MethodSource("inputPatternsToExclusionsProvider")
-    public void testProducesCorrectExclusions(List<String> providedPatterns, List<String> resultingExclusions) throws IOException {
-        final File root = new File("root");
+    public void testProducesCorrectExclusions(List<String> providedPatterns, List<String> resultingExclusions) {
+        File root = new File("root");
         root.mkdir();
-        final File sub1 = new File(root, "sub1");
+        File sub1 = new File(root, "sub1");
         sub1.mkdir();
-        final File sub2 = new File(root, "sub2");
+        File sub2 = new File(root, "sub2");
         sub2.mkdir();
-        final File sub1Sub1 = new File(sub1, "sub1Sub1");
+        File sub1Sub1 = new File(sub1, "sub1Sub1");
         sub1Sub1.mkdir();
-        final File sub1Sub2 = new File(sub1, "sub1Sub2");
+        File sub1Sub2 = new File(sub1, "sub1Sub2");
         sub1Sub2.mkdir();
-        final File sub2Sub1 = new File(sub2, "sub2Sub1");
+        File sub2Sub1 = new File(sub2, "sub2Sub1");
         sub2Sub1.mkdir();
 
-        DetectExcludedDirectoryFilter filter = new DetectExcludedDirectoryFilter(root.toPath(), providedPatterns, providedPatterns, providedPatterns);
+        DetectExcludedDirectoryFilter filter = new DetectExcludedDirectoryFilter(root.toPath(), providedPatterns);
         ExclusionPatternCreator exclusionPatternCreator = new ExclusionPatternCreator(new SimpleFileFinder(), file -> filter.isExcluded(file), root);
         assertEqualCollections(resultingExclusions, exclusionPatternCreator.determineExclusionPatterns(3, providedPatterns));
     }
