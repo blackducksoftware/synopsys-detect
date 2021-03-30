@@ -25,7 +25,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.common.util.finder.FileFinder;
-import com.synopsys.integration.common.util.finder.WildcardFileFinder;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.help.PropertyConfigurationHelpContext;
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
@@ -73,6 +72,7 @@ import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.profiling.DetectorProfiler;
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.util.OperatingSystemType;
 
 import freemarker.template.Configuration;
@@ -85,14 +85,15 @@ public class DetectBootFactory {
     private final Gson gson;
     private final EventSystem eventSystem;
     private final BlackDuckConnectivityChecker blackDuckConnectivityChecker;
+    private final FileFinder fileFinder;
 
-    public DetectBootFactory(DetectRun detectRun, DetectInfo detectInfo, Gson gson, EventSystem eventSystem) {
+    public DetectBootFactory(DetectRun detectRun, DetectInfo detectInfo, Gson gson, EventSystem eventSystem, FileFinder fileFinder) {
         this.detectRun = detectRun;
         this.detectInfo = detectInfo;
         this.gson = gson;
         this.eventSystem = eventSystem;
-
         this.blackDuckConnectivityChecker = new BlackDuckConnectivityChecker();
+        this.fileFinder = fileFinder;
     }
 
     public DetectBoot createDetectBoot(List<PropertySource> propertySources, String[] sourceArgs, DetectContext detectContext) {
@@ -154,7 +155,6 @@ public class DetectBootFactory {
         ConnectionFactory connectionFactory = new ConnectionFactory(connectionDetails);
         ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
 
-        FileFinder fileFinder = new WildcardFileFinder();
         DirectoryExecutableFinder directoryExecutableFinder = DirectoryExecutableFinder.forCurrentOperatingSystem(fileFinder);
         SystemPathExecutableFinder systemPathExecutableFinder = new SystemPathExecutableFinder(directoryExecutableFinder);
         DetectExecutableResolver detectExecutableResolver = new DetectExecutableResolver(directoryExecutableFinder, systemPathExecutableFinder, detectExecutableOptions);

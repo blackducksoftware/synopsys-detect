@@ -23,7 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
@@ -47,7 +47,6 @@ import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluator;
 import com.synopsys.integration.detector.evaluation.DiscoveryFilter;
 import com.synopsys.integration.detector.finder.DetectorFinder;
-import com.synopsys.integration.detector.finder.DetectorFinderDirectoryListException;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
 
@@ -75,17 +74,12 @@ public class DetectorTool {
     }
 
     public DetectorToolResult performDetectors(File directory, DetectorRuleSet detectorRuleSet, DetectorFinderOptions detectorFinderOptions, DetectorEvaluationOptions evaluationOptions, String projectDetector,
-        List<DetectorType> requiredDetectors)
-        throws DetectUserFriendlyException {
+        List<DetectorType> requiredDetectors, FileFinder fileFinder) {
         logger.debug("Initializing detector system.");
         Optional<DetectorEvaluationTree> possibleRootEvaluation;
-        try {
-            logger.debug("Starting detector file system traversal.");
-            possibleRootEvaluation = detectorFinder.findDetectors(directory, detectorRuleSet, detectorFinderOptions);
 
-        } catch (DetectorFinderDirectoryListException e) {
-            throw new DetectUserFriendlyException("Detect was unable to list a directory while searching for detectors.", e, ExitCodeType.FAILURE_DETECTOR);
-        }
+        logger.debug("Starting detector file system traversal.");
+        possibleRootEvaluation = detectorFinder.findDetectors(directory, detectorRuleSet, detectorFinderOptions, fileFinder);
 
         if (!possibleRootEvaluation.isPresent()) {
             logger.error("The source directory could not be searched for detectors - detector tool failed.");

@@ -4,6 +4,8 @@
 ### New Features
 * Added support for Yarn workspaces.
 * Added support for the dependency graph SBT plugin. Resolution cache generation is no longer a requirement of the SBT detector.
+* Added the properties [detect.excluded.directories](../properties/configuration/paths/#detect-excluded-directories-advanced), [detect.exclude.default.directories](../properties/configuration/paths/#detect-exclude-default-directories-advanced), and [detect.excluded.directory.search.depth](../properties/configuration/signature scanner/#detect-excluded-directory-search-depth) to handle exclusions for detector search and signature scanning.
+* Added ability to specify excluded directory paths using [glob patterns](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)).
 * Added properties [detect.lerna.excluded.packages](../properties/detectors/lerna/#lerna-packages-excluded-advanced) and [detect.lerna.included.packages](../properties/detectors/lerna/#lerna-packages-included-advanced) to exclude and include specific Lerna packages.
 
 ### Changed features

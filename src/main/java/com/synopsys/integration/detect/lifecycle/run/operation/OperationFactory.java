@@ -7,6 +7,10 @@
  */
 package com.synopsys.integration.detect.lifecycle.run.operation;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.util.function.Predicate;
+
 import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.bdio2.util.Bdio2Factory;
@@ -33,6 +37,7 @@ import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysi
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisUploadService;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerTool;
+import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
 import com.synopsys.integration.detect.workflow.bdio.BdioManager;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
 import com.synopsys.integration.detect.workflow.blackduck.DetectCustomFieldService;
@@ -69,7 +74,7 @@ public class OperationFactory {
 
     public final DetectorOperation createDetectorOperation() {
         return new DetectorOperation(runContext.getDetectConfiguration(), runContext.getDetectConfigurationFactory(), runContext.getDirectoryManager(), runContext.getEventSystem(), runContext.getDetectDetectableFactory(),
-            runContext.getExtractionEnvironmentProvider(), runContext.getCodeLocationConverter(), runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getDetectorEventPublisher());
+            runContext.getExtractionEnvironmentProvider(), runContext.getCodeLocationConverter(), runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getDetectorEventPublisher(), runContext.getFileFinder());
     }
 
     public final RapidScanOperation createRapidScanOperation() {
@@ -92,7 +97,7 @@ public class OperationFactory {
         BinaryScanOptions binaryScanOptions = runContext.getDetectConfigurationFactory().createBinaryScanOptions();
 
         return new BinaryScanOperation(blackDuckRunData, binaryScanOptions, runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getDirectoryManager(), runContext.getCodeLocationNameManager(),
-            runContext.getOperationSystem());
+            runContext.getOperationSystem(), runContext.getFileFinder());
     }
 
     public final BdioUploadOperation createBdioUploadOperation() {
@@ -148,7 +153,10 @@ public class OperationFactory {
     public final SignatureScanOperation createSignatureScanOperation() throws DetectUserFriendlyException {
         BlackDuckRunData blackDuckRunData = runContext.getProductRunData().getBlackDuckRunData();
         BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = runContext.getDetectConfigurationFactory().createBlackDuckSignatureScannerOptions();
-        BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, runContext.getDetectContext());
+        Path sourcePath = runContext.getDirectoryManager().getSourceDirectory().toPath();
+        DetectExcludedDirectoryFilter fileFilter = runContext.getDetectConfigurationFactory().createDetectDirectoryFileFilter(sourcePath);
+        Predicate<File> collectExcludedDirectoriesPredicate = file -> fileFilter.isExcluded(file);
+        BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, runContext.getDetectContext(), collectExcludedDirectoriesPredicate);
 
         return new SignatureScanOperation(blackDuckRunData, blackDuckSignatureScannerTool, runContext.getStatusEventPublisher(), runContext.getExitCodePublisher());
     }

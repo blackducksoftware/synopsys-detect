@@ -19,8 +19,6 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.
 public class BlackDuckSignatureScannerOptions {
     private final List<Path> signatureScannerPaths;
     private final List<String> exclusionPatterns;
-    private final List<String> exclusionNamePatterns;
-
     @Nullable
     private final Path offlineLocalScannerInstallPath;
     @Nullable
@@ -49,28 +47,26 @@ public class BlackDuckSignatureScannerOptions {
     private final Boolean copyrightSearch;
 
     public BlackDuckSignatureScannerOptions(
-        final List<Path> signatureScannerPaths,
-        final List<String> exclusionPatterns,
-        final List<String> exclusionNamePatterns,
-        @Nullable final Path offlineLocalScannerInstallPath,
-        @Nullable final Path onlineLocalScannerInstallPath,
-        @Nullable final String userProvidedScannerInstallUrl,
-        final Integer scanMemory,
-        final Integer parallelProcessors,
-        final Boolean dryRun,
-        @Nullable final SnippetMatching snippetMatching,
-        @Nullable final Boolean uploadSource,
-        @Nullable final String codeLocationPrefix,
-        @Nullable final String codeLocationSuffix,
-        @Nullable final String additionalArguments,
-        final Integer maxDepth,
-        @Nullable final IndividualFileMatching individualFileMatching,
-        final Boolean licenseSearch,
-        final Boolean copyrightSearch) {
+        List<Path> signatureScannerPaths,
+        List<String> exclusionPatterns,
+        @Nullable Path offlineLocalScannerInstallPath,
+        @Nullable Path onlineLocalScannerInstallPath,
+        @Nullable String userProvidedScannerInstallUrl,
+        Integer scanMemory,
+        Integer parallelProcessors,
+        Boolean dryRun,
+        @Nullable SnippetMatching snippetMatching,
+        @Nullable Boolean uploadSource,
+        @Nullable String codeLocationPrefix,
+        @Nullable String codeLocationSuffix,
+        @Nullable String additionalArguments,
+        Integer maxDepth,
+        @Nullable IndividualFileMatching individualFileMatching,
+        Boolean licenseSearch,
+        Boolean copyrightSearch) {
 
         this.signatureScannerPaths = signatureScannerPaths;
         this.exclusionPatterns = exclusionPatterns;
-        this.exclusionNamePatterns = exclusionNamePatterns;
         this.offlineLocalScannerInstallPath = offlineLocalScannerInstallPath;
         this.onlineLocalScannerInstallPath = onlineLocalScannerInstallPath;
         this.userProvidedScannerInstallUrl = userProvidedScannerInstallUrl;
@@ -94,10 +90,6 @@ public class BlackDuckSignatureScannerOptions {
 
     public List<String> getExclusionPatterns() {
         return exclusionPatterns;
-    }
-
-    public List<String> getExclusionNamePatterns() {
-        return exclusionNamePatterns;
     }
 
     public Integer getScanMemory() {

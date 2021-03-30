@@ -9,6 +9,7 @@ package com.synopsys.integration.detect;
 
 import java.io.File;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import javax.xml.parsers.DocumentBuilder;
 
@@ -22,7 +23,6 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.common.util.finder.FileFinder;
-import com.synopsys.integration.common.util.finder.WildcardFileFinder;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
@@ -99,21 +99,12 @@ public class RunBeanConfiguration {
     public DocumentBuilder documentBuilder;
     @Autowired
     public DetectableOptionFactory detectableOptionFactory;
+    @Autowired
+    public FileFinder fileFinder;
 
     @Bean
     public ExternalIdFactory externalIdFactory() {
         return new ExternalIdFactory();
-    }
-
-    @Bean
-    public FileFinder fullFileFinder() {
-        return new WildcardFileFinder();
-    }
-
-    //Be mindful of using this file finder, it filters based on detector exclusions, it's VERY DIFFERENT from the FULL file finder above.
-    @Bean
-    public FileFinder filteredFileFinder() {
-        return detectConfigurationFactory.createFilteredFileFinder(directoryManager.getSourceDirectory().toPath());
     }
 
     @Bean
@@ -165,7 +156,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public DirectoryExecutableFinder directoryExecutableFinder() {
-        return DirectoryExecutableFinder.forCurrentOperatingSystem(fullFileFinder());
+        return DirectoryExecutableFinder.forCurrentOperatingSystem(fileFinder);
     }
 
     @Bean
@@ -209,7 +200,7 @@ public class RunBeanConfiguration {
     @Bean
     public DockerInspectorResolver dockerInspectorResolver() throws DetectUserFriendlyException {
         DockerInspectorInstaller dockerInspectorInstaller = new DockerInspectorInstaller(artifactResolver());
-        return new ArtifactoryDockerInspectorResolver(directoryManager, airGapManager(), fullFileFinder(), dockerInspectorInstaller, detectableOptionFactory.createDockerDetectableOptions());
+        return new ArtifactoryDockerInspectorResolver(directoryManager, airGapManager(), fileFinder, dockerInspectorInstaller, detectableOptionFactory.createDockerDetectableOptions());
     }
 
     @Bean()
@@ -233,7 +224,7 @@ public class RunBeanConfiguration {
         DetectExecutableResolver executableResolver = detectExecutableResolver();
         DotNetRuntimeFinder runtimeFinder = new DotNetRuntimeFinder(executableRunner, executableResolver, directoryManager.getPermanentDirectory());
         DotNetRuntimeManager dotNetRuntimeManager = new DotNetRuntimeManager(runtimeFinder, new DotNetRuntimeParser());
-        return new LocatorNugetInspectorResolver(executableResolver, executableRunner, detectInfo, fullFileFinder(), installerOptions.getNugetInspectorName(), installerOptions.getPackagesRepoUrl(), locator, dotNetRuntimeManager);
+        return new LocatorNugetInspectorResolver(executableResolver, executableRunner, detectInfo, fileFinder, installerOptions.getNugetInspectorName(), installerOptions.getPackagesRepoUrl(), locator, dotNetRuntimeManager);
     }
 
     @Bean()
@@ -248,7 +239,7 @@ public class RunBeanConfiguration {
 
     @Bean()
     public DetectableFactory detectableFactory() {
-        return new DetectableFactory(filteredFileFinder(), executableRunner(), externalIdFactory(), gson);
+        return new DetectableFactory(fileFinder, executableRunner(), externalIdFactory(), gson);
     }
 
     @Bean()
@@ -283,9 +274,9 @@ public class RunBeanConfiguration {
     @Lazy
     @Bean()
     public BlackDuckSignatureScanner blackDuckSignatureScanner(BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, ScanBatchRunner scanBatchRunner, BlackDuckServerConfig blackDuckServerConfig,
-        CodeLocationNameManager codeLocationNameManager) {
-        return new BlackDuckSignatureScanner(directoryManager, fullFileFinder(), codeLocationNameManager, blackDuckSignatureScannerOptions, scanBatchRunner, blackDuckServerConfig, statusEventPublisher(), exitCodePublisher(),
-            operationSystem());
+        CodeLocationNameManager codeLocationNameManager, Predicate<File> fileFilter) {
+        return new BlackDuckSignatureScanner(directoryManager, codeLocationNameManager, blackDuckSignatureScannerOptions, scanBatchRunner, blackDuckServerConfig, statusEventPublisher(), exitCodePublisher(),
+            operationSystem(), fileFinder, fileFilter);
     }
 
 }
