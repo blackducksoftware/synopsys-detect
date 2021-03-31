@@ -37,8 +37,8 @@ import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysi
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisUploadService;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerTool;
-import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
+import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
 import com.synopsys.integration.detect.workflow.bdio.BdioManager;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
 import com.synopsys.integration.detect.workflow.blackduck.DetectCustomFieldService;
@@ -104,7 +104,7 @@ public class OperationFactory {
     }
 
     public final BdioUploadOperation createBdioUploadOperation() {
-        return new BdioUploadOperation(runContext.getOperationSystem());
+        return new BdioUploadOperation(runContext.getOperationSystem(), runContext.getDetectConfigurationFactory().createBdioOptions());
     }
 
     public final CodeLocationResultCalculationOperation createCodeLocationResultCalculationOperation() {
