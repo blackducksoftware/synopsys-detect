@@ -333,6 +333,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../../../advanced/detect-exclusion/" title="Exclusions in Detect" class="md-nav__link">
+      Exclusions in Detect
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../../../advanced/downloads/" title="Downloads" class="md-nav__link">
       Downloads
     </a>
@@ -478,13 +490,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-17" type="checkbox" id="nav-9-17">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-18" type="checkbox" id="nav-9-18">
     
-    <label class="md-nav__link" for="nav-9-17">
+    <label class="md-nav__link" for="nav-9-18">
       Package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-17">
+      <label class="md-nav__title" for="nav-9-18">
         Package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -706,13 +718,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-18" type="checkbox" id="nav-9-18">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-19" type="checkbox" id="nav-9-19">
     
-    <label class="md-nav__link" for="nav-9-18">
+    <label class="md-nav__link" for="nav-9-19">
       Troubleshooting
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-18">
+      <label class="md-nav__title" for="nav-9-19">
         Troubleshooting
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -1009,6 +1021,13 @@
         <li class="md-nav__item">
   <a href="#buildless-mode" class="md-nav__link">
     Buildless Mode
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-target" class="md-nav__link">
+    Detect Target
   </a>
   
 </li>
@@ -1462,6 +1481,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#detect-target" class="md-nav__link">
+    Detect Target
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#wait-for-results" class="md-nav__link">
     Wait For Results
   </a>
@@ -1547,6 +1573,54 @@
 <tr>
 <td>Strict</td>
 <td>No</td>
+</tr>
+<tr>
+<td>Example</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="detect-target">Detect Target<a class="headerlink" href="#detect-target" title="Permanent link">#</a></h2>
+<pre><code>--detect.target.type=SOURCE,IMAGE 
+</code></pre>
+
+<p>Informs detect of what is being scanned which allows improved user experience when scanning different types of targets.</p>
+<p>Changes the behaviour of detect to better suite what is being scanned. For example, when IMAGE is selected, detect will not pick a source directory, will automatically disable the DETECTOR tool and run BINARY/SIGNATURE SCAN on the provided image.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>7.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>DetectTargetType</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>SOURCE</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>SOURCE, IMAGE</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>Yes</td>
 </tr>
 <tr>
 <td>Example</td>

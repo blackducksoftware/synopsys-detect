@@ -329,6 +329,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../../advanced/detect-exclusion/" title="Exclusions in Detect" class="md-nav__link">
+      Exclusions in Detect
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../../advanced/downloads/" title="Downloads" class="md-nav__link">
       Downloads
     </a>
@@ -474,13 +486,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-17" type="checkbox" id="nav-9-17">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-18" type="checkbox" id="nav-9-18">
     
-    <label class="md-nav__link" for="nav-9-17">
+    <label class="md-nav__link" for="nav-9-18">
       Package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-17">
+      <label class="md-nav__title" for="nav-9-18">
         Package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -702,13 +714,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-18" type="checkbox" id="nav-9-18">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-19" type="checkbox" id="nav-9-19">
     
-    <label class="md-nav__link" for="nav-9-18">
+    <label class="md-nav__link" for="nav-9-19">
       Troubleshooting
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-18">
+      <label class="md-nav__title" for="nav-9-19">
         Troubleshooting
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -1685,23 +1697,23 @@
 <tbody>
 <tr>
 <td><a href="../configuration/paths/#detector-directory-exclusions-deprecated">detect.detector.search.exclusion</a></td>
-<td>Detector Directory Exclusions: A comma-separated list of directory names to exclude from detector search. <br /><br /> <strong>DEPRECATED: This property is now deprecated. In future versions of Detect, it will be consolidated with other exclusion properties. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
+<td>Detector Directory Exclusions: A comma-separated list of directory names to exclude from detector search. <br /><br /> <strong>DEPRECATED: This property is deprecated.  Please use --detect.ignore to specify directory names to exclude from detector search. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
 </tr>
 <tr>
 <td><a href="../configuration/paths/#detector-directory-patterns-exclusions-deprecated">detect.detector.search.exclusion.patterns</a></td>
-<td>Detector Directory Patterns Exclusions: A comma-separated list of directory name patterns to exclude from detector search. <br /><br /> <strong>DEPRECATED: This property is now deprecated. In future versions of Detect, it will be consolidated with other exclusion properties. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
+<td>Detector Directory Patterns Exclusions: A comma-separated list of directory name patterns to exclude from detector search. <br /><br /> <strong>DEPRECATED: This property is deprecated.  Please use --detect.ignore to specify directory name patterns to exclude from detector search. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
 </tr>
 <tr>
 <td><a href="../configuration/paths/#detector-directory-path-exclusions-deprecated">detect.detector.search.exclusion.paths</a></td>
-<td>Detector Directory Path Exclusions: A comma-separated list of directory paths to exclude from detector search. (E.g. 'foo/bar/biz' will only exclude the 'biz' directory if the parent directory structure is 'foo/bar/'.) <br /><br /> <strong>DEPRECATED: This property is now deprecated. In future versions of Detect, it will be consolidated with other exclusion properties. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
+<td>Detector Directory Path Exclusions: A comma-separated list of directory paths to exclude from detector search. (E.g. 'foo/bar/biz' will only exclude the 'biz' directory if the parent directory structure is 'foo/bar/'.) <br /><br /> <strong>DEPRECATED: This property is deprecated.  Please use --detect.ignore to specify directory paths to exclude from detector search. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
 </tr>
 <tr>
 <td><a href="../configuration/paths/#detector-file-exclusions-deprecated">detect.detector.search.exclusion.files</a></td>
-<td>Detector File Exclusions: A comma-separated list of file names to exclude from detector search. <br /><br /> <strong>DEPRECATED: This property is now deprecated. In future versions of Detect, it will be consolidated with other exclusion properties. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
+<td>Detector File Exclusions: A comma-separated list of file names to exclude from detector search. <br /><br /> <strong>DEPRECATED: This property is deprecated.  Detect no longer supports the exclusion of individual files.  If you wish to exclude certain detectors, please use --detect.excluded.detector.types. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
 </tr>
 <tr>
 <td><a href="../configuration/paths/#detector-exclude-default-directories-deprecated">detect.detector.search.exclusion.defaults</a></td>
-<td>default: true <br /><br /> Detector Exclude Default Directories: If true, the bom tool search will exclude the default directory names. See the detailed help for more information. <br /><br /> <strong>DEPRECATED: This property is now deprecated. In future versions of Detect, it will be consolidated with other exclusion properties. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
+<td>default: true <br /><br /> Detector Exclude Default Directories: If true, the bom tool search will exclude the default directory names. See the detailed help for more information. <br /><br /> <strong>DEPRECATED: This property is deprecated.  Please use --detect.ignore.defaults to exclude default directory names from detector search. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
 </tr>
 <tr>
 <td><a href="../configuration/paths/#resolve-tilde-in-paths-deprecated">detect.resolve.tilde.in.paths</a></td>
@@ -1804,15 +1816,15 @@
 </tr>
 <tr>
 <td><a href="../configuration/signature scanner/#directory-name-exclusion-patterns-deprecated">detect.blackduck.signature.scanner.exclusion.name.patterns</a></td>
-<td>default: node_modules <br /><br /> Directory Name Exclusion Patterns: A comma-separated list of directory name patterns for which Detect searches and adds to the signature scanner --exclude flag values. <br /><br /> <strong>DEPRECATED: This property is now deprecated. In future versions of Detect, it will be consolidated with other exclusion properties. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
+<td>default: node_modules <br /><br /> Directory Name Exclusion Patterns: A comma-separated list of directory name patterns for which Detect searches and adds to the signature scanner --exclude flag values. <br /><br /> <strong>DEPRECATED: This property is now deprecated.  Please use --detect.ignore to specify directory name patterns for which Detect searches and adds to the signature scanner as --exclude flag values. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
 </tr>
 <tr>
 <td><a href="../configuration/signature scanner/#exclusion-patterns-search-depth-deprecated">detect.blackduck.signature.scanner.exclusion.pattern.search.depth</a></td>
-<td>default: 4 <br /><br /> Exclusion Patterns Search Depth: Enables you to adjust the depth to which Detect will search when creating signature scanner exclusion patterns. <br /><br /> <strong>DEPRECATED: This property is now deprecated. In future versions of Detect, it will be consolidated with other exclusion properties. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
+<td>default: 4 <br /><br /> Exclusion Patterns Search Depth: Enables you to adjust the depth to which Detect will search when creating signature scanner exclusion patterns. <br /><br /> <strong>DEPRECATED: This property is deprecated.  Please use --detect.ignore.search.depth to adjust the depth to which Detect will search when creating signature scanner exclusion patterns. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
 </tr>
 <tr>
 <td><a href="../configuration/signature scanner/#exclusion-patterns-deprecated">detect.blackduck.signature.scanner.exclusion.patterns</a></td>
-<td>Exclusion Patterns: A comma-separated list of values (each value is a directory name pattern surrounded by '/' characters) to be used with the Signature Scanner --exclude flag. <br /><br /> <strong>DEPRECATED: This property is now deprecated. In future versions of Detect, it will be consolidated with other exclusion properties. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
+<td>Exclusion Patterns: A comma-separated list of values (each value is a directory name pattern surrounded by '/' characters) to be used with the Signature Scanner --exclude flag. <br /><br /> <strong>DEPRECATED: This property is now deprecated.  Please use --detect.ignore to specify patterns to be passed to the signature scanner as values for --exclude options. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
 </tr>
 <tr>
 <td><a href="../configuration/signature scanner/#signature-scanner-local-path-40offline41-deprecated">detect.blackduck.signature.scanner.offline.local.path</a></td>

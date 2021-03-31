@@ -333,6 +333,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../../../advanced/detect-exclusion/" title="Exclusions in Detect" class="md-nav__link">
+      Exclusions in Detect
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../../../advanced/downloads/" title="Downloads" class="md-nav__link">
       Downloads
     </a>
@@ -478,13 +490,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-17" type="checkbox" id="nav-9-17">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-18" type="checkbox" id="nav-9-18">
     
-    <label class="md-nav__link" for="nav-9-17">
+    <label class="md-nav__link" for="nav-9-18">
       Package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-17">
+      <label class="md-nav__title" for="nav-9-18">
         Package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -706,13 +718,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-18" type="checkbox" id="nav-9-18">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-19" type="checkbox" id="nav-9-19">
     
-    <label class="md-nav__link" for="nav-9-18">
+    <label class="md-nav__link" for="nav-9-19">
       Troubleshooting
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-18">
+      <label class="md-nav__title" for="nav-9-19">
         Troubleshooting
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -1129,6 +1141,20 @@
         <li class="md-nav__item">
   <a href="#detector-search-continue-advanced" class="md-nav__link">
     Detector Search Continue (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-excluded-directories-advanced" class="md-nav__link">
+    Detect Excluded Directories (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-exclude-default-directories-advanced" class="md-nav__link">
+    Detect Exclude Default Directories (Advanced)
   </a>
   
 </li>
@@ -1702,6 +1728,20 @@
         <li class="md-nav__item">
   <a href="#detector-search-continue-advanced" class="md-nav__link">
     Detector Search Continue (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-excluded-directories-advanced" class="md-nav__link">
+    Detect Excluded Directories (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-exclude-default-directories-advanced" class="md-nav__link">
+    Detect Exclude Default Directories (Advanced)
   </a>
   
 </li>
@@ -2450,6 +2490,102 @@
 </tr>
 </tbody>
 </table>
+<h2 id="detect-excluded-directories-advanced">Detect Excluded Directories (Advanced)<a class="headerlink" href="#detect-excluded-directories-advanced" title="Permanent link">#</a></h2>
+<pre><code>--detect.excluded.directories
+</code></pre>
+
+<p>A comma-separated list of names, name patterns, relative paths, or path patterns of directories that Detect should exclude.</p>
+<p>Subdirectories whose name or path is resolved from the patterns in this list will not be searched when determining which detectors to run, and will be excluded from signature scan using the Scan CLI '--exclude' flag. Refer to the <i>Advanced</i> &gt; <i>Exclusions in Detect</i> page for more details.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>7.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String List</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Example</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="detect-exclude-default-directories-advanced">Detect Exclude Default Directories (Advanced)<a class="headerlink" href="#detect-exclude-default-directories-advanced" title="Permanent link">#</a></h2>
+<pre><code>--detect.exclude.default.directories=true
+</code></pre>
+
+<p>If true, Detect will exclude the default directory names. See the detailed help for more information.</p>
+<p>If true, these directories will be excluded by Detect when searching for detectors and will be excluded from signature scan using the Scan CLI '--exclude' flag: bin, build, .git, .gradle, node_modules, out, packages, target.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>7.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Boolean</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>true</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Example</td>
+<td></td>
+</tr>
+</tbody>
+</table>
 <h2 id="detect-tools-output-path-advanced">Detect Tools Output Path (Advanced)<a class="headerlink" href="#detect-tools-output-path-advanced" title="Permanent link">#</a></h2>
 <pre><code>--detect.tools.output.path
 </code></pre>
@@ -2600,7 +2736,7 @@
 
 <p>A comma-separated list of directory names to exclude from detector search.</p>
 <p>While searching the source directory to determine which detectors to run, subdirectories whose name appear in this list will not be searched.</p>
-<p><strong>DEPRECATED: This property is now deprecated. In future versions of Detect, it will be consolidated with other exclusion properties. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<p><strong>DEPRECATED: This property is deprecated.  Please use --detect.ignore to specify directory names to exclude from detector search. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
 <table>
 <thead>
 <tr>
@@ -2645,7 +2781,7 @@
 
 <p>A comma-separated list of directory name patterns to exclude from detector search.</p>
 <p>While searching the source directory to determine which detectors to run, subdirectories whose name match a pattern in this list will not be searched. These patterns are file system glob patterns ('?' is a wildcard for a single character, '*' is a wildcard for zero or more characters). For example, suppose you're running in bash on Linux, you've set --detect.detector.search.depth=1, and have a subdirectory named blackduck-common (a gradle project) that you want to exclude from the detector search. Any of the following would exclude it:--detect.detector.search.exclusion.patterns=blackduck-common,--detect.detector.search.exclusion.patterns='blackduck-common',--detect.detector.search.exclusion.patterns='blackduck-*'</p>
-<p><strong>DEPRECATED: This property is now deprecated. In future versions of Detect, it will be consolidated with other exclusion properties. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<p><strong>DEPRECATED: This property is deprecated.  Please use --detect.ignore to specify directory name patterns to exclude from detector search. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
 <table>
 <thead>
 <tr>
@@ -2690,7 +2826,7 @@
 
 <p>A comma-separated list of directory paths to exclude from detector search. (E.g. 'foo/bar/biz' will only exclude the 'biz' directory if the parent directory structure is 'foo/bar/'.)</p>
 <p>This property performs the same basic function as detect.detector.search.exclusion, but lets you be more specific.</p>
-<p><strong>DEPRECATED: This property is now deprecated. In future versions of Detect, it will be consolidated with other exclusion properties. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<p><strong>DEPRECATED: This property is deprecated.  Please use --detect.ignore to specify directory paths to exclude from detector search. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
 <table>
 <thead>
 <tr>
@@ -2734,7 +2870,7 @@
 </code></pre>
 
 <p>A comma-separated list of file names to exclude from detector search.</p>
-<p><strong>DEPRECATED: This property is now deprecated. In future versions of Detect, it will be consolidated with other exclusion properties. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<p><strong>DEPRECATED: This property is deprecated.  Detect no longer supports the exclusion of individual files.  If you wish to exclude certain detectors, please use --detect.excluded.detector.types. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
 <table>
 <thead>
 <tr>
@@ -2779,7 +2915,7 @@
 
 <p>If true, the bom tool search will exclude the default directory names. See the detailed help for more information.</p>
 <p>If true, these directories will be excluded from the detector search: bin, build, .git, .gradle, node_modules, out, packages, target.</p>
-<p><strong>DEPRECATED: This property is now deprecated. In future versions of Detect, it will be consolidated with other exclusion properties. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<p><strong>DEPRECATED: This property is deprecated.  Please use --detect.ignore.defaults to exclude default directory names from detector search. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
 <table>
 <thead>
 <tr>

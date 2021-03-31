@@ -36,7 +36,7 @@
     
     
       
-        <title>Risk Report Generation - Synopsys Detect</title>
+        <title>Exclusions in Detect - Synopsys Detect</title>
       
     
     
@@ -75,7 +75,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#risk-report-generation" tabindex="1" class="md-skip">
+      <a href="#exclusions-in-detect" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -101,7 +101,7 @@
             </span>
             <span class="md-header-nav__topic">
               
-                Risk Report Generation
+                Exclusions in Detect
               
             </span>
           
@@ -333,11 +333,83 @@
           
           
 
+  
 
-  <li class="md-nav__item">
-    <a href="../detect-exclusion/" title="Exclusions in Detect" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Exclusions in Detect
+      </label>
+    
+    <a href="./" title="Exclusions in Detect" class="md-nav__link md-nav__link--active">
       Exclusions in Detect
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#directory-exclusions" class="md-nav__link">
+    Directory Exclusions
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exclude-directories-by-name" class="md-nav__link">
+    Exclude directories by name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exclude-directories-by-path" class="md-nav__link">
+    Exclude directories by path
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#related-properties" class="md-nav__link">
+    Related properties:
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#package-manager-exclusions" class="md-nav__link">
+    Package Manager Exclusions
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
   </li>
 
         
@@ -405,20 +477,11 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-    <a href="./" title="Risk Report Generation" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../reports/" title="Risk Report Generation" class="md-nav__link">
       Risk Report Generation
     </a>
-    
   </li>
 
         
@@ -1404,6 +1467,56 @@
     
   
   
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#directory-exclusions" class="md-nav__link">
+    Directory Exclusions
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exclude-directories-by-name" class="md-nav__link">
+    Exclude directories by name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exclude-directories-by-path" class="md-nav__link">
+    Exclude directories by path
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#related-properties" class="md-nav__link">
+    Related properties:
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#package-manager-exclusions" class="md-nav__link">
+    Package Manager Exclusions
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1415,17 +1528,91 @@
               
                 
                 
-                <h1 id="risk-report-generation">Risk Report Generation<a class="headerlink" href="#risk-report-generation" title="Permanent link">#</a></h1>
-<p>Synopsys Detect can generate a Black Duck risk report in PDF form.
-Synopsys Detect looks for risk report generation details in the properties whose names start with detect.risk.report,
-including:</p>
+                <h1 id="exclusions-in-detect">Exclusions in Detect<a class="headerlink" href="#exclusions-in-detect" title="Permanent link">#</a></h1>
+<h2 id="directory-exclusions">Directory Exclusions<a class="headerlink" href="#directory-exclusions" title="Permanent link">#</a></h2>
+<p>Use <a href="../../properties/configuration/paths/#detect-excluded-directories-advanced">detect.excluded.directories</a> to exclude directories from search when looking for detectors, and when finding paths to pass to the signature scanner as values for an '--exclude' flag.</p>
+<h3 id="exclude-directories-by-name">Exclude directories by name<a class="headerlink" href="#exclude-directories-by-name" title="Permanent link">#</a></h3>
+<p>This property accepts explicit directory names, as well as globbing-style wildcard patterns. See <a href="../includeexcludewildcards/#property-wildcard-support">here</a> for more info.</p>
+<p>Examples</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Excluded</th>
+<th>Not Excluded</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>foo</code></td>
+<td>/root/foo</td>
+<td>/root/foobar</td>
+</tr>
+<tr>
+<td><code>*bar</code></td>
+<td>/root/bar &amp; /root/foobar</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="exclude-directories-by-path">Exclude directories by path<a class="headerlink" href="#exclude-directories-by-path" title="Permanent link">#</a></h3>
+<p>This property accepts explicit paths relative to the project's root, or you may specify glob-style patterns.</p>
+<p>Examples</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Excluded</th>
+<th>Not Excluded</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>foo/bar</code></td>
+<td>/root/foo/bar</td>
+<td>/root/dir/foo/bar</td>
+</tr>
+<tr>
+<td><code>**/foo/bar</code></td>
+<td>/root/dir/foo/bar &amp; /root/directory/foo/bar</td>
+<td></td>
+</tr>
+<tr>
+<td><code>/root/d*/*</code></td>
+<td>/root/dir/foo &amp; /root/directory/bar</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>When specifying path patterns:</p>
 <ul>
-<li>detect.risk.report.pdf (enable report generation)</li>
-<li>detect.risk.report.path (path where report will be located)</li>
+<li>Use '*' to match 0 or more directory name characters (will not cross directory boundaries).</li>
+<li>Use '**' to match 0 or more directory path characters (will cross directory boundaries).</li>
 </ul>
-<p>If Synopsys Detect generates a risk report, you must either be online or have the applicable air gap files in order to render the PDF properly.</p>
-<p>If you are online, then Synopsys Artifactory is used to download the applicable font file which is then unzipped and the font files are located.
-If you are offline, the air gap font files are located at the provided path.</p>
+<p>Synopsys Detect uses FileSystem::getPatchMatcher and its glob syntax implementation to exclude path patterns. See <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)">here</a> for more info.</p>
+<h3 id="related-properties">Related properties:<a class="headerlink" href="#related-properties" title="Permanent link">#</a></h3>
+<ul>
+<li><a href="../../properties/configuration/paths/#detect-exclude-default-directories-advanced">detect.exclude.default.directories</a></li>
+<li><a href="../../properties/configuration/signature scanner/#detect-excluded-directory-search-depth">detect.excluded.directory.search.depth</a></li>
+</ul>
+<h2 id="package-manager-exclusions">Package Manager Exclusions<a class="headerlink" href="#package-manager-exclusions" title="Permanent link">#</a></h2>
+<p>If you wish to specify package manager-specific exclusions you may do so using the following properties:</p>
+<ul>
+<li><a href="../../properties/detectors/gradle/#gradle-include-configurations-advanced">detect.gradle.included.configurations</a></li>
+<li><a href="../../properties/detectors/gradle/#gradle-exclude-configurations-advanced">detect.gradle.excluded.configurations</a></li>
+<li><a href="../../properties/detectors/gradle/#gradle-include-projects-advanced">detect.gradle.included.projects</a></li>
+<li><a href="../../properties/detectors/gradle/#gradle-exclude-projects-advanced">detect.gradle.excluded.projects</a></li>
+<li><a href="../../properties/detectors/lerna/#lerna-packages-included-advanced">detect.lerna.included.packages</a></li>
+<li><a href="../../properties/detectors/lerna/#lerna-packages-excluded-advanced">detect.lerna.excluded.packages</a></li>
+<li><a href="../../properties/detectors/maven/#dependency-scope-included">detect.maven.included.scopes</a></li>
+<li><a href="../../properties/detectors/maven/#dependency-scope-excluded">detect.maven.excluded.scopes</a></li>
+<li><a href="../../properties/detectors/maven/#maven-modules-included-advanced">detect.maven.included.modules</a></li>
+<li><a href="../../properties/detectors/maven/#maven-modules-excluded-advanced">detect.maven.excluded.modules</a></li>
+<li><a href="../../properties/detectors/nuget/#nuget-modules-included-advanced">detect.nuget.included.modules</a></li>
+<li><a href="../../properties/detectors/nuget/#nuget-projects-excluded-advanced">detect.nuget.excluded.modules</a></li>
+<li><a href="../../properties/detectors/sbt/#sbt-configurations-included-deprecated">detect.sbt.included.configurations</a></li>
+<li><a href="../../properties/detectors/sbt/#sbt-configurations-excluded-deprecated">detect.sbt.excluded.configurations</a></li>
+</ul>
                 
                   
                 
@@ -1446,7 +1633,7 @@ If you are offline, the air gap font files are located at the provided path.</p>
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../proxies/" title="Running behind a proxy" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../concurrent/" title="Concurrent execution" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -1455,19 +1642,19 @@ If you are offline, the air gap font files are located at the provided path.</p>
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Running behind a proxy
+                Concurrent execution
               </span>
             </div>
           </a>
         
         
-          <a href="../scan-naming/" title="Code location (scan) naming" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../downloads/" title="Downloads" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Code location (scan) naming
+                Downloads
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">
