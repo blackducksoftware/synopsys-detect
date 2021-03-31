@@ -25,6 +25,10 @@ public class BinaryScanToolResult {
         return new BinaryScanToolResult(null);
     }
 
+    public static BinaryScanToolResult SKIPPED() {
+        return new BinaryScanToolResult(null);
+    }
+
     private BinaryScanToolResult(CodeLocationCreationData<BinaryScanBatchOutput> codeLocationCreationData) {
         this.codeLocationCreationData = codeLocationCreationData;
     }

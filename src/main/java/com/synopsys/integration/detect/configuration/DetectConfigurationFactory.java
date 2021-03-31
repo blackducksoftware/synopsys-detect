@@ -48,10 +48,13 @@ import com.synopsys.integration.detect.configuration.connection.ConnectionDetail
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DefaultDetectorExcludedDirectories;
 import com.synopsys.integration.detect.configuration.enumeration.DefaultVersionNameScheme;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
+import com.synopsys.integration.detect.lifecycle.boot.decision.RunDecision;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions;
-import com.synopsys.integration.detect.lifecycle.run.RunOptions;
+import com.synopsys.integration.detect.lifecycle.run.AggregateOptions;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableOptions;
 import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisOptions;
@@ -253,25 +256,37 @@ public class DetectConfigurationFactory {
         return new PhoneHomeOptions(phoneHomePassthrough);
     }
 
-    public RunOptions createRunOptions() {
+    //TODO: Should not return the tool, but return an options object someone else uses to make the tool.
+    public DetectToolFilter createToolFilter(RunDecision runDecision, BlackDuckDecision blackDuckDecision) {
         // This is because it is double deprecated so we must check if either property is set.
         Optional<Boolean> sigScanDisabled = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED.getProperty(),
             DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_DISABLED.getProperty());
         Optional<Boolean> polarisEnabled = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_SWIP_ENABLED.getProperty());
+        Optional<Boolean> impactEnabled = Optional.of(detectConfiguration.getValue(DetectProperties.DETECT_IMPACT_ANALYSIS_ENABLED.getProperty()));
 
         List<FilterableEnumValue<DetectTool>> includedTools = getValue(DetectProperties.DETECT_TOOLS);
         List<FilterableEnumValue<DetectTool>> excludedTools = getValue(DetectProperties.DETECT_TOOLS_EXCLUDED);
         ExcludeIncludeEnumFilter filter = new ExcludeIncludeEnumFilter(excludedTools, includedTools);
-        DetectToolFilter detectToolFilter = new DetectToolFilter(filter, sigScanDisabled, polarisEnabled);
+        return new DetectToolFilter(filter, sigScanDisabled, polarisEnabled, impactEnabled, runDecision, blackDuckDecision);
+    }
 
-        Boolean unmapCodeLocations = getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_UNMAP);
+    public AggregateOptions createAggregateOptions() {
         String aggregateName = getNullableValue(DetectProperties.DETECT_BOM_AGGREGATE_NAME);
         AggregateMode aggregateMode = getValue(DetectProperties.DETECT_BOM_AGGREGATE_REMEDIATION_MODE);
-        List<DetectTool> preferredTools = getValue(DetectProperties.DETECT_PROJECT_TOOL);
-        Boolean useBdio2 = getValue(DetectProperties.DETECT_BDIO2_ENABLED);
-        BlackduckScanMode scanMode = getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE);
 
-        return new RunOptions(unmapCodeLocations, aggregateName, aggregateMode, preferredTools, detectToolFilter, useBdio2, scanMode);
+        return new AggregateOptions(aggregateName, aggregateMode);
+    }
+
+    public BlackduckScanMode createScanMode() {
+        return getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE);
+    }
+
+    public DetectTargetType createDetectTarget() {
+        return getValue(DetectProperties.DETECT_TARGET_TYPE);
+    }
+
+    public List<DetectTool> createPreferredProjectTools() {
+        return getValue(DetectProperties.DETECT_PROJECT_TOOL);
     }
 
     public DirectoryOptions createDirectoryOptions() throws IOException {
@@ -332,7 +347,8 @@ public class DetectConfigurationFactory {
     public BdioOptions createBdioOptions() {
         String prefix = getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX);
         String suffix = getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX);
-        return new BdioOptions(prefix, suffix);
+        Boolean useBdio2 = getValue(DetectProperties.DETECT_BDIO2_ENABLED);
+        return new BdioOptions(useBdio2, prefix, suffix);
     }
 
     public ProjectNameVersionOptions createProjectNameVersionOptions(String sourceDirectoryName) {
@@ -342,6 +358,10 @@ public class DetectConfigurationFactory {
         DefaultVersionNameScheme defaultProjectVersionScheme = getValue(DetectProperties.DETECT_DEFAULT_PROJECT_VERSION_SCHEME);
         String defaultProjectVersionFormat = getValue(DetectProperties.DETECT_DEFAULT_PROJECT_VERSION_TIMEFORMAT);
         return new ProjectNameVersionOptions(sourceDirectoryName, overrideProjectName, overrideProjectVersionName, defaultProjectVersionText, defaultProjectVersionScheme, defaultProjectVersionFormat);
+    }
+
+    public boolean createShouldUnmapCodeLocations() {
+        return getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_UNMAP);
     }
 
     public DetectProjectServiceOptions createDetectProjectServiceOptions() throws DetectUserFriendlyException {
@@ -452,11 +472,10 @@ public class DetectConfigurationFactory {
     }
 
     public ImpactAnalysisOptions createImpactAnalysisOptions() {
-        Boolean enabled = detectConfiguration.getValue(DetectProperties.DETECT_IMPACT_ANALYSIS_ENABLED.getProperty());
         Path outputDirectory = getPathOrNull(DetectProperties.DETECT_IMPACT_ANALYSIS_OUTPUT_PATH.getProperty());
         String codeLocationPrefix = getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX);
         String codeLocationSuffix = getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX);
-        return new ImpactAnalysisOptions(enabled, codeLocationPrefix, codeLocationSuffix, outputDirectory);
+        return new ImpactAnalysisOptions(codeLocationPrefix, codeLocationSuffix, outputDirectory);
     }
 
     public DetectExecutableOptions createDetectExecutableOptions() {

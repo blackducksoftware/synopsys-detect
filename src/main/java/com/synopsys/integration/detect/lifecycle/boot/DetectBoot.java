@@ -35,6 +35,7 @@ import com.synopsys.integration.detect.configuration.DetectPropertyUtil;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
 import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
 import com.synopsys.integration.detect.configuration.help.json.HelpJsonManager;
 import com.synopsys.integration.detect.configuration.help.print.HelpPrinter;
@@ -42,10 +43,11 @@ import com.synopsys.integration.detect.configuration.validation.DeprecationResul
 import com.synopsys.integration.detect.configuration.validation.DetectConfigurationBootManager;
 import com.synopsys.integration.detect.interactive.InteractiveManager;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
+import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
+import com.synopsys.integration.detect.lifecycle.boot.decision.PolarisDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
-import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecision;
+import com.synopsys.integration.detect.lifecycle.boot.decision.RunDecision;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBoot;
-import com.synopsys.integration.detect.lifecycle.run.RunOptions;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.util.filter.DetectOverrideableFilter;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
@@ -167,15 +169,18 @@ public class DetectBoot {
 
         ProductRunData productRunData;
         try {
-            RunOptions runOptions = detectConfigurationFactory.createRunOptions();
-            DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
+
             ProductDecider productDecider = new ProductDecider();
-            ProductDecision productDecision = productDecider.decide(detectConfigurationFactory, directoryManager.getUserHome(), detectToolFilter);
+            BlackDuckDecision blackDuckDecision = productDecider.decideBlackDuck(detectConfigurationFactory.createBlackDuckConnectionDetails(), detectConfigurationFactory.createBlackDuckSignatureScannerOptions(),
+                detectConfigurationFactory.createScanMode(), detectConfigurationFactory.createBdioOptions());
+            RunDecision runDecision = new RunDecision(detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE); //TODO: Move to proper decision home. -jp
+            DetectToolFilter detectToolFilter = detectConfigurationFactory.createToolFilter(runDecision, blackDuckDecision);
+            PolarisDecision polarisDecision = productDecider.decidePolaris(detectConfigurationFactory, directoryManager.getUserHome(), detectToolFilter, blackDuckDecision);
 
             logger.debug("Decided what products will be run. Starting product boot.");
 
             ProductBoot productBoot = detectBootFactory.createProductBoot(detectConfigurationFactory);
-            productRunData = productBoot.boot(productDecision);
+            productRunData = productBoot.boot(polarisDecision, blackDuckDecision, detectToolFilter);
         } catch (DetectUserFriendlyException e) {
             return Optional.of(DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem));
         }

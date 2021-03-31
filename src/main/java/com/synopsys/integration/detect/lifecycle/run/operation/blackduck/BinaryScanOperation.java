@@ -15,6 +15,7 @@ import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
+import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanToolResult;
@@ -48,17 +49,16 @@ public class BinaryScanOperation {
         this.operationSystem = operationSystem;
     }
 
-    public Optional<CodeLocationCreationData<BinaryScanBatchOutput>> execute(NameVersion projectNameVersion) throws DetectUserFriendlyException {
+    public Optional<CodeLocationCreationData<BinaryScanBatchOutput>> execute(NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws DetectUserFriendlyException {
         Optional<CodeLocationCreationData<BinaryScanBatchOutput>> operationResult = Optional.empty();
         BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
             blackDuckServicesFactory.createBinaryScanUploadService();
         BlackDuckBinaryScannerTool binaryScannerTool = new BlackDuckBinaryScannerTool(statusEventPublisher, exitCodePublisher, codeLocationNameManager, directoryManager, fileFinder, binaryScanOptions,
             blackDuckServicesFactory.createBinaryScanUploadService(), operationSystem);
-        if (binaryScannerTool.shouldRun()) {
-            BinaryScanToolResult result = binaryScannerTool.performBinaryScanActions(projectNameVersion);
-            if (result.isSuccessful()) {
-                operationResult = Optional.of(result.getCodeLocationCreationData());
-            }
+
+        BinaryScanToolResult result = binaryScannerTool.performBinaryScanActions(dockerTargetData, projectNameVersion);
+        if (result.isSuccessful()) {
+            operationResult = Optional.of(result.getCodeLocationCreationData());
         }
 
         return operationResult;

@@ -22,7 +22,6 @@ import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
-import com.synopsys.integration.detect.lifecycle.run.RunOptions;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.exception.IntegrationException;
@@ -36,14 +35,14 @@ public class DetectBdioUploadService {
         this.operationSystem = operationSystem;
     }
 
-    public CodeLocationCreationData<UploadBatchOutput> uploadBdioFiles(RunOptions runOptions, BdioResult bdioResult, BdioUploadService bdioUploadService, Bdio2UploadService bdio2UploadService,
+    public CodeLocationCreationData<UploadBatchOutput> uploadBdioFiles(BlackduckScanMode scanMode, BdioResult bdioResult, BdioUploadService bdioUploadService, Bdio2UploadService bdio2UploadService,
         IntelligentPersistenceService intelligentPersistenceScanService) throws DetectUserFriendlyException, IntegrationException {
 
         UploadBatch uploadBatch = createBatch(bdioResult);
         CodeLocationCreationData<UploadBatchOutput> response;
         try {
             if (bdioResult.isBdio2()) {
-                if (runOptions.getScanMode() == BlackduckScanMode.INTELLIGENT) {
+                if (scanMode == BlackduckScanMode.INTELLIGENT) {
                     response = intelligentPersistenceScanService.uploadBdio(uploadBatch);
                 } else {
                     response = bdio2UploadService.uploadBdio(uploadBatch);

@@ -56,7 +56,7 @@ public class BdioCodeLocationCreatorTest {
         final DirectoryManager directoryManager = Mockito.mock(DirectoryManager.class);
         Mockito.when(directoryManager.getSourceDirectory()).thenReturn(sourceDir);
         final EventSystem eventSystem = Mockito.mock(EventSystem.class);
-        final BdioCodeLocationCreator creator = new BdioCodeLocationCreator(codeLocationNameManager, directoryManager, eventSystem);
+        final BdioCodeLocationCreator creator = new BdioCodeLocationCreator(codeLocationNameManager, directoryManager);
         final NameVersion projectNameVersion = new NameVersion("testName", "testVersion");
         final DependencyGraph dependencyGraph = Mockito.mock(DependencyGraph.class);
         final Set<Dependency> dependencies = new HashSet<>();

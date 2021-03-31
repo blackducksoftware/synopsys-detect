@@ -52,7 +52,7 @@ public class SignatureScanOperation {
             blackDuckServerConfig = blackDuckRunData.getBlackDuckServerConfig();
         }
         SignatureScannerToolResult signatureScannerToolResult = signatureScannerTool
-                                                                    .runScanTool(codeLocationCreationService, blackDuckServerConfig, signatureScanInput.getProjectNameVersion(), signatureScanInput.getDockerTar().orElse(null));
+                                                                    .runScanTool(codeLocationCreationService, blackDuckServerConfig, signatureScanInput.getProjectNameVersion(), signatureScanInput.getDockerTargetData().orElse(null));
         if (signatureScannerToolResult.getResult() == Result.SUCCESS && signatureScannerToolResult.getCreationData().isPresent()) {
             result = signatureScannerToolResult.getCreationData();
         } else if (signatureScannerToolResult.getResult() != Result.SUCCESS) {

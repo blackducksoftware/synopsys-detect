@@ -7,13 +7,17 @@
  */
 package com.synopsys.integration.detect.lifecycle.run.data;
 
+import com.synopsys.integration.detect.util.filter.DetectToolFilter;
+
 public class ProductRunData {
     private final PolarisRunData polarisRunData;
     private final BlackDuckRunData blackDuckRunData;
+    private final DetectToolFilter detectToolFilter;
 
-    public ProductRunData(final PolarisRunData polarisRunData, final BlackDuckRunData blackDuckRunData) {
+    public ProductRunData(final PolarisRunData polarisRunData, final BlackDuckRunData blackDuckRunData, final DetectToolFilter detectToolFilter) {
         this.polarisRunData = polarisRunData;
         this.blackDuckRunData = blackDuckRunData;
+        this.detectToolFilter = detectToolFilter;
     }
 
     public PolarisRunData getPolarisRunData() {
@@ -30,5 +34,9 @@ public class ProductRunData {
 
     public boolean shouldUsePolarisProduct() {
         return polarisRunData != null;
+    }
+
+    public DetectToolFilter getDetectToolFilter() {
+        return detectToolFilter;
     }
 }
