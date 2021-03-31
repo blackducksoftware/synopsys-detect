@@ -22,6 +22,7 @@ import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.exception.IntegrationException;
@@ -30,9 +31,11 @@ public class DetectBdioUploadService {
     private static final String OPERATION_NAME = "Black Duck BDIO Upload";
     private final Logger logger = LoggerFactory.getLogger(DetectBdioUploadService.class);
     private final OperationSystem operationSystem;
+    private final BdioOptions bdioOptions;
 
-    public DetectBdioUploadService(OperationSystem operationSystem) {
+    public DetectBdioUploadService(OperationSystem operationSystem, BdioOptions bdioOptions) {
         this.operationSystem = operationSystem;
+        this.bdioOptions = bdioOptions;
     }
 
     public CodeLocationCreationData<UploadBatchOutput> uploadBdioFiles(BlackduckScanMode scanMode, BdioResult bdioResult, BdioUploadService bdioUploadService, Bdio2UploadService bdio2UploadService,
@@ -41,14 +44,11 @@ public class DetectBdioUploadService {
         UploadBatch uploadBatch = createBatch(bdioResult);
         CodeLocationCreationData<UploadBatchOutput> response;
         try {
-            if (bdioResult.isBdio2()) {
-                if (scanMode == BlackduckScanMode.INTELLIGENT) {
-                    response = intelligentPersistenceScanService.uploadBdio(uploadBatch);
-                } else {
-                    response = bdio2UploadService.uploadBdio(uploadBatch);
-                }
+            if (bdioOptions.isLegacyUploadEnabled()) {
+                response = legacyUpload(bdioResult, uploadBatch, bdioUploadService, bdio2UploadService);
             } else {
-                response = bdioUploadService.uploadBdio(uploadBatch);
+                logger.debug("Performing intelligent BDIO upload.");
+                response = intelligentPersistenceScanService.uploadBdio(uploadBatch);
             }
         } catch (IntegrationException ex) {
             logger.error("Error uploading bdio files", ex);
@@ -58,6 +58,17 @@ public class DetectBdioUploadService {
         checkForUploadFailure(response);
         operationSystem.completeWithSuccess(OPERATION_NAME);
 
+        return response;
+    }
+
+    private CodeLocationCreationData<UploadBatchOutput> legacyUpload(BdioResult bdioResult, UploadBatch uploadBatch, BdioUploadService bdioUploadService, Bdio2UploadService bdio2UploadService) throws IntegrationException {
+        CodeLocationCreationData<UploadBatchOutput> response;
+        logger.debug("Performing legacy BDIO upload.");
+        if (bdioResult.isBdio2()) {
+            response = bdio2UploadService.uploadBdio(uploadBatch);
+        } else {
+            response = bdioUploadService.uploadBdio(uploadBatch);
+        }
         return response;
     }
 
