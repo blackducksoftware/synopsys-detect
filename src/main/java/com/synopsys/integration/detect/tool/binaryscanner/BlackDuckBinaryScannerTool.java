@@ -103,7 +103,7 @@ public class BlackDuckBinaryScannerTool {
                 return BinaryScanToolResult.FAILURE();
             }
         } else if (dockerTargetData != null && dockerTargetData.getContainerFilesystem().isPresent()) {
-            logger.info("Binary upload will docker container file system.");
+            logger.info("Binary Scanner will upload docker container file system.");
             binaryUpload = dockerTargetData.getContainerFilesystem().get();
         } else if (dockerTargetData != null && dockerTargetData.getProvidedImageTar().isPresent()) {
             logger.info("Binary upload will docker provided image tar.");
