@@ -58,9 +58,9 @@ public class SbtDotOutputParserTest {
         SbtDotOutputParser parser = new SbtDotOutputParser();
         List<File> results = parser.parseGeneratedGraphFiles(input);
         Assertions.assertEquals(3, results.size());
-        Assertions.assertEquals("/Users/jordanp/scalafmt-master/scalafmt/scalafmt-interfaces/target/dependencies-compile.dot", results.get(0).toString());
-        Assertions.assertEquals("/Users/jordanp/scalafmt-master/scalafmt/target/dependencies-compile.dot", results.get(1).toString());
-        Assertions.assertEquals("/Users/jordanp/scalafmt-master/scalafmt/scalafmt-dynamic/target/dependencies-compile.dot", results.get(2).toString());
+        Assertions.assertEquals(new File("/Users/jordanp/scalafmt-master/scalafmt/scalafmt-interfaces/target/dependencies-compile.dot"), results.get(0));
+        Assertions.assertEquals(new File("/Users/jordanp/scalafmt-master/scalafmt/target/dependencies-compile.dot"), results.get(1));
+        Assertions.assertEquals(new File("/Users/jordanp/scalafmt-master/scalafmt/scalafmt-dynamic/target/dependencies-compile.dot"), results.get(2));
     }
 
 }
