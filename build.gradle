@@ -19,7 +19,7 @@ buildscript {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
     }
 }
-
+ 
 group = 'com.synopsys.integration'
 version = '6.9.1-SNAPSHOT'
 
