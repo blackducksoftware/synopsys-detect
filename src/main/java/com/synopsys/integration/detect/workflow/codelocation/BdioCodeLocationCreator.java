@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
-import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
@@ -29,13 +28,10 @@ public class BdioCodeLocationCreator {
 
     private final CodeLocationNameManager codeLocationNameManager;
     private final DirectoryManager directoryManager;
-    private final EventSystem eventSystem;
 
-    public BdioCodeLocationCreator(final CodeLocationNameManager codeLocationNameManager, final DirectoryManager directoryManager,
-        final EventSystem eventSystem) {
+    public BdioCodeLocationCreator(final CodeLocationNameManager codeLocationNameManager, final DirectoryManager directoryManager) {
         this.codeLocationNameManager = codeLocationNameManager;
         this.directoryManager = directoryManager;
-        this.eventSystem = eventSystem;
     }
 
     public BdioCodeLocationResult createFromDetectCodeLocations(final List<DetectCodeLocation> detectCodeLocations, String prefix, String suffix, final NameVersion projectNameVersion) throws DetectUserFriendlyException {

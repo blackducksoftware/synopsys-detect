@@ -143,8 +143,8 @@ public class RunContext {
         return codeLocationConverter;
     }
 
-    public RunOptions createRunOptions() {
-        return detectConfigurationFactory.createRunOptions();
+    public AggregateOptions createRunOptions() {
+        return detectConfigurationFactory.createAggregateOptions();
     }
 
     public Gson getGson() {

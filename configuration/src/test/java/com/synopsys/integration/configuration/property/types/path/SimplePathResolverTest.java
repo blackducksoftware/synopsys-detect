@@ -31,6 +31,6 @@ public class SimplePathResolverTest {
     @Test
     public void resolvePathTest() {
         final PathResolver simplePathResolver = new SimplePathResolver();
-        Assertions.assertEquals(Paths.get("/simple/test"), simplePathResolver.resolvePath("/simple/test"));
+        Assertions.assertEquals(Paths.get("/simple/test").toAbsolutePath(), simplePathResolver.resolvePath("/simple/test"));
     }
 }

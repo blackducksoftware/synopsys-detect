@@ -60,18 +60,18 @@ public class BdioManager {
         this.directoryManager = directoryManager;
     }
 
-    public BdioResult createBdioFiles(BdioOptions bdioOptions, AggregateOptions aggregateOptions, NameVersion projectNameVersion, List<DetectCodeLocation> codeLocations, boolean useBdio2)
+    public BdioResult createBdioFiles(BdioOptions bdioOptions, AggregateDecision aggregateDecision, NameVersion projectNameVersion, List<DetectCodeLocation> codeLocations, boolean useBdio2)
         throws DetectUserFriendlyException {
         DetectBdioWriter detectBdioWriter = new DetectBdioWriter(simpleBdioFactory, detectInfo);
-        Optional<String> aggregateName = aggregateOptions.getAggregateName();
+        Optional<String> aggregateName = aggregateDecision.getAggregateName();
 
         List<UploadTarget> uploadTargets = new ArrayList<>();
         Map<DetectCodeLocation, String> codeLocationNamesResult = new HashMap<>();
-        if (aggregateOptions.shouldAggregate() && aggregateName.isPresent()) {
+        if (aggregateDecision.shouldAggregate() && aggregateName.isPresent()) {
             logger.debug("Creating aggregate BDIO file.");
 
             AggregateBdioTransformer aggregateBdioTransformer = new AggregateBdioTransformer(simpleBdioFactory);
-            DependencyGraph aggregateDependencyGraph = aggregateBdioTransformer.aggregateCodeLocations(directoryManager.getSourceDirectory(), codeLocations, aggregateOptions.getAggregateMode());
+            DependencyGraph aggregateDependencyGraph = aggregateBdioTransformer.aggregateCodeLocations(directoryManager.getSourceDirectory(), codeLocations, aggregateDecision.getAggregateMode());
             boolean aggregateHasDependencies = !aggregateDependencyGraph.getRootDependencies().isEmpty();
 
             ExternalId projectExternalId = externalIdFactory.createNameVersionExternalId(new Forge("/", "DETECT"), projectNameVersion.getName(), projectNameVersion.getVersion());
@@ -85,7 +85,7 @@ public class BdioManager {
             aggregateBdioWriter.writeAggregateBdioFile(aggregateBdioFile, codeLocationName, projectNameVersion, projectExternalId, aggregateDependencyGraph, useBdio2);
 
             codeLocations.forEach(cl -> codeLocationNamesResult.put(cl, codeLocationName));
-            if (aggregateHasDependencies || aggregateOptions.shouldUploadEmptyAggregate()) {
+            if (aggregateHasDependencies || aggregateDecision.shouldUploadEmptyAggregate()) {
                 uploadTargets.add(UploadTarget.createDefault(projectNameVersion, codeLocationName, aggregateBdioFile));
             } else {
                 logger.warn("The aggregate contained no dependencies, will not upload aggregate at this time.");

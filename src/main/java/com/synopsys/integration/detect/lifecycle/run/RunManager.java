@@ -35,7 +35,7 @@ import com.synopsys.integration.detect.tool.UniversalToolsResult;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
 import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisToolResult;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
-import com.synopsys.integration.detect.workflow.bdio.AggregateOptions;
+import com.synopsys.integration.detect.workflow.bdio.AggregateDecision;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationResults;
@@ -59,23 +59,22 @@ public class RunManager {
             RunResult runResult = new RunResult();
             ProductRunData productRunData = runContext.getProductRunData();
             OperationFactory operationFactory = new OperationFactory(runContext);
-            RunOptions runOptions = runContext.createRunOptions();
-            DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
             ProjectEventPublisher projectEventPublisher = runContext.getProjectEventPublisher();
+            DetectToolFilter detectToolFilter = productRunData.getDetectToolFilter();
 
             logger.info(ReportConstants.RUN_SEPARATOR);
             if (runContext.getProductRunData().shouldUsePolarisProduct()) {
-                runPolarisProduct(operationFactory, detectToolFilter, runOptions);
+                runPolarisProduct(operationFactory, detectToolFilter);
             } else {
                 logger.info("Polaris tools will not be run.");
             }
 
-            UniversalToolsResult universalToolsResult = runUniversalProjectTools(operationFactory, runOptions, detectToolFilter, projectEventPublisher, runResult);
+            UniversalToolsResult universalToolsResult = runUniversalProjectTools(operationFactory, detectToolFilter, projectEventPublisher, runResult);
 
             if (productRunData.shouldUseBlackDuckProduct()) {
-                AggregateOptions aggregateOptions = operationFactory.createAggregateOptionsOperation().execute(universalToolsResult.anyFailed());
-                runBlackDuckProduct(productRunData.getBlackDuckRunData(), operationFactory, runOptions, detectToolFilter, runResult,
-                    universalToolsResult.getNameVersion(), aggregateOptions);
+                AggregateDecision aggregateDecision = operationFactory.createAggregateOptionsOperation().execute(universalToolsResult.anyFailed());
+                runBlackDuckProduct(productRunData.getBlackDuckRunData(), operationFactory, detectToolFilter, runResult,
+                    universalToolsResult.getNameVersion(), aggregateDecision);
             } else {
                 logger.info("Black Duck tools will not be run.");
             }
@@ -98,7 +97,6 @@ public class RunManager {
 
     private UniversalToolsResult runUniversalProjectTools(
         OperationFactory operationFactory,
-        RunOptions runOptions,
         DetectToolFilter detectToolFilter,
         ProjectEventPublisher projectEventPublisher,
         RunResult runResult
@@ -106,7 +104,7 @@ public class RunManager {
         boolean anythingFailed = false;
 
         logger.info(ReportConstants.RUN_SEPARATOR);
-        if (!runOptions.shouldPerformRapidModeScan() && detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
+        if (detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
             logger.info("Will include the Docker tool.");
             DetectableToolResult detectableToolResult = operationFactory.createDockerOperation().execute();
             runResult.addDetectableToolResult(detectableToolResult);
@@ -117,7 +115,7 @@ public class RunManager {
         }
 
         logger.info(ReportConstants.RUN_SEPARATOR);
-        if (!runOptions.shouldPerformRapidModeScan() && detectToolFilter.shouldInclude(DetectTool.BAZEL)) {
+        if (detectToolFilter.shouldInclude(DetectTool.BAZEL)) {
             logger.info("Will include the Bazel tool.");
             DetectableToolResult detectableToolResult = operationFactory.createBazelOperation().execute();
             runResult.addDetectableToolResult(detectableToolResult);
@@ -157,9 +155,9 @@ public class RunManager {
         }
     }
 
-    private void runPolarisProduct(OperationFactory operationFactory, DetectToolFilter detectToolFilter, RunOptions runOptions) {
+    private void runPolarisProduct(OperationFactory operationFactory, DetectToolFilter detectToolFilter) {
         logger.info(ReportConstants.RUN_SEPARATOR);
-        if (detectToolFilter.shouldInclude(DetectTool.POLARIS) && !runOptions.shouldPerformRapidModeScan()) {
+        if (detectToolFilter.shouldInclude(DetectTool.POLARIS)) {
             logger.info("Will include the Polaris tool.");
             operationFactory.createPolarisOperation().execute();
             logger.info("Polaris actions finished.");
@@ -168,17 +166,17 @@ public class RunManager {
         }
     }
 
-    private void runBlackDuckProduct(BlackDuckRunData blackDuckRunData, OperationFactory operationFactory, RunOptions runOptions, DetectToolFilter detectToolFilter, RunResult runResult, NameVersion projectNameVersion,
-        AggregateOptions aggregateOptions)
+    private void runBlackDuckProduct(BlackDuckRunData blackDuckRunData, OperationFactory operationFactory, DetectToolFilter detectToolFilter, RunResult runResult, NameVersion projectNameVersion,
+        AggregateDecision aggregateDecision)
         throws IntegrationException, DetectUserFriendlyException {
 
         logger.debug("Black Duck tools will run.");
 
         ProjectVersionWrapper projectVersionWrapper = null;
 
-        BdioInput bdioInput = new BdioInput(aggregateOptions, projectNameVersion, runResult.getDetectCodeLocations());
+        BdioInput bdioInput = new BdioInput(aggregateDecision, projectNameVersion, runResult.getDetectCodeLocations());
         BdioResult bdioResult = operationFactory.createBdioFileGenerationOperation().execute(bdioInput);
-        if (runOptions.shouldPerformRapidModeScan() && blackDuckRunData.isOnline()) {
+        if (blackDuckRunData.isRapid() && blackDuckRunData.isOnline()) {
             blackDuckRunData.getPhoneHomeManager().ifPresent(PhoneHomeManager::startPhoneHome);
             logger.info(ReportConstants.RUN_SEPARATOR);
             RapidScanInput rapidScanInput = new RapidScanInput(projectNameVersion, bdioResult);
@@ -197,7 +195,7 @@ public class RunManager {
             logger.debug("Processing Detect Code Locations.");
 
             CodeLocationAccumulator codeLocationAccumulator = new CodeLocationAccumulator<>();
-            Optional<CodeLocationCreationData<UploadBatchOutput>> uploadResult = operationFactory.createBdioUploadOperation().execute(runOptions, blackDuckRunData, bdioResult);
+            Optional<CodeLocationCreationData<UploadBatchOutput>> uploadResult = operationFactory.createBdioUploadOperation().execute(blackDuckRunData.getScanMode(), blackDuckRunData, bdioResult);
             uploadResult.ifPresent(codeLocationAccumulator::addWaitableCodeLocation);
 
             logger.debug("Completed Detect Code Location processing.");
@@ -205,7 +203,7 @@ public class RunManager {
             logger.info(ReportConstants.RUN_SEPARATOR);
             if (detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN)) {
                 logger.info("Will include the signature scanner tool.");
-                SignatureScanInput signatureScanInput = new SignatureScanInput(projectNameVersion, runResult.getDockerTar().orElse(null));
+                SignatureScanInput signatureScanInput = new SignatureScanInput(projectNameVersion, runResult.getDockerTargetData().orElse(null));
                 Optional<CodeLocationCreationData<ScanBatchOutput>> signatureScanResult = operationFactory.createSignatureScanOperation().execute(signatureScanInput);
                 signatureScanResult.ifPresent(codeLocationAccumulator::addWaitableCodeLocation);
                 logger.info("Signature scanner actions finished.");
@@ -217,7 +215,7 @@ public class RunManager {
             if (detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN)) {
                 logger.info("Will include the binary scanner tool.");
                 if (blackDuckRunData.isOnline()) {
-                    Optional<CodeLocationCreationData<BinaryScanBatchOutput>> binaryScanResult = operationFactory.createBinaryScanOperation().execute(projectNameVersion);
+                    Optional<CodeLocationCreationData<BinaryScanBatchOutput>> binaryScanResult = operationFactory.createBinaryScanOperation().execute(projectNameVersion, runResult.getDockerTargetData().orElse(null));
                     binaryScanResult.ifPresent(codeLocationAccumulator::addWaitableCodeLocation);
                 }
                 logger.info("Binary scanner actions finished.");
@@ -226,15 +224,13 @@ public class RunManager {
             }
             ImpactAnalysisOperation impactAnalysisOperation = operationFactory.createImpactAnalysisOperation();
             logger.info(ReportConstants.RUN_SEPARATOR);
-            if (detectToolFilter.shouldInclude(DetectTool.IMPACT_ANALYSIS) && impactAnalysisOperation.shouldImpactAnalysisToolRun()) {
+            if (detectToolFilter.shouldInclude(DetectTool.IMPACT_ANALYSIS)) {
                 logger.info("Will include the Vulnerability Impact Analysis tool.");
                 ImpactAnalysisInput impactAnalysisInput = new ImpactAnalysisInput(projectNameVersion, projectVersionWrapper);
                 ImpactAnalysisToolResult impactAnalysisToolResult = impactAnalysisOperation.execute(impactAnalysisInput);
                 /* TODO: There is currently no mechanism within Black Duck for checking the completion status of an Impact Analysis code location. Waiting should happen here when such a mechanism exists. See HUB-25142. JM - 08/2020 */
                 codeLocationAccumulator.addNonWaitableCodeLocation(impactAnalysisToolResult.getCodeLocationNames());
                 logger.info("Vulnerability Impact Analysis tool actions finished.");
-            } else if (impactAnalysisOperation.shouldImpactAnalysisToolRun()) {
-                logger.info("Vulnerability Impact Analysis tool is enabled but will not run due to tool configuration.");
             } else {
                 logger.info("Vulnerability Impact Analysis tool will not be run.");
             }
@@ -247,7 +243,7 @@ public class RunManager {
                 logger.info("Will perform Black Duck post actions.");
                 BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
                 FullScanPostProcessingInput fullScanPostProcessingInput = new FullScanPostProcessingInput(projectNameVersion, bdioResult, codeLocationResults, projectVersionWrapper);
-                operationFactory.createFullScanPostProcessingOperation().execute(blackDuckServicesFactory, fullScanPostProcessingInput);
+                operationFactory.createFullScanPostProcessingOperation(detectToolFilter).execute(blackDuckServicesFactory, fullScanPostProcessingInput);
                 logger.info("Black Duck actions have finished.");
             } else {
                 logger.debug("Will not perform Black Duck post actions: Detect is not online.");

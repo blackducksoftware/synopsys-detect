@@ -17,10 +17,10 @@ import com.synopsys.integration.blackduck.bdio2.util.Bdio2Factory;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.lifecycle.run.AggregateOptions;
 import com.synopsys.integration.detect.lifecycle.run.RunContext;
-import com.synopsys.integration.detect.lifecycle.run.RunOptions;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
-import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.AggregateOptionsOperation;
+import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.AggregateDecisionOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BdioFileGenerationOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BdioUploadOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BinaryScanOperation;
@@ -38,6 +38,7 @@ import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysi
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerTool;
 import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
+import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.BdioManager;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
 import com.synopsys.integration.detect.workflow.blackduck.DetectCustomFieldService;
@@ -50,11 +51,11 @@ import com.synopsys.integration.util.NoThreadExecutorService;
 
 public class OperationFactory {
     private final RunContext runContext;
-    private final RunOptions runOptions;
+    private final AggregateOptions aggregateOptions;
 
     public OperationFactory(RunContext runContext) {
         this.runContext = runContext;
-        this.runOptions = runContext.createRunOptions();
+        this.aggregateOptions = runContext.createRunOptions();
     }
 
     public final PolarisOperation createPolarisOperation() {
@@ -67,7 +68,7 @@ public class OperationFactory {
     }
 
     public final BazelOperation createBazelOperation() {
-        return new BazelOperation(runContext.getDirectoryManager(), runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getDetectDetectableFactory(), runOptions.getDetectToolFilter(),
+        return new BazelOperation(runContext.getDirectoryManager(), runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getDetectDetectableFactory(),
             runContext.getExtractionEnvironmentProvider(),
             runContext.getCodeLocationConverter(), runContext.getOperationSystem());
     }
@@ -82,14 +83,16 @@ public class OperationFactory {
             runContext.getDetectConfigurationFactory().findTimeoutInSeconds());
     }
 
-    public final AggregateOptionsOperation createAggregateOptionsOperation() {
-        return new AggregateOptionsOperation(runOptions, runContext.getOperationSystem());
+    public final AggregateDecisionOperation createAggregateOptionsOperation() {
+        return new AggregateDecisionOperation(aggregateOptions, runContext.getOperationSystem());
     }
 
     public final BdioFileGenerationOperation createBdioFileGenerationOperation() {
         BdioManager bdioManager = new BdioManager(runContext.getDetectInfo(), new SimpleBdioFactory(), new ExternalIdFactory(), new Bdio2Factory(), new IntegrationEscapeUtil(), runContext.getCodeLocationNameManager(),
             runContext.getBdioCodeLocationCreator(), runContext.getDirectoryManager());
-        return new BdioFileGenerationOperation(runOptions, runContext.getDetectConfigurationFactory().createBdioOptions(), bdioManager, runContext.getCodeLocationEventPublisher(), runContext.getOperationSystem());
+
+        return new BdioFileGenerationOperation(runContext.getDetectConfigurationFactory().createBdioOptions(), bdioManager, runContext.getCodeLocationEventPublisher(),
+            runContext.getOperationSystem());
     }
 
     public final BinaryScanOperation createBinaryScanOperation() {
@@ -108,12 +111,12 @@ public class OperationFactory {
         return new CodeLocationResultCalculationOperation(new CodeLocationResultCalculator(), runContext.getCodeLocationEventPublisher(), runContext.getOperationSystem());
     }
 
-    public final FullScanPostProcessingOperation createFullScanPostProcessingOperation() {
+    public final FullScanPostProcessingOperation createFullScanPostProcessingOperation(DetectToolFilter detectToolFilter) {
         DetectConfigurationFactory detectConfigurationFactory = runContext.getDetectConfigurationFactory();
         BlackDuckPostOptions blackDuckPostOptions = detectConfigurationFactory.createBlackDuckPostOptions();
         Long timeoutInSeconds = detectConfigurationFactory.findTimeoutInSeconds();
 
-        return new FullScanPostProcessingOperation(runOptions.getDetectToolFilter(), blackDuckPostOptions, runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getOperationSystem(), timeoutInSeconds,
+        return new FullScanPostProcessingOperation(detectToolFilter, blackDuckPostOptions, runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getOperationSystem(), timeoutInSeconds,
             runContext.getDetectFontLoader());
     }
 
@@ -141,13 +144,13 @@ public class OperationFactory {
         DetectProjectServiceOptions options = runContext.getDetectConfigurationFactory().createDetectProjectServiceOptions();
         DetectCustomFieldService detectCustomFieldService = new DetectCustomFieldService();
 
-        return new ProjectCreationOperation(runOptions, options, detectCustomFieldService, runContext.getOperationSystem());
+        return new ProjectCreationOperation(runContext.getDetectConfigurationFactory().createShouldUnmapCodeLocations(), options, detectCustomFieldService, runContext.getOperationSystem());
     }
 
     public final ProjectDecisionOperation createProjectDecisionOperation() {
         ProjectNameVersionOptions projectNameVersionOptions = runContext.getDetectConfigurationFactory().createProjectNameVersionOptions(runContext.getDirectoryManager().getSourceDirectory().getName());
         ProjectNameVersionDecider projectNameVersionDecider = new ProjectNameVersionDecider(projectNameVersionOptions);
-        return new ProjectDecisionOperation(runOptions, projectNameVersionDecider, runContext.getOperationSystem());
+        return new ProjectDecisionOperation(projectNameVersionDecider, runContext.getOperationSystem(), runContext.getDetectConfigurationFactory().createPreferredProjectTools());
     }
 
     public final SignatureScanOperation createSignatureScanOperation() throws DetectUserFriendlyException {

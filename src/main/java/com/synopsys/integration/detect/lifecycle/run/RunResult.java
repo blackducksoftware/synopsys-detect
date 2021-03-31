@@ -7,19 +7,19 @@
  */
 package com.synopsys.integration.detect.lifecycle.run;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
+import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.tool.DetectableToolResult;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.project.DetectToolProjectInfo;
 import com.synopsys.integration.util.NameVersion;
 
 public class RunResult {
-    private File dockerTar = null;
+    private DockerTargetData dockerTargetData = null;
     private final List<DetectToolProjectInfo> detectToolProjectInfo = new ArrayList<>();
     private final List<DetectCodeLocation> detectCodeLocations = new ArrayList<>();
 
@@ -34,16 +34,16 @@ public class RunResult {
 
     public void addDetectableToolResult(final DetectableToolResult detectableToolResult) {
         detectableToolResult.getDetectToolProjectInfo().ifPresent(detectToolProjectInfo1 -> addToolNameVersion(detectToolProjectInfo1.getDetectTool(), detectToolProjectInfo1.getSuggestedNameVersion()));
-        detectableToolResult.getDockerTar().ifPresent(this::addDockerFile);
+        detectableToolResult.getDockerTar().ifPresent(this::addDockerTargetData);
         detectCodeLocations.addAll(detectableToolResult.getDetectCodeLocations());
     }
 
-    public void addDockerFile(final File dockerFile) {
-        dockerTar = dockerFile;
+    public void addDockerTargetData(final DockerTargetData dockerTargetData) {
+        this.dockerTargetData = dockerTargetData;
     }
 
-    public Optional<File> getDockerTar() {
-        return Optional.ofNullable(dockerTar);
+    public Optional<DockerTargetData> getDockerTargetData() {
+        return Optional.ofNullable(dockerTargetData);
     }
 
     public List<DetectToolProjectInfo> getDetectToolProjectInfo() {

@@ -135,7 +135,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public BdioCodeLocationCreator detectCodeLocationManager(CodeLocationNameManager codeLocationNameManager) {
-        return new BdioCodeLocationCreator(codeLocationNameManager, directoryManager, eventSystem);
+        return new BdioCodeLocationCreator(codeLocationNameManager, directoryManager);
     }
 
     @Bean

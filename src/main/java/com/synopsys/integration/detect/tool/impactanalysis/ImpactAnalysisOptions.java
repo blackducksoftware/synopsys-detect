@@ -12,7 +12,6 @@ import java.nio.file.Path;
 import org.jetbrains.annotations.Nullable;
 
 public class ImpactAnalysisOptions {
-    private final Boolean enabled;
     @Nullable
     private final String codeLocationPrefix;
     @Nullable
@@ -20,15 +19,10 @@ public class ImpactAnalysisOptions {
     @Nullable
     private final Path outputDirectory;
 
-    public ImpactAnalysisOptions(Boolean enabled, @Nullable String codeLocationPrefix, @Nullable String codeLocationSuffix, @Nullable Path outputDirectory) {
-        this.enabled = enabled;
+    public ImpactAnalysisOptions(@Nullable String codeLocationPrefix, @Nullable String codeLocationSuffix, @Nullable Path outputDirectory) {
         this.codeLocationPrefix = codeLocationPrefix;
         this.codeLocationSuffix = codeLocationSuffix;
         this.outputDirectory = outputDirectory;
-    }
-
-    public Boolean isEnabled() {
-        return enabled;
     }
 
     @Nullable
