@@ -10,6 +10,7 @@ package com.synopsys.integration.detect.lifecycle.run.operation;
 import java.nio.file.Path;
 import java.util.List;
 
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
@@ -47,11 +48,12 @@ public class DetectorOperation {
     private final StatusEventPublisher statusEventPublisher;
     private final ExitCodePublisher exitCodePublisher;
     private final DetectorEventPublisher detectorEventPublisher;
+    private FileFinder fileFinder;
 
     public DetectorOperation(PropertyConfiguration detectConfiguration, DetectConfigurationFactory detectConfigurationFactory, DirectoryManager directoryManager, EventSystem eventSystem,
         DetectDetectableFactory detectDetectableFactory, ExtractionEnvironmentProvider extractionEnvironmentProvider, CodeLocationConverter codeLocationConverter, StatusEventPublisher statusEventPublisher,
         ExitCodePublisher exitCodePublisher,
-        DetectorEventPublisher detectorEventPublisher) {
+        DetectorEventPublisher detectorEventPublisher, FileFinder fileFinder) {
         this.detectConfiguration = detectConfiguration;
         this.detectConfigurationFactory = detectConfigurationFactory;
         this.directoryManager = directoryManager;
@@ -62,9 +64,10 @@ public class DetectorOperation {
         this.statusEventPublisher = statusEventPublisher;
         this.exitCodePublisher = exitCodePublisher;
         this.detectorEventPublisher = detectorEventPublisher;
+        this.fileFinder = fileFinder;
     }
 
-    public DetectorToolResult execute() throws DetectUserFriendlyException, IntegrationException {
+    public DetectorToolResult execute() {
         String projectBomTool = detectConfiguration.getValueOrEmpty(DetectProperties.DETECT_PROJECT_DETECTOR.getProperty()).orElse(null);
         List<DetectorType> requiredDetectors = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_REQUIRED_DETECTOR_TYPES.getProperty());
         boolean buildless = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_BUILDLESS.getProperty());
@@ -73,12 +76,12 @@ public class DetectorOperation {
         DetectorRuleSet detectRuleSet = detectorRuleFactory.createRules(detectDetectableFactory, buildless);
 
         Path sourcePath = directoryManager.getSourceDirectory().toPath();
-        DetectorFinderOptions finderOptions = detectConfigurationFactory.createSearchOptions(sourcePath);
+        DetectorFinderOptions finderOptions = detectConfigurationFactory.createDetectorFinderOptions(sourcePath);
         DetectorEvaluationOptions detectorEvaluationOptions = detectConfigurationFactory.createDetectorEvaluationOptions();
 
         DetectorIssuePublisher detectorIssuePublisher = new DetectorIssuePublisher();
         DetectorTool detectorTool = new DetectorTool(new DetectorFinder(), extractionEnvironmentProvider, eventSystem, codeLocationConverter, detectorIssuePublisher, statusEventPublisher, exitCodePublisher, detectorEventPublisher);
-        DetectorToolResult detectorToolResult = detectorTool.performDetectors(directoryManager.getSourceDirectory(), detectRuleSet, finderOptions, detectorEvaluationOptions, projectBomTool, requiredDetectors);
+        DetectorToolResult detectorToolResult = detectorTool.performDetectors(directoryManager.getSourceDirectory(), detectRuleSet, finderOptions, detectorEvaluationOptions, projectBomTool, requiredDetectors, fileFinder);
 
         if (detectorToolResult.anyDetectorsFailed()) {
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR, "A detector failed."));

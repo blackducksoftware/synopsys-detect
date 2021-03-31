@@ -2,12 +2,16 @@
 
 ## Version 7.0.0
 ### New Features
+* Added support for Yarn workspaces.
 * Added support for the dependency graph SBT plugin. Resolution cache generation is no longer a requirement of the SBT detector.
+* Added the properties [detect.excluded.directories](../properties/configuration/paths/#detect-excluded-directories-advanced), [detect.exclude.default.directories](../properties/configuration/paths/#detect-exclude-default-directories-advanced), and [detect.excluded.directory.search.depth](../properties/configuration/signature scanner/#detect-excluded-directory-search-depth) to handle exclusions for detector search and signature scanning.
+* Added ability to specify excluded directory paths using [glob patterns](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)).
 * Added properties [detect.lerna.excluded.packages](../properties/detectors/lerna/#lerna-packages-excluded-advanced) and [detect.lerna.included.packages](../properties/detectors/lerna/#lerna-packages-included-advanced) to exclude and include specific Lerna packages.
 
 ### Changed features
 * Gradle detector no longer uses the gradle inspector. Only the init script is required.
 * The default BDIO format for communicating dependency graphs to Black Duck has been changed from BDIO1 to BDIO2.
+* Risk report generation will download fonts from Artifactory or use the font files in the fonts directory in the air gap zip of detect.
 
 ### Resolved issues
 * (IDETECT-2527) Resolved an issue in the Go Mod detector to extract and process data even if 'go mod why' command fails to run.
@@ -34,6 +38,9 @@
 * (IDETECT-2394) Resolved an issue that created inaccurate relationships in the BDIO files when Gemlock files were processed.
 * (IDETECT-2404) Resolved an issue where signature scanner arguments passed through detect.blackduck.signature.scanner.arguments that contained space were being improperly parsed.
 * (IDETECT-2525) Resolved an issue with the Yarn detector that caused component version information to be missing when the yarn.lock file contained quoted field keys.
+* (IDETECT-2254) Resolved an issue with the Yarn detector that caused certain components to be omitted from some Yarn 2 projects.
+* (IDETECT-2471) Resolved an issue where a missing Git executable in certain situations causes an exception.
+
 
 ## Version 6.8.0
 ### New features

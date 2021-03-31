@@ -23,6 +23,8 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.common.util.finder.FileFinder;
+import com.synopsys.integration.common.util.finder.SimpleFileFinder;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectInfoUtility;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
@@ -99,20 +101,22 @@ public class Application implements ApplicationRunner {
 
         Gson gson = BlackDuckServicesFactory.createDefaultGsonBuilder().setPrettyPrinting().create();
         DetectInfo detectInfo = DetectInfoUtility.createDefaultDetectInfo();
+        FileFinder fileFinder = new SimpleFileFinder();
         detectContext.registerBean(gson);
         detectContext.registerBean(detectInfo);
+        detectContext.registerBean(fileFinder);
 
         boolean printOutput = true;
         boolean shouldForceSuccess = false;
 
-        Optional<DetectBootResult> detectBootResultOptional = bootApplication(detectRun, applicationArguments.getSourceArgs(), eventSystem, detectContext, exitCodeManager, gson, detectInfo);
+        Optional<DetectBootResult> detectBootResultOptional = bootApplication(detectRun, applicationArguments.getSourceArgs(), eventSystem, detectContext, exitCodeManager, gson, detectInfo, fileFinder);
 
         if (detectBootResultOptional.isPresent()) {
             DetectBootResult detectBootResult = detectBootResultOptional.get();
             printOutput = detectBootResult.shouldPrintOutput();
             shouldForceSuccess = detectBootResult.shouldForceSuccess();
 
-            runApplication(detectContext, detectRun, eventSystem, exitCodeManager, detectBootResult);
+            runApplication(detectContext, eventSystem, exitCodeManager, detectBootResult, fileFinder);
 
             //Create status output file.
             logger.info("");
@@ -129,12 +133,13 @@ public class Application implements ApplicationRunner {
         exitApplication(exitManager, startTime, printOutput, shouldForceSuccess);
     }
 
-    private Optional<DetectBootResult> bootApplication(DetectRun detectRun, String[] sourceArgs, EventSystem eventSystem, DetectContext detectContext, ExitCodeManager exitCodeManager, Gson gson, DetectInfo detectInfo) {
+    private Optional<DetectBootResult> bootApplication(DetectRun detectRun, String[] sourceArgs, EventSystem eventSystem, DetectContext detectContext, ExitCodeManager exitCodeManager, Gson gson, DetectInfo detectInfo,
+        FileFinder fileFinder) {
         Optional<DetectBootResult> bootResult = Optional.empty();
         try {
             logger.debug("Detect boot begin.");
 
-            DetectBootFactory detectBootFactory = new DetectBootFactory(detectRun, detectInfo, gson, eventSystem);
+            DetectBootFactory detectBootFactory = new DetectBootFactory(detectRun, detectInfo, gson, eventSystem, fileFinder);
             DetectBoot detectBoot = detectBootFactory.createDetectBoot(detectBootFactory.createPropertySourcesFromEnvironment(environment), sourceArgs, detectContext);
             bootResult = detectBoot.boot(detectInfo.getDetectVersion());
 
@@ -146,13 +151,13 @@ public class Application implements ApplicationRunner {
         return bootResult;
     }
 
-    private void runApplication(DetectContext detectContext, DetectRun detectRun, EventSystem eventSystem, ExitCodeManager exitCodeManager, DetectBootResult detectBootResult) {
+    private void runApplication(DetectContext detectContext, EventSystem eventSystem, ExitCodeManager exitCodeManager, DetectBootResult detectBootResult, FileFinder fileFinder) {
         Optional<ProductRunData> optionalProductRunData = detectBootResult.getProductRunData();
         if (detectBootResult.getBootType() == DetectBootResult.BootType.RUN && optionalProductRunData.isPresent()) {
             logger.debug("Detect will attempt to run.");
             ProductRunData productRunData = optionalProductRunData.get();
             RunManager runManager = new RunManager(exitCodeManager);
-            RunContext runContext = new RunContext(detectContext, productRunData);
+            RunContext runContext = new RunContext(detectContext, productRunData, fileFinder);
             runManager.run(runContext);
 
         } else {

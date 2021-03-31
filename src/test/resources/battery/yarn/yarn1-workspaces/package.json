@@ -1,0 +1,6 @@
+{
+  "private": true,
+  "workspaces": {
+      "packages": [ "workspace-a", "workspace-b" ]
+  }
+}

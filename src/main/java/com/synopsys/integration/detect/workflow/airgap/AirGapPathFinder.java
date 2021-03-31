@@ -21,12 +21,12 @@ public class AirGapPathFinder {
 
     public File findDetectJar() {
         try {
-            final String relativeJarFile = guessJarInvocation();
+            String relativeJarFile = guessJarInvocation();
             if (relativeJarFile == null) {
                 logger.debug("Unable to guess detect jar file, relative jar file was null.");
                 return null;
             } else {
-                final File jarFile = new File(relativeJarFile).getCanonicalFile();
+                File jarFile = new File(relativeJarFile).getCanonicalFile();
                 logger.debug("Checking for jar file: " + jarFile.toString());
                 if (jarFile.exists()) {
                     logger.debug("Found detect jar file.");
@@ -36,24 +36,29 @@ public class AirGapPathFinder {
                     return null;
                 }
             }
-        } catch (final IOException e) {
+        } catch (IOException e) {
             logger.debug("An error occurred while guessing detect jar location.");
             return null;
         }
     }
 
-    public File createRelativePackagedInspectorsFile(final File file, final String inspectorName) {
-        final File packagedInspectorsFolder = new File(file, "packaged-inspectors");
-        final File inspectorFolder = new File(packagedInspectorsFolder, inspectorName);
+    public File createRelativePackagedInspectorsFile(File file, String inspectorName) {
+        File packagedInspectorsFolder = new File(file, "packaged-inspectors");
+        File inspectorFolder = new File(packagedInspectorsFolder, inspectorName);
         return inspectorFolder;
+    }
+
+    public File createRelativeFontsFile(File file) {
+        File packagedFontFolder = new File(file, "fonts");
+        return packagedFontFolder;
     }
 
     // This will attempt to guess the relative path to the detect jar, ie what is passed to java -jar {here}
     private String guessJarInvocation() {
         final String containsDetectJarRegex = ".*synopsys-detect-[^\\\\/]+\\.jar.*";
-        final String javaClasspath = System.getProperty("java.class.path");
+        String javaClasspath = System.getProperty("java.class.path");
         if (javaClasspath != null && javaClasspath.matches(containsDetectJarRegex)) {
-            for (final String classpathChunk : javaClasspath.split(System.getProperty("path.separator"))) {
+            for (String classpathChunk : javaClasspath.split(System.getProperty("path.separator"))) {
                 if (classpathChunk != null && classpathChunk.matches(containsDetectJarRegex)) {
                     logger.debug(String.format("Guessed Detect jar location as %s", classpathChunk));
                     return classpathChunk;

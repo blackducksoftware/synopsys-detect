@@ -1,3 +1,4 @@
 dependencies {
     implementation project(':detectable')
+    implementation project(':common')
 }

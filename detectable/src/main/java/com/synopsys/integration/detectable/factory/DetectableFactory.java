@@ -16,6 +16,7 @@ import org.xml.sax.SAXException;
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.BdioTransformer;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.common.util.parse.CommandParser;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
@@ -39,7 +40,6 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.Python
 import com.synopsys.integration.detectable.detectable.executable.resolver.Rebar3Resolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.SbtResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.SwiftResolver;
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
@@ -221,9 +221,11 @@ import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockExtractor;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
 import com.synopsys.integration.detectable.detectables.yarn.YarnPackager;
+import com.synopsys.integration.detectable.detectables.yarn.YarnTransformer;
+import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonFiles;
+import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonReader;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockLineAnalyzer;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
-import com.synopsys.integration.detectable.detectables.yarn.parse.YarnTransformer;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.section.YarnLockDependencySpecParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.section.YarnLockEntrySectionParserSet;
@@ -414,7 +416,7 @@ public class DetectableFactory {
         return new YarnLockDetectable(environment, fileFinder, yarnLockExtractor(yarnLockOptions));
     }
 
-    public LernaDetectable createLernaDetectable(DetectableEnvironment environment, LernaResolver lernaResolver, YarnLockOptions yarnLockOptions, NpmLockfileOptions npmLockfileOptions, LernaOptions lernaOptions) {
+    public LernaDetectable createLernaDetectable(DetectableEnvironment environment, LernaResolver lernaResolver, NpmLockfileOptions npmLockfileOptions, YarnLockOptions yarnLockOptions, LernaOptions lernaOptions) {
         return new LernaDetectable(environment, fileFinder, lernaResolver, lernaExtractor(npmLockfileOptions, yarnLockOptions, lernaOptions));
     }
 
@@ -744,12 +746,20 @@ public class DetectableFactory {
         return new YarnTransformer(externalIdFactory);
     }
 
-    private YarnPackager yarnPackager(YarnLockOptions yarnLockOptions) {
-        return new YarnPackager(gson, yarnLockParser(), yarnTransformer(), yarnLockOptions);
+    private YarnPackager yarnPackager() {
+        return new YarnPackager(yarnTransformer());
+    }
+
+    private PackageJsonFiles packageJsonFiles() {
+        return new PackageJsonFiles(externalIdFactory, packageJsonReader());
+    }
+
+    private PackageJsonReader packageJsonReader() {
+        return new PackageJsonReader(gson);
     }
 
     private YarnLockExtractor yarnLockExtractor(YarnLockOptions yarnLockOptions) {
-        return new YarnLockExtractor(yarnPackager(yarnLockOptions));
+        return new YarnLockExtractor(yarnLockParser(), yarnPackager(), packageJsonFiles(), yarnLockOptions);
     }
 
     private BitbakeRecipesParser bitbakeRecipesParser() {
@@ -857,7 +867,7 @@ public class DetectableFactory {
     }
 
     private LernaPackager lernaPackager(NpmLockfileOptions npmLockfileOptions, YarnLockOptions yarnLockOptions, LernaOptions lernaOptions) {
-        return new LernaPackager(fileFinder, npmLockfilePackager(), npmLockfileOptions, yarnPackager(yarnLockOptions), lernaOptions);
+        return new LernaPackager(fileFinder, packageJsonReader(), yarnLockParser(), yarnLockOptions, npmLockfilePackager(), npmLockfileOptions, yarnPackager(), lernaOptions);
     }
 
     private LernaExtractor lernaExtractor(NpmLockfileOptions npmLockfileOptions, YarnLockOptions yarnLockOptions, LernaOptions lernaOptions) {

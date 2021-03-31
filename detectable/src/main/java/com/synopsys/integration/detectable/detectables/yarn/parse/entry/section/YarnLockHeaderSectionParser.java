@@ -36,14 +36,18 @@ public class YarnLockHeaderSectionParser implements YarnLockEntrySectionParser {
         String line = yarnLockLines.get(lineIndexOfStartOfSection).trim();
         line = StringUtils.removeEnd(line, ":").trim();
         line = yarnLockLineAnalyzer.unquote(line);
-        StringTokenizer tokenizer = TokenizerFactory.createHeaderTokenizer(line);
-        while (tokenizer.hasMoreTokens()) {
-            String rawEntryString = tokenizer.nextToken().trim();
-            String entryString = StringUtils.removeEnd(rawEntryString, ":").trim();
-            String unquotedEntryString = yarnLockLineAnalyzer.unquote(entryString);
-            YarnLockEntryId entry = parseSingleEntry(unquotedEntryString);
-            logger.trace("Entry header ID: name: {}, version: {}", entry.getName(), entry.getVersion());
-            entryBuilder.addId(entry);
+        if ("__metadata".equals(line)) {
+            entryBuilder.setMetadataEntry(true);
+        } else {
+            StringTokenizer tokenizer = TokenizerFactory.createHeaderTokenizer(line);
+            while (tokenizer.hasMoreTokens()) {
+                String rawEntryString = tokenizer.nextToken().trim();
+                String entryString = StringUtils.removeEnd(rawEntryString, ":").trim();
+                String unquotedEntryString = yarnLockLineAnalyzer.unquote(entryString);
+                YarnLockEntryId entry = parseSingleEntry(unquotedEntryString);
+                logger.trace("Entry header ID: name: {}, version: {}", entry.getName(), entry.getVersion());
+                entryBuilder.addId(entry);
+            }
         }
         return lineIndexOfStartOfSection;
     }
@@ -52,7 +56,7 @@ public class YarnLockHeaderSectionParser implements YarnLockEntrySectionParser {
     //Notice, this removes the workspace, so "name@workspace:version" will become simply "name@version"
     private YarnLockEntryId parseSingleEntry(String entry) {
         YarnLockEntryId normalEntry = parseSingleEntryNormally(entry);
-        if (normalEntry.getVersion().contains(":")) {
+        if (normalEntry.getVersion().startsWith("npm:")) {
             return new YarnLockEntryId(normalEntry.getName(), StringUtils.substringAfter(normalEntry.getVersion(), ":"));
         } else {
             return normalEntry;

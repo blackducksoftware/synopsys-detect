@@ -10,6 +10,7 @@ package com.synopsys.integration.detect.lifecycle.run;
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
@@ -20,6 +21,7 @@ import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
 import com.synopsys.integration.detect.tool.detector.DetectDetectableFactory;
 import com.synopsys.integration.detect.tool.detector.DetectorEventPublisher;
 import com.synopsys.integration.detect.tool.detector.extraction.ExtractionEnvironmentProvider;
+import com.synopsys.integration.detect.workflow.blackduck.DetectFontLoader;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationCreator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationEventPublisher;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameGenerator;
@@ -54,8 +56,10 @@ public class RunContext {
     private final CodeLocationEventPublisher codeLocationEventPublisher;
     private final ProjectEventPublisher projectEventPublisher;
     private final OperationSystem operationSystem;
+    private final DetectFontLoader detectFontLoader;
+    private final FileFinder fileFinder;
 
-    public RunContext(DetectContext detectContext, ProductRunData productRunData) {
+    public RunContext(DetectContext detectContext, ProductRunData productRunData, FileFinder fileFinder) {
         this.detectContext = detectContext;
         this.productRunData = productRunData;
         detectConfiguration = detectContext.getBean(PropertyConfiguration.class);
@@ -74,11 +78,13 @@ public class RunContext {
         codeLocationEventPublisher = detectContext.getBean(CodeLocationEventPublisher.class);
         projectEventPublisher = detectContext.getBean(ProjectEventPublisher.class);
         operationSystem = detectContext.getBean(OperationSystem.class);
+        detectFontLoader = detectContext.getBean(DetectFontLoader.class);
         extractionEnvironmentProvider = new ExtractionEnvironmentProvider(directoryManager);
         codeLocationConverter = new CodeLocationConverter(new ExternalIdFactory());
         gson = detectContext.getBean(Gson.class);
         // Can't have more than one instance of Gson registered at the moment.  It causes problems resolving the beans for the application if there is more than one Gson.
         this.htmlEscapeDisabledGson = BlackDuckServicesFactory.createDefaultGsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+        this.fileFinder = fileFinder;
     }
 
     public DetectContext getDetectContext() {
@@ -171,5 +177,13 @@ public class RunContext {
 
     public OperationSystem getOperationSystem() {
         return operationSystem;
+    }
+
+    public DetectFontLoader getDetectFontLoader() {
+        return detectFontLoader;
+    }
+
+    public FileFinder getFileFinder() {
+        return fileFinder;
     }
 }

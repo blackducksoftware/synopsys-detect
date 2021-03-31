@@ -42,7 +42,7 @@ import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanB
 import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
 import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanOutput;
 import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanUploadService;
-import com.synopsys.integration.common.util.finder.WildcardFileFinder;
+import com.synopsys.integration.common.util.finder.SimpleFileFinder;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
@@ -74,7 +74,7 @@ public class BlackDuckBinaryScannerToolTest {
 
     @Test
     public void testMultipleTargetPaths() throws DetectUserFriendlyException, IOException, IntegrationException {
-        WildcardFileFinder fileFinder = new WildcardFileFinder();
+        SimpleFileFinder fileFinder = new SimpleFileFinder();
         DirectoryManager directoryManager = Mockito.mock(DirectoryManager.class);
         BinaryScanUploadService uploadService = Mockito.mock(BinaryScanUploadService.class);
         CodeLocationNameManager codeLocationNameManager = Mockito.mock(CodeLocationNameManager.class);

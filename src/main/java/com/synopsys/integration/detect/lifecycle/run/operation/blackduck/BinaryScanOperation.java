@@ -12,7 +12,7 @@ import java.util.Optional;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.common.util.finder.WildcardFileFinder;
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
@@ -35,22 +35,25 @@ public class BinaryScanOperation {
     private final DirectoryManager directoryManager;
     private final CodeLocationNameManager codeLocationNameManager;
     private final OperationSystem operationSystem;
+    private final FileFinder fileFinder;
 
     public BinaryScanOperation(BlackDuckRunData blackDuckRunData, BinaryScanOptions binaryScanOptions, StatusEventPublisher statusEventPublisher, ExitCodePublisher exitCodePublisher, DirectoryManager directoryManager,
-        CodeLocationNameManager codeLocationNameManager, OperationSystem operationSystem) {
+        CodeLocationNameManager codeLocationNameManager, OperationSystem operationSystem, FileFinder fileFinder) {
         this.blackDuckRunData = blackDuckRunData;
         this.binaryScanOptions = binaryScanOptions;
         this.statusEventPublisher = statusEventPublisher;
         this.exitCodePublisher = exitCodePublisher;
         this.directoryManager = directoryManager;
         this.codeLocationNameManager = codeLocationNameManager;
+        this.fileFinder = fileFinder;
         this.operationSystem = operationSystem;
     }
 
-    public Optional<CodeLocationCreationData<BinaryScanBatchOutput>> execute(NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws DetectUserFriendlyException, IntegrationException {
+    public Optional<CodeLocationCreationData<BinaryScanBatchOutput>> execute(NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws DetectUserFriendlyException {
         Optional<CodeLocationCreationData<BinaryScanBatchOutput>> operationResult = Optional.empty();
         BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
-        BlackDuckBinaryScannerTool binaryScannerTool = new BlackDuckBinaryScannerTool(statusEventPublisher, exitCodePublisher, codeLocationNameManager, directoryManager, new WildcardFileFinder(), binaryScanOptions,
+            blackDuckServicesFactory.createBinaryScanUploadService();
+        BlackDuckBinaryScannerTool binaryScannerTool = new BlackDuckBinaryScannerTool(statusEventPublisher, exitCodePublisher, codeLocationNameManager, directoryManager, fileFinder, binaryScanOptions,
             blackDuckServicesFactory.createBinaryScanUploadService(), operationSystem);
 
         BinaryScanToolResult result = binaryScannerTool.performBinaryScanActions(dockerTargetData, projectNameVersion);
