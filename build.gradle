@@ -5,7 +5,7 @@ import com.synopsys.integration.detect.verification.VerifyBlackDuckDetectTask
 buildscript {
     ext {
         springBootVersion = '2.4.3'
-        blackDuckCommonVersion = '54.0.0'
+        blackDuckCommonVersion = '54.1.0-SNAPSHOT'
         junitPlatformDefaultTestTags = 'integration, performance, battery'
     }
 
