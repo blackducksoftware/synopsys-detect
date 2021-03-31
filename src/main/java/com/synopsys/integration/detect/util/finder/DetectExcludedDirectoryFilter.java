@@ -51,6 +51,12 @@ public class DetectExcludedDirectoryFilter implements Predicate<File> {
 
     private boolean pathMatches(File file) {
         for (String excludedDirectory : directoryExclusionPatterns) {
+            // On Windows, patterns starting with a * raise InvalidPathException, so perform pattern check first
+            PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher(String.format(PATH_MATCHER_SYNTAX, excludedDirectory));
+            if (pathMatcher.matches(file.toPath())) {
+                return true;
+            }
+
             Path excludedDirectoryPath;
             try {
                 excludedDirectoryPath = new File(excludedDirectory).toPath();
@@ -59,9 +65,8 @@ public class DetectExcludedDirectoryFilter implements Predicate<File> {
                 continue;
             }
             Path relativeDirectoryPath = sourcePath.relativize(file.toPath());
-            PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher(String.format(PATH_MATCHER_SYNTAX, excludedDirectory));
 
-            if (relativeDirectoryPath.endsWith(excludedDirectoryPath) || pathMatcher.matches(file.toPath())) {
+            if (relativeDirectoryPath.endsWith(excludedDirectoryPath)) {
                 return true;
             }
         }
