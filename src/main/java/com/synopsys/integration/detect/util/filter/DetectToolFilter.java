@@ -25,9 +25,6 @@ import com.synopsys.integration.detect.lifecycle.boot.decision.RunDecision;
  * The idea is in the future, this is pre-calculated at detect-boot and is passed around as a decision so instead of shouldInclude we just ask willPolarisRun
  * -jp 3/29/20
  */
-//Basically this is the placeholder actually making proper run decisions. It can't currently be done 'properly' because of how interwined the pieces are.
-// This at least keeps the bulk of the tool on/off logic in the same place.
-// It is basica
 public class DetectToolFilter {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
