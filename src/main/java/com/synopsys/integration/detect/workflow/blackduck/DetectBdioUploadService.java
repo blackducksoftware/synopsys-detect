@@ -47,6 +47,7 @@ public class DetectBdioUploadService {
             if (bdioOptions.isLegacyUploadEnabled()) {
                 response = legacyUpload(bdioResult, uploadBatch, bdioUploadService, bdio2UploadService);
             } else {
+                logger.debug("Performing intelligent BDIO upload.");
                 response = intelligentPersistenceScanService.uploadBdio(uploadBatch);
             }
         } catch (IntegrationException ex) {
@@ -62,6 +63,7 @@ public class DetectBdioUploadService {
 
     private CodeLocationCreationData<UploadBatchOutput> legacyUpload(BdioResult bdioResult, UploadBatch uploadBatch, BdioUploadService bdioUploadService, Bdio2UploadService bdio2UploadService) throws IntegrationException {
         CodeLocationCreationData<UploadBatchOutput> response;
+        logger.debug("Performing legacy BDIO upload.");
         if (bdioResult.isBdio2()) {
             response = bdio2UploadService.uploadBdio(uploadBatch);
         } else {

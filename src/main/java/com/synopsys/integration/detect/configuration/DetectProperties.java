@@ -1257,7 +1257,7 @@ public class DetectProperties {
 
     public static final DetectProperty<BooleanProperty> BLACKDUCK_LEGACY_UPLOAD_ENABLED =
         new DetectProperty<>(new BooleanProperty("blackduck.legacy.upload.enabled", true))
-            .setInfo("Use Legacy BDIO upload endpoints in Black Duck", DetectPropertyFromVersion.VERSION_7_0_0)
+            .setInfo("Use legacy BDIO upload endpoints in Black Duck", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp(
                 "If set to true, Detect will upload the BDIO files to Black Duck using older REST APIs.  Set this to false if you want to use the intelligent persistent scan endpoints in Black Duck.  The intelligent persistent endpoints are a Black Duck feature to be used with a later Black Duck version.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK)
