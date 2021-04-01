@@ -43,68 +43,79 @@ The file includes status codes, issues encountered and results produced. As addi
 "codeLocationCount": The number of code locations this detector produced.
 "explanations": [ A human readable list of strings describing why this detector ran such as "Found file:
 <path>". ]
-    }
-    ```
-    ###Detector Status Codes
+}
+```
+###Detector Status Codes
+| Status Code | Description |
+| --- | --- |
+<#list statusCodes as statusCode>
+    | ${statusCode.statusCode} | ${statusCode.statusCodeDescription} |
+</#list>
 
-    | Status Code | Description |
-    | --- | --- |
-    <#list statusCodes as statusCode>
-        | ${statusCode.statusCode} | ${statusCode.statusCodeDescription} |
-    </#list>
+##Status
+```
+{
+"key": The normalized key this status element describes such as "GIT".
+"status": "SUCCESS" or "FAILURE"
+}
+```
 
-    ##Status
-    ```
-    {
-    "key": The normalized key this status element describes such as "GIT".
-    "status": "SUCCESS" or "FAILURE"
-    }
-    ```
+##Issues
+```
+{
+"type": A key describing the type of issue, currently "EXCEPTION", "DEPRECATION" or "DETECTOR".
+"title": A string describing the issue.
+"messages": A list of a strings describing the details of the issue.
+}
+```
 
-    ##Issues
-    ```
-    {
-    "type": A key describing the type of issue, currently "EXCEPTION", "DEPRECATION" or "DETECTOR".
-    "messages": A list of a strings describing the issue.
-    }
-    ```
+##Results
 
-    ##Results
+A result is a URL, file path to output, or messages produced by the ${solution_name} run: a Black Duck Bill Of Materials, Risk Report, Notices Report, Air Gap zip, or Rapid Scan results.
+```
+{
+"location": The path to the result.
+"message": A string describing the result.
+"sub_messages": A list of strings providing more detail about the result.
+}
+```
 
-    A result is a URL or file path to output produced by the ${solution_name} run: a Black Duck Bill Of Materials, Risk Report, Notices Report, or Air Gap zip.
-    ```
-    {
-    "location": The path to the result.
-    "message": A string describing the result.
-    }
-    ```
+##Property Values
 
-    ##Property Values
+A map of every property key to it's string value that detect found. These are only properties to which detect has a known key,
+so pass-through properties like docker and dynamic properties like custom fields are not included. Passwords and other sensitive fields are masked.
 
-    A map of every property key to it's string value that detect found. These are only properties to which detect has a known key,
-    so pass-through properties like docker and dynamic properties like custom fields are not included. Passwords and other sensitive fields are masked.
-
-    ```
-    "propertyValues": {
+```
+  "propertyValues": {
     "key": "value",
     "boolean-key": "true"
-    }
-    ```
+  }
+```
 
-    ##Unrecognized Paths
+##Operations
+A list of information regarding internal execution of detect to describe when portions of detect run and what their status is.
+This information is intended to be used when detect fails and the reason for the failure needs to be determined.
 
-    For those detectors that support it (currently, only CLANG), a list of file paths to dependencies that
-    (a) were not recognized by the package manager, and (b) reside outside the source directory.
-    ````
-    {
-    "
-    <Detector type>": [ A list of file paths to unrecognized dependencies ]
-        }
-        ````
+```
+"startTimestamp": A formatted UTC timestamp when the execution started.
+"endTimestamp": A formatted UTC timestamp when the execution ended.
+"descriptionKey": A string that describes what is being executed.
+"status": "SUCCESS" or "FAILURE"
+```
 
-        ## Code Locations
-        ````
-        {
-        "codeLocationName": The name of a code location produced by this run of ${solution_name}.
-        }
-        ````
+##Unrecognized Paths
+
+For those detectors that support it (currently, only CLANG), a list of file paths to dependencies that
+(a) were not recognized by the package manager, and (b) reside outside the source directory.
+````
+{
+"<Detector type>": [ A list of file paths to unrecognized dependencies ]
+}
+````
+
+## Code Locations
+````
+{
+"codeLocationName": The name of a code location produced by this run of ${solution_name}.
+}
+````

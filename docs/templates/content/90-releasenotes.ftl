@@ -24,6 +24,10 @@
 * (IDETECT-2099) Improved error reporting for exceptions that occur during a Detect run. For each exception, a Detect "issue" is written to the log and to the status.json file.
 * (IDETECT-2516) Improved error reporting for the case where environment variable BDS_JAVA_HOME is set incorrectly.
 
+## Version 6.9.1
+### Resolved issues
+* (IDETECT-2555) Resolved an issue that could cause Detect, when run against Black Duck 2020.10.0, to fail with a message similar to: "Cannot cast... to... VersionBomCodeLocationBomComputedNotificationUserView".
+
 ## Version 6.9.0
 ### New Features
 * Added ability for detectors to explain why they applied. It will appear in the logs at info level and in the status.json.
