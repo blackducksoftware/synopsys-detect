@@ -13,7 +13,10 @@ buildscript {
     }
 
     apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-repositories.gradle', to: buildscript
-    apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-dependencies.gradle', to: buildscript
+    ////////// START BUILDSCRIPT DEPENDENCY //////////
+dependencies { classpath "com.synopsys.integration:common-gradle-plugin:1.8.1" }
+
+////////// END BUILDSCRIPT DEPENDENCY //////////
 
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
@@ -21,7 +24,7 @@ buildscript {
 }
  
 group = 'com.synopsys.integration'
-version = '6.9.1-SIGQA3-SNAPSHOT'
+version = '6.9.1'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
