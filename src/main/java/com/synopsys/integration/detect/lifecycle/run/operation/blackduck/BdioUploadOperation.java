@@ -23,6 +23,7 @@ import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
+import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.blackduck.DetectBdioUploadService;
 import com.synopsys.integration.detect.workflow.status.OperationSystem;
@@ -31,9 +32,11 @@ import com.synopsys.integration.exception.IntegrationException;
 public class BdioUploadOperation {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final OperationSystem operationSystem;
+    private final BdioOptions bdioOptions;
 
-    public BdioUploadOperation(OperationSystem operationSystem) {
+    public BdioUploadOperation(OperationSystem operationSystem, BdioOptions bdioOptions) {
         this.operationSystem = operationSystem;
+        this.bdioOptions = bdioOptions;
     }
 
     public Optional<CodeLocationCreationData<UploadBatchOutput>> execute(BlackduckScanMode scanMode, BlackDuckRunData blackDuckRunData, BdioResult bdioResult) throws DetectUserFriendlyException, IntegrationException {
@@ -47,7 +50,7 @@ public class BdioUploadOperation {
                 BdioUploadService bdioUploadService = blackDuckServicesFactory.createBdioUploadService();
                 Bdio2UploadService bdio2UploadService = blackDuckServicesFactory.createBdio2UploadService();
                 IntelligentPersistenceService intelligentPersistenceScanService = blackDuckServicesFactory.createIntelligentPersistenceService();
-                DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService(operationSystem);
+                DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService(operationSystem, bdioOptions);
                 result = Optional.of(detectBdioUploadService.uploadBdioFiles(scanMode, bdioResult, bdioUploadService, bdio2UploadService, intelligentPersistenceScanService));
             }
         } else {

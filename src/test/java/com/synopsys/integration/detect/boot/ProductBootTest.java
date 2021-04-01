@@ -57,7 +57,7 @@ public class ProductBootTest {
     public void blackDuckConnectionFailureThrows() {
         BlackDuckConnectivityResult connectivityResult = BlackDuckConnectivityResult.failure("Failed to connect");
 
-        Assertions.assertThrows(DetectUserFriendlyException.class, () -> testBoot(BlackDuckDecision.runOnline(BlackduckScanMode.LEGACY), PolarisDecision.skip(), new ProductBootOptions(false, false), connectivityResult, null));
+        Assertions.assertThrows(DetectUserFriendlyException.class, () -> testBoot(BlackDuckDecision.runOnline(BlackduckScanMode.INTELLIGENT), PolarisDecision.skip(), new ProductBootOptions(false, false), connectivityResult, null));
     }
 
     @Test
@@ -71,7 +71,7 @@ public class ProductBootTest {
     public void blackDuckFailureWithIgnoreReturnsFalse() throws DetectUserFriendlyException, IOException, IntegrationException {
         BlackDuckConnectivityResult connectivityResult = BlackDuckConnectivityResult.failure("Failed to connect");
 
-        ProductRunData productRunData = testBoot(BlackDuckDecision.runOnline(BlackduckScanMode.LEGACY), PolarisDecision.skip(), new ProductBootOptions(true, false), connectivityResult, null);
+        ProductRunData productRunData = testBoot(BlackDuckDecision.runOnline(BlackduckScanMode.INTELLIGENT), PolarisDecision.skip(), new ProductBootOptions(true, false), connectivityResult, null);
 
         Assertions.assertFalse(productRunData.shouldUseBlackDuckProduct());
         Assertions.assertFalse(productRunData.shouldUsePolarisProduct());
@@ -81,7 +81,7 @@ public class ProductBootTest {
     public void blackDuckConnectionFailureWithTestThrows() {
         BlackDuckConnectivityResult connectivityResult = BlackDuckConnectivityResult.failure("Failed to connect");
 
-        Assertions.assertThrows(DetectUserFriendlyException.class, () -> testBoot(BlackDuckDecision.runOnline(BlackduckScanMode.LEGACY), PolarisDecision.skip(), new ProductBootOptions(false, true), connectivityResult, null));
+        Assertions.assertThrows(DetectUserFriendlyException.class, () -> testBoot(BlackDuckDecision.runOnline(BlackduckScanMode.INTELLIGENT), PolarisDecision.skip(), new ProductBootOptions(false, true), connectivityResult, null));
     }
 
     @Test
@@ -95,7 +95,7 @@ public class ProductBootTest {
     public void blackDuckConnectionSuccessWithTestReturnsNull() throws DetectUserFriendlyException, IOException, IntegrationException {
         BlackDuckConnectivityResult connectivityResult = BlackDuckConnectivityResult.success(Mockito.mock(BlackDuckServicesFactory.class), Mockito.mock(BlackDuckServerConfig.class));
 
-        ProductRunData productRunData = testBoot(BlackDuckDecision.runOnline(BlackduckScanMode.LEGACY), PolarisDecision.skip(), new ProductBootOptions(false, true), connectivityResult, null);
+        ProductRunData productRunData = testBoot(BlackDuckDecision.runOnline(BlackduckScanMode.INTELLIGENT), PolarisDecision.skip(), new ProductBootOptions(false, true), connectivityResult, null);
 
         Assertions.assertNull(productRunData);
     }
@@ -112,7 +112,7 @@ public class ProductBootTest {
     @Test
     public void blackDuckOnlyWorks() throws DetectUserFriendlyException, IOException, IntegrationException {
         BlackDuckConnectivityResult connectivityResult = BlackDuckConnectivityResult.success(Mockito.mock(BlackDuckServicesFactory.class), Mockito.mock(BlackDuckServerConfig.class));
-        ProductRunData productRunData = testBoot(BlackDuckDecision.runOnline(BlackduckScanMode.LEGACY), PolarisDecision.skip(), new ProductBootOptions(false, false), connectivityResult, null);
+        ProductRunData productRunData = testBoot(BlackDuckDecision.runOnline(BlackduckScanMode.INTELLIGENT), PolarisDecision.skip(), new ProductBootOptions(false, false), connectivityResult, null);
 
         Assertions.assertTrue(productRunData.shouldUseBlackDuckProduct());
         Assertions.assertFalse(productRunData.shouldUsePolarisProduct());
