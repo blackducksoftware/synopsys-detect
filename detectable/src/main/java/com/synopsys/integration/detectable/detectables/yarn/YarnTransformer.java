@@ -55,7 +55,7 @@ public class YarnTransformer {
             Optional<YarnWorkspace> workspace = yarnLockResult.getWorkspaceData().lookup(entry);
             if (workspace.isPresent()) {
                 StringDependencyId id = workspace.get().createDependency(graphBuilder);
-                addYarnLockDependenciesToGraph(yarnLockResult, productionOnly, graphBuilder, entry, id, getIsQualifiedWorkspaceDependencyCheck(workspace.get(), productionOnly));
+                addYarnLockDependenciesToGraph(yarnLockResult, productionOnly, graphBuilder, entry, id, getWorkspaceDependencyQualifiesCheck(workspace.get(), productionOnly));
             } else {
                 for (YarnLockEntryId entryId : entry.getIds()) {
                     StringDependencyId id = generateComponentDependencyId(entryId.getName(), entryId.getVersion());
@@ -71,35 +71,30 @@ public class YarnTransformer {
         return s -> true;
     }
 
-    private Predicate<String> getIsQualifiedWorkspaceDependencyCheck(YarnWorkspace workspace, boolean productionOnly) {
-        return depName -> thisWorkspaceDependencyShouldBeIncluded(workspace, depName, productionOnly);
+    private Predicate<String> getWorkspaceDependencyQualifiesCheck(YarnWorkspace workspace, boolean productionOnly) {
+        if (!productionOnly) {
+            return getEverythingQualifiesCheck();
+        }
+        return depName -> thisWorkspaceDependencyIsProduction(workspace, depName);
     }
 
-    private boolean thisWorkspaceDependencyShouldBeIncluded(YarnWorkspace workspace, String depName, boolean productionOnly) {
-        if (!productionOnly) {
-            logger.trace("Including workspace {} dependency {} because all dependencies were requested", workspace.getName(), depName);
+    private boolean thisWorkspaceDependencyIsProduction(YarnWorkspace workspace, String depName) {
+        String workspaceName = workspace.getName().orElse("?");
+        if (workspace.hasDependency(depName)) {
+            logger.trace("Including workspace {} dependency {} because it's in the workspace package.json dependency list",
+                workspaceName, depName);
             return true;
         }
-        for (String workspaceDependencyName : workspace.getDependencies().keySet()) {
-            if (depName.equals(workspaceDependencyName)) {
-                logger.trace("Including workspace {} dependency {} because it's in the workspace package.json dependency list",
-                    workspace.getName(), depName);
-                return true;
-            }
-        }
-        for (String workspaceDevDependencyName : workspace.getDevDependencies().keySet()) {
-            if (depName.equals(workspaceDevDependencyName)) {
-                logger.trace("Excluding workspace {} dependency {} because it's in the workspace package.json dev dependency list",
-                    workspace.getName(), depName);
-                return false;
-            }
+        if (workspace.hasDevDependency(depName)) {
+            logger.trace("Excluding workspace {} dependency {} because it's in the workspace package.json dev dependency list",
+                workspaceName, depName);
+            return false;
         }
         logger.warn("Workspace {} dependency {} was found in the workspace's yarn.lock entry, but not found in either of the workspace's package.json dependency lists; excluding it",
-            workspace.getName(), depName);
+            workspaceName, depName);
         return false;
     }
 
-    // TODO if this (yarn.lock) entry is a workspace, we can't trust its (yarn.lock) dependencies; must check workspace package.json to see if they are deps or devDeps; maybe pass a predicate which can be used to test each one?
     private void addYarnLockDependenciesToGraph(YarnLockResult yarnLockResult, boolean productionOnly,
         LazyExternalIdDependencyGraphBuilder graphBuilder, YarnLockEntry entry, StringDependencyId id,
         Predicate<String> qualificationCheck) {
