@@ -251,5 +251,10 @@ class ProductDeciderTest {
                 builderStatus.addErrorMessage("Invalid polaris config!");
             }
         }
+
+        @Override
+        public String getUrl() {
+            return this.url;
+        }
     }
 }
