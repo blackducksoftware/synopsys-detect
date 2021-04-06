@@ -44,6 +44,7 @@ import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
 public class BlackDuckBinaryScannerTool {
+    private static final String BINARY_SCAN_FILE_UNREADABLE_MSG = "Binary scan file did not exist, is not a file or can't be read.";
     private final Logger logger = LoggerFactory.getLogger(BlackDuckBinaryScannerTool.class);
     private static final String STATUS_KEY = "BINARY_SCAN";
     private static final String OPERATION_NAME = "Black Duck Binary Scan";
@@ -98,7 +99,7 @@ public class BlackDuckBinaryScannerTool {
             } else {
                 logger.warn("Binary scanner did not find any files matching pattern.");
                 statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
-                operationSystem.completeWithError(OPERATION_NAME, "Binary scan file did not exist, is not a file or can't be read.");
+                operationSystem.completeWithError(OPERATION_NAME, BINARY_SCAN_FILE_UNREADABLE_MSG);
                 exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, STATUS_KEY);
                 return BinaryScanToolResult.FAILURE();
             }
@@ -122,9 +123,9 @@ public class BlackDuckBinaryScannerTool {
             CodeLocationCreationData<BinaryScanBatchOutput> codeLocationCreationData = uploadBinaryScanFile(uploadService, binaryUpload, name, version);
             return BinaryScanToolResult.SUCCESS(codeLocationCreationData);
         } else {
-            logger.warn("Binary scan file did not exist, is not a file or can't be read.");
+            logger.warn(BINARY_SCAN_FILE_UNREADABLE_MSG);
             statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
-            operationSystem.completeWithError(OPERATION_NAME, "Binary scan file did not exist, is not a file or can't be read.");
+            operationSystem.completeWithError(OPERATION_NAME, BINARY_SCAN_FILE_UNREADABLE_MSG);
             exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, STATUS_KEY);
             return BinaryScanToolResult.FAILURE();
         }
