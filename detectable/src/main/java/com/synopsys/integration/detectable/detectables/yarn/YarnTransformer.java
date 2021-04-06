@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -54,31 +55,63 @@ public class YarnTransformer {
             Optional<YarnWorkspace> workspace = yarnLockResult.getWorkspaceData().lookup(entry);
             if (workspace.isPresent()) {
                 StringDependencyId id = workspace.get().createDependency(graphBuilder);
-                addYarnLockDependenciesToGraph(yarnLockResult, productionOnly, graphBuilder, entry, id);
+                addYarnLockDependenciesToGraph(yarnLockResult, productionOnly, graphBuilder, entry, id, getWorkspaceDependencyQualifiesCheck(workspace.get(), productionOnly));
             } else {
                 for (YarnLockEntryId entryId : entry.getIds()) {
                     StringDependencyId id = generateComponentDependencyId(entryId.getName(), entryId.getVersion());
                     graphBuilder.setDependencyInfo(id, entryId.getName(), entry.getVersion(), generateComponentExternalId(entryId.getName(), entry.getVersion()));
-                    addYarnLockDependenciesToGraph(yarnLockResult, productionOnly, graphBuilder, entry, id);
+                    addYarnLockDependenciesToGraph(yarnLockResult, productionOnly, graphBuilder, entry, id, getEverythingQualifiesCheck());
                 }
             }
         }
         return graphBuilder.build(getLazyBuilderHandler(externalDependencies, yarnLockResult));
     }
 
-    private void addYarnLockDependenciesToGraph(YarnLockResult yarnLockResult, boolean productionOnly, LazyExternalIdDependencyGraphBuilder graphBuilder, YarnLockEntry entry, StringDependencyId id) {
+    private Predicate<String> getEverythingQualifiesCheck() {
+        return s -> true;
+    }
+
+    private Predicate<String> getWorkspaceDependencyQualifiesCheck(YarnWorkspace workspace, boolean productionOnly) {
+        if (!productionOnly) {
+            return getEverythingQualifiesCheck();
+        }
+        return depName -> thisWorkspaceDependencyIsProduction(workspace, depName);
+    }
+
+    private boolean thisWorkspaceDependencyIsProduction(YarnWorkspace workspace, String depName) {
+        String workspaceName = workspace.getName().orElse("?");
+        if (workspace.hasDependency(depName)) {
+            logger.trace("Including workspace {} dependency {} because it's in the workspace package.json dependency list",
+                workspaceName, depName);
+            return true;
+        }
+        if (workspace.hasDevDependency(depName)) {
+            logger.trace("Excluding workspace {} dependency {} because it's in the workspace package.json dev dependency list",
+                workspaceName, depName);
+            return false;
+        }
+        logger.warn("Workspace {} dependency {} was found in the workspace's yarn.lock entry, but not found in either of the workspace's package.json dependency lists; excluding it",
+            workspaceName, depName);
+        return false;
+    }
+
+    private void addYarnLockDependenciesToGraph(YarnLockResult yarnLockResult, boolean productionOnly,
+        LazyExternalIdDependencyGraphBuilder graphBuilder, YarnLockEntry entry, StringDependencyId id,
+        Predicate<String> qualificationCheck) {
         for (YarnLockDependency dependency : entry.getDependencies()) {
-            Optional<YarnWorkspace> dependencyWorkspace = yarnLockResult.getWorkspaceData().lookup(dependency);
-            StringDependencyId stringDependencyId;
-            if (dependencyWorkspace.isPresent()) {
-                stringDependencyId = dependencyWorkspace.get().generateDependencyId();
-            } else {
-                stringDependencyId = generateComponentDependencyId(dependency.getName(), dependency.getVersion());
-            }
-            if (!productionOnly || !dependency.isOptional()) {
-                graphBuilder.addChildWithParent(stringDependencyId, id);
-            } else {
-                logger.trace("Excluding optional dependency: {}", stringDependencyId.getValue());
+            if (qualificationCheck.test(dependency.getName())) {
+                Optional<YarnWorkspace> dependencyWorkspace = yarnLockResult.getWorkspaceData().lookup(dependency);
+                StringDependencyId stringDependencyId;
+                if (dependencyWorkspace.isPresent()) {
+                    stringDependencyId = dependencyWorkspace.get().generateDependencyId();
+                } else {
+                    stringDependencyId = generateComponentDependencyId(dependency.getName(), dependency.getVersion());
+                }
+                if (!productionOnly || !dependency.isOptional()) {
+                    graphBuilder.addChildWithParent(stringDependencyId, id);
+                } else {
+                    logger.trace("Excluding optional dependency: {}", stringDependencyId.getValue());
+                }
             }
         }
     }

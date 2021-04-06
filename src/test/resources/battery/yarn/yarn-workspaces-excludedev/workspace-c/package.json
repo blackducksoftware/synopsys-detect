@@ -1,0 +1,8 @@
+{
+  "name": "workspace-c",
+  "version": "1.0.0",
+  "devDependencies": {
+    "@types/sql.js": "^1",
+    "sql.js": "1.4.0"
+  }
+}

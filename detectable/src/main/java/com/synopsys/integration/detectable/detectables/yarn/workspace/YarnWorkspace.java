@@ -114,6 +114,14 @@ public class YarnWorkspace {
         return id;
     }
 
+    public boolean hasDependency(String depName) {
+        return getDependencies().keySet().contains(depName);
+    }
+
+    public boolean hasDevDependency(String depName) {
+        return getDevDependencies().keySet().contains(depName);
+    }
+
     private boolean versionMatches(String version) {
         if (StringUtils.isBlank(version) && StringUtils.isBlank(getVersion().orElse(null))) {
             return true;
