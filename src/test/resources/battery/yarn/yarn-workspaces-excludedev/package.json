@@ -1,0 +1,15 @@
+{
+  "name": "simple",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "workspace-a",
+      "workspace-b",
+      "workspace-c"
+    ]
+  },
+  "dependencies": {
+    "workspace-b": "1.0.0"
+  }
+}
