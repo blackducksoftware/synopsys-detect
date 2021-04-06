@@ -58,13 +58,19 @@ public class RapidScanDetectResult implements DetectResult {
         resultMessages.add(String.format(warningCountFormat, licenseGroupName, summary.getLicenseWarningCount()));
         resultMessages.add("");
         resultMessages.add("\tPolicies Violated:");
-        summary.getPolicyViolationNames().forEach(policy -> resultMessages.add(String.format(indentedMessageFormat, policy)));
+        summary.getPolicyViolationNames().stream()
+            .sorted()
+            .forEach(policy -> resultMessages.add(String.format(indentedMessageFormat, policy)));
         resultMessages.add("");
         resultMessages.add("\tComponents with Policy Violations:");
-        summary.getComponentsViolatingPolicy().forEach(component -> resultMessages.add(String.format(indentedMessageFormat, component)));
+        summary.getComponentsViolatingPolicy().stream()
+            .sorted()
+            .forEach(component -> resultMessages.add(String.format(indentedMessageFormat, component)));
         resultMessages.add("");
         resultMessages.add("\tComponents with Policy Violation Warnings:");
-        summary.getComponentsViolatingPolicyWarnings().forEach(component -> resultMessages.add(String.format(indentedMessageFormat, component)));
+        summary.getComponentsViolatingPolicyWarnings().stream()
+            .sorted()
+            .forEach(component -> resultMessages.add(String.format(indentedMessageFormat, component)));
         return resultMessages;
     }
 }

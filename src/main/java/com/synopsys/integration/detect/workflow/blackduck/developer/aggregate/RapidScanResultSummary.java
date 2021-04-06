@@ -139,13 +139,15 @@ public class RapidScanResultSummary {
         public void addDetailData(RapidScanComponentDetail detail) {
             String formattedComponentName = String.format("%s %s (%s)", detail.getComponent(), detail.getVersion(), detail.getComponentIdentifier());
             if (detail.hasWarnings()) {
-                addComponentsViolatingPolicy(formattedComponentName);
+                addComponentViolatingPolicyWarnings(formattedComponentName);
             }
             if (detail.hasErrors()) {
-                addComponentViolatingPolicyWarnings(formattedComponentName);
+                addComponentsViolatingPolicy(formattedComponentName);
             }
 
             addViolatedPolicyNames(detail.getComponentDetails().getPolicyNames());
+            addViolatedPolicyNames(detail.getSecurityDetails().getPolicyNames());
+            addViolatedPolicyNames(detail.getLicenseDetails().getPolicyNames());
             addPolicyViolations(detail.getComponentErrorCount());
             addSecurityErrors(detail.getSecurityErrorCount());
             addLicenseErrors(detail.getLicenseErrorCount());
