@@ -86,10 +86,10 @@ public class ProductDecider {
         if (offline && scanMode == BlackduckScanMode.RAPID) {
             logger.debug("Black Duck will NOT run: Black Duck offline mode is set to true and Black Duck {} scan is enabled which requires online mode", BlackduckScanMode.RAPID.name());
             return BlackDuckDecision.skip();
-        } else if (offline) {
-            logger.debug("Black Duck will run: Black Duck offline mode was set to true.");
-            return BlackDuckDecision.runOffline();
-        } else if ((scanMode == BlackduckScanMode.RAPID || scanMode == BlackduckScanMode.INTELLIGENT) && !bdioOptions.isBdio2Enabled()) {
+        } else if (scanMode == BlackduckScanMode.RAPID && !bdioOptions.isBdio2Enabled()) {
+            logger.debug("Black Duck will NOT run: Detect will not generate BDIO2 files and Black Duck {} scan is enabled which requires BDIO2 file generation", scanMode.name());
+            return BlackDuckDecision.skip();
+        } else if (scanMode == BlackduckScanMode.INTELLIGENT && !bdioOptions.isBdio2Enabled() && !bdioOptions.isLegacyUploadEnabled()) {
             logger.debug("Black Duck will NOT run: Detect will not generate BDIO2 files and Black Duck {} scan is enabled which requires BDIO2 file generation", scanMode.name());
             return BlackDuckDecision.skip();
         } else if (signatureScannerHostUrl.isPresent()) {
@@ -101,6 +101,9 @@ public class ProductDecider {
         } else if (blackDuckUrl.isPresent()) {
             logger.debug("Black Duck will run ONLINE: A Black Duck url was found.");
             return BlackDuckDecision.runOnline(scanMode);
+        } else if (offline) {
+            logger.debug("Black Duck will run: Black Duck offline mode was set to true.");
+            return BlackDuckDecision.runOffline();
         } else {
             logger.debug("Black Duck will NOT run: The Black Duck url must be provided or offline mode must be set to true.");
             return BlackDuckDecision.skip();
