@@ -60,12 +60,26 @@ gradle.allprojects {
                 generateRootProjectMetaData(project, outputDirectoryPath)
 
                 if(projectFilter.shouldInclude(project.name)) {
+                    def dependencyTask = project.tasks.getByName('dependencies')
                     File projectOutputFile = findProjectOutputFile(project, outputDirectoryPath)
                     File projectFile = createProjectOutputFile(projectOutputFile)
 
-                    // modify the configurations for the dependency task and the output file
-                    setConfigurations(filterConfigurations(project, excludedConfigurationNames, includedConfigurationNames))
-                    setOutputFile(projectFile)
+                    if(dependencyTask.metaClass.respondsTo(dependencyTask, "setConfigurations")) {
+                        println "Updating configurations for task"
+                        // modify the configurations for the dependency task
+                        setConfigurations(filterConfigurations(project, excludedConfigurationNames, includedConfigurationNames))
+
+                    } else {
+                        println "Could not find method 'setConfigurations'"
+                    }
+
+                    if(dependencyTask.metaClass.respondsTo(dependencyTask,"setOutputFile")) {
+                        println "Updating output file for task to "+projectFile.getAbsolutePath()
+                        // modify the output file
+                        setOutputFile(projectFile)
+                    } else {
+                        println "Could not find method 'setOutputFile'"
+                    }
                 }
             }
 
