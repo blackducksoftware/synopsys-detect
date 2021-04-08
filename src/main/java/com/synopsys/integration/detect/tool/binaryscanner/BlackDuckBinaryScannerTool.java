@@ -137,7 +137,7 @@ public class BlackDuckBinaryScannerTool {
         String suffix = binaryScanOptions.getCodeLocationSuffix();
         String codeLocationName = codeLocationNameManager.createBinaryScanCodeLocationName(binaryScanFile, projectName, projectVersionName, prefix, suffix);
         try {
-            logger.info("Preparing to upload binary scan file: " + codeLocationName);
+            logger.info("Preparing to upload binary scan file: " + binaryScanFile.getAbsolutePath());
             BinaryScan binaryScan = new BinaryScan(binaryScanFile, projectName, projectVersionName, codeLocationName);
             BinaryScanBatch binaryScanBatch = new BinaryScanBatch(binaryScan);
             CodeLocationCreationData<BinaryScanBatchOutput> codeLocationCreationData = binaryScanUploadService.uploadBinaryScan(binaryScanBatch);
@@ -146,7 +146,7 @@ public class BlackDuckBinaryScannerTool {
             // The throwExceptionForError() in BinaryScanBatchOutput has a bug, so doing that work here
             throwExceptionForError(binaryScanBatchOutput);
 
-            logger.info("Successfully uploaded binary scan file: " + codeLocationName);
+            logger.info("Successfully uploaded binary scan file: " + binaryScanFile.getAbsolutePath());
             operationSystem.completeWithSuccess(OPERATION_NAME);
             statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.SUCCESS));
             return codeLocationCreationData;
