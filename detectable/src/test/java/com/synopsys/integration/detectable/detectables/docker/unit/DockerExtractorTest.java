@@ -23,6 +23,7 @@
 package com.synopsys.integration.detectable.detectables.docker.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.condition.OS.WINDOWS;
 
@@ -42,9 +43,9 @@ import org.mockito.Mockito;
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.BdioTransformer;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectables.docker.DockerExtractor;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorInfo;
 import com.synopsys.integration.detectable.detectables.docker.DockerProperties;
@@ -83,7 +84,7 @@ public class DockerExtractorTest {
         Extraction extraction = extract(image, imageId, tar, fakeContainerFileSystemFile, null, executableRunner);
 
         assertEquals("ubuntu:latest", extraction.getMetaData(DockerExtractor.DOCKER_IMAGE_NAME_META_DATA).get());
-        assertTrue(extraction.getMetaData(DockerExtractor.DOCKER_TAR_META_DATA).get().getName().endsWith("_containerfilesystem.tar.gz"));
+        assertTrue(extraction.getMetaData(DockerExtractor.CONTAINER_FILESYSTEM_META_DATA).get().getName().endsWith("_containerfilesystem.tar.gz"));
 
         ArgumentCaptor<Executable> executableArgumentCaptor = ArgumentCaptor.forClass(Executable.class);
         Mockito.verify(executableRunner).execute(executableArgumentCaptor.capture());
@@ -109,8 +110,7 @@ public class DockerExtractorTest {
         Extraction extraction = extract(image, imageId, tar, fakeContainerFileSystemFile, fakeSquashedImageFile, executableRunner);
 
         assertEquals("ubuntu:latest", extraction.getMetaData(DockerExtractor.DOCKER_IMAGE_NAME_META_DATA).get());
-        // When Detect gets both .tar.gz files back, should prefer the squashed image
-        assertTrue(extraction.getMetaData(DockerExtractor.DOCKER_TAR_META_DATA).get().getName().endsWith("_squashedimage.tar.gz"));
+        assertTrue(extraction.getMetaData(DockerExtractor.SQUASHED_IMAGE_META_DATA).get().getName().endsWith("_squashedimage.tar.gz"));
 
         ArgumentCaptor<Executable> executableArgumentCaptor = ArgumentCaptor.forClass(Executable.class);
         Mockito.verify(executableRunner).execute(executableArgumentCaptor.capture());
@@ -136,7 +136,7 @@ public class DockerExtractorTest {
         Extraction extraction = extract(image, imageId, tar, fakeContainerFileSystemFile, null, executableRunner);
 
         assertTrue(extraction.getMetaData(DockerExtractor.DOCKER_IMAGE_NAME_META_DATA).get().endsWith("testDockerTarfile.tar"));
-        assertTrue(extraction.getMetaData(DockerExtractor.DOCKER_TAR_META_DATA).get().getName().endsWith("_containerfilesystem.tar.gz"));
+        assertTrue(extraction.getMetaData(DockerExtractor.CONTAINER_FILESYSTEM_META_DATA).get().getName().endsWith("_containerfilesystem.tar.gz"));
 
         ArgumentCaptor<Executable> executableArgumentCaptor = ArgumentCaptor.forClass(Executable.class);
         Mockito.verify(executableRunner).execute(executableArgumentCaptor.capture());
