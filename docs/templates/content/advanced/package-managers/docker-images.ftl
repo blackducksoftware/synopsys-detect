@@ -6,12 +6,19 @@ For simple use cases, add either ```--detect.docker.image={repo}:{tag}``` or ```
 The documentation for Docker Inspector is available [here](https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/187596884/Black+Duck+Docker+Inspector).
 
 When passed a value for either detect.docker.image or detect.docker.tar,
-${solution_name} runs Docker Inspector on given image (the "target image"),
-creating one code location. ${solution_name} by default runs
-the ${blackduck_signature_scanner_name} on the "container file system"
-(the file system a container created from the image has at startup time).
+${solution_name} runs Docker Inspector on the given image (the "target image"),
+creating one code location.
+
+${solution_name} by default runs
+the ${blackduck_signature_scanner_name} on an image built from the "container file system".
+This image is referred to as
+the squashed image (because it has only one layer, to eliminate the chance of false positives from lower layers).
+This scan creates another code location.
+
+Finally, ${solution_name} by default
+runs ${blackduck_binary_scan_capability} on the container file system.
 Refer to [${solution_name}'s scan target](#scantarget) for more details.
-This creates a second code location.
+This also creates a code location.
 
 ### File permissions
 
@@ -51,6 +58,10 @@ When a Docker image is run; for example, using a `docker run` command, a contain
 When ${solution_name} invokes both Docker Inspector because either detect.docker.image or detect.docker.tar is set, and the ${blackduck_signature_scanner_name}, as it does by default, the target of that ${blackduck_signature_scan_act} is the initial container file system constructed by Docker Inspector, packaged in a way to optimize results from ${blackduck_product_name}'s matching algorithms. Rather than directly running the ${blackduck_signature_scanner_name} on the initial container file system, ${solution_name} runs the ${blackduck_signature_scanner_name} on a new image; in other words, the squashed image, constructed using the initial container file system built by Docker Inspector. Packaging the initial container file system in a Docker image triggers matching algorithms within ${blackduck_product_name} that optimize match results for Linux file systems.
 
 In earlier versions of ${solution_name} / Docker Inspector, ${solution_name} ran the ${blackduck_signature_scanner_name} directly on the target image. This approach had the disadvantage of potentially producing false positives under certain circumstances. For example, suppose your target image consists of multiple layers. If version 1 of a package is installed in layer 0, and then replaced with a newer version of that package in layer 1, both versions exist in the image, even though the initial container file system only includes version 2. A ${blackduck_signature_scan_act} of the target image shows both versions, even though version 1 has been effectively replaced with version 2. The current ${solution_name} / Docker Inspector functionality avoids this potential for false positives.
+
+By default, ${solution_name} also runs ${blackduck_binary_scan_capability} on the initial container file system.
+If your ${blackduck_product_name} server does not have ${blackduck_binary_scan_capability} enabled, you
+should disable ${blackduck_binary_scan_capability}. For example, you might set: *--detect.tools.excluded=BINARY_SCAN*.
 
 ### Isolating application components
 

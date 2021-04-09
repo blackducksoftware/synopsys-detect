@@ -106,10 +106,8 @@ public class BlackDuckBinaryScannerTool {
         } else if (dockerTargetData != null && dockerTargetData.getContainerFilesystem().isPresent()) {
             logger.info("Binary Scanner will upload docker container file system.");
             binaryUpload = dockerTargetData.getContainerFilesystem().get();
-        } else if (dockerTargetData != null && dockerTargetData.getProvidedImageTar().isPresent()) {
-            logger.info("Binary upload will docker provided image tar.");
-            binaryUpload = dockerTargetData.getProvidedImageTar().get();
         }
+        // Very important not to binary scan the same Docker output that we sig scanned (=codelocation name collision)
 
         if (binaryUpload == null) {
             logger.info("Binary scanner found nothing to upload.");
