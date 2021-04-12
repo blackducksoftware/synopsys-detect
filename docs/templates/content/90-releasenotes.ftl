@@ -2,6 +2,7 @@
 
 ## Version 7.0.0
 ### New Features
+* Added scripts detect7.sh and detect7.ps1 for invoking ${solution_name} 7.x.x. detect.sh and detect.ps1 will (by default) continue to invoke the latest ${solution_name} 6 version.
 * Added support for Yarn workspaces.
 * Added support for the dependency graph SBT plugin. Resolution cache generation is no longer a requirement of the SBT detector.
 * Added the properties [detect.excluded.directories](../properties/configuration/paths/#detect-excluded-directories-advanced), [detect.exclude.default.directories](../properties/configuration/paths/#detect-exclude-default-directories-advanced), and [detect.excluded.directory.search.depth](../properties/configuration/signature scanner/#detect-excluded-directory-search-depth) to handle exclusions for detector search and signature scanning.

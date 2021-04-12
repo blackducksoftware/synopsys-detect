@@ -23,8 +23,8 @@ public class Terms {
         termMap.put("source_repo_organization", "blackducksoftware");
         termMap.put("image_repo_organization", "blackducksoftware");
         termMap.put("blackduck_release_page", "https://github.com/blackducksoftware/hub/releases");
-        termMap.put("bash_script_name", "detect.sh");
-        termMap.put("powershell_script_name", "detect.ps1");
+        termMap.put("bash_script_name", "detect7.sh");
+        termMap.put("powershell_script_name", "detect7.ps1");
         termMap.put("binary_repo_url_base", "https://sig-repo.synopsys.com");
         termMap.put("binary_repo_ui_url_base", "https://sig-repo.synopsys.com/webapp/#/artifacts/browse/tree/General");
         termMap.put("binary_repo_repo", "bds-integrations-release");
