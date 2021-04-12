@@ -14,6 +14,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
@@ -1972,13 +1973,18 @@ public class DetectProperties {
             if (field.getType().equals(DetectProperty.class)) {
                 Object property = field.get(Property.class);
                 DetectProperty detectProperty = (DetectProperty) property;
-                properties.add(convertDetectPropertyToProperty(detectProperty));
+                convertDetectPropertyToProperty(detectProperty).ifPresent(p -> properties.add(p));
             }
         }
         return new Properties(properties);
     }
 
-    private static Property convertDetectPropertyToProperty(DetectProperty detectProperty) {
+    private static Optional<Property> convertDetectPropertyToProperty(DetectProperty detectProperty) {
+        // TODO This is a TEMPORARY workaround for the fact that we forgot to remove the remove-in-7 properties for 7.0.0
+        // For 7.1.0 we should remove the remove-in-7 properties, and remove the following 4 lines:
+        if ((detectProperty.getPropertyDeprecationInfo() != null) && (detectProperty.getPropertyDeprecationInfo().getRemoveInVersion() == DetectMajorVersion.SEVEN)) {
+            return Optional.empty();
+        }
         Property property = detectProperty.getProperty();
         property.setInfo(detectProperty.getName(), detectProperty.getFromVersion());
         if (detectProperty.getPropertyHelpInfo() != null) {
@@ -1994,7 +2000,7 @@ public class DetectProperties {
         if (detectProperty.getExample() != null) {
             property.setExample(detectProperty.getExample());
         }
-        return property;
+        return Optional.of(property);
     }
 
 }
