@@ -29,13 +29,26 @@ There are two ways to run ${solution_name}:
 1. Download and run a ${solution_name} script.
 1. Download and run a ${solution_name} .jar file.
 
-The primary reason to run a ${solution_name} script is that the scripts by default always
-run the latest version of the ${solution_name} .jar file; downloading it for you if necessary.
-When run this way, ${solution_name} automatically updates itself; as soon as a new version becomes
-available, the new version automatically runs, unless you override this default behavior.
+The primary reason to run one of the ${solution_name} scripts is that the scripts have an auto-update feature.
+By default, they always
+run the latest version of the ${solution_name} .jar file within a specific major version; downloading it for you if necessary.
+When you run ${solution_name} via one of the provided scripts, you automatically pick up fixes and new features as they are released.
+Each script limits itself to a specific ${solution_name} major version (for example, 7.y.z, or 6.y.z), unless you override
+this default behavior.
+
+| ${solution_name} version | Script Type | Script Name |
+| --- | --- | --- |
+| 7 | Bash | detect7.sh |
+| 7 | PowerShell | detect7.ps1 |
+| 6 | Bash | detect.sh |
+| 6 | PowerShell | detect.ps1 |
+
+Instuctions and examples in this documentation that reference the scripts assume you are running
+${solution_name} 7, so refer to detect7.sh or detect7.ps1. To run ${solution_name} 6 instead,
+simply substitute detect.sh for detect7.sh, or detect.ps1 for detect7.ps1.
 
 The primary reason to run the ${solution_name} .jar directly is that this method provides
-direct control over the ${solution_name} version;
+direct control over the exact ${solution_name} version;
 ${solution_name} does not automatically update in this scenario.
 
 ## Running the ${solution_name} script
@@ -56,13 +69,13 @@ On Linux or Mac, execute the ${solution_name} script (${bash_script_name}, which
 To download and run the latest version of ${solution_name} in a single command:
 
 ````
-bash <(curl -s -L https://detect.synopsys.com/detect.sh)
+bash <(curl -s -L https://detect.synopsys.com/detect7.sh)
 ````
 
 Append any command line arguments to the end, separated by spaces. For example:
 
 ````
-bash <(curl -s -L https://detect.synopsys.com/detect.sh) --blackduck.url=https://blackduck.mydomain.com --blackduck.username=myusername
+bash <(curl -s -L https://detect.synopsys.com/detect7.sh) --blackduck.url=https://blackduck.mydomain.com --blackduck.username=myusername
 ````
 
 #### Windows
@@ -73,13 +86,13 @@ the [Command Prompt](https://en.wikipedia.org/wiki/Cmd.exe).
 To download and run the latest version of ${solution_name} in a single command:
 
 ````
-powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"
+powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect"
 ````
 
 Append any command line arguments to the end, separated by spaces. For example:
 
 ````
-powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect" --blackduck.url=https://blackduck.mydomain.com --blackduck.username=myusername
+powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect" --blackduck.url=https://blackduck.mydomain.com --blackduck.username=myusername
 ````
 
 ### Running a specific version of ${solution_name}
@@ -90,14 +103,14 @@ To run a specific version of ${solution_name}:
 
 ````
 export DETECT_LATEST_RELEASE_VERSION={${solution_name} version}
-bash <(curl -s -L https://detect.synopsys.com/detect.sh)
+bash <(curl -s -L https://detect.synopsys.com/detect7.sh)
 ````
 
 For example, to run ${solution_name} version 5.5.0:
 
 ````
 export DETECT_LATEST_RELEASE_VERSION=5.5.0
-bash <(curl -s -L https://detect.synopsys.com/detect.sh)
+bash <(curl -s -L https://detect.synopsys.com/detect7.sh)
 ````
 
 #### Windows (Command Prompt)
@@ -106,14 +119,14 @@ To run a specific version of ${solution_name}:
 
 ````
 set DETECT_LATEST_RELEASE_VERSION={${solution_name} version}
-powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"
+powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect"
 ````
 
 For example, to run ${solution_name} version 5.5.0:
 
 ````
 set DETECT_LATEST_RELEASE_VERSION=5.5.0
-powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"
+powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect"
 ````
 
 ## Running the ${solution_name} .jar
