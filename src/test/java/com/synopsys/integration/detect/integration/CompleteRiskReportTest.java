@@ -78,6 +78,7 @@ public class CompleteRiskReportTest extends BlackDuckIntegrationTest {
 
         List<String> detectArgs = getInitialArgs(projectName, projectVersionName);
         detectArgs.add("--detect.risk.report.pdf=true");
+        detectArgs.add("--detect.timeout=1200");
         if (includePath) {
             detectArgs.add("--detect.risk.report.pdf.path=" + reportDirectory.toString());
         }
