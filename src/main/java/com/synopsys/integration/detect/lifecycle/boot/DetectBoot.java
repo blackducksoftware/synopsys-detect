@@ -113,11 +113,7 @@ public class DetectBoot {
 
         DetectConfigurationBootManager detectConfigurationBootManager = detectBootFactory.createDetectConfigurationBootManager(detectConfiguration);
         DeprecationResult deprecationResult = detectConfigurationBootManager.checkForDeprecations(detectConfiguration);
-
-        Boolean suppressConfigurationOutput = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_SUPPRESS_CONFIGURATION_OUTPUT.getProperty());
-        if (Boolean.FALSE.equals(suppressConfigurationOutput)) {
-            detectConfigurationBootManager.printConfiguration(maskedRawPropertyValues, propertyKeys, deprecationResult.getAdditionalNotes());
-        }
+        detectConfigurationBootManager.printConfiguration(maskedRawPropertyValues, propertyKeys, deprecationResult.getAdditionalNotes());
 
         Optional<DetectUserFriendlyException> possiblePropertyParseError = detectConfigurationBootManager.validateForPropertyParseErrors();
         if (possiblePropertyParseError.isPresent()) {
