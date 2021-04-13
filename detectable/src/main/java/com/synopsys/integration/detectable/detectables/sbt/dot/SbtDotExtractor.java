@@ -27,14 +27,17 @@ import com.synopsys.integration.executable.Executable;
 import com.synopsys.integration.executable.ExecutableOutput;
 
 public class SbtDotExtractor {
+    // Adding this arg to sbt command line let's it run in the background (IDETECT-2595)
+    // Ref: https://github.com/sbt/sbt/issues/701
+    public static final String SBT_ARG_TO_ENABLE_BACKGROUND_EXECUTION = "-Djline.terminal=jline.UnsupportedTerminal";
     private final DetectableExecutableRunner executableRunner;
     private final SbtDotOutputParser sbtDotOutputParser;
     private final SbtProjectMatcher sbtProjectMatcher;
     private final SbtGraphParserTransformer sbtGraphParserTransformer;
     private final SbtDotGraphNodeParser graphNodeParser;
 
-    public SbtDotExtractor(final DetectableExecutableRunner executableRunner, final SbtDotOutputParser sbtDotOutputParser, final SbtProjectMatcher sbtProjectMatcher,
-        final SbtGraphParserTransformer sbtGraphParserTransformer, final SbtDotGraphNodeParser graphNodeParser) {
+    public SbtDotExtractor(DetectableExecutableRunner executableRunner, SbtDotOutputParser sbtDotOutputParser, SbtProjectMatcher sbtProjectMatcher,
+        SbtGraphParserTransformer sbtGraphParserTransformer, SbtDotGraphNodeParser graphNodeParser) {
         this.executableRunner = executableRunner;
         this.sbtDotOutputParser = sbtDotOutputParser;
         this.sbtProjectMatcher = sbtProjectMatcher;
@@ -44,7 +47,7 @@ public class SbtDotExtractor {
 
     public Extraction extract(File directory, ExecutableTarget sbt) {
         try {
-            Executable dotExecutable = ExecutableUtils.createFromTarget(directory, sbt, "dependencyDot");
+            Executable dotExecutable = ExecutableUtils.createFromTarget(directory, sbt, SbtDotExtractor.SBT_ARG_TO_ENABLE_BACKGROUND_EXECUTION, "dependencyDot");
             ExecutableOutput dotOutput = executableRunner.executeSuccessfully(dotExecutable);
             List<File> dotGraphs = sbtDotOutputParser.parseGeneratedGraphFiles(dotOutput.getStandardOutputAsList());
 

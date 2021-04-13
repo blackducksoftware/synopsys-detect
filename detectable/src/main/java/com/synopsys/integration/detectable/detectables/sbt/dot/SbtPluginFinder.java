@@ -46,7 +46,7 @@ public class SbtPluginFinder {
 
     private List<String> listPlugins(File directory, ExecutableTarget sbt) throws DetectableException {
         try {
-            ExecutableOutput output = executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, sbt, "-Djline.terminal=jline.UnsupportedTerminal", "plugins"));
+            ExecutableOutput output = executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, sbt, SbtDotExtractor.SBT_ARG_TO_ENABLE_BACKGROUND_EXECUTION, "plugins"));
             return output.getStandardOutputAsList();
         } catch (ExecutableFailedException e) {
             throw new DetectableException("Unable to list installed sbt plugins, detect requires a suitable sbt plugin is available to find dependency graphs.", e);
