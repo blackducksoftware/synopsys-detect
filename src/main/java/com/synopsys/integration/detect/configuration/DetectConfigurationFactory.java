@@ -9,7 +9,6 @@ package com.synopsys.integration.detect.configuration;
 
 import static java.util.Collections.emptyList;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -74,9 +73,6 @@ import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOption
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
-import com.synopsys.integration.log.SilentIntLogger;
-import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig;
-import com.synopsys.integration.polaris.common.configuration.PolarisServerConfigBuilder;
 import com.synopsys.integration.rest.credentials.Credentials;
 import com.synopsys.integration.rest.credentials.CredentialsBuilder;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
@@ -212,27 +208,6 @@ public class DetectConfigurationFactory {
         return new BlackDuckConnectionDetails(offline, blackduckUrl, blackDuckProperties, findParallelProcessors(), createConnectionDetails());
     }
     //#endregion
-
-    public PolarisServerConfigBuilder createPolarisServerConfigBuilder(File userHome) {
-        PolarisServerConfigBuilder polarisServerConfigBuilder = PolarisServerConfig.newBuilder();
-        Set<String> allPolarisKeys = polarisServerConfigBuilder.getPropertyKeys();
-        Map<String, String> polarisProperties = detectConfiguration.getRaw(allPolarisKeys);
-
-        // Detect and polaris-common use different property keys for the Polaris URL,
-        // so we need to pull it from they Detect config using Detect's key,
-        // and write it to the polaris-common config using the polaris-common key.
-        String polarisUrlValue = detectConfiguration.getRaw(DetectProperties.POLARIS_URL.getProperty()).orElse(null);
-        if (StringUtils.isNotBlank(polarisUrlValue)) {
-            polarisProperties.put(PolarisServerConfigBuilder.URL_KEY.getKey(), polarisUrlValue);
-        }
-
-        polarisServerConfigBuilder.setLogger(new SilentIntLogger());
-
-        polarisServerConfigBuilder.setProperties(polarisProperties.entrySet());
-        polarisServerConfigBuilder.setUserHome(userHome.getAbsolutePath());
-        polarisServerConfigBuilder.setTimeoutInSeconds(findTimeoutInSeconds().intValue());
-        return polarisServerConfigBuilder;
-    }
 
     public PhoneHomeOptions createPhoneHomeOptions() {
         Map<String, String> phoneHomePassthrough = detectConfiguration.getRaw(DetectProperties.PHONEHOME_PASSTHROUGH.getProperty());

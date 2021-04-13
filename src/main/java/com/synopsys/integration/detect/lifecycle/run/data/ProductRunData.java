@@ -10,30 +10,20 @@ package com.synopsys.integration.detect.lifecycle.run.data;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 
 public class ProductRunData {
-    private final PolarisRunData polarisRunData;
     private final BlackDuckRunData blackDuckRunData;
     private final DetectToolFilter detectToolFilter;
 
-    public ProductRunData(final PolarisRunData polarisRunData, final BlackDuckRunData blackDuckRunData, final DetectToolFilter detectToolFilter) {
-        this.polarisRunData = polarisRunData;
+    public ProductRunData(final BlackDuckRunData blackDuckRunData, final DetectToolFilter detectToolFilter) {
         this.blackDuckRunData = blackDuckRunData;
         this.detectToolFilter = detectToolFilter;
     }
-
-    public PolarisRunData getPolarisRunData() {
-        return polarisRunData;
-    }
-
+    
     public BlackDuckRunData getBlackDuckRunData() {
         return blackDuckRunData;
     }
 
     public boolean shouldUseBlackDuckProduct() {
         return blackDuckRunData != null;
-    }
-
-    public boolean shouldUsePolarisProduct() {
-        return polarisRunData != null;
     }
 
     public DetectToolFilter getDetectToolFilter() {

@@ -22,69 +22,22 @@
  */
 package com.synopsys.integration.detect.boot;
 
-import java.io.File;
 import java.nio.file.Path;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.synopsys.integration.builder.BuilderStatus;
 import com.synopsys.integration.common.util.Bds;
-import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
-import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
-import com.synopsys.integration.detect.lifecycle.boot.decision.PolarisDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
-import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
-import com.synopsys.integration.polaris.common.configuration.PolarisServerConfigBuilder;
 
 class ProductDeciderTest {
-    private String VALID_URL = "http://example";
-
-    @Test
-    public void shouldRunPolarisWhenConfigValid() {
-        File userHome = Mockito.mock(File.class);
-        DetectToolFilter detectToolFilter = mockToolFilterForPolaris(true);
-        DetectConfigurationFactory detectConfigurationFactory = mockDetectConfigurationFactoryForPolaris(true, null);
-
-        PolarisDecision polarisDecision = new ProductDecider().decidePolaris(detectConfigurationFactory, userHome, detectToolFilter, BlackDuckDecision.runOnline(BlackduckScanMode.INTELLIGENT));
-        Assertions.assertTrue(polarisDecision.shouldRun());
-    }
-
-    @Test
-    public void shouldNotRunPolarisWhenConfigInvalid() {
-        File userHome = Mockito.mock(File.class);
-        DetectToolFilter detectToolFilter = mockToolFilterForPolaris(true);
-        DetectConfigurationFactory detectConfigurationFactory = mockDetectConfigurationFactoryForPolaris(false, null);
-
-        PolarisDecision polarisDecision = new ProductDecider().decidePolaris(detectConfigurationFactory, userHome, detectToolFilter, BlackDuckDecision.runOnline(BlackduckScanMode.INTELLIGENT));
-        Assertions.assertFalse(polarisDecision.shouldRun());
-    }
-
-    @Test
-    public void shouldNotRunPolarisWhenConfigInvalidAndURLProvided() {
-        File userHome = Mockito.mock(File.class);
-        DetectToolFilter detectToolFilter = mockToolFilterForPolaris(true);
-        DetectConfigurationFactory detectConfigurationFactory = mockDetectConfigurationFactoryForPolaris(false, VALID_URL);
-
-        PolarisDecision polarisDecision = new ProductDecider().decidePolaris(detectConfigurationFactory, userHome, detectToolFilter, BlackDuckDecision.runOnline(BlackduckScanMode.INTELLIGENT));
-        Assertions.assertFalse(polarisDecision.shouldRun());
-    }
-
-    @Test
-    public void shouldNotRunPolarisWhenExcluded() {
-        File userHome = Mockito.mock(File.class);
-        DetectToolFilter detectToolFilter = mockToolFilterForPolaris(false);
-        DetectConfigurationFactory detectConfigurationFactory = mockDetectConfigurationFactoryForPolaris(true, null);
-
-        PolarisDecision polarisDecision = new ProductDecider().decidePolaris(detectConfigurationFactory, userHome, detectToolFilter, BlackDuckDecision.runOnline(BlackduckScanMode.INTELLIGENT));
-        Assertions.assertFalse(polarisDecision.shouldRun());
-    }
+    private final String VALID_URL = "http://example";
 
     @Test
     public void shouldRunBlackDuckOfflineWhenOverride() {
@@ -134,16 +87,6 @@ class ProductDeciderTest {
 
         Assertions.assertTrue(productDecision.shouldRun());
         Assertions.assertFalse(productDecision.isOffline());
-    }
-
-    @Test
-    public void shouldNotRunPolarisBlackDuckRapidMode() {
-        File userHome = Mockito.mock(File.class);
-        DetectToolFilter detectToolFilter = mockToolFilterForPolaris(true);
-        DetectConfigurationFactory detectConfigurationFactory = mockDetectConfigurationFactoryForPolaris(true, null);
-
-        PolarisDecision polarisDecision = new ProductDecider().decidePolaris(detectConfigurationFactory, userHome, detectToolFilter, BlackDuckDecision.runOnline(BlackduckScanMode.RAPID));
-        Assertions.assertFalse(polarisDecision.shouldRun());
     }
 
     @Test
@@ -213,48 +156,11 @@ class ProductDeciderTest {
         return new BdioOptions(useBdio2, null, null, enableLegacyUpload);
     }
 
-    private DetectToolFilter mockToolFilterForPolaris(boolean includesPolaris) {
-        DetectToolFilter detectToolFilter = Mockito.mock(DetectToolFilter.class);
-        Mockito.when(detectToolFilter.shouldInclude(DetectTool.POLARIS)).thenReturn(includesPolaris);
-        return detectToolFilter;
-    }
-
     private BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions(Path offlineScannerInstallPath, String userProvidedScannerInstallUrl) {
         return new BlackDuckSignatureScannerOptions(Bds.listOf(), Bds.listOf(), offlineScannerInstallPath, null, userProvidedScannerInstallUrl, 1024, 1, false, null, false, null, null, null, 1, null, false, false);
     }
 
     private BlackDuckConnectionDetails blackDuckConnectionDetails(boolean offline, String blackduckUrl) {
         return new BlackDuckConnectionDetails(offline, blackduckUrl, null, null, null);
-    }
-
-    private DetectConfigurationFactory mockDetectConfigurationFactoryForPolaris(boolean returnsValid, String url) {
-        PolarisServerConfigBuilder polarisServerConfigBuilder = new MockPolarisServerConfigBuilder(returnsValid, url);
-        DetectConfigurationFactory detectConfigurationFactory = Mockito.mock(DetectConfigurationFactory.class);
-        Mockito.when(detectConfigurationFactory.createPolarisServerConfigBuilder(Mockito.any())).thenReturn(
-            polarisServerConfigBuilder
-        );
-        return detectConfigurationFactory;
-    }
-
-    static class MockPolarisServerConfigBuilder extends PolarisServerConfigBuilder {
-        private final boolean isValid;
-        private final String url;
-
-        public MockPolarisServerConfigBuilder(boolean isValid, String url) {
-            this.isValid = isValid;
-            this.url = url;
-        }
-
-        @Override
-        protected void validate(BuilderStatus builderStatus) {
-            if (!isValid) {
-                builderStatus.addErrorMessage("Invalid polaris config!");
-            }
-        }
-
-        @Override
-        public String getUrl() {
-            return this.url;
-        }
     }
 }

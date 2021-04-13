@@ -58,10 +58,6 @@ public class OperationFactory {
         this.aggregateOptions = runContext.createRunOptions();
     }
 
-    public final PolarisOperation createPolarisOperation() {
-        return new PolarisOperation(runContext.getProductRunData(), runContext.getDetectConfiguration(), runContext.getDirectoryManager(), runContext.getEventSystem(), runContext.getStatusEventPublisher(), runContext.getOperationSystem());
-    }
-
     public final DockerOperation createDockerOperation() {
         return new DockerOperation(runContext.getDirectoryManager(), runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getDetectDetectableFactory(), runContext.getExtractionEnvironmentProvider(),
             runContext.getCodeLocationConverter(), runContext.getOperationSystem());
