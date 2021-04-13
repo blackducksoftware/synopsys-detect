@@ -21,10 +21,6 @@ For connecting to ${blackduck_product_name}:
 * A ${blackduck_product_name} user with the [required roles](../advanced/BD-user-role-requirements/).
 * On Alpine Linux you will also need to override the Java installation used by the ${blackduck_signature_scanner_name} as described [here](../advanced/troubleshooting/solutions/#solution_8).
 
-## ${polaris_product_name} requirements
-
-A licensed installation of Polaris with access credentials.
-
 ## Project type-specific requirements
 
 In general, the detectors require:

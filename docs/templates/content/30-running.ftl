@@ -244,7 +244,8 @@ Use the [BDIO2 enabled property](../properties/configuration/paths/#bdio-2-enabl
 
 ## Running with ${polaris_product_name}
 
-This capability is deprecated and will be removed in a future release.
+This capability was deprecated in ${solution_name} 6, and disabled in ${solution_name} 7. All references
+to it will be removed in ${solution_name} 8.
 
 ${solution_name} can be used with ${polaris_product_name} to perform Static Application Security Testing (SAST).
 
