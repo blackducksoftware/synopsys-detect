@@ -61,7 +61,7 @@ public class DetectBootTest {
         Map<String, String> propertyMap = new HashMap<>();
         propertyMap.put(DetectProperties.BLACKDUCK_OFFLINE_MODE.getProperty().getKey(), "true");
         List<PropertySource> propertySources = Collections.singletonList(new MapPropertySource(TEST_PROPERTY_SOURCE_NAME, propertyMap));
-        String[] sourceArgs = new String[]{};
+        String[] sourceArgs = new String[] {};
 
         try {
             DetectBoot detectBoot = detectBootFactory.createDetectBoot(propertySources, sourceArgs, detectContext);
@@ -74,20 +74,19 @@ public class DetectBootTest {
             assertTrue(wrappedProductRunData.isPresent());
             ProductRunData productRunData = wrappedProductRunData.get();
             assertTrue(productRunData.shouldUseBlackDuckProduct());
-            assertFalse(productRunData.shouldUsePolarisProduct());
             assertFalse(productRunData.getBlackDuckRunData().isOnline());
         } catch (IOException | IllegalAccessException e) {
             fail("Unexpected exception was thrown by the test code: ", e);
         }
     }
 
-    @ValueSource(strings = { "-h", "--help"} )
+    @ValueSource(strings = { "-h", "--help" })
     @ParameterizedTest
     public void testHelp(String sourceArg) {
         Map<String, String> propertyMap = new HashMap<>();
         propertyMap.put(DetectProperties.BLACKDUCK_OFFLINE_MODE.getProperty().getKey(), "true");
         List<PropertySource> propertySources = Collections.singletonList(new MapPropertySource(TEST_PROPERTY_SOURCE_NAME, propertyMap));
-        String[] sourceArgs = new String[]{sourceArg};
+        String[] sourceArgs = new String[] { sourceArg };
 
         try {
             DetectBoot detectBoot = detectBootFactory.createDetectBoot(propertySources, sourceArgs, detectContext);

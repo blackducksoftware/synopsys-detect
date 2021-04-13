@@ -47,7 +47,6 @@ import com.synopsys.integration.detect.interactive.InteractivePropertySourceBuil
 import com.synopsys.integration.detect.interactive.InteractiveWriter;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
 import com.synopsys.integration.detect.lifecycle.boot.product.BlackDuckConnectivityChecker;
-import com.synopsys.integration.detect.lifecycle.boot.product.PolarisConnectivityChecker;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBoot;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootFactory;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions;
@@ -72,7 +71,6 @@ import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.profiling.DetectorProfiler;
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.util.OperatingSystemType;
 
 import freemarker.template.Configuration;
@@ -200,7 +198,7 @@ public class DetectBootFactory {
 
     public ProductBoot createProductBoot(DetectConfigurationFactory detectConfigurationFactory) {
         ProductBootOptions productBootOptions = detectConfigurationFactory.createProductBootOptions();
-        return new ProductBoot(blackDuckConnectivityChecker, new PolarisConnectivityChecker(), createAnalyticsConfigurationService(), createProductBootFactory(detectConfigurationFactory), productBootOptions);
+        return new ProductBoot(blackDuckConnectivityChecker, createAnalyticsConfigurationService(), createProductBootFactory(detectConfigurationFactory), productBootOptions);
     }
 
     public AnalyticsConfigurationService createAnalyticsConfigurationService() {

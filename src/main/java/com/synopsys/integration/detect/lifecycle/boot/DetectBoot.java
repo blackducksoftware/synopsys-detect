@@ -44,7 +44,6 @@ import com.synopsys.integration.detect.configuration.validation.DetectConfigurat
 import com.synopsys.integration.detect.interactive.InteractiveManager;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
-import com.synopsys.integration.detect.lifecycle.boot.decision.PolarisDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
 import com.synopsys.integration.detect.lifecycle.boot.decision.RunDecision;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBoot;
@@ -113,11 +112,7 @@ public class DetectBoot {
 
         DetectConfigurationBootManager detectConfigurationBootManager = detectBootFactory.createDetectConfigurationBootManager(detectConfiguration);
         DeprecationResult deprecationResult = detectConfigurationBootManager.checkForDeprecations(detectConfiguration);
-
-        Boolean suppressConfigurationOutput = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_SUPPRESS_CONFIGURATION_OUTPUT.getProperty());
-        if (Boolean.FALSE.equals(suppressConfigurationOutput)) {
-            detectConfigurationBootManager.printConfiguration(maskedRawPropertyValues, propertyKeys, deprecationResult.getAdditionalNotes());
-        }
+        detectConfigurationBootManager.printConfiguration(maskedRawPropertyValues, propertyKeys, deprecationResult.getAdditionalNotes());
 
         Optional<DetectUserFriendlyException> possiblePropertyParseError = detectConfigurationBootManager.validateForPropertyParseErrors();
         if (possiblePropertyParseError.isPresent()) {
@@ -175,12 +170,11 @@ public class DetectBoot {
                 detectConfigurationFactory.createScanMode(), detectConfigurationFactory.createBdioOptions());
             RunDecision runDecision = new RunDecision(detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE); //TODO: Move to proper decision home. -jp
             DetectToolFilter detectToolFilter = detectConfigurationFactory.createToolFilter(runDecision, blackDuckDecision);
-            PolarisDecision polarisDecision = productDecider.decidePolaris(detectConfigurationFactory, directoryManager.getUserHome(), detectToolFilter, blackDuckDecision);
 
             logger.debug("Decided what products will be run. Starting product boot.");
 
             ProductBoot productBoot = detectBootFactory.createProductBoot(detectConfigurationFactory);
-            productRunData = productBoot.boot(polarisDecision, blackDuckDecision, detectToolFilter);
+            productRunData = productBoot.boot(blackDuckDecision, detectToolFilter);
         } catch (DetectUserFriendlyException e) {
             return Optional.of(DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem));
         }

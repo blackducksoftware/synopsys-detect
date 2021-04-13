@@ -34,7 +34,7 @@ import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.types.path.SimplePathResolver;
 import com.synopsys.integration.configuration.source.MapPropertySource;
 import com.synopsys.integration.configuration.source.PropertySource;
-import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
+import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 
 //import com.synopsys.integration.detect.configuration.DetectInfo;
 //import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
@@ -50,25 +50,25 @@ public class DetectConfigurationTest {
         final String givenKeyFull = "detect.phone.home.passthrough." + givenKeyPhoneHomePart;
         final String givenValue = "testValue";
 
-        final HashMap<String, String> values = new HashMap<>();
+        HashMap<String, String> values = new HashMap<>();
         values.put(givenKeyFull, givenValue);
-        final List<PropertySource> propertySources = new ArrayList<>();
+        List<PropertySource> propertySources = new ArrayList<>();
         propertySources.add(new MapPropertySource("test", values));
-        final PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);
+        PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);
 
-        final Map<String, String> phoneHomePropertiesMap = propertyConfiguration.getRaw(DetectProperties.PHONEHOME_PASSTHROUGH.getProperty());
+        Map<String, String> phoneHomePropertiesMap = propertyConfiguration.getRaw(DetectProperties.PHONEHOME_PASSTHROUGH.getProperty());
         Assertions.assertEquals(givenValue, phoneHomePropertiesMap.get(givenKeyPhoneHomePart));
     }
 
     @Test
     public void testDeprecated() throws DetectUserFriendlyException {
-        final HashMap<String, String> values = new HashMap<>();
-        values.put(DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS.getProperty().getKey(), "2");
-        final List<PropertySource> propertySources = new ArrayList<>();
+        HashMap<String, String> values = new HashMap<>();
+        values.put(DetectProperties.DETECT_BDIO2_ENABLED.getProperty().getKey(), "false");
+        List<PropertySource> propertySources = new ArrayList<>();
         propertySources.add(new MapPropertySource("test", values));
-        final PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);
-        final DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(propertyConfiguration, new SimplePathResolver());
-        final BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions();
-        Assertions.assertEquals(2, (int) blackDuckSignatureScannerOptions.getParallelProcessors());
+        PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);
+        DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(propertyConfiguration, new SimplePathResolver());
+        BdioOptions bdioOptions = detectConfigurationFactory.createBdioOptions();
+        Assertions.assertFalse(bdioOptions.isBdio2Enabled());
     }
 }

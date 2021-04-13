@@ -48,7 +48,7 @@ import com.synopsys.integration.util.NameVersion;
 
 public class RunManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private ExitCodeManager exitCodeManager;
+    private final ExitCodeManager exitCodeManager;
 
     public RunManager(ExitCodeManager exitCodeManager) {
         this.exitCodeManager = exitCodeManager;
@@ -61,13 +61,6 @@ public class RunManager {
             OperationFactory operationFactory = new OperationFactory(runContext);
             ProjectEventPublisher projectEventPublisher = runContext.getProjectEventPublisher();
             DetectToolFilter detectToolFilter = productRunData.getDetectToolFilter();
-
-            logger.info(ReportConstants.RUN_SEPARATOR);
-            if (runContext.getProductRunData().shouldUsePolarisProduct()) {
-                runPolarisProduct(operationFactory, detectToolFilter);
-            } else {
-                logger.info("Polaris tools will not be run.");
-            }
 
             UniversalToolsResult universalToolsResult = runUniversalProjectTools(operationFactory, detectToolFilter, projectEventPublisher, runResult);
 
@@ -152,17 +145,6 @@ public class RunManager {
             return UniversalToolsResult.failure(projectNameVersion);
         } else {
             return UniversalToolsResult.success(projectNameVersion);
-        }
-    }
-
-    private void runPolarisProduct(OperationFactory operationFactory, DetectToolFilter detectToolFilter) {
-        logger.info(ReportConstants.RUN_SEPARATOR);
-        if (detectToolFilter.shouldInclude(DetectTool.POLARIS)) {
-            logger.info("Will include the Polaris tool.");
-            operationFactory.createPolarisOperation().execute();
-            logger.info("Polaris actions finished.");
-        } else {
-            logger.info("Polaris CLI tool will not be run.");
         }
     }
 

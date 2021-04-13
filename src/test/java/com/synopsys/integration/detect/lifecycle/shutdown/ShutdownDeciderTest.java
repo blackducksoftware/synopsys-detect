@@ -30,7 +30,7 @@ public class ShutdownDeciderTest {
 
     @Test
     public void shouldPreserveBdioAndScanIfOffline() {
-        ProductRunData productRunData = new ProductRunData(null, BlackDuckRunData.offline(), null);
+        ProductRunData productRunData = new ProductRunData(BlackDuckRunData.offline(), null);
         CleanupDecision decision = new ShutdownDecider().decideCleanup(ConfigTestUtils.emptyConfig(), productRunData, null);
         Assert.assertTrue(decision.shouldPreserveBdio());
         Assert.assertTrue(decision.shouldPreserveScan());

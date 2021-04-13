@@ -20,36 +20,31 @@ import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
-import com.synopsys.integration.detect.lifecycle.boot.decision.PolarisDecision;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
-import com.synopsys.integration.detect.lifecycle.run.data.PolarisRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.blackduck.analytics.AnalyticsConfigurationService;
 import com.synopsys.integration.detect.workflow.blackduck.analytics.AnalyticsSetting;
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig;
 
 public class ProductBoot {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final BlackDuckConnectivityChecker blackDuckConnectivityChecker;
-    private final PolarisConnectivityChecker polarisConnectivityChecker;
     private final AnalyticsConfigurationService analyticsConfigurationService;
     private final ProductBootFactory productBootFactory;
     private final ProductBootOptions productBootOptions;
 
-    public ProductBoot(BlackDuckConnectivityChecker blackDuckConnectivityChecker, PolarisConnectivityChecker polarisConnectivityChecker, AnalyticsConfigurationService analyticsConfigurationService, ProductBootFactory productBootFactory,
+    public ProductBoot(BlackDuckConnectivityChecker blackDuckConnectivityChecker, AnalyticsConfigurationService analyticsConfigurationService, ProductBootFactory productBootFactory,
         ProductBootOptions productBootOptions) {
         this.blackDuckConnectivityChecker = blackDuckConnectivityChecker;
-        this.polarisConnectivityChecker = polarisConnectivityChecker;
         this.analyticsConfigurationService = analyticsConfigurationService;
         this.productBootFactory = productBootFactory;
         this.productBootOptions = productBootOptions;
     }
 
-    public ProductRunData boot(PolarisDecision polarisDecision, BlackDuckDecision blackDuckDecision, DetectToolFilter detectToolFilter) throws DetectUserFriendlyException {
-        if (!polarisDecision.shouldRun() && !blackDuckDecision.shouldRun()) {
+    public ProductRunData boot(BlackDuckDecision blackDuckDecision, DetectToolFilter detectToolFilter) throws DetectUserFriendlyException {
+        if (!blackDuckDecision.shouldRun()) {
             throw new DetectUserFriendlyException(
                 "Your environment was not sufficiently configured to run Black Duck or Polaris. Please configure your environment for at least one product.  See online help at: https://detect.synopsys.com/doc/",
                 ExitCodeType.FAILURE_CONFIGURATION);
@@ -60,15 +55,13 @@ public class ProductBoot {
 
         BlackDuckRunData blackDuckRunData = getBlackDuckRunData(blackDuckDecision, productBootFactory, blackDuckConnectivityChecker, productBootOptions, analyticsConfigurationService);
 
-        PolarisRunData polarisRunData = getPolarisRunData(polarisDecision, polarisConnectivityChecker);
-
         if (productBootOptions.isTestConnections()) {
             logger.debug(String.format("%s is set to 'true' so Detect will not run.", DetectProperties.DETECT_TEST_CONNECTION.getProperty().getName()));
             return null;
         }
 
         logger.debug("Detect product boot completed.");
-        return new ProductRunData(polarisRunData, blackDuckRunData, detectToolFilter);
+        return new ProductRunData(blackDuckRunData, detectToolFilter);
     }
 
     @Nullable
@@ -116,21 +109,5 @@ public class ProductBoot {
             logger.trace("Failed to check analytics setting on Black Duck. Likely this Black Duck instance does not support it.", e);
             return true; // Skip phone home will be applied at the library level.
         }
-    }
-
-    private PolarisRunData getPolarisRunData(PolarisDecision polarisDecision, PolarisConnectivityChecker polarisConnectivityChecker) throws DetectUserFriendlyException {
-        PolarisRunData polarisRunData = null;
-        if (polarisDecision.shouldRun()) {
-            logger.debug("Will boot Polaris product.");
-            PolarisServerConfig polarisServerConfig = polarisDecision.getPolarisServerConfig();
-            PolarisConnectivityResult polarisConnectivityResult = polarisConnectivityChecker.determineConnectivity(polarisServerConfig);
-
-            if (polarisConnectivityResult.isSuccessfullyConnected()) {
-                polarisRunData = new PolarisRunData(polarisDecision.getPolarisServerConfig());
-            } else {
-                throw new DetectUserFriendlyException("Could not communicate with Polaris: " + polarisConnectivityResult.getFailureReason(), ExitCodeType.FAILURE_POLARIS_CONNECTIVITY);
-            }
-        }
-        return polarisRunData;
     }
 }

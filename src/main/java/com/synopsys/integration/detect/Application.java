@@ -106,14 +106,12 @@ public class Application implements ApplicationRunner {
         detectContext.registerBean(detectInfo);
         detectContext.registerBean(fileFinder);
 
-        boolean printOutput = true;
         boolean shouldForceSuccess = false;
 
         Optional<DetectBootResult> detectBootResultOptional = bootApplication(detectRun, applicationArguments.getSourceArgs(), eventSystem, detectContext, exitCodeManager, gson, detectInfo, fileFinder);
 
         if (detectBootResultOptional.isPresent()) {
             DetectBootResult detectBootResult = detectBootResultOptional.get();
-            printOutput = detectBootResult.shouldPrintOutput();
             shouldForceSuccess = detectBootResult.shouldForceSuccess();
 
             runApplication(detectContext, eventSystem, exitCodeManager, detectBootResult, fileFinder);
@@ -130,7 +128,7 @@ public class Application implements ApplicationRunner {
 
         logger.debug("All Detect actions completed.");
 
-        exitApplication(exitManager, startTime, printOutput, shouldForceSuccess);
+        exitApplication(exitManager, startTime, shouldForceSuccess);
     }
 
     private Optional<DetectBootResult> bootApplication(DetectRun detectRun, String[] sourceArgs, EventSystem eventSystem, DetectContext detectContext, ExitCodeManager exitCodeManager, Gson gson, DetectInfo detectInfo,
@@ -195,8 +193,8 @@ public class Application implements ApplicationRunner {
         }
     }
 
-    private void exitApplication(ExitManager exitManager, long startTime, boolean printOutput, boolean shouldForceSuccess) {
-        ExitOptions exitOptions = new ExitOptions(startTime, printOutput, shouldForceSuccess, SHOULD_EXIT);
+    private void exitApplication(ExitManager exitManager, long startTime, boolean shouldForceSuccess) {
+        ExitOptions exitOptions = new ExitOptions(startTime, shouldForceSuccess, SHOULD_EXIT);
         ExitResult exitResult = exitManager.exit(exitOptions);
 
         if (exitResult.shouldForceSuccess()) {

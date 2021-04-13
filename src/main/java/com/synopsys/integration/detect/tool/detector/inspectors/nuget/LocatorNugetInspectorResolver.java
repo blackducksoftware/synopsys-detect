@@ -14,13 +14,13 @@ import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.runtime.DotNetRuntimeManager;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspector;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.impl.DotNetCoreNugetInspector;
@@ -29,13 +29,13 @@ import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.OperatingSystemType;
 
 public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
+    private static final String INTEGRATION_NUGET_INSPECTOR_NAME = "IntegrationNugetInspector";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final DetectExecutableResolver executableResolver;
     private final DetectableExecutableRunner executableRunner;
     private final DetectInfo detectInfo;
     private final FileFinder fileFinder;
-    private final String nugetInspectorName;
     private final List<String> packagesRepoUrl;
     private final NugetInspectorLocator nugetInspectorLocator;
     private final DotNetRuntimeManager dotNetRuntimeManager;
@@ -44,13 +44,12 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
     private NugetInspector resolvedNugetInspector;
 
     public LocatorNugetInspectorResolver(DetectExecutableResolver executableResolver, DetectableExecutableRunner executableRunner, DetectInfo detectInfo,
-        FileFinder fileFinder, String nugetInspectorName, List<String> packagesRepoUrl, NugetInspectorLocator nugetInspectorLocator,
+        FileFinder fileFinder, List<String> packagesRepoUrl, NugetInspectorLocator nugetInspectorLocator,
         DotNetRuntimeManager dotNetRuntimeManager) {
         this.executableResolver = executableResolver;
         this.executableRunner = executableRunner;
         this.detectInfo = detectInfo;
         this.fileFinder = fileFinder;
-        this.nugetInspectorName = nugetInspectorName;
         this.packagesRepoUrl = packagesRepoUrl;
         this.nugetInspectorLocator = nugetInspectorLocator;
         this.dotNetRuntimeManager = dotNetRuntimeManager;
@@ -108,7 +107,7 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
 
     //original inspector
     private NugetInspector findExeInspector(File nupkgFolder) throws DetectableException {
-        String exeName = nugetInspectorName + ".exe";
+        String exeName = INTEGRATION_NUGET_INSPECTOR_NAME + ".exe";
         Function<String, NugetInspector> constructor = (String exePath) -> new ExeNugetInspector(executableRunner, exePath);
         return findInspector(nupkgFolder, exeName, constructor);
     }

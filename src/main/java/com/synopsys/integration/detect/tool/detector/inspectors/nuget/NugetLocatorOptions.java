@@ -12,21 +12,15 @@ import java.util.Optional;
 
 public class NugetLocatorOptions {
     private final List<String> packagesRepoUrl;
-    private final String nugetInspectorName;
     private final String nugetInspectorVersion;
 
-    public NugetLocatorOptions(final List<String> packagesRepoUrl, final String nugetInspectorName, final String nugetInspectorVersion) {
+    public NugetLocatorOptions(List<String> packagesRepoUrl, String nugetInspectorVersion) {
         this.packagesRepoUrl = packagesRepoUrl;
-        this.nugetInspectorName = nugetInspectorName;
         this.nugetInspectorVersion = nugetInspectorVersion;
     }
 
     public List<String> getPackagesRepoUrl() {
         return packagesRepoUrl;
-    }
-
-    public String getNugetInspectorName() {
-        return nugetInspectorName;
     }
 
     public Optional<String> getNugetInspectorVersion() {

@@ -91,13 +91,6 @@ public class DetectBootResult {
                    .orElse(Boolean.FALSE);
     }
 
-    @NotNull
-    public Boolean shouldPrintOutput() {
-        return getDetectConfiguration()
-                   .map(configuration -> !configuration.getValueOrDefault(DetectProperties.DETECT_SUPPRESS_RESULTS_OUTPUT.getProperty()))
-                   .orElse(Boolean.TRUE);
-    }
-
     public enum BootType {
         EXIT,
         RUN,

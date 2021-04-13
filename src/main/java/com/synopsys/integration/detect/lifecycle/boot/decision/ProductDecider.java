@@ -30,53 +30,19 @@ package com.synopsys.integration.detect.lifecycle.boot.decision;
  * under the License.
  */
 
-import java.io.File;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.builder.BuilderStatus;
-import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
-import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
-import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
-import com.synopsys.integration.polaris.common.configuration.PolarisServerConfigBuilder;
 
 public class ProductDecider {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    public PolarisDecision decidePolaris(DetectConfigurationFactory detectConfigurationFactory, File userHome, DetectToolFilter detectToolFilter, BlackDuckDecision blackDuckDecision) {
-        if (!detectToolFilter.shouldInclude(DetectTool.POLARIS)) {
-            logger.debug("Polaris will NOT run because it is excluded.");
-            return PolarisDecision.skip();
-        }
-
-        if (blackDuckDecision.scanMode() == BlackduckScanMode.RAPID) {
-            logger.debug("Polaris will NOT run because BlackDuck {} scan configured.", BlackduckScanMode.RAPID.name());
-            return PolarisDecision.skip();
-        }
-
-        PolarisServerConfigBuilder polarisServerConfigBuilder = detectConfigurationFactory.createPolarisServerConfigBuilder(userHome);
-        BuilderStatus builderStatus = polarisServerConfigBuilder.validateAndGetBuilderStatus();
-        if (!builderStatus.isValid()) {
-            String polarisUrl = polarisServerConfigBuilder.getUrl();
-            if (StringUtils.isBlank(polarisUrl)) {
-                logger.debug("Polaris will NOT run: The Polaris url must be provided.");
-            } else {
-                logger.debug("Polaris will NOT run: " + builderStatus.getFullErrorMessage());
-            }
-            return PolarisDecision.skip();
-        } else {
-            logger.debug("Polaris will run: An access token and url were found.");
-            return PolarisDecision.runOnline(polarisServerConfigBuilder.build());
-        }
-    }
 
     public BlackDuckDecision decideBlackDuck(BlackDuckConnectionDetails blackDuckConnectionDetails, BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, BlackduckScanMode scanMode, BdioOptions bdioOptions) {
         boolean offline = blackDuckConnectionDetails.getOffline();
