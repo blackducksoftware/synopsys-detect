@@ -26,7 +26,7 @@ public class SbtPluginFinder {
     public static final String DEPENDENCY_GRAPH_SBT_INTERNAL_PLUGIN_NAME = "sbt.plugins.DependencyTreePlugin";
     private final DetectableExecutableRunner executableRunner;
 
-    public SbtPluginFinder(final DetectableExecutableRunner executableRunner) {
+    public SbtPluginFinder(DetectableExecutableRunner executableRunner) {
         this.executableRunner = executableRunner;
     }
 
@@ -37,7 +37,7 @@ public class SbtPluginFinder {
 
     public boolean determineInstalledPlugin(List<String> pluginOutput) {
         if (pluginOutput.stream().anyMatch(line ->
-                line.contains(DEPENDENCY_GRAPH_PLUGIN_NAME) || line.contains(DEPENDENCY_GRAPH_SBT_INTERNAL_PLUGIN_NAME))) {
+                                               line.contains(DEPENDENCY_GRAPH_PLUGIN_NAME) || line.contains(DEPENDENCY_GRAPH_SBT_INTERNAL_PLUGIN_NAME))) {
             return true;
         } else {
             return false;
@@ -46,7 +46,7 @@ public class SbtPluginFinder {
 
     private List<String> listPlugins(File directory, ExecutableTarget sbt) throws DetectableException {
         try {
-            ExecutableOutput output = executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, sbt, "plugins"));
+            ExecutableOutput output = executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, sbt, SbtDotExtractor.SBT_ARG_TO_ENABLE_BACKGROUND_EXECUTION, "plugins"));
             return output.getStandardOutputAsList();
         } catch (ExecutableFailedException e) {
             throw new DetectableException("Unable to list installed sbt plugins, detect requires a suitable sbt plugin is available to find dependency graphs.", e);
