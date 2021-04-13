@@ -1620,7 +1620,7 @@ When setting a property value on the command line, prefix the property name with
 <p>There is a space before and between each complete property setting, but there are no spaces around the equals sign (=).</p>
 <p>For example,
 to set property <em>detect.project.value</em>:</p>
-<pre><code>bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh) --detect.project.name=MyProject
+<pre><code>bash &lt;(curl -s -L https://detect.synopsys.com/detect7.sh) --detect.project.name=MyProject
 </code></pre>
 
 <h2 id="using-environment-variables">Using environment variables<a class="headerlink" href="#using-environment-variables" title="Permanent link">#</a></h2>
@@ -1629,14 +1629,14 @@ to set property <em>detect.project.value</em>:</p>
 is the property name converted to uppercase, with period characters (".") converted to underscore
 characters ("_"). For example:</p>
 <pre><code>export DETECT_PROJECT_NAME=MyProject
-bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh)
+bash &lt;(curl -s -L https://detect.synopsys.com/detect7.sh)
 </code></pre>
 
 <p>On Windows, the environment variable name can either be the original property
 name, or the property name converted to uppercase with period characters (".") converted to underscore
 characters ("_"). For example:</p>
 <pre><code>$Env:DETECT_PROJECT_NAME = MyProject
-powershell &quot;[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect&quot;
+powershell &quot;[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect&quot;
 </code></pre>
 
 <h2 id="using-a-configuration-file">Using a configuration file<a class="headerlink" href="#using-a-configuration-file" title="Permanent link">#</a></h2>
@@ -1648,7 +1648,7 @@ property values from it.</p>
 <p>For example, if you wanted to set property <em>detect.project.name</em> using a configuration (.properties) file, you
 could do it as follows:</p>
 <pre><code>echo &quot;detect.project.name=myproject&quot; &gt; application.properties
-bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh) --detect.source.path=/opt/projects/project1
+bash &lt;(curl -s -L https://detect.synopsys.com/detect7.sh) --detect.source.path=/opt/projects/project1
 </code></pre>
 
 <p>Because the configuration file has one of the file names that Spring looks for by default
@@ -1671,7 +1671,7 @@ Populate it with property assignments as previously described.</p>
 <h3 id="selecting-a-profile-on-the-command-line">Selecting a profile on the command line<a class="headerlink" href="#selecting-a-profile-on-the-command-line" title="Permanent link">#</a></h3>
 <p>To select one or more profiles on the Synopsys Detect command line, assign the the comma-separated list of profiles
 to the Spring Boot property <em>spring.profiles.active</em>:</p>
-<pre><code>bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh) --spring.profiles.active={profilename}
+<pre><code>bash &lt;(curl -s -L https://detect.synopsys.com/detect7.sh) --spring.profiles.active={profilename}
 </code></pre>
 
 <p>This capability is provided by Spring Boot. For more information, refer to

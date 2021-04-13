@@ -1626,7 +1626,7 @@ output directory must be readable by all.</p>
 <p>For more complex use cases, you may need to pass Docker Inspector property values to Docker Inspector using Synopsys Detect. To do this, construct the Synopsys Detect property name by prefixing the Docker Inspector property name with <code>detect.docker.passthrough.</code>.</p>
 <p>For example, suppose you need to set Docker Inspector's service.timeout value (the length of time Docker Inspector waits for a response from the Image Inspector services that it uses) to 480000 milliseconds. You add the prefix to the Docker Inspector property name to derive the Synopsys Detect property name <code>detect.docker.passthrough.service.timeout</code>. Therefore, add <code>--detect.docker.passthrough.service.timeout=480000</code> to the Synopsys Detect command line.</p>
 <p>For example:</p>
-<pre><code>./detect.sh --detect.docker.image=ubuntu:latest --detect.docker.passthrough.service.timeout=480000
+<pre><code>./detect7.sh --detect.docker.image=ubuntu:latest --detect.docker.passthrough.service.timeout=480000
 </code></pre>
 
 <p>You can set any Docker Inspector property using this method.
@@ -1653,7 +1653,7 @@ should disable Black Duck - Binary Analysis. For example, you might set: <em>--d
 <p>Run the docker inspect command on the base image; in our example this is ubuntu:latest.
 Find the last element in the RootFS.Layers array. This is the platform top layer ID. In the following example, this is sha256:b079b3fa8d1b4b30a71a6e81763ed3da1327abaf0680ed3ed9f00ad1d5de5e7c.
 Set the value of the Docker Inspector property docker.platform.top.layer.id to the platform top layer ID. For example:</p>
-<p>./detect.sh ... --detect.docker.image={your application image} --detect.docker.platform.top.layer.id=sha256:b079b3fa8d1b4b30a71a6e81763ed3da1327abaf0680ed3ed9f00ad1d5de5e7c</p>
+<p>./detect7.sh ... --detect.docker.image={your application image} --detect.docker.platform.top.layer.id=sha256:b079b3fa8d1b4b30a71a6e81763ed3da1327abaf0680ed3ed9f00ad1d5de5e7c</p>
 <p>In this mode, there may be some loss in match accuracy from the Black Duck Signature Scanner because, in this scenario, the Black Duck Signature Scanner may be deprived of some contextual information, such as the operating system files that enable it to determine the Linux distribution, and that that may negatively affect its ability to accurately identify components.</p>
 <h3 id="inspecting-windows-docker-images">Inspecting Windows Docker images<a class="headerlink" href="#inspecting-windows-docker-images" title="Permanent link">#</a></h3>
 <p>Given a Windows Image, Docker Inspector, since it can only discover packages using

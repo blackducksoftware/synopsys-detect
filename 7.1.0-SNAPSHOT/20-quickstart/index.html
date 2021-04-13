@@ -1514,11 +1514,11 @@ server. One way to do that is to add the following arguments to the command line
 </ul>
 <p>The command you run looks like this:</p>
 <p>On Linux or Mac:</p>
-<pre><code>bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh) --blackduck.url={your Black Duck server URL} --blackduck.username={your Black Duck username} --blackduck.password={your Black Duck password}
+<pre><code>bash &lt;(curl -s -L https://detect.synopsys.com/detect7.sh) --blackduck.url={your Black Duck server URL} --blackduck.username={your Black Duck username} --blackduck.password={your Black Duck password}
 </code></pre>
 
 <p>On Windows:</p>
-<pre><code>powershell &quot;[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect&quot; --blackduck.url={your Black Duck server URL} --blackduck.username={your Black Duck username} --blackduck.password={your Black Duck password}
+<pre><code>powershell &quot;[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect&quot; --blackduck.url={your Black Duck server URL} --blackduck.username={your Black Duck username} --blackduck.password={your Black Duck password}
 </code></pre>
 
 <p>The operations performed by Synopsys Detect depends on what it finds in your source directory.

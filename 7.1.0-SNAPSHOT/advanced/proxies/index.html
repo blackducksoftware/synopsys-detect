@@ -429,15 +429,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#providing-proxy-details-to-detectsh" class="md-nav__link">
-    Providing proxy details to detect.sh
+  <a href="#providing-proxy-details-to-detect7sh" class="md-nav__link">
+    Providing proxy details to detect7.sh
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#providing-proxy-details-to-detectps1" class="md-nav__link">
-    Providing proxy details to detect.ps1
+  <a href="#providing-proxy-details-to-detect7ps1" class="md-nav__link">
+    Providing proxy details to detect7.ps1
   </a>
   
 </li>
@@ -1458,15 +1458,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#providing-proxy-details-to-detectsh" class="md-nav__link">
-    Providing proxy details to detect.sh
+  <a href="#providing-proxy-details-to-detect7sh" class="md-nav__link">
+    Providing proxy details to detect7.sh
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#providing-proxy-details-to-detectps1" class="md-nav__link">
-    Providing proxy details to detect.ps1
+  <a href="#providing-proxy-details-to-detect7ps1" class="md-nav__link">
+    Providing proxy details to detect7.ps1
   </a>
   
 </li>
@@ -1492,7 +1492,7 @@
 <p>When running behind a proxy:</p>
 <ol>
 <li>The one-liner cannot be used to download the scripts, they do not know about proxy. The scripts must be already downloaded.</li>
-<li>The script (detect.sh or detect.ps1) requires proxy details to do a version
+<li>The script (detect7.sh or detect7.ps1) requires proxy details to do a version
 check on, and/or download the Synopsys Detect .jar file.</li>
 <li>Synopsys Detect; in other words, the code in the .jar file, requires proxy details to download inspectors and
 connect to Black Duck and Polaris.</li>
@@ -1507,23 +1507,23 @@ including:</p>
 <li>blackduck.proxy.password (proxy password)</li>
 </ul>
 <p>Refer to <a href="../../properties/configuration/proxy/">properties</a> for more information.</p>
-<h2 id="providing-proxy-details-to-detectsh">Providing proxy details to detect.sh<a class="headerlink" href="#providing-proxy-details-to-detectsh" title="Permanent link">#</a></h2>
-<p>The curl commands executed by detect.sh to do a version check on, and/or download the Synopsys Detect
+<h2 id="providing-proxy-details-to-detect7sh">Providing proxy details to detect7.sh<a class="headerlink" href="#providing-proxy-details-to-detect7sh" title="Permanent link">#</a></h2>
+<p>The curl commands executed by detect7.sh to do a version check on, and/or download the Synopsys Detect
 .jar file, require additional command line options when run behind a proxy. For more information
 on curl options, refer to the <a href="https://curl.haxx.se/docs/manpage.html">curl documentation</a>.</p>
-<p>To provide additional curl command line options for detect.sh to use
+<p>To provide additional curl command line options for detect7.sh to use
 when it executes curl, set the environment variable DETECT_CURL_OPTS before running
-detect.sh. For example:</p>
+detect7.sh. For example:</p>
 <pre><code>export DETECT_CURL_OPTS=--proxy http://myproxy:3128
-./detect.sh
+./detect7.sh
 </code></pre>
-<p>When using detect.sh to execute Synopsys Detect you must set proxy properties
+<p>When using detect7.sh to execute Synopsys Detect you must set proxy properties
 for Synopsys Detect as previously described.</p>
-<h2 id="providing-proxy-details-to-detectps1">Providing proxy details to detect.ps1<a class="headerlink" href="#providing-proxy-details-to-detectps1" title="Permanent link">#</a></h2>
-<p>detect.ps1 derives proxy details from environment variables
+<h2 id="providing-proxy-details-to-detect7ps1">Providing proxy details to detect7.ps1<a class="headerlink" href="#providing-proxy-details-to-detect7ps1" title="Permanent link">#</a></h2>
+<p>detect7.ps1 derives proxy details from environment variables
 whose names match the Synopsys Detect proxy property names.
-Configuring detect.ps1 for your proxy involves
-setting those environment variables before running detect.ps1.
+Configuring detect7.ps1 for your proxy involves
+setting those environment variables before running detect7.ps1.
 Note that typically, the PowerShell script is run from a Command window, using "powershell script.ps1" so these should be run in that Command window.
 For example:</p>
 <pre><code>set BLACKDUCK_PROXY_HOST=$ProxyHost
@@ -1533,7 +1533,7 @@ set BLACKDUCK_PROXY_USERNAME=$ProxyPassword
 powershell "Import-Module FULL_PATH_TO_DOWNLOADED_SCRIPT/detect.ps1; detect"
 </code></pre>
 <p>For additional information on these properties, including alternate key formats, see the <a href="../advanced/script-configuration/">Shell script configuration reference</a>.</p>
-<p>When using detect.ps1 to execute Synopsys Detect, Synopsys Detect also receives the proxy details
+<p>When using detect7.ps1 to execute Synopsys Detect, Synopsys Detect also receives the proxy details
 from these environment variables, so no additional configuration is required for Synopsys Detect.</p>
                 
                   

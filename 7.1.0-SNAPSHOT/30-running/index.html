@@ -1806,12 +1806,48 @@ Synopsys Detect assumes the current working directory is the project directory.<
 <li>Download and run a Synopsys Detect script.</li>
 <li>Download and run a Synopsys Detect .jar file.</li>
 </ol>
-<p>The primary reason to run a Synopsys Detect script is that the scripts by default always
-run the latest version of the Synopsys Detect .jar file; downloading it for you if necessary.
-When run this way, Synopsys Detect automatically updates itself; as soon as a new version becomes
-available, the new version automatically runs, unless you override this default behavior.</p>
+<p>The primary reason to run one of the Synopsys Detect scripts is that the scripts have an auto-update feature.
+By default, they always
+run the latest version of the Synopsys Detect .jar file within a specific major version; downloading it for you if necessary.
+When you run Synopsys Detect via one of the provided scripts, you automatically pick up fixes and new features as they are released.
+Each script limits itself to a specific Synopsys Detect major version (for example, 7.y.z, or 6.y.z), unless you override
+this default behavior.</p>
+<table>
+<thead>
+<tr>
+<th>Synopsys Detect version</th>
+<th>Script Type</th>
+<th>Script Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>7</td>
+<td>Bash</td>
+<td>detect7.sh</td>
+</tr>
+<tr>
+<td>7</td>
+<td>PowerShell</td>
+<td>detect7.ps1</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Bash</td>
+<td>detect.sh</td>
+</tr>
+<tr>
+<td>6</td>
+<td>PowerShell</td>
+<td>detect.ps1</td>
+</tr>
+</tbody>
+</table>
+<p>Instuctions and examples in this documentation that reference the scripts assume you are running
+Synopsys Detect 7, so refer to detect7.sh or detect7.ps1. To run Synopsys Detect 6 instead,
+simply substitute detect.sh for detect7.sh, or detect.ps1 for detect7.ps1.</p>
 <p>The primary reason to run the Synopsys Detect .jar directly is that this method provides
-direct control over the Synopsys Detect version;
+direct control over the exact Synopsys Detect version;
 Synopsys Detect does not automatically update in this scenario.</p>
 <h2 id="running-the-synopsys-detect-script">Running the Synopsys Detect script<a class="headerlink" href="#running-the-synopsys-detect-script" title="Permanent link">#</a></h2>
 <p>The primary function of the Synopsys Detect scripts is to download and execute the Synopsys Detect .jar file.
@@ -1823,47 +1859,47 @@ Several aspects of script functionality can be configured, including:</p>
 </ul>
 <p>Information on how to configure the scripts is in <a href="../advanced/script-configuration/">Shell script configuration</a>.</p>
 <h4 id="linux-or-mac">Linux or Mac<a class="headerlink" href="#linux-or-mac" title="Permanent link">#</a></h4>
-<p>On Linux or Mac, execute the Synopsys Detect script (detect.sh, which is a Bash script) from Bash.</p>
+<p>On Linux or Mac, execute the Synopsys Detect script (detect7.sh, which is a Bash script) from Bash.</p>
 <p>To download and run the latest version of Synopsys Detect in a single command:</p>
-<pre><code>bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh)
+<pre><code>bash &lt;(curl -s -L https://detect.synopsys.com/detect7.sh)
 </code></pre>
 
 <p>Append any command line arguments to the end, separated by spaces. For example:</p>
-<pre><code>bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh) --blackduck.url=https://blackduck.mydomain.com --blackduck.username=myusername
+<pre><code>bash &lt;(curl -s -L https://detect.synopsys.com/detect7.sh) --blackduck.url=https://blackduck.mydomain.com --blackduck.username=myusername
 </code></pre>
 
 <h4 id="windows">Windows<a class="headerlink" href="#windows" title="Permanent link">#</a></h4>
-<p>On Windows, execute the Synopsys Detect script (detect.ps1, which is a PowerShell script) from
+<p>On Windows, execute the Synopsys Detect script (detect7.ps1, which is a PowerShell script) from
 the <a href="https://en.wikipedia.org/wiki/Cmd.exe">Command Prompt</a>.</p>
 <p>To download and run the latest version of Synopsys Detect in a single command:</p>
-<pre><code>powershell &quot;[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect&quot;
+<pre><code>powershell &quot;[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect&quot;
 </code></pre>
 
 <p>Append any command line arguments to the end, separated by spaces. For example:</p>
-<pre><code>powershell &quot;[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect&quot; --blackduck.url=https://blackduck.mydomain.com --blackduck.username=myusername
+<pre><code>powershell &quot;[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect&quot; --blackduck.url=https://blackduck.mydomain.com --blackduck.username=myusername
 </code></pre>
 
 <h3 id="running-a-specific-version-of-synopsys-detect">Running a specific version of Synopsys Detect<a class="headerlink" href="#running-a-specific-version-of-synopsys-detect" title="Permanent link">#</a></h3>
 <h4 id="linux-or-mac-bash">Linux or Mac (Bash)<a class="headerlink" href="#linux-or-mac-bash" title="Permanent link">#</a></h4>
 <p>To run a specific version of Synopsys Detect:</p>
 <pre><code>export DETECT_LATEST_RELEASE_VERSION={Synopsys Detect version}
-bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh)
+bash &lt;(curl -s -L https://detect.synopsys.com/detect7.sh)
 </code></pre>
 
 <p>For example, to run Synopsys Detect version 5.5.0:</p>
 <pre><code>export DETECT_LATEST_RELEASE_VERSION=5.5.0
-bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh)
+bash &lt;(curl -s -L https://detect.synopsys.com/detect7.sh)
 </code></pre>
 
 <h4 id="windows-command-prompt">Windows (Command Prompt)<a class="headerlink" href="#windows-command-prompt" title="Permanent link">#</a></h4>
 <p>To run a specific version of Synopsys Detect:</p>
 <pre><code>set DETECT_LATEST_RELEASE_VERSION={Synopsys Detect version}
-powershell &quot;[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect&quot;
+powershell &quot;[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect&quot;
 </code></pre>
 
 <p>For example, to run Synopsys Detect version 5.5.0:</p>
 <pre><code>set DETECT_LATEST_RELEASE_VERSION=5.5.0
-powershell &quot;[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect&quot;
+powershell &quot;[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect&quot;
 </code></pre>
 
 <h2 id="running-the-synopsys-detect-jar">Running the Synopsys Detect .jar<a class="headerlink" href="#running-the-synopsys-detect-jar" title="Permanent link">#</a></h2>
@@ -1877,9 +1913,9 @@ powershell &quot;[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm http
 java -jar synopsys-detect-5.6.2.jar
 </code></pre>
 
-<p>You can use the Synopsys Detect Bash script (detect.sh) to download the Synopsys Detect .jar file:</p>
+<p>You can use the Synopsys Detect Bash script (detect7.sh) to download the Synopsys Detect .jar file:</p>
 <pre><code>export DETECT_DOWNLOAD_ONLY=1
-./detect.sh
+./detect7.sh
 </code></pre>
 
 <h2 id="including-and-excluding-tools-and-detectors">Including and excluding tools and detectors<a class="headerlink" href="#including-and-excluding-tools-and-detectors" title="Permanent link">#</a></h2>

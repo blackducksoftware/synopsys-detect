@@ -2940,6 +2940,7 @@
 <h2 id="version-700">Version 7.0.0<a class="headerlink" href="#version-700" title="Permanent link">#</a></h2>
 <h3 id="new-features">New Features<a class="headerlink" href="#new-features" title="Permanent link">#</a></h3>
 <ul>
+<li>Added scripts detect7.sh and detect7.ps1 for invoking Synopsys Detect 7.x.x. detect.sh and detect.ps1 will (by default) continue to invoke the latest Synopsys Detect 6 version.</li>
 <li>Added support for Yarn workspaces.</li>
 <li>Added support for the dependency graph SBT plugin. Resolution cache generation is no longer a requirement of the SBT detector.</li>
 <li>Added the properties <a href="../properties/configuration/paths/#detect-excluded-directories-advanced">detect.excluded.directories</a>, <a href="../properties/configuration/paths/#detect-exclude-default-directories-advanced">detect.exclude.default.directories</a>, and <a href="../properties/configuration/signature scanner/#detect-excluded-directory-search-depth">detect.excluded.directory.search.depth</a> to handle exclusions for detector search and signature scanning.</li>
@@ -3127,7 +3128,7 @@ and writes them to the status.json file.</li>
 <li>Synopsys Detect stops if the Docker Inspector tool applies and Synopsys Detect is running on Windows.</li>
 <li>Synopsys Detect configures Docker Inspector's working directories inside Synopsys Detect's run directory.</li>
 <li>Synopsys Detect requires and runs Docker Inspector version 9.</li>
-<li>Moved the location to which detect.sh downloads the Synopsys Detect .jar from /tmp to ~/synopsys-detect/download.</li>
+<li>Moved the location to which detect7.sh downloads the Synopsys Detect .jar from /tmp to ~/synopsys-detect/download.</li>
 </ul>
 <h3 id="resolved-issues_9">Resolved issues<a class="headerlink" href="#resolved-issues_9" title="Permanent link">#</a></h3>
 <ul>
