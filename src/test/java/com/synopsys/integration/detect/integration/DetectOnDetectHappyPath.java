@@ -57,7 +57,6 @@ public class DetectOnDetectHappyPath extends BlackDuckIntegrationTest {
     public static final String COMMON_TEST_CODE_LOCATION_SUFFIX = "/common-test/com.synopsys.integration/common-test/%s gradle/bom";
     public static final String CONFIGURATION_CODE_LOCATION_SUFFIX = "/configuration/com.synopsys.integration/configuration/%s gradle/bom";
     public static final String DETECTOR_CODE_LOCATION_SUFFIX = "/detector/com.synopsys.integration/detector/%s gradle/bom";
-    public static final String POLARIS_CODE_LOCATION_SUFFIX = "/polaris/com.synopsys.integration/polaris/%s gradle/bom";
 
     private ProjectView projectToDelete = null;
     private List<CodeLocationView> codeLocationsToDelete = null;
@@ -97,8 +96,7 @@ public class DetectOnDetectHappyPath extends BlackDuckIntegrationTest {
         codeLocationNameSuffixesToCheck.add(String.format(COMMON_TEST_CODE_LOCATION_SUFFIX, version));
         codeLocationNameSuffixesToCheck.add(String.format(CONFIGURATION_CODE_LOCATION_SUFFIX, version));
         codeLocationNameSuffixesToCheck.add(String.format(DETECTOR_CODE_LOCATION_SUFFIX, version));
-        codeLocationNameSuffixesToCheck.add(String.format(POLARIS_CODE_LOCATION_SUFFIX, version));
-
+        
         final String projectName = "synopsys-detect-junit";
         final String projectVersionName = "happy-path";
         ProjectVersionWrapper projectVersionWrapper = assertProjectVersionReady(projectName, projectVersionName);
