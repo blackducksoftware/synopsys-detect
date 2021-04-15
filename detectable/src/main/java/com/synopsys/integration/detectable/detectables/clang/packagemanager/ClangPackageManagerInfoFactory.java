@@ -18,35 +18,35 @@ public class ClangPackageManagerInfoFactory {
     }
 
     public ClangPackageManagerInfo rpm() {
-        final ClangPackageManagerInfoBuilder rpm = new ClangPackageManagerInfoBuilder();
+        ClangPackageManagerInfoBuilder rpm = new ClangPackageManagerInfoBuilder();
         rpm.setName("rpm");
         rpm.setCmd("rpm");
         rpm.setForge(Forge.CENTOS, Forge.FEDORA, Forge.REDHAT);
         rpm.setPresenceCheckArguments(VERSION_FLAG);
-        rpm.setPresenceCheckExpectedText("RPM version");
+        rpm.setPresenceCheckExpectedText("RPM");
         rpm.setGetOwnerArguments("-qf", "--queryformat=\\{ epoch: \\\"%{E}\\\", name: \\\"%{N}\\\", version: \\\"%{V}-%{R}\\\", arch: \\\"%{ARCH}\\\" \\}");
         return rpm.build();
     }
 
     public ClangPackageManagerInfo dpkg() {
-        final ClangPackageManagerInfoBuilder dpkg = new ClangPackageManagerInfoBuilder();
+        ClangPackageManagerInfoBuilder dpkg = new ClangPackageManagerInfoBuilder();
         dpkg.setName("dpkg");
         dpkg.setCmd("dpkg");
         dpkg.setForge(Forge.UBUNTU, Forge.DEBIAN);
         dpkg.setPresenceCheckArguments(VERSION_FLAG);
-        dpkg.setPresenceCheckExpectedText("package management program version");
+        dpkg.setPresenceCheckExpectedText("Debian");
         dpkg.setGetOwnerArguments("-S");
         dpkg.setPackageInfoArguments("-s");
         return dpkg.build();
     }
 
     public ClangPackageManagerInfo apk() {
-        final ClangPackageManagerInfoBuilder apk = new ClangPackageManagerInfoBuilder();
+        ClangPackageManagerInfoBuilder apk = new ClangPackageManagerInfoBuilder();
         apk.setName("apk");
         apk.setCmd("apk");
         apk.setForge(Forge.ALPINE);
         apk.setPresenceCheckArguments(VERSION_FLAG);
-        apk.setPresenceCheckExpectedText("apk-tools ");
+        apk.setPresenceCheckExpectedText("apk-tools");
         apk.setGetOwnerArguments("info", "--who-owns");
         apk.setArchitectureArguments("info", "--print-arch");
         return apk.build();
