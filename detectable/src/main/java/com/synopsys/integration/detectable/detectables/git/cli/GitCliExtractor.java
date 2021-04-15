@@ -19,6 +19,7 @@ import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunnerException;
@@ -33,14 +34,15 @@ public class GitCliExtractor {
     private final DetectableExecutableRunner executableRunner;
     private final GitUrlParser gitUrlParser;
 
-    public GitCliExtractor(final DetectableExecutableRunner executableRunner, final GitUrlParser gitUrlParser) {
+    public GitCliExtractor(DetectableExecutableRunner executableRunner, GitUrlParser gitUrlParser) {
         this.executableRunner = executableRunner;
         this.gitUrlParser = gitUrlParser;
     }
 
-    public Extraction extract(final ExecutableTarget gitExecutable, final File directory) {
+    public Extraction extract(ExecutableTarget gitExecutable, File directory) {
         try {
-            final String repoName = getRepoName(gitExecutable, directory);
+            ToolVersionLogger.log(executableRunner, directory, gitExecutable);
+            String repoName = getRepoName(gitExecutable, directory);
             String branch = getRepoBranch(gitExecutable, directory);
 
             if ("HEAD".equals(branch)) {
@@ -54,7 +56,7 @@ public class GitCliExtractor {
                        .projectName(repoName)
                        .projectVersion(branch)
                        .build();
-        } catch (final ExecutableRunnerException | IntegrationException | MalformedURLException e) {
+        } catch (ExecutableRunnerException | IntegrationException | MalformedURLException e) {
             logger.debug("Failed to extract project info from the git executable.", e);
             return new Extraction.Builder()
                        .success()
@@ -62,22 +64,22 @@ public class GitCliExtractor {
         }
     }
 
-    private String getRepoName(final ExecutableTarget gitExecutable, final File directory) throws ExecutableRunnerException, IntegrationException, MalformedURLException {
-        final String remoteUrlString = runGitSingleLinesResponseSecretly(gitExecutable, directory, "config", "--get", "remote.origin.url");
+    private String getRepoName(ExecutableTarget gitExecutable, File directory) throws ExecutableRunnerException, IntegrationException, MalformedURLException {
+        String remoteUrlString = runGitSingleLinesResponseSecretly(gitExecutable, directory, "config", "--get", "remote.origin.url");
         return gitUrlParser.getRepoName(remoteUrlString);
     }
 
-    private String getRepoBranch(final ExecutableTarget gitExecutable, final File directory) throws ExecutableRunnerException, IntegrationException {
+    private String getRepoBranch(ExecutableTarget gitExecutable, File directory) throws ExecutableRunnerException, IntegrationException {
         return runGitSingleLinesResponse(gitExecutable, directory, "rev-parse", "--abbrev-ref", "HEAD").trim();
     }
 
-    private Optional<String> getRepoBranchBackup(final ExecutableTarget gitExecutable, final File directory) throws ExecutableRunnerException, IntegrationException {
+    private Optional<String> getRepoBranchBackup(ExecutableTarget gitExecutable, File directory) throws ExecutableRunnerException, IntegrationException {
         String output = runGitSingleLinesResponse(gitExecutable, directory, "log", "-n", "1", "--pretty=%d", "HEAD").trim();
         output = StringUtils.removeStart(output, "(");
         output = StringUtils.removeEnd(output, ")");
-        final String[] pieces = output.split(", ");
+        String[] pieces = output.split(", ");
 
-        final String repoBranch;
+        String repoBranch;
         if (pieces.length != 2 || !pieces[1].startsWith(TAG_TOKEN)) {
             logger.debug(String.format("Unexpected output on git log. %s", output));
             repoBranch = null;
@@ -88,19 +90,19 @@ public class GitCliExtractor {
         return Optional.ofNullable(repoBranch);
     }
 
-    private String getCommitHash(final ExecutableTarget gitExecutable, final File directory) {
+    private String getCommitHash(ExecutableTarget gitExecutable, File directory) {
         try {
             return runGitSingleLinesResponse(gitExecutable, directory, "rev-parse", "HEAD").trim();
-        } catch (final ExecutableRunnerException | IntegrationException e) {
+        } catch (ExecutableRunnerException | IntegrationException e) {
             return "";
         }
     }
 
-    private String runGitSingleLinesResponse(final ExecutableTarget gitExecutable, final File directory, final String... args) throws ExecutableRunnerException, IntegrationException {
+    private String runGitSingleLinesResponse(ExecutableTarget gitExecutable, File directory, String... args) throws ExecutableRunnerException, IntegrationException {
         return verifyOutputAndGetFirstLine(executableRunner.execute(ExecutableUtils.createFromTarget(directory, gitExecutable, args)));
     }
 
-    private String runGitSingleLinesResponseSecretly(final ExecutableTarget gitExecutable, final File directory, final String... args) throws ExecutableRunnerException, IntegrationException {
+    private String runGitSingleLinesResponseSecretly(ExecutableTarget gitExecutable, File directory, String... args) throws ExecutableRunnerException, IntegrationException {
         return verifyOutputAndGetFirstLine(executableRunner.executeSecretly(ExecutableUtils.createFromTarget(directory, gitExecutable, args)));
     }
 
@@ -109,7 +111,7 @@ public class GitCliExtractor {
             throw new IntegrationException("git returned a non-zero status code.");
         }
 
-        final List<String> lines = gitOutput.getStandardOutputAsList();
+        List<String> lines = gitOutput.getStandardOutputAsList();
         if (lines.size() != 1) {
             throw new IntegrationException("git output is of a different expected size.");
         }

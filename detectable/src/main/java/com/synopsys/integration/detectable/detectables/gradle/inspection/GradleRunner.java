@@ -57,4 +57,8 @@ public class GradleRunner {
 
         executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, gradleExe, arguments));
     }
+
+    public DetectableExecutableRunner getExecutableRunner() {
+        return executableRunner;
+    }
 }

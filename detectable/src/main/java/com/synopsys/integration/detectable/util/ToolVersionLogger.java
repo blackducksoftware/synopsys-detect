@@ -22,10 +22,13 @@ public class ToolVersionLogger {
     private static final Logger logger = LoggerFactory.getLogger(ToolVersionLogger.class);
 
     public static void log(DetectableExecutableRunner executableRunner, File directory, ExecutableTarget conanExe) {
+        if (!logger.isDebugEnabled()) {
+            return;
+        }
         List<String> versionArgument = Arrays.asList("--version");
         try {
-            String pythonVersionOutput = executableRunner.execute(ExecutableUtils.createFromTarget(directory, conanExe, versionArgument)).getStandardOutput();
-            logger.debug("{} version info: {}", conanExe.toCommand(), pythonVersionOutput);
+            executableRunner.execute(ExecutableUtils.createFromTarget(directory, conanExe, versionArgument));
+            // At DEBUG, commands executed and their output are logged, so it would be redundant to log 'em again here
         } catch (Exception e) {
             logger.warn("Unable to determine {} version: {}", conanExe.toCommand(), e.getMessage());
         }
