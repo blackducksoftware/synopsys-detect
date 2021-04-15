@@ -9,8 +9,12 @@ package com.synopsys.integration.detect.lifecycle.run.operation.blackduck;
 
 import java.util.Optional;
 
+import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
+import com.synopsys.integration.blackduck.http.BlackDuckRequestFactory;
+import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.blackduck.service.dataservice.ProjectService;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
@@ -20,12 +24,15 @@ import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostActions;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
 import com.synopsys.integration.detect.workflow.blackduck.DetectFontLoader;
+import com.synopsys.integration.detect.workflow.blackduck.report.service.ReportService;
 import com.synopsys.integration.detect.workflow.result.BlackDuckBomDetectResult;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.rest.HttpUrl;
+import com.synopsys.integration.util.IntegrationEscapeUtil;
 
 public class FullScanPostProcessingOperation {
     private final DetectToolFilter detectToolFilter;
@@ -47,9 +54,19 @@ public class FullScanPostProcessingOperation {
         this.detectFontLoader = detectFontLoader;
     }
 
-    public void execute(BlackDuckServicesFactory blackDuckServicesFactory, FullScanPostProcessingInput postProcessingInput) throws DetectUserFriendlyException, IntegrationException {
+    public void execute(BlackDuckServicesFactory blackDuckServicesFactory, FullScanPostProcessingInput postProcessingInput) throws DetectUserFriendlyException {
+        Gson gson = blackDuckServicesFactory.getGson();
+        HttpUrl blackDuckUrl = blackDuckServicesFactory.getBlackDuckHttpClient().getBaseUrl();
+        BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
+        BlackDuckRequestFactory blackDuckRequestFactory = blackDuckServicesFactory.getRequestFactory();
+        IntLogger reportServiceLogger = blackDuckServicesFactory.getLogger();
+        ProjectService projectService = blackDuckServicesFactory.createProjectService();
+        IntegrationEscapeUtil integrationEscapeUtil = blackDuckServicesFactory.createIntegrationEscapeUtil();
+        long reportServiceTimeout = detectTimeoutInSeconds * 1000;
+        ReportService reportService = new ReportService(gson, blackDuckUrl, blackDuckApiClient, blackDuckRequestFactory, reportServiceLogger, projectService, integrationEscapeUtil, reportServiceTimeout);
+
         BlackDuckPostActions blackDuckPostActions = new BlackDuckPostActions(blackDuckServicesFactory.createCodeLocationCreationService(), statusEventPublisher, exitCodePublisher, blackDuckServicesFactory.getBlackDuckApiClient(),
-            blackDuckServicesFactory.createProjectBomService(), blackDuckServicesFactory.createReportService(detectTimeoutInSeconds * 1000), operationSystem, detectFontLoader);
+            blackDuckServicesFactory.createProjectBomService(), reportService, operationSystem, detectFontLoader);
         blackDuckPostActions
             .perform(blackDuckPostOptions, postProcessingInput.getCodeLocationResults().getCodeLocationWaitData(), postProcessingInput.getProjectVersionWrapper(), postProcessingInput.getProjectNameVersion(), detectTimeoutInSeconds);
 

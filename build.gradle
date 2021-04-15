@@ -5,7 +5,7 @@ import com.synopsys.integration.detect.verification.VerifyBlackDuckDetectTask
 buildscript {
     ext {
         springBootVersion = '2.4.3'
-        blackDuckCommonVersion = '54.1.0'
+        blackDuckCommonVersion = '55.0.0-SNAPSHOT'
         junitPlatformDefaultTestTags = 'integration, performance, battery'
     }
 
@@ -95,7 +95,9 @@ dependencies {
 
     implementation 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.8'
-    implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
+    implementation ("com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}") {
+        exclude group: 'com.synopsys.integration', module: 'integration-reporting'
+    }
     implementation 'com.synopsys:method-analyzer-core:0.1.0'
 
     implementation 'org.apache.maven.shared:maven-invoker:3.0.0'
@@ -103,6 +105,7 @@ dependencies {
     implementation 'org.yaml:snakeyaml:1.24'
     implementation 'org.zeroturnaround:zt-zip:1.13'
     implementation 'org.freemarker:freemarker:2.3.26-incubating'
+    implementation 'org.apache.pdfbox:pdfbox:2.0.21'
 
     // spring-boot-starter-test *can* provide these, but we choose to be more explicit about the dependencies we ACTUALLY use
     testImplementation 'org.assertj:assertj-core:3.13.2'
