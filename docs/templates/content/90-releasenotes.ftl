@@ -1,5 +1,14 @@
 # Release notes
 
+## Version 7.1.0
+
+### New Features
+
+### Changed features
+
+### Resolved issues
+* (IDETECT-2541) Resolved an issue that caused the CLANG detector to fail when run in non-English locales on Ubuntu and Debian systems.
+
 ## Version 7.0.0
 ### New Features
 * Added scripts detect7.sh and detect7.ps1 for invoking ${solution_name} 7.x.x. detect.sh and detect.ps1 will (by default) continue to invoke the latest ${solution_name} 6 version.
