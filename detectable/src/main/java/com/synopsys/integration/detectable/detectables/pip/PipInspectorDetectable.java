@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
@@ -21,7 +22,6 @@ import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PipResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PythonResolver;
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
@@ -44,6 +44,7 @@ public class PipInspectorDetectable extends Detectable {
     private final PipInspectorDetectableOptions pipInspectorDetectableOptions;
 
     private ExecutableTarget pythonExe;
+    private ExecutableTarget pipExe;
     private File pipInspector;
     private File setupFile;
     private List<Path> requirementsFiles;
@@ -87,7 +88,7 @@ public class PipInspectorDetectable extends Detectable {
             return new ExecutableNotFoundDetectableResult("python");
         }
 
-        ExecutableTarget pipExe = pipResolver.resolvePip();
+        pipExe = pipResolver.resolvePip();
         if (pipExe == null) {
             return new ExecutableNotFoundDetectableResult("pip");
         }
@@ -103,6 +104,6 @@ public class PipInspectorDetectable extends Detectable {
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         //TODO: Handle null better.
-        return pipInspectorExtractor.extract(environment.getDirectory(), pythonExe, pipInspector, setupFile, requirementsFiles, pipInspectorDetectableOptions.getPipProjectName().orElse(""));
+        return pipInspectorExtractor.extract(environment.getDirectory(), pythonExe, pipExe, pipInspector, setupFile, requirementsFiles, pipInspectorDetectableOptions.getPipProjectName().orElse(""));
     }
 }

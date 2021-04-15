@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
@@ -26,6 +28,7 @@ import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class PipInspectorExtractor {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectableExecutableRunner executableRunner;
     private final PipInspectorTreeParser pipInspectorTreeParser;
 
@@ -34,7 +37,8 @@ public class PipInspectorExtractor {
         this.pipInspectorTreeParser = pipInspectorTreeParser;
     }
 
-    public Extraction extract(File directory, ExecutableTarget pythonExe, File pipInspector, File setupFile, List<Path> requirementFilePaths, String providedProjectName) {
+    public Extraction extract(File directory, ExecutableTarget pythonExe, ExecutableTarget pipExe, File pipInspector, File setupFile, List<Path> requirementFilePaths, String providedProjectName) {
+        logToolVersions(directory, pythonExe, pipExe);
         Extraction extractionResult;
         try {
             String projectName = getProjectName(directory, pythonExe, setupFile, providedProjectName);
@@ -104,4 +108,19 @@ public class PipInspectorExtractor {
         return projectName;
     }
 
+    private void logToolVersions(File directory, ExecutableTarget pythonExe, ExecutableTarget pipExe) {
+        List<String> versionArgument = Arrays.asList("--version");
+        try {
+            List<String> pythonVersionOutput = executableRunner.execute(ExecutableUtils.createFromTarget(directory, pythonExe, versionArgument)).getStandardOutputAsList();
+            logger.debug("Python version info: {}", pythonVersionOutput.get(0));
+        } catch (Exception e) {
+            logger.warn("Unable to determine python version: {}", e.getMessage());
+        }
+        try {
+            List<String> pipVersionOutput = executableRunner.execute(ExecutableUtils.createFromTarget(directory, pipExe, versionArgument)).getStandardOutputAsList();
+            logger.debug("Pip version info: {}", pipVersionOutput.get(0));
+        } catch (Exception e) {
+            logger.warn("Unable to determine python version: {}", e.getMessage());
+        }
+    }
 }
