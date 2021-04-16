@@ -238,9 +238,10 @@ ${solution_name} produces dependency information for Black Duck in Black Duck In
 ${solution_name} can produce BDIO files in two formats: BDIO version 1, or BDIO version 2.
 Versions of Black Duck prior to 2018.12.4 accept only BDIO 1. Black Duck versions 2018.12.4 and higher
 accept either BDIO 1 or BDIO 2.
-By default, ${solution_name} produces BDIO 1 files.
+By default, ${solution_name} produces BDIO 2 files.
 
-Use the [BDIO2 enabled property](../properties/configuration/paths/#bdio-2-enabled) to select BDIO 2 format.
+Use the [BDIO2 enabled property](../properties/configuration/paths/#bdio-2-enabled) to select BDIO 1 format
+(by disabling BDIO 2 format).
 
 ## Running with ${polaris_product_name}
 
