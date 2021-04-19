@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.stream.Collectors;
 
-import org.codehaus.plexus.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.detect.configuration.DetectInfo;
@@ -108,6 +108,7 @@ public class FormattedOutputManager {
         if (messages.isEmpty()) {
             return messages;
         }
+        // if a line starts with a tab character remove it.  Any other tabs replace it with spaces to preserve a similar look to the messages as the console output.
         return messages.stream()
                    .filter(StringUtils::isNotBlank)
                    .map(message -> StringUtils.replaceOnce(message, "\t", ""))
