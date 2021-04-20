@@ -93,7 +93,7 @@ public class CodeLocationBdioCreator {
 
             BdioMetadata bdioMetadata = bdio2Factory.createBdioMetadata(codeLocationName, ZonedDateTime.now(), productListBuilder);
             Project bdio2Project = bdio2Factory.createProject(externalId, projectNameVersion.getName(), projectNameVersion.getVersion());
-            Bdio2Document bdio2Document = bdio2Factory.createBdio2Document(bdioMetadata, bdio2Project, dependencyGraph);
+            Bdio2Document bdio2Document = bdio2Factory.createBdio2Document(bdioMetadata, bdio2Project, dependencyGraph, 1);
 
             Bdio2Writer bdio2Writer = new Bdio2Writer();
             File bdio2OutputFile = new File(bdioOutput, bdioCodeLocation.getBdioName() + ".bdio");

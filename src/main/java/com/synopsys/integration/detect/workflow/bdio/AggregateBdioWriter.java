@@ -64,7 +64,7 @@ public class AggregateBdioWriter {
 
         BdioMetadata bdioMetadata = bdio2Factory.createBdioMetadata(codeLocationName, ZonedDateTime.now(), new ProductList.Builder());
         Project project = bdio2Factory.createProject(projectExternalId, projectNameVersion.getName(), projectNameVersion.getVersion());
-        Bdio2Document bdio2Document = bdio2Factory.createBdio2Document(bdioMetadata, project, aggregateDependencyGraph);
+        Bdio2Document bdio2Document = bdio2Factory.createBdio2Document(bdioMetadata, project, aggregateDependencyGraph, 2);
 
         Bdio2Writer bdio2Writer = new Bdio2Writer();
         try {
