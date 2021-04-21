@@ -78,6 +78,8 @@ Append any command line arguments to the end, separated by spaces. For example:
 bash <(curl -s -L https://detect.synopsys.com/detect7.sh) --blackduck.url=https://blackduck.mydomain.com --blackduck.username=myusername
 ````
 
+See [Quoting and escaping shell script arguments](../advanced/script-escaping-special-characters/) for details about quoting and escaping arguments.
+
 #### Windows
 
 On Windows, execute the ${solution_name} script (${powershell_script_name}, which is a PowerShell script) from
@@ -94,6 +96,8 @@ Append any command line arguments to the end, separated by spaces. For example:
 ````
 powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect" --blackduck.url=https://blackduck.mydomain.com --blackduck.username=myusername
 ````
+
+See [Quoting and escaping shell script arguments](../advanced/script-escaping-special-characters/) for details about quoting and escaping arguments.
 
 ### Running a specific version of ${solution_name}
 
