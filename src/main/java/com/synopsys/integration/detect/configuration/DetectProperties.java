@@ -92,7 +92,8 @@ public class DetectProperties {
             .setHelp("A comma separated list of regular expression host patterns that should not use the proxy.",
                 "These patterns must adhere to Java regular expressions: https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html")
             .setGroups(DetectGroup.PROXY, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT)
-            .setCategory(DetectCategory.Advanced);
+            .setCategory(DetectCategory.Advanced)
+            .setExample("blackduck[0-9]+.mycompany.com");
 
     public static final DetectProperty<NullableStringProperty> BLACKDUCK_PROXY_NTLM_DOMAIN =
         new DetectProperty<>(new NullableStringProperty("blackduck.proxy.ntlm.domain"))
