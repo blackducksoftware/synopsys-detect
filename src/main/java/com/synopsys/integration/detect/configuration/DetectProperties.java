@@ -233,7 +233,8 @@ public class DetectProperties {
             .setInfo("Binary Scan Filename Patterns", DetectPropertyFromVersion.VERSION_6_0_0)
             .setHelp(
                 "If specified, all files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified. Search depth is controlled by property detect.binary.scan.search.depth. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
-            .setGroups(DetectGroup.BINARY_SCANNER, DetectGroup.SOURCE_PATH);
+            .setGroups(DetectGroup.BINARY_SCANNER, DetectGroup.SOURCE_PATH)
+            .setExample("*.jar");
 
     public static final DetectProperty<IntegerProperty> DETECT_BINARY_SCAN_SEARCH_DEPTH =
         new DetectProperty<>(new IntegerProperty("detect.binary.scan.search.depth", 0))
@@ -620,7 +621,8 @@ public class DetectProperties {
                 "Subdirectories whose name or path is resolved from the patterns in this list will not be searched when determining which detectors to run, and will be excluded from signature scan using the Scan CLI '--exclude' flag. Refer to the <i>Advanced</i> > <i>Exclusions in Detect</i> page for more details."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setCategory(DetectCategory.Advanced);
+            .setCategory(DetectCategory.Advanced)
+            .setExample("**/*-test");
 
     //TODO - pass these defaults to sig scan also
     public static final DetectProperty<BooleanProperty> DETECT_EXCLUDE_DEFAULT_DIRECTORIES =
