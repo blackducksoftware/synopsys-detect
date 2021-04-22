@@ -1479,11 +1479,18 @@
 <p>The recommended environment for running detect7.sh on Linux or Mac is Bash.</p>
 <p>When an argument contains a space, you should wrap the argument with escaped quotes.</p>
 <p>For example:</p>
-<p>detect7.sh --detect.project.name=\"Project Test\"</p>
+<pre><code>detect7.sh --detect.project.name=\&quot;Project Test\&quot;
+</code></pre>
+
+<pre><code>bash &lt;(curl -s -L https://detect.synopsys.com/detect7.sh) --detect.project.name=\&quot;Project Test\&quot;
+</code></pre>
+
 <p>When an argument contains a special character (for example, an exclamation point) you must
 escape the character with a backslash. The backslash should precede the escaped character.</p>
 <p>For example:</p>
-<p>detect7.sh --detect.project.name=Project\!Test</p>
+<pre><code>detect7.sh --detect.project.name=Project\\!Test
+</code></pre>
+
 <h2 id="running-the-powershell-script-detect7ps1-on-windows">Running the PowerShell script (detect7.ps1) on Windows<a class="headerlink" href="#running-the-powershell-script-detect7ps1-on-windows" title="Permanent link">#</a></h2>
 <p>The recommended environment for running detect7.ps1 on Windows is the <a href="https://en.wikipedia.org/wiki/Cmd.exe">Windows Command Prompt</a>.</p>
 <p>When an argument contains a space, comma or other special character, you should escape the character with a back quote. The back quote should precede the escaped character.</p>
@@ -1492,6 +1499,9 @@ escape the character with a backslash. The backslash should precede the escaped 
 </code></pre>
 
 <pre><code>detect7.ps1 --detect.signature.scanner.paths=path1`,path2
+</code></pre>
+
+<pre><code>Powershell &quot;[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect&quot; --detect.project.name=Project` Test
 </code></pre>
                 
                   

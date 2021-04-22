@@ -1868,6 +1868,7 @@ Several aspects of script functionality can be configured, including:</p>
 <pre><code>bash &lt;(curl -s -L https://detect.synopsys.com/detect7.sh) --blackduck.url=https://blackduck.mydomain.com --blackduck.username=myusername
 </code></pre>
 
+<p>See <a href="../advanced/script-escaping-special-characters/">Quoting and escaping shell script arguments</a> for details about quoting and escaping arguments.</p>
 <h4 id="windows">Windows<a class="headerlink" href="#windows" title="Permanent link">#</a></h4>
 <p>On Windows, execute the Synopsys Detect script (detect7.ps1, which is a PowerShell script) from
 the <a href="https://en.wikipedia.org/wiki/Cmd.exe">Command Prompt</a>.</p>
@@ -1879,6 +1880,7 @@ the <a href="https://en.wikipedia.org/wiki/Cmd.exe">Command Prompt</a>.</p>
 <pre><code>powershell &quot;[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect&quot; --blackduck.url=https://blackduck.mydomain.com --blackduck.username=myusername
 </code></pre>
 
+<p>See <a href="../advanced/script-escaping-special-characters/">Quoting and escaping shell script arguments</a> for details about quoting and escaping arguments.</p>
 <h3 id="running-a-specific-version-of-synopsys-detect">Running a specific version of Synopsys Detect<a class="headerlink" href="#running-a-specific-version-of-synopsys-detect" title="Permanent link">#</a></h3>
 <h4 id="linux-or-mac-bash">Linux or Mac (Bash)<a class="headerlink" href="#linux-or-mac-bash" title="Permanent link">#</a></h4>
 <p>To run a specific version of Synopsys Detect:</p>

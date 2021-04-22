@@ -2464,7 +2464,7 @@
 </tr>
 <tr>
 <td>Example</td>
-<td></td>
+<td>**/*-test</td>
 </tr>
 </tbody>
 </table>
@@ -2666,7 +2666,7 @@
 
 <p>A comma-separated list of directory names to exclude from detector search.</p>
 <p>While searching the source directory to determine which detectors to run, subdirectories whose name appear in this list will not be searched.</p>
-<p><strong>DEPRECATED: This property is deprecated.  Please use --detect.ignore to specify directory names to exclude from detector search. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<p><strong>DEPRECATED: This property is deprecated.  Please use --detect.excluded.directories to specify directory names to exclude from detector search. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
 <table>
 <thead>
 <tr>
@@ -2711,7 +2711,7 @@
 
 <p>A comma-separated list of directory name patterns to exclude from detector search.</p>
 <p>While searching the source directory to determine which detectors to run, subdirectories whose name match a pattern in this list will not be searched. These patterns are file system glob patterns ('?' is a wildcard for a single character, '*' is a wildcard for zero or more characters). For example, suppose you're running in bash on Linux, you've set --detect.detector.search.depth=1, and have a subdirectory named blackduck-common (a gradle project) that you want to exclude from the detector search. Any of the following would exclude it:--detect.detector.search.exclusion.patterns=blackduck-common,--detect.detector.search.exclusion.patterns='blackduck-common',--detect.detector.search.exclusion.patterns='blackduck-*'</p>
-<p><strong>DEPRECATED: This property is deprecated.  Please use --detect.ignore to specify directory name patterns to exclude from detector search. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<p><strong>DEPRECATED: This property is deprecated.  Please use --detect.excluded.directories to specify directory name patterns to exclude from detector search. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
 <table>
 <thead>
 <tr>
@@ -2756,7 +2756,7 @@
 
 <p>A comma-separated list of directory paths to exclude from detector search. (E.g. 'foo/bar/biz' will only exclude the 'biz' directory if the parent directory structure is 'foo/bar/'.)</p>
 <p>This property performs the same basic function as detect.detector.search.exclusion, but lets you be more specific.</p>
-<p><strong>DEPRECATED: This property is deprecated.  Please use --detect.ignore to specify directory paths to exclude from detector search. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<p><strong>DEPRECATED: This property is deprecated.  Please use --detect.excluded.directories to specify directory paths to exclude from detector search. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
 <table>
 <thead>
 <tr>
@@ -2845,7 +2845,7 @@
 
 <p>If true, the bom tool search will exclude the default directory names. See the detailed help for more information.</p>
 <p>If true, these directories will be excluded from the detector search: bin, build, .git, .gradle, node_modules, out, packages, target.</p>
-<p><strong>DEPRECATED: This property is deprecated.  Please use --detect.ignore.defaults to exclude default directory names from detector search. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<p><strong>DEPRECATED: This property is deprecated.  Please use --detect.exclude.default.directories to exclude default directory names from detector search. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
 <table>
 <thead>
 <tr>

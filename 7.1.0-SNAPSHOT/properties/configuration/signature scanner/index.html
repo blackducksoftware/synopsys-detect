@@ -2255,7 +2255,7 @@
 
 <p>A comma-separated list of directory name patterns for which Detect searches and adds to the signature scanner --exclude flag values.</p>
 <p>This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> &gt; <i>Property wildcard support</i> page for more details. Detect will recursively search within the scan targets for files/directories that match these patterns and will create the corresponding exclusion patterns (paths relative to the scan target directory) for the signature scanner (Black Duck scan CLI). Please note that the signature scanner will only exclude directories; matched filenames will be passed to the signature scanner but will have no effect. These patterns will be added to the patterns provided by detect.blackduck.signature.scanner.exclusion.patterns and passed as --exclude values. For example: suppose you are running in bash on Linux, and have a subdirectory named blackduck-common that you want to exclude. Any of the following would exclude it: --detect.blackduck.signature.scanner.exclusion.name.patterns=blackduck-common, --detect.blackduck.signature.scanner.exclusion.name.patterns='blackduck-common', --detect.blackduck.signature.scanner.exclusion.name.patterns='blackduck-*'. Use this property when you want Detect to convert the given patterns to actual paths. Use detect.blackduck.signature.scanner.exclusion.patterns to pass patterns directly to the signature scanner as-is.</p>
-<p><strong>DEPRECATED: This property is now deprecated.  Please use --detect.ignore to specify directory name patterns for which Detect searches and adds to the signature scanner as --exclude flag values. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<p><strong>DEPRECATED: This property is now deprecated.  Please use --detect.excluded.directories to specify directory name patterns for which Detect searches and adds to the signature scanner as --exclude flag values. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
 <table>
 <thead>
 <tr>
@@ -2299,7 +2299,7 @@
 </code></pre>
 
 <p>Enables you to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.</p>
-<p><strong>DEPRECATED: This property is deprecated.  Please use --detect.ignore.search.depth to adjust the depth to which Detect will search when creating signature scanner exclusion patterns. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<p><strong>DEPRECATED: This property is deprecated.  Please use --detect.excluded.directory.search.depth to adjust the depth to which Detect will search when creating signature scanner exclusion patterns. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
 <table>
 <thead>
 <tr>
@@ -2344,7 +2344,7 @@
 
 <p>A comma-separated list of values (each value is a directory name pattern surrounded by '/' characters) to be used with the Signature Scanner --exclude flag.</p>
 <p>Each pattern provided is passed to the signature scanner (Black Duck scan CLI) as a value for an --exclude option. The signature scanner requires that these exclusion patterns start and end with a forward slash (/), and may not contain double asterisks (**). These patterns will be added to the paths created from detect.blackduck.signature.scanner.exclusion.name.patterns and passed as --exclude values. Use this property to pass patterns directly to the signature scanner as-is. For example: suppose you are running in bash on Linux, and have a subdirectory named blackduck-common that you want to exclude from signature scanning. Any of the following would exclude it: --detect.blackduck.signature.scanner.exclusion.patterns=/blackduck-common/, --detect.blackduck.signature.scanner.exclusion.patterns='/blackduck-common/', --detect.blackduck.signature.scanner.exclusion.patterns='/blackduck-*/'. Use detect.blackduck.signature.scanner.exclusion.name.patterns when you want Detect to convert the given patterns to actual paths.</p>
-<p><strong>DEPRECATED: This property is now deprecated.  Please use --detect.ignore to specify patterns to be passed to the signature scanner as values for --exclude options. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<p><strong>DEPRECATED: This property is now deprecated.  Please use --detect.excluded.directories to specify patterns to be passed to the signature scanner as values for --exclude options. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
 <table>
 <thead>
 <tr>
