@@ -8,22 +8,15 @@
 package com.synopsys.integration.detect.lifecycle.boot;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.env.ConfigurableEnvironment;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.help.PropertyConfigurationHelpContext;
@@ -31,25 +24,24 @@ import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.configuration.property.types.path.SimplePathResolver;
 import com.synopsys.integration.configuration.property.types.path.TildeInPathResolver;
 import com.synopsys.integration.configuration.source.PropertySource;
-import com.synopsys.integration.configuration.source.SpringConfigurationPropertySource;
 import com.synopsys.integration.detect.Application;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
+import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
-import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
-import com.synopsys.integration.detect.configuration.help.DetectArgumentStateParser;
 import com.synopsys.integration.detect.configuration.help.json.HelpJsonManager;
 import com.synopsys.integration.detect.configuration.validation.DetectConfigurationBootManager;
 import com.synopsys.integration.detect.interactive.InteractiveManager;
 import com.synopsys.integration.detect.interactive.InteractiveModeDecisionTree;
 import com.synopsys.integration.detect.interactive.InteractivePropertySourceBuilder;
 import com.synopsys.integration.detect.interactive.InteractiveWriter;
-import com.synopsys.integration.detect.lifecycle.DetectContext;
 import com.synopsys.integration.detect.lifecycle.boot.product.BlackDuckConnectivityChecker;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBoot;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootFactory;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions;
+import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
+import com.synopsys.integration.detect.lifecycle.run.singleton.BootSingletons;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableOptions;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
@@ -94,24 +86,9 @@ public class DetectBootFactory {
         this.fileFinder = fileFinder;
     }
 
-    public DetectBoot createDetectBoot(List<PropertySource> propertySources, String[] sourceArgs, DetectContext detectContext) {
-        DetectArgumentStateParser detectArgumentStateParser = new DetectArgumentStateParser();
-        DetectArgumentState detectArgumentState = detectArgumentStateParser.parseArgs(sourceArgs);
-
-        return new DetectBoot(this, detectArgumentState, propertySources, detectContext);
-    }
-
-    public List<PropertySource> createPropertySourcesFromEnvironment(ConfigurableEnvironment environment) {
-        try {
-            return new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironment(environment, false));
-        } catch (RuntimeException e) {
-            logger.error("An unknown property source was found, detect will still continue.", e);
-            return new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironment(environment, true));
-        }
-    }
-
-    public ObjectMapper createObjectMapper() {
-        return BlackDuckServicesFactory.createDefaultObjectMapper();
+    public BootSingletons createRunDependencies(ProductRunData productRunData, PropertyConfiguration detectConfiguration, DetectableOptionFactory detectableOptionFactory, DetectConfigurationFactory detectConfigurationFactory,
+        DirectoryManager directoryManager, Configuration configuration) {
+        return new BootSingletons(productRunData, detectRun, gson, detectInfo, fileFinder, eventSystem, createDetectorProfiler(), detectConfiguration, detectableOptionFactory, detectConfigurationFactory, directoryManager, configuration);
     }
 
     public Configuration createFreemarkerConfiguration() {
@@ -121,15 +98,6 @@ public class DetectBootFactory {
         configuration.setLogTemplateExceptions(true);
 
         return configuration;
-    }
-
-    public DocumentBuilder createXmlDocumentBuilder() {
-        try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            return factory.newDocumentBuilder();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public PathResolver createPathResolver(Boolean resolveTildes) {
@@ -180,20 +148,12 @@ public class DetectBootFactory {
         return new DetectConfigurationBootManager(eventSystem, detectInfo, detectConfigurationReporter);
     }
 
-    public DetectorProfiler createDetectorProfiler() {
+    private DetectorProfiler createDetectorProfiler() {
         return new DetectorProfiler(eventSystem);
     }
 
     public ProductBootFactory createProductBootFactory(DetectConfigurationFactory detectConfigurationFactory) {
         return new ProductBootFactory(detectInfo, eventSystem, detectConfigurationFactory);
-    }
-
-    public EventSystem getEventSystem() {
-        return eventSystem;
-    }
-
-    public DetectRun getDetectRun() {
-        return detectRun;
     }
 
     public ProductBoot createProductBoot(DetectConfigurationFactory detectConfigurationFactory) {

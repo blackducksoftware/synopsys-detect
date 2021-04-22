@@ -470,4 +470,8 @@ public class DetectConfigurationFactory {
         return detectConfiguration.getValue(detectProperty.getProperty());
     }
 
+    public String createCodeLocationOverride() {
+        return detectConfiguration.getValueOrEmpty(DetectProperties.DETECT_CODE_LOCATION_NAME.getProperty()).orElse(null);
+
+    }
 }

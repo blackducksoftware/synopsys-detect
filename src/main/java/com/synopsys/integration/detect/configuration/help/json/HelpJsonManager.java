@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detect.tool.detector.DetectDetectableFactory;
 import com.synopsys.integration.detect.tool.detector.DetectorRuleFactory;
+import com.synopsys.integration.detect.tool.detector.factory.DetectDetectableFactory;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detector.rule.DetectorRule;

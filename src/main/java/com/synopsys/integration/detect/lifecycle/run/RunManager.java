@@ -29,10 +29,15 @@ import com.synopsys.integration.detect.lifecycle.run.operation.input.FullScanPos
 import com.synopsys.integration.detect.lifecycle.run.operation.input.ImpactAnalysisInput;
 import com.synopsys.integration.detect.lifecycle.run.operation.input.RapidScanInput;
 import com.synopsys.integration.detect.lifecycle.run.operation.input.SignatureScanInput;
+import com.synopsys.integration.detect.lifecycle.run.singleton.BootSingletons;
+import com.synopsys.integration.detect.lifecycle.run.singleton.EventSingletons;
+import com.synopsys.integration.detect.lifecycle.run.singleton.SingletonFactory;
+import com.synopsys.integration.detect.lifecycle.run.singleton.UtilitySingletons;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeManager;
 import com.synopsys.integration.detect.tool.DetectableToolResult;
 import com.synopsys.integration.detect.tool.UniversalToolsResult;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
+import com.synopsys.integration.detect.tool.detector.factory.DetectorFactory;
 import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisToolResult;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.AggregateDecision;
@@ -54,12 +59,23 @@ public class RunManager {
         this.exitCodeManager = exitCodeManager;
     }
 
-    public void run(RunContext runContext) {
+    public void run(BootSingletons bootSingletons) {
+        OperationSystem operationSystem = null;
         try {
             RunResult runResult = new RunResult();
-            ProductRunData productRunData = runContext.getProductRunData();
-            OperationFactory operationFactory = new OperationFactory(runContext);
-            ProjectEventPublisher projectEventPublisher = runContext.getProjectEventPublisher();
+            ProductRunData productRunData = bootSingletons.getProductRunData();
+
+            SingletonFactory singletonFactory = new SingletonFactory(bootSingletons);
+            EventSingletons eventSingletons = singletonFactory.createEventSingletons();
+            UtilitySingletons utilitySingletons = singletonFactory.createUtilitySingletons(eventSingletons);
+            operationSystem = utilitySingletons.getOperationSystem();
+
+            DetectorFactory detectorFactory = new DetectorFactory(bootSingletons, utilitySingletons);
+            DetectFontLoaderFactory detectFontLoaderFactory = new DetectFontLoaderFactory(bootSingletons, utilitySingletons);
+            OperationFactory operationFactory = new OperationFactory(detectorFactory.detectDetectableFactory(), detectFontLoaderFactory, bootSingletons, utilitySingletons, eventSingletons);
+
+            // know singleton -
+            ProjectEventPublisher projectEventPublisher = eventSingletons.getProjectEventPublisher();
             DetectToolFilter detectToolFilter = productRunData.getDetectToolFilter();
 
             UniversalToolsResult universalToolsResult = runUniversalProjectTools(operationFactory, detectToolFilter, projectEventPublisher, runResult);
@@ -83,8 +99,9 @@ public class RunManager {
             logger.debug("An exception was thrown during the detect run.", e);
             exitCodeManager.requestExitCode(e);
         } finally {
-            OperationSystem operationSystem = runContext.getOperationSystem();
-            operationSystem.publishOperations();
+            if (operationSystem != null) {
+                operationSystem.publishOperations();
+            }
         }
     }
 

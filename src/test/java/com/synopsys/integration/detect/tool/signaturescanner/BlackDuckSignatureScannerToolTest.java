@@ -1,7 +1,5 @@
 package com.synopsys.integration.detect.tool.signaturescanner;
 
-import static org.mockito.ArgumentMatchers.any;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
@@ -20,7 +18,6 @@ import com.synopsys.integration.blackduck.api.generated.discovery.BlackDuckMedia
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchOutput;
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.BlackDuckOnlineProperties;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommand;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
@@ -28,8 +25,6 @@ import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
 import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
-import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
-import com.synopsys.integration.detect.lifecycle.DetectContext;
 import com.synopsys.integration.detect.workflow.DetectRun;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameGenerator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
@@ -41,7 +36,7 @@ import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.util.IntEnvironmentVariables;
 import com.synopsys.integration.util.NameVersion;
 
-public class BlackDuckSignatureScannerToolTest {
+public class BlackDuckSignatureScannerToolTest {//        //TODO: Why? What is this testing? -jp
 
     @Test
     public void testRunScanTool() throws DetectUserFriendlyException, IOException, IntegrationException {
@@ -51,15 +46,10 @@ public class BlackDuckSignatureScannerToolTest {
         DirectoryOptions directoryOptions = new DirectoryOptions(null, null, null, null, signatureScannerInstallationDirectory.toPath());
         DirectoryManager directoryManager = new DirectoryManager(directoryOptions, new DetectRun(""));
 
-        CodeLocationNameManager codeLocationNameManager = new CodeLocationNameManager(new CodeLocationNameGenerator(null));
+        CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(null);
+        CodeLocationNameManager codeLocationNameManager = new CodeLocationNameManager(codeLocationNameGenerator);
 
         BlackDuckSignatureScanner blackDuckSignatureScanner = Mockito.mock(BlackDuckSignatureScanner.class);
-
-        DetectContext detectContext = Mockito.mock(DetectContext.class);
-        Mockito.when(detectContext.getBean(any(Class.class), any(BlackDuckSignatureScannerOptions.class), any(ScanBatchRunner.class), any(), any(), any())).thenReturn(blackDuckSignatureScanner);
-        Mockito.when(detectContext.getBean(DirectoryManager.class)).thenReturn(directoryManager);
-        Mockito.when(detectContext.getBean(CodeLocationNameManager.class)).thenReturn(codeLocationNameManager);
-        Mockito.when(detectContext.getBean(ConnectionFactory.class)).thenReturn(null);
 
         NameVersion projectNameVersion = new NameVersion("name", "version");
         BlackDuckOnlineProperties blackDuckOnlineProperties = new BlackDuckOnlineProperties(null, false, false, false);
@@ -67,7 +57,8 @@ public class BlackDuckSignatureScannerToolTest {
         ScanBatchOutput scanBatchOutput = new ScanBatchOutput(Collections.singletonList(ScanCommandOutput.SUCCESS(projectNameVersion, null, null, scanCommand, null)));
         Mockito.when(blackDuckSignatureScanner.performScanActions(projectNameVersion, signatureScannerInstallationDirectory, null)).thenReturn(scanBatchOutput);
 
-        BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, detectContext, null);
+        BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, file -> true, null, directoryManager, codeLocationNameManager, null, null,
+            null, null, null);
 
         testOnline(blackDuckSignatureScannerTool, scanBatchOutput, projectNameVersion);
     }
