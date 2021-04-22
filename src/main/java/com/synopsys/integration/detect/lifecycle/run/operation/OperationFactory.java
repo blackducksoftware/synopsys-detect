@@ -123,6 +123,12 @@ public class OperationFactory {
         this.extractionEnvironmentProvider = new ExtractionEnvironmentProvider(directoryManager);
     }
 
+    public final DockerOperation createDockerOperation() {
+        return new DockerOperation(directoryManager, statusEventPublisher, exitCodePublisher, detectDetectableFactory,
+            extractionEnvironmentProvider,
+            codeLocationConverter, operationSystem);
+    }
+
     public final BazelOperation createBazelOperation() {
         return new BazelOperation(directoryManager, statusEventPublisher, exitCodePublisher, detectDetectableFactory,
             extractionEnvironmentProvider,
