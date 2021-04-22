@@ -12,8 +12,8 @@ Examples
 
 | Value | Excluded | Not Excluded |
 | --- | --- | --- |
-|`foo` | /root/foo | /root/foobar
-| `*bar` | /root/bar & /root/foobar | |
+|`foo` | /projectRoot/foo | /projectRoot/foobar
+| `*bar` | /projectRoot/bar & /projectRoot/foobar | |
 
 ### Exclude directories by path
 
@@ -23,9 +23,9 @@ Examples
 
 | Value | Excluded | Not Excluded |
 | --- | --- | --- |
-| `foo/bar` | /root/foo/bar | /root/dir/foo/bar |
-| `**/foo/bar` | /root/dir/foo/bar & /root/directory/foo/bar | |
-| `/root/d*/*` | /root/dir/foo & /root/directory/bar | |
+| `foo/bar` | /projectRoot/foo/bar | /projectRoot/dir/foo/bar |
+| `**/foo/bar` | /projectRoot/dir/foo/bar & /projectRoot/directory/foo/bar | |
+| `/root/d*/*` | /projectRoot/dir/foo & /projectRoot/directory/bar | |
 
 When specifying path patterns:
 

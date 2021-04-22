@@ -1279,7 +1279,7 @@ public class DetectProperties {
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
-            .setDeprecated("This property is deprecated.  Please use --detect.ignore to specify directory names to exclude from detector search.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+            .setDeprecated("This property is deprecated.  Please use --detect.excluded.directories to specify directory names to exclude from detector search.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<StringListProperty> DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS =
@@ -1289,7 +1289,7 @@ public class DetectProperties {
                 "While searching the source directory to determine which detectors to run, subdirectories whose name match a pattern in this list will not be searched. These patterns are file system glob patterns ('?' is a wildcard for a single character, '*' is a wildcard for zero or more characters). For example, suppose you're running in bash on Linux, you've set --detect.detector.search.depth=1, and have a subdirectory named blackduck-common (a gradle project) that you want to exclude from the detector search. Any of the following would exclude it:--detect.detector.search.exclusion.patterns=blackduck-common,--detect.detector.search.exclusion.patterns='blackduck-common',--detect.detector.search.exclusion.patterns='blackduck-*'")
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
-            .setDeprecated("This property is deprecated.  Please use --detect.ignore to specify directory name patterns to exclude from detector search.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+            .setDeprecated("This property is deprecated.  Please use --detect.excluded.directories to specify directory name patterns to exclude from detector search.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<StringListProperty> DETECT_DETECTOR_SEARCH_EXCLUSION_PATHS =
@@ -1301,7 +1301,7 @@ public class DetectProperties {
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
-            .setDeprecated("This property is deprecated.  Please use --detect.ignore to specify directory paths to exclude from detector search.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+            .setDeprecated("This property is deprecated.  Please use --detect.excluded.directories to specify directory paths to exclude from detector search.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<StringListProperty> DETECT_DETECTOR_SEARCH_EXCLUSION_FILES =
@@ -1322,7 +1322,7 @@ public class DetectProperties {
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
-            .setDeprecated("This property is deprecated.  Please use --detect.ignore.defaults to exclude default directory names from detector search.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+            .setDeprecated("This property is deprecated.  Please use --detect.exclude.default.directories to exclude default directory names from detector search.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_RESOLVE_TILDE_IN_PATHS =
@@ -1386,7 +1386,8 @@ public class DetectProperties {
             .setHelp("A comma-separated list of directory name patterns for which Detect searches and adds to the signature scanner --exclude flag values.",
                 "This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details. Detect will recursively search within the scan targets for files/directories that match these patterns and will create the corresponding exclusion patterns (paths relative to the scan target directory) for the signature scanner (Black Duck scan CLI). Please note that the signature scanner will only exclude directories; matched filenames will be passed to the signature scanner but will have no effect. These patterns will be added to the patterns provided by detect.blackduck.signature.scanner.exclusion.patterns and passed as --exclude values. For example: suppose you are running in bash on Linux, and have a subdirectory named blackduck-common that you want to exclude. Any of the following would exclude it: --detect.blackduck.signature.scanner.exclusion.name.patterns=blackduck-common, --detect.blackduck.signature.scanner.exclusion.name.patterns='blackduck-common', --detect.blackduck.signature.scanner.exclusion.name.patterns='blackduck-*'. Use this property when you want Detect to convert the given patterns to actual paths. Use detect.blackduck.signature.scanner.exclusion.patterns to pass patterns directly to the signature scanner as-is.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN)
-            .setDeprecated("This property is now deprecated.  Please use --detect.ignore to specify directory name patterns for which Detect searches and adds to the signature scanner as --exclude flag values.", DetectMajorVersion.SEVEN,
+            .setDeprecated("This property is now deprecated.  Please use --detect.excluded.directories to specify directory name patterns for which Detect searches and adds to the signature scanner as --exclude flag values.",
+                DetectMajorVersion.SEVEN,
                 DetectMajorVersion.EIGHT);
 
     @Deprecated
@@ -1395,7 +1396,7 @@ public class DetectProperties {
             .setInfo("Exclusion Patterns Search Depth", DetectPropertyFromVersion.VERSION_5_0_0)
             .setHelp("Enables you to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN)
-            .setDeprecated("This property is deprecated.  Please use --detect.ignore.search.depth to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.", DetectMajorVersion.SEVEN,
+            .setDeprecated("This property is deprecated.  Please use --detect.excluded.directory.search.depth to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.", DetectMajorVersion.SEVEN,
                 DetectMajorVersion.EIGHT);
 
     @Deprecated
@@ -1405,7 +1406,8 @@ public class DetectProperties {
             .setHelp("A comma-separated list of values (each value is a directory name pattern surrounded by '/' characters) to be used with the Signature Scanner --exclude flag.",
                 "Each pattern provided is passed to the signature scanner (Black Duck scan CLI) as a value for an --exclude option. The signature scanner requires that these exclusion patterns start and end with a forward slash (/), and may not contain double asterisks (**). These patterns will be added to the paths created from detect.blackduck.signature.scanner.exclusion.name.patterns and passed as --exclude values. Use this property to pass patterns directly to the signature scanner as-is. For example: suppose you are running in bash on Linux, and have a subdirectory named blackduck-common that you want to exclude from signature scanning. Any of the following would exclude it: --detect.blackduck.signature.scanner.exclusion.patterns=/blackduck-common/, --detect.blackduck.signature.scanner.exclusion.patterns='/blackduck-common/', --detect.blackduck.signature.scanner.exclusion.patterns='/blackduck-*/'. Use detect.blackduck.signature.scanner.exclusion.name.patterns when you want Detect to convert the given patterns to actual paths.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN)
-            .setDeprecated("This property is now deprecated.  Please use --detect.ignore to specify patterns to be passed to the signature scanner as values for --exclude options.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+            .setDeprecated("This property is now deprecated.  Please use --detect.excluded.directories to specify patterns to be passed to the signature scanner as values for --exclude options.", DetectMajorVersion.SEVEN,
+                DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<NullablePathProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH =
