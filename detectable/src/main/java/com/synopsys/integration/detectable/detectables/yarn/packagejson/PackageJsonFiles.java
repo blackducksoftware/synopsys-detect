@@ -48,13 +48,14 @@ public class PackageJsonFiles {
 
     @NotNull
     public Collection<YarnWorkspace> readWorkspacePackageJsonFiles(File workspaceDir) throws IOException {
+        String forwardSlashedWorkspaceDirPath = deriveForwardSlashedPath(workspaceDir);
         File packageJsonFile = new File(workspaceDir, YarnLockDetectable.YARN_PACKAGE_JSON);
         List<String> workspaceDirPatterns = extractWorkspaceDirPatterns(packageJsonFile);
 
         Collection<YarnWorkspace> workspaces = new LinkedList<>();
         for (String workspaceSubdirPattern : workspaceDirPatterns) {
             logger.trace("workspaceSubdirPattern: {}", workspaceSubdirPattern);
-            String globString = String.format("glob:%s/%s/package.json", workspaceDir.getAbsolutePath(), workspaceSubdirPattern);
+            String globString = String.format("glob:%s/%s/package.json", forwardSlashedWorkspaceDirPath, workspaceSubdirPattern);
             logger.trace("workspace subdir globString: {}", globString);
             PathMatcher matcher = FileSystems.getDefault().getPathMatcher(globString);
             Files.walkFileTree(workspaceDir.toPath(), new SimpleFileVisitor<Path>() {
@@ -81,6 +82,17 @@ public class PackageJsonFiles {
             logger.debug("Found {} matching workspace package.json files for workspaces listed in {}", workspaces.size(), packageJsonFile.getAbsolutePath());
         }
         return workspaces;
+    }
+
+    @NotNull
+    private String deriveForwardSlashedPath(File file) {
+        String forwardSlashWorkspaceDirPath;
+        if (!File.separator.equals("/")) {
+            forwardSlashWorkspaceDirPath = file.getAbsolutePath().replace(File.separator, "/");
+        } else {
+            forwardSlashWorkspaceDirPath = file.getAbsolutePath();
+        }
+        return forwardSlashWorkspaceDirPath;
     }
 
     @NotNull
