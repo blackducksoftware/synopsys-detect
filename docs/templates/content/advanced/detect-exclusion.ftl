@@ -25,7 +25,7 @@ Examples
 | --- | --- | --- |
 | `foo/bar` | /projectRoot/foo/bar | /projectRoot/dir/foo/bar |
 | `**/foo/bar` | /projectRoot/dir/foo/bar & /projectRoot/directory/foo/bar | |
-| `/root/d*/*` | /projectRoot/dir/foo & /projectRoot/directory/bar | |
+| `/projectRoot/d*/*` | /projectRoot/dir/foo & /projectRoot/directory/bar | |
 
 When specifying path patterns:
 
