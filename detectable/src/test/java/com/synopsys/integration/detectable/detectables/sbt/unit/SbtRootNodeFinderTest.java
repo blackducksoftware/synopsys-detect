@@ -11,9 +11,9 @@ import com.paypal.digraph.parser.GraphParser;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotGraphNodeParser;
-import com.synopsys.integration.detectable.detectables.sbt.dot.SbtProjectMatcher;
+import com.synopsys.integration.detectable.detectables.sbt.dot.SbtRootNodeFinder;
 
-public class SbtProjectMatcherTest {
+public class SbtRootNodeFinderTest {
 
     private GraphParser createGraphParser(String actualGraph) {
         String simpleGraph = "digraph \"dependency-graph\" {\n"
@@ -39,8 +39,8 @@ public class SbtProjectMatcherTest {
     @Test
     public void projectFoundFromSingleNode() throws DetectableException {
         GraphParser graphParser = createGraphParser(node("one-org", "one-name", "one-version"));
-        SbtProjectMatcher projectMatcher = new SbtProjectMatcher(new SbtDotGraphNodeParser(new ExternalIdFactory()));
-        String projectId = projectMatcher.determineProjectNodeID(graphParser);
+        SbtRootNodeFinder projectMatcher = new SbtRootNodeFinder(new SbtDotGraphNodeParser(new ExternalIdFactory()));
+        String projectId = projectMatcher.determineRootIDs(graphParser);
         Assertions.assertEquals("\"one-org:one-name:one-version\"", projectId);
     }
 
@@ -49,8 +49,8 @@ public class SbtProjectMatcherTest {
         GraphParser graphParser = createGraphParser(node("two-org", "two-name", "two-version") +
                                                         node("one-org", "one-name", "one-version") +
                                                         edge("one-org", "one-name", "one-version", "two-org", "two-name", "two-version"));
-        SbtProjectMatcher projectMatcher = new SbtProjectMatcher(new SbtDotGraphNodeParser(new ExternalIdFactory()));
-        String projectId = projectMatcher.determineProjectNodeID(graphParser);
+        SbtRootNodeFinder projectMatcher = new SbtRootNodeFinder(new SbtDotGraphNodeParser(new ExternalIdFactory()));
+        String projectId = projectMatcher.determineRootIDs(graphParser);
         Assertions.assertEquals("\"one-org:one-name:one-version\"", projectId);
     }
 

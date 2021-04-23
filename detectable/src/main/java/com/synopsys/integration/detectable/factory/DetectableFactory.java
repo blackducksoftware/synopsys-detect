@@ -210,7 +210,7 @@ import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotGraphNodePa
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotOutputParser;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtGraphParserTransformer;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtPluginFinder;
-import com.synopsys.integration.detectable.detectables.sbt.dot.SbtProjectMatcher;
+import com.synopsys.integration.detectable.detectables.sbt.dot.SbtRootNodeFinder;
 import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheExtractor;
 import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheOptions;
 import com.synopsys.integration.detectable.detectables.swift.SwiftCliDetectable;
@@ -722,8 +722,8 @@ public class DetectableFactory {
         return new SbtDotOutputParser();
     }
 
-    private SbtProjectMatcher sbtProjectMatcher() {
-        return new SbtProjectMatcher(sbtDotGraphNodeParser());
+    private SbtRootNodeFinder sbtProjectMatcher() {
+        return new SbtRootNodeFinder(sbtDotGraphNodeParser());
     }
 
     private SbtDotGraphNodeParser sbtDotGraphNodeParser() {

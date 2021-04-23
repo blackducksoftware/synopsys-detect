@@ -8,6 +8,7 @@
 package com.synopsys.integration.detectable.detectables.sbt.dot;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -19,6 +20,7 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.util.OperatingSystemType;
 
 public class SbtPluginFinder {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -46,7 +48,13 @@ public class SbtPluginFinder {
 
     private List<String> listPlugins(File directory, ExecutableTarget sbt) throws DetectableException {
         try {
-            ExecutableOutput output = executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, sbt, SbtDotExtractor.SBT_ARG_TO_ENABLE_BACKGROUND_EXECUTION, "plugins"));
+            List<String> arguments = new ArrayList<>();
+            if (OperatingSystemType.determineFromSystem() != OperatingSystemType.WINDOWS) {
+                arguments.add(SbtDotExtractor.SBT_ARG_TO_ENABLE_BACKGROUND_EXECUTION_LINUX);
+            }
+            arguments.add("plugins");
+
+            ExecutableOutput output = executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, sbt, arguments));
             return output.getStandardOutputAsList();
         } catch (ExecutableFailedException e) {
             throw new DetectableException("Unable to list installed sbt plugins, detect requires a suitable sbt plugin is available to find dependency graphs.", e);

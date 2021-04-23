@@ -1,0 +1,38 @@
+[
+  {
+    "specVersion": "1.1.0",
+    "spdx:name": "dependencies-mess-demo_2.12/0.1/services/service2/service2/service2_2.12/0.1.0-SNAPSHOT sbt/bom",
+    "creationInfo": {
+      "spdx:creator": [
+        "Tool: Detect-7.1.0-SNAPSHOT",
+        "Tool: IntegrationBdio-22.1.1"
+      ],
+      "spdx:created": "2021-04-23T18:56:40.436268Z"
+    },
+    "@id": "uuid:e6c04a67-7865-4a50-b475-e4b4c55e087f",
+    "@type": "BillOfMaterials",
+    "relationship": []
+  },
+  {
+    "name": "dependencies-mess-demo_2.12",
+    "revision": "0.1",
+    "@id": "http:maven/service2/service2_2.12/0.1.0-SNAPSHOT",
+    "@type": "Project",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "service2:service2_2.12:0.1.0-SNAPSHOT",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "service2_2.12",
+          "0.1.0-SNAPSHOT"
+        ],
+        "prefix": "service2"
+      }
+    },
+    "relationship": []
+  }
+]
