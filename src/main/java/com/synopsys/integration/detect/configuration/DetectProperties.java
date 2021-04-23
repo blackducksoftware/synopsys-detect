@@ -1127,7 +1127,7 @@ public class DetectProperties {
 
     public static final DetectProperty<NullableStringProperty> DETECT_SBT_ARGUMENTS =
         new DetectProperty<>(new NullableStringProperty("detect.sbt.arguments"))
-            .setInfo("Additional sbt command Arguments", DetectPropertyFromVersion.VERSION_6_8_0)
+            .setInfo("Additional sbt command Arguments", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp("A space-separated list of additional arguments to add to sbt command line when running Detect against an SBT project. Detect will execute the command 'sbt {additional arguments} {Detect-added arguments}.'")
             .setGroups(DetectGroup.SBT, DetectGroup.SOURCE_SCAN)
             .setExample("\"-Djline.terminal=jline.UnsupportedTerminal\"");
