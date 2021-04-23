@@ -90,7 +90,7 @@ public class SbtDetectable extends Detectable {
             explanations.add(new FoundExecutable(sbt));
         }
 
-        foundPlugin = sbtPluginFinder.isPluginInstalled(environment.getDirectory(), sbt);
+        foundPlugin = sbtPluginFinder.isPluginInstalled(environment.getDirectory(), sbt, sbtResolutionCacheOptions.getSbtCommandAdditionalArguments());
         if (!foundPlugin) {
             return new SbtMissingPluginDetectableResult(environment.getDirectory().toString());
         } else {
@@ -108,7 +108,7 @@ public class SbtDetectable extends Detectable {
                     "Included and excluded SBT configurations can not be used when an sbt plugin is used for dependency resolution. They can still be used when not using a dependency plugin, either remove the plugin or do not provide the properties.")
                            .build();
             }
-            return sbtPluginExtractor.extract(environment.getDirectory(), sbt);
+            return sbtPluginExtractor.extract(environment.getDirectory(), sbt, sbtResolutionCacheOptions.getSbtCommandAdditionalArguments());
         } else {
             logger.warn("No SBT plugin was found, will attempt to parse report files. This approach is deprecated and a plugin should be installed. ");
             return sbtResolutionCacheExtractor.extract(environment.getDirectory(), sbtResolutionCacheOptions);

@@ -15,26 +15,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheOptions;
-
 public class SbtCommandArgumentGenerator {
-    @Nullable
-    private final List<String> sbtCommandAdditionalArguments;
-
-    public SbtCommandArgumentGenerator(SbtResolutionCacheOptions options) {
-        if (StringUtils.isNotBlank(options.getSbtCommandAdditionalArguments())) {
-            String[] additionalArgs = options.getSbtCommandAdditionalArguments().split(" +");
-            this.sbtCommandAdditionalArguments = Arrays.asList(additionalArgs);
-        } else {
-            this.sbtCommandAdditionalArguments = null;
-        }
-    }
 
     @NotNull
-    public List<String> generateSbtCmdArgs(String sbtSubCommand) {
+    public List<String> generateSbtCmdArgs(@Nullable String sbtCommandAdditionalArgumentsString, String sbtSubCommand) {
         List<String> exeArgs = new ArrayList<>();
-        if (sbtCommandAdditionalArguments != null) {
-            exeArgs.addAll(sbtCommandAdditionalArguments);
+        if (StringUtils.isNotBlank(sbtCommandAdditionalArgumentsString)) {
+            String[] additionalArgs = sbtCommandAdditionalArgumentsString.split(" +");
+            exeArgs.addAll(Arrays.asList(additionalArgs));
         }
         exeArgs.add(sbtSubCommand);
         return exeArgs;

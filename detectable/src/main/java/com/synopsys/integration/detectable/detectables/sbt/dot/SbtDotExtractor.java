@@ -45,9 +45,9 @@ public class SbtDotExtractor {
         this.sbtCommandArgumentGenerator = sbtCommandArgumentGenerator;
     }
 
-    public Extraction extract(File directory, ExecutableTarget sbt) {
+    public Extraction extract(File directory, ExecutableTarget sbt, String sbtCommandAdditionalArguments) {
         try {
-            List<String> sbtArgs = sbtCommandArgumentGenerator.generateSbtCmdArgs("dependencyDot");
+            List<String> sbtArgs = sbtCommandArgumentGenerator.generateSbtCmdArgs(sbtCommandAdditionalArguments, "dependencyDot");
             Executable dotExecutable = ExecutableUtils.createFromTarget(directory, sbt, sbtArgs);
             ExecutableOutput dotOutput = executableRunner.executeSuccessfully(dotExecutable);
             List<File> dotGraphs = sbtDotOutputParser.parseGeneratedGraphFiles(dotOutput.getStandardOutputAsList());

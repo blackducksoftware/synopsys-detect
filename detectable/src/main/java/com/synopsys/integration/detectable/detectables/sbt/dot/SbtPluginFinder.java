@@ -10,6 +10,7 @@ package com.synopsys.integration.detectable.detectables.sbt.dot;
 import java.io.File;
 import java.util.List;
 
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,8 +33,8 @@ public class SbtPluginFinder {
         this.sbtCommandArgumentGenerator = sbtCommandArgumentGenerator;
     }
 
-    public boolean isPluginInstalled(File directory, ExecutableTarget sbt) throws DetectableException {
-        List<String> pluginOutput = listPlugins(directory, sbt);
+    public boolean isPluginInstalled(File directory, ExecutableTarget sbt, @Nullable String sbtCommandAdditionalArguments) throws DetectableException {
+        List<String> pluginOutput = listPlugins(directory, sbt, sbtCommandAdditionalArguments);
         return determineInstalledPlugin(pluginOutput);
     }
 
@@ -46,9 +47,9 @@ public class SbtPluginFinder {
         }
     }
 
-    private List<String> listPlugins(File directory, ExecutableTarget sbt) throws DetectableException {
+    private List<String> listPlugins(File directory, ExecutableTarget sbt, @Nullable String sbtCommandAdditionalArguments) throws DetectableException {
         try {
-            List<String> args = sbtCommandArgumentGenerator.generateSbtCmdArgs("plugins");
+            List<String> args = sbtCommandArgumentGenerator.generateSbtCmdArgs(sbtCommandAdditionalArguments, "plugins");
             ExecutableOutput output = executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, sbt, args));
             return output.getStandardOutputAsList();
         } catch (ExecutableFailedException e) {

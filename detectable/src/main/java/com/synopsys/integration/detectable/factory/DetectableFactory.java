@@ -406,7 +406,7 @@ public class DetectableFactory {
     }
 
     public SbtDetectable createSbtDetectable(DetectableEnvironment environment, SbtResolver sbtResolver, SbtResolutionCacheOptions sbtResolutionCacheOptions) {
-        return new SbtDetectable(environment, fileFinder, sbtResolutionCacheExtractor(), sbtResolutionCacheOptions, sbtResolver, sbtDotExtractor(sbtResolutionCacheOptions), sbtPluginFinder(sbtResolutionCacheOptions));
+        return new SbtDetectable(environment, fileFinder, sbtResolutionCacheExtractor(), sbtResolutionCacheOptions, sbtResolver, sbtDotExtractor(), sbtPluginFinder());
     }
 
     public SwiftCliDetectable createSwiftCliDetectable(DetectableEnvironment environment, SwiftResolver swiftResolver) {
@@ -711,16 +711,12 @@ public class DetectableFactory {
         return new SbtResolutionCacheExtractor(fileFinder, externalIdFactory);
     }
 
-    public SbtPluginFinder sbtPluginFinder(SbtResolutionCacheOptions sbtResolutionCacheOptions) {
-        return new SbtPluginFinder(executableRunner, sbtCommandArgumentGenerator(sbtResolutionCacheOptions));
+    public SbtPluginFinder sbtPluginFinder() {
+        return new SbtPluginFinder(executableRunner, new SbtCommandArgumentGenerator());
     }
 
-    private SbtDotExtractor sbtDotExtractor(SbtResolutionCacheOptions sbtResolutionCacheOptions) {
-        return new SbtDotExtractor(executableRunner, sbtDotOutputParser(), sbtProjectMatcher(), sbtGraphParserTransformer(), sbtDotGraphNodeParser(), sbtCommandArgumentGenerator(sbtResolutionCacheOptions));
-    }
-
-    private SbtCommandArgumentGenerator sbtCommandArgumentGenerator(SbtResolutionCacheOptions sbtResolutionCacheOptions) {
-        return new SbtCommandArgumentGenerator(sbtResolutionCacheOptions);
+    private SbtDotExtractor sbtDotExtractor() {
+        return new SbtDotExtractor(executableRunner, sbtDotOutputParser(), sbtProjectMatcher(), sbtGraphParserTransformer(), sbtDotGraphNodeParser(), new SbtCommandArgumentGenerator());
     }
 
     private SbtDotOutputParser sbtDotOutputParser() {
