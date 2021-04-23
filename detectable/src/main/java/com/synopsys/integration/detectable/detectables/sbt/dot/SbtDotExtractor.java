@@ -31,10 +31,6 @@ import com.synopsys.integration.executable.ExecutableOutput;
 
 public class SbtDotExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    // Adding this arg to sbt command line let's it run in the background (IDETECT-2595)
-    // Ref: https://github.com/sbt/sbt/issues/701
-    public static final String SBT_ARG_TO_ENABLE_BACKGROUND_EXECUTION_LINUX = "-Djline.terminal=jline.UnsupportedTerminal";
     private final DetectableExecutableRunner executableRunner;
     private final SbtDotOutputParser sbtDotOutputParser;
     private final SbtRootNodeFinder sbtRootNodeFinder;
