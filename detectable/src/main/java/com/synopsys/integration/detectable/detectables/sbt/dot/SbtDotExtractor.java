@@ -27,27 +27,28 @@ import com.synopsys.integration.executable.Executable;
 import com.synopsys.integration.executable.ExecutableOutput;
 
 public class SbtDotExtractor {
-    // Adding this arg to sbt command line let's it run in the background (IDETECT-2595)
-    // Ref: https://github.com/sbt/sbt/issues/701
-    public static final String SBT_ARG_TO_ENABLE_BACKGROUND_EXECUTION = "-Djline.terminal=jline.UnsupportedTerminal";
     private final DetectableExecutableRunner executableRunner;
     private final SbtDotOutputParser sbtDotOutputParser;
     private final SbtProjectMatcher sbtProjectMatcher;
     private final SbtGraphParserTransformer sbtGraphParserTransformer;
     private final SbtDotGraphNodeParser graphNodeParser;
+    private final SbtCommandArgumentGenerator sbtCommandArgumentGenerator;
 
     public SbtDotExtractor(DetectableExecutableRunner executableRunner, SbtDotOutputParser sbtDotOutputParser, SbtProjectMatcher sbtProjectMatcher,
-        SbtGraphParserTransformer sbtGraphParserTransformer, SbtDotGraphNodeParser graphNodeParser) {
+        SbtGraphParserTransformer sbtGraphParserTransformer, SbtDotGraphNodeParser graphNodeParser,
+        SbtCommandArgumentGenerator sbtCommandArgumentGenerator) {
         this.executableRunner = executableRunner;
         this.sbtDotOutputParser = sbtDotOutputParser;
         this.sbtProjectMatcher = sbtProjectMatcher;
         this.sbtGraphParserTransformer = sbtGraphParserTransformer;
         this.graphNodeParser = graphNodeParser;
+        this.sbtCommandArgumentGenerator = sbtCommandArgumentGenerator;
     }
 
     public Extraction extract(File directory, ExecutableTarget sbt) {
         try {
-            Executable dotExecutable = ExecutableUtils.createFromTarget(directory, sbt, SbtDotExtractor.SBT_ARG_TO_ENABLE_BACKGROUND_EXECUTION, "dependencyDot");
+            List<String> sbtArgs = sbtCommandArgumentGenerator.generateSbtCmdArgs("dependencyDot");
+            Executable dotExecutable = ExecutableUtils.createFromTarget(directory, sbt, sbtArgs);
             ExecutableOutput dotOutput = executableRunner.executeSuccessfully(dotExecutable);
             List<File> dotGraphs = sbtDotOutputParser.parseGeneratedGraphFiles(dotOutput.getStandardOutputAsList());
 
@@ -73,5 +74,4 @@ public class SbtDotExtractor {
             return new Extraction.Builder().exception(e).build();
         }
     }
-
 }

@@ -25,9 +25,11 @@ public class SbtPluginFinder {
     public static final String DEPENDENCY_GRAPH_PLUGIN_NAME = "net.virtualvoid.sbt.graph.DependencyGraphPlugin";
     public static final String DEPENDENCY_GRAPH_SBT_INTERNAL_PLUGIN_NAME = "sbt.plugins.DependencyTreePlugin";
     private final DetectableExecutableRunner executableRunner;
+    private final SbtCommandArgumentGenerator sbtCommandArgumentGenerator;
 
-    public SbtPluginFinder(DetectableExecutableRunner executableRunner) {
+    public SbtPluginFinder(DetectableExecutableRunner executableRunner, SbtCommandArgumentGenerator sbtCommandArgumentGenerator) {
         this.executableRunner = executableRunner;
+        this.sbtCommandArgumentGenerator = sbtCommandArgumentGenerator;
     }
 
     public boolean isPluginInstalled(File directory, ExecutableTarget sbt) throws DetectableException {
@@ -46,7 +48,8 @@ public class SbtPluginFinder {
 
     private List<String> listPlugins(File directory, ExecutableTarget sbt) throws DetectableException {
         try {
-            ExecutableOutput output = executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, sbt, SbtDotExtractor.SBT_ARG_TO_ENABLE_BACKGROUND_EXECUTION, "plugins"));
+            List<String> args = sbtCommandArgumentGenerator.generateSbtCmdArgs("plugins");
+            ExecutableOutput output = executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, sbt, args));
             return output.getStandardOutputAsList();
         } catch (ExecutableFailedException e) {
             throw new DetectableException("Unable to list installed sbt plugins, detect requires a suitable sbt plugin is available to find dependency graphs.", e);

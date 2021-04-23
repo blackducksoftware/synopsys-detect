@@ -9,15 +9,24 @@ package com.synopsys.integration.detectable.detectables.sbt.parse;
 
 import java.util.List;
 
+import org.jetbrains.annotations.Nullable;
+
 public class SbtResolutionCacheOptions {
+    private final String sbtCommandAdditionalArguments;
     private final List<String> includedConfigurations;
     private final List<String> excludedConfigurations;
     private final int reportDepth;
 
-    public SbtResolutionCacheOptions(List<String> includedConfigurations, List<String> excludedConfigurations, int reportDepth) {
+    public SbtResolutionCacheOptions(@Nullable String sbtCommandAdditionalArguments, List<String> includedConfigurations, List<String> excludedConfigurations, int reportDepth) {
+        this.sbtCommandAdditionalArguments = sbtCommandAdditionalArguments;
         this.includedConfigurations = includedConfigurations;
         this.excludedConfigurations = excludedConfigurations;
         this.reportDepth = reportDepth;
+    }
+
+    @Nullable
+    public String getSbtCommandAdditionalArguments() {
+        return sbtCommandAdditionalArguments;
     }
 
     public List<String> getIncludedConfigurations() {

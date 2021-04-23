@@ -205,6 +205,7 @@ import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecP
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecLineParser;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecParser;
 import com.synopsys.integration.detectable.detectables.sbt.SbtDetectable;
+import com.synopsys.integration.detectable.detectables.sbt.dot.SbtCommandArgumentGenerator;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotExtractor;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotGraphNodeParser;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotOutputParser;
@@ -405,7 +406,7 @@ public class DetectableFactory {
     }
 
     public SbtDetectable createSbtDetectable(DetectableEnvironment environment, SbtResolver sbtResolver, SbtResolutionCacheOptions sbtResolutionCacheOptions) {
-        return new SbtDetectable(environment, fileFinder, sbtResolutionCacheExtractor(), sbtResolutionCacheOptions, sbtResolver, sbtDotExtractor(), sbtPluginFinder());
+        return new SbtDetectable(environment, fileFinder, sbtResolutionCacheExtractor(), sbtResolutionCacheOptions, sbtResolver, sbtDotExtractor(sbtResolutionCacheOptions), sbtPluginFinder(sbtResolutionCacheOptions));
     }
 
     public SwiftCliDetectable createSwiftCliDetectable(DetectableEnvironment environment, SwiftResolver swiftResolver) {
@@ -710,12 +711,16 @@ public class DetectableFactory {
         return new SbtResolutionCacheExtractor(fileFinder, externalIdFactory);
     }
 
-    public SbtPluginFinder sbtPluginFinder() {
-        return new SbtPluginFinder(executableRunner);
+    public SbtPluginFinder sbtPluginFinder(SbtResolutionCacheOptions sbtResolutionCacheOptions) {
+        return new SbtPluginFinder(executableRunner, sbtCommandArgumentGenerator(sbtResolutionCacheOptions));
     }
 
-    private SbtDotExtractor sbtDotExtractor() {
-        return new SbtDotExtractor(executableRunner, sbtDotOutputParser(), sbtProjectMatcher(), sbtGraphParserTransformer(), sbtDotGraphNodeParser());
+    private SbtDotExtractor sbtDotExtractor(SbtResolutionCacheOptions sbtResolutionCacheOptions) {
+        return new SbtDotExtractor(executableRunner, sbtDotOutputParser(), sbtProjectMatcher(), sbtGraphParserTransformer(), sbtDotGraphNodeParser(), sbtCommandArgumentGenerator(sbtResolutionCacheOptions));
+    }
+
+    private SbtCommandArgumentGenerator sbtCommandArgumentGenerator(SbtResolutionCacheOptions sbtResolutionCacheOptions) {
+        return new SbtCommandArgumentGenerator(sbtResolutionCacheOptions);
     }
 
     private SbtDotOutputParser sbtDotOutputParser() {

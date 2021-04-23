@@ -13,6 +13,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
@@ -23,7 +24,6 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.SbtRes
 import com.synopsys.integration.detectable.detectable.explanation.Explanation;
 import com.synopsys.integration.detectable.detectable.explanation.FoundExecutable;
 import com.synopsys.integration.detectable.detectable.explanation.FoundSbtPlugin;
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
@@ -51,9 +51,9 @@ public class SbtDetectable extends Detectable {
     private ExecutableTarget sbt;
     private boolean foundPlugin;
 
-    public SbtDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final SbtResolutionCacheExtractor sbtResolutionCacheExtractor,
-        SbtResolutionCacheOptions sbtResolutionCacheOptions, final SbtResolver sbtResolver, final SbtDotExtractor sbtPluginExtractor,
-        final SbtPluginFinder sbtPluginFinder) {
+    public SbtDetectable(DetectableEnvironment environment, FileFinder fileFinder, SbtResolutionCacheExtractor sbtResolutionCacheExtractor,
+        SbtResolutionCacheOptions sbtResolutionCacheOptions, SbtResolver sbtResolver, SbtDotExtractor sbtPluginExtractor,
+        SbtPluginFinder sbtPluginFinder) {
         super(environment);
         this.fileFinder = fileFinder;
         this.sbtResolutionCacheExtractor = sbtResolutionCacheExtractor;
@@ -101,7 +101,7 @@ public class SbtDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         if (sbt != null && foundPlugin) {
             if (sbtResolutionCacheOptions.getExcludedConfigurations().size() > 0 || sbtResolutionCacheOptions.getIncludedConfigurations().size() > 0) {
                 return new Extraction.Builder().failure(
