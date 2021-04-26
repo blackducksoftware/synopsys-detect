@@ -211,3 +211,13 @@ task signJar() {
         }
     }
 }
+
+task verifyJar() {
+    dependsOn signJar
+    doLast {
+        exec {
+            // returns 0 if successfully verified as signed; non-0 if not
+            commandLine 'jarsigner', '-verify', '-strict', "${createArtifactName()}"
+	}
+    }
+}
