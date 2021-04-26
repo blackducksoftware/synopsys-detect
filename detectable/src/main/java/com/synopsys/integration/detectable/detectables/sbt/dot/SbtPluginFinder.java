@@ -8,6 +8,7 @@
 package com.synopsys.integration.detectable.detectables.sbt.dot;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
@@ -20,6 +21,7 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.util.OperatingSystemType;
 
 public class SbtPluginFinder {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

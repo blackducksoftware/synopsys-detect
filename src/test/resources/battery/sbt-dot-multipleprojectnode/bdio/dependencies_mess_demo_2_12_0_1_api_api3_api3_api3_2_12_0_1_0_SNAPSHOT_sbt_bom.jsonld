@@ -1,0 +1,65 @@
+[
+  {
+    "specVersion": "1.1.0",
+    "spdx:name": "dependencies-mess-demo_2.12/0.1/api/api3/api3/api3_2.12/0.1.0-SNAPSHOT sbt/bom",
+    "creationInfo": {
+      "spdx:creator": [
+        "Tool: Detect-7.1.0-SNAPSHOT",
+        "Tool: IntegrationBdio-22.1.1"
+      ],
+      "spdx:created": "2021-04-23T18:56:40.412282700Z"
+    },
+    "@id": "uuid:4653ba29-1a7a-4c0d-8cc3-4ce1fd5ecf48",
+    "@type": "BillOfMaterials",
+    "relationship": []
+  },
+  {
+    "name": "dependencies-mess-demo_2.12",
+    "revision": "0.1",
+    "@id": "http:maven/api3/api3_2.12/0.1.0-SNAPSHOT",
+    "@type": "Project",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "api3:api3_2.12:0.1.0-SNAPSHOT",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "api3_2.12",
+          "0.1.0-SNAPSHOT"
+        ],
+        "prefix": "api3"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/api4/api4_2.12/0.1.0-SNAPSHOT",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "api4_2.12",
+    "revision": "0.1.0-SNAPSHOT",
+    "@id": "http:maven/api4/api4_2.12/0.1.0-SNAPSHOT",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "api4:api4_2.12:0.1.0-SNAPSHOT",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "api4_2.12",
+          "0.1.0-SNAPSHOT"
+        ],
+        "prefix": "api4"
+      }
+    },
+    "relationship": []
+  }
+]
