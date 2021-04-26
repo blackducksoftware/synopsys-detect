@@ -219,10 +219,11 @@ public class DetectableOptionFactory {
     }
 
     public SbtResolutionCacheOptions createSbtResolutionCacheDetectableOptions() {
+        String sbtCommandAdditionalArguments = getNullableValue(DetectProperties.DETECT_SBT_ARGUMENTS);
         List<String> includedConfigurations = getValue(DetectProperties.DETECT_SBT_INCLUDED_CONFIGURATIONS);
         List<String> excludedConfigurations = getValue(DetectProperties.DETECT_SBT_EXCLUDED_CONFIGURATIONS);
         Integer reportDepth = getValue(DetectProperties.DETECT_SBT_REPORT_DEPTH);
-        return new SbtResolutionCacheOptions(includedConfigurations, excludedConfigurations, reportDepth);
+        return new SbtResolutionCacheOptions(sbtCommandAdditionalArguments, includedConfigurations, excludedConfigurations, reportDepth);
     }
 
     public YarnLockOptions createYarnLockOptions() {
