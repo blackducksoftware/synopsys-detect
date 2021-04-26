@@ -205,12 +205,13 @@ import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecP
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecLineParser;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecParser;
 import com.synopsys.integration.detectable.detectables.sbt.SbtDetectable;
+import com.synopsys.integration.detectable.detectables.sbt.dot.SbtCommandArgumentGenerator;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotExtractor;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotGraphNodeParser;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotOutputParser;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtGraphParserTransformer;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtPluginFinder;
-import com.synopsys.integration.detectable.detectables.sbt.dot.SbtProjectMatcher;
+import com.synopsys.integration.detectable.detectables.sbt.dot.SbtRootNodeFinder;
 import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheExtractor;
 import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheOptions;
 import com.synopsys.integration.detectable.detectables.swift.SwiftCliDetectable;
@@ -711,19 +712,19 @@ public class DetectableFactory {
     }
 
     public SbtPluginFinder sbtPluginFinder() {
-        return new SbtPluginFinder(executableRunner);
+        return new SbtPluginFinder(executableRunner, new SbtCommandArgumentGenerator());
     }
 
     private SbtDotExtractor sbtDotExtractor() {
-        return new SbtDotExtractor(executableRunner, sbtDotOutputParser(), sbtProjectMatcher(), sbtGraphParserTransformer(), sbtDotGraphNodeParser());
+        return new SbtDotExtractor(executableRunner, sbtDotOutputParser(), sbtProjectMatcher(), sbtGraphParserTransformer(), sbtDotGraphNodeParser(), new SbtCommandArgumentGenerator());
     }
 
     private SbtDotOutputParser sbtDotOutputParser() {
         return new SbtDotOutputParser();
     }
 
-    private SbtProjectMatcher sbtProjectMatcher() {
-        return new SbtProjectMatcher(sbtDotGraphNodeParser());
+    private SbtRootNodeFinder sbtProjectMatcher() {
+        return new SbtRootNodeFinder(sbtDotGraphNodeParser());
     }
 
     private SbtDotGraphNodeParser sbtDotGraphNodeParser() {

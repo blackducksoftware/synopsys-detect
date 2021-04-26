@@ -52,5 +52,16 @@ public class SbtBattery {
         test.expectBdioResources();
         test.run();
     }
+
+    @Test
+    void dotPluginMultipleProjectNode() {
+        final BatteryTest test = new BatteryTest("sbt-dot-multipleprojectnode");
+        test.sourceDirectoryNamed("sbt-dot");
+        test.sourceFileNamed("build.sbt");
+        test.addDirectlyToSourceFolderFromExpandedResource("dots");
+        test.executableFromResourceFiles(DetectProperties.DETECT_SBT_PATH.getProperty(), "sbt-plugins.xout", "sbt-dependencyDot.ftl");
+        test.expectBdioResources();
+        test.run();
+    }
 }
 

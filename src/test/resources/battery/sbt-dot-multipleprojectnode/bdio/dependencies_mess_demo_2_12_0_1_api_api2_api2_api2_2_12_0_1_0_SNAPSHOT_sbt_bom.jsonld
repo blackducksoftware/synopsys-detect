@@ -1,0 +1,91 @@
+[
+  {
+    "specVersion": "1.1.0",
+    "spdx:name": "dependencies-mess-demo_2.12/0.1/api/api2/api2/api2_2.12/0.1.0-SNAPSHOT sbt/bom",
+    "creationInfo": {
+      "spdx:creator": [
+        "Tool: Detect-7.1.0-SNAPSHOT",
+        "Tool: IntegrationBdio-22.1.1"
+      ],
+      "spdx:created": "2021-04-23T18:56:40.398298800Z"
+    },
+    "@id": "uuid:15093f43-bf0f-4a56-afe5-430703cc6f72",
+    "@type": "BillOfMaterials",
+    "relationship": []
+  },
+  {
+    "name": "dependencies-mess-demo_2.12",
+    "revision": "0.1",
+    "@id": "http:maven/api2/api2_2.12/0.1.0-SNAPSHOT",
+    "@type": "Project",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "api2:api2_2.12:0.1.0-SNAPSHOT",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "api2_2.12",
+          "0.1.0-SNAPSHOT"
+        ],
+        "prefix": "api2"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/service2/service2_2.12/0.1.0-SNAPSHOT",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/api5/api5_2.12/0.1.0-SNAPSHOT",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "service2_2.12",
+    "revision": "0.1.0-SNAPSHOT",
+    "@id": "http:maven/service2/service2_2.12/0.1.0-SNAPSHOT",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "service2:service2_2.12:0.1.0-SNAPSHOT",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "service2_2.12",
+          "0.1.0-SNAPSHOT"
+        ],
+        "prefix": "service2"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "api5_2.12",
+    "revision": "0.1.0-SNAPSHOT",
+    "@id": "http:maven/api5/api5_2.12/0.1.0-SNAPSHOT",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "api5:api5_2.12:0.1.0-SNAPSHOT",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "api5_2.12",
+          "0.1.0-SNAPSHOT"
+        ],
+        "prefix": "api5"
+      }
+    },
+    "relationship": []
+  }
+]
