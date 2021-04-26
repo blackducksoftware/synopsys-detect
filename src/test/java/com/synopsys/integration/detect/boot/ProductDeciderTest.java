@@ -50,6 +50,16 @@ class ProductDeciderTest {
     }
 
     @Test
+    public void shouldRunOfflineEvenWhenUrlProvided() {
+        BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, "http://example.com");
+        BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = blackDuckSignatureScannerOptions(null, null);
+        BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(blackDuckConnectionDetails, blackDuckSignatureScannerOptions, BlackduckScanMode.INTELLIGENT, createBdioOptions(false, true));
+
+        Assertions.assertTrue(productDecision.shouldRun());
+        Assertions.assertTrue(productDecision.isOffline());
+    }
+
+    @Test
     public void shouldRunBlackDuckOfflineWhenInstallUrl() {
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, null);
         BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = blackDuckSignatureScannerOptions(null, VALID_URL);
