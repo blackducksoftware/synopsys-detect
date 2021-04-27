@@ -1379,6 +1379,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#additional-sbt-command-arguments" class="md-nav__link">
+    Additional sbt command Arguments
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#sbt-configurations-excluded-deprecated" class="md-nav__link">
     SBT Configurations Excluded (Deprecated)
   </a>
@@ -1453,6 +1460,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#additional-sbt-command-arguments" class="md-nav__link">
+    Additional sbt command Arguments
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#sbt-configurations-excluded-deprecated" class="md-nav__link">
     SBT Configurations Excluded (Deprecated)
   </a>
@@ -1491,6 +1505,53 @@
                 
                 
                 <h1 id="sbt">sbt<a class="headerlink" href="#sbt" title="Permanent link">#</a></h1>
+<h2 id="additional-sbt-command-arguments">Additional sbt command Arguments<a class="headerlink" href="#additional-sbt-command-arguments" title="Permanent link">#</a></h2>
+<pre><code>--detect.sbt.arguments
+</code></pre>
+
+<p>A space-separated list of additional arguments to add to sbt command line when running Detect against an SBT project. Detect will execute the command 'sbt {additional arguments} {Detect-added arguments}'.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>7.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Optional String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Example</td>
+<td>"-Djline.terminal=jline.UnsupportedTerminal"</td>
+</tr>
+</tbody>
+</table>
 <h2 id="sbt-configurations-excluded-deprecated">SBT Configurations Excluded (Deprecated)<a class="headerlink" href="#sbt-configurations-excluded-deprecated" title="Permanent link">#</a></h2>
 <pre><code>--detect.sbt.excluded.configurations
 </code></pre>

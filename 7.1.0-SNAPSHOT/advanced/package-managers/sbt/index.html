@@ -700,9 +700,38 @@
       
     
     
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        SBT support
+      </label>
+    
     <a href="./" title="SBT support" class="md-nav__link md-nav__link--active">
       SBT support
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#background-execution" class="md-nav__link">
+    Background execution
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
     
   </li>
 
@@ -1406,6 +1435,22 @@
     
   
   
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#background-execution" class="md-nav__link">
+    Background execution
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1438,6 +1483,15 @@ net.virtualvoid.sbt.graph.DependencyGraphPlugin
 <p>The plugins include a "dependencyDot" task which generates "target/configuration-dependencies.dot" for each project.
 In some cases, the dot files are not generated in "./target" and while those graphs will still be found and results are not affected, it could affect the project and version chosen and code location's directory.</p>
 <p>**NOTE: Older SBT projects that generate a resolution cache are still supported but are being deprecated. You must install the plugin for SBT to continue working uninterrupted.</p>
+<h2 id="background-execution">Background execution<a class="headerlink" href="#background-execution" title="Permanent link">#</a></h2>
+<p>The sbt command line utility is known to hang when run in the background (this may be limited to Linux and Mac systems):
+<a href="https://github.com/sbt/sbt/issues/701">https://github.com/sbt/sbt/issues/701</a>.
+This can cause Synopsys Detect to hang, if Synopsys Detect is run in the background,
+and the SBT detector runs.
+You can apply the workaround suggested in that github issue using the
+<em>detect.sbt.arguments</em> property:</p>
+<pre><code>./detect7.sh --detect.sbt.arguments=&quot;-Djline.terminal=jline.UnsupportedTerminal&quot;
+</code></pre>
                 
                   
                 
