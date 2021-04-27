@@ -205,6 +205,7 @@ task publishAirGapZipWithoutDocker() {
 
 task signJar() {
     dependsOn build
+    finalizedBy 'verifyJar'
     doLast {
         exec {
             commandLine 'jarsigner', '-tsa', 'http://tsa.starfieldtech.com/', '-storetype', 'pkcs12', '-storepass', "${jarSigningKeystorePassword}", '-keystore', "${jarSigningKeystorePath}", "${createArtifactName()}", "${jarSigningCertificateAlias}"
