@@ -11,7 +11,6 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.NullSafePackageJson;
@@ -33,11 +32,9 @@ public class YarnPackager {
         YarnLockResult yarnLockResult = new YarnLockResult(rootPackageJson, yarnWorkspaces, yarnLock);
 
         try {
-            DependencyGraph dependencyGraph = yarnTransformer.generateDependencyGraph(yarnLockResult, useProductionOnly, getWorkspaceDependenciesFromWorkspacePackageJson, externalDependencies,
+            List<CodeLocation> codeLocations = yarnTransformer.generateCodeLocations(yarnLockResult, useProductionOnly, getWorkspaceDependenciesFromWorkspacePackageJson, externalDependencies,
                 workspaceFilter);
-            CodeLocation codeLocation = new CodeLocation(dependencyGraph);
-
-            return YarnResult.success(rootPackageJson.getName().orElse(null), rootPackageJson.getVersion().orElse(null), codeLocation);
+            return YarnResult.success(rootPackageJson.getName().orElse(null), rootPackageJson.getVersion().orElse(null), codeLocations);
         } catch (MissingExternalIdException exception) {
             return YarnResult.failure(exception);
         }

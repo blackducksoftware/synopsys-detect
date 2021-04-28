@@ -24,6 +24,7 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.UnitTest;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.YarnTransformer;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.NullSafePackageJson;
@@ -57,8 +58,13 @@ class YarnTransformerTest {
     void testExcludeDevDependencies() throws MissingExternalIdException {
         YarnLockResult yarnLockResult = buildTestYarnLockResult(noWorkspaces, noWorkspaces, false, false);
 
-        DependencyGraph dependencyGraph = yarnTransformer.generateDependencyGraph(yarnLockResult, true, false, new ArrayList<>(0), ExcludedIncludedWildcardFilter.EMPTY);
+        List<CodeLocation> codeLocations = yarnTransformer.generateCodeLocations(yarnLockResult, true, false, new ArrayList<>(0), ExcludedIncludedWildcardFilter.EMPTY);
 
+        assertEquals(1, codeLocations.size());
+        CodeLocation codeLocation = codeLocations.get(0);
+        assertEquals("tbd", codeLocation.getExternalId().get().getName());
+        assertEquals("tbd", codeLocation.getExternalId().get().getVersion());
+        DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
         assertEquals(1, dependencyGraph.getRootDependencies().size());
 
         Set<Dependency> rootDeps = dependencyGraph.getRootDependencies();
@@ -75,8 +81,13 @@ class YarnTransformerTest {
     void testIncludeDevDependencies() throws MissingExternalIdException {
         YarnLockResult yarnLockResult = buildTestYarnLockResult(noWorkspaces, noWorkspaces, false, false);
 
-        DependencyGraph dependencyGraph = yarnTransformer.generateDependencyGraph(yarnLockResult, false, false, new ArrayList<>(0), ExcludedIncludedWildcardFilter.EMPTY);
+        List<CodeLocation> codeLocations = yarnTransformer.generateCodeLocations(yarnLockResult, false, false, new ArrayList<>(0), ExcludedIncludedWildcardFilter.EMPTY);
 
+        assertEquals(1, codeLocations.size());
+        CodeLocation codeLocation = codeLocations.get(0);
+        assertEquals("tbd", codeLocation.getExternalId().get().getName());
+        assertEquals("tbd", codeLocation.getExternalId().get().getVersion());
+        DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
         assertEquals(2, dependencyGraph.getRootDependencies().size());
 
         ExternalId fooExternalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "foo", "1.0");
@@ -99,8 +110,13 @@ class YarnTransformerTest {
         workspacesThatAreNotDependencies.add(new NameVersion("workspace-notdep", "1.0.0"));
         YarnLockResult yarnLockResult = buildTestYarnLockResult(workspacesThatAreDependencies, workspacesThatAreNotDependencies, false, false);
 
-        DependencyGraph dependencyGraph = yarnTransformer.generateDependencyGraph(yarnLockResult, false, false, workspacesThatAreDependencies, ExcludedIncludedWildcardFilter.EMPTY);
+        List<CodeLocation> codeLocations = yarnTransformer.generateCodeLocations(yarnLockResult, false, false, workspacesThatAreDependencies, ExcludedIncludedWildcardFilter.EMPTY);
 
+        assertEquals(1, codeLocations.size());
+        CodeLocation codeLocation = codeLocations.get(0);
+        assertEquals("tbd", codeLocation.getExternalId().get().getName());
+        assertEquals("tbd", codeLocation.getExternalId().get().getVersion());
+        DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
         assertEquals(3, dependencyGraph.getRootDependencies().size());
         ExternalId workspaceExternalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, workspacesThatAreDependencies.get(0).getName(),
             workspacesThatAreDependencies.get(0).getVersion());
@@ -120,8 +136,13 @@ class YarnTransformerTest {
         List<NameVersion> allWorkspaces = new LinkedList<>(workspacesThatAreDependencies);
         allWorkspaces.addAll(workspacesThatAreNotDependencies);
 
-        DependencyGraph dependencyGraph = yarnTransformer.generateDependencyGraph(yarnLockResult, false, true, allWorkspaces, ExcludedIncludedWildcardFilter.EMPTY);
+        List<CodeLocation> codeLocations = yarnTransformer.generateCodeLocations(yarnLockResult, false, true, allWorkspaces, ExcludedIncludedWildcardFilter.EMPTY);
 
+        assertEquals(1, codeLocations.size());
+        CodeLocation codeLocation = codeLocations.get(0);
+        assertEquals("tbd", codeLocation.getExternalId().get().getName());
+        assertEquals("tbd", codeLocation.getExternalId().get().getVersion());
+        DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
         assertEquals(4, dependencyGraph.getRootDependencies().size());
         // TODO make this a static class field
         Forge worspaceForge = new Forge("/", "detect-yarn-workspace");
@@ -147,8 +168,13 @@ class YarnTransformerTest {
         workspacesThatAreNotDependencies.add(new NameVersion("workspace-notdep", "1.0.0"));
         YarnLockResult yarnLockResult = buildTestYarnLockResult(workspacesThatAreDependencies, workspacesThatAreNotDependencies, true, false);
 
-        DependencyGraph dependencyGraph = yarnTransformer.generateDependencyGraph(yarnLockResult, false, true, workspacesThatAreDependencies, null);
+        List<CodeLocation> codeLocations = yarnTransformer.generateCodeLocations(yarnLockResult, false, true, workspacesThatAreDependencies, null);
 
+        assertEquals(1, codeLocations.size());
+        CodeLocation codeLocation = codeLocations.get(0);
+        assertEquals("tbd", codeLocation.getExternalId().get().getName());
+        assertEquals("tbd", codeLocation.getExternalId().get().getVersion());
+        DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
         assertEquals(3, dependencyGraph.getRootDependencies().size());
         String targetWorkspaceName = workspacesThatAreDependencies.get(0).getName();
         boolean foundWorkspaceDep = false;
@@ -179,8 +205,13 @@ class YarnTransformerTest {
         workspacesThatAreNotDependencies.add(new NameVersion("workspace-notdep", "1.0.0"));
         YarnLockResult yarnLockResult = buildTestYarnLockResult(workspacesThatAreDependencies, workspacesThatAreNotDependencies, true, true);
 
-        DependencyGraph dependencyGraph = yarnTransformer.generateDependencyGraph(yarnLockResult, false, true, workspacesThatAreDependencies, ExcludedIncludedWildcardFilter.EMPTY);
+        List<CodeLocation> codeLocations = yarnTransformer.generateCodeLocations(yarnLockResult, false, true, workspacesThatAreDependencies, ExcludedIncludedWildcardFilter.EMPTY);
 
+        assertEquals(1, codeLocations.size());
+        CodeLocation codeLocation = codeLocations.get(0);
+        assertEquals("tbd", codeLocation.getExternalId().get().getName());
+        assertEquals("tbd", codeLocation.getExternalId().get().getVersion());
+        DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
         assertEquals(4, dependencyGraph.getRootDependencies().size());
         String targetWorkspaceName = workspacesThatAreNotDependencies.get(0).getName();
         boolean foundWorkspaceDep = false;
@@ -212,9 +243,14 @@ class YarnTransformerTest {
         YarnLockResult yarnLockResult = new YarnLockResult(packageJson, YarnWorkspaces.EMPTY, yarnLock);
 
         // This should not throw an exception.
-        DependencyGraph dependencyGraph = yarnTransformer.generateDependencyGraph(yarnLockResult, false, false, new ArrayList<>(0), ExcludedIncludedWildcardFilter.EMPTY);
+        List<CodeLocation> codeLocations = yarnTransformer.generateCodeLocations(yarnLockResult, false, false, new ArrayList<>(0), ExcludedIncludedWildcardFilter.EMPTY);
 
         // Sanity check.
+        assertEquals(1, codeLocations.size());
+        CodeLocation codeLocation = codeLocations.get(0);
+        assertEquals("tbd", codeLocation.getExternalId().get().getName());
+        assertEquals("tbd", codeLocation.getExternalId().get().getVersion());
+        DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
         Assertions.assertNotNull(dependencyGraph, "The dependency graph should not be null.");
         assertEquals(1, dependencyGraph.getRootDependencies().size(), "Only 'foo:1.0' should appear in the graph.");
         ExternalId fooExternalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "foo", "1.0");

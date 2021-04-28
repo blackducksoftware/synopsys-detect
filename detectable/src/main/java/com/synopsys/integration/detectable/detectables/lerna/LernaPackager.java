@@ -161,7 +161,7 @@ public class LernaPackager {
                 return LernaResult.failure(yarnResult.getException().get());
             }
 
-            return LernaResult.success(yarnResult.getProjectName(), yarnResult.getProjectVersionName(), Collections.singletonList(yarnResult.getCodeLocation()));
+            return LernaResult.success(yarnResult.getProjectName(), yarnResult.getProjectVersionName(), yarnResult.getCodeLocations());
         } else {
             return LernaResult.failure(
                 new FileNotFoundException(

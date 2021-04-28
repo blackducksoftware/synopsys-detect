@@ -66,7 +66,7 @@ public class YarnLockExtractor {
             return new Extraction.Builder()
                        .projectName(yarnResult.getProjectName())
                        .projectVersion(yarnResult.getProjectVersionName())
-                       .success(yarnResult.getCodeLocation())
+                       .success(yarnResult.getCodeLocations())
                        .build();
         } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();
