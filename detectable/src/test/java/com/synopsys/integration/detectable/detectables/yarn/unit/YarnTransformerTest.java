@@ -62,8 +62,6 @@ class YarnTransformerTest {
 
         assertEquals(1, codeLocations.size());
         CodeLocation codeLocation = codeLocations.get(0);
-        assertEquals("tbd", codeLocation.getExternalId().get().getName());
-        assertEquals("tbd", codeLocation.getExternalId().get().getVersion());
         DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
         assertEquals(1, dependencyGraph.getRootDependencies().size());
 
@@ -85,8 +83,6 @@ class YarnTransformerTest {
 
         assertEquals(1, codeLocations.size());
         CodeLocation codeLocation = codeLocations.get(0);
-        assertEquals("tbd", codeLocation.getExternalId().get().getName());
-        assertEquals("tbd", codeLocation.getExternalId().get().getVersion());
         DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
         assertEquals(2, dependencyGraph.getRootDependencies().size());
 
@@ -110,7 +106,7 @@ class YarnTransformerTest {
         workspacesThatAreNotDependencies.add(new NameVersion("workspace-notdep", "1.0.0"));
         YarnLockResult yarnLockResult = buildTestYarnLockResult(workspacesThatAreDependencies, workspacesThatAreNotDependencies, false, false);
 
-        List<CodeLocation> codeLocations = yarnTransformer.generateCodeLocations(yarnLockResult, false, false, workspacesThatAreDependencies, ExcludedIncludedWildcardFilter.EMPTY);
+        List<CodeLocation> codeLocations = yarnTransformer.generateCodeLocations(yarnLockResult, false, false, new ArrayList<>(), ExcludedIncludedWildcardFilter.EMPTY);
 
         assertEquals(1, codeLocations.size());
         CodeLocation codeLocation = codeLocations.get(0);
@@ -291,9 +287,9 @@ class YarnTransformerTest {
         for (NameVersion workspace : allWorkspaces) {
             String workspaceDepName = workspace.getName() + WORKSPACE_DEP_SUFFIX;
             String workspaceDevDepName = workspace.getName() + "-dev" + WORKSPACE_DEP_SUFFIX;
-            if (yarn1project || includeAllWorkspaceDependencies) {
-                addWorkspacePackageJson(workspacesByName, workspace, workspaceDepName, workspaceDevDepName);
-            }
+            //            if (yarn1project || includeAllWorkspaceDependencies) {
+            addWorkspacePackageJson(workspacesByName, workspace, workspaceDepName, workspaceDevDepName);
+            //            }
             if (!yarn1project) {
                 addWorkspaceToYarnLockEntries(yarnLockEntries, workspace, workspaceDepName);
             }
