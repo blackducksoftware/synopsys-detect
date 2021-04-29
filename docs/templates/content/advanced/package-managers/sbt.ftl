@@ -27,3 +27,15 @@ The plugins include a "dependencyDot" task which generates "target/configuration
 In some cases, the dot files are not generated in "./target" and while those graphs will still be found and results are not affected, it could affect the project and version chosen and code location's directory.
 
 **NOTE: Older SBT projects that generate a resolution cache are still supported but are being deprecated. You must install the plugin for SBT to continue working uninterrupted.
+
+## Background execution
+
+The sbt command line utility is known to hang when run in the background (this may be limited to Linux and Mac systems):
+[https://github.com/sbt/sbt/issues/701](https://github.com/sbt/sbt/issues/701).
+This can cause ${solution_name} to hang, if ${solution_name} is run in the background,
+and the SBT detector runs.
+You can apply the workaround suggested in that github issue using the
+*detect.sbt.arguments* property:
+```
+./detect7.sh --detect.sbt.arguments="-Djline.terminal=jline.UnsupportedTerminal"
+```

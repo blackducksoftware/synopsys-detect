@@ -1,0 +1,38 @@
+[
+  {
+    "specVersion": "1.1.0",
+    "spdx:name": "dependencies-mess-demo_2.12/0.1/api/api5/api5/api5_2.12/0.1.0-SNAPSHOT sbt/bom",
+    "creationInfo": {
+      "spdx:creator": [
+        "Tool: Detect-7.1.0-SNAPSHOT",
+        "Tool: IntegrationBdio-22.1.1"
+      ],
+      "spdx:created": "2021-04-23T18:56:40.451270900Z"
+    },
+    "@id": "uuid:dd9de509-9839-4d2f-95c4-a90cccf34982",
+    "@type": "BillOfMaterials",
+    "relationship": []
+  },
+  {
+    "name": "dependencies-mess-demo_2.12",
+    "revision": "0.1",
+    "@id": "http:maven/api5/api5_2.12/0.1.0-SNAPSHOT",
+    "@type": "Project",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "api5:api5_2.12:0.1.0-SNAPSHOT",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "api5_2.12",
+          "0.1.0-SNAPSHOT"
+        ],
+        "prefix": "api5"
+      }
+    },
+    "relationship": []
+  }
+]

@@ -41,7 +41,7 @@ class SpringConfigurationPropertySourceTests {
         final MockEnvironment m = new MockEnvironment();
         m.setProperty("example.key", "value");
 
-        final List<PropertySource> sources = new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironment(m));
+        final List<PropertySource> sources = new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironment(m, true));
         final PropertyConfiguration config = new PropertyConfiguration(sources);
 
         final NullableProperty<String> property = new NullableStringProperty("example.key");

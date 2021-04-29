@@ -11,15 +11,21 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.function.Predicate;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.bdio2.util.Bdio2Factory;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.common.util.finder.FileFinder;
+import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
+import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
-import com.synopsys.integration.detect.lifecycle.run.AggregateOptions;
-import com.synopsys.integration.detect.lifecycle.run.RunContext;
+import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
+import com.synopsys.integration.detect.lifecycle.run.DetectFontLoaderFactory;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
+import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.AggregateDecisionOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BdioFileGenerationOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BdioUploadOperation;
@@ -30,7 +36,15 @@ import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.ImpactA
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.ProjectCreationOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.ProjectDecisionOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.SignatureScanOperation;
+import com.synopsys.integration.detect.lifecycle.run.singleton.BootSingletons;
+import com.synopsys.integration.detect.lifecycle.run.singleton.EventSingletons;
+import com.synopsys.integration.detect.lifecycle.run.singleton.UtilitySingletons;
+import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
+import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
+import com.synopsys.integration.detect.tool.detector.DetectorEventPublisher;
+import com.synopsys.integration.detect.tool.detector.extraction.ExtractionEnvironmentProvider;
+import com.synopsys.integration.detect.tool.detector.factory.DetectDetectableFactory;
 import com.synopsys.integration.detect.tool.impactanalysis.BlackDuckImpactAnalysisTool;
 import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisOptions;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisBatchRunner;
@@ -44,120 +58,176 @@ import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
 import com.synopsys.integration.detect.workflow.blackduck.DetectCustomFieldService;
 import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOptions;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationResultCalculator;
+import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationCreator;
+import com.synopsys.integration.detect.workflow.codelocation.CodeLocationEventPublisher;
+import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
+import com.synopsys.integration.detect.workflow.event.EventSystem;
+import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionDecider;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
+import com.synopsys.integration.detect.workflow.status.OperationSystem;
+import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NoThreadExecutorService;
 
 public class OperationFactory {
-    private final RunContext runContext;
-    private final AggregateOptions aggregateOptions;
+    private final DetectDetectableFactory detectDetectableFactory;
+    private final DetectFontLoaderFactory detectFontLoaderFactory; //TODO: Eh? Only need it if you want to do risk reports.
 
-    public OperationFactory(RunContext runContext) {
-        this.runContext = runContext;
-        this.aggregateOptions = runContext.createRunOptions();
+    private final Gson htmlEscapeDisabledGson;
+    private final CodeLocationConverter codeLocationConverter;
+    private final ExtractionEnvironmentProvider extractionEnvironmentProvider;
+
+    private final StatusEventPublisher statusEventPublisher;
+    private final ExitCodePublisher exitCodePublisher;
+    private final CodeLocationEventPublisher codeLocationEventPublisher;
+    private final DetectorEventPublisher detectorEventPublisher;
+
+    private final OperationSystem operationSystem;
+    private final CodeLocationNameManager codeLocationNameManager;
+    private final BdioCodeLocationCreator bdioCodeLocationCreator;
+    private final ConnectionFactory connectionFactory;
+
+    private final PropertyConfiguration detectConfiguration;
+    private final DirectoryManager directoryManager;
+    private final DetectConfigurationFactory detectConfigurationFactory;
+    private final EventSystem eventSystem;
+    private final FileFinder fileFinder;
+    private final DetectInfo detectInfo;
+    private final ProductRunData productRunData;
+
+    public OperationFactory(DetectDetectableFactory detectDetectableFactory, DetectFontLoaderFactory detectFontLoaderFactory, BootSingletons bootSingletons, UtilitySingletons utilitySingletons, EventSingletons eventSingletons) {
+        this.detectDetectableFactory = detectDetectableFactory;
+        this.detectFontLoaderFactory = detectFontLoaderFactory;
+
+        statusEventPublisher = eventSingletons.getStatusEventPublisher();
+        exitCodePublisher = eventSingletons.getExitCodePublisher();
+        codeLocationEventPublisher = eventSingletons.getCodeLocationEventPublisher();
+        detectorEventPublisher = eventSingletons.getDetectorEventPublisher();
+
+        directoryManager = bootSingletons.getDirectoryManager();
+        detectConfiguration = bootSingletons.getDetectConfiguration();
+        detectConfigurationFactory = bootSingletons.getDetectConfigurationFactory();
+        eventSystem = bootSingletons.getEventSystem();
+        fileFinder = bootSingletons.getFileFinder();
+        detectInfo = bootSingletons.getDetectInfo();
+        productRunData = bootSingletons.getProductRunData();
+
+        operationSystem = utilitySingletons.getOperationSystem();
+        codeLocationNameManager = utilitySingletons.getCodeLocationNameManager();
+        bdioCodeLocationCreator = utilitySingletons.getBdioCodeLocationCreator();
+        connectionFactory = utilitySingletons.getConnectionFactory();
+
+        this.htmlEscapeDisabledGson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+        this.codeLocationConverter = new CodeLocationConverter(utilitySingletons.getExternalIdFactory());
+        this.extractionEnvironmentProvider = new ExtractionEnvironmentProvider(directoryManager);
     }
 
     public final DockerOperation createDockerOperation() {
-        return new DockerOperation(runContext.getDirectoryManager(), runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getDetectDetectableFactory(), runContext.getExtractionEnvironmentProvider(),
-            runContext.getCodeLocationConverter(), runContext.getOperationSystem());
+        return new DockerOperation(directoryManager, statusEventPublisher, exitCodePublisher, detectDetectableFactory,
+            extractionEnvironmentProvider,
+            codeLocationConverter, operationSystem);
     }
 
     public final BazelOperation createBazelOperation() {
-        return new BazelOperation(runContext.getDirectoryManager(), runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getDetectDetectableFactory(),
-            runContext.getExtractionEnvironmentProvider(),
-            runContext.getCodeLocationConverter(), runContext.getOperationSystem());
+        return new BazelOperation(directoryManager, statusEventPublisher, exitCodePublisher, detectDetectableFactory,
+            extractionEnvironmentProvider,
+            codeLocationConverter, operationSystem);
     }
 
     public final DetectorOperation createDetectorOperation() {
-        return new DetectorOperation(runContext.getDetectConfiguration(), runContext.getDetectConfigurationFactory(), runContext.getDirectoryManager(), runContext.getEventSystem(), runContext.getDetectDetectableFactory(),
-            runContext.getExtractionEnvironmentProvider(), runContext.getCodeLocationConverter(), runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getDetectorEventPublisher(), runContext.getFileFinder());
+        return new DetectorOperation(detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem,
+            detectDetectableFactory,
+            extractionEnvironmentProvider, codeLocationConverter, statusEventPublisher, exitCodePublisher, detectorEventPublisher,
+            fileFinder);
     }
 
     public final RapidScanOperation createRapidScanOperation() {
-        return new RapidScanOperation(runContext.getHtmlEscapeDisabledGson(), runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getDirectoryManager(), runContext.getOperationSystem(),
-            runContext.getDetectConfigurationFactory().findTimeoutInSeconds());
+        return new RapidScanOperation(htmlEscapeDisabledGson, statusEventPublisher, exitCodePublisher, directoryManager,
+            operationSystem,
+            detectConfigurationFactory.findTimeoutInSeconds());
     }
 
     public final AggregateDecisionOperation createAggregateOptionsOperation() {
-        return new AggregateDecisionOperation(aggregateOptions, runContext.getOperationSystem());
+        return new AggregateDecisionOperation(detectConfigurationFactory.createAggregateOptions(), operationSystem);
     }
 
     public final BdioFileGenerationOperation createBdioFileGenerationOperation() {
-        BdioManager bdioManager = new BdioManager(runContext.getDetectInfo(), new SimpleBdioFactory(), new ExternalIdFactory(), new Bdio2Factory(), new IntegrationEscapeUtil(), runContext.getCodeLocationNameManager(),
-            runContext.getBdioCodeLocationCreator(), runContext.getDirectoryManager());
+        BdioManager bdioManager = new BdioManager(detectInfo, new SimpleBdioFactory(), new ExternalIdFactory(), new Bdio2Factory(), new IntegrationEscapeUtil(), codeLocationNameManager,
+            bdioCodeLocationCreator, directoryManager);
 
-        return new BdioFileGenerationOperation(runContext.getDetectConfigurationFactory().createBdioOptions(), bdioManager, runContext.getCodeLocationEventPublisher(),
-            runContext.getOperationSystem());
+        return new BdioFileGenerationOperation(detectConfigurationFactory.createBdioOptions(), bdioManager, codeLocationEventPublisher,
+            operationSystem);
     }
 
     public final BinaryScanOperation createBinaryScanOperation() {
-        BlackDuckRunData blackDuckRunData = runContext.getProductRunData().getBlackDuckRunData();
-        BinaryScanOptions binaryScanOptions = runContext.getDetectConfigurationFactory().createBinaryScanOptions();
+        BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
+        BinaryScanOptions binaryScanOptions = detectConfigurationFactory.createBinaryScanOptions();
 
-        return new BinaryScanOperation(blackDuckRunData, binaryScanOptions, runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getDirectoryManager(), runContext.getCodeLocationNameManager(),
-            runContext.getOperationSystem(), runContext.getFileFinder());
+        return new BinaryScanOperation(blackDuckRunData, binaryScanOptions, statusEventPublisher, exitCodePublisher, directoryManager,
+            codeLocationNameManager,
+            operationSystem, fileFinder);
     }
 
     public final BdioUploadOperation createBdioUploadOperation() {
-        return new BdioUploadOperation(runContext.getOperationSystem(), runContext.getDetectConfigurationFactory().createBdioOptions());
+        return new BdioUploadOperation(operationSystem, detectConfigurationFactory.createBdioOptions());
     }
 
     public final CodeLocationResultCalculationOperation createCodeLocationResultCalculationOperation() {
-        return new CodeLocationResultCalculationOperation(new CodeLocationResultCalculator(), runContext.getCodeLocationEventPublisher(), runContext.getOperationSystem());
+        return new CodeLocationResultCalculationOperation(new CodeLocationResultCalculator(), codeLocationEventPublisher, operationSystem);
     }
 
-    public final FullScanPostProcessingOperation createFullScanPostProcessingOperation(DetectToolFilter detectToolFilter) {
-        DetectConfigurationFactory detectConfigurationFactory = runContext.getDetectConfigurationFactory();
+    public final FullScanPostProcessingOperation createFullScanPostProcessingOperation(DetectToolFilter detectToolFilter) throws DetectUserFriendlyException {
         BlackDuckPostOptions blackDuckPostOptions = detectConfigurationFactory.createBlackDuckPostOptions();
         Long timeoutInSeconds = detectConfigurationFactory.findTimeoutInSeconds();
 
-        return new FullScanPostProcessingOperation(detectToolFilter, blackDuckPostOptions, runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getOperationSystem(), timeoutInSeconds,
-            runContext.getDetectFontLoader());
+        return new FullScanPostProcessingOperation(detectToolFilter, blackDuckPostOptions, statusEventPublisher, exitCodePublisher, operationSystem, timeoutInSeconds, detectFontLoaderFactory.detectFontLoader());
     }
 
     public final ImpactAnalysisOperation createImpactAnalysisOperation() {
-        BlackDuckRunData blackDuckRunData = runContext.getProductRunData().getBlackDuckRunData();
-        ImpactAnalysisOptions impactAnalysisOptions = runContext.getDetectConfigurationFactory().createImpactAnalysisOptions();
+        BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
+        ImpactAnalysisOptions impactAnalysisOptions = detectConfigurationFactory.createImpactAnalysisOptions();
         BlackDuckImpactAnalysisTool blackDuckImpactAnalysisTool;
-        if (runContext.getProductRunData().shouldUseBlackDuckProduct() && blackDuckRunData.isOnline()) {
+        if (productRunData.shouldUseBlackDuckProduct() && blackDuckRunData.isOnline()) {
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
             ImpactAnalysisBatchRunner impactAnalysisBatchRunner = new ImpactAnalysisBatchRunner(blackDuckServicesFactory.getLogger(), blackDuckServicesFactory.getBlackDuckApiClient(), new NoThreadExecutorService(),
                 blackDuckServicesFactory.getGson());
             ImpactAnalysisUploadService impactAnalysisUploadService = new ImpactAnalysisUploadService(impactAnalysisBatchRunner, blackDuckServicesFactory.createCodeLocationCreationService());
             blackDuckImpactAnalysisTool = BlackDuckImpactAnalysisTool
-                                              .ONLINE(runContext.getDirectoryManager(), runContext.getCodeLocationNameManager(), impactAnalysisOptions, blackDuckServicesFactory.getBlackDuckApiClient(), impactAnalysisUploadService,
-                                                  blackDuckServicesFactory.createCodeLocationService(), runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(), runContext.getOperationSystem());
+                                              .ONLINE(directoryManager, codeLocationNameManager, impactAnalysisOptions, blackDuckServicesFactory.getBlackDuckApiClient(), impactAnalysisUploadService,
+                                                  blackDuckServicesFactory.createCodeLocationService(), statusEventPublisher, exitCodePublisher, operationSystem);
         } else {
             blackDuckImpactAnalysisTool = BlackDuckImpactAnalysisTool
-                                              .OFFLINE(runContext.getDirectoryManager(), runContext.getCodeLocationNameManager(), impactAnalysisOptions, runContext.getStatusEventPublisher(), runContext.getExitCodePublisher(),
-                                                  runContext.getOperationSystem());
+                                              .OFFLINE(directoryManager, codeLocationNameManager, impactAnalysisOptions, statusEventPublisher,
+                                                  exitCodePublisher,
+                                                  operationSystem);
         }
         return new ImpactAnalysisOperation(blackDuckImpactAnalysisTool);
     }
 
     public final ProjectCreationOperation createProjectCreationOperation() throws DetectUserFriendlyException {
-        DetectProjectServiceOptions options = runContext.getDetectConfigurationFactory().createDetectProjectServiceOptions();
+        DetectProjectServiceOptions options = detectConfigurationFactory.createDetectProjectServiceOptions();
         DetectCustomFieldService detectCustomFieldService = new DetectCustomFieldService();
 
-        return new ProjectCreationOperation(runContext.getDetectConfigurationFactory().createShouldUnmapCodeLocations(), options, detectCustomFieldService, runContext.getOperationSystem());
+        return new ProjectCreationOperation(detectConfigurationFactory.createShouldUnmapCodeLocations(), options, detectCustomFieldService, operationSystem);
     }
 
     public final ProjectDecisionOperation createProjectDecisionOperation() {
-        ProjectNameVersionOptions projectNameVersionOptions = runContext.getDetectConfigurationFactory().createProjectNameVersionOptions(runContext.getDirectoryManager().getSourceDirectory().getName());
+        ProjectNameVersionOptions projectNameVersionOptions = detectConfigurationFactory.createProjectNameVersionOptions(directoryManager.getSourceDirectory().getName());
         ProjectNameVersionDecider projectNameVersionDecider = new ProjectNameVersionDecider(projectNameVersionOptions);
-        return new ProjectDecisionOperation(projectNameVersionDecider, runContext.getOperationSystem(), runContext.getDetectConfigurationFactory().createPreferredProjectTools());
+        return new ProjectDecisionOperation(projectNameVersionDecider, operationSystem, detectConfigurationFactory.createPreferredProjectTools());
     }
 
     public final SignatureScanOperation createSignatureScanOperation() throws DetectUserFriendlyException {
-        BlackDuckRunData blackDuckRunData = runContext.getProductRunData().getBlackDuckRunData();
-        BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = runContext.getDetectConfigurationFactory().createBlackDuckSignatureScannerOptions();
-        Path sourcePath = runContext.getDirectoryManager().getSourceDirectory().toPath();
-        DetectExcludedDirectoryFilter fileFilter = runContext.getDetectConfigurationFactory().createDetectDirectoryFileFilter(sourcePath);
+        BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
+        BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions();
+        Path sourcePath = directoryManager.getSourceDirectory().toPath();
+        DetectExcludedDirectoryFilter fileFilter = detectConfigurationFactory.createDetectDirectoryFileFilter(sourcePath);
         Predicate<File> collectExcludedDirectoriesPredicate = file -> fileFilter.isExcluded(file);
-        BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, runContext.getDetectContext(), collectExcludedDirectoriesPredicate);
+        BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, collectExcludedDirectoriesPredicate, connectionFactory, directoryManager,
+            codeLocationNameManager, detectInfo, fileFinder, operationSystem, exitCodePublisher, statusEventPublisher);
 
-        return new SignatureScanOperation(blackDuckRunData, blackDuckSignatureScannerTool, runContext.getStatusEventPublisher(), runContext.getExitCodePublisher());
+        return new SignatureScanOperation(blackDuckRunData, blackDuckSignatureScannerTool, statusEventPublisher, exitCodePublisher);
     }
 
 }
