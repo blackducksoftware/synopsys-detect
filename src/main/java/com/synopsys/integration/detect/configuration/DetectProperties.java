@@ -624,7 +624,6 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .setExample("**/*-test");
 
-    //TODO - pass these defaults to sig scan also
     public static final DetectProperty<BooleanProperty> DETECT_EXCLUDE_DEFAULT_DIRECTORIES =
         new DetectProperty<>(new BooleanProperty("detect.exclude.default.directories", true))
             .setInfo("Detect Exclude Default Directories", DetectPropertyFromVersion.VERSION_7_0_0)
