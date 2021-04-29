@@ -1,6 +1,7 @@
 package com.synopsys.integration.detectable.detectables.yarn.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -8,9 +9,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
@@ -99,131 +102,6 @@ class YarnTransformerTest {
     }
 
     @Test
-    void testYarn2WorkspacesJustDependencies() throws MissingExternalIdException {
-        List<NameVersion> workspacesThatAreDependencies = new LinkedList<>();
-        workspacesThatAreDependencies.add(new NameVersion("workspace-isdep", "1.0.0"));
-        List<NameVersion> workspacesThatAreNotDependencies = new LinkedList<>();
-        workspacesThatAreNotDependencies.add(new NameVersion("workspace-notdep", "1.0.0"));
-        YarnLockResult yarnLockResult = buildTestYarnLockResult(workspacesThatAreDependencies, workspacesThatAreNotDependencies, false, false);
-
-        List<CodeLocation> codeLocations = yarnTransformer.generateCodeLocations(yarnLockResult, false, false, new ArrayList<>(), ExcludedIncludedWildcardFilter.EMPTY);
-
-        assertEquals(1, codeLocations.size());
-        CodeLocation codeLocation = codeLocations.get(0);
-        assertEquals("tbd", codeLocation.getExternalId().get().getName());
-        assertEquals("tbd", codeLocation.getExternalId().get().getVersion());
-        DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
-        assertEquals(3, dependencyGraph.getRootDependencies().size());
-        ExternalId workspaceExternalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, workspacesThatAreDependencies.get(0).getName(),
-            workspacesThatAreDependencies.get(0).getVersion());
-        Set<Dependency> actualWorkspaceDeps = dependencyGraph.getChildrenForParent(workspaceExternalId);
-        Dependency actualWorkspaceDep = actualWorkspaceDeps.iterator().next();
-        assertEquals(workspacesThatAreDependencies.get(0).getName() + WORKSPACE_DEP_SUFFIX, actualWorkspaceDep.getName());
-        assertEquals(workspacesThatAreDependencies.get(0).getVersion(), actualWorkspaceDep.getVersion());
-    }
-
-    @Test
-    void testYarn2WorkspacesAll() throws MissingExternalIdException {
-        List<NameVersion> workspacesThatAreDependencies = new LinkedList<>();
-        workspacesThatAreDependencies.add(new NameVersion("workspace-isdep", "1.0.0"));
-        List<NameVersion> workspacesThatAreNotDependencies = new LinkedList<>();
-        workspacesThatAreNotDependencies.add(new NameVersion("workspace-notdep", "1.0.0"));
-        YarnLockResult yarnLockResult = buildTestYarnLockResult(workspacesThatAreDependencies, workspacesThatAreNotDependencies, false, true);
-        List<NameVersion> allWorkspaces = new LinkedList<>(workspacesThatAreDependencies);
-        allWorkspaces.addAll(workspacesThatAreNotDependencies);
-
-        List<CodeLocation> codeLocations = yarnTransformer.generateCodeLocations(yarnLockResult, false, true, allWorkspaces, ExcludedIncludedWildcardFilter.EMPTY);
-
-        assertEquals(1, codeLocations.size());
-        CodeLocation codeLocation = codeLocations.get(0);
-        assertEquals("tbd", codeLocation.getExternalId().get().getName());
-        assertEquals("tbd", codeLocation.getExternalId().get().getVersion());
-        DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
-        assertEquals(4, dependencyGraph.getRootDependencies().size());
-        // TODO make this a static class field
-        Forge worspaceForge = new Forge("/", "detect-yarn-workspace");
-        ExternalId workspaceExternalId = externalIdFactory.createNameVersionExternalId(worspaceForge, workspacesThatAreDependencies.get(0).getName(),
-            workspacesThatAreDependencies.get(0).getVersion());
-        Set<Dependency> actualWorkspaceDeps = dependencyGraph.getChildrenForParent(workspaceExternalId);
-        Dependency actualWorkspaceDep = actualWorkspaceDeps.iterator().next();
-        assertEquals(workspacesThatAreDependencies.get(0).getName() + WORKSPACE_DEP_SUFFIX, actualWorkspaceDep.getName());
-        assertEquals(workspacesThatAreDependencies.get(0).getVersion(), actualWorkspaceDep.getVersion());
-        workspaceExternalId = externalIdFactory.createNameVersionExternalId(worspaceForge, workspacesThatAreNotDependencies.get(0).getName(),
-            workspacesThatAreNotDependencies.get(0).getVersion());
-        actualWorkspaceDeps = dependencyGraph.getChildrenForParent(workspaceExternalId);
-        actualWorkspaceDep = actualWorkspaceDeps.iterator().next();
-        assertEquals(workspacesThatAreNotDependencies.get(0).getName() + WORKSPACE_DEP_SUFFIX, actualWorkspaceDep.getName());
-        assertEquals(workspacesThatAreNotDependencies.get(0).getVersion(), actualWorkspaceDep.getVersion());
-    }
-
-    @Test
-    void testYarn1WorkspacesJustDependencies() throws MissingExternalIdException {
-        List<NameVersion> workspacesThatAreDependencies = new LinkedList<>();
-        workspacesThatAreDependencies.add(new NameVersion("workspace-isdep", "1.0.0"));
-        List<NameVersion> workspacesThatAreNotDependencies = new LinkedList<>();
-        workspacesThatAreNotDependencies.add(new NameVersion("workspace-notdep", "1.0.0"));
-        YarnLockResult yarnLockResult = buildTestYarnLockResult(workspacesThatAreDependencies, workspacesThatAreNotDependencies, true, false);
-
-        List<CodeLocation> codeLocations = yarnTransformer.generateCodeLocations(yarnLockResult, false, true, workspacesThatAreDependencies, null);
-
-        assertEquals(1, codeLocations.size());
-        CodeLocation codeLocation = codeLocations.get(0);
-        assertEquals("tbd", codeLocation.getExternalId().get().getName());
-        assertEquals("tbd", codeLocation.getExternalId().get().getVersion());
-        DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
-        assertEquals(3, dependencyGraph.getRootDependencies().size());
-        String targetWorkspaceName = workspacesThatAreDependencies.get(0).getName();
-        boolean foundWorkspaceDep = false;
-        boolean foundWorkspaceDevDep = false;
-        for (Dependency workspaceCandidate : dependencyGraph.getRootDependencies()) {
-            if (targetWorkspaceName.equals(workspaceCandidate.getExternalId().getName())) {
-                Set<Dependency> actualWorkspaceDeps = dependencyGraph.getChildrenForParent(workspaceCandidate);
-                for (Dependency actualWorkspaceDep : actualWorkspaceDeps) {
-                    if (actualWorkspaceDep.getExternalId().getName().equals(workspacesThatAreDependencies.get(0).getName() + WORKSPACE_DEP_SUFFIX)) {
-                        assertEquals(workspacesThatAreDependencies.get(0).getVersion(), actualWorkspaceDep.getVersion());
-                        foundWorkspaceDep = true;
-                    } else if (actualWorkspaceDep.getExternalId().getName().equals(workspacesThatAreDependencies.get(0).getName() + "-dev" + WORKSPACE_DEP_SUFFIX)) {
-                        assertEquals(workspacesThatAreDependencies.get(0).getVersion(), actualWorkspaceDep.getVersion());
-                        foundWorkspaceDevDep = true;
-                    }
-                }
-            }
-        }
-        assertTrue(foundWorkspaceDep);
-        assertTrue(foundWorkspaceDevDep);
-    }
-
-    @Test
-    void testYarn1WorkspacesAll() throws MissingExternalIdException {
-        List<NameVersion> workspacesThatAreDependencies = new LinkedList<>();
-        workspacesThatAreDependencies.add(new NameVersion("workspace-isdep", "1.0.0"));
-        List<NameVersion> workspacesThatAreNotDependencies = new LinkedList<>();
-        workspacesThatAreNotDependencies.add(new NameVersion("workspace-notdep", "1.0.0"));
-        YarnLockResult yarnLockResult = buildTestYarnLockResult(workspacesThatAreDependencies, workspacesThatAreNotDependencies, true, true);
-
-        List<CodeLocation> codeLocations = yarnTransformer.generateCodeLocations(yarnLockResult, false, true, workspacesThatAreDependencies, ExcludedIncludedWildcardFilter.EMPTY);
-
-        assertEquals(1, codeLocations.size());
-        CodeLocation codeLocation = codeLocations.get(0);
-        assertEquals("tbd", codeLocation.getExternalId().get().getName());
-        assertEquals("tbd", codeLocation.getExternalId().get().getVersion());
-        DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
-        assertEquals(4, dependencyGraph.getRootDependencies().size());
-        String targetWorkspaceName = workspacesThatAreNotDependencies.get(0).getName();
-        boolean foundWorkspaceDep = false;
-        for (Dependency workspaceCandidate : dependencyGraph.getRootDependencies()) {
-            if (targetWorkspaceName.equals(workspaceCandidate.getExternalId().getName())) {
-                Set<Dependency> actualWorkspaceDeps = dependencyGraph.getChildrenForParent(workspaceCandidate);
-                Dependency actualWorkspaceDep = actualWorkspaceDeps.iterator().next();
-                assertEquals(workspacesThatAreNotDependencies.get(0).getName() + WORKSPACE_DEP_SUFFIX, actualWorkspaceDep.getName());
-                assertEquals(workspacesThatAreNotDependencies.get(0).getVersion(), actualWorkspaceDep.getVersion());
-                foundWorkspaceDep = true;
-            }
-        }
-        assertTrue(foundWorkspaceDep);
-    }
-
-    @Test
     void doesntThrowOnMissingExternalId() throws MissingExternalIdException {
         // Ensure components not defined in the graph doesn't cause an exception to be thrown. See IDETECT-1974.
 
@@ -244,13 +122,57 @@ class YarnTransformerTest {
         // Sanity check.
         assertEquals(1, codeLocations.size());
         CodeLocation codeLocation = codeLocations.get(0);
-        assertEquals("tbd", codeLocation.getExternalId().get().getName());
-        assertEquals("tbd", codeLocation.getExternalId().get().getVersion());
         DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
         Assertions.assertNotNull(dependencyGraph, "The dependency graph should not be null.");
         assertEquals(1, dependencyGraph.getRootDependencies().size(), "Only 'foo:1.0' should appear in the graph.");
         ExternalId fooExternalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "foo", "1.0");
         assertTrue(dependencyGraph.hasDependency(fooExternalId), "Missing the only expected dependency.");
+    }
+
+    @Test
+    void testAllWorkspacesYarnV1() throws MissingExternalIdException {
+        doAllWorkspacesTest(true);
+    }
+
+    @Test
+    void testAllWorkspacesYarnV2() throws MissingExternalIdException {
+        doAllWorkspacesTest(false);
+    }
+
+    private void doAllWorkspacesTest(boolean yarn1Project) throws MissingExternalIdException {
+        // Unless filtered out, even workspaces that are not dependencies should be included
+        List<NameVersion> workspacesThatAreDependencies = new LinkedList<>();
+        workspacesThatAreDependencies.add(new NameVersion("workspace-isdep", "1.0.0"));
+        List<NameVersion> workspacesThatAreNotDependencies = new LinkedList<>();
+        workspacesThatAreNotDependencies.add(new NameVersion("workspace-notdep", "1.0.0"));
+        YarnLockResult yarnLockResult = buildTestYarnLockResult(workspacesThatAreDependencies, workspacesThatAreNotDependencies, yarn1Project, false);
+
+        List<CodeLocation> codeLocations = yarnTransformer.generateCodeLocations(yarnLockResult, false, yarn1Project, new ArrayList<>(), ExcludedIncludedWildcardFilter.EMPTY);
+
+        assertEquals(3, codeLocations.size());
+        Iterator<CodeLocation> codeLocationIterator = codeLocations.iterator();
+        CodeLocation rootProjectCodeLocation = codeLocationIterator.next();
+        assertFalse(rootProjectCodeLocation.getExternalId().isPresent());
+        DependencyGraph rootProjectDependencyGraph = rootProjectCodeLocation.getDependencyGraph();
+        assertEquals(2, rootProjectDependencyGraph.getRootDependencies().size());
+        List<String> dependencyNames = rootProjectDependencyGraph.getRootDependencies().stream()
+                                           .map(Dependency::getName)
+                                           .collect(Collectors.toList());
+        assertTrue(dependencyNames.contains("foo"));
+        assertTrue(dependencyNames.contains("bar"));
+
+        for (int i = 1; i < 3; i++) {
+            CodeLocation workspaceCodeLocation = codeLocationIterator.next();
+            assertTrue(workspaceCodeLocation.getExternalId().get().getName().startsWith("workspace-"));
+            assertTrue(workspaceCodeLocation.getExternalId().get().getName().endsWith("dep"));
+            assertEquals("detect", workspaceCodeLocation.getExternalId().get().getForge().getName());
+
+            List<String> workspaceDependencyNames = workspaceCodeLocation.getDependencyGraph().getRootDependencies().stream()
+                                                        .map(Dependency::getName)
+                                                        .collect(Collectors.toList());
+            assertTrue(workspaceDependencyNames.contains(workspaceCodeLocation.getExternalId().get().getName() + "-dep"));
+            assertTrue(workspaceDependencyNames.contains(workspaceCodeLocation.getExternalId().get().getName() + "-dev-dep"));
+        }
     }
 
     @NotNull
