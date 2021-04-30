@@ -7,10 +7,12 @@
  */
 package com.synopsys.integration.detectable.detectables.yarn;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -39,6 +41,7 @@ public class YarnTransformer {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     public static final String STRING_ID_NAME_VERSION_SEPARATOR = "@";
     private final ExternalIdFactory externalIdFactory;
+    private final Set<StringDependencyId> unMatchedDependencies = new HashSet<>();
 
     public YarnTransformer(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
@@ -74,7 +77,7 @@ public class YarnTransformer {
                 addYarnLockDependenciesToGraph(yarnLockResult, productionOnly, graphBuilder, entry, id);
             }
         }
-        return graphBuilder.build(getLazyBuilderHandler(externalDependencies, yarnLockResult));
+        return graphBuilder.build(getLazyBuilderHandler(externalDependencies));
     }
 
     private void addYarnLockDependenciesToGraph(YarnLockResult yarnLockResult, boolean productionOnly,
@@ -96,7 +99,7 @@ public class YarnTransformer {
         return dependencyWorkspace.isPresent();
     }
 
-    private LazyBuilderMissingExternalIdHandler getLazyBuilderHandler(List<NameVersion> externalDependencies, YarnLockResult yarnLockResult) {
+    private LazyBuilderMissingExternalIdHandler getLazyBuilderHandler(List<NameVersion> externalDependencies) {
         return (dependencyId, lazyDependencyInfo) -> {
             Optional<NameVersion> externalDependency = externalDependencies.stream().filter(it -> it.getName().equals(lazyDependencyInfo.getName())).findFirst();
             Optional<ExternalId> externalId = externalDependency.map(it -> generateComponentExternalId(it.getName(), it.getVersion()));
@@ -105,14 +108,11 @@ public class YarnTransformer {
             } else {
                 ExternalId lazilyGeneratedExternalId;
                 StringDependencyId stringDependencyId = (StringDependencyId) dependencyId;
-                Optional<YarnWorkspace> workspace = yarnLockResult.getWorkspaceData().lookup(stringDependencyId);
-                if (workspace.isPresent()) {
-                    logger.warn("Workspace {} wasn't defined during data collection for the graph build; adding it during build step", stringDependencyId.getValue());
-                    lazilyGeneratedExternalId = workspace.get().generateExternalId();
-                } else {
-                    logger.warn("Missing yarn dependency. '{}' is neither a defined workspace nor a dependency defined in yarn.lock.", stringDependencyId.getValue());
-                    lazilyGeneratedExternalId = generateComponentExternalId(stringDependencyId);
+                if (!unMatchedDependencies.contains(stringDependencyId)) {
+                    logger.warn("Unable to find standard NPM package identification details for '{}' in the yarn.lock file", stringDependencyId.getValue());
+                    unMatchedDependencies.add(stringDependencyId);
                 }
+                lazilyGeneratedExternalId = generateComponentExternalId(stringDependencyId);
                 return lazilyGeneratedExternalId;
             }
         };
