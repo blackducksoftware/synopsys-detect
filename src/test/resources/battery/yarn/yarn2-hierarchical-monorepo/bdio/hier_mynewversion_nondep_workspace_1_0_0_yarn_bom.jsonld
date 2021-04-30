@@ -7,23 +7,23 @@
         "Tool: Detect-7.0.0-SIGQA18-SNAPSHOT",
         "Tool: IntegrationBdio-22.1.1"
       ],
-      "spdx:created": "2021-04-30T18:57:45.191Z"
+      "spdx:created": "2021-04-30T21:06:16.546Z"
     },
-    "@id": "uuid:78360ab6-68f4-4628-b417-d9a3b3fcb40b",
+    "@id": "uuid:296fc15a-e3a1-4b8e-be1f-7c52133bea32",
     "@type": "BillOfMaterials",
     "relationship": []
   },
   {
     "name": "hier",
     "revision": "mynewversion",
-    "@id": "http:detect/nondep-workspace/1.0.0",
+    "@id": "http:npmjs/nondep-workspace/1.0.0",
     "@type": "Project",
     "externalIdentifier": {
-      "externalSystemTypeId": "detect",
+      "externalSystemTypeId": "npmjs",
       "externalId": "nondep-workspace/1.0.0",
       "externalIdMetaData": {
         "forge": {
-          "name": "detect",
+          "name": "npmjs",
           "separator": "/"
         },
         "pieces": [

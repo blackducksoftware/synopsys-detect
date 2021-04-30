@@ -55,8 +55,7 @@ public class YarnTransformer {
             if ((workspaceFilter == null) || workspaceFilter.willInclude(projectOrWorkspace.getName().orElse(null))) {
                 DependencyGraph workspaceGraph = buildGraphForProjectOrWorkspace(yarnLockResult, projectOrWorkspace.getWorkspacePackageJson().getPackageJson(), productionOnly,
                     externalDependencies);
-                ExternalId workspaceExternalId = externalIdFactory.createNameVersionExternalId(new Forge("/", "Detect"),
-                    projectOrWorkspace.getName().orElse("unknown"),
+                ExternalId workspaceExternalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, projectOrWorkspace.getName().orElse("unknown"),
                     projectOrWorkspace.getVersionString());
                 codeLocations.add(new CodeLocation(workspaceGraph, workspaceExternalId));
             }

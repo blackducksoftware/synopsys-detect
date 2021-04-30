@@ -7,23 +7,23 @@
         "Tool: Detect-7.0.0-SIGQA18-SNAPSHOT",
         "Tool: IntegrationBdio-22.1.1"
       ],
-      "spdx:created": "2021-04-30T19:00:24.419Z"
+      "spdx:created": "2021-04-30T21:08:13.156Z"
     },
-    "@id": "uuid:95f14826-15ef-41fd-b1df-a15e1eb6c3c5",
+    "@id": "uuid:4cbdb813-724d-45c3-ac4a-d8d815e44889",
     "@type": "BillOfMaterials",
     "relationship": []
   },
   {
     "name": "@yarnpkg/monorepo",
     "revision": "Default Detect Version",
-    "@id": "http:detect/%40yarnpkg%2Fplugin-npm/2.4.0",
+    "@id": "http:npmjs/%40yarnpkg%2Fplugin-npm/2.4.0",
     "@type": "Project",
     "externalIdentifier": {
-      "externalSystemTypeId": "detect",
+      "externalSystemTypeId": "npmjs",
       "externalId": "@yarnpkg/plugin-npm/2.4.0",
       "externalIdMetaData": {
         "forge": {
-          "name": "detect",
+          "name": "npmjs",
           "separator": "/"
         },
         "pieces": [
