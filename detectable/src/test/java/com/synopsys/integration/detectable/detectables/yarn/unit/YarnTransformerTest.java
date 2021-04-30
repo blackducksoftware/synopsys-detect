@@ -165,7 +165,7 @@ class YarnTransformerTest {
             CodeLocation workspaceCodeLocation = codeLocationIterator.next();
             assertTrue(workspaceCodeLocation.getExternalId().get().getName().startsWith("workspace-"));
             assertTrue(workspaceCodeLocation.getExternalId().get().getName().endsWith("dep"));
-            assertEquals("detect", workspaceCodeLocation.getExternalId().get().getForge().getName());
+            assertEquals("npmjs", workspaceCodeLocation.getExternalId().get().getForge().getName());
 
             List<String> workspaceDependencyNames = workspaceCodeLocation.getDependencyGraph().getRootDependencies().stream()
                                                         .map(Dependency::getName)
