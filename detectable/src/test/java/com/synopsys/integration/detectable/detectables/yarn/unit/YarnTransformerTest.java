@@ -59,9 +59,9 @@ class YarnTransformerTest {
 
     @Test
     void testExcludeDevDependencies() throws MissingExternalIdException {
-        YarnLockResult yarnLockResult = buildTestYarnLockResult(noWorkspaces, noWorkspaces, false, false);
+        YarnLockResult yarnLockResult = buildTestYarnLockResult(noWorkspaces, noWorkspaces, false);
 
-        List<CodeLocation> codeLocations = yarnTransformer.generateCodeLocations(yarnLockResult, true, false, new ArrayList<>(0), ExcludedIncludedWildcardFilter.EMPTY);
+        List<CodeLocation> codeLocations = yarnTransformer.generateCodeLocations(yarnLockResult, true, new ArrayList<>(0), ExcludedIncludedWildcardFilter.EMPTY);
 
         assertEquals(1, codeLocations.size());
         CodeLocation codeLocation = codeLocations.get(0);
@@ -80,9 +80,9 @@ class YarnTransformerTest {
 
     @Test
     void testIncludeDevDependencies() throws MissingExternalIdException {
-        YarnLockResult yarnLockResult = buildTestYarnLockResult(noWorkspaces, noWorkspaces, false, false);
+        YarnLockResult yarnLockResult = buildTestYarnLockResult(noWorkspaces, noWorkspaces, false);
 
-        List<CodeLocation> codeLocations = yarnTransformer.generateCodeLocations(yarnLockResult, false, false, new ArrayList<>(0), ExcludedIncludedWildcardFilter.EMPTY);
+        List<CodeLocation> codeLocations = yarnTransformer.generateCodeLocations(yarnLockResult, false, new ArrayList<>(0), ExcludedIncludedWildcardFilter.EMPTY);
 
         assertEquals(1, codeLocations.size());
         CodeLocation codeLocation = codeLocations.get(0);
@@ -117,7 +117,7 @@ class YarnTransformerTest {
         YarnLockResult yarnLockResult = new YarnLockResult(packageJson, YarnWorkspaces.EMPTY, yarnLock);
 
         // This should not throw an exception.
-        List<CodeLocation> codeLocations = yarnTransformer.generateCodeLocations(yarnLockResult, false, false, new ArrayList<>(0), ExcludedIncludedWildcardFilter.EMPTY);
+        List<CodeLocation> codeLocations = yarnTransformer.generateCodeLocations(yarnLockResult, false, new ArrayList<>(0), ExcludedIncludedWildcardFilter.EMPTY);
 
         // Sanity check.
         assertEquals(1, codeLocations.size());
@@ -145,9 +145,9 @@ class YarnTransformerTest {
         workspacesThatAreDependencies.add(new NameVersion("workspace-isdep", "1.0.0"));
         List<NameVersion> workspacesThatAreNotDependencies = new LinkedList<>();
         workspacesThatAreNotDependencies.add(new NameVersion("workspace-notdep", "1.0.0"));
-        YarnLockResult yarnLockResult = buildTestYarnLockResult(workspacesThatAreDependencies, workspacesThatAreNotDependencies, yarn1Project, false);
+        YarnLockResult yarnLockResult = buildTestYarnLockResult(workspacesThatAreDependencies, workspacesThatAreNotDependencies, yarn1Project);
 
-        List<CodeLocation> codeLocations = yarnTransformer.generateCodeLocations(yarnLockResult, false, yarn1Project, new ArrayList<>(), ExcludedIncludedWildcardFilter.EMPTY);
+        List<CodeLocation> codeLocations = yarnTransformer.generateCodeLocations(yarnLockResult, false, new ArrayList<>(), ExcludedIncludedWildcardFilter.EMPTY);
 
         assertEquals(3, codeLocations.size());
         Iterator<CodeLocation> codeLocationIterator = codeLocations.iterator();
@@ -176,7 +176,7 @@ class YarnTransformerTest {
     }
 
     @NotNull
-    private YarnLockResult buildTestYarnLockResult(List<NameVersion> workspacesThatAreDependencies, List<NameVersion> workspacesThatAreNotDependencies, boolean yarn1project, boolean includeAllWorkspaceDependencies) {
+    private YarnLockResult buildTestYarnLockResult(List<NameVersion> workspacesThatAreDependencies, List<NameVersion> workspacesThatAreNotDependencies, boolean yarn1project) {
         PackageJson rawPackageJson = new PackageJson();
         rawPackageJson.dependencies = new HashMap<>();
         rawPackageJson.dependencies.put("foo", "fooFuzzyVersion-1.0");
@@ -231,7 +231,7 @@ class YarnTransformerTest {
     }
 
     private void addWorkspaceToYarnLockEntries(List<YarnLockEntry> yarnLockEntries, NameVersion workspace, String workspaceDepName) {
-        List<YarnLockDependency> dependencyRefsToWkspDeps = Arrays.asList(new YarnLockDependency(workspaceDepName, workspace.getVersion(), false));
+        List<YarnLockDependency> dependencyRefsToWkspDeps = Collections.singletonList(new YarnLockDependency(workspaceDepName, workspace.getVersion(), false));
         List<YarnLockEntryId> yarnLockEntryIdsWkspEntryIds = Arrays.asList(
             new YarnLockEntryId(workspace.getName(), workspace.getVersion()),
             new YarnLockEntryId(workspace.getName(), "workspace:packages/" + workspace.getName()));

@@ -28,11 +28,11 @@ public class YarnPackager {
     }
 
     public YarnResult generateCodeLocation(NullSafePackageJson rootPackageJson, YarnWorkspaces yarnWorkspaces, YarnLock yarnLock, List<NameVersion> externalDependencies,
-        boolean useProductionOnly, boolean getWorkspaceDependenciesFromWorkspacePackageJson, @Nullable ExcludedIncludedWildcardFilter workspaceFilter) {
+        boolean useProductionOnly, @Nullable ExcludedIncludedWildcardFilter workspaceFilter) {
         YarnLockResult yarnLockResult = new YarnLockResult(rootPackageJson, yarnWorkspaces, yarnLock);
 
         try {
-            List<CodeLocation> codeLocations = yarnTransformer.generateCodeLocations(yarnLockResult, useProductionOnly, getWorkspaceDependenciesFromWorkspacePackageJson, externalDependencies,
+            List<CodeLocation> codeLocations = yarnTransformer.generateCodeLocations(yarnLockResult, useProductionOnly, externalDependencies,
                 workspaceFilter);
             return YarnResult.success(rootPackageJson.getName().orElse(null), rootPackageJson.getVersion().orElse(null), codeLocations);
         } catch (MissingExternalIdException exception) {
