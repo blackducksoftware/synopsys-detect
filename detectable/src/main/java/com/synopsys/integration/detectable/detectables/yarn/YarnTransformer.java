@@ -50,19 +50,22 @@ public class YarnTransformer {
         List<NameVersion> externalDependencies, @Nullable ExcludedIncludedWildcardFilter workspaceFilter) throws MissingExternalIdException {
         List<CodeLocation> codeLocations = new LinkedList<>();
         DependencyGraph rootProjectGraph = buildGraphForProjectOrWorkspace(yarnLockResult, yarnLockResult.getRootPackageJson(), productionOnly, getWorkspaceDependenciesFromWorkspacePackageJson,
-            externalDependencies, workspaceFilter);
+            externalDependencies);
         CodeLocation rootProjectCodeLocation = new CodeLocation(rootProjectGraph);
         codeLocations.add(rootProjectCodeLocation);
         for (YarnWorkspace projectOrWorkspace : yarnLockResult.getWorkspaceData().getWorkspaces()) {
             if (isRootProject(yarnLockResult, projectOrWorkspace)) {
+                System.out.println("TODO: I WONDERED: IS THIS EVER TRUE?? Yup, it is!");
                 continue;
             }
-            DependencyGraph workspaceGraph = buildGraphForProjectOrWorkspace(yarnLockResult, projectOrWorkspace.getWorkspacePackageJson().getPackageJson(), productionOnly, getWorkspaceDependenciesFromWorkspacePackageJson,
-                externalDependencies, workspaceFilter);
-            ExternalId workspaceExternalId = externalIdFactory.createNameVersionExternalId(new Forge("/", "Detect"),
-                projectOrWorkspace.getName().orElse("unknown"),
-                projectOrWorkspace.getVersionString());
-            codeLocations.add(new CodeLocation(workspaceGraph, workspaceExternalId));
+            if ((workspaceFilter == null) || workspaceFilter.willInclude(projectOrWorkspace.getName().orElse(null))) {
+                DependencyGraph workspaceGraph = buildGraphForProjectOrWorkspace(yarnLockResult, projectOrWorkspace.getWorkspacePackageJson().getPackageJson(), productionOnly, getWorkspaceDependenciesFromWorkspacePackageJson,
+                    externalDependencies);
+                ExternalId workspaceExternalId = externalIdFactory.createNameVersionExternalId(new Forge("/", "Detect"),
+                    projectOrWorkspace.getName().orElse("unknown"),
+                    projectOrWorkspace.getVersionString());
+                codeLocations.add(new CodeLocation(workspaceGraph, workspaceExternalId));
+            }
         }
 
         return codeLocations;
@@ -74,15 +77,14 @@ public class YarnTransformer {
     }
 
     private DependencyGraph buildGraphForProjectOrWorkspace(YarnLockResult yarnLockResult, NullSafePackageJson projectOrWorkspacePackageJson, boolean productionOnly, boolean getWorkspaceDependenciesFromWorkspacePackageJson,
-        List<NameVersion> externalDependencies,
-        @Nullable ExcludedIncludedWildcardFilter workspaceFilter) throws MissingExternalIdException {
+        List<NameVersion> externalDependencies) throws MissingExternalIdException {
         // TODO all of this needs to be done per workspace?
         // So far: Only adds rootProject's dependencies and transitives
         LazyExternalIdDependencyGraphBuilder graphBuilder = new LazyExternalIdDependencyGraphBuilder();
 
         // TODO/done omit workspaces
         addRootNodesToGraph(graphBuilder, projectOrWorkspacePackageJson, yarnLockResult.getWorkspaceData(), productionOnly,
-            getWorkspaceDependenciesFromWorkspacePackageJson, workspaceFilter);
+            getWorkspaceDependenciesFromWorkspacePackageJson);
 
         for (YarnLockEntry entry : yarnLockResult.getYarnLock().getEntries()) {
             // TODO:
@@ -174,12 +176,14 @@ public class YarnTransformer {
 
     private void addRootNodesToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder,
         NullSafePackageJson projectOrWorkspacePackageJson, YarnWorkspaces workspaceData, boolean productionOnly,
-        boolean getWorkspaceDependenciesFromWorkspacePackageJson,
-        @Nullable ExcludedIncludedWildcardFilter workspacesFilter) {
+        boolean getWorkspaceDependenciesFromWorkspacePackageJson) {
+        // TODO why is getWorkspaceDependenciesFromWorkspacePackageJson UNUSED???
+        // TODO IF PROCESSING THE ROOT PROJECT, DO THIS populateGraphWithRootDependencies()
+        // TODO used to filter workspaces here but I removed it
+        // TODO pretty sure I no longer need NullSafePackageJson.isRoot!
         logger.debug("Adding root dependencies from project/workspace PackageJson: {}:{}", projectOrWorkspacePackageJson.getNameString(), projectOrWorkspacePackageJson.getVersionString());
-        if ((workspacesFilter == null) || workspacesFilter.willInclude(projectOrWorkspacePackageJson.getName().orElse(null))) {
-            populateGraphWithRootDependencies(graphBuilder, projectOrWorkspacePackageJson, productionOnly, workspaceData);
-        }
+        populateGraphWithRootDependencies(graphBuilder, projectOrWorkspacePackageJson, productionOnly, workspaceData);
+
         // TODO:
         //        if ((workspacesFilter != null) || getWorkspaceDependenciesFromWorkspacePackageJson) {
         //            populateGraphFromWorkspaceData(graphBuilder, workspaceData, productionOnly, getWorkspaceDependenciesFromWorkspacePackageJson, workspacesFilter);
