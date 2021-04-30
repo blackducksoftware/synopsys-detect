@@ -50,8 +50,7 @@ public class YarnTransformer {
         List<CodeLocation> codeLocations = new LinkedList<>();
         DependencyGraph rootProjectGraph = buildGraphForProjectOrWorkspace(yarnLockResult, yarnLockResult.getRootPackageJson(), productionOnly,
             externalDependencies);
-        CodeLocation rootProjectCodeLocation = new CodeLocation(rootProjectGraph);
-        codeLocations.add(rootProjectCodeLocation);
+        codeLocations.add(new CodeLocation(rootProjectGraph));
         for (YarnWorkspace projectOrWorkspace : yarnLockResult.getWorkspaceData().getWorkspaces()) {
             if ((workspaceFilter == null) || workspaceFilter.willInclude(projectOrWorkspace.getName().orElse(null))) {
                 DependencyGraph workspaceGraph = buildGraphForProjectOrWorkspace(yarnLockResult, projectOrWorkspace.getWorkspacePackageJson().getPackageJson(), productionOnly,

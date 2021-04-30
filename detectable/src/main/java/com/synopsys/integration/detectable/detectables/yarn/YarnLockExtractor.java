@@ -81,7 +81,7 @@ public class YarnLockExtractor {
     private ExcludedIncludedWildcardFilter deriveExcludedIncludedWildcardFilter() {
         ExcludedIncludedWildcardFilter workspacesFilter;
         if (yarnLockOptions.getExcludedWorkspaceNamePatterns().isEmpty() && yarnLockOptions.getIncludedWorkspaceNamePatterns().isEmpty()) {
-            workspacesFilter = null; // Just follow dependencies
+            workspacesFilter = null; // Include all
         } else {
             workspacesFilter = ExcludedIncludedWildcardFilter.fromCollections(yarnLockOptions.getExcludedWorkspaceNamePatterns(), yarnLockOptions.getIncludedWorkspaceNamePatterns());
         }
