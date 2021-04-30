@@ -115,15 +115,15 @@ public class YarnBattery {
         test.run();
     }
 
-    // TODO also exclude wksp b here:
     @Test
-    void yarnYarn1WorkspacesWithDevDep() {
+    void yarnYarn1SelectWorkspaceWithDevDep() {
         BatteryTest test = new BatteryTest("yarn1-workspaces-workspacedep", "yarn/yarn1-workspaces-workspacedep");
         test.sourceDirectoryNamed("yarn1-workspaces-workspacedep");
         test.sourceFileFromResource("yarn.lock");
         test.sourceFileFromResource("package.json");
         test.sourceFileFromResource("workspace-a/package.json");
         test.sourceFileFromResource("workspace-b/package.json");
+        test.property("detect.yarn.included.workspaces", "w*-a");
         test.expectBdioResources();
         test.run();
     }
