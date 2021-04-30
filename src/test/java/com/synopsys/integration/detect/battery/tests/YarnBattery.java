@@ -103,18 +103,7 @@ public class YarnBattery {
     }
 
     @Test
-    void yarnWorkspacesExtensive() {
-        BatteryTest test = new BatteryTest("yarn-workspaces-berry", "yarn/yarn-workspaces-berry");
-        test.sourceDirectoryNamed("yarn-workspaces-berry");
-        test.sourceFileFromResource("yarn.lock");
-        test.sourceFileFromResource("package.json");
-        test.sourceFileFromResource("packages/plugin-npm/package.json");
-        test.expectBdioResources();
-        test.run();
-    }
-
-    @Test
-    void yarnYarn1WorkspacesAddAll() {
+    void yarnYarn1WorkspacesAllByFilter() {
         BatteryTest test = new BatteryTest("yarn1-workspaces", "yarn/yarn1-workspaces");
         test.sourceDirectoryNamed("yarn1-workspaces");
         test.sourceFileFromResource("yarn.lock");
@@ -126,8 +115,9 @@ public class YarnBattery {
         test.run();
     }
 
+    // TODO also exclude wksp b here:
     @Test
-    void yarnYarn1WorkspacesWithWorkspaceDep() {
+    void yarnYarn1WorkspacesWithDevDep() {
         BatteryTest test = new BatteryTest("yarn1-workspaces-workspacedep", "yarn/yarn1-workspaces-workspacedep");
         test.sourceDirectoryNamed("yarn1-workspaces-workspacedep");
         test.sourceFileFromResource("yarn.lock");
@@ -160,6 +150,17 @@ public class YarnBattery {
         test.sourceFileFromResource("workspace-a/child-workspace/package.json");
         test.sourceFileFromResource("nondep-workspace/package.json");
         test.property("detect.yarn.included.workspaces", "nondep-work*");
+        test.expectBdioResources();
+        test.run();
+    }
+
+    @Test
+    void yarnWorkspacesExtensive() {
+        BatteryTest test = new BatteryTest("yarn-workspaces-berry", "yarn/yarn-workspaces-berry");
+        test.sourceDirectoryNamed("yarn-workspaces-berry");
+        test.sourceFileFromResource("yarn.lock");
+        test.sourceFileFromResource("package.json");
+        test.sourceFileFromResource("packages/plugin-npm/package.json");
         test.expectBdioResources();
         test.run();
     }

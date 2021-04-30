@@ -1,34 +1,34 @@
 [
   {
     "specVersion": "1.1.0",
-    "spdx:name": "yarn1-workspaces/Default Detect Version/yarn1-workspaces yarn/bom",
+    "spdx:name": "hier/Default Detect Version/workspace-a/1.0.0 yarn/bom",
     "creationInfo": {
       "spdx:creator": [
         "Tool: Detect-7.0.0-SIGQA18-SNAPSHOT",
         "Tool: IntegrationBdio-22.1.1"
       ],
-      "spdx:created": "2021-04-30T18:21:19.640Z"
+      "spdx:created": "2021-04-30T18:33:32.531Z"
     },
-    "@id": "uuid:b477653b-6de5-43fa-8448-4d216d53d6df",
+    "@id": "uuid:74873700-b31d-4998-a603-50e5b1077199",
     "@type": "BillOfMaterials",
     "relationship": []
   },
   {
-    "name": "yarn1-workspaces",
+    "name": "hier",
     "revision": "Default Detect Version",
-    "@id": "http:detect/yarn1-workspaces",
+    "@id": "http:detect/workspace-a/1.0.0",
     "@type": "Project",
     "externalIdentifier": {
       "externalSystemTypeId": "detect",
-      "externalId": "yarn1-workspaces",
+      "externalId": "workspace-a/1.0.0",
       "externalIdMetaData": {
         "forge": {
           "name": "detect",
           "separator": "/"
         },
         "pieces": [
-          "yarn1-workspaces",
-          null
+          "workspace-a",
+          "1.0.0"
         ]
       }
     },
