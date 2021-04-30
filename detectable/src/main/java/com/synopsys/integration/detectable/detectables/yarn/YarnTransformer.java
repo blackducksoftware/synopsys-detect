@@ -11,7 +11,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -68,26 +67,20 @@ public class YarnTransformer {
         List<NameVersion> externalDependencies) throws MissingExternalIdException {
         LazyExternalIdDependencyGraphBuilder graphBuilder = new LazyExternalIdDependencyGraphBuilder();
         addRootNodesToGraph(graphBuilder, projectOrWorkspacePackageJson, yarnLockResult.getWorkspaceData(), productionOnly);
-
         for (YarnLockEntry entry : yarnLockResult.getYarnLock().getEntries()) {
             for (YarnLockEntryId entryId : entry.getIds()) {
                 StringDependencyId id = generateComponentDependencyId(entryId.getName(), entryId.getVersion());
                 graphBuilder.setDependencyInfo(id, entryId.getName(), entry.getVersion(), generateComponentExternalId(entryId.getName(), entry.getVersion()));
-                addYarnLockDependenciesToGraph(yarnLockResult, productionOnly, graphBuilder, entry, id, getEverythingQualifiesCheck());
+                addYarnLockDependenciesToGraph(yarnLockResult, productionOnly, graphBuilder, entry, id);
             }
         }
         return graphBuilder.build(getLazyBuilderHandler(externalDependencies, yarnLockResult));
     }
 
-    private Predicate<String> getEverythingQualifiesCheck() {
-        return s -> true;
-    }
-
     private void addYarnLockDependenciesToGraph(YarnLockResult yarnLockResult, boolean productionOnly,
-        LazyExternalIdDependencyGraphBuilder graphBuilder, YarnLockEntry entry, StringDependencyId id,
-        Predicate<String> qualificationCheck) {
+        LazyExternalIdDependencyGraphBuilder graphBuilder, YarnLockEntry entry, StringDependencyId id) {
         for (YarnLockDependency dependency : entry.getDependencies()) {
-            if (qualificationCheck.test(dependency.getName()) && !isWorkspace(yarnLockResult.getWorkspaceData(), dependency)) {
+            if (!isWorkspace(yarnLockResult.getWorkspaceData(), dependency)) {
                 StringDependencyId stringDependencyId = generateComponentDependencyId(dependency.getName(), dependency.getVersion());
                 if (!productionOnly || !dependency.isOptional()) {
                     graphBuilder.addChildWithParent(stringDependencyId, id);

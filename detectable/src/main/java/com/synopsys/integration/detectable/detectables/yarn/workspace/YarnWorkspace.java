@@ -115,11 +115,11 @@ public class YarnWorkspace {
     }
 
     public boolean hasDependency(String depName) {
-        return getDependencies().keySet().contains(depName);
+        return getDependencies().containsKey(depName);
     }
 
     public boolean hasDevDependency(String depName) {
-        return getDevDependencies().keySet().contains(depName);
+        return getDevDependencies().containsKey(depName);
     }
 
     private boolean versionMatches(String version) {
