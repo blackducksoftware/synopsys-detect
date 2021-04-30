@@ -51,13 +51,26 @@ public class YarnBattery {
     }
 
     @Test
-    void yarnWorkspacesSimple() {
+    void yarnWorkspacesAllByDefault() {
         BatteryTest test = new BatteryTest("yarn-workspaces-simple", "yarn/yarn-workspaces-simple");
         test.sourceDirectoryNamed("yarn-workspaces-simple");
         test.sourceFileFromResource("yarn.lock");
         test.sourceFileFromResource("package.json");
         test.sourceFileFromResource("mypkgs/workspace-a/package.json");
         test.sourceFileFromResource("mypkgs/workspace-b/package.json");
+        test.expectBdioResources();
+        test.run();
+    }
+
+    @Test
+    void yarnWorkspacesAllByFilter() {
+        BatteryTest test = new BatteryTest("yarn-workspaces-simple-allworkspaces", "yarn/yarn-workspaces-simple-allworkspaces");
+        test.sourceDirectoryNamed("yarn-workspaces-simple-allworkspaces");
+        test.sourceFileFromResource("yarn.lock");
+        test.sourceFileFromResource("package.json");
+        test.sourceFileFromResource("mypkgs/workspace-a/package.json");
+        test.sourceFileFromResource("mypkgs/workspace-b/package.json");
+        test.property("detect.yarn.included.workspaces", "*");
         test.expectBdioResources();
         test.run();
     }
@@ -72,19 +85,6 @@ public class YarnBattery {
         test.sourceFileFromResource("workspace-b/package.json");
         test.sourceFileFromResource("workspace-c/package.json");
         test.property("detect.yarn.prod.only", "true");
-        test.expectBdioResources();
-        test.run();
-    }
-
-    @Test
-    void yarnWorkspacesSimpleIncludingAllWorkspaces() {
-        BatteryTest test = new BatteryTest("yarn-workspaces-simple-allworkspaces", "yarn/yarn-workspaces-simple-allworkspaces");
-        test.sourceDirectoryNamed("yarn-workspaces-simple-allworkspaces");
-        test.sourceFileFromResource("yarn.lock");
-        test.sourceFileFromResource("package.json");
-        test.sourceFileFromResource("mypkgs/workspace-a/package.json");
-        test.sourceFileFromResource("mypkgs/workspace-b/package.json");
-        test.property("detect.yarn.included.workspaces", "*");
         test.expectBdioResources();
         test.run();
     }
