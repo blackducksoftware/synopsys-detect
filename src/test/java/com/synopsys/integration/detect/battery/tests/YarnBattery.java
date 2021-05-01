@@ -116,6 +116,21 @@ public class YarnBattery {
     }
 
     @Test
+    void yarnYarn2UnnamedWorkspaces() {
+        BatteryTest test = new BatteryTest("yarn2-unnamed-workspaces", "yarn/yarn2-unnamed-workspaces");
+        test.sourceDirectoryNamed("yarn2-unnamed-workspaces");
+        test.sourceFileFromResource("yarn.lock");
+        test.sourceFileFromResource("package.json");
+        test.sourceFileFromResource("workspaces/workspace-a/package.json");
+        test.sourceFileFromResource("workspaces/workspace-b/package.json");
+        test.sourceFileFromResource("workspaces/workspace-c/package.json");
+        test.sourceFileFromResource("workspaces/workspace-d/package.json");
+        test.property("detect.yarn.included.workspaces", "workspaces/workspace-c,workspaces/workspace-d");
+        test.expectBdioResources();
+        test.run();
+    }
+
+    @Test
     void yarnYarn1SelectWorkspaceWithDevDep() {
         BatteryTest test = new BatteryTest("yarn1-workspaces-workspacedep", "yarn/yarn1-workspaces-workspacedep");
         test.sourceDirectoryNamed("yarn1-workspaces-workspacedep");

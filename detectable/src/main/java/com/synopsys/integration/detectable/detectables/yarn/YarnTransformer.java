@@ -53,12 +53,12 @@ public class YarnTransformer {
         DependencyGraph rootProjectGraph = buildGraphForProjectOrWorkspace(yarnLockResult, yarnLockResult.getRootPackageJson(), productionOnly,
             externalDependencies);
         codeLocations.add(new CodeLocation(rootProjectGraph));
-        for (YarnWorkspace projectOrWorkspace : yarnLockResult.getWorkspaceData().getWorkspaces()) {
-            if ((workspaceFilter == null) || workspaceFilter.willInclude(projectOrWorkspace.getName().orElse(null))) {
-                DependencyGraph workspaceGraph = buildGraphForProjectOrWorkspace(yarnLockResult, projectOrWorkspace.getWorkspacePackageJson().getPackageJson(), productionOnly,
+        for (YarnWorkspace workspace : yarnLockResult.getWorkspaceData().getWorkspaces()) {
+            if ((workspaceFilter == null) || workspaceFilter.willInclude(workspace.getWorkspacePackageJson().getDirRelativePath())) {
+                DependencyGraph workspaceGraph = buildGraphForProjectOrWorkspace(yarnLockResult, workspace.getWorkspacePackageJson().getPackageJson(), productionOnly,
                     externalDependencies);
-                ExternalId workspaceExternalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, projectOrWorkspace.getName().orElse("unknown"),
-                    projectOrWorkspace.getVersionString());
+                ExternalId workspaceExternalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, workspace.getWorkspacePackageJson().getDirRelativePath(),
+                    "local");
                 codeLocations.add(new CodeLocation(workspaceGraph, workspaceExternalId));
             }
         }
