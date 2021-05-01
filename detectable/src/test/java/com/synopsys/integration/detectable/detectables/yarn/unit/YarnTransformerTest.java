@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -163,15 +164,17 @@ class YarnTransformerTest {
 
         for (int i = 1; i < 3; i++) {
             CodeLocation workspaceCodeLocation = codeLocationIterator.next();
-            assertTrue(workspaceCodeLocation.getExternalId().get().getName().startsWith("workspace-"));
+            assertTrue(workspaceCodeLocation.getExternalId().get().getName().startsWith("packages/workspace-"));
             assertTrue(workspaceCodeLocation.getExternalId().get().getName().endsWith("dep"));
+            assertTrue(workspaceCodeLocation.getExternalId().get().getVersion().equals("local"));
             assertEquals("npmjs", workspaceCodeLocation.getExternalId().get().getForge().getName());
 
             List<String> workspaceDependencyNames = workspaceCodeLocation.getDependencyGraph().getRootDependencies().stream()
                                                         .map(Dependency::getName)
                                                         .collect(Collectors.toList());
-            assertTrue(workspaceDependencyNames.contains(workspaceCodeLocation.getExternalId().get().getName() + "-dep"));
-            assertTrue(workspaceDependencyNames.contains(workspaceCodeLocation.getExternalId().get().getName() + "-dev-dep"));
+            String workspaceName = StringUtils.substringAfter(workspaceCodeLocation.getExternalId().get().getName(), "packages/");
+            assertTrue(workspaceDependencyNames.contains(workspaceName + "-dep"));
+            assertTrue(workspaceDependencyNames.contains(workspaceName + "-dev-dep"));
         }
     }
 

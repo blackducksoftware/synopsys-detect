@@ -1,43 +1,68 @@
 [
   {
     "specVersion": "1.1.0",
-    "spdx:name": "simple/1.0.0/workspace-b/1.0.0 yarn/bom",
+    "spdx:name": "simple/1.0.0/workspace-a/local yarn/bom",
     "creationInfo": {
       "spdx:creator": [
         "Tool: Detect-7.0.0-SIGQA18-SNAPSHOT",
         "Tool: IntegrationBdio-22.1.1"
       ],
-      "spdx:created": "2021-04-30T20:44:17.760Z"
+      "spdx:created": "2021-05-01T23:39:21.502Z"
     },
-    "@id": "uuid:69f5b4fd-8bdc-4699-95d9-479e22191233",
+    "@id": "uuid:2b4b7df2-ae55-490c-9944-a1fc154ab51c",
     "@type": "BillOfMaterials",
     "relationship": []
   },
   {
     "name": "simple",
     "revision": "1.0.0",
-    "@id": "http:npmjs/workspace-b/1.0.0",
+    "@id": "http:npmjs/workspace-a/local",
     "@type": "Project",
     "externalIdentifier": {
       "externalSystemTypeId": "npmjs",
-      "externalId": "workspace-b/1.0.0",
+      "externalId": "workspace-a/local",
       "externalIdMetaData": {
         "forge": {
           "name": "npmjs",
           "separator": "/"
         },
         "pieces": [
-          "workspace-b",
-          "1.0.0"
+          "workspace-a",
+          "local"
         ]
       }
     },
     "relationship": [
       {
+        "related": "http:npmjs/%40types%2Fjest/24.9.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
         "related": "http:npmjs/cross-env/5.0.5",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
+  },
+  {
+    "name": "@types/jest",
+    "revision": "24.9.0",
+    "@id": "http:npmjs/%40types%2Fjest/24.9.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "@types/jest/24.9.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "@types/jest",
+          "24.9.0"
+        ]
+      }
+    },
+    "relationship": []
   },
   {
     "name": "cross-env",

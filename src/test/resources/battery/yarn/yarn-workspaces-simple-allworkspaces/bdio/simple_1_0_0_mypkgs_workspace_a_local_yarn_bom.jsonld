@@ -1,40 +1,44 @@
 [
   {
     "specVersion": "1.1.0",
-    "spdx:name": "hier/mynewversion/nondep-workspace/1.0.0 yarn/bom",
+    "spdx:name": "simple/1.0.0/mypkgs/workspace-a/local yarn/bom",
     "creationInfo": {
       "spdx:creator": [
         "Tool: Detect-7.0.0-SIGQA18-SNAPSHOT",
         "Tool: IntegrationBdio-22.1.1"
       ],
-      "spdx:created": "2021-04-30T21:06:16.546Z"
+      "spdx:created": "2021-05-01T23:16:29.056Z"
     },
-    "@id": "uuid:296fc15a-e3a1-4b8e-be1f-7c52133bea32",
+    "@id": "uuid:2d3718f2-d98b-4c29-b45f-266b43c7d7ce",
     "@type": "BillOfMaterials",
     "relationship": []
   },
   {
-    "name": "hier",
-    "revision": "mynewversion",
-    "@id": "http:npmjs/nondep-workspace/1.0.0",
+    "name": "simple",
+    "revision": "1.0.0",
+    "@id": "http:npmjs/mypkgs%2Fworkspace-a/local",
     "@type": "Project",
     "externalIdentifier": {
       "externalSystemTypeId": "npmjs",
-      "externalId": "nondep-workspace/1.0.0",
+      "externalId": "mypkgs/workspace-a/local",
       "externalIdMetaData": {
         "forge": {
           "name": "npmjs",
           "separator": "/"
         },
         "pieces": [
-          "nondep-workspace",
-          "1.0.0"
+          "mypkgs/workspace-a",
+          "local"
         ]
       }
     },
     "relationship": [
       {
         "related": "http:npmjs/eslint/6.8.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/cross-env/5.0.5",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -59,10 +63,6 @@
       }
     },
     "relationship": [
-      {
-        "related": "http:npmjs/glob-parent/5.1.2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
       {
         "related": "http:npmjs/eslint-visitor-keys/1.3.0",
         "relationshipType": "DYNAMIC_LINK"
@@ -89,6 +89,10 @@
       },
       {
         "related": "http:npmjs/inquirer/7.3.3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/v8-compile-cache/2.2.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -148,15 +152,15 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
+        "related": "http:npmjs/glob-parent/5.1.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
         "related": "http:npmjs/progress/2.0.3",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
         "related": "http:npmjs/json-stable-stringify-without-jsonify/1.0.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/v8-compile-cache/2.3.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -208,79 +212,6 @@
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
-  },
-  {
-    "name": "glob-parent",
-    "revision": "5.1.2",
-    "@id": "http:npmjs/glob-parent/5.1.2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "glob-parent/5.1.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "pieces": [
-          "glob-parent",
-          "5.1.2"
-        ]
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/is-glob/4.0.1",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "is-glob",
-    "revision": "4.0.1",
-    "@id": "http:npmjs/is-glob/4.0.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "is-glob/4.0.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "pieces": [
-          "is-glob",
-          "4.0.1"
-        ]
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/is-extglob/2.1.1",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "is-extglob",
-    "revision": "2.1.1",
-    "@id": "http:npmjs/is-extglob/2.1.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "is-extglob/2.1.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "pieces": [
-          "is-extglob",
-          "2.1.1"
-        ]
-      }
-    },
-    "relationship": []
   },
   {
     "name": "eslint-visitor-keys",
@@ -442,10 +373,6 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:npmjs/string-width/4.2.2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
         "related": "http:npmjs/cli-cursor/3.1.0",
         "relationshipType": "DYNAMIC_LINK"
       },
@@ -483,6 +410,10 @@
       },
       {
         "related": "http:npmjs/chalk/4.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/string-width/4.2.1",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -529,129 +460,6 @@
         "pieces": [
           "escape-string-regexp",
           "1.0.5"
-        ]
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "string-width",
-    "revision": "4.2.2",
-    "@id": "http:npmjs/string-width/4.2.2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "string-width/4.2.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "pieces": [
-          "string-width",
-          "4.2.2"
-        ]
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/strip-ansi/6.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/is-fullwidth-code-point/3.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/emoji-regex/8.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "strip-ansi",
-    "revision": "6.0.0",
-    "@id": "http:npmjs/strip-ansi/6.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "strip-ansi/6.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "pieces": [
-          "strip-ansi",
-          "6.0.0"
-        ]
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/ansi-regex/5.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "ansi-regex",
-    "revision": "5.0.0",
-    "@id": "http:npmjs/ansi-regex/5.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "ansi-regex/5.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "pieces": [
-          "ansi-regex",
-          "5.0.0"
-        ]
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "is-fullwidth-code-point",
-    "revision": "3.0.0",
-    "@id": "http:npmjs/is-fullwidth-code-point/3.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "is-fullwidth-code-point/3.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "pieces": [
-          "is-fullwidth-code-point",
-          "3.0.0"
-        ]
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "emoji-regex",
-    "revision": "8.0.0",
-    "@id": "http:npmjs/emoji-regex/8.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "emoji-regex/8.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "pieces": [
-          "emoji-regex",
-          "8.0.0"
         ]
       }
     },
@@ -839,6 +647,53 @@
         "pieces": [
           "cli-width",
           "3.0.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "strip-ansi",
+    "revision": "6.0.0",
+    "@id": "http:npmjs/strip-ansi/6.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "strip-ansi/6.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "strip-ansi",
+          "6.0.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/ansi-regex/5.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "ansi-regex",
+    "revision": "5.0.0",
+    "@id": "http:npmjs/ansi-regex/5.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "ansi-regex/5.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "ansi-regex",
+          "5.0.0"
         ]
       }
     },
@@ -1253,6 +1108,150 @@
         "pieces": [
           "color-name",
           "1.1.4"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "string-width",
+    "revision": "4.2.1",
+    "@id": "http:npmjs/string-width/4.2.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "string-width/4.2.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "string-width",
+          "4.2.1"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/strip-ansi/6.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/is-fullwidth-code-point/3.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/emoji-regex/8.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "is-fullwidth-code-point",
+    "revision": "3.0.0",
+    "@id": "http:npmjs/is-fullwidth-code-point/3.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "is-fullwidth-code-point/3.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "is-fullwidth-code-point",
+          "3.0.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "emoji-regex",
+    "revision": "8.0.0",
+    "@id": "http:npmjs/emoji-regex/8.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "emoji-regex/8.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "emoji-regex",
+          "8.0.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "v8-compile-cache",
+    "revision": "2.2.0",
+    "@id": "http:npmjs/v8-compile-cache/2.2.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "v8-compile-cache/2.2.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "v8-compile-cache",
+          "2.2.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "is-glob",
+    "revision": "4.0.1",
+    "@id": "http:npmjs/is-glob/4.0.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "is-glob/4.0.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "is-glob",
+          "4.0.1"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/is-extglob/2.1.1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "is-extglob",
+    "revision": "2.1.1",
+    "@id": "http:npmjs/is-extglob/2.1.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "is-extglob/2.1.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "is-extglob",
+          "2.1.1"
         ]
       }
     },
@@ -2452,6 +2451,32 @@
     "relationship": []
   },
   {
+    "name": "glob-parent",
+    "revision": "5.1.1",
+    "@id": "http:npmjs/glob-parent/5.1.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "glob-parent/5.1.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "glob-parent",
+          "5.1.1"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/is-glob/4.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
     "name": "progress",
     "revision": "2.0.3",
     "@id": "http:npmjs/progress/2.0.3",
@@ -2488,27 +2513,6 @@
         "pieces": [
           "json-stable-stringify-without-jsonify",
           "1.0.1"
-        ]
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "v8-compile-cache",
-    "revision": "2.3.0",
-    "@id": "http:npmjs/v8-compile-cache/2.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "v8-compile-cache/2.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "pieces": [
-          "v8-compile-cache",
-          "2.3.0"
         ]
       }
     },
@@ -3180,19 +3184,19 @@
     },
     "relationship": [
       {
-        "related": "http:npmjs/%40babel%2Fhighlight/7.13.10",
+        "related": "http:npmjs/%40babel%2Fhighlight/7.12.13",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
   },
   {
     "name": "@babel/highlight",
-    "revision": "7.13.10",
-    "@id": "http:npmjs/%40babel%2Fhighlight/7.13.10",
+    "revision": "7.12.13",
+    "@id": "http:npmjs/%40babel%2Fhighlight/7.12.13",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "npmjs",
-      "externalId": "@babel/highlight/7.13.10",
+      "externalId": "@babel/highlight/7.12.13",
       "externalIdMetaData": {
         "forge": {
           "name": "npmjs",
@@ -3200,7 +3204,7 @@
         },
         "pieces": [
           "@babel/highlight",
-          "7.13.10"
+          "7.12.13"
         ]
       }
     },
@@ -3431,5 +3435,162 @@
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
+  },
+  {
+    "name": "cross-env",
+    "revision": "5.0.5",
+    "@id": "http:npmjs/cross-env/5.0.5",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "cross-env/5.0.5",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "cross-env",
+          "5.0.5"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/cross-spawn/5.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/is-windows/1.0.2",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "cross-spawn",
+    "revision": "5.1.0",
+    "@id": "http:npmjs/cross-spawn/5.1.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "cross-spawn/5.1.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "cross-spawn",
+          "5.1.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/lru-cache/4.1.5",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/shebang-command/1.2.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/which/1.3.1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "lru-cache",
+    "revision": "4.1.5",
+    "@id": "http:npmjs/lru-cache/4.1.5",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "lru-cache/4.1.5",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "lru-cache",
+          "4.1.5"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/pseudomap/1.0.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/yallist/2.1.2",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "pseudomap",
+    "revision": "1.0.2",
+    "@id": "http:npmjs/pseudomap/1.0.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "pseudomap/1.0.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "pseudomap",
+          "1.0.2"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "yallist",
+    "revision": "2.1.2",
+    "@id": "http:npmjs/yallist/2.1.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "yallist/2.1.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "yallist",
+          "2.1.2"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "is-windows",
+    "revision": "1.0.2",
+    "@id": "http:npmjs/is-windows/1.0.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "is-windows/1.0.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "is-windows",
+          "1.0.2"
+        ]
+      }
+    },
+    "relationship": []
   }
 ]

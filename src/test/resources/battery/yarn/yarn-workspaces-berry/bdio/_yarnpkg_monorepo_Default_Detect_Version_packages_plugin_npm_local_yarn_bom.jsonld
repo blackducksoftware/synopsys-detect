@@ -1,34 +1,34 @@
 [
   {
     "specVersion": "1.1.0",
-    "spdx:name": "@yarnpkg/monorepo/Default Detect Version/@yarnpkg/plugin-npm/2.4.0 yarn/bom",
+    "spdx:name": "@yarnpkg/monorepo/Default Detect Version/packages/plugin-npm/local yarn/bom",
     "creationInfo": {
       "spdx:creator": [
         "Tool: Detect-7.0.0-SIGQA18-SNAPSHOT",
         "Tool: IntegrationBdio-22.1.1"
       ],
-      "spdx:created": "2021-04-30T21:08:13.156Z"
+      "spdx:created": "2021-05-01T23:45:20.700Z"
     },
-    "@id": "uuid:4cbdb813-724d-45c3-ac4a-d8d815e44889",
+    "@id": "uuid:5a3982dd-15c6-40d5-af42-6e68f85f771e",
     "@type": "BillOfMaterials",
     "relationship": []
   },
   {
     "name": "@yarnpkg/monorepo",
     "revision": "Default Detect Version",
-    "@id": "http:npmjs/%40yarnpkg%2Fplugin-npm/2.4.0",
+    "@id": "http:npmjs/packages%2Fplugin-npm/local",
     "@type": "Project",
     "externalIdentifier": {
       "externalSystemTypeId": "npmjs",
-      "externalId": "@yarnpkg/plugin-npm/2.4.0",
+      "externalId": "packages/plugin-npm/local",
       "externalIdMetaData": {
         "forge": {
           "name": "npmjs",
           "separator": "/"
         },
         "pieces": [
-          "@yarnpkg/plugin-npm",
-          "2.4.0"
+          "packages/plugin-npm",
+          "local"
         ]
       }
     },

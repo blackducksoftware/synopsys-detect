@@ -97,7 +97,7 @@ public class YarnBattery {
         test.sourceFileFromResource("package.json");
         test.sourceFileFromResource("mypkgs/workspace-a/package.json");
         test.sourceFileFromResource("mypkgs/workspace-b/package.json");
-        test.property("detect.yarn.included.workspaces", "workspace-a");
+        test.property("detect.yarn.included.workspaces", "mypkgs/workspace-a");
         test.expectBdioResources();
         test.run();
     }
@@ -110,7 +110,7 @@ public class YarnBattery {
         test.sourceFileFromResource("package.json");
         test.sourceFileFromResource("workspace-a/package.json");
         test.sourceFileFromResource("workspace-b/package.json");
-        test.property("detect.yarn.included.workspaces", "*");
+        test.property("detect.yarn.included.workspaces", "workspace-*");
         test.expectBdioResources();
         test.run();
     }

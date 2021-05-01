@@ -1,34 +1,34 @@
 [
   {
     "specVersion": "1.1.0",
-    "spdx:name": "simple/1.0.0/workspace-b/1.0.0 yarn/bom",
+    "spdx:name": "simple/1.0.0/mypkgs/workspace-b/local yarn/bom",
     "creationInfo": {
       "spdx:creator": [
         "Tool: Detect-7.0.0-SIGQA18-SNAPSHOT",
         "Tool: IntegrationBdio-22.1.1"
       ],
-      "spdx:created": "2021-04-30T20:53:19.109Z"
+      "spdx:created": "2021-05-01T18:55:48.917Z"
     },
-    "@id": "uuid:f10a0c10-ada1-4757-bfa6-6bfdb4bb5ba5",
+    "@id": "uuid:12ac79de-0298-4619-b80c-e0a0af6505ff",
     "@type": "BillOfMaterials",
     "relationship": []
   },
   {
     "name": "simple",
     "revision": "1.0.0",
-    "@id": "http:npmjs/workspace-b/1.0.0",
+    "@id": "http:npmjs/mypkgs%2Fworkspace-b/local",
     "@type": "Project",
     "externalIdentifier": {
       "externalSystemTypeId": "npmjs",
-      "externalId": "workspace-b/1.0.0",
+      "externalId": "mypkgs/workspace-b/local",
       "externalIdMetaData": {
         "forge": {
           "name": "npmjs",
           "separator": "/"
         },
         "pieces": [
-          "workspace-b",
-          "1.0.0"
+          "mypkgs/workspace-b",
+          "local"
         ]
       }
     },

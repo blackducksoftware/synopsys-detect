@@ -1,26 +1,26 @@
 [
   {
     "specVersion": "1.1.0",
-    "spdx:name": "simple/1.0.0/workspace-c/1.0.0 yarn/bom",
+    "spdx:name": "simple/1.0.0/workspace-c/local yarn/bom",
     "creationInfo": {
       "spdx:creator": [
         "Tool: Detect-7.0.0-SIGQA18-SNAPSHOT",
         "Tool: IntegrationBdio-22.1.1"
       ],
-      "spdx:created": "2021-04-30T20:55:50.087Z"
+      "spdx:created": "2021-05-01T23:20:38.432Z"
     },
-    "@id": "uuid:50f9f84d-e68d-4bad-b343-eb631686981e",
+    "@id": "uuid:667e5f5f-a024-4ed9-93ab-c8d7b122546f",
     "@type": "BillOfMaterials",
     "relationship": []
   },
   {
     "name": "simple",
     "revision": "1.0.0",
-    "@id": "http:npmjs/workspace-c/1.0.0",
+    "@id": "http:npmjs/workspace-c/local",
     "@type": "Project",
     "externalIdentifier": {
       "externalSystemTypeId": "npmjs",
-      "externalId": "workspace-c/1.0.0",
+      "externalId": "workspace-c/local",
       "externalIdMetaData": {
         "forge": {
           "name": "npmjs",
@@ -28,7 +28,7 @@
         },
         "pieces": [
           "workspace-c",
-          "1.0.0"
+          "local"
         ]
       }
     },
