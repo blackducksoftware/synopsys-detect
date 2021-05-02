@@ -100,7 +100,7 @@ public class YarnWorkspace {
     public boolean matches(String name, String version) {
         if (getName().orElse("").equals(name)) {
             if (!version.startsWith(WORKSPACE_VERSION_PREFIX) && !versionMatches(version)) {
-                logger.warn("yarn.lock dependency {} has the same name as a workspace, but the version is {} (vs. {}). Considering them the same anyway.",
+                logger.trace("yarn.lock dependency {} has the same name as a workspace, but the version is {} (vs. {}). Considering them the same anyway.",
                     name, version, getVersionString());
             }
             return true;

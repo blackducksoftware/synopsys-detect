@@ -156,6 +156,19 @@ public class YarnBattery {
     }
 
     @Test
+    void yarnYarn2ExcludeNestedWorkspace() {
+        BatteryTest test = new BatteryTest("yarn2-workspace-hierarchy-exclude", "yarn/yarn2-workspace-hierarchy-exclude");
+        test.sourceDirectoryNamed("yarn2-workspace-hierarchy-exclude");
+        test.sourceFileFromResource("yarn.lock");
+        test.sourceFileFromResource("package.json");
+        test.sourceFileFromResource("workspace-a/package.json");
+        test.sourceFileFromResource("workspace-a/child-workspace/package.json");
+        test.property("detect.yarn.excluded.workspaces", "child-workspace");
+        test.expectBdioResources();
+        test.run();
+    }
+
+    @Test
     void yarnYarn2WorkspacesHierarchyMonorepo() {
         BatteryTest test = new BatteryTest("yarn2-hierarchical-monorepo", "yarn/yarn2-hierarchical-monorepo");
         test.sourceDirectoryNamed("yarn2-hierarchical-monorepo");

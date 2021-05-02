@@ -55,7 +55,7 @@ public class YarnTransformer {
             externalDependencies);
         codeLocations.add(new CodeLocation(rootProjectGraph));
         for (YarnWorkspace workspace : yarnLockResult.getWorkspaceData().getWorkspaces()) {
-            if ((workspaceFilter == null) || workspaceFilter.willInclude(workspace.getWorkspacePackageJson().getDirRelativePath())) {
+            if ((workspaceFilter == null) || workspaceFilter.shouldInclude(workspace.getWorkspacePackageJson().getDirRelativePath())) {
                 logger.debug("Adding root dependencies for workspace: {}", workspace.getWorkspacePackageJson().getDirRelativePath());
                 DependencyGraph workspaceGraph = buildGraphForProjectOrWorkspace(yarnLockResult, workspace.getWorkspacePackageJson().getPackageJson(), productionOnly,
                     externalDependencies);
