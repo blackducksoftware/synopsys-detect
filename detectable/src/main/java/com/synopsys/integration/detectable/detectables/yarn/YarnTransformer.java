@@ -50,11 +50,13 @@ public class YarnTransformer {
     public List<CodeLocation> generateCodeLocations(YarnLockResult yarnLockResult, boolean productionOnly,
         List<NameVersion> externalDependencies, @Nullable ExcludedIncludedWildcardFilter workspaceFilter) throws MissingExternalIdException {
         List<CodeLocation> codeLocations = new LinkedList<>();
+        logger.debug("Adding root dependencies for project: {}:{}", yarnLockResult.getRootPackageJson().getNameString(), yarnLockResult.getRootPackageJson().getVersionString());
         DependencyGraph rootProjectGraph = buildGraphForProjectOrWorkspace(yarnLockResult, yarnLockResult.getRootPackageJson(), productionOnly,
             externalDependencies);
         codeLocations.add(new CodeLocation(rootProjectGraph));
         for (YarnWorkspace workspace : yarnLockResult.getWorkspaceData().getWorkspaces()) {
             if ((workspaceFilter == null) || workspaceFilter.willInclude(workspace.getWorkspacePackageJson().getDirRelativePath())) {
+                logger.debug("Adding root dependencies for workspace: {}", workspace.getWorkspacePackageJson().getDirRelativePath());
                 DependencyGraph workspaceGraph = buildGraphForProjectOrWorkspace(yarnLockResult, workspace.getWorkspacePackageJson().getPackageJson(), productionOnly,
                     externalDependencies);
                 ExternalId workspaceExternalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, workspace.getWorkspacePackageJson().getDirRelativePath(),
@@ -120,7 +122,6 @@ public class YarnTransformer {
 
     private void addRootNodesToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder,
         NullSafePackageJson projectOrWorkspacePackageJson, YarnWorkspaces workspaceData, boolean productionOnly) {
-        logger.debug("Adding root dependencies from project/workspace PackageJson: {}:{}", projectOrWorkspacePackageJson.getNameString(), projectOrWorkspacePackageJson.getVersionString());
         populateGraphWithRootDependencies(graphBuilder, projectOrWorkspacePackageJson, productionOnly, workspaceData);
     }
 
