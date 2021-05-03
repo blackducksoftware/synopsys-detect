@@ -633,9 +633,9 @@ public class DetectProperties {
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
-    public static final DetectProperty<IntegerProperty> DETECT_EXCLUDED_DIRECTORY_SEARCH_DEPTH =
-        new DetectProperty<>(new IntegerProperty("detect.excluded.directory.search.depth", 4))
-            .setInfo("Detect Excluded Directory Search Depth", DetectPropertyFromVersion.VERSION_7_0_0)
+    public static final DetectProperty<IntegerProperty> DETECT_EXCLUDED_DIRECTORIES_SEARCH_DEPTH =
+        new DetectProperty<>(new IntegerProperty("detect.excluded.directories.search.depth", 4))
+            .setInfo("Detect Excluded Directories Search Depth", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp("Enables you to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN);
 
@@ -1402,7 +1402,7 @@ public class DetectProperties {
             .setInfo("Exclusion Patterns Search Depth", DetectPropertyFromVersion.VERSION_5_0_0)
             .setHelp("Enables you to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN)
-            .setDeprecated("This property is deprecated.  Please use --detect.excluded.directory.search.depth to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.", DetectMajorVersion.SEVEN,
+            .setDeprecated("This property is deprecated.  Please use --detect.excluded.directories.search.depth to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.", DetectMajorVersion.SEVEN,
                 DetectMajorVersion.EIGHT);
 
     @Deprecated
