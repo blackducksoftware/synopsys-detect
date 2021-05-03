@@ -212,9 +212,7 @@ class YarnTransformerTest {
         for (NameVersion workspace : allWorkspaces) {
             String workspaceDepName = workspace.getName() + WORKSPACE_DEP_SUFFIX;
             String workspaceDevDepName = workspace.getName() + "-dev" + WORKSPACE_DEP_SUFFIX;
-            //            if (yarn1project || includeAllWorkspaceDependencies) {
             addWorkspacePackageJson(workspacesByName, workspace, workspaceDepName, workspaceDevDepName);
-            //            }
             if (!yarn1project) {
                 addWorkspaceToYarnLockEntries(yarnLockEntries, workspace, workspaceDepName);
             }
