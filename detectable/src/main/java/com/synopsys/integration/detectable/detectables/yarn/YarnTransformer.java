@@ -138,26 +138,11 @@ public class YarnTransformer {
             if (dependencyWorkspace.isPresent()) {
                 logger.trace("Omitting dependency {}/{} because it's a workspace", rootDependency.getKey(), rootDependency.getValue());
             } else {
-                StringDependencyId stringDependencyId;
-                stringDependencyId = deriveIdForDependency(graphBuilder, workspaceData, rootDependency);
+                StringDependencyId stringDependencyId = generateComponentDependencyId(rootDependency.getKey(), rootDependency.getValue());
                 logger.debug("Adding root dependency to graph: stringDependencyId: {}", stringDependencyId);
                 graphBuilder.addChildToRoot(stringDependencyId);
             }
         }
-    }
-
-    private StringDependencyId deriveIdForDependency(LazyExternalIdDependencyGraphBuilder graphBuilder, YarnWorkspaces workspaceData, Map.Entry<String, String> rootDependency) {
-        StringDependencyId stringDependencyId;
-        Optional<YarnWorkspace> workspace = workspaceData.lookup(rootDependency.getKey(), rootDependency.getValue());
-        if (workspace.isPresent()) {
-            stringDependencyId = workspace.get().generateDependencyId();
-            ExternalId externalId = workspace.get().generateExternalId();
-            graphBuilder
-                .setDependencyInfo(stringDependencyId, workspace.get().getName().orElse(null), workspace.get().getVersion().orElse(null), externalId);
-        } else {
-            stringDependencyId = generateComponentDependencyId(rootDependency.getKey(), rootDependency.getValue());
-        }
-        return stringDependencyId;
     }
 
     private StringDependencyId generateComponentDependencyId(String name, String version) {

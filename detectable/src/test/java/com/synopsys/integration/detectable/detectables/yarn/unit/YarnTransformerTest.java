@@ -166,7 +166,7 @@ class YarnTransformerTest {
             CodeLocation workspaceCodeLocation = codeLocationIterator.next();
             assertTrue(workspaceCodeLocation.getExternalId().get().getName().startsWith("packages/workspace-"));
             assertTrue(workspaceCodeLocation.getExternalId().get().getName().endsWith("dep"));
-            assertTrue(workspaceCodeLocation.getExternalId().get().getVersion().equals("local"));
+            assertEquals("local", workspaceCodeLocation.getExternalId().get().getVersion());
             assertEquals("npmjs", workspaceCodeLocation.getExternalId().get().getForge().getName());
 
             List<String> workspaceDependencyNames = workspaceCodeLocation.getDependencyGraph().getRootDependencies().stream()
@@ -255,7 +255,7 @@ class YarnTransformerTest {
         rawWorkspacePackageJson.devDependencies.put(workspaceDevDepName, workspaceNameVersion.getVersion());
         NullSafePackageJson workspacePackageJson = new NullSafePackageJson(rawWorkspacePackageJson);
         WorkspacePackageJson locatedWorkspacePackageJson = new WorkspacePackageJson(null, workspacePackageJson, "packages/" + workspaceNameVersion.getName());
-        YarnWorkspace workspace = new YarnWorkspace(new ExternalIdFactory(), locatedWorkspacePackageJson);
+        YarnWorkspace workspace = new YarnWorkspace(locatedWorkspacePackageJson);
         workspacesByName.add(workspace);
     }
 }
