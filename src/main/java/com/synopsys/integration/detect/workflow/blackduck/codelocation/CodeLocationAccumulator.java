@@ -14,14 +14,13 @@ import java.util.Set;
 
 import com.synopsys.integration.blackduck.codelocation.CodeLocationBatchOutput;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
-import com.synopsys.integration.blackduck.codelocation.CodeLocationOutput;
 
-public class CodeLocationAccumulator<O extends CodeLocationOutput, T extends CodeLocationBatchOutput<O>> {
+public class CodeLocationAccumulator {
 
-    private final List<CodeLocationCreationData<T>> waitableCodeLocations = new ArrayList<>();
+    private final List<CodeLocationCreationData<? extends CodeLocationBatchOutput<?>>> waitableCodeLocations = new ArrayList<>();
     private final Set<String> nonWaitableCodeLocations = new HashSet<>();
 
-    public void addWaitableCodeLocation(CodeLocationCreationData<T> creationData) {
+    public void addWaitableCodeLocation(CodeLocationCreationData<? extends CodeLocationBatchOutput<?>> creationData) {
         waitableCodeLocations.add(creationData);
     }
 
@@ -29,7 +28,7 @@ public class CodeLocationAccumulator<O extends CodeLocationOutput, T extends Cod
         nonWaitableCodeLocations.addAll(names);
     }
 
-    public List<CodeLocationCreationData<T>> getWaitableCodeLocations() {
+    public List<CodeLocationCreationData<? extends CodeLocationBatchOutput<?>>> getWaitableCodeLocations() {
         return waitableCodeLocations;
     }
 

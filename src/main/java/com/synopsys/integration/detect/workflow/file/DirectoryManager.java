@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.tool.detector.extraction.ExtractionId;
-import com.synopsys.integration.detect.workflow.DetectRun;
+import com.synopsys.integration.detect.workflow.DetectRunId;
 
 public class DirectoryManager {
     private final Logger logger = LoggerFactory.getLogger(DirectoryManager.class);
@@ -71,7 +71,7 @@ public class DirectoryManager {
 
     private final Map<ExtractionId, File> extractionDirectories = new HashMap<>();
 
-    public DirectoryManager(DirectoryOptions directoryOptions, DetectRun detectRun) {
+    public DirectoryManager(DirectoryOptions directoryOptions, DetectRunId detectRunId) {
         sourceDirectory = directoryOptions.getSourcePathOverride()
                               .map(Path::toFile)
                               .orElse(new File(System.getProperty("user.dir")));
@@ -101,10 +101,10 @@ public class DirectoryManager {
             .filter(it -> !outputDirectories.containsKey(it))
             .forEach(it -> outputDirectories.put(it, new File(outputDirectory, it.getDirectoryName())));
 
-        File possibleRunDirectory = new File(getOutputDirectory(OutputDirectory.RUNS), detectRun.getRunId());
+        File possibleRunDirectory = new File(getOutputDirectory(OutputDirectory.RUNS), detectRunId.getRunId());
         if (possibleRunDirectory.exists()) {
             logger.warn("A run directory already exists with this detect run id. Will attempt to use a UUID for the run folder in addition.");
-            possibleRunDirectory = new File(getOutputDirectory(OutputDirectory.RUNS), detectRun.getRunId() + "-" + java.util.UUID.randomUUID());
+            possibleRunDirectory = new File(getOutputDirectory(OutputDirectory.RUNS), detectRunId.getRunId() + "-" + java.util.UUID.randomUUID());
         }
         runDirectory = possibleRunDirectory;
 

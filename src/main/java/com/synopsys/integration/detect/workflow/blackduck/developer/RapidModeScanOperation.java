@@ -7,7 +7,6 @@
  */
 package com.synopsys.integration.detect.workflow.blackduck.developer;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,22 +20,19 @@ import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationExceptio
 import com.synopsys.integration.blackduck.scan.RapidScanService;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
-import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.rest.exception.IntegrationRestException;
 
-public class BlackDuckRapidMode {
+public class RapidModeScanOperation {
     public static final int DEFAULT_WAIT_INTERVAL_IN_SECONDS = 1;
     private static final String OPERATION_NAME = "Black Duck Rapid Scan";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final BlackDuckRunData blackDuckRunData;
     private final RapidScanService rapidScanService;
     private final Long timeoutInSeconds;
     private final OperationSystem operationSystem;
 
-    public BlackDuckRapidMode(BlackDuckRunData blackDuckRunData, RapidScanService rapidScanService, Long timeoutInSeconds, OperationSystem operationSystem) {
-        this.blackDuckRunData = blackDuckRunData;
+    public RapidModeScanOperation(RapidScanService rapidScanService, Long timeoutInSeconds, OperationSystem operationSystem) {
         this.rapidScanService = rapidScanService;
         this.timeoutInSeconds = timeoutInSeconds;
         this.operationSystem = operationSystem;
@@ -45,10 +41,6 @@ public class BlackDuckRapidMode {
     public List<DeveloperScanComponentResultView> run(BdioResult bdioResult) throws DetectUserFriendlyException {
         logger.info("Begin Rapid Mode Scan");
         operationSystem.beginOperation(OPERATION_NAME);
-        if (!blackDuckRunData.isOnline()) {
-            logger.warn("Black Duck isn't online skipping rapid mode scan.");
-            return Collections.emptyList();
-        }
 
         List<DeveloperScanComponentResultView> results = new LinkedList<>();
         try {
