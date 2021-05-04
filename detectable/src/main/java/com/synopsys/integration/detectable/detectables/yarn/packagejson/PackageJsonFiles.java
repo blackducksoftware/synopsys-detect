@@ -26,17 +26,14 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
 import com.synopsys.integration.detectable.detectables.yarn.workspace.YarnWorkspace;
 
 public class PackageJsonFiles {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final ExternalIdFactory externalIdFactory;
     private final PackageJsonReader packageJsonReader;
 
-    public PackageJsonFiles(ExternalIdFactory externalIdFactory, PackageJsonReader packageJsonReader) {
-        this.externalIdFactory = externalIdFactory;
+    public PackageJsonFiles(PackageJsonReader packageJsonReader) {
         this.packageJsonReader = packageJsonReader;
     }
 
@@ -66,7 +63,7 @@ public class PackageJsonFiles {
                         NullSafePackageJson packageJson = read(file.toFile());
                         Path rel = workspaceDir.toPath().relativize(file.getParent());
                         WorkspacePackageJson workspacePackageJson = new WorkspacePackageJson(file.toFile(), packageJson, rel.toString());
-                        YarnWorkspace workspace = new YarnWorkspace(externalIdFactory, workspacePackageJson);
+                        YarnWorkspace workspace = new YarnWorkspace(workspacePackageJson);
                         workspaces.add(workspace);
                     }
                     return FileVisitResult.CONTINUE;

@@ -1,0 +1,191 @@
+[
+  {
+    "specVersion": "1.1.0",
+    "spdx:name": "hier/Default Detect Version/child-workspace/local yarn/bom",
+    "creationInfo": {
+      "spdx:creator": [
+        "Tool: Detect-7.0.0-SIGQA18-SNAPSHOT",
+        "Tool: IntegrationBdio-22.1.1"
+      ],
+      "spdx:created": "2021-05-01T23:41:29.106Z"
+    },
+    "@id": "uuid:a03db5aa-6f64-46b9-aa26-060bb57c84f9",
+    "@type": "BillOfMaterials",
+    "relationship": []
+  },
+  {
+    "name": "hier",
+    "revision": "Default Detect Version",
+    "@id": "http:npmjs/child-workspace/local",
+    "@type": "Project",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "child-workspace/local",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "child-workspace",
+          "local"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/openssl/1.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "openssl",
+    "revision": "1.1.0",
+    "@id": "http:npmjs/openssl/1.1.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "openssl/1.1.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "openssl",
+          "1.1.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/mout/0.11.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/nyks/2.31.3",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "mout",
+    "revision": "0.11.1",
+    "@id": "http:npmjs/mout/0.11.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "mout/0.11.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "mout",
+          "0.11.1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "nyks",
+    "revision": "2.31.3",
+    "@id": "http:npmjs/nyks/2.31.3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "nyks/2.31.3",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "nyks",
+          "2.31.3"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/async/2.6.3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/mout/1.2.2",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "async",
+    "revision": "2.6.3",
+    "@id": "http:npmjs/async/2.6.3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "async/2.6.3",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "async",
+          "2.6.3"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/lodash/4.17.21",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "lodash",
+    "revision": "4.17.21",
+    "@id": "http:npmjs/lodash/4.17.21",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "lodash/4.17.21",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "lodash",
+          "4.17.21"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "mout",
+    "revision": "1.2.2",
+    "@id": "http:npmjs/mout/1.2.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "mout/1.2.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "mout",
+          "1.2.2"
+        ]
+      }
+    },
+    "relationship": []
+  }
+]

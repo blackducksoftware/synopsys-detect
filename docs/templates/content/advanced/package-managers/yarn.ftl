@@ -13,26 +13,49 @@ The package.json file specifies the direct dependencies for the project. ${solut
 dependencies to the top level of the dependency graph that it builds.
 The yarn.lock file contains necessary details about those
 direct dependencies and their transient dependencies, enabling ${solution_name}
-to build the complete graph of direct and transient dependencies. The Yarn detector
-produces a single codelocation with this graph.
+to build the complete graph of direct and transient dependencies.
 
 ${solution_name} supports projects that use Yarn version 1 or version 2.
 
 ## Yarn workspace support
 
-${solution_name} supports Yarn projects that use workspaces.
-By default, only workspaces that are dependencies of the
-root project (directly or indirectly) are included in the produced dependency graph.
-The workspace exclude/include filters can be used to force workspaces to be excluded
-or included.
+In addition to the codelocation generated for the project (showing its direct
+and transitive dependencies),
+${solution_name} also generates a codelocation per included workspace
+(all workspaces are included by default).
 
-## Monorepo support
+### Referencing workspaces
 
-If your root project contains workspaces but does not depend on them, you can
-use the workspace include filter to force some or all of the workspaces to be included.
-To include all workspaces in a monorepo, set detect.yarn.included.workspaces="*".
+When you use the workspace exclude/include properties, refer to workspaces
+the same way Yarn refers to them in the *workspaces* list in the declaring package.json file:
+use the relative path of the workspace directory (relative to the declaring workspace).
 
-## Using the workspace exclude and include filters
+For example, if your project package.json contains:
+````
+"workspaces": [
+"packages/workspace-a",
+"packages/workspace-b"
+],
+````
+${solution_name} will expect you to refer to these workspaces as "packages/workspace-a" and "packages/workspace-b".
+This naming convention remains the same even at deeper workspace nesting levels. Suppose your project
+has a workspace packages/workspace-a, and packages/workspace-a's package.json contains:
+````
+"workspaces": [
+"child1-of-workspace-a",
+"child2-of-workspace-a"
+],
+````
+${solution_name} will expect you to refer to these workspaces as "child1-of-workspace-a" and "child2-of-workspace-a".
 
-When using the workspace exclude and include filters, specify workspaces by
-name (workspace package.json name field value), not by directory path.
+### Excluding workspaces
+
+By default, ${solution_name} includes all workspaces in the results, regardless of whether or not
+they are declared as dependencies of the project. You can specify a subset of workspaces
+to include or exclude using the workspace exclude/include properties
+*detect.yarn.excluded.workspaces* and *detect.yarn.included.workspaces*.
+
+When using the workspace exclude and include properties, use the workspace
+referencing guidelines described above. You can also use
+filename globbing-style wildcards, and can specify multiple values separated
+by commas.
