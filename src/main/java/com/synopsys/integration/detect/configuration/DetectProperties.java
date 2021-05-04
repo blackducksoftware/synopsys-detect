@@ -621,19 +621,18 @@ public class DetectProperties {
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
-    //TODO - pass these defaults to sig scan also
-    public static final DetectProperty<BooleanProperty> DETECT_EXCLUDE_DEFAULT_DIRECTORIES =
-        new DetectProperty<>(new BooleanProperty("detect.exclude.default.directories", true))
-            .setInfo("Detect Exclude Default Directories", DetectPropertyFromVersion.VERSION_7_0_0)
-            .setHelp("If true, Detect will exclude the default directory names. See the detailed help for more information.",
-                "If true, these directories will be excluded by Detect when searching for detectors and will be excluded from signature scan using the Scan CLI '--exclude' flag: bin, build, .git, .gradle, node_modules, out, packages, target."
+    public static final DetectProperty<BooleanProperty> DETECT_EXCLUDED_DIRECTORIES_DEFAULTS_DISABLED =
+        new DetectProperty<>(new BooleanProperty("detect.excluded.directories.defaults.disabled", false))
+            .setInfo("Detect Excluded Directories Defaults Disabled", DetectPropertyFromVersion.VERSION_7_0_0)
+            .setHelp("If false, Detect will exclude the default directory names. See the detailed help for more information.",
+                "If false, these directories will be excluded by Detect when searching for detectors and will be excluded from signature scan using the Scan CLI '--exclude' flag: bin, build, .git, .gradle, node_modules, out, packages, target."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
-    public static final DetectProperty<IntegerProperty> DETECT_EXCLUDED_DIRECTORY_SEARCH_DEPTH =
-        new DetectProperty<>(new IntegerProperty("detect.excluded.directory.search.depth", 4))
-            .setInfo("Detect Excluded Directory Search Depth", DetectPropertyFromVersion.VERSION_7_0_0)
+    public static final DetectProperty<IntegerProperty> DETECT_EXCLUDED_DIRECTORIES_SEARCH_DEPTH =
+        new DetectProperty<>(new IntegerProperty("detect.excluded.directories.search.depth", 4))
+            .setInfo("Detect Excluded Directories Search Depth", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp("Enables you to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN);
 
@@ -1326,7 +1325,7 @@ public class DetectProperties {
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
-            .setDeprecated("This property is deprecated.  Please use --detect.exclude.default.directories to exclude default directory names from detector search.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+            .setDeprecated("This property is deprecated.  Please use --detect.excluded.directories.defaults.disabled to exclude default directory names from detector search.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_RESOLVE_TILDE_IN_PATHS =
@@ -1795,7 +1794,7 @@ public class DetectProperties {
             .setInfo("Exclusion Patterns Search Depth", DetectPropertyFromVersion.VERSION_5_0_0)
             .setHelp("Enables you to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN)
-            .setDeprecated("This property is deprecated.  Please use --detect.excluded.directory.search.depth to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.", DetectMajorVersion.SEVEN,
+            .setDeprecated("This property is deprecated.  Please use --detect.excluded.directories.search.depth to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.", DetectMajorVersion.SEVEN,
                 DetectMajorVersion.EIGHT);
 
     @Deprecated
