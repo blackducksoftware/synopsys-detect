@@ -95,18 +95,18 @@ public class NpmLockfilePackager {
         return new NpmParseResult(projectId.getName(), projectId.getVersion(), codeLocation);
     }
 
-    private void addRootDependencies(List<NpmDependency> resolvedDependencies, List<NpmRequires> requires, MutableDependencyGraph dependencyGraph, final List<NameVersion> externalDependencies) {
+    private void addRootDependencies(List<NpmDependency> resolvedDependencies, List<NpmRequires> requires, MutableDependencyGraph dependencyGraph, List<NameVersion> externalDependencies) {
         for (NpmRequires dependency : requires) {
             Dependency resolved = lookupProjectOrExternal(dependency.getName(), resolvedDependencies, externalDependencies);
             if (resolved != null) {
                 dependencyGraph.addChildToRoot(resolved);
             } else {
-                logger.error("No dependency found for package: " + dependency.getName());
+                logger.warn("No dependency found for package: " + dependency.getName());
             }
         }
     }
 
-    private void transformTreeToGraph(NpmDependency npmDependency, NpmProject npmProject, MutableDependencyGraph dependencyGraph, boolean includeDevDependencies, final List<NameVersion> externalDependencies) {
+    private void transformTreeToGraph(NpmDependency npmDependency, NpmProject npmProject, MutableDependencyGraph dependencyGraph, boolean includeDevDependencies, List<NameVersion> externalDependencies) {
         if (!shouldIncludeDependency(npmDependency, includeDevDependencies)) {
             return;
         }
@@ -118,14 +118,14 @@ public class NpmLockfilePackager {
                 logger.trace(String.format("Found package: %s with version: %s", resolved.getName(), resolved.getVersion()));
                 dependencyGraph.addChildWithParent(resolved, npmDependency.getGraphDependency());
             } else {
-                logger.error("No dependency found for package: " + required.getName());
+                logger.warn("No dependency found for package: " + required.getName());
             }
         });
 
         npmDependency.getDependencies().forEach(child -> transformTreeToGraph(child, npmProject, dependencyGraph, includeDevDependencies, externalDependencies));
     }
 
-    private Dependency lookupProjectOrExternal(String name, List<NpmDependency> projectResolvedDependencies, final List<NameVersion> externalDependencies) {
+    private Dependency lookupProjectOrExternal(String name, List<NpmDependency> projectResolvedDependencies, List<NameVersion> externalDependencies) {
         Dependency projectDependency = firstDependencyWithName(projectResolvedDependencies, name);
         if (projectDependency != null) {
             return projectDependency;
@@ -137,7 +137,7 @@ public class NpmLockfilePackager {
     }
 
     //returns the first dependency in the following order: directly under this dependency, under a parent, under the project, under external dependencies
-    private Dependency lookupDependency(String name, NpmDependency npmDependency, NpmProject project, final List<NameVersion> externalDependencies) {
+    private Dependency lookupDependency(String name, NpmDependency npmDependency, NpmProject project, List<NameVersion> externalDependencies) {
         Dependency resolved = firstDependencyWithName(npmDependency.getDependencies(), name);
 
         if (resolved != null) {
