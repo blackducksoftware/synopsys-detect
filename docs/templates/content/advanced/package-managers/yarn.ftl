@@ -21,17 +21,15 @@ ${solution_name} supports projects that use Yarn version 1 or version 2.
 
 In addition to the codelocation generated for the project (showing its direct
 and transitive dependencies),
-${solution_name} also generates a codelocation per included workspace.
+${solution_name} also generates a codelocation per included workspace
+(all workspaces are included by default).
 
-### Workspace naming
+### Referencing workspaces
 
-Because the name field of a yarn workspace package.json file is optional
-(and therefore not reliable),
-${solution_name} uses the relative path of the workspace directory as the name of the workspace.
-More specifically, it uses the workspace directory path relative to the project or workspace
-that declares it as a workspace.
-In other words, ${solution_name} uses the workspace name as it would appear in the
-declaring package.json file without any wildcards.
+When you use the workspace exclude/include properties, refer to workspaces
+the same way Yarn refers to them in the *workspaces* list in the declaring package.json file:
+use the relative path of the workspace directory (relative to the declaring workspace).
+
 For example, if your project package.json contains:
 ````
 "workspaces": [
@@ -39,16 +37,16 @@ For example, if your project package.json contains:
 "packages/workspace-b"
 ],
 ````
-${solution_name} names these workspaces "packages/workspace-a" and "packages/workspace-b".
-This naming convention applies even at deeper workspace nesting levels. Suppose your project
-has a workspace "packages/workspace-a", and packages/workspace-a's package.json contains:
+${solution_name} will expect you to refer to these workspaces as "packages/workspace-a" and "packages/workspace-b".
+This naming convention remains the same even at deeper workspace nesting levels. Suppose your project
+has a workspace packages/workspace-a, and packages/workspace-a's package.json contains:
 ````
 "workspaces": [
 "child1-of-workspace-a",
 "child2-of-workspace-a"
 ],
 ````
-${solution_name} names these workspaces "child1-of-workspace-a" and "child2-of-workspace-a".
+${solution_name} will expect you to refer to these workspaces as "child1-of-workspace-a" and "child2-of-workspace-a".
 
 ### Excluding workspaces
 
@@ -58,9 +56,6 @@ to include or exclude using the workspace exclude/include properties
 *detect.yarn.excluded.workspaces* and *detect.yarn.included.workspaces*.
 
 When using the workspace exclude and include properties, use the workspace
-naming rules described above. For example, if your project
-package.json's workspaces list includes "packages/workspace-a" and "packages/workspace-b",
-you would include or exclude workspace-a by specifying "packages/workspace-a"
-in the value of the workspace include or exclude property. You can also use
+referencing guidelines described above. You can also use
 filename globbing-style wildcards, and can specify multiple values separated
 by commas.

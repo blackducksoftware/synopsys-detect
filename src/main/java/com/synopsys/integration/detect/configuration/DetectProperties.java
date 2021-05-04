@@ -1225,7 +1225,7 @@ public class DetectProperties {
                 "By default, Detect includes all workspaces, but will skip any Yarn workspaces specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.YARN, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
-            .setExample("workspaces/workspace-a,workspaces/workspace-b");
+            .setExample("workspaces/workspace-a,workspaces/*-test");
 
     public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_YARN_INCLUDED_WORKSPACES =
         new DetectProperty<>(new CaseSensitiveStringListProperty("detect.yarn.included.workspaces"))
