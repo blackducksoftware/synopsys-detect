@@ -98,7 +98,7 @@ public class ProductDecider {
         } else if (signatureScannerOfflineLocalPath.isPresent()) {
             logger.info("A local Black Duck signature scanner path was provided, which requires Black Duck offline mode.");
             return BlackDuckDecision.runOffline();
-        } else if (blackDuckUrl.isPresent()) {
+        } else if (!offline && blackDuckUrl.isPresent()) {
             logger.debug("Black Duck will run ONLINE: A Black Duck url was found.");
             return BlackDuckDecision.runOnline(scanMode);
         } else if (offline) {

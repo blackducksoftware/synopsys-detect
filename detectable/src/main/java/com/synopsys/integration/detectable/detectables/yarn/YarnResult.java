@@ -7,6 +7,8 @@
  */
 package com.synopsys.integration.detectable.detectables.yarn;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
@@ -20,22 +22,22 @@ public class YarnResult {
     private final String projectName;
     @Nullable
     private final String projectVersionName;
-    private final CodeLocation codeLocation;
+    private final List<CodeLocation> codeLocations;
     @Nullable
     private final Exception exception;
 
-    public static YarnResult success(@Nullable String projectName, @Nullable String projectVersionName, CodeLocation codeLocation) {
-        return new YarnResult(projectName, projectVersionName, codeLocation, null);
+    public static YarnResult success(@Nullable String projectName, @Nullable String projectVersionName, List<CodeLocation> codeLocations) {
+        return new YarnResult(projectName, projectVersionName, codeLocations, null);
     }
 
     public static YarnResult failure(@NotNull Exception exception) {
-        return new YarnResult(null, null, null, exception);
+        return new YarnResult(null, null, new ArrayList<>(0), exception);
     }
 
-    private YarnResult(@Nullable String projectName, @Nullable String projectVersionName, @Nullable CodeLocation codeLocation, @Nullable Exception exception) {
+    private YarnResult(@Nullable String projectName, @Nullable String projectVersionName, List<CodeLocation> codeLocations, @Nullable Exception exception) {
         this.projectName = projectName;
         this.projectVersionName = projectVersionName;
-        this.codeLocation = codeLocation;
+        this.codeLocations = codeLocations;
         this.exception = exception;
     }
 
@@ -50,8 +52,8 @@ public class YarnResult {
     }
 
     @Nullable
-    public CodeLocation getCodeLocation() {
-        return codeLocation;
+    public List<CodeLocation> getCodeLocations() {
+        return codeLocations;
     }
 
     public Optional<Exception> getException() {
