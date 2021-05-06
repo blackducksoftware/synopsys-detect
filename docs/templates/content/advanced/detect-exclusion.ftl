@@ -36,8 +36,8 @@ ${solution_name} uses FileSystem::getPatchMatcher and its glob syntax implementa
 
 ### Related properties:
 
-* [detect.exclude.default.directories](../../properties/configuration/paths/#detect-exclude-default-directories-advanced)
-* [detect.excluded.directory.search.depth](../../properties/configuration/signature scanner/#detect-excluded-directory-search-depth)
+* [detect.excluded.directories.defaults.disabled](../../properties/configuration/paths/#detect-excluded-directories-defaults-disabled-advanced)
+* [detect.excluded.directories.search.depth](../../properties/configuration/signature scanner/#detect-excluded-directories-search-depth)
 
 ## Package Manager Exclusions
 

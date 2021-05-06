@@ -51,12 +51,11 @@ public class YarnLockExtractor {
             String projectName = rootPackageJson.getName().orElse("null");
             logger.debug("Extracting Yarn project {} in {}", projectName, projectDir.getAbsolutePath());
             YarnLock yarnLock = readYarnLock(yarnLockFile);
-            boolean getWorkspaceDependenciesFromWorkspacePackageJson = yarnLock.isYarn1Project();
             YarnWorkspaces workspaceData = collectWorkspaceData(projectDir);
             ExcludedIncludedWildcardFilter workspacesFilter = deriveExcludedIncludedWildcardFilter();
 
             YarnResult yarnResult = yarnPackager.generateCodeLocation(rootPackageJson, workspaceData, yarnLock, new ArrayList<>(),
-                yarnLockOptions.useProductionOnly(), getWorkspaceDependenciesFromWorkspacePackageJson, workspacesFilter);
+                yarnLockOptions.useProductionOnly(), workspacesFilter);
 
             Optional<Exception> yarnException = yarnResult.getException();
             if (yarnException.isPresent()) {
@@ -66,7 +65,7 @@ public class YarnLockExtractor {
             return new Extraction.Builder()
                        .projectName(yarnResult.getProjectName())
                        .projectVersion(yarnResult.getProjectVersionName())
-                       .success(yarnResult.getCodeLocation())
+                       .success(yarnResult.getCodeLocations())
                        .build();
         } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();
@@ -75,15 +74,14 @@ public class YarnLockExtractor {
 
     private YarnLock readYarnLock(File yarnLockFile) throws IOException {
         List<String> yarnLockLines = FileUtils.readLines(yarnLockFile, StandardCharsets.UTF_8);
-        YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockLines);
-        return yarnLock;
+        return yarnLockParser.parseYarnLock(yarnLockLines);
     }
 
     @Nullable
     private ExcludedIncludedWildcardFilter deriveExcludedIncludedWildcardFilter() {
         ExcludedIncludedWildcardFilter workspacesFilter;
         if (yarnLockOptions.getExcludedWorkspaceNamePatterns().isEmpty() && yarnLockOptions.getIncludedWorkspaceNamePatterns().isEmpty()) {
-            workspacesFilter = null; // Just follow dependencies
+            workspacesFilter = null; // Include all
         } else {
             workspacesFilter = ExcludedIncludedWildcardFilter.fromCollections(yarnLockOptions.getExcludedWorkspaceNamePatterns(), yarnLockOptions.getIncludedWorkspaceNamePatterns());
         }

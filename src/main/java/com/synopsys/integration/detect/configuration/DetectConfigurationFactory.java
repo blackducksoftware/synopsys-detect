@@ -268,7 +268,7 @@ public class DetectConfigurationFactory {
     private List<String> collectDirectoryExclusions() {
         List<String> directoryExclusionPatterns = new ArrayList(getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES));
 
-        if (getValue(DetectProperties.DETECT_EXCLUDE_DEFAULT_DIRECTORIES)) {
+        if (!getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_DEFAULTS_DISABLED)) {
             List<String> defaultExcluded = Arrays.stream(DefaultDetectorExcludedDirectories.values())
                                                .map(DefaultDetectorExcludedDirectories::getDirectoryName)
                                                .collect(Collectors.toList());
@@ -367,12 +367,22 @@ public class DetectConfigurationFactory {
         String additionalArguments = PropertyConfigUtils
                                          .getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS.getProperty())
                                          .orElse(null);
-        Integer maxDepth = getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORY_SEARCH_DEPTH);
+        //<<<<<<< HEAD
+        //Integer maxDepth = getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORY_SEARCH_DEPTH);
         Path offlineLocalScannerInstallPath = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH.getProperty())
                                                   .map(path -> path.resolvePath(pathResolver)).orElse(null);
         Path onlineLocalScannerInstallPath = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH.getProperty()).map(path -> path.resolvePath(pathResolver))
                                                  .orElse(null);
         String userProvidedScannerInstallUrl = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL.getProperty()).orElse(null);
+        //=======
+        Integer maxDepth = getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_SEARCH_DEPTH);
+        //        Path offlineLocalScannerInstallPath = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH.getProperty(),
+        //            DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH.getProperty()).map(path -> path.resolvePath(pathResolver)).orElse(null);
+        //        Path onlineLocalScannerInstallPath = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH.getProperty(),
+        //            DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_LOCAL_PATH.getProperty()).map(path -> path.resolvePath(pathResolver)).orElse(null);
+        //        String userProvidedScannerInstallUrl = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL.getProperty(),
+        //            DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL.getProperty()).orElse(null);
+        //>>>>>>> 7.0.0
 
         if (offlineLocalScannerInstallPath != null && StringUtils.isNotBlank(userProvidedScannerInstallUrl)) {
             throw new DetectUserFriendlyException(

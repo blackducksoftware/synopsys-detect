@@ -1,0 +1,37 @@
+[
+  {
+    "specVersion": "1.1.0",
+    "spdx:name": "hier/Default Detect Version/yarn2-workspace-hierarchy-exclude yarn/bom",
+    "creationInfo": {
+      "spdx:creator": [
+        "Tool: Detect-7.0.0-SIGQA18-SNAPSHOT",
+        "Tool: IntegrationBdio-22.1.1"
+      ],
+      "spdx:created": "2021-05-02T23:27:11.193Z"
+    },
+    "@id": "uuid:421e751f-6879-4920-9492-94e35658f547",
+    "@type": "BillOfMaterials",
+    "relationship": []
+  },
+  {
+    "name": "hier",
+    "revision": "Default Detect Version",
+    "@id": "http:detect/yarn2-workspace-hierarchy-exclude",
+    "@type": "Project",
+    "externalIdentifier": {
+      "externalSystemTypeId": "detect",
+      "externalId": "yarn2-workspace-hierarchy-exclude",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "detect",
+          "separator": "/"
+        },
+        "pieces": [
+          "yarn2-workspace-hierarchy-exclude",
+          null
+        ]
+      }
+    },
+    "relationship": []
+  }
+]

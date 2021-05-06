@@ -624,18 +624,18 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .setExample("**/*-test");
 
-    public static final DetectProperty<BooleanProperty> DETECT_EXCLUDE_DEFAULT_DIRECTORIES =
-        new DetectProperty<>(new BooleanProperty("detect.exclude.default.directories", true))
-            .setInfo("Detect Exclude Default Directories", DetectPropertyFromVersion.VERSION_7_0_0)
-            .setHelp("If true, Detect will exclude the default directory names. See the detailed help for more information.",
-                "If true, these directories will be excluded by Detect when searching for detectors and will be excluded from signature scan using the Scan CLI '--exclude' flag: bin, build, .git, .gradle, node_modules, out, packages, target."
+    public static final DetectProperty<BooleanProperty> DETECT_EXCLUDED_DIRECTORIES_DEFAULTS_DISABLED =
+        new DetectProperty<>(new BooleanProperty("detect.excluded.directories.defaults.disabled", false))
+            .setInfo("Detect Excluded Directories Defaults Disabled", DetectPropertyFromVersion.VERSION_7_0_0)
+            .setHelp("If false, Detect will exclude the default directory names. See the detailed help for more information.",
+                "If false, these directories will be excluded by Detect when searching for detectors and will be excluded from signature scan using the Scan CLI '--exclude' flag: bin, build, .git, .gradle, node_modules, out, packages, target."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
-    public static final DetectProperty<IntegerProperty> DETECT_EXCLUDED_DIRECTORY_SEARCH_DEPTH =
-        new DetectProperty<>(new IntegerProperty("detect.excluded.directory.search.depth", 4))
-            .setInfo("Detect Excluded Directory Search Depth", DetectPropertyFromVersion.VERSION_7_0_0)
+    public static final DetectProperty<IntegerProperty> DETECT_EXCLUDED_DIRECTORIES_SEARCH_DEPTH =
+        new DetectProperty<>(new IntegerProperty("detect.excluded.directories.search.depth", 4))
+            .setInfo("Detect Excluded Directories Search Depth", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp("Enables you to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN);
 
@@ -1223,20 +1223,20 @@ public class DetectProperties {
     public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_YARN_EXCLUDED_WORKSPACES =
         new DetectProperty<>(new CaseSensitiveStringListProperty("detect.yarn.excluded.workspaces"))
             .setInfo("Yarn Exclude Workspaces", DetectPropertyFromVersion.VERSION_7_0_0)
-            .setHelp("A comma-separated list of Yarn workspaces to exclude.",
-                "As Detect examines the Yarn project for dependencies, Detect will skip any Yarn workspaces specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
+            .setHelp("A comma-separated list of Yarn workspaces (specified by the workspace directory's relative path) to exclude.",
+                "By default, Detect includes all workspaces, but will skip any Yarn workspaces specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.YARN, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
-            .setExample("workspace-a,workspace-b");
+            .setExample("workspaces/workspace-a,workspaces/*-test");
 
     public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_YARN_INCLUDED_WORKSPACES =
         new DetectProperty<>(new CaseSensitiveStringListProperty("detect.yarn.included.workspaces"))
             .setInfo("Yarn Include Workspaces", DetectPropertyFromVersion.VERSION_7_0_0)
-            .setHelp("A comma-separated list of Yarn workspaces to include.",
-                "As Detect examines the Yarn project for dependencies, if this property is set, Detect will include only those Yarn workspaces specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
+            .setHelp("A comma-separated list of Yarn workspaces (specified by the workspace directory's relative path) to include.",
+                "By default, Detect includes all workspaces. If workspaces are excluded or included, Detect will include any workspace included by this property that is not excluded. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.YARN, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
-            .setExample("workspace-a,workspace-b");
+            .setExample("workspaces/workspace-a,workspaces/workspace-b");
 
     public static final DetectProperty<EnumProperty<LogLevel>> LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION =
         new DetectProperty<>(new EnumProperty<>("logging.level.com.synopsys.integration", LogLevel.INFO, LogLevel.class))
@@ -1328,7 +1328,7 @@ public class DetectProperties {
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
-            .setDeprecated("This property is deprecated.  Please use --detect.exclude.default.directories to exclude default directory names from detector search.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+            .setDeprecated("This property is deprecated.  Please use --detect.excluded.directories.defaults.disabled to exclude default directory names from detector search.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_RESOLVE_TILDE_IN_PATHS =
@@ -1402,7 +1402,7 @@ public class DetectProperties {
             .setInfo("Exclusion Patterns Search Depth", DetectPropertyFromVersion.VERSION_5_0_0)
             .setHelp("Enables you to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN)
-            .setDeprecated("This property is deprecated.  Please use --detect.excluded.directory.search.depth to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.", DetectMajorVersion.SEVEN,
+            .setDeprecated("This property is deprecated.  Please use --detect.excluded.directories.search.depth to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.", DetectMajorVersion.SEVEN,
                 DetectMajorVersion.EIGHT);
 
     @Deprecated
