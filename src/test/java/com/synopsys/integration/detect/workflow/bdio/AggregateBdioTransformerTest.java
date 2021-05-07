@@ -50,7 +50,7 @@ class AggregateBdioTransformerTest {
     }
 
     @Test
-    void test() throws DetectUserFriendlyException {
+    void testTransitiveMode() throws DetectUserFriendlyException {
 
         DependencyGraph aggregatedGraph = aggregateBdioTransformer.aggregateCodeLocations(sourceDir, inputCodelocations, AggregateMode.TRANSITIVE);
 
@@ -63,6 +63,16 @@ class AggregateBdioTransformerTest {
         Set<Dependency> subProjectOneDependencies = aggregatedGraph.getChildrenForParent(subProjectOne);
         assertTrue(subProjectOneDependencies.contains(genComponentDependency("junit", "junit", "4.12")));
         assertTrue(subProjectOneDependencies.contains(genComponentDependency("joda-time", "joda-time", "2.2")));
+    }
+
+    @Test
+    void testDirectMode() throws DetectUserFriendlyException {
+
+        DependencyGraph aggregatedGraph = aggregateBdioTransformer.aggregateCodeLocations(sourceDir, inputCodelocations, AggregateMode.DIRECT);
+
+        assertEquals(2, aggregatedGraph.getRootDependencies().size());
+        assertTrue(aggregatedGraph.getRootDependencies().contains(genComponentDependency("junit", "junit", "4.12")));
+        assertTrue(aggregatedGraph.getRootDependencies().contains(genComponentDependency("joda-time", "joda-time", "2.2")));
     }
 
     @NotNull
