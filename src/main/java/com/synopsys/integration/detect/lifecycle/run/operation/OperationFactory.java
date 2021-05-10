@@ -381,4 +381,20 @@ public class OperationFactory { //TODO: OperationRunner
     public void publishSignatureScanReport(final List<SignatureScannerReport> report) {
         new PublishSignatureScanReports(exitCodePublisher, statusEventPublisher).publishReports(report);
     }
+
+    public Optional<File> calculateNoticesDirectory() { //TODO Should be a decision in boot
+        if (detectConfigurationFactory.createBlackDuckPostOptions().shouldGenerateNoticesReport()) {
+            return Optional.of(detectConfigurationFactory.createBlackDuckPostOptions().getNoticesReportPath().toFile());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<File> calculateRiskReportFileLocation() { //TODO Should be a decision in boot
+        if (detectConfigurationFactory.createBlackDuckPostOptions().shouldGenerateRiskReport()) {
+            return Optional.of(detectConfigurationFactory.createBlackDuckPostOptions().getRiskReportPdfPath().toFile());
+        } else {
+            return Optional.empty();
+        }
+    }
 }

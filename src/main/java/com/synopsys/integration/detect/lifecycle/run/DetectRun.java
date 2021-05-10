@@ -66,10 +66,10 @@ public class DetectRun {
                     rapidModeSteps.runAll(productRunData.getBlackDuckRunData(), nameVersion, bdio);
                 } else if (productRunData.getBlackDuckRunData().isOnline()) {
                     IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationFactory);
-                    intelligentModeSteps.runOnline(productRunData.getBlackDuckRunData(), bdio, nameVersion, null, productRunData.getDetectToolFilter(), universalToolsResult.getDockerTargetData()); //todo get post options
+                    intelligentModeSteps.runOnline(productRunData.getBlackDuckRunData(), bdio, nameVersion, productRunData.getDetectToolFilter(), universalToolsResult.getDockerTargetData()); //todo get post options
                 } else {
                     IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationFactory);
-                    intelligentModeSteps.runOffline(bdio, nameVersion, productRunData.getDetectToolFilter(), universalToolsResult.getDockerTargetData());
+                    intelligentModeSteps.runOffline(nameVersion, productRunData.getDetectToolFilter(), universalToolsResult.getDockerTargetData());
                 }
             } else {
                 logger.info("Black Duck tools will not be run.");

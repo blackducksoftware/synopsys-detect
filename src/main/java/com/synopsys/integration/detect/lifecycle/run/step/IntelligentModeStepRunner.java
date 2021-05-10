@@ -30,7 +30,6 @@ import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysi
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerToolResult;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
-import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationResults;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationWaitData;
@@ -50,14 +49,14 @@ public class IntelligentModeStepRunner {
         this.operationFactory = operationFactory;
     }
 
-    public void runOffline(BdioResult bdioResult, NameVersion projectNameVersion, DetectToolFilter detectToolFilter, DockerTargetData dockerTargetData) throws DetectUserFriendlyException, IntegrationException, IOException {
+    public void runOffline(NameVersion projectNameVersion, DetectToolFilter detectToolFilter, DockerTargetData dockerTargetData) throws DetectUserFriendlyException, IntegrationException, IOException {
         runSignatureScannerOffline(detectToolFilter, projectNameVersion, dockerTargetData);
         runImpactAnalysisOffline(detectToolFilter, projectNameVersion);
     }
 
     //TODO: Change black duck post options to a decision and stick it in Run Data somewhere.
     //TODO: Change detect tool filter to a decision and stick it in Run Data somewhere
-    public void runOnline(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, NameVersion projectNameVersion, BlackDuckPostOptions blackDuckPostOptions, DetectToolFilter detectToolFilter, DockerTargetData dockerTargetData)
+    public void runOnline(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, NameVersion projectNameVersion, DetectToolFilter detectToolFilter, DockerTargetData dockerTargetData)
         throws DetectUserFriendlyException, IntegrationException, IOException, InterruptedException {
 
         ProjectVersionWrapper projectVersion = getOrCreateProjectOnBlackDuck(blackDuckRunData, projectNameVersion);
@@ -79,8 +78,8 @@ public class IntelligentModeStepRunner {
             blackDuckRunData);//TODO: Get real timeout. = Long timeoutInSeconds = detectConfigurationFactory.findTimeoutInSeconds(); detectTimeoutInSeconds * 1000
 
         checkPolicy(projectVersion.getProjectVersionView(), blackDuckRunData);
-        riskReport(blackDuckRunData, blackDuckPostOptions, projectVersion);
-        noticesReport(blackDuckRunData, blackDuckPostOptions, projectVersion);
+        riskReport(blackDuckRunData, projectVersion);
+        noticesReport(blackDuckRunData, projectVersion);
         publishPostResults(bdioResult, projectVersion, detectToolFilter);
     }
 
@@ -221,13 +220,14 @@ public class IntelligentModeStepRunner {
         return operationFactory.getOrCreateProject(blackDuckRunData, projectNameVersion); //TODO: This is not an operation.
     }
 
-    public void riskReport(BlackDuckRunData blackDuckRunData, BlackDuckPostOptions blackDuckPostOptions, ProjectVersionWrapper projectVersion) throws IOException, DetectUserFriendlyException, IntegrationException {
-        if (blackDuckPostOptions.shouldGenerateRiskReport()) { //TODO: Should be a decision somewhere.
+    public void riskReport(BlackDuckRunData blackDuckRunData, ProjectVersionWrapper projectVersion) throws IOException, DetectUserFriendlyException, IntegrationException {
+        Optional<File> riskReportFile = operationFactory.calculateRiskReportFileLocation();
+        if (riskReportFile.isPresent()) {
             logger.info("Creating risk report pdf");
-            File reportDirectory = blackDuckPostOptions.getRiskReportPdfPath().toFile();
+            File reportDirectory = riskReportFile.get();
 
             if (!reportDirectory.exists() && !reportDirectory.mkdirs()) {
-                logger.warn(String.format("Failed to create risk report pdf directory: %s", blackDuckPostOptions.getRiskReportPdfPath().toString()));
+                logger.warn(String.format("Failed to create risk report pdf directory: %s", reportDirectory));
             }
 
             File createdPdf = operationFactory.createRiskReportFile(blackDuckRunData, projectVersion);
@@ -237,13 +237,14 @@ public class IntelligentModeStepRunner {
         }
     }
 
-    public void noticesReport(BlackDuckRunData blackDuckRunData, BlackDuckPostOptions blackDuckPostOptions, ProjectVersionWrapper projectVersion) throws IOException, IntegrationException, InterruptedException {
-        if (blackDuckPostOptions.shouldGenerateNoticesReport()) { //TODO: Should be a decision somewhere.
+    public void noticesReport(BlackDuckRunData blackDuckRunData, ProjectVersionWrapper projectVersion) throws IOException, IntegrationException, InterruptedException {
+        Optional<File> noticesReportDirectory = operationFactory.calculateNoticesDirectory();
+        if (noticesReportDirectory.isPresent()) {
             logger.info("Creating notices report");
-            File noticesDirectory = blackDuckPostOptions.getNoticesReportPath().toFile();
+            File noticesDirectory = noticesReportDirectory.get();
 
             if (!noticesDirectory.exists() && !noticesDirectory.mkdirs()) {
-                logger.warn(String.format("Failed to create notices directory at %s", blackDuckPostOptions.getNoticesReportPath().toString()));
+                logger.warn(String.format("Failed to create notices directory at %s", noticesDirectory));
             }
 
             File noticesFile = operationFactory.createNoticesReportFile(blackDuckRunData, projectVersion);
