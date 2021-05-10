@@ -11,8 +11,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
-import java.util.function.Predicate;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -23,9 +27,15 @@ import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponent
 import com.synopsys.integration.blackduck.bdio2.util.Bdio2Factory;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationBatchOutput;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatch;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandRunner;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanPathsUtility;
 import com.synopsys.integration.blackduck.scan.RapidScanService;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.dataservice.ReportService;
+import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
@@ -35,17 +45,15 @@ import com.synopsys.integration.detect.configuration.DetectUserFriendlyException
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
 import com.synopsys.integration.detect.lifecycle.run.DetectFontLoaderFactory;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
+import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.AggregateDecisionOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BdioFileGenerationOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BdioUploadOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BdioUploadResult;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BinaryScanOperation;
-import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.FullScanPostProcessingOperation;
-import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.ImpactAnalysisOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.ProjectCreationOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.ProjectDecisionOperation;
-import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.SignatureScanOperation;
 import com.synopsys.integration.detect.lifecycle.run.singleton.BootSingletons;
 import com.synopsys.integration.detect.lifecycle.run.singleton.EventSingletons;
 import com.synopsys.integration.detect.lifecycle.run.singleton.UtilitySingletons;
@@ -55,17 +63,26 @@ import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
 import com.synopsys.integration.detect.tool.detector.DetectorEventPublisher;
 import com.synopsys.integration.detect.tool.detector.extraction.ExtractionEnvironmentProvider;
 import com.synopsys.integration.detect.tool.detector.factory.DetectDetectableFactory;
-import com.synopsys.integration.detect.tool.impactanalysis.BlackDuckImpactAnalysisTool;
-import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisOptions;
-import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisBatchRunner;
+import com.synopsys.integration.detect.tool.impactanalysis.GenerateImpactAnalysisOperation;
+import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisMapCodeLocationsOperation;
+import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisNamingOperation;
+import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisUploadOperation;
+import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisBatchOutput;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisUploadService;
-import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
-import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerTool;
-import com.synopsys.integration.detect.util.filter.DetectToolFilter;
-import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
+import com.synopsys.integration.detect.tool.signaturescanner.SignatureScanPath;
+import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerLogger;
+import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerReport;
+import com.synopsys.integration.detect.tool.signaturescanner.operation.CalculateScanPathsOperation;
+import com.synopsys.integration.detect.tool.signaturescanner.operation.CreateScanBatchOperation;
+import com.synopsys.integration.detect.tool.signaturescanner.operation.CreateScanBatchRunnerWithBlackDuck;
+import com.synopsys.integration.detect.tool.signaturescanner.operation.CreateScanBatchRunnerWithCustomUrl;
+import com.synopsys.integration.detect.tool.signaturescanner.operation.CreateScanBatchRunnerWithLocalInstall;
+import com.synopsys.integration.detect.tool.signaturescanner.operation.CreateSignatureScanReports;
+import com.synopsys.integration.detect.tool.signaturescanner.operation.PublishSignatureScanReports;
+import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanOperation;
+import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanOuputResult;
 import com.synopsys.integration.detect.workflow.bdio.BdioManager;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
-import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
 import com.synopsys.integration.detect.workflow.blackduck.DetectCustomFieldService;
 import com.synopsys.integration.detect.workflow.blackduck.DetectFontLoader;
 import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOptions;
@@ -87,13 +104,16 @@ import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
 import com.synopsys.integration.detect.workflow.project.ProjectEventPublisher;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionDecider;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
+import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.detect.workflow.result.ReportDetectResult;
 import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.log.Slf4jIntLogger;
+import com.synopsys.integration.util.IntEnvironmentVariables;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
-import com.synopsys.integration.util.NoThreadExecutorService;
+import com.synopsys.integration.util.OperatingSystemType;
 
 public class OperationFactory { //TODO: OperationRunner
     private final DetectDetectableFactory detectDetectableFactory;
@@ -195,6 +215,9 @@ public class OperationFactory { //TODO: OperationRunner
     }
     //End Rapid
 
+    //Post actions
+    //End post actions
+
     public final AggregateDecisionOperation createAggregateOptionsOperation() {
         return new AggregateDecisionOperation(detectConfigurationFactory.createAggregateOptions(), operationSystem);
     }
@@ -228,32 +251,26 @@ public class OperationFactory { //TODO: OperationRunner
         codeLocationEventPublisher.publishCodeLocationsCompleted(codeLocationNames);
     }
 
-    public final FullScanPostProcessingOperation createFullScanPostProcessingOperation(DetectToolFilter detectToolFilter) throws DetectUserFriendlyException {
-        BlackDuckPostOptions blackDuckPostOptions = detectConfigurationFactory.createBlackDuckPostOptions();
-        Long timeoutInSeconds = detectConfigurationFactory.findTimeoutInSeconds();
-
-        return new FullScanPostProcessingOperation(detectToolFilter, blackDuckPostOptions, statusEventPublisher, exitCodePublisher, operationSystem, timeoutInSeconds, detectFontLoaderFactory.detectFontLoader());
+    public final String generateImpactAnalysisCodeLocationName(NameVersion projectNameVersion) throws IOException {
+        ImpactAnalysisNamingOperation impactAnalysisNamingOperation = new ImpactAnalysisNamingOperation(codeLocationNameManager);
+        return impactAnalysisNamingOperation.createCodeLocationName(directoryManager.getSourceDirectory(), projectNameVersion, detectConfigurationFactory.createImpactAnalysisOptions());
     }
 
-    public final ImpactAnalysisOperation createImpactAnalysisOperation() {
-        BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
-        ImpactAnalysisOptions impactAnalysisOptions = detectConfigurationFactory.createImpactAnalysisOptions();
-        BlackDuckImpactAnalysisTool blackDuckImpactAnalysisTool;
-        if (productRunData.shouldUseBlackDuckProduct() && blackDuckRunData.isOnline()) {
-            BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
-            ImpactAnalysisBatchRunner impactAnalysisBatchRunner = new ImpactAnalysisBatchRunner(blackDuckServicesFactory.getLogger(), blackDuckServicesFactory.getBlackDuckApiClient(), new NoThreadExecutorService(),
-                blackDuckServicesFactory.getGson());
-            ImpactAnalysisUploadService impactAnalysisUploadService = new ImpactAnalysisUploadService(impactAnalysisBatchRunner, blackDuckServicesFactory.createCodeLocationCreationService());
-            blackDuckImpactAnalysisTool = BlackDuckImpactAnalysisTool
-                                              .ONLINE(directoryManager, codeLocationNameManager, impactAnalysisOptions, blackDuckServicesFactory.getBlackDuckApiClient(), impactAnalysisUploadService,
-                                                  blackDuckServicesFactory.createCodeLocationService(), statusEventPublisher, exitCodePublisher, operationSystem);
-        } else {
-            blackDuckImpactAnalysisTool = BlackDuckImpactAnalysisTool
-                                              .OFFLINE(directoryManager, codeLocationNameManager, impactAnalysisOptions, statusEventPublisher,
-                                                  exitCodePublisher,
-                                                  operationSystem);
-        }
-        return new ImpactAnalysisOperation(blackDuckImpactAnalysisTool);
+    public final Path generateImpactAnalysisFile(String codeLocationName) throws IOException {
+        GenerateImpactAnalysisOperation generateImpactAnalysisOperation = new GenerateImpactAnalysisOperation();
+        return generateImpactAnalysisOperation.generateImpactAnalysis(directoryManager.getSourceDirectory(), codeLocationName, directoryManager.getImpactAnalysisOutputDirectory().toPath());
+    }
+
+    public final CodeLocationCreationData<ImpactAnalysisBatchOutput> uploadImpactAnalysisFile(Path impactAnalysisFile, NameVersion projectNameVersion, String codeLocationName, BlackDuckServicesFactory blackDuckServicesFactory)
+        throws IntegrationException {
+        ImpactAnalysisUploadOperation impactAnalysisUploadOperation = new ImpactAnalysisUploadOperation(ImpactAnalysisUploadService.create(blackDuckServicesFactory));
+        return impactAnalysisUploadOperation.uploadImpactAnalysis(impactAnalysisFile, projectNameVersion, codeLocationName);
+    }
+
+    public final void mapImpactAnalysisCodeLocations(Path impactAnalysisFile, CodeLocationCreationData<ImpactAnalysisBatchOutput> impactCodeLocationData, ProjectVersionWrapper projectVersionWrapper,
+        BlackDuckServicesFactory blackDuckServicesFactory) throws IntegrationException {
+        ImpactAnalysisMapCodeLocationsOperation mapCodeLocationsOperation = new ImpactAnalysisMapCodeLocationsOperation(blackDuckServicesFactory.getBlackDuckApiClient());
+        mapCodeLocationsOperation.mapCodeLocations(impactAnalysisFile, impactCodeLocationData, projectVersionWrapper);
     }
 
     public final ProjectVersionWrapper getOrCreateProject(BlackDuckRunData blackDuckRunData, NameVersion projeNameVersion) throws DetectUserFriendlyException, IntegrationException {// TODO: This is too big to be an operation.
@@ -270,23 +287,9 @@ public class OperationFactory { //TODO: OperationRunner
         return new ProjectDecisionOperation(projectNameVersionDecider, operationSystem, detectConfigurationFactory.createPreferredProjectTools());
     }
 
-    public final SignatureScanOperation createSignatureScanOperation() throws DetectUserFriendlyException {
-        BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
-        BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions();
-        Path sourcePath = directoryManager.getSourceDirectory().toPath();
-        DetectExcludedDirectoryFilter fileFilter = detectConfigurationFactory.createDetectDirectoryFileFilter(sourcePath);
-        Predicate<File> collectExcludedDirectoriesPredicate = file -> fileFilter.isExcluded(file);
-        BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, collectExcludedDirectoriesPredicate, connectionFactory, directoryManager,
-            codeLocationNameManager, detectInfo, fileFinder, operationSystem, exitCodePublisher, statusEventPublisher);
-
-        return new SignatureScanOperation(blackDuckRunData, blackDuckSignatureScannerTool, statusEventPublisher, exitCodePublisher);
-    }
-
     public void checkPolicy(BlackDuckRunData blackDuckRunData, ProjectVersionView projectVersionView) throws IntegrationException {
-
         PolicyChecker policyChecker = new PolicyChecker(exitCodePublisher, blackDuckRunData.getBlackDuckServicesFactory().getBlackDuckApiClient(), blackDuckRunData.getBlackDuckServicesFactory().createProjectBomService());
         policyChecker.checkPolicy(detectConfigurationFactory.createBlackDuckPostOptions().getSeveritiesToFailPolicyCheck(), projectVersionView);
-
     }
 
     public void publishReport(final ReportDetectResult report) {
@@ -308,5 +311,74 @@ public class OperationFactory { //TODO: OperationRunner
 
     public void publishProjectNameVersionChosen(final NameVersion nameVersion) {
         projectEventPublisher.publishProjectNameVersionChosen(nameVersion);
+    }
+
+    public void publishResult(final DetectResult detectResult) {
+        statusEventPublisher.publishDetectResult(detectResult);
+    }
+
+    public List<SignatureScanPath> createScanPaths(NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws DetectUserFriendlyException, IOException {
+        return new CalculateScanPathsOperation().determinePathsAndExclusions(projectNameVersion, detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getMaxDepth(), dockerTargetData);
+    }
+
+    public ScanBatch createScanBatchOnline(final List<SignatureScanPath> scanPaths, File installDirectory, NameVersion projectNameVersion, DockerTargetData dockerTargetData, BlackDuckRunData blackDuckRunData)
+        throws DetectUserFriendlyException {
+        return new CreateScanBatchOperation().createScanBatchWithBlackDuck(projectNameVersion, installDirectory, scanPaths, blackDuckRunData.getBlackDuckServerConfig(), dockerTargetData);
+    }
+
+    public ScanBatch createScanBatchOffline(final List<SignatureScanPath> scanPaths, File installDirectory, NameVersion projectNameVersion, DockerTargetData dockerTargetData)
+        throws DetectUserFriendlyException {
+        return new CreateScanBatchOperation().createScanBatchWithoutBlackDuck(projectNameVersion, installDirectory, scanPaths, dockerTargetData);
+    }
+
+    public File calculateDetectControlledInstallDirectory() {
+        return directoryManager.getPermanentDirectory();
+    }
+
+    public Optional<File> calculateOfflineLocalScannerInstallPath() throws DetectUserFriendlyException {
+        return detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getOfflineLocalScannerInstallPath().map(Path::toFile);
+    }
+
+    public Optional<String> calculateUserProvidedScannerUrl() throws DetectUserFriendlyException {
+        return detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getUserProvidedScannerInstallUrl();
+    }
+
+    public ScanBatchRunner createScanBatchRunnerWithBlackDuck(BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
+        ExecutorService executorService = Executors.newFixedThreadPool(detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getParallelProcessors());
+        IntEnvironmentVariables intEnvironmentVariables = IntEnvironmentVariables.includeSystemEnv();
+        return new CreateScanBatchRunnerWithBlackDuck(intEnvironmentVariables, OperatingSystemType.determineFromSystem(), executorService).createScanBatchRunner(blackDuckRunData.getBlackDuckServerConfig());
+    }
+
+    public ScanBatchRunner createScanBatchRunnerFromLocalInstall(File installDirectory) throws DetectUserFriendlyException {
+        ExecutorService executorService = Executors.newFixedThreadPool(detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getParallelProcessors());
+        IntEnvironmentVariables intEnvironmentVariables = IntEnvironmentVariables.includeSystemEnv();
+        ScanPathsUtility scanPathsUtility = new ScanPathsUtility(new Slf4jIntLogger(LoggerFactory.getLogger(ScanPathsUtility.class)), intEnvironmentVariables, OperatingSystemType.determineFromSystem());
+        ScanCommandRunner scanCommandRunner = new ScanCommandRunner(new Slf4jIntLogger(LoggerFactory.getLogger(ScanCommandRunner.class)), intEnvironmentVariables, scanPathsUtility, executorService);
+        return new CreateScanBatchRunnerWithLocalInstall(intEnvironmentVariables, scanPathsUtility, scanCommandRunner).createScanBatchRunner(installDirectory);
+    }
+
+    public ScanBatchRunner createScanBatchRunnerWithCustomUrl(String url) throws DetectUserFriendlyException {
+        ExecutorService executorService = Executors.newFixedThreadPool(detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getParallelProcessors());
+        IntEnvironmentVariables intEnvironmentVariables = IntEnvironmentVariables.includeSystemEnv();
+        ScanPathsUtility scanPathsUtility = new ScanPathsUtility(new Slf4jIntLogger(LoggerFactory.getLogger(ScanPathsUtility.class)), intEnvironmentVariables, OperatingSystemType.determineFromSystem());
+        ScanCommandRunner scanCommandRunner = new ScanCommandRunner(new Slf4jIntLogger(LoggerFactory.getLogger(ScanCommandRunner.class)), intEnvironmentVariables, scanPathsUtility, executorService);
+        return new CreateScanBatchRunnerWithCustomUrl(intEnvironmentVariables, new SignatureScannerLogger(LoggerFactory.getLogger(ScanCommandRunner.class)), OperatingSystemType.determineFromSystem(), scanPathsUtility, scanCommandRunner)
+                   .createScanBatchRunner(url, connectionFactory, detectInfo);
+    }
+
+    public NotificationTaskRange createCodeLocationRange(BlackDuckRunData blackDuckRunData) throws IntegrationException {
+        return blackDuckRunData.getBlackDuckServicesFactory().createCodeLocationCreationService().calculateCodeLocationRange();
+    }
+
+    public SignatureScanOuputResult signatureScan(ScanBatch scanBatch, ScanBatchRunner scanBatchRunner) throws IntegrationException {
+        return new SignatureScanOperation().performScanActions(scanBatch, scanBatchRunner);
+    }
+
+    public List<SignatureScannerReport> createSignatureScanReport(List<SignatureScanPath> signatureScanPaths, List<ScanCommandOutput> scanCommandOutputList) {
+        return new CreateSignatureScanReports().reportResults(signatureScanPaths, scanCommandOutputList);
+    }
+
+    public void publishSignatureScanReport(final List<SignatureScannerReport> report) {
+        new PublishSignatureScanReports(exitCodePublisher, statusEventPublisher).publishReports(report);
     }
 }

@@ -172,7 +172,6 @@ public class BlackDuckImpactAnalysisTool {
         ImpactAnalysisBatchOutput impactAnalysisBatchOutput = codeLocationCreationData.getOutput();
         impactAnalysisBatchOutput.throwExceptionForError(logger);
         return codeLocationCreationData;
-
     }
 
     // TODO: Create a code location mapping service generic enough for all tools.

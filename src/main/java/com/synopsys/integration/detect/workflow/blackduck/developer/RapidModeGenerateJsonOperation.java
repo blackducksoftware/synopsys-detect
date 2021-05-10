@@ -25,7 +25,7 @@ import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 
-public class RapidModeGenerateJsonOperation {
+public class RapidModeGenerateJsonOperation { //TODO: extends Operation<File>
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Gson gson;
     private final DirectoryManager directoryManager;

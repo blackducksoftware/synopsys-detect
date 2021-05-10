@@ -12,13 +12,15 @@ import java.util.Optional;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.Result;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchOutput;
+import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 
 public class SignatureScannerToolResult {
     private final Optional<CodeLocationCreationData<ScanBatchOutput>> creationData;
     private final ScanBatchOutput scanBatchOutput;
     private final Result result;
 
-    public static SignatureScannerToolResult createOnlineResult(CodeLocationCreationData<ScanBatchOutput> creationData) {
+    public static SignatureScannerToolResult createOnlineResult(NotificationTaskRange notificationTaskRange, ScanBatchOutput scanBatchOutput) {
+        CodeLocationCreationData<ScanBatchOutput> creationData = new CodeLocationCreationData<>(notificationTaskRange, scanBatchOutput);
         return new SignatureScannerToolResult(creationData, creationData.getOutput(), Result.SUCCESS);
     }
 

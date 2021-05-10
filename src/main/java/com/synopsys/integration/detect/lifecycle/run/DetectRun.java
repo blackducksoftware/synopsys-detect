@@ -24,7 +24,6 @@ import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeManager;
 import com.synopsys.integration.detect.tool.UniversalToolsResult;
 import com.synopsys.integration.detect.tool.detector.factory.DetectorFactory;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
-import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
 import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.util.NameVersion;
 
@@ -48,12 +47,12 @@ public class DetectRun {
     }
 
     public void run(BootSingletons bootSingletons) {
-        OperationSystem operationSystem = null;
+        OperationSystem operationSystem = null;//where is this supposed to come from?
         try {
             ProductRunData productRunData = bootSingletons.getProductRunData(); //TODO: Remove run data from boot singletons
             OperationFactory operationFactory = createOperationFactory(bootSingletons);
 
-            UniversalStepRunner stepRunner = new UniversalStepRunner(operationFactory, productRunData.getDetectToolFilter()); //Product independant tools
+            UniversalStepRunner stepRunner = new UniversalStepRunner(operationFactory, productRunData.getDetectToolFilter()); //Product independent tools
             UniversalToolsResult universalToolsResult = stepRunner.runUniversalTools();
 
             // combine: processProjectInformation() -> ProjectResult (nameversion, bdio)
@@ -65,10 +64,12 @@ public class DetectRun {
                 if (productRunData.getBlackDuckRunData().isRapid()) {
                     RapidModeStepRunner rapidModeSteps = new RapidModeStepRunner();
                     rapidModeSteps.runAll(productRunData.getBlackDuckRunData(), nameVersion, bdio);
-                } else {
-                    BlackDuckPostOptions postOptions = bootSingletons.getDetectConfigurationFactory().createBlackDuckPostOptions(); //TODO: Move to decisions in run data.
+                } else if (productRunData.getBlackDuckRunData().isOnline()) {
                     IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationFactory);
-                    intelligentModeSteps.runAll(productRunData.getBlackDuckRunData(), bdio, nameVersion, postOptions, productRunData.getDetectToolFilter(), universalToolsResult.getDockerTargetData());
+                    intelligentModeSteps.runOnline(productRunData.getBlackDuckRunData(), bdio, nameVersion, null, productRunData.getDetectToolFilter(), universalToolsResult.getDockerTargetData()); //todo get post options
+                } else {
+                    IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationFactory);
+                    intelligentModeSteps.runOffline(bdio, nameVersion, productRunData.getDetectToolFilter(), universalToolsResult.getDockerTargetData());
                 }
             } else {
                 logger.info("Black Duck tools will not be run.");
@@ -88,4 +89,32 @@ public class DetectRun {
             }
         }
     }
+
+    //TODO: Handle all these?
+    /*
+            } catch (DetectUserFriendlyException e) {
+            operationSystem.completeWithError(currentOperationKey, e.getMessage());
+            throw e;
+        } catch (IllegalArgumentException e) {
+            String errorReason = String.format("Your Black Duck configuration is not valid: %s", e.getMessage());
+            operationSystem.completeWithError(currentOperationKey, errorReason);
+            throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
+        } catch (IntegrationRestException e) {
+            operationSystem.completeWithError(currentOperationKey, e.getMessage());
+            throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
+        } catch (BlackDuckTimeoutExceededException e) {
+            operationSystem.completeWithError(currentOperationKey, e.getMessage());
+            throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_TIMEOUT);
+        } catch (InterruptedException e) {
+            String errorReason = String.format("There was a problem: %s", e.getMessage());
+            operationSystem.completeWithError(currentOperationKey, errorReason);
+            // Restore interrupted state...
+            Thread.currentThread().interrupt();
+            throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_GENERAL_ERROR);
+        } catch (Exception e) {
+            String errorReason = String.format("There was a problem: %s", e.getMessage());
+            operationSystem.completeWithError(currentOperationKey, errorReason);
+            throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_GENERAL_ERROR);
+        }
+     */
 }
