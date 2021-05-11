@@ -27,6 +27,8 @@ import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponent
 import com.synopsys.integration.blackduck.bdio2.util.Bdio2Factory;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationBatchOutput;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
+import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
+import com.synopsys.integration.blackduck.codelocation.CodeLocationWaitResult;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatch;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
@@ -43,6 +45,7 @@ import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
+import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.run.DetectFontLoaderFactory;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
@@ -57,6 +60,7 @@ import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.Project
 import com.synopsys.integration.detect.lifecycle.run.singleton.BootSingletons;
 import com.synopsys.integration.detect.lifecycle.run.singleton.EventSingletons;
 import com.synopsys.integration.detect.lifecycle.run.singleton.UtilitySingletons;
+import com.synopsys.integration.detect.lifecycle.run.step.OperationHelper;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
 import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
@@ -143,6 +147,10 @@ public class OperationFactory { //TODO: OperationRunner
     private final RapidScanResultAggregator rapidScanResultAggregator;
     private final ProjectEventPublisher projectEventPublisher;
 
+    private final OperationHelper helper;
+
+    //Internal: Operation -> Action
+    //Leave OperationSystem but it becomes 'user facing groups of actions or steps'
     public OperationFactory(DetectDetectableFactory detectDetectableFactory, DetectFontLoaderFactory detectFontLoaderFactory, BootSingletons bootSingletons, UtilitySingletons utilitySingletons, EventSingletons eventSingletons) {
         this.detectDetectableFactory = detectDetectableFactory;
         this.detectFontLoaderFactory = detectFontLoaderFactory;
@@ -171,6 +179,7 @@ public class OperationFactory { //TODO: OperationRunner
         this.codeLocationConverter = new CodeLocationConverter(utilitySingletons.getExternalIdFactory());
         this.extractionEnvironmentProvider = new ExtractionEnvironmentProvider(directoryManager);
         this.rapidScanResultAggregator = new RapidScanResultAggregator();
+        this.helper = new OperationHelper(operationSystem);
     }
 
     public final DockerOperation createDockerOperation() {
@@ -318,7 +327,8 @@ public class OperationFactory { //TODO: OperationRunner
     }
 
     public List<SignatureScanPath> createScanPaths(NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws DetectUserFriendlyException, IOException {
-        return new CalculateScanPathsOperation().determinePathsAndExclusions(projectNameVersion, detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getMaxDepth(), dockerTargetData);
+        return helper.safelyRunAs("Signature Scan Calculate Paths",
+            () -> new CalculateScanPathsOperation().determinePathsAndExclusions(projectNameVersion, detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getMaxDepth(), dockerTargetData));
     }
 
     public ScanBatch createScanBatchOnline(final List<SignatureScanPath> scanPaths, File installDirectory, NameVersion projectNameVersion, DockerTargetData dockerTargetData, BlackDuckRunData blackDuckRunData)
@@ -370,8 +380,8 @@ public class OperationFactory { //TODO: OperationRunner
         return blackDuckRunData.getBlackDuckServicesFactory().createCodeLocationCreationService().calculateCodeLocationRange();
     }
 
-    public SignatureScanOuputResult signatureScan(ScanBatch scanBatch, ScanBatchRunner scanBatchRunner) throws IntegrationException {
-        return new SignatureScanOperation().performScanActions(scanBatch, scanBatchRunner);
+    public SignatureScanOuputResult signatureScan(ScanBatch scanBatch, ScanBatchRunner scanBatchRunner) throws DetectUserFriendlyException {
+        return helper.safelyRunAs("Signature Scan CLI", () -> new SignatureScanOperation().performScanActions(scanBatch, scanBatchRunner));
     }
 
     public List<SignatureScannerReport> createSignatureScanReport(List<SignatureScanPath> signatureScanPaths, List<ScanCommandOutput> scanCommandOutputList) {
@@ -397,4 +407,27 @@ public class OperationFactory { //TODO: OperationRunner
             return Optional.empty();
         }
     }
+
+    public void waitForCodeLocations(BlackDuckRunData blackDuckRunData, CodeLocationWaitData codeLocationWaitData, NameVersion projectNameVersion) throws InterruptedException, IntegrationException, DetectUserFriendlyException {
+        helper.safelyRunAs("Wait for Code Locations", () -> {
+            //TODO fix this when NotificationTaskRange doesn't include task start time
+            //ekerwin - The start time of the task is the earliest time a code location was created.
+            // In order to wait the full timeout, we have to not use that start time and instead use now().
+            //TODO: Handle the possible null pointer here.
+            NotificationTaskRange notificationTaskRange = new NotificationTaskRange(System.currentTimeMillis(), codeLocationWaitData.getNotificationRange().getStartDate(),
+                codeLocationWaitData.getNotificationRange().getEndDate());
+            CodeLocationCreationService codeLocationCreationService = blackDuckRunData.getBlackDuckServicesFactory().createCodeLocationCreationService(); //TODO: Is this the way? - jp
+            CodeLocationWaitResult result = codeLocationCreationService.waitForCodeLocations(
+                notificationTaskRange,
+                projectNameVersion,
+                codeLocationWaitData.getCodeLocationNames(),
+                codeLocationWaitData.getExpectedNotificationCount(),
+                detectConfigurationFactory.findTimeoutInSeconds()
+            );
+            if (result.getStatus() == CodeLocationWaitResult.Status.PARTIAL) {
+                throw new DetectUserFriendlyException(result.getErrorMessage().orElse("Timed out waiting for code locations to finish on the Black Duck server."), ExitCodeType.FAILURE_TIMEOUT);
+            }
+        });
+    }
+
 }

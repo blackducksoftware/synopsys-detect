@@ -26,7 +26,7 @@ import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class DetectBdioUploadService {
+public class DetectBdioUploadService { //TODO: [Operation] Needs to be migrated - currently performs more than one operation.
     private static final String OPERATION_NAME = "Black Duck BDIO Upload";
     private final Logger logger = LoggerFactory.getLogger(DetectBdioUploadService.class);
     private final OperationSystem operationSystem;

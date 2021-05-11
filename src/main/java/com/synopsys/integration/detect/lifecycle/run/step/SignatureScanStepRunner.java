@@ -34,32 +34,36 @@ public class SignatureScanStepRunner {
     }
 
     public SignatureScannerToolResult runSignatureScannerOnline(BlackDuckRunData blackDuckRunData, NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws DetectUserFriendlyException, IOException, IntegrationException {
-        ScanBatchRunnerResult scanBatchRunnerResult = findOnlineScanBatchRunner(blackDuckRunData);
+        ScanBatchRunnerResult scanBatchRunnerResult = resolveOnlineScanBatchRunner(blackDuckRunData);
 
         List<SignatureScanPath> scanPaths = operationFactory.createScanPaths(projectNameVersion, dockerTargetData);
         ScanBatch scanBatch = operationFactory.createScanBatchOnline(scanPaths, scanBatchRunnerResult.getInstallDirectory(), projectNameVersion, dockerTargetData, blackDuckRunData);
 
         NotificationTaskRange notificationTaskRange = operationFactory.createCodeLocationRange(blackDuckRunData);
-        SignatureScanOuputResult scanOuputResult = operationFactory.signatureScan(scanBatch, scanBatchRunnerResult.getScanBatchRunner());
-
-        List<SignatureScannerReport> reports = operationFactory.createSignatureScanReport(scanPaths, scanOuputResult.getScanCommandOutputs());
-        operationFactory.publishSignatureScanReport(reports);
+        SignatureScanOuputResult scanOuputResult = executeScan(scanBatch, scanBatchRunnerResult, scanPaths);
 
         return SignatureScannerToolResult.createOnlineResult(notificationTaskRange, scanOuputResult.getScanBatchOutput());
     }
 
     public void runSignatureScannerOffline(NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws DetectUserFriendlyException, IOException, IntegrationException {
-        ScanBatchRunnerResult scanBatchRunnerResult = findOfflineScanBatchRunner();
+        ScanBatchRunnerResult scanBatchRunnerResult = resolveOfflineScanBatchRunner();
 
         List<SignatureScanPath> scanPaths = operationFactory.createScanPaths(projectNameVersion, dockerTargetData);
         ScanBatch scanBatch = operationFactory.createScanBatchOffline(scanPaths, scanBatchRunnerResult.getInstallDirectory(), projectNameVersion, dockerTargetData);
+
+        executeScan(scanBatch, scanBatchRunnerResult, scanPaths);
+    }
+
+    private SignatureScanOuputResult executeScan(final ScanBatch scanBatch, final ScanBatchRunnerResult scanBatchRunnerResult, final List<SignatureScanPath> scanPaths) throws DetectUserFriendlyException {
         SignatureScanOuputResult scanOuputResult = operationFactory.signatureScan(scanBatch, scanBatchRunnerResult.getScanBatchRunner());
 
         List<SignatureScannerReport> reports = operationFactory.createSignatureScanReport(scanPaths, scanOuputResult.getScanCommandOutputs());
         operationFactory.publishSignatureScanReport(reports);
+
+        return scanOuputResult;
     }
 
-    private ScanBatchRunnerResult findOfflineScanBatchRunner() throws DetectUserFriendlyException {
+    private ScanBatchRunnerResult resolveOfflineScanBatchRunner() throws DetectUserFriendlyException {
         ScanBatchRunnerUserResult userProvided = findUserProvidedScanBatchRunner();
         File installDirectory = determineScanInstallDirectory(userProvided);
         ScanBatchRunner scanBatchRunner;
@@ -71,7 +75,7 @@ public class SignatureScanStepRunner {
         return new ScanBatchRunnerResult(scanBatchRunner, installDirectory);
     }
 
-    private ScanBatchRunnerResult findOnlineScanBatchRunner(BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
+    private ScanBatchRunnerResult resolveOnlineScanBatchRunner(BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
         ScanBatchRunnerUserResult userProvided = findUserProvidedScanBatchRunner();
         File installDirectory = determineScanInstallDirectory(userProvided);
 

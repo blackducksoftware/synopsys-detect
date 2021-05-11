@@ -7,27 +7,21 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
-import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
-import com.synopsys.integration.blackduck.codelocation.CodeLocationWaitResult;
 import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
-import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BdioUploadResult;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisBatchOutput;
-import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerToolResult;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
@@ -44,14 +38,18 @@ import com.synopsys.integration.util.NameVersion;
 public class IntelligentModeStepRunner {
     private OperationFactory operationFactory;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private StepHelper stepHelper;
 
     public IntelligentModeStepRunner(final OperationFactory operationFactory) {
         this.operationFactory = operationFactory;
     }
 
     public void runOffline(NameVersion projectNameVersion, DetectToolFilter detectToolFilter, DockerTargetData dockerTargetData) throws DetectUserFriendlyException, IntegrationException, IOException {
-        runSignatureScannerOffline(detectToolFilter, projectNameVersion, dockerTargetData);
-        runImpactAnalysisOffline(detectToolFilter, projectNameVersion);
+        stepHelper.runToolIfIncluded(DetectTool.SIGNATURE_SCAN, "Signature Scanner", () -> {
+            SignatureScanStepRunner signatureScanStepRunner = new SignatureScanStepRunner(operationFactory);
+            signatureScanStepRunner.runSignatureScannerOffline(projectNameVersion, dockerTargetData);
+        });
+        stepHelper.runToolIfIncluded(DetectTool.IMPACT_ANALYSIS, "Vulnerability Impact Analysis", () -> generateImpactAnalysis(projectNameVersion));
     }
 
     //TODO: Change black duck post options to a decision and stick it in Run Data somewhere.
@@ -59,28 +57,39 @@ public class IntelligentModeStepRunner {
     public void runOnline(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, NameVersion projectNameVersion, DetectToolFilter detectToolFilter, DockerTargetData dockerTargetData)
         throws DetectUserFriendlyException, IntegrationException, IOException, InterruptedException {
 
-        ProjectVersionWrapper projectVersion = getOrCreateProjectOnBlackDuck(blackDuckRunData, projectNameVersion);
+        ProjectVersionWrapper projectVersion = stepHelper.logicalGroup("Create or Locate Project", () -> getOrCreateProjectOnBlackDuck(blackDuckRunData, projectNameVersion));
 
         logger.debug("Completed project and version actions.");
         logger.debug("Processing Detect Code Locations.");
 
         CodeLocationAccumulator codeLocationAccumulator = new CodeLocationAccumulator();
-        uploadBdio(blackDuckRunData, bdioResult, codeLocationAccumulator);
+        stepHelper.logicalGroup("Upload Bdio", () -> uploadBdio(blackDuckRunData, bdioResult, codeLocationAccumulator));
 
         logger.debug("Completed Detect Code Location processing.");
 
-        runSignatureScannerOnline(detectToolFilter, blackDuckRunData, codeLocationAccumulator, projectNameVersion, dockerTargetData);
-        runBinaryScanner(blackDuckRunData, detectToolFilter, projectNameVersion, codeLocationAccumulator, dockerTargetData);
-        runImpactAnalysisOnline(detectToolFilter, projectNameVersion, projectVersion, codeLocationAccumulator, blackDuckRunData.getBlackDuckServicesFactory());
+        stepHelper.runToolIfIncluded(DetectTool.SIGNATURE_SCAN, "Signature Scanner", () -> {
+            SignatureScanStepRunner signatureScanStepRunner = new SignatureScanStepRunner(operationFactory);
+            signatureScanStepRunner.runSignatureScannerOnline(blackDuckRunData, projectNameVersion, dockerTargetData);
+        });
 
-        CodeLocationResults codeLocationResults = calculateCodeLocations(codeLocationAccumulator);
-        waitForCodeLocations(codeLocationResults.getCodeLocationWaitData(), 0, projectNameVersion,
-            blackDuckRunData);//TODO: Get real timeout. = Long timeoutInSeconds = detectConfigurationFactory.findTimeoutInSeconds(); detectTimeoutInSeconds * 1000
+        stepHelper.runToolIfIncluded(DetectTool.BINARY_SCAN, "Binary Scanner", () -> {
+            Optional<CodeLocationCreationData<BinaryScanBatchOutput>> binaryScanResult = operationFactory.createBinaryScanOperation().execute(projectNameVersion, dockerTargetData);
+            binaryScanResult.ifPresent(codeLocationAccumulator::addWaitableCodeLocation);
+        });
 
-        checkPolicy(projectVersion.getProjectVersionView(), blackDuckRunData);
-        riskReport(blackDuckRunData, projectVersion);
-        noticesReport(blackDuckRunData, projectVersion);
-        publishPostResults(bdioResult, projectVersion, detectToolFilter);
+        stepHelper.runToolIfIncluded(DetectTool.IMPACT_ANALYSIS, "Vulnerability Impact Analysis", () -> runImpactAnalysisOnline(projectNameVersion, projectVersion, codeLocationAccumulator, blackDuckRunData.getBlackDuckServicesFactory()));
+
+        stepHelper.logicalGroup("Wait for Code Locations", () -> {
+            CodeLocationResults codeLocationResults = calculateCodeLocations(codeLocationAccumulator);
+            waitForCodeLocations(codeLocationResults.getCodeLocationWaitData(), projectNameVersion, blackDuckRunData);
+        });
+
+        stepHelper.logicalGroup("Black Duck Post Actions", () -> {
+            checkPolicy(projectVersion.getProjectVersionView(), blackDuckRunData);
+            riskReport(blackDuckRunData, projectVersion);
+            noticesReport(blackDuckRunData, projectVersion);
+            publishPostResults(bdioResult, projectVersion, detectToolFilter);
+        });
     }
 
     public void uploadBdio(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, CodeLocationAccumulator codeLocationAccumulator) throws DetectUserFriendlyException, IntegrationException {
@@ -117,102 +126,27 @@ public class IntelligentModeStepRunner {
         operationFactory.checkPolicy(blackDuckRunData, projectVersionView);
     }
 
-    public void waitForCodeLocations(CodeLocationWaitData codeLocationWaitData, long timeoutInSeconds, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
+    public void waitForCodeLocations(CodeLocationWaitData codeLocationWaitData, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
         throws DetectUserFriendlyException, InterruptedException, IntegrationException {
         logger.info("Detect must wait for bom tool calculations to finish.");
         if (codeLocationWaitData.getExpectedNotificationCount() > 0) {
-            //TODO fix this when NotificationTaskRange doesn't include task start time
-            //ekerwin - The start time of the task is the earliest time a code location was created.
-            // In order to wait the full timeout, we have to not use that start time and instead use now().
-            //TODO: Handle the possible null pointer here.
-            NotificationTaskRange notificationTaskRange = new NotificationTaskRange(System.currentTimeMillis(), codeLocationWaitData.getNotificationRange().getStartDate(),
-                codeLocationWaitData.getNotificationRange().getEndDate());
-            CodeLocationCreationService codeLocationCreationService = blackDuckRunData.getBlackDuckServicesFactory().createCodeLocationCreationService(); //TODO: Is this the way? - jp
-            CodeLocationWaitResult result = codeLocationCreationService.waitForCodeLocations(
-                notificationTaskRange,
-                projectNameVersion,
-                codeLocationWaitData.getCodeLocationNames(),
-                codeLocationWaitData.getExpectedNotificationCount(),
-                timeoutInSeconds
-            );
-            if (result.getStatus() == CodeLocationWaitResult.Status.PARTIAL) {
-                throw new DetectUserFriendlyException(result.getErrorMessage().orElse("Timed out waiting for code locations to finish on the Black Duck server."), ExitCodeType.FAILURE_TIMEOUT);
-            }
+            operationFactory.waitForCodeLocations(blackDuckRunData, codeLocationWaitData, projectNameVersion);
         }
     }
 
-    public void runSignatureScannerOnline(DetectToolFilter detectToolFilter, BlackDuckRunData blackDuckRunData, CodeLocationAccumulator codeLocationAccumulator, NameVersion projectNameVersion, @Nullable DockerTargetData dockerTargetData)
-        throws DetectUserFriendlyException, IntegrationException, IOException {
-        logger.info(ReportConstants.RUN_SEPARATOR);
-        if (detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN)) {
-            logger.info("Will include the signature scanner tool.");
-            SignatureScanStepRunner signatureScanStepRunner = new SignatureScanStepRunner(operationFactory);
-            SignatureScannerToolResult toolResult = signatureScanStepRunner.runSignatureScannerOnline(blackDuckRunData, projectNameVersion, dockerTargetData);
-            toolResult.getCreationData().ifPresent(codeLocationAccumulator::addWaitableCodeLocation);
-            logger.info("Signature scanner actions finished.");
-        } else {
-            logger.info("Signature scan tool will not be run.");
-        }
+    public void runImpactAnalysisOnline(NameVersion projectNameVersion, ProjectVersionWrapper projectVersionWrapper, CodeLocationAccumulator codeLocationAccumulator,
+        BlackDuckServicesFactory blackDuckServicesFactory) throws DetectUserFriendlyException, IOException, IntegrationException {
+        String impactAnalysisName = operationFactory.generateImpactAnalysisCodeLocationName(projectNameVersion);
+        Path impactFile = operationFactory.generateImpactAnalysisFile(impactAnalysisName);
+        CodeLocationCreationData<ImpactAnalysisBatchOutput> uploadData = operationFactory.uploadImpactAnalysisFile(impactFile, projectNameVersion, impactAnalysisName, blackDuckServicesFactory);
+        operationFactory.mapImpactAnalysisCodeLocations(impactFile, uploadData, projectVersionWrapper, blackDuckServicesFactory);
+        /* TODO: There is currently no mechanism within Black Duck for checking the completion status of an Impact Analysis code location. Waiting should happen here when such a mechanism exists. See HUB-25142. JM - 08/2020 */
+        codeLocationAccumulator.addNonWaitableCodeLocation(uploadData.getOutput().getSuccessfulCodeLocationNames());
     }
 
-    public void runSignatureScannerOffline(DetectToolFilter detectToolFilter, NameVersion projectNameVersion, @Nullable DockerTargetData dockerTargetData)
-        throws DetectUserFriendlyException, IntegrationException, IOException {
-        logger.info(ReportConstants.RUN_SEPARATOR);
-        if (detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN)) {
-            logger.info("Will include the signature scanner tool.");
-            SignatureScanStepRunner signatureScanStepRunner = new SignatureScanStepRunner(operationFactory);
-            signatureScanStepRunner.runSignatureScannerOffline(projectNameVersion, dockerTargetData);
-            logger.info("Signature scanner actions finished.");
-        } else {
-            logger.info("Signature scan tool will not be run.");
-        }
-    }
-
-    public void runBinaryScanner(BlackDuckRunData blackDuckRunData, DetectToolFilter detectToolFilter, NameVersion projectNameVersion, CodeLocationAccumulator codeLocationAccumulator, @Nullable DockerTargetData dockerTargetData)
-        throws DetectUserFriendlyException, IntegrationException {
-        logger.info(ReportConstants.RUN_SEPARATOR);
-        if (detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN)) {
-            logger.info("Will include the binary scanner tool.");
-            if (blackDuckRunData.isOnline()) {
-                Optional<CodeLocationCreationData<BinaryScanBatchOutput>> binaryScanResult = operationFactory.createBinaryScanOperation().execute(projectNameVersion, dockerTargetData);
-                binaryScanResult.ifPresent(codeLocationAccumulator::addWaitableCodeLocation);
-            }
-            logger.info("Binary scanner actions finished.");
-        } else {
-            logger.info("Binary scan tool will not be run.");
-        }
-    }
-
-    //TODO: Common functionality could be grouped. Balance dependency hell and code duplication.
-    public void runImpactAnalysisOnline(DetectToolFilter detectToolFilter, NameVersion projectNameVersion, ProjectVersionWrapper projectVersionWrapper, CodeLocationAccumulator codeLocationAccumulator,
-        BlackDuckServicesFactory blackDuckServicesFactory)
-        throws DetectUserFriendlyException, IntegrationException, IOException {
-        logger.info(ReportConstants.RUN_SEPARATOR);
-        if (detectToolFilter.shouldInclude(DetectTool.IMPACT_ANALYSIS)) {
-            logger.info("Will include the Vulnerability Impact Analysis tool.");
-            String impactAnalysisName = operationFactory.generateImpactAnalysisCodeLocationName(projectNameVersion);
-            Path impactFile = operationFactory.generateImpactAnalysisFile(impactAnalysisName);
-            CodeLocationCreationData<ImpactAnalysisBatchOutput> uploadData = operationFactory.uploadImpactAnalysisFile(impactFile, projectNameVersion, impactAnalysisName, blackDuckServicesFactory);
-            operationFactory.mapImpactAnalysisCodeLocations(impactFile, uploadData, projectVersionWrapper, blackDuckServicesFactory);
-            /* TODO: There is currently no mechanism within Black Duck for checking the completion status of an Impact Analysis code location. Waiting should happen here when such a mechanism exists. See HUB-25142. JM - 08/2020 */
-            codeLocationAccumulator.addNonWaitableCodeLocation(uploadData.getOutput().getSuccessfulCodeLocationNames());
-            logger.info("Vulnerability Impact Analysis tool actions finished."); //TODO: not publishing anything
-        } else {
-            logger.info("Vulnerability Impact Analysis tool will not be run.");
-        }
-    }
-
-    public void runImpactAnalysisOffline(DetectToolFilter detectToolFilter, NameVersion projectNameVersion)
-        throws IOException {
-        logger.info(ReportConstants.RUN_SEPARATOR);
-        if (detectToolFilter.shouldInclude(DetectTool.IMPACT_ANALYSIS)) {
-            logger.info("Will include the Vulnerability Impact Analysis tool.");
-            String impactAnalysisName = operationFactory.generateImpactAnalysisCodeLocationName(projectNameVersion);
-            operationFactory.generateImpactAnalysisFile(impactAnalysisName);
-            logger.info("Vulnerability Impact Analysis tool actions finished."); //TODO: not publishing anything
-        } else {
-            logger.info("Vulnerability Impact Analysis tool will not be run.");
-        }
+    private Path generateImpactAnalysis(NameVersion projectNameVersion) throws IOException {
+        String impactAnalysisName = operationFactory.generateImpactAnalysisCodeLocationName(projectNameVersion);
+        return operationFactory.generateImpactAnalysisFile(impactAnalysisName);
     }
 
     public ProjectVersionWrapper getOrCreateProjectOnBlackDuck(BlackDuckRunData blackDuckRunData, NameVersion projectNameVersion) throws DetectUserFriendlyException, IntegrationException {
