@@ -752,7 +752,7 @@ public class DetectableFactory {
     }
 
     private PackageJsonFiles packageJsonFiles() {
-        return new PackageJsonFiles(externalIdFactory, packageJsonReader());
+        return new PackageJsonFiles(packageJsonReader());
     }
 
     private PackageJsonReader packageJsonReader() {

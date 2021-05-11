@@ -14,11 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
-import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependencyid.StringDependencyId;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.yarn.YarnTransformer;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.WorkspacePackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDependency;
@@ -27,13 +23,10 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLock
 
 public class YarnWorkspace {
     private static final String WORKSPACE_VERSION_PREFIX = "workspace:";
-    private static final Forge WORKSPACE_FORGE = new Forge("/", "detect-yarn-workspace");
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final ExternalIdFactory externalIdFactory;
     private final WorkspacePackageJson workspacePackageJson;
 
-    public YarnWorkspace(ExternalIdFactory externalIdFactory, WorkspacePackageJson workspacePackageJson) {
-        this.externalIdFactory = externalIdFactory;
+    public YarnWorkspace(WorkspacePackageJson workspacePackageJson) {
         this.workspacePackageJson = workspacePackageJson;
     }
 
@@ -63,11 +56,6 @@ public class YarnWorkspace {
 
     public StringDependencyId generateDependencyId() {
         return new StringDependencyId(getName().orElse(null) + YarnTransformer.STRING_ID_NAME_VERSION_SEPARATOR + WORKSPACE_VERSION_PREFIX + workspacePackageJson.getDirRelativePath());
-    }
-
-    public ExternalId generateExternalId() {
-        String version = getVersion().orElse(null);
-        return externalIdFactory.createNameVersionExternalId(WORKSPACE_FORGE, getName().orElse(null), version);
     }
 
     public boolean matches(YarnLockEntry yarnLockEntry) {
@@ -100,7 +88,7 @@ public class YarnWorkspace {
     public boolean matches(String name, String version) {
         if (getName().orElse("").equals(name)) {
             if (!version.startsWith(WORKSPACE_VERSION_PREFIX) && !versionMatches(version)) {
-                logger.warn("yarn.lock dependency {} has the same name as a workspace, but the version is {} (vs. {}). Considering them the same anyway.",
+                logger.trace("yarn.lock dependency {} has the same name as a workspace, but the version is {} (vs. {}). Considering them the same anyway.",
                     name, version, getVersionString());
             }
             return true;
@@ -108,18 +96,12 @@ public class YarnWorkspace {
         return false;
     }
 
-    public StringDependencyId createDependency(LazyExternalIdDependencyGraphBuilder graphBuilder) {
-        StringDependencyId id = generateDependencyId();
-        graphBuilder.setDependencyInfo(id, getName().orElse(null), getVersion().orElse(null), generateExternalId());
-        return id;
-    }
-
     public boolean hasDependency(String depName) {
-        return getDependencies().keySet().contains(depName);
+        return getDependencies().containsKey(depName);
     }
 
     public boolean hasDevDependency(String depName) {
-        return getDevDependencies().keySet().contains(depName);
+        return getDevDependencies().containsKey(depName);
     }
 
     private boolean versionMatches(String version) {
