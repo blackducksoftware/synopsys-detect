@@ -4,7 +4,7 @@ import com.synopsys.integration.detect.verification.VerifyBlackDuckDetectTask
 
 buildscript {
     ext {
-        springBootVersion = '2.4.3'
+        springBootVersion = '2.4.5'
         blackDuckCommonVersion = '54.2.3'
         junitPlatformDefaultTestTags = 'integration, performance, battery'
     }
@@ -58,7 +58,6 @@ allprojects {
         implementation "org.slf4j:slf4j-api:1.7.30"
         implementation "org.apache.commons:commons-lang3:3.10" /* this could be managed by blackduck common */
         implementation 'org.jetbrains:annotations:19.0.0'
-        implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.4'
         implementation 'net.minidev:json-smart:2.4.2'
         implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.3'
 
