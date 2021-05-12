@@ -3,7 +3,6 @@ dependencies {
 
     implementation project(':common')
 
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.5'
     implementation 'org.tomlj:tomlj:1.0.0'
     implementation 'org.codehaus.groovy:groovy-astbuilder:3.0.7'
     implementation 'com.moandjiezana.toml:toml4j:0.7.1'

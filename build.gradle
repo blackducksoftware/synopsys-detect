@@ -58,6 +58,9 @@ allprojects {
         implementation "org.slf4j:slf4j-api:1.7.30"
         implementation "org.apache.commons:commons-lang3:3.10" /* this could be managed by blackduck common */
         implementation 'org.jetbrains:annotations:19.0.0'
+        implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.4'
+        implementation 'net.minidev:json-smart:2.4.2'
+        implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.3'
 
         testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
         testImplementation 'org.mockito:mockito-core:2.+'
@@ -94,13 +97,12 @@ dependencies {
     implementation 'ch.qos.logback:logback-classic:1.2.3'
 
     implementation 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.8'
     implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
     implementation 'com.synopsys:method-analyzer-core:0.1.0'
 
     implementation 'org.apache.maven.shared:maven-invoker:3.0.0'
     implementation "org.springframework.boot:spring-boot"
-    implementation 'org.yaml:snakeyaml:1.24'
+    implementation 'org.yaml:snakeyaml:1.27'
     implementation 'org.zeroturnaround:zt-zip:1.13'
     implementation 'org.freemarker:freemarker:2.3.26-incubating'
 
