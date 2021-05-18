@@ -115,12 +115,14 @@ dependencies {
 
 springBoot { mainClass = 'com.synopsys.integration.detect.Application' }
 
-tasks['testBattery'].doFirst {
-    def batteryPath = new File(createBatteryPath())
-    batteryPath.mkdirs()
-    environment 'BATTERY_TESTS_DETECT_JAR_PATH', createArtifactName()
-    environment 'BATTERY_TESTS_PATH', batteryPath.getCanonicalPath()
-    environment 'BATTERY_TESTS_JAVA_PATH', org.gradle.internal.jvm.Jvm.current().javaExecutable.getCanonicalPath()
+if (project.tasks.findByName('testBattery')) {
+    tasks['testBattery'].doFirst {
+        def batteryPath = new File(createBatteryPath())
+        batteryPath.mkdirs()
+        environment 'BATTERY_TESTS_DETECT_JAR_PATH', createArtifactName()
+        environment 'BATTERY_TESTS_PATH', batteryPath.getCanonicalPath()
+        environment 'BATTERY_TESTS_JAVA_PATH', org.gradle.internal.jvm.Jvm.current().javaExecutable.getCanonicalPath()
+    }
 }
 
 task updateBattery(type: UpdateBatteryTask) {}
