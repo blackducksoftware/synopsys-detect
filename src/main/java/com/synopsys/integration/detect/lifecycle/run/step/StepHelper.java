@@ -31,7 +31,7 @@ public class StepHelper {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(detectTool)) {
             logger.info("Will include the " + name + " tool.");
-            logicalGroup(name, supplier);
+            runAsGroup(name, supplier);
             logger.info(name + " actions finished.");
         } else {
             logger.info(name + " tool will not be run.");
@@ -42,7 +42,7 @@ public class StepHelper {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(detectTool)) {
             logger.info("Will include the " + name + " tool.");
-            Optional<T> value = Optional.ofNullable(logicalGroup(name, supplier));
+            Optional<T> value = Optional.ofNullable(runAsGroup(name, supplier));
             logger.info(name + " actions finished.");
             return value;
         } else {
@@ -51,7 +51,7 @@ public class StepHelper {
         }
     }
 
-    public void logicalGroup(String name, OperationFunction supplier) throws DetectUserFriendlyException {
+    public void runAsGroup(String name, OperationFunction supplier) throws DetectUserFriendlyException {
         Operation operation = operationSystem.startOperation(name);
         try {
             supplier.execute();
@@ -84,7 +84,7 @@ public class StepHelper {
         }
     }
 
-    public <T> T logicalGroup(String name, OperationSupplier<T> supplier) throws DetectUserFriendlyException {
+    public <T> T runAsGroup(String name, OperationSupplier<T> supplier) throws DetectUserFriendlyException {
         Operation operation = operationSystem.startOperation(name);
         try {
             T value = supplier.execute();

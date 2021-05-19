@@ -25,7 +25,7 @@ public class UniversalStepRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectToolFilter detectToolFilter; //TODO: This should be a decision
 
-    public UniversalStepRunner(final OperationFactory operationFactory, DetectToolFilter detectToolFilter) {
+    public UniversalStepRunner(final OperationFactory operationFactory, DetectToolFilter detectToolFilter) { //TODO: Move to Step Helper
         this.operationFactory = operationFactory;
         this.detectToolFilter = detectToolFilter;
     }

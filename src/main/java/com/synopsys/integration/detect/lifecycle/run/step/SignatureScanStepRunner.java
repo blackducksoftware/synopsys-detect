@@ -89,7 +89,7 @@ public class SignatureScanStepRunner {
         return new ScanBatchRunnerResult(scanBatchRunner, installDirectory);
     }
 
-    private File determineScanInstallDirectory(ScanBatchRunnerUserResult userProvided) {
+    private File determineScanInstallDirectory(ScanBatchRunnerUserResult userProvided) throws DetectUserFriendlyException {
         if (userProvided.getInstallDirectory().isPresent()) {
             return userProvided.getInstallDirectory().get();
         } else {

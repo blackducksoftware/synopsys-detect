@@ -19,6 +19,7 @@ import com.synopsys.integration.detect.lifecycle.run.singleton.SingletonFactory;
 import com.synopsys.integration.detect.lifecycle.run.singleton.UtilitySingletons;
 import com.synopsys.integration.detect.lifecycle.run.step.IntelligentModeStepRunner;
 import com.synopsys.integration.detect.lifecycle.run.step.RapidModeStepRunner;
+import com.synopsys.integration.detect.lifecycle.run.step.StepHelper;
 import com.synopsys.integration.detect.lifecycle.run.step.UniversalStepRunner;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeManager;
 import com.synopsys.integration.detect.tool.UniversalToolsResult;
@@ -35,11 +36,7 @@ public class DetectRun {
         this.exitCodeManager = exitCodeManager;
     }
 
-    private OperationFactory createOperationFactory(BootSingletons bootSingletons) throws DetectUserFriendlyException {
-        SingletonFactory singletonFactory = new SingletonFactory(bootSingletons);
-        EventSingletons eventSingletons = singletonFactory.createEventSingletons();
-        UtilitySingletons utilitySingletons = singletonFactory.createUtilitySingletons(eventSingletons);
-
+    private OperationFactory createOperationFactory(BootSingletons bootSingletons, UtilitySingletons utilitySingletons, EventSingletons eventSingletons) throws DetectUserFriendlyException {
         DetectorFactory detectorFactory = new DetectorFactory(bootSingletons, utilitySingletons);
         DetectFontLoaderFactory detectFontLoaderFactory = new DetectFontLoaderFactory(bootSingletons, utilitySingletons);
 
@@ -47,10 +44,15 @@ public class DetectRun {
     }
 
     public void run(BootSingletons bootSingletons) {
-        OperationSystem operationSystem = null;//where is this supposed to come from?
+        OperationSystem operationSystem = null;
         try {
+            SingletonFactory singletonFactory = new SingletonFactory(bootSingletons);
+            EventSingletons eventSingletons = singletonFactory.createEventSingletons();
+            UtilitySingletons utilitySingletons = singletonFactory.createUtilitySingletons(eventSingletons);
+            operationSystem = utilitySingletons.getOperationSystem();
+
             ProductRunData productRunData = bootSingletons.getProductRunData(); //TODO: Remove run data from boot singletons
-            OperationFactory operationFactory = createOperationFactory(bootSingletons);
+            OperationFactory operationFactory = createOperationFactory(bootSingletons, utilitySingletons, eventSingletons);
 
             UniversalStepRunner stepRunner = new UniversalStepRunner(operationFactory, productRunData.getDetectToolFilter()); //Product independent tools
             UniversalToolsResult universalToolsResult = stepRunner.runUniversalTools();
@@ -59,16 +61,17 @@ public class DetectRun {
             NameVersion nameVersion = stepRunner.determineProjectInformation(universalToolsResult);
             operationFactory.publishProjectNameVersionChosen(nameVersion);
             BdioResult bdio = stepRunner.generateBdio(universalToolsResult, nameVersion);
+            StepHelper stepHelper = new StepHelper(operationSystem, productRunData.getDetectToolFilter());
 
             if (productRunData.shouldUseBlackDuckProduct()) {
                 if (productRunData.getBlackDuckRunData().isRapid()) {
                     RapidModeStepRunner rapidModeSteps = new RapidModeStepRunner();
                     rapidModeSteps.runAll(productRunData.getBlackDuckRunData(), nameVersion, bdio);
                 } else if (productRunData.getBlackDuckRunData().isOnline()) {
-                    IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationFactory);
+                    IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationFactory, stepHelper);
                     intelligentModeSteps.runOnline(productRunData.getBlackDuckRunData(), bdio, nameVersion, productRunData.getDetectToolFilter(), universalToolsResult.getDockerTargetData()); //todo get post options
                 } else {
-                    IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationFactory);
+                    IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationFactory, stepHelper);
                     intelligentModeSteps.runOffline(nameVersion, productRunData.getDetectToolFilter(), universalToolsResult.getDockerTargetData());
                 }
             } else {

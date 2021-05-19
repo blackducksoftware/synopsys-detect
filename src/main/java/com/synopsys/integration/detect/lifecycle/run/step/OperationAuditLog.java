@@ -11,14 +11,14 @@ import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.exception.IntegrationRestException;
 
 //Essentially an adapter for 'running an operation' and 'reporting the operation' in one step. Whether or not this is desired is TBD.
-public class OperationHelper {
+public class OperationAuditLog { //NoOpAuditLog
     private final OperationSystem operationSystem;
 
-    public OperationHelper(final OperationSystem operationSystem) {
+    public OperationAuditLog(final OperationSystem operationSystem) {
         this.operationSystem = operationSystem;
     }
 
-    public void safelyRunAs(String name, OperationFunction supplier) throws DetectUserFriendlyException {
+    public void named(String name, OperationFunction supplier) throws DetectUserFriendlyException {
         Operation operation = operationSystem.startOperation(name);
         try {
             supplier.execute();
@@ -51,7 +51,7 @@ public class OperationHelper {
         }
     }
 
-    public <T> T safelyRunAs(String name, OperationSupplier<T> supplier) throws DetectUserFriendlyException {
+    public <T> T named(String name, OperationSupplier<T> supplier) throws DetectUserFriendlyException {
         Operation operation = operationSystem.startOperation(name);
         try {
             T value = supplier.execute();
