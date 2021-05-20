@@ -23,6 +23,7 @@ import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BdioUploadResult;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisBatchOutput;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
+import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationResults;
@@ -94,7 +95,17 @@ public class IntelligentModeStepRunner {
     }
 
     public void uploadBdio(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, CodeLocationAccumulator codeLocationAccumulator) throws DetectUserFriendlyException, IntegrationException {
-        BdioUploadResult uploadResult = operationFactory.uploadBdio(blackDuckRunData, bdioResult);
+        BdioOptions bdioOptions = operationFactory.calculateBdioOptions(); //TODO: Move to a decision
+        BdioUploadResult uploadResult;
+        if (bdioOptions.isLegacyUploadEnabled()) {
+            if (bdioOptions.isBdio2Enabled()) {
+                uploadResult = operationFactory.uploadBdio2(blackDuckRunData, bdioResult);
+            } else {
+                uploadResult = operationFactory.uploadBdio1(blackDuckRunData, bdioResult);
+            }
+        } else {
+            uploadResult = operationFactory.uploadBdioIntelligentPersistent(blackDuckRunData, bdioResult);
+        }
         uploadResult.getUploadOutput().ifPresent(codeLocationAccumulator::addWaitableCodeLocation);
     }
 

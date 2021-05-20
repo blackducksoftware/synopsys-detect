@@ -51,7 +51,6 @@ import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.AggregateDecisionOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BdioFileGenerationOperation;
-import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BdioUploadOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BdioUploadResult;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BinaryScanOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.ProjectCreationOperation;
@@ -85,10 +84,14 @@ import com.synopsys.integration.detect.tool.signaturescanner.operation.PublishSi
 import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanOperation;
 import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanOuputResult;
 import com.synopsys.integration.detect.workflow.bdio.BdioManager;
+import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.blackduck.DetectCustomFieldService;
 import com.synopsys.integration.detect.workflow.blackduck.DetectFontLoader;
 import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOptions;
+import com.synopsys.integration.detect.workflow.blackduck.bdio.IntelligentPersistentUploadOperation;
+import com.synopsys.integration.detect.workflow.blackduck.bdio.LegacyBdio1UploadOperation;
+import com.synopsys.integration.detect.workflow.blackduck.bdio.LegacyBdio2UploadOperation;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationWaitCalculator;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationWaitData;
 import com.synopsys.integration.detect.workflow.blackduck.developer.RapidModeGenerateJsonOperation;
@@ -254,8 +257,16 @@ public class OperationFactory { //TODO: OperationRunner
         });
     }
 
-    public final BdioUploadResult uploadBdio(BlackDuckRunData blackDuckRunData, BdioResult bdioResult) throws DetectUserFriendlyException {
-        return auditLog.named("Upload Bdio", () -> new BdioUploadOperation(operationSystem, detectConfigurationFactory.createBdioOptions()).execute(blackDuckRunData, bdioResult));
+    public final BdioUploadResult uploadBdio1(BlackDuckRunData blackDuckRunData, BdioResult bdioResult) throws DetectUserFriendlyException {
+        return auditLog.named("Upload Bdio", () -> new LegacyBdio1UploadOperation(blackDuckRunData.getBlackDuckServicesFactory().createBdioUploadService()).uploadBdioFiles(bdioResult));
+    }
+
+    public final BdioUploadResult uploadBdio2(BlackDuckRunData blackDuckRunData, BdioResult bdioResult) throws DetectUserFriendlyException {
+        return auditLog.named("Upload Bdio", () -> new LegacyBdio2UploadOperation(blackDuckRunData.getBlackDuckServicesFactory().createBdio2UploadService()).uploadBdioFiles(bdioResult));
+    }
+
+    public final BdioUploadResult uploadBdioIntelligentPersistent(BlackDuckRunData blackDuckRunData, BdioResult bdioResult) throws DetectUserFriendlyException {
+        return auditLog.named("Upload Bdio", () -> new IntelligentPersistentUploadOperation(blackDuckRunData.getBlackDuckServicesFactory().createIntelligentPersistenceService()).uploadBdioFiles(bdioResult));
     }
 
     public final CodeLocationWaitData calulcateCodeLocationWaitData(List<CodeLocationCreationData<? extends CodeLocationBatchOutput<?>>> codeLocationCreationDatas) throws DetectUserFriendlyException {
@@ -467,4 +478,7 @@ public class OperationFactory { //TODO: OperationRunner
         });
     }
 
+    public BdioOptions calculateBdioOptions() {
+        return detectConfigurationFactory.createBdioOptions();
+    }
 }

@@ -1,11 +1,4 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
-package com.synopsys.integration.detect.workflow.blackduck;
+package com.synopsys.integration.detect.workflow.blackduck.bdio;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,51 +7,33 @@ import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.Result;
 import com.synopsys.integration.blackduck.codelocation.bdio2legacy.Bdio2UploadService;
 import com.synopsys.integration.blackduck.codelocation.bdiolegacy.BdioUploadService;
-import com.synopsys.integration.blackduck.codelocation.intelligentpersistence.IntelligentPersistenceService;
 import com.synopsys.integration.blackduck.codelocation.upload.UploadBatch;
 import com.synopsys.integration.blackduck.codelocation.upload.UploadBatchOutput;
 import com.synopsys.integration.blackduck.codelocation.upload.UploadOutput;
 import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
-import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
+import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BdioUploadResult;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
-import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class DetectBdioUploadService { //TODO: [Operation] Needs to be migrated - currently performs more than one operation.
-    private static final String OPERATION_NAME = "Black Duck BDIO Upload";
-    private final Logger logger = LoggerFactory.getLogger(DetectBdioUploadService.class);
-    private final OperationSystem operationSystem;
-    private final BdioOptions bdioOptions;
+public abstract class BdioUploadOperation { //TODO: Could use Functional Interface.
+    private final Logger logger = LoggerFactory.getLogger(BdioUploadOperation.class);
 
-    public DetectBdioUploadService(OperationSystem operationSystem, BdioOptions bdioOptions) {
-        this.operationSystem = operationSystem;
-        this.bdioOptions = bdioOptions;
-    }
-
-    public CodeLocationCreationData<UploadBatchOutput> uploadBdioFiles(BdioResult bdioResult, BdioUploadService bdioUploadService, Bdio2UploadService bdio2UploadService,
-        IntelligentPersistenceService intelligentPersistenceScanService) throws DetectUserFriendlyException, IntegrationException {
-
+    public BdioUploadResult uploadBdioFiles(BdioResult bdioResult) throws DetectUserFriendlyException {
         UploadBatch uploadBatch = createBatch(bdioResult);
         CodeLocationCreationData<UploadBatchOutput> response;
         try {
-            if (bdioOptions.isLegacyUploadEnabled()) {
-                response = legacyUpload(bdioResult, uploadBatch, bdioUploadService, bdio2UploadService);
-            } else {
-                logger.debug("Performing intelligent BDIO upload.");
-                response = intelligentPersistenceScanService.uploadBdio(uploadBatch);
-            }
+            response = executeUpload(uploadBatch);
         } catch (IntegrationException ex) {
             logger.error("Error uploading bdio files", ex);
-            operationSystem.completeWithError(OPERATION_NAME, ex.getMessage());
-            throw ex;
+            throw new DetectUserFriendlyException("Error uploading bdio files", ex, ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
         }
         checkForUploadFailure(response);
-        operationSystem.completeWithSuccess(OPERATION_NAME);
-
-        return response;
+        return new BdioUploadResult(response);
     }
+
+    protected abstract CodeLocationCreationData<UploadBatchOutput> executeUpload(final UploadBatch uploadBatch) throws IntegrationException;
 
     private CodeLocationCreationData<UploadBatchOutput> legacyUpload(BdioResult bdioResult, UploadBatch uploadBatch, BdioUploadService bdioUploadService, Bdio2UploadService bdio2UploadService) throws IntegrationException {
         CodeLocationCreationData<UploadBatchOutput> response;
@@ -85,7 +60,6 @@ public class DetectBdioUploadService { //TODO: [Operation] Needs to be migrated 
             if (uploadOutput.getResult() == Result.FAILURE) {
                 logger.error(String.format("Failed to upload code location: %s", uploadOutput.getCodeLocationName()));
                 logger.error(String.format("Reason: %s", uploadOutput.getErrorMessage().orElse("Unknown reason.")));
-                operationSystem.completeWithError(uploadOutput.getException().map(Exception::getMessage).orElse(""));
                 throw new DetectUserFriendlyException("An error occurred uploading a bdio file.", uploadOutput.getException().orElse(null), ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
             }
         }
