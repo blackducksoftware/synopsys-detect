@@ -8,6 +8,7 @@
 
 ### Resolved issues
 * (IDETECT-2541) Resolved an issue that caused the CLANG detector to fail when run in non-English locales on Ubuntu and Debian systems.
+* (IDETECT-2505) Resolved an issue that caused go mod components with +incompatible version suffixes to not be matched on Black Duck.
 
 ## Version 7.0.0
 ### New Features
