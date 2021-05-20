@@ -46,7 +46,7 @@ public class IntelligentModeStepRunner {
         this.stepHelper = stepHelper;
     }
 
-    public void runOffline(NameVersion projectNameVersion, DetectToolFilter detectToolFilter, DockerTargetData dockerTargetData) throws DetectUserFriendlyException, IntegrationException, IOException {
+    public void runOffline(NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws DetectUserFriendlyException {
         stepHelper.runToolIfIncluded(DetectTool.SIGNATURE_SCAN, "Signature Scanner", () -> {
             SignatureScanStepRunner signatureScanStepRunner = new SignatureScanStepRunner(operationFactory);
             signatureScanStepRunner.runSignatureScannerOffline(projectNameVersion, dockerTargetData);

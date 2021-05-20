@@ -72,7 +72,7 @@ public class DetectRun {
                     intelligentModeSteps.runOnline(productRunData.getBlackDuckRunData(), bdio, nameVersion, productRunData.getDetectToolFilter(), universalToolsResult.getDockerTargetData()); //todo get post options
                 } else {
                     IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationFactory, stepHelper);
-                    intelligentModeSteps.runOffline(nameVersion, productRunData.getDetectToolFilter(), universalToolsResult.getDockerTargetData());
+                    intelligentModeSteps.runOffline(nameVersion, universalToolsResult.getDockerTargetData());
                 }
             } else {
                 logger.info("Black Duck tools will not be run.");
