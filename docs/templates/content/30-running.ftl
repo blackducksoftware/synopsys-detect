@@ -22,12 +22,13 @@ You can run ${solution_name} from any directory. If you are not running ${soluti
 provide the project directory using the [source path property](../properties/configuration/paths/#source-path). When that property is not set,
 ${solution_name} assumes the current working directory is the project directory.
 
-## Choosing a run method (script or .jar)
+## Choosing a run method (script, .jar, or Docker container)
 
-There are two ways to run ${solution_name}:
+There are three ways to run ${solution_name}:
 
 1. Download and run a ${solution_name} script.
 1. Download and run a ${solution_name} .jar file.
+1. Run ${solution_name} from within a Docker container.
 
 The primary reason to run one of the ${solution_name} scripts is that the scripts have an auto-update feature.
 By default, they always
@@ -49,6 +50,9 @@ simply substitute detect.sh for detect7.sh, or detect.ps1 for detect7.ps1.
 
 The primary reason to run the ${solution_name} .jar directly is that this method provides
 direct control over the exact ${solution_name} version;
+${solution_name} does not automatically update in this scenario.
+
+The primary reason to run ${solution_name} from within a Docker container is to take advantage of the benefits of Docker containers, which include standardized run environment configuration;
 ${solution_name} does not automatically update in this scenario.
 
 ## Running the ${solution_name} script
@@ -156,6 +160,41 @@ You can use the ${solution_name} Bash script (${bash_script_name}) to download t
 export DETECT_DOWNLOAD_ONLY=1
 ./${bash_script_name}
 ````
+
+## Running ${solution_name} from within a Docker container
+
+${solution_name} publishes Docker images which can be used to run Detect from within a Docker container.
+
+### To Use
+
+To run a container built from a ${solution_name} image, use the Docker CLI's `docker run` command.
+
+* Use the -it options to view logs during the container run.
+
+* Use the -v option to create a bind mount that will link a provided path to project source on your host to the /source directory within the container.
+
+* Provide ${solution_name} property values as you would when running via the ${solution_name} script or the ${solution_name} jar, at the end of the `docker run` command.
+
+Find available images at (insert link here).
+
+The format of image names is: blackducksoftware/detect:detect-[detect_version]-[package_manager]-[package_manager_version]
+
+#### ${solution_name} Base Image
+
+All Detect images are built from a base ${solution_name} image that can be used to build your own custom ${solution_name} image, or to run Detect in buildless mode.
+
+The format of base image names is: blackducksoftware/detect:detect-[detect_version]
+
+#### Examples
+
+`docker run -it -v [/path/to/source]:/source blackducksoftware/detect:[detect_image_tag] [detect_arguments]`
+
+`docker run -it -v /Home/my/gradle/project:/source blackducksoftware/detect:7.0.0-gradle-6.8.2 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn`
+
+`docker run -it -v /Home/my/maven/project:/source blackducksoftware/detect:6.9.1-maven-3.8.1 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn`
+
+`docker run -it -v /Home/my/project:/source blackducksoftware/detect:7.0.0 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn --detect.detector.buildless=true`
+
 
 ## Choosing the target type
 
