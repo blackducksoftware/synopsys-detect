@@ -89,7 +89,7 @@ public class UniversalStepRunner {
 
         logger.debug("Determining project info.");
 
-        NameVersion projectNameVersion = operationFactory.createProjectDecisionOperation().execute(universalToolsResult.getDetectToolProjectInfo());
+        NameVersion projectNameVersion = operationFactory.createProjectDecisionOperation(universalToolsResult.getDetectToolProjectInfo());
 
         logger.info(String.format("Project name: %s", projectNameVersion.getName()));
         logger.info(String.format("Project version: %s", projectNameVersion.getVersion()));
