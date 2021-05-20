@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 
 import com.paypal.digraph.parser.GraphParser;

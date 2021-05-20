@@ -788,7 +788,9 @@ public class DetectProperties {
     public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_NUGET_EXCLUDED_MODULES =
         new DetectProperty<>(new CaseSensitiveStringListProperty("detect.nuget.excluded.modules"))
             .setInfo("Nuget Projects Excluded", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("The names of the projects in a solution to exclude.")
+            .setHelp(
+                "The projects within the solution to exclude. Detect will exclude all projects with names that include any of the given regex patterns. To match a full project name (for example: 'BaGet.Core'), use a regular expression that matches only the full name ('^BaGet.Core$')")
+            .setExample("^BaGet.Core$,^BaGet.Core.Tests$")
             .setGroups(DetectGroup.NUGET, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
@@ -802,7 +804,9 @@ public class DetectProperties {
     public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_NUGET_INCLUDED_MODULES =
         new DetectProperty<>(new CaseSensitiveStringListProperty("detect.nuget.included.modules"))
             .setInfo("Nuget Modules Included", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("The names of the projects in a solution to include (overrides exclude).")
+            .setHelp(
+                "The names of the projects in a solution to include (overrides exclude). Detect will include all projects with names that include any of the given regex patterns. To match a full project name (for example: 'BaGet.Core'), use a regular expression that matches only the full name ('^BaGet.Core$')")
+            .setExample("^BaGet.Core$,^BaGet.Core.Tests$")
             .setGroups(DetectGroup.NUGET, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 

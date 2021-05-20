@@ -24,7 +24,7 @@ If you are scanning Docker images and your Black Duck server does not have the b
 use --detect.tools.exluded=BINARY_SCAN to disable the binary scan step.
 
 ### Changed features
-* The following directories will be excluded from signature scan by default, in addition to node_modules: bin, build, .git, .gradle, out, packages, target. Use [detect.excluded.directories.defaults.disabled](../properties/configuration/paths/#detect-excluded-directories-defaults-disabled-advanced) to disable these defaults.
+* The following directories will be excluded from signature scan by default, in addition to node_modules: bin, build, .git, .gradle, out, packages, target. Use [detect.excluded.directories.defaults](../properties/configuration/paths/#detect-excluded-directories-defaults-disabled-advanced) to disable these defaults.
 * Detect no longer supports the exclusion of individual files during detector search, only directories.
 * Gradle detector no longer uses the gradle inspector. Only the init script is required.
 * The default BDIO format for communicating dependency graphs to Black Duck has been changed from BDIO1 to BDIO2.

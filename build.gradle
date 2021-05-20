@@ -4,7 +4,7 @@ import com.synopsys.integration.detect.verification.VerifyBlackDuckDetectTask
 
 buildscript {
     ext {
-        springBootVersion = '2.4.3'
+        springBootVersion = '2.4.5'
         blackDuckCommonVersion = '54.2.3'
         junitPlatformDefaultTestTags = 'integration, performance, battery'
     }
@@ -58,6 +58,8 @@ allprojects {
         implementation "org.slf4j:slf4j-api:1.7.30"
         implementation "org.apache.commons:commons-lang3:3.10" /* this could be managed by blackduck common */
         implementation 'org.jetbrains:annotations:19.0.0'
+        implementation 'net.minidev:json-smart:2.4.2'
+        implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.3'
 
         testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
         testImplementation 'org.mockito:mockito-core:2.+'
@@ -94,13 +96,12 @@ dependencies {
     implementation 'ch.qos.logback:logback-classic:1.2.3'
 
     implementation 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.8'
     implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
     implementation 'com.synopsys:method-analyzer-core:0.1.0'
 
     implementation 'org.apache.maven.shared:maven-invoker:3.0.0'
     implementation "org.springframework.boot:spring-boot"
-    implementation 'org.yaml:snakeyaml:1.24'
+    implementation 'org.yaml:snakeyaml:1.27'
     implementation 'org.zeroturnaround:zt-zip:1.13'
     implementation 'org.freemarker:freemarker:2.3.26-incubating'
 
@@ -114,12 +115,14 @@ dependencies {
 
 springBoot { mainClass = 'com.synopsys.integration.detect.Application' }
 
-tasks['testBattery'].doFirst {
-    def batteryPath = new File(createBatteryPath())
-    batteryPath.mkdirs()
-    environment 'BATTERY_TESTS_DETECT_JAR_PATH', createArtifactName()
-    environment 'BATTERY_TESTS_PATH', batteryPath.getCanonicalPath()
-    environment 'BATTERY_TESTS_JAVA_PATH', org.gradle.internal.jvm.Jvm.current().javaExecutable.getCanonicalPath()
+if (project.tasks.findByName('testBattery')) {
+    tasks['testBattery'].doFirst {
+        def batteryPath = new File(createBatteryPath())
+        batteryPath.mkdirs()
+        environment 'BATTERY_TESTS_DETECT_JAR_PATH', createArtifactName()
+        environment 'BATTERY_TESTS_PATH', batteryPath.getCanonicalPath()
+        environment 'BATTERY_TESTS_JAVA_PATH', org.gradle.internal.jvm.Jvm.current().javaExecutable.getCanonicalPath()
+    }
 }
 
 task updateBattery(type: UpdateBatteryTask) {}
