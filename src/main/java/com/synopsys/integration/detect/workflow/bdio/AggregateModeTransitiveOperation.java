@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.bdio;
 
 import java.io.File;
@@ -23,36 +16,26 @@ import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
-import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.codelocation.FileNameUtils;
 
-public class AggregateBdioTransformer {
+public class AggregateModeTransitiveOperation {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final SimpleBdioFactory simpleBdioFactory;
 
-    public AggregateBdioTransformer(final SimpleBdioFactory simpleBdioFactory) {
+    public AggregateModeTransitiveOperation(final SimpleBdioFactory simpleBdioFactory) {
         this.simpleBdioFactory = simpleBdioFactory;
     }
 
-    public DependencyGraph aggregateCodeLocations(final File sourcePath, final List<DetectCodeLocation> codeLocations, final AggregateMode aggregateMode) throws DetectUserFriendlyException {
+    public DependencyGraph aggregateCodeLocations(final File sourcePath, final List<DetectCodeLocation> codeLocations) throws DetectUserFriendlyException {
         final MutableDependencyGraph aggregateDependencyGraph = simpleBdioFactory.createMutableDependencyGraph();
 
         for (final DetectCodeLocation detectCodeLocation : codeLocations) {
-            if (aggregateMode.equals(AggregateMode.DIRECT)) {
-                aggregateDependencyGraph.addGraphAsChildrenToRoot(detectCodeLocation.getDependencyGraph());
-            } else if (aggregateMode.equals(AggregateMode.TRANSITIVE)) {
-                final Dependency codeLocationDependency = createAggregateDependency(sourcePath, detectCodeLocation);
-                aggregateDependencyGraph.addChildrenToRoot(codeLocationDependency);
-                aggregateDependencyGraph.addGraphAsChildrenToParent(codeLocationDependency, detectCodeLocation.getDependencyGraph());
-            } else {
-                throw new DetectUserFriendlyException(
-                    String.format("The %s property was set to an unsupported aggregation mode, will not aggregate at this time.", DetectProperties.DETECT_BOM_AGGREGATE_REMEDIATION_MODE.getProperty().getKey()),
-                    ExitCodeType.FAILURE_GENERAL_ERROR);
-            }
+            final Dependency codeLocationDependency = createAggregateDependency(sourcePath, detectCodeLocation);
+            aggregateDependencyGraph.addChildrenToRoot(codeLocationDependency);
+            aggregateDependencyGraph.addGraphAsChildrenToParent(codeLocationDependency, detectCodeLocation.getDependencyGraph());
         }
 
         return aggregateDependencyGraph;

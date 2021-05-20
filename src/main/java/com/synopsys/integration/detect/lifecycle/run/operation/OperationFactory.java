@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.SimpleBdioFactory;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponentResultView;
@@ -33,6 +34,7 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatc
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandRunner;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanPathsUtility;
+import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
 import com.synopsys.integration.blackduck.scan.RapidScanService;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.dataservice.ReportService;
@@ -50,7 +52,6 @@ import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.AggregateDecisionOperation;
-import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BdioFileGenerationOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BdioUploadResult;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BinaryScanOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.ProjectCreationOperation;
@@ -82,9 +83,17 @@ import com.synopsys.integration.detect.tool.signaturescanner.operation.CreateSig
 import com.synopsys.integration.detect.tool.signaturescanner.operation.PublishSignatureScanReports;
 import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanOperation;
 import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanOuputResult;
-import com.synopsys.integration.detect.workflow.bdio.BdioManager;
+import com.synopsys.integration.detect.workflow.bdio.AggregateCodeLocation;
+import com.synopsys.integration.detect.workflow.bdio.AggregateModeDirectOperation;
+import com.synopsys.integration.detect.workflow.bdio.AggregateModeTransitiveOperation;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
+import com.synopsys.integration.detect.workflow.bdio.CreateAggregateBdio1FileOperation;
+import com.synopsys.integration.detect.workflow.bdio.CreateAggregateBdio2FileOperation;
+import com.synopsys.integration.detect.workflow.bdio.CreateAggregateCodeLocationOperation;
+import com.synopsys.integration.detect.workflow.bdio.CreateBdio1FilesOperation;
+import com.synopsys.integration.detect.workflow.bdio.CreateBdio2FilesOperation;
+import com.synopsys.integration.detect.workflow.bdio.DetectBdioWriter;
 import com.synopsys.integration.detect.workflow.blackduck.DetectCustomFieldService;
 import com.synopsys.integration.detect.workflow.blackduck.DetectFontLoader;
 import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOptions;
@@ -100,9 +109,11 @@ import com.synopsys.integration.detect.workflow.blackduck.developer.RapidScanDet
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultAggregator;
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultSummary;
 import com.synopsys.integration.detect.workflow.blackduck.policy.PolicyChecker;
-import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationCreator;
+import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationResult;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationEventPublisher;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
+import com.synopsys.integration.detect.workflow.codelocation.CreateBdioCodeLocationsFromDetectCodeLocationsOperation;
+import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
@@ -116,7 +127,6 @@ import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.util.IntEnvironmentVariables;
-import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 import com.synopsys.integration.util.OperatingSystemType;
 
@@ -135,7 +145,7 @@ public class OperationFactory { //TODO: OperationRunner
 
     private final OperationSystem operationSystem;
     private final CodeLocationNameManager codeLocationNameManager;
-    private final BdioCodeLocationCreator bdioCodeLocationCreator;
+    private final CreateBdioCodeLocationsFromDetectCodeLocationsOperation createBdioCodeLocationsFromDetectCodeLocationsOperation;
     private final ConnectionFactory connectionFactory;
 
     private final PropertyConfiguration detectConfiguration;
@@ -172,7 +182,7 @@ public class OperationFactory { //TODO: OperationRunner
 
         operationSystem = utilitySingletons.getOperationSystem();
         codeLocationNameManager = utilitySingletons.getCodeLocationNameManager();
-        bdioCodeLocationCreator = utilitySingletons.getBdioCodeLocationCreator();
+        createBdioCodeLocationsFromDetectCodeLocationsOperation = utilitySingletons.getBdioCodeLocationCreator();
         connectionFactory = utilitySingletons.getConnectionFactory();
 
         //My Managed Dependencies
@@ -234,16 +244,6 @@ public class OperationFactory { //TODO: OperationRunner
 
     public final AggregateDecisionOperation createAggregateOptionsOperation() throws DetectUserFriendlyException {
         return auditLog.named("Create Aggregate Options", () -> new AggregateDecisionOperation(detectConfigurationFactory.createAggregateOptions(), operationSystem));
-    }
-
-    public final BdioFileGenerationOperation createBdioFileGenerationOperation() throws DetectUserFriendlyException {
-        return auditLog.named("Generate Bdio File", () -> {
-            BdioManager bdioManager = new BdioManager(detectInfo, new SimpleBdioFactory(), new ExternalIdFactory(), new Bdio2Factory(), new IntegrationEscapeUtil(), codeLocationNameManager,
-                bdioCodeLocationCreator, directoryManager);
-
-            return new BdioFileGenerationOperation(detectConfigurationFactory.createBdioOptions(), bdioManager, codeLocationEventPublisher,
-                operationSystem);
-        });
     }
 
     public final BinaryScanOperation createBinaryScanOperation() throws DetectUserFriendlyException {
@@ -480,5 +480,53 @@ public class OperationFactory { //TODO: OperationRunner
 
     public BdioOptions calculateBdioOptions() {
         return detectConfigurationFactory.createBdioOptions();
+    }
+
+    public BdioCodeLocationResult createBdioCodeLocationsFromDetectCodeLocations(final List<DetectCodeLocation> detectCodeLocations, final NameVersion projectNameVersion) throws DetectUserFriendlyException {
+        return auditLog.named("Create Bdio Code Locations", () -> {
+            BdioOptions bdioOptions = detectConfigurationFactory.createBdioOptions();
+            return new CreateBdioCodeLocationsFromDetectCodeLocationsOperation(codeLocationNameManager, directoryManager)
+                       .transformDetectCodeLocations(detectCodeLocations, bdioOptions.getProjectCodeLocationPrefix(), bdioOptions.getProjectCodeLocationSuffix(), projectNameVersion);
+        });
+    }
+
+    public List<UploadTarget> createBdio1Files(BdioCodeLocationResult bdioCodeLocationResult, NameVersion projectNameVersion) throws DetectUserFriendlyException {
+        return auditLog.named("Create Bdio 1 Files", () -> {
+            DetectBdioWriter detectBdioWriter = new DetectBdioWriter(new SimpleBdioFactory(), detectInfo);
+            return new CreateBdio1FilesOperation(detectBdioWriter, new SimpleBdioFactory()).createBdioFiles(bdioCodeLocationResult, directoryManager.getBdioOutputDirectory(), projectNameVersion);
+        });
+    }
+
+    public List<UploadTarget> createBdio2Files(BdioCodeLocationResult bdioCodeLocationResult, NameVersion projectNameVersion) throws DetectUserFriendlyException {
+        return auditLog.named("Create Bdio 2 Files", () -> {
+            return new CreateBdio2FilesOperation(new Bdio2Factory(), detectInfo).createBdioFiles(bdioCodeLocationResult, directoryManager.getBdioOutputDirectory(), projectNameVersion);
+        });
+    }
+
+    public AggregateCodeLocation createAggregateCodeLocation(DependencyGraph aggregateDependencyGraph, NameVersion projectNameVersion, String aggregateName, String extension) throws DetectUserFriendlyException {
+        return auditLog.named("Create Aggregate Code Location", () -> new CreateAggregateCodeLocationOperation(new ExternalIdFactory(), codeLocationNameManager)
+                                                                          .createAggregateCodeLocation(directoryManager.getBdioOutputDirectory(), aggregateDependencyGraph, projectNameVersion, aggregateName, extension));
+    }
+
+    public DependencyGraph aggregateDirect(List<DetectCodeLocation> detectCodeLocations) throws DetectUserFriendlyException {
+        return auditLog.named("Direct Aggregate", () -> new AggregateModeDirectOperation(new SimpleBdioFactory()).aggregateCodeLocations(directoryManager.getSourceDirectory(), detectCodeLocations));
+    }
+
+    public DependencyGraph aggregateTransitive(List<DetectCodeLocation> detectCodeLocations) throws DetectUserFriendlyException {
+        return auditLog.named("Transitive Aggregate", () -> new AggregateModeTransitiveOperation(new SimpleBdioFactory()).aggregateCodeLocations(directoryManager.getSourceDirectory(), detectCodeLocations));
+    }
+
+    public void createAggregateBdio1File(AggregateCodeLocation aggregateCodeLocation) throws DetectUserFriendlyException {
+        auditLog.named("Create Aggregate Bdio 1 File", () -> {
+            DetectBdioWriter detectBdioWriter = new DetectBdioWriter(new SimpleBdioFactory(), detectInfo);
+            new CreateAggregateBdio1FileOperation(new SimpleBdioFactory(), detectBdioWriter).writeAggregateBdio1File(aggregateCodeLocation);
+        });
+    }
+
+    public void createAggregateBdio2File(AggregateCodeLocation aggregateCodeLocation) throws DetectUserFriendlyException {
+        auditLog.named("Create Bdio Code Locations", () -> {
+            DetectBdioWriter detectBdioWriter = new DetectBdioWriter(new SimpleBdioFactory(), detectInfo);
+            new CreateAggregateBdio2FileOperation(new Bdio2Factory()).writeAggregateBdio2File(aggregateCodeLocation);
+        });
     }
 }

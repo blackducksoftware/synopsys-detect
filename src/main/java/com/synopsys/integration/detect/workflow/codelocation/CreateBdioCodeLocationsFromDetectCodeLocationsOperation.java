@@ -23,18 +23,18 @@ import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 
-public class BdioCodeLocationCreator {
-    private final Logger logger = LoggerFactory.getLogger(BdioCodeLocationCreator.class);
+public class CreateBdioCodeLocationsFromDetectCodeLocationsOperation {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final CodeLocationNameManager codeLocationNameManager;
     private final DirectoryManager directoryManager;
 
-    public BdioCodeLocationCreator(final CodeLocationNameManager codeLocationNameManager, final DirectoryManager directoryManager) {
+    public CreateBdioCodeLocationsFromDetectCodeLocationsOperation(final CodeLocationNameManager codeLocationNameManager, final DirectoryManager directoryManager) {
         this.codeLocationNameManager = codeLocationNameManager;
         this.directoryManager = directoryManager;
     }
 
-    public BdioCodeLocationResult createFromDetectCodeLocations(final List<DetectCodeLocation> detectCodeLocations, String prefix, String suffix, final NameVersion projectNameVersion) throws DetectUserFriendlyException {
+    public BdioCodeLocationResult transformDetectCodeLocations(final List<DetectCodeLocation> detectCodeLocations, String prefix, String suffix, final NameVersion projectNameVersion) throws DetectUserFriendlyException {
         final List<DetectCodeLocation> validDetectCodeLocations = findValidCodeLocations(detectCodeLocations);
         final Map<DetectCodeLocation, String> codeLocationsAndNames = createCodeLocationNameMap(validDetectCodeLocations, directoryManager.getSourceDirectory(), projectNameVersion, prefix, suffix);
 
