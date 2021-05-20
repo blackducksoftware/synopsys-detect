@@ -175,7 +175,7 @@ To run a container built from a ${solution_name} image, use the Docker CLI's `do
 
 * Provide ${solution_name} property values as you would when running via the ${solution_name} script or the ${solution_name} jar, at the end of the `docker run` command.
 
-Find available images at (insert link here).
+Find available images [here](https://hub.docker.com/repository/docker/blackducksoftware/detect).
 
 The format of image names is: blackducksoftware/detect:detect-[detect_version]-[package_manager]-[package_manager_version]
 
