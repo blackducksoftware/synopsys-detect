@@ -3,6 +3,7 @@
 ## Version 7.1.0
 
 ### New Features
+* There now exist Docker images that can be used to run ${solution_name} from within a container.  See [Running ${solution_name} from within a Docker container](/30-running/#running-synopsys-detect-from-within-a-docker-container) for more details.
 
 ### Changed features
 
