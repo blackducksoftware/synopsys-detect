@@ -68,7 +68,7 @@ public class UpdateArtifactoryPropertiesTask extends DefaultTask {
         }
 
         try {
-            setArtifactoryProperty(httpClient, artifactoryDeploymentUrl, artifactoryRepository, latestPropertyKey, constructedDownloadUri);
+            // Used to update latestPropertyKey too, but that's being left as-is (pointing to "latest-6") forever for old Detect scripts
             setArtifactoryProperty(httpClient, artifactoryDeploymentUrl, artifactoryRepository, majorVersionPropertyKey, constructedDownloadUri);
         } catch (IntegrationException | IOException e) {
             logger.alwaysLog(String.format("Manual corrections to the properties for %s-%s may be necessary.", projectName, projectVersion));

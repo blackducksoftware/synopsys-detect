@@ -51,13 +51,26 @@ public class YarnBattery {
     }
 
     @Test
-    void yarnWorkspacesSimple() {
+    void yarnWorkspacesAllByDefault() {
         BatteryTest test = new BatteryTest("yarn-workspaces-simple", "yarn/yarn-workspaces-simple");
         test.sourceDirectoryNamed("yarn-workspaces-simple");
         test.sourceFileFromResource("yarn.lock");
         test.sourceFileFromResource("package.json");
         test.sourceFileFromResource("mypkgs/workspace-a/package.json");
         test.sourceFileFromResource("mypkgs/workspace-b/package.json");
+        test.expectBdioResources();
+        test.run();
+    }
+
+    @Test
+    void yarnWorkspacesAllByFilter() {
+        BatteryTest test = new BatteryTest("yarn-workspaces-simple-allworkspaces", "yarn/yarn-workspaces-simple-allworkspaces");
+        test.sourceDirectoryNamed("yarn-workspaces-simple-allworkspaces");
+        test.sourceFileFromResource("yarn.lock");
+        test.sourceFileFromResource("package.json");
+        test.sourceFileFromResource("mypkgs/workspace-a/package.json");
+        test.sourceFileFromResource("mypkgs/workspace-b/package.json");
+        test.property("detect.yarn.included.workspaces", "*");
         test.expectBdioResources();
         test.run();
     }
@@ -77,19 +90,6 @@ public class YarnBattery {
     }
 
     @Test
-    void yarnWorkspacesSimpleIncludingAllWorkspaces() {
-        BatteryTest test = new BatteryTest("yarn-workspaces-simple-allworkspaces", "yarn/yarn-workspaces-simple-allworkspaces");
-        test.sourceDirectoryNamed("yarn-workspaces-simple-allworkspaces");
-        test.sourceFileFromResource("yarn.lock");
-        test.sourceFileFromResource("package.json");
-        test.sourceFileFromResource("mypkgs/workspace-a/package.json");
-        test.sourceFileFromResource("mypkgs/workspace-b/package.json");
-        test.property("detect.yarn.included.workspaces", "*");
-        test.expectBdioResources();
-        test.run();
-    }
-
-    @Test
     void yarnWorkspacesSimpleSelectWorkspace() {
         BatteryTest test = new BatteryTest("yarn-workspaces-simple-selectwksp", "yarn/yarn-workspaces-simple-selectwksp");
         test.sourceDirectoryNamed("yarn-workspaces-simple-selectwksp");
@@ -97,43 +97,48 @@ public class YarnBattery {
         test.sourceFileFromResource("package.json");
         test.sourceFileFromResource("mypkgs/workspace-a/package.json");
         test.sourceFileFromResource("mypkgs/workspace-b/package.json");
-        test.property("detect.yarn.included.workspaces", "workspace-a");
+        test.property("detect.yarn.included.workspaces", "mypkgs/workspace-a");
         test.expectBdioResources();
         test.run();
     }
 
     @Test
-    void yarnWorkspacesExtensive() {
-        BatteryTest test = new BatteryTest("yarn-workspaces-berry", "yarn/yarn-workspaces-berry");
-        test.sourceDirectoryNamed("yarn-workspaces-berry");
-        test.sourceFileFromResource("yarn.lock");
-        test.sourceFileFromResource("package.json");
-        test.sourceFileFromResource("packages/plugin-npm/package.json");
-        test.expectBdioResources();
-        test.run();
-    }
-
-    @Test
-    void yarnYarn1WorkspacesAddAll() {
+    void yarnYarn1WorkspacesAllByFilter() {
         BatteryTest test = new BatteryTest("yarn1-workspaces", "yarn/yarn1-workspaces");
         test.sourceDirectoryNamed("yarn1-workspaces");
         test.sourceFileFromResource("yarn.lock");
         test.sourceFileFromResource("package.json");
         test.sourceFileFromResource("workspace-a/package.json");
         test.sourceFileFromResource("workspace-b/package.json");
-        test.property("detect.yarn.included.workspaces", "*");
+        test.property("detect.yarn.included.workspaces", "workspace-*");
         test.expectBdioResources();
         test.run();
     }
 
     @Test
-    void yarnYarn1WorkspacesWithWorkspaceDep() {
+    void yarnYarn2UnnamedWorkspaces() {
+        BatteryTest test = new BatteryTest("yarn2-unnamed-workspaces", "yarn/yarn2-unnamed-workspaces");
+        test.sourceDirectoryNamed("yarn2-unnamed-workspaces");
+        test.sourceFileFromResource("yarn.lock");
+        test.sourceFileFromResource("package.json");
+        test.sourceFileFromResource("workspaces/workspace-a/package.json");
+        test.sourceFileFromResource("workspaces/workspace-b/package.json");
+        test.sourceFileFromResource("workspaces/workspace-c/package.json");
+        test.sourceFileFromResource("workspaces/workspace-d/package.json");
+        test.property("detect.yarn.included.workspaces", "workspaces/workspace-c,workspaces/workspace-d");
+        test.expectBdioResources();
+        test.run();
+    }
+
+    @Test
+    void yarnYarn1SelectWorkspaceWithDevDep() {
         BatteryTest test = new BatteryTest("yarn1-workspaces-workspacedep", "yarn/yarn1-workspaces-workspacedep");
         test.sourceDirectoryNamed("yarn1-workspaces-workspacedep");
         test.sourceFileFromResource("yarn.lock");
         test.sourceFileFromResource("package.json");
         test.sourceFileFromResource("workspace-a/package.json");
         test.sourceFileFromResource("workspace-b/package.json");
+        test.property("detect.yarn.included.workspaces", "w*-a");
         test.expectBdioResources();
         test.run();
     }
@@ -151,6 +156,19 @@ public class YarnBattery {
     }
 
     @Test
+    void yarnYarn2ExcludeNestedWorkspace() {
+        BatteryTest test = new BatteryTest("yarn2-workspace-hierarchy-exclude", "yarn/yarn2-workspace-hierarchy-exclude");
+        test.sourceDirectoryNamed("yarn2-workspace-hierarchy-exclude");
+        test.sourceFileFromResource("yarn.lock");
+        test.sourceFileFromResource("package.json");
+        test.sourceFileFromResource("workspace-a/package.json");
+        test.sourceFileFromResource("workspace-a/child-workspace/package.json");
+        test.property("detect.yarn.excluded.workspaces", "child-workspace");
+        test.expectBdioResources();
+        test.run();
+    }
+
+    @Test
     void yarnYarn2WorkspacesHierarchyMonorepo() {
         BatteryTest test = new BatteryTest("yarn2-hierarchical-monorepo", "yarn/yarn2-hierarchical-monorepo");
         test.sourceDirectoryNamed("yarn2-hierarchical-monorepo");
@@ -160,6 +178,17 @@ public class YarnBattery {
         test.sourceFileFromResource("workspace-a/child-workspace/package.json");
         test.sourceFileFromResource("nondep-workspace/package.json");
         test.property("detect.yarn.included.workspaces", "nondep-work*");
+        test.expectBdioResources();
+        test.run();
+    }
+
+    @Test
+    void yarnWorkspacesExtensive() {
+        BatteryTest test = new BatteryTest("yarn-workspaces-berry", "yarn/yarn-workspaces-berry");
+        test.sourceDirectoryNamed("yarn-workspaces-berry");
+        test.sourceFileFromResource("yarn.lock");
+        test.sourceFileFromResource("package.json");
+        test.sourceFileFromResource("packages/plugin-npm/package.json");
         test.expectBdioResources();
         test.run();
     }

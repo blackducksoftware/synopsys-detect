@@ -12,7 +12,6 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import com.synopsys.integration.bdio.model.dependencyid.StringDependencyId;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDependency;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntry;
 
@@ -38,10 +37,6 @@ public class YarnWorkspaces {
 
     public Optional<YarnWorkspace> lookup(String name, String version) {
         return lookup(w -> w.matches(name, version));
-    }
-
-    public Optional<YarnWorkspace> lookup(StringDependencyId dependencyId) {
-        return lookup(w -> w.matches(dependencyId));
     }
 
     private Optional<YarnWorkspace> lookup(Predicate<YarnWorkspace> p) {

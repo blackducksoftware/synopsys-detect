@@ -9,18 +9,36 @@ When passed a value for either detect.docker.image or detect.docker.tar,
 ${solution_name} runs Docker Inspector on the given image (the "target image"),
 creating one code location.
 
+## ${solution_name} workflow
+
+When running ${solution_name} on a Docker image, you'll probably want to
+set *detect.target.type* to *IMAGE*.
+
+When a Docker image is provided and property *detect.target.type* is set to IMAGE, ${solution_name} will run:
+
+1. Docker Inspector (on the image)
+1. ${blackduck_signature_scanner_name} (on the image)
+1. ${blackduck_binary_scan_capability} (on the image)
+
+When a Docker Image is provided and property *detect.target.type* is set to *SOURCE* (the default), ${solution_name} will run:
+
+1. Docker Inspector (on the image)
+1. Any applicable detectors (on the source directory)
+1. ${blackduck_signature_scanner_name} (on the image)
+1. ${blackduck_binary_scan_capability} (on the image)
+
 ${solution_name} by default runs
 the ${blackduck_signature_scanner_name} on an image built from the "container file system".
 This image is referred to as
 the squashed image (because it has only one layer, to eliminate the chance of false positives from lower layers).
 This scan creates another code location.
 
-Finally, ${solution_name} by default
+${solution_name} by default
 runs ${blackduck_binary_scan_capability} on the container file system.
 Refer to [${solution_name}'s scan target](#scantarget) for more details.
 This also creates a code location.
 
-### File permissions
+## File permissions
 
 When using Docker Inspector, ${solution_name} must be run in an environment configured so that files created
 by Docker Inspector are readable by all. On Linux, this means an appropriate umask value
@@ -29,8 +47,7 @@ output directory must be readable by all.
 
 Docker image tarfiles passed to ${solution_name} via the *detect.docker.tar* property must be readable by all.
 
-
-### Passing Docker Inspector property values to Docker Inspector from ${solution_name}
+## Passing Docker Inspector property values to Docker Inspector from ${solution_name}
 
 For more complex use cases, you may need to pass Docker Inspector property values to Docker Inspector using ${solution_name}. To do this, construct the ${solution_name} property name by prefixing the Docker Inspector property name with ```detect.docker.passthrough.```.
 
@@ -51,7 +68,7 @@ because changing their values is likely to interfere with ${solution_name}'s abi
 * upload.bdio
 
 <a name="scantarget"></a>
-### ${solution_name}'s scan target
+## ${solution_name}'s scan target
 
 When a Docker image is run; for example, using a `docker run` command, a container is created. That container has a file system; in other words, the container file system. The container file system at the instant the container is created; in other words, the initial container file system, can be determined in advance from the image without running the image. Because the target image is not yet trusted, Docker Inspector does not run the image; that is, it does not create a container from the image, but it does construct the initial container file system, which is the file system a container has at the instant it is created.
 
@@ -63,7 +80,7 @@ By default, ${solution_name} also runs ${blackduck_binary_scan_capability} on th
 If your ${blackduck_product_name} server does not have ${blackduck_binary_scan_capability} enabled, you
 should disable ${blackduck_binary_scan_capability}. For example, you might set: *--detect.tools.excluded=BINARY_SCAN*.
 
-### Isolating application components
+## Isolating application components
 
 If you are interested in components from the application layers of your image, but not interested in components from the underlying platform layers, you can exclude components from platform layers from the results.
 
@@ -79,18 +96,18 @@ Set the value of the Docker Inspector property docker.platform.top.layer.id to t
 
 In this mode, there may be some loss in match accuracy from the ${blackduck_signature_scanner_name} because, in this scenario, the ${blackduck_signature_scanner_name} may be deprived of some contextual information, such as the operating system files that enable it to determine the Linux distribution, and that that may negatively affect its ability to accurately identify components.
 
-### Inspecting Windows Docker images
+## Inspecting Windows Docker images
 
 Given a Windows Image, Docker Inspector, since it can only discover packages using
 a Linux package manager will not contribute any components to the BOM, but will
 return the container filesystem (in the form of a squashed image),
 which ${solution_name} will scan using the ${blackduck_signature_scanner_name}.
 
-### Inspecting Docker images on Windows
+## Inspecting Docker images on Windows
 
 This section contains considerations that apply when running on Windows.
 
-#### Docker usually needs to be configured for Linux containers
+### Docker usually needs to be configured for Linux containers
 
 By default, Docker Inspector pulls (using Docker) and uses container-based image inspector services.
 These services run on Linux operating systems.
@@ -101,7 +118,7 @@ Docker Inspector also supports more advanced deployment options that avoid this 
 image inspector services running elsewhere in the network;
 for more information, refer to the Docker Inspector documentation.
 
-#### Docker must be able to mount the shared directory as a volume
+### Docker must be able to mount the shared directory as a volume
 
 Docker Inspector uses Docker to mount a shared directory (a directory inside ${solution_name}'s output directory,
 which is controlled via property detect.output.path)
@@ -109,14 +126,14 @@ so that it can be accessed (read from and written to) by the image inspector con
 Consequently Docker must have permissions sufficient to mount read/write directories
 within ${solution_name}'s output directory.
 
-#### The user must have permission to create symbolic links
+### The user must have permission to create symbolic links
 
 Docker Inspector constructs the initial file system that a container would have if you ran
 the target image. All component discovery (including package manager discovery
 and signature scanning) is based on this file system. In order to construct the file
 system accurately, the ${solution_name} user must have permission to create symbolic links.
 
-#### A Docker bug may affect ${solution_name} during clean up
+### A Docker bug may affect ${solution_name} during clean up
 
 For important information on a Docker for Windows bug that might affect ${solution_name}, refer to the
 [troubleshooting page](../../troubleshooting/solutions/#on-windows-error-trying-cleanup).

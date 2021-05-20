@@ -26,7 +26,7 @@ dependencyManagement {
 
 dependencies {
     implementation "org.freemarker:freemarker:2.3.26-incubating"
-    implementation("com.synopsys.integration:common-gradle-plugin:1.8.1") {
+    implementation("com.synopsys.integration:common-gradle-plugin:1.11.1") {
         exclude group: 'org.springframework', module: 'spring-core'
     }
     implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
