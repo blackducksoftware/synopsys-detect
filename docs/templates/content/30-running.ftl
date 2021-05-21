@@ -171,7 +171,9 @@ To run a container built from a ${solution_name} image, use the Docker CLI's `do
 
 * Use the -it options to view logs during the container run.
 
-* Use the -v option to create a bind mount that will link a provided path to project source on your host to the /source directory within the container.
+* Use the -v option to create a bind mount that will link a provided path to project source on your host to the /source directory within the container. Do this in place of providing the --detect.source.path property, as you would when running ${solution_name} via the script or jar.
+
+* Use the --rm option to clean up the container once it exits.
 
 * Provide ${solution_name} property values as you would when running via the ${solution_name} script or the ${solution_name} jar, at the end of the `docker run` command.
 
@@ -181,7 +183,7 @@ The format of image names is: blackducksoftware/detect:detect-[detect_version]-[
 
 #### ${solution_name} Base Image
 
-All Detect images are built from a base ${solution_name} image that can be used to build your own custom ${solution_name} image, or to run Detect in buildless mode.
+All Detect images are built from a base ${solution_name} image that can be used to build your own custom ${solution_name} image, to run ${solution_name} in buildless mode, or to run non-detector tools such as the Signature Scanner or Binary Scanner.
 
 The format of base image names is: blackducksoftware/detect:detect-[detect_version]
 
@@ -195,6 +197,7 @@ The format of base image names is: blackducksoftware/detect:detect-[detect_versi
 
 `docker run -it -v /Home/my/project:/source blackducksoftware/detect:7.0.0 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn --detect.detector.buildless=true`
 
+`docker run -it -v /Home/my/project:/source blackducksoftware/detect:6.9.1 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn --detect.tools=SIGNATURE_SCAN,BINARY_SCAN`
 
 ## Choosing the target type
 
