@@ -58,7 +58,7 @@ import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.Project
 import com.synopsys.integration.detect.lifecycle.run.singleton.BootSingletons;
 import com.synopsys.integration.detect.lifecycle.run.singleton.EventSingletons;
 import com.synopsys.integration.detect.lifecycle.run.singleton.UtilitySingletons;
-import com.synopsys.integration.detect.lifecycle.run.step.OperationAuditLog;
+import com.synopsys.integration.detect.lifecycle.run.step.utility.OperationAuditLog;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
 import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
