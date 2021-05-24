@@ -23,6 +23,7 @@ import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
 import com.synopsys.integration.blackduck.api.generated.view.TagView;
 import com.synopsys.integration.blackduck.http.BlackDuckRequestBuilder;
+import com.synopsys.integration.blackduck.http.BlackDuckRequestFactory;
 import com.synopsys.integration.blackduck.http.BlackDuckRequestFilter;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
@@ -119,7 +120,8 @@ public class DetectProjectService {
                 Optional<ProjectVersionWrapper> parentWrapper = projectService.getProjectVersion(parentProjectName, parentVersionName);
                 if (parentWrapper.isPresent()) {
                     ProjectVersionView parentProjectVersionView = parentWrapper.get().getProjectVersionView();
-                    BlackDuckRequestBuilder requestBuilder = BlackDuckServicesFactory.createDefaultRequestFactory().createCommonGetRequestBuilder();
+                    BlackDuckRequestFactory blackDuckRequestFactory = new BlackDuckRequestFactory(BlackDuckServicesFactory.createDefaultGson());
+                    BlackDuckRequestBuilder requestBuilder = blackDuckRequestFactory.createCommonGetRequestBuilder();
                     requestBuilder.addBlackDuckFilter(BlackDuckRequestFilter.createFilterWithSingleValue("bomComponentSource", "custom_project"));
                     List<ProjectVersionComponentView> components = blackDuckApiClient.getAllResponses(parentProjectVersionView, ProjectVersionView.COMPONENTS_LINK_RESPONSE, requestBuilder);
                     Optional<ProjectVersionComponentView> existingProjectComponent = components.stream()

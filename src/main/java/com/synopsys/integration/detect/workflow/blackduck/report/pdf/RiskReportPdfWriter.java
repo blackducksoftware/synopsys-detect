@@ -7,6 +7,14 @@
  */
 package com.synopsys.integration.detect.workflow.blackduck.report.pdf;
 
+/*
+ * blackduck-common
+ *
+ * Copyright (c) 2021 Synopsys, Inc.
+ *
+ * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
+ */
+
 import static java.awt.Color.decode;
 
 import java.awt.*;
@@ -24,8 +32,8 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
-import com.synopsys.integration.blackduck.service.model.BomComponent;
-import com.synopsys.integration.blackduck.service.model.ReportData;
+import com.synopsys.integration.detect.workflow.blackduck.report.BomComponent;
+import com.synopsys.integration.detect.workflow.blackduck.report.ReportData;
 import com.synopsys.integration.detect.workflow.blackduck.report.service.RiskReportException;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
@@ -101,7 +109,7 @@ public class RiskReportPdfWriter {
 
     private PDRectangle writeHeader(float pageWidth, float startingHeight) throws IOException, URISyntaxException {
         PDRectangle logoRectangle = pdfManager.drawRectangle(0, startingHeight - 100, pageWidth, 100, Color.WHITE);
-        pdfManager.drawImage(30, logoRectangle.getLowerLeftY() + 27.5F, 203, 45, "/riskreport/images/Synopsys_logo.png");
+        pdfManager.drawImage(30, logoRectangle.getLowerLeftY() + 27.5F, 203, 45, "/riskreport/web/images/Synopsys_logo.png");
         PDRectangle titleRectangle = pdfManager.drawRectangle(0, logoRectangle.getLowerLeftY() - 80, pageWidth - 35, 80, new Color(110, 50, 155).darker());
         pdfManager.writeText(35, titleRectangle.getLowerLeftY() + 32F, "Black Duck Risk Report", boldFont, 20, Color.WHITE);
         logger.trace("Finished writing the pdf header.");
@@ -183,9 +191,11 @@ public class RiskReportPdfWriter {
         pdfManager.writeText(50, rowY, "Component", boldFont, 12, textColor);
         pdfManager.writeText(190, rowY, "Version", boldFont, 12, textColor);
         pdfManager.writeText(310, rowY, "License", boldFont, 12, textColor);
-        pdfManager.writeText(430, rowY, "H", boldFont, 12, textColor);
-        pdfManager.writeText(470, rowY, "M", boldFont, 12, textColor);
-        pdfManager.writeText(510, rowY, "L", boldFont, 12, textColor);
+
+        pdfManager.writeText(430, rowY, "C", boldFont, 12, textColor);
+        pdfManager.writeText(460, rowY, "H", boldFont, 12, textColor);
+        pdfManager.writeText(490, rowY, "M", boldFont, 12, textColor);
+        pdfManager.writeText(520, rowY, "L", boldFont, 12, textColor);
         pdfManager.writeText(550, rowY, "Opt R", boldFont, 12, textColor);
 
         boolean isOdd = false;
@@ -233,7 +243,7 @@ public class RiskReportPdfWriter {
 
         float rowUpperY = rowRectangle.getUpperRightY();
         if (StringUtils.isNotBlank(component.getPolicyStatus()) && component.getPolicyStatus().equalsIgnoreCase("IN_VIOLATION")) {
-            pdfManager.drawImageCentered(15, rowUpperY, 8, 8, 0, rowHeight, "/riskreport/images/cross_through_circle.png");
+            pdfManager.drawImageCentered(15, rowUpperY, 8, 8, 0, rowHeight, "/riskreport/web/images/cross_through_circle.png");
         }
         String componentURL = "";
         if (StringUtils.isNotBlank(component.getComponentURL())) {
@@ -255,9 +265,10 @@ public class RiskReportPdfWriter {
 
         pdfManager.writeWrappedVerticalCenteredText(290, rowUpperY, componentLicenseWidth, rowHeight, componentLicenseTextLines, font, fontSize, textColor);
 
-        pdfManager.writeTextCentered(434, rowUpperY, rowHeight, String.valueOf(component.getSecurityRiskHighCount()), font, fontSize, textColor);
-        pdfManager.writeTextCentered(477, rowUpperY, rowHeight, String.valueOf(component.getSecurityRiskMediumCount()), font, fontSize, textColor);
-        pdfManager.writeTextCentered(520, rowUpperY, rowHeight, String.valueOf(component.getSecurityRiskLowCount()), font, fontSize, textColor);
+        pdfManager.writeTextCentered(434, rowUpperY, rowHeight, String.valueOf(component.getSecurityRiskCriticalCount()), font, fontSize, textColor);
+        pdfManager.writeTextCentered(464, rowUpperY, rowHeight, String.valueOf(component.getSecurityRiskHighCount()), font, fontSize, textColor);
+        pdfManager.writeTextCentered(494, rowUpperY, rowHeight, String.valueOf(component.getSecurityRiskMediumCount()), font, fontSize, textColor);
+        pdfManager.writeTextCentered(524, rowUpperY, rowHeight, String.valueOf(component.getSecurityRiskLowCount()), font, fontSize, textColor);
 
         Risk operationalRisk = getOperationalRisk(component, rowColor);
 

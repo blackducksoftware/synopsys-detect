@@ -43,9 +43,9 @@ import com.synopsys.integration.blackduck.http.BlackDuckRequestFactory;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.DataService;
 import com.synopsys.integration.blackduck.service.dataservice.ProjectService;
-import com.synopsys.integration.blackduck.service.model.BomComponent;
-import com.synopsys.integration.blackduck.service.model.PolicyRule;
-import com.synopsys.integration.blackduck.service.model.ReportData;
+import com.synopsys.integration.detect.workflow.blackduck.report.BomComponent;
+import com.synopsys.integration.detect.workflow.blackduck.report.PolicyRule;
+import com.synopsys.integration.detect.workflow.blackduck.report.ReportData;
 import com.synopsys.integration.detect.workflow.blackduck.report.pdf.FontLoader;
 import com.synopsys.integration.detect.workflow.blackduck.report.pdf.RiskReportPdfWriter;
 import com.synopsys.integration.exception.IntegrationException;
@@ -316,7 +316,7 @@ public class ReportService extends DataService {
         jsonObject.addProperty("reportFormat", reportFormat.toString());
         jsonObject.addProperty("reportType", ReportType.VERSION_LICENSE.toString());
 
-        String json = blackDuckApiClient.convertToJson(jsonObject);
+        String json = gson.toJson(jsonObject);
         Request request = blackDuckRequestFactory.createCommonPostRequestBuilder(reportUrl, json).build();
         return blackDuckApiClient.executePostRequestAndRetrieveURL(request);
     }

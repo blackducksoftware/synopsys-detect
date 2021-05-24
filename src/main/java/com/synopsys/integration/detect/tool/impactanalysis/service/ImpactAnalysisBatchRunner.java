@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationException;
+import com.synopsys.integration.blackduck.http.BlackDuckRequestFactory;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.log.IntLogger;
@@ -65,8 +66,9 @@ public class ImpactAnalysisBatchRunner {
     }
 
     private List<ImpactAnalysisCallable> createCallables(ImpactAnalysisBatch impactAnalysisBatch) {
+        BlackDuckRequestFactory blackDuckRequestFactory = new BlackDuckRequestFactory(BlackDuckServicesFactory.createDefaultGson());
         return impactAnalysisBatch.getImpactAnalyses().stream()
-                   .map(impactAnalysis -> new ImpactAnalysisCallable(gson, blackDuckService, impactAnalysis, BlackDuckServicesFactory.createDefaultRequestFactory()))
+                   .map(impactAnalysis -> new ImpactAnalysisCallable(gson, blackDuckService, impactAnalysis, blackDuckRequestFactory))
                    .collect(Collectors.toList());
     }
 
