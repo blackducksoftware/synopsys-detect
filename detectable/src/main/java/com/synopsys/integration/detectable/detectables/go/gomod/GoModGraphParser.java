@@ -37,7 +37,10 @@ public class GoModGraphParser {
 
         for (String line : goModGraph) {
             //example: github.com/gomods/athens cloud.google.com/go@v0.26.0
-            line = line.replace(incompatibleSuffix, ""); // Trim incompatible suffix so that KB can match component
+            if (line.endsWith(incompatibleSuffix)) {
+                // Trim incompatible suffix so that KB can match component
+                line = line.substring(0, line.length() - incompatibleSuffix.length());
+            }
             addDependencyToGraph(mutableDependencyGraph, line, rootModule, moduleExclusionList);
         }
 
