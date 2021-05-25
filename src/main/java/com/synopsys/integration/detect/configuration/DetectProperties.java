@@ -936,7 +936,9 @@ public class DetectProperties {
 
     public static final DetectProperty<EnumListProperty<ProjectCloneCategoriesType>> DETECT_PROJECT_CLONE_CATEGORIES =
         new DetectProperty<>(
-            new EnumListProperty<>("detect.project.clone.categories", Arrays.asList(ProjectCloneCategoriesType.COMPONENT_DATA, ProjectCloneCategoriesType.VULN_DATA), ProjectCloneCategoriesType.class))
+            new EnumListProperty<>("detect.project.clone.categories",
+                Arrays.asList(ProjectCloneCategoriesType.COMPONENT_DATA, ProjectCloneCategoriesType.VULN_DATA, ProjectCloneCategoriesType.LICENSE_TERM_FULFILLMENT, ProjectCloneCategoriesType.CUSTOM_FIELD_DATA),
+                ProjectCloneCategoriesType.class))
             .setInfo("Clone Project Categories", DetectPropertyFromVersion.VERSION_4_2_0)
             .setHelp(
                 "The value of this property is used to set the 'Cloning' settings on created Black Duck projects. If property detect.project.version.update is set to true, the value of this property is used to set the 'Cloning' settings on updated Black Duck projects.")
