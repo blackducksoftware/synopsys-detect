@@ -5,6 +5,7 @@
 ### New Features
 
 ### Changed features
+* (IDETECT-2524) Default clone categories increased to include license terms and custom fields to match default settings in Black Duck.
 
 ### Resolved issues
 * (IDETECT-2541) Resolved an issue that caused the CLANG detector to fail when run in non-English locales on Ubuntu and Debian systems.
