@@ -23,10 +23,10 @@ import com.synopsys.integration.detect.tool.detector.executable.SystemPathExecut
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detect.workflow.airgap.AirGapPathFinder;
-import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationCreator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationEventPublisher;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameGenerator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
+import com.synopsys.integration.detect.workflow.codelocation.CreateBdioCodeLocationsFromDetectCodeLocationsOperation;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.project.ProjectEventPublisher;
@@ -55,7 +55,7 @@ public class SingletonFactory {
         AirGapPathFinder airGapPathFinder = new AirGapPathFinder();
         CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(detectConfigurationFactory.createCodeLocationOverride());
         CodeLocationNameManager codeLocationNameManager = new CodeLocationNameManager(codeLocationNameGenerator);
-        BdioCodeLocationCreator bdioCodeLocationCreator = new BdioCodeLocationCreator(codeLocationNameManager, directoryManager);
+        CreateBdioCodeLocationsFromDetectCodeLocationsOperation createBdioCodeLocationsFromDetectCodeLocationsOperation = new CreateBdioCodeLocationsFromDetectCodeLocationsOperation(codeLocationNameManager, directoryManager);
         AirGapInspectorPaths airGapInspectorPaths = new AirGapInspectorPaths(airGapPathFinder, detectConfigurationFactory.createAirGapOptions());
         BdioTransformer bdioTransformer = new BdioTransformer();
         DetectExecutableRunner executableRunner = DetectExecutableRunner.newDebug(eventSystem);
@@ -64,7 +64,7 @@ public class SingletonFactory {
         DetectExecutableResolver detectExecutableResolver = new DetectExecutableResolver(directoryExecutableFinder, systemExecutableFinder, detectConfigurationFactory.createDetectExecutableOptions());
         OperationSystem operationSystem = new OperationSystem(eventSingletons.getStatusEventPublisher());
 
-        return new UtilitySingletons(externalIdFactory, connectionFactory, artifactResolver, codeLocationNameManager, bdioCodeLocationCreator, airGapInspectorPaths, bdioTransformer,
+        return new UtilitySingletons(externalIdFactory, connectionFactory, artifactResolver, codeLocationNameManager, createBdioCodeLocationsFromDetectCodeLocationsOperation, airGapInspectorPaths, bdioTransformer,
             executableRunner, detectExecutableResolver, operationSystem);
     }
 

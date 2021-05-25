@@ -14,7 +14,7 @@ import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
-import com.synopsys.integration.detect.workflow.DetectRun;
+import com.synopsys.integration.detect.workflow.DetectRunId;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.profiling.DetectorProfiler;
@@ -25,7 +25,7 @@ import freemarker.template.Configuration;
 public class BootSingletons {
     private final ProductRunData productRunData;
 
-    private final DetectRun detectRun;
+    private final DetectRunId detectRunId;
     private final Gson gson;
     private final DetectInfo detectInfo;
 
@@ -40,13 +40,13 @@ public class BootSingletons {
     private final DirectoryManager directoryManager;
     private final Configuration configuration;
 
-    public BootSingletons(final ProductRunData productRunData, final DetectRun detectRun, final Gson gson, final DetectInfo detectInfo, final FileFinder fileFinder, final EventSystem eventSystem,
+    public BootSingletons(final ProductRunData productRunData, final DetectRunId detectRunId, final Gson gson, final DetectInfo detectInfo, final FileFinder fileFinder, final EventSystem eventSystem,
         final DetectorProfiler detectorProfiler,
         final PropertyConfiguration detectConfiguration, final DetectableOptionFactory detectableOptionFactory, final DetectConfigurationFactory detectConfigurationFactory,
         final DirectoryManager directoryManager,
         final Configuration configuration) {
         this.productRunData = productRunData;
-        this.detectRun = detectRun;
+        this.detectRunId = detectRunId;
         this.gson = gson;
         this.detectInfo = detectInfo;
         this.fileFinder = fileFinder;
@@ -91,8 +91,8 @@ public class BootSingletons {
         return fileFinder;
     }
 
-    public DetectRun getDetectRun() {
-        return detectRun;
+    public DetectRunId getDetectRunId() {
+        return detectRunId;
     }
 
     public DetectorProfiler getDetectorProfiler() {
