@@ -363,18 +363,23 @@ public class OperationFactory { //TODO: OperationRunner
 
     public List<SignatureScanPath> createScanPaths(NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws DetectUserFriendlyException {
         return auditLog.named("Calculate Signature Scan Paths",
-            () -> new CalculateScanPathsOperation().determinePathsAndExclusions(projectNameVersion, detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getMaxDepth(), dockerTargetData));
+            () -> new CalculateScanPathsOperation(detectConfigurationFactory.createBlackDuckSignatureScannerOptions(), directoryManager, fileFinder,
+                detectConfigurationFactory.createDetectDirectoryFileFilter(directoryManager.getSourceDirectory().toPath()))
+                      .determinePathsAndExclusions(projectNameVersion, detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getMaxDepth(), dockerTargetData));
     }
 
     public ScanBatch createScanBatchOnline(final List<SignatureScanPath> scanPaths, File installDirectory, NameVersion projectNameVersion, DockerTargetData dockerTargetData, BlackDuckRunData blackDuckRunData)
         throws DetectUserFriendlyException {
         return auditLog.named("Create Online Signature Scan Batch",
-            () -> new CreateScanBatchOperation().createScanBatchWithBlackDuck(projectNameVersion, installDirectory, scanPaths, blackDuckRunData.getBlackDuckServerConfig(), dockerTargetData));
+            () -> new CreateScanBatchOperation(detectConfigurationFactory.createBlackDuckSignatureScannerOptions(), directoryManager, codeLocationNameManager)
+                      .createScanBatchWithBlackDuck(projectNameVersion, installDirectory, scanPaths, blackDuckRunData.getBlackDuckServerConfig(), dockerTargetData));
     }
 
     public ScanBatch createScanBatchOffline(final List<SignatureScanPath> scanPaths, File installDirectory, NameVersion projectNameVersion, DockerTargetData dockerTargetData)
         throws DetectUserFriendlyException {
-        return auditLog.named("Create Offline Signature Scan Batch", () -> new CreateScanBatchOperation().createScanBatchWithoutBlackDuck(projectNameVersion, installDirectory, scanPaths, dockerTargetData));
+        return auditLog.named("Create Offline Signature Scan Batch",
+            () -> new CreateScanBatchOperation(detectConfigurationFactory.createBlackDuckSignatureScannerOptions(), directoryManager, codeLocationNameManager)
+                      .createScanBatchWithoutBlackDuck(projectNameVersion, installDirectory, scanPaths, dockerTargetData));
     }
 
     public File calculateDetectControlledInstallDirectory() throws DetectUserFriendlyException {

@@ -29,9 +29,16 @@ import com.synopsys.integration.util.NameVersion;
 
 public class CreateScanBatchOperation {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private BlackDuckSignatureScannerOptions signatureScannerOptions;
-    private DirectoryManager directoryManager;
-    private CodeLocationNameManager codeLocationNameManager;
+    private final BlackDuckSignatureScannerOptions signatureScannerOptions;
+    private final DirectoryManager directoryManager;
+    private final CodeLocationNameManager codeLocationNameManager;
+
+    public CreateScanBatchOperation(final BlackDuckSignatureScannerOptions signatureScannerOptions, final DirectoryManager directoryManager,
+        final CodeLocationNameManager codeLocationNameManager) {
+        this.signatureScannerOptions = signatureScannerOptions;
+        this.directoryManager = directoryManager;
+        this.codeLocationNameManager = codeLocationNameManager;
+    }
 
     public ScanBatch createScanBatchWithBlackDuck(NameVersion projectNameVersion, File installDirectory, List<SignatureScanPath> signatureScanPaths, BlackDuckServerConfig blackDuckServerConfig, @Nullable DockerTargetData dockerTargetData)
         throws DetectUserFriendlyException {
