@@ -29,6 +29,8 @@ dependencies {
     implementation("com.synopsys.integration:common-gradle-plugin:1.11.1") {
         exclude group: 'org.springframework', module: 'spring-core'
     }
-    implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
+    implementation ("com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}") {
+        exclude group: 'com.synopsys.integration', module: 'integration-reporting'
+    }
     implementation 'org.springframework:spring-core'
 }
