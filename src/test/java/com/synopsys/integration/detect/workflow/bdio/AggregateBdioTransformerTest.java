@@ -30,7 +30,6 @@ import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 
 class AggregateBdioTransformerTest {
     private static Gson gson;
-    private static AggregateBdioTransformer aggregateBdioTransformer;
     private static BdioTransformer bdioTransformer;
     private static File sourceDir = new File("src/test/resources/workflow/bdio/aggregation/src");
     private static List<DetectCodeLocation> inputCodelocations;
@@ -38,7 +37,6 @@ class AggregateBdioTransformerTest {
     @BeforeAll
     static void setup() throws IOException {
         gson = new Gson();
-        aggregateBdioTransformer = new AggregateBdioTransformer(new SimpleBdioFactory());
         bdioTransformer = new BdioTransformer();
         List<String> inputBdioFilenames = Arrays.asList(
             "basic_multiproject_0_0_0_SNAPSHOT_com_synopsys_integration_basic_multiproject_0_0_0_SNAPSHOT_gradle_bom.jsonld",
@@ -52,7 +50,7 @@ class AggregateBdioTransformerTest {
     @Test
     void testTransitiveMode() throws DetectUserFriendlyException {
 
-        DependencyGraph aggregatedGraph = aggregateBdioTransformer.aggregateCodeLocations(sourceDir, inputCodelocations, AggregateMode.TRANSITIVE);
+        DependencyGraph aggregatedGraph = new AggregateModeTransitiveOperation(new SimpleBdioFactory()).aggregateCodeLocations(sourceDir, inputCodelocations);
 
         assertEquals(3, aggregatedGraph.getRootDependencies().size());
         assertTrue(aggregatedGraph.getRootDependencies().contains(genProjectDependency("com.synopsys.integration", "basic-multiproject", "0.0.0-SNAPSHOT")));
@@ -68,7 +66,7 @@ class AggregateBdioTransformerTest {
     @Test
     void testDirectMode() throws DetectUserFriendlyException {
 
-        DependencyGraph aggregatedGraph = aggregateBdioTransformer.aggregateCodeLocations(sourceDir, inputCodelocations, AggregateMode.DIRECT);
+        DependencyGraph aggregatedGraph = new AggregateModeDirectOperation(new SimpleBdioFactory()).aggregateCodeLocations(sourceDir, inputCodelocations);
 
         assertEquals(2, aggregatedGraph.getRootDependencies().size());
         assertTrue(aggregatedGraph.getRootDependencies().contains(genComponentDependency("junit", "junit", "4.12")));

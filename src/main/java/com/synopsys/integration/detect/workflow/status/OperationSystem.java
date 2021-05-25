@@ -34,6 +34,11 @@ public class OperationSystem {
 
     }
 
+    public void finishOperation(String operationName) { //for use in finally blocks.
+        Operation operation = operationMap.computeIfAbsent(operationName, this::createNewOperation);
+        operation.finish();
+    }
+
     public void completeWithError(String operationName, String... errorMessages) {
         Operation operation = operationMap.computeIfAbsent(operationName, this::createNewOperation);
         operation.error(errorMessages);
@@ -50,7 +55,7 @@ public class OperationSystem {
         statusEventPublisher.publishOperation(operation);
     }
 
-    private Operation startOperation(String operationName) {
+    public Operation startOperation(String operationName) {
         Operation currentOperation = operationMap.computeIfAbsent(operationName, this::createNewOperation);
         if (currentOperation.getEndTime().isPresent()) {
             publishOperation(currentOperation);

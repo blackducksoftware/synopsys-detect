@@ -39,7 +39,7 @@ import com.synopsys.integration.detect.lifecycle.boot.DetectBootResult;
 import com.synopsys.integration.detect.lifecycle.exit.ExitManager;
 import com.synopsys.integration.detect.lifecycle.exit.ExitOptions;
 import com.synopsys.integration.detect.lifecycle.exit.ExitResult;
-import com.synopsys.integration.detect.lifecycle.run.RunManager;
+import com.synopsys.integration.detect.lifecycle.run.DetectRun;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.run.singleton.BootSingletons;
 import com.synopsys.integration.detect.lifecycle.shutdown.CleanupUtility;
@@ -48,7 +48,7 @@ import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeUtility;
 import com.synopsys.integration.detect.lifecycle.shutdown.ShutdownDecider;
 import com.synopsys.integration.detect.lifecycle.shutdown.ShutdownDecision;
 import com.synopsys.integration.detect.lifecycle.shutdown.ShutdownManager;
-import com.synopsys.integration.detect.workflow.DetectRun;
+import com.synopsys.integration.detect.workflow.DetectRunId;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.report.ReportListener;
@@ -101,7 +101,7 @@ public class Application implements ApplicationRunner {
 
         //Before boot even begins, we create a new Spring context for Detect to work within.
         logger.debug("Initializing detect.");
-        DetectRun detectRun = DetectRun.createDefault();
+        DetectRunId detectRunId = DetectRunId.createDefault();
 
         Gson gson = BlackDuckServicesFactory.createDefaultGsonBuilder().setPrettyPrinting().create();
         DetectInfo detectInfo = DetectInfoUtility.createDefaultDetectInfo();
@@ -109,7 +109,7 @@ public class Application implements ApplicationRunner {
 
         boolean shouldForceSuccess = false;
 
-        Optional<DetectBootResult> detectBootResultOptional = bootApplication(detectRun, applicationArguments.getSourceArgs(), eventSystem, exitCodeManager, gson, detectInfo, fileFinder);
+        Optional<DetectBootResult> detectBootResultOptional = bootApplication(detectRunId, applicationArguments.getSourceArgs(), eventSystem, exitCodeManager, gson, detectInfo, fileFinder);
 
         if (detectBootResultOptional.isPresent()) {
             DetectBootResult detectBootResult = detectBootResultOptional.get();
@@ -132,7 +132,7 @@ public class Application implements ApplicationRunner {
         exitApplication(exitManager, startTime, shouldForceSuccess);
     }
 
-    private Optional<DetectBootResult> bootApplication(DetectRun detectRun, String[] sourceArgs, EventSystem eventSystem, ExitCodeManager exitCodeManager, Gson gson, DetectInfo detectInfo,
+    private Optional<DetectBootResult> bootApplication(DetectRunId detectRunId, String[] sourceArgs, EventSystem eventSystem, ExitCodeManager exitCodeManager, Gson gson, DetectInfo detectInfo,
         FileFinder fileFinder) {
         Optional<DetectBootResult> bootResult = Optional.empty();
         try {
@@ -141,7 +141,7 @@ public class Application implements ApplicationRunner {
             DetectArgumentState detectArgumentState = detectArgumentStateParser.parseArgs(sourceArgs);
             List<PropertySource> propertySources = new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironmentSafely(environment, logger::error));
 
-            DetectBootFactory detectBootFactory = new DetectBootFactory(detectRun, detectInfo, gson, eventSystem, fileFinder);
+            DetectBootFactory detectBootFactory = new DetectBootFactory(detectRunId, detectInfo, gson, eventSystem, fileFinder);
             DetectBoot detectBoot = new DetectBoot(eventSystem, detectBootFactory, detectArgumentState, propertySources);
 
             bootResult = detectBoot.boot(detectInfo.getDetectVersion());
@@ -159,8 +159,8 @@ public class Application implements ApplicationRunner {
         Optional<ProductRunData> optionalProductRunData = detectBootResult.getProductRunData();
         if (detectBootResult.getBootType() == DetectBootResult.BootType.RUN && optionalProductRunData.isPresent() && optionalRunContext.isPresent()) {
             logger.debug("Detect will attempt to run.");
-            RunManager runManager = new RunManager(exitCodeManager);
-            runManager.run(optionalRunContext.get());
+            DetectRun detectRun = new DetectRun(exitCodeManager);
+            detectRun.run(optionalRunContext.get());
 
         } else {
             logger.debug("Detect will NOT attempt to run.");

@@ -45,20 +45,27 @@ public class Operation {
         this.errorMessages = errorMessages;
     }
 
+    public void finish() {
+        if (getEndTime().isPresent())
+            return;
+
+        endTime = Instant.now();
+    }
+
     public void success() {
         this.statusType = StatusType.SUCCESS;
-        endTime = Instant.now();
+        finish();
     }
 
     public void fail() {
         this.statusType = StatusType.FAILURE;
-        endTime = Instant.now();
+        finish();
     }
 
     public void error(String... errorMessages) {
         this.statusType = StatusType.FAILURE;
         this.errorMessages = errorMessages;
-        endTime = Instant.now();
+        finish();
     }
 
     public Instant getStartTime() {
