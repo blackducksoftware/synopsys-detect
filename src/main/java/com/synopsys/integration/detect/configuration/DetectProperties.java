@@ -70,7 +70,7 @@ public class DetectProperties {
     public static final DetectProperty<NullableStringProperty> BLACKDUCK_API_TOKEN =
         new DetectProperty<>(new NullableStringProperty("blackduck.api.token"))
             .setInfo("Black Duck API Token", DetectPropertyFromVersion.VERSION_4_2_0)
-            .setHelp("The API token used to authenticate with the Black Duck Server.")
+            .setHelp("The access token used to authenticate with the Black Duck Server.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT);
 
     public static final DetectProperty<BooleanProperty> BLACKDUCK_OFFLINE_MODE =
