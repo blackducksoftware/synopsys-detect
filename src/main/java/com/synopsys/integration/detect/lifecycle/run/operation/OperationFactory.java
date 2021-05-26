@@ -345,7 +345,7 @@ public class OperationFactory { //TODO: OperationRunner
     public File createRiskReportFile(BlackDuckRunData blackDuckRunData, ProjectVersionWrapper projectVersionWrapper, File reportDirectory) throws DetectUserFriendlyException {
         return auditLog.named("Create Risk Report File", () -> {
             DetectFontLoader detectFontLoader = detectFontLoaderFactory.detectFontLoader();
-            com.synopsys.integration.detect.workflow.blackduck.report.service.ReportService reportService = creatReportService(blackDuckRunData);
+            ReportService reportService = creatReportService(blackDuckRunData);
             File createdPdf = reportService.createReportPdfFile(reportDirectory, projectVersionWrapper.getProjectView(), projectVersionWrapper.getProjectVersionView(), detectFontLoader::loadFont,
                 detectFontLoader::loadBoldFont);
             return createdPdf;
@@ -354,12 +354,12 @@ public class OperationFactory { //TODO: OperationRunner
 
     public File createNoticesReportFile(BlackDuckRunData blackDuckRunData, ProjectVersionWrapper projectVersion) throws DetectUserFriendlyException {
         return auditLog.named("Create Notices Report File", () -> {
-            com.synopsys.integration.detect.workflow.blackduck.report.service.ReportService reportService = creatReportService(blackDuckRunData);
+            ReportService reportService = creatReportService(blackDuckRunData);
             return reportService.createNoticesReportFile(directoryManager.getReportOutputDirectory(), projectVersion.getProjectView(), projectVersion.getProjectVersionView());
         });
     }
 
-    private com.synopsys.integration.detect.workflow.blackduck.report.service.ReportService creatReportService(BlackDuckRunData blackDuckRunData) {
+    private ReportService creatReportService(BlackDuckRunData blackDuckRunData) {
         BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
         Gson gson = blackDuckServicesFactory.getGson();
         HttpUrl blackDuckUrl = blackDuckServicesFactory.getBlackDuckHttpClient().getBaseUrl();
@@ -469,10 +469,20 @@ public class OperationFactory { //TODO: OperationRunner
     public Optional<File> calculateRiskReportFileLocation() throws DetectUserFriendlyException { //TODO Should be a decision in boot
         return auditLog.named("Decide Risk Report Path", () -> {
             if (detectConfigurationFactory.createBlackDuckPostOptions().shouldGenerateRiskReport()) {
-                return Optional.of(detectConfigurationFactory.createBlackDuckPostOptions().getRiskReportPdfPath().toFile());
-            } else {
-                return Optional.empty();
+                File customReportLocation = detectConfigurationFactory.createBlackDuckPostOptions().getRiskReportPdfPath().toFile();
+                if (customReportLocation.exists()) {
+                    return Optional.of(customReportLocation);
+                } else {
+                    //TODO- detect.risk.report.path has a default for risk report directory to be current working directory
+                    // should the property determine the default, or should this method?
+                    //      if this method, what should default be:
+                    //          current working directory (behavior before refactor)
+                    //          source directory (what docs claim)
+                    //          report output directory (behavior after refactor)
+                    return Optional.of(directoryManager.getSourceDirectory());
+                }
             }
+            return Optional.empty();
         });
     }
 
