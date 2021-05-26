@@ -7,12 +7,10 @@
  */
 package com.synopsys.integration.detect.workflow.blackduck.analytics;
 
-import com.google.gson.annotations.SerializedName;
+import com.synopsys.integration.blackduck.api.core.BlackDuckResponse;
 
-public class AnalyticsSetting {
-    @SerializedName("name")
+public class AnalyticsSetting extends BlackDuckResponse {
     private final String name;
-    @SerializedName("value")
     private final boolean value;
 
     public AnalyticsSetting(String name, boolean value) {
@@ -27,4 +25,5 @@ public class AnalyticsSetting {
     public boolean isEnabled() {
         return value;
     }
+
 }

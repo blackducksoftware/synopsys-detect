@@ -15,6 +15,7 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.TaskAction;
 
+import com.google.gson.Gson;
 import com.synopsys.integration.Common;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.IntLogger;
@@ -22,6 +23,7 @@ import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.rest.HttpMethod;
 import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.rest.body.BodyContent;
+import com.synopsys.integration.rest.body.BodyContentConverter;
 import com.synopsys.integration.rest.body.StringBodyContent;
 import com.synopsys.integration.rest.client.AuthenticatingIntHttpClient;
 import com.synopsys.integration.rest.client.BasicAuthHttpClient;
@@ -33,6 +35,7 @@ import com.synopsys.integration.rest.support.AuthenticationSupport;
 
 public class UpdateArtifactoryPropertiesTask extends DefaultTask {
     private final IntLogger logger = new Slf4jIntLogger(getLogger());
+    private final Gson gson = new Gson();
     private final Project project = this.getProject();
 
     @TaskAction
@@ -54,7 +57,7 @@ public class UpdateArtifactoryPropertiesTask extends DefaultTask {
         String artifactoryRepository = getExtensionProperty(Common.PROPERTY_ARTIFACTORY_REPO);
         String artifactoryDownloadUrl = getExtensionProperty(Common.PROPERTY_DOWNLOAD_ARTIFACTORY_URL);
 
-        AuthenticatingIntHttpClient httpClient = new BasicAuthHttpClient(logger, 200, true, ProxyInfo.NO_PROXY_INFO, new AuthenticationSupport(), artifactoryDeployerUsername, artifactoryDeployerPassword);
+        AuthenticatingIntHttpClient httpClient = new BasicAuthHttpClient(logger, gson, 200, true, ProxyInfo.NO_PROXY_INFO, new AuthenticationSupport(), artifactoryDeployerUsername, artifactoryDeployerPassword);
 
         String majorVersion = projectVersion.split("\\.")[0];
         String latestPropertyKey = "DETECT_LATEST";
@@ -85,11 +88,10 @@ public class UpdateArtifactoryPropertiesTask extends DefaultTask {
     private void setArtifactoryProperty(IntHttpClient httpClient, String artifactoryDeploymentUrl, String deploymentRepositoryKey, String propertyKey, String propertyValue)
         throws IntegrationException, IOException {
         HttpUrl baseUrl = new HttpUrl(String.format("%s/api/metadata/%s/com/synopsys/integration/%s", artifactoryDeploymentUrl, deploymentRepositoryKey, project.getName()));
-        BodyContent bodyContent = new StringBodyContent(String.format("{\"props\":{\"%s\":\"%s\"}}", propertyKey, propertyValue));
+        BodyContent bodyContent = new StringBodyContent(String.format("{\"props\":{\"%s\":\"%s\"}}", propertyKey, propertyValue), BodyContentConverter.DEFAULT);
         Request request = new Request.Builder()
                               .url(baseUrl)
                               .method(HttpMethod.PATCH)
-                              .acceptMimeType("application/json")
                               .bodyContent(bodyContent)
                               .build();
 
