@@ -31,10 +31,17 @@ import com.synopsys.integration.util.NameVersion;
 
 public class CalculateScanPathsOperation {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private BlackDuckSignatureScannerOptions signatureScannerOptions;
-    private DirectoryManager directoryManager;
-    private FileFinder fileFinder;
-    private Predicate<File> fileFilter;
+    private final BlackDuckSignatureScannerOptions signatureScannerOptions;
+    private final DirectoryManager directoryManager;
+    private final FileFinder fileFinder;
+    private final Predicate<File> fileFilter;
+
+    public CalculateScanPathsOperation(final BlackDuckSignatureScannerOptions signatureScannerOptions, final DirectoryManager directoryManager, final FileFinder fileFinder, final Predicate<File> fileFilter) {
+        this.signatureScannerOptions = signatureScannerOptions;
+        this.directoryManager = directoryManager;
+        this.fileFinder = fileFinder;
+        this.fileFilter = fileFilter;
+    }
 
     public List<SignatureScanPath> determinePathsAndExclusions(NameVersion projectNameVersion, Integer maxDepth, @Nullable DockerTargetData dockerTargetData) throws IOException {
         List<Path> providedSignatureScanPaths = signatureScannerOptions.getSignatureScannerPaths();

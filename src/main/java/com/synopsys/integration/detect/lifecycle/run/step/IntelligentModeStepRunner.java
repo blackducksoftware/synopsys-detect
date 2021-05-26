@@ -49,7 +49,7 @@ public class IntelligentModeStepRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private StepHelper stepHelper;
 
-    public IntelligentModeStepRunner(final OperationFactory operationFactory, final StepHelper stepHelper) {
+    public IntelligentModeStepRunner(OperationFactory operationFactory, StepHelper stepHelper) {
         this.operationFactory = operationFactory;
         this.stepHelper = stepHelper;
     }
@@ -184,7 +184,7 @@ public class IntelligentModeStepRunner {
                 logger.warn(String.format("Failed to create risk report pdf directory: %s", reportDirectory));
             }
 
-            File createdPdf = operationFactory.createRiskReportFile(blackDuckRunData, projectVersion);
+            File createdPdf = operationFactory.createRiskReportFile(blackDuckRunData, projectVersion, reportDirectory);
 
             logger.info(String.format("Created risk report pdf: %s", createdPdf.getCanonicalPath()));
             operationFactory.publishReport(new ReportDetectResult("Risk Report", createdPdf.getCanonicalPath()));
