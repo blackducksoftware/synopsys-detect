@@ -110,16 +110,16 @@ export BLACKDUCK_URL=https://blackduck.yourdomain.com
 * Using property assignments in a .properties configuration file (#14 in Spring Boot's order of precedence):
 ````
 blackduck.url=https://blackduck.yourdomain.com
-blackduck.api.token=yourtokenvalue
+blackduck.api.token=youraccesstoken
 ````
 * Using property assignments in a .yml configuration file (also #14 in Spring Boot's order of precedence, but .properties takes precedence over .yml):
 ````
 blackduck.url: https://blackduck.yourdomain.com
-blackduck.api.token: yourtokenvalue
+blackduck.api.token: youraccesstoken
 ````
 * Using the SPRING_APPLICATION_JSON environment variable with a set of properties set using JSON format (#5 in Spring Boot's order of precedence):
 ````
-export SPRING_APPLICATION_JSON='{"blackduck.url":"https://blackduck.yourdomain.com","blackduck.api.token":"yourgeneratedtoken"}'
+export SPRING_APPLICATION_JSON='{"blackduck.url":"https://blackduck.yourdomain.com","blackduck.api.token":"youraccesstoken"}'
 ````
 
 Refer to the [Spring Boot documentation](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config)
@@ -131,11 +131,9 @@ You can provide sensitive values such as credentials to ${solution_name} using a
 mechanisms provided by [Spring Boot](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config),
 including:
 
-* On the command line; for example, --blackduck.password={your password}.
-* As an environment variable value; for example, export BLACKDUCK_PASSWORD={your password}.
+* On the command line; for example, --blackduck.api.token={your access token}.
+* As an environment variable value; for example, export BLACKDUCK_API_TOKEN={your access token}.
 * In a configuration (.properties) file; for example, ./application.properties.
 
 Values provided on the command line may be visible to other users that can view process details.
 Setting sensitive values using environment variables is usually considered more secure.
-Connecting to another system; for example, ${blackduck_product_name} or ${polaris_product_name}) using an access token (also called an API token)
-is usually considered more secure than connecting using a username and password. 

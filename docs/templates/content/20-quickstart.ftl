@@ -27,21 +27,20 @@ To run ${solution_name}, you will need to provide login credentials for your ${b
 server. One way to do that is to add the following arguments to the command line:
 
 * `--blackduck.url={your Black Duck server URL}`
-* `--blackduck.username={your Black Duck username}`
-* `--blackduck.password={your Black Duck password}`
+* `--blackduck.api.token={your Black Duck access token}`
 
 The command you run looks like this:
 
 On Linux or Mac:
 
 ````
-bash <(curl -s -L https://detect.synopsys.com/detect7.sh) --blackduck.url={your Black Duck server URL} --blackduck.username={your Black Duck username} --blackduck.password={your Black Duck password}
+bash <(curl -s -L https://detect.synopsys.com/detect7.sh) --blackduck.url={your Black Duck server URL} --blackduck.api.token={your Black Duck access token}
 ````
 
 On Windows:
 
 ````
-powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect" --blackduck.url={your Black Duck server URL} --blackduck.username={your Black Duck username} --blackduck.password={your Black Duck password}
+powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect" --blackduck.url={your Black Duck server URL} --blackduck.api.token={your Black Duck access token}
 ````
 
 The operations performed by ${solution_name} depends on what it finds in your source directory.
