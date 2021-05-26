@@ -644,14 +644,14 @@ public class DetectProperties {
             .setInfo("Vulnerability Impact Analysis Enabled", DetectPropertyFromVersion.VERSION_6_5_0)
             .setHelp(
                 "If set to true, Detect will attempt to look for *.class files and generate a Vulnerability Impact Analysis Report for upload to Black Duck.")
-            .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL);
+            .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<NullablePathProperty> DETECT_IMPACT_ANALYSIS_OUTPUT_PATH =
         new DetectProperty<>(new NullablePathProperty("detect.impact.analysis.output.path"))
             .setInfo("Impact Analysis Output Directory", DetectPropertyFromVersion.VERSION_6_5_0)
             .setHelp("The path to the output directory for Impact Analysis reports.",
                 "If not set, the Impact Analysis reports are placed in a 'impact-analysis' subdirectory of the output directory.")
-            .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL);
+            .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<FilterableEnumListProperty<DetectorType>> DETECT_INCLUDED_DETECTOR_TYPES =
         new DetectProperty<>(new FilterableEnumListProperty<>("detect.included.detector.types", emptyList(), DetectorType.class))
