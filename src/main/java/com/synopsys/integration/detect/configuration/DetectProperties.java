@@ -335,7 +335,7 @@ public class DetectProperties {
     public static final DetectProperty<NullableStringProperty> DETECT_BOM_AGGREGATE_NAME =
         new DetectProperty<>(new NullableStringProperty("detect.bom.aggregate.name"))
             .setInfo("Aggregate BDIO File Name", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("If set, this will aggregate all the BOMs to create a single BDIO file with the name provided.")
+            .setHelp("If set, this will aggregate all the BOMs to create a single BDIO file with the filename provided.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced);
 
