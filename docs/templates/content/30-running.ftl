@@ -189,15 +189,15 @@ The format of base image names is: blackducksoftware/detect:detect-[detect_versi
 
 #### Examples
 
-`docker run -it -v [/path/to/source]:/source blackducksoftware/detect:[detect_image_tag] [detect_arguments]`
+`docker run -it --rm -v [/path/to/source]:/source blackducksoftware/detect:[detect_image_tag] [detect_arguments]`
 
-`docker run -it -v /Home/my/gradle/project:/source blackducksoftware/detect:7.0.0-gradle-6.8.2 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn`
+`docker run -it --rm -v /Home/my/gradle/project:/source blackducksoftware/detect:7.0.0-gradle-6.8.2 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn`
 
-`docker run -it -v /Home/my/maven/project:/source blackducksoftware/detect:6.9.1-maven-3.8.1 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn`
+`docker run -it --rm -v /Home/my/maven/project:/source blackducksoftware/detect:6.9.1-maven-3.8.1 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn`
 
-`docker run -it -v /Home/my/project:/source blackducksoftware/detect:7.0.0 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn --detect.detector.buildless=true`
+`docker run -it --rm -v /Home/my/project:/source blackducksoftware/detect:7.0.0 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn --detect.detector.buildless=true`
 
-`docker run -it -v /Home/my/project:/source blackducksoftware/detect:6.9.1 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn --detect.tools=SIGNATURE_SCAN,BINARY_SCAN`
+`docker run -it --rm -v /Home/my/project:/source blackducksoftware/detect:6.9.1 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn --detect.tools=SIGNATURE_SCAN,BINARY_SCAN`
 
 ## Choosing the target type
 
