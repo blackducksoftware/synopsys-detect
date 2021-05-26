@@ -345,7 +345,7 @@ public class OperationFactory { //TODO: OperationRunner
     public File createRiskReportFile(BlackDuckRunData blackDuckRunData, ProjectVersionWrapper projectVersionWrapper, File reportDirectory) throws DetectUserFriendlyException {
         return auditLog.named("Create Risk Report File", () -> {
             DetectFontLoader detectFontLoader = detectFontLoaderFactory.detectFontLoader();
-            com.synopsys.integration.detect.workflow.blackduck.report.service.ReportService reportService = creatReportService(blackDuckRunData);
+            ReportService reportService = creatReportService(blackDuckRunData);
             File createdPdf = reportService.createReportPdfFile(reportDirectory, projectVersionWrapper.getProjectView(), projectVersionWrapper.getProjectVersionView(), detectFontLoader::loadFont,
                 detectFontLoader::loadBoldFont);
             return createdPdf;
