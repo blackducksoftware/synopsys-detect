@@ -3,6 +3,7 @@
 ## Version 7.1.0
 
 ### New Features
+* Added ability to specify custom fonts to be used during risk report generation. See [here](../advanced/reports/#risk-report-generation) for more details.
 
 ### Changed features
 
