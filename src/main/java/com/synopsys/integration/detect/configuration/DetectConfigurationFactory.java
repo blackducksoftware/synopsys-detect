@@ -24,6 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.Nullable;
 
+import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
@@ -81,10 +82,12 @@ import com.synopsys.integration.rest.proxy.ProxyInfoBuilder;
 public class DetectConfigurationFactory {
     private final PropertyConfiguration detectConfiguration;
     private final PathResolver pathResolver;
+    private final Gson gson;
 
-    public DetectConfigurationFactory(PropertyConfiguration detectConfiguration, PathResolver pathResolver) {
+    public DetectConfigurationFactory(PropertyConfiguration detectConfiguration, PathResolver pathResolver, Gson gson) {
         this.detectConfiguration = detectConfiguration;
         this.pathResolver = pathResolver;
+        this.gson = gson;
     }
 
     //#region Prefer These Over Any Property
@@ -194,7 +197,7 @@ public class DetectConfigurationFactory {
                                           .map(Pattern::compile)
                                           .collect(Collectors.toList());
         ProxyInfo proxyInformation = createBlackDuckProxyInfo();
-        return new ConnectionDetails(proxyInformation, proxyPatterns, findTimeoutInSeconds(), alwaysTrust);
+        return new ConnectionDetails(gson, proxyInformation, proxyPatterns, findTimeoutInSeconds(), alwaysTrust);
     }
 
     public BlackDuckConnectionDetails createBlackDuckConnectionDetails() throws DetectUserFriendlyException {

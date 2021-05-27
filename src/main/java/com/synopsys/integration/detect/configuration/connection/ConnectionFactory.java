@@ -10,6 +10,7 @@ package com.synopsys.integration.detect.configuration.connection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.google.gson.Gson;
 import com.synopsys.integration.common.util.ProxyUtil;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.SilentIntLogger;
@@ -28,10 +29,10 @@ public class ConnectionFactory {
             logger = new SilentIntLogger();
         }
         if (ProxyUtil.shouldIgnoreUrl(url, connectionDetails.getIgnoredProxyHostPatterns(), logger)) {
-            return new IntHttpClient(logger, Math.toIntExact(connectionDetails.getTimeout()), connectionDetails.getAlwaysTrust(), ProxyInfo.NO_PROXY_INFO);
+            return new IntHttpClient(logger, connectionDetails.getGson(), Math.toIntExact(connectionDetails.getTimeout()), connectionDetails.getAlwaysTrust(), ProxyInfo.NO_PROXY_INFO);
         } else {
-            return new IntHttpClient(logger, Math.toIntExact(connectionDetails.getTimeout()), connectionDetails.getAlwaysTrust(), connectionDetails.getProxyInformation());
+            return new IntHttpClient(logger, connectionDetails.getGson(), Math.toIntExact(connectionDetails.getTimeout()), connectionDetails.getAlwaysTrust(), connectionDetails.getProxyInformation());
         }
-
     }
+
 }

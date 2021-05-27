@@ -142,7 +142,7 @@ public class Application implements ApplicationRunner {
             List<PropertySource> propertySources = new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironmentSafely(environment, logger::error));
 
             DetectBootFactory detectBootFactory = new DetectBootFactory(detectRunId, detectInfo, gson, eventSystem, fileFinder);
-            DetectBoot detectBoot = new DetectBoot(eventSystem, detectBootFactory, detectArgumentState, propertySources);
+            DetectBoot detectBoot = new DetectBoot(eventSystem, gson, detectBootFactory, detectArgumentState, propertySources);
 
             bootResult = detectBoot.boot(detectInfo.getDetectVersion());
 

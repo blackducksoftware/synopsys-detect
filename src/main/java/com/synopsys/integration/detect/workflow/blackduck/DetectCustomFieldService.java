@@ -25,9 +25,10 @@ import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class DetectCustomFieldService {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     public static final LinkMultipleResponses<CustomFieldView> CUSTOM_FIELDS_LINK = new LinkMultipleResponses<>("custom-fields", CustomFieldView.class);
     public static final LinkMultipleResponses<CustomFieldOptionView> CUSTOM_FIELDS_OPTION_LIST_LINK = new LinkMultipleResponses<>("custom-field-option-list", CustomFieldOptionView.class);
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private List<CustomFieldOperation> determineOperations(final CustomFieldDocument customFieldDocument, final ProjectVersionWrapper projectVersionWrapper, final BlackDuckApiClient blackDuckService) throws DetectUserFriendlyException {
         final List<CustomFieldView> projectFields = retrieveCustomFields(projectVersionWrapper.getProjectView(), blackDuckService);
@@ -90,9 +91,10 @@ public class DetectCustomFieldService {
         return operations;
     }
 
+    //TODO ejk There is no way this is a reasonable implementation. :)
     private List<CustomFieldView> retrieveCustomFields(final BlackDuckView view, final BlackDuckApiClient blackDuckService) {
         try {
-            return blackDuckService.getAllResponses(view, CUSTOM_FIELDS_LINK);
+            return blackDuckService.getAllResponses(view.metaMultipleResponses(CUSTOM_FIELDS_LINK));
         } catch (final IntegrationException | NoSuchElementException e) {
             return Collections.emptyList();
         }
@@ -100,7 +102,7 @@ public class DetectCustomFieldService {
 
     private List<CustomFieldOptionView> retrieveCustomFieldOptions(final BlackDuckView view, final BlackDuckApiClient blackDuckService) {
         try {
-            return blackDuckService.getAllResponses(view, CUSTOM_FIELDS_OPTION_LIST_LINK);
+            return blackDuckService.getAllResponses(view.metaMultipleResponses(CUSTOM_FIELDS_OPTION_LIST_LINK));
         } catch (final IntegrationException | NoSuchElementException e) {
             return Collections.emptyList();
         }
@@ -110,4 +112,5 @@ public class DetectCustomFieldService {
         final List<CustomFieldOperation> customFieldOperations = determineOperations(customFieldDocument, projectVersionWrapper, blackDuckService);
         executeCustomFieldOperations(customFieldOperations, blackDuckService);
     }
+
 }

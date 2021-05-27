@@ -33,12 +33,11 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 
 import com.google.gson.Gson;
+import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentView;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
-import com.synopsys.integration.blackduck.http.BlackDuckRequestFactory;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.dataservice.CodeLocationService;
@@ -85,12 +84,12 @@ public abstract class BlackDuckIntegrationTest {
         codeLocationService = blackDuckServicesFactory.createCodeLocationService();
 
         Gson gson = blackDuckServicesFactory.getGson();
-        HttpUrl blackDuckUrl = blackDuckServicesFactory.getBlackDuckHttpClient().getBaseUrl();
         BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
-        BlackDuckRequestFactory blackDuckRequestFactory = blackDuckServicesFactory.getRequestFactory();
+        ApiDiscovery apiDiscovery = blackDuckServicesFactory.getApiDiscovery();
+        HttpUrl blackDuckUrl = blackDuckServicesFactory.getBlackDuckHttpClient().getBlackDuckUrl();
         IntegrationEscapeUtil integrationEscapeUtil = blackDuckServicesFactory.createIntegrationEscapeUtil();
         long reportServiceTimeout = 120 * 1000;
-        reportService = new ReportService(gson, blackDuckUrl, blackDuckApiClient, blackDuckRequestFactory, logger, projectService, integrationEscapeUtil, reportServiceTimeout);
+        reportService = new ReportService(gson, blackDuckUrl, blackDuckApiClient, apiDiscovery, logger, integrationEscapeUtil, reportServiceTimeout);
 
         previousShouldExit = Application.shouldExit();
         Application.setShouldExit(false);
@@ -112,7 +111,7 @@ public abstract class BlackDuckIntegrationTest {
         optionalProjectVersionWrapper = projectService.getProjectVersion(projectName, projectVersionName);
         assertTrue(optionalProjectVersionWrapper.isPresent());
 
-        List<CodeLocationView> codeLocations = blackDuckService.getAllResponses(optionalProjectVersionWrapper.get().getProjectVersionView(), ProjectVersionView.CODELOCATIONS_LINK_RESPONSE);
+        List<CodeLocationView> codeLocations = blackDuckService.getAllResponses(optionalProjectVersionWrapper.get().getProjectVersionView().metaCodelocationsLink());
         assertEquals(0, codeLocations.size());
 
         List<ProjectVersionComponentView> bomComponents = projectBomService.getComponentsForProjectVersion(optionalProjectVersionWrapper.get().getProjectVersionView());

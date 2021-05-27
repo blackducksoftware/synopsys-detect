@@ -10,6 +10,7 @@ package com.synopsys.integration.detect.tool.impactanalysis.service;
 import java.util.Set;
 
 import com.synopsys.integration.blackduck.api.core.BlackDuckPath;
+import com.synopsys.integration.blackduck.api.manual.response.BlackDuckResponseResponse;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
@@ -19,14 +20,14 @@ import com.synopsys.integration.util.NameVersion;
 import com.synopsys.integration.util.NoThreadExecutorService;
 
 public class ImpactAnalysisUploadService {
-    public static final BlackDuckPath IMPACT_ANALYSIS_PATH = new BlackDuckPath("/api/scans/vulnerability-impact");
+    public static final BlackDuckPath<BlackDuckResponseResponse> IMPACT_ANALYSIS_PATH = new BlackDuckPath<>("/api/scans/vulnerability-impact", BlackDuckResponseResponse.class, false);
 
     private final ImpactAnalysisBatchRunner impactAnalysisBatchRunner;
     private final CodeLocationCreationService codeLocationCreationService;
 
     // TODO: Move to BlackDuckServicesFactory in blackduck-common
     public static ImpactAnalysisUploadService create(BlackDuckServicesFactory blackDuckServicesFactory) {
-        ImpactAnalysisBatchRunner impactAnalysisBatchRunner = new ImpactAnalysisBatchRunner(blackDuckServicesFactory.getLogger(), blackDuckServicesFactory.getBlackDuckApiClient(), new NoThreadExecutorService(),
+        ImpactAnalysisBatchRunner impactAnalysisBatchRunner = new ImpactAnalysisBatchRunner(blackDuckServicesFactory.getLogger(), blackDuckServicesFactory.getBlackDuckApiClient(), blackDuckServicesFactory.getApiDiscovery(), new NoThreadExecutorService(),
             blackDuckServicesFactory.getGson());
         return new ImpactAnalysisUploadService(impactAnalysisBatchRunner, blackDuckServicesFactory.createCodeLocationCreationService());
     }
