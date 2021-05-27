@@ -211,7 +211,7 @@ task signJar() {
     finalizedBy 'verifyJar'
     doLast {
         exec {
-            commandLine 'jarsigner', '-tsa', 'http://tsa.starfieldtech.com/', '-storetype', 'pkcs12', '-storepass', "${jarSigningKeystorePassword}", '-keystore', "${jarSigningKeystorePath}", "${createArtifactName()}", "${jarSigningCertificateAlias}"
+            commandLine 'jarsigner', '-tsa', 'http://rfc3161timestamp.globalsign.com/advanced', '-storetype', 'pkcs12', '-storepass', "${jarSigningKeystorePassword}", '-keystore', "${jarSigningKeystorePath}", "${createArtifactName()}", "${jarSigningCertificateAlias}"
         }
     }
 }
