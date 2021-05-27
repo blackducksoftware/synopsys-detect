@@ -26,6 +26,7 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 public class GoModGraphParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExternalIdFactory externalIdFactory;
+    private final String incompatibleSuffix = "+incompatible";
 
     public GoModGraphParser(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
@@ -36,6 +37,10 @@ public class GoModGraphParser {
 
         for (String line : goModGraph) {
             //example: github.com/gomods/athens cloud.google.com/go@v0.26.0
+            if (line.endsWith(incompatibleSuffix)) {
+                // Trim incompatible suffix so that KB can match component
+                line = line.substring(0, line.length() - incompatibleSuffix.length());
+            }
             addDependencyToGraph(mutableDependencyGraph, line, rootModule, moduleExclusionList);
         }
 

@@ -1435,7 +1435,7 @@
     },
     "relationship": [
       {
-        "related": "http:golang/github.com%2Fgofrs%2Fuuid/v3.2.0%2Bincompatible",
+        "related": "http:golang/github.com%2Fgofrs%2Fuuid/v3.2.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -1450,12 +1450,12 @@
   },
   {
     "name": "github.com/gofrs/uuid",
-    "revision": "v3.2.0+incompatible",
-    "@id": "http:golang/github.com%2Fgofrs%2Fuuid/v3.2.0%2Bincompatible",
+    "revision": "v3.2.0",
+    "@id": "http:golang/github.com%2Fgofrs%2Fuuid/v3.2.0",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "golang",
-      "externalId": "github.com/gofrs/uuid:v3.2.0+incompatible",
+      "externalId": "github.com/gofrs/uuid:v3.2.0",
       "externalIdMetaData": {
         "forge": {
           "name": "golang",
@@ -1463,7 +1463,7 @@
         },
         "pieces": [
           "github.com/gofrs/uuid",
-          "v3.2.0+incompatible"
+          "v3.2.0"
         ]
       }
     },
@@ -2304,7 +2304,7 @@
     },
     "relationship": [
       {
-        "related": "http:golang/github.com%2Fjtolds%2Fgls/v4.20.0%2Bincompatible",
+        "related": "http:golang/github.com%2Fjtolds%2Fgls/v4.20.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -2319,12 +2319,12 @@
   },
   {
     "name": "github.com/jtolds/gls",
-    "revision": "v4.20.0+incompatible",
-    "@id": "http:golang/github.com%2Fjtolds%2Fgls/v4.20.0%2Bincompatible",
+    "revision": "v4.20.0",
+    "@id": "http:golang/github.com%2Fjtolds%2Fgls/v4.20.0",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "golang",
-      "externalId": "github.com/jtolds/gls:v4.20.0+incompatible",
+      "externalId": "github.com/jtolds/gls:v4.20.0",
       "externalIdMetaData": {
         "forge": {
           "name": "golang",
@@ -2332,7 +2332,7 @@
         },
         "pieces": [
           "github.com/jtolds/gls",
-          "v4.20.0+incompatible"
+          "v4.20.0"
         ]
       }
     },
@@ -4247,7 +4247,7 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:golang/github.com%2Fgofrs%2Fuuid/v3.2.0%2Bincompatible",
+        "related": "http:golang/github.com%2Fgofrs%2Fuuid/v3.2.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {

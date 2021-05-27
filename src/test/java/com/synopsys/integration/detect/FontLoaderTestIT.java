@@ -41,7 +41,7 @@ import com.synopsys.integration.configuration.property.types.path.SimplePathReso
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
-import com.synopsys.integration.detect.workflow.DetectRun;
+import com.synopsys.integration.detect.workflow.DetectRunId;
 import com.synopsys.integration.detect.workflow.blackduck.DetectFontLoader;
 import com.synopsys.integration.detect.workflow.blackduck.font.DetectFontInstaller;
 import com.synopsys.integration.detect.workflow.blackduck.font.DetectFontLocator;
@@ -64,7 +64,7 @@ public class FontLoaderTestIT {
         ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
         DetectFontInstaller installer = new DetectFontInstaller(artifactResolver);
         DirectoryOptions directoryOptions = new DirectoryOptions(null, null, null, null, fontDirectory.toPath());
-        DirectoryManager directoryManager = new DirectoryManager(directoryOptions, DetectRun.createDefault());
+        DirectoryManager directoryManager = new DirectoryManager(directoryOptions, DetectRunId.createDefault());
         detectFontLocator = new OnlineDetectFontLocator(installer, directoryManager);
     }
 

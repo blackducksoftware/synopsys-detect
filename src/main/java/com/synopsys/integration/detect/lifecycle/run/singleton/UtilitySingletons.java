@@ -14,8 +14,8 @@ import com.synopsys.integration.detect.tool.detector.executable.DetectExecutable
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
-import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationCreator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
+import com.synopsys.integration.detect.workflow.codelocation.CreateBdioCodeLocationsFromDetectCodeLocationsOperation;
 import com.synopsys.integration.detect.workflow.status.OperationSystem;
 
 public class UtilitySingletons {
@@ -23,7 +23,7 @@ public class UtilitySingletons {
     private final ConnectionFactory connectionFactory;
     private final ArtifactResolver artifactResolver;
     private final CodeLocationNameManager codeLocationNameManager;
-    private final BdioCodeLocationCreator bdioCodeLocationCreator;
+    private final CreateBdioCodeLocationsFromDetectCodeLocationsOperation createBdioCodeLocationsFromDetectCodeLocationsOperation;
     private final AirGapInspectorPaths airGapInspectorPaths;
     private final BdioTransformer bdioTransformer;
     private final DetectExecutableRunner executableRunner;
@@ -32,13 +32,13 @@ public class UtilitySingletons {
 
     public UtilitySingletons(final ExternalIdFactory externalIdFactory, final ConnectionFactory connectionFactory, final ArtifactResolver artifactResolver,
         final CodeLocationNameManager codeLocationNameManager,
-        final BdioCodeLocationCreator bdioCodeLocationCreator, final AirGapInspectorPaths airGapInspectorPaths, final BdioTransformer bdioTransformer,
+        final CreateBdioCodeLocationsFromDetectCodeLocationsOperation createBdioCodeLocationsFromDetectCodeLocationsOperation, final AirGapInspectorPaths airGapInspectorPaths, final BdioTransformer bdioTransformer,
         final DetectExecutableRunner executableRunner, final DetectExecutableResolver detectExecutableResolver, final OperationSystem operationSystem) {
         this.externalIdFactory = externalIdFactory;
         this.connectionFactory = connectionFactory;
         this.artifactResolver = artifactResolver;
         this.codeLocationNameManager = codeLocationNameManager;
-        this.bdioCodeLocationCreator = bdioCodeLocationCreator;
+        this.createBdioCodeLocationsFromDetectCodeLocationsOperation = createBdioCodeLocationsFromDetectCodeLocationsOperation;
         this.airGapInspectorPaths = airGapInspectorPaths;
         this.bdioTransformer = bdioTransformer;
         this.executableRunner = executableRunner;
@@ -62,8 +62,8 @@ public class UtilitySingletons {
         return codeLocationNameManager;
     }
 
-    public BdioCodeLocationCreator getBdioCodeLocationCreator() {
-        return bdioCodeLocationCreator;
+    public CreateBdioCodeLocationsFromDetectCodeLocationsOperation getBdioCodeLocationCreator() {
+        return createBdioCodeLocationsFromDetectCodeLocationsOperation;
     }
 
     public AirGapInspectorPaths getAirGapInspectorPaths() {

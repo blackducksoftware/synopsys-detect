@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectInfo;
-import com.synopsys.integration.detect.workflow.DetectRun;
+import com.synopsys.integration.detect.workflow.DetectRunId;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 
@@ -33,14 +33,15 @@ public class DiagnosticSystem {
     private DiagnosticLogSystem diagnosticLogSystem;
     private DiagnosticExecutableCapture diagnosticExecutableCapture;
     private DiagnosticFileCapture diagnosticFileCapture;
-    private final DetectRun detectRun;
+    private final DetectRunId detectRunId;
     private final DetectInfo detectInfo;
     private final DirectoryManager directoryManager;
     private final EventSystem eventSystem;
 
-    public DiagnosticSystem(boolean isExtendedMode, PropertyConfiguration propertyConfiguration, DetectRun detectRun, DetectInfo detectInfo, DirectoryManager directoryManager, EventSystem eventSystem, SortedMap<String, String> maskedRawPropertyValues, Set<String> propertyKeys) {
+    public DiagnosticSystem(boolean isExtendedMode, PropertyConfiguration propertyConfiguration, DetectRunId detectRunId, DetectInfo detectInfo, DirectoryManager directoryManager, EventSystem eventSystem,
+        SortedMap<String, String> maskedRawPropertyValues, Set<String> propertyKeys) {
         this.propertyConfiguration = propertyConfiguration;
-        this.detectRun = detectRun;
+        this.detectRunId = detectRunId;
         this.detectInfo = detectInfo;
         this.directoryManager = directoryManager;
         this.eventSystem = eventSystem;
@@ -62,7 +63,7 @@ public class DiagnosticSystem {
 
         logger.info("Initializing diagnostic components.");
         try {
-            diagnosticReportHandler = new DiagnosticReportHandler(directoryManager.getReportOutputDirectory(), detectRun.getRunId(), eventSystem);
+            diagnosticReportHandler = new DiagnosticReportHandler(directoryManager.getReportOutputDirectory(), detectRunId.getRunId(), eventSystem);
             diagnosticLogSystem = new DiagnosticLogSystem(directoryManager.getLogOutputDirectory(), eventSystem);
             diagnosticExecutableCapture = new DiagnosticExecutableCapture(directoryManager.getExecutableOutputDirectory(), eventSystem);
             if (isExtendedMode) {
@@ -138,6 +139,6 @@ public class DiagnosticSystem {
         directoriesToCompress.add(directoryManager.getRunHomeDirectory());
 
         DiagnosticZipCreator zipper = new DiagnosticZipCreator();
-        return zipper.createDiagnosticZip(detectRun.getRunId(), directoryManager.getRunsOutputDirectory(), directoriesToCompress);
+        return zipper.createDiagnosticZip(detectRunId.getRunId(), directoryManager.getRunsOutputDirectory(), directoriesToCompress);
     }
 }

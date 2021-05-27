@@ -70,7 +70,7 @@ public class DetectProperties {
     public static final DetectProperty<NullableStringProperty> BLACKDUCK_API_TOKEN =
         new DetectProperty<>(new NullableStringProperty("blackduck.api.token"))
             .setInfo("Black Duck API Token", DetectPropertyFromVersion.VERSION_4_2_0)
-            .setHelp("The API token used to authenticate with the Black Duck Server.")
+            .setHelp("The access token used to authenticate with the Black Duck Server.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT);
 
     public static final DetectProperty<BooleanProperty> BLACKDUCK_OFFLINE_MODE =
@@ -335,7 +335,7 @@ public class DetectProperties {
     public static final DetectProperty<NullableStringProperty> DETECT_BOM_AGGREGATE_NAME =
         new DetectProperty<>(new NullableStringProperty("detect.bom.aggregate.name"))
             .setInfo("Aggregate BDIO File Name", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("If set, this will aggregate all the BOMs to create a single BDIO file with the name provided.")
+            .setHelp("If set, this will aggregate all the BOMs to create a single BDIO file with the filename provided.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced);
 
@@ -377,7 +377,7 @@ public class DetectProperties {
         new DetectProperty<>(new NullableStringProperty("detect.code.location.name"))
             .setInfo("Scan Name", DetectPropertyFromVersion.VERSION_4_0_0)
             .setHelp(
-                "An override for the name Detect will use for the scan file it creates. If supplied and multiple scans are found, Detect will append an index to each scan name. When this property is set, detect.project.codelocation.prefix and detect.project.codelocation.suffix are ignored.")
+                "An override for the name Detect will use for the scan (codelocation) it creates. If supplied and multiple scans are found, Detect will append an index to each scan name. When this property is set, detect.project.codelocation.prefix and detect.project.codelocation.suffix are ignored.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced);
 
@@ -644,14 +644,14 @@ public class DetectProperties {
             .setInfo("Vulnerability Impact Analysis Enabled", DetectPropertyFromVersion.VERSION_6_5_0)
             .setHelp(
                 "If set to true, Detect will attempt to look for *.class files and generate a Vulnerability Impact Analysis Report for upload to Black Duck.")
-            .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL);
+            .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<NullablePathProperty> DETECT_IMPACT_ANALYSIS_OUTPUT_PATH =
         new DetectProperty<>(new NullablePathProperty("detect.impact.analysis.output.path"))
             .setInfo("Impact Analysis Output Directory", DetectPropertyFromVersion.VERSION_6_5_0)
             .setHelp("The path to the output directory for Impact Analysis reports.",
                 "If not set, the Impact Analysis reports are placed in a 'impact-analysis' subdirectory of the output directory.")
-            .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL);
+            .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<FilterableEnumListProperty<DetectorType>> DETECT_INCLUDED_DETECTOR_TYPES =
         new DetectProperty<>(new FilterableEnumListProperty<>("detect.included.detector.types", emptyList(), DetectorType.class))
@@ -936,7 +936,9 @@ public class DetectProperties {
 
     public static final DetectProperty<EnumListProperty<ProjectCloneCategoriesType>> DETECT_PROJECT_CLONE_CATEGORIES =
         new DetectProperty<>(
-            new EnumListProperty<>("detect.project.clone.categories", Arrays.asList(ProjectCloneCategoriesType.COMPONENT_DATA, ProjectCloneCategoriesType.VULN_DATA), ProjectCloneCategoriesType.class))
+            new EnumListProperty<>("detect.project.clone.categories",
+                Arrays.asList(ProjectCloneCategoriesType.COMPONENT_DATA, ProjectCloneCategoriesType.VULN_DATA, ProjectCloneCategoriesType.LICENSE_TERM_FULFILLMENT, ProjectCloneCategoriesType.CUSTOM_FIELD_DATA),
+                ProjectCloneCategoriesType.class))
             .setInfo("Clone Project Categories", DetectPropertyFromVersion.VERSION_4_2_0)
             .setHelp(
                 "The value of this property is used to set the 'Cloning' settings on created Black Duck projects. If property detect.project.version.update is set to true, the value of this property is used to set the 'Cloning' settings on updated Black Duck projects.")

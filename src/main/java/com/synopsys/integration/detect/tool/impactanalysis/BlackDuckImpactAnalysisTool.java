@@ -96,7 +96,7 @@ public class BlackDuckImpactAnalysisTool {
 
     /**
      * @param projectNameAndVersion is the Black Duck project name and version.
-     * @param projectVersionWrapper is Nullable, but is a pre-requisite for code location mapping.
+     * @param projectVersionWrapper is Nullable, but is a pre-requisite for code location mapping. ///////// HAHAHAHAHAHAHAHAHAHA iT FORCE checks FOR NULL AM I GOING INSANE WHAT IS THIS - jordan
      */
     @NotNull
     public ImpactAnalysisToolResult performImpactAnalysisActions(NameVersion projectNameAndVersion, @Nullable ProjectVersionWrapper projectVersionWrapper) throws DetectUserFriendlyException {
@@ -172,7 +172,6 @@ public class BlackDuckImpactAnalysisTool {
         ImpactAnalysisBatchOutput impactAnalysisBatchOutput = codeLocationCreationData.getOutput();
         impactAnalysisBatchOutput.throwExceptionForError(logger);
         return codeLocationCreationData;
-
     }
 
     // TODO: Create a code location mapping service generic enough for all tools.

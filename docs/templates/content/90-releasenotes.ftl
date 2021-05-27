@@ -4,11 +4,14 @@
 
 ### New Features
 * Added ability to specify custom fonts to be used during risk report generation. See [here](../advanced/reports/#risk-report-generation) for more details.
+* There now exist Docker images that can be used to run ${solution_name} from within a container.  See [Running ${solution_name} from within a Docker container](/30-running/#running-synopsys-detect-from-within-a-docker-container) for more details.
 
 ### Changed features
+* (IDETECT-2524) Default clone categories increased to include license terms and custom fields to match default settings in Black Duck.
 
 ### Resolved issues
 * (IDETECT-2541) Resolved an issue that caused the CLANG detector to fail when run in non-English locales on Ubuntu and Debian systems.
+* (IDETECT-2505) Resolved an issue that caused go mod components with +incompatible version suffixes to not be matched on Black Duck.
 
 ## Version 7.0.0
 ### New Features

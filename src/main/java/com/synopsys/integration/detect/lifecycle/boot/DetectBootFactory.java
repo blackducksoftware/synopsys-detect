@@ -50,7 +50,7 @@ import com.synopsys.integration.detect.tool.detector.executable.SystemPathExecut
 import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorInstaller;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
-import com.synopsys.integration.detect.workflow.DetectRun;
+import com.synopsys.integration.detect.workflow.DetectRunId;
 import com.synopsys.integration.detect.workflow.airgap.AirGapCreator;
 import com.synopsys.integration.detect.workflow.airgap.AirGapPathFinder;
 import com.synopsys.integration.detect.workflow.airgap.DetectFontAirGapCreator;
@@ -70,15 +70,15 @@ import freemarker.template.Configuration;
 //Responsible for creating a few classes boot needs
 public class DetectBootFactory {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final DetectRun detectRun;
+    private final DetectRunId detectRunId;
     private final DetectInfo detectInfo;
     private final Gson gson;
     private final EventSystem eventSystem;
     private final BlackDuckConnectivityChecker blackDuckConnectivityChecker;
     private final FileFinder fileFinder;
 
-    public DetectBootFactory(DetectRun detectRun, DetectInfo detectInfo, Gson gson, EventSystem eventSystem, FileFinder fileFinder) {
-        this.detectRun = detectRun;
+    public DetectBootFactory(DetectRunId detectRunId, DetectInfo detectInfo, Gson gson, EventSystem eventSystem, FileFinder fileFinder) {
+        this.detectRunId = detectRunId;
         this.detectInfo = detectInfo;
         this.gson = gson;
         this.eventSystem = eventSystem;
@@ -88,7 +88,7 @@ public class DetectBootFactory {
 
     public BootSingletons createRunDependencies(ProductRunData productRunData, PropertyConfiguration detectConfiguration, DetectableOptionFactory detectableOptionFactory, DetectConfigurationFactory detectConfigurationFactory,
         DirectoryManager directoryManager, Configuration configuration) {
-        return new BootSingletons(productRunData, detectRun, gson, detectInfo, fileFinder, eventSystem, createDetectorProfiler(), detectConfiguration, detectableOptionFactory, detectConfigurationFactory, directoryManager, configuration);
+        return new BootSingletons(productRunData, detectRunId, gson, detectInfo, fileFinder, eventSystem, createDetectorProfiler(), detectConfiguration, detectableOptionFactory, detectConfigurationFactory, directoryManager, configuration);
     }
 
     public Configuration createFreemarkerConfiguration() {
@@ -114,7 +114,7 @@ public class DetectBootFactory {
     }
 
     public DiagnosticSystem createDiagnosticSystem(boolean isDiagnosticExtended, PropertyConfiguration detectConfiguration, DirectoryManager directoryManager, SortedMap<String, String> maskedRawPropertyValues, Set<String> propertyKeys) {
-        return new DiagnosticSystem(isDiagnosticExtended, detectConfiguration, detectRun, detectInfo, directoryManager, eventSystem, maskedRawPropertyValues, propertyKeys);
+        return new DiagnosticSystem(isDiagnosticExtended, detectConfiguration, detectRunId, detectInfo, directoryManager, eventSystem, maskedRawPropertyValues, propertyKeys);
     }
 
     public AirGapCreator createAirGapCreator(ConnectionDetails connectionDetails, DetectExecutableOptions detectExecutableOptions, Configuration freemarkerConfiguration) {
@@ -140,7 +140,7 @@ public class DetectBootFactory {
     }
 
     public DirectoryManager createDirectoryManager(DetectConfigurationFactory detectConfigurationFactory) throws IOException {
-        return new DirectoryManager(detectConfigurationFactory.createDirectoryOptions(), detectRun);
+        return new DirectoryManager(detectConfigurationFactory.createDirectoryOptions(), detectRunId);
     }
 
     public DetectConfigurationBootManager createDetectConfigurationBootManager(PropertyConfiguration detectConfiguration) {
