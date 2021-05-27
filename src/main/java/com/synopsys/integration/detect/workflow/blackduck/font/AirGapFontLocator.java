@@ -9,6 +9,7 @@ package com.synopsys.integration.detect.workflow.blackduck.font;
 
 import java.io.File;
 
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,19 +27,34 @@ public class AirGapFontLocator implements DetectFontLocator {
 
     @Override
     public File locateRegularFontFile() throws DetectUserFriendlyException {
-        return locateFontFile(DetectFontLocator.FONT_FILE_NAME_REGULAR);
+        return locateFontFile(DetectFontLocator.DEFAULT_FONT_FILE_NAME_REGULAR, DetectFontLocator.CUSTOM_FONT_FILE_DIR_NAME_REGULAR);
     }
 
     @Override
     public File locateBoldFontFile() throws DetectUserFriendlyException {
-        return locateFontFile(DetectFontLocator.FONT_FILE_NAME_BOLD);
+        return locateFontFile(DetectFontLocator.DEFAULT_FONT_FILE_NAME_BOLD, DetectFontLocator.CUSTOM_FONT_FILE_DIR_NAME_BOLD);
     }
 
-    private File locateFontFile(String childName) throws DetectUserFriendlyException {
-        File fontFile = airGapPaths.getFontsAirGapFile()
-                            .map(fontAirGapPath -> new File(fontAirGapPath, childName))
-                            .orElseThrow(() -> new DetectUserFriendlyException(String.format("Could not get the font file %s from the air gap path", childName), ExitCodeType.FAILURE_GENERAL_ERROR));
+    private File locateFontFile(String defaultFontFileName, String customFontDirectoryName) throws DetectUserFriendlyException {
+        File fontFile = airGapPaths.getFontsAirGapDirectory()
+                            .map(fontAirGapDirectory -> locateFontFile(fontAirGapDirectory, defaultFontFileName, customFontDirectoryName))
+                            .orElseThrow(() -> new DetectUserFriendlyException(String.format("Could not get the font file %s from the air gap path", defaultFontFileName), ExitCodeType.FAILURE_GENERAL_ERROR));
         logger.debug("Locating font file {}", fontFile.getAbsolutePath());
+
         return fontFile;
+    }
+
+    @Nullable
+    private File locateFontFile(File fontsDirectory, String defaultFontFileName, String customFontDirectoryName) {
+        File customFontDirectory = new File(fontsDirectory, customFontDirectoryName);
+        if (customFontDirectory.exists() && customFontDirectory.isDirectory() && customFontDirectory.listFiles() != null && customFontDirectory.listFiles().length != 0) {
+            // If custom font directory is present and non-empty, use first file in that directory
+            for (File file : customFontDirectory.listFiles()) {
+                if (file.getName().endsWith(DetectFontLocator.TTF_FILE_EXTENSION)) {
+                    return file;
+                }
+            }
+        }
+        return new File(fontsDirectory, defaultFontFileName);
     }
 }

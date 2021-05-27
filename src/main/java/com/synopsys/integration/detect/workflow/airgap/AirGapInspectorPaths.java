@@ -85,7 +85,7 @@ public class AirGapInspectorPaths {
         return Optional.ofNullable(fontsAirGapPath);
     }
 
-    public Optional<File> getFontsAirGapFile() {
+    public Optional<File> getFontsAirGapDirectory() {
         return getFontsAirGapPath().map(Path::toFile).filter(File::exists);
     }
 }

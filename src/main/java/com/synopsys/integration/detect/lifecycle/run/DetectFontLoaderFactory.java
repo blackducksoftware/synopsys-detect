@@ -10,7 +10,6 @@ package com.synopsys.integration.detect.lifecycle.run;
 import java.io.File;
 import java.util.Optional;
 
-import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.run.singleton.BootSingletons;
 import com.synopsys.integration.detect.lifecycle.run.singleton.UtilitySingletons;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
@@ -33,9 +32,9 @@ public class DetectFontLoaderFactory {
         directoryManager = bootSingletons.getDirectoryManager();
     }
 
-    public DetectFontLoader detectFontLoader() throws DetectUserFriendlyException {
+    public DetectFontLoader detectFontLoader() {
         DetectFontLocator locator;
-        Optional<File> fontAirGapPath = airGapInspectorPaths.getFontsAirGapFile();
+        Optional<File> fontAirGapPath = airGapInspectorPaths.getFontsAirGapDirectory();
         if (fontAirGapPath.isPresent()) {
             locator = new AirGapFontLocator(airGapInspectorPaths);
         } else {

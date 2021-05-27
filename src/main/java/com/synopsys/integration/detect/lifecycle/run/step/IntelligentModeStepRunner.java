@@ -201,7 +201,7 @@ public class IntelligentModeStepRunner {
                 logger.warn(String.format("Failed to create notices directory at %s", noticesDirectory));
             }
 
-            File noticesFile = operationFactory.createNoticesReportFile(blackDuckRunData, projectVersion);
+            File noticesFile = operationFactory.createNoticesReportFile(blackDuckRunData, projectVersion, noticesDirectory);
             logger.info(String.format("Created notices report: %s", noticesFile.getCanonicalPath()));
 
             operationFactory.publishReport(new ReportDetectResult("Notices Report", noticesFile.getCanonicalPath()));
