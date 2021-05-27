@@ -17,6 +17,7 @@ import com.synopsys.integration.detect.workflow.nameversion.decision.PreferredDe
 import com.synopsys.integration.detect.workflow.nameversion.decision.PreferredDetectorNotFoundDecision;
 import com.synopsys.integration.detect.workflow.nameversion.decision.TooManyPreferredDetectorTypesFoundDecision;
 import com.synopsys.integration.detector.base.DetectorType;
+import com.synopsys.integration.util.NameVersion;
 
 /*
 Originally, name version could be decided after all detectors had ran, there was no benefit calculating the name 'on the fly'.
@@ -29,13 +30,13 @@ This allows discovery to run only the minimum amount of discoveries needed.
 public class PreferredDetectorNameVersionHandler extends DetectorNameVersionHandler {
     private final DetectorType preferredDetectorType;
 
-    public PreferredDetectorNameVersionHandler(final DetectorType preferredDetectorType) {
+    public PreferredDetectorNameVersionHandler(DetectorType preferredDetectorType) {
         super(Collections.emptyList());
         this.preferredDetectorType = preferredDetectorType;
     }
 
     @Override
-    public boolean willAccept(final DetectorProjectInfoMetadata metadata) {
+    public boolean willAccept(DetectorProjectInfoMetadata metadata) {
         if (metadata.getDetectorType().equals(preferredDetectorType)) {
             return super.willAccept(metadata);
         } else {
@@ -44,16 +45,22 @@ public class PreferredDetectorNameVersionHandler extends DetectorNameVersionHand
     }
 
     @Override
-    public void accept(final DetectorProjectInfo projectInfo) {
+    public void accept(DetectorProjectInfo projectInfo) {
         if (projectInfo.getDetectorType().equals(preferredDetectorType)) {
             super.accept(projectInfo);
         }
     }
 
+    //TODO- do we want to apply git here?
+    @Override
+    public void applyGitNameVersion(NameVersion gitNameVersion) {
+        getLowestDepth().add(new DetectorProjectInfo(DetectorType.valueOf("N/A"), 0, gitNameVersion));
+    }
+
     @NotNull
     @Override
     public NameVersionDecision finalDecision() {
-        final List<DetectorProjectInfo> uniqueDetectorsAtLowestDepth = this.filterUniqueDetectorsOnly(getLowestDepth());
+        List<DetectorProjectInfo> uniqueDetectorsAtLowestDepth = this.filterUniqueDetectorsOnly(getLowestDepth());
 
         if (uniqueDetectorsAtLowestDepth.isEmpty()) {
             return new PreferredDetectorNotFoundDecision(preferredDetectorType);

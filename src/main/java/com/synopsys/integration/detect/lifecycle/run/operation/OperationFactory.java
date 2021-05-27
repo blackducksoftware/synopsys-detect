@@ -119,6 +119,8 @@ import com.synopsys.integration.detect.workflow.codelocation.CreateBdioCodeLocat
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
+import com.synopsys.integration.detect.workflow.nameversion.git.GitNameVersionExtractor;
+import com.synopsys.integration.detect.workflow.nameversion.git.GitNameVersionExtractorBuilder;
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
 import com.synopsys.integration.detect.workflow.project.DetectToolProjectInfo;
 import com.synopsys.integration.detect.workflow.project.ProjectEventPublisher;
@@ -139,6 +141,7 @@ import com.synopsys.integration.util.OperatingSystemType;
 public class OperationFactory { //TODO: OperationRunner
     private final DetectDetectableFactory detectDetectableFactory;
     private final DetectFontLoaderFactory detectFontLoaderFactory; //TODO: Eh? Only need it if you want to do risk reports.
+    private final GitNameVersionExtractor gitNameVersionExtractor;
 
     private final Gson htmlEscapeDisabledGson;
     private final CodeLocationConverter codeLocationConverter;
@@ -191,6 +194,8 @@ public class OperationFactory { //TODO: OperationRunner
         createBdioCodeLocationsFromDetectCodeLocationsOperation = utilitySingletons.getBdioCodeLocationCreator();
         connectionFactory = utilitySingletons.getConnectionFactory();
 
+        gitNameVersionExtractor = GitNameVersionExtractorBuilder.build(fileFinder, utilitySingletons.getExecutableRunner(), utilitySingletons.getDetectExecutableResolver());
+
         //My Managed Dependencies
         this.htmlEscapeDisabledGson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
         this.codeLocationConverter = new CodeLocationConverter(utilitySingletons.getExternalIdFactory());
@@ -216,7 +221,7 @@ public class OperationFactory { //TODO: OperationRunner
         return new DetectorOperation(detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem,
             detectDetectableFactory,
             extractionEnvironmentProvider, codeLocationConverter, statusEventPublisher, exitCodePublisher, detectorEventPublisher,
-            fileFinder);
+            fileFinder, gitNameVersionExtractor);
     }
     //END: NOT YET MIGRATED
 

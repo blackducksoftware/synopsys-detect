@@ -26,7 +26,6 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.CondaR
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanmResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.DockerResolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.GitResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GoResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GradleResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.JavaResolver;
@@ -104,14 +103,6 @@ import com.synopsys.integration.detectable.detectables.docker.DockerDetectable;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectableOptions;
 import com.synopsys.integration.detectable.detectables.docker.DockerExtractor;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
-import com.synopsys.integration.detectable.detectables.git.cli.GitCliDetectable;
-import com.synopsys.integration.detectable.detectables.git.cli.GitCliExtractor;
-import com.synopsys.integration.detectable.detectables.git.cli.GitUrlParser;
-import com.synopsys.integration.detectable.detectables.git.parsing.GitParseDetectable;
-import com.synopsys.integration.detectable.detectables.git.parsing.GitParseExtractor;
-import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigNameVersionTransformer;
-import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigNodeTransformer;
-import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitFileParser;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepExtractor;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepLockDetectable;
 import com.synopsys.integration.detectable.detectables.go.godep.parse.GoLockParser;
@@ -289,14 +280,6 @@ public class DetectableFactory {
 
     public GemlockDetectable createGemlockDetectable(DetectableEnvironment environment) {
         return new GemlockDetectable(environment, fileFinder, gemlockExtractor());
-    }
-
-    public GitParseDetectable createGitParseDetectable(DetectableEnvironment environment) {
-        return new GitParseDetectable(environment, fileFinder, gitParseExtractor());
-    }
-
-    public GitCliDetectable createGitCliDetectable(DetectableEnvironment environment, GitResolver gitResolver) {
-        return new GitCliDetectable(environment, fileFinder, gitCliExtractor(), gitResolver);
     }
 
     public GoModCliDetectable createGoModCliDetectable(DetectableEnvironment environment, GoResolver goResolver) {
@@ -498,30 +481,6 @@ public class DetectableFactory {
 
     private PackratLockExtractor packratLockExtractor() {
         return new PackratLockExtractor(packratDescriptionFileParser(), packratLockFileParser(), fileFinder);
-    }
-
-    private GitFileParser gitFileParser() {
-        return new GitFileParser();
-    }
-
-    private GitConfigNameVersionTransformer gitConfigNameVersionTransformer() {
-        return new GitConfigNameVersionTransformer(gitUrlParser());
-    }
-
-    private GitConfigNodeTransformer gitConfigNodeTransformer() {
-        return new GitConfigNodeTransformer();
-    }
-
-    private GitParseExtractor gitParseExtractor() {
-        return new GitParseExtractor(gitFileParser(), gitConfigNameVersionTransformer(), gitConfigNodeTransformer());
-    }
-
-    private GitUrlParser gitUrlParser() {
-        return new GitUrlParser();
-    }
-
-    private GitCliExtractor gitCliExtractor() {
-        return new GitCliExtractor(executableRunner, gitUrlParser());
     }
 
     private GoLockParser goLockParser() {

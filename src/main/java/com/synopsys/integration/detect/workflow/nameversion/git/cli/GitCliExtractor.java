@@ -1,11 +1,11 @@
 /*
- * detectable
+ * synopsys-detect
  *
  * Copyright (c) 2021 Synopsys, Inc.
  *
  * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
-package com.synopsys.integration.detectable.detectables.git.cli;
+package com.synopsys.integration.detect.workflow.nameversion.git.cli;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -15,31 +15,31 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
-import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
-import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
+import com.synopsys.integration.util.NameVersion;
 
 public class GitCliExtractor {
     private static final String TAG_TOKEN = "tag: ";
 
     private final IntLogger logger = new Slf4jIntLogger(LoggerFactory.getLogger(this.getClass()));
 
-    private final DetectableExecutableRunner executableRunner;
+    private final DetectExecutableRunner executableRunner;
     private final GitUrlParser gitUrlParser;
 
-    public GitCliExtractor(DetectableExecutableRunner executableRunner, GitUrlParser gitUrlParser) {
+    public GitCliExtractor(DetectExecutableRunner executableRunner, GitUrlParser gitUrlParser) {
         this.executableRunner = executableRunner;
         this.gitUrlParser = gitUrlParser;
     }
 
-    public Extraction extract(ExecutableTarget gitExecutable, File directory) {
+    public Optional<NameVersion> extract(ExecutableTarget gitExecutable, File directory) {
         try {
             ToolVersionLogger.log(executableRunner, directory, gitExecutable);
             String repoName = getRepoName(gitExecutable, directory);
@@ -50,17 +50,10 @@ public class GitCliExtractor {
                 branch = getRepoBranchBackup(gitExecutable, directory)
                              .orElseGet(() -> getCommitHash(gitExecutable, directory));
             }
-
-            return new Extraction.Builder()
-                       .success()
-                       .projectName(repoName)
-                       .projectVersion(branch)
-                       .build();
+            return Optional.of(new NameVersion(repoName, branch));
         } catch (ExecutableRunnerException | IntegrationException | MalformedURLException e) {
             logger.debug("Failed to extract project info from the git executable.", e);
-            return new Extraction.Builder()
-                       .success()
-                       .build();
+            return Optional.empty();
         }
     }
 

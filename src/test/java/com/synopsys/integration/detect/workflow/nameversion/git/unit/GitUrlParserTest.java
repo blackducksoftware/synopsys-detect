@@ -20,57 +20,57 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.git.unit;
+package com.synopsys.integration.detect.workflow.nameversion.git.unit;
 
 import java.net.MalformedURLException;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detectable.detectables.git.cli.GitUrlParser;
+import com.synopsys.integration.detect.workflow.nameversion.git.cli.GitUrlParser;
 
 class GitUrlParserTest {
     @Test
     void sshUrl() throws MalformedURLException {
-        final GitUrlParser gitUrlParser = new GitUrlParser();
-        final String remoteUrl = "ssh://user@synopsys.com:12345/blackducksoftware/synopsys-detect";
-        final String repoName = gitUrlParser.getRepoName(remoteUrl);
+        GitUrlParser gitUrlParser = new GitUrlParser();
+        String remoteUrl = "ssh://user@synopsys.com:12345/blackducksoftware/synopsys-detect";
+        String repoName = gitUrlParser.getRepoName(remoteUrl);
 
         Assertions.assertEquals("blackducksoftware/synopsys-detect", repoName);
     }
 
     @Test
     void gitUrl() throws MalformedURLException {
-        final GitUrlParser gitUrlParser = new GitUrlParser();
-        final String remoteUrl = "git://git.yoctoproject.org/poky.git";
-        final String repoName = gitUrlParser.getRepoName(remoteUrl);
+        GitUrlParser gitUrlParser = new GitUrlParser();
+        String remoteUrl = "git://git.yoctoproject.org/poky.git";
+        String repoName = gitUrlParser.getRepoName(remoteUrl);
 
         Assertions.assertEquals("git.yoctoproject.org/poky", repoName);
     }
 
     @Test
     void gitAtUrl() throws MalformedURLException {
-        final GitUrlParser gitUrlParser = new GitUrlParser();
-        final String remoteUrl = "git@github.com:blackducksoftware/synopsys-detect.git";
-        final String repoName = gitUrlParser.getRepoName(remoteUrl);
+        GitUrlParser gitUrlParser = new GitUrlParser();
+        String remoteUrl = "git@github.com:blackducksoftware/synopsys-detect.git";
+        String repoName = gitUrlParser.getRepoName(remoteUrl);
 
         Assertions.assertEquals("blackducksoftware/synopsys-detect", repoName);
     }
 
     @Test
     void httpsUrl() throws MalformedURLException {
-        final GitUrlParser gitUrlParser = new GitUrlParser();
-        final String remoteUrl = "https://github.com/blackducksoftware/synopsys-detect";
-        final String repoName = gitUrlParser.getRepoName(remoteUrl);
+        GitUrlParser gitUrlParser = new GitUrlParser();
+        String remoteUrl = "https://github.com/blackducksoftware/synopsys-detect";
+        String repoName = gitUrlParser.getRepoName(remoteUrl);
 
         Assertions.assertEquals("blackducksoftware/synopsys-detect", repoName);
     }
 
     @Test
     void httpsEncodedUsernamePasswordUrl() throws MalformedURLException {
-        final GitUrlParser gitUrlParser = new GitUrlParser();
-        final String remoteUrl = "https://USERNAME:PASSWORD@SERVER/test/path/to/blackducksoftware/synopsys-detect.git";
-        final String repoName = gitUrlParser.getRepoName(remoteUrl);
+        GitUrlParser gitUrlParser = new GitUrlParser();
+        String remoteUrl = "https://USERNAME:PASSWORD@SERVER/test/path/to/blackducksoftware/synopsys-detect.git";
+        String repoName = gitUrlParser.getRepoName(remoteUrl);
 
         Assertions.assertEquals("blackducksoftware/synopsys-detect", repoName);
     }

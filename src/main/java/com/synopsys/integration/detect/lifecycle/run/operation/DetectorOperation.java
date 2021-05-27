@@ -28,6 +28,7 @@ import com.synopsys.integration.detect.tool.detector.factory.DetectDetectableFac
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
+import com.synopsys.integration.detect.workflow.nameversion.git.GitNameVersionExtractor;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
@@ -47,11 +48,12 @@ public class DetectorOperation {
     private final ExitCodePublisher exitCodePublisher;
     private final DetectorEventPublisher detectorEventPublisher;
     private FileFinder fileFinder;
+    private GitNameVersionExtractor gitNameVersionExtractor;
 
     public DetectorOperation(PropertyConfiguration detectConfiguration, DetectConfigurationFactory detectConfigurationFactory, DirectoryManager directoryManager, EventSystem eventSystem,
         DetectDetectableFactory detectDetectableFactory, ExtractionEnvironmentProvider extractionEnvironmentProvider, CodeLocationConverter codeLocationConverter, StatusEventPublisher statusEventPublisher,
         ExitCodePublisher exitCodePublisher,
-        DetectorEventPublisher detectorEventPublisher, FileFinder fileFinder) {
+        DetectorEventPublisher detectorEventPublisher, FileFinder fileFinder, GitNameVersionExtractor gitNameVersionExtractor) {
         this.detectConfiguration = detectConfiguration;
         this.detectConfigurationFactory = detectConfigurationFactory;
         this.directoryManager = directoryManager;
@@ -63,6 +65,7 @@ public class DetectorOperation {
         this.exitCodePublisher = exitCodePublisher;
         this.detectorEventPublisher = detectorEventPublisher;
         this.fileFinder = fileFinder;
+        this.gitNameVersionExtractor = gitNameVersionExtractor;
     }
 
     public DetectorToolResult execute() {
@@ -78,7 +81,9 @@ public class DetectorOperation {
         DetectorEvaluationOptions detectorEvaluationOptions = detectConfigurationFactory.createDetectorEvaluationOptions();
 
         DetectorIssuePublisher detectorIssuePublisher = new DetectorIssuePublisher();
-        DetectorTool detectorTool = new DetectorTool(new DetectorFinder(), extractionEnvironmentProvider, eventSystem, codeLocationConverter, detectorIssuePublisher, statusEventPublisher, exitCodePublisher, detectorEventPublisher);
+
+        DetectorTool detectorTool = new DetectorTool(new DetectorFinder(), extractionEnvironmentProvider, eventSystem, codeLocationConverter, detectorIssuePublisher, statusEventPublisher, exitCodePublisher, detectorEventPublisher,
+            gitNameVersionExtractor);
         DetectorToolResult detectorToolResult = detectorTool.performDetectors(directoryManager.getSourceDirectory(), detectRuleSet, finderOptions, detectorEvaluationOptions, projectBomTool, requiredDetectors, fileFinder);
 
         if (detectorToolResult.anyDetectorsFailed()) {

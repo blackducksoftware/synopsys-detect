@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.git.unit;
+package com.synopsys.integration.detect.workflow.nameversion.git.unit;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,22 +31,22 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfigNode;
-import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitFileParser;
+import com.synopsys.integration.detect.workflow.nameversion.git.model.GitConfigNode;
+import com.synopsys.integration.detect.workflow.nameversion.git.parse.GitFileParser;
 
 class GitFileParserTest {
     @Test
     public void parseHeadFile() {
-        final GitFileParser gitFileParser = new GitFileParser();
-        final String gitHeadContent = "ref: refs/heads/master\n";
-        final String head = gitFileParser.parseGitHead(gitHeadContent);
+        GitFileParser gitFileParser = new GitFileParser();
+        String gitHeadContent = "ref: refs/heads/master\n";
+        String head = gitFileParser.parseGitHead(gitHeadContent);
         Assertions.assertEquals("refs/heads/master", head);
     }
 
     @Test
     public void parseGitConfig() {
-        final GitFileParser gitFileParser = new GitFileParser();
-        final List<String> output = Arrays.asList(
+        GitFileParser gitFileParser = new GitFileParser();
+        List<String> output = Arrays.asList(
             "[core]",
             "	repositoryformatversion = 0",
             "	filemode = true",
@@ -65,31 +65,31 @@ class GitFileParserTest {
             "	merge = refs/heads/test"
         );
 
-        final List<GitConfigNode> gitConfigNodes = gitFileParser.parseGitConfig(output);
+        List<GitConfigNode> gitConfigNodes = gitFileParser.parseGitConfig(output);
         Assertions.assertEquals(4, gitConfigNodes.size());
 
-        final List<GitConfigNode> gitConfigCores = getNodes(gitConfigNodes, "core");
+        List<GitConfigNode> gitConfigCores = getNodes(gitConfigNodes, "core");
         Assertions.assertEquals(1, gitConfigCores.size());
 
-        final List<GitConfigNode> gitConfigRemotes = getNodes(gitConfigNodes, "remote");
+        List<GitConfigNode> gitConfigRemotes = getNodes(gitConfigNodes, "remote");
         Assertions.assertEquals(1, gitConfigRemotes.size());
 
-        final List<GitConfigNode> gitConfigBranches = getNodes(gitConfigNodes, "branch");
+        List<GitConfigNode> gitConfigBranches = getNodes(gitConfigNodes, "branch");
         Assertions.assertEquals(2, gitConfigBranches.size());
 
-        final Optional<GitConfigNode> remoteOrigin = gitConfigRemotes.stream()
-                                                         .filter(it -> it.getName().isPresent())
-                                                         .filter(it -> it.getName().get().equals("origin"))
-                                                         .findAny();
+        Optional<GitConfigNode> remoteOrigin = gitConfigRemotes.stream()
+                                                   .filter(it -> it.getName().isPresent())
+                                                   .filter(it -> it.getName().get().equals("origin"))
+                                                   .findAny();
 
         Assertions.assertTrue(remoteOrigin.isPresent());
 
-        final Optional<String> fetch = remoteOrigin.get().getProperty("fetch");
+        Optional<String> fetch = remoteOrigin.get().getProperty("fetch");
         Assertions.assertEquals(Optional.of("+refs/heads/*:refs/remotes/origin/*"), fetch);
     }
 
     @NotNull
-    private List<GitConfigNode> getNodes(@NotNull final List<GitConfigNode> gitConfigElements, @NotNull final String tag) {
+    private List<GitConfigNode> getNodes(@NotNull List<GitConfigNode> gitConfigElements, @NotNull String tag) {
         return gitConfigElements.stream()
                    .filter(gitConfigElement -> tag.equals(gitConfigElement.getType()))
                    .collect(Collectors.toList());

@@ -32,6 +32,7 @@ import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.nameversion.DetectorNameVersionHandler;
 import com.synopsys.integration.detect.workflow.nameversion.PreferredDetectorNameVersionHandler;
+import com.synopsys.integration.detect.workflow.nameversion.git.GitNameVersionExtractor;
 import com.synopsys.integration.detect.workflow.report.util.DetectorEvaluationUtils;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.status.DetectorStatus;
@@ -49,6 +50,7 @@ import com.synopsys.integration.detector.evaluation.DiscoveryFilter;
 import com.synopsys.integration.detector.finder.DetectorFinder;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
+import com.synopsys.integration.util.NameVersion;
 
 public class DetectorTool {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -60,9 +62,10 @@ public class DetectorTool {
     private final StatusEventPublisher statusEventPublisher;
     private final ExitCodePublisher exitCodePublisher;
     private final DetectorEventPublisher detectorEventPublisher;
+    private final GitNameVersionExtractor gitNameVersionExtractor;
 
     public DetectorTool(DetectorFinder detectorFinder, ExtractionEnvironmentProvider extractionEnvironmentProvider, EventSystem eventSystem, CodeLocationConverter codeLocationConverter,
-        DetectorIssuePublisher detectorIssuePublisher, StatusEventPublisher statusEventPublisher, ExitCodePublisher exitCodePublisher, DetectorEventPublisher detectorEventPublisher) {
+        DetectorIssuePublisher detectorIssuePublisher, StatusEventPublisher statusEventPublisher, ExitCodePublisher exitCodePublisher, DetectorEventPublisher detectorEventPublisher, GitNameVersionExtractor gitNameVersionExtractor) {
         this.detectorFinder = detectorFinder;
         this.extractionEnvironmentProvider = extractionEnvironmentProvider;
         this.eventSystem = eventSystem;
@@ -71,6 +74,7 @@ public class DetectorTool {
         this.statusEventPublisher = statusEventPublisher;
         this.exitCodePublisher = exitCodePublisher;
         this.detectorEventPublisher = detectorEventPublisher;
+        this.gitNameVersionExtractor = gitNameVersionExtractor;
     }
 
     public DetectorToolResult performDetectors(File directory, DetectorRuleSet detectorRuleSet, DetectorFinderOptions detectorFinderOptions, DetectorEvaluationOptions evaluationOptions, String projectDetector,
@@ -133,6 +137,12 @@ public class DetectorTool {
         publishMissingDetectorEvents(requiredDetectors, evaluationResult.getApplicableDetectorTypes());
 
         Map<CodeLocation, DetectCodeLocation> codeLocationMap = createCodeLocationMap(detectorEvaluations, directory);
+
+        // Get name version info from Git in case Detector was unable to determine that info
+        Optional<NameVersion> gitNameVersion = gitNameVersionExtractor.extract(directory);
+        gitNameVersion.ifPresent(nameVersion -> {
+            detectorNameVersionHandler.applyGitNameVersion(gitNameVersion.get());
+        });
 
         DetectorToolResult detectorToolResult = new DetectorToolResult(
             detectorNameVersionHandler.finalDecision().getChosenNameVersion().orElse(null),

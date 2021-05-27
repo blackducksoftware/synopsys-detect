@@ -24,7 +24,6 @@ package com.synopsys.integration.detect.tool.detector;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -49,6 +48,7 @@ import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.tool.detector.extraction.ExtractionEnvironmentProvider;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
+import com.synopsys.integration.detect.workflow.nameversion.git.GitNameVersionExtractor;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
@@ -83,14 +83,16 @@ public class DetectorToolTest {
         StatusEventPublisher statusEventPublisher = Mockito.mock(StatusEventPublisher.class);
         ExitCodePublisher exitCodePublisher = Mockito.mock(ExitCodePublisher.class);
         DetectorEventPublisher detectorEventPublisher = Mockito.mock(DetectorEventPublisher.class);
+        GitNameVersionExtractor gitNameVersionExtractor = Mockito.mock(GitNameVersionExtractor.class);
 
-        DetectorTool tool = new DetectorTool(detectorFinder, extractionEnvironmentProvider, eventSystem, codeLocationConverter, detectorIssuePublisher, statusEventPublisher, exitCodePublisher, detectorEventPublisher);
+        DetectorTool tool = new DetectorTool(detectorFinder, extractionEnvironmentProvider, eventSystem, codeLocationConverter, detectorIssuePublisher, statusEventPublisher, exitCodePublisher, detectorEventPublisher,
+            gitNameVersionExtractor);
 
         File directory = new File(".");
         DetectorRuleSet detectorRuleSet = Mockito.mock(DetectorRuleSet.class);
         DetectorFinderOptions detectorFinderOptions = Mockito.mock(DetectorFinderOptions.class);
         DetectorEvaluationOptions evaluationOptions = Mockito.mock(DetectorEvaluationOptions.class);
-        final String projectBomTool = "testBomTool";
+        String projectBomTool = "testBomTool";
 
         tool.performDetectors(directory, detectorRuleSet, detectorFinderOptions, evaluationOptions, projectBomTool, new ArrayList<>(), new SimpleFileFinder());
 
@@ -176,8 +178,10 @@ public class DetectorToolTest {
         StatusEventPublisher statusEventPublisher = Mockito.mock(StatusEventPublisher.class);
         ExitCodePublisher exitCodePublisher = Mockito.mock(ExitCodePublisher.class);
         DetectorEventPublisher detectorEventPublisher = Mockito.mock(DetectorEventPublisher.class);
+        GitNameVersionExtractor gitNameVersionExtractor = Mockito.mock(GitNameVersionExtractor.class);
 
-        DetectorTool tool = new DetectorTool(detectorFinder, extractionEnvironmentProvider, eventSystem, codeLocationConverter, detectorIssuePublisher, statusEventPublisher, exitCodePublisher, detectorEventPublisher);
+        DetectorTool tool = new DetectorTool(detectorFinder, extractionEnvironmentProvider, eventSystem, codeLocationConverter, detectorIssuePublisher, statusEventPublisher, exitCodePublisher, detectorEventPublisher,
+            gitNameVersionExtractor);
         File directory = new File(".");
         GoModCliDetectable detectable = createDetectable(extraction, extractionResult);
         DetectorRule<GoModCliDetectable> rule = createRule(detectable);
@@ -246,7 +250,7 @@ public class DetectorToolTest {
 
     private DetectorFinderOptions createFinderOptions() {
         Predicate<File> fileFilter = f -> true;
-        final int maximumDepth = 10;
+        int maximumDepth = 10;
         return new DetectorFinderOptions(fileFilter, maximumDepth);
     }
 

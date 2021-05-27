@@ -19,7 +19,7 @@ public enum DetectorType {
     CONDA,
     CPAN,
     CRAN,
-    GIT,
+    GIT, // Git just provides project name and version info. It does not provide any information about project dependencies.
     GO_MOD,
     GO_DEP,
     GO_VNDR,

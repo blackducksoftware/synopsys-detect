@@ -23,6 +23,7 @@ import com.synopsys.integration.detect.workflow.nameversion.decision.NameVersion
 import com.synopsys.integration.detect.workflow.nameversion.decision.UniqueDetectorDecision;
 import com.synopsys.integration.detect.workflow.nameversion.decision.UniqueDetectorNotFoundDecision;
 import com.synopsys.integration.detector.base.DetectorType;
+import com.synopsys.integration.util.NameVersion;
 
 /*
 Originally, name version could be decided after all detectors had ran, there was no benefit calculating the name 'on the fly'.
@@ -65,6 +66,13 @@ public class DetectorNameVersionHandler {
         } else {
             lowestDepth.add(projectInfo);
         }
+    }
+
+    public void applyGitNameVersion(NameVersion gitNameVersion) {
+        //TODO- what logic makes sense here...
+        //  do we put the git info at the back of the lowest depth list?
+        //  do we preserve the GIT DetectorType so that the git name version can be consumed by a NameVersion decision?
+        lowestDepth.add(new DetectorProjectInfo(DetectorType.GIT, 0, gitNameVersion));
     }
 
     public NameVersionDecision finalDecision() {
