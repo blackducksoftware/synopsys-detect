@@ -470,15 +470,9 @@ public class OperationFactory { //TODO: OperationRunner
         return auditLog.named("Decide Risk Report Path", () -> {
             if (detectConfigurationFactory.createBlackDuckPostOptions().shouldGenerateRiskReport()) {
                 File customReportLocation = detectConfigurationFactory.createBlackDuckPostOptions().getRiskReportPdfPath().toFile();
-                if (customReportLocation.exists()) {
+                if (customReportLocation.exists() && !customReportLocation.getName().equals(".")) { //TODO- is there a better way to avoid writing to default of .?
                     return Optional.of(customReportLocation);
                 } else {
-                    //TODO- detect.risk.report.path has a default for risk report directory to be current working directory
-                    // should the property determine the default, or should this method?
-                    //      if this method, what should default be:
-                    //          current working directory (behavior before refactor)
-                    //          source directory (what docs claim)
-                    //          report output directory (behavior after refactor)
                     return Optional.of(directoryManager.getSourceDirectory());
                 }
             }
