@@ -56,7 +56,6 @@ public class HelpJsonManager {
         helpData.setNestable(rule.isNestable());
         helpData.setNestInvisible(rule.isNestInvisible());
         helpData.setYieldsTo(ruleSet.getYieldsTo(rule).stream().map(DetectorRule::getDescriptiveName).collect(Collectors.toList()));
-        helpData.setFallbackTo(ruleSet.getFallbackFrom(rule).map(DetectorRule::getDescriptiveName).orElse(""));
 
         //Attempt to create the detectable.
         //Not currently possible. Need a full DetectableConfiguration to be able to make Detectables.

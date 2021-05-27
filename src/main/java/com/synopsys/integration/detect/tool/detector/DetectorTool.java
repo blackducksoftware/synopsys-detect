@@ -241,8 +241,6 @@ public class DetectorTool {
                         logger.warn("An issue occurred in the detector system, an unknown evaluation status was created. Please contact support.");
                     }
                 }
-            } else if (detectorEvaluation.isFallbackExtractable() || detectorEvaluation.isPreviousExtractable()) {
-                statusType = StatusType.SUCCESS;
             } else {
                 statusType = StatusType.FAILURE;
             }

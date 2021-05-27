@@ -34,7 +34,6 @@ import com.synopsys.integration.detectable.detectable.result.SectionNotFoundDete
 import com.synopsys.integration.detectable.detectable.result.WrongOperatingSystemResult;
 import com.synopsys.integration.detector.result.ExcludedDetectorResult;
 import com.synopsys.integration.detector.result.FailedDetectorResult;
-import com.synopsys.integration.detector.result.FallbackNotNeededDetectorResult;
 import com.synopsys.integration.detector.result.ForcedNestedPassedDetectorResult;
 import com.synopsys.integration.detector.result.MaxDepthExceededDetectorResult;
 import com.synopsys.integration.detector.result.NotNestableDetectorResult;
@@ -62,7 +61,6 @@ public class DetectorResultStatusCodeLookup {
         map.put(ExecutableNotFoundDetectableResult.class, DetectorStatusCode.EXECUTABLE_NOT_FOUND);
         map.put(FailedDetectableResult.class, DetectorStatusCode.FAILED);
         map.put(FailedDetectorResult.class, DetectorStatusCode.FAILED);
-        map.put(FallbackNotNeededDetectorResult.class, DetectorStatusCode.FALLBACK_NOT_NEEDED);
         map.put(FilesNotFoundDetectableResult.class, DetectorStatusCode.FILES_NOT_FOUND);
         map.put(FileNotFoundDetectableResult.class, DetectorStatusCode.FILE_NOT_FOUND);
         map.put(GivenFileNotFoundDetectableResult.class, DetectorStatusCode.FILE_NOT_FOUND);
