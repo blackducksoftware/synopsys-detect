@@ -86,6 +86,7 @@ import com.synopsys.integration.detect.tool.signaturescanner.operation.CreateSig
 import com.synopsys.integration.detect.tool.signaturescanner.operation.PublishSignatureScanReports;
 import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanOperation;
 import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanOuputResult;
+import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
 import com.synopsys.integration.detect.workflow.bdio.AggregateCodeLocation;
 import com.synopsys.integration.detect.workflow.bdio.AggregateModeDirectOperation;
 import com.synopsys.integration.detect.workflow.bdio.AggregateModeTransitiveOperation;
@@ -353,14 +354,14 @@ public class OperationFactory { //TODO: OperationRunner
         });
     }
 
-    public File createNoticesReportFile(BlackDuckRunData blackDuckRunData, ProjectVersionWrapper projectVersion) throws DetectUserFriendlyException {
+    public File createNoticesReportFile(BlackDuckRunData blackDuckRunData, ProjectVersionWrapper projectVersion, File noticesDirectory) throws DetectUserFriendlyException {
         return auditLog.named("Create Notices Report File", () -> {
-            com.synopsys.integration.detect.workflow.blackduck.report.service.ReportService reportService = creatReportService(blackDuckRunData);
-            return reportService.createNoticesReportFile(directoryManager.getReportOutputDirectory(), projectVersion.getProjectView(), projectVersion.getProjectVersionView());
+            ReportService reportService = creatReportService(blackDuckRunData);
+            return reportService.createNoticesReportFile(noticesDirectory, projectVersion.getProjectView(), projectVersion.getProjectVersionView());
         });
     }
 
-    private com.synopsys.integration.detect.workflow.blackduck.report.service.ReportService creatReportService(BlackDuckRunData blackDuckRunData) {
+    private ReportService creatReportService(BlackDuckRunData blackDuckRunData) {
         BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
         Gson gson = blackDuckServicesFactory.getGson();
         HttpUrl blackDuckUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl();
@@ -382,9 +383,10 @@ public class OperationFactory { //TODO: OperationRunner
     }
 
     public List<SignatureScanPath> createScanPaths(NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws DetectUserFriendlyException {
+        DetectExcludedDirectoryFilter detectExcludedDirectoryFilter = detectConfigurationFactory.createDetectDirectoryFileFilter(directoryManager.getSourceDirectory().toPath());
         return auditLog.named("Calculate Signature Scan Paths",
             () -> new CalculateScanPathsOperation(detectConfigurationFactory.createBlackDuckSignatureScannerOptions(), directoryManager, fileFinder,
-                detectConfigurationFactory.createDetectDirectoryFileFilter(directoryManager.getSourceDirectory().toPath()))
+                detectExcludedDirectoryFilter::isExcluded)
                       .determinePathsAndExclusions(projectNameVersion, detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getMaxDepth(), dockerTargetData));
     }
 
@@ -462,20 +464,28 @@ public class OperationFactory { //TODO: OperationRunner
     public Optional<File> calculateNoticesDirectory() throws DetectUserFriendlyException { //TODO Should be a decision in boot
         return auditLog.named("Decide Notices Report Path", () -> {
             if (detectConfigurationFactory.createBlackDuckPostOptions().shouldGenerateNoticesReport()) {
-                return Optional.of(detectConfigurationFactory.createBlackDuckPostOptions().getNoticesReportPath().toFile());
-            } else {
-                return Optional.empty();
+                File customReportLocation = detectConfigurationFactory.createBlackDuckPostOptions().getNoticesReportPath().toFile();
+                if (customReportLocation.exists() && !customReportLocation.getName().equals(".")) { //TODO- is there a better way to avoid writing to default of .?
+                    return Optional.of(customReportLocation);
+                } else {
+                    return Optional.of(directoryManager.getSourceDirectory());
+                }
             }
+            return Optional.empty();
         });
     }
 
     public Optional<File> calculateRiskReportFileLocation() throws DetectUserFriendlyException { //TODO Should be a decision in boot
         return auditLog.named("Decide Risk Report Path", () -> {
             if (detectConfigurationFactory.createBlackDuckPostOptions().shouldGenerateRiskReport()) {
-                return Optional.of(detectConfigurationFactory.createBlackDuckPostOptions().getRiskReportPdfPath().toFile());
-            } else {
-                return Optional.empty();
+                File customReportLocation = detectConfigurationFactory.createBlackDuckPostOptions().getRiskReportPdfPath().toFile();
+                if (customReportLocation.exists() && !customReportLocation.getName().equals(".")) { //TODO- is there a better way to avoid writing to default of .?
+                    return Optional.of(customReportLocation);
+                } else {
+                    return Optional.of(directoryManager.getSourceDirectory());
+                }
             }
+            return Optional.empty();
         });
     }
 

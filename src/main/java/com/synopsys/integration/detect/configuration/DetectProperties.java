@@ -70,7 +70,7 @@ public class DetectProperties {
     public static final DetectProperty<NullableStringProperty> BLACKDUCK_API_TOKEN =
         new DetectProperty<>(new NullableStringProperty("blackduck.api.token"))
             .setInfo("Black Duck API Token", DetectPropertyFromVersion.VERSION_4_2_0)
-            .setHelp("The API token used to authenticate with the Black Duck Server.")
+            .setHelp("The access token used to authenticate with the Black Duck Server.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT);
 
     public static final DetectProperty<BooleanProperty> BLACKDUCK_OFFLINE_MODE =
@@ -377,7 +377,7 @@ public class DetectProperties {
         new DetectProperty<>(new NullableStringProperty("detect.code.location.name"))
             .setInfo("Scan Name", DetectPropertyFromVersion.VERSION_4_0_0)
             .setHelp(
-                "An override for the name Detect will use for the scan file it creates. If supplied and multiple scans are found, Detect will append an index to each scan name. When this property is set, detect.project.codelocation.prefix and detect.project.codelocation.suffix are ignored.")
+                "An override for the name Detect will use for the scan (codelocation) it creates. If supplied and multiple scans are found, Detect will append an index to each scan name. When this property is set, detect.project.codelocation.prefix and detect.project.codelocation.suffix are ignored.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced);
 
