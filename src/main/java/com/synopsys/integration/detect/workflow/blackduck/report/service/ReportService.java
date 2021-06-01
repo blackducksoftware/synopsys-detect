@@ -43,7 +43,6 @@ import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationExceptio
 import com.synopsys.integration.blackduck.http.BlackDuckRequestBuilder;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.DataService;
-import com.synopsys.integration.blackduck.service.dataservice.ProjectService;
 import com.synopsys.integration.blackduck.service.request.BlackDuckResponseRequest;
 import com.synopsys.integration.detect.workflow.blackduck.report.BomComponent;
 import com.synopsys.integration.detect.workflow.blackduck.report.PolicyRule;
@@ -55,12 +54,12 @@ import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.rest.body.BodyContentConverter;
 import com.synopsys.integration.rest.exception.IntegrationRestException;
-import com.synopsys.integration.rest.request.Request;
 import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 
 public class ReportService extends DataService {
     public final static long DEFAULT_TIMEOUT = 1000L * 60 * 5;
+    public static final String REPORT_VIEW_CONTENT_LINK = "content";
 
     private final IntegrationEscapeUtil escapeUtil;
     private final long timeoutInMilliseconds;
@@ -284,7 +283,7 @@ public class ReportService extends DataService {
                 logger.debug("Waiting for the Notices Report to complete.");
                 ReportView reportInfo = isReportFinishedGenerating(reportUrl);
 
-                HttpUrl contentUrl = reportInfo.getFirstLink(ReportView.CONTENT_LINK);
+                HttpUrl contentUrl = reportInfo.getFirstLink(REPORT_VIEW_CONTENT_LINK);
                 if (contentUrl == null) {
                     throw new BlackDuckIntegrationException("Could not find content link for the report at : " + reportUrl);
                 }
