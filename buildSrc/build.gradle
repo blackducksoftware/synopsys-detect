@@ -1,14 +1,11 @@
 buildscript {
     ext {
         springBootVersion = '2.4.3'
-        blackDuckCommonVersion = '55.0.1-SNAPSHOT'
+        blackDuckCommonVersion = '55.0.0'
     }
     apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-repositories.gradle', to: buildscript
     apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-dependencies.gradle', to: buildscript
 
-    repositories {
-        mavenLocal()
-    }
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
     }
