@@ -386,7 +386,7 @@ public class OperationFactory { //TODO: OperationRunner
         DetectExcludedDirectoryFilter detectExcludedDirectoryFilter = detectConfigurationFactory.createDetectDirectoryFileFilter(directoryManager.getSourceDirectory().toPath());
         return auditLog.named("Calculate Signature Scan Paths",
             () -> new CalculateScanPathsOperation(detectConfigurationFactory.createBlackDuckSignatureScannerOptions(), directoryManager, fileFinder,
-                file -> detectExcludedDirectoryFilter.isExcluded(file))
+                detectExcludedDirectoryFilter::isExcluded)
                       .determinePathsAndExclusions(projectNameVersion, detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getMaxDepth(), dockerTargetData));
     }
 
