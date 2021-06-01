@@ -106,7 +106,7 @@ public class DetectOnDetectHappyPath extends BlackDuckIntegrationTest {
         detectArgs.add("--detect.wait.for.results=true");
         Application.main(detectArgs.toArray(ArrayUtils.EMPTY_STRING_ARRAY));
 
-        codeLocationsToDelete = blackDuckService.getAllResponses(projectVersionWrapper.getProjectVersionView(), ProjectVersionView.CODELOCATIONS_LINK_RESPONSE);
+        codeLocationsToDelete = blackDuckService.getAllResponses(projectVersionWrapper.getProjectVersionView().metaCodelocationsLink());
         Set<String> createdCodeLocationNames = codeLocationsToDelete.stream().map(CodeLocationView::getName).collect(Collectors.toSet());
         createdCodeLocationNames.forEach(System.out::println);
         codeLocationNameSuffixesToCheck.forEach(System.out::println);

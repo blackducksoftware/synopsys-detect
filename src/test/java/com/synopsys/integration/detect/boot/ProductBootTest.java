@@ -102,7 +102,7 @@ public class ProductBootTest {
         Mockito.when(blackDuckConnectivityChecker.determineConnectivity(Mockito.any())).thenReturn(blackDuckconnectivityResult);
 
         AnalyticsConfigurationService analyticsConfigurationService = Mockito.mock(AnalyticsConfigurationService.class);
-        Mockito.when(analyticsConfigurationService.fetchAnalyticsSetting(Mockito.any())).thenReturn(new AnalyticsSetting("analytics", true));
+        Mockito.when(analyticsConfigurationService.fetchAnalyticsSetting(Mockito.any(), Mockito.any())).thenReturn(new AnalyticsSetting("analytics", true));
 
         ProductBoot productBoot = new ProductBoot(blackDuckConnectivityChecker, analyticsConfigurationService, productBootFactory, productBootOptions);
 

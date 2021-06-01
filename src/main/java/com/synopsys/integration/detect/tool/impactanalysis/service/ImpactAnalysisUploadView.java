@@ -11,12 +11,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.synopsys.integration.blackduck.api.core.BlackDuckView;
-import com.synopsys.integration.blackduck.api.core.response.LinkResponse;
+import com.synopsys.integration.blackduck.api.core.response.LinkBlackDuckResponse;
 import com.synopsys.integration.blackduck.api.core.response.LinkSingleResponse;
 import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
 
 public class ImpactAnalysisUploadView extends BlackDuckView {
-    public static final Map<String, LinkResponse> links = new HashMap<>();
+    public static final Map<String, LinkBlackDuckResponse<?>> links = new HashMap<>();
+
     public static final String CODE_LOCATION_LINK = "codelocation";
     public static final String SCAN_BOM_ENTRIES_LINK = "scan-bom-entries";
 

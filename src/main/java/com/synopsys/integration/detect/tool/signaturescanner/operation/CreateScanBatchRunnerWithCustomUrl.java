@@ -7,6 +7,8 @@
  */
 package com.synopsys.integration.detect.tool.signaturescanner.operation;
 
+import java.io.File;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,20 +18,16 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScannerZipInstaller;
 import com.synopsys.integration.blackduck.http.client.SignatureScannerClient;
 import com.synopsys.integration.blackduck.keystore.KeyStoreHelper;
-import com.synopsys.integration.blackduck.useragent.UserAgentItem;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
-import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
+import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
-import com.synopsys.integration.detect.tool.signaturescanner.FakeBlackDuckHttpClientWrapper;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerLogger;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.SilentIntLogger;
 import com.synopsys.integration.rest.HttpUrl;
-import com.synopsys.integration.rest.client.IntHttpClient;
 import com.synopsys.integration.util.CleanupZipExpander;
 import com.synopsys.integration.util.IntEnvironmentVariables;
-import com.synopsys.integration.util.NameVersion;
 import com.synopsys.integration.util.OperatingSystemType;
 
 public class CreateScanBatchRunnerWithCustomUrl {
@@ -50,8 +48,7 @@ public class CreateScanBatchRunnerWithCustomUrl {
         this.scanCommandRunner = scanCommandRunner;
     }
 
-    public ScanBatchRunner createScanBatchRunner(String providedUrl, ConnectionFactory connectionFactory, DetectInfo detectInfo) throws DetectUserFriendlyException {
-        // INTCMN-528: Should need install directory here and not when creating the jobs.
+    public ScanBatchRunner createScanBatchRunner(String providedUrl, ConnectionDetails connectionDetails, DetectInfo detectInfo, File installDirectory) throws DetectUserFriendlyException {
         logger.debug("Signature scanner will use the provided url to download/update the scanner.");
         HttpUrl baseUrl;
         try {
@@ -59,25 +56,16 @@ public class CreateScanBatchRunnerWithCustomUrl {
         } catch (IntegrationException e) {
             throw new DetectUserFriendlyException("User provided scanner install url could not be parsed: " + providedUrl, e, ExitCodeType.FAILURE_CONFIGURATION);
         }
-        UserAgentItem solutionUserAgentItem = createSolutionUserAgentItem(detectInfo);
-        IntHttpClient restConnection = connectionFactory.createConnection(providedUrl, new SilentIntLogger()); //TODO: Should this be silent?
-        FakeBlackDuckHttpClientWrapper fakeBlackDuckHttpClient = new FakeBlackDuckHttpClientWrapper(restConnection, baseUrl, solutionUserAgentItem);
 
         CleanupZipExpander cleanupZipExpander = new CleanupZipExpander(slf4jIntLogger);
-        SignatureScannerClient signatureScannerClient = new SignatureScannerClient(fakeBlackDuckHttpClient);
+        SignatureScannerClient signatureScannerClient = new SignatureScannerClient(new SilentIntLogger(), connectionDetails.getGson(), connectionDetails.getTimeout().intValue(), connectionDetails.getAlwaysTrust(),
+            connectionDetails.getProxyInformation());
         KeyStoreHelper keyStoreHelper = new KeyStoreHelper(slf4jIntLogger);
         ScannerZipInstaller scannerZipInstaller = new ScannerZipInstaller(slf4jIntLogger, signatureScannerClient, cleanupZipExpander, scanPathsUtility,
-            keyStoreHelper, baseUrl, operatingSystemType);
+            keyStoreHelper, baseUrl, operatingSystemType, installDirectory);
 
-        return ScanBatchRunner.createComplete(intEnvironmentVariables, scannerZipInstaller, scanPathsUtility, scanCommandRunner);
+        return ScanBatchRunner.createComplete(intEnvironmentVariables, scanPathsUtility, scanCommandRunner, scannerZipInstaller);
 
     }
 
-    private UserAgentItem createSolutionUserAgentItem(DetectInfo detectInfo) {
-        String version = null;
-        if (null != detectInfo) {
-            version = detectInfo.getDetectVersion();
-        }
-        return new UserAgentItem(new NameVersion("synopsys_detect", version));
-    }
 }

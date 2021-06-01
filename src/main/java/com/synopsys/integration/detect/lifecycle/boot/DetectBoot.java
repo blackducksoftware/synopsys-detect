@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.configuration.source.MapPropertySource;
@@ -64,12 +65,14 @@ public class DetectBoot {
     public static final PrintStream DEFAULT_PRINT_STREAM = System.out;
 
     private final EventSystem eventSystem;
+    private final Gson gson;
     private final DetectBootFactory detectBootFactory;
     private final DetectArgumentState detectArgumentState;
     private final List<PropertySource> propertySources;
 
-    public DetectBoot(EventSystem eventSystem, DetectBootFactory detectBootFactory, DetectArgumentState detectArgumentState, List<PropertySource> propertySources) {
+    public DetectBoot(EventSystem eventSystem, Gson gson, DetectBootFactory detectBootFactory, DetectArgumentState detectArgumentState, List<PropertySource> propertySources) {
         this.eventSystem = eventSystem;
+        this.gson = gson;
         this.detectBootFactory = detectBootFactory;
         this.detectArgumentState = detectArgumentState;
         this.propertySources = propertySources;
@@ -126,7 +129,7 @@ public class DetectBoot {
 
         Configuration freemarkerConfiguration = detectBootFactory.createFreemarkerConfiguration();
         PathResolver pathResolver = detectBootFactory.createPathResolver(detectConfiguration.getValueOrDefault(DetectProperties.DETECT_RESOLVE_TILDE_IN_PATHS.getProperty()));
-        DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration, pathResolver);
+        DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration, pathResolver, gson);
         DirectoryManager directoryManager = detectBootFactory.createDirectoryManager(detectConfigurationFactory);
 
         DiagnosticSystem diagnosticSystem = null;

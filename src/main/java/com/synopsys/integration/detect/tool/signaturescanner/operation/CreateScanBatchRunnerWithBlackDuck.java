@@ -7,6 +7,7 @@
  */
 package com.synopsys.integration.detect.tool.signaturescanner.operation;
 
+import java.io.File;
 import java.util.concurrent.ExecutorService;
 
 import org.slf4j.Logger;
@@ -38,7 +39,7 @@ public class CreateScanBatchRunnerWithBlackDuck {
         this.executorService = executorService;
     }
 
-    public ScanBatchRunner createScanBatchRunner(BlackDuckServerConfig blackDuckServerConfig) {  // INTCMN-528: Should need install directory here, not later.
+    public ScanBatchRunner createScanBatchRunner(BlackDuckServerConfig blackDuckServerConfig, File installDirectory) {
         logger.debug("Signature scanner will use the Black Duck server to download/update the scanner - this is the most likely situation.");
         SignatureScannerLogger slf4jIntLogger = new SignatureScannerLogger(logger);
         ScanPathsUtility scanPathsUtility = new ScanPathsUtility(slf4jIntLogger, intEnvironmentVariables, operatingSystemType);
@@ -49,7 +50,8 @@ public class CreateScanBatchRunnerWithBlackDuck {
         KeyStoreHelper keyStoreHelper = new KeyStoreHelper(slf4jIntLogger);
         ScannerZipInstaller scannerZipInstaller = new ScannerZipInstaller(slf4jIntLogger, signatureScannerClient,
             cleanupZipExpander, scanPathsUtility, keyStoreHelper,
-            blackDuckServerConfig.getBlackDuckUrl(), operatingSystemType);
-        return ScanBatchRunner.createComplete(intEnvironmentVariables, scannerZipInstaller, scanPathsUtility, scanCommandRunner);
+            blackDuckServerConfig.getBlackDuckUrl(), operatingSystemType, installDirectory);
+        return ScanBatchRunner.createComplete(intEnvironmentVariables, scanPathsUtility, scanCommandRunner, scannerZipInstaller);
     }
+
 }

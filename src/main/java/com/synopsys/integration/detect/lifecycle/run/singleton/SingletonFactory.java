@@ -13,6 +13,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.tool.detector.DetectorEventPublisher;
@@ -50,7 +51,8 @@ public class SingletonFactory {
 
     public UtilitySingletons createUtilitySingletons(EventSingletons eventSingletons) throws DetectUserFriendlyException {
         ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        ConnectionFactory connectionFactory = new ConnectionFactory(detectConfigurationFactory.createConnectionDetails());
+        ConnectionDetails connectionDetails = detectConfigurationFactory.createConnectionDetails();
+        ConnectionFactory connectionFactory = new ConnectionFactory(connectionDetails);
         ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
         AirGapPathFinder airGapPathFinder = new AirGapPathFinder();
         CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(detectConfigurationFactory.createCodeLocationOverride());
@@ -64,7 +66,7 @@ public class SingletonFactory {
         DetectExecutableResolver detectExecutableResolver = new DetectExecutableResolver(directoryExecutableFinder, systemExecutableFinder, detectConfigurationFactory.createDetectExecutableOptions());
         OperationSystem operationSystem = new OperationSystem(eventSingletons.getStatusEventPublisher());
 
-        return new UtilitySingletons(externalIdFactory, connectionFactory, artifactResolver, codeLocationNameManager, createBdioCodeLocationsFromDetectCodeLocationsOperation, airGapInspectorPaths, bdioTransformer,
+        return new UtilitySingletons(externalIdFactory, connectionDetails, artifactResolver, codeLocationNameManager, createBdioCodeLocationsFromDetectCodeLocationsOperation, airGapInspectorPaths, bdioTransformer,
             executableRunner, detectExecutableResolver, operationSystem);
     }
 

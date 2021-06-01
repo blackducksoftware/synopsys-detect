@@ -30,20 +30,14 @@ import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import com.google.gson.Gson;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.types.path.SimplePathResolver;
 import com.synopsys.integration.configuration.source.MapPropertySource;
 import com.synopsys.integration.configuration.source.PropertySource;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 
-//import com.synopsys.integration.detect.configuration.DetectInfo;
-//import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
-//import com.synopsys.integration.detect.configuration.help.DetectOption;
-//import com.synopsys.integration.detect.configuration.help.DetectOptionManager;
-//import com.synopsys.integration.detect.configuration.enumeration.OperatingSystemType;
-
 public class DetectConfigurationTest {
-
     @Test
     public void testPhoneHomePassthroughProperties() {
         final String givenKeyPhoneHomePart = "x.y.z";
@@ -67,8 +61,9 @@ public class DetectConfigurationTest {
         List<PropertySource> propertySources = new ArrayList<>();
         propertySources.add(new MapPropertySource("test", values));
         PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);
-        DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(propertyConfiguration, new SimplePathResolver());
+        DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(propertyConfiguration, new SimplePathResolver(), new Gson());
         BdioOptions bdioOptions = detectConfigurationFactory.createBdioOptions();
         Assertions.assertFalse(bdioOptions.isBdio2Enabled());
     }
+
 }
