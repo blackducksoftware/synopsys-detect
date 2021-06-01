@@ -85,6 +85,7 @@ import com.synopsys.integration.detect.tool.signaturescanner.operation.CreateSig
 import com.synopsys.integration.detect.tool.signaturescanner.operation.PublishSignatureScanReports;
 import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanOperation;
 import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanOuputResult;
+import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
 import com.synopsys.integration.detect.workflow.bdio.AggregateCodeLocation;
 import com.synopsys.integration.detect.workflow.bdio.AggregateModeDirectOperation;
 import com.synopsys.integration.detect.workflow.bdio.AggregateModeTransitiveOperation;
@@ -382,9 +383,10 @@ public class OperationFactory { //TODO: OperationRunner
     }
 
     public List<SignatureScanPath> createScanPaths(NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws DetectUserFriendlyException {
+        DetectExcludedDirectoryFilter detectExcludedDirectoryFilter = detectConfigurationFactory.createDetectDirectoryFileFilter(directoryManager.getSourceDirectory().toPath());
         return auditLog.named("Calculate Signature Scan Paths",
             () -> new CalculateScanPathsOperation(detectConfigurationFactory.createBlackDuckSignatureScannerOptions(), directoryManager, fileFinder,
-                detectConfigurationFactory.createDetectDirectoryFileFilter(directoryManager.getSourceDirectory().toPath()))
+                file -> detectExcludedDirectoryFilter.isExcluded(file))
                       .determinePathsAndExclusions(projectNameVersion, detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getMaxDepth(), dockerTargetData));
     }
 
