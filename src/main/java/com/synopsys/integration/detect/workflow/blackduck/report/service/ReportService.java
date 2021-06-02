@@ -59,7 +59,6 @@ import com.synopsys.integration.util.IntegrationEscapeUtil;
 
 public class ReportService extends DataService {
     public final static long DEFAULT_TIMEOUT = 1000L * 60 * 5;
-    public static final String REPORT_VIEW_CONTENT_LINK = "content";
 
     private final IntegrationEscapeUtil escapeUtil;
     private final long timeoutInMilliseconds;
@@ -283,7 +282,7 @@ public class ReportService extends DataService {
                 logger.debug("Waiting for the Notices Report to complete.");
                 ReportView reportInfo = isReportFinishedGenerating(reportUrl);
 
-                HttpUrl contentUrl = reportInfo.getFirstLink(REPORT_VIEW_CONTENT_LINK);
+                HttpUrl contentUrl = reportInfo.getFirstLink(ReportView.CONTENT_LINK);
                 if (contentUrl == null) {
                     throw new BlackDuckIntegrationException("Could not find content link for the report at : " + reportUrl);
                 }
