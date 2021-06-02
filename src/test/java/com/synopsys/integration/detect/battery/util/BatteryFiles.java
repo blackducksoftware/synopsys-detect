@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.battery;
+package com.synopsys.integration.detect.battery.util;
 
 import java.io.File;
 import java.io.FileWriter;

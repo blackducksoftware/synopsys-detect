@@ -20,9 +20,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.battery;
+package com.synopsys.integration.detect.battery.util;
 
-import static com.synopsys.integration.detect.battery.BatteryFiles.UTIL_RESOURCE_PREFIX;
+import static com.synopsys.integration.detect.battery.util.BatteryFiles.UTIL_RESOURCE_PREFIX;
 
 import java.io.File;
 import java.io.IOException;

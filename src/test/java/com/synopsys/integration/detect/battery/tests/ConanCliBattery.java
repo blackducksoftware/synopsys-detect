@@ -3,7 +3,7 @@ package com.synopsys.integration.detect.battery.tests;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detect.battery.BatteryTest;
+import com.synopsys.integration.detect.battery.util.BatteryTest;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
 @Tag("battery")

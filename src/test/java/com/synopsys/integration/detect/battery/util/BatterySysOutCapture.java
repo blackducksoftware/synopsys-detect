@@ -5,7 +5,7 @@
  *
  * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
-package com.synopsys.integration.detect.battery;
+package com.synopsys.integration.detect.battery.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
