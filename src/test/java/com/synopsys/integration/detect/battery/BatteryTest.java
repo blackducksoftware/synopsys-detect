@@ -33,6 +33,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -189,23 +190,30 @@ public final class BatteryTest {
         this.toolsValue = toolsValue;
     }
 
-    public void run() {
+    public DetectOutput run() {
+        DetectOutput detectOutput = null;
         try {
             checkEnvironment();
             initializeDirectories();
             createFiles();
             List<String> executableArguments = createExecutables();
-            runDetect(executableArguments);
+            detectOutput = runDetect(executableArguments);
 
-            assertBdio();
+            if (shouldExpectBdioResources) {
+                assertBdio();
+            }
         } catch (ExecutableRunnerException | IOException | JSONException | TemplateException | BdioCompare.BdioCompareException e) {
             Assertions.assertNull(e, "An exception should not have been thrown!");
         } finally {
             checkAndCleanupBatteryDirectory();
         }
+
+        Assertions.assertNotNull(detectOutput, "");
+
+        return detectOutput;
     }
 
-    private void runDetect(List<String> additionalArguments) throws IOException, ExecutableRunnerException {
+    private DetectOutput runDetect(List<String> additionalArguments) throws IOException, ExecutableRunnerException {
         List<String> detectArguments = new ArrayList<>();
         Map<Property, String> properties = new HashMap<>();
 
@@ -224,21 +232,33 @@ public final class BatteryTest {
         detectArguments.addAll(additionalArguments);
         detectArguments.addAll(additionalProperties);
 
-        if (executeDetectScript(detectArguments)) {
-            logger.info("Executed as script.");
-        } else if (executeDetectJar(detectArguments)) {
-            logger.info("Executed as jar.");
-        } else {
-            logger.info("Executed as static.");
-            executeDetectStatic(detectArguments);
+        if (useDetectScript) {
+            logger.info("Executing as script.");
+            return executeDetectScript(detectArguments);
         }
+
+        Optional<DetectJar> detectJar = DetectJar.locateJar();
+        if (detectJar.isPresent()) {
+            logger.info("Executed as jar.");
+            return executeDetectJar(detectJar.get(), detectArguments);
+        }
+
+        logger.info("Executed as static.");
+        return executeDetectStatic(detectArguments);
     }
 
-    private void executeDetectStatic(List<String> detectArguments) {
+    private DetectOutput executeDetectStatic(List<String> detectArguments) {
+        BatterySysOutCapture capture = new BatterySysOutCapture();
+
         boolean previous = Application.shouldExit();
         Application.setShouldExit(false);
+
+        capture.startCapture();
         Application.main(detectArguments.toArray(ArrayUtils.EMPTY_STRING_ARRAY));
+        List<String> results = capture.stopCapture();
+
         Application.setShouldExit(previous);
+        return new DetectOutput(results);
     }
 
     private ExecutableOutput downloadDetectBash(File target) throws ExecutableRunnerException {
@@ -254,11 +274,7 @@ public final class BatteryTest {
         return executableRunner.execute(executable);
     }
 
-    private boolean executeDetectScript(List<String> detectArguments) throws ExecutableRunnerException {
-        if (!useDetectScript) {
-            return false;
-        }
-
+    private DetectOutput executeDetectScript(List<String> detectArguments) throws ExecutableRunnerException {
         List<String> shellArguments = new ArrayList<>();
         String target = "";
         if (SystemUtils.IS_OS_WINDOWS) {
@@ -292,24 +308,17 @@ public final class BatteryTest {
 
         Assertions.assertTrue(lines.size() > 0, "Detect wrote nothing to standard out.");
 
-        return true;
+        return new DetectOutput(result.getStandardOutputAsList());
     }
 
-    private boolean executeDetectJar(List<String> detectArguments) throws ExecutableRunnerException {
-        String java = System.getenv("BATTERY_TESTS_JAVA_PATH");
-        String detectJar = System.getenv("BATTERY_TESTS_DETECT_JAR_PATH");
-        boolean bothExist = StringUtils.isNotBlank(java) && StringUtils.isNotBlank(detectJar) && new File(java).exists() && new File(detectJar).exists();
-        if (!bothExist) {
-            return false;
-        }
-
+    private DetectOutput executeDetectJar(DetectJar detectJar, List<String> detectArguments) throws ExecutableRunnerException {
         List<String> javaArguments = new ArrayList<>();
         javaArguments.add("-jar");
-        javaArguments.add(detectJar);
+        javaArguments.add(detectJar.getJar());
         javaArguments.addAll(detectArguments);
 
         ProcessBuilderRunner executableRunner = new ProcessBuilderRunner(new Slf4jIntLogger(logger));
-        ExecutableOutput result = executableRunner.execute(Executable.create(outputDirectory, java, javaArguments));
+        ExecutableOutput result = executableRunner.execute(Executable.create(outputDirectory, detectJar.getJava(), javaArguments));
 
         Assertions.assertEquals(0, result.getReturnCode(), "Detect returned a non-zero exit code:" + result.getReturnCode());
 
@@ -317,7 +326,7 @@ public final class BatteryTest {
 
         Assertions.assertTrue(lines.size() > 0, "Detect wrote nothing to standard out.");
 
-        return true;
+        return new DetectOutput(result.getStandardOutputAsList());
     }
 
     private void initializeDirectories() throws IOException {
@@ -411,48 +420,43 @@ public final class BatteryTest {
         File[] bdio = bdioDirectory.listFiles();
         Assertions.assertTrue(bdio != null && bdio.length > 0, "Bdio output files could not be found.");
 
-        if (shouldExpectBdioResources) {
-            File expectedBdioFolder = BatteryFiles.asFile("/" + resourcePrefix + "/bdio");
-            File[] expectedBdioFiles = expectedBdioFolder.listFiles();
-            Assertions.assertTrue(expectedBdioFiles != null && expectedBdioFiles.length > 0, "Expected bdio resource files could not be found: " + expectedBdioFolder.getCanonicalPath());
-            Assertions.assertEquals(expectedBdioFiles.length, bdio.length, "Detect did not create the expected number of bdio files.");
+        File expectedBdioFolder = BatteryFiles.asFile("/" + resourcePrefix + "/bdio");
+        File[] expectedBdioFiles = expectedBdioFolder.listFiles();
+        Assertions.assertTrue(expectedBdioFiles != null && expectedBdioFiles.length > 0, "Expected bdio resource files could not be found: " + expectedBdioFolder.getCanonicalPath());
+        Assertions.assertEquals(expectedBdioFiles.length, bdio.length, "Detect did not create the expected number of bdio files.");
 
-            List<File> actualByName = Arrays.stream(bdio).sorted(Comparator.comparing(File::getName)).collect(Collectors.toList());
-            List<File> expectedByName = Arrays.stream(expectedBdioFiles).sorted(Comparator.comparing(File::getName)).collect(Collectors.toList());
+        List<File> actualByName = Arrays.stream(bdio).sorted(Comparator.comparing(File::getName)).collect(Collectors.toList());
+        List<File> expectedByName = Arrays.stream(expectedBdioFiles).sorted(Comparator.comparing(File::getName)).collect(Collectors.toList());
 
-            int issueCount = 0;
-            for (int i = 0; i < expectedByName.size(); i++) {
-                logger.info("***BDIO BATTERY TEST|" + testName + "|" + resourcePrefix + "|" + expectedByName.get(i).getName() + "***");
+        int issueCount = 0;
+        for (int i = 0; i < expectedByName.size(); i++) {
+            logger.info("***BDIO BATTERY TEST|" + testName + "|" + resourcePrefix + "|" + expectedByName.get(i).getName() + "***");
 
-                File expected = expectedByName.get(i);
-                File actual = actualByName.get(i);
-                Assertions.assertEquals(expected.getName(), actual.getName(), "Bdio file names did not match when sorted.");
+            File expected = expectedByName.get(i);
+            File actual = actualByName.get(i);
+            Assertions.assertEquals(expected.getName(), actual.getName(), "Bdio file names did not match when sorted.");
 
-                String expectedJson = FileUtils.readFileToString(expected, Charset.defaultCharset());
-                String actualJson = FileUtils.readFileToString(actual, Charset.defaultCharset());
+            String expectedJson = FileUtils.readFileToString(expected, Charset.defaultCharset());
+            String actualJson = FileUtils.readFileToString(actual, Charset.defaultCharset());
 
-                JSONArray expectedJsonArray = (JSONArray) JSONParser.parseJSON(expectedJson);
-                JSONArray actualJsonArray = (JSONArray) JSONParser.parseJSON(actualJson);
+            JSONArray expectedJsonArray = (JSONArray) JSONParser.parseJSON(expectedJson);
+            JSONArray actualJsonArray = (JSONArray) JSONParser.parseJSON(actualJson);
 
-                BdioCompare compare = new BdioCompare();
-                List<BdioCompare.BdioIssue> issues = compare.compare(expectedJsonArray, actualJsonArray);
+            BdioCompare compare = new BdioCompare();
+            List<BdioCompare.BdioIssue> issues = compare.compare(expectedJsonArray, actualJsonArray);
 
-                if (issues.size() > 0) {
-                    logger.error("=================");
-                    logger.error("BDIO Issues");
-                    logger.error("Expected: " + expected.getCanonicalPath());
-                    logger.error("Actual: " + actual.getCanonicalPath());
-                    logger.error("=================");
-                    issues.forEach(issue -> logger.error(issue.getIssue()));
-                    logger.error("=================");
-                }
-                issueCount += issues.size();
+            if (issues.size() > 0) {
+                logger.error("=================");
+                logger.error("BDIO Issues");
+                logger.error("Expected: " + expected.getCanonicalPath());
+                logger.error("Actual: " + actual.getCanonicalPath());
+                logger.error("=================");
+                issues.forEach(issue -> logger.error(issue.getIssue()));
+                logger.error("=================");
             }
-            Assertions.assertEquals(0, issueCount, "The BDIO comparison failed, one or more issues were found, please check the logs.");
-
-        } else {
-            Assertions.assertEquals(0, bdio.length, "No bdio resources were asserted but detect created bdio files. Add resource bdio assertion or add a new type of assertion.");
+            issueCount += issues.size();
         }
+        Assertions.assertEquals(0, issueCount, "The BDIO comparison failed, one or more issues were found, please check the logs.");
     }
 
     public void sourceDirectoryNamed(String sourceDirectoryName) {
