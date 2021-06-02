@@ -20,19 +20,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.battery.tests;
+package com.synopsys.integration.detect.battery.detector;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detect.battery.util.BatteryTest;
+import com.synopsys.integration.detect.battery.util.DetectorBatteryTest;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
 @Tag("battery")
 public class PipBattery {
     @Test
     void lock() {
-        final BatteryTest test = new BatteryTest("pip-cli");
+        final DetectorBatteryTest test = new DetectorBatteryTest("pip-cli");
         test.sourceDirectoryNamed("linux-pip");
         test.sourceFileNamed("setup.py");
         test.executableFromResourceFiles(DetectProperties.DETECT_PYTHON_PATH.getProperty(), "pip-name.xout", "pip-inspector.xout");
@@ -44,7 +44,7 @@ public class PipBattery {
 
     @Test
     void pipenv_cli() {
-        final BatteryTest test = new BatteryTest("pipenv-cli");
+        final DetectorBatteryTest test = new DetectorBatteryTest("pipenv-cli");
         test.sourceDirectoryNamed("pipenv-cli-django");
         test.sourceFileNamed("Pipfile.lock");
         test.sourceFileNamed("Pipfile");
@@ -57,7 +57,7 @@ public class PipBattery {
 
     @Test
     void pipenv_cli_projectonly() {
-        final BatteryTest test = new BatteryTest("pipenv-cli-projectonly");
+        final DetectorBatteryTest test = new DetectorBatteryTest("pipenv-cli-projectonly");
         test.sourceDirectoryNamed("pipenv-cli-projectonly");
         test.sourceFileNamed("Pipfile.lock");
         test.sourceFileNamed("Pipfile");

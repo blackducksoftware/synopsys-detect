@@ -20,26 +20,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.battery.tests;
+package com.synopsys.integration.detect.battery.detector;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detect.battery.util.BatteryTest;
-import com.synopsys.integration.detect.configuration.DetectProperties;
+import com.synopsys.integration.detect.battery.util.DetectorBatteryTest;
 
 @Tag("battery")
-public class NugetBattery {
+public class CpanmBattery {
     @Test
-    void dotnetcore() {
-        final BatteryTest test = new BatteryTest("nuget-dotnetcore");
-        test.sourceDirectoryNamed("windows-nuget4");
-        test.sourceFileNamed("example.sln");
-        test.executableThatCopiesFiles(DetectProperties.DETECT_DOTNET_PATH.getProperty(), "NUGET-0")
-            .onWindows(5, "")
-            .onLinux(3, "--output_directory=");
-        test.git("https://github.com/GaProgMan/dwCheckApi.git", "master");
+    void lock() {
+        final DetectorBatteryTest test = new DetectorBatteryTest("cpanm-lock");
+        test.sourceDirectoryNamed("windows-cpanm");
+        test.sourceFileFromResource("composer.json");
+        test.sourceFileFromResource("composer.lock");
+        test.git("https://github.com/petrkle/zonglovani.info.git", "master");
         test.expectBdioResources();
         test.run();
     }
 }
+

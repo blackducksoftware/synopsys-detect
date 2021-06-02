@@ -20,21 +20,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.battery.tests;
+package com.synopsys.integration.detect.battery.detector;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detect.battery.util.BatteryTest;
+import com.synopsys.integration.detect.battery.util.DetectorBatteryTest;
+import com.synopsys.integration.detect.configuration.DetectProperties;
 
 @Tag("battery")
-public class PackratBattery {
+public class PearBattery {
     @Test
     void lock() {
-        final BatteryTest test = new BatteryTest("packrat-lock");
-        test.sourceDirectoryNamed("packrat-lock");
-        test.sourceFileFromResource("packrat.lock");
-        test.git("https://github.com/pingles/redshift-r.git", "master");
+        final DetectorBatteryTest test = new DetectorBatteryTest("pear-cli");
+        test.sourceDirectoryNamed("linux-pear");
+        test.sourceFileFromResource("package.xml");
+        test.executableFromResourceFiles(DetectProperties.DETECT_PEAR_PATH.getProperty(), "pear-list.xout", "pear-package.xout");
         test.expectBdioResources();
         test.run();
     }

@@ -1,16 +1,16 @@
-package com.synopsys.integration.detect.battery.tests;
+package com.synopsys.integration.detect.battery.detector;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detect.battery.util.BatteryTest;
+import com.synopsys.integration.detect.battery.util.DetectorBatteryTest;
 
 @Tag("battery")
 public class ConanLockfileBattery {
 
     @Test
     void conanLockShortFormExternalId() {
-        BatteryTest test = new BatteryTest("conan-lock-shortform", "conan-lock/shortform");
+        DetectorBatteryTest test = new DetectorBatteryTest("conan-lock-shortform", "conan-lock/shortform");
         test.sourceDirectoryNamed("conan-lock");
         test.sourceFileFromResource("conan.lock");
         test.property("detect.conan.attempt.package.revision.match", "false");
@@ -20,7 +20,7 @@ public class ConanLockfileBattery {
 
     @Test
     void conanLockLongFormExternalId() {
-        BatteryTest test = new BatteryTest("conan-lock-longform", "conan-lock/longform");
+        DetectorBatteryTest test = new DetectorBatteryTest("conan-lock-longform", "conan-lock/longform");
         test.sourceDirectoryNamed("conan-lock");
         test.sourceFileFromResource("conan.lock");
         test.property("detect.conan.attempt.package.revision.match", "true");

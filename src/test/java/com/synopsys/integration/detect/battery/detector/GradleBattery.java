@@ -20,12 +20,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.battery.tests;
+package com.synopsys.integration.detect.battery.detector;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detect.battery.util.BatteryTest;
+import com.synopsys.integration.detect.battery.util.DetectorBatteryTest;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
 @Tag("battery")
@@ -34,7 +34,7 @@ public class GradleBattery {
 
     @Test
     void gradleFromProperty() {
-        final BatteryTest test = new BatteryTest("gradle-property", "gradle-inspector");
+        final DetectorBatteryTest test = new DetectorBatteryTest("gradle-property", "gradle-inspector");
         test.executableThatCopiesFiles(DetectProperties.DETECT_GRADLE_PATH.getProperty(), RESOURCE_FOLDER)
             .onWindows(5, "")
             .onLinux(3, "-DGRADLEEXTRACTIONDIR=");
@@ -47,7 +47,7 @@ public class GradleBattery {
 
     @Test
     void gradleWrapperFromSourceFile() {
-        final BatteryTest test = new BatteryTest("gradle-wrapper", "gradle-inspector");
+        final DetectorBatteryTest test = new DetectorBatteryTest("gradle-wrapper", "gradle-inspector");
         test.executableSourceFileThatCopiesFiles("gradlew.bat", "gradlew", RESOURCE_FOLDER)
             .onWindows(5, "")
             .onLinux(3, "-DGRADLEEXTRACTIONDIR=");

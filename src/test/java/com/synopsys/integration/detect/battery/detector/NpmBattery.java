@@ -20,42 +20,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.battery.tests;
+package com.synopsys.integration.detect.battery.detector;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detect.battery.util.BatteryTest;
+import com.synopsys.integration.detect.battery.util.DetectorBatteryTest;
 
 @Tag("battery")
-public class RubygemsBattery {
+public class NpmBattery {
     @Test
-    void lock() {
-        BatteryTest test = new BatteryTest("rubygems-lock");
-        test.sourceDirectoryNamed("linux-rubygems");
-        test.sourceFileFromResource("Gemfile.lock");
-        test.git("https://github.com/BlackDuckCoPilot/example-rubygems-travis", "master");
+    void packagelock() {
+        final DetectorBatteryTest test = new DetectorBatteryTest("npm-packagelock");
+        test.sourceDirectoryNamed("linux-npm");
+        test.sourceFileFromResource("package-lock.json");
+        test.sourceFileFromResource("package.json");
+        test.git("https://github.com/BlackDuckCoPilot/example-npm-travis.git", "master");
         test.expectBdioResources();
         test.run();
     }
-
-    @Test
-    void gemfileGeneratingCircularDependencies() {
-        BatteryTest test = new BatteryTest("rubygems-circular-lock");
-        test.sourceDirectoryNamed("jquery-multiselect-rails");
-        test.sourceFileFromResource("Gemfile.lock");
-        test.expectBdioResources();
-        test.run();
-    }
-
-    @Test
-    void gemfileVersionLessDependencies() {
-        BatteryTest test = new BatteryTest("rubygems-versionless-lock");
-        test.sourceDirectoryNamed("rails");
-        test.sourceFileFromResource("Gemfile.lock");
-        test.expectBdioResources();
-        test.run();
-    }
-
 }
 

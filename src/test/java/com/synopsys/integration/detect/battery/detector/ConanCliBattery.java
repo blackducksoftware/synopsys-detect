@@ -1,9 +1,9 @@
-package com.synopsys.integration.detect.battery.tests;
+package com.synopsys.integration.detect.battery.detector;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detect.battery.util.BatteryTest;
+import com.synopsys.integration.detect.battery.util.DetectorBatteryTest;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
 @Tag("battery")
@@ -13,7 +13,7 @@ public class ConanCliBattery {
 
     @Test
     void conanMinimal() {
-        BatteryTest test = new BatteryTest("conan-minimal", "conan-cli/minimal");
+        DetectorBatteryTest test = new DetectorBatteryTest("conan-minimal", "conan-cli/minimal");
         test.executableFromResourceFiles(DetectProperties.DETECT_CONAN_PATH.getProperty(), "conan-info-minimal.xout");
         test.sourceDirectoryNamed("conan-minimal");
         test.sourceFileNamed("conanfile.txt");
@@ -24,7 +24,7 @@ public class ConanCliBattery {
 
     @Test
     void conanWithProjectNameVersion() {
-        BatteryTest test = new BatteryTest("conan-withprojectnameversion", "conan-cli/withprojectnameversion");
+        DetectorBatteryTest test = new DetectorBatteryTest("conan-withprojectnameversion", "conan-cli/withprojectnameversion");
         test.executableFromResourceFiles(DetectProperties.DETECT_CONAN_PATH.getProperty(), "conan-info-withprojectnameversion.xout");
         test.sourceDirectoryNamed("conan-withprojectnameversion");
         test.sourceFileNamed("conanfile.txt");
@@ -34,7 +34,7 @@ public class ConanCliBattery {
 
     @Test
     void conanWithUserChannel() {
-        BatteryTest test = new BatteryTest("conan-withuserchannel", "conan-cli/withuserchannel");
+        DetectorBatteryTest test = new DetectorBatteryTest("conan-withuserchannel", "conan-cli/withuserchannel");
         test.executableFromResourceFiles(DetectProperties.DETECT_CONAN_PATH.getProperty(), "conan-info-withuserchannel.xout");
         test.sourceDirectoryNamed("conan-withuserchannel");
         test.sourceFileNamed("conanfile.txt");
@@ -45,7 +45,7 @@ public class ConanCliBattery {
 
     @Test
     void conanWithRevisions() {
-        BatteryTest test = new BatteryTest("conan-withrevisions", "conan-cli/withrevisions");
+        DetectorBatteryTest test = new DetectorBatteryTest("conan-withrevisions", "conan-cli/withrevisions");
         test.executableFromResourceFiles(DetectProperties.DETECT_CONAN_PATH.getProperty(), "conan-info-withrevisions.xout");
         test.sourceDirectoryNamed("conan-withrevisions");
         test.sourceFileNamed("conanfile.py");
@@ -56,7 +56,7 @@ public class ConanCliBattery {
 
     @Test
     void conanPkgRevOnly() {
-        BatteryTest test = new BatteryTest("conan-pkgrevonly", "conan-cli/pkgrevonly");
+        DetectorBatteryTest test = new DetectorBatteryTest("conan-pkgrevonly", "conan-cli/pkgrevonly");
         test.executableFromResourceFiles(DetectProperties.DETECT_CONAN_PATH.getProperty(), "conan-info-pkgrevonly.xout");
         test.sourceDirectoryNamed("conan-pkgrevonly");
         test.sourceFileNamed("conanfile.txt");

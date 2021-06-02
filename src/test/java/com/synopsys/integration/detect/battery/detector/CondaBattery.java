@@ -20,22 +20,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.battery.tests;
+package com.synopsys.integration.detect.battery.detector;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detect.battery.util.BatteryTest;
+import com.synopsys.integration.detect.battery.util.DetectorBatteryTest;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
 @Tag("battery")
-public class PearBattery {
+public class CondaBattery {
     @Test
     void lock() {
-        final BatteryTest test = new BatteryTest("pear-cli");
-        test.sourceDirectoryNamed("linux-pear");
-        test.sourceFileFromResource("package.xml");
-        test.executableFromResourceFiles(DetectProperties.DETECT_PEAR_PATH.getProperty(), "pear-list.xout", "pear-package.xout");
+        final DetectorBatteryTest test = new DetectorBatteryTest("conda-list");
+        test.sourceDirectoryNamed("linux-conda");
+        test.sourceFileNamed("environment.yml");
+        test.sourceFileNamed("setup.py");
+        test.executableFromResourceFiles(DetectProperties.DETECT_CONDA_PATH.getProperty(), "conda-list.xout", "conda-info.xout");
+        test.executableFromResourceFiles(DetectProperties.DETECT_PYTHON_PATH.getProperty(), "python-setup.xout", "python-inspector.xout");
         test.expectBdioResources();
         test.run();
     }

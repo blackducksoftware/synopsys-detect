@@ -20,36 +20,42 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.battery.tests;
+package com.synopsys.integration.detect.battery.detector;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detect.battery.util.BatteryTest;
+import com.synopsys.integration.detect.battery.util.DetectorBatteryTest;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
 @Tag("battery")
-public class MavenBattery {
-    private static final String MAVEN_OUTPUT_RESOURCE = "maven-dependencytree.xout";
-
+public class GoBattery {
     @Test
-    void mavenFromProperty() {
-        final BatteryTest test = new BatteryTest("maven-property", "maven-cli");
-        test.executableFromResourceFiles(DetectProperties.DETECT_MAVEN_PATH.getProperty(), MAVEN_OUTPUT_RESOURCE);
-        test.sourceDirectoryNamed("linux-maven");
-        test.sourceFileNamed("pom.xml");
-        test.git("https://github.com/BlackDuckCoPilot/example-maven-travis", "master");
+    void lock() {
+        DetectorBatteryTest test = new DetectorBatteryTest("dep-lock");
+        test.sourceDirectoryNamed("rooms");
+        test.sourceFileFromResource("Gopkg.lock");
+        test.git("https://github.com/thenrich/rooms", "master");
         test.expectBdioResources();
         test.run();
     }
 
     @Test
-    void mavenFromSourceFile() {
-        final BatteryTest test = new BatteryTest("maven-wrapper", "maven-cli");
-        test.executableSourceFileFromResourceFiles("mvnw.cmd", "mvnw", MAVEN_OUTPUT_RESOURCE);
-        test.sourceDirectoryNamed("linux-maven");
-        test.sourceFileNamed("pom.xml");
-        test.git("https://github.com/BlackDuckCoPilot/example-maven-travis", "master");
+    void conf() {
+        DetectorBatteryTest test = new DetectorBatteryTest("go_vndr-lock");
+        test.sourceDirectoryNamed("linux-vndr");
+        test.sourceFileFromResource("vendor.conf");
+        test.git("https://github.com/moby/moby.git", "master");
+        test.expectBdioResources();
+        test.run();
+    }
+
+    @Test
+    void mod() {
+        DetectorBatteryTest test = new DetectorBatteryTest("go-mod");
+        test.executableFromResourceFiles(DetectProperties.DETECT_GO_PATH.getProperty(), "go-list.xout", "go-version.xout", "go-list-u-json.xout", "go-mod-graph.xout", "go-mod-why.xout");
+        test.sourceDirectoryNamed("source");
+        test.sourceFileFromResource("go.mod");
         test.expectBdioResources();
         test.run();
     }

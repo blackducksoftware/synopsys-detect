@@ -20,21 +20,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.battery.tests;
+package com.synopsys.integration.detect.battery.detector;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detect.battery.util.BatteryTest;
+import com.synopsys.integration.detect.battery.util.DetectorBatteryTest;
+import com.synopsys.integration.detect.configuration.DetectProperties;
 
 @Tag("battery")
-public class CocoapodsBattery {
+public class NugetBattery {
     @Test
-    void podlock() {
-        final BatteryTest test = new BatteryTest("cocoapods-podlock");
-        test.sourceDirectoryNamed("linux-cocoapods");
-        test.sourceFileFromResource("Podfile.lock");
-        test.git("https://github.com/BlackDuckCoPilot/example-cocoapods-travis.git", "master");
+    void dotnetcore() {
+        final DetectorBatteryTest test = new DetectorBatteryTest("nuget-dotnetcore");
+        test.sourceDirectoryNamed("windows-nuget4");
+        test.sourceFileNamed("example.sln");
+        test.executableThatCopiesFiles(DetectProperties.DETECT_DOTNET_PATH.getProperty(), "NUGET-0")
+            .onWindows(5, "")
+            .onLinux(3, "--output_directory=");
+        test.git("https://github.com/GaProgMan/dwCheckApi.git", "master");
         test.expectBdioResources();
         test.run();
     }

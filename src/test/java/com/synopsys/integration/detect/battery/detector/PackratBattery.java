@@ -20,22 +20,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.battery.tests;
+package com.synopsys.integration.detect.battery.detector;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detect.battery.util.BatteryTest;
+import com.synopsys.integration.detect.battery.util.DetectorBatteryTest;
 
 @Tag("battery")
-public class NpmBattery {
+public class PackratBattery {
     @Test
-    void packagelock() {
-        final BatteryTest test = new BatteryTest("npm-packagelock");
-        test.sourceDirectoryNamed("linux-npm");
-        test.sourceFileFromResource("package-lock.json");
-        test.sourceFileFromResource("package.json");
-        test.git("https://github.com/BlackDuckCoPilot/example-npm-travis.git", "master");
+    void lock() {
+        final DetectorBatteryTest test = new DetectorBatteryTest("packrat-lock");
+        test.sourceDirectoryNamed("packrat-lock");
+        test.sourceFileFromResource("packrat.lock");
+        test.git("https://github.com/pingles/redshift-r.git", "master");
         test.expectBdioResources();
         test.run();
     }

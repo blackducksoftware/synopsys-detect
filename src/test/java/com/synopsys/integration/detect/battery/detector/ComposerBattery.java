@@ -20,18 +20,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.battery.tests;
+package com.synopsys.integration.detect.battery.detector;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detect.battery.util.BatteryTest;
+import com.synopsys.integration.detect.battery.util.DetectorBatteryTest;
 
 @Tag("battery")
 public class ComposerBattery {
     @Test
     void lock() {
-        final BatteryTest test = new BatteryTest("composer-lock");
+        final DetectorBatteryTest test = new DetectorBatteryTest("composer-lock");
         test.sourceDirectoryNamed("linux-composer");
         test.sourceFileFromResource("composer.json");
         test.sourceFileFromResource("composer.lock");

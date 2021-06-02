@@ -20,44 +20,42 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.battery.tests;
+package com.synopsys.integration.detect.battery.detector;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detect.battery.util.BatteryTest;
-import com.synopsys.integration.detect.configuration.DetectProperties;
+import com.synopsys.integration.detect.battery.util.DetectorBatteryTest;
 
 @Tag("battery")
-public class GoBattery {
+public class RubygemsBattery {
     @Test
     void lock() {
-        BatteryTest test = new BatteryTest("dep-lock");
-        test.sourceDirectoryNamed("rooms");
-        test.sourceFileFromResource("Gopkg.lock");
-        test.git("https://github.com/thenrich/rooms", "master");
+        DetectorBatteryTest test = new DetectorBatteryTest("rubygems-lock");
+        test.sourceDirectoryNamed("linux-rubygems");
+        test.sourceFileFromResource("Gemfile.lock");
+        test.git("https://github.com/BlackDuckCoPilot/example-rubygems-travis", "master");
         test.expectBdioResources();
         test.run();
     }
 
     @Test
-    void conf() {
-        BatteryTest test = new BatteryTest("go_vndr-lock");
-        test.sourceDirectoryNamed("linux-vndr");
-        test.sourceFileFromResource("vendor.conf");
-        test.git("https://github.com/moby/moby.git", "master");
+    void gemfileGeneratingCircularDependencies() {
+        DetectorBatteryTest test = new DetectorBatteryTest("rubygems-circular-lock");
+        test.sourceDirectoryNamed("jquery-multiselect-rails");
+        test.sourceFileFromResource("Gemfile.lock");
         test.expectBdioResources();
         test.run();
     }
 
     @Test
-    void mod() {
-        BatteryTest test = new BatteryTest("go-mod");
-        test.executableFromResourceFiles(DetectProperties.DETECT_GO_PATH.getProperty(), "go-list.xout", "go-version.xout", "go-list-u-json.xout", "go-mod-graph.xout", "go-mod-why.xout");
-        test.sourceDirectoryNamed("source");
-        test.sourceFileFromResource("go.mod");
+    void gemfileVersionLessDependencies() {
+        DetectorBatteryTest test = new DetectorBatteryTest("rubygems-versionless-lock");
+        test.sourceDirectoryNamed("rails");
+        test.sourceFileFromResource("Gemfile.lock");
         test.expectBdioResources();
         test.run();
     }
+
 }
 

@@ -20,26 +20,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.battery.tests;
+package com.synopsys.integration.detect.battery.detector;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detect.battery.util.BatteryTest;
-import com.synopsys.integration.detect.configuration.DetectProperties;
+import com.synopsys.integration.detect.battery.util.DetectorBatteryTest;
 
 @Tag("battery")
-public class CondaBattery {
+public class CocoapodsBattery {
     @Test
-    void lock() {
-        final BatteryTest test = new BatteryTest("conda-list");
-        test.sourceDirectoryNamed("linux-conda");
-        test.sourceFileNamed("environment.yml");
-        test.sourceFileNamed("setup.py");
-        test.executableFromResourceFiles(DetectProperties.DETECT_CONDA_PATH.getProperty(), "conda-list.xout", "conda-info.xout");
-        test.executableFromResourceFiles(DetectProperties.DETECT_PYTHON_PATH.getProperty(), "python-setup.xout", "python-inspector.xout");
+    void podlock() {
+        final DetectorBatteryTest test = new DetectorBatteryTest("cocoapods-podlock");
+        test.sourceDirectoryNamed("linux-cocoapods");
+        test.sourceFileFromResource("Podfile.lock");
+        test.git("https://github.com/BlackDuckCoPilot/example-cocoapods-travis.git", "master");
         test.expectBdioResources();
         test.run();
     }
 }
-
