@@ -29,6 +29,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.synopsys.integration.blackduck.api.generated.deprecated.view.PolicyStatusView;
+import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionComponentPolicyStatusType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ReportFormatType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ReportType;
@@ -39,10 +40,10 @@ import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
 import com.synopsys.integration.blackduck.api.generated.view.ReportView;
 import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationException;
-import com.synopsys.integration.blackduck.http.BlackDuckRequestFactory;
+import com.synopsys.integration.blackduck.http.BlackDuckRequestBuilder;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.DataService;
-import com.synopsys.integration.blackduck.service.dataservice.ProjectService;
+import com.synopsys.integration.blackduck.service.request.BlackDuckResponseRequest;
 import com.synopsys.integration.detect.workflow.blackduck.report.BomComponent;
 import com.synopsys.integration.detect.workflow.blackduck.report.PolicyRule;
 import com.synopsys.integration.detect.workflow.blackduck.report.ReportData;
@@ -51,24 +52,21 @@ import com.synopsys.integration.detect.workflow.blackduck.report.pdf.RiskReportP
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.rest.HttpUrl;
+import com.synopsys.integration.rest.body.BodyContentConverter;
 import com.synopsys.integration.rest.exception.IntegrationRestException;
-import com.synopsys.integration.rest.request.Request;
 import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 
 public class ReportService extends DataService {
     public final static long DEFAULT_TIMEOUT = 1000L * 60 * 5;
 
-    private final ProjectService projectDataService;
     private final IntegrationEscapeUtil escapeUtil;
     private final long timeoutInMilliseconds;
     private final HttpUrl blackDuckBaseUrl;
     private final Gson gson;
 
-    public ReportService(Gson gson, HttpUrl blackDuckBaseUrl, BlackDuckApiClient blackDuckApiClient, BlackDuckRequestFactory blackDuckRequestFactory, IntLogger logger, ProjectService projectDataService,
-        IntegrationEscapeUtil escapeUtil, long timeoutInMilliseconds) {
-        super(blackDuckApiClient, blackDuckRequestFactory, logger);
-        this.projectDataService = projectDataService;
+    public ReportService(Gson gson, HttpUrl blackDuckBaseUrl, BlackDuckApiClient blackDuckApiClient, ApiDiscovery apiDiscovery, IntLogger logger, IntegrationEscapeUtil escapeUtil, long timeoutInMilliseconds) {
+        super(blackDuckApiClient, apiDiscovery, logger);
         this.escapeUtil = escapeUtil;
 
         long timeout = timeoutInMilliseconds;
@@ -124,7 +122,7 @@ public class ReportService extends DataService {
         logger.trace("Getting the Report Contents using the Aggregate Bom Rest Server");
         List<ProjectVersionComponentView> bomEntries;
         try {
-            bomEntries = blackDuckApiClient.getAllResponses(version, ProjectVersionView.COMPONENTS_LINK_RESPONSE);
+            bomEntries = blackDuckApiClient.getAllResponses(version.metaComponentsLink());
         } catch (NoSuchElementException e) {
             throw new BlackDuckIntegrationException("BOM could not be read.  This is likely because you lack sufficient permissions.  Please check your permissions.");
         }
@@ -164,7 +162,7 @@ public class ReportService extends DataService {
     }
 
     private LocalDateTime getDateTimeOfLatestScanForProjectVersion(ProjectVersionView projectVersion, String projectName) throws IntegrationException {
-        List<CodeLocationView> codeLocations = blackDuckApiClient.getAllResponses(projectVersion, ProjectVersionView.CODELOCATIONS_LINK_RESPONSE);
+        List<CodeLocationView> codeLocations = blackDuckApiClient.getAllResponses(projectVersion.metaCodelocationsLink());
         if (codeLocations.isEmpty()) {
             logger.info(String.format("Could not find any code locations for %s - %s", projectName, projectVersion.getVersionName()));
             return null;
@@ -231,7 +229,7 @@ public class ReportService extends DataService {
         if (bomEntry != null && bomEntry.getApprovalStatus() != null) {
             ProjectVersionComponentPolicyStatusType status = bomEntry.getApprovalStatus();
             if (status == ProjectVersionComponentPolicyStatusType.IN_VIOLATION) {
-                List<ComponentPolicyRulesView> rules = blackDuckApiClient.getAllResponses(bomEntry, ProjectVersionComponentView.POLICY_RULES_LINK_RESPONSE);
+                List<ComponentPolicyRulesView> rules = blackDuckApiClient.getAllResponses(bomEntry.metaPolicyRulesLink());
                 List<PolicyRule> rulesViolated = new ArrayList<>();
                 for (ComponentPolicyRulesView policyRuleView : rules) {
                     PolicyRule ruleViolated = new PolicyRule(policyRuleView.getName(), policyRuleView.getDescription());
@@ -276,7 +274,7 @@ public class ReportService extends DataService {
      * Assumes the BOM has already been updated
      */
     public String generateBlackDuckNoticesReport(ProjectVersionView version, ReportFormatType reportFormat) throws InterruptedException, IntegrationException {
-        if (version.hasLink(ProjectVersionView.LICENSEREPORTS_LINK)) {
+        if (version.hasLink(ProjectVersionView.LICENSE_REPORTS_LINK)) {
             try {
                 logger.debug("Starting the Notices Report generation.");
                 HttpUrl reportUrl = startGeneratingBlackDuckNoticesReport(version, reportFormat);
@@ -310,14 +308,16 @@ public class ReportService extends DataService {
     }
 
     public HttpUrl startGeneratingBlackDuckNoticesReport(ProjectVersionView version, ReportFormatType reportFormat) throws IntegrationException {
-        HttpUrl reportUrl = version.getFirstLink(ProjectVersionView.LICENSEREPORTS_LINK);
+        HttpUrl reportUrl = version.getFirstLink(ProjectVersionView.LICENSE_REPORTS_LINK);
 
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("reportFormat", reportFormat.toString());
         jsonObject.addProperty("reportType", ReportType.VERSION_LICENSE.toString());
 
-        String json = gson.toJson(jsonObject);
-        Request request = blackDuckRequestFactory.createCommonPostRequestBuilder(reportUrl, json).build();
+        BlackDuckResponseRequest request = new BlackDuckRequestBuilder()
+            .postObject(jsonObject, BodyContentConverter.DEFAULT)
+            .buildBlackDuckResponseRequest(reportUrl);
+
         return blackDuckApiClient.executePostRequestAndRetrieveURL(request);
     }
 

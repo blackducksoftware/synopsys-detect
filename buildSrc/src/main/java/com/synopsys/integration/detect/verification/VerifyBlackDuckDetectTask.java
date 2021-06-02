@@ -43,7 +43,7 @@ public class VerifyBlackDuckDetectTask extends DefaultTask {
         ProjectService projectService = blackDuckServicesFactory.createProjectService();
 
         ProjectVersionWrapper projectVersionWrapper = projectService.getProjectVersion(getProject().getName(), getProject().getVersion().toString()).get();
-        List<ProjectVersionComponentView> bomComponents = blackDuckService.getAllResponses(projectVersionWrapper.getProjectVersionView(), ProjectVersionView.COMPONENTS_LINK_RESPONSE);
+        List<ProjectVersionComponentView> bomComponents = blackDuckService.getAllResponses(projectVersionWrapper.getProjectVersionView().metaComponentsLink());
         if (bomComponents.isEmpty()) {
             throw new GradleException("No bom components were found for ${project.name} - ${version}");
         }

@@ -13,15 +13,16 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
-import com.synopsys.integration.blackduck.api.generated.response.CurrentVersionView;
+import com.synopsys.integration.blackduck.api.core.response.LinkMultipleResponses;
 import com.synopsys.integration.blackduck.api.generated.view.RoleAssignmentView;
 import com.synopsys.integration.blackduck.api.generated.view.UserGroupView;
 import com.synopsys.integration.blackduck.api.generated.view.UserView;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.blackduck.service.dataservice.BlackDuckRegistrationService;
 import com.synopsys.integration.blackduck.service.dataservice.UserGroupService;
+import com.synopsys.integration.blackduck.service.dataservice.UserService;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.exception.IntegrationException;
@@ -30,6 +31,8 @@ import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.rest.client.ConnectionResult;
 
 public class BlackDuckConnectivityChecker {
+    private static final LinkMultipleResponses<UserGroupView> USERGROUPS = new LinkMultipleResponses<>("usergroups", UserGroupView.class);
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public BlackDuckConnectivityResult determineConnectivity(BlackDuckServerConfig blackDuckServerConfig)
@@ -46,23 +49,24 @@ public class BlackDuckConnectivityChecker {
         }
 
         BlackDuckServicesFactory blackDuckServicesFactory = blackDuckServerConfig.createBlackDuckServicesFactory(new Slf4jIntLogger(logger));
+        BlackDuckRegistrationService blackDuckRegistrationService = blackDuckServicesFactory.createBlackDuckRegistrationService();
+        UserService userService = blackDuckServicesFactory.createUserService();
 
         try {
-            BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
-            CurrentVersionView currentVersion = blackDuckApiClient.getResponse(ApiDiscovery.CURRENT_VERSION_LINK_RESPONSE);
-
-            logger.info(String.format("Successfully connected to Black Duck (version %s)!", currentVersion.getVersion()));
+            String version = blackDuckRegistrationService.getBlackDuckServerData().getVersion();
+            logger.info(String.format("Successfully connected to Black Duck (version %s)!", version));
 
             if (logger.isDebugEnabled()) {
                 // These (particularly fetching roles) can be very slow operations
-                UserView userView = blackDuckApiClient.getResponse(ApiDiscovery.CURRENT_USER_LINK_RESPONSE);
+                UserView userView = userService.findCurrentUser();
                 logger.debug("Connected as: " + userView.getUserName());
 
                 UserGroupService userGroupService = blackDuckServicesFactory.createUserGroupService();
                 List<RoleAssignmentView> roles = userGroupService.getRolesForUser(userView);
                 logger.debug("Roles: " + roles.stream().map(RoleAssignmentView::getName).distinct().collect(Collectors.joining(", ")));
 
-                List<UserGroupView> groups = blackDuckApiClient.getAllResponses(userView.getFirstLink("usergroups"), UserGroupView.class);
+                BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
+                List<UserGroupView> groups = blackDuckApiClient.getAllResponses(userView.metaMultipleResponses(USERGROUPS));
                 logger.debug("Group: " + groups.stream().map(UserGroupView::getName).distinct().collect(Collectors.joining(", ")));
             }
         } catch (IntegrationException e) {

@@ -15,6 +15,7 @@ import static com.synopsys.integration.detect.configuration.DetectProperties.DET
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.Gson;
 import com.synopsys.integration.configuration.source.PropertySource;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
@@ -33,11 +34,13 @@ public class InteractiveModeDecisionTree implements DecisionTree {
     private final DetectInfo detectInfo;
     private final BlackDuckConnectivityChecker blackDuckConnectivityChecker;
     private final List<PropertySource> existingPropertySources;
+    private final Gson gson;
 
-    public InteractiveModeDecisionTree(DetectInfo detectInfo, BlackDuckConnectivityChecker blackDuckConnectivityChecker, List<PropertySource> existingPropertySources) {
+    public InteractiveModeDecisionTree(DetectInfo detectInfo, BlackDuckConnectivityChecker blackDuckConnectivityChecker, List<PropertySource> existingPropertySources, Gson gson) {
         this.detectInfo = detectInfo;
         this.blackDuckConnectivityChecker = blackDuckConnectivityChecker;
         this.existingPropertySources = new ArrayList<>(existingPropertySources);
+        this.gson = gson;
     }
 
     @Override
@@ -47,7 +50,7 @@ public class InteractiveModeDecisionTree implements DecisionTree {
 
         Boolean connectToHub = writer.askYesOrNo(SHOULD_CONNECT_TO_BLACKDUCK);
         if (connectToHub) {
-            BlackDuckConnectionDecisionBranch blackDuckConnectionDecisionBranch = new BlackDuckConnectionDecisionBranch(detectInfo, blackDuckConnectivityChecker, existingPropertySources);
+            BlackDuckConnectionDecisionBranch blackDuckConnectionDecisionBranch = new BlackDuckConnectionDecisionBranch(detectInfo, blackDuckConnectivityChecker, existingPropertySources, gson);
             blackDuckConnectionDecisionBranch.traverse(propertySourceBuilder, writer);
 
             Boolean customDetails = writer.askYesOrNo(SHOULD_SET_PROJECT_NAME_VERSION);

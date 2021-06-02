@@ -162,13 +162,13 @@ public class DetectBootFactory {
     }
 
     public AnalyticsConfigurationService createAnalyticsConfigurationService() {
-        return new AnalyticsConfigurationService(gson);
+        return new AnalyticsConfigurationService();
     }
 
     public InteractiveManager createInteractiveManager(List<PropertySource> propertySources) {
         InteractiveWriter writer = InteractiveWriter.defaultWriter(System.console(), System.in, System.out);
         InteractivePropertySourceBuilder propertySourceBuilder = new InteractivePropertySourceBuilder(writer);
-        InteractiveModeDecisionTree interactiveModeDecisionTree = new InteractiveModeDecisionTree(detectInfo, blackDuckConnectivityChecker, propertySources);
+        InteractiveModeDecisionTree interactiveModeDecisionTree = new InteractiveModeDecisionTree(detectInfo, blackDuckConnectivityChecker, propertySources, gson);
         return new InteractiveManager(propertySourceBuilder, writer, interactiveModeDecisionTree);
     }
 

@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
@@ -83,7 +84,7 @@ public class ProductBoot {
         if (blackDuckConnectivityResult.isSuccessfullyConnected()) {
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckConnectivityResult.getBlackDuckServicesFactory();
 
-            if (shouldUsePhoneHome(analyticsConfigurationService, blackDuckServicesFactory.getBlackDuckApiClient())) {
+            if (shouldUsePhoneHome(analyticsConfigurationService, blackDuckServicesFactory.getApiDiscovery(), blackDuckServicesFactory.getBlackDuckApiClient())) {
                 PhoneHomeManager phoneHomeManager = productBootFactory.createPhoneHomeManager(blackDuckServicesFactory);
                 return BlackDuckRunData.online(blackDuckDecision.scanMode(), blackDuckServicesFactory, phoneHomeManager, blackDuckConnectivityResult.getBlackDuckServerConfig());
             } else {
@@ -101,9 +102,9 @@ public class ProductBoot {
         }
     }
 
-    private boolean shouldUsePhoneHome(AnalyticsConfigurationService analyticsConfigurationService, BlackDuckApiClient blackDuckService) {
+    private boolean shouldUsePhoneHome(AnalyticsConfigurationService analyticsConfigurationService, ApiDiscovery apiDiscovery, BlackDuckApiClient blackDuckService) {
         try {
-            AnalyticsSetting analyticsSetting = analyticsConfigurationService.fetchAnalyticsSetting(blackDuckService);
+            AnalyticsSetting analyticsSetting = analyticsConfigurationService.fetchAnalyticsSetting(apiDiscovery, blackDuckService);
             return analyticsSetting.isEnabled();
         } catch (IntegrationException | IOException e) {
             logger.trace("Failed to check analytics setting on Black Duck. Likely this Black Duck instance does not support it.", e);

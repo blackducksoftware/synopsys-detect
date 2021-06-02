@@ -23,7 +23,6 @@ import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
 import com.synopsys.integration.blackduck.api.generated.view.TagView;
 import com.synopsys.integration.blackduck.http.BlackDuckRequestBuilder;
-import com.synopsys.integration.blackduck.http.BlackDuckRequestFactory;
 import com.synopsys.integration.blackduck.http.BlackDuckRequestFilter;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.dataservice.ProjectBomService;
@@ -33,6 +32,7 @@ import com.synopsys.integration.blackduck.service.dataservice.ProjectUsersServic
 import com.synopsys.integration.blackduck.service.dataservice.TagService;
 import com.synopsys.integration.blackduck.service.model.ProjectSyncModel;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
+import com.synopsys.integration.blackduck.service.request.BlackDuckMultipleRequest;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.workflow.status.OperationSystem;
@@ -119,10 +119,14 @@ public class DetectProjectService {
                 Optional<ProjectVersionWrapper> parentWrapper = projectService.getProjectVersion(parentProjectName, parentVersionName);
                 if (parentWrapper.isPresent()) {
                     ProjectVersionView parentProjectVersionView = parentWrapper.get().getProjectVersionView();
-                    BlackDuckRequestFactory blackDuckRequestFactory = new BlackDuckRequestFactory();
-                    BlackDuckRequestBuilder requestBuilder = blackDuckRequestFactory.createCommonGetRequestBuilder();
-                    requestBuilder.addBlackDuckFilter(BlackDuckRequestFilter.createFilterWithSingleValue("bomComponentSource", "custom_project"));
-                    List<ProjectVersionComponentView> components = blackDuckApiClient.getAllResponses(parentProjectVersionView, ProjectVersionView.COMPONENTS_LINK_RESPONSE, requestBuilder);
+
+                    BlackDuckRequestFilter filter = BlackDuckRequestFilter.createFilterWithSingleValue("bomComponentSource", "custom_project");
+                    BlackDuckMultipleRequest<ProjectVersionComponentView> spec = new BlackDuckRequestBuilder()
+                                                                                     .commonGet()
+                                                                                     .addBlackDuckFilter(filter)
+                                                                                     .buildBlackDuckRequest(parentProjectVersionView.metaComponentsLink());
+
+                    List<ProjectVersionComponentView> components = blackDuckApiClient.getAllResponses(spec);
                     Optional<ProjectVersionComponentView> existingProjectComponent = components.stream()
                                                                                          .filter(component -> component.getComponentName().equals(projectName))
                                                                                          .filter(component -> component.getComponentVersionName().equals(projectVersionName))
@@ -252,7 +256,7 @@ public class DetectProjectService {
         try {
             Optional<ProjectView> projectView = projectService.getProjectByName(projectName);
             if (projectView.isPresent()) {
-                List<ProjectVersionView> projectVersionViews = blackDuckService.getAllResponses(projectView.get(), ProjectView.VERSIONS_LINK_RESPONSE);
+                List<ProjectVersionView> projectVersionViews = blackDuckService.getAllResponses(projectView.get().metaVersionsLink());
                 if (projectVersionViews.isEmpty()) {
                     logger.warn("Could not find an existing project version to clone from. Ensure the project exists when using the latest clone flag.");
                     return Optional.empty();

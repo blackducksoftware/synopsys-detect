@@ -39,6 +39,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import com.google.gson.Gson;
 import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.configuration.source.MapPropertySource;
 import com.synopsys.integration.detect.configuration.DetectInfo;
@@ -272,7 +273,7 @@ public class InteractiveModeDecisionTreeEndToEndTest {
 
     public void testTraverse(Map<String, String> callToResponse, Map<DetectProperty<?>, String> expectedProperties) {
         DetectInfo detectInfo = new DetectInfo("synopsys_detect", 1, OperatingSystemType.LINUX);
-        InteractiveModeDecisionTree decisionTree = new InteractiveModeDecisionTree(detectInfo, new BlackDuckConnectivityChecker(), new ArrayList<>());
+        InteractiveModeDecisionTree decisionTree = new InteractiveModeDecisionTree(detectInfo, new BlackDuckConnectivityChecker(), new ArrayList<>(), new Gson());
 
         InteractiveWriter mockWriter = mockWriter(callToResponse);
         InteractivePropertySourceBuilder propertySourceBuilder = new InteractivePropertySourceBuilder(mockWriter);

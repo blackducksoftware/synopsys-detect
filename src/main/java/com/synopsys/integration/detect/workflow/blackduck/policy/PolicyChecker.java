@@ -72,7 +72,7 @@ public class PolicyChecker {
                 continue;
             }
 
-            for (ComponentPolicyRulesView componentPolicyRulesView : blackDuckService.getAllResponses(projectVersionComponentView, ProjectVersionComponentView.POLICY_RULES_LINK_RESPONSE)) {
+            for (ComponentPolicyRulesView componentPolicyRulesView : blackDuckService.getAllResponses(projectVersionComponentView.metaPolicyRulesLink())) {
                 String componentId = projectVersionComponentView.getComponentName();
                 if (StringUtils.isNotBlank(projectVersionComponentView.getComponentVersionName())) {
                     componentId += ":" + projectVersionComponentView.getComponentVersionName();

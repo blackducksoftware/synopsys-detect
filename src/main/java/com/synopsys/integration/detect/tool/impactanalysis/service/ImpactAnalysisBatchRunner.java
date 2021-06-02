@@ -14,20 +14,22 @@ import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
+import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationException;
-import com.synopsys.integration.blackduck.http.BlackDuckRequestFactory;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.log.IntLogger;
 
 public class ImpactAnalysisBatchRunner {
     private final IntLogger logger;
-    private final BlackDuckApiClient blackDuckService;
+    private final BlackDuckApiClient blackDuckApiClient;
+    private final ApiDiscovery apiDiscovery;
     private final ExecutorService executorService;
     private final Gson gson;
 
-    public ImpactAnalysisBatchRunner(IntLogger logger, BlackDuckApiClient blackDuckService, ExecutorService executorService, Gson gson) {
+    public ImpactAnalysisBatchRunner(IntLogger logger, BlackDuckApiClient blackDuckApiClient, ApiDiscovery apiDiscovery, ExecutorService executorService, Gson gson) {
         this.logger = logger;
-        this.blackDuckService = blackDuckService;
+        this.blackDuckApiClient = blackDuckApiClient;
+        this.apiDiscovery = apiDiscovery;
         this.executorService = executorService;
         this.gson = gson;
     }
@@ -65,9 +67,8 @@ public class ImpactAnalysisBatchRunner {
     }
 
     private List<ImpactAnalysisCallable> createCallables(ImpactAnalysisBatch impactAnalysisBatch) {
-        BlackDuckRequestFactory blackDuckRequestFactory = new BlackDuckRequestFactory();
         return impactAnalysisBatch.getImpactAnalyses().stream()
-                   .map(impactAnalysis -> new ImpactAnalysisCallable(gson, blackDuckService, impactAnalysis, blackDuckRequestFactory))
+                   .map(impactAnalysis -> new ImpactAnalysisCallable(gson, blackDuckApiClient, apiDiscovery, impactAnalysis))
                    .collect(Collectors.toList());
     }
 
