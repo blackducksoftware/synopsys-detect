@@ -35,8 +35,8 @@ import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.ExecutableOutputUtil;
 
-public class GitCliCommitHashDetectableTest extends DetectableFunctionalTest {
-    public GitCliCommitHashDetectableTest() throws IOException {
+public class GitDetectableCliCommitHashTest extends DetectableFunctionalTest {
+    public GitDetectableCliCommitHashTest() throws IOException {
         super("git-cli");
     }
 
@@ -55,12 +55,12 @@ public class GitCliCommitHashDetectableTest extends DetectableFunctionalTest {
 
     @NotNull
     @Override
-    public Detectable create(@NotNull final DetectableEnvironment environment) {
-        return detectableFactory.createGitCliDetectable(environment, () -> ExecutableTarget.forCommand("git"));
+    public Detectable create(@NotNull DetectableEnvironment environment) {
+        return detectableFactory.createGitDetectable(environment, () -> ExecutableTarget.forCommand("git"));
     }
 
     @Override
-    public void assertExtraction(@NotNull final Extraction extraction) {
+    public void assertExtraction(@NotNull Extraction extraction) {
         Assertions.assertEquals(0, extraction.getCodeLocations().size(), "Git should not produce a dependency graph. It is for project info only.");
         Assertions.assertEquals("blackducksoftware/synopsys-detect", extraction.getProjectName());
         Assertions.assertEquals("9ec2a2bcfa8651b6e096b06d72b1b9290b429e3c", extraction.getProjectVersion());
