@@ -14,12 +14,15 @@ import java.util.concurrent.Callable;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
+import com.synopsys.integration.blackduck.exception.BlackDuckApiException;
 import com.synopsys.integration.blackduck.http.BlackDuckRequestBuilder;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.request.BlackDuckResponseRequest;
 import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.util.NameVersion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ImpactAnalysisCallable implements Callable<ImpactAnalysisOutput> {
     private final Gson gson;
@@ -45,9 +48,12 @@ public class ImpactAnalysisCallable implements Callable<ImpactAnalysisOutput> {
             try (Response response = blackDuckApiClient.execute(request)) {
                 return ImpactAnalysisOutput.FROM_RESPONSE(gson, projectAndVersion, codeLocationName, response);
             }
+        } catch (BlackDuckApiException apiException) {
+            String errorMessage = String.format("Failed to upload impact analysis file: %s; Black Duck response: %s [Black Duck error code: %s]", impactAnalysis.getImpactAnalysisPath().toAbsolutePath(), apiException.getMessage(), apiException.getBlackDuckErrorCode());
+            return ImpactAnalysisOutput.FAILURE(projectAndVersion, codeLocationName, errorMessage, apiException, apiException.getBlackDuckErrorCode(), apiException.getMessage(), apiException.getOriginalIntegrationRestException().getHttpStatusCode(), apiException.getOriginalIntegrationRestException().getHttpResponseContent());
         } catch (Exception e) {
-            String errorMessage = String.format("Failed to impact analysis file: %s because %s", impactAnalysis.getImpactAnalysisPath().toAbsolutePath(), e.getMessage());
-            return ImpactAnalysisOutput.FAILURE(projectAndVersion, codeLocationName, errorMessage, e);
+            String errorMessage = String.format("Failed to upload impact analysis file: %s because %s", impactAnalysis.getImpactAnalysisPath().toAbsolutePath(), e.getMessage());
+            return ImpactAnalysisOutput.FAILURE(projectAndVersion, codeLocationName, errorMessage, e, null, null, 0, null);
         }
     }
 
