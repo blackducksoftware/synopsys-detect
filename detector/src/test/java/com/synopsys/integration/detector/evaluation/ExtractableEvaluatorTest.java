@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -111,7 +110,6 @@ public class ExtractableEvaluatorTest {
         DetectorRule detectorRule = Mockito.mock(DetectorRule.class);
         Mockito.when(detectorRule.getDescriptiveName()).thenReturn("test rule");
         Mockito.when(detectorEvaluation.getDetectorRule()).thenReturn(detectorRule);
-        Mockito.when(detectorRuleSet.getFallbackFrom(Mockito.any())).thenReturn(Optional.empty());
 
         Mockito.when(detectorEvaluationTree.getDepthFromRoot()).thenReturn(0);
         Mockito.when(evaluationOptions.isForceNested()).thenReturn(true);
