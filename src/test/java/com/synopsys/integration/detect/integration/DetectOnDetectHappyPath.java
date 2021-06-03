@@ -42,7 +42,6 @@ import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentView;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.Application;
@@ -65,7 +64,7 @@ public class DetectOnDetectHappyPath extends BlackDuckIntegrationTest {
     public void deleteBlackDuckItems() {
         if (null != projectToDelete) {
             try {
-                blackDuckService.delete(projectToDelete);
+                blackDuckApiClient.delete(projectToDelete);
             } catch (IntegrationException e) {
                 e.printStackTrace();
             }
@@ -74,7 +73,7 @@ public class DetectOnDetectHappyPath extends BlackDuckIntegrationTest {
         if (null != codeLocationsToDelete) {
             for (CodeLocationView toDelete : codeLocationsToDelete) {
                 try {
-                    blackDuckService.delete(toDelete);
+                    blackDuckApiClient.delete(toDelete);
                 } catch (IntegrationException e) {
                     e.printStackTrace();
                 }
@@ -106,7 +105,7 @@ public class DetectOnDetectHappyPath extends BlackDuckIntegrationTest {
         detectArgs.add("--detect.wait.for.results=true");
         Application.main(detectArgs.toArray(ArrayUtils.EMPTY_STRING_ARRAY));
 
-        codeLocationsToDelete = blackDuckService.getAllResponses(projectVersionWrapper.getProjectVersionView().metaCodelocationsLink());
+        codeLocationsToDelete = blackDuckApiClient.getAllResponses(projectVersionWrapper.getProjectVersionView().metaCodelocationsLink());
         Set<String> createdCodeLocationNames = codeLocationsToDelete.stream().map(CodeLocationView::getName).collect(Collectors.toSet());
         createdCodeLocationNames.forEach(System.out::println);
         codeLocationNameSuffixesToCheck.forEach(System.out::println);
