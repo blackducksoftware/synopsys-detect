@@ -21,6 +21,9 @@ import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
+import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisBatchOutput;
+import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisOutput;
+import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisUploadView;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.HttpUrl;
 

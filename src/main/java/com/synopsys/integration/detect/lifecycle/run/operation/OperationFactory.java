@@ -70,8 +70,8 @@ import com.synopsys.integration.detect.tool.impactanalysis.GenerateImpactAnalysi
 import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisMapCodeLocationsOperation;
 import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisNamingOperation;
 import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisUploadOperation;
-import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisBatchOutput;
-import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisUploadService;
+import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisBatchOutput;
+import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisUploadService;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScanPath;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerLogger;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerReport;

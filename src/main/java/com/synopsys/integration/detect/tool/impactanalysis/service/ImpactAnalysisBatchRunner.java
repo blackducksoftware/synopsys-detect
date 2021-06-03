@@ -5,7 +5,7 @@
  *
  * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
-package com.synopsys.integration.detect.tool.impactanalysis;
+package com.synopsys.integration.detect.tool.impactanalysis.service;
 
 import java.util.ArrayList;
 import java.util.List;
