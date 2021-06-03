@@ -22,6 +22,10 @@ import com.synopsys.integration.util.NameVersion;
 public class RapidModeStepRunner {
     OperationFactory operationFactory;
 
+    public RapidModeStepRunner(OperationFactory operationFactory) {
+        this.operationFactory = operationFactory;
+    }
+
     public void runAll(BlackDuckRunData blackDuckRunData, NameVersion projectVersion, BdioResult bdioResult) throws DetectUserFriendlyException, IOException {
         operationFactory.phoneHome(blackDuckRunData);
         List<DeveloperScanComponentResultView> results = operationFactory.performRapidScan(blackDuckRunData, bdioResult);
