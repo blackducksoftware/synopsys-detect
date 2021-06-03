@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import com.synopsys.integration.blackduck.codelocation.Result;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -21,10 +22,12 @@ import com.synopsys.integration.util.NameVersion;
 import com.synopsys.integration.util.NoThreadExecutorService;
 import org.junit.jupiter.api.io.TempDir;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @Tag("integration")
 public class ImpactAnalysisTest extends BlackDuckIntegrationTest {
-    private CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(null);
-    private CodeLocationNameManager codeLocationNameManager = new CodeLocationNameManager(codeLocationNameGenerator);
+    private final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(null);
+    private final CodeLocationNameManager codeLocationNameManager = new CodeLocationNameManager(codeLocationNameGenerator);
 
     @TempDir
     File outputDirAsPath;
@@ -48,8 +51,8 @@ public class ImpactAnalysisTest extends BlackDuckIntegrationTest {
         ImpactAnalysisUploadOperation impactAnalysisUploadOperation = new ImpactAnalysisUploadOperation(impactAnalysisUploadService);
         CodeLocationCreationData<ImpactAnalysisBatchOutput> creationData = impactAnalysisUploadOperation.uploadImpactAnalysis(impactAnalysisFile, projectNameVersion, impactAnalysisCodeLocationName);
 
-        ImpactAnalysisMapCodeLocationsOperation mapCodeLocationsOperation = new ImpactAnalysisMapCodeLocationsOperation(blackDuckApiClient);
-        mapCodeLocationsOperation.mapCodeLocations(impactAnalysisFile, creationData, projectAndVersion);
+        assertEquals(1, creationData.getOutput().getOutputs().size());
+        assertEquals(Result.SUCCESS, creationData.getOutput().getOutputs().get(0).getResult());
 
         blackDuckApiClient.delete(projectAndVersion.getProjectView());
     }
