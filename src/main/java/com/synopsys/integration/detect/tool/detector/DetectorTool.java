@@ -30,6 +30,8 @@ import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.tool.detector.extraction.ExtractionEnvironmentProvider;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
+import com.synopsys.integration.detect.workflow.nameversion.DetectorEvaluationNameVersionDecider;
+import com.synopsys.integration.detect.workflow.nameversion.DetectorNameVersionDecider;
 import com.synopsys.integration.detect.workflow.nameversion.DetectorNameVersionHandler;
 import com.synopsys.integration.detect.workflow.nameversion.PreferredDetectorNameVersionHandler;
 import com.synopsys.integration.detect.workflow.report.util.DetectorEvaluationUtils;
@@ -49,6 +51,7 @@ import com.synopsys.integration.detector.evaluation.DiscoveryFilter;
 import com.synopsys.integration.detector.finder.DetectorFinder;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
+import com.synopsys.integration.util.NameVersion;
 
 public class DetectorTool {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -122,7 +125,7 @@ public class DetectorTool {
 
         DetectorAggregateEvaluationResult evaluationResult = detectorEvaluator.evaluate(rootEvaluation);
 
-        logger.debug("Finished detectors.");
+        logger.debug("Finished detectors."); // TODO- finished extractions?
 
         printExplanations(rootEvaluation);
 
@@ -134,8 +137,12 @@ public class DetectorTool {
 
         Map<CodeLocation, DetectCodeLocation> codeLocationMap = createCodeLocationMap(detectorEvaluations, directory);
 
+        DetectorEvaluationNameVersionDecider detectorEvaluationNameVersionDecider = new DetectorEvaluationNameVersionDecider(new DetectorNameVersionDecider());
+        Optional<NameVersion> bomToolProjectNameVersion = detectorEvaluationNameVersionDecider.decideSuggestion(detectorEvaluations, projectDetector);
+        logger.debug("Finished evaluating detectors for project info.");
+
         DetectorToolResult detectorToolResult = new DetectorToolResult(
-            detectorNameVersionHandler.finalDecision().getChosenNameVersion().orElse(null),
+            bomToolProjectNameVersion.orElse(null),
             new ArrayList<>(codeLocationMap.values()),
             evaluationResult.getApplicableDetectorTypes(),
             new HashSet<>(),
