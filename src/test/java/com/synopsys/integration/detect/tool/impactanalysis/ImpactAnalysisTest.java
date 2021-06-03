@@ -19,17 +19,21 @@ import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameMan
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 import com.synopsys.integration.util.NoThreadExecutorService;
+import org.junit.jupiter.api.io.TempDir;
 
 @Tag("integration")
 public class ImpactAnalysisTest extends BlackDuckIntegrationTest {
     private CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(null);
     private CodeLocationNameManager codeLocationNameManager = new CodeLocationNameManager(codeLocationNameGenerator);
 
+    @TempDir
+    File outputDirAsPath;
+
     @Test
     public void testImpactAnalysisForDetect() throws IOException, IntegrationException {
         File toScan = new File("./");
-        Path outputDirectory = new File("/Users/ekerwin/working/impactanalysis").toPath();
-        NameVersion projectNameVersion = new NameVersion("roger", "wilco");
+        Path outputDirectory = outputDirAsPath.toPath();
+        NameVersion projectNameVersion = new NameVersion("synopsys-detect-junit", "impact-analysis");
         ProjectVersionWrapper projectAndVersion = projectService.syncProjectAndVersion(ProjectSyncModel.createWithDefaults(projectNameVersion));
 
         ImpactAnalysisOptions impactAnalysisOptions = new ImpactAnalysisOptions("prefix", "suffix", outputDirectory);
