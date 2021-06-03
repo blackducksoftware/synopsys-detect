@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
@@ -19,6 +20,7 @@ import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 import com.synopsys.integration.util.NoThreadExecutorService;
 
+@Tag("integration")
 public class ImpactAnalysisTest extends BlackDuckIntegrationTest {
     private CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(null);
     private CodeLocationNameManager codeLocationNameManager = new CodeLocationNameManager(codeLocationNameGenerator);
