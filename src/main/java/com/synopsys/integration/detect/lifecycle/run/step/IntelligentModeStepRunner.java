@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerToolResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +80,8 @@ public class IntelligentModeStepRunner {
 
         stepHelper.runToolIfIncluded(DetectTool.SIGNATURE_SCAN, "Signature Scanner", () -> {
             SignatureScanStepRunner signatureScanStepRunner = new SignatureScanStepRunner(operationFactory);
-            signatureScanStepRunner.runSignatureScannerOnline(blackDuckRunData, projectNameVersion, dockerTargetData);
+            SignatureScannerToolResult signatureScannerToolResult = signatureScanStepRunner.runSignatureScannerOnline(blackDuckRunData, projectNameVersion, dockerTargetData);
+            signatureScannerToolResult.getCreationData().ifPresent(codeLocationAccumulator::addWaitableCodeLocation);
         });
 
         stepHelper.runToolIfIncluded(DetectTool.BINARY_SCAN, "Binary Scanner", () -> {
