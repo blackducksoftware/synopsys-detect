@@ -21,8 +21,6 @@ import com.synopsys.integration.blackduck.service.request.BlackDuckResponseReque
 import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.util.NameVersion;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ImpactAnalysisCallable implements Callable<ImpactAnalysisOutput> {
     private final Gson gson;
