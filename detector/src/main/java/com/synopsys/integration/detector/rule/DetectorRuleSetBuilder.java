@@ -97,28 +97,21 @@ public class DetectorRuleSetBuilder {
 
     //returns true when every fallback with this rule as the 'fallback to' detector has had it's 'failing' detector already been added.
     private boolean fallbackSatisfied(final DetectorRule rule, final List<DetectorRule> orderedRules, final Map<DetectorRule, DetectorRule> fallbackToRules) {
-        boolean fallbackSatisfied = true;
-        for (final Map.Entry<DetectorRule, DetectorRule> fallback : fallbackToRules.entrySet()) {
-            //When the Key detector fails we fallback to the Value detector. Therefore for a given rule, every time it is a Value that corresponding Key detector must have already been added.
-            if (rule.equals(fallback.getValue()) && !orderedRules.contains(fallback.getKey())) {
-                fallbackSatisfied = false;
-            }
-        }
-        return fallbackSatisfied;
+        //When the Key detector fails we fallback to the Value detector. Therefore for a given rule, every time it is a Value that corresponding Key detector must have already been added.
+        return fallbackToRules.entrySet()
+            .stream()
+            .filter(fallback -> rule.equals(fallback.getValue()))
+            .allMatch(fallback -> orderedRules.contains(fallback.getKey()));
     }
 
-    //returns true when all all detectors the rule yields to have already been added.
     private boolean yieldSatisfied(final DetectorRule rule, final List<DetectorRule> orderedRules, final Map<DetectorRule, Set<DetectorRule>> yieldsToRules) {
-        if (yieldsToRules.containsKey(rule)) {
-            boolean yieldedSatisfied = true;
-            for (final DetectorRule yield : yieldsToRules.get(rule)) {
-                if (!orderedRules.contains(yield)) {
-                    yieldedSatisfied = false;
-                }
-            }
-            return yieldedSatisfied;
-        } else {
+        if (!yieldsToRules.containsKey(rule)) {
             return true;
         }
+
+        // if ordered rules is missing ANY of the yielded rules, return false
+        // otherwise return true
+        return orderedRules.containsAll(yieldsToRules.get(rule));
     }
+
 }
