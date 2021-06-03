@@ -15,7 +15,6 @@ import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
-import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisBatchOutput;
 
 public class ImpactAnalysisToolResult {
     @Nullable

@@ -13,9 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
-import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysis;
-import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisBatchOutput;
-import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisUploadService;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
@@ -34,4 +31,5 @@ public class ImpactAnalysisUploadOperation {
         impactAnalysisBatchOutput.throwExceptionForError(logger);
         return codeLocationCreationData;
     }
+
 }

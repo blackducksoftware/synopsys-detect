@@ -5,12 +5,14 @@
  *
  * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
-package com.synopsys.integration.detect.tool.impactanalysis.service;
+package com.synopsys.integration.detect.tool.impactanalysis;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
+
+import org.apache.http.HttpHeaders;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
@@ -63,6 +65,11 @@ public class ImpactAnalysisCallable implements Callable<ImpactAnalysisOutput> {
 
         return new BlackDuckRequestBuilder()
                    .postMultipart(fileMap, new HashMap<>())
+                   // ejk - at least against 2021.4.1, Black Duck won't handle
+                   // an Accept application/json, so we have to explicitly
+                   // accept anything
+                   // (IDETECT-2664 sorry for no link. Security.)
+                   .addHeader(HttpHeaders.ACCEPT, "*/*")
                    .buildBlackDuckResponseRequest(url);
     }
 
