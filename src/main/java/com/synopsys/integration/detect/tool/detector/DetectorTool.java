@@ -10,7 +10,6 @@ package com.synopsys.integration.detect.tool.detector;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
@@ -32,8 +31,6 @@ import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.nameversion.DetectorEvaluationNameVersionDecider;
 import com.synopsys.integration.detect.workflow.nameversion.DetectorNameVersionDecider;
-import com.synopsys.integration.detect.workflow.nameversion.DetectorNameVersionHandler;
-import com.synopsys.integration.detect.workflow.nameversion.PreferredDetectorNameVersionHandler;
 import com.synopsys.integration.detect.workflow.report.util.DetectorEvaluationUtils;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.status.DetectorStatus;
@@ -47,7 +44,6 @@ import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.evaluation.DetectorAggregateEvaluationResult;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluator;
-import com.synopsys.integration.detector.evaluation.DiscoveryFilter;
 import com.synopsys.integration.detector.finder.DetectorFinder;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
@@ -95,11 +91,10 @@ public class DetectorTool {
         List<DetectorEvaluation> detectorEvaluations = rootEvaluation.allDescendentEvaluations();
 
         logger.trace("Setting up detector events.");
-        DetectorNameVersionHandler detectorNameVersionHandler = createNameVersionHandler(projectDetector);
-        DiscoveryFilter discoveryFilter = new DetectDiscoveryFilter(eventSystem, detectorNameVersionHandler);
+        //DetectorNameVersionHandler detectorNameVersionHandler = createNameVersionHandler(projectDetector);
         DetectorEvaluatorBroadcaster eventBroadcaster = new DetectorEvaluatorBroadcaster(eventSystem);
 
-        DetectorEvaluator detectorEvaluator = new DetectorEvaluator(evaluationOptions, extractionEnvironmentProvider::createExtractionEnvironment, discoveryFilter);
+        DetectorEvaluator detectorEvaluator = new DetectorEvaluator(evaluationOptions, extractionEnvironmentProvider::createExtractionEnvironment);
         detectorEvaluator.setDetectorEvaluatorListener(eventBroadcaster);
 
         detectorEvaluator.registerPostApplicableCallback(detectorAggregateEvaluationResult -> {
@@ -114,12 +109,9 @@ public class DetectorTool {
 
             Integer extractionCount = detectorAggregateEvaluationResult.getExtractionCount();
             detectorEventPublisher.publishExtractionCount(extractionCount);
-            detectorEventPublisher.publishDiscoveryCount(extractionCount); //right now discovery and extraction are the same. -jp 8/14/19
 
             logger.debug("Total number of detectors: {}", extractionCount);
         });
-
-        detectorEvaluator.registerPostDiscoveryCallback(detectorAggregateEvaluationResult -> detectorEventPublisher.publishDiscoveriesCompleted(detectorAggregateEvaluationResult.getEvaluationTree()));
 
         detectorEvaluator.registerPostExtractionCallback(detectorAggregateEvaluationResult -> detectorEventPublisher.publishExtractionsCompleted(detectorAggregateEvaluationResult.getEvaluationTree()));
 
@@ -180,21 +172,21 @@ public class DetectorTool {
         logger.info(ReportConstants.RUN_SEPARATOR);
     }
 
-    private DetectorNameVersionHandler createNameVersionHandler(String projectDetector) {
-        Optional<DetectorType> preferredProjectDetector = Optional.empty();
-        if (StringUtils.isNotBlank(projectDetector)) {
-            preferredProjectDetector = preferredDetectorTypeFromString(projectDetector);
-        }
-
-        DetectorNameVersionHandler detectorNameVersionHandler;
-        if (preferredProjectDetector.isPresent()) {
-            detectorNameVersionHandler = new PreferredDetectorNameVersionHandler(preferredProjectDetector.get());
-        } else {
-            detectorNameVersionHandler = new DetectorNameVersionHandler(Collections.singletonList(DetectorType.GIT));
-        }
-
-        return detectorNameVersionHandler;
-    }
+    //    private DetectorNameVersionHandler createNameVersionHandler(String projectDetector) {
+    //        Optional<DetectorType> preferredProjectDetector = Optional.empty();
+    //        if (StringUtils.isNotBlank(projectDetector)) {
+    //            preferredProjectDetector = preferredDetectorTypeFromString(projectDetector);
+    //        }
+    //
+    //        DetectorNameVersionHandler detectorNameVersionHandler;
+    //        if (preferredProjectDetector.isPresent()) {
+    //            detectorNameVersionHandler = new PreferredDetectorNameVersionHandler(preferredProjectDetector.get());
+    //        } else {
+    //            detectorNameVersionHandler = new DetectorNameVersionHandler(Collections.singletonList(DetectorType.GIT));
+    //        }
+    //
+    //        return detectorNameVersionHandler;
+    //    }
 
     private Optional<DetectorType> preferredDetectorTypeFromString(String detectorTypeRaw) {
         String detectorType = detectorTypeRaw.trim().toUpperCase();

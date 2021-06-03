@@ -1,3 +1,10 @@
+/*
+ * synopsys-detect
+ *
+ * Copyright (c) 2021 Synopsys, Inc.
+ *
+ * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
+ */
 package com.synopsys.integration.detect.workflow.nameversion;
 
 import static java.util.Collections.emptyList;
@@ -108,11 +115,12 @@ public class DetectorNameVersionDecider {
     }
 
     private List<DetectorProjectInfo> projectNamesAtLowestDepth(List<DetectorProjectInfo> projectNamePossibilities) {
-        DetectorProjectInfo lowestDepth = projectNamePossibilities.stream()
-                                              .sorted(Comparator.comparing(DetectorProjectInfo::getDepth))
-                                              .collect(Collectors.toList()).get(0);
+        List<DetectorProjectInfo> lowestDepthList = projectNamePossibilities.stream()
+                                                        .sorted(Comparator.comparing(DetectorProjectInfo::getDepth))
+                                                        .collect(Collectors.toList());
 
-        if (lowestDepth != null) {
+        if (!lowestDepthList.isEmpty()) {
+            DetectorProjectInfo lowestDepth = lowestDepthList.get(0);
             List<DetectorProjectInfo> allLowest = projectNamePossibilities.stream()
                                                       .filter(info -> info.getDepth() == lowestDepth.getDepth())
                                                       .collect(Collectors.toList());

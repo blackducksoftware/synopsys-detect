@@ -124,15 +124,11 @@ public class FormattedOutputManager {
         detectorOutput.detectorType = evaluation.getDetectorType().toString();
 
         detectorOutput.extracted = evaluation.wasExtractionSuccessful();
-        detectorOutput.discoverable = evaluation.wasDiscoverySuccessful();
         detectorOutput.status = evaluation.getStatus().name();
         detectorOutput.statusCode = evaluation.getStatusCode();
         detectorOutput.statusReason = evaluation.getStatusReason();
         detectorOutput.explanations = Bds.of(evaluation.getAllExplanations()).map(Explanation::describeSelf).toList();
 
-        if (evaluation.getDiscovery() != null) {
-            detectorOutput.discoveryReason = evaluation.getDiscovery().getDescription();
-        }
         if (evaluation.getExtraction() != null) {
             detectorOutput.extractedReason = evaluation.getExtraction().getDescription();
             detectorOutput.relevantFiles = Bds.of(evaluation.getExtraction().getRelevantFiles()).map(File::toString).toList();

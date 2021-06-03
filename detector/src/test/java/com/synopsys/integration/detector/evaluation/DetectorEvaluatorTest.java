@@ -44,10 +44,9 @@ public class DetectorEvaluatorTest {
         DetectorEvaluationOptions evaluationOptions = Mockito.mock(DetectorEvaluationOptions.class);
         ExtractionEnvironment extractionEnvironment = Mockito.mock(ExtractionEnvironment.class);
         Function<DetectorEvaluation, ExtractionEnvironment> extractionEnvironmentProvider = (detectorEvaluation) -> extractionEnvironment;
-        DiscoveryFilter discoveryFilter = Mockito.mock(DiscoveryFilter.class);
         DetectorEvaluationTree rootEvaluation = Mockito.mock(DetectorEvaluationTree.class);
 
-        DetectorEvaluator detectorEvaluator = new DetectorEvaluator(evaluationOptions, extractionEnvironmentProvider, discoveryFilter);
+        DetectorEvaluator detectorEvaluator = new DetectorEvaluator(evaluationOptions, extractionEnvironmentProvider);
         detectorEvaluator.setDetectorEvaluatorListener(listener);
         DetectorAggregateEvaluationResult result = detectorEvaluator.evaluate(rootEvaluation);
 

@@ -26,9 +26,6 @@ public class FormattedDetectorOutput {
     @SerializedName("descriptiveName")
     public String descriptiveName = "";
 
-    @SerializedName("discoverable")
-    public boolean discoverable = true;
-
     @SerializedName("extracted")
     public boolean extracted = true;
 
@@ -40,9 +37,6 @@ public class FormattedDetectorOutput {
 
     @SerializedName("statusReason")
     public String statusReason = "";
-
-    @SerializedName("discoveryReason")
-    public String discoveryReason = "";
 
     @SerializedName("extractedReason")
     public String extractedReason = "";

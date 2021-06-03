@@ -1,3 +1,10 @@
+/*
+ * synopsys-detect
+ *
+ * Copyright (c) 2021 Synopsys, Inc.
+ *
+ * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
+ */
 package com.synopsys.integration.detect.workflow.nameversion;
 
 import java.util.List;
@@ -22,15 +29,15 @@ public class DetectorEvaluationNameVersionDecider {
     }
 
     public Optional<NameVersion> decideSuggestion(List<DetectorEvaluation> detectorEvaluations, String projectDetector) {
-        List<DetectorProjectInfo> detectorProjectInfo = detectorEvaluations.stream()
-                                                            .filter(DetectorEvaluation::wasExtractionSuccessful)
-                                                            .filter(detectorEvaluation -> StringUtils.isNotBlank(detectorEvaluation.getExtraction().getProjectName()))
-                                                            .map(this::toProjectInfo)
-                                                            .collect(Collectors.toList());
+        List<DetectorProjectInfo> detectorProjectInfoList = detectorEvaluations.stream()
+                                                                .filter(DetectorEvaluation::wasExtractionSuccessful)
+                                                                .filter(detectorEvaluation -> StringUtils.isNotBlank(detectorEvaluation.getExtraction().getProjectName()))
+                                                                .map(this::toProjectInfo)
+                                                                .collect(Collectors.toList());
 
         DetectorType detectorType = preferredDetectorTypeFromString(projectDetector);
 
-        return detectorNameVersionDecider.decideProjectNameVersion(detectorProjectInfo, detectorType);
+        return detectorNameVersionDecider.decideProjectNameVersion(detectorProjectInfoList, detectorType);
     }
 
     private DetectorType preferredDetectorTypeFromString(String detectorType) {
@@ -40,7 +47,7 @@ public class DetectorEvaluationNameVersionDecider {
         }
         // In Kotlin this check was to see if castDetectorType != null but that doesn't make any sense...
         if (castDetectorType == null) {
-            logger.info("A valid preferred detector type was not provided, deciding project name automatically.");
+            logger.debug("A valid preferred detector type was not provided, deciding project name automatically.");
         }
         return castDetectorType;
     }
