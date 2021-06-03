@@ -15,6 +15,8 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeManager;
+import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeUtility;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
@@ -168,7 +170,7 @@ public class OperationFactory { //TODO: OperationRunner
 
     //Internal: Operation -> Action
     //Leave OperationSystem but it becomes 'user facing groups of actions or steps'
-    public OperationFactory(DetectDetectableFactory detectDetectableFactory, DetectFontLoaderFactory detectFontLoaderFactory, BootSingletons bootSingletons, UtilitySingletons utilitySingletons, EventSingletons eventSingletons) {
+    public OperationFactory(DetectDetectableFactory detectDetectableFactory, DetectFontLoaderFactory detectFontLoaderFactory, BootSingletons bootSingletons, UtilitySingletons utilitySingletons, EventSingletons eventSingletons, ExitCodeManager exitCodeManager) {
         this.detectDetectableFactory = detectDetectableFactory;
         this.detectFontLoaderFactory = detectFontLoaderFactory;
 
@@ -196,7 +198,7 @@ public class OperationFactory { //TODO: OperationRunner
         this.codeLocationConverter = new CodeLocationConverter(utilitySingletons.getExternalIdFactory());
         this.extractionEnvironmentProvider = new ExtractionEnvironmentProvider(directoryManager);
         this.rapidScanResultAggregator = new RapidScanResultAggregator();
-        this.auditLog = new OperationAuditLog(operationSystem);
+        this.auditLog = new OperationAuditLog(operationSystem, exitCodeManager);
     }
 
     //START: NOT YET MIGRATED

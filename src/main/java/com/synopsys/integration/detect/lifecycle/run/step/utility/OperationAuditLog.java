@@ -12,6 +12,7 @@ import java.io.IOException;
 import com.synopsys.integration.blackduck.exception.BlackDuckTimeoutExceededException;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeManager;
 import com.synopsys.integration.detect.workflow.status.Operation;
 import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.exception.IntegrationException;
@@ -20,9 +21,11 @@ import com.synopsys.integration.rest.exception.IntegrationRestException;
 //Essentially an adapter for 'running an operation' and 'reporting the operation' in one step. Whether or not this is desired is TBD.
 public class OperationAuditLog { //NoOpAuditLog
     private final OperationSystem operationSystem;
+    private final ExitCodeManager exitCodeManager;
 
-    public OperationAuditLog(final OperationSystem operationSystem) {
+    public OperationAuditLog(OperationSystem operationSystem, ExitCodeManager exitCodeManager) {
         this.operationSystem = operationSystem;
+        this.exitCodeManager = exitCodeManager;
     }
 
     public void named(String name, OperationFunction supplier) throws DetectUserFriendlyException {
@@ -86,7 +89,9 @@ public class OperationAuditLog { //NoOpAuditLog
         } catch (Exception e) {
             String errorReason = String.format("There was a problem: %s", e.getMessage());
             operation.error(errorReason);
-            throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_GENERAL_ERROR);
+            // TODO Need this for more exception types than just this one!
+            exitCodeManager.requestExitCode(e);
+            throw new DetectUserFriendlyException(errorReason, e, exitCodeManager.getWinningExitCode());
         } finally {
             operation.finish();
         }
