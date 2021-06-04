@@ -31,13 +31,12 @@ import org.junit.jupiter.api.Assertions;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
-import com.synopsys.integration.detectable.detectable.executable.resolver.GitResolver;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
-import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.detectable.util.ExecutableOutputUtil;
 
-public class GitCliDetectableTest extends DetectableFunctionalTest {
-    public GitCliDetectableTest() throws IOException {
+public class GitDetectableCliCommitHashTest extends DetectableFunctionalTest {
+    public GitDetectableCliCommitHashTest() throws IOException {
         super("git-cli");
     }
 
@@ -45,32 +44,25 @@ public class GitCliDetectableTest extends DetectableFunctionalTest {
     public void setup() throws IOException {
         addDirectory(Paths.get(".git"));
 
-        final String gitRemoteUrlOutput = "https://github.com/blackducksoftware/synopsys-detect";
-        final ExecutableOutput gitConfigExecutableOutput = new ExecutableOutput(0, gitRemoteUrlOutput, "");
-        addExecutableOutput(gitConfigExecutableOutput, "git", "config", "--get", "remote.origin.url");
+        addExecutableOutput(ExecutableOutputUtil.success("https://github.com/blackducksoftware/synopsys-detect"), "git", "config", "--get", "remote.origin.url");
 
-        final String gitBranchOutput = "branch-version";
-        final ExecutableOutput gitBranchExecutableOutput = new ExecutableOutput(0, gitBranchOutput, "");
-        addExecutableOutput(gitBranchExecutableOutput, "git", "rev-parse", "--abbrev-ref", "HEAD");
+        addExecutableOutput(ExecutableOutputUtil.success("HEAD"), "git", "rev-parse", "--abbrev-ref", "HEAD");
+
+        addExecutableOutput(ExecutableOutputUtil.success("(HEAD -> develop, origin/develop, origin/HEAD)"), "git", "log", "-n", "1", "--pretty=%d", "HEAD");
+
+        addExecutableOutput(ExecutableOutputUtil.success("9ec2a2bcfa8651b6e096b06d72b1b9290b429e3c"), "git", "rev-parse", "HEAD");
     }
 
     @NotNull
     @Override
-    public Detectable create(@NotNull final DetectableEnvironment environment) {
-        class GitExeResolver implements GitResolver {
-            @Override
-            public ExecutableTarget resolveGit() {
-                return ExecutableTarget.forCommand("git");
-            }
-        }
-
-        return detectableFactory.createGitCliDetectable(environment, new GitExeResolver());
+    public Detectable create(@NotNull DetectableEnvironment environment) {
+        return detectableFactory.createGitDetectable(environment, () -> ExecutableTarget.forCommand("git"));
     }
 
     @Override
-    public void assertExtraction(@NotNull final Extraction extraction) {
+    public void assertExtraction(@NotNull Extraction extraction) {
         Assertions.assertEquals(0, extraction.getCodeLocations().size(), "Git should not produce a dependency graph. It is for project info only.");
         Assertions.assertEquals("blackducksoftware/synopsys-detect", extraction.getProjectName());
-        Assertions.assertEquals("branch-version", extraction.getProjectVersion());
+        Assertions.assertEquals("9ec2a2bcfa8651b6e096b06d72b1b9290b429e3c", extraction.getProjectVersion());
     }
 }

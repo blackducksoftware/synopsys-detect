@@ -43,9 +43,6 @@ public class DetectorEvaluation {
     private Extraction extraction;
     private Discovery discovery;
 
-    private DetectorEvaluation fallbackTo;
-    private DetectorEvaluation fallbackFrom;
-
     // The detector evaluation is built over time. The only thing you need at the start is the rule this evaluation represents.
     public DetectorEvaluation(DetectorRule detectorRule) {
         this.detectorRule = detectorRule;
@@ -146,14 +143,6 @@ public class DetectorEvaluation {
         return isApplicable() && this.extractable != null && this.extractable.getPassed();
     }
 
-    public boolean isFallbackExtractable() {
-        return fallbackTo != null && (fallbackTo.isExtractable() || fallbackTo.isFallbackExtractable());
-    }
-
-    public boolean isPreviousExtractable() {
-        return fallbackFrom != null && (fallbackFrom.isExtractable() || fallbackFrom.isPreviousExtractable());
-    }
-
     public String getExtractabilityMessage() {
         return getDetectorResultDescription(extractable).orElse(NO_MESSAGE);
     }
@@ -161,8 +150,6 @@ public class DetectorEvaluation {
     public DetectorStatusType getStatus() {
         if (getExtraction() != null && getExtraction().getResult().equals(Extraction.ExtractionResultType.SUCCESS)) {
             return DetectorStatusType.SUCCESS;
-        } else if (fallbackFrom != null && fallbackFrom.isExtractable()) {
-            return DetectorStatusType.DEFERRED;
         }
         return DetectorStatusType.FAILURE;
     }
@@ -218,17 +205,6 @@ public class DetectorEvaluation {
         return "Passed";
     }
 
-    public Optional<DetectorEvaluation> getSuccessfulFallback() {
-        if (fallbackTo != null) {
-            if (fallbackTo.isExtractable()) {
-                return Optional.of(fallbackTo);
-            } else {
-                return fallbackTo.getSuccessfulFallback();
-            }
-        }
-        return Optional.empty();
-    }
-
     private Optional<String> getDetectorResultDescription(DetectorResult detectorResult) {
         String description = null;
 
@@ -261,32 +237,6 @@ public class DetectorEvaluation {
 
     public void setDetectable(Detectable detectable) {
         this.detectable = detectable;
-    }
-
-    public DetectorEvaluation getFallbackTo() {
-        return fallbackTo;
-    }
-
-    public List<DetectorEvaluation> getFallbacks() {
-        if (fallbackTo != null) {
-            List<DetectorEvaluation> fallbacks = new ArrayList<>();
-            fallbacks.add(fallbackTo);
-            fallbacks.addAll(fallbackTo.getFallbacks());
-            return fallbacks;
-        }
-        return new ArrayList<>();
-    }
-
-    public void setFallbackTo(DetectorEvaluation fallbackTo) {
-        this.fallbackTo = fallbackTo;
-    }
-
-    public DetectorEvaluation getFallbackFrom() {
-        return fallbackFrom;
-    }
-
-    public void setFallbackFrom(DetectorEvaluation fallbackFrom) {
-        this.fallbackFrom = fallbackFrom;
     }
 
     public DetectorType getDetectorType() {

@@ -7,7 +7,6 @@
  */
 package com.synopsys.integration.detector.evaluation;
 
-import java.util.Optional;
 import java.util.function.Function;
 
 import org.slf4j.Logger;
@@ -21,8 +20,6 @@ import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.detector.result.DetectorResult;
-import com.synopsys.integration.detector.result.FallbackNotNeededDetectorResult;
-import com.synopsys.integration.detector.rule.DetectorRule;
 
 public class ExtractableEvaluator extends Evaluator {
     private final Logger logger = LoggerFactory.getLogger(ExtractableEvaluator.class);
@@ -52,7 +49,7 @@ public class ExtractableEvaluator extends Evaluator {
                 logger.trace("Detector was searchable and applicable, will check extractable: {}", detectorEvaluation.getDetectorRule().getDescriptiveName());
 
                 logger.trace("Checking to see if this detector is a fallback detector.");
-                DetectableResult detectableExtractableResult = getDetectableExtractableResult(detectorEvaluationTree, detectorEvaluation);
+                DetectableResult detectableExtractableResult = getDetectableExtractableResult(detectorEvaluation);
 
                 DetectorResult extractableResult = new DetectorResult(detectableExtractableResult.getPassed(), detectableExtractableResult.toDescription(), detectableExtractableResult.getClass(),
                     detectableExtractableResult.getExplanation(), detectableExtractableResult.getRelevantFiles());
@@ -72,38 +69,13 @@ public class ExtractableEvaluator extends Evaluator {
         }
     }
 
-    private DetectableResult getDetectableExtractableResult(DetectorEvaluationTree detectorEvaluationTree, DetectorEvaluation detectorEvaluation) {
-        DetectableResult detectableExtractableResult;
-
-        detectableExtractableResult = checkForFallbackDetector(detectorEvaluationTree, detectorEvaluation);
-
-        if (detectableExtractableResult == null) {
-            Detectable detectable = detectorEvaluation.getDetectable();
-            try {
-                return detectable.extractable();
-            } catch (DetectableException e) {
-                return new ExceptionDetectableResult(e);
-            }
+    private DetectableResult getDetectableExtractableResult(DetectorEvaluation detectorEvaluation) {
+        Detectable detectable = detectorEvaluation.getDetectable();
+        try {
+            return detectable.extractable();
+        } catch (DetectableException e) {
+            return new ExceptionDetectableResult(e);
         }
-        return detectableExtractableResult;
-    }
-
-    private DetectableResult checkForFallbackDetector(DetectorEvaluationTree detectorEvaluationTree, DetectorEvaluation detectorEvaluation) {
-        Optional<DetectorRule> fallbackFrom = detectorEvaluationTree.getDetectorRuleSet().getFallbackFrom(detectorEvaluation.getDetectorRule());
-        if (fallbackFrom.isPresent()) {
-            Optional<DetectorEvaluation> fallbackEvaluationOptional = detectorEvaluationTree.getEvaluation(fallbackFrom.get());
-
-            if (fallbackEvaluationOptional.isPresent()) {
-                DetectorEvaluation fallbackEvaluation = fallbackEvaluationOptional.get();
-                fallbackEvaluation.setFallbackTo(detectorEvaluation);
-                detectorEvaluation.setFallbackFrom(fallbackEvaluation);
-
-                if (fallbackEvaluation.isExtractable()) {
-                    return new FallbackNotNeededDetectorResult(fallbackEvaluation.getDetectorRule());
-                }
-            }
-        }
-        return null;
     }
 
     public void setupDiscoveryAndExtractions(DetectorEvaluationTree detectorEvaluationTree, Function<DetectorEvaluation, ExtractionEnvironment> extractionEnvironmentProvider) {

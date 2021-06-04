@@ -5,17 +5,18 @@
  *
  * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
-package com.synopsys.integration.detectable.detectables.git.parsing;
+package com.synopsys.integration.detectable.detectables.git;
 
 import java.io.File;
 
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
+import com.synopsys.integration.detectable.detectables.git.parsing.GitParseExtractor;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
@@ -31,7 +32,7 @@ public class GitParseDetectable extends Detectable {
     private File gitConfigFile;
     private File gitHeadFile;
 
-    public GitParseDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final GitParseExtractor gitParseExtractor) {
+    public GitParseDetectable(DetectableEnvironment environment, FileFinder fileFinder, GitParseExtractor gitParseExtractor) {
         super(environment);
         this.fileFinder = fileFinder;
         this.gitParseExtractor = gitParseExtractor;
@@ -54,7 +55,7 @@ public class GitParseDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         return gitParseExtractor.extract(gitConfigFile, gitHeadFile);
     }
 
