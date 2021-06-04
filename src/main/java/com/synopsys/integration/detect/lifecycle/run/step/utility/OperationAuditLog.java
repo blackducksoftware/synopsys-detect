@@ -33,29 +33,18 @@ public class OperationAuditLog { //NoOpAuditLog
         try {
             supplier.execute();
             operationSystem.completeWithSuccess(name);
-        } catch (DetectUserFriendlyException e) {
-            operationSystem.completeWithError(name, e.getMessage());
-            throw e;
-        } catch (IllegalArgumentException e) {
-            String errorReason = String.format("Your Black Duck configuration is not valid: %s", e.getMessage());
-            operation.error(errorReason);
-            throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
-        } catch (IntegrationRestException e) {
-            operation.error(e.getMessage());
-            throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
-        } catch (BlackDuckTimeoutExceededException e) {
-            operation.error(e.getMessage());
-            throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_TIMEOUT);
         } catch (InterruptedException e) {
             String errorReason = String.format("There was a problem: %s", e.getMessage());
-            operation.error(errorReason);
+            operationSystem.completeWithError(name, errorReason);
             // Restore interrupted state...
             Thread.currentThread().interrupt();
             throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_GENERAL_ERROR);
         } catch (Exception e) {
             String errorReason = String.format("There was a problem: %s", e.getMessage());
-            operation.error(errorReason);
-            throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_GENERAL_ERROR);
+            operationSystem.completeWithError(name, errorReason);
+            // TODO maybe just get code for exception using utility? This seems to add it twice
+            exitCodeManager.requestExitCode(e);
+            throw new DetectUserFriendlyException(errorReason, e, exitCodeManager.getWinningExitCode());
         } finally {
             operation.finish();
         }
@@ -67,29 +56,17 @@ public class OperationAuditLog { //NoOpAuditLog
             T value = supplier.execute();
             operationSystem.completeWithSuccess(name);
             return value;
-        } catch (DetectUserFriendlyException e) {
-            operationSystem.completeWithError(name, e.getMessage());
-            throw e;
-        } catch (IllegalArgumentException e) {
-            String errorReason = String.format("Your Black Duck configuration is not valid: %s", e.getMessage());
-            operation.error(errorReason);
-            throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
-        } catch (IntegrationRestException e) {
-            operation.error(e.getMessage());
-            throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
-        } catch (BlackDuckTimeoutExceededException e) {
-            operation.error(e.getMessage());
-            throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_TIMEOUT);
         } catch (InterruptedException e) {
             String errorReason = String.format("There was a problem: %s", e.getMessage());
-            operation.error(errorReason);
+            operationSystem.completeWithError(name, errorReason);
             // Restore interrupted state...
             Thread.currentThread().interrupt();
             throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_GENERAL_ERROR);
         } catch (Exception e) {
             String errorReason = String.format("There was a problem: %s", e.getMessage());
-            operation.error(errorReason);
-            // TODO Need this for more exception types than just this one!
+            operationSystem.completeWithError(name, errorReason);
+            // Important to do this while we still have the raw exception (assuming we don't want to throw Exception from here):
+            // TODO maybe just get code for exception using utility? This seems to add it twice
             exitCodeManager.requestExitCode(e);
             throw new DetectUserFriendlyException(errorReason, e, exitCodeManager.getWinningExitCode());
         } finally {
