@@ -16,7 +16,6 @@ import java.util.Set;
 import com.synopsys.integration.detect.docs.copied.HelpJsonDetectorStatusCode;
 
 public class DetectorStatusCodes {
-
     private Set<HelpJsonDetectorStatusCode> statusCodes;
 
     public DetectorStatusCodes(final List<HelpJsonDetectorStatusCode> statusCodes) {
@@ -30,10 +29,10 @@ public class DetectorStatusCodes {
     }
 
     private static class HelpJsonDetectorStatusCodeComparator implements Comparator<HelpJsonDetectorStatusCode> {
-
         @Override
         public int compare(final HelpJsonDetectorStatusCode o1, final HelpJsonDetectorStatusCode o2) {
             return o1.getStatusCode().compareTo(o2.getStatusCode());
         }
     }
+
 }

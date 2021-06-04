@@ -87,5 +87,10 @@ public class DetectorRuleSetBuilder {
         } else {
             return true;
         }
+
+        // if ordered rules is missing ANY of the yielded rules, return false
+        // otherwise return true
+        return orderedRules.containsAll(yieldsToRules.get(rule));
     }
+
 }
