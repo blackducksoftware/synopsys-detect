@@ -32,13 +32,11 @@ import org.junit.jupiter.api.Assertions;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.ExecutableTarget;
-import com.synopsys.integration.detectable.detectable.executable.resolver.GitResolver;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 
-public class GitDetectableParseTest extends DetectableFunctionalTest {
-    public GitDetectableParseTest() throws IOException {
+public class GitParseDetectableTest extends DetectableFunctionalTest {
+    public GitParseDetectableTest() throws IOException {
         super("git-parse");
     }
 
@@ -70,13 +68,7 @@ public class GitDetectableParseTest extends DetectableFunctionalTest {
     @NotNull
     @Override
     public Detectable create(@NotNull DetectableEnvironment environment) {
-        class GitExeResolver implements GitResolver {
-            @Override
-            public ExecutableTarget resolveGit() {
-                return null;
-            }
-        }
-        return detectableFactory.createGitDetectable(environment, new GitExeResolver());
+        return detectableFactory.createGitParseDetectable(environment);
     }
 
     @Override
