@@ -25,8 +25,8 @@ public class ImpactAnalysisOutput extends CodeLocationOutput {
     private final String contentString;
     private final ImpactAnalysisUploadView impactAnalysisUploadView;
 
-    public static ImpactAnalysisOutput FAILURE(NameVersion projectAndVersion, String codeLocationName, String errorMessage, Exception exception) {
-        return new ImpactAnalysisOutput(Result.FAILURE, projectAndVersion, codeLocationName, errorMessage, exception, null, null, 0, null, null);
+    public static ImpactAnalysisOutput FAILURE(NameVersion projectAndVersion, String codeLocationName, String errorMessage, Exception exception, String response, String statusMessage, int statusCode, String contentString) {
+        return new ImpactAnalysisOutput(Result.FAILURE, projectAndVersion, codeLocationName, errorMessage, exception, response, statusMessage, statusCode, contentString, null);
     }
 
     public static ImpactAnalysisOutput FROM_RESPONSE(Gson gson, NameVersion projectAndVersion, String codeLocationName, Response response) {
@@ -45,7 +45,7 @@ public class ImpactAnalysisOutput extends CodeLocationOutput {
         String errorMessage = null;
         if (!response.isStatusCodeSuccess()) {
             result = Result.FAILURE;
-            errorMessage = "Unknown status code when uploading binary scan: " + response.getStatusCode() + ", " + response.getStatusMessage();
+            errorMessage = "Unexpected status code when uploading impact analysis: " + response.getStatusCode() + ", " + response.getStatusMessage();
         } else if (null != contentStringException) {
             result = Result.FAILURE;
             errorMessage = contentStringException.getMessage();

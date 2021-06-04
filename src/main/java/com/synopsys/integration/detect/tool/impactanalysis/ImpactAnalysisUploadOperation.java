@@ -34,4 +34,5 @@ public class ImpactAnalysisUploadOperation {
         impactAnalysisBatchOutput.throwExceptionForError(logger);
         return codeLocationCreationData;
     }
+
 }

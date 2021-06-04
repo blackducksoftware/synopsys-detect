@@ -65,7 +65,7 @@ public class DetectRun {
 
             if (productRunData.shouldUseBlackDuckProduct()) {
                 if (productRunData.getBlackDuckRunData().isRapid()) {
-                    RapidModeStepRunner rapidModeSteps = new RapidModeStepRunner();
+                    RapidModeStepRunner rapidModeSteps = new RapidModeStepRunner(operationFactory);
                     rapidModeSteps.runAll(productRunData.getBlackDuckRunData(), nameVersion, bdio);
                 } else if (productRunData.getBlackDuckRunData().isOnline()) {
                     IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationFactory, stepHelper);

@@ -10,14 +10,10 @@ package com.synopsys.integration.detect.tool.impactanalysis;
 import java.io.File;
 import java.io.IOException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.util.NameVersion;
 
 public class ImpactAnalysisNamingOperation {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final CodeLocationNameManager codeLocationNameManager;
 
     public ImpactAnalysisNamingOperation(final CodeLocationNameManager codeLocationNameManager) {
@@ -31,4 +27,5 @@ public class ImpactAnalysisNamingOperation {
         String codeLocationSuffix = impactAnalysisOptions.getCodeLocationSuffix();
         return codeLocationNameManager.createImpactAnalysisCodeLocationName(toScan, projectName, projectVersionName, codeLocationPrefix, codeLocationSuffix);
     }
+
 }
