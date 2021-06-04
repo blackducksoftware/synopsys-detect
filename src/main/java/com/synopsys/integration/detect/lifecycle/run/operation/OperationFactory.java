@@ -16,7 +16,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeManager;
-import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeUtility;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
