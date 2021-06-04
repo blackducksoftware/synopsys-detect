@@ -42,4 +42,8 @@ public class ExitCodeManager {
         }
         return winningExitCodeType;
     }
+
+    public ExitCodeType getExitCodeFromExceptionDetails(final Exception e) {
+        return exitCodeUtility.getExitCodeFromExceptionDetails(e);
+    }
 }

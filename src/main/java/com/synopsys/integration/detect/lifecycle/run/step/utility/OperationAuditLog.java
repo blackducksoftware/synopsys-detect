@@ -13,6 +13,7 @@ import com.synopsys.integration.blackduck.exception.BlackDuckTimeoutExceededExce
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeManager;
+import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeUtility;
 import com.synopsys.integration.detect.workflow.status.Operation;
 import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.exception.IntegrationException;
@@ -42,9 +43,7 @@ public class OperationAuditLog { //NoOpAuditLog
         } catch (Exception e) {
             String errorReason = String.format("There was a problem: %s", e.getMessage());
             operationSystem.completeWithError(name, errorReason);
-            // TODO maybe just get code for exception using utility? This seems to add it twice
-            exitCodeManager.requestExitCode(e);
-            throw new DetectUserFriendlyException(errorReason, e, exitCodeManager.getWinningExitCode());
+            throw new DetectUserFriendlyException(errorReason, e, exitCodeManager.getExitCodeFromExceptionDetails(e));
         } finally {
             operation.finish();
         }
@@ -65,10 +64,7 @@ public class OperationAuditLog { //NoOpAuditLog
         } catch (Exception e) {
             String errorReason = String.format("There was a problem: %s", e.getMessage());
             operationSystem.completeWithError(name, errorReason);
-            // Important to do this while we still have the raw exception (assuming we don't want to throw Exception from here):
-            // TODO maybe just get code for exception using utility? This seems to add it twice
-            exitCodeManager.requestExitCode(e);
-            throw new DetectUserFriendlyException(errorReason, e, exitCodeManager.getWinningExitCode());
+            throw new DetectUserFriendlyException(errorReason, e, exitCodeManager.getExitCodeFromExceptionDetails(e));
         } finally {
             operation.finish();
         }
