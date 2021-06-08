@@ -35,14 +35,6 @@ public class DetectorEventPublisher {
         eventSystem.publishEvent(Event.DetectorsComplete, detectorToolResult);
     }
 
-    public void publishDiscoveryCount(Integer discoveryCount) {
-        eventSystem.publishEvent(Event.DiscoveryCount, discoveryCount);
-    }
-
-    public void publishDiscoveriesCompleted(DetectorEvaluationTree detectorEvaluationTree) {
-        eventSystem.publishEvent(Event.DiscoveriesCompleted, detectorEvaluationTree);
-    }
-
     public void publishExtractionCount(Integer extractionCount) {
         eventSystem.publishEvent(Event.ExtractionCount, extractionCount);
     }

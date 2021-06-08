@@ -23,6 +23,7 @@ import com.synopsys.integration.detectable.detectables.npm.cli.parse.NpmCliParse
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmParseResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.util.NameVersion;
 
 public class NpmCliExtractor {
     public static final String OUTPUT_FILE = "detect_npm_proj_dependencies.json";
@@ -37,7 +38,7 @@ public class NpmCliExtractor {
         this.npmCliParser = npmCliParser;
     }
 
-    public Extraction extract(File directory, ExecutableTarget npmExe, NpmCliExtractorOptions npmCliExtractorOptions) {//TODO: Extractor should not use DetectableOptions
+    public Extraction extract(File directory, ExecutableTarget npmExe, NpmCliExtractorOptions npmCliExtractorOptions, NameVersion packageJsonNameVersion) {//TODO: Extractor should not use DetectableOptions
 
         boolean includeDevDeps = npmCliExtractorOptions.shouldIncludeDevDependencies();
         List<String> exeArgs = new ArrayList<>();
@@ -67,7 +68,9 @@ public class NpmCliExtractor {
             logger.debug("Parsing npm ls file.");
             logger.debug(standardOutput);
             NpmParseResult result = npmCliParser.generateCodeLocation(standardOutput);
-            return new Extraction.Builder().success(result.getCodeLocation()).projectName(result.getProjectName()).projectVersion(result.getProjectVersion()).build();
+            String projectName = result.getProjectName() != null ? result.getProjectName() : packageJsonNameVersion.getName();
+            String projectVersion = result.getProjectVersion() != null ? result.getProjectVersion() : packageJsonNameVersion.getVersion();
+            return new Extraction.Builder().success(result.getCodeLocation()).projectName(projectName).projectVersion(projectVersion).build();
         } else {
             logger.error("Nothing returned from npm ls -json command");
             return new Extraction.Builder().failure("Npm returned error after running npm ls.").build();

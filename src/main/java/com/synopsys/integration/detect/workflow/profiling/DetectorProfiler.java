@@ -19,7 +19,6 @@ import com.synopsys.integration.detector.base.DetectorType;
 public class DetectorProfiler {
     private final Timekeeper<DetectorEvaluation> applicableTimekeeper = new Timekeeper<>();
     private final Timekeeper<DetectorEvaluation> extractableTimekeeper = new Timekeeper<>();
-    private final Timekeeper<DetectorEvaluation> discoveryTimekeeper = new Timekeeper<>();
     private final Timekeeper<DetectorEvaluation> extractionTimekeeper = new Timekeeper<>();
 
     private final EventSystem eventSystem;
@@ -31,8 +30,6 @@ public class DetectorProfiler {
         eventSystem.registerListener(Event.ApplicableEnded, this::applicableEnded);
         eventSystem.registerListener(Event.ExtractableStarted, this::extractableStarted);
         eventSystem.registerListener(Event.ExtractableEnded, this::extractableEnded);
-        eventSystem.registerListener(Event.DiscoveryStarted, this::discoveryStarted);
-        eventSystem.registerListener(Event.DiscoveryEnded, this::discoveryEnded);
         eventSystem.registerListener(Event.ExtractionStarted, this::extractionStarted);
         eventSystem.registerListener(Event.ExtractionEnded, this::extractionEnded);
         eventSystem.registerListener(Event.DetectorsComplete, event -> detectorsComplete());
@@ -52,14 +49,6 @@ public class DetectorProfiler {
 
     private void extractableEnded(DetectorEvaluation evaluation) {
         extractableTimekeeper.ended(evaluation);
-    }
-
-    private void discoveryStarted(DetectorEvaluation evaluation) {
-        discoveryTimekeeper.started(evaluation);
-    }
-
-    private void discoveryEnded(DetectorEvaluation evaluation) {
-        discoveryTimekeeper.ended(evaluation);
     }
 
     private void extractionStarted(DetectorEvaluation evaluation) {
@@ -82,12 +71,8 @@ public class DetectorProfiler {
         return extractionTimekeeper.getTimings();
     }
 
-    public List<Timing<DetectorEvaluation>> getDiscoveryTimings() {
-        return extractionTimekeeper.getTimings();
-    }
-
     public void detectorsComplete() {
-        DetectorTimings timings = new DetectorTimings(getAggregateDetectorGroupTimes(), getApplicableTimings(), getExtractableTimings(), getDiscoveryTimings(), getExtractionTimings());
+        DetectorTimings timings = new DetectorTimings(getAggregateDetectorGroupTimes(), getApplicableTimings(), getExtractableTimings(), getExtractionTimings());
         eventSystem.publishEvent(Event.DetectorsProfiled, timings);
     }
 
@@ -107,7 +92,6 @@ public class DetectorProfiler {
     public Map<DetectorType, Long> getAggregateDetectorGroupTimes() {
         Map<DetectorType, Long> aggregate = new HashMap<>();
         addAggregateByDetectorGroupType(aggregate, getExtractableTimings());
-        addAggregateByDetectorGroupType(aggregate, getDiscoveryTimings());
         addAggregateByDetectorGroupType(aggregate, getExtractionTimings());
         return aggregate;
     }

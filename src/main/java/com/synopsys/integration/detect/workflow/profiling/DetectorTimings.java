@@ -17,16 +17,14 @@ public class DetectorTimings {
     private final Map<DetectorType, Long> aggregateTimings;
     private final List<Timing<DetectorEvaluation>> applicableTimings;
     private final List<Timing<DetectorEvaluation>> extractableTimings;
-    private final List<Timing<DetectorEvaluation>> discoveryTimings;
     private final List<Timing<DetectorEvaluation>> extractionTimings;
 
-    public DetectorTimings(final Map<DetectorType, Long> aggregateTimings, final List<Timing<DetectorEvaluation>> applicableTimings,
-        final List<Timing<DetectorEvaluation>> extractableTimings, final List<Timing<DetectorEvaluation>> discoveryTimings,
-        final List<Timing<DetectorEvaluation>> extractionTimings) {
+    public DetectorTimings(Map<DetectorType, Long> aggregateTimings, List<Timing<DetectorEvaluation>> applicableTimings,
+        List<Timing<DetectorEvaluation>> extractableTimings,
+        List<Timing<DetectorEvaluation>> extractionTimings) {
         this.aggregateTimings = aggregateTimings;
         this.applicableTimings = applicableTimings;
         this.extractableTimings = extractableTimings;
-        this.discoveryTimings = discoveryTimings;
         this.extractionTimings = extractionTimings;
     }
 
@@ -44,9 +42,5 @@ public class DetectorTimings {
 
     public List<Timing<DetectorEvaluation>> getExtractionTimings() {
         return extractionTimings;
-    }
-
-    public List<Timing<DetectorEvaluation>> getDiscoveryTimings() {
-        return discoveryTimings;
     }
 }

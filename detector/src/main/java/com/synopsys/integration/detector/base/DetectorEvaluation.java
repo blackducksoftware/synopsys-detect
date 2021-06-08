@@ -17,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.Discovery;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectable.explanation.Explanation;
 import com.synopsys.integration.detectable.extraction.Extraction;
@@ -41,7 +40,6 @@ public class DetectorEvaluation {
 
     private ExtractionEnvironment extractionEnvironment;
     private Extraction extraction;
-    private Discovery discovery;
 
     // The detector evaluation is built over time. The only thing you need at the start is the rule this evaluation represents.
     public DetectorEvaluation(DetectorRule detectorRule) {
@@ -80,18 +78,6 @@ public class DetectorEvaluation {
         return isExtractable() && this.extraction != null && this.extraction.getResult() == Extraction.ExtractionResultType.EXCEPTION;
     }
 
-    public boolean wasDiscoverySuccessful() {
-        return isExtractable() && this.discovery != null && this.discovery.getResult() == Discovery.DiscoveryResultType.SUCCESS;
-    }
-
-    public boolean wasDiscoveryFailure() {
-        return isExtractable() && this.discovery != null && this.discovery.getResult() == Discovery.DiscoveryResultType.FAILURE;
-    }
-
-    public boolean wasDiscoveryException() {
-        return isExtractable() && this.discovery != null && this.discovery.getResult() == Discovery.DiscoveryResultType.EXCEPTION;
-    }
-
     public List<Explanation> getAllExplanations() {
         List<Explanation> explanations = new ArrayList<>();
         if (applicable != null) {
@@ -121,14 +107,6 @@ public class DetectorEvaluation {
 
     public boolean isApplicable() {
         return isSearchable() && this.applicable != null && this.applicable.getPassed();
-    }
-
-    public void setDiscovery(Discovery discovery) {
-        this.discovery = discovery;
-    }
-
-    public Discovery getDiscovery() {
-        return discovery;
     }
 
     public String getApplicabilityMessage() {

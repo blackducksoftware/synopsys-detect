@@ -12,7 +12,6 @@ import org.mockito.Mockito;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.Discovery;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
@@ -29,8 +28,6 @@ public class ExtractionEvaluatorTest {
     @Test
     public void testEvaluationSuccess() throws DetectableException, ExecutableFailedException {
         DetectorEvaluationOptions evaluationOptions = Mockito.mock(DetectorEvaluationOptions.class);
-        DiscoveryFilter discoveryFilter = Mockito.mock(DiscoveryFilter.class);
-        Mockito.when(discoveryFilter.shouldDiscover(Mockito.any(DetectorEvaluation.class))).thenReturn(true);
         ExtractionEvaluator evaluator = new ExtractionEvaluator(evaluationOptions);
         DetectorEvaluationTree detectorEvaluationTree = Mockito.mock(DetectorEvaluationTree.class);
         Mockito.when(detectorEvaluationTree.getDirectory()).thenReturn(new File("."));
@@ -50,8 +47,6 @@ public class ExtractionEvaluatorTest {
     @Test
     public void testEvaluationDiscoveryExtractionPerformed() throws DetectableException, ExecutableFailedException {
         DetectorEvaluationOptions evaluationOptions = Mockito.mock(DetectorEvaluationOptions.class);
-        DiscoveryFilter discoveryFilter = Mockito.mock(DiscoveryFilter.class);
-        Mockito.when(discoveryFilter.shouldDiscover(Mockito.any(DetectorEvaluation.class))).thenReturn(true);
         ExtractionEvaluator evaluator = new ExtractionEvaluator(evaluationOptions);
         DetectorEvaluationTree detectorEvaluationTree = Mockito.mock(DetectorEvaluationTree.class);
         Mockito.when(detectorEvaluationTree.getDirectory()).thenReturn(new File("."));
@@ -71,8 +66,6 @@ public class ExtractionEvaluatorTest {
     @Test
     public void testEvaluationException() throws DetectableException, ExecutableFailedException {
         DetectorEvaluationOptions evaluationOptions = Mockito.mock(DetectorEvaluationOptions.class);
-        DiscoveryFilter discoveryFilter = Mockito.mock(DiscoveryFilter.class);
-        Mockito.when(discoveryFilter.shouldDiscover(Mockito.any(DetectorEvaluation.class))).thenReturn(true);
         ExtractionEvaluator evaluator = new ExtractionEvaluator(evaluationOptions);
         DetectorEvaluationTree detectorEvaluationTree = Mockito.mock(DetectorEvaluationTree.class);
         Mockito.when(detectorEvaluationTree.getDirectory()).thenReturn(new File("."));
@@ -93,12 +86,6 @@ public class ExtractionEvaluatorTest {
         throws DetectableException, ExecutableFailedException {
         ExtractionEnvironment extractionEnvironment = Mockito.mock(ExtractionEnvironment.class);
         DetectorEvaluation detectorEvaluation = Mockito.mock(DetectorEvaluation.class);
-        Discovery discovery = Mockito.mock(Discovery.class);
-        if (extractionExists) {
-            Mockito.when(discovery.getExtraction()).thenReturn(new Extraction.Builder().success().build());
-        } else {
-            Mockito.when(discovery.getExtraction()).thenReturn(null);
-        }
 
         Detectable detectable = Mockito.mock(Detectable.class);
         DetectableResult detectableExtractableResult = Mockito.mock(DetectableResult.class);
@@ -110,7 +97,6 @@ public class ExtractionEvaluatorTest {
         Mockito.when(detectorEvaluation.isSearchable()).thenReturn(true);
         Mockito.when(detectorEvaluation.isApplicable()).thenReturn(true);
         Mockito.when(detectorEvaluation.isExtractable()).thenReturn(true);
-        Mockito.when(detectorEvaluation.getDiscovery()).thenReturn(discovery);
         List<DetectorEvaluation> detectorEvaluations = Collections.singletonList(detectorEvaluation);
         Mockito.when(detectorEvaluationTree.getOrderedEvaluations()).thenReturn(detectorEvaluations);
 

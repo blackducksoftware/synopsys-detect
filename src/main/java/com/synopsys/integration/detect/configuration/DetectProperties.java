@@ -992,7 +992,7 @@ public class DetectProperties {
         new DetectProperty<>(new NullableStringProperty("detect.project.detector"))
             .setInfo("Project Name and Version Detector", DetectPropertyFromVersion.VERSION_4_0_0)
             .setHelp(
-                "The detector that will be used to determine the project name and version when multiple detector types. This property should be used with the detect.project.tool.",
+                "The detector that will be used to determine the project name and version when multiple detector types apply. This property should be used with detect.project.tool.",
                 "If Detect finds that multiple detectors apply, this property can be used to select the detector that will provide the project name and version. When using this property, you should also set detect.project.tool=DETECTOR"
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)

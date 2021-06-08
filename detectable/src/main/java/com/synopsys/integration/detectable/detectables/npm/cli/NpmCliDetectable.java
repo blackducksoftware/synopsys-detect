@@ -9,18 +9,17 @@ package com.synopsys.integration.detectable.detectables.npm.cli;
 
 import java.io.File;
 
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.Discovery;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.NpmResolver;
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.NpmNodeModulesNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectables.npm.NpmPackageJsonDiscoverer;
+import com.synopsys.integration.detectable.detectables.npm.NpmPackageJsonNameVersionExtractor;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
@@ -32,25 +31,20 @@ public class NpmCliDetectable extends Detectable {
     private final FileFinder fileFinder;
     private final NpmResolver npmResolver;
     private final NpmCliExtractor npmCliExtractor;
-    private final NpmPackageJsonDiscoverer npmPackageJsonDiscoverer;
     private final NpmCliExtractorOptions npmCliExtractorOptions;
+    private final NpmPackageJsonNameVersionExtractor npmPackageJsonNameVersionExtractor;
 
     private File packageJson;
     private ExecutableTarget npmExe;
 
-    public NpmCliDetectable(DetectableEnvironment environment, FileFinder fileFinder, NpmResolver npmResolver, NpmCliExtractor npmCliExtractor, NpmPackageJsonDiscoverer npmPackageJsonDiscoverer,
+    public NpmCliDetectable(DetectableEnvironment environment, FileFinder fileFinder, NpmResolver npmResolver, NpmCliExtractor npmCliExtractor, NpmPackageJsonNameVersionExtractor npmPackageJsonNameVersionExtractor,
         NpmCliExtractorOptions npmCliExtractorOptions) {
         super(environment);
         this.fileFinder = fileFinder;
         this.npmResolver = npmResolver;
         this.npmCliExtractor = npmCliExtractor;
-        this.npmPackageJsonDiscoverer = npmPackageJsonDiscoverer;
         this.npmCliExtractorOptions = npmCliExtractorOptions; // TODO: Should this be wrapped in a detectables option?
-    }
-
-    @Override
-    public Discovery discover(ExtractionEnvironment extractionEnvironment) {
-        return npmPackageJsonDiscoverer.discover(packageJson);
+        this.npmPackageJsonNameVersionExtractor = npmPackageJsonNameVersionExtractor;
     }
 
     @Override
@@ -76,7 +70,7 @@ public class NpmCliDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
-        return npmCliExtractor.extract(environment.getDirectory(), npmExe, npmCliExtractorOptions);
+        return npmCliExtractor.extract(environment.getDirectory(), npmExe, npmCliExtractorOptions, npmPackageJsonNameVersionExtractor.extract(packageJson));
     }
 
 }
