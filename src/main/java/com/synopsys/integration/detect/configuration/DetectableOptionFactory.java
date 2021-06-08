@@ -37,7 +37,7 @@ import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliExtract
 import com.synopsys.integration.detectable.detectables.conan.lockfile.ConanLockfileExtractorOptions;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectableOptions;
-import com.synopsys.integration.detectable.detectables.go.GoModDetectableOptions;
+import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorOptions;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptOptions;
 import com.synopsys.integration.detectable.detectables.lerna.LernaOptions;
@@ -133,9 +133,9 @@ public class DetectableOptionFactory {
             dockerPlatformTopLayerId);
     }
 
-    public GoModDetectableOptions createGoDetectableOptions() {
+    public GoModCliDetectableOptions createGoModCliDetectableOptions() {
         Boolean dependencyVerificationEnabled = getValue(DetectProperties.DETECT_GO_ENABLE_VERIFICATION);
-        return new GoModDetectableOptions(dependencyVerificationEnabled);
+        return new GoModCliDetectableOptions(dependencyVerificationEnabled);
     }
 
     public GradleInspectorOptions createGradleInspectorOptions() {

@@ -1,9 +1,9 @@
-package com.synopsys.integration.detectable.detectables.go;
+package com.synopsys.integration.detectable.detectables.go.gomod;
 
-public class GoModDetectableOptions {
+public class GoModCliDetectableOptions {
     private final boolean dependencyVerificationEnabled;
 
-    public GoModDetectableOptions(boolean dependencyVerificationEnabled) {
+    public GoModCliDetectableOptions(boolean dependencyVerificationEnabled) {
         this.dependencyVerificationEnabled = dependencyVerificationEnabled;
     }
 

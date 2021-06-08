@@ -124,7 +124,7 @@ public class DetectDetectableFactory {
     }
 
     public GoModCliDetectable createGoModCliDetectable(DetectableEnvironment environment) {
-        return detectableFactory.createGoModCliDetectable(environment, detectExecutableResolver, detectableOptionFactory.createGoDetectableOptions());
+        return detectableFactory.createGoModCliDetectable(environment, detectExecutableResolver, detectableOptionFactory.createGoModCliDetectableOptions());
     }
 
     public GoDepLockDetectable createGoLockDetectable(DetectableEnvironment environment) {

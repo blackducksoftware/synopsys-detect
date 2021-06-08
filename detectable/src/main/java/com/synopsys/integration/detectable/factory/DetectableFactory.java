@@ -112,7 +112,6 @@ import com.synopsys.integration.detectable.detectables.git.parsing.GitParseExtra
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigNameVersionTransformer;
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigNodeTransformer;
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitFileParser;
-import com.synopsys.integration.detectable.detectables.go.GoModDetectableOptions;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepExtractor;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepLockDetectable;
 import com.synopsys.integration.detectable.detectables.go.godep.parse.GoLockParser;
@@ -120,6 +119,7 @@ import com.synopsys.integration.detectable.detectables.go.gogradle.GoGradleDetec
 import com.synopsys.integration.detectable.detectables.go.gogradle.GoGradleExtractor;
 import com.synopsys.integration.detectable.detectables.go.gogradle.GoGradleLockParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectable;
+import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliExtractor;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCommandExecutor;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModGraphParser;
@@ -300,8 +300,8 @@ public class DetectableFactory {
         return new GitParseDetectable(environment, fileFinder, gitParseExtractor());
     }
 
-    public GoModCliDetectable createGoModCliDetectable(DetectableEnvironment environment, GoResolver goResolver, GoModDetectableOptions goModDetectableOptions) {
-        return new GoModCliDetectable(environment, fileFinder, goResolver, goModCliExtractor(), goModDetectableOptions);
+    public GoModCliDetectable createGoModCliDetectable(DetectableEnvironment environment, GoResolver goResolver, GoModCliDetectableOptions goModCliDetectableOptions) {
+        return new GoModCliDetectable(environment, fileFinder, goResolver, goModCliExtractor(), goModCliDetectableOptions);
     }
 
     public GoDepLockDetectable createGoLockDetectable(DetectableEnvironment environment) {

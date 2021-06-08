@@ -12,7 +12,7 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GoResolver;
-import com.synopsys.integration.detectable.detectables.go.GoModDetectableOptions;
+import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectableOptions;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
@@ -67,8 +67,8 @@ public class GoModMinusWhyDetectableTest extends DetectableFunctionalTest {
                 return ExecutableTarget.forCommand("go");
             }
         }
-        GoModDetectableOptions goModDetectableOptions = new GoModDetectableOptions(false);
-        return detectableFactory.createGoModCliDetectable(detectableEnvironment, new GoResolverTest(), goModDetectableOptions);
+        GoModCliDetectableOptions goModCliDetectableOptions = new GoModCliDetectableOptions(false);
+        return detectableFactory.createGoModCliDetectable(detectableEnvironment, new GoResolverTest(), goModCliDetectableOptions);
     }
 
     @Override
