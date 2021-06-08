@@ -8,6 +8,7 @@
 package com.synopsys.integration.detectable.detectables.go.gomod;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -33,8 +34,11 @@ public class GoModCliExtractor {
             List<String> listOutput = goModCommandExecutor.generateGoListOutput(directory, goExe);
             List<String> listUJsonOutput = goModCommandExecutor.generateGoListUJsonOutput(directory, goExe);
             List<String> modGraphOutput = goModCommandExecutor.generateGoModGraphOutput(directory, goExe);
-            List<String> modWhyOutput = goModCommandExecutor.generateGoModWhyOutput(directory, goExe);
-            Set<String> moduleExclusionList = goModWhyParser.createModuleExclusionList(modWhyOutput);
+            Set<String> moduleExclusionList = Collections.emptySet();
+            if (dependencyVerificationEnabled) {
+                List<String> modWhyOutput = goModCommandExecutor.generateGoModWhyOutput(directory, goExe);
+                moduleExclusionList = goModWhyParser.createModuleExclusionList(modWhyOutput);
+            }
             List<String> finalModGraphOutput = goModGraphTransformer.transformGoModGraphOutput(modGraphOutput, listUJsonOutput);
             List<CodeLocation> codeLocations = goModGraphParser.parseListAndGoModGraph(listOutput, finalModGraphOutput, moduleExclusionList);
             return new Extraction.Builder().success(codeLocations).build();//no project info - hoping git can help with that.
