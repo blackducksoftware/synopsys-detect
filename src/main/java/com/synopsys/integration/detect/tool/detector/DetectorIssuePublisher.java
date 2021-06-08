@@ -31,11 +31,9 @@ public class DetectorIssuePublisher {
             List<DetectorEvaluation> excepted = DetectorEvaluationUtils.filteredChildren(tree, DetectorEvaluation::wasExtractionException);
             List<DetectorEvaluation> failed = DetectorEvaluationUtils.filteredChildren(tree, DetectorEvaluation::wasExtractionFailure);
             List<DetectorEvaluation> notExtractable = DetectorEvaluationUtils.filteredChildren(tree, evaluation -> evaluation.isApplicable() && !evaluation.isExtractable());
-            //List<DetectorEvaluation> extractable_failed_but_skipped = notExtractable.stream().filter(it -> it.isPreviousExtractable()).collect(Collectors.toList());
 
             List<String> messages = new ArrayList<>();
 
-            //writeEvaluationsIfNotEmpty(writer, "\tSkipped: ", spacer, extractable_failed_but_skipped, DetectorEvaluation::getExtractabilityMessage);
             addIfNotEmpty(messages, "Not Extractable: ", spacer, notExtractable, DetectorEvaluation::getExtractabilityMessage);
             addIfNotEmpty(messages, "Failure: ", spacer, failed, detectorEvaluation -> detectorEvaluation.getExtraction().getDescription());
             addIfNotEmpty(messages, "Exception: ", spacer, excepted, detectorEvaluation -> ExceptionUtil.oneSentenceDescription(detectorEvaluation.getExtraction().getError()));

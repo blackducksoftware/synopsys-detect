@@ -176,7 +176,6 @@ public class DetectorRuleFactory {
 
         ruleSet.yield(gemspec).to(gemlock);
 
-        //ruleSet.addDetector(DetectorType.GIT, "Git", GitDetectable.class, detectableFactory::createGitDetectable).defaults().build(); //TODO- is this okay?
         ruleSet.addDetector(DetectorType.GIT, "Git Parse", GitParseDetectable.class, detectableFactory::createGitParseDetectable).defaults().build();
 
         return ruleSet.build();
