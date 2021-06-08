@@ -15,47 +15,37 @@ import com.synopsys.integration.detector.evaluation.DetectorEvaluatorListener;
 public class DetectorEvaluatorBroadcaster implements DetectorEvaluatorListener {
     private final EventSystem eventSystem;
 
-    public DetectorEvaluatorBroadcaster(final EventSystem eventSystem) {
+    public DetectorEvaluatorBroadcaster(EventSystem eventSystem) {
         this.eventSystem = eventSystem;
     }
 
     @Override
-    public void applicableStarted(final DetectorEvaluation detectorEvaluation) {
+    public void applicableStarted(DetectorEvaluation detectorEvaluation) {
         eventSystem.publishEvent(Event.ApplicableStarted, detectorEvaluation);
     }
 
     @Override
-    public void applicableEnded(final DetectorEvaluation detectorEvaluation) {
+    public void applicableEnded(DetectorEvaluation detectorEvaluation) {
         eventSystem.publishEvent(Event.ApplicableEnded, detectorEvaluation);
     }
 
     @Override
-    public void extractableStarted(final DetectorEvaluation detectorEvaluation) {
+    public void extractableStarted(DetectorEvaluation detectorEvaluation) {
         eventSystem.publishEvent(Event.ExtractableStarted, detectorEvaluation);
     }
 
     @Override
-    public void extractableEnded(final DetectorEvaluation detectorEvaluation) {
+    public void extractableEnded(DetectorEvaluation detectorEvaluation) {
         eventSystem.publishEvent(Event.ExtractableEnded, detectorEvaluation);
     }
 
     @Override
-    public void discoveryStarted(final DetectorEvaluation detectorEvaluation) {
-        eventSystem.publishEvent(Event.DiscoveryStarted, detectorEvaluation);
-    }
-
-    @Override
-    public void discoveryEnded(final DetectorEvaluation detectorEvaluation) {
-        eventSystem.publishEvent(Event.DiscoveryEnded, detectorEvaluation);
-    }
-
-    @Override
-    public void extractionStarted(final DetectorEvaluation detectorEvaluation) {
+    public void extractionStarted(DetectorEvaluation detectorEvaluation) {
         eventSystem.publishEvent(Event.ExtractionStarted, detectorEvaluation);
     }
 
     @Override
-    public void extractionEnded(final DetectorEvaluation detectorEvaluation) {
+    public void extractionEnded(DetectorEvaluation detectorEvaluation) {
         eventSystem.publishEvent(Event.ExtractionEnded, detectorEvaluation);
     }
 }

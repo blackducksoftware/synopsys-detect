@@ -19,13 +19,11 @@ public class DetectorEvaluator {
     private DetectorEvaluatorListener detectorEvaluatorListener;
     private ApplicableEvaluator applicableEvaluator;
     private ExtractableEvaluator extractableEvaluator;
-    private DiscoveryEvaluator discoveryEvaluator;
     private ExtractionEvaluator extractionEvaluator;
 
-    public DetectorEvaluator(DetectorEvaluationOptions evaluationOptions, Function<DetectorEvaluation, ExtractionEnvironment> extractionEnvironmentProvider, DiscoveryFilter discoveryFilter) {
+    public DetectorEvaluator(DetectorEvaluationOptions evaluationOptions, Function<DetectorEvaluation, ExtractionEnvironment> extractionEnvironmentProvider) {
         applicableEvaluator = new ApplicableEvaluator(evaluationOptions);
         extractableEvaluator = new ExtractableEvaluator(evaluationOptions, extractionEnvironmentProvider);
-        discoveryEvaluator = new DiscoveryEvaluator(evaluationOptions, discoveryFilter);
         extractionEvaluator = new ExtractionEvaluator(evaluationOptions);
     }
 
@@ -33,7 +31,6 @@ public class DetectorEvaluator {
         // each evaluator mutates the rootEvaluation object's state.  So we only need to return the rootEvaluation object at the end.
         applicableEvaluator.evaluate(rootEvaluation);
         extractableEvaluator.evaluate(rootEvaluation);
-        discoveryEvaluator.evaluate(rootEvaluation);
         extractionEvaluator.evaluate(rootEvaluation);
 
         return new DetectorAggregateEvaluationResult(rootEvaluation);
@@ -47,10 +44,6 @@ public class DetectorEvaluator {
         extractableEvaluator.registerEvaluatorResultCallback(callBack);
     }
 
-    public void registerPostDiscoveryCallback(Consumer<DetectorAggregateEvaluationResult> callBack) {
-        discoveryEvaluator.registerEvaluatorResultCallback(callBack);
-    }
-
     public void registerPostExtractionCallback(Consumer<DetectorAggregateEvaluationResult> callBack) {
         extractionEvaluator.registerEvaluatorResultCallback(callBack);
     }
@@ -58,12 +51,11 @@ public class DetectorEvaluator {
     public Optional<DetectorEvaluatorListener> getDetectorEvaluatorListener() {
         return Optional.ofNullable(detectorEvaluatorListener);
     }
-    
+
     public void setDetectorEvaluatorListener(DetectorEvaluatorListener detectorEvaluatorListener) {
         this.detectorEvaluatorListener = detectorEvaluatorListener;
         applicableEvaluator.setDetectorEvaluatorListener(detectorEvaluatorListener);
         extractableEvaluator.setDetectorEvaluatorListener(detectorEvaluatorListener);
-        discoveryEvaluator.setDetectorEvaluatorListener(detectorEvaluatorListener);
         extractionEvaluator.setDetectorEvaluatorListener(detectorEvaluatorListener);
     }
 }

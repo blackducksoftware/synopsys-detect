@@ -18,10 +18,6 @@ public interface DetectorEvaluatorListener {
 
     void extractableEnded(DetectorEvaluation detectorEvaluation);
 
-    void discoveryStarted(DetectorEvaluation detectorEvaluation);
-
-    void discoveryEnded(DetectorEvaluation detectorEvaluation);
-
     void extractionStarted(DetectorEvaluation detectorEvaluation);
 
     void extractionEnded(DetectorEvaluation detectorEvaluation);
