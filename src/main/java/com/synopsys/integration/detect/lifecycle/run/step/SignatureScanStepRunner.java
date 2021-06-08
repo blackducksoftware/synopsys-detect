@@ -68,7 +68,7 @@ public class SignatureScanStepRunner {
     }
 
     private ScanBatchRunner resolveOfflineScanBatchRunner() throws DetectUserFriendlyException {
-        ScanBatchRunnerUserResult userProvided = findUserProvidedScanBatchRunner();
+        ScanBatchRunnerUserResult userProvided = findUserProvidedOfflineScanBatchRunner();
         File installDirectory = determineScanInstallDirectory(userProvided);
         ScanBatchRunner scanBatchRunner;
         if (userProvided.getScanBatchRunner().isPresent()) {
@@ -80,7 +80,7 @@ public class SignatureScanStepRunner {
     }
 
     private ScanBatchRunner resolveOnlineScanBatchRunner(BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
-        ScanBatchRunnerUserResult userProvided = findUserProvidedScanBatchRunner();
+        ScanBatchRunnerUserResult userProvided = findUserProvidedOnlineScanBatchRunner();
         File installDirectory = determineScanInstallDirectory(userProvided);
 
         ScanBatchRunner scanBatchRunner;
@@ -101,11 +101,26 @@ public class SignatureScanStepRunner {
         }
     }
 
-    private ScanBatchRunnerUserResult findUserProvidedScanBatchRunner() throws DetectUserFriendlyException { //TODO: This should be handled by a decision somewhere.
-        Optional<File> offlinePath = operationFactory.calculateOfflineLocalScannerInstallPath();
-        if (offlinePath.isPresent()) {
+    private ScanBatchRunnerUserResult findUserProvidedOfflineScanBatchRunner() throws DetectUserFriendlyException { //TODO: This should be handled by a decision somewhere.
+        Optional<File> localScannerPath = operationFactory.calculateOfflineLocalScannerInstallPath();
+        if (localScannerPath.isPresent()) {
             logger.debug("Signature scanner given an existing path for the scanner - we won't attempt to manage the install.");
-            return ScanBatchRunnerUserResult.fromLocalInstall(operationFactory.createScanBatchRunnerFromLocalInstall(offlinePath.get()), offlinePath.get());
+            return ScanBatchRunnerUserResult.fromLocalInstall(operationFactory.createScanBatchRunnerFromLocalInstall(localScannerPath.get()), localScannerPath.get());
+        } else if (operationFactory.calculateUserProvidedScannerUrl().isPresent()) {
+            logger.debug("Signature scanner will use the provided url to download/update the scanner.");
+            //TODO ejk - not confident this is right
+            File installDirectory = operationFactory.calculateDetectControlledInstallDirectory();
+            return ScanBatchRunnerUserResult.fromCustomUrl(operationFactory.createScanBatchRunnerWithCustomUrl(operationFactory.calculateUserProvidedScannerUrl().get(), installDirectory));
+        }
+        return ScanBatchRunnerUserResult.none();
+    }
+
+    // TODO share code with above method; only first line differs; pass in a lambda
+    private ScanBatchRunnerUserResult findUserProvidedOnlineScanBatchRunner() throws DetectUserFriendlyException { //TODO: This should be handled by a decision somewhere.
+        Optional<File> localScannerPath = operationFactory.calculateOnlineLocalScannerInstallPath();
+        if (localScannerPath.isPresent()) {
+            logger.debug("Signature scanner given an existing path for the scanner - we won't attempt to manage the install.");
+            return ScanBatchRunnerUserResult.fromLocalInstall(operationFactory.createScanBatchRunnerFromLocalInstall(localScannerPath.get()), localScannerPath.get());
         } else if (operationFactory.calculateUserProvidedScannerUrl().isPresent()) {
             logger.debug("Signature scanner will use the provided url to download/update the scanner.");
             //TODO ejk - not confident this is right

@@ -411,6 +411,10 @@ public class OperationFactory { //TODO: OperationRunner
         return auditLog.named("Calculate Offline Local Scanner Path", () -> detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getOfflineLocalScannerInstallPath().map(Path::toFile));
     }
 
+    public Optional<File> calculateOnlineLocalScannerInstallPath() throws DetectUserFriendlyException {
+        return auditLog.named("Calculate Online Local Scanner Path", () -> detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getOnlineLocalScannerInstallPath().map(Path::toFile));
+    }
+
     public Optional<String> calculateUserProvidedScannerUrl() throws DetectUserFriendlyException {
         return auditLog.named("Calculate User Provided Scanner Url", () -> detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getUserProvidedScannerInstallUrl());
     }
