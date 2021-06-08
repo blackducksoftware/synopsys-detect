@@ -34,9 +34,9 @@ public class GoModCliExtractorTest {
         File directory = new File("");
         ExecutableTarget goExe = ExecutableTarget.forFile(new File(""));
         Answer<ExecutableOutput> executableAnswer = new Answer<ExecutableOutput>() {
-            final String[] goListArgs = { "list", "-m" };
-            final String[] goListJsonArgs = { "list", "-m", "-u", "-json", "all" };
-            final String[] goModGraphArgs = { "mod", "graph" };
+            String[] goListArgs = { "list", "-m" };
+            String[] goListJsonArgs = { "list", "-m", "-u", "-json", "all" };
+            String[] goModGraphArgs = { "mod", "graph" };
 
             @Override
             public ExecutableOutput answer(InvocationOnMock invocation) {
@@ -77,10 +77,10 @@ public class GoModCliExtractorTest {
         File directory = new File("");
         ExecutableTarget goExe = ExecutableTarget.forFile(new File(""));
         Answer<ExecutableOutput> executableAnswer = new Answer<ExecutableOutput>() {
-            final String[] goListArgs = { "list", "-m" };
-            final String[] goListJsonArgs = { "list", "-m", "-u", "-json", "all" };
-            final String[] goModGraphArgs = { "mod", "graph" };
-            final String[] goModWhyArgs = { "mod", "why", "-m", "all" };
+            String[] goListArgs = { "list", "-m" };
+            String[] goListJsonArgs = { "list", "-m", "-u", "-json", "all" };
+            String[] goModGraphArgs = { "mod", "graph" };
+            String[] goModWhyArgs = { "mod", "why", "-m", "all" };
 
             @Override
             public ExecutableOutput answer(InvocationOnMock invocation) throws Throwable {
