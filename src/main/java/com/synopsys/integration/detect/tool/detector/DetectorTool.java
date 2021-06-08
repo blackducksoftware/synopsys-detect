@@ -18,7 +18,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -170,35 +169,6 @@ public class DetectorTool {
             logger.info("No detectors found.");
         }
         logger.info(ReportConstants.RUN_SEPARATOR);
-    }
-
-    //    private DetectorNameVersionHandler createNameVersionHandler(String projectDetector) {
-    //        Optional<DetectorType> preferredProjectDetector = Optional.empty();
-    //        if (StringUtils.isNotBlank(projectDetector)) {
-    //            preferredProjectDetector = preferredDetectorTypeFromString(projectDetector);
-    //        }
-    //
-    //        DetectorNameVersionHandler detectorNameVersionHandler;
-    //        if (preferredProjectDetector.isPresent()) {
-    //            detectorNameVersionHandler = new PreferredDetectorNameVersionHandler(preferredProjectDetector.get());
-    //        } else {
-    //            detectorNameVersionHandler = new DetectorNameVersionHandler(Collections.singletonList(DetectorType.GIT));
-    //        }
-    //
-    //        return detectorNameVersionHandler;
-    //    }
-
-    private Optional<DetectorType> preferredDetectorTypeFromString(String detectorTypeRaw) {
-        String detectorType = detectorTypeRaw.trim().toUpperCase();
-        if (StringUtils.isNotBlank(detectorType)) {
-            if (DetectorType.getPossibleNames().contains(detectorType)) {
-                return Optional.of(DetectorType.valueOf(detectorType));
-            } else {
-                logger.info("A valid preferred detector type was not provided, deciding project name automatically.");
-                return Optional.empty();
-            }
-        }
-        return Optional.empty();
     }
 
     private Map<DetectorType, StatusType> extractStatus(List<DetectorEvaluation> detectorEvaluations) {
