@@ -28,7 +28,7 @@ public class GoModCliExtractor {
         this.goModGraphTransformer = goModGraphTransformer;
     }
 
-    public Extraction extract(File directory, ExecutableTarget goExe) {
+    public Extraction extract(File directory, ExecutableTarget goExe, boolean dependencyVerificationEnabled) {
         try {
             List<String> listOutput = goModCommandExecutor.generateGoListOutput(directory, goExe);
             List<String> listUJsonOutput = goModCommandExecutor.generateGoListUJsonOutput(directory, goExe);

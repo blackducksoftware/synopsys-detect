@@ -112,6 +112,7 @@ import com.synopsys.integration.detectable.detectables.git.parsing.GitParseExtra
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigNameVersionTransformer;
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigNodeTransformer;
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitFileParser;
+import com.synopsys.integration.detectable.detectables.go.GoModDetectableOptions;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepExtractor;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepLockDetectable;
 import com.synopsys.integration.detectable.detectables.go.godep.parse.GoLockParser;
@@ -299,8 +300,8 @@ public class DetectableFactory {
         return new GitParseDetectable(environment, fileFinder, gitParseExtractor());
     }
 
-    public GoModCliDetectable createGoModCliDetectable(DetectableEnvironment environment, GoResolver goResolver) {
-        return new GoModCliDetectable(environment, fileFinder, goResolver, goModCliExtractor());
+    public GoModCliDetectable createGoModCliDetectable(DetectableEnvironment environment, GoResolver goResolver, GoModDetectableOptions goModDetectableOptions) {
+        return new GoModCliDetectable(environment, fileFinder, goResolver, goModCliExtractor(), goModDetectableOptions);
     }
 
     public GoDepLockDetectable createGoLockDetectable(DetectableEnvironment environment) {
