@@ -144,13 +144,13 @@ public class IntelligentModeStepRunner {
     }
 
     private void checkPolicy(ProjectVersionView projectVersionView, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
-        logger.info("Detect will check policy for violations.");
+        logger.info("Checking to see if Detect should check policy for violations.");
         operationFactory.checkPolicy(blackDuckRunData, projectVersionView);
     }
 
     public void waitForCodeLocations(CodeLocationWaitData codeLocationWaitData, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
         throws DetectUserFriendlyException {
-        logger.info("Detect must wait for bom tool calculations to finish.");
+        logger.info("Checking to see if Detect should wait for bom tool calculations to finish.");
         if (codeLocationWaitData.getExpectedNotificationCount() > 0) {
             operationFactory.waitForCodeLocations(blackDuckRunData, codeLocationWaitData, projectNameVersion);
         }

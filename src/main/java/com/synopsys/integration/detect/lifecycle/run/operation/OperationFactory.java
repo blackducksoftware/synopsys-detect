@@ -334,8 +334,10 @@ public class OperationFactory { //TODO: OperationRunner
 
     public void checkPolicy(BlackDuckRunData blackDuckRunData, ProjectVersionView projectVersionView) throws DetectUserFriendlyException {
         auditLog.named("Check for Policy", () -> {
-            PolicyChecker policyChecker = new PolicyChecker(exitCodePublisher, blackDuckRunData.getBlackDuckServicesFactory().getBlackDuckApiClient(), blackDuckRunData.getBlackDuckServicesFactory().createProjectBomService());
-            policyChecker.checkPolicy(detectConfigurationFactory.createBlackDuckPostOptions().getSeveritiesToFailPolicyCheck(), projectVersionView);
+            if (detectConfigurationFactory.createBlackDuckPostOptions().shouldPerformPolicyCheck()) {
+                PolicyChecker policyChecker = new PolicyChecker(exitCodePublisher, blackDuckRunData.getBlackDuckServicesFactory().getBlackDuckApiClient(), blackDuckRunData.getBlackDuckServicesFactory().createProjectBomService());
+                policyChecker.checkPolicy(detectConfigurationFactory.createBlackDuckPostOptions().getSeveritiesToFailPolicyCheck(), projectVersionView);
+            }
         });
     }
 
@@ -494,22 +496,24 @@ public class OperationFactory { //TODO: OperationRunner
 
     public void waitForCodeLocations(BlackDuckRunData blackDuckRunData, CodeLocationWaitData codeLocationWaitData, NameVersion projectNameVersion) throws DetectUserFriendlyException {
         auditLog.named("Wait for Code Locations", () -> {
-            //TODO fix this when NotificationTaskRange doesn't include task start time
-            //ekerwin - The start time of the task is the earliest time a code location was created.
-            // In order to wait the full timeout, we have to not use that start time and instead use now().
-            //TODO: Handle the possible null pointer here.
-            NotificationTaskRange notificationTaskRange = new NotificationTaskRange(System.currentTimeMillis(), codeLocationWaitData.getNotificationRange().getStartDate(),
-                codeLocationWaitData.getNotificationRange().getEndDate());
-            CodeLocationCreationService codeLocationCreationService = blackDuckRunData.getBlackDuckServicesFactory().createCodeLocationCreationService(); //TODO: Is this the way? - jp
-            CodeLocationWaitResult result = codeLocationCreationService.waitForCodeLocations(
-                notificationTaskRange,
-                projectNameVersion,
-                codeLocationWaitData.getCodeLocationNames(),
-                codeLocationWaitData.getExpectedNotificationCount(),
-                detectConfigurationFactory.findTimeoutInSeconds()
-            );
-            if (result.getStatus() == CodeLocationWaitResult.Status.PARTIAL) {
-                throw new DetectUserFriendlyException(result.getErrorMessage().orElse("Timed out waiting for code locations to finish on the Black Duck server."), ExitCodeType.FAILURE_TIMEOUT);
+            if (detectConfigurationFactory.createBlackDuckPostOptions().shouldWaitForResults()) {
+                //TODO fix this when NotificationTaskRange doesn't include task start time
+                //ekerwin - The start time of the task is the earliest time a code location was created.
+                // In order to wait the full timeout, we have to not use that start time and instead use now().
+                //TODO: Handle the possible null pointer here.
+                NotificationTaskRange notificationTaskRange = new NotificationTaskRange(System.currentTimeMillis(), codeLocationWaitData.getNotificationRange().getStartDate(),
+                        codeLocationWaitData.getNotificationRange().getEndDate());
+                CodeLocationCreationService codeLocationCreationService = blackDuckRunData.getBlackDuckServicesFactory().createCodeLocationCreationService(); //TODO: Is this the way? - jp
+                CodeLocationWaitResult result = codeLocationCreationService.waitForCodeLocations(
+                        notificationTaskRange,
+                        projectNameVersion,
+                        codeLocationWaitData.getCodeLocationNames(),
+                        codeLocationWaitData.getExpectedNotificationCount(),
+                        detectConfigurationFactory.findTimeoutInSeconds()
+                );
+                if (result.getStatus() == CodeLocationWaitResult.Status.PARTIAL) {
+                    throw new DetectUserFriendlyException(result.getErrorMessage().orElse("Timed out waiting for code locations to finish on the Black Duck server."), ExitCodeType.FAILURE_TIMEOUT);
+                }
             }
         });
     }
