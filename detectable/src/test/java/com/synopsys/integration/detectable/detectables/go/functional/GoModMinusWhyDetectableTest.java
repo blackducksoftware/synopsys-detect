@@ -52,8 +52,7 @@ public class GoModMinusWhyDetectableTest extends DetectableFunctionalTest {
 
         ExecutableOutput goModWhyOutput = createStandardOutput(
             "# github.com/dgrijalva/jwt-go",
-            "(main module does not need module github.com/dgrijalva/jwt-go)",
-            "github.com/davecgh/go-spew"
+            "(main module does not need module github.com/dgrijalva/jwt-go)"
         );
 
         addExecutableOutput(goModWhyOutput, "go", "mod", "why", "-m", "all");
