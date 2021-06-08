@@ -33,12 +33,12 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 
 import com.google.gson.Gson;
+import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentView;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
+import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
-import com.synopsys.integration.blackduck.http.BlackDuckRequestFactory;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.dataservice.CodeLocationService;
@@ -60,10 +60,13 @@ public abstract class BlackDuckIntegrationTest {
 
     protected static IntLogger logger;
     protected static BlackDuckServicesFactory blackDuckServicesFactory;
-    protected static BlackDuckApiClient blackDuckService;
+    protected static Gson gson;
+    protected static ApiDiscovery apiDiscovery;
+    protected static BlackDuckApiClient blackDuckApiClient;
     protected static ProjectService projectService;
     protected static ProjectBomService projectBomService;
     protected static CodeLocationService codeLocationService;
+    protected static CodeLocationCreationService codeLocationCreationService;
     protected static ReportService reportService;
     protected static boolean previousShouldExit;
 
@@ -79,18 +82,19 @@ public abstract class BlackDuckIntegrationTest {
         blackDuckServerConfigBuilder.setTimeoutInSeconds(5 * 60);
 
         blackDuckServicesFactory = blackDuckServerConfigBuilder.build().createBlackDuckServicesFactory(logger);
-        blackDuckService = blackDuckServicesFactory.getBlackDuckApiClient();
+        gson = blackDuckServicesFactory.getGson();
+        apiDiscovery = blackDuckServicesFactory.getApiDiscovery();
+        blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
+
         projectService = blackDuckServicesFactory.createProjectService();
         projectBomService = blackDuckServicesFactory.createProjectBomService();
         codeLocationService = blackDuckServicesFactory.createCodeLocationService();
+        codeLocationCreationService = blackDuckServicesFactory.createCodeLocationCreationService();
 
-        Gson gson = blackDuckServicesFactory.getGson();
-        HttpUrl blackDuckUrl = blackDuckServicesFactory.getBlackDuckHttpClient().getBaseUrl();
-        BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
-        BlackDuckRequestFactory blackDuckRequestFactory = blackDuckServicesFactory.getRequestFactory();
+        HttpUrl blackDuckUrl = blackDuckServicesFactory.getBlackDuckHttpClient().getBlackDuckUrl();
         IntegrationEscapeUtil integrationEscapeUtil = blackDuckServicesFactory.createIntegrationEscapeUtil();
         long reportServiceTimeout = 120 * 1000;
-        reportService = new ReportService(gson, blackDuckUrl, blackDuckApiClient, blackDuckRequestFactory, logger, projectService, integrationEscapeUtil, reportServiceTimeout);
+        reportService = new ReportService(gson, blackDuckUrl, blackDuckApiClient, apiDiscovery, logger, integrationEscapeUtil, reportServiceTimeout);
 
         previousShouldExit = Application.shouldExit();
         Application.setShouldExit(false);
@@ -104,7 +108,7 @@ public abstract class BlackDuckIntegrationTest {
     public ProjectVersionWrapper assertProjectVersionReady(String projectName, String projectVersionName) throws IntegrationException {
         Optional<ProjectVersionWrapper> optionalProjectVersionWrapper = projectService.getProjectVersion(projectName, projectVersionName);
         if (optionalProjectVersionWrapper.isPresent()) {
-            blackDuckService.delete(optionalProjectVersionWrapper.get().getProjectView());
+            blackDuckApiClient.delete(optionalProjectVersionWrapper.get().getProjectView());
         }
 
         ProjectSyncModel projectSyncModel = ProjectSyncModel.createWithDefaults(projectName, projectVersionName);
@@ -112,7 +116,7 @@ public abstract class BlackDuckIntegrationTest {
         optionalProjectVersionWrapper = projectService.getProjectVersion(projectName, projectVersionName);
         assertTrue(optionalProjectVersionWrapper.isPresent());
 
-        List<CodeLocationView> codeLocations = blackDuckService.getAllResponses(optionalProjectVersionWrapper.get().getProjectVersionView(), ProjectVersionView.CODELOCATIONS_LINK_RESPONSE);
+        List<CodeLocationView> codeLocations = blackDuckApiClient.getAllResponses(optionalProjectVersionWrapper.get().getProjectVersionView().metaCodelocationsLink());
         assertEquals(0, codeLocations.size());
 
         List<ProjectVersionComponentView> bomComponents = projectBomService.getComponentsForProjectVersion(optionalProjectVersionWrapper.get().getProjectVersionView());

@@ -33,7 +33,7 @@ public class DetectCodeLocationUnmapService {
 
     public void unmapCodeLocations(ProjectVersionView projectVersionView) throws DetectUserFriendlyException {
         try {
-            List<CodeLocationView> codeLocationViews = blackDuckService.getAllResponses(projectVersionView, ProjectVersionView.CODELOCATIONS_LINK_RESPONSE);
+            List<CodeLocationView> codeLocationViews = blackDuckService.getAllResponses(projectVersionView.metaCodelocationsLink());
 
             for (CodeLocationView codeLocationView : codeLocationViews) {
                 codeLocationService.unmapCodeLocation(codeLocationView);

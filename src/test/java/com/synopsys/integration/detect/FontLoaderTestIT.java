@@ -58,9 +58,9 @@ public class FontLoaderTestIT {
     public void createTempDirectory() throws Exception {
         fontDirectory = Files.createTempDirectory("junit_test_font_loader").toFile();
         PropertyConfiguration propertyConfiguration = new PropertyConfiguration(Collections.emptyList());
-        DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(propertyConfiguration, new SimplePathResolver());
-        ConnectionFactory connectionFactory = new ConnectionFactory(detectConfigurationFactory.createConnectionDetails());
         Gson gson = new Gson();
+        DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(propertyConfiguration, new SimplePathResolver(), gson);
+        ConnectionFactory connectionFactory = new ConnectionFactory(detectConfigurationFactory.createConnectionDetails());
         ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
         DetectFontInstaller installer = new DetectFontInstaller(artifactResolver);
         DirectoryOptions directoryOptions = new DirectoryOptions(null, null, null, null, fontDirectory.toPath());

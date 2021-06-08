@@ -9,6 +9,7 @@ package com.synopsys.integration.detect.lifecycle.run.singleton;
 
 import com.synopsys.integration.bdio.BdioTransformer;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
@@ -20,7 +21,7 @@ import com.synopsys.integration.detect.workflow.status.OperationSystem;
 
 public class UtilitySingletons {
     private final ExternalIdFactory externalIdFactory;
-    private final ConnectionFactory connectionFactory;
+    private final ConnectionDetails connectionDetails;
     private final ArtifactResolver artifactResolver;
     private final CodeLocationNameManager codeLocationNameManager;
     private final CreateBdioCodeLocationsFromDetectCodeLocationsOperation createBdioCodeLocationsFromDetectCodeLocationsOperation;
@@ -30,12 +31,12 @@ public class UtilitySingletons {
     private final DetectExecutableResolver detectExecutableResolver;
     private final OperationSystem operationSystem;
 
-    public UtilitySingletons(final ExternalIdFactory externalIdFactory, final ConnectionFactory connectionFactory, final ArtifactResolver artifactResolver,
+    public UtilitySingletons(final ExternalIdFactory externalIdFactory, final ConnectionDetails connectionDetails, final ArtifactResolver artifactResolver,
         final CodeLocationNameManager codeLocationNameManager,
         final CreateBdioCodeLocationsFromDetectCodeLocationsOperation createBdioCodeLocationsFromDetectCodeLocationsOperation, final AirGapInspectorPaths airGapInspectorPaths, final BdioTransformer bdioTransformer,
         final DetectExecutableRunner executableRunner, final DetectExecutableResolver detectExecutableResolver, final OperationSystem operationSystem) {
         this.externalIdFactory = externalIdFactory;
-        this.connectionFactory = connectionFactory;
+        this.connectionDetails = connectionDetails;
         this.artifactResolver = artifactResolver;
         this.codeLocationNameManager = codeLocationNameManager;
         this.createBdioCodeLocationsFromDetectCodeLocationsOperation = createBdioCodeLocationsFromDetectCodeLocationsOperation;
@@ -50,8 +51,8 @@ public class UtilitySingletons {
         return externalIdFactory;
     }
 
-    public ConnectionFactory getConnectionFactory() {
-        return connectionFactory;
+    public ConnectionDetails getConnectionDetails() {
+        return connectionDetails;
     }
 
     public ArtifactResolver getArtifactResolver() {

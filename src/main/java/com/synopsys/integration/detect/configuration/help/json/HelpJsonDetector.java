@@ -103,4 +103,5 @@ public class HelpJsonDetector {
     public void setYieldsTo(List<String> yieldsTo) {
         this.yieldsTo = yieldsTo;
     }
+
 }

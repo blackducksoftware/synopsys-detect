@@ -48,9 +48,9 @@ public class DetectorRuleSetBuilder {
 
         while (orderedRules.size() < rules.size() && atLeastOneRuleAdded) {
             List<DetectorRule> satisfiedRules = rules.stream()
-                                                          .filter(rule -> !orderedRules.contains(rule))
-                                                          .filter(rule -> yieldSatisfied(rule, orderedRules, yieldsToRules))
-                                                          .collect(Collectors.toList());
+                                                    .filter(rule -> !orderedRules.contains(rule))
+                                                    .filter(rule -> yieldSatisfied(rule, orderedRules, yieldsToRules))
+                                                    .collect(Collectors.toList());
 
             atLeastOneRuleAdded = satisfiedRules.size() > 0;
             orderedRules.addAll(satisfiedRules);
@@ -85,7 +85,14 @@ public class DetectorRuleSetBuilder {
             }
             return yieldedSatisfied;
         } else {
-            return true;
+            if (!yieldsToRules.containsKey(rule)) {
+                return true;
+            }
         }
+
+        // if ordered rules is missing ANY of the yielded rules, return false
+        // otherwise return true
+        return orderedRules.containsAll(yieldsToRules.get(rule));
     }
+
 }

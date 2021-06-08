@@ -36,10 +36,10 @@ public class DetectFontInstallerTestIT {
 
     @Test
     public void testFontInstall() throws Exception {
-        PropertyConfiguration propertyConfiguration = new PropertyConfiguration(Collections.emptyList());
-        DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(propertyConfiguration, new SimplePathResolver());
-        ConnectionFactory connectionFactory = new ConnectionFactory(detectConfigurationFactory.createConnectionDetails());
         Gson gson = new Gson();
+        PropertyConfiguration propertyConfiguration = new PropertyConfiguration(Collections.emptyList());
+        DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(propertyConfiguration, new SimplePathResolver(), gson);
+        ConnectionFactory connectionFactory = new ConnectionFactory(detectConfigurationFactory.createConnectionDetails());
         ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
         DetectFontInstaller installer = new DetectFontInstaller(artifactResolver);
         installer.installFonts(targetDirectory);

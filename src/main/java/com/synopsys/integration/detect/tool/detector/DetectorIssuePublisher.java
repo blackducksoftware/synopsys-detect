@@ -34,8 +34,7 @@ public class DetectorIssuePublisher {
 
             List<String> messages = new ArrayList<>();
 
-            // Old message: For now, log only ones that used fallback. TODO- do we want to log notExtractable? if not, delete
-            //addIfNotEmpty(messages, "Not Extractable: ", spacer, extractableFailed, DetectorEvaluation::getExtractabilityMessage);
+            addIfNotEmpty(messages, "Not Extractable: ", spacer, notExtractable, DetectorEvaluation::getExtractabilityMessage);
             addIfNotEmpty(messages, "Failure: ", spacer, failed, detectorEvaluation -> detectorEvaluation.getExtraction().getDescription());
             addIfNotEmpty(messages, "Exception: ", spacer, excepted, detectorEvaluation -> ExceptionUtil.oneSentenceDescription(detectorEvaluation.getExtraction().getError()));
 

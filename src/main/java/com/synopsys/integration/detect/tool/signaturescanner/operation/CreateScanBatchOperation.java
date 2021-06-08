@@ -28,7 +28,6 @@ import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.util.NameVersion;
 
 public class CreateScanBatchOperation {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final BlackDuckSignatureScannerOptions signatureScannerOptions;
     private final DirectoryManager directoryManager;
     private final CodeLocationNameManager codeLocationNameManager;
@@ -40,21 +39,20 @@ public class CreateScanBatchOperation {
         this.codeLocationNameManager = codeLocationNameManager;
     }
 
-    public ScanBatch createScanBatchWithBlackDuck(NameVersion projectNameVersion, File installDirectory, List<SignatureScanPath> signatureScanPaths, BlackDuckServerConfig blackDuckServerConfig, @Nullable DockerTargetData dockerTargetData)
+    public ScanBatch createScanBatchWithBlackDuck(NameVersion projectNameVersion, List<SignatureScanPath> signatureScanPaths, BlackDuckServerConfig blackDuckServerConfig, @Nullable DockerTargetData dockerTargetData)
         throws DetectUserFriendlyException {
-        return createScanBatch(projectNameVersion, installDirectory, signatureScanPaths, blackDuckServerConfig, dockerTargetData);
+        return createScanBatch(projectNameVersion, signatureScanPaths, blackDuckServerConfig, dockerTargetData);
     }
 
-    public ScanBatch createScanBatchWithoutBlackDuck(NameVersion projectNameVersion, File installDirectory, List<SignatureScanPath> signatureScanPaths, @Nullable DockerTargetData dockerTargetData) throws DetectUserFriendlyException {
+    public ScanBatch createScanBatchWithoutBlackDuck(NameVersion projectNameVersion, List<SignatureScanPath> signatureScanPaths, @Nullable DockerTargetData dockerTargetData) throws DetectUserFriendlyException {
         //when offline, we must still call this with 'null' as a workaround for library issues, so offline scanner must be created with this set to null.
-        return createScanBatch(projectNameVersion, installDirectory, signatureScanPaths, null, dockerTargetData);
+        return createScanBatch(projectNameVersion, signatureScanPaths, null, dockerTargetData);
     }
 
-    private ScanBatch createScanBatch(NameVersion projectNameVersion, File installDirectory, List<SignatureScanPath> signatureScanPaths, @Nullable BlackDuckServerConfig blackDuckServerConfig, @Nullable DockerTargetData dockerTargetData)
+    private ScanBatch createScanBatch(NameVersion projectNameVersion, List<SignatureScanPath> signatureScanPaths, @Nullable BlackDuckServerConfig blackDuckServerConfig, @Nullable DockerTargetData dockerTargetData)
         throws DetectUserFriendlyException {
         ScanBatchBuilder scanJobBuilder = new ScanBatchBuilder();
         scanJobBuilder.scanMemoryInMegabytes(signatureScannerOptions.getScanMemory());
-        scanJobBuilder.installDirectory(installDirectory); // INTCMN-528: Should only need to provide this when constructing the ScanBatchRunner, not for each batch.
         scanJobBuilder.outputDirectory(directoryManager.getScanOutputDirectory());
 
         scanJobBuilder.dryRun(signatureScannerOptions.getDryRun());
@@ -94,4 +92,5 @@ public class CreateScanBatchOperation {
             throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_CONFIGURATION);
         }
     }
+
 }

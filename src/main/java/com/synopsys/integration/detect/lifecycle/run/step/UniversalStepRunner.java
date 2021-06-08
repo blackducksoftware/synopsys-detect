@@ -122,9 +122,9 @@ public class UniversalStepRunner {
         AggregateCodeLocation aggregateCodeLocation = operationFactory.createAggregateCodeLocation(aggregateDependencyGraph, projectNameVersion, aggregateName, aggregateExtension);
 
         if (isBdio2) {
-            operationFactory.createAggregateBdio1File(aggregateCodeLocation);
-        } else {
             operationFactory.createAggregateBdio2File(aggregateCodeLocation);
+        } else {
+            operationFactory.createAggregateBdio1File(aggregateCodeLocation);
         }
 
         List<UploadTarget> uploadTargets = new ArrayList<>();

@@ -43,9 +43,6 @@ public class DetectorEvaluation {
     private Extraction extraction;
     private Discovery discovery;
 
-    private DetectorEvaluation fallbackTo;
-    private DetectorEvaluation fallbackFrom;
-
     // The detector evaluation is built over time. The only thing you need at the start is the rule this evaluation represents.
     public DetectorEvaluation(DetectorRule detectorRule) {
         this.detectorRule = detectorRule;

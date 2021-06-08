@@ -25,6 +25,8 @@ import com.synopsys.integration.detectable.detectables.cpan.CpanCliDetectable;
 import com.synopsys.integration.detectable.detectables.cran.PackratLockDetectable;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectable;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
+import com.synopsys.integration.detectable.detectables.git.GitDetectable;
+import com.synopsys.integration.detectable.detectables.git.GitParseDetectable;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepLockDetectable;
 import com.synopsys.integration.detectable.detectables.go.gogradle.GoGradleDetectable;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectable;
@@ -111,6 +113,14 @@ public class DetectDetectableFactory {
 
     public GemlockDetectable createGemlockDetectable(DetectableEnvironment environment) {
         return detectableFactory.createGemlockDetectable(environment);
+    }
+
+    public GitDetectable createGitDetectable(DetectableEnvironment environment) {
+        return detectableFactory.createGitDetectable(environment, detectExecutableResolver);
+    }
+
+    public GitParseDetectable createGitParseDetectable(DetectableEnvironment environment) {
+        return detectableFactory.createGitParseDetectable(environment);
     }
 
     public GoModCliDetectable createGoModCliDetectable(DetectableEnvironment environment) {
