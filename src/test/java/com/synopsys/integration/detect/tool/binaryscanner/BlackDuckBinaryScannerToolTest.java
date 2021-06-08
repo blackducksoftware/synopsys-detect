@@ -54,7 +54,6 @@ import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.util.NameVersion;
 
 public class BlackDuckBinaryScannerToolTest {
-
     @Test
     public void testShouldFailOnDirectory() throws DetectUserFriendlyException {
         BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("."), Collections.singletonList(""), "", "", 0);

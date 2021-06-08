@@ -12,6 +12,7 @@ import java.io.IOException;
 import com.synopsys.integration.blackduck.exception.BlackDuckTimeoutExceededException;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeManager;
 import com.synopsys.integration.detect.workflow.status.Operation;
 import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.exception.IntegrationException;
@@ -20,9 +21,11 @@ import com.synopsys.integration.rest.exception.IntegrationRestException;
 //Essentially an adapter for 'running an operation' and 'reporting the operation' in one step. Whether or not this is desired is TBD.
 public class OperationAuditLog { //NoOpAuditLog
     private final OperationSystem operationSystem;
+    private final ExitCodeManager exitCodeManager;
 
-    public OperationAuditLog(final OperationSystem operationSystem) {
+    public OperationAuditLog(OperationSystem operationSystem, ExitCodeManager exitCodeManager) {
         this.operationSystem = operationSystem;
+        this.exitCodeManager = exitCodeManager;
     }
 
     public void named(String name, OperationFunction supplier) throws DetectUserFriendlyException {
@@ -30,29 +33,16 @@ public class OperationAuditLog { //NoOpAuditLog
         try {
             supplier.execute();
             operationSystem.completeWithSuccess(name);
-        } catch (DetectUserFriendlyException e) {
-            operationSystem.completeWithError(name, e.getMessage());
-            throw e;
-        } catch (IllegalArgumentException e) {
-            String errorReason = String.format("Your Black Duck configuration is not valid: %s", e.getMessage());
-            operation.error(errorReason);
-            throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
-        } catch (IntegrationRestException e) {
-            operation.error(e.getMessage());
-            throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
-        } catch (BlackDuckTimeoutExceededException e) {
-            operation.error(e.getMessage());
-            throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_TIMEOUT);
         } catch (InterruptedException e) {
             String errorReason = String.format("There was a problem: %s", e.getMessage());
-            operation.error(errorReason);
+            operationSystem.completeWithError(name, errorReason);
             // Restore interrupted state...
             Thread.currentThread().interrupt();
             throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_GENERAL_ERROR);
         } catch (Exception e) {
             String errorReason = String.format("There was a problem: %s", e.getMessage());
-            operation.error(errorReason);
-            throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_GENERAL_ERROR);
+            operationSystem.completeWithError(name, errorReason);
+            throw new DetectUserFriendlyException(errorReason, e, exitCodeManager.getExitCodeFromExceptionDetails(e));
         } finally {
             operation.finish();
         }
@@ -64,29 +54,16 @@ public class OperationAuditLog { //NoOpAuditLog
             T value = supplier.execute();
             operationSystem.completeWithSuccess(name);
             return value;
-        } catch (DetectUserFriendlyException e) {
-            operationSystem.completeWithError(name, e.getMessage());
-            throw e;
-        } catch (IllegalArgumentException e) {
-            String errorReason = String.format("Your Black Duck configuration is not valid: %s", e.getMessage());
-            operation.error(errorReason);
-            throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
-        } catch (IntegrationRestException e) {
-            operation.error(e.getMessage());
-            throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
-        } catch (BlackDuckTimeoutExceededException e) {
-            operation.error(e.getMessage());
-            throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_TIMEOUT);
         } catch (InterruptedException e) {
             String errorReason = String.format("There was a problem: %s", e.getMessage());
-            operation.error(errorReason);
+            operationSystem.completeWithError(name, errorReason);
             // Restore interrupted state...
             Thread.currentThread().interrupt();
             throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_GENERAL_ERROR);
         } catch (Exception e) {
             String errorReason = String.format("There was a problem: %s", e.getMessage());
-            operation.error(errorReason);
-            throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_GENERAL_ERROR);
+            operationSystem.completeWithError(name, errorReason);
+            throw new DetectUserFriendlyException(errorReason, e, exitCodeManager.getExitCodeFromExceptionDetails(e));
         } finally {
             operation.finish();
         }

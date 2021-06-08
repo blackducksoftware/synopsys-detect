@@ -23,7 +23,6 @@ public class HelpJsonDetector {
     private Boolean nestInvisible = false;
 
     private List<String> yieldsTo = new ArrayList<>();
-    private String fallbackTo = "";
 
     public String getDetectableLanguage() {
         return detectableLanguage;

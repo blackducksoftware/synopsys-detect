@@ -8,8 +8,7 @@
 package com.synopsys.integration.detectable.detectables.git;
 
 import java.io.File;
-
-import org.apache.commons.lang3.StringUtils;
+import java.util.Arrays;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
@@ -18,6 +17,8 @@ import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GitResolver;
+import com.synopsys.integration.detectable.detectable.explanation.FoundExecutable;
+import com.synopsys.integration.detectable.detectable.explanation.FoundFile;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FailedDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
@@ -42,8 +43,7 @@ public class GitDetectable extends Detectable {
     private File gitConfigFile;
     private File gitHeadFile;
 
-    private boolean cliExtract;
-    private boolean parseExtract;
+    private boolean canParse;
 
     public GitDetectable(DetectableEnvironment environment, FileFinder fileFinder, GitCliExtractor gitCliExtractor, GitResolver gitResolver, GitParseExtractor gitParseExtractor) {
         super(environment);
@@ -57,17 +57,7 @@ public class GitDetectable extends Detectable {
     public DetectableResult applicable() {
         gitDirectory = fileFinder.findFile(environment.getDirectory(), GIT_DIRECTORY_NAME);
         if (gitDirectory != null) {
-            cliExtract = true;
-        }
-
-        gitConfigFile = fileFinder.findFile(gitDirectory, GIT_CONFIG_FILENAME);
-        gitHeadFile = fileFinder.findFile(gitDirectory, GIT_HEAD_FILENAME);
-        if ((gitConfigFile != null && gitHeadFile != null)) {
-            parseExtract = true;
-        }
-
-        if (cliExtract || parseExtract) {
-            return new PassedDetectableResult();
+            return new PassedDetectableResult(new FoundFile(gitDirectory));
         } else {
             return new FailedDetectableResult();
         }
@@ -76,21 +66,39 @@ public class GitDetectable extends Detectable {
     @Override
     public DetectableResult extractable() throws DetectableException {
         gitExecutable = gitResolver.resolveGit();
-        cliExtract = cliExtract && gitExecutable != null && StringUtils.isNotBlank(gitExecutable.toCommand());
+
+        if (gitExecutable != null) {
+            return new PassedDetectableResult(new FoundExecutable(gitExecutable));
+        } else {
+            gitConfigFile = fileFinder.findFile(gitDirectory, GIT_CONFIG_FILENAME);
+            gitHeadFile = fileFinder.findFile(gitDirectory, GIT_HEAD_FILENAME);
+            if ((gitConfigFile != null && gitHeadFile != null)) {
+                canParse = true;
+                return new PassedDetectableResult(Arrays.asList(new FoundFile(gitConfigFile), new FoundFile(gitHeadFile)));
+            }
+        }
+
         return new PassedDetectableResult();
     }
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         // Try cli extraction first (preferred method, better results), if unsuccessful then try parse extraction
-        Extraction extraction = new Extraction.Builder().failure("Could not extract project data using Git Detector.").build();
-        if (cliExtract) {
-            extraction = gitCliExtractor.extract(gitExecutable, environment.getDirectory());
+        if (gitExecutable != null) {
+            Extraction extraction = gitCliExtractor.extract(gitExecutable, environment.getDirectory());
+            if (extraction.isSuccess()) {
+                return extraction;
+            }
         }
-        if ((extraction == null || extraction.getProjectName() == null || extraction.getProjectVersion() == null) && parseExtract) {
-            extraction = gitParseExtractor.extract(gitConfigFile, gitHeadFile);
+        if (canParse) {
+            Extraction extraction = gitParseExtractor.extract(gitConfigFile, gitHeadFile);
+            if (extraction.isSuccess()) {
+                return extraction;
+            }
         }
-        return extraction;
+
+        // We don't care if GitDetectable doesn't get results, it's essentially just a best-effort project name/version utility
+        return new Extraction.Builder().success().build();
     }
 
 }

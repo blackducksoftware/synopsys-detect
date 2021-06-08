@@ -39,8 +39,7 @@ public class DetectRun {
     private OperationFactory createOperationFactory(BootSingletons bootSingletons, UtilitySingletons utilitySingletons, EventSingletons eventSingletons) throws DetectUserFriendlyException {
         DetectorFactory detectorFactory = new DetectorFactory(bootSingletons, utilitySingletons);
         DetectFontLoaderFactory detectFontLoaderFactory = new DetectFontLoaderFactory(bootSingletons, utilitySingletons);
-
-        return new OperationFactory(detectorFactory.detectDetectableFactory(), detectFontLoaderFactory, bootSingletons, utilitySingletons, eventSingletons);
+        return new OperationFactory(detectorFactory.detectDetectableFactory(), detectFontLoaderFactory, bootSingletons, utilitySingletons, eventSingletons, exitCodeManager);
     }
 
     public void run(BootSingletons bootSingletons) {
@@ -65,7 +64,7 @@ public class DetectRun {
 
             if (productRunData.shouldUseBlackDuckProduct()) {
                 if (productRunData.getBlackDuckRunData().isRapid()) {
-                    RapidModeStepRunner rapidModeSteps = new RapidModeStepRunner();
+                    RapidModeStepRunner rapidModeSteps = new RapidModeStepRunner(operationFactory);
                     rapidModeSteps.runAll(productRunData.getBlackDuckRunData(), nameVersion, bdio);
                 } else if (productRunData.getBlackDuckRunData().isOnline()) {
                     IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationFactory, stepHelper);

@@ -105,6 +105,7 @@ import com.synopsys.integration.detectable.detectables.docker.DockerDetectableOp
 import com.synopsys.integration.detectable.detectables.docker.DockerExtractor;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
 import com.synopsys.integration.detectable.detectables.git.GitDetectable;
+import com.synopsys.integration.detectable.detectables.git.GitParseDetectable;
 import com.synopsys.integration.detectable.detectables.git.cli.GitCliExtractor;
 import com.synopsys.integration.detectable.detectables.git.cli.GitUrlParser;
 import com.synopsys.integration.detectable.detectables.git.parsing.GitParseExtractor;
@@ -292,6 +293,10 @@ public class DetectableFactory {
 
     public GitDetectable createGitDetectable(DetectableEnvironment environment, GitResolver gitResolver) {
         return new GitDetectable(environment, fileFinder, gitCliExtractor(), gitResolver, gitParseExtractor());
+    }
+
+    public GitParseDetectable createGitParseDetectable(DetectableEnvironment environment) {
+        return new GitParseDetectable(environment, fileFinder, gitParseExtractor());
     }
 
     public GoModCliDetectable createGoModCliDetectable(DetectableEnvironment environment, GoResolver goResolver) {

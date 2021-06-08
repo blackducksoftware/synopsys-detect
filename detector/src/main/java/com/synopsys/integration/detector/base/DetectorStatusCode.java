@@ -15,7 +15,6 @@ public enum DetectorStatusCode {
     EXTRACTION_FAILED("During extraction, one or more exceptions were encountered."),
     EXECUTABLE_NOT_FOUND("The necessary executable was not found."),
     FAILED("Detector failed."),
-    FALLBACK_NOT_NEEDED("The fallback detector was not needed, as its preceding detector passed."),
     FILES_NOT_FOUND("Necessary files were not found within the target project."),
     FILE_NOT_FOUND("A file was not found within the target project."),
     FORCED_NESTED_PASSED("Forced to pass because nested forced by user."),

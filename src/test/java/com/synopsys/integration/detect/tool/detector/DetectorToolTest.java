@@ -70,7 +70,6 @@ import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.detector.rule.DetectorRuleSetBuilder;
 
 public class DetectorToolTest {
-
     @Test
     public void testFailWhenMisConfigured() throws DetectUserFriendlyException {
 

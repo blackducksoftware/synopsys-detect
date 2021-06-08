@@ -18,6 +18,7 @@ import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectable;
 import com.synopsys.integration.detectable.detectables.cpan.CpanCliDetectable;
 import com.synopsys.integration.detectable.detectables.cran.PackratLockDetectable;
 import com.synopsys.integration.detectable.detectables.git.GitDetectable;
+import com.synopsys.integration.detectable.detectables.git.GitParseDetectable;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepLockDetectable;
 import com.synopsys.integration.detectable.detectables.go.gogradle.GoGradleDetectable;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectable;
@@ -131,7 +132,7 @@ public class DetectorRuleFactory {
 
         ruleSet.addDetector(DetectorType.SWIFT, "Swift", SwiftCliDetectable.class, detectableFactory::createSwiftCliDetectable).defaults().build();
 
-        ruleSet.addDetector(DetectorType.GIT, "Git", GitDetectable.class, detectableFactory::createGitCliDetectable).defaults().build();
+        ruleSet.addDetector(DetectorType.GIT, "Git", GitDetectable.class, detectableFactory::createGitDetectable).defaults().build();
 
         return ruleSet.build();
     }
@@ -174,6 +175,8 @@ public class DetectorRuleFactory {
         DetectorRule gemspec = ruleSet.addDetector(DetectorType.RUBYGEMS, "Gemspec", GemspecParseDetectable.class, detectableFactory::createGemspecParseDetectable).defaults().build();
 
         ruleSet.yield(gemspec).to(gemlock);
+
+        ruleSet.addDetector(DetectorType.GIT, "Git Parse", GitParseDetectable.class, detectableFactory::createGitParseDetectable).defaults().build();
 
         return ruleSet.build();
     }
