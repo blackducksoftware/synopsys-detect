@@ -25,14 +25,14 @@ package com.synopsys.integration.detect.battery.detector;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detect.battery.util.DetectorBatteryTest;
+import com.synopsys.integration.detect.battery.util.DetectorBattery;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
 @Tag("battery")
 public class GoBattery {
     @Test
     void lock() {
-        DetectorBatteryTest test = new DetectorBatteryTest("dep-lock");
+        DetectorBattery test = new DetectorBattery("dep-lock");
         test.sourceDirectoryNamed("rooms");
         test.sourceFileFromResource("Gopkg.lock");
         test.git("https://github.com/thenrich/rooms", "master");
@@ -42,7 +42,7 @@ public class GoBattery {
 
     @Test
     void conf() {
-        DetectorBatteryTest test = new DetectorBatteryTest("go_vndr-lock");
+        DetectorBattery test = new DetectorBattery("go_vndr-lock");
         test.sourceDirectoryNamed("linux-vndr");
         test.sourceFileFromResource("vendor.conf");
         test.git("https://github.com/moby/moby.git", "master");
@@ -52,7 +52,7 @@ public class GoBattery {
 
     @Test
     void mod() {
-        DetectorBatteryTest test = new DetectorBatteryTest("go-mod");
+        DetectorBattery test = new DetectorBattery("go-mod");
         test.executableFromResourceFiles(DetectProperties.DETECT_GO_PATH.getProperty(), "go-list.xout", "go-version.xout", "go-list-u-json.xout", "go-mod-graph.xout", "go-mod-why.xout");
         test.sourceDirectoryNamed("source");
         test.sourceFileFromResource("go.mod");

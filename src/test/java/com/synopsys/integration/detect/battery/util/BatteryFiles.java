@@ -137,6 +137,6 @@ public class BatteryFiles {
     }
 
     public static File asFile(final String relativeResourcePath, final String prefix) {
-        return FileUtil.asFile(DetectorBatteryTest.class, relativeResourcePath, prefix);
+        return FileUtil.asFile(DetectorBattery.class, relativeResourcePath, prefix);
     }
 }

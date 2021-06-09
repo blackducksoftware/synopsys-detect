@@ -25,13 +25,13 @@ package com.synopsys.integration.detect.battery.detector;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detect.battery.util.DetectorBatteryTest;
+import com.synopsys.integration.detect.battery.util.DetectorBattery;
 
 @Tag("battery")
 public class NpmBattery {
     @Test
     void packagelock() {
-        final DetectorBatteryTest test = new DetectorBatteryTest("npm-packagelock");
+        final DetectorBattery test = new DetectorBattery("npm-packagelock");
         test.sourceDirectoryNamed("linux-npm");
         test.sourceFileFromResource("package-lock.json");
         test.sourceFileFromResource("package.json");
