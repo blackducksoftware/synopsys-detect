@@ -63,7 +63,7 @@ public class GoModCliExtractorTest {
         GoModCliExtractor goModCliExtractor = new GoModCliExtractor(goModCommandExecutor, goModGraphParser, goModGraphTransformer, goModWhyParser);
 
         boolean wasSuccessful = true;
-        Extraction extraction = goModCliExtractor.extract(directory, goExe);
+        Extraction extraction = goModCliExtractor.extract(directory, goExe, true);
         if (extraction.getError() instanceof ArrayIndexOutOfBoundsException) {
             wasSuccessful = false;
         }
@@ -110,7 +110,7 @@ public class GoModCliExtractorTest {
         GoModCliExtractor goModCliExtractor = new GoModCliExtractor(goModCommandExecutor, goModGraphParser, goModGraphTransformer, goModWhyParser);
 
         boolean wasSuccessful = true;
-        Extraction extraction = goModCliExtractor.extract(directory, goExe);
+        Extraction extraction = goModCliExtractor.extract(directory, goExe, true);
         if (extraction.getError() instanceof ArrayIndexOutOfBoundsException) {
             wasSuccessful = false;
         }
