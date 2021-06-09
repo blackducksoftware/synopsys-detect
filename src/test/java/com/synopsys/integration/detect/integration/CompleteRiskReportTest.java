@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -45,6 +46,9 @@ import com.synopsys.integration.detect.Application;
 public class CompleteRiskReportTest extends BlackDuckIntegrationTest {
     @Test
     public void testRiskReportWithoutPath() throws Exception {
+        Assertions.assertNotNull(System.getenv().get(BLACKDUCK_URL), "Integration tests require a black duck url.");
+        Assertions.assertNotNull(System.getenv().get(BLACKDUCK_API_TOKEN), "Integration tests require a black duck api token.");
+
         testRiskReportIsPopulated(false);
     }
 
@@ -53,6 +57,7 @@ public class CompleteRiskReportTest extends BlackDuckIntegrationTest {
         testRiskReportIsPopulated(true);
     }
 
+    //Tests that a new project has an empty report, run detect to fill it, tests the report is filled.
     public void testRiskReportIsPopulated(boolean includePath) throws Exception {
         Path tempReportDirectoryPath = Files.createTempDirectory("junit_report");
         File reportDirectory;
