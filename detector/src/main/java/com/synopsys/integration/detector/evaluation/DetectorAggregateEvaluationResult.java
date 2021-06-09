@@ -37,18 +37,22 @@ public class DetectorAggregateEvaluationResult {
     }
 
     public Set<DetectorType> getApplicableDetectorTypesRecursively() {
-        Set<DetectorType> applied = new HashSet<>();
-        applied.addAll(getApplicableDetectorTypes());
-        for (DetectorEvaluationTree child : evaluationTree.getChildren()) {
-            applied.addAll(getApplicableDetectorTypes(child));
-        }
-        return applied;
+        return getApplicableDetectorTypesRecursively(evaluationTree);
     }
 
     public Integer getExtractionCount() {
         return Math.toIntExact(getDetectorEvaluations().stream()
                                    .filter(DetectorEvaluation::isExtractable)
                                    .count());
+    }
+
+    private Set<DetectorType> getApplicableDetectorTypesRecursively(DetectorEvaluationTree givenEvaluationTree) {
+        Set<DetectorType> applied = new HashSet<>();
+        applied.addAll(getApplicableDetectorTypes(givenEvaluationTree));
+        for (DetectorEvaluationTree childEvaluationTree : givenEvaluationTree.getChildren()) {
+            applied.addAll(getApplicableDetectorTypesRecursively(childEvaluationTree));
+        }
+        return applied;
     }
 
     private List<DetectorEvaluation> getDetectorEvaluations(DetectorEvaluationTree givenEvaluationTree) {
