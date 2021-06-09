@@ -561,6 +561,12 @@ public class DetectProperties {
             .setHelp("Path to the Go executable.")
             .setGroups(DetectGroup.GO, DetectGroup.GLOBAL);
 
+    public static final DetectProperty<BooleanProperty> DETECT_GO_ENABLE_VERIFICATION =
+        new DetectProperty<>(new BooleanProperty("detect.go.mod.enable.verification", true))
+            .setInfo("Go Mod Dependency Verification", DetectPropertyFromVersion.VERSION_7_1_0)
+            .setHelp("When enabled, Detect will use the results of 'go mod why' to filter out unused dependencies. Set to false if you have an empty BOM.")
+            .setGroups(DetectGroup.GO, DetectGroup.GLOBAL);
+
     public static final DetectProperty<NullableStringProperty> DETECT_GRADLE_BUILD_COMMAND =
         new DetectProperty<>(new NullableStringProperty("detect.gradle.build.command"))
             .setInfo("Gradle Build Command", DetectPropertyFromVersion.VERSION_3_0_0)
