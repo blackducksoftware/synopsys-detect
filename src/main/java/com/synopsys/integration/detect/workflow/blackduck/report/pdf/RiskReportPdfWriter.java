@@ -68,7 +68,10 @@ public class RiskReportPdfWriter {
         String escapedProjectVersionName = escapeUtil.replaceWithUnderscore(report.getProjectVersion());
         File pdfFile = new File(outputDirectory, escapedProjectName + "_" + escapedProjectVersionName + "_BlackDuck_RiskReport.pdf");
         if (pdfFile.exists()) {
-            pdfFile.delete();
+            boolean deleted = pdfFile.delete();
+            if (!deleted) {
+                logger.warn(String.format("Unable to delete existing file %s before re-creating it", pdfFile.getAbsolutePath()));
+            }
         }
         PDDocument document = new PDDocument();
 

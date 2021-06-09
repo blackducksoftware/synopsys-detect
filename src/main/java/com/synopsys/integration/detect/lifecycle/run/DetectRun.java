@@ -76,7 +76,6 @@ public class DetectRun {
             } else {
                 logger.info("Black Duck tools will not be run.");
             }
-
         } catch (Exception e) {
             if (e.getMessage() != null) {
                 logger.error("Detect run failed: {}", e.getMessage());
@@ -85,6 +84,10 @@ public class DetectRun {
             }
             logger.debug("An exception was thrown during the detect run.", e);
             exitCodeManager.requestExitCode(e);
+            if (e instanceof InterruptedException) {
+                // Restore interrupted state...
+                Thread.currentThread().interrupt();
+            }
         } finally {
             if (operationSystem != null) {
                 operationSystem.publishOperations();
