@@ -124,7 +124,7 @@ public class DetectorTool {
         publishStatusEvents(statusMap);
         publishFileEvents(detectorEvaluations);
         detectorIssuePublisher.publishEvents(statusEventPublisher, rootEvaluation);
-        publishMissingDetectorEvents(requiredDetectors, evaluationResult.getApplicableDetectorTypes());
+        publishMissingDetectorEvents(requiredDetectors, evaluationResult.getApplicableDetectorTypesRecursively());
 
         Map<CodeLocation, DetectCodeLocation> codeLocationMap = createCodeLocationMap(detectorEvaluations, directory);
 
