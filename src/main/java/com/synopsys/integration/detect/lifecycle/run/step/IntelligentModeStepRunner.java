@@ -14,7 +14,6 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerToolResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +30,7 @@ import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BdioUploadResult;
 import com.synopsys.integration.detect.lifecycle.run.step.utility.StepHelper;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisBatchOutput;
+import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerToolResult;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
@@ -145,13 +145,15 @@ public class IntelligentModeStepRunner {
 
     private void checkPolicy(ProjectVersionView projectVersionView, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
         logger.info("Checking to see if Detect should check policy for violations.");
-        operationFactory.checkPolicy(blackDuckRunData, projectVersionView);
+        if (operationFactory.createBlackDuckPostOptions().shouldPerformPolicyCheck()) {
+            operationFactory.checkPolicy(blackDuckRunData, projectVersionView);
+        }
     }
 
     public void waitForCodeLocations(CodeLocationWaitData codeLocationWaitData, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
         throws DetectUserFriendlyException {
         logger.info("Checking to see if Detect should wait for bom tool calculations to finish.");
-        if (codeLocationWaitData.getExpectedNotificationCount() > 0) {
+        if (operationFactory.createBlackDuckPostOptions().shouldWaitForResults() && codeLocationWaitData.getExpectedNotificationCount() > 0) {
             operationFactory.waitForCodeLocations(blackDuckRunData, codeLocationWaitData, projectNameVersion);
         }
     }
