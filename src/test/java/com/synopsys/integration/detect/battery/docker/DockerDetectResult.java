@@ -1,5 +1,7 @@
 package com.synopsys.integration.detect.battery.docker;
 
+import com.synopsys.integration.detect.battery.util.DockerTestAssertions;
+
 public class DockerDetectResult {
     private int exitCode;
     private String detectLogs;
@@ -15,5 +17,9 @@ public class DockerDetectResult {
 
     public String getDetectLogs() {
         return detectLogs;
+    }
+
+    public DockerTestAssertions assertions() {
+        return new DockerTestAssertions(this);
     }
 }

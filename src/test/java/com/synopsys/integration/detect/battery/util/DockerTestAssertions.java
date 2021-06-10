@@ -12,6 +12,10 @@ public class DockerTestAssertions {
     private File outputDirectory;
     private File bdioDirectory;
 
+    public DockerTestAssertions(final DockerDetectResult dockerDetectResult) {
+        this.dockerDetectResult = dockerDetectResult;
+    }
+
     public void successfulDetectorType(String detectorType) {
         Assertions.assertTrue(dockerDetectResult.getDetectLogs().contains(detectorType + " : SUCCESS"));
     }
