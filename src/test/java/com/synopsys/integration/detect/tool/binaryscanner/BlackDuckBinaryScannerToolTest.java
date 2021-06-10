@@ -47,7 +47,6 @@ import com.synopsys.integration.detect.configuration.DetectUserFriendlyException
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.response.Response;
@@ -60,9 +59,8 @@ public class BlackDuckBinaryScannerToolTest {
 
         StatusEventPublisher statusEventPublisher = Mockito.mock(StatusEventPublisher.class);
         ExitCodePublisher exitCodePublisher = Mockito.mock(ExitCodePublisher.class);
-        OperationSystem operationSystem = Mockito.mock(OperationSystem.class);
 
-        BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(statusEventPublisher, exitCodePublisher, null, null, null, binaryScanOptions, null, operationSystem);
+        BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(statusEventPublisher, exitCodePublisher, null, null, null, binaryScanOptions, null);
 
         NameVersion projectNameVersion = new NameVersion("testName", "testVersion");
 
@@ -79,7 +77,6 @@ public class BlackDuckBinaryScannerToolTest {
         CodeLocationNameManager codeLocationNameManager = Mockito.mock(CodeLocationNameManager.class);
         StatusEventPublisher statusEventPublisher = Mockito.mock(StatusEventPublisher.class);
         ExitCodePublisher exitCodePublisher = Mockito.mock(ExitCodePublisher.class);
-        OperationSystem operationSystem = Mockito.mock(OperationSystem.class);
         Response response = Mockito.mock(Response.class);
         Mockito.when(response.isStatusCodeSuccess()).thenReturn(true);
 
@@ -107,7 +104,7 @@ public class BlackDuckBinaryScannerToolTest {
         Mockito.doAnswer(invocation -> expectedOutput).when(uploadService).uploadBinaryScan(Mockito.any(BinaryScanBatch.class));
 
         BinaryScanOptions binaryScanOptions = new BinaryScanOptions(null, targetPaths, "", "", 3);
-        BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(statusEventPublisher, exitCodePublisher, codeLocationNameManager, directoryManager, fileFinder, binaryScanOptions, uploadService, operationSystem);
+        BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(statusEventPublisher, exitCodePublisher, codeLocationNameManager, directoryManager, fileFinder, binaryScanOptions, uploadService);
 
         BinaryScanToolResult result = tool.performBinaryScanActions(null, projectNameVersion);
 

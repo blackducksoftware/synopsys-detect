@@ -50,7 +50,6 @@ public class DetectableTool {
     private final DetectTool detectTool;
     private final StatusEventPublisher statusEventPublisher;
     private final ExitCodePublisher exitCodePublisher;
-    private final OperationSystem operationSystem;
 
     public DetectableTool(DetectableCreatable detectableCreatable, ExtractionEnvironmentProvider extractionEnvironmentProvider, CodeLocationConverter codeLocationConverter,
         String name, DetectTool detectTool, StatusEventPublisher statusEventPublisher, ExitCodePublisher exitCodePublisher, OperationSystem operationSystem) {
@@ -61,11 +60,9 @@ public class DetectableTool {
         this.detectTool = detectTool;
         this.statusEventPublisher = statusEventPublisher;
         this.exitCodePublisher = exitCodePublisher;
-        this.operationSystem = operationSystem;
     }
 
     public DetectableToolResult execute(File sourcePath) { //TODO: Caller publishes result.
-        operationSystem.beginOperation(name);
         logger.trace("Starting a detectable tool.");
 
         DetectableEnvironment detectableEnvironment = new DetectableEnvironment(sourcePath);
@@ -92,7 +89,6 @@ public class DetectableTool {
         if (!extractable.getPassed()) {
             logger.error("Was not extractable: " + extractable.toDescription());
             statusEventPublisher.publishStatusSummary(new Status(name, StatusType.FAILURE));
-            operationSystem.completeWithError(name, extractable.toDescription());
             exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_GENERAL_ERROR, extractable.toDescription());
             return DetectableToolResult.failed(extractable);
         }
@@ -110,13 +106,11 @@ public class DetectableTool {
         if (!extraction.isSuccess()) {
             logger.error("Extraction was not success.");
             statusEventPublisher.publishStatusSummary(new Status(name, StatusType.FAILURE));
-            operationSystem.completeWithError(name, extraction.getDescription());
             exitCodePublisher.publishExitCode(new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, extractable.toDescription()));
             return DetectableToolResult.failed();
         } else {
             logger.debug("Extraction success.");
             statusEventPublisher.publishStatusSummary(new Status(name, StatusType.SUCCESS));
-            operationSystem.completeWithSuccess(name);
         }
 
         Map<CodeLocation, DetectCodeLocation> detectCodeLocationMap = codeLocationConverter.toDetectCodeLocation(sourcePath, extraction, sourcePath, name);

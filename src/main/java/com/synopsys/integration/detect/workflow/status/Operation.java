@@ -28,17 +28,23 @@ public class Operation {
     private String name;
     private StatusType statusType;
     private String[] errorMessages;
+    private OperationType operationType;
 
     public static Operation of(String name) {
-        return new Operation(name);
+        return new Operation(name, OperationType.PUBLIC);
     }
 
-    protected Operation(String name) {
-        this(Instant.now(), null, name, StatusType.SUCCESS);
+    public static Operation silentOf(String name) {
+        return new Operation(name, OperationType.INTERNAL);
     }
 
-    protected Operation(Instant startTime, @Nullable Instant endTime, String name, StatusType statusType, String... errorMessages) {
+    protected Operation(String name, OperationType type) {
+        this(Instant.now(), type, null, name, StatusType.SUCCESS);
+    }
+
+    protected Operation(Instant startTime, OperationType operationType, @Nullable Instant endTime, String name, StatusType statusType, String... errorMessages) {
         this.startTime = startTime;
+        this.operationType = operationType;
         this.endTime = endTime;
         this.name = name;
         this.statusType = statusType;
@@ -76,6 +82,10 @@ public class Operation {
         return Optional.ofNullable(endTime);
     }
 
+    public Instant getEndTimeOrStartTime() {
+        return getEndTime().orElse(getStartTime());
+    }
+
     public String getName() {
         return name;
     }
@@ -86,5 +96,9 @@ public class Operation {
 
     public String[] getErrorMessages() {
         return errorMessages;
+    }
+
+    public OperationType getOperationType() {
+        return operationType;
     }
 }
