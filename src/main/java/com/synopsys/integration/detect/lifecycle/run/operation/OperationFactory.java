@@ -231,7 +231,7 @@ public class OperationFactory { //TODO: OperationRunner
     public final List<DeveloperScanComponentResultView> performRapidScan(BlackDuckRunData blackDuckRunData, BdioResult bdioResult) throws DetectUserFriendlyException {
         return auditLog.namedPublic("Project Name Version Chosen", () -> {
             RapidScanService rapidScanService = blackDuckRunData.getBlackDuckServicesFactory().createRapidScanService();
-            return new RapidModeScanOperation(rapidScanService, detectConfigurationFactory.findTimeoutInSeconds(), operationSystem).run(bdioResult);
+            return new RapidModeScanOperation(rapidScanService, detectConfigurationFactory.findTimeoutInSeconds()).run(bdioResult);
         });
     }
 
@@ -252,7 +252,7 @@ public class OperationFactory { //TODO: OperationRunner
     //End post actions
 
     public final AggregateDecisionOperation createAggregateOptionsOperation() throws DetectUserFriendlyException {
-        return auditLog.namedPublic("Create Aggregate Options", () -> new AggregateDecisionOperation(detectConfigurationFactory.createAggregateOptions(), operationSystem));
+        return auditLog.namedPublic("Create Aggregate Options", () -> new AggregateDecisionOperation(detectConfigurationFactory.createAggregateOptions()));
     }
 
     public final BinaryScanOperation createBinaryScanOperation() throws DetectUserFriendlyException {
@@ -262,7 +262,7 @@ public class OperationFactory { //TODO: OperationRunner
 
             return new BinaryScanOperation(blackDuckRunData, binaryScanOptions, statusEventPublisher, exitCodePublisher, directoryManager,
                 codeLocationNameManager,
-                operationSystem, fileFinder);
+                fileFinder);
         });
     }
 
@@ -321,7 +321,7 @@ public class OperationFactory { //TODO: OperationRunner
             DetectProjectServiceOptions options = detectConfigurationFactory.createDetectProjectServiceOptions();
             DetectCustomFieldService detectCustomFieldService = new DetectCustomFieldService();
 
-            return new ProjectCreationOperation(detectConfigurationFactory.createShouldUnmapCodeLocations(), options, detectCustomFieldService, operationSystem)
+            return new ProjectCreationOperation(detectConfigurationFactory.createShouldUnmapCodeLocations(), options, detectCustomFieldService)
                        .execute(blackDuckRunData.getBlackDuckServicesFactory(), projeNameVersion);
         });
     }
