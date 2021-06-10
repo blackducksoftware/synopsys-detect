@@ -108,6 +108,7 @@ dependencies {
     // spring-boot-starter-test *can* provide these, but we choose to be more explicit about the dependencies we ACTUALLY use
     testImplementation 'org.assertj:assertj-core:3.13.2'
     testImplementation 'org.skyscreamer:jsonassert:1.5.0'
+    testImplementation 'org.mockito:mockito-inline:2.+'
 
     testImplementation project(':configuration').sourceSets.test.output
     testImplementation project(':common-test')
