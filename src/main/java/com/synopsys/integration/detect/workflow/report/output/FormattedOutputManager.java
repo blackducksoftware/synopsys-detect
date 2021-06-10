@@ -29,7 +29,9 @@ import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.Operation;
+import com.synopsys.integration.detect.workflow.status.OperationType;
 import com.synopsys.integration.detect.workflow.status.Status;
+import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detect.workflow.status.UnrecognizedPaths;
 import com.synopsys.integration.detectable.detectable.explanation.Explanation;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
@@ -75,10 +77,7 @@ public class FormattedOutputManager {
         formattedOutput.issues = Bds.of(detectIssues)
                                      .map(issue -> new FormattedIssueOutput(issue.getType().name(), issue.getTitle(), issue.getMessages()))
                                      .toList();
-        formattedOutput.operations = Bds.of(detectOperations)
-                                         .map(operation -> new FormattedOperationOutput(Operation.formatTimestamp(operation.getStartTime()), Operation.formatTimestamp(operation.getEndTime().orElse(null)), operation.getName(),
-                                             operation.getStatusType().name()))
-                                         .toList();
+        formattedOutput.operations = visibleOperations();
 
         if (detectorToolResult != null) {
             formattedOutput.detectors = Bds.of(detectorToolResult.getRootDetectorEvaluationTree())
@@ -102,6 +101,14 @@ public class FormattedOutputManager {
         formattedOutput.propertyValues = rawMaskedPropertyValues;
 
         return formattedOutput;
+    }
+
+    private List<FormattedOperationOutput> visibleOperations() {
+        return Bds.of(detectOperations)
+                   .filter(operation -> operation.getOperationType() == OperationType.PUBLIC || operation.getStatusType() != StatusType.SUCCESS) //EITHER a public operation or a failed internal operation
+                   .map(operation -> new FormattedOperationOutput(Operation.formatTimestamp(operation.getStartTime()), Operation.formatTimestamp(operation.getEndTime().orElse(null)), operation.getName(),
+                       operation.getStatusType().name()))
+                   .toList();
     }
 
     private List<String> removeTabsFromMessages(List<String> messages) {

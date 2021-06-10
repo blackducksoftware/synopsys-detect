@@ -47,7 +47,7 @@ public class DetectRun {
         try {
             SingletonFactory singletonFactory = new SingletonFactory(bootSingletons);
             EventSingletons eventSingletons = singletonFactory.createEventSingletons();
-            UtilitySingletons utilitySingletons = singletonFactory.createUtilitySingletons(eventSingletons);
+            UtilitySingletons utilitySingletons = singletonFactory.createUtilitySingletons(eventSingletons, exitCodeManager);
             operationSystem = utilitySingletons.getOperationSystem();
 
             ProductRunData productRunData = bootSingletons.getProductRunData(); //TODO: Remove run data from boot singletons
@@ -60,7 +60,7 @@ public class DetectRun {
             NameVersion nameVersion = stepRunner.determineProjectInformation(universalToolsResult);
             operationFactory.publishProjectNameVersionChosen(nameVersion);
             BdioResult bdio = stepRunner.generateBdio(universalToolsResult, nameVersion);
-            StepHelper stepHelper = new StepHelper(operationSystem, productRunData.getDetectToolFilter());
+            StepHelper stepHelper = new StepHelper(operationSystem, utilitySingletons.getOperationWrapper(), productRunData.getDetectToolFilter());
 
             if (productRunData.shouldUseBlackDuckProduct()) {
                 if (productRunData.getBlackDuckRunData().isRapid()) {
