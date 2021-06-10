@@ -104,10 +104,10 @@ import com.synopsys.integration.detectable.detectables.docker.DockerDetectable;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectableOptions;
 import com.synopsys.integration.detectable.detectables.docker.DockerExtractor;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
-import com.synopsys.integration.detectable.detectables.git.cli.GitCliDetectable;
+import com.synopsys.integration.detectable.detectables.git.GitDetectable;
+import com.synopsys.integration.detectable.detectables.git.GitParseDetectable;
 import com.synopsys.integration.detectable.detectables.git.cli.GitCliExtractor;
 import com.synopsys.integration.detectable.detectables.git.cli.GitUrlParser;
-import com.synopsys.integration.detectable.detectables.git.parsing.GitParseDetectable;
 import com.synopsys.integration.detectable.detectables.git.parsing.GitParseExtractor;
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigNameVersionTransformer;
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigNodeTransformer;
@@ -119,6 +119,7 @@ import com.synopsys.integration.detectable.detectables.go.gogradle.GoGradleDetec
 import com.synopsys.integration.detectable.detectables.go.gogradle.GoGradleExtractor;
 import com.synopsys.integration.detectable.detectables.go.gogradle.GoGradleLockParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectable;
+import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliExtractor;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCommandExecutor;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModGraphParser;
@@ -152,7 +153,7 @@ import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomWrapper
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseDetectable;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseExtractor;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseOptions;
-import com.synopsys.integration.detectable.detectables.npm.NpmPackageJsonDiscoverer;
+import com.synopsys.integration.detectable.detectables.npm.NpmPackageJsonNameVersionExtractor;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliDetectable;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliExtractor;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliExtractorOptions;
@@ -291,16 +292,16 @@ public class DetectableFactory {
         return new GemlockDetectable(environment, fileFinder, gemlockExtractor());
     }
 
+    public GitDetectable createGitDetectable(DetectableEnvironment environment, GitResolver gitResolver) {
+        return new GitDetectable(environment, fileFinder, gitCliExtractor(), gitResolver, gitParseExtractor());
+    }
+
     public GitParseDetectable createGitParseDetectable(DetectableEnvironment environment) {
         return new GitParseDetectable(environment, fileFinder, gitParseExtractor());
     }
 
-    public GitCliDetectable createGitCliDetectable(DetectableEnvironment environment, GitResolver gitResolver) {
-        return new GitCliDetectable(environment, fileFinder, gitCliExtractor(), gitResolver);
-    }
-
-    public GoModCliDetectable createGoModCliDetectable(DetectableEnvironment environment, GoResolver goResolver) {
-        return new GoModCliDetectable(environment, fileFinder, goResolver, goModCliExtractor());
+    public GoModCliDetectable createGoModCliDetectable(DetectableEnvironment environment, GoResolver goResolver, GoModCliDetectableOptions goModCliDetectableOptions) {
+        return new GoModCliDetectable(environment, fileFinder, goResolver, goModCliExtractor(), goModCliDetectableOptions);
     }
 
     public GoDepLockDetectable createGoLockDetectable(DetectableEnvironment environment) {
@@ -627,8 +628,8 @@ public class DetectableFactory {
         return new NpmCliExtractor(executableRunner, npmCliDependencyFinder());
     }
 
-    private NpmPackageJsonDiscoverer npmPackageJsonDiscoverer() {
-        return new NpmPackageJsonDiscoverer(gson);
+    private NpmPackageJsonNameVersionExtractor npmPackageJsonDiscoverer() {
+        return new NpmPackageJsonNameVersionExtractor(gson);
     }
 
     private NpmLockfileExtractor npmLockfileExtractor() {

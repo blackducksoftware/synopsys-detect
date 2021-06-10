@@ -10,7 +10,7 @@ package com.synopsys.integration.detect.lifecycle.run.singleton;
 import com.synopsys.integration.bdio.BdioTransformer;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
-import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
+import com.synopsys.integration.detect.lifecycle.run.step.utility.OperationWrapper;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
@@ -30,11 +30,13 @@ public class UtilitySingletons {
     private final DetectExecutableRunner executableRunner;
     private final DetectExecutableResolver detectExecutableResolver;
     private final OperationSystem operationSystem;
+    private final OperationWrapper operationWrapper;
 
     public UtilitySingletons(final ExternalIdFactory externalIdFactory, final ConnectionDetails connectionDetails, final ArtifactResolver artifactResolver,
         final CodeLocationNameManager codeLocationNameManager,
         final CreateBdioCodeLocationsFromDetectCodeLocationsOperation createBdioCodeLocationsFromDetectCodeLocationsOperation, final AirGapInspectorPaths airGapInspectorPaths, final BdioTransformer bdioTransformer,
-        final DetectExecutableRunner executableRunner, final DetectExecutableResolver detectExecutableResolver, final OperationSystem operationSystem) {
+        final DetectExecutableRunner executableRunner, final DetectExecutableResolver detectExecutableResolver, final OperationSystem operationSystem,
+        final OperationWrapper operationWrapper) {
         this.externalIdFactory = externalIdFactory;
         this.connectionDetails = connectionDetails;
         this.artifactResolver = artifactResolver;
@@ -45,6 +47,7 @@ public class UtilitySingletons {
         this.executableRunner = executableRunner;
         this.detectExecutableResolver = detectExecutableResolver;
         this.operationSystem = operationSystem;
+        this.operationWrapper = operationWrapper;
     }
 
     public ExternalIdFactory getExternalIdFactory() {
@@ -85,5 +88,9 @@ public class UtilitySingletons {
 
     public OperationSystem getOperationSystem() {
         return operationSystem;
+    }
+
+    public OperationWrapper getOperationWrapper() {
+        return operationWrapper;
     }
 }

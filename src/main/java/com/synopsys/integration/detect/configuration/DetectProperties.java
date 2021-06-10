@@ -561,6 +561,12 @@ public class DetectProperties {
             .setHelp("Path to the Go executable.")
             .setGroups(DetectGroup.GO, DetectGroup.GLOBAL);
 
+    public static final DetectProperty<BooleanProperty> DETECT_GO_ENABLE_VERIFICATION =
+        new DetectProperty<>(new BooleanProperty("detect.go.mod.enable.verification", true))
+            .setInfo("Go Mod Dependency Verification", DetectPropertyFromVersion.VERSION_7_1_0)
+            .setHelp("When enabled, Detect will use the results of 'go mod why' to filter out unused dependencies. Set to false if you have an empty BOM.")
+            .setGroups(DetectGroup.GO, DetectGroup.GLOBAL);
+
     public static final DetectProperty<NullableStringProperty> DETECT_GRADLE_BUILD_COMMAND =
         new DetectProperty<>(new NullableStringProperty("detect.gradle.build.command"))
             .setInfo("Gradle Build Command", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -992,7 +998,7 @@ public class DetectProperties {
         new DetectProperty<>(new NullableStringProperty("detect.project.detector"))
             .setInfo("Project Name and Version Detector", DetectPropertyFromVersion.VERSION_4_0_0)
             .setHelp(
-                "The detector that will be used to determine the project name and version when multiple detector types. This property should be used with the detect.project.tool.",
+                "The detector that will be used to determine the project name and version when multiple detector types apply. This property should be used with detect.project.tool.",
                 "If Detect finds that multiple detectors apply, this property can be used to select the detector that will provide the project name and version. When using this property, you should also set detect.project.tool=DETECTOR"
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)

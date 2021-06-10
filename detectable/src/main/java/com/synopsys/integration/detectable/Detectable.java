@@ -16,7 +16,7 @@ import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 public abstract class Detectable {
     protected DetectableEnvironment environment;
 
-    public Detectable(final DetectableEnvironment environment) {
+    public Detectable(DetectableEnvironment environment) {
         this.environment = environment;
     }
 
@@ -29,23 +29,6 @@ public abstract class Detectable {
      * Extractable may be as heavy as needed, and may (and sometimes should) fail. Make web requests, install inspectors or run executables.
      */
     public abstract DetectableResult extractable() throws DetectableException;
-
-    /*
-     * Perform project information discovery and try not to throw an exception. Instead return a discovery built with an exception.
-     */
-    public Discovery discover(final ExtractionEnvironment extractionEnvironment) {
-        try {
-            final Extraction extraction = extract(extractionEnvironment);
-            if (extraction.isSuccess()) {
-                return new Discovery.Builder().success(extraction).build();
-            } else {
-                return new Discovery.Builder().failure("The extraction was not a success.").build();
-            }
-        } catch (ExecutableFailedException e) {
-            return new Discovery.Builder().failure("The extraction was not a success. An executable returned a non-zero exit code.").build();
-        }
-
-    }
 
     /*
      * Perform the extraction and try not to throw an exception. Instead return an extraction built with an exception.

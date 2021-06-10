@@ -22,13 +22,12 @@ public class HelpJsonDetector {
     private Boolean nestInvisible = false;
 
     private List<String> yieldsTo = new ArrayList<>();
-    private String fallbackTo = "";
 
     public String getDetectableLanguage() {
         return detectableLanguage;
     }
 
-    public void setDetectableLanguage(final String detectableLanguage) {
+    public void setDetectableLanguage(String detectableLanguage) {
         this.detectableLanguage = detectableLanguage;
     }
 
@@ -36,7 +35,7 @@ public class HelpJsonDetector {
         return detectableRequirementsMarkdown;
     }
 
-    public void setDetectableRequirementsMarkdown(final String detectableRequirementsMarkdown) {
+    public void setDetectableRequirementsMarkdown(String detectableRequirementsMarkdown) {
         this.detectableRequirementsMarkdown = detectableRequirementsMarkdown;
     }
 
@@ -44,7 +43,7 @@ public class HelpJsonDetector {
         return detectableForge;
     }
 
-    public void setDetectableForge(final String detectableForge) {
+    public void setDetectableForge(String detectableForge) {
         this.detectableForge = detectableForge;
     }
 
@@ -52,7 +51,7 @@ public class HelpJsonDetector {
         return detectorType;
     }
 
-    public void setDetectorType(final String detectorType) {
+    public void setDetectorType(String detectorType) {
         this.detectorType = detectorType;
     }
 
@@ -60,7 +59,7 @@ public class HelpJsonDetector {
         return detectorName;
     }
 
-    public void setDetectorName(final String detectorName) {
+    public void setDetectorName(String detectorName) {
         this.detectorName = detectorName;
     }
 
@@ -68,7 +67,7 @@ public class HelpJsonDetector {
         return detectorDescriptiveName;
     }
 
-    public void setDetectorDescriptiveName(final String detectorDescriptiveName) {
+    public void setDetectorDescriptiveName(String detectorDescriptiveName) {
         this.detectorDescriptiveName = detectorDescriptiveName;
     }
 
@@ -76,7 +75,7 @@ public class HelpJsonDetector {
         return maxDepth;
     }
 
-    public void setMaxDepth(final Integer maxDepth) {
+    public void setMaxDepth(Integer maxDepth) {
         this.maxDepth = maxDepth;
     }
 
@@ -84,7 +83,7 @@ public class HelpJsonDetector {
         return nestable;
     }
 
-    public void setNestable(final Boolean nestable) {
+    public void setNestable(Boolean nestable) {
         this.nestable = nestable;
     }
 
@@ -92,7 +91,7 @@ public class HelpJsonDetector {
         return nestInvisible;
     }
 
-    public void setNestInvisible(final Boolean nestInvisible) {
+    public void setNestInvisible(Boolean nestInvisible) {
         this.nestInvisible = nestInvisible;
     }
 
@@ -100,15 +99,8 @@ public class HelpJsonDetector {
         return yieldsTo;
     }
 
-    public void setYieldsTo(final List<String> yieldsTo) {
+    public void setYieldsTo(List<String> yieldsTo) {
         this.yieldsTo = yieldsTo;
     }
 
-    public String getFallbackTo() {
-        return fallbackTo;
-    }
-
-    public void setFallbackTo(final String fallbackTo) {
-        this.fallbackTo = fallbackTo;
-    }
 }

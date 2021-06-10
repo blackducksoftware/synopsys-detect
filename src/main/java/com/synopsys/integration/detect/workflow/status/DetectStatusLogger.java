@@ -101,7 +101,8 @@ public class DetectStatusLogger {
 
     private void logDetectOperations(IntLogger logger, List<Operation> operations) {
         List<Operation> sortedOperations = operations.stream()
-                                               .sorted(Comparator.comparing(Operation::getStartTime)
+                                               .filter(operation -> operation.getOperationType() == OperationType.PUBLIC || operation.getStatusType() != StatusType.SUCCESS) //EITHER a public operation or a failed internal operation
+                                               .sorted(Comparator.comparing(Operation::getEndTimeOrStartTime)
                                                            .thenComparing(Operation::getName))
                                                .collect(Collectors.toList());
         logger.debug("====== Detect Operations ======");

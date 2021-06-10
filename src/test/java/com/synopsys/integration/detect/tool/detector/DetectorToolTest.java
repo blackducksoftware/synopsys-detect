@@ -24,7 +24,6 @@ package com.synopsys.integration.detect.tool.detector;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -71,7 +70,6 @@ import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.detector.rule.DetectorRuleSetBuilder;
 
 public class DetectorToolTest {
-
     @Test
     public void testFailWhenMisConfigured() throws DetectUserFriendlyException {
 
@@ -90,7 +88,7 @@ public class DetectorToolTest {
         DetectorRuleSet detectorRuleSet = Mockito.mock(DetectorRuleSet.class);
         DetectorFinderOptions detectorFinderOptions = Mockito.mock(DetectorFinderOptions.class);
         DetectorEvaluationOptions evaluationOptions = Mockito.mock(DetectorEvaluationOptions.class);
-        final String projectBomTool = "testBomTool";
+        String projectBomTool = "testBomTool";
 
         tool.performDetectors(directory, detectorRuleSet, detectorFinderOptions, evaluationOptions, projectBomTool, new ArrayList<>(), new SimpleFileFinder());
 
@@ -107,7 +105,7 @@ public class DetectorToolTest {
 
         assertFalse(result.getApplicableDetectorTypes().isEmpty());
         assertTrue(result.getBomToolCodeLocations().isEmpty());
-        assertFalse(result.getBomToolProjectNameVersion().isPresent());
+        assertTrue(result.getBomToolProjectNameVersion().isPresent());
         assertTrue(result.getCodeLocationMap().isEmpty());
         assertTrue(result.getFailedDetectorTypes().isEmpty());
         assertTrue(result.getRootDetectorEvaluationTree().isPresent());
@@ -123,7 +121,7 @@ public class DetectorToolTest {
 
         assertFalse(result.getApplicableDetectorTypes().isEmpty());
         assertTrue(result.getBomToolCodeLocations().isEmpty());
-        assertFalse(result.getBomToolProjectNameVersion().isPresent());
+        assertTrue(result.getBomToolProjectNameVersion().isPresent());
         assertTrue(result.getCodeLocationMap().isEmpty());
         assertTrue(result.getFailedDetectorTypes().isEmpty());
         assertTrue(result.getRootDetectorEvaluationTree().isPresent());
@@ -246,7 +244,7 @@ public class DetectorToolTest {
 
     private DetectorFinderOptions createFinderOptions() {
         Predicate<File> fileFilter = f -> true;
-        final int maximumDepth = 10;
+        int maximumDepth = 10;
         return new DetectorFinderOptions(fileFilter, maximumDepth);
     }
 

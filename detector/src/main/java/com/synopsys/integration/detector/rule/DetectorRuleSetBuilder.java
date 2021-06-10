@@ -22,44 +22,35 @@ import com.synopsys.integration.detector.base.DetectorType;
 public class DetectorRuleSetBuilder {
     private final List<DetectorRule> rules = new ArrayList<>();
     private final List<DetectorRuleYieldBuilder> yieldBuilders = new ArrayList<>();
-    private final List<DetectorRuleFallbackBuilder> fallbackBuilders = new ArrayList<>();
 
-    public <T extends Detectable> DetectorRuleBuilder addDetector(final DetectorType type, final String name, Class<T> detectableClass, final DetectableCreatable<T> detectableCreatable) {
-        final DetectorRuleBuilder ruleBuilder = new DetectorRuleBuilder<T>(name, type, detectableClass, detectableCreatable);
+    public <T extends Detectable> DetectorRuleBuilder addDetector(DetectorType type, String name, Class<T> detectableClass, DetectableCreatable<T> detectableCreatable) {
+        DetectorRuleBuilder ruleBuilder = new DetectorRuleBuilder<>(name, type, detectableClass, detectableCreatable);
         ruleBuilder.setDetectorRuleSetBuilder(this);
         return ruleBuilder;
     }
 
-    public DetectorRuleSetBuilder add(final DetectorRule rule) {
+    public DetectorRuleSetBuilder add(DetectorRule rule) {
         rules.add(rule);
         return this;
     }
 
-    public DetectorRuleYieldBuilder yield(final DetectorRule rule) {
-        final DetectorRuleYieldBuilder builder = new DetectorRuleYieldBuilder(rule);
+    public DetectorRuleYieldBuilder yield(DetectorRule rule) {
+        DetectorRuleYieldBuilder builder = new DetectorRuleYieldBuilder(rule);
         yieldBuilders.add(builder);
         return builder;
     }
 
-    public DetectorRuleFallbackBuilder fallback(final DetectorRule rule) {
-        final DetectorRuleFallbackBuilder builder = new DetectorRuleFallbackBuilder(rule);
-        fallbackBuilders.add(builder);
-        return builder;
-    }
-
     public DetectorRuleSet build() {
-        final Map<DetectorRule, Set<DetectorRule>> yieldsToRules = buildYield();
-        final Map<DetectorRule, DetectorRule> fallbackToRules = buildFallback();
+        Map<DetectorRule, Set<DetectorRule>> yieldsToRules = buildYield();
 
-        final List<DetectorRule> orderedRules = new ArrayList<>();
+        List<DetectorRule> orderedRules = new ArrayList<>();
         boolean atLeastOneRuleAdded = true;
 
         while (orderedRules.size() < rules.size() && atLeastOneRuleAdded) {
-            final List<DetectorRule> satisfiedRules = rules.stream()
-                                                          .filter(rule -> !orderedRules.contains(rule))
-                                                          .filter(rule -> yieldSatisfied(rule, orderedRules, yieldsToRules))
-                                                          .filter(rule -> fallbackSatisfied(rule, orderedRules, fallbackToRules))
-                                                          .collect(Collectors.toList());
+            List<DetectorRule> satisfiedRules = rules.stream()
+                                                    .filter(rule -> !orderedRules.contains(rule))
+                                                    .filter(rule -> yieldSatisfied(rule, orderedRules, yieldsToRules))
+                                                    .collect(Collectors.toList());
 
             atLeastOneRuleAdded = satisfiedRules.size() > 0;
             orderedRules.addAll(satisfiedRules);
@@ -69,12 +60,12 @@ public class DetectorRuleSetBuilder {
             throw new RuntimeException("Unable to order detector rules.");
         }
 
-        return new DetectorRuleSet(orderedRules, yieldsToRules, fallbackToRules);
+        return new DetectorRuleSet(orderedRules, yieldsToRules);
     }
 
     private Map<DetectorRule, Set<DetectorRule>> buildYield() {
-        final Map<DetectorRule, Set<DetectorRule>> yieldsToRules = new HashMap<>();
-        for (final DetectorRuleYieldBuilder yieldBuilder : yieldBuilders) {
+        Map<DetectorRule, Set<DetectorRule>> yieldsToRules = new HashMap<>();
+        for (DetectorRuleYieldBuilder yieldBuilder : yieldBuilders) {
             if (!yieldsToRules.containsKey(yieldBuilder.getYieldingDetector())) {
                 yieldsToRules.put(yieldBuilder.getYieldingDetector(), new HashSet<>());
             }
@@ -83,30 +74,20 @@ public class DetectorRuleSetBuilder {
         return yieldsToRules;
     }
 
-    private Map<DetectorRule, DetectorRule> buildFallback() {
-        final Map<DetectorRule, DetectorRule> fallbackToRules = new HashMap<>();
-        for (final DetectorRuleFallbackBuilder fallbackBuilder : fallbackBuilders) {
-            if (fallbackToRules.containsKey(fallbackBuilder.getFailingDetector())) {
-                throw new RuntimeException("Each detector can only have a single fallback. Chain fallback detectors with X -> Y -> Z instead of X -> Y and X -> Z.");
-            } else {
-                fallbackToRules.put(fallbackBuilder.getFailingDetector(), fallbackBuilder.getFallbackToDetector());
+    //returns true when all all detectors the rule yields to have already been added.
+    private boolean yieldSatisfied(DetectorRule rule, List<DetectorRule> orderedRules, Map<DetectorRule, Set<DetectorRule>> yieldsToRules) {
+        if (yieldsToRules.containsKey(rule)) {
+            boolean yieldedSatisfied = true;
+            for (DetectorRule yield : yieldsToRules.get(rule)) {
+                if (!orderedRules.contains(yield)) {
+                    yieldedSatisfied = false;
+                }
             }
-        }
-        return fallbackToRules;
-    }
-
-    //returns true when every fallback with this rule as the 'fallback to' detector has had it's 'failing' detector already been added.
-    private boolean fallbackSatisfied(final DetectorRule rule, final List<DetectorRule> orderedRules, final Map<DetectorRule, DetectorRule> fallbackToRules) {
-        //When the Key detector fails we fallback to the Value detector. Therefore for a given rule, every time it is a Value that corresponding Key detector must have already been added.
-        return fallbackToRules.entrySet()
-            .stream()
-            .filter(fallback -> rule.equals(fallback.getValue()))
-            .allMatch(fallback -> orderedRules.contains(fallback.getKey()));
-    }
-
-    private boolean yieldSatisfied(final DetectorRule rule, final List<DetectorRule> orderedRules, final Map<DetectorRule, Set<DetectorRule>> yieldsToRules) {
-        if (!yieldsToRules.containsKey(rule)) {
-            return true;
+            return yieldedSatisfied;
+        } else {
+            if (!yieldsToRules.containsKey(rule)) {
+                return true;
+            }
         }
 
         // if ordered rules is missing ANY of the yielded rules, return false

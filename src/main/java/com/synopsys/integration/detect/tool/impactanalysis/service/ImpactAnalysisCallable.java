@@ -12,8 +12,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import org.apache.http.HttpHeaders;
+
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
+import com.synopsys.integration.blackduck.exception.BlackDuckApiException;
 import com.synopsys.integration.blackduck.http.BlackDuckRequestBuilder;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.request.BlackDuckResponseRequest;
@@ -45,9 +48,12 @@ public class ImpactAnalysisCallable implements Callable<ImpactAnalysisOutput> {
             try (Response response = blackDuckApiClient.execute(request)) {
                 return ImpactAnalysisOutput.FROM_RESPONSE(gson, projectAndVersion, codeLocationName, response);
             }
+        } catch (BlackDuckApiException apiException) {
+            String errorMessage = String.format("Failed to upload impact analysis file: %s; Black Duck response: %s [Black Duck error code: %s]", impactAnalysis.getImpactAnalysisPath().toAbsolutePath(), apiException.getMessage(), apiException.getBlackDuckErrorCode());
+            return ImpactAnalysisOutput.FAILURE(projectAndVersion, codeLocationName, errorMessage, apiException, apiException.getBlackDuckErrorCode(), apiException.getMessage(), apiException.getOriginalIntegrationRestException().getHttpStatusCode(), apiException.getOriginalIntegrationRestException().getHttpResponseContent());
         } catch (Exception e) {
-            String errorMessage = String.format("Failed to impact analysis file: %s because %s", impactAnalysis.getImpactAnalysisPath().toAbsolutePath(), e.getMessage());
-            return ImpactAnalysisOutput.FAILURE(projectAndVersion, codeLocationName, errorMessage, e);
+            String errorMessage = String.format("Failed to upload impact analysis file: %s because %s", impactAnalysis.getImpactAnalysisPath().toAbsolutePath(), e.getMessage());
+            return ImpactAnalysisOutput.FAILURE(projectAndVersion, codeLocationName, errorMessage, e, null, null, 0, null);
         }
     }
 
@@ -59,6 +65,11 @@ public class ImpactAnalysisCallable implements Callable<ImpactAnalysisOutput> {
 
         return new BlackDuckRequestBuilder()
                    .postMultipart(fileMap, new HashMap<>())
+                   // ejk - at least against 2021.4.1, Black Duck won't handle
+                   // an Accept application/json, so we have to explicitly
+                   // accept anything
+                   // (IDETECT-2664 sorry for no link. Security.)
+                   .addHeader(HttpHeaders.ACCEPT, "*/*")
                    .buildBlackDuckResponseRequest(url);
     }
 

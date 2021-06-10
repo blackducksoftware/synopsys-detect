@@ -22,9 +22,7 @@ import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanToolResult;
 import com.synopsys.integration.detect.tool.binaryscanner.BlackDuckBinaryScannerTool;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
-import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
 public class BinaryScanOperation {
@@ -34,11 +32,10 @@ public class BinaryScanOperation {
     private final ExitCodePublisher exitCodePublisher;
     private final DirectoryManager directoryManager;
     private final CodeLocationNameManager codeLocationNameManager;
-    private final OperationSystem operationSystem;
     private final FileFinder fileFinder;
 
     public BinaryScanOperation(BlackDuckRunData blackDuckRunData, BinaryScanOptions binaryScanOptions, StatusEventPublisher statusEventPublisher, ExitCodePublisher exitCodePublisher, DirectoryManager directoryManager,
-        CodeLocationNameManager codeLocationNameManager, OperationSystem operationSystem, FileFinder fileFinder) {
+        CodeLocationNameManager codeLocationNameManager, FileFinder fileFinder) {
         this.blackDuckRunData = blackDuckRunData;
         this.binaryScanOptions = binaryScanOptions;
         this.statusEventPublisher = statusEventPublisher;
@@ -46,15 +43,14 @@ public class BinaryScanOperation {
         this.directoryManager = directoryManager;
         this.codeLocationNameManager = codeLocationNameManager;
         this.fileFinder = fileFinder;
-        this.operationSystem = operationSystem;
     }
 
     public Optional<CodeLocationCreationData<BinaryScanBatchOutput>> execute(NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws DetectUserFriendlyException {
         Optional<CodeLocationCreationData<BinaryScanBatchOutput>> operationResult = Optional.empty();
         BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
-            blackDuckServicesFactory.createBinaryScanUploadService();
+        blackDuckServicesFactory.createBinaryScanUploadService();
         BlackDuckBinaryScannerTool binaryScannerTool = new BlackDuckBinaryScannerTool(statusEventPublisher, exitCodePublisher, codeLocationNameManager, directoryManager, fileFinder, binaryScanOptions,
-            blackDuckServicesFactory.createBinaryScanUploadService(), operationSystem);
+            blackDuckServicesFactory.createBinaryScanUploadService());
 
         BinaryScanToolResult result = binaryScannerTool.performBinaryScanActions(dockerTargetData, projectNameVersion);
         if (result.isSuccessful()) {

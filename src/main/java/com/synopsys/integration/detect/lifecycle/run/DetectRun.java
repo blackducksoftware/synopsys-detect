@@ -39,8 +39,7 @@ public class DetectRun {
     private OperationFactory createOperationFactory(BootSingletons bootSingletons, UtilitySingletons utilitySingletons, EventSingletons eventSingletons) throws DetectUserFriendlyException {
         DetectorFactory detectorFactory = new DetectorFactory(bootSingletons, utilitySingletons);
         DetectFontLoaderFactory detectFontLoaderFactory = new DetectFontLoaderFactory(bootSingletons, utilitySingletons);
-
-        return new OperationFactory(detectorFactory.detectDetectableFactory(), detectFontLoaderFactory, bootSingletons, utilitySingletons, eventSingletons);
+        return new OperationFactory(detectorFactory.detectDetectableFactory(), detectFontLoaderFactory, bootSingletons, utilitySingletons, eventSingletons, exitCodeManager);
     }
 
     public void run(BootSingletons bootSingletons) {
@@ -48,7 +47,7 @@ public class DetectRun {
         try {
             SingletonFactory singletonFactory = new SingletonFactory(bootSingletons);
             EventSingletons eventSingletons = singletonFactory.createEventSingletons();
-            UtilitySingletons utilitySingletons = singletonFactory.createUtilitySingletons(eventSingletons);
+            UtilitySingletons utilitySingletons = singletonFactory.createUtilitySingletons(eventSingletons, exitCodeManager);
             operationSystem = utilitySingletons.getOperationSystem();
 
             ProductRunData productRunData = bootSingletons.getProductRunData(); //TODO: Remove run data from boot singletons
@@ -61,11 +60,11 @@ public class DetectRun {
             NameVersion nameVersion = stepRunner.determineProjectInformation(universalToolsResult);
             operationFactory.publishProjectNameVersionChosen(nameVersion);
             BdioResult bdio = stepRunner.generateBdio(universalToolsResult, nameVersion);
-            StepHelper stepHelper = new StepHelper(operationSystem, productRunData.getDetectToolFilter());
+            StepHelper stepHelper = new StepHelper(operationSystem, utilitySingletons.getOperationWrapper(), productRunData.getDetectToolFilter());
 
             if (productRunData.shouldUseBlackDuckProduct()) {
                 if (productRunData.getBlackDuckRunData().isRapid()) {
-                    RapidModeStepRunner rapidModeSteps = new RapidModeStepRunner();
+                    RapidModeStepRunner rapidModeSteps = new RapidModeStepRunner(operationFactory);
                     rapidModeSteps.runAll(productRunData.getBlackDuckRunData(), nameVersion, bdio);
                 } else if (productRunData.getBlackDuckRunData().isOnline()) {
                     IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationFactory, stepHelper);
@@ -77,7 +76,6 @@ public class DetectRun {
             } else {
                 logger.info("Black Duck tools will not be run.");
             }
-
         } catch (Exception e) {
             if (e.getMessage() != null) {
                 logger.error("Detect run failed: {}", e.getMessage());
@@ -86,6 +84,10 @@ public class DetectRun {
             }
             logger.debug("An exception was thrown during the detect run.", e);
             exitCodeManager.requestExitCode(e);
+            if (e instanceof InterruptedException) {
+                // Restore interrupted state...
+                Thread.currentThread().interrupt();
+            }
         } finally {
             if (operationSystem != null) {
                 operationSystem.publishOperations();

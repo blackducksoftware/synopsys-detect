@@ -30,6 +30,7 @@ import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BdioUploadResult;
 import com.synopsys.integration.detect.lifecycle.run.step.utility.StepHelper;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisBatchOutput;
+import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerToolResult;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
@@ -79,7 +80,8 @@ public class IntelligentModeStepRunner {
 
         stepHelper.runToolIfIncluded(DetectTool.SIGNATURE_SCAN, "Signature Scanner", () -> {
             SignatureScanStepRunner signatureScanStepRunner = new SignatureScanStepRunner(operationFactory);
-            signatureScanStepRunner.runSignatureScannerOnline(blackDuckRunData, projectNameVersion, dockerTargetData);
+            SignatureScannerToolResult signatureScannerToolResult = signatureScanStepRunner.runSignatureScannerOnline(blackDuckRunData, projectNameVersion, dockerTargetData);
+            signatureScannerToolResult.getCreationData().ifPresent(codeLocationAccumulator::addWaitableCodeLocation);
         });
 
         stepHelper.runToolIfIncluded(DetectTool.BINARY_SCAN, "Binary Scanner", () -> {
@@ -142,14 +144,16 @@ public class IntelligentModeStepRunner {
     }
 
     private void checkPolicy(ProjectVersionView projectVersionView, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
-        logger.info("Detect will check policy for violations.");
-        operationFactory.checkPolicy(blackDuckRunData, projectVersionView);
+        logger.info("Checking to see if Detect should check policy for violations.");
+        if (operationFactory.createBlackDuckPostOptions().shouldPerformPolicyCheck()) {
+            operationFactory.checkPolicy(blackDuckRunData, projectVersionView);
+        }
     }
 
     public void waitForCodeLocations(CodeLocationWaitData codeLocationWaitData, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
         throws DetectUserFriendlyException {
-        logger.info("Detect must wait for bom tool calculations to finish.");
-        if (codeLocationWaitData.getExpectedNotificationCount() > 0) {
+        logger.info("Checking to see if Detect should wait for bom tool calculations to finish.");
+        if (operationFactory.createBlackDuckPostOptions().shouldWaitForResults() && codeLocationWaitData.getExpectedNotificationCount() > 0) {
             operationFactory.waitForCodeLocations(blackDuckRunData, codeLocationWaitData, projectNameVersion);
         }
     }

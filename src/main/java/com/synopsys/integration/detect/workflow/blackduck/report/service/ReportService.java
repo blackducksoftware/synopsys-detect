@@ -96,7 +96,10 @@ public class ReportService extends DataService {
         String escapedProjectVersionName = escapeUtil.replaceWithUnderscore(projectVersionName);
         File noticesReportFile = new File(outputDirectory, escapedProjectName + "_" + escapedProjectVersionName + "_Black_Duck_Notices_Report.txt");
         if (noticesReportFile.exists()) {
-            noticesReportFile.delete();
+            boolean deleted = noticesReportFile.delete();
+            if (!deleted) {
+                logger.warn(String.format("Unable to delete existing file %s before re-creating it", noticesReportFile.getAbsolutePath()));
+            }
         }
         try (FileWriter writer = new FileWriter(noticesReportFile)) {
             logger.trace("Creating Notices Report in : " + outputDirectory.getCanonicalPath());
