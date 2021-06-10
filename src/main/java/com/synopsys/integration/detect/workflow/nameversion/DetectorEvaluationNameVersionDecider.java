@@ -41,9 +41,10 @@ public class DetectorEvaluationNameVersionDecider {
     }
 
     private DetectorType preferredDetectorTypeFromString(String detectorType) {
+        String detectorTypeUppercase = detectorType.toUpperCase();
         DetectorType castDetectorType = null;
-        if (StringUtils.isNotBlank(detectorType) && DetectorType.getPossibleNames().contains(detectorType.toUpperCase())) {
-            castDetectorType = DetectorType.valueOf(detectorType);
+        if (StringUtils.isNotBlank(detectorType) && DetectorType.getPossibleNames().contains(detectorTypeUppercase)) {
+            castDetectorType = DetectorType.valueOf(detectorTypeUppercase);
         }
         // In Kotlin this check was to see if castDetectorType != null but that doesn't make any sense...
         if (castDetectorType == null) {
