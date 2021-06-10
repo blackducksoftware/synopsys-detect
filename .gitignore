@@ -27,3 +27,4 @@ docs/generated/
 synopsys-detect-*-help.json
 
 docker-test/
+*.hprof
