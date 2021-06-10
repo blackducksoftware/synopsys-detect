@@ -57,12 +57,12 @@ public class StepHelper {
     }
 
     public void runAsGroup(String name, OperationWrapper.OperationFunction supplier) throws DetectUserFriendlyException {
-        Operation operation = operationSystem.startOperation(name, OperationType.PUBLIC);
+        Operation operation = operationSystem.startOperation(name, OperationType.INTERNAL);
         operationWrapper.named(name, operation, supplier);
     }
 
     public <T> T runAsGroup(String name, OperationWrapper.OperationSupplier<T> supplier) throws DetectUserFriendlyException {
-        Operation operation = operationSystem.startOperation(name, OperationType.PUBLIC);
+        Operation operation = operationSystem.startOperation(name, OperationType.INTERNAL);
         return operationWrapper.named(name, operation, supplier);
     }
 }
