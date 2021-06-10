@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.battery.docker;
+package com.synopsys.integration.detect.battery.docker.util;
 
 import java.io.File;
 

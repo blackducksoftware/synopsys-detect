@@ -5,7 +5,7 @@ import java.util.Objects;
 
 import org.junit.jupiter.api.Assertions;
 
-import com.synopsys.integration.detect.battery.docker.DockerDetectResult;
+import com.synopsys.integration.detect.battery.docker.util.DockerDetectResult;
 
 public class DockerTestAssertions {
     private DockerDetectResult dockerDetectResult;

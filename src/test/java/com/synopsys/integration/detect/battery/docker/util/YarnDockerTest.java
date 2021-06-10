@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.battery.docker;
+package com.synopsys.integration.detect.battery.docker.util;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +35,12 @@ import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.util.OperatingSystemType;
 
 @Tag("docker")
-public class LongFormExampleDockerBattery {
+public class YarnDockerTest {
+    @Test
+    void YarnBerryTest() {
+
+    }
+
     @Test
     void run() throws IOException, InterruptedException {
         String imageName = "docker-battery-yarn";
