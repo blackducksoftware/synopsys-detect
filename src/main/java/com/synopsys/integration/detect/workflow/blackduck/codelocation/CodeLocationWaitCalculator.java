@@ -12,19 +12,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.synopsys.integration.blackduck.codelocation.CodeLocationBatchOutput;
-import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 
 public class CodeLocationWaitCalculator {
-    public CodeLocationWaitData calculateWaitData(List<CodeLocationCreationData<? extends CodeLocationBatchOutput<?>>> codeLocationCreationDatas) {
+    public CodeLocationWaitData calculateWaitData(List<AccumulatedCodeLocationData> codeLocationCreationDatas) {
         int expectedNotificationCount = 0;
         NotificationTaskRange notificationRange = null;
         Set<String> codeLocationNames = new HashSet<>();
 
-        for (CodeLocationCreationData<? extends CodeLocationBatchOutput<?>> codeLocationCreationData : codeLocationCreationDatas) {
-            expectedNotificationCount += codeLocationCreationData.getOutput().getExpectedNotificationCount();
-            codeLocationNames.addAll(codeLocationCreationData.getOutput().getSuccessfulCodeLocationNames());
+        for (AccumulatedCodeLocationData codeLocationCreationData : codeLocationCreationDatas) {
+            expectedNotificationCount += codeLocationCreationData.getExpectedNotificationCount();
+            codeLocationNames.addAll(codeLocationCreationData.getSuccessfulCodeLocationNames());
 
             if (null == notificationRange) {
                 notificationRange = codeLocationCreationData.getNotificationTaskRange();
