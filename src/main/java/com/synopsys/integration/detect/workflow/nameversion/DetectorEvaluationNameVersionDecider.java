@@ -41,7 +41,11 @@ public class DetectorEvaluationNameVersionDecider {
     }
 
     private DetectorType preferredDetectorTypeFromString(String detectorType) {
-        String detectorTypeUppercase = detectorType.toUpperCase();
+
+        String detectorTypeUppercase = null;
+        if (detectorType != null) {
+            detectorTypeUppercase = detectorType.toUpperCase();
+        }
         DetectorType castDetectorType = null;
         if (StringUtils.isNotBlank(detectorType) && DetectorType.getPossibleNames().contains(detectorTypeUppercase)) {
             castDetectorType = DetectorType.valueOf(detectorTypeUppercase);
