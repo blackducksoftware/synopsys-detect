@@ -60,7 +60,7 @@ import com.synopsys.integration.log.Slf4jIntLogger;
 
 import freemarker.template.TemplateException;
 
-public final class DetectorBatteryTest {
+public final class DetectorBattery {
     private static final String ENVIRONMENT_VARIABLE_BATTERY_TESTS_PATH = "BATTERY_TESTS_PATH";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final List<BatteryExecutable> executables = new ArrayList<>();
@@ -89,12 +89,12 @@ public final class DetectorBatteryTest {
     private final AtomicInteger commandCount = new AtomicInteger();
     private final AtomicInteger executableCount = new AtomicInteger();
 
-    public DetectorBatteryTest(String name) {
+    public DetectorBattery(String name) {
         this.testName = name;
         this.resourcePrefix = name;
     }
 
-    public DetectorBatteryTest(String testName, String resourcePrefix) {
+    public DetectorBattery(String testName, String resourcePrefix) {
         this.testName = testName;
         this.resourcePrefix = resourcePrefix;
     }

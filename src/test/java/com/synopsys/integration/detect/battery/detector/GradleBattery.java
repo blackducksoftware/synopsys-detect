@@ -25,7 +25,7 @@ package com.synopsys.integration.detect.battery.detector;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detect.battery.util.DetectorBatteryTest;
+import com.synopsys.integration.detect.battery.util.DetectorBattery;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
 @Tag("battery")
@@ -34,7 +34,7 @@ public class GradleBattery {
 
     @Test
     void gradleFromProperty() {
-        final DetectorBatteryTest test = new DetectorBatteryTest("gradle-property", "gradle-inspector");
+        final DetectorBattery test = new DetectorBattery("gradle-property", "gradle-inspector");
         test.executableThatCopiesFiles(DetectProperties.DETECT_GRADLE_PATH.getProperty(), RESOURCE_FOLDER)
             .onWindows(5, "")
             .onLinux(3, "-DGRADLEEXTRACTIONDIR=");
@@ -47,7 +47,7 @@ public class GradleBattery {
 
     @Test
     void gradleWrapperFromSourceFile() {
-        final DetectorBatteryTest test = new DetectorBatteryTest("gradle-wrapper", "gradle-inspector");
+        final DetectorBattery test = new DetectorBattery("gradle-wrapper", "gradle-inspector");
         test.executableSourceFileThatCopiesFiles("gradlew.bat", "gradlew", RESOURCE_FOLDER)
             .onWindows(5, "")
             .onLinux(3, "-DGRADLEEXTRACTIONDIR=");

@@ -25,7 +25,7 @@ package com.synopsys.integration.detect.battery.detector;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detect.battery.util.DetectorBatteryTest;
+import com.synopsys.integration.detect.battery.util.DetectorBattery;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
 @Tag("battery")
@@ -34,7 +34,7 @@ public class MavenBattery {
 
     @Test
     void mavenFromProperty() {
-        final DetectorBatteryTest test = new DetectorBatteryTest("maven-property", "maven-cli");
+        final DetectorBattery test = new DetectorBattery("maven-property", "maven-cli");
         test.executableFromResourceFiles(DetectProperties.DETECT_MAVEN_PATH.getProperty(), MAVEN_OUTPUT_RESOURCE);
         test.sourceDirectoryNamed("linux-maven");
         test.sourceFileNamed("pom.xml");
@@ -45,7 +45,7 @@ public class MavenBattery {
 
     @Test
     void mavenFromSourceFile() {
-        final DetectorBatteryTest test = new DetectorBatteryTest("maven-wrapper", "maven-cli");
+        final DetectorBattery test = new DetectorBattery("maven-wrapper", "maven-cli");
         test.executableSourceFileFromResourceFiles("mvnw.cmd", "mvnw", MAVEN_OUTPUT_RESOURCE);
         test.sourceDirectoryNamed("linux-maven");
         test.sourceFileNamed("pom.xml");
