@@ -19,31 +19,6 @@ public class OperationSystem {
         this.statusEventPublisher = statusEventPublisher;
     }
 
-    public void beginOperation(String operationName) {
-        startOperation(operationName);
-    }
-
-    public void completeWithSuccess(String operationName) {
-        Operation operation = operationMap.computeIfAbsent(operationName, this::createNewOperation);
-        operation.success();
-    }
-
-    public void completeWithFailure(String operationName) {
-        Operation operation = operationMap.computeIfAbsent(operationName, this::createNewOperation);
-        operation.fail();
-
-    }
-
-    public void finishOperation(String operationName) { //for use in finally blocks.
-        Operation operation = operationMap.computeIfAbsent(operationName, this::createNewOperation);
-        operation.finish();
-    }
-
-    public void completeWithError(String operationName, String... errorMessages) {
-        Operation operation = operationMap.computeIfAbsent(operationName, this::createNewOperation);
-        operation.error(errorMessages);
-    }
-
     public void publishOperations() {
         operationMap.values().forEach(this::publishOperation);
     }
@@ -55,17 +30,17 @@ public class OperationSystem {
         statusEventPublisher.publishOperation(operation);
     }
 
-    public Operation startOperation(String operationName) {
-        Operation currentOperation = operationMap.computeIfAbsent(operationName, this::createNewOperation);
+    public Operation startOperation(String operationName, OperationType type) {
+        Operation currentOperation = operationMap.computeIfAbsent(operationName, key -> createNewOperation(operationName, type));
         if (currentOperation.getEndTime().isPresent()) {
             publishOperation(currentOperation);
-            currentOperation = createNewOperation(operationName);
+            currentOperation = createNewOperation(operationName, type);
             operationMap.put(operationName, currentOperation);
         }
         return currentOperation;
     }
 
-    private Operation createNewOperation(String operationName) {
-        return Operation.of(operationName);
+    private Operation createNewOperation(String operationName, OperationType type) {
+        return new Operation(operationName, type);
     }
 }
