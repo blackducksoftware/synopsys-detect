@@ -3,7 +3,7 @@ package com.synopsys.integration.detect.battery.detector;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detect.battery.util.DetectorBattery;
+import com.synopsys.integration.detect.battery.util.DetectorBatteryTest;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
 @Tag("battery")
@@ -17,7 +17,7 @@ class BazelBattery {
 
     @Test
     void bazelMavenInstall() {
-        DetectorBattery test = new DetectorBattery("bazel-maven-install", "bazel/maven-install");
+        DetectorBatteryTest test = new DetectorBatteryTest("bazel-maven-install", "bazel/maven-install");
         test.withToolsValue("BAZEL");
         test.property("detect.bazel.target", "//tests/integration:ArtifactExclusionsTest");
         test.property("detect.bazel.dependency.type", "MAVEN_INSTALL");
@@ -30,7 +30,7 @@ class BazelBattery {
 
     @Test
     void bazelHaskellCabalLibrary() {
-        DetectorBattery test = new DetectorBattery("bazel-haskell-cabal-library", "bazel/haskell-cabal-library");
+        DetectorBatteryTest test = new DetectorBatteryTest("bazel-haskell-cabal-library", "bazel/haskell-cabal-library");
         test.withToolsValue("BAZEL");
         test.property("detect.bazel.target", "//cat_hs/lib/args:args");
         test.property("detect.bazel.dependency.type", "HASKELL_CABAL_LIBRARY");
@@ -43,7 +43,7 @@ class BazelBattery {
 
     @Test
     void bazelMavenJar() {
-        DetectorBattery test = new DetectorBattery("bazel-maven-jar", "bazel/maven-jar");
+        DetectorBatteryTest test = new DetectorBatteryTest("bazel-maven-jar", "bazel/maven-jar");
         test.withToolsValue("BAZEL");
         test.property("detect.bazel.target", "//:ProjectRunner");
         test.property("detect.bazel.dependency.type", "MAVEN_JAR");
@@ -57,7 +57,7 @@ class BazelBattery {
 
     @Test
     void bazelHaskellCabalLibraryAll() {
-        DetectorBattery test = new DetectorBattery("bazel-haskell-cabal-library-all", "bazel/haskell-cabal-library-all");
+        DetectorBatteryTest test = new DetectorBatteryTest("bazel-haskell-cabal-library-all", "bazel/haskell-cabal-library-all");
         test.withToolsValue("BAZEL");
         test.property("detect.bazel.target", "//cat_hs/lib/args:args");
         test.property("detect.bazel.dependency.type", "ALL");
