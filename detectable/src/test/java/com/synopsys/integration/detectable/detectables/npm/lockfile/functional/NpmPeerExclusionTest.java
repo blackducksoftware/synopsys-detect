@@ -36,9 +36,9 @@ import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 import com.synopsys.integration.detectable.util.graph.GraphAssert;
 
 @FunctionalTest
-public class NpmDevExclusionTest {
-    ExternalId childDev;
-    ExternalId parentDev;
+public class NpmPeerExclusionTest {
+    ExternalId childPeer;
+    ExternalId parentPeer;
     NpmLockfilePackager npmLockfileParser;
     String packageJsonText;
     String packageLockText;
@@ -49,28 +49,28 @@ public class NpmDevExclusionTest {
 
         npmLockfileParser = new NpmLockfilePackager(new GsonBuilder().setPrettyPrinting().create(), externalIdFactory);
 
-        packageJsonText = FunctionalTestFiles.asString("/npm/dev-exclusion-test/package.json");
-        packageLockText = FunctionalTestFiles.asString("/npm/dev-exclusion-test/package-lock.json");
+        packageJsonText = FunctionalTestFiles.asString("/npm/peer-exclusion-test/package.json");
+        packageLockText = FunctionalTestFiles.asString("/npm/peer-exclusion-test/package-lock.json");
 
-        childDev = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "child-dev", "3.0.0");
-        parentDev = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "parent-dev", "2.0.0");
+        childPeer = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "child-peer", "3.0.0");
+        parentPeer = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "parent-peer", "2.0.0");
     }
 
     @Test
-    public void testDevDependencyNotExists() {
+    public void testPeerDependencyNotExists() {
         NpmParseResult result = npmLockfileParser.parse(packageJsonText, packageLockText, false, false);
         GraphAssert graphAssert = new GraphAssert(Forge.NPMJS, result.getCodeLocation().getDependencyGraph());
-        graphAssert.hasNoDependency(childDev);
-        graphAssert.hasNoDependency(parentDev);
+        graphAssert.hasNoDependency(childPeer);
+        graphAssert.hasNoDependency(parentPeer);
         graphAssert.hasRootSize(0);
     }
 
     @Test
-    public void testDevDependencyExists() {
-        NpmParseResult result = npmLockfileParser.parse(packageJsonText, packageLockText, true, false);
+    public void testPeerDependencyExists() {
+        NpmParseResult result = npmLockfileParser.parse(packageJsonText, packageLockText, false, true);
         GraphAssert graphAssert = new GraphAssert(Forge.NPMJS, result.getCodeLocation().getDependencyGraph());
-        graphAssert.hasDependency(childDev);
-        graphAssert.hasDependency(parentDev);
+        graphAssert.hasDependency(childPeer);
+        graphAssert.hasDependency(parentPeer);
         graphAssert.hasRootSize(1);
     }
 }
