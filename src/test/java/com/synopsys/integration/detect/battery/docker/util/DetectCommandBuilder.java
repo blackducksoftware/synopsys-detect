@@ -1,14 +1,19 @@
 package com.synopsys.integration.detect.battery.docker.util;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.synopsys.integration.detect.configuration.DetectProperty;
 
 public class DetectCommandBuilder {
-    Map<String, String> properties;
+    Map<String, String> properties = new HashMap<>();
 
     public String buildCommand() {
-        return "";
+        StringBuilder builder = new StringBuilder();
+        properties.forEach((key, value) -> {
+            builder.append(" --").append(key).append("=").append(value);
+        });
+        return builder.toString();
     }
 
     public void property(String key, String value) {

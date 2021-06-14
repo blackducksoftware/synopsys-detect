@@ -4,13 +4,15 @@ import java.io.File;
 
 public class DockerTestDirectories {
     private final File dockerDirectory;
+    private final File toolsDirectory;
     private final File resultDirectory;
     private final File resultBdioDirectory;
     private final File resultOutputDirectory;
     private final File detectJar;
 
-    public DockerTestDirectories(final File dockerDirectory, final File resultDirectory, File resultBdioDirectory, File resultOutputDirectory, final File detectJar) {
+    public DockerTestDirectories(final File dockerDirectory, final File toolsDirectory, final File resultDirectory, File resultBdioDirectory, File resultOutputDirectory, final File detectJar) {
         this.dockerDirectory = dockerDirectory;
+        this.toolsDirectory = toolsDirectory;
         this.resultDirectory = resultDirectory;
         this.resultBdioDirectory = resultBdioDirectory;
         this.resultOutputDirectory = resultOutputDirectory;
@@ -35,5 +37,9 @@ public class DockerTestDirectories {
 
     public File getResultOutputDirectory() {
         return resultOutputDirectory;
+    }
+
+    public File getToolsDirectory() {
+        return toolsDirectory;
     }
 }

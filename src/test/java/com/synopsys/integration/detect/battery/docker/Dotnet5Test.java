@@ -15,7 +15,7 @@ import com.synopsys.integration.detect.configuration.DetectProperties;
 public class Dotnet5Test {
     @Test
     void detectUsesDotnet5() throws IOException, InterruptedException {
-        DetectDockerTest test = new DetectDockerTest("detect-dotnet-five", "detect-dotnet-five:1.0.0");
+        DetectDockerTest test = new DetectDockerTest("detect-dotnet-five", "detect-dotnet-five:1.0.1");
         test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Dotnet5.dockerfile"));
 
         DetectCommandBuilder commandBuilder = new DetectCommandBuilder();
