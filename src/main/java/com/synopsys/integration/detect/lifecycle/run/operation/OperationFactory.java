@@ -557,6 +557,10 @@ public class OperationFactory { //TODO: OperationRunner
         return auditLog.namedPublic("Transitive Aggregate", () -> new AggregateModeTransitiveOperation(new SimpleBdioFactory()).aggregateCodeLocations(directoryManager.getSourceDirectory(), detectCodeLocations));
     }
 
+    public DependencyGraph aggregateAccurate(List<DetectCodeLocation> detectCodeLocations) throws DetectUserFriendlyException {
+        return auditLog.namedPublic("Transitive Accurate", () -> new AggregateModeAccurateOperation(new SimpleBdioFactory()).aggregateCodeLocations(directoryManager.getSourceDirectory(), detectCodeLocations));
+    }
+
     public void createAggregateBdio1File(AggregateCodeLocation aggregateCodeLocation) throws DetectUserFriendlyException {
         auditLog.namedPublic("Create Aggregate Bdio 1 File", () -> {
             DetectBdioWriter detectBdioWriter = new DetectBdioWriter(new SimpleBdioFactory(), detectInfo);

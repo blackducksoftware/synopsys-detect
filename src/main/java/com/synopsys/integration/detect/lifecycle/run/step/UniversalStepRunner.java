@@ -111,6 +111,8 @@ public class UniversalStepRunner {
             aggregateDependencyGraph = operationFactory.aggregateDirect(universalToolsResult.getDetectCodeLocations());
         } else if (aggregateDecision.getAggregateMode() == AggregateMode.TRANSITIVE) {
             aggregateDependencyGraph = operationFactory.aggregateTransitive(universalToolsResult.getDetectCodeLocations());
+        } else if (aggregateDecision.getAggregateMode() == AggregateMode.ACCURATE) {
+            aggregateDependencyGraph = operationFactory.aggregateAccurate(universalToolsResult.getDetectCodeLocations());
         } else {
             throw new DetectUserFriendlyException(
                 String.format("The %s property was set to an unsupported aggregation mode, will not aggregate at this time.", DetectProperties.DETECT_BOM_AGGREGATE_REMEDIATION_MODE.getProperty().getKey()),
