@@ -67,11 +67,16 @@ public class NpmLockfilePackager {
             }
 
             //Then we will add relationships between the project (root) and the graph
-            boolean atLeastOneRequired = !project.getDeclaredDependencies().isEmpty() || !project.getDeclaredDevDependencies().isEmpty();
+            boolean atLeastOneRequired = !project.getDeclaredDependencies().isEmpty()
+                                             || !project.getDeclaredDevDependencies().isEmpty()
+                                             || !project.getDeclaredPeerDependencies().isEmpty();
             if (atLeastOneRequired) {
                 addRootDependencies(project.getResolvedDependencies(), project.getDeclaredDependencies(), dependencyGraph, externalDependencies);
                 if (includeDevDependencies) {
                     addRootDependencies(project.getResolvedDependencies(), project.getDeclaredDevDependencies(), dependencyGraph, externalDependencies);
+                }
+                if (includePeerDependencies) {
+                    addRootDependencies(project.getResolvedDependencies(), project.getDeclaredPeerDependencies(), dependencyGraph, externalDependencies);
                 }
             } else {
                 project.getResolvedDependencies()
@@ -161,6 +166,8 @@ public class NpmLockfilePackager {
     private boolean shouldIncludeDependency(NpmDependency packageLockDependency, boolean includeDevDependencies, boolean includePeerDependencies) {
         if (packageLockDependency.isDevDependency()) {
             return includeDevDependencies;
+        } else if (packageLockDependency.isPeerDependency()) {
+            return includePeerDependencies;
         }
         return true;
     }

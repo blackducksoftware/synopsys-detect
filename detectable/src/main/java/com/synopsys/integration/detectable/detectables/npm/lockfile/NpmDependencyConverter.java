@@ -49,6 +49,11 @@ public class NpmDependencyConverter {
                 List<NpmRequires> rootDevRequires = convertNameVersionMapToRequires(packageJson.devDependencies);
                 project.addAllDevDependencies(rootDevRequires);
             }
+
+            if (packageJson.peerDependencies != null) {
+                List<NpmRequires> rootPeerRequires = convertNameVersionMapToRequires(packageJson.peerDependencies);
+                project.addAllPeerDependencies(rootPeerRequires);
+            }
         }
 
         return project;

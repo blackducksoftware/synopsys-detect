@@ -16,6 +16,7 @@ public class NpmProject {
     private final String version;
 
     private final List<NpmRequires> declaredDevDependencies = new ArrayList<>();
+    private final List<NpmRequires> declaredPeerDependencies = new ArrayList<>();
     private final List<NpmRequires> declaredDependencies = new ArrayList<>();
 
     private final List<NpmDependency> resolvedDependencies = new ArrayList<>();
@@ -27,6 +28,10 @@ public class NpmProject {
 
     public void addAllDevDependencies(Collection<NpmRequires> requires) {
         this.declaredDevDependencies.addAll(requires);
+    }
+
+    public void addAllPeerDependencies(Collection<NpmRequires> requires) {
+        this.declaredPeerDependencies.addAll(requires);
     }
 
     public void addAllDependencies(Collection<NpmRequires> requires) {
@@ -51,6 +56,10 @@ public class NpmProject {
 
     public List<NpmRequires> getDeclaredDevDependencies() {
         return declaredDevDependencies;
+    }
+
+    public List<NpmRequires> getDeclaredPeerDependencies() {
+        return declaredPeerDependencies;
     }
 
     public List<NpmDependency> getResolvedDependencies() {

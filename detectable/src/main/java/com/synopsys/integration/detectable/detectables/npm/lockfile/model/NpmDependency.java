@@ -18,12 +18,14 @@ public class NpmDependency {
     private final String name;
     private final String version;
     private final boolean devDependency;
+    private final boolean peerDependency;
     private final Dependency dependency;
 
-    public NpmDependency(final String name, final String version, final boolean devDependency, final Dependency dependency) {
+    public NpmDependency(String name, String version, boolean devDependency, boolean peerDependency, Dependency dependency) {
         this.name = name;
         this.version = version;
         this.devDependency = devDependency;
+        this.peerDependency = peerDependency;
         this.dependency = dependency;
     }
 
@@ -35,15 +37,15 @@ public class NpmDependency {
         return Optional.ofNullable(parent);
     }
 
-    public void setParent(final NpmDependency parent) {
+    public void setParent(NpmDependency parent) {
         this.parent = parent;
     }
 
-    public void addAllRequires(final Collection<NpmRequires> required) {
+    public void addAllRequires(Collection<NpmRequires> required) {
         this.requires.addAll(required);
     }
 
-    public void addAllDependencies(final Collection<NpmDependency> dependencies) {
+    public void addAllDependencies(Collection<NpmDependency> dependencies) {
         this.dependencies.addAll(dependencies);
     }
 
@@ -65,6 +67,10 @@ public class NpmDependency {
 
     public boolean isDevDependency() {
         return devDependency;
+    }
+
+    public boolean isPeerDependency() {
+        return peerDependency;
     }
 
     public Dependency getGraphDependency() {
