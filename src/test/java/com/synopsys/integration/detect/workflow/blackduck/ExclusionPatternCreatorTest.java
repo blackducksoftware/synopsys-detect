@@ -3,13 +3,17 @@ package com.synopsys.integration.detect.workflow.blackduck;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -20,7 +24,7 @@ import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter
 public class ExclusionPatternCreatorTest {
     @ParameterizedTest
     @MethodSource("inputPatternsToExclusionsProvider")
-    public void testProducesCorrectExclusions(List<String> providedPatterns, List<String> resultingExclusions) {
+    public void testProducesCorrectExclusions(List<String> providedPatterns, List<String> resultingExclusions) throws IOException {
         File root = new File("root");
         root.mkdir();
         File sub1 = new File(root, "sub1");
@@ -37,6 +41,8 @@ public class ExclusionPatternCreatorTest {
         DetectExcludedDirectoryFilter filter = new DetectExcludedDirectoryFilter(root.toPath(), providedPatterns);
         ExclusionPatternCreator exclusionPatternCreator = new ExclusionPatternCreator(new SimpleFileFinder(), file -> filter.isExcluded(file), root);
         assertEqualCollections(resultingExclusions, exclusionPatternCreator.determineExclusionPatterns(3, providedPatterns));
+
+        FileUtils.deleteDirectory(root);
     }
 
     static Stream<Arguments> inputPatternsToExclusionsProvider() {
@@ -63,5 +69,27 @@ public class ExclusionPatternCreatorTest {
                 Assertions.fail();
             }
         }
+    }
+
+    @Test
+    public void testDoesCreateRedundantExclusions() throws IOException {
+        File root = new File("root");
+        root.mkdir();
+        File foo = new File("root", "foo");
+        foo.mkdir();
+        File bar = new File(foo, "bar");
+        bar.mkdir();
+
+        List<String> toExclude = Arrays.asList("foo", "bar");
+
+        DetectExcludedDirectoryFilter filter = new DetectExcludedDirectoryFilter(root.toPath(), toExclude);
+        ExclusionPatternCreator exclusionPatternCreator = new ExclusionPatternCreator(new SimpleFileFinder(), file -> filter.isExcluded(file), root);
+        Set<String> exlusionPatterns = exclusionPatternCreator.determineExclusionPatterns(2, toExclude);
+
+        Assertions.assertEquals(1, exlusionPatterns.size());
+        Assertions.assertTrue(exlusionPatterns.contains("/foo/"));
+        Assertions.assertFalse(exlusionPatterns.contains("/foo/bar/"));
+
+        FileUtils.deleteDirectory(root);
     }
 }
