@@ -779,6 +779,12 @@ public class DetectProperties {
             .setHelp("Set this value to false if you would like to exclude your dev dependencies when ran.")
             .setGroups(DetectGroup.NPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
 
+    public static final DetectProperty<BooleanProperty> DETECT_NPM_INCLUDE_PEER_DEPENDENCIES =
+        new DetectProperty<>(new BooleanProperty("detect.npm.include.peer.dependencies", true))
+            .setInfo("Include NPM Peer Dependencies", DetectPropertyFromVersion.VERSION_7_1_0)
+            .setHelp("Set this value to false if you would like to exclude your peer dependencies when ran.")
+            .setGroups(DetectGroup.NPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
+
     public static final DetectProperty<NullablePathProperty> DETECT_NPM_PATH =
         new DetectProperty<>(new NullablePathProperty("detect.npm.path"))
             .setInfo("NPM Executable", DetectPropertyFromVersion.VERSION_3_0_0)

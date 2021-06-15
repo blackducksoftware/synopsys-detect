@@ -65,11 +65,16 @@ public class GitDetectable extends Detectable {
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        gitExecutable = gitResolver.resolveGit();
+        try {
+            gitExecutable = gitResolver.resolveGit();
+        } catch (DetectableException e) {
+            gitExecutable = null;
+        }
 
         if (gitExecutable != null) {
             return new PassedDetectableResult(new FoundExecutable(gitExecutable));
         } else {
+            // Couldn't find git executable, so we try to parse git files
             gitConfigFile = fileFinder.findFile(gitDirectory, GIT_CONFIG_FILENAME);
             gitHeadFile = fileFinder.findFile(gitDirectory, GIT_HEAD_FILENAME);
             if ((gitConfigFile != null && gitHeadFile != null)) {

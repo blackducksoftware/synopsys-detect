@@ -28,6 +28,11 @@ public class OnlineNugetInspectorLocator implements NugetInspectorLocator {
     }
 
     @Override
+    public File locateDotnet5Inspector() throws DetectableException {
+        return locateInspector(nugetInspectorInstaller::installDotNet5);
+    }
+
+    @Override
     public File locateDotnet3Inspector() throws DetectableException {
         return locateInspector(nugetInspectorInstaller::installDotNet3);
     }
