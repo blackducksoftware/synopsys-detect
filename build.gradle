@@ -6,7 +6,7 @@ buildscript {
     ext {
         springBootVersion = '2.4.5'
         blackDuckCommonVersion = '55.0.2'
-        junitPlatformDefaultTestTags = 'integration, performance, battery'
+        junitPlatformCustomTestTags = 'battery, docker'
     }
 
     apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-repositories.gradle', to: buildscript
