@@ -34,6 +34,9 @@ public class NugetAirGapCreator {
         logger.info("Installing nuget dotnet3 inspector.");
         installThenCopy(nugetFolder, AirgapNugetInspectorLocator.INSPECTOR_DIR_DOTNET3, nugetInspectorInstaller::installDotNet3);
 
+        logger.info("Installing nuget dotnet5 inspector.");
+        installThenCopy(nugetFolder, AirgapNugetInspectorLocator.INSPECTOR_DIR_DOTNET5, nugetInspectorInstaller::installDotNet5);
+
         logger.info("Installing nuget dotnet inspector.");
         installThenCopy(nugetFolder, AirgapNugetInspectorLocator.INSPECTOR_DIR_DOTNET, nugetInspectorInstaller::installDotNet);
 

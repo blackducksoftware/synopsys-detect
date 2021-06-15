@@ -17,4 +17,6 @@ public interface NugetInspectorLocator {
     File locateDotnetInspector() throws DetectableException;
 
     File locateExeInspector() throws DetectableException;
+
+    File locateDotnet5Inspector() throws DetectableException;
 }

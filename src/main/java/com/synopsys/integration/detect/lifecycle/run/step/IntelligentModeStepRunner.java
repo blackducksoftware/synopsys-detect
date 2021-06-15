@@ -165,6 +165,7 @@ public class IntelligentModeStepRunner {
         operationFactory.mapImpactAnalysisCodeLocations(impactFile, uploadData, projectVersionWrapper, blackDuckServicesFactory);
         /* TODO: There is currently no mechanism within Black Duck for checking the completion status of an Impact Analysis code location. Waiting should happen here when such a mechanism exists. See HUB-25142. JM - 08/2020 */
         codeLocationAccumulator.addNonWaitableCodeLocation(uploadData.getOutput().getSuccessfulCodeLocationNames());
+
     }
 
     private Path generateImpactAnalysis(NameVersion projectNameVersion) throws DetectUserFriendlyException {
