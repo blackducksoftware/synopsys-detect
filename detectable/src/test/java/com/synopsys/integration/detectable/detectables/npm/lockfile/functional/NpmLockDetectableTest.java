@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Assertions;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmLockfileOptions;
+import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
@@ -50,6 +50,12 @@ public class NpmLockDetectableTest extends DetectableFunctionalTest {
             "           \"resolved\": \"https://registry.npmjs.org/concat-map/-/concat-map-0.0.1.tgz\",",
             "           \"integrity\": \"sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=\",",
             "           \"dev\": true",
+            "       },",
+            "       \"peer-example\": {",
+            "           \"version\": \"1.0.0\",",
+            "           \"resolved\": \"https://synopsys.com/404/peer-example.tgz\",",
+            "           \"integrity\": \"sha1-1Klr13/Wjfd5OnMDajug1UBdR3s=\",",
+            "           \"peer\": true",
             "       }",
             "   }",
             "}"
@@ -58,17 +64,18 @@ public class NpmLockDetectableTest extends DetectableFunctionalTest {
 
     @NotNull
     @Override
-    public Detectable create(@NotNull final DetectableEnvironment environment) {
-        return detectableFactory.createNpmPackageLockDetectable(environment, new NpmLockfileOptions(true));
+    public Detectable create(@NotNull DetectableEnvironment environment) {
+        return detectableFactory.createNpmPackageLockDetectable(environment, new NpmLockfileOptions(true, true));
     }
 
     @Override
-    public void assertExtraction(@NotNull final Extraction extraction) {
+    public void assertExtraction(@NotNull Extraction extraction) {
         Assertions.assertEquals(1, extraction.getCodeLocations().size(), "A code location should have been generated.");
 
-        final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, extraction.getCodeLocations().get(0).getDependencyGraph());
+        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, extraction.getCodeLocations().get(0).getDependencyGraph());
 
-        graphAssert.hasRootSize(3);
+        graphAssert.hasRootSize(4);
+        graphAssert.hasRootDependency("peer-example", "1.0.0");
         graphAssert.hasRootDependency("brace-expansion", "1.1.8");
         graphAssert.hasRootDependency("balanced-match", "1.0.0");
         graphAssert.hasRootDependency("concat-map", "0.0.1");

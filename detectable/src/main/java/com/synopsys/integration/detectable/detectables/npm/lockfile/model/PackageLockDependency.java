@@ -18,6 +18,9 @@ public class PackageLockDependency {
     @SerializedName("dev")
     public Boolean dev;
 
+    @SerializedName("peer")
+    public Boolean peer;
+
     @SerializedName("requires")
     public Map<String, String> requires;
 
