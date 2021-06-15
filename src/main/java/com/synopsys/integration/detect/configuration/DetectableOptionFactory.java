@@ -195,7 +195,8 @@ public class DetectableOptionFactory {
 
     public NpmPackageJsonParseDetectableOptions createNpmPackageJsonParseDetectableOptions() {
         Boolean includeDevDependencies = getValue(DetectProperties.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES);
-        return new NpmPackageJsonParseDetectableOptions(includeDevDependencies);
+        Boolean includePeerDependencies = getValue(DetectProperties.DETECT_NPM_INCLUDE_PEER_DEPENDENCIES);
+        return new NpmPackageJsonParseDetectableOptions(includeDevDependencies, includePeerDependencies);
     }
 
     public PearCliDetectableOptions createPearCliDetectableOptions() {

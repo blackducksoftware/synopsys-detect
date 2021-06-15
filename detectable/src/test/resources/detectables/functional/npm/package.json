@@ -8,5 +8,9 @@
   "devDependencies": {
     "nameDev1": "versionDev1",
     "nameDev2": "versionDev2"
+  },
+  "peerDependencies": {
+    "namePeer1": "versionPeer1",
+    "namePeer2": "versionPeer2"
   }
 }

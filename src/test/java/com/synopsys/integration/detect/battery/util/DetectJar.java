@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.Assertions;
 
 public class DetectJar {
     private final String java;
@@ -23,6 +24,22 @@ public class DetectJar {
         } else {
             return Optional.empty();
         }
+    }
+
+    public static File findJar() {
+        File libs = TestPaths.libs();
+        Assertions.assertNotNull(libs, "Could not locate the libs directory, does libs exist, was the project built?");
+        Assertions.assertTrue(libs.exists(), "Could not locate the libs directory, does libs exist, was the project built?");
+
+        File[] libChildren = libs.listFiles();
+        Assertions.assertNotNull(libChildren, "Could not locate at least one child of libs, does libs exist, was the project built?");
+        Assertions.assertEquals(1, libChildren.length, "Found an unexpected number of jars, only expecting ONE, aka THE JAR expected to run.");
+        File detectJarFile = libChildren[0];
+
+        Assertions.assertNotNull(detectJarFile, "Could not find a detect jar!");
+        Assertions.assertTrue(detectJarFile.getName().endsWith(".jar"), "Unknown file type, must find a detect jar to run!");
+
+        return detectJarFile;
     }
 
     public String getJar() {

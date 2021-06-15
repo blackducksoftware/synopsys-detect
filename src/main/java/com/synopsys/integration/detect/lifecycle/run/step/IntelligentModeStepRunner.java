@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
-import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
@@ -85,8 +84,8 @@ public class IntelligentModeStepRunner {
         });
 
         stepHelper.runToolIfIncluded(DetectTool.BINARY_SCAN, "Binary Scanner", () -> {
-            Optional<CodeLocationCreationData<BinaryScanBatchOutput>> binaryScanResult = operationFactory.createBinaryScanOperation().execute(projectNameVersion, dockerTargetData);
-            binaryScanResult.ifPresent(codeLocationAccumulator::addWaitableCodeLocation);
+            BinaryScanStepRunner binaryScanStepRunner = new BinaryScanStepRunner(operationFactory);
+            binaryScanStepRunner.runBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData).ifPresent(codeLocationAccumulator::addWaitableCodeLocation);
         });
 
         stepHelper.runToolIfIncluded(DetectTool.IMPACT_ANALYSIS, "Vulnerability Impact Analysis", () -> runImpactAnalysisOnline(projectNameVersion, projectVersion, codeLocationAccumulator, blackDuckRunData.getBlackDuckServicesFactory()));
@@ -166,6 +165,7 @@ public class IntelligentModeStepRunner {
         operationFactory.mapImpactAnalysisCodeLocations(impactFile, uploadData, projectVersionWrapper, blackDuckServicesFactory);
         /* TODO: There is currently no mechanism within Black Duck for checking the completion status of an Impact Analysis code location. Waiting should happen here when such a mechanism exists. See HUB-25142. JM - 08/2020 */
         codeLocationAccumulator.addNonWaitableCodeLocation(uploadData.getOutput().getSuccessfulCodeLocationNames());
+
     }
 
     private Path generateImpactAnalysis(NameVersion projectNameVersion) throws DetectUserFriendlyException {

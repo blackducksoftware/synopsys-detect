@@ -14,6 +14,7 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 
 public class AirgapNugetInspectorLocator implements NugetInspectorLocator {
     public static final String INSPECTOR_DIR_DOTNET3 = "nuget_dotnet3";
+    public static final String INSPECTOR_DIR_DOTNET5 = "nuget_dotnet5";
     public static final String INSPECTOR_DIR_DOTNET = "nuget_dotnet";
     public static final String INSPECTOR_DIR_CLASSIC = "nuget_classic";
 
@@ -26,6 +27,11 @@ public class AirgapNugetInspectorLocator implements NugetInspectorLocator {
     @Override
     public File locateDotnet3Inspector() throws DetectableException {
         return locateInspector(INSPECTOR_DIR_DOTNET3);
+    }
+
+    @Override
+    public File locateDotnet5Inspector() throws DetectableException {
+        return locateInspector(INSPECTOR_DIR_DOTNET5);
     }
 
     @Override

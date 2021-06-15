@@ -25,14 +25,14 @@ package com.synopsys.integration.detect.battery.detector;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detect.battery.util.DetectorBattery;
+import com.synopsys.integration.detect.battery.util.DetectorBatteryTest;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
 @Tag("battery")
 public class PipBattery {
     @Test
     void lock() {
-        final DetectorBattery test = new DetectorBattery("pip-cli");
+        final DetectorBatteryTest test = new DetectorBatteryTest("pip-cli");
         test.sourceDirectoryNamed("linux-pip");
         test.sourceFileNamed("setup.py");
         test.executableFromResourceFiles(DetectProperties.DETECT_PYTHON_PATH.getProperty(), "pip-name.xout", "pip-inspector.xout");
@@ -44,7 +44,7 @@ public class PipBattery {
 
     @Test
     void pipenv_cli() {
-        final DetectorBattery test = new DetectorBattery("pipenv-cli");
+        final DetectorBatteryTest test = new DetectorBatteryTest("pipenv-cli");
         test.sourceDirectoryNamed("pipenv-cli-django");
         test.sourceFileNamed("Pipfile.lock");
         test.sourceFileNamed("Pipfile");
@@ -57,7 +57,7 @@ public class PipBattery {
 
     @Test
     void pipenv_cli_projectonly() {
-        final DetectorBattery test = new DetectorBattery("pipenv-cli-projectonly");
+        final DetectorBatteryTest test = new DetectorBatteryTest("pipenv-cli-projectonly");
         test.sourceDirectoryNamed("pipenv-cli-projectonly");
         test.sourceFileNamed("Pipfile.lock");
         test.sourceFileNamed("Pipfile");

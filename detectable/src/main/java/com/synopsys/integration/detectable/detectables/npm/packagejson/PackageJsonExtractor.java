@@ -35,23 +35,20 @@ public class PackageJsonExtractor {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public Extraction extract(InputStream packageJsonInputStream, boolean includeDevDependencies) {
+    public Extraction extract(InputStream packageJsonInputStream, boolean includeDevDependencies, boolean includePeerDependencies) {
         Reader packageJsonReader = new InputStreamReader(packageJsonInputStream);
         PackageJson packageJson = gson.fromJson(packageJsonReader, PackageJson.class);
 
-        return extract(packageJson, includeDevDependencies);
+        return extract(packageJson, includeDevDependencies, includePeerDependencies);
     }
 
-    public Extraction extract(PackageJson packageJson, boolean includeDevDependencies) {
-        List<Dependency> dependencies = packageJson.dependencies.entrySet().stream()
-                                            .map(this::entryToDependency)
-                                            .collect(Collectors.toList());
-
+    public Extraction extract(PackageJson packageJson, boolean includeDevDependencies, boolean includePeerDependencies) {
+        List<Dependency> dependencies = transformDependencies(packageJson.dependencies);
         if (includeDevDependencies) {
-            List<Dependency> devDependencies = packageJson.devDependencies.entrySet().stream()
-                                                   .map(this::entryToDependency)
-                                                   .collect(Collectors.toList());
-            dependencies.addAll(devDependencies);
+            dependencies.addAll(transformDependencies(packageJson.devDependencies));
+        }
+        if (includePeerDependencies) {
+            dependencies.addAll(transformDependencies(packageJson.peerDependencies));
         }
 
         MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
@@ -67,6 +64,12 @@ public class PackageJsonExtractor {
                    .projectName(projectName)
                    .projectVersion(projectVersion)
                    .build();
+    }
+
+    private List<Dependency> transformDependencies(Map<String, String> dependencies) {
+        return dependencies.entrySet().stream()
+                   .map(this::entryToDependency)
+                   .collect(Collectors.toList());
     }
 
     private Dependency entryToDependency(Map.Entry<String, String> dependencyEntry) {

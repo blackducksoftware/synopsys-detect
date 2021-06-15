@@ -25,13 +25,13 @@ package com.synopsys.integration.detect.battery.detector;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detect.battery.util.DetectorBattery;
+import com.synopsys.integration.detect.battery.util.DetectorBatteryTest;
 
 @Tag("battery")
 public class RubygemsBattery {
     @Test
     void lock() {
-        DetectorBattery test = new DetectorBattery("rubygems-lock");
+        DetectorBatteryTest test = new DetectorBatteryTest("rubygems-lock");
         test.sourceDirectoryNamed("linux-rubygems");
         test.sourceFileFromResource("Gemfile.lock");
         test.git("https://github.com/BlackDuckCoPilot/example-rubygems-travis", "master");
@@ -41,7 +41,7 @@ public class RubygemsBattery {
 
     @Test
     void gemfileGeneratingCircularDependencies() {
-        DetectorBattery test = new DetectorBattery("rubygems-circular-lock");
+        DetectorBatteryTest test = new DetectorBatteryTest("rubygems-circular-lock");
         test.sourceDirectoryNamed("jquery-multiselect-rails");
         test.sourceFileFromResource("Gemfile.lock");
         test.expectBdioResources();
@@ -50,7 +50,7 @@ public class RubygemsBattery {
 
     @Test
     void gemfileVersionLessDependencies() {
-        DetectorBattery test = new DetectorBattery("rubygems-versionless-lock");
+        DetectorBatteryTest test = new DetectorBatteryTest("rubygems-versionless-lock");
         test.sourceDirectoryNamed("rails");
         test.sourceFileFromResource("Gemfile.lock");
         test.expectBdioResources();
