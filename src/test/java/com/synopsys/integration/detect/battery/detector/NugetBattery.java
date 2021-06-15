@@ -25,14 +25,14 @@ package com.synopsys.integration.detect.battery.detector;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detect.battery.util.DetectorBattery;
+import com.synopsys.integration.detect.battery.util.DetectorBatteryTest;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
 @Tag("battery")
 public class NugetBattery {
     @Test
     void dotnetcore() {
-        final DetectorBattery test = new DetectorBattery("nuget-dotnetcore");
+        final DetectorBatteryTest test = new DetectorBatteryTest("nuget-dotnetcore");
         test.sourceDirectoryNamed("windows-nuget4");
         test.sourceFileNamed("example.sln");
         test.executableThatCopiesFiles(DetectProperties.DETECT_DOTNET_PATH.getProperty(), "NUGET-0")

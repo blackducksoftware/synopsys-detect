@@ -4,13 +4,13 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 
 import com.synopsys.integration.detect.battery.util.DetectOutput;
-import com.synopsys.integration.detect.battery.util.DetectorBattery;
+import com.synopsys.integration.detect.battery.util.DetectorBatteryTest;
 
 @Tag("battery")
 class ExclusionBattery {
     @Disabled
     void excludesTwo() { /* Requires Signature Scanner */
-        DetectorBattery test = new DetectorBattery("exclusions");
+        DetectorBatteryTest test = new DetectorBatteryTest("exclusions");
         test.withToolsValue("SIGNATURE_SCAN");
         test.property("detect.excluded.directories", "example");
         test.sourceDirectoryNamed("exclusions");

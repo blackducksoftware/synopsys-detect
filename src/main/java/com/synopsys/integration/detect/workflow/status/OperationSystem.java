@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class OperationSystem {
-    private final Map<String, Operation> operationMap = new HashMap<>();
+    private final Map<String, Operation> operationMap = new HashMap<>(); //TODO: May no longer need it to be a map.
     private final StatusEventPublisher statusEventPublisher;
 
     public OperationSystem(StatusEventPublisher statusEventPublisher) {

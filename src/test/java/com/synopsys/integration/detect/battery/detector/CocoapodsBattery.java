@@ -25,13 +25,13 @@ package com.synopsys.integration.detect.battery.detector;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detect.battery.util.DetectorBattery;
+import com.synopsys.integration.detect.battery.util.DetectorBatteryTest;
 
 @Tag("battery")
 public class CocoapodsBattery {
     @Test
     void podlock() {
-        final DetectorBattery test = new DetectorBattery("cocoapods-podlock");
+        final DetectorBatteryTest test = new DetectorBatteryTest("cocoapods-podlock");
         test.sourceDirectoryNamed("linux-cocoapods");
         test.sourceFileFromResource("Podfile.lock");
         test.git("https://github.com/BlackDuckCoPilot/example-cocoapods-travis.git", "master");
