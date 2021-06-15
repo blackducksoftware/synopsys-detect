@@ -22,10 +22,10 @@ public class Dotnet5Test {
         commandBuilder.property(DetectProperties.DETECT_TOOLS, "DETECTOR");
         commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
         commandBuilder.property(DetectProperties.DETECT_CLEANUP, "false");
-        commandBuilder.property(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION, "INFO");
+        commandBuilder.property(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION, "DEBUG");
         DockerTestAssertions result = test.run(commandBuilder);
 
-        result.atLeastOneBdioFile();
         result.successfulDetectorType("NUGET");
+        result.atLeastOneBdioFile();
     }
 }

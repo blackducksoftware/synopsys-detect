@@ -77,7 +77,7 @@ public class DetectDockerTest {
         File detectJar = DetectJar.findJar();
         Assertions.assertNotNull(detectJar, "Docker tests require a detect jar.");
 
-        return new DockerTestDirectories(dockerTestDirectory, toolsDirectory, resultDirectory, resultOutputDirectory, resultBdioDirectory, detectJar);
+        return new DockerTestDirectories(dockerTestDirectory, toolsDirectory, resultDirectory, resultBdioDirectory, resultOutputDirectory, detectJar);
     }
 
     private DockerDetectResult runContainer(DockerTestDirectories dockerTestDirectories, DetectCommandBuilder detectCommandBuilder) {
@@ -113,6 +113,6 @@ public class DetectDockerTest {
     public DockerTestAssertions run(DetectCommandBuilder commandBuilder) {
         DockerTestDirectories directories = setup();
         DockerDetectResult result = runContainer(directories, commandBuilder);
-        return new DockerTestAssertions(result);
+        return new DockerTestAssertions(directories, result);
     }
 }

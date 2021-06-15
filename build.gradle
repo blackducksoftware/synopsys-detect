@@ -16,8 +16,6 @@ buildscript {
     }
 }
 
-project.ext.junitShowStandardStreams = 'true'
-
 //TODO Remove this when the Spock dependency, Spock 2.0, is officially released. Upgrade to a Spring Boot version that depends on Groovy 3.0.0 and Spock 2.0 by default.
 ext['groovy.version'] = '3.0.0'
 
