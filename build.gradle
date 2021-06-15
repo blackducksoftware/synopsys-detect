@@ -161,7 +161,7 @@ task createAirGapZip(type: JavaExec) {
     classpath = files(createArtifactName())
     classpath += sourceSets.main.runtimeClasspath
     main = 'com.synopsys.integration.detect.Application'
-    args = ['--detect.gradle.path=gradlew', "--detect.output.path=${buildDir}/libs/", '-z']
+    args = [System.getProperty("os.name").toLowerCase().contains("windows") ? '--detect.gradle.path=gradlew.bat' : '--detect.gradle.path=gradlew', "--detect.output.path=${buildDir}/libs/", '-z']
     standardOutput = new ByteArrayOutputStream()
     doLast {
         createAirGapZip.ext.airGapPath = parseAirGapZipPath(standardOutput)
