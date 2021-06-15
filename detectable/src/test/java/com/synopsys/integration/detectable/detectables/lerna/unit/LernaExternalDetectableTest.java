@@ -96,7 +96,7 @@ public class LernaExternalDetectableTest extends DetectableFunctionalTest {
     @NotNull
     @Override
     public Detectable create(@NotNull DetectableEnvironment environment) {
-        NpmLockfileOptions npmLockFileOptions = new NpmLockfileOptions(true);
+        NpmLockfileOptions npmLockFileOptions = new NpmLockfileOptions(true, true);
         YarnLockOptions yarnLockOptions = new YarnLockOptions(false, new ArrayList<>(0), new ArrayList<>(0));
         LernaOptions lernaOptions = new LernaOptions(false, new LinkedList<>(), new LinkedList<>());
         return detectableFactory.createLernaDetectable(environment, () -> ExecutableTarget.forCommand("lerna"), npmLockFileOptions, yarnLockOptions, lernaOptions);
