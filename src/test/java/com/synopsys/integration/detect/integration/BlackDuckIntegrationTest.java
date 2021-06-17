@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
@@ -69,7 +70,7 @@ public abstract class BlackDuckIntegrationTest {
     protected static ReportService reportService;
     protected static boolean previousShouldExit;
 
-    //@BeforeAll
+    @BeforeAll
     public static void setup() {
         logger = new BufferedIntLogger();
 
