@@ -138,6 +138,7 @@ import com.synopsys.integration.util.IntEnvironmentVariables;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 import com.synopsys.integration.util.OperatingSystemType;
+import com.synopsys.integration.detect.workflow.bdio.AggregateModeAccurateOperation;
 
 public class OperationFactory { //TODO: OperationRunner
     private final DetectDetectableFactory detectDetectableFactory;
