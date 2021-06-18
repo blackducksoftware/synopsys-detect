@@ -6,6 +6,7 @@
 * Added ability to specify custom fonts to be used during risk report generation. See [here](../advanced/reports/#risk-report-generation) for more details.
 * There now exist Docker images that can be used to run ${solution_name} from within a container.  See [Running ${solution_name} from within a Docker container](/30-running/#running-synopsys-detect-from-within-a-docker-container) for more details.
 * Added detect.go.mod.enable.verification for disabling the `go mod why` check that ${solution_name} uses to filter out unused dependencies.
+* Added support for dotnet 5 when running the NuGet inspector.
 
 ### Changed features
 * (IDETECT-2524) Default clone categories increased to include license terms and custom fields to match default settings in Black Duck.
