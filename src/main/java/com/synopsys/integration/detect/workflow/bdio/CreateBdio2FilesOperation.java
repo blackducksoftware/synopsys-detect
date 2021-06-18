@@ -63,7 +63,7 @@ public class CreateBdio2FilesOperation {
             productListBuilder.addProduct(product);
 
             BdioMetadata bdioMetadata = bdio2Factory.createBdioMetadata(codeLocationName, ZonedDateTime.now(), productListBuilder);
-            Project bdio2Project = bdio2Factory.createProject(externalId, projectNameVersion.getName(), projectNameVersion.getVersion());
+            Project bdio2Project = bdio2Factory.createProject(externalId, projectNameVersion.getName(), projectNameVersion.getVersion(), true);
             Bdio2Document bdio2Document = bdio2Factory.createBdio2Document(bdioMetadata, bdio2Project, dependencyGraph);
 
             Bdio2Writer bdio2Writer = new Bdio2Writer();
