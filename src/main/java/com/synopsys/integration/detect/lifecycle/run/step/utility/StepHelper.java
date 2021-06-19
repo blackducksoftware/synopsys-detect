@@ -8,6 +8,7 @@
 package com.synopsys.integration.detect.lifecycle.run.step.utility;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,36 +34,44 @@ public class StepHelper {
     }
 
     public void runToolIfIncluded(DetectTool detectTool, String name, OperationWrapper.OperationFunction supplier) throws DetectUserFriendlyException {
-        logger.info(ReportConstants.RUN_SEPARATOR);
-        if (detectToolFilter.shouldInclude(detectTool)) {
-            logger.info("Will include the " + name + " tool.");
-            runAsGroup(name, supplier);
-            logger.info(name + " actions finished.");
-        } else {
-            logger.info(name + " tool will not be run.");
-        }
+        runToolIfIncluded(detectTool, name, () -> {
+            supplier.execute();
+            return true;
+        }, () -> {}, (e) -> {});
     }
 
-    public <T> Optional<T> runToolIfIncluded(DetectTool detectTool, String name, OperationWrapper.OperationSupplier<T> supplier) throws DetectUserFriendlyException {
+    public void runToolIfIncludedWithCallbacks(DetectTool detectTool, String name, OperationWrapper.OperationFunction supplier, Runnable successConsumer, Consumer<Exception> errorConsumer)
+        throws DetectUserFriendlyException {
+        runToolIfIncluded(detectTool, name, () -> {
+            supplier.execute();
+            return true;
+        }, successConsumer, errorConsumer);
+    }
+
+    private <T> Optional<T> runToolIfIncluded(DetectTool detectTool, String name, OperationWrapper.OperationSupplier<T> supplier, Runnable successConsumer, Consumer<Exception> errorConsumer)
+        throws DetectUserFriendlyException {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(detectTool)) {
             logger.info("Will include the " + name + " tool.");
-            Optional<T> value = Optional.ofNullable(runAsGroup(name + " Tool", supplier));
+            Operation operation = operationSystem.startOperation(name + " Tool", OperationType.INTERNAL);
+            T value = operationWrapper.namedWithCallbacks(name, operation, supplier, successConsumer, errorConsumer);
             logger.info(name + " actions finished.");
-            return value;
+            return Optional.ofNullable(value);
         } else {
             logger.info(name + " tool will not be run.");
             return Optional.empty();
         }
     }
 
-    public void runAsGroup(String name, OperationWrapper.OperationFunction supplier) throws DetectUserFriendlyException {
-        Operation operation = operationSystem.startOperation(name, OperationType.INTERNAL);
-        operationWrapper.named(name, operation, supplier);
+    public void runAsGroup(String name, OperationType type, OperationWrapper.OperationFunction supplier) throws DetectUserFriendlyException {
+        runAsGroup(name, type, () -> {
+            supplier.execute();
+            return true;
+        });
     }
 
-    public <T> T runAsGroup(String name, OperationWrapper.OperationSupplier<T> supplier) throws DetectUserFriendlyException {
-        Operation operation = operationSystem.startOperation(name, OperationType.INTERNAL);
+    public <T> T runAsGroup(String name, OperationType type, OperationWrapper.OperationSupplier<T> supplier) throws DetectUserFriendlyException {
+        Operation operation = operationSystem.startOperation(name + " Tool", type);
         return operationWrapper.named(name, operation, supplier);
     }
 }

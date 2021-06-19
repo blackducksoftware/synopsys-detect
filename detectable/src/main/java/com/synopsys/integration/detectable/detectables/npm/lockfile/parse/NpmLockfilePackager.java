@@ -42,11 +42,11 @@ public class NpmLockfilePackager {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public NpmParseResult parse(@Nullable String packageJsonText, String lockFileText, boolean includeDevDependencies) {
-        return parse(packageJsonText, lockFileText, includeDevDependencies, new ArrayList<>());
+    public NpmParseResult parse(@Nullable String packageJsonText, String lockFileText, boolean includeDevDependencies, boolean includePeerDependencies) {
+        return parse(packageJsonText, lockFileText, includeDevDependencies, includePeerDependencies, new ArrayList<>());
     }
 
-    public NpmParseResult parse(@Nullable String packageJsonText, String lockFileText, boolean includeDevDependencies, List<NameVersion> externalDependencies) {
+    public NpmParseResult parse(@Nullable String packageJsonText, String lockFileText, boolean includeDevDependencies, boolean includePeerDependencies, List<NameVersion> externalDependencies) {
         MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
 
         Optional<PackageJson> packageJson = Optional.ofNullable(packageJsonText)
@@ -63,15 +63,20 @@ public class NpmLockfilePackager {
 
             //First we will recreate the graph from the resolved npm dependencies
             for (NpmDependency resolved : project.getResolvedDependencies()) {
-                transformTreeToGraph(resolved, project, dependencyGraph, includeDevDependencies, externalDependencies);
+                transformTreeToGraph(resolved, project, dependencyGraph, includeDevDependencies, includePeerDependencies, externalDependencies);
             }
 
             //Then we will add relationships between the project (root) and the graph
-            boolean atLeastOneRequired = !project.getDeclaredDependencies().isEmpty() || !project.getDeclaredDevDependencies().isEmpty();
+            boolean atLeastOneRequired = !project.getDeclaredDependencies().isEmpty()
+                                             || !project.getDeclaredDevDependencies().isEmpty()
+                                             || !project.getDeclaredPeerDependencies().isEmpty();
             if (atLeastOneRequired) {
                 addRootDependencies(project.getResolvedDependencies(), project.getDeclaredDependencies(), dependencyGraph, externalDependencies);
                 if (includeDevDependencies) {
                     addRootDependencies(project.getResolvedDependencies(), project.getDeclaredDevDependencies(), dependencyGraph, externalDependencies);
+                }
+                if (includePeerDependencies) {
+                    addRootDependencies(project.getResolvedDependencies(), project.getDeclaredPeerDependencies(), dependencyGraph, externalDependencies);
                 }
             } else {
                 project.getResolvedDependencies()
@@ -106,8 +111,8 @@ public class NpmLockfilePackager {
         }
     }
 
-    private void transformTreeToGraph(NpmDependency npmDependency, NpmProject npmProject, MutableDependencyGraph dependencyGraph, boolean includeDevDependencies, List<NameVersion> externalDependencies) {
-        if (!shouldIncludeDependency(npmDependency, includeDevDependencies)) {
+    private void transformTreeToGraph(NpmDependency npmDependency, NpmProject npmProject, MutableDependencyGraph dependencyGraph, boolean includeDevDependencies, boolean includePeerDependencies, List<NameVersion> externalDependencies) {
+        if (!shouldIncludeDependency(npmDependency, includeDevDependencies, includePeerDependencies)) {
             return;
         }
 
@@ -122,7 +127,7 @@ public class NpmLockfilePackager {
             }
         });
 
-        npmDependency.getDependencies().forEach(child -> transformTreeToGraph(child, npmProject, dependencyGraph, includeDevDependencies, externalDependencies));
+        npmDependency.getDependencies().forEach(child -> transformTreeToGraph(child, npmProject, dependencyGraph, includeDevDependencies, includePeerDependencies, externalDependencies));
     }
 
     private Dependency lookupProjectOrExternal(String name, List<NpmDependency> projectResolvedDependencies, List<NameVersion> externalDependencies) {
@@ -158,9 +163,11 @@ public class NpmLockfilePackager {
         return null;
     }
 
-    private boolean shouldIncludeDependency(NpmDependency packageLockDependency, boolean includeDevDependencies) {
+    private boolean shouldIncludeDependency(NpmDependency packageLockDependency, boolean includeDevDependencies, boolean includePeerDependencies) {
         if (packageLockDependency.isDevDependency()) {
             return includeDevDependencies;
+        } else if (packageLockDependency.isPeerDependency()) {
+            return includePeerDependencies;
         }
         return true;
     }

@@ -32,6 +32,7 @@ public class NpmShrinkwrapDetectable extends Detectable {
     private final FileFinder fileFinder;
     private final NpmLockfileExtractor npmLockfileExtractor;
     private final boolean includeDevDependencies;
+    private final boolean includePeerDependencies;
 
     private File lockfile;
     private File packageJson;
@@ -41,6 +42,7 @@ public class NpmShrinkwrapDetectable extends Detectable {
         this.fileFinder = fileFinder;
         this.npmLockfileExtractor = npmLockfileExtractor;
         this.includeDevDependencies = npmLockfileOptions.shouldIncludeDeveloperDependencies();
+        this.includePeerDependencies = npmLockfileOptions.shouldIncludePeerDependencies();
     }
 
     @Override
@@ -58,7 +60,7 @@ public class NpmShrinkwrapDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment environment) {
-        return npmLockfileExtractor.extract(lockfile, packageJson, includeDevDependencies);
+        return npmLockfileExtractor.extract(lockfile, packageJson, includeDevDependencies, includePeerDependencies);
     }
 
 }

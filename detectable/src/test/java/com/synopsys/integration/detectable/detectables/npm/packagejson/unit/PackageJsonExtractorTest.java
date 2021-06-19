@@ -35,11 +35,11 @@ import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.PackageJsonExtractor;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
+import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.util.graph.GraphAssert;
 
 @UnitTest
@@ -53,8 +53,8 @@ class PackageJsonExtractorTest {
 
     @BeforeEach
     void setUp() {
-        final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        ExternalIdFactory externalIdFactory = new ExternalIdFactory();
 
         testDep1 = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, "name1", "version1");
         testDep2 = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, "name2", "version2");
@@ -64,14 +64,14 @@ class PackageJsonExtractorTest {
     }
 
     @Test
-    void extractWithNoDevDependencies() {
-        final PackageJson packageJson = createPackageJson();
-        final Extraction extraction = packageJsonExtractor.extract(packageJson, false);
+    void extractWithNoDevOrPeerDependencies() {
+        PackageJson packageJson = createPackageJson();
+        Extraction extraction = packageJsonExtractor.extract(packageJson, false, false);
         assertEquals(1, extraction.getCodeLocations().size());
-        final CodeLocation codeLocation = extraction.getCodeLocations().get(0);
-        final DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
+        CodeLocation codeLocation = extraction.getCodeLocations().get(0);
+        DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
 
-        final GraphAssert graphAssert = new GraphAssert(Forge.RUBYGEMS, dependencyGraph);
+        GraphAssert graphAssert = new GraphAssert(Forge.RUBYGEMS, dependencyGraph);
         graphAssert.hasRootDependency(testDep1);
         graphAssert.hasRootDependency(testDep2);
         graphAssert.hasNoDependency(testDevDep1);
@@ -80,14 +80,14 @@ class PackageJsonExtractorTest {
     }
 
     @Test
-    void extractWithDevDependencies() {
-        final PackageJson packageJson = createPackageJson();
-        final Extraction extraction = packageJsonExtractor.extract(packageJson, true);
+    void extractWithDevNoPeerDependencies() {
+        PackageJson packageJson = createPackageJson();
+        Extraction extraction = packageJsonExtractor.extract(packageJson, true, false);
         assertEquals(1, extraction.getCodeLocations().size());
-        final CodeLocation codeLocation = extraction.getCodeLocations().get(0);
-        final DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
+        CodeLocation codeLocation = extraction.getCodeLocations().get(0);
+        DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
 
-        final GraphAssert graphAssert = new GraphAssert(Forge.RUBYGEMS, dependencyGraph);
+        GraphAssert graphAssert = new GraphAssert(Forge.RUBYGEMS, dependencyGraph);
         graphAssert.hasRootDependency(testDep1);
         graphAssert.hasRootDependency(testDep2);
         graphAssert.hasRootDependency(testDevDep1);
@@ -96,7 +96,7 @@ class PackageJsonExtractorTest {
     }
 
     private PackageJson createPackageJson() {
-        final PackageJson packageJson = new PackageJson();
+        PackageJson packageJson = new PackageJson();
 
         packageJson.name = "test";
         packageJson.version = "test-version";

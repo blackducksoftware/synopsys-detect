@@ -29,6 +29,7 @@ import com.synopsys.integration.blackduck.bdio2.util.Bdio2Factory;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationWaitResult;
+import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatch;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
@@ -53,7 +54,6 @@ import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.AggregateDecisionOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BdioUploadResult;
-import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BinaryScanOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.ProjectCreationOperation;
 import com.synopsys.integration.detect.lifecycle.run.singleton.BootSingletons;
 import com.synopsys.integration.detect.lifecycle.run.singleton.EventSingletons;
@@ -62,7 +62,9 @@ import com.synopsys.integration.detect.lifecycle.run.step.utility.OperationAudit
 import com.synopsys.integration.detect.lifecycle.run.step.utility.OperationWrapper;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeManager;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
+import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanFindMultipleTargetsOperation;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
+import com.synopsys.integration.detect.tool.binaryscanner.BinaryUploadOperation;
 import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
 import com.synopsys.integration.detect.tool.detector.DetectorEventPublisher;
 import com.synopsys.integration.detect.tool.detector.extraction.ExtractionEnvironmentProvider;
@@ -130,7 +132,9 @@ import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOption
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.detect.workflow.result.ReportDetectResult;
 import com.synopsys.integration.detect.workflow.status.OperationSystem;
+import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
+import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.rest.HttpUrl;
@@ -253,17 +257,6 @@ public class OperationFactory { //TODO: OperationRunner
 
     public final AggregateDecisionOperation createAggregateOptionsOperation() throws DetectUserFriendlyException {
         return auditLog.namedInternal("Create Aggregate Options", () -> new AggregateDecisionOperation(detectConfigurationFactory.createAggregateOptions()));
-    }
-
-    public final BinaryScanOperation createBinaryScanOperation() throws DetectUserFriendlyException {
-        return auditLog.namedPublic("Execute Binary Scan", () -> {
-            BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
-            BinaryScanOptions binaryScanOptions = detectConfigurationFactory.createBinaryScanOptions();
-
-            return new BinaryScanOperation(blackDuckRunData, binaryScanOptions, statusEventPublisher, exitCodePublisher, directoryManager,
-                codeLocationNameManager,
-                fileFinder);
-        });
     }
 
     public final BdioUploadResult uploadBdio1(BlackDuckRunData blackDuckRunData, BdioResult bdioResult) throws DetectUserFriendlyException {
@@ -582,5 +575,37 @@ public class OperationFactory { //TODO: OperationRunner
 
     public BlackDuckPostOptions createBlackDuckPostOptions() {
         return detectConfigurationFactory.createBlackDuckPostOptions();
+    }
+
+    public BinaryScanOptions calculateBinaryScanOptions() {
+        return detectConfigurationFactory.createBinaryScanOptions();
+    }
+
+    public Optional<File> searchForBinaryTargets(final List<String> multipleTargetFileNamePatterns, final int searchDepth) throws DetectUserFriendlyException {
+        return auditLog.namedInternal("Binary Search For Targets", () -> {
+            return new BinaryScanFindMultipleTargetsOperation(fileFinder, directoryManager).searchForMultipleTargets(multipleTargetFileNamePatterns, searchDepth);
+        });
+    }
+
+    public void publishBinaryFailure(String message) {
+        statusEventPublisher.publishStatusSummary(new Status("BINARY_SCAN", StatusType.FAILURE));
+        exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, "BINARY_SCAN");
+    }
+
+    public void publishImpactFailure(Exception e) {
+        statusEventPublisher.publishStatusSummary(new Status("IMPACT_ANALYSIS", StatusType.FAILURE));
+        exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, "BINARY_SCAN");
+    }
+
+    public void publishImpactSuccess() {
+        statusEventPublisher.publishStatusSummary(new Status("BINARY_SCAN", StatusType.FAILURE));
+        exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, "BINARY_SCAN");
+    }
+
+    public CodeLocationCreationData<BinaryScanBatchOutput> uploadBinaryScanFile(final File binaryUpload, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
+        return auditLog.namedPublic("Binary Upload", () -> {
+            return new BinaryUploadOperation(statusEventPublisher, codeLocationNameManager, calculateBinaryScanOptions())
+                       .uploadBinaryScanFile(binaryUpload, blackDuckRunData.getBlackDuckServicesFactory().createBinaryScanUploadService(), projectNameVersion);
+        });
     }
 }

@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
-import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
@@ -41,6 +40,7 @@ import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.result.BlackDuckBomDetectResult;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.detect.workflow.result.ReportDetectResult;
+import com.synopsys.integration.detect.workflow.status.OperationType;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.util.NameVersion;
@@ -56,11 +56,11 @@ public class IntelligentModeStepRunner {
     }
 
     public void runOffline(NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws DetectUserFriendlyException {
-        stepHelper.runToolIfIncluded(DetectTool.SIGNATURE_SCAN, "Signature Scanner", () -> {
+        stepHelper.runToolIfIncluded(DetectTool.SIGNATURE_SCAN, "Signature Scanner", () -> { //Internal: Sig scan publishes it's own status.
             SignatureScanStepRunner signatureScanStepRunner = new SignatureScanStepRunner(operationFactory);
             signatureScanStepRunner.runSignatureScannerOffline(projectNameVersion, dockerTargetData);
         });
-        stepHelper.runToolIfIncluded(DetectTool.IMPACT_ANALYSIS, "Vulnerability Impact Analysis", () -> generateImpactAnalysis(projectNameVersion));
+        stepHelper.runToolIfIncluded(DetectTool.IMPACT_ANALYSIS, "Vulnerability Impact Analysis",  /* because it does not publish it's own status */ () -> generateImpactAnalysis(projectNameVersion));
     }
 
     //TODO: Change black duck post options to a decision and stick it in Run Data somewhere.
@@ -68,13 +68,13 @@ public class IntelligentModeStepRunner {
     public void runOnline(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, NameVersion projectNameVersion, DetectToolFilter detectToolFilter, DockerTargetData dockerTargetData)
         throws DetectUserFriendlyException, IntegrationException, IOException, InterruptedException {
 
-        ProjectVersionWrapper projectVersion = stepHelper.runAsGroup("Create or Locate Project", () -> getOrCreateProjectOnBlackDuck(blackDuckRunData, projectNameVersion));
+        ProjectVersionWrapper projectVersion = stepHelper.runAsGroup("Create or Locate Project", OperationType.INTERNAL, () -> getOrCreateProjectOnBlackDuck(blackDuckRunData, projectNameVersion));
 
         logger.debug("Completed project and version actions.");
         logger.debug("Processing Detect Code Locations.");
 
         CodeLocationAccumulator codeLocationAccumulator = new CodeLocationAccumulator();
-        stepHelper.runAsGroup("Upload Bdio", () -> uploadBdio(blackDuckRunData, bdioResult, codeLocationAccumulator));
+        stepHelper.runAsGroup("Upload Bdio", OperationType.INTERNAL, () -> uploadBdio(blackDuckRunData, bdioResult, codeLocationAccumulator));
 
         logger.debug("Completed Detect Code Location processing.");
 
@@ -85,18 +85,20 @@ public class IntelligentModeStepRunner {
         });
 
         stepHelper.runToolIfIncluded(DetectTool.BINARY_SCAN, "Binary Scanner", () -> {
-            Optional<CodeLocationCreationData<BinaryScanBatchOutput>> binaryScanResult = operationFactory.createBinaryScanOperation().execute(projectNameVersion, dockerTargetData);
-            binaryScanResult.ifPresent(codeLocationAccumulator::addWaitableCodeLocation);
+            BinaryScanStepRunner binaryScanStepRunner = new BinaryScanStepRunner(operationFactory);
+            binaryScanStepRunner.runBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData).ifPresent(codeLocationAccumulator::addWaitableCodeLocation);
         });
 
-        stepHelper.runToolIfIncluded(DetectTool.IMPACT_ANALYSIS, "Vulnerability Impact Analysis", () -> runImpactAnalysisOnline(projectNameVersion, projectVersion, codeLocationAccumulator, blackDuckRunData.getBlackDuckServicesFactory()));
+        stepHelper.runToolIfIncludedWithCallbacks(DetectTool.IMPACT_ANALYSIS, "Vulnerability Impact Analysis",
+            () -> runImpactAnalysisOnline(projectNameVersion, projectVersion, codeLocationAccumulator, blackDuckRunData.getBlackDuckServicesFactory()),
+            operationFactory::publishImpactSuccess, operationFactory::publishImpactFailure);
 
-        stepHelper.runAsGroup("Wait for Code Locations", () -> {
+        stepHelper.runAsGroup("Wait for Code Locations", OperationType.INTERNAL, () -> {
             CodeLocationResults codeLocationResults = calculateCodeLocations(codeLocationAccumulator);
             waitForCodeLocations(codeLocationResults.getCodeLocationWaitData(), projectNameVersion, blackDuckRunData);
         });
 
-        stepHelper.runAsGroup("Black Duck Post Actions", () -> {
+        stepHelper.runAsGroup("Black Duck Post Actions", OperationType.INTERNAL, () -> {
             checkPolicy(projectVersion.getProjectVersionView(), blackDuckRunData);
             riskReport(blackDuckRunData, projectVersion);
             noticesReport(blackDuckRunData, projectVersion);

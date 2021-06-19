@@ -11,9 +11,7 @@ import java.util.Map;
 
 import com.google.gson.annotations.SerializedName;
 
-public class
-
-PackageLock {
+public class PackageLock {
     @SerializedName("name")
     public String name;
 

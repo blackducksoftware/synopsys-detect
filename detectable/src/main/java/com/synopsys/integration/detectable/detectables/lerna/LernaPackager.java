@@ -147,10 +147,18 @@ public class LernaPackager {
         }
 
         if (lockFile.getNpmLockContents().isPresent()) {
-            //TODO: What if the NPM result is FAILED?
-            NpmParseResult npmParseResult = npmLockfileParser
-                                                .parse(packageJsonContents, lockFile.getNpmLockContents().get(), npmLockfileOptions.shouldIncludeDeveloperDependencies(), externalPackages);
-            return LernaResult.success(npmParseResult.getProjectName(), npmParseResult.getProjectVersion(), Collections.singletonList(npmParseResult.getCodeLocation()));
+            try {
+                NpmParseResult npmParseResult = npmLockfileParser.parse(
+                    packageJsonContents,
+                    lockFile.getNpmLockContents().get(),
+                    npmLockfileOptions.shouldIncludeDeveloperDependencies(),
+                    npmLockfileOptions.shouldIncludePeerDependencies(),
+                    externalPackages
+                );
+                return LernaResult.success(npmParseResult.getProjectName(), npmParseResult.getProjectVersion(), Collections.singletonList(npmParseResult.getCodeLocation()));
+            } catch (Exception exception) {
+                return LernaResult.failure(exception);
+            }
         } else if (lockFile.getYarnLockContents().isPresent()) {
             YarnLock yarnLock = yarnLockParser.parseYarnLock(lockFile.getYarnLockContents().get());
             NullSafePackageJson rootPackageJson = packageJsonReader.read(packageJsonContents);

@@ -87,7 +87,10 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
 
         if (useDotnet) {
             File dotnetFolder;
-            if (dotNetRuntimeManager.isRuntimeAvailable(3, 1)) {
+            if (dotNetRuntimeManager.isRuntimeAvailable(5)) {
+                dotnetFolder = nugetInspectorLocator.locateDotnet5Inspector();
+                return findDotnetCoreInspector(dotnetFolder, dotnetExecutable, "NugetDotnet5Inspector.dll");
+            } else if (dotNetRuntimeManager.isRuntimeAvailable(3, 1)) {
                 dotnetFolder = nugetInspectorLocator.locateDotnet3Inspector();
                 return findDotnetCoreInspector(dotnetFolder, dotnetExecutable, "NugetDotnet3Inspector.dll");
             } else {

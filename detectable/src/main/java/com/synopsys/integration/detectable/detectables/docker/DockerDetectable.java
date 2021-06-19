@@ -27,6 +27,7 @@ import com.synopsys.integration.detectable.detectable.result.PropertyInsufficien
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
+//TODO: Violates Detectable contract. Take folder -> give project data. This does not take a folder.
 @DetectableInfo(language = "N/A", forge = "Derived from the Linux distribution", requirementsMarkdown = "Access to a Docker Engine. See <a href='https://blackducksoftware.github.io/blackduck-docker-inspector/latest/overview/'>Docker Inspector documentation</a> for details.")
 public class DockerDetectable extends Detectable {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

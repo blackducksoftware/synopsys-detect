@@ -7,6 +7,7 @@ buildscript {
         springBootVersion = '2.4.5'
         blackDuckCommonVersion = '56.0.0-SNAPSHOT'
         junitPlatformDefaultTestTags = 'integration, performance, battery'
+        junitPlatformCustomTestTags = 'docker, battery'
     }
 
     apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-repositories.gradle', to: buildscript
@@ -20,7 +21,7 @@ buildscript {
 ext['groovy.version'] = '3.0.0'
 
 group = 'com.synopsys.integration'
-version = '7.1.0-SIGQA6-SNAPSHOT'
+version = '7.1.0-SIGQA9-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
@@ -112,6 +113,8 @@ dependencies {
 
     testImplementation project(':configuration').sourceSets.test.output
     testImplementation project(':common-test')
+    testImplementation 'com.github.docker-java:docker-java-core:3.2.7'
+    testImplementation 'com.github.docker-java:docker-java-transport-httpclient5:3.2.7'
 }
 
 springBoot { mainClass = 'com.synopsys.integration.detect.Application' }
@@ -161,7 +164,7 @@ task createAirGapZip(type: JavaExec) {
     classpath = files(createArtifactName())
     classpath += sourceSets.main.runtimeClasspath
     main = 'com.synopsys.integration.detect.Application'
-    args = ['--detect.gradle.path=gradlew', "--detect.output.path=${buildDir}/libs/", '-z']
+    args = [System.getProperty("os.name").toLowerCase().contains("windows") ? '--detect.gradle.path=gradlew.bat' : '--detect.gradle.path=gradlew', "--detect.output.path=${buildDir}/libs/", '-z']
     standardOutput = new ByteArrayOutputStream()
     doLast {
         createAirGapZip.ext.airGapPath = parseAirGapZipPath(standardOutput)
@@ -223,6 +226,6 @@ task verifyJar() {
         exec {
             // returns 0 if successfully verified as signed; non-0 if not
             commandLine 'jarsigner', '-verify', '-strict', "${createArtifactName()}"
-	}
+        }
     }
 }

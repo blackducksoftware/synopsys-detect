@@ -15,6 +15,10 @@ public class ArtifactoryConstants {
 
     private static final String NUGET_VERSION_SUFFIX = ".nupkg";
 
+    public static final String NUGET_DOTNET5_INSPECTOR_REPO = "bds-integrations-nuget-release/NugetDotnet5Inspector";
+    public static final String NUGET_DOTNET5_INSPECTOR_PROPERTY = "NUGET_DOTNET5_INSPECTOR_LATEST_1";
+    public static final String NUGET_DOTNET5_INSPECTOR_VERSION_OVERRIDE = "/NugetDotnet5Inspector." + ArtifactoryConstants.VERSION_PLACEHOLDER + NUGET_VERSION_SUFFIX;
+
     public static final String NUGET_DOTNET3_INSPECTOR_REPO = "bds-integrations-nuget-release/NugetDotnet3Inspector";
     public static final String NUGET_DOTNET3_INSPECTOR_PROPERTY = "NUGET_DOTNET3_INSPECTOR_LATEST_1";
     public static final String NUGET_DOTNET3_INSPECTOR_VERSION_OVERRIDE = "/NugetDotnet3Inspector." + ArtifactoryConstants.VERSION_PLACEHOLDER + NUGET_VERSION_SUFFIX;

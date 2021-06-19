@@ -16,6 +16,7 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 public class DotNetRuntimeManager {
     private final DotNetRuntimeFinder runtimeFinder;
     private final DotNetRuntimeParser runtimeParser;
+    private List<String> availableRuntimes = null;
 
     public DotNetRuntimeManager(final DotNetRuntimeFinder runtimeFinder, final DotNetRuntimeParser runtimeParser) {
         this.runtimeFinder = runtimeFinder;
@@ -28,7 +29,9 @@ public class DotNetRuntimeManager {
     }
 
     public boolean isRuntimeAvailable(final String version) throws DetectableException {
-        final List<String> availableRuntimes = runtimeFinder.listAvailableRuntimes();
+        if (availableRuntimes == null) {
+            availableRuntimes = runtimeFinder.listAvailableRuntimes();
+        }
         return runtimeParser.doRuntimesContainVersionStartingWith(availableRuntimes, version);
     }
 }
