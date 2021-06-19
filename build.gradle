@@ -6,7 +6,6 @@ buildscript {
     ext {
         springBootVersion = '2.4.5'
         blackDuckCommonVersion = '56.0.0-SNAPSHOT'
-        junitPlatformDefaultTestTags = 'integration, performance, battery'
         junitPlatformCustomTestTags = 'docker, battery'
     }
 
