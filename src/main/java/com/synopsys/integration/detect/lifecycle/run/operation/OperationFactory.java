@@ -589,12 +589,11 @@ public class OperationFactory { //TODO: OperationRunner
 
     public void publishImpactFailure(Exception e) {
         statusEventPublisher.publishStatusSummary(new Status("IMPACT_ANALYSIS", StatusType.FAILURE));
-        exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, "BINARY_SCAN");
+        exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, "IMPACT_ANALYSIS");
     }
 
     public void publishImpactSuccess() {
-        statusEventPublisher.publishStatusSummary(new Status("BINARY_SCAN", StatusType.FAILURE));
-        exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, "BINARY_SCAN");
+        statusEventPublisher.publishStatusSummary(new Status("IMPACT_ANALYSIS", StatusType.SUCCESS));
     }
 
     public CodeLocationCreationData<BinaryScanBatchOutput> uploadBinaryScanFile(final File binaryUpload, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
