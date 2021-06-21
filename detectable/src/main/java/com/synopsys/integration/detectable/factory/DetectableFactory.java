@@ -625,7 +625,7 @@ public class DetectableFactory {
     }
 
     private NpmCliExtractor npmCliExtractor() {
-        return new NpmCliExtractor(executableRunner, npmCliDependencyFinder());
+        return new NpmCliExtractor(executableRunner, npmCliDependencyFinder(), gson);
     }
 
     private NpmPackageJsonNameVersionExtractor npmPackageJsonDiscoverer() {
