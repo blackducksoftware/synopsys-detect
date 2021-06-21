@@ -54,23 +54,23 @@ class NpmDependencyTypeFilterTest {
     static Stream<TestParameter> shouldIncludeSource() {
         return Stream.<TestParameter>builder()
                    // Include Dev Dependencies
-                   .add(TestParameter.reg(true, false, true))
-                   .add(TestParameter.reg(true, false, false))
+                   .add(TestParameter.neither(true, false, true))
+                   .add(TestParameter.neither(true, false, false))
                    .add(TestParameter.dev(true, false, true))
                    .add(TestParameter.dev(true, false, false))
                    .add(TestParameter.peer(true, false, false))
 
                    // Include Peer Dependencies
-                   .add(TestParameter.reg(false, true, true))
-                   .add(TestParameter.reg(false, true, false))
+                   .add(TestParameter.neither(false, true, true))
+                   .add(TestParameter.neither(false, true, false))
                    .add(TestParameter.dev(false, true, true))
                    .add(TestParameter.dev(false, true, false))
                    .add(TestParameter.peer(false, true, true))
                    .add(TestParameter.peer(false, true, false))
 
                    // Exclude both dependency types
-                   .add(TestParameter.reg(false, false, false))
-                   .add(TestParameter.reg(false, false, true))
+                   .add(TestParameter.neither(false, false, false))
+                   .add(TestParameter.neither(false, false, true))
                    .add(TestParameter.dev(false, false, false))
                    .add(TestParameter.peer(false, false, false))
 
@@ -79,8 +79,8 @@ class NpmDependencyTypeFilterTest {
                    .add(TestParameter.dev(true, true, false))
                    .add(TestParameter.peer(true, true, true))
                    .add(TestParameter.peer(true, true, false))
-                   .add(TestParameter.reg(true, true, true))
-                   .add(TestParameter.reg(true, true, false))
+                   .add(TestParameter.neither(true, true, true))
+                   .add(TestParameter.neither(true, true, false))
 
                    .build();
     }
@@ -105,7 +105,7 @@ class NpmDependencyTypeFilterTest {
         public final boolean isPeerDependency;
         public final boolean isRootDependency;
 
-        public static TestParameter reg(boolean includeDevDependencies, boolean includePeerDependencies, boolean isRootDependency) {
+        public static TestParameter neither(boolean includeDevDependencies, boolean includePeerDependencies, boolean isRootDependency) {
             return new TestParameter(includeDevDependencies, includePeerDependencies, false, false, isRootDependency);
         }
 
