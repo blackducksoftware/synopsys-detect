@@ -21,9 +21,9 @@ public class BatteryBdioAssert {
     private final String resourcePrefix;
     private final String testName;
 
-    public BatteryBdioAssert(final String resourcePrefix, final String testName) {
-        this.resourcePrefix = resourcePrefix;
+    public BatteryBdioAssert(final String testName, final String resourcePrefix) {
         this.testName = testName;
+        this.resourcePrefix = resourcePrefix;
     }
 
     public void assertBdio(File bdioDirectory) throws IOException, JSONException, BdioCompare.BdioCompareException {
