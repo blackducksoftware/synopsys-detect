@@ -184,8 +184,9 @@ public class DetectableOptionFactory {
 
     public NpmCliExtractorOptions createNpmCliExtractorOptions() {
         Boolean includeDevDependencies = getValue(DetectProperties.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES);
+        Boolean includePeerDependencies = getValue(DetectProperties.DETECT_NPM_INCLUDE_PEER_DEPENDENCIES);
         String npmArguments = getNullableValue(DetectProperties.DETECT_NPM_ARGUMENTS);
-        return new NpmCliExtractorOptions(includeDevDependencies, npmArguments);
+        return new NpmCliExtractorOptions(includeDevDependencies, includePeerDependencies, npmArguments);
     }
 
     public NpmLockfileOptions createNpmLockfileOptions() {
