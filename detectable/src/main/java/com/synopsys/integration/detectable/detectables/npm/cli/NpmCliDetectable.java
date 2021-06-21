@@ -70,7 +70,14 @@ public class NpmCliDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
-        return npmCliExtractor.extract(environment.getDirectory(), npmExe, npmCliExtractorOptions, npmPackageJsonNameVersionExtractor.extract(packageJson));
+        return npmCliExtractor.extract(
+            environment.getDirectory(),
+            npmExe,
+            npmCliExtractorOptions.getNpmArguments().orElse(null),
+            npmCliExtractorOptions.shouldIncludeDevDependencies(),
+            npmCliExtractorOptions.shouldIncludePeerDependencies(),
+            packageJson
+        );
     }
 
 }
