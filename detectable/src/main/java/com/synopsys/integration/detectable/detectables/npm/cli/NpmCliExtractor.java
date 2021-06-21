@@ -40,7 +40,6 @@ public class NpmCliExtractor {
 
     public Extraction extract(File directory, ExecutableTarget npmExe, NpmCliExtractorOptions npmCliExtractorOptions, NameVersion packageJsonNameVersion) {//TODO: Extractor should not use DetectableOptions
 
-        boolean includeDevDeps = npmCliExtractorOptions.shouldIncludeDevDependencies();
         List<String> exeArgs = new ArrayList<>();
         exeArgs.add("ls");
         exeArgs.add("-json");
@@ -48,7 +47,7 @@ public class NpmCliExtractor {
             exeArgs.add("-prod");
         }
 
-        npmCliExtractorOptions.getNpmArguments()
+        Optional.ofNullable(npmArguments)
             .map(arg -> arg.split(" "))
             .ifPresent(additionalArguments -> exeArgs.addAll(Arrays.asList(additionalArguments)));
 
