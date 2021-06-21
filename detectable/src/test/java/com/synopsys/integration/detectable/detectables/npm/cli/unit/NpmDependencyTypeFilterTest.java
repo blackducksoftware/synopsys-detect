@@ -55,31 +55,33 @@ class NpmDependencyTypeFilterTest {
         return Stream.<TestParameter>builder()
                    // Dev Dependencies
                    // isDevDependency = true
-                   .add(new TestParameter(true, false, true, false, true))
-                   .add(new TestParameter(true, false, true, false, false))
-                   .add(new TestParameter(false, false, true, false, false))
+                   .add(TestParameter.dev(true, false, true))
+                   .add(TestParameter.dev(true, false, false))
+                   .add(TestParameter.dev(false, false, false))
                    // isDevDependency = false
-                   .add(new TestParameter(true, false, false, false, true))
-                   .add(new TestParameter(true, false, false, false, false))
-                   .add(new TestParameter(false, false, false, false, false))
-                   .add(new TestParameter(false, false, false, false, true))
+                   .add(TestParameter.reg(true, false, true))
+                   .add(TestParameter.reg(true, false, false))
+                   .add(TestParameter.reg(false, false, false))
+                   .add(TestParameter.reg(false, false, true))
 
                    // Peer Dependencies
                    // isPeerDependency = true
-                   .add(new TestParameter(false, true, false, true, true))
-                   .add(new TestParameter(false, true, false, true, false))
-                   .add(new TestParameter(false, false, false, true, false))
+                   .add(TestParameter.peer(false, true, true))
+                   .add(TestParameter.peer(false, true, false))
+                   .add(TestParameter.peer(false, false, false))
                    // isPeerDependency = false
-                   .add(new TestParameter(false, true, false, false, true))
-                   .add(new TestParameter(false, true, false, false, false))
-                   .add(new TestParameter(false, false, false, false, true))
-                   .add(new TestParameter(false, false, false, false, false))
+                   .add(TestParameter.reg(false, true, true))
+                   .add(TestParameter.reg(false, true, false))
+                   .add(TestParameter.reg(false, false, true))
+                   .add(TestParameter.reg(false, false, false))
 
                    // Together - Include both dependency types
-                   .add(new TestParameter(true, true, true, false, true))
-                   .add(new TestParameter(true, true, true, false, false))
-                   .add(new TestParameter(true, true, false, true, true))
-                   .add(new TestParameter(true, true, false, true, false))
+                   .add(TestParameter.dev(true, true, true))
+                   .add(TestParameter.dev(true, true, false))
+                   .add(TestParameter.peer(true, true, true))
+                   .add(TestParameter.peer(true, true, false))
+                   .add(TestParameter.reg(true, true, true))
+                   .add(TestParameter.reg(true, true, false))
 
                    .build();
     }
@@ -88,11 +90,11 @@ class NpmDependencyTypeFilterTest {
         return Stream.<TestParameter>builder()
                    // Dev Dependencies
                    // isDevDependency = true
-                   .add(new TestParameter(false, false, true, false, true))
+                   .add(TestParameter.dev(false, false, true))
 
                    // Peer Dependencies
                    // isPeerDependency = true
-                   .add(new TestParameter(false, false, false, true, true))
+                   .add(TestParameter.peer(false, false, true))
 
                    .build();
     }
@@ -104,7 +106,19 @@ class NpmDependencyTypeFilterTest {
         public final boolean isPeerDependency;
         public final boolean isRootDependency;
 
-        public TestParameter(boolean includeDevDependencies, boolean includePeerDependencies, boolean isDevDependency, boolean isPeerDependency, boolean isRootDependency) {
+        public static TestParameter reg(boolean includeDevDependencies, boolean includePeerDependencies, boolean isRootDependency) {
+            return new TestParameter(includeDevDependencies, includePeerDependencies, false, false, isRootDependency);
+        }
+
+        public static TestParameter dev(boolean includeDevDependencies, boolean includePeerDependencies, boolean isRootDependency) {
+            return new TestParameter(includeDevDependencies, includePeerDependencies, true, false, isRootDependency);
+        }
+
+        public static TestParameter peer(boolean includeDevDependencies, boolean includePeerDependencies, boolean isRootDependency) {
+            return new TestParameter(includeDevDependencies, includePeerDependencies, false, true, isRootDependency);
+        }
+
+        private TestParameter(boolean includeDevDependencies, boolean includePeerDependencies, boolean isDevDependency, boolean isPeerDependency, boolean isRootDependency) {
             this.includeDevDependencies = includeDevDependencies;
             this.includePeerDependencies = includePeerDependencies;
             this.isDevDependency = isDevDependency;
