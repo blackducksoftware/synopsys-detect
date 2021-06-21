@@ -16,16 +16,21 @@ The NuGet detectors do not work with mono.
 
 ### DotNet 5 inspector
 
-Source: https://github.com/blackducksoftware/nuget-dotnet3-inspector
-Binary:
+Source: https://github.com/blackducksoftware/nuget-dotnet5-inspector
+
+Binary: https://sig-repo.synopsys.com/bds-integrations-nuget-release/NugetDotnet5Inspector/
+
+Runtime: DotNet 5
 
 ### DotNet 3.1 inspector
 
 Source: https://github.com/blackducksoftware/nuget-dotnet3-inspector
 
-Binary: https://sig-repo.synopsys.com/bds-integrations-nuget-release/NugetDotnet5Inspector/
+Binary: https://sig-repo.synopsys.com/bds-integrations-nuget-release/NugetDotnet3Inspector/
 
-Runtime: DotNet 5
+Runtime: DotNet 3.1
+
+Requires: .NET framework version 4.5
 
 ### DotNet inspector
 
