@@ -2,6 +2,7 @@ package com.synopsys.integration.detect.battery.docker.provider;
 
 import java.io.File;
 
+import com.github.dockerjava.api.command.BuildImageCmd;
 import org.junit.jupiter.api.Assertions;
 
 import com.github.dockerjava.api.DockerClient;
@@ -26,9 +27,11 @@ public class BuildDockerImageProvider implements DockerImageProvider {
         File imageDockerFile = FileUtil.asFile(DetectorBatteryTest.class, dockerfileResourceName, "/docker/");
         Assertions.assertNotNull(imageDockerFile, "Could not find the dockerfile in the resources, ensure the dockerfile exists as named. It is needed to build the image if the image is not present.");
 
-        dockerClient.buildImageCmd(imageDockerFile)
-            .withTags(Bds.of(imageName).toSet())
-            .exec(new BuildImageResultCallback())
-            .awaitImageId();
+        try (BuildImageCmd buildImageCmd = dockerClient.buildImageCmd(imageDockerFile)) {
+            buildImageCmd
+                    .withTags(Bds.of(imageName).toSet())
+                    .exec(new BuildImageResultCallback())
+                    .awaitImageId();
+        }
     }
 }
