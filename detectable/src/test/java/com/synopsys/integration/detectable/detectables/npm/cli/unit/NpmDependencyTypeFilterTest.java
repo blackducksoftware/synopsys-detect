@@ -7,7 +7,8 @@
  */
 package com.synopsys.integration.detectable.detectables.npm.cli.unit;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collections;
 import java.util.Set;
@@ -22,8 +23,20 @@ import com.synopsys.integration.util.Stringable;
 class NpmDependencyTypeFilterTest {
 
     @ParameterizedTest()
-    @MethodSource("generateTest")
-    void includeDependencies(TestParameter testParameter) {
+    @MethodSource("shouldIncludeSource")
+    void shouldIncludeTest(TestParameter testParameter) {
+        boolean shouldInclude = testWithParameter(testParameter);
+        assertTrue(shouldInclude);
+    }
+
+    @ParameterizedTest()
+    @MethodSource("shouldNotIncludeSource")
+    void shouldNotIncludeTest(TestParameter testParameter) {
+        boolean shouldInclude = testWithParameter(testParameter);
+        assertFalse(shouldInclude);
+    }
+
+    boolean testWithParameter(TestParameter testParameter) {
         Set<String> devDependencies = Collections.singleton("test-dev");
         Set<String> peerDependencies = Collections.singleton("test-peer");
 
@@ -34,47 +47,52 @@ class NpmDependencyTypeFilterTest {
         } else if (testParameter.isPeerDependency) {
             dependencyName = "test-peer";
         }
-        boolean actual = npmDependencyTypeFilter.shouldInclude(dependencyName, testParameter.isRootDependency);
-        assertEquals(testParameter.shouldInclude, actual, "TestParameters: " + testParameter);
+
+        return npmDependencyTypeFilter.shouldInclude(dependencyName, testParameter.isRootDependency);
     }
 
-    static Stream<TestParameter> generateTest() {
+    static Stream<TestParameter> shouldIncludeSource() {
         return Stream.<TestParameter>builder()
                    // Dev Dependencies
                    // isDevDependency = true
-                   .add(new TestParameter(true, false, true, false, true, true))
-                   .add(new TestParameter(true, false, true, false, false, true))
-                   .add(new TestParameter(false, false, true, false, false, true))
-                   .add(new TestParameter(false, false, true, false, true, false))
+                   .add(new TestParameter(true, false, true, false, true))
+                   .add(new TestParameter(true, false, true, false, false))
+                   .add(new TestParameter(false, false, true, false, false))
                    // isDevDependency = false
-                   .add(new TestParameter(true, false, false, false, true, true))
-                   .add(new TestParameter(true, false, false, false, false, true))
-                   .add(new TestParameter(false, false, false, false, false, true))
-                   .add(new TestParameter(false, false, false, false, true, true))
+                   .add(new TestParameter(true, false, false, false, true))
+                   .add(new TestParameter(true, false, false, false, false))
+                   .add(new TestParameter(false, false, false, false, false))
+                   .add(new TestParameter(false, false, false, false, true))
 
                    // Peer Dependencies
                    // isPeerDependency = true
-                   .add(new TestParameter(false, true, false, true, true, true))
-                   .add(new TestParameter(false, true, false, true, false, true))
-                   .add(new TestParameter(false, false, false, true, true, false))
-                   .add(new TestParameter(false, false, false, true, false, true))
+                   .add(new TestParameter(false, true, false, true, true))
+                   .add(new TestParameter(false, true, false, true, false))
+                   .add(new TestParameter(false, false, false, true, false))
                    // isPeerDependency = false
-                   .add(new TestParameter(false, true, false, false, true, true))
-                   .add(new TestParameter(false, true, false, false, false, true))
-                   .add(new TestParameter(false, false, false, false, true, true))
-                   .add(new TestParameter(false, false, false, false, false, true))
+                   .add(new TestParameter(false, true, false, false, true))
+                   .add(new TestParameter(false, true, false, false, false))
+                   .add(new TestParameter(false, false, false, false, true))
+                   .add(new TestParameter(false, false, false, false, false))
 
-                   // Together
-                   // Include Both Types
-                   .add(new TestParameter(true, true, true, false, true, true))
-                   .add(new TestParameter(true, true, true, false, false, true))
-                   .add(new TestParameter(true, true, false, true, true, true))
-                   .add(new TestParameter(true, true, false, true, false, true))
-                   // Exclude Both types
-                   .add(new TestParameter(false, false, true, false, true, false))
-                   .add(new TestParameter(false, false, true, false, false, true))
-                   .add(new TestParameter(false, false, false, true, true, false))
-                   .add(new TestParameter(false, false, false, true, false, true))
+                   // Together - Include both dependency types
+                   .add(new TestParameter(true, true, true, false, true))
+                   .add(new TestParameter(true, true, true, false, false))
+                   .add(new TestParameter(true, true, false, true, true))
+                   .add(new TestParameter(true, true, false, true, false))
+
+                   .build();
+    }
+
+    static Stream<TestParameter> shouldNotIncludeSource() {
+        return Stream.<TestParameter>builder()
+                   // Dev Dependencies
+                   // isDevDependency = true
+                   .add(new TestParameter(false, false, true, false, true))
+
+                   // Peer Dependencies
+                   // isPeerDependency = true
+                   .add(new TestParameter(false, false, false, true, true))
 
                    .build();
     }
@@ -85,15 +103,13 @@ class NpmDependencyTypeFilterTest {
         public final boolean isDevDependency;
         public final boolean isPeerDependency;
         public final boolean isRootDependency;
-        public final boolean shouldInclude;
 
-        public TestParameter(boolean includeDevDependencies, boolean includePeerDependencies, boolean isDevDependency, boolean isPeerDependency, boolean isRootDependency, boolean shouldInclude) {
+        public TestParameter(boolean includeDevDependencies, boolean includePeerDependencies, boolean isDevDependency, boolean isPeerDependency, boolean isRootDependency) {
             this.includeDevDependencies = includeDevDependencies;
             this.includePeerDependencies = includePeerDependencies;
             this.isDevDependency = isDevDependency;
             this.isPeerDependency = isPeerDependency;
             this.isRootDependency = isRootDependency;
-            this.shouldInclude = shouldInclude;
         }
     }
 }
