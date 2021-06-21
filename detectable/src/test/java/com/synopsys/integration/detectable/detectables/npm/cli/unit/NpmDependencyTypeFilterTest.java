@@ -40,6 +40,7 @@ class NpmDependencyTypeFilterTest {
         assertTrue(filter.shouldInclude(NEITHER, false));
         assertTrue(filter.shouldInclude(DEV, true));
         assertTrue(filter.shouldInclude(DEV, false));
+        assertFalse(filter.shouldInclude(PEER, true));
         assertTrue(filter.shouldInclude(PEER, false));
 
     }
@@ -49,6 +50,7 @@ class NpmDependencyTypeFilterTest {
         NpmDependencyTypeFilter filter = createFilter(false, true);
         assertTrue(filter.shouldInclude(NEITHER, true));
         assertTrue(filter.shouldInclude(NEITHER, false));
+        assertFalse(filter.shouldInclude(DEV, true));
         assertTrue(filter.shouldInclude(DEV, false));
         assertTrue(filter.shouldInclude(PEER, true));
         assertTrue(filter.shouldInclude(PEER, false));
