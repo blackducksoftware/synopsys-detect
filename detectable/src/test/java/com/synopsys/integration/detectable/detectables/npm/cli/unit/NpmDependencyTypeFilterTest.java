@@ -26,14 +26,14 @@ class NpmDependencyTypeFilterTest {
     @MethodSource("shouldIncludeSource")
     void shouldIncludeTest(TestParameter testParameter) {
         boolean shouldInclude = testWithParameter(testParameter);
-        assertTrue(shouldInclude);
+        assertTrue(shouldInclude, "Test Parameters: " + testParameter);
     }
 
     @ParameterizedTest()
     @MethodSource("shouldNotIncludeSource")
     void shouldNotIncludeTest(TestParameter testParameter) {
         boolean shouldInclude = testWithParameter(testParameter);
-        assertFalse(shouldInclude);
+        assertFalse(shouldInclude, "Test Parameters: " + testParameter);
     }
 
     boolean testWithParameter(TestParameter testParameter) {
