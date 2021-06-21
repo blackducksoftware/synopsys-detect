@@ -2,6 +2,7 @@ package com.synopsys.integration.detect.battery.docker;
 
 import java.io.IOException;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -14,6 +15,8 @@ import com.synopsys.integration.detect.configuration.DetectProperties;
 @Tag("docker")
 public class Dotnet5Test {
     @Test
+    @Disabled
+        //jp - temporarily until jenkins can run them.
     void detectUsesDotnet5() throws IOException, InterruptedException {
         DetectDockerTest test = new DetectDockerTest("detect-dotnet-five", "detect-dotnet-five:1.0.1");
         test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Dotnet5.dockerfile"));
