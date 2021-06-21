@@ -53,29 +53,28 @@ class NpmDependencyTypeFilterTest {
 
     static Stream<TestParameter> shouldIncludeSource() {
         return Stream.<TestParameter>builder()
-                   // Dev Dependencies
-                   // isDevDependency = true
-                   .add(TestParameter.dev(true, false, true))
-                   .add(TestParameter.dev(true, false, false))
-                   .add(TestParameter.dev(false, false, false))
-                   // isDevDependency = false
+                   // Include Dev Dependencies
                    .add(TestParameter.reg(true, false, true))
                    .add(TestParameter.reg(true, false, false))
-                   .add(TestParameter.reg(false, false, false))
-                   .add(TestParameter.reg(false, false, true))
+                   .add(TestParameter.dev(true, false, true))
+                   .add(TestParameter.dev(true, false, false))
+                   .add(TestParameter.peer(true, false, false))
 
-                   // Peer Dependencies
-                   // isPeerDependency = true
-                   .add(TestParameter.peer(false, true, true))
-                   .add(TestParameter.peer(false, true, false))
-                   .add(TestParameter.peer(false, false, false))
-                   // isPeerDependency = false
+                   // Include Peer Dependencies
                    .add(TestParameter.reg(false, true, true))
                    .add(TestParameter.reg(false, true, false))
-                   .add(TestParameter.reg(false, false, true))
-                   .add(TestParameter.reg(false, false, false))
+                   .add(TestParameter.dev(false, true, true))
+                   .add(TestParameter.dev(false, true, false))
+                   .add(TestParameter.peer(false, true, true))
+                   .add(TestParameter.peer(false, true, false))
 
-                   // Together - Include both dependency types
+                   // Exclude both dependency types
+                   .add(TestParameter.reg(false, false, false))
+                   .add(TestParameter.reg(false, false, true))
+                   .add(TestParameter.dev(false, false, false))
+                   .add(TestParameter.peer(false, false, false))
+
+                   // Include both dependency types
                    .add(TestParameter.dev(true, true, true))
                    .add(TestParameter.dev(true, true, false))
                    .add(TestParameter.peer(true, true, true))
@@ -91,10 +90,12 @@ class NpmDependencyTypeFilterTest {
                    // Dev Dependencies
                    // isDevDependency = true
                    .add(TestParameter.dev(false, false, true))
+                   .add(TestParameter.dev(false, true, true))
 
                    // Peer Dependencies
                    // isPeerDependency = true
                    .add(TestParameter.peer(false, false, true))
+                   .add(TestParameter.peer(true, false, true))
 
                    .build();
     }
