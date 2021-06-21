@@ -60,7 +60,8 @@ public class IntelligentModeStepRunner {
             SignatureScanStepRunner signatureScanStepRunner = new SignatureScanStepRunner(operationFactory);
             signatureScanStepRunner.runSignatureScannerOffline(projectNameVersion, dockerTargetData);
         });
-        stepHelper.runToolIfIncluded(DetectTool.IMPACT_ANALYSIS, "Vulnerability Impact Analysis",  /* because it does not publish it's own status */ () -> generateImpactAnalysis(projectNameVersion));
+        stepHelper.runToolIfIncludedWithCallbacks(DetectTool.IMPACT_ANALYSIS, "Vulnerability Impact Analysis",  /* because it does not publish it's own status */ () -> generateImpactAnalysis(projectNameVersion),
+            operationFactory::publishImpactSuccess, operationFactory::publishImpactFailure);
     }
 
     //TODO: Change black duck post options to a decision and stick it in Run Data somewhere.
