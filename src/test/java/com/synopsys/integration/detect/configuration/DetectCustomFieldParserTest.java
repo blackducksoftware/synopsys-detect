@@ -28,8 +28,8 @@ import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detect.workflow.blackduck.CustomFieldDocument;
-import com.synopsys.integration.detect.workflow.blackduck.CustomFieldElement;
+import com.synopsys.integration.detect.workflow.blackduck.project.customfields.CustomFieldDocument;
+import com.synopsys.integration.detect.workflow.blackduck.project.customfields.CustomFieldElement;
 
 public class DetectCustomFieldParserTest {
 
