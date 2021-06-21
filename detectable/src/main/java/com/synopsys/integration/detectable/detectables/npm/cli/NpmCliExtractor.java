@@ -26,6 +26,7 @@ import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.npm.cli.parse.NpmCliParser;
+import com.synopsys.integration.detectable.detectables.npm.cli.parse.NpmDependencyTypeFilter;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmParseResult;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.extraction.Extraction;
@@ -77,7 +78,8 @@ public class NpmCliExtractor {
         } else if (StringUtils.isNotBlank(standardOutput)) {
             logger.debug("Parsing npm ls file.");
             logger.debug(standardOutput);
-            NpmParseResult result = npmCliParser.generateCodeLocation(standardOutput);
+            NpmDependencyTypeFilter npmDependencyTypeFilter = new NpmDependencyTypeFilter(packageJson.devDependencies.keySet(), packageJson.peerDependencies.keySet(), includeDevDependencies, includePeerDependencies);
+            NpmParseResult result = npmCliParser.generateCodeLocation(standardOutput, npmDependencyTypeFilter);
             String projectName = result.getProjectName() != null ? result.getProjectName() : packageJson.name;
             String projectVersion = result.getProjectVersion() != null ? result.getProjectVersion() : packageJson.version;
             return new Extraction.Builder().success(result.getCodeLocation()).projectName(projectName).projectVersion(projectVersion).build();
