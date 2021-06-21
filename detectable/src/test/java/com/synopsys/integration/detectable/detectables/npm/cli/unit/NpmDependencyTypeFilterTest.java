@@ -88,12 +88,10 @@ class NpmDependencyTypeFilterTest {
     static Stream<TestParameter> shouldNotIncludeSource() {
         return Stream.<TestParameter>builder()
                    // Dev Dependencies
-                   // isDevDependency = true
                    .add(TestParameter.dev(false, false, true))
                    .add(TestParameter.dev(false, true, true))
 
                    // Peer Dependencies
-                   // isPeerDependency = true
                    .add(TestParameter.peer(false, false, true))
                    .add(TestParameter.peer(true, false, true))
 
