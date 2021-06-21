@@ -33,7 +33,7 @@ import com.synopsys.integration.detect.configuration.DetectProperties;
 
 public final class DetectorBatteryTest extends BatteryTest {
     private String toolsValue = "DETECTOR";
-    private List<String> additionalProperties;
+    private List<String> additionalProperties = new ArrayList<>();
 
     public DetectorBatteryTest(final String name) {
         super(name);
