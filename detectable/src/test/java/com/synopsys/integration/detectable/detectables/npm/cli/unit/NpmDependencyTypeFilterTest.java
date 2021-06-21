@@ -20,7 +20,7 @@ import com.synopsys.integration.detectable.detectables.npm.cli.parse.NpmDependen
 class NpmDependencyTypeFilterTest {
     private final static String NEITHER = "test";
     private final static String DEV = "test-dev";
-    private final static String PEER = "test-dev";
+    private final static String PEER = "test-peer";
 
     @Test
     void includeNeitherTest() {
@@ -68,8 +68,8 @@ class NpmDependencyTypeFilterTest {
     }
 
     private NpmDependencyTypeFilter createFilter(boolean includeDevDependencies, boolean includePeerDependencies) {
-        Set<String> devDependencies = Collections.singleton("test-dev");
-        Set<String> peerDependencies = Collections.singleton("test-peer");
+        Set<String> devDependencies = Collections.singleton(DEV);
+        Set<String> peerDependencies = Collections.singleton(PEER);
         return new NpmDependencyTypeFilter(devDependencies, peerDependencies, includeDevDependencies, includePeerDependencies);
     }
 
