@@ -49,10 +49,7 @@ public class ProductDecider {
         Optional<String> blackDuckUrl = blackDuckConnectionDetails.getBlackDuckUrl();
         Optional<String> signatureScannerHostUrl = blackDuckSignatureScannerOptions.getUserProvidedScannerInstallUrl();
         Optional<Path> signatureScannerOfflineLocalPath = blackDuckSignatureScannerOptions.getOfflineLocalScannerInstallPath();
-        if (offline && scanMode == BlackduckScanMode.RAPID) {
-            logger.debug("Black Duck will NOT run: Black Duck offline mode is set to true and Black Duck {} scan is enabled which requires online mode", BlackduckScanMode.RAPID.name());
-            return BlackDuckDecision.skip();
-        } else if (scanMode == BlackduckScanMode.RAPID && !bdioOptions.isBdio2Enabled()) {
+        if (scanMode == BlackduckScanMode.RAPID && !bdioOptions.isBdio2Enabled()) {
             logger.debug("Black Duck will NOT run: Detect will not generate BDIO2 files and Black Duck {} scan is enabled which requires BDIO2 file generation", scanMode.name());
             return BlackDuckDecision.skip();
         } else if (scanMode == BlackduckScanMode.INTELLIGENT && !bdioOptions.isBdio2Enabled() && !bdioOptions.isLegacyUploadEnabled()) {

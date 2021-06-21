@@ -2,6 +2,8 @@
 
 Rapid Scan or Rapid Scan Mode is a new way of running ${solution_name} with Black Duck. This mode is designed to be as fast as possible and does not persist any data on Black Duck.
 
+It is enabled by adding [--detect.blackduck.scan.mode=RAPID](../properties/configuration/blackduck%20server/#detect-scan-mode-advanced) to a run of detect.
+
 # Overview
 
 Unlike persistent scans, no data is stored on Black Duck and all scans are done transiently. These scans are primarily intended to be fast.
@@ -35,15 +37,15 @@ The results are also printed in the logs:
 2021-06-18 11:38:18 EDT INFO  [main] --- 			Apache ActiveMQ 5.15.9 (maven:org.apache.activemq:activemq-client:5.15.9)
 ```
 
+For fastest results, enabling aggregate mode can increase the upload speed.
+
 # Restrictions
 
 When Rapid Scan is enabled, ${solution_name} will only run certain tools to ensure results are calculated as fast as possible.
 
-The currently supported tools are: DETECTOR, SIGNATURE SCAN
+The currently supported tools are: DETECTOR
 
 All other tools are disabled when running in Rapid Scan mode.
-
-Rapid Scan cannot be run in offline mode.
 
 Rapid Scan requires Black Duck policies. Rapid Scan only reports components that violates policies. If no policies are violated or there are no defined policies, then no components are returned.
 
