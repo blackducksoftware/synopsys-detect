@@ -45,7 +45,13 @@ All other tools are disabled when running in Rapid Scan mode.
 
 Rapid Scan cannot be run in offline mode.
 
-Detect cannot fail on severity for Rapid Scan policy violations because Rapid Scan policy violations do not have a severity.
+Rapid Scan requires Black Duck policies. Rapid Scan only reports components that violates policies. If no policies are violated or there are no defined policies, then no components are returned.
+
+Detect will fail with FAILURE_POLICY_VIOLATION if any component violate polices with a CRITICAL or BLOCKER severity.
+
+See Black Duck documentation for a list of policy conditions that are supported by Rapid Scan.
+
+The Detect property detect.policy.check.fail.on.severities does not apply to Rapid Scanning.
 
 Detect does not create a Project or Version on Black Duck in Rapid Mode.
 
