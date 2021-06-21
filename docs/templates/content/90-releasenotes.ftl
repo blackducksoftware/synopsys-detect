@@ -7,6 +7,7 @@
 * There now exist Docker images that can be used to run ${solution_name} from within a container.  See [Running ${solution_name} from within a Docker container](/30-running/#running-synopsys-detect-from-within-a-docker-container) for more details.
 * Added detect.go.mod.enable.verification for disabling the `go mod why` check that ${solution_name} uses to filter out unused dependencies.
 * Added support for dotnet 5 when running the NuGet inspector.
+* Added a new property [detect.npm.include.peer.dependencies](../properties/detectors/npm/#include-npm-peer-dependencies) which allows the users to filter out NPM peer dependencies from their BOM.
 
 ### Changed features
 * The following clone categories were added to the default value for property detect.project.clone.categories: LICENSE_TERM_FULFILLMENT, CUSTOM_FIELD_DATA
