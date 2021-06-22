@@ -12,7 +12,6 @@ import com.github.dockerjava.api.model.HostConfig;
 import com.synopsys.integration.detect.battery.docker.provider.DockerImageProvider;
 import com.synopsys.integration.detect.battery.util.DetectJar;
 import com.synopsys.integration.detect.battery.util.DockerTestAssertions;
-import com.synopsys.integration.detect.battery.util.TestPaths;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
 public class DetectDockerTestBuilder {
@@ -39,8 +38,8 @@ public class DetectDockerTestBuilder {
         this.dockerImageProvider = dockerImageProvider;
     }
 
-    private DockerTestDirectories setup() {
-        File dockerTestDirectory = new File(TestPaths.build(), "docker");
+    private DockerTestDirectories setup() throws IOException {
+        File dockerTestDirectory = SharedDockerDirectory.getRoot();
         File toolsDirectory = new File(dockerTestDirectory, "tools");
         File resultDirectory = new File(dockerTestDirectory, testId);
         File resultOutputDirectory = new File(resultDirectory, "output");
@@ -111,7 +110,12 @@ public class DetectDockerTestBuilder {
     }
 
     public DockerTestAssertions run(DetectCommandBuilder commandBuilder) {
-        DockerTestDirectories directories = setup();
+        DockerTestDirectories directories = null;
+        try {
+            directories = setup();
+        } catch (IOException e) {
+            Assertions.fail("Unable to setup docker directory.", e);
+        }
         DockerDetectResult result = runContainer(directories, commandBuilder);
         return new DockerTestAssertions(directories, result);
     }

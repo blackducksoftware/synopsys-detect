@@ -32,6 +32,7 @@ public class DetectJar {
         Assertions.assertTrue(libs.exists(), "Could not locate the libs directory, does libs exist, was the project built?");
 
         File[] libChildren = libs.listFiles();
+
         Assertions.assertNotNull(libChildren, "Could not locate at least one child of libs, does libs exist, was the project built?");
         Assertions.assertEquals(1, libChildren.length, "Found an unexpected number of jars, only expecting ONE, aka THE JAR expected to run.");
         File detectJarFile = libChildren[0];
