@@ -1,14 +1,17 @@
 package com.synopsys.integration.detect.tool.impactanalysis;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import com.synopsys.integration.blackduck.codelocation.Result;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
+import com.synopsys.integration.blackduck.codelocation.Result;
 import com.synopsys.integration.blackduck.service.model.ProjectSyncModel;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.integration.BlackDuckIntegrationTest;
@@ -20,9 +23,6 @@ import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameMan
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 import com.synopsys.integration.util.NoThreadExecutorService;
-import org.junit.jupiter.api.io.TempDir;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Tag("integration")
 public class ImpactAnalysisTest extends BlackDuckIntegrationTest {
@@ -39,7 +39,7 @@ public class ImpactAnalysisTest extends BlackDuckIntegrationTest {
         NameVersion projectNameVersion = new NameVersion("synopsys-detect-junit", "impact-analysis");
         ProjectVersionWrapper projectAndVersion = projectService.syncProjectAndVersion(ProjectSyncModel.createWithDefaults(projectNameVersion));
 
-        ImpactAnalysisOptions impactAnalysisOptions = new ImpactAnalysisOptions("prefix", "suffix", outputDirectory);
+        ImpactAnalysisOptions impactAnalysisOptions = new ImpactAnalysisOptions("prefix", "suffix");
         ImpactAnalysisNamingOperation impactAnalysisNamingOperation = new ImpactAnalysisNamingOperation(codeLocationNameManager);
         String impactAnalysisCodeLocationName = impactAnalysisNamingOperation.createCodeLocationName(toScan, projectNameVersion, impactAnalysisOptions);
 

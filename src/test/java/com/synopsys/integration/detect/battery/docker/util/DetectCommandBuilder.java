@@ -9,6 +9,10 @@ import com.synopsys.integration.detect.configuration.DetectProperty;
 public class DetectCommandBuilder {
     Map<String, String> properties = new HashMap<>();
 
+    public static DetectCommandBuilder withDefaults() {
+        return new DetectCommandBuilder().defaults();
+    }
+
     public String buildCommand() {
         StringBuilder builder = new StringBuilder();
         properties.forEach((key, value) -> {
@@ -17,17 +21,27 @@ public class DetectCommandBuilder {
         return builder.toString();
     }
 
-    public void property(String key, String value) {
+    public DetectCommandBuilder property(String key, String value) {
         properties.put(key, value);
+        return this;
     }
 
-    public void property(DetectProperty<?> property, String value) {
+    public DetectCommandBuilder property(DetectProperty<?> property, String value) {
         property(property.getProperty().getKey(), value);
+        return this;
     }
 
-    public void connectToBlackDuck(final String blackduckUrl, final String apiToken, final boolean trustCert) {
+    public DetectCommandBuilder connectToBlackDuck(final String blackduckUrl, final String apiToken, final boolean trustCert) {
         property(DetectProperties.BLACKDUCK_URL, blackduckUrl);
         property(DetectProperties.BLACKDUCK_API_TOKEN, apiToken);
         property(DetectProperties.BLACKDUCK_TRUST_CERT, trustCert ? "true" : "false");
+        return this;
+    }
+
+    public DetectCommandBuilder defaults() {
+        property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
+        property(DetectProperties.DETECT_CLEANUP, "false");
+        property(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION, "DEBUG");
+        return this;
     }
 }

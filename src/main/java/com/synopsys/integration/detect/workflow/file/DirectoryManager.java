@@ -121,6 +121,10 @@ public class DirectoryManager {
         directoryOptions.getScanOutputPathOverride()
             .map(Path::toFile)
             .ifPresent(scanOutputPath -> runDirectories.put(RunDirectory.SCAN, scanOutputPath));
+
+        directoryOptions.getImpactOutputPathOverride()
+            .map(Path::toFile)
+            .ifPresent(scanOutputPath -> runDirectories.put(RunDirectory.IMPACT_ANALYSIS, scanOutputPath));
     }
 
     public File getUserHome() {

@@ -116,6 +116,10 @@ public class DockerTestAssertions {
         Assertions.assertTrue(regex.matcher(dockerDetectResult.getDetectLogs()).matches(), "Expected logs to contain '" + regex.toString() + "' but they did not.");
     }
 
+    public void logContains(String thing) {
+        Assertions.assertTrue(dockerDetectResult.getDetectLogs().contains(thing), "Expected logs to contain '" + thing + "' but they did not.");
+    }
+
     public void successfulOperation(String operationName) {
         successfulOperationStatusJson(operationName);
         successfulThingLogged(operationName);

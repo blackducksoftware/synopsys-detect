@@ -63,7 +63,7 @@ public class FontLoaderTestIT {
         ConnectionFactory connectionFactory = new ConnectionFactory(detectConfigurationFactory.createConnectionDetails());
         ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
         DetectFontInstaller installer = new DetectFontInstaller(artifactResolver);
-        DirectoryOptions directoryOptions = new DirectoryOptions(null, null, null, null, fontDirectory.toPath());
+        DirectoryOptions directoryOptions = new DirectoryOptions(null, null, null, null, fontDirectory.toPath(), null);
         DirectoryManager directoryManager = new DirectoryManager(directoryOptions, DetectRunId.createDefault());
         detectFontLocator = new OnlineDetectFontLocator(installer, directoryManager);
     }

@@ -18,16 +18,27 @@ public class ImpactTest {
         DetectDockerTestBuilder test = new DetectDockerTestBuilder("detect-impact-test", "detect-impact-test:1.0.0");
         test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Impact.dockerfile"));
 
-        DetectCommandBuilder commandBuilder = new DetectCommandBuilder();
+        DetectCommandBuilder commandBuilder = DetectCommandBuilder.withDefaults();
         commandBuilder.property(DetectProperties.DETECT_TOOLS, "IMPACT_ANALYSIS");
-        commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
-        commandBuilder.property(DetectProperties.DETECT_CLEANUP, "false");
-        commandBuilder.property(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION, "DEBUG");
         commandBuilder.property(DetectProperties.DETECT_IMPACT_ANALYSIS_ENABLED, "true");
         DockerTestAssertions result = test.run(commandBuilder);
 
         result.successfulTool("IMPACT_ANALYSIS");
         result.logContainsPattern("Vulnerability Impact Analysis generated report at /opt/results/output/runs/", "/impact-analysis/external-method-uses.bdmu");
         result.successfulOperation("Generate Impact Analysis File");
+    }
+
+    @Test
+    void impactOutputPath() throws IOException, InterruptedException {
+        DetectDockerTestBuilder test = new DetectDockerTestBuilder("detect-impact-output-path-test", "detect-impact-test:1.0.0");
+        test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Impact.dockerfile"));
+
+        DetectCommandBuilder commandBuilder = DetectCommandBuilder.withDefaults();
+        commandBuilder.property(DetectProperties.DETECT_TOOLS, "IMPACT_ANALYSIS");
+        commandBuilder.property(DetectProperties.DETECT_IMPACT_ANALYSIS_ENABLED, "true");
+        commandBuilder.property(DetectProperties.DETECT_IMPACT_ANALYSIS_OUTPUT_PATH, "/tmp");
+        DockerTestAssertions result = test.run(commandBuilder);
+
+        result.logContains("Vulnerability Impact Analysis generated report at /tmp/external-method-uses.bdmu");
     }
 }

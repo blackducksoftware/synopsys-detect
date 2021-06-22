@@ -7,8 +7,6 @@
  */
 package com.synopsys.integration.detect.tool.impactanalysis;
 
-import java.nio.file.Path;
-
 import org.jetbrains.annotations.Nullable;
 
 public class ImpactAnalysisOptions {
@@ -16,13 +14,10 @@ public class ImpactAnalysisOptions {
     private final String codeLocationPrefix;
     @Nullable
     private final String codeLocationSuffix;
-    @Nullable
-    private final Path outputDirectory;
 
-    public ImpactAnalysisOptions(@Nullable String codeLocationPrefix, @Nullable String codeLocationSuffix, @Nullable Path outputDirectory) {
+    public ImpactAnalysisOptions(@Nullable String codeLocationPrefix, @Nullable String codeLocationSuffix) {
         this.codeLocationPrefix = codeLocationPrefix;
         this.codeLocationSuffix = codeLocationSuffix;
-        this.outputDirectory = outputDirectory;
     }
 
     @Nullable
@@ -33,10 +28,5 @@ public class ImpactAnalysisOptions {
     @Nullable
     public String getCodeLocationSuffix() {
         return codeLocationSuffix;
-    }
-
-    @Nullable
-    public Path getOutputDirectory() {
-        return outputDirectory;
     }
 }

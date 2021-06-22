@@ -1,16 +1,6 @@
 package com.synopsys.integration.detect.workflow.blackduck.developer;
 
-import com.google.gson.Gson;
-import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponentResultView;
-import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
-import com.synopsys.integration.detect.workflow.DetectRunId;
-import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.detect.workflow.file.DirectoryOptions;
-import com.synopsys.integration.util.NameVersion;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-import org.mockito.Mockito;
-import org.zeroturnaround.zip.commons.FileUtils;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +8,18 @@ import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+import org.mockito.Mockito;
+import org.zeroturnaround.zip.commons.FileUtils;
+
+import com.google.gson.Gson;
+import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponentResultView;
+import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.workflow.DetectRunId;
+import com.synopsys.integration.detect.workflow.file.DirectoryManager;
+import com.synopsys.integration.detect.workflow.file.DirectoryOptions;
+import com.synopsys.integration.util.NameVersion;
 
 public class RapidModeGenerateJsonOperationTest {
 
@@ -28,7 +29,7 @@ public class RapidModeGenerateJsonOperationTest {
 
         File tempDir = tempPath.toFile();
         File scanDir = new File(tempDir, "scan");
-        DirectoryOptions directoryOptions = new DirectoryOptions(null, null, null, scanDir.toPath(), null);
+        DirectoryOptions directoryOptions = new DirectoryOptions(null, null, null, scanDir.toPath(), null, null);
         DetectRunId detectRunId = new DetectRunId("testId");
         DirectoryManager directoryManager = new DirectoryManager(directoryOptions, detectRunId);
         RapidModeGenerateJsonOperation op = new RapidModeGenerateJsonOperation(gson, directoryManager);
@@ -43,7 +44,7 @@ public class RapidModeGenerateJsonOperationTest {
 
         File generatedFile = op.generateJsonFile(projectNameVersion, results);
 
-        String expectedFilename = String.format("%s_%s_BlackDuck_DeveloperMode_Result.json",projectNameVersion.getName(), projectNameVersion.getVersion());
+        String expectedFilename = String.format("%s_%s_BlackDuck_DeveloperMode_Result.json", projectNameVersion.getName(), projectNameVersion.getVersion());
         String expectedPath = new File(scanDir, expectedFilename).getAbsolutePath();
         assertEquals(expectedPath, generatedFile.getAbsolutePath());
 

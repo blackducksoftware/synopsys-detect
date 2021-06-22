@@ -253,8 +253,8 @@ public class DetectConfigurationFactory {
         Path bdioPath = getPathOrNull(DetectProperties.DETECT_BDIO_OUTPUT_PATH.getProperty());
         Path scanPath = getPathOrNull(DetectProperties.DETECT_SCAN_OUTPUT_PATH.getProperty());
         Path toolsOutputPath = getPathOrNull(DetectProperties.DETECT_TOOLS_OUTPUT_PATH.getProperty());
-
-        return new DirectoryOptions(sourcePath, outputPath, bdioPath, scanPath, toolsOutputPath);
+        Path impactOutputPath = getPathOrNull(DetectProperties.DETECT_IMPACT_ANALYSIS_OUTPUT_PATH.getProperty());
+        return new DirectoryOptions(sourcePath, outputPath, bdioPath, scanPath, toolsOutputPath, impactOutputPath);
     }
 
     public AirGapOptions createAirGapOptions() {
@@ -452,10 +452,9 @@ public class DetectConfigurationFactory {
     }
 
     public ImpactAnalysisOptions createImpactAnalysisOptions() {
-        Path outputDirectory = getPathOrNull(DetectProperties.DETECT_IMPACT_ANALYSIS_OUTPUT_PATH.getProperty());
         String codeLocationPrefix = getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX);
         String codeLocationSuffix = getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX);
-        return new ImpactAnalysisOptions(codeLocationPrefix, codeLocationSuffix, outputDirectory);
+        return new ImpactAnalysisOptions(codeLocationPrefix, codeLocationSuffix);
     }
 
     public DetectExecutableOptions createDetectExecutableOptions() {
