@@ -37,8 +37,6 @@ The results are also printed in the logs:
 2021-06-18 11:38:18 EDT INFO  [main] --- 			Apache ActiveMQ 5.15.9 (maven:org.apache.activemq:activemq-client:5.15.9)
 ```
 
-Currently, it is recommended to run rapid mode with aggregation (either mode) to reduce duplication and reduce upload overhead.
-
 # Restrictions
 
 When Rapid Scan is enabled, ${solution_name} will only run certain tools to ensure results are calculated as fast as possible.
@@ -46,6 +44,8 @@ When Rapid Scan is enabled, ${solution_name} will only run certain tools to ensu
 The currently supported tools are: DETECTOR
 
 All other tools are disabled when running in Rapid Scan mode.
+
+Rapid mode should be run with aggregation so server-side metrics can be properly collected.
 
 Rapid Scan requires Black Duck policies. Rapid Scan only reports components that violates policies. If no policies are violated or there are no defined policies, then no components are returned.
 
