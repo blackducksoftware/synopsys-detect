@@ -181,13 +181,14 @@ To run a container built from a ${solution_name} image, use the Docker CLI's `do
 
 Find available images [here](https://hub.docker.com/repository/docker/blackducksoftware/detect).
 
-The format of image names is: blackducksoftware/detect:detect-[detect_version]-[package_manager]-[package_manager_version]
+The format of image names is: blackducksoftware/detect:[detect_version]-[package_manager]-[package_manager_version]
+* If you want an image with the latest supported release for a major version of Detect, and the latest supported version of a package manager, such images are named in the following format: blackducksoftware/detect:[detect_major_version]-[package_manager]
 
 #### ${solution_name} Base Image
 
 All Detect images are built from a base ${solution_name} image that can be used to build your own custom ${solution_name} image, to run ${solution_name} in buildless mode, or to run non-detector tools such as the Signature Scanner or Binary Scanner.
 
-The format of base image names is: blackducksoftware/detect:detect-[detect_version]
+The format of base image names is: blackducksoftware/detect:[detect_version]
 
 #### Examples
 
@@ -195,7 +196,7 @@ The format of base image names is: blackducksoftware/detect:detect-[detect_versi
 
 `docker run -it --rm -v /Home/my/gradle/project:/source -v /Home/where/I/want/detect/output/files:/output blackducksoftware/detect:7.0.0-gradle-6.8.2 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn`
 
-`docker run -it --rm -v /Home/my/maven/project:/source -v /Home/where/I/want/detect/output/files:/output blackducksoftware/detect:6.9.1-maven-3.8.1 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn`
+`docker run -it --rm -v /Home/my/maven/project:/source -v /Home/where/I/want/detect/output/files:/output blackducksoftware/detect:7-gradle --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn`
 
 `docker run -it --rm -v /Home/my/project:/source -v /Home/where/I/want/detect/output/files:/output blackducksoftware/detect:7.0.0 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn --detect.detector.buildless=true`
 
