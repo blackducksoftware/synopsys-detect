@@ -19,7 +19,6 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 import com.synopsys.integration.detectable.detectable.executable.resolver.NpmResolver;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.NpmNodeModulesNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectables.npm.NpmPackageJsonNameVersionExtractor;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
@@ -32,19 +31,16 @@ public class NpmCliDetectable extends Detectable {
     private final NpmResolver npmResolver;
     private final NpmCliExtractor npmCliExtractor;
     private final NpmCliExtractorOptions npmCliExtractorOptions;
-    private final NpmPackageJsonNameVersionExtractor npmPackageJsonNameVersionExtractor;
 
     private File packageJson;
     private ExecutableTarget npmExe;
 
-    public NpmCliDetectable(DetectableEnvironment environment, FileFinder fileFinder, NpmResolver npmResolver, NpmCliExtractor npmCliExtractor, NpmPackageJsonNameVersionExtractor npmPackageJsonNameVersionExtractor,
-        NpmCliExtractorOptions npmCliExtractorOptions) {
+    public NpmCliDetectable(DetectableEnvironment environment, FileFinder fileFinder, NpmResolver npmResolver, NpmCliExtractor npmCliExtractor, NpmCliExtractorOptions npmCliExtractorOptions) {
         super(environment);
         this.fileFinder = fileFinder;
         this.npmResolver = npmResolver;
         this.npmCliExtractor = npmCliExtractor;
         this.npmCliExtractorOptions = npmCliExtractorOptions; // TODO: Should this be wrapped in a detectables option?
-        this.npmPackageJsonNameVersionExtractor = npmPackageJsonNameVersionExtractor;
     }
 
     @Override
