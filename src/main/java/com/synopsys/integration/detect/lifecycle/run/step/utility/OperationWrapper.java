@@ -8,6 +8,7 @@
 package com.synopsys.integration.detect.lifecycle.run.step.utility;
 
 import java.io.IOException;
+import java.util.function.Consumer;
 
 import com.synopsys.integration.blackduck.exception.BlackDuckTimeoutExceededException;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
@@ -32,19 +33,30 @@ public class OperationWrapper {
     }
 
     public <T> T named(String name, Operation operation, OperationSupplier<T> supplier) throws DetectUserFriendlyException {
+        return named(name, operation, supplier, () -> {}, (e) -> {});
+    }
+
+    public <T> T namedWithCallbacks(String name, Operation operation, OperationSupplier<T> supplier, Runnable successConsumer, Consumer<Exception> errorConsumer) throws DetectUserFriendlyException {
+        return named(name, operation, supplier, successConsumer, errorConsumer);
+    }
+
+    public <T> T named(String name, Operation operation, OperationSupplier<T> supplier, Runnable successConsumer, Consumer<Exception> errorConsumer) throws DetectUserFriendlyException {
         try {
             T value = supplier.execute();
             operation.success();
+            successConsumer.run();
             return value;
         } catch (InterruptedException e) {
             String errorReason = String.format("There was a problem: %s", e.getMessage());
             operation.error(name, errorReason);
             // Restore interrupted state...
             Thread.currentThread().interrupt();
+            errorConsumer.accept(e);
             throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_GENERAL_ERROR);
         } catch (Exception e) {
             String errorReason = String.format("There was a problem: %s", e.getMessage());
             operation.error(name, errorReason);
+            errorConsumer.accept(e);
             throw new DetectUserFriendlyException(errorReason, e, exitCodeManager.getExitCodeFromExceptionDetails(e));
         } finally {
             operation.finish();

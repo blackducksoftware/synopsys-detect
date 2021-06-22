@@ -3,6 +3,7 @@ package com.synopsys.integration.detect.battery.docker.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 
 public class DetectCommandBuilder {
@@ -24,4 +25,9 @@ public class DetectCommandBuilder {
         property(property.getProperty().getKey(), value);
     }
 
+    public void connectToBlackDuck(final String blackduckUrl, final String apiToken, final boolean trustCert) {
+        property(DetectProperties.BLACKDUCK_URL, blackduckUrl);
+        property(DetectProperties.BLACKDUCK_API_TOKEN, apiToken);
+        property(DetectProperties.BLACKDUCK_TRUST_CERT, trustCert ? "true" : "false");
+    }
 }

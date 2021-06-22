@@ -66,8 +66,10 @@ import com.synopsys.integration.detect.workflow.airgap.AirGapOptions;
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
-import com.synopsys.integration.detect.workflow.blackduck.CustomFieldDocument;
-import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOptions;
+import com.synopsys.integration.detect.workflow.blackduck.project.customfields.CustomFieldDocument;
+import com.synopsys.integration.detect.workflow.blackduck.project.options.FindCloneOptions;
+import com.synopsys.integration.detect.workflow.blackduck.project.options.ParentProjectMapOptions;
+import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectSyncOptions;
 import com.synopsys.integration.detect.workflow.file.DirectoryOptions;
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeOptions;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
@@ -321,7 +323,12 @@ public class DetectConfigurationFactory {
         return getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_UNMAP);
     }
 
-    public DetectProjectServiceOptions createDetectProjectServiceOptions() throws DetectUserFriendlyException {
+    public CustomFieldDocument createCustomFieldDocument() throws DetectUserFriendlyException {
+        DetectCustomFieldParser parser = new DetectCustomFieldParser();
+        return parser.parseCustomFieldDocument(detectConfiguration.getRaw());
+    }
+
+    public ProjectSyncOptions createDetectProjectServiceOptions() {
         ProjectVersionPhaseType projectVersionPhase = getValue(DetectProperties.DETECT_PROJECT_VERSION_PHASE);
         ProjectVersionDistributionType projectVersionDistribution = getValue(DetectProperties.DETECT_PROJECT_VERSION_DISTRIBUTION);
         Integer projectTier = getNullableValue(DetectProperties.DETECT_PROJECT_TIER);
@@ -330,20 +337,38 @@ public class DetectConfigurationFactory {
         List<ProjectCloneCategoriesType> cloneCategories = getValue(DetectProperties.DETECT_PROJECT_CLONE_CATEGORIES);
         Boolean projectLevelAdjustments = getValue(DetectProperties.DETECT_PROJECT_LEVEL_ADJUSTMENTS);
         Boolean forceProjectVersionUpdate = getValue(DetectProperties.DETECT_PROJECT_VERSION_UPDATE);
-        String cloneVersionName = getNullableValue(DetectProperties.DETECT_CLONE_PROJECT_VERSION_NAME);
         String projectVersionNickname = getNullableValue(DetectProperties.DETECT_PROJECT_VERSION_NICKNAME);
-        String applicationId = getNullableValue(DetectProperties.DETECT_PROJECT_APPLICATION_ID);
-        List<String> groups = getValue(DetectProperties.DETECT_PROJECT_USER_GROUPS);
-        List<String> tags = getValue(DetectProperties.DETECT_PROJECT_TAGS);
+
+        return new ProjectSyncOptions(projectVersionPhase, projectVersionDistribution, projectTier, projectDescription, projectVersionNotes, cloneCategories, forceProjectVersionUpdate,
+            projectVersionNickname, projectLevelAdjustments);
+    }
+
+    public ParentProjectMapOptions createParentProjectMapOptions() {
         String parentProjectName = getNullableValue(DetectProperties.DETECT_PARENT_PROJECT_NAME);
         String parentProjectVersion = getNullableValue(DetectProperties.DETECT_PARENT_PROJECT_VERSION_NAME);
+        return new ParentProjectMapOptions(parentProjectName, parentProjectVersion);
+    }
+
+    public FindCloneOptions createCloneFindOptions() {
+        String cloneVersionName = getNullableValue(DetectProperties.DETECT_CLONE_PROJECT_VERSION_NAME);
         Boolean cloneLatestProjectVersion = getValue(DetectProperties.DETECT_CLONE_PROJECT_VERSION_LATEST);
 
-        DetectCustomFieldParser parser = new DetectCustomFieldParser();
-        CustomFieldDocument customFieldDocument = parser.parseCustomFieldDocument(detectConfiguration.getRaw());
+        return new FindCloneOptions(cloneVersionName, cloneLatestProjectVersion);
+    }
 
-        return new DetectProjectServiceOptions(projectVersionPhase, projectVersionDistribution, projectTier, projectDescription, projectVersionNotes, cloneCategories, projectLevelAdjustments, forceProjectVersionUpdate, cloneVersionName,
-            projectVersionNickname, applicationId, tags, groups, parentProjectName, parentProjectVersion, cloneLatestProjectVersion, customFieldDocument);
+    @Nullable
+    public String createApplicationId() {
+        return getNullableValue(DetectProperties.DETECT_PROJECT_APPLICATION_ID);
+    }
+
+    @Nullable
+    public List<String> createTags() {
+        return getValue(DetectProperties.DETECT_PROJECT_TAGS);
+    }
+
+    @Nullable
+    public List<String> createGroups() {
+        return getValue(DetectProperties.DETECT_PROJECT_USER_GROUPS);
     }
 
     public BlackDuckSignatureScannerOptions createBlackDuckSignatureScannerOptions() throws DetectUserFriendlyException {

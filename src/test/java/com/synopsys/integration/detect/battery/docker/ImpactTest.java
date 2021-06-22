@@ -13,22 +13,24 @@ import com.synopsys.integration.detect.battery.util.DockerTestAssertions;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
 @Tag("docker")
-public class Dotnet5Test {
+public class ImpactTest {
     @Test
     @Disabled
         //jp - temporarily until jenkins can run them.
-    void detectUsesDotnet5() throws IOException, InterruptedException {
-        DetectDockerTest test = new DetectDockerTest("detect-dotnet-five", "detect-dotnet-five:1.0.1");
-        test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Dotnet5.dockerfile"));
+    void offlineImpact() throws IOException, InterruptedException {
+        DetectDockerTest test = new DetectDockerTest("detect-impact-test", "detect-impact-test:1.0.0");
+        test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Impact.dockerfile"));
 
         DetectCommandBuilder commandBuilder = new DetectCommandBuilder();
-        commandBuilder.property(DetectProperties.DETECT_TOOLS, "DETECTOR");
+        commandBuilder.property(DetectProperties.DETECT_TOOLS, "IMPACT_ANALYSIS");
         commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
         commandBuilder.property(DetectProperties.DETECT_CLEANUP, "false");
         commandBuilder.property(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION, "DEBUG");
+        commandBuilder.property(DetectProperties.DETECT_IMPACT_ANALYSIS_ENABLED, "true");
         DockerTestAssertions result = test.run(commandBuilder);
 
-        result.successfulDetectorType("NUGET");
-        result.atLeastOneBdioFile();
+        result.successfulTool("IMPACT_ANALYSIS");
+        result.logContainsPattern("Vulnerability Impact Analysis generated report at /opt/results/output/runs/", "/impact-analysis/external-method-uses.bdmu");
+        result.successfulOperation("Generate Impact Analysis File");
     }
 }

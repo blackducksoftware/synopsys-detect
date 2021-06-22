@@ -74,7 +74,10 @@ public class DetectDockerRunner {
 
     public boolean imageExists(final String imageName, DockerClient dockerClient) {
         List<Image> images = dockerClient.listImagesCmd().exec();
-        List<String> tags = images.stream().flatMap(image -> Arrays.stream(image.getRepoTags())).collect(Collectors.toList());
+        List<String> tags = images.stream()
+                .filter(image -> image.getRepoTags() != null)
+                .flatMap(image -> Arrays.stream(image.getRepoTags()))
+                .collect(Collectors.toList());
         return tags.contains(imageName);
     }
 }

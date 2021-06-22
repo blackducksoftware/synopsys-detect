@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
 import com.synopsys.integration.detect.lifecycle.run.singleton.BootSingletons;
@@ -63,18 +64,23 @@ public class DetectRun {
             StepHelper stepHelper = new StepHelper(operationSystem, utilitySingletons.getOperationWrapper(), productRunData.getDetectToolFilter());
 
             if (productRunData.shouldUseBlackDuckProduct()) {
-                if (productRunData.getBlackDuckRunData().isRapid()) {
-                    RapidModeStepRunner rapidModeSteps = new RapidModeStepRunner(operationFactory);
-                    rapidModeSteps.runAll(productRunData.getBlackDuckRunData(), nameVersion, bdio);
-                } else if (productRunData.getBlackDuckRunData().isOnline()) {
-                    IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationFactory, stepHelper);
-                    intelligentModeSteps.runOnline(productRunData.getBlackDuckRunData(), bdio, nameVersion, productRunData.getDetectToolFilter(), universalToolsResult.getDockerTargetData()); //todo get post options
+                BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
+                if (blackDuckRunData.isRapid()) {
+                    if (blackDuckRunData.isOnline()) {
+                        RapidModeStepRunner rapidModeSteps = new RapidModeStepRunner(operationFactory);
+                        rapidModeSteps.runOnline(blackDuckRunData, nameVersion, bdio);
+                    } else {
+                        logger.info("Rapid Scan is offline, nothing to do.");
+                    }
                 } else {
-                    IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationFactory, stepHelper);
-                    intelligentModeSteps.runOffline(nameVersion, universalToolsResult.getDockerTargetData());
+                    if (blackDuckRunData.isOnline()) {
+                        IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationFactory, stepHelper);
+                        intelligentModeSteps.runOnline(blackDuckRunData, bdio, nameVersion, productRunData.getDetectToolFilter(), universalToolsResult.getDockerTargetData());
+                    } else {
+                        IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationFactory, stepHelper);
+                        intelligentModeSteps.runOffline(nameVersion, universalToolsResult.getDockerTargetData());
+                    }
                 }
-            } else {
-                logger.info("Black Duck tools will not be run.");
             }
         } catch (Exception e) {
             if (e.getMessage() != null) {

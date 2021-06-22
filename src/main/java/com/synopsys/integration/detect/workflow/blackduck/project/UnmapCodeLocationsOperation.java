@@ -5,7 +5,7 @@
  *
  * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
-package com.synopsys.integration.detect.workflow.blackduck;
+package com.synopsys.integration.detect.workflow.blackduck.project;
 
 import java.util.List;
 
@@ -20,13 +20,13 @@ import com.synopsys.integration.detect.configuration.DetectUserFriendlyException
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class DetectCodeLocationUnmapService {
+public class UnmapCodeLocationsOperation {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final BlackDuckApiClient blackDuckService;
     private final CodeLocationService codeLocationService;
 
-    public DetectCodeLocationUnmapService(BlackDuckApiClient blackDuckService, CodeLocationService codeLocationService) {
+    public UnmapCodeLocationsOperation(BlackDuckApiClient blackDuckService, CodeLocationService codeLocationService) {
         this.blackDuckService = blackDuckService;
         this.codeLocationService = codeLocationService;
     }
