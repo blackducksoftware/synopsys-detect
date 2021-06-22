@@ -668,7 +668,7 @@ public class OperationFactory { //TODO: OperationRunner
     }
 
     public void unmapCodeLocations(ProjectVersionWrapper projectVersion, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
-        auditLog.namedInternal("Add Tags", () -> {
+        auditLog.namedInternal("Unmap Code Locations", () -> {
             new UnmapCodeLocationsOperation(blackDuckRunData.getBlackDuckServicesFactory().getBlackDuckApiClient(), blackDuckRunData.getBlackDuckServicesFactory().createCodeLocationService())
                 .unmapCodeLocations(projectVersion.getProjectVersionView());
         });
@@ -679,14 +679,14 @@ public class OperationFactory { //TODO: OperationRunner
     }
 
     public CloneFindResult findLatestProjectVersionCloneUrl(BlackDuckRunData blackDuckRunData, String projectName) throws DetectUserFriendlyException {
-        return auditLog.namedInternal("Add Tags", () -> {
+        return auditLog.namedInternal("Find Clone Url By Latest", () -> {
             return new FindCloneByLatestOperation(blackDuckRunData.getBlackDuckServicesFactory().createProjectService(), blackDuckRunData.getBlackDuckServicesFactory().getBlackDuckApiClient())
                        .findLatestProjectVersionCloneUrl(projectName);
         });
     }
 
     public CloneFindResult findNamedCloneUrl(BlackDuckRunData blackDuckRunData, String projectName, String cloneVersionName) throws DetectUserFriendlyException {
-        return auditLog.namedInternal("Add Tags", () -> {
+        return auditLog.namedInternal("Find Clone Url By Name", () -> {
             return new FindCloneByNameOperation(blackDuckRunData.getBlackDuckServicesFactory().createProjectService())
                        .findNamedCloneUrl(projectName, cloneVersionName);
         });
