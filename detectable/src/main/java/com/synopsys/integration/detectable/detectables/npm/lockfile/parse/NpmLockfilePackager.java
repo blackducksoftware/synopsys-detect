@@ -90,12 +90,9 @@ public class NpmLockfilePackager {
             logger.debug("Lock file did not have a 'dependencies' section.");
         }
         logger.debug("Finished processing.");
-        ExternalId projectId;
-        if (packageJson.isPresent()) {
-            projectId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, packageJson.get().name, packageJson.get().version);
-        } else {
-            projectId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, packageLock.name, packageLock.version);
-        }
+        ExternalId projectId = packageJson
+                                   .map(it -> externalIdFactory.createNameVersionExternalId(Forge.NPMJS, it.name, it.version))
+                                   .orElse(externalIdFactory.createNameVersionExternalId(Forge.NPMJS, packageLock.name, packageLock.version));
         CodeLocation codeLocation = new CodeLocation(dependencyGraph, projectId);
         return new NpmParseResult(projectId.getName(), projectId.getVersion(), codeLocation);
     }
@@ -106,7 +103,7 @@ public class NpmLockfilePackager {
             if (resolved != null) {
                 dependencyGraph.addChildToRoot(resolved);
             } else {
-                logger.warn("No dependency found for package: " + dependency.getName());
+                logger.warn("No dependency found for package: {}", dependency.getName());
             }
         }
     }
@@ -123,7 +120,7 @@ public class NpmLockfilePackager {
                 logger.trace(String.format("Found package: %s with version: %s", resolved.getName(), resolved.getVersion()));
                 dependencyGraph.addChildWithParent(resolved, npmDependency.getGraphDependency());
             } else {
-                logger.warn("No dependency found for package: " + required.getName());
+                logger.warn("No dependency found for package: {}", required.getName());
             }
         });
 
