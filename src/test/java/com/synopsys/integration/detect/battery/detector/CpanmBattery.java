@@ -25,13 +25,13 @@ package com.synopsys.integration.detect.battery.detector;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detect.battery.util.DetectorBatteryTest;
+import com.synopsys.integration.detect.battery.util.DetectorBatteryTestRunner;
 
 @Tag("battery")
 public class CpanmBattery {
     @Test
     void lock() {
-        final DetectorBatteryTest test = new DetectorBatteryTest("cpanm-lock");
+        final DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("cpanm-lock");
         test.sourceDirectoryNamed("windows-cpanm");
         test.sourceFileFromResource("composer.json");
         test.sourceFileFromResource("composer.lock");

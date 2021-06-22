@@ -25,14 +25,14 @@ package com.synopsys.integration.detect.battery.detector;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detect.battery.util.DetectorBatteryTest;
+import com.synopsys.integration.detect.battery.util.DetectorBatteryTestRunner;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
 @Tag("battery")
 public class CondaBattery {
     @Test
     void lock() {
-        final DetectorBatteryTest test = new DetectorBatteryTest("conda-list");
+        final DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("conda-list");
         test.sourceDirectoryNamed("linux-conda");
         test.sourceFileNamed("environment.yml");
         test.sourceFileNamed("setup.py");

@@ -25,14 +25,14 @@ package com.synopsys.integration.detect.battery.detector;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detect.battery.util.DetectorBatteryTest;
+import com.synopsys.integration.detect.battery.util.DetectorBatteryTestRunner;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
 @Tag("battery")
 public class SbtBattery {
     @Test
     void resolutioncache() {
-        final DetectorBatteryTest test = new DetectorBatteryTest("sbt-resolutioncache");
+        final DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("sbt-resolutioncache");
         test.sourceDirectoryNamed("linux-sbt");
         test.sourceFileNamed("build.sbt");
         test.sourceFolderFromExpandedResource("target");
@@ -44,7 +44,7 @@ public class SbtBattery {
 
     @Test
     void dotPlugin() {
-        final DetectorBatteryTest test = new DetectorBatteryTest("sbt-dot");
+        final DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("sbt-dot");
         test.sourceDirectoryNamed("sbt-dot");
         test.sourceFileNamed("build.sbt");
         test.addDirectlyToSourceFolderFromExpandedResource("dots");
@@ -55,7 +55,7 @@ public class SbtBattery {
 
     @Test
     void dotPluginMultipleProjectNode() {
-        final DetectorBatteryTest test = new DetectorBatteryTest("sbt-dot-multipleprojectnode");
+        final DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("sbt-dot-multipleprojectnode");
         test.sourceDirectoryNamed("sbt-dot");
         test.sourceFileNamed("build.sbt");
         test.addDirectlyToSourceFolderFromExpandedResource("dots");

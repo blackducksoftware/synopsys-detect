@@ -15,7 +15,7 @@ import com.synopsys.integration.detect.battery.util.DockerTestAssertions;
 import com.synopsys.integration.detect.battery.util.TestPaths;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
-public class DetectDockerTest {
+public class DetectDockerTestBuilder {
     private final String testId;
     private final String imageName;
     private DockerImageProvider dockerImageProvider;
@@ -26,7 +26,7 @@ public class DetectDockerTest {
     private static String imageDetectPath = "/opt/detect";
     private static String imageToolPath = "/opt/tools";
 
-    public DetectDockerTest(final String testId, final String imageName) {
+    public DetectDockerTestBuilder(final String testId, final String imageName) {
         this.testId = testId;
         this.imageName = imageName;
     }
