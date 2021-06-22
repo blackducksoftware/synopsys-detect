@@ -37,7 +37,7 @@ The results are also printed in the logs:
 2021-06-18 11:38:18 EDT INFO  [main] --- 			Apache ActiveMQ 5.15.9 (maven:org.apache.activemq:activemq-client:5.15.9)
 ```
 
-For fastest results, enabling aggregate mode can increase the upload speed.
+Currently, it is recommended to run rapid mode with aggregation (either mode) to reduce duplication and reduce upload overhead.
 
 # Restrictions
 

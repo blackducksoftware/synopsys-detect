@@ -69,7 +69,7 @@ public class IntelligentModeStepRunner {
     public void runOnline(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, NameVersion projectNameVersion, DetectToolFilter detectToolFilter, DockerTargetData dockerTargetData)
         throws DetectUserFriendlyException, IntegrationException, IOException, InterruptedException {
 
-        ProjectVersionWrapper projectVersion = stepHelper.runAsGroup("Create or Locate Project", OperationType.INTERNAL, () -> getOrCreateProjectOnBlackDuck(blackDuckRunData, projectNameVersion));
+        ProjectVersionWrapper projectVersion = stepHelper.runAsGroup("Create or Locate Project", OperationType.INTERNAL, () -> new BlackDuckProjectVersionStepRunner(operationFactory).runAll(projectNameVersion, blackDuckRunData));
 
         logger.debug("Completed project and version actions.");
         logger.debug("Processing Detect Code Locations.");
@@ -174,11 +174,6 @@ public class IntelligentModeStepRunner {
     private Path generateImpactAnalysis(NameVersion projectNameVersion) throws DetectUserFriendlyException {
         String impactAnalysisName = operationFactory.generateImpactAnalysisCodeLocationName(projectNameVersion);
         return operationFactory.generateImpactAnalysisFile(impactAnalysisName);
-    }
-
-    public ProjectVersionWrapper getOrCreateProjectOnBlackDuck(BlackDuckRunData blackDuckRunData, NameVersion projectNameVersion) throws DetectUserFriendlyException {
-        logger.debug("Getting or creating project.");
-        return operationFactory.getOrCreateProject(blackDuckRunData, projectNameVersion); //TODO: This is not an operation.
     }
 
     public void riskReport(BlackDuckRunData blackDuckRunData, ProjectVersionWrapper projectVersion) throws IOException, DetectUserFriendlyException {
