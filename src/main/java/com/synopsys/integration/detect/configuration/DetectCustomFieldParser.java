@@ -16,8 +16,8 @@ import org.springframework.boot.context.properties.source.ConfigurationPropertyS
 import org.springframework.boot.context.properties.source.MapConfigurationPropertySource;
 
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
-import com.synopsys.integration.detect.workflow.blackduck.CustomFieldDocument;
-import com.synopsys.integration.detect.workflow.blackduck.CustomFieldElement;
+import com.synopsys.integration.detect.workflow.blackduck.project.customfields.CustomFieldDocument;
+import com.synopsys.integration.detect.workflow.blackduck.project.customfields.CustomFieldElement;
 
 public class DetectCustomFieldParser {
 

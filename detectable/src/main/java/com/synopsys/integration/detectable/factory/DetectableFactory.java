@@ -153,7 +153,6 @@ import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomWrapper
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseDetectable;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseExtractor;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseOptions;
-import com.synopsys.integration.detectable.detectables.npm.NpmPackageJsonNameVersionExtractor;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliDetectable;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliExtractor;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliExtractorOptions;
@@ -353,7 +352,7 @@ public class DetectableFactory {
     }
 
     public NpmCliDetectable createNpmCliDetectable(DetectableEnvironment environment, NpmResolver npmResolver, NpmCliExtractorOptions npmCliExtractorOptions) {
-        return new NpmCliDetectable(environment, fileFinder, npmResolver, npmCliExtractor(), npmPackageJsonDiscoverer(), npmCliExtractorOptions);
+        return new NpmCliDetectable(environment, fileFinder, npmResolver, npmCliExtractor(), npmCliExtractorOptions);
     }
 
     public NpmPackageLockDetectable createNpmPackageLockDetectable(DetectableEnvironment environment, NpmLockfileOptions npmLockfileOptions) {
@@ -625,11 +624,7 @@ public class DetectableFactory {
     }
 
     private NpmCliExtractor npmCliExtractor() {
-        return new NpmCliExtractor(executableRunner, npmCliDependencyFinder());
-    }
-
-    private NpmPackageJsonNameVersionExtractor npmPackageJsonDiscoverer() {
-        return new NpmPackageJsonNameVersionExtractor(gson);
+        return new NpmCliExtractor(executableRunner, npmCliDependencyFinder(), gson);
     }
 
     private NpmLockfileExtractor npmLockfileExtractor() {

@@ -7,6 +7,8 @@
  */
 package com.synopsys.integration.detect.workflow.status;
 
+import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
+
 public class Status {
     private final String descriptionKey;
     private final StatusType statusType;
@@ -24,4 +26,7 @@ public class Status {
         return statusType;
     }
 
+    public static Status forTool(DetectTool tool, StatusType statusType) {
+        return new Status(tool.toString(), statusType);
+    }
 }

@@ -7,10 +7,13 @@
  */
 package com.synopsys.integration.detect.lifecycle.run;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
 import com.synopsys.integration.detect.lifecycle.run.singleton.BootSingletons;
@@ -43,12 +46,12 @@ public class DetectRun {
     }
 
     public void run(BootSingletons bootSingletons) {
-        OperationSystem operationSystem = null;
+        Optional<OperationSystem> operationSystem = Optional.empty();
         try {
             SingletonFactory singletonFactory = new SingletonFactory(bootSingletons);
             EventSingletons eventSingletons = singletonFactory.createEventSingletons();
             UtilitySingletons utilitySingletons = singletonFactory.createUtilitySingletons(eventSingletons, exitCodeManager);
-            operationSystem = utilitySingletons.getOperationSystem();
+            operationSystem = Optional.of(utilitySingletons.getOperationSystem());
 
             ProductRunData productRunData = bootSingletons.getProductRunData(); //TODO: Remove run data from boot singletons
             OperationFactory operationFactory = createOperationFactory(bootSingletons, utilitySingletons, eventSingletons);
@@ -60,38 +63,45 @@ public class DetectRun {
             NameVersion nameVersion = stepRunner.determineProjectInformation(universalToolsResult);
             operationFactory.publishProjectNameVersionChosen(nameVersion);
             BdioResult bdio = stepRunner.generateBdio(universalToolsResult, nameVersion);
-            StepHelper stepHelper = new StepHelper(operationSystem, utilitySingletons.getOperationWrapper(), productRunData.getDetectToolFilter());
+            StepHelper stepHelper = new StepHelper(utilitySingletons.getOperationSystem(), utilitySingletons.getOperationWrapper(), productRunData.getDetectToolFilter());
 
             if (productRunData.shouldUseBlackDuckProduct()) {
-                if (productRunData.getBlackDuckRunData().isRapid()) {
+                BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
+                if (blackDuckRunData.isRapid() && blackDuckRunData.isOnline()) {
                     RapidModeStepRunner rapidModeSteps = new RapidModeStepRunner(operationFactory);
-                    rapidModeSteps.runAll(productRunData.getBlackDuckRunData(), nameVersion, bdio);
-                } else if (productRunData.getBlackDuckRunData().isOnline()) {
+                    rapidModeSteps.runOnline(blackDuckRunData, nameVersion, bdio);
+                } else if (blackDuckRunData.isRapid()) {
+                    logger.info("Rapid Scan is offline, nothing to do.");
+                } else if (blackDuckRunData.isOnline()) {
                     IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationFactory, stepHelper);
-                    intelligentModeSteps.runOnline(productRunData.getBlackDuckRunData(), bdio, nameVersion, productRunData.getDetectToolFilter(), universalToolsResult.getDockerTargetData()); //todo get post options
+                    intelligentModeSteps.runOnline(blackDuckRunData, bdio, nameVersion, productRunData.getDetectToolFilter(), universalToolsResult.getDockerTargetData());
                 } else {
                     IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationFactory, stepHelper);
                     intelligentModeSteps.runOffline(nameVersion, universalToolsResult.getDockerTargetData());
                 }
-            } else {
-                logger.info("Black Duck tools will not be run.");
             }
         } catch (Exception e) {
-            if (e.getMessage() != null) {
-                logger.error("Detect run failed: {}", e.getMessage());
-            } else {
-                logger.error("Detect run failed: {}", e.getClass().getSimpleName());
-            }
+            logger.error("Detect run failed: {}", getExceptionMessage(e));
             logger.debug("An exception was thrown during the detect run.", e);
             exitCodeManager.requestExitCode(e);
-            if (e instanceof InterruptedException) {
-                // Restore interrupted state...
-                Thread.currentThread().interrupt();
-            }
+            checkForInterruptedException(e);
         } finally {
-            if (operationSystem != null) {
-                operationSystem.publishOperations();
-            }
+            operationSystem.ifPresent(OperationSystem::publishOperations);
+        }
+    }
+
+    private String getExceptionMessage(Exception e) {
+        if (e.getMessage() != null) {
+            return e.getMessage();
+        } else {
+            return e.getClass().getSimpleName();
+        }
+    }
+
+    private void checkForInterruptedException(Exception e) {
+        if (e instanceof InterruptedException) {
+            // Restore interrupted state...
+            Thread.currentThread().interrupt();
         }
     }
 }

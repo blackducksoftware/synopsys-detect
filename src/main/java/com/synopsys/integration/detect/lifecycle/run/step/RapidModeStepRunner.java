@@ -26,7 +26,7 @@ public class RapidModeStepRunner {
         this.operationFactory = operationFactory;
     }
 
-    public void runAll(BlackDuckRunData blackDuckRunData, NameVersion projectVersion, BdioResult bdioResult) throws DetectUserFriendlyException, IOException {
+    public void runOnline(BlackDuckRunData blackDuckRunData, NameVersion projectVersion, BdioResult bdioResult) throws DetectUserFriendlyException, IOException {
         operationFactory.phoneHome(blackDuckRunData);
         List<DeveloperScanComponentResultView> results = operationFactory.performRapidScan(blackDuckRunData, bdioResult);
         File jsonFile = operationFactory.generateRapidJsonFile(projectVersion, results);

@@ -12,15 +12,15 @@ import com.synopsys.integration.executable.ExecutableRunnerException;
 
 import freemarker.template.TemplateException;
 
-public abstract class BatteryTest {
+public abstract class BatteryTestRunner {
     protected final BatteryContext batteryContext;
     private boolean shouldAssertBdio = false;
 
-    public BatteryTest(String name) {
+    public BatteryTestRunner(String name) {
         this.batteryContext = new BatteryContext(name);
     }
 
-    public BatteryTest(String testName, String resourcePrefix) {
+    public BatteryTestRunner(String testName, String resourcePrefix) {
         this.batteryContext = new BatteryContext(testName, resourcePrefix);
     }
 

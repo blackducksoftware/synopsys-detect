@@ -47,6 +47,7 @@ import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.run.DetectFontLoaderFactory;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
@@ -54,7 +55,6 @@ import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.AggregateDecisionOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BdioUploadResult;
-import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.ProjectCreationOperation;
 import com.synopsys.integration.detect.lifecycle.run.singleton.BootSingletons;
 import com.synopsys.integration.detect.lifecycle.run.singleton.EventSingletons;
 import com.synopsys.integration.detect.lifecycle.run.singleton.UtilitySingletons;
@@ -100,9 +100,7 @@ import com.synopsys.integration.detect.workflow.bdio.CreateBdio1FilesOperation;
 import com.synopsys.integration.detect.workflow.bdio.CreateBdio2FilesOperation;
 import com.synopsys.integration.detect.workflow.bdio.DetectBdioWriter;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
-import com.synopsys.integration.detect.workflow.blackduck.DetectCustomFieldService;
 import com.synopsys.integration.detect.workflow.blackduck.DetectFontLoader;
-import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOptions;
 import com.synopsys.integration.detect.workflow.blackduck.bdio.IntelligentPersistentUploadOperation;
 import com.synopsys.integration.detect.workflow.blackduck.bdio.LegacyBdio1UploadOperation;
 import com.synopsys.integration.detect.workflow.blackduck.bdio.LegacyBdio2UploadOperation;
@@ -116,6 +114,19 @@ import com.synopsys.integration.detect.workflow.blackduck.developer.RapidScanDet
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultAggregator;
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultSummary;
 import com.synopsys.integration.detect.workflow.blackduck.policy.PolicyChecker;
+import com.synopsys.integration.detect.workflow.blackduck.project.AddTagsToProjectOperation;
+import com.synopsys.integration.detect.workflow.blackduck.project.AddUserGroupsToProjectOperation;
+import com.synopsys.integration.detect.workflow.blackduck.project.FindCloneByLatestOperation;
+import com.synopsys.integration.detect.workflow.blackduck.project.FindCloneByNameOperation;
+import com.synopsys.integration.detect.workflow.blackduck.project.MapToParentOperation;
+import com.synopsys.integration.detect.workflow.blackduck.project.SetApplicationIdOperation;
+import com.synopsys.integration.detect.workflow.blackduck.project.SyncProjectOperation;
+import com.synopsys.integration.detect.workflow.blackduck.project.UnmapCodeLocationsOperation;
+import com.synopsys.integration.detect.workflow.blackduck.project.UpdateCustomFieldsOperation;
+import com.synopsys.integration.detect.workflow.blackduck.project.customfields.CustomFieldDocument;
+import com.synopsys.integration.detect.workflow.blackduck.project.options.CloneFindResult;
+import com.synopsys.integration.detect.workflow.blackduck.project.options.FindCloneOptions;
+import com.synopsys.integration.detect.workflow.blackduck.project.options.ParentProjectMapOptions;
 import com.synopsys.integration.detect.workflow.blackduck.report.service.ReportService;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationResult;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationEventPublisher;
@@ -306,16 +317,6 @@ public class OperationFactory { //TODO: OperationRunner
         auditLog.namedInternal("Map Impact Analysis Code Locations", () -> {
             ImpactAnalysisMapCodeLocationsOperation mapCodeLocationsOperation = new ImpactAnalysisMapCodeLocationsOperation(blackDuckServicesFactory.getBlackDuckApiClient());
             mapCodeLocationsOperation.mapCodeLocations(impactAnalysisFile, impactCodeLocationData, projectVersionWrapper);
-        });
-    }
-
-    public final ProjectVersionWrapper getOrCreateProject(BlackDuckRunData blackDuckRunData, NameVersion projeNameVersion) throws DetectUserFriendlyException {
-        return auditLog.namedPublic("Create or Get Project On Black Duck", () -> {
-            DetectProjectServiceOptions options = detectConfigurationFactory.createDetectProjectServiceOptions();
-            DetectCustomFieldService detectCustomFieldService = new DetectCustomFieldService();
-
-            return new ProjectCreationOperation(detectConfigurationFactory.createShouldUnmapCodeLocations(), options, detectCustomFieldService)
-                       .execute(blackDuckRunData.getBlackDuckServicesFactory(), projeNameVersion);
         });
     }
 
@@ -588,24 +589,112 @@ public class OperationFactory { //TODO: OperationRunner
     }
 
     public void publishBinaryFailure(String message) {
-        statusEventPublisher.publishStatusSummary(new Status("BINARY_SCAN", StatusType.FAILURE));
+        statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.BINARY_SCAN, StatusType.FAILURE));
         exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, "BINARY_SCAN");
     }
 
     public void publishImpactFailure(Exception e) {
-        statusEventPublisher.publishStatusSummary(new Status("IMPACT_ANALYSIS", StatusType.FAILURE));
-        exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, "BINARY_SCAN");
+        statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.IMPACT_ANALYSIS, StatusType.FAILURE));
+        exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, "IMPACT_ANALYSIS");
     }
 
     public void publishImpactSuccess() {
-        statusEventPublisher.publishStatusSummary(new Status("BINARY_SCAN", StatusType.FAILURE));
-        exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, "BINARY_SCAN");
+        statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.IMPACT_ANALYSIS, StatusType.SUCCESS));
     }
 
     public CodeLocationCreationData<BinaryScanBatchOutput> uploadBinaryScanFile(final File binaryUpload, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
         return auditLog.namedPublic("Binary Upload", () -> {
             return new BinaryUploadOperation(statusEventPublisher, codeLocationNameManager, calculateBinaryScanOptions())
                        .uploadBinaryScanFile(binaryUpload, blackDuckRunData.getBlackDuckServicesFactory().createBinaryScanUploadService(), projectNameVersion);
+        });
+    }
+
+    public ProjectVersionWrapper syncProjectVersion(NameVersion projectNameVersion, CloneFindResult cloneFindResult, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
+        return auditLog.namedInternal("Sync Project", () -> {
+            return new SyncProjectOperation(blackDuckRunData.getBlackDuckServicesFactory().createProjectService()).sync(projectNameVersion, cloneFindResult, detectConfigurationFactory.createDetectProjectServiceOptions());
+        });
+    }
+
+    public ParentProjectMapOptions calculateParentProjectMapOptions() {
+        return detectConfigurationFactory.createParentProjectMapOptions();
+    }
+
+    public void mapToParentProject(String parentProjectName, String parentProjectVersionName, ProjectVersionWrapper projectVersion, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
+        auditLog.namedInternal("Map to Parent Project", () -> {
+            new MapToParentOperation(blackDuckRunData.getBlackDuckServicesFactory().getBlackDuckApiClient(), blackDuckRunData.getBlackDuckServicesFactory().createProjectService(),
+                blackDuckRunData.getBlackDuckServicesFactory().createProjectBomService())
+                .mapToParentProjectVersion(parentProjectName, parentProjectVersionName, projectVersion);
+        });
+    }
+
+    public String calculateApplicationId() {
+        return detectConfigurationFactory.createApplicationId();
+    }
+
+    public void setApplicationId(String applicationId, ProjectVersionWrapper projectVersion, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
+        auditLog.namedInternal("Sync Project", () -> {
+            new SetApplicationIdOperation(blackDuckRunData.getBlackDuckServicesFactory().createProjectMappingService()).setApplicationId(projectVersion.getProjectView(), applicationId);
+        });
+    }
+
+    public CustomFieldDocument calculateCustomFields() throws DetectUserFriendlyException {
+        return detectConfigurationFactory.createCustomFieldDocument();
+    }
+
+    public void updateCustomFields(CustomFieldDocument customFieldDocument, ProjectVersionWrapper projectVersion, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
+        auditLog.namedInternal("Update Custom Fields", () -> {
+            new UpdateCustomFieldsOperation(blackDuckRunData.getBlackDuckServicesFactory().getBlackDuckApiClient()).updateCustomFields(projectVersion, customFieldDocument);
+        });
+    }
+
+    public List<String> calculateUserGroups() {
+        return detectConfigurationFactory.createGroups();
+    }
+
+    public List<String> calculateTags() {
+        return detectConfigurationFactory.createTags();
+    }
+
+    public void addUserGroups(List<String> userGroups, ProjectVersionWrapper projectVersion, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
+        auditLog.namedInternal("Add User Groups", () -> {
+            new AddUserGroupsToProjectOperation(blackDuckRunData.getBlackDuckServicesFactory().createProjectUsersService())
+                .addUserGroupsToProject(projectVersion, userGroups);
+        });
+    }
+
+    public void addTags(List<String> tags, ProjectVersionWrapper projectVersion, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
+        auditLog.namedInternal("Add Tags", () -> {
+            new AddTagsToProjectOperation(blackDuckRunData.getBlackDuckServicesFactory().createTagService())
+                .addTagsToProject(projectVersion, tags);
+        });
+    }
+
+    public boolean calculateShouldUnmap() {
+        return detectConfigurationFactory.createShouldUnmapCodeLocations();
+    }
+
+    public void unmapCodeLocations(ProjectVersionWrapper projectVersion, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
+        auditLog.namedInternal("Unmap Code Locations", () -> {
+            new UnmapCodeLocationsOperation(blackDuckRunData.getBlackDuckServicesFactory().getBlackDuckApiClient(), blackDuckRunData.getBlackDuckServicesFactory().createCodeLocationService())
+                .unmapCodeLocations(projectVersion.getProjectVersionView());
+        });
+    }
+
+    public FindCloneOptions calculateCloneOptions() {
+        return detectConfigurationFactory.createCloneFindOptions();
+    }
+
+    public CloneFindResult findLatestProjectVersionCloneUrl(BlackDuckRunData blackDuckRunData, String projectName) throws DetectUserFriendlyException {
+        return auditLog.namedInternal("Find Clone Url By Latest", () -> {
+            return new FindCloneByLatestOperation(blackDuckRunData.getBlackDuckServicesFactory().createProjectService(), blackDuckRunData.getBlackDuckServicesFactory().getBlackDuckApiClient())
+                       .findLatestProjectVersionCloneUrl(projectName);
+        });
+    }
+
+    public CloneFindResult findNamedCloneUrl(BlackDuckRunData blackDuckRunData, String projectName, String cloneVersionName) throws DetectUserFriendlyException {
+        return auditLog.namedInternal("Find Clone Url By Name", () -> {
+            return new FindCloneByNameOperation(blackDuckRunData.getBlackDuckServicesFactory().createProjectService())
+                       .findNamedCloneUrl(projectName, cloneVersionName);
         });
     }
 }

@@ -2,6 +2,8 @@
 
 Rapid Scan or Rapid Scan Mode is a new way of running ${solution_name} with Black Duck. This mode is designed to be as fast as possible and does not persist any data on Black Duck.
 
+It is enabled by adding [--detect.blackduck.scan.mode=RAPID](../properties/configuration/blackduck%20server/#detect-scan-mode-advanced) to a run of detect.
+
 # Overview
 
 Unlike persistent scans, no data is stored on Black Duck and all scans are done transiently. These scans are primarily intended to be fast.
@@ -39,13 +41,19 @@ The results are also printed in the logs:
 
 When Rapid Scan is enabled, ${solution_name} will only run certain tools to ensure results are calculated as fast as possible.
 
-The currently supported tools are: DETECTOR, SIGNATURE SCAN
+The currently supported tools are: DETECTOR
 
 All other tools are disabled when running in Rapid Scan mode.
 
-Rapid Scan cannot be run in offline mode.
+Rapid mode should be run with aggregation so server-side metrics can be properly collected.
 
-Detect cannot fail on severity for Rapid Scan policy violations because Rapid Scan policy violations do not have a severity.
+Rapid Scan requires Black Duck policies. Rapid Scan only reports components that violates policies. If no policies are violated or there are no defined policies, then no components are returned.
+
+Detect will fail with FAILURE_POLICY_VIOLATION if any component violate polices with a CRITICAL or BLOCKER severity.
+
+See Black Duck documentation for a list of policy conditions that are supported by Rapid Scan.
+
+The Detect property detect.policy.check.fail.on.severities does not apply to Rapid Scanning.
 
 Detect does not create a Project or Version on Black Duck in Rapid Mode.
 

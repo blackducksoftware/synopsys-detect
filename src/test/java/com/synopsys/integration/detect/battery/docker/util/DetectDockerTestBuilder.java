@@ -12,10 +12,9 @@ import com.github.dockerjava.api.model.HostConfig;
 import com.synopsys.integration.detect.battery.docker.provider.DockerImageProvider;
 import com.synopsys.integration.detect.battery.util.DetectJar;
 import com.synopsys.integration.detect.battery.util.DockerTestAssertions;
-import com.synopsys.integration.detect.battery.util.TestPaths;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
-public class DetectDockerTest {
+public class DetectDockerTestBuilder {
     private final String testId;
     private final String imageName;
     private DockerImageProvider dockerImageProvider;
@@ -26,7 +25,7 @@ public class DetectDockerTest {
     private static String imageDetectPath = "/opt/detect";
     private static String imageToolPath = "/opt/tools";
 
-    public DetectDockerTest(final String testId, final String imageName) {
+    public DetectDockerTestBuilder(final String testId, final String imageName) {
         this.testId = testId;
         this.imageName = imageName;
     }
@@ -39,8 +38,8 @@ public class DetectDockerTest {
         this.dockerImageProvider = dockerImageProvider;
     }
 
-    private DockerTestDirectories setup() {
-        File dockerTestDirectory = new File(TestPaths.build(), "docker");
+    private DockerTestDirectories setup() throws IOException {
+        File dockerTestDirectory = SharedDockerDirectory.getRoot();
         File toolsDirectory = new File(dockerTestDirectory, "tools");
         File resultDirectory = new File(dockerTestDirectory, testId);
         File resultOutputDirectory = new File(resultDirectory, "output");
@@ -111,7 +110,12 @@ public class DetectDockerTest {
     }
 
     public DockerTestAssertions run(DetectCommandBuilder commandBuilder) {
-        DockerTestDirectories directories = setup();
+        DockerTestDirectories directories = null;
+        try {
+            directories = setup();
+        } catch (IOException e) {
+            Assertions.fail("Unable to setup docker directory.", e);
+        }
         DockerDetectResult result = runContainer(directories, commandBuilder);
         return new DockerTestAssertions(directories, result);
     }

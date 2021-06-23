@@ -31,15 +31,15 @@ import java.util.Map;
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
-public final class DetectorBatteryTest extends BatteryTest {
+public final class DetectorBatteryTestRunner extends BatteryTestRunner {
     private String toolsValue = "DETECTOR";
     private List<String> additionalProperties = new ArrayList<>();
 
-    public DetectorBatteryTest(final String name) {
+    public DetectorBatteryTestRunner(final String name) {
         super(name);
     }
 
-    public DetectorBatteryTest(final String testName, final String resourcePrefix) {
+    public DetectorBatteryTestRunner(final String testName, final String resourcePrefix) {
         super(testName, resourcePrefix);
     }
 

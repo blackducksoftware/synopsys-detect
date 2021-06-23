@@ -37,7 +37,7 @@ public class OperationWrapper {
     }
 
     public <T> T namedWithCallbacks(String name, Operation operation, OperationSupplier<T> supplier, Runnable successConsumer, Consumer<Exception> errorConsumer) throws DetectUserFriendlyException {
-        return named(name, operation, supplier);
+        return named(name, operation, supplier, successConsumer, errorConsumer);
     }
 
     public <T> T named(String name, Operation operation, OperationSupplier<T> supplier, Runnable successConsumer, Consumer<Exception> errorConsumer) throws DetectUserFriendlyException {
