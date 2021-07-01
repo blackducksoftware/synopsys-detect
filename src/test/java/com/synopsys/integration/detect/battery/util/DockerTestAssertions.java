@@ -102,17 +102,9 @@ public class DockerTestAssertions {
         Assertions.assertTrue(Objects.requireNonNull(bdioDirectory.listFiles()).length > 0, "Expected at least one bdio file!");
     }
 
-    public void logContainsPattern(String... patternPieces) {
-        StringBuilder pattern = new StringBuilder();
-        for (String patternPiece : patternPieces) {
-            if (pattern.length() == 0) {
-                pattern.append(Pattern.quote(patternPiece));
-            } else {
-                pattern.append(".*").append(Pattern.quote(patternPiece));
-            }
-        }
+    public void logContainsPattern(String pattern) {
         Assertions.assertNotNull(pattern);
-        Pattern regex = Pattern.compile("(?s).*" + pattern.toString() + ".*", Pattern.MULTILINE);
+        Pattern regex = Pattern.compile("(?s).*" + pattern + ".*", Pattern.MULTILINE);
         Assertions.assertTrue(regex.matcher(dockerDetectResult.getDetectLogs()).matches(), "Expected logs to contain '" + regex.toString() + "' but they did not.");
     }
 
@@ -123,5 +115,13 @@ public class DockerTestAssertions {
     public void successfulOperation(String operationName) {
         successfulOperationStatusJson(operationName);
         successfulThingLogged(operationName);
+    }
+
+    public void projectVersion(String project, String version) {
+        FormattedOutput statusJson = locateStatusJson();
+        Assertions.assertEquals(project, statusJson.projectName);
+        Assertions.assertEquals(version, statusJson.projectVersion);
+        logContains("Project name: " + project); //Should we rely solely on the status json?
+        logContains("Project version: " + version);
     }
 }
