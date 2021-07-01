@@ -15,13 +15,13 @@ Synopsys Detect consolidates the functionality of Black Duck™ , Black Duck Bin
 *Available from GitHub for Linux/MacOS by running:*
 
 ```bash
-bash <(curl -s -L https://detect.synopsys.com/detect.sh)
+bash <(curl -s -L https://detect.synopsys.com/detect7.sh)
 ```
 
 *Available from GitHub for Windows by running:*
 
 ```cmd
-powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"
+powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect"
 ```
 
 For scripts, please see [Detect Scripts](https://github.com/synopsys-sig/synopsys-detect-scripts).
