@@ -27,5 +27,6 @@ public class Dotnet5Test {
 
         result.successfulDetectorType("NUGET");
         result.atLeastOneBdioFile();
+        result.logContains("https://sig-repo.synopsys.com/bds-integrations-nuget-release/"); // Verify we are using the EXTERNAL artifactory to download the inspector.
     }
 }
