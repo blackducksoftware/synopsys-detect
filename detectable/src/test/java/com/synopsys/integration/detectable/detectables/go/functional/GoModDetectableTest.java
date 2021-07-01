@@ -28,11 +28,17 @@ public class GoModDetectableTest extends DetectableFunctionalTest {
         addFile(Paths.get("go.mod"));
 
         ExecutableOutput goListOutput = createStandardOutput(
-            "github.com/gomods/athens",
-            "github.com/sirupsen/logrus",
-            "github.com/dgrijalva/jwt-go"
+            "{\n",
+            "\t\"Path\": \"github.com/gomods/athens\"\n",
+            "}\n",
+            "{\n",
+            "\t\"Path\": \"github.com/sirupsen/logrus\"\n",
+            "}\n",
+            "{\n",
+            "\t\"Path\": \"github.com/dgrijalva/jwt-go\"\n",
+            "}\n"
         );
-        addExecutableOutput(goListOutput, "go", "list", "-m");
+        addExecutableOutput(goListOutput, "go", "list", "-m", "-json");
 
         ExecutableOutput goVersionOutput = createStandardOutput(
             "go version go1.14.5 darwin/amd64"
@@ -44,7 +50,6 @@ public class GoModDetectableTest extends DetectableFunctionalTest {
             "\t\"Path\": \"github.com/codegangsta/negroni\",\n",
             "\t\"Version\": \"v1.0.0\"\n",
             "}\n",
-            "",
             "{\n",
             "\t\"Path\": \"github.com/sirupsen/logrus\",\n",
             "\t\"Version\": \"v1.1.1\",\n",
@@ -53,7 +58,6 @@ public class GoModDetectableTest extends DetectableFunctionalTest {
             "\t\t\"Version\": \"v2.0.0\"\n",
             "\t}\n",
             "}\n",
-            "",
             "{\n",
             "\t\"Path\": \"github.com/davecgh/go-spew\",\n",
             "\t\"Version\": \"v1.1.1\"\n",
@@ -69,7 +73,7 @@ public class GoModDetectableTest extends DetectableFunctionalTest {
             "github.com/gomods/athens github.com/codegangsta/negroni@v1.0.0",
             "github.com/gomods/athens github.com/sirupsen/logrus@v1.1.1",
             "github.com/sirupsen/logrus@v1.1.1 github.com/davecgh/go-spew@v1.1.1",
-            "github.com/dgrijalva/jwt-go github.com/dgrijalva/jwt-go@v3.2.0+incompatible"
+            "github.com/gomods/athens github.com/dgrijalva/jwt-go@v3.2.0+incompatible"
         );
         addExecutableOutput(goModGraphOutput, "go", "mod", "graph");
 
@@ -104,13 +108,30 @@ public class GoModDetectableTest extends DetectableFunctionalTest {
     public void assertExtraction(@NotNull Extraction extraction) {
         Assertions.assertEquals(3, extraction.getCodeLocations().size());
 
-        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.GOLANG, extraction.getCodeLocations().get(0).getDependencyGraph());
-        graphAssert.hasRootSize(2);
-        graphAssert.hasRootDependency("github.com/codegangsta/negroni", "v1.0.0");
-        graphAssert.hasRootDependency("github.com/sirupsen/logrus", "v2.0.0");
-        graphAssert.hasParentChildRelationship("github.com/sirupsen/logrus", "v2.0.0", "github.com/davecgh/go-spew", "v1.1.1");
-        graphAssert.hasNoDependency("github.com/dgrijalva/jwt-go", "v3.2.0+incompatible");
-        graphAssert.hasDependency("github.com/dgrijalva/jwt-go", "v3.2.0");
+        NameVersionGraphAssert athensGraphAssert = new NameVersionGraphAssert(Forge.GOLANG, extraction.getCodeLocations().get(0).getDependencyGraph());
+        athensGraphAssert.hasRootSize(3);
+        athensGraphAssert.hasRootDependency("github.com/codegangsta/negroni", "v1.0.0");
+        athensGraphAssert.hasRootDependency("github.com/sirupsen/logrus", "v2.0.0");
+        athensGraphAssert.hasRootDependency("github.com/dgrijalva/jwt-go", "v3.2.0");
+        athensGraphAssert.hasParentChildRelationship("github.com/sirupsen/logrus", "v2.0.0", "github.com/davecgh/go-spew", "v1.1.1");
+        athensGraphAssert.hasNoDependency("github.com/dgrijalva/jwt-go", "v3.2.0+incompatible");
+        athensGraphAssert.hasNoDependency("github.com/gomods/athens", "v3.2.0+incompatible"); // Represented by the CodeLocation
+
+        NameVersionGraphAssert logurusGraphAssert = new NameVersionGraphAssert(Forge.GOLANG, extraction.getCodeLocations().get(1).getDependencyGraph());
+        logurusGraphAssert.hasRootSize(1);
+        logurusGraphAssert.hasRootDependency("github.com/davecgh/go-spew", "v1.1.1");
+        logurusGraphAssert.hasNoDependency("github.com/dgrijalva/jwt-go", "v3.2.0+incompatible");
+        logurusGraphAssert.hasNoDependency("github.com/dgrijalva/jwt-go", "v3.2.0");
+        logurusGraphAssert.hasNoDependency("github.com/codegangsta/negroni", "v1.0.0");
+        logurusGraphAssert.hasNoDependency("github.com/sirupsen/logrus", "v2.0.0"); // Represented by the CodeLocation
+
+        NameVersionGraphAssert jwtGraphAssert = new NameVersionGraphAssert(Forge.GOLANG, extraction.getCodeLocations().get(2).getDependencyGraph());
+        jwtGraphAssert.hasRootSize(1);
+        jwtGraphAssert.hasRootDependency("github.com/sirupsen/logrus", "v2.0.0");
+        jwtGraphAssert.hasNoDependency("github.com/dgrijalva/jwt-go", "v3.2.0"); // Represented by the CodeLocation
+        jwtGraphAssert.hasNoDependency("github.com/dgrijalva/jwt-go", "v3.2.0+incompatible");
+        jwtGraphAssert.hasNoDependency("github.com/codegangsta/negroni", "v1.0.0");
+
     }
 
 }

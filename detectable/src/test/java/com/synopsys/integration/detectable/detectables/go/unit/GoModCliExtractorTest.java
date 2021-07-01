@@ -17,10 +17,10 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliExtractor;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCommandExecutor;
-import com.synopsys.integration.detectable.detectables.go.gomod.GoModGraphParser;
-import com.synopsys.integration.detectable.detectables.go.gomod.GoModGraphTransformer;
-import com.synopsys.integration.detectable.detectables.go.gomod.GoModWhyParser;
-import com.synopsys.integration.detectable.detectables.go.gomod.ReplacementDataExtractor;
+import com.synopsys.integration.detectable.detectables.go.gomod.dependency.GoModGraphGenerator;
+import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoGraphParser;
+import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoListParser;
+import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoModWhyParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.executable.Executable;
 import com.synopsys.integration.executable.ExecutableOutput;
