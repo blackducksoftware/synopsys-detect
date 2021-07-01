@@ -11,7 +11,7 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detectable.detectables.go.gomod.GoModWhyParser;
+import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoModWhyParser;
 
 public class GoModWhyParserTest {
 
