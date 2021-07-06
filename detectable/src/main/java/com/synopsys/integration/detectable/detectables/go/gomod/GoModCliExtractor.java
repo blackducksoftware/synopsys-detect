@@ -15,15 +15,15 @@ import java.util.stream.Collectors;
 
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectables.go.gomod.dependency.GoModGraphGenerator;
-import com.synopsys.integration.detectable.detectables.go.gomod.dependency.GoRelationshipManager;
-import com.synopsys.integration.detectable.detectables.go.gomod.dependency.GoVersionManager;
 import com.synopsys.integration.detectable.detectables.go.gomod.model.GoGraphRelationship;
 import com.synopsys.integration.detectable.detectables.go.gomod.model.GoListModule;
 import com.synopsys.integration.detectable.detectables.go.gomod.model.GoListUJsonData;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoGraphParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoListParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoModWhyParser;
+import com.synopsys.integration.detectable.detectables.go.gomod.process.GoModGraphGenerator;
+import com.synopsys.integration.detectable.detectables.go.gomod.process.GoRelationshipManager;
+import com.synopsys.integration.detectable.detectables.go.gomod.process.GoVersionManager;
 import com.synopsys.integration.detectable.extraction.Extraction;
 
 public class GoModCliExtractor {

@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.go.gomod.dependency;
+package com.synopsys.integration.detectable.detectables.go.gomod.process;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

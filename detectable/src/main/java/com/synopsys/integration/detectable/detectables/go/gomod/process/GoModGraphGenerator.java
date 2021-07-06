@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.go.gomod.dependency;
+package com.synopsys.integration.detectable.detectables.go.gomod.process;
 
 import java.util.HashSet;
 import java.util.List;
