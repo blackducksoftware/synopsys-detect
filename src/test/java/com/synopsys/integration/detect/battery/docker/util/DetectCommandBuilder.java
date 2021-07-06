@@ -3,8 +3,11 @@ package com.synopsys.integration.detect.battery.docker.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectProperty;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 
 public class DetectCommandBuilder {
     Map<String, String> properties = new HashMap<>();
@@ -42,6 +45,11 @@ public class DetectCommandBuilder {
         property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
         property(DetectProperties.DETECT_CLEANUP, "false");
         property(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION, "DEBUG");
+        return this;
+    }
+
+    public DetectCommandBuilder tools(DetectTool... detectTools) {
+        property(DetectProperties.DETECT_TOOLS, StringUtils.join(detectTools, ","));
         return this;
     }
 }

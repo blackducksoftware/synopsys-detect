@@ -24,7 +24,7 @@ public class ImpactTest {
         DockerTestAssertions result = test.run(commandBuilder);
 
         result.successfulTool("IMPACT_ANALYSIS");
-        result.logContainsPattern("Vulnerability Impact Analysis generated report at /opt/results/output/runs/", "/impact-analysis/external-method-uses.bdmu");
+        result.logContainsPattern("Vulnerability Impact Analysis generated report at /opt/results/output/runs/.*/impact-analysis/external-method-uses.bdmu");
         result.successfulOperation("Generate Impact Analysis File");
     }
 
