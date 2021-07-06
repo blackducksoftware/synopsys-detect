@@ -1,9 +1,11 @@
 package com.synopsys.integration.detectable.detectables.go.gomod.process;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import com.synopsys.integration.detectable.detectables.go.gomod.model.GoGraphRelationship;
@@ -33,7 +35,7 @@ public class GoRelationshipManager {
     }
 
     public List<GoGraphRelationship> getRelationshipsFor(String moduleName) {
-        return relationshipMap.get(moduleName);
+        return Optional.ofNullable(relationshipMap.get(moduleName)).orElse(Collections.emptyList());
     }
 
     public boolean isNotUsedByMainModule(String moduleName) {
