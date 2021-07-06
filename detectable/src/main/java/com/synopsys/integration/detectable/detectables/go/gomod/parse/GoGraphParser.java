@@ -27,6 +27,7 @@ public class GoGraphParser {
         return goGraphRelationships;
     }
 
+    // TODO: Since Detect is no longer getting the version from `go mod graph`, is it still possible to have an incompatible suffix?
     private String removeIncompatibleSuffix(String line) {
         if (line.endsWith(INCOMPATIBLE_SUFFIX)) {
             // Trim incompatible suffix so that KB can match component
