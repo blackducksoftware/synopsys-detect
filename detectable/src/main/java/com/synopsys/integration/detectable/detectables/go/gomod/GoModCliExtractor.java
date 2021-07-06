@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.go.gomod.dependency.GoModGraphGenerator;
-import com.synopsys.integration.detectable.detectables.go.gomod.dependency.GoRelationshipWalker;
+import com.synopsys.integration.detectable.detectables.go.gomod.dependency.GoRelationshipManager;
 import com.synopsys.integration.detectable.detectables.go.gomod.dependency.GoVersionManager;
 import com.synopsys.integration.detectable.detectables.go.gomod.model.GoGraphRelationship;
 import com.synopsys.integration.detectable.detectables.go.gomod.model.GoListModule;
@@ -58,10 +58,10 @@ public class GoModCliExtractor {
                 moduleExclusionList = goModWhyParser.createModuleExclusionList(modWhyOutput);
             }
 
-            GoRelationshipWalker goRelationshipWalker = new GoRelationshipWalker(goGraphRelationships, moduleExclusionList);
+            GoRelationshipManager goRelationshipManager = new GoRelationshipManager(goGraphRelationships, moduleExclusionList);
             GoVersionManager goVersionManager = new GoVersionManager(goListUJsonData);
             List<CodeLocation> codeLocations = goListModules.stream()
-                                                   .map(goListModule -> goModGraphGenerator.generateGraph(goListModule, goRelationshipWalker, goVersionManager))
+                                                   .map(goListModule -> goModGraphGenerator.generateGraph(goListModule, goRelationshipManager, goVersionManager))
                                                    .collect(Collectors.toList());
 
             return new Extraction.Builder().success(codeLocations).build();//no project info - hoping git can help with that.

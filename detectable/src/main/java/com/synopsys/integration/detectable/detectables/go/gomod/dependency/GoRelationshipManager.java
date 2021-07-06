@@ -8,11 +8,11 @@ import java.util.Set;
 
 import com.synopsys.integration.detectable.detectables.go.gomod.model.GoGraphRelationship;
 
-public class GoRelationshipWalker {
+public class GoRelationshipManager {
     private final Map<String, List<GoGraphRelationship>> relationshipMap;
     private final Set<String> excludedModules;
 
-    public GoRelationshipWalker(List<GoGraphRelationship> goGraphRelationships, Set<String> excludedModules) {
+    public GoRelationshipManager(List<GoGraphRelationship> goGraphRelationships, Set<String> excludedModules) {
         this.excludedModules = excludedModules;
         relationshipMap = new HashMap<>();
         for (GoGraphRelationship goGraphRelationship : goGraphRelationships) {
@@ -36,7 +36,7 @@ public class GoRelationshipWalker {
         return relationshipMap.get(moduleName);
     }
 
-    public boolean shouldIncludeModule(String moduleName) {
-        return !excludedModules.contains(moduleName);
+    public boolean isNotUsedByMainModule(String moduleName) {
+        return excludedModules.contains(moduleName);
     }
 }

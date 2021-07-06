@@ -27,21 +27,21 @@ public class GoModGraphGenerator {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public CodeLocation generateGraph(GoListModule projectModule, GoRelationshipWalker goRelationshipWalker, GoVersionManager goVersionManager) {
+    public CodeLocation generateGraph(GoListModule projectModule, GoRelationshipManager goRelationshipManager, GoVersionManager goVersionManager) {
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
         String moduleName = projectModule.getPath();
-        if (goRelationshipWalker.hasRelationshipsFor(moduleName)) {
-            goRelationshipWalker.getRelationshipsFor(moduleName).stream()
+        if (goRelationshipManager.hasRelationshipsFor(moduleName)) {
+            goRelationshipManager.getRelationshipsFor(moduleName).stream()
                 .map(relationship -> relationship.getChild().getName())
-                .forEach(childName -> addModuleToGraph(childName, null, graph, goRelationshipWalker, goVersionManager));
+                .forEach(childName -> addModuleToGraph(childName, null, graph, goRelationshipManager, goVersionManager));
         }
 
         return new CodeLocation(graph, externalIdFactory.createNameVersionExternalId(Forge.GOLANG, projectModule.getPath(), projectModule.getVersion()));
     }
 
-    private void addModuleToGraph(String moduleName, @Nullable Dependency parent, MutableDependencyGraph graph, GoRelationshipWalker goRelationshipWalker, GoVersionManager goVersionManager) {
-        if (parent == null && !goRelationshipWalker.shouldIncludeModule(moduleName)) {
-            logger.debug("Excluding root module '{}' because it is not used in source.", moduleName);
+    private void addModuleToGraph(String moduleName, @Nullable Dependency parent, MutableDependencyGraph graph, GoRelationshipManager goRelationshipManager, GoVersionManager goVersionManager) {
+        if (parent == null && goRelationshipManager.isNotUsedByMainModule(moduleName)) {
+            logger.debug("Excluding module '{}' because it is not used by the main module.", moduleName);
             return;
         }
 
@@ -53,11 +53,11 @@ public class GoModGraphGenerator {
             graph.addChildToRoot(dependency);
         }
 
-        if (!fullyGraphedModules.contains(moduleName) && goRelationshipWalker.hasRelationshipsFor(moduleName)) {
+        if (!fullyGraphedModules.contains(moduleName) && goRelationshipManager.hasRelationshipsFor(moduleName)) {
             fullyGraphedModules.add(moduleName);
-            List<GoGraphRelationship> projectRelationships = goRelationshipWalker.getRelationshipsFor(moduleName);
+            List<GoGraphRelationship> projectRelationships = goRelationshipManager.getRelationshipsFor(moduleName);
             for (GoGraphRelationship projectRelationship : projectRelationships) {
-                addModuleToGraph(projectRelationship.getChild().getName(), dependency, graph, goRelationshipWalker, goVersionManager);
+                addModuleToGraph(projectRelationship.getChild().getName(), dependency, graph, goRelationshipManager, goVersionManager);
             }
         }
     }
