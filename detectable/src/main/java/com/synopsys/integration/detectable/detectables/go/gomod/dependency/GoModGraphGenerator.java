@@ -40,8 +40,8 @@ public class GoModGraphGenerator {
     }
 
     private void addModuleToGraph(String moduleName, @Nullable Dependency parent, MutableDependencyGraph graph, GoRelationshipWalker goRelationshipWalker, GoVersionManager goVersionManager) {
-        if (!goRelationshipWalker.shouldIncludeModule(moduleName)) {
-            logger.debug("Excluding module '{}' because it is not used in source.", moduleName);
+        if (parent == null && !goRelationshipWalker.shouldIncludeModule(moduleName)) {
+            logger.debug("Excluding root module '{}' because it is not used in source.", moduleName);
             return;
         }
 
