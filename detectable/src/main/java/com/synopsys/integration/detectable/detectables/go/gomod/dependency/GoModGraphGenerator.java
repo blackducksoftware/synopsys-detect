@@ -62,22 +62,6 @@ public class GoModGraphGenerator {
         }
     }
 
-    private void addChildFromRelationship(GoGraphRelationship relationship, MutableDependencyGraph graph, GoVersionManager goVersionManager) {
-        String childName = relationship.getChild().getName();
-        String parentName = relationship.getParent().getName();
-        if (parentName.equals(childName)) {
-            // Resolved versions can appear as a relationship.
-            // Example: github.com/dgrijalva/jwt-go github.com/dgrijalva/jwt-go@v3.2.0+incompatible
-            return;
-        }
-
-        String parentVersion = goVersionManager.getVersionForModule(parentName).orElse(null);
-        String childVersion = goVersionManager.getVersionForModule(childName).orElse(null);
-        Dependency childDependency = convertToDependency(childName, childVersion);
-        Dependency parentDependency = convertToDependency(parentName, parentVersion);
-        graph.addParentWithChild(parentDependency, childDependency);
-    }
-
     private Dependency convertToDependency(String moduleName, @Nullable String moduleVersion) {
         return new Dependency(moduleName, moduleVersion, externalIdFactory.createNameVersionExternalId(Forge.GOLANG, moduleName, moduleVersion));
     }
