@@ -58,13 +58,16 @@ public class GoModCliExtractor {
                 moduleExclusionList = goModWhyParser.createModuleExclusionList(modWhyOutput);
             }
 
+            // TODO: Move above to it's own class
+
             GoRelationshipManager goRelationshipManager = new GoRelationshipManager(goGraphRelationships, moduleExclusionList);
             GoVersionManager goVersionManager = new GoVersionManager(goListUJsonData);
             List<CodeLocation> codeLocations = goListModules.stream()
                                                    .map(goListModule -> goModGraphGenerator.generateGraph(goListModule, goRelationshipManager, goVersionManager))
                                                    .collect(Collectors.toList());
 
-            return new Extraction.Builder().success(codeLocations).build();//no project info - hoping git can help with that.
+            // No project info - hoping git can help with that.
+            return new Extraction.Builder().success(codeLocations).build();
         } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();
         }

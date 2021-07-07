@@ -100,6 +100,7 @@ public class GoModDetectableDepVerifyTest extends DetectableFunctionalTest {
         graphAssert.hasRootSize(1);
 
         graphAssert.hasRootDependency("golang.org/x/text", "v0.3.6");
+
         // This version should be replaced with a v0.3.6
         graphAssert.hasNoDependency("golang.org/x/text", "v0.3.0");
 

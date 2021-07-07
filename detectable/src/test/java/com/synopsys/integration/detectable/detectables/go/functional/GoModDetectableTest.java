@@ -116,7 +116,8 @@ public class GoModDetectableTest extends DetectableFunctionalTest {
         athensGraphAssert.hasRootDependency("github.com/dgrijalva/jwt-go", "v3.2.0");
         athensGraphAssert.hasParentChildRelationship("github.com/sirupsen/logrus", "v2.0.0", "github.com/davecgh/go-spew", "v1.1.1");
         athensGraphAssert.hasNoDependency("github.com/dgrijalva/jwt-go", "v3.2.0+incompatible");
-        athensGraphAssert.hasNoDependency("github.com/gomods/athens", "v3.2.0+incompatible"); // Represented by the CodeLocation
+        // Represented by the CodeLocation
+        athensGraphAssert.hasNoDependency("github.com/gomods/athens", "v3.2.0+incompatible");
 
         NameVersionGraphAssert logurusGraphAssert = new NameVersionGraphAssert(Forge.GOLANG, extraction.getCodeLocations().get(1).getDependencyGraph());
         logurusGraphAssert.hasRootSize(1);
@@ -124,7 +125,9 @@ public class GoModDetectableTest extends DetectableFunctionalTest {
         logurusGraphAssert.hasNoDependency("github.com/dgrijalva/jwt-go", "v3.2.0+incompatible");
         logurusGraphAssert.hasNoDependency("github.com/dgrijalva/jwt-go", "v3.2.0");
         logurusGraphAssert.hasNoDependency("github.com/codegangsta/negroni", "v1.0.0");
-        logurusGraphAssert.hasNoDependency("github.com/sirupsen/logrus", "v2.0.0"); // Represented by the CodeLocation
+
+        // Represented by the CodeLocation
+        logurusGraphAssert.hasNoDependency("github.com/sirupsen/logrus", "v2.0.0");
 
         NameVersionGraphAssert jwtGraphAssert = new NameVersionGraphAssert(Forge.GOLANG, extraction.getCodeLocations().get(2).getDependencyGraph());
         jwtGraphAssert.hasRootSize(0); // This module has no relationships in `go mod graph` output.
