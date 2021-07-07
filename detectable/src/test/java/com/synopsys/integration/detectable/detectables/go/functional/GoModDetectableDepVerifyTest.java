@@ -1,7 +1,6 @@
 package com.synopsys.integration.detectable.detectables.go.functional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -94,8 +93,7 @@ public class GoModDetectableDepVerifyTest extends DetectableFunctionalTest {
 
     @Override
     public void assertExtraction(@NotNull Extraction extraction) {
-        assertNotEquals(Extraction.ExtractionResultType.EXCEPTION, extraction.getResult(), () -> extraction.getError().getMessage());
-        assertEquals(Extraction.ExtractionResultType.SUCCESS, extraction.getResult());
+        assertSuccessfulExtraction(extraction);
         assertEquals(1, extraction.getCodeLocations().size());
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.GOLANG, extraction.getCodeLocations().get(0).getDependencyGraph());
