@@ -6,8 +6,8 @@ import java.util.List;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.detectable.detectables.go.gomod.model.GoListAllData;
 import com.synopsys.integration.detectable.detectables.go.gomod.model.GoListModule;
-import com.synopsys.integration.detectable.detectables.go.gomod.model.GoListUJsonData;
 
 public class GoListParser {
     private final Gson gson;
@@ -16,8 +16,8 @@ public class GoListParser {
         this.gson = gson;
     }
 
-    public List<GoListUJsonData> parseGoListUJsonOutput(List<String> listUJsonOutput) throws DetectableException {
-        return parseGoListJsonToClass(listUJsonOutput, GoListUJsonData.class);
+    public List<GoListAllData> parseGoListAllJsonOutput(List<String> listUJsonOutput) throws DetectableException {
+        return parseGoListJsonToClass(listUJsonOutput, GoListAllData.class);
     }
 
     public List<GoListModule> parseGoListModuleJsonOutput(List<String> listModuleJsonOutput) throws DetectableException {

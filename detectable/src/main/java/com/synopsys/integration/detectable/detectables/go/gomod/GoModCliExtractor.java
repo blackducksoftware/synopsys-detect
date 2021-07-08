@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.go.gomod.model.GoGraphRelationship;
+import com.synopsys.integration.detectable.detectables.go.gomod.model.GoListAllData;
 import com.synopsys.integration.detectable.detectables.go.gomod.model.GoListModule;
-import com.synopsys.integration.detectable.detectables.go.gomod.model.GoListUJsonData;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoGraphParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoListParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoModWhyParser;
@@ -46,8 +46,8 @@ public class GoModCliExtractor {
             List<String> listOutput = goModCommandExecutor.generateGoListOutput(directory, goExe);
             List<GoListModule> goListModules = goListParser.parseGoListModuleJsonOutput(listOutput);
 
-            List<String> listUJsonOutput = goModCommandExecutor.generateGoListUJsonOutput(directory, goExe);
-            List<GoListUJsonData> goListUJsonData = goListParser.parseGoListUJsonOutput(listUJsonOutput);
+            List<String> listAllOutput = goModCommandExecutor.generateGoListUJsonOutput(directory, goExe);
+            List<GoListAllData> goListAllData = goListParser.parseGoListAllJsonOutput(listAllOutput);
 
             List<String> modGraphOutput = goModCommandExecutor.generateGoModGraphOutput(directory, goExe);
             List<GoGraphRelationship> goGraphRelationships = goGraphParser.parseRelationshipsFromGoModGraph(modGraphOutput);
@@ -61,7 +61,7 @@ public class GoModCliExtractor {
             // TODO: Move above to it's own class
 
             GoRelationshipManager goRelationshipManager = new GoRelationshipManager(goGraphRelationships, moduleExclusionList);
-            GoVersionManager goVersionManager = new GoVersionManager(goListUJsonData);
+            GoVersionManager goVersionManager = new GoVersionManager(goListAllData);
             List<CodeLocation> codeLocations = goListModules.stream()
                                                    .map(goListModule -> goModGraphGenerator.generateGraph(goListModule, goRelationshipManager, goVersionManager))
                                                    .collect(Collectors.toList());

@@ -9,7 +9,7 @@ package com.synopsys.integration.detectable.detectables.go.gomod.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class GoListUJsonData {
+public class GoListAllData {
     @SerializedName("Path")
     private String path;
 

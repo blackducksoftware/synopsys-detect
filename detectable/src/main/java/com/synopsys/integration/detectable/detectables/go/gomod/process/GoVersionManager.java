@@ -3,13 +3,13 @@ package com.synopsys.integration.detectable.detectables.go.gomod.process;
 import java.util.List;
 import java.util.Optional;
 
-import com.synopsys.integration.detectable.detectables.go.gomod.model.GoListUJsonData;
+import com.synopsys.integration.detectable.detectables.go.gomod.model.GoListAllData;
 import com.synopsys.integration.detectable.detectables.go.gomod.model.ReplaceData;
 
 public class GoVersionManager {
-    private final List<GoListUJsonData> allModules;
+    private final List<GoListAllData> allModules;
 
-    public GoVersionManager(List<GoListUJsonData> allModules) {
+    public GoVersionManager(List<GoListAllData> allModules) {
         this.allModules = allModules;
     }
 
