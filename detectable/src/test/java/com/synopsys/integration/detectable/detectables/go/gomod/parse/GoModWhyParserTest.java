@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.go.unit;
+package com.synopsys.integration.detectable.detectables.go.gomod.parse;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
-
-import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoModWhyParser;
 
 public class GoModWhyParserTest {
 
