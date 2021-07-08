@@ -17,6 +17,7 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliExtractor;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCommandExecutor;
+import com.synopsys.integration.detectable.detectables.go.gomod.GoModDataGatherer;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoGraphParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoListParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoModWhyParser;
@@ -61,7 +62,8 @@ public class GoModCliExtractorTest {
         GoModGraphGenerator goModGraphGenerator = new GoModGraphGenerator(new ExternalIdFactory());
         GoListParser goListParser = new GoListParser(new GsonBuilder().create());
         GoGraphParser goGraphParser = new GoGraphParser();
-        GoModCliExtractor goModCliExtractor = new GoModCliExtractor(goModCommandExecutor, goModGraphGenerator, goModWhyParser, goListParser, goGraphParser);
+        GoModDataGatherer goModDataGatherer = new GoModDataGatherer(goModCommandExecutor, goListParser, goGraphParser, goModWhyParser);
+        GoModCliExtractor goModCliExtractor = new GoModCliExtractor(goModDataGatherer, goModGraphGenerator);
 
         boolean wasSuccessful = true;
         Extraction extraction = goModCliExtractor.extract(directory, goExe, true);
@@ -109,7 +111,8 @@ public class GoModCliExtractorTest {
         GoModGraphGenerator goModGraphGenerator = new GoModGraphGenerator(new ExternalIdFactory());
         GoListParser goListParser = new GoListParser(new GsonBuilder().create());
         GoGraphParser goGraphParser = new GoGraphParser();
-        GoModCliExtractor goModCliExtractor = new GoModCliExtractor(goModCommandExecutor, goModGraphGenerator, goModWhyParser, goListParser, goGraphParser);
+        GoModDataGatherer goModDataGatherer = new GoModDataGatherer(goModCommandExecutor, goListParser, goGraphParser, goModWhyParser);
+        GoModCliExtractor goModCliExtractor = new GoModCliExtractor(goModDataGatherer, goModGraphGenerator);
 
         boolean wasSuccessful = true;
         Extraction extraction = goModCliExtractor.extract(directory, goExe, true);

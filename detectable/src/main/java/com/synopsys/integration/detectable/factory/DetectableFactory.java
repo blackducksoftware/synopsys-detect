@@ -122,6 +122,7 @@ import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectab
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliExtractor;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCommandExecutor;
+import com.synopsys.integration.detectable.detectables.go.gomod.GoModDataGatherer;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoGraphParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoListParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoModWhyParser;
@@ -552,8 +553,12 @@ public class DetectableFactory {
         return new GoGraphParser();
     }
 
+    private GoModDataGatherer goModDataGatherer() {
+        return new GoModDataGatherer(goModCommandExecutor(), goListParser(), goGraphParser(), goModWhyParser());
+    }
+
     private GoModCliExtractor goModCliExtractor() {
-        return new GoModCliExtractor(goModCommandExecutor(), goModGraphGraphGenerator(), goModWhyParser(), goListParser(), goGraphParser());
+        return new GoModCliExtractor(goModDataGatherer(), goModGraphGraphGenerator());
     }
 
     private GoVndrExtractor goVndrExtractor() {
