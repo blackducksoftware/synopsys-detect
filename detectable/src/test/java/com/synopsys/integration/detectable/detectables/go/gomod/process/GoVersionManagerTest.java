@@ -11,7 +11,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detectable.detectables.go.gomod.model.GoListUJsonData;
+import com.synopsys.integration.detectable.detectables.go.gomod.model.GoListAllData;
 import com.synopsys.integration.detectable.detectables.go.gomod.model.ReplaceData;
 
 class GoVersionManagerTest {
@@ -21,11 +21,11 @@ class GoVersionManagerTest {
 
     @BeforeAll
     static void init() {
-        GoListUJsonData moduleA = new GoListUJsonData();
+        GoListAllData moduleA = new GoListAllData();
         moduleA.setPath(MODULE_A_PATH);
         moduleA.setVersion("1.0.0");
 
-        GoListUJsonData moduleB = new GoListUJsonData();
+        GoListAllData moduleB = new GoListAllData();
         moduleB.setPath(MODULE_B_PATH);
         moduleB.setVersion("2.0.0");
         ReplaceData replaceData = new ReplaceData();
@@ -33,8 +33,8 @@ class GoVersionManagerTest {
         replaceData.setVersion("2.3.4");
         moduleB.setReplace(replaceData);
 
-        List<GoListUJsonData> goListUJsonData = Arrays.asList(moduleA, moduleB);
-        goVersionManager = new GoVersionManager(goListUJsonData);
+        List<GoListAllData> goListAllData = Arrays.asList(moduleA, moduleB);
+        goVersionManager = new GoVersionManager(goListAllData);
     }
 
     @Test
