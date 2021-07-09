@@ -25,6 +25,7 @@ import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 
 // TODO: Look into using DetectableExecutableRunner::executeSuccessfully. It may be able to reduce the code here. - JM 07/2021
+// Suppresses SonarLint warnings for duplicated strings. This improves readability of the executable arguments.
 @SuppressWarnings("java:S1192")
 public class GoModCommandExecutor {
     private final Logger logger = LoggerFactory.getLogger(getClass());
