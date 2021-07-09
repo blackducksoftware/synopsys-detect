@@ -1,10 +1,12 @@
 package com.synopsys.integration.detectable.detectables.go.functional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.IOException;
 import java.nio.file.Paths;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.Assertions;
 
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Detectable;
@@ -15,6 +17,7 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.GoReso
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectableOptions;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
+import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 import com.synopsys.integration.executable.ExecutableOutput;
 
@@ -27,65 +30,49 @@ public class GoModDetectableTest extends DetectableFunctionalTest {
     protected void setup() throws IOException {
         addFile(Paths.get("go.mod"));
 
-        ExecutableOutput goListOutput = createStandardOutput(
-            "{\n",
-            "\t\"Path\": \"github.com/gomods/athens\"\n",
-            "}\n",
-            "{\n",
-            "\t\"Path\": \"github.com/sirupsen/logrus\"\n",
-            "}\n",
-            "{\n",
-            "\t\"Path\": \"github.com/dgrijalva/jwt-go\"\n",
-            "}\n"
-        );
+        ExecutableOutput goListOutput = new ExecutableOutput(FunctionalTestFiles.asString("/go/go-list.xout"), StringUtils.EMPTY);
         addExecutableOutput(goListOutput, "go", "list", "-m", "-json");
 
         ExecutableOutput goVersionOutput = createStandardOutput(
-            "go version go1.14.5 darwin/amd64"
+            "go version go1.16.5 darwin/amd64"
         );
         addExecutableOutput(goVersionOutput, "go", "version");
 
-        ExecutableOutput goListUJsonOutput = createStandardOutput(
-            "{\n",
-            "\t\"Path\": \"github.com/codegangsta/negroni\",\n",
-            "\t\"Version\": \"v1.0.0\"\n",
-            "}\n",
-            "{\n",
-            "\t\"Path\": \"github.com/sirupsen/logrus\",\n",
-            "\t\"Version\": \"v1.1.1\",\n",
-            "\t\"Replace\": {\n",
-            "\t\t\"Path\": \"github.com/sirupsen/logrus\",\n",
-            "\t\t\"Version\": \"v2.0.0\"\n",
-            "\t}\n",
-            "}\n",
-            "{\n",
-            "\t\"Path\": \"github.com/davecgh/go-spew\",\n",
-            "\t\"Version\": \"v1.1.1\"\n",
-            "}",
-            "{\n",
-            "\t\"Path\": \"github.com/dgrijalva/jwt-go\",\n",
-            "\t\"Version\": \"v3.2.0\"\n",
-            "}"
-        );
+        ExecutableOutput goListUJsonOutput = new ExecutableOutput(FunctionalTestFiles.asString("/go/go-list-all.xout"), StringUtils.EMPTY);
         addExecutableOutput(goListUJsonOutput, "go", "list", "-mod=readonly", "-m", "-u", "-json", "all");
 
         ExecutableOutput goModGraphOutput = createStandardOutput(
-            "github.com/gomods/athens github.com/codegangsta/negroni@v1.0.0",
-            "github.com/gomods/athens github.com/sirupsen/logrus@v1.1.1",
-            "github.com/sirupsen/logrus@v1.1.1 github.com/davecgh/go-spew@v1.1.1",
-            "github.com/gomods/athens github.com/dgrijalva/jwt-go@v3.2.0+incompatible"
+            "github.com/gin-gonic/gin golang.org/x/text@v0.3.0",
+            "github.com/gin-gonic/gin sigs.k8s.io/yaml@v1.2.0",
+            "golang.org/x/text@v0.3.0 golang.org/x/tools@v0.0.0-20180917221912-90fa682c2a6e",
+            "gopkg.in/yaml.v2@v2.2.8 gopkg.in/check.v1@v0.0.0-20161208181325-20d25e280405",
+            "sigs.k8s.io/yaml@v1.2.0 github.com/davecgh/go-spew@v1.1.1",
+            "sigs.k8s.io/yaml@v1.2.0 gopkg.in/yaml.v2@v2.2.8"
         );
         addExecutableOutput(goModGraphOutput, "go", "mod", "graph");
 
         ExecutableOutput goModWhyOutput = createStandardOutput(
-            "# github.com/gomods/athens",
-            "github.com/codegangsta/negroni",
-            "github.com/sirupsen/logrus",
+            "# github.com/gin-gonic/gin",
+            "github.com/gin-gonic/gin",
             "",
-            "# github.com/sirupsen/logrus",
-            "github.com/davecgh/go-spew",
-            "# github.com/dgrijalva/jwt-go",
-            "github.com/davecgh/go-spew"
+            "# github.com/davecgh/go-spew",
+            "(main module does not need module github.com/davecgh/go-spew)",
+            "",
+            "# golang.org/x/text",
+            "github.com/gin-gonic/gin",
+            "golang.org/x/text/language",
+            "",
+            "# golang.org/x/tools",
+            "(main module does not need module golang.org/x/tools)",
+            "",
+            "# gopkg.in/check.v1",
+            "(main module does not need module gopkg.in/check.v1)",
+            "",
+            "# gopkg.in/yaml.v2",
+            "(main module does not need module gopkg.in/yaml.v2)",
+            "",
+            "# sigs.k8s.io/yaml",
+            "(main module does not need module sigs.k8s.io/yaml)"
         );
 
         addExecutableOutput(goModWhyOutput, "go", "mod", "why", "-m", "all");
@@ -107,30 +94,23 @@ public class GoModDetectableTest extends DetectableFunctionalTest {
     @Override
     public void assertExtraction(@NotNull Extraction extraction) {
         assertSuccessfulExtraction(extraction);
-        Assertions.assertEquals(3, extraction.getCodeLocations().size());
+        assertEquals(1, extraction.getCodeLocations().size());
 
-        NameVersionGraphAssert athensGraphAssert = new NameVersionGraphAssert(Forge.GOLANG, extraction.getCodeLocations().get(0).getDependencyGraph());
-        athensGraphAssert.hasRootSize(3);
-        athensGraphAssert.hasRootDependency("github.com/codegangsta/negroni", "v1.0.0");
-        athensGraphAssert.hasRootDependency("github.com/sirupsen/logrus", "v2.0.0");
-        athensGraphAssert.hasRootDependency("github.com/dgrijalva/jwt-go", "v3.2.0");
-        athensGraphAssert.hasParentChildRelationship("github.com/sirupsen/logrus", "v2.0.0", "github.com/davecgh/go-spew", "v1.1.1");
-        athensGraphAssert.hasNoDependency("github.com/dgrijalva/jwt-go", "v3.2.0+incompatible");
-        // Represented by the CodeLocation
-        athensGraphAssert.hasNoDependency("github.com/gomods/athens", "v3.2.0+incompatible");
+        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.GOLANG, extraction.getCodeLocations().get(0).getDependencyGraph());
+        graphAssert.hasRootSize(1);
 
-        NameVersionGraphAssert logurusGraphAssert = new NameVersionGraphAssert(Forge.GOLANG, extraction.getCodeLocations().get(1).getDependencyGraph());
-        logurusGraphAssert.hasRootSize(1);
-        logurusGraphAssert.hasRootDependency("github.com/davecgh/go-spew", "v1.1.1");
-        logurusGraphAssert.hasNoDependency("github.com/dgrijalva/jwt-go", "v3.2.0+incompatible");
-        logurusGraphAssert.hasNoDependency("github.com/dgrijalva/jwt-go", "v3.2.0");
-        logurusGraphAssert.hasNoDependency("github.com/codegangsta/negroni", "v1.0.0");
+        graphAssert.hasRootDependency("golang.org/x/text", "v0.3.6");
 
-        // Represented by the CodeLocation
-        logurusGraphAssert.hasNoDependency("github.com/sirupsen/logrus", "v2.0.0");
+        // This version should be replaced with a v0.3.6
+        graphAssert.hasNoDependency("golang.org/x/text", "v0.3.0");
 
-        NameVersionGraphAssert jwtGraphAssert = new NameVersionGraphAssert(Forge.GOLANG, extraction.getCodeLocations().get(2).getDependencyGraph());
-        jwtGraphAssert.hasRootSize(0); // This module has no relationships in `go mod graph` output.
+        graphAssert.hasDependency("golang.org/x/tools", "v0.0.0-20180917221912-90fa682c2a6e");
+        graphAssert.hasParentChildRelationship("golang.org/x/text", "v0.3.6", "golang.org/x/tools", "v0.0.0-20180917221912-90fa682c2a6e");
+
+        // sigs.k8s.io/yaml and it's transitives are unused as per `go mod why`
+        graphAssert.hasNoDependency("sigs.k8s.io/yaml", "v1.2.0");
+        graphAssert.hasNoDependency("github.com/davecgh/go-spew", "v1.1.1");
+        graphAssert.hasNoDependency("gopkg.in/yaml.v2", "v2.2.8");
     }
 
 }
