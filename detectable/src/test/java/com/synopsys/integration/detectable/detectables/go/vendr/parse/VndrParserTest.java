@@ -32,6 +32,17 @@ class VndrParserTest {
     }
 
     @Test
+    void invalidLine() {
+        DependencyGraph dependencyGraph = vndrParser.parseVendorConf(Arrays.asList(
+            "github.com/klauspost/compress v1.4.1",
+            "invlaid_line"
+        ));
+        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.GOLANG, dependencyGraph);
+        graphAssert.hasRootSize(1);
+        graphAssert.hasRootDependency("github.com/klauspost/compress", "v1.4.1");
+    }
+
+    @Test
     void commentsTest() {
         DependencyGraph dependencyGraph = vndrParser.parseVendorConf(Arrays.asList(
             "github.com/Azure/go-ansiterm d6e3b3328b783f23731bc4d058875b0371ff8109 # v0.4.15",

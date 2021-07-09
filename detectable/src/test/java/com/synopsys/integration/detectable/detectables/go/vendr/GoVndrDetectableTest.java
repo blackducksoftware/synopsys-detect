@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.go.functional;
+package com.synopsys.integration.detectable.detectables.go.vendr;
 
 import java.io.IOException;
 import java.nio.file.Paths;
