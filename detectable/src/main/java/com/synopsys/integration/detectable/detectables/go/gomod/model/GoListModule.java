@@ -9,7 +9,7 @@ package com.synopsys.integration.detectable.detectables.go.gomod.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class ReplaceData {
+public class GoListModule {
     @SerializedName("Path")
     private String path;
 

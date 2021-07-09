@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import com.synopsys.integration.bdio.model.Forge;
@@ -16,11 +17,12 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.GoReso
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectableOptions;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
+import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 import com.synopsys.integration.executable.ExecutableOutput;
 
-public class GoModDetectableTest extends DetectableFunctionalTest {
-    public GoModDetectableTest() throws IOException {
+public class GoModDetectableMinusWhyTest extends DetectableFunctionalTest {
+    public GoModDetectableMinusWhyTest() throws IOException {
         super("gomod");
     }
 
@@ -28,7 +30,7 @@ public class GoModDetectableTest extends DetectableFunctionalTest {
     protected void setup() throws IOException {
         addFile(Paths.get("go.mod"));
 
-        ExecutableOutput goListOutput = createStandardOutputFromResource("/go/go-list.xout");
+        ExecutableOutput goListOutput = new ExecutableOutput(FunctionalTestFiles.asString("/go/go-list.xout"), StringUtils.EMPTY);
         addExecutableOutput(goListOutput, "go", "list", "-m", "-json");
 
         ExecutableOutput goVersionOutput = createStandardOutput(
@@ -36,7 +38,7 @@ public class GoModDetectableTest extends DetectableFunctionalTest {
         );
         addExecutableOutput(goVersionOutput, "go", "version");
 
-        ExecutableOutput goListUJsonOutput = createStandardOutputFromResource("/go/go-list-all.xout");
+        ExecutableOutput goListUJsonOutput = new ExecutableOutput(FunctionalTestFiles.asString("/go/go-list-all.xout"), StringUtils.EMPTY);
         addExecutableOutput(goListUJsonOutput, "go", "list", "-mod=readonly", "-m", "-u", "-json", "all");
 
         ExecutableOutput goModGraphOutput = createStandardOutput(
@@ -48,32 +50,6 @@ public class GoModDetectableTest extends DetectableFunctionalTest {
             "sigs.k8s.io/yaml@v1.2.0 gopkg.in/yaml.v2@v2.2.8"
         );
         addExecutableOutput(goModGraphOutput, "go", "mod", "graph");
-
-        ExecutableOutput goModWhyOutput = createStandardOutput(
-            "# github.com/gin-gonic/gin",
-            "github.com/gin-gonic/gin",
-            "",
-            "# github.com/davecgh/go-spew",
-            "(main module does not need module github.com/davecgh/go-spew)",
-            "",
-            "# golang.org/x/text",
-            "github.com/gin-gonic/gin",
-            "golang.org/x/text/language",
-            "",
-            "# golang.org/x/tools",
-            "(main module does not need module golang.org/x/tools)",
-            "",
-            "# gopkg.in/check.v1",
-            "(main module does not need module gopkg.in/check.v1)",
-            "",
-            "# gopkg.in/yaml.v2",
-            "(main module does not need module gopkg.in/yaml.v2)",
-            "",
-            "# sigs.k8s.io/yaml",
-            "(main module does not need module sigs.k8s.io/yaml)"
-        );
-
-        addExecutableOutput(goModWhyOutput, "go", "mod", "why", "-m", "all");
     }
 
     @NotNull
@@ -85,7 +61,7 @@ public class GoModDetectableTest extends DetectableFunctionalTest {
                 return ExecutableTarget.forCommand("go");
             }
         }
-        GoModCliDetectableOptions goModCliDetectableOptions = new GoModCliDetectableOptions(true);
+        GoModCliDetectableOptions goModCliDetectableOptions = new GoModCliDetectableOptions(false);
         return detectableFactory.createGoModCliDetectable(detectableEnvironment, new GoResolverTest(), goModCliDetectableOptions);
     }
 
@@ -95,20 +71,22 @@ public class GoModDetectableTest extends DetectableFunctionalTest {
         assertEquals(1, extraction.getCodeLocations().size());
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.GOLANG, extraction.getCodeLocations().get(0).getDependencyGraph());
-        graphAssert.hasRootSize(1);
+        graphAssert.hasRootSize(2);
 
         graphAssert.hasRootDependency("golang.org/x/text", "v0.3.6");
-
         // This version should be replaced with a v0.3.6
         graphAssert.hasNoDependency("golang.org/x/text", "v0.3.0");
 
         graphAssert.hasDependency("golang.org/x/tools", "90fa682c2a6e");
         graphAssert.hasParentChildRelationship("golang.org/x/text", "v0.3.6", "golang.org/x/tools", "90fa682c2a6e");
 
-        // sigs.k8s.io/yaml and it's transitives are unused as per `go mod why`
-        graphAssert.hasNoDependency("sigs.k8s.io/yaml", "v1.2.0");
-        graphAssert.hasNoDependency("github.com/davecgh/go-spew", "v1.1.1");
-        graphAssert.hasNoDependency("gopkg.in/yaml.v2", "v2.2.8");
+        graphAssert.hasRootDependency("sigs.k8s.io/yaml", "v1.2.0");
+        graphAssert.hasDependency("github.com/davecgh/go-spew", "v1.1.1");
+        graphAssert.hasParentChildRelationship("sigs.k8s.io/yaml", "v1.2.0", "github.com/davecgh/go-spew", "v1.1.1");
+        graphAssert.hasDependency("gopkg.in/yaml.v2", "v2.2.8");
+        graphAssert.hasParentChildRelationship("sigs.k8s.io/yaml", "v1.2.0", "gopkg.in/yaml.v2", "v2.2.8");
+        graphAssert.hasDependency("gopkg.in/check.v1", "20d25e280405");
+        graphAssert.hasParentChildRelationship("gopkg.in/yaml.v2", "v2.2.8", "gopkg.in/check.v1", "20d25e280405");
     }
 
 }
