@@ -25,6 +25,7 @@ import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 
 // TODO: Look into using DetectableExecutableRunner::executeSuccessfully. It may be able to reduce the code here. - JM 07/2021
+@SuppressWarnings("java:S1192")
 public class GoModCommandExecutor {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private static final String FAILURE_MSG_QUERYING_FOR_THE_GO_MOD_GRAPH = "Querying for the go mod graph failed:";
@@ -33,15 +34,6 @@ public class GoModCommandExecutor {
     private static final String FAILURE_MSG_QUERYING_FOR_GO_MOD_WHY = "Querying for the go modules compiled into the binary failed:";
     private static final Pattern GENERATE_GO_LIST_U_JSON_OUTPUT_PATTERN = Pattern.compile("\\d+\\.[\\d.]+");
 
-    private static final String LIST_COMMAND = "list";
-    private static final String MOD_COMMAND = "mod";
-
-    private static final String MODULE_FLAG = "-m";
-    private static final String JSON_FLAG = "-json";
-    private static final String UPGRADE_FLAG = "-u";
-
-    private static final String ALL_ARGUMENT = "all";
-
     private final DetectableExecutableRunner executableRunner;
 
     public GoModCommandExecutor(DetectableExecutableRunner executableRunner) {
@@ -49,7 +41,7 @@ public class GoModCommandExecutor {
     }
 
     List<String> generateGoListOutput(File directory, ExecutableTarget goExe) throws ExecutableRunnerException, DetectableException {
-        return execute(directory, goExe, FAILURE_MSG_QUERYING_GO_FOR_THE_LIST_OF_MODULES, LIST_COMMAND, MODULE_FLAG, JSON_FLAG);
+        return execute(directory, goExe, FAILURE_MSG_QUERYING_GO_FOR_THE_LIST_OF_MODULES, "list", "-m", "-json");
     }
 
     List<String> generateGoListUJsonOutput(File directory, ExecutableTarget goExe) throws ExecutableRunnerException, DetectableException {
@@ -59,22 +51,22 @@ public class GoModCommandExecutor {
             String version = matcher.group();
             String[] parts = version.split("\\.");
             if (Integer.parseInt(parts[0]) > 1 || Integer.parseInt(parts[1]) >= 14) {
-                return execute(directory, goExe, FAILURE_MSG_QUERYING_FOR_THE_GO_MOD_GRAPH, LIST_COMMAND, "-mod=readonly", MODULE_FLAG, UPGRADE_FLAG, JSON_FLAG, ALL_ARGUMENT);
+                return execute(directory, goExe, FAILURE_MSG_QUERYING_FOR_THE_GO_MOD_GRAPH, "list", "-mod=readonly", "-m", "-u", "-json", "all");
             } else {
-                return execute(directory, goExe, FAILURE_MSG_QUERYING_FOR_THE_GO_MOD_GRAPH, LIST_COMMAND, MODULE_FLAG, UPGRADE_FLAG, JSON_FLAG, ALL_ARGUMENT);
+                return execute(directory, goExe, FAILURE_MSG_QUERYING_FOR_THE_GO_MOD_GRAPH, "list", "-m", "-u", "-json", "all");
             }
         }
         return new ArrayList<>();
     }
 
     List<String> generateGoModGraphOutput(File directory, ExecutableTarget goExe) throws ExecutableRunnerException, DetectableException {
-        return execute(directory, goExe, FAILURE_MSG_QUERYING_FOR_THE_GO_MOD_GRAPH, MOD_COMMAND, "graph");
+        return execute(directory, goExe, FAILURE_MSG_QUERYING_FOR_THE_GO_MOD_GRAPH, "mod", "graph");
     }
 
     List<String> generateGoModWhyOutput(File directory, ExecutableTarget goExe) {
         try {
             // executing this command helps produce more accurate results. Parse the output to create a module exclusion list.
-            return execute(directory, goExe, FAILURE_MSG_QUERYING_FOR_GO_MOD_WHY, MOD_COMMAND, "why", MODULE_FLAG, ALL_ARGUMENT);
+            return execute(directory, goExe, FAILURE_MSG_QUERYING_FOR_GO_MOD_WHY, "mod", "why", "-m", "all");
         } catch (ExecutableRunnerException | DetectableException ex) {
             logger.error("{} Will not be able to create an accurate module exclusion list.", FAILURE_MSG_QUERYING_FOR_GO_MOD_WHY);
             logger.debug("Error executing go mod why command. ", ex);
