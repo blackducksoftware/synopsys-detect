@@ -76,17 +76,17 @@ public class GoModDetectableMinusWhyTest extends DetectableFunctionalTest {
         graphAssert.hasRootDependency("golang.org/x/text", "v0.3.6");
         // This version should be replaced with a v0.3.6
         graphAssert.hasNoDependency("golang.org/x/text", "v0.3.0");
-        
-        graphAssert.hasDependency("golang.org/x/tools", "v0.0.0-20180917221912-90fa682c2a6e");
-        graphAssert.hasParentChildRelationship("golang.org/x/text", "v0.3.6", "golang.org/x/tools", "v0.0.0-20180917221912-90fa682c2a6e");
+
+        graphAssert.hasDependency("golang.org/x/tools", "90fa682c2a6e");
+        graphAssert.hasParentChildRelationship("golang.org/x/text", "v0.3.6", "golang.org/x/tools", "90fa682c2a6e");
 
         graphAssert.hasRootDependency("sigs.k8s.io/yaml", "v1.2.0");
         graphAssert.hasDependency("github.com/davecgh/go-spew", "v1.1.1");
         graphAssert.hasParentChildRelationship("sigs.k8s.io/yaml", "v1.2.0", "github.com/davecgh/go-spew", "v1.1.1");
         graphAssert.hasDependency("gopkg.in/yaml.v2", "v2.2.8");
         graphAssert.hasParentChildRelationship("sigs.k8s.io/yaml", "v1.2.0", "gopkg.in/yaml.v2", "v2.2.8");
-        graphAssert.hasDependency("gopkg.in/check.v1", "v0.0.0-20161208181325-20d25e280405");
-        graphAssert.hasParentChildRelationship("gopkg.in/yaml.v2", "v2.2.8", "gopkg.in/check.v1", "v0.0.0-20161208181325-20d25e280405");
+        graphAssert.hasDependency("gopkg.in/check.v1", "20d25e280405");
+        graphAssert.hasParentChildRelationship("gopkg.in/yaml.v2", "v2.2.8", "gopkg.in/check.v1", "20d25e280405");
     }
 
 }

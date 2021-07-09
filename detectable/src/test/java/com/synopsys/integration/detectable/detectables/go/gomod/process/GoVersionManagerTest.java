@@ -33,8 +33,30 @@ class GoVersionManagerTest {
         replaceData.setVersion("2.3.4");
         moduleB.setReplace(replaceData);
 
-        List<GoListAllData> goListAllData = Arrays.asList(moduleA, moduleB);
+        GoListAllData incompatibleModule = new GoListAllData();
+        incompatibleModule.setPath("example.io/incompatible");
+        incompatibleModule.setVersion("2.0.0+incompatible");
+
+        GoListAllData gitModule = new GoListAllData();
+        gitModule.setPath("example.io/hash");
+        gitModule.setVersion("version_with_hash-123abc-456xyz");
+
+        List<GoListAllData> goListAllData = Arrays.asList(moduleA, moduleB, incompatibleModule, gitModule);
         goVersionManager = new GoVersionManager(goListAllData);
+    }
+
+    @Test
+    void versionWithIncompatible() {
+        Optional<String> versionForModule = goVersionManager.getVersionForModule("example.io/incompatible");
+        assertTrue(versionForModule.isPresent());
+        assertEquals("2.0.0", versionForModule.get());
+    }
+
+    @Test
+    void versionWithGitHash() {
+        Optional<String> versionForModule = goVersionManager.getVersionForModule("example.io/hash");
+        assertTrue(versionForModule.isPresent());
+        assertEquals("456xyz", versionForModule.get());
     }
 
     @Test

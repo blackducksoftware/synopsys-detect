@@ -18,29 +18,17 @@ import com.synopsys.integration.detectable.detectables.go.gomod.model.GoGraphRel
 import com.synopsys.integration.util.NameVersion;
 
 public class GoGraphParser {
-    private static final String INCOMPATIBLE_SUFFIX = "+incompatible";
-
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public List<GoGraphRelationship> parseRelationshipsFromGoModGraph(List<String> goModGraphOutput) {
         List<GoGraphRelationship> goGraphRelationships = new LinkedList<>();
         for (String line : goModGraphOutput) {
             //example: github.com/gomods/athens cloud.google.com/go@v0.26.0
-            line = removeIncompatibleSuffix(line);
             Optional<GoGraphRelationship> goGraphRelationship = parseLine(line);
             goGraphRelationship.ifPresent(goGraphRelationships::add);
         }
 
         return goGraphRelationships;
-    }
-
-    // https://golang.org/ref/mod#incompatible-versions
-    private String removeIncompatibleSuffix(String line) {
-        if (line.endsWith(INCOMPATIBLE_SUFFIX)) {
-            // Trim incompatible suffix so that KB can match component
-            line = line.substring(0, line.length() - INCOMPATIBLE_SUFFIX.length());
-        }
-        return line;
     }
 
     private Optional<GoGraphRelationship> parseLine(String line) {
@@ -65,10 +53,6 @@ public class GoGraphParser {
             } else {
                 String name = parts[0];
                 String version = parts[1];
-                if (version.contains("-")) { //The KB only supports the git hash, unfortunately we must strip out the rest. This gets just the commit has from a go.mod psuedo version.
-                    String[] versionPieces = version.split("-");
-                    version = versionPieces[versionPieces.length - 1];
-                }
                 return new NameVersion(name, version);
             }
         } else {

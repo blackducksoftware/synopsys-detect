@@ -33,34 +33,6 @@ class GoGraphParserTest {
     }
 
     @Test
-    void versionWithIncompatible() {
-        List<GoGraphRelationship> relationships = generateRelationships(
-            "example.io/moduleA example.io/incompatible@2.0.0+incompatible"
-        );
-        assertEquals(1, relationships.size());
-
-        GoGraphRelationship relationship = relationships.get(0);
-        assertEquals("example.io/moduleA", relationship.getParent().getName());
-        assertNull(relationship.getParent().getVersion());
-        assertEquals("example.io/incompatible", relationship.getChild().getName());
-        assertEquals("2.0.0", relationship.getChild().getVersion());
-    }
-
-    @Test
-    void versionWithGitHash() {
-        List<GoGraphRelationship> relationships = generateRelationships(
-            "example.io/moduleA example.io/hash@version_with_hash-123abc456"
-        );
-        assertEquals(1, relationships.size());
-
-        GoGraphRelationship relationship = relationships.get(0);
-        assertEquals("example.io/moduleA", relationship.getParent().getName());
-        assertNull(relationship.getParent().getVersion());
-        assertEquals("example.io/hash", relationship.getChild().getName());
-        assertEquals("123abc456", relationship.getChild().getVersion());
-    }
-
-    @Test
     void unParseableLine() {
         List<GoGraphRelationship> relationships = generateRelationships(
             "example.io/moduleB example.io/invalid@2.0.0 un-parseable line"
