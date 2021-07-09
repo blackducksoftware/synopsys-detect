@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -183,6 +184,12 @@ public abstract class DetectableFunctionalTest {
     public ExecutableOutput createStandardOutput(String... outputLines) {
         String output = String.join(System.lineSeparator(), outputLines);
         return new ExecutableOutput(0, output, "");
+    }
+
+    @NotNull
+    public ExecutableOutput createStandardOutputFromResource(String resourcePath) {
+        String resourceContent = FunctionalTestFiles.asString(resourcePath);
+        return new ExecutableOutput(resourceContent, StringUtils.EMPTY);
     }
 
     @NotNull
