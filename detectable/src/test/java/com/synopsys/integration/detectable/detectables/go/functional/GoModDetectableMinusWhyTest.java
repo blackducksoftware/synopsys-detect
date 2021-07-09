@@ -76,8 +76,7 @@ public class GoModDetectableMinusWhyTest extends DetectableFunctionalTest {
         graphAssert.hasRootDependency("golang.org/x/text", "v0.3.6");
         // This version should be replaced with a v0.3.6
         graphAssert.hasNoDependency("golang.org/x/text", "v0.3.0");
-
-
+        
         graphAssert.hasDependency("golang.org/x/tools", "v0.0.0-20180917221912-90fa682c2a6e");
         graphAssert.hasParentChildRelationship("golang.org/x/text", "v0.3.6", "golang.org/x/tools", "v0.0.0-20180917221912-90fa682c2a6e");
 
