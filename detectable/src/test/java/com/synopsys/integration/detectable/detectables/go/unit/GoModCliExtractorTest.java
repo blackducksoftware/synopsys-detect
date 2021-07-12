@@ -17,10 +17,10 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliExtractor;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCommandExecutor;
-import com.synopsys.integration.detectable.detectables.go.gomod.GoModGraphParser;
-import com.synopsys.integration.detectable.detectables.go.gomod.GoModGraphTransformer;
-import com.synopsys.integration.detectable.detectables.go.gomod.GoModWhyParser;
-import com.synopsys.integration.detectable.detectables.go.gomod.ReplacementDataExtractor;
+import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoGraphParser;
+import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoListParser;
+import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoModWhyParser;
+import com.synopsys.integration.detectable.detectables.go.gomod.process.GoModGraphGenerator;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.executable.Executable;
 import com.synopsys.integration.executable.ExecutableOutput;
@@ -56,11 +56,12 @@ public class GoModCliExtractorTest {
             }
         };
         Mockito.doAnswer(executableAnswer).when(executableRunner).execute(Mockito.any(Executable.class));
-        GoModGraphParser goModGraphParser = new GoModGraphParser(new ExternalIdFactory());
         GoModWhyParser goModWhyParser = new GoModWhyParser();
         GoModCommandExecutor goModCommandExecutor = new GoModCommandExecutor(executableRunner);
-        GoModGraphTransformer goModGraphTransformer = new GoModGraphTransformer(new ReplacementDataExtractor(new GsonBuilder().create()));
-        GoModCliExtractor goModCliExtractor = new GoModCliExtractor(goModCommandExecutor, goModGraphParser, goModGraphTransformer, goModWhyParser);
+        GoModGraphGenerator goModGraphGenerator = new GoModGraphGenerator(new ExternalIdFactory());
+        GoListParser goListParser = new GoListParser(new GsonBuilder().create());
+        GoGraphParser goGraphParser = new GoGraphParser();
+        GoModCliExtractor goModCliExtractor = new GoModCliExtractor(goModCommandExecutor, goListParser, goGraphParser, goModWhyParser, goModGraphGenerator);
 
         boolean wasSuccessful = true;
         Extraction extraction = goModCliExtractor.extract(directory, goExe, true);
@@ -103,11 +104,12 @@ public class GoModCliExtractorTest {
         };
         Mockito.doAnswer(executableAnswer).when(executableRunner).execute(Mockito.any(Executable.class));
 
-        GoModGraphParser goModGraphParser = new GoModGraphParser(new ExternalIdFactory());
         GoModWhyParser goModWhyParser = new GoModWhyParser();
         GoModCommandExecutor goModCommandExecutor = new GoModCommandExecutor(executableRunner);
-        GoModGraphTransformer goModGraphTransformer = new GoModGraphTransformer(new ReplacementDataExtractor(new GsonBuilder().create()));
-        GoModCliExtractor goModCliExtractor = new GoModCliExtractor(goModCommandExecutor, goModGraphParser, goModGraphTransformer, goModWhyParser);
+        GoModGraphGenerator goModGraphGenerator = new GoModGraphGenerator(new ExternalIdFactory());
+        GoListParser goListParser = new GoListParser(new GsonBuilder().create());
+        GoGraphParser goGraphParser = new GoGraphParser();
+        GoModCliExtractor goModCliExtractor = new GoModCliExtractor(goModCommandExecutor, goListParser, goGraphParser, goModWhyParser, goModGraphGenerator);
 
         boolean wasSuccessful = true;
         Extraction extraction = goModCliExtractor.extract(directory, goExe, true);

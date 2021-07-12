@@ -1,5 +1,11 @@
 # Release notes
 
+## Version 7.2.0
+
+### Resolved issues
+* (IDETECT-2532) Resolved an issue that caused multiple versions of Go-Mod dependencies to appear in the BOM.
+* (IDETECT-2668, IDETECT-2706) Resolved an issue that caused Go-Mod dependencies with a replacement version to not be honored.
+
 ## Version 7.1.0
 
 ### New Features
