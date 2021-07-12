@@ -76,7 +76,6 @@ public class AggregateModeAccurateOperation {
         }
         externalIdPieces.add(bomToolType);
         final String[] pieces = externalIdPieces.toArray(ArrayUtils.EMPTY_STRING_ARRAY);
-        // TODO This will need to change for ACCURATE mode
         return new ProjectDependency(name, version, new ExternalIdFactory().createModuleNamesExternalId(original.getForge(), pieces));
     }
 }
