@@ -16,14 +16,15 @@ import com.synopsys.integration.detect.workflow.report.output.FormattedDetectorO
 import com.synopsys.integration.detect.workflow.report.output.FormattedOperationOutput;
 import com.synopsys.integration.detect.workflow.report.output.FormattedOutput;
 import com.synopsys.integration.detect.workflow.report.output.FormattedStatusOutput;
+import com.synopsys.integration.util.NameVersion;
 
-public class DockerTestAssertions {
+public class DockerAssertions {
     private DockerDetectResult dockerDetectResult;
     private final File outputDirectory;
     private final File bdioDirectory;
     private FormattedOutput statusJson = null;
 
-    public DockerTestAssertions(final DockerTestDirectories testDirectories, final DockerDetectResult dockerDetectResult) {
+    public DockerAssertions(final DockerTestDirectories testDirectories, final DockerDetectResult dockerDetectResult) {
         this.dockerDetectResult = dockerDetectResult;
         this.outputDirectory = testDirectories.getResultOutputDirectory();
         this.bdioDirectory = testDirectories.getResultBdioDirectory();
@@ -117,11 +118,19 @@ public class DockerTestAssertions {
         successfulThingLogged(operationName);
     }
 
+    public void projectVersion(NameVersion nameVersion) {
+        projectVersion(nameVersion.getName(), nameVersion.getVersion());
+    }
+
     public void projectVersion(String project, String version) {
         FormattedOutput statusJson = locateStatusJson();
         Assertions.assertEquals(project, statusJson.projectName);
         Assertions.assertEquals(version, statusJson.projectVersion);
         logContains("Project name: " + project); //Should we rely solely on the status json?
         logContains("Project version: " + version);
+    }
+
+    public void bdioFiles(int bdioCount) {
+
     }
 }

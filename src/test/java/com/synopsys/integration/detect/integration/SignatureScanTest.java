@@ -28,18 +28,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.List;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junitpioneer.jupiter.TempDirectory;
 
 import com.synopsys.integration.detect.Application;
+import com.synopsys.integration.detect.battery.docker.integration.BlackDuckAssertions;
+import com.synopsys.integration.detect.battery.docker.integration.BlackDuckTestConnection;
+import com.synopsys.integration.detect.battery.docker.util.DetectCommandBuilder;
+import com.synopsys.integration.detect.configuration.DetectProperties;
 
 @Tag("integration")
-public class SignatureScanTest extends BlackDuckIntegrationTest {
+public class SignatureScanTest {
     private static final long HALF_MILLION_BYTES = 500_000;
 
     @Test
@@ -47,13 +49,20 @@ public class SignatureScanTest extends BlackDuckIntegrationTest {
     public void testOfflineScanWithSnippetMatching(@TempDirectory.TempDir final Path tempOutputDirectory) throws Exception {
         final String projectName = "synopsys-detect-junit";
         final String projectVersionName = "offline-scan";
-        assertProjectVersionReady(projectName, projectVersionName);
+        BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
+        BlackDuckAssertions blackDuckAssertions = blackDuckTestConnection.projectVersionAssertions(projectName, projectVersionName);
 
-        final List<String> detectArgs = getInitialArgs(projectName, projectVersionName);
-        detectArgs.add("--detect.output.path=" + tempOutputDirectory.toString());
-        detectArgs.add("--detect.blackduck.signature.scanner.snippet.matching=SNIPPET_MATCHING");
-        detectArgs.add("--detect.blackduck.signature.scanner.dry.run=true");
-        Application.main(detectArgs.toArray(ArrayUtils.EMPTY_STRING_ARRAY));
+        blackDuckAssertions.emptyOnBlackDuck();
+
+        DetectCommandBuilder detectCommandBuilder = new DetectCommandBuilder();
+        detectCommandBuilder.projectNameVersion(blackDuckAssertions.getProjectNameVersion());
+        detectCommandBuilder.connectToBlackDuck(blackDuckTestConnection);
+        detectCommandBuilder.property(DetectProperties.DETECT_OUTPUT_PATH, tempOutputDirectory.toString());
+        detectCommandBuilder.property(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING, "SNIPPET_MATCHING");
+        detectCommandBuilder.property(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN, "true");
+
+        Application.setShouldExit(false);
+        Application.main(detectCommandBuilder.buildArguments());
 
         assertDirectoryStructureForOfflineScan(tempOutputDirectory);
     }

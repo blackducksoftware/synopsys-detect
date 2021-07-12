@@ -8,25 +8,23 @@ import org.junit.jupiter.api.Test;
 import com.synopsys.integration.detect.battery.docker.provider.BuildDockerImageProvider;
 import com.synopsys.integration.detect.battery.docker.util.DetectCommandBuilder;
 import com.synopsys.integration.detect.battery.docker.util.DetectDockerTestBuilder;
-import com.synopsys.integration.detect.battery.util.DockerTestAssertions;
+import com.synopsys.integration.detect.battery.util.DockerAssertions;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
-@Tag("docker")
+@Tag("integration")
 public class Dotnet5Test {
     @Test
     void detectUsesDotnet5() throws IOException, InterruptedException {
         DetectDockerTestBuilder test = new DetectDockerTestBuilder("detect-dotnet-five", "detect-dotnet-five:1.0.1");
         test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Dotnet5.dockerfile"));
 
-        DetectCommandBuilder commandBuilder = new DetectCommandBuilder();
+        DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults();
         commandBuilder.property(DetectProperties.DETECT_TOOLS, "DETECTOR");
         commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
-        commandBuilder.property(DetectProperties.DETECT_CLEANUP, "false");
-        commandBuilder.property(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION, "DEBUG");
-        DockerTestAssertions result = test.run(commandBuilder);
+        DockerAssertions dockerAssertions = test.run(commandBuilder);
 
-        result.successfulDetectorType("NUGET");
-        result.atLeastOneBdioFile();
-        result.logContains("https://sig-repo.synopsys.com/bds-integrations-nuget-release/"); // Verify we are using the EXTERNAL artifactory to download the inspector.
+        dockerAssertions.successfulDetectorType("NUGET");
+        dockerAssertions.atLeastOneBdioFile();
+        dockerAssertions.logContains("https://sig-repo.synopsys.com/bds-integrations-nuget-release/"); // Verify we are using the EXTERNAL artifactory to download the inspector.
     }
 }

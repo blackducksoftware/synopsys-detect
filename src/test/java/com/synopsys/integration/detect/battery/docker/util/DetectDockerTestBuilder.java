@@ -11,7 +11,7 @@ import com.github.dockerjava.api.model.Bind;
 import com.github.dockerjava.api.model.HostConfig;
 import com.synopsys.integration.detect.battery.docker.provider.DockerImageProvider;
 import com.synopsys.integration.detect.battery.util.DetectJar;
-import com.synopsys.integration.detect.battery.util.DockerTestAssertions;
+import com.synopsys.integration.detect.battery.util.DockerAssertions;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
 public class DetectDockerTestBuilder {
@@ -81,8 +81,14 @@ public class DetectDockerTestBuilder {
 
     private DockerDetectResult runContainer(DockerTestDirectories dockerTestDirectories, DetectCommandBuilder detectCommandBuilder) {
         DetectDockerRunner detectDockerRunner = new DetectDockerRunner();
+        DockerClient dockerClient = null;
         try {
-            DockerClient dockerClient = detectDockerRunner.connectToDocker();
+            dockerClient = detectDockerRunner.connectToDocker();
+        } catch (Exception e) {
+            Assertions.fail("Unable to connect to Docker. Integration tests now require docker. Please ensure a docker daemon is running and connectable.", e);
+        }
+        Assertions.assertNotNull(dockerClient, "Unable to connect to Docker. Integration tests now require docker. Please ensure a docker daemon is running and connectable.");
+        try {
             if (!detectDockerRunner.imageExists(imageName, dockerClient)) {
                 Assertions.assertNotNull(dockerImageProvider, "Image could not be found and no image provider was configured.");
                 dockerImageProvider.installImage(imageName, dockerClient);
@@ -109,7 +115,7 @@ public class DetectDockerTestBuilder {
         return null;
     }
 
-    public DockerTestAssertions run(DetectCommandBuilder commandBuilder) {
+    public DockerAssertions run(DetectCommandBuilder commandBuilder) {
         DockerTestDirectories directories = null;
         try {
             directories = setup();
@@ -117,6 +123,6 @@ public class DetectDockerTestBuilder {
             Assertions.fail("Unable to setup docker directory.", e);
         }
         DockerDetectResult result = runContainer(directories, commandBuilder);
-        return new DockerTestAssertions(directories, result);
+        return new DockerAssertions(directories, result);
     }
 }

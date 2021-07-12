@@ -22,110 +22,41 @@
  */
 package com.synopsys.integration.detect.integration;
 
-import static java.nio.file.Files.lines;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentView;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
-import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
+import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.detect.Application;
-import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.detect.battery.docker.integration.BlackDuckAssertions;
+import com.synopsys.integration.detect.battery.docker.integration.BlackDuckTestConnection;
+import com.synopsys.integration.detect.battery.docker.util.DetectCommandBuilder;
 
 @Tag("integration")
-public class DetectOnDetectHappyPath extends BlackDuckIntegrationTest {
-    public static final String SIGNATURE_SCAN_CODE_LOCATION_SUFFIX = "/synopsys-detect-junit/happy-path scan";
-    public static final String DETECTABLE_CODE_LOCATION_SUFFIX = "/detectable/com.synopsys.integration/detectable/%s gradle/bom";
-    public static final String SYNOPSYS_DETECT_CODE_LOCATION_SUFFIX = "/com.synopsys.integration/synopsys-detect/%s gradle/bom";
-    public static final String COMMON_CODE_LOCATION_SUFFIX = "/common/com.synopsys.integration/common/%s gradle/bom";
-    public static final String COMMON_TEST_CODE_LOCATION_SUFFIX = "/common-test/com.synopsys.integration/common-test/%s gradle/bom";
-    public static final String CONFIGURATION_CODE_LOCATION_SUFFIX = "/configuration/com.synopsys.integration/configuration/%s gradle/bom";
-    public static final String DETECTOR_CODE_LOCATION_SUFFIX = "/detector/com.synopsys.integration/detector/%s gradle/bom";
-
-    private ProjectView projectToDelete = null;
-    private List<CodeLocationView> codeLocationsToDelete = null;
-
-    @AfterEach
-    public void deleteBlackDuckItems() {
-        if (null != projectToDelete) {
-            try {
-                blackDuckApiClient.delete(projectToDelete);
-            } catch (IntegrationException e) {
-                e.printStackTrace();
-            }
-        }
-
-        if (null != codeLocationsToDelete) {
-            for (CodeLocationView toDelete : codeLocationsToDelete) {
-                try {
-                    blackDuckApiClient.delete(toDelete);
-                } catch (IntegrationException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
+public class DetectOnDetectHappyPath {
     @Test
     public void testBomCreatedInBlackDuck() throws Exception {
-        Path buildGradle = Paths.get("build.gradle");
-        Optional<String> versionLine = lines(buildGradle).map(String::trim).filter(line -> line.startsWith("version")).findFirst();
-        String version = StringUtils.substringBetween(versionLine.get(), "'");
+        BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
+        BlackDuckAssertions projectUtil = blackDuckTestConnection.projectVersionAssertions("synopsys-detect-junit", "happy-path");
 
-        List<String> codeLocationNameSuffixesToCheck = new ArrayList<>();
-        codeLocationNameSuffixesToCheck.add(SIGNATURE_SCAN_CODE_LOCATION_SUFFIX);
-        codeLocationNameSuffixesToCheck.add(String.format(DETECTABLE_CODE_LOCATION_SUFFIX, version));
-        codeLocationNameSuffixesToCheck.add(String.format(SYNOPSYS_DETECT_CODE_LOCATION_SUFFIX, version));
-        codeLocationNameSuffixesToCheck.add(String.format(COMMON_CODE_LOCATION_SUFFIX, version));
-        codeLocationNameSuffixesToCheck.add(String.format(COMMON_TEST_CODE_LOCATION_SUFFIX, version));
-        codeLocationNameSuffixesToCheck.add(String.format(CONFIGURATION_CODE_LOCATION_SUFFIX, version));
-        codeLocationNameSuffixesToCheck.add(String.format(DETECTOR_CODE_LOCATION_SUFFIX, version));
-        
-        final String projectName = "synopsys-detect-junit";
-        final String projectVersionName = "happy-path";
-        ProjectVersionWrapper projectVersionWrapper = assertProjectVersionReady(projectName, projectVersionName);
-        projectToDelete = projectVersionWrapper.getProjectView();
+        DetectCommandBuilder detectCommandBuilder = new DetectCommandBuilder();
+        detectCommandBuilder.projectNameVersion(projectUtil.getProjectNameVersion());
+        detectCommandBuilder.connectToBlackDuck(blackDuckTestConnection);
+        detectCommandBuilder.waitForResults();
 
-        List<String> detectArgs = getInitialArgs(projectName, projectVersionName);
-        detectArgs.add("--detect.wait.for.results=true");
-        Application.main(detectArgs.toArray(ArrayUtils.EMPTY_STRING_ARRAY));
+        projectUtil.emptyOnBlackDuck();
 
-        codeLocationsToDelete = blackDuckApiClient.getAllResponses(projectVersionWrapper.getProjectVersionView().metaCodelocationsLink());
-        Set<String> createdCodeLocationNames = codeLocationsToDelete.stream().map(CodeLocationView::getName).collect(Collectors.toSet());
-        createdCodeLocationNames.forEach(System.out::println);
-        codeLocationNameSuffixesToCheck.forEach(System.out::println);
+        Application.setShouldExit(false);
+        Application.main(detectCommandBuilder.buildArguments());
 
-        assertEquals(codeLocationNameSuffixesToCheck.size(), createdCodeLocationNames.size());
-        int matches = 0;
-        for (String suffix : codeLocationNameSuffixesToCheck) {
-            for (String codeLocationName : createdCodeLocationNames) {
-                if (codeLocationName.endsWith(suffix)) {
-                    matches++;
-                    break;
-                }
-            }
-        }
-        assertEquals(codeLocationNameSuffixesToCheck.size(), matches);
+        projectUtil.hasCodeLocations("synopsys-detect/synopsys-detect-junit/happy-path scan",
+            "synopsys-detect-junit/happy-path/detectable/com.synopsys.integration/detectable/7.2.0-SNAPSHOT gradle/bom",
+            "synopsys-detect-junit/happy-path/com.synopsys.integration/synopsys-detect/7.2.0-SNAPSHOT gradle/bom",
+            "synopsys-detect-junit/happy-path/common/com.synopsys.integration/common/7.2.0-SNAPSHOT gradle/bom",
+            "synopsys-detect-junit/happy-path/common-test/com.synopsys.integration/common-test/7.2.0-SNAPSHOT gradle/bom",
+            "synopsys-detect-junit/happy-path/configuration/com.synopsys.integration/configuration/7.2.0-SNAPSHOT gradle/bom",
+            "synopsys-detect-junit/happy-path/detector/com.synopsys.integration/detector/7.2.0-SNAPSHOT gradle/bom");
 
-        List<ProjectVersionComponentView> bomComponents = projectBomService.getComponentsForProjectVersion(projectVersionWrapper.getProjectVersionView());
-        // We used to look for blackduck-common, but we adopt new versions faster than KB can pick them up
-        Optional<ProjectVersionComponentView> blackDuckCommonComponent = bomComponents.stream().filter(ProjectVersionComponentView -> "jackson-core".equals(ProjectVersionComponentView.getComponentName())).findFirst();
-        assertTrue(blackDuckCommonComponent.isPresent());
+        projectUtil.hasComponents(Bds.of("jackson-core").toSet());
     }
 
 }

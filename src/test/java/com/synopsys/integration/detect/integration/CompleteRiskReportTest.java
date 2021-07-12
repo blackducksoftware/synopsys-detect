@@ -34,21 +34,22 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.ArrayUtils;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.Application;
+import com.synopsys.integration.detect.battery.docker.integration.BlackDuckAssertions;
+import com.synopsys.integration.detect.battery.docker.integration.BlackDuckTestConnection;
+import com.synopsys.integration.detect.battery.docker.util.DetectCommandBuilder;
+import com.synopsys.integration.detect.configuration.DetectProperties;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
+import com.synopsys.integration.detect.workflow.blackduck.report.service.ReportService;
 
 @Tag("integration")
-public class CompleteRiskReportTest extends BlackDuckIntegrationTest {
+public class CompleteRiskReportTest {
     @Test
     public void testRiskReportWithoutPath() throws Exception {
-        Assertions.assertNotNull(System.getenv().get(BLACKDUCK_URL), "Integration tests require a black duck url.");
-        Assertions.assertNotNull(System.getenv().get(BLACKDUCK_API_TOKEN), "Integration tests require a black duck api token.");
-
         testRiskReportIsPopulated(false);
     }
 
@@ -67,9 +68,12 @@ public class CompleteRiskReportTest extends BlackDuckIntegrationTest {
             reportDirectory = new File(".");
         }
 
-        final String projectName = "synopsys-detect-junit";
-        final String projectVersionName = "risk-report";
-        ProjectVersionWrapper projectVersionWrapper = assertProjectVersionReady(projectName, projectVersionName);
+        BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
+        ReportService reportService = blackDuckTestConnection.createReportService();
+
+        BlackDuckAssertions blackDuckAssertions = blackDuckTestConnection.projectVersionAssertions("synopsys-detect-junit", "risk-report");
+        ProjectVersionWrapper projectVersionWrapper = blackDuckAssertions.emptyOnBlackDuck();
+
         List<File> pdfFiles = getPdfFiles(reportDirectory);
         assertEquals(0, pdfFiles.size());
         File riskReportPdf = reportService.createReportPdfFile(reportDirectory, projectVersionWrapper.getProjectView(), projectVersionWrapper.getProjectVersionView());
@@ -81,16 +85,18 @@ public class CompleteRiskReportTest extends BlackDuckIntegrationTest {
         pdfFiles = getPdfFiles(reportDirectory);
         assertEquals(0, pdfFiles.size());
 
-        List<String> detectArgs = getInitialArgs(projectName, projectVersionName);
-        detectArgs.add("--detect.risk.report.pdf=true");
-        detectArgs.add("--detect.timeout=1200");
+        DetectCommandBuilder detectCommandBuilder = new DetectCommandBuilder();
+        detectCommandBuilder.connectToBlackDuck(blackDuckTestConnection);
+        detectCommandBuilder.projectNameVersion(blackDuckAssertions.getProjectNameVersion());
+        detectCommandBuilder.property(DetectProperties.DETECT_RISK_REPORT_PDF, "true");
+        detectCommandBuilder.property(DetectProperties.DETECT_TIMEOUT, "1200");
         if (includePath) {
-            detectArgs.add("--detect.risk.report.pdf.path=" + reportDirectory.toString());
+            detectCommandBuilder.property(DetectProperties.DETECT_RISK_REPORT_PDF_PATH, reportDirectory.toString());
         }
+        detectCommandBuilder.tools(DetectTool.DETECTOR);
 
-        detectArgs.add("--detect.tools=DETECTOR");
-        detectArgs.forEach(System.out::println);
-        Application.main(detectArgs.toArray(ArrayUtils.EMPTY_STRING_ARRAY));
+        Application.setShouldExit(false);
+        Application.main(detectCommandBuilder.buildArguments());
 
         pdfFiles = getPdfFiles(reportDirectory);
         assertEquals(1, pdfFiles.size());
