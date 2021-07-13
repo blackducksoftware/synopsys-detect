@@ -501,4 +501,11 @@ public class DetectConfigurationFactory {
         return detectConfiguration.getValueOrEmpty(DetectProperties.DETECT_CODE_LOCATION_NAME.getProperty()).orElse(null);
 
     }
+
+    public DetectorToolOptions createDetectorToolOptions() {
+        String projectBomTool = detectConfiguration.getValueOrEmpty(DetectProperties.DETECT_PROJECT_DETECTOR.getProperty()).orElse(null);
+        List<DetectorType> requiredDetectors = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_REQUIRED_DETECTOR_TYPES.getProperty());
+        boolean buildless = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_BUILDLESS.getProperty());
+        return new DetectorToolOptions(projectBomTool, requiredDetectors, buildless);
+    }
 }

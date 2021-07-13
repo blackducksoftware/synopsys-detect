@@ -61,7 +61,7 @@ public class UniversalStepRunner {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
             logger.info("Will include the Docker tool.");
-            DetectableToolResult result = operationFactory.createDockerOperation().execute();
+            DetectableToolResult result = operationFactory.executeDocker().execute();
             logger.info("Docker actions finished.");
             return Optional.ofNullable(result);
         } else {
@@ -74,7 +74,7 @@ public class UniversalStepRunner {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.BAZEL)) {
             logger.info("Will include the Bazel tool.");
-            DetectableToolResult result = operationFactory.createBazelOperation().execute();
+            DetectableToolResult result = operationFactory.executeBazel().execute();
             logger.info("Bazel actions finished.");
             return Optional.ofNullable(result);
         } else {
@@ -87,7 +87,10 @@ public class UniversalStepRunner {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.DETECTOR)) {
             logger.info("Will include the detector tool.");
-            DetectorToolResult result = operationFactory.createDetectorOperation().execute();
+            DetectorToolResult result = operationFactory.executeDetectors();
+            if (result.anyDetectorsFailed()) {
+                operationFactory.publishDetectorFailure();
+            }
             logger.info("Detector actions finished.");
             return Optional.ofNullable(result);
         } else {
