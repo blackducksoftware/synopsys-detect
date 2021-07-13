@@ -1,0 +1,62 @@
+/*
+ * detectable
+ *
+ * Copyright (c) 2021 Synopsys, Inc.
+ *
+ * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
+ */
+package com.synopsys.integration.detectable.detectables.go.gomod.parse;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.synopsys.integration.detectable.detectables.go.gomod.model.GoGraphRelationship;
+import com.synopsys.integration.util.NameVersion;
+
+public class GoGraphParser {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    public List<GoGraphRelationship> parseRelationshipsFromGoModGraph(List<String> goModGraphOutput) {
+        List<GoGraphRelationship> goGraphRelationships = new LinkedList<>();
+        for (String line : goModGraphOutput) {
+            //example: github.com/gomods/athens cloud.google.com/go@v0.26.0
+            Optional<GoGraphRelationship> goGraphRelationship = parseLine(line);
+            goGraphRelationship.ifPresent(goGraphRelationships::add);
+        }
+
+        return goGraphRelationships;
+    }
+
+    private Optional<GoGraphRelationship> parseLine(String line) {
+        String[] parts = line.split(" ");
+        if (parts.length != 2) {
+            logger.warn("Unknown graph line format: {}", line);
+            return Optional.empty();
+        }
+
+        NameVersion parent = extractNameVersion(parts[0]);
+        NameVersion child = extractNameVersion(parts[1]);
+
+        return Optional.of(new GoGraphRelationship(parent, child));
+    }
+
+    private NameVersion extractNameVersion(String dependency) {
+        if (dependency.contains("@")) {
+            String[] parts = dependency.split("@");
+            if (parts.length != 2) {
+                logger.warn("Unknown graph dependency format, using entire entry as name: {}", dependency);
+                return new NameVersion(dependency, null);
+            } else {
+                String name = parts[0];
+                String version = parts[1];
+                return new NameVersion(name, version);
+            }
+        } else {
+            return new NameVersion(dependency, null);
+        }
+    }
+}

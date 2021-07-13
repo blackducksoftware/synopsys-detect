@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.battery.util;
+package com.synopsys.integration.detect.battery.docker.util;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,20 +10,19 @@ import java.util.regex.Pattern;
 import org.junit.jupiter.api.Assertions;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.detect.battery.docker.util.DockerDetectResult;
-import com.synopsys.integration.detect.battery.docker.util.DockerTestDirectories;
 import com.synopsys.integration.detect.workflow.report.output.FormattedDetectorOutput;
 import com.synopsys.integration.detect.workflow.report.output.FormattedOperationOutput;
 import com.synopsys.integration.detect.workflow.report.output.FormattedOutput;
 import com.synopsys.integration.detect.workflow.report.output.FormattedStatusOutput;
+import com.synopsys.integration.util.NameVersion;
 
-public class DockerTestAssertions {
+public class DockerAssertions {
     private DockerDetectResult dockerDetectResult;
     private final File outputDirectory;
     private final File bdioDirectory;
     private FormattedOutput statusJson = null;
 
-    public DockerTestAssertions(final DockerTestDirectories testDirectories, final DockerDetectResult dockerDetectResult) {
+    public DockerAssertions(final DockerTestDirectories testDirectories, final DockerDetectResult dockerDetectResult) {
         this.dockerDetectResult = dockerDetectResult;
         this.outputDirectory = testDirectories.getResultOutputDirectory();
         this.bdioDirectory = testDirectories.getResultBdioDirectory();
@@ -117,11 +116,29 @@ public class DockerTestAssertions {
         successfulThingLogged(operationName);
     }
 
+    public void projectVersion(NameVersion nameVersion) {
+        projectVersion(nameVersion.getName(), nameVersion.getVersion());
+    }
+
     public void projectVersion(String project, String version) {
         FormattedOutput statusJson = locateStatusJson();
         Assertions.assertEquals(project, statusJson.projectName);
         Assertions.assertEquals(version, statusJson.projectVersion);
         logContains("Project name: " + project); //Should we rely solely on the status json?
         logContains("Project version: " + version);
+    }
+
+    public void bdioFiles(int bdioCount) {
+        Assertions.assertNotNull(bdioDirectory, "Bdio directory did not exist!");
+        Assertions.assertNotNull(bdioDirectory.listFiles(), "Bdio directory list files was null.");
+        Assertions.assertEquals(bdioCount, Objects.requireNonNull(bdioDirectory.listFiles()).length);
+    }
+
+    public File getOutputDirectory() {
+        return outputDirectory;
+    }
+
+    public void resultProducedAtLocation(String location) {
+        Assertions.assertTrue(locateStatusJson().results.stream().anyMatch(result -> result.location.equals(location)), "Unable to find result: " + location);
     }
 }

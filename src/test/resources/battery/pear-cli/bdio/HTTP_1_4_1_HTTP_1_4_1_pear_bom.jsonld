@@ -18,8 +18,10 @@
           "name": "pear",
           "separator": "/"
         },
-        "name": "HTTP",
-        "version": "1.4.1"
+        "pieces": [
+          "HTTP",
+          "1.4.1"
+        ]
       }
     },
     "relationship": [
@@ -42,8 +44,10 @@
           "name": "pear",
           "separator": "/"
         },
-        "name": "PEAR",
-        "version": "1.9.5"
+        "pieces": [
+          "PEAR",
+          "1.9.5"
+        ]
       }
     },
     "relationship": []

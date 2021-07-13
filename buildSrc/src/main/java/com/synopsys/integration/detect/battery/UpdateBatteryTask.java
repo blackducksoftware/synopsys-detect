@@ -58,8 +58,8 @@ public class UpdateBatteryTask extends DefaultTask {
                         fileWriter.write(gson.toJson(json));
                     }
 
-                    System.out.println("COPIED FROM: $actualBdioFile");
-                    System.out.println("COPIED TO  : $bdioFile");
+                    System.out.println("COPIED FROM: " + actualBdioFile.getAbsolutePath());
+                    System.out.println("COPIED TO  : " + bdioFile.getAbsolutePath());
                 }
             }
         }

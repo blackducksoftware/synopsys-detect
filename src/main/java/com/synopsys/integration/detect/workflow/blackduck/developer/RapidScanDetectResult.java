@@ -44,18 +44,20 @@ public class RapidScanDetectResult implements DetectResult {
         String policyGroupName = RapidScanDetailGroup.POLICY.getDisplayName();
         String securityGroupName = RapidScanDetailGroup.SECURITY.getDisplayName();
         String licenseGroupName = RapidScanDetailGroup.LICENSE.getDisplayName();
-        String errorCountFormat = "\t%s Errors = %d";
-        String warningCountFormat = "\t%s Warnings = %d";
+        String countFormat = "\t\t* %s: %d";
         String indentedMessageFormat = "\t\t%s";
 
         List<String> resultMessages = new LinkedList<>();
         resultMessages.add("");
-        resultMessages.add(String.format(errorCountFormat, policyGroupName, summary.getPolicyErrorCount()));
-        resultMessages.add(String.format(warningCountFormat, policyGroupName, summary.getPolicyWarningCount()));
-        resultMessages.add(String.format(errorCountFormat, securityGroupName, summary.getSecurityErrorCount()));
-        resultMessages.add(String.format(warningCountFormat, securityGroupName, summary.getSecurityWarningCount()));
-        resultMessages.add(String.format(errorCountFormat, licenseGroupName, summary.getLicenseErrorCount()));
-        resultMessages.add(String.format(warningCountFormat, licenseGroupName, summary.getLicenseWarningCount()));
+        resultMessages.add("\tCritical and blocking policy violations for");
+        resultMessages.add(String.format(countFormat, policyGroupName, summary.getPolicyErrorCount()));
+        resultMessages.add(String.format(countFormat, securityGroupName, summary.getSecurityErrorCount()));
+        resultMessages.add(String.format(countFormat, licenseGroupName, summary.getLicenseErrorCount()));
+        resultMessages.add("");
+        resultMessages.add("\tOther policy violations");
+        resultMessages.add(String.format(countFormat, policyGroupName, summary.getPolicyWarningCount()));
+        resultMessages.add(String.format(countFormat, securityGroupName, summary.getSecurityWarningCount()));
+        resultMessages.add(String.format(countFormat, licenseGroupName, summary.getLicenseWarningCount()));
         resultMessages.add("");
         resultMessages.add("\tPolicies Violated:");
         summary.getPolicyViolationNames().stream()

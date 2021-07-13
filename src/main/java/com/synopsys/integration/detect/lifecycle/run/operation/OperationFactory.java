@@ -47,6 +47,7 @@ import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.configuration.DetectorToolOptions;
 import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
@@ -63,11 +64,18 @@ import com.synopsys.integration.detect.lifecycle.run.step.utility.OperationAudit
 import com.synopsys.integration.detect.lifecycle.run.step.utility.OperationWrapper;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeManager;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
+import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
+import com.synopsys.integration.detect.tool.DetectableTool;
+import com.synopsys.integration.detect.tool.DetectableToolResult;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanFindMultipleTargetsOperation;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryUploadOperation;
 import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
 import com.synopsys.integration.detect.tool.detector.DetectorEventPublisher;
+import com.synopsys.integration.detect.tool.detector.DetectorIssuePublisher;
+import com.synopsys.integration.detect.tool.detector.DetectorRuleFactory;
+import com.synopsys.integration.detect.tool.detector.DetectorTool;
+import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
 import com.synopsys.integration.detect.tool.detector.extraction.ExtractionEnvironmentProvider;
 import com.synopsys.integration.detect.tool.detector.factory.DetectDetectableFactory;
 import com.synopsys.integration.detect.tool.impactanalysis.GenerateImpactAnalysisOperation;
@@ -134,6 +142,7 @@ import com.synopsys.integration.detect.workflow.codelocation.CodeLocationEventPu
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.codelocation.CreateBdioCodeLocationsFromDetectCodeLocationsOperation;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
+import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
@@ -147,6 +156,8 @@ import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detect.workflow.status.StatusType;
+import com.synopsys.integration.detector.finder.DetectorFinder;
+import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.rest.HttpUrl;
@@ -218,26 +229,38 @@ public class OperationFactory { //TODO: OperationRunner
         this.auditLog = new OperationAuditLog(utilitySingletons.getOperationWrapper(), operationSystem);
     }
 
-    //START: NOT YET MIGRATED
-    public final DockerOperation createDockerOperation() {
-        return new DockerOperation(directoryManager, statusEventPublisher, exitCodePublisher, detectDetectableFactory,
-            extractionEnvironmentProvider,
-            codeLocationConverter, operationSystem);
+    public final DetectableToolResult executeDocker() throws DetectUserFriendlyException {
+        return auditLog.namedPublic("Execute Docker", () -> {
+            DetectableTool detectableTool = new DetectableTool(detectDetectableFactory::createDockerDetectable,
+                extractionEnvironmentProvider, codeLocationConverter, "DOCKER", DetectTool.DOCKER,
+                statusEventPublisher, exitCodePublisher, operationSystem);
+
+            return detectableTool.execute(directoryManager.getSourceDirectory());
+        });
     }
 
-    public final BazelOperation createBazelOperation() {
-        return new BazelOperation(directoryManager, statusEventPublisher, exitCodePublisher, detectDetectableFactory,
-            extractionEnvironmentProvider,
-            codeLocationConverter, operationSystem);
+    public final DetectableToolResult executeBazel() throws DetectUserFriendlyException {
+        return auditLog.namedPublic("Execute Bazel", () -> {
+            DetectableTool detectableTool = new DetectableTool(detectDetectableFactory::createBazelDetectable,
+                extractionEnvironmentProvider, codeLocationConverter, "BAZEL", DetectTool.BAZEL,
+                statusEventPublisher, exitCodePublisher, operationSystem);
+            return detectableTool.execute(directoryManager.getSourceDirectory());
+        });
     }
 
-    public final DetectorOperation createDetectorOperation() {
-        return new DetectorOperation(detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem,
-            detectDetectableFactory,
-            extractionEnvironmentProvider, codeLocationConverter, statusEventPublisher, exitCodePublisher, detectorEventPublisher,
-            fileFinder);
+    public final DetectorToolResult executeDetectors() throws DetectUserFriendlyException {
+        return auditLog.namedPublic("Execute Detectors", () -> {
+            DetectorToolOptions detectorToolOptions = detectConfigurationFactory.createDetectorToolOptions();
+            DetectorRuleFactory detectorRuleFactory = new DetectorRuleFactory();
+            DetectorRuleSet detectRuleSet = detectorRuleFactory.createRules(detectDetectableFactory, detectorToolOptions.isBuildless());
+            File sourcePath = directoryManager.getSourceDirectory();
+
+            DetectorTool detectorTool = new DetectorTool(new DetectorFinder(), extractionEnvironmentProvider, eventSystem, codeLocationConverter, new DetectorIssuePublisher(), statusEventPublisher, exitCodePublisher,
+                detectorEventPublisher);
+            return detectorTool.performDetectors(directoryManager.getSourceDirectory(), detectRuleSet, detectConfigurationFactory.createDetectorFinderOptions(sourcePath.toPath()),
+                detectConfigurationFactory.createDetectorEvaluationOptions(), detectorToolOptions.getProjectBomTool(), detectorToolOptions.getRequiredDetectors(), fileFinder);
+        });
     }
-    //END: NOT YET MIGRATED
 
     public final void phoneHome(BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
         auditLog.namedPublic("Phone Home", () -> blackDuckRunData.getPhoneHomeManager().ifPresent(PhoneHomeManager::startPhoneHome));
@@ -697,5 +720,9 @@ public class OperationFactory { //TODO: OperationRunner
             return new FindCloneByNameOperation(blackDuckRunData.getBlackDuckServicesFactory().createProjectService())
                        .findNamedCloneUrl(projectName, cloneVersionName);
         });
+    }
+
+    public void publishDetectorFailure() {
+        eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR, "A detector failed."));
     }
 }

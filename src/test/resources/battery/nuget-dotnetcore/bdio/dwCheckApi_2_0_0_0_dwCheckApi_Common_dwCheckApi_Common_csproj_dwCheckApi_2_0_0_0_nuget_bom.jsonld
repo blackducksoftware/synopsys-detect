@@ -18,17 +18,19 @@
           "name": "nuget",
           "separator": "/"
         },
-        "name": "dwCheckApi",
-        "version": "2.0.0.0"
+        "pieces": [
+          "dwCheckApi",
+          "2.0.0.0"
+        ]
       }
     },
     "relationship": [
       {
-        "related": "http:nuget/Microsoft.Extensions.Configuration.Json/2.0.0",
+        "related": "http:nuget/Microsoft.EntityFrameworkCore/2.0.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:nuget/Newtonsoft.Json/10.0.3",
+        "related": "http:nuget/Microsoft.Extensions.Configuration.Json/2.0.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -36,11 +38,15 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:nuget/Microsoft.EntityFrameworkCore/2.0.0",
+        "related": "http:nuget/Microsoft.EntityFrameworkCore.Sqlite/2.0.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
         "related": "http:nuget/NETStandard.Library/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/Microsoft.NETCore.App/2.0.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -48,119 +54,115 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:nuget/Microsoft.EntityFrameworkCore.Tools/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.EntityFrameworkCore.Sqlite/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.NETCore.App/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "Microsoft.Extensions.Configuration.Json",
-    "revision": "2.0.0",
-    "@id": "http:nuget/Microsoft.Extensions.Configuration.Json/2.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "Microsoft.Extensions.Configuration.Json/2.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "Microsoft.Extensions.Configuration.Json",
-        "version": "2.0.0"
-      }
-    },
-    "relationship": [
-      {
         "related": "http:nuget/Newtonsoft.Json/10.0.3",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:nuget/Microsoft.Extensions.Configuration/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.Extensions.Configuration.FileExtensions/2.0.0",
+        "related": "http:nuget/Microsoft.EntityFrameworkCore.Tools/2.0.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
   },
   {
-    "name": "Newtonsoft.Json",
-    "revision": "10.0.3",
-    "@id": "http:nuget/Newtonsoft.Json/10.0.3",
+    "name": "Microsoft.EntityFrameworkCore",
+    "revision": "2.0.0",
+    "@id": "http:nuget/Microsoft.EntityFrameworkCore/2.0.0",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "nuget",
-      "externalId": "Newtonsoft.Json/10.0.3",
+      "externalId": "Microsoft.EntityFrameworkCore/2.0.0",
       "externalIdMetaData": {
         "forge": {
           "name": "nuget",
           "separator": "/"
         },
-        "name": "Newtonsoft.Json",
-        "version": "10.0.3"
+        "pieces": [
+          "Microsoft.EntityFrameworkCore",
+          "2.0.0"
+        ]
       }
     },
     "relationship": [
       {
-        "related": "http:nuget/System.ComponentModel.TypeConverter/4.3.0",
+        "related": "http:nuget/Remotion.Linq/2.1.1",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:nuget/System.Runtime.Serialization.Formatters/4.3.0",
+        "related": "http:nuget/System.Interactive.Async/3.1.1",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:nuget/Microsoft.CSharp/4.4.0",
+        "related": "http:nuget/Microsoft.Extensions.Logging/2.0.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:nuget/System.Runtime.Serialization.Primitives/4.3.0",
+        "related": "http:nuget/Microsoft.Extensions.Caching.Memory/2.0.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:nuget/NETStandard.Library/2.0.0",
+        "related": "http:nuget/Microsoft.Extensions.DependencyInjection/2.0.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:nuget/System.Xml.XmlDocument/4.3.0",
+        "related": "http:nuget/System.Collections.Immutable/1.4.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Diagnostics.DiagnosticSource/4.4.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.ComponentModel.Annotations/4.4.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
   },
   {
-    "name": "System.ComponentModel.TypeConverter",
-    "revision": "4.3.0",
-    "@id": "http:nuget/System.ComponentModel.TypeConverter/4.3.0",
+    "name": "Remotion.Linq",
+    "revision": "2.1.1",
+    "@id": "http:nuget/Remotion.Linq/2.1.1",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "nuget",
-      "externalId": "System.ComponentModel.TypeConverter/4.3.0",
+      "externalId": "Remotion.Linq/2.1.1",
       "externalIdMetaData": {
         "forge": {
           "name": "nuget",
           "separator": "/"
         },
-        "name": "System.ComponentModel.TypeConverter",
-        "version": "4.3.0"
+        "pieces": [
+          "Remotion.Linq",
+          "2.1.1"
+        ]
       }
     },
     "relationship": [
       {
-        "related": "http:nuget/System.ComponentModel.Primitives/4.3.0",
+        "related": "http:nuget/System.Collections/4.3.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:nuget/System.Runtime.Extensions/4.3.0",
+        "related": "http:nuget/System.Linq.Expressions/4.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Diagnostics.Debug/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.ObjectModel/4.0.12",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Linq.Queryable/4.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Reflection/4.3.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -168,7 +170,7 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:nuget/System.Reflection.TypeExtensions/4.3.0",
+        "related": "http:nuget/System.Runtime.Extensions/4.3.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -177,580 +179,6 @@
       },
       {
         "related": "http:nuget/System.Threading/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.ComponentModel/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Collections.Specialized/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Resources.ResourceManager/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Reflection.Primitives/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Collections.NonGeneric/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Collections/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Reflection/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Globalization/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "System.ComponentModel.Primitives",
-    "revision": "4.3.0",
-    "@id": "http:nuget/System.ComponentModel.Primitives/4.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.ComponentModel.Primitives/4.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.ComponentModel.Primitives",
-        "version": "4.3.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/System.ComponentModel/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Resources.ResourceManager/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "System.ComponentModel",
-    "revision": "4.3.0",
-    "@id": "http:nuget/System.ComponentModel/4.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.ComponentModel/4.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.ComponentModel",
-        "version": "4.3.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "System.Runtime",
-    "revision": "4.3.0",
-    "@id": "http:nuget/System.Runtime/4.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.Runtime/4.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.Runtime",
-        "version": "4.3.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "Microsoft.NETCore.Platforms",
-    "revision": "2.0.0",
-    "@id": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "Microsoft.NETCore.Platforms/2.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "Microsoft.NETCore.Platforms",
-        "version": "2.0.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "Microsoft.NETCore.Targets",
-    "revision": "1.1.0",
-    "@id": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "Microsoft.NETCore.Targets/1.1.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "Microsoft.NETCore.Targets",
-        "version": "1.1.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "System.Resources.ResourceManager",
-    "revision": "4.3.0",
-    "@id": "http:nuget/System.Resources.ResourceManager/4.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.Resources.ResourceManager/4.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.Resources.ResourceManager",
-        "version": "4.3.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/System.Reflection/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Globalization/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "System.Reflection",
-    "revision": "4.3.0",
-    "@id": "http:nuget/System.Reflection/4.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.Reflection/4.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.Reflection",
-        "version": "4.3.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/System.Reflection.Primitives/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.IO/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "System.Reflection.Primitives",
-    "revision": "4.3.0",
-    "@id": "http:nuget/System.Reflection.Primitives/4.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.Reflection.Primitives/4.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.Reflection.Primitives",
-        "version": "4.3.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "System.IO",
-    "revision": "4.3.0",
-    "@id": "http:nuget/System.IO/4.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.IO/4.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.IO",
-        "version": "4.3.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/System.Text.Encoding/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Threading.Tasks/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "System.Text.Encoding",
-    "revision": "4.3.0",
-    "@id": "http:nuget/System.Text.Encoding/4.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.Text.Encoding/4.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.Text.Encoding",
-        "version": "4.3.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "System.Threading.Tasks",
-    "revision": "4.3.0",
-    "@id": "http:nuget/System.Threading.Tasks/4.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.Threading.Tasks/4.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.Threading.Tasks",
-        "version": "4.3.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "System.Globalization",
-    "revision": "4.3.0",
-    "@id": "http:nuget/System.Globalization/4.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.Globalization/4.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.Globalization",
-        "version": "4.3.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "System.Runtime.Extensions",
-    "revision": "4.3.0",
-    "@id": "http:nuget/System.Runtime.Extensions/4.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.Runtime.Extensions/4.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.Runtime.Extensions",
-        "version": "4.3.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "System.Reflection.Extensions",
-    "revision": "4.3.0",
-    "@id": "http:nuget/System.Reflection.Extensions/4.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.Reflection.Extensions/4.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.Reflection.Extensions",
-        "version": "4.3.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/System.Reflection/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "System.Reflection.TypeExtensions",
-    "revision": "4.3.0",
-    "@id": "http:nuget/System.Reflection.TypeExtensions/4.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.Reflection.TypeExtensions/4.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.Reflection.TypeExtensions",
-        "version": "4.3.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/System.Reflection/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "System.Linq",
-    "revision": "4.3.0",
-    "@id": "http:nuget/System.Linq/4.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.Linq/4.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.Linq",
-        "version": "4.3.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/System.Diagnostics.Debug/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime.Extensions/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Resources.ResourceManager/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Collections/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "System.Diagnostics.Debug",
-    "revision": "4.3.0",
-    "@id": "http:nuget/System.Diagnostics.Debug/4.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.Diagnostics.Debug/4.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.Diagnostics.Debug",
-        "version": "4.3.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -768,11 +196,213 @@
           "name": "nuget",
           "separator": "/"
         },
-        "name": "System.Collections",
-        "version": "4.3.0"
+        "pieces": [
+          "System.Collections",
+          "4.3.0"
+        ]
       }
     },
     "relationship": [
+      {
+        "related": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "Microsoft.NETCore.Targets",
+    "revision": "1.1.0",
+    "@id": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "Microsoft.NETCore.Targets/1.1.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "Microsoft.NETCore.Targets",
+          "1.1.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "System.Runtime",
+    "revision": "4.3.0",
+    "@id": "http:nuget/System.Runtime/4.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.Runtime/4.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.Runtime",
+          "4.3.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "Microsoft.NETCore.Platforms",
+    "revision": "2.0.0",
+    "@id": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "Microsoft.NETCore.Platforms/2.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "Microsoft.NETCore.Platforms",
+          "2.0.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "System.Linq.Expressions",
+    "revision": "4.1.0",
+    "@id": "http:nuget/System.Linq.Expressions/4.1.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.Linq.Expressions/4.1.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.Linq.Expressions",
+          "4.1.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/System.IO/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Globalization/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Reflection.Emit.ILGeneration/4.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Reflection.TypeExtensions/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.ObjectModel/4.0.12",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Reflection.Emit/4.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Reflection.Primitives/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Reflection/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Reflection.Extensions/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime.Extensions/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Threading/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Linq/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Collections/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Diagnostics.Debug/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Resources.ResourceManager/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Reflection.Emit.Lightweight/4.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "System.IO",
+    "revision": "4.3.0",
+    "@id": "http:nuget/System.IO/4.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.IO/4.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.IO",
+          "4.3.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
       {
         "related": "http:nuget/System.Runtime/4.3.0",
         "relationshipType": "DYNAMIC_LINK"
@@ -782,7 +412,371 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
+        "related": "http:nuget/System.Threading.Tasks/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Text.Encoding/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "System.Threading.Tasks",
+    "revision": "4.3.0",
+    "@id": "http:nuget/System.Threading.Tasks/4.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.Threading.Tasks/4.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.Threading.Tasks",
+          "4.3.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
         "related": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "System.Text.Encoding",
+    "revision": "4.3.0",
+    "@id": "http:nuget/System.Text.Encoding/4.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.Text.Encoding/4.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.Text.Encoding",
+          "4.3.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "System.Globalization",
+    "revision": "4.3.0",
+    "@id": "http:nuget/System.Globalization/4.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.Globalization/4.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.Globalization",
+          "4.3.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "System.Reflection.Emit.ILGeneration",
+    "revision": "4.0.1",
+    "@id": "http:nuget/System.Reflection.Emit.ILGeneration/4.0.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.Reflection.Emit.ILGeneration/4.0.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.Reflection.Emit.ILGeneration",
+          "4.0.1"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Reflection.Primitives/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Reflection/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "System.Reflection.Primitives",
+    "revision": "4.3.0",
+    "@id": "http:nuget/System.Reflection.Primitives/4.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.Reflection.Primitives/4.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.Reflection.Primitives",
+          "4.3.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "System.Reflection",
+    "revision": "4.3.0",
+    "@id": "http:nuget/System.Reflection/4.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.Reflection/4.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.Reflection",
+          "4.3.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/System.IO/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Reflection.Primitives/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "System.Reflection.TypeExtensions",
+    "revision": "4.3.0",
+    "@id": "http:nuget/System.Reflection.TypeExtensions/4.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.Reflection.TypeExtensions/4.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.Reflection.TypeExtensions",
+          "4.3.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Reflection/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "System.ObjectModel",
+    "revision": "4.0.12",
+    "@id": "http:nuget/System.ObjectModel/4.0.12",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.ObjectModel/4.0.12",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.ObjectModel",
+          "4.0.12"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/System.Collections/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Diagnostics.Debug/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Resources.ResourceManager/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Threading/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "System.Diagnostics.Debug",
+    "revision": "4.3.0",
+    "@id": "http:nuget/System.Diagnostics.Debug/4.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.Diagnostics.Debug/4.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.Diagnostics.Debug",
+          "4.3.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "System.Resources.ResourceManager",
+    "revision": "4.3.0",
+    "@id": "http:nuget/System.Resources.ResourceManager/4.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.Resources.ResourceManager/4.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.Resources.ResourceManager",
+          "4.3.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/System.Globalization/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Reflection/4.3.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -800,175 +794,55 @@
           "name": "nuget",
           "separator": "/"
         },
-        "name": "System.Threading",
-        "version": "4.3.0"
+        "pieces": [
+          "System.Threading",
+          "4.3.0"
+        ]
       }
     },
     "relationship": [
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
       {
         "related": "http:nuget/System.Threading.Tasks/4.3.0",
         "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
       }
     ]
   },
   {
-    "name": "System.Collections.Specialized",
-    "revision": "4.3.0",
-    "@id": "http:nuget/System.Collections.Specialized/4.3.0",
+    "name": "System.Reflection.Emit",
+    "revision": "4.0.1",
+    "@id": "http:nuget/System.Reflection.Emit/4.0.1",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "nuget",
-      "externalId": "System.Collections.Specialized/4.3.0",
+      "externalId": "System.Reflection.Emit/4.0.1",
       "externalIdMetaData": {
         "forge": {
           "name": "nuget",
           "separator": "/"
         },
-        "name": "System.Collections.Specialized",
-        "version": "4.3.0"
+        "pieces": [
+          "System.Reflection.Emit",
+          "4.0.1"
+        ]
       }
     },
     "relationship": [
       {
-        "related": "http:nuget/System.Runtime.Extensions/4.3.0",
+        "related": "http:nuget/System.IO/4.3.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:nuget/System.Resources.ResourceManager/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Collections.NonGeneric/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Threading/4.3.0",
+        "related": "http:nuget/System.Reflection.Emit.ILGeneration/4.0.1",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
         "related": "http:nuget/System.Runtime/4.3.0",
         "relationshipType": "DYNAMIC_LINK"
       },
-      {
-        "related": "http:nuget/System.Globalization.Extensions/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Globalization/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "System.Collections.NonGeneric",
-    "revision": "4.3.0",
-    "@id": "http:nuget/System.Collections.NonGeneric/4.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.Collections.NonGeneric/4.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.Collections.NonGeneric",
-        "version": "4.3.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/System.Diagnostics.Debug/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime.Extensions/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Resources.ResourceManager/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Threading/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Globalization/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "System.Globalization.Extensions",
-    "revision": "4.3.0",
-    "@id": "http:nuget/System.Globalization.Extensions/4.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.Globalization.Extensions/4.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.Globalization.Extensions",
-        "version": "4.3.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/System.Runtime.Extensions/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime.InteropServices/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Resources.ResourceManager/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Globalization/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "System.Runtime.InteropServices",
-    "revision": "4.3.0",
-    "@id": "http:nuget/System.Runtime.InteropServices/4.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.Runtime.InteropServices/4.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.Runtime.InteropServices",
-        "version": "4.3.0"
-      }
-    },
-    "relationship": [
       {
         "related": "http:nuget/System.Reflection.Primitives/4.3.0",
         "relationshipType": "DYNAMIC_LINK"
@@ -976,43 +850,33 @@
       {
         "related": "http:nuget/System.Reflection/4.3.0",
         "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime.Handles/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
-        "relationshipType": "DYNAMIC_LINK"
       }
     ]
   },
   {
-    "name": "System.Runtime.Handles",
+    "name": "System.Reflection.Extensions",
     "revision": "4.3.0",
-    "@id": "http:nuget/System.Runtime.Handles/4.3.0",
+    "@id": "http:nuget/System.Reflection.Extensions/4.3.0",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "nuget",
-      "externalId": "System.Runtime.Handles/4.3.0",
+      "externalId": "System.Reflection.Extensions/4.3.0",
       "externalIdMetaData": {
         "forge": {
           "name": "nuget",
           "separator": "/"
         },
-        "name": "System.Runtime.Handles",
-        "version": "4.3.0"
+        "pieces": [
+          "System.Reflection.Extensions",
+          "4.3.0"
+        ]
       }
     },
     "relationship": [
+      {
+        "related": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
       {
         "related": "http:nuget/System.Runtime/4.3.0",
         "relationshipType": "DYNAMIC_LINK"
@@ -1022,31 +886,75 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
+        "related": "http:nuget/System.Reflection/4.3.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
   },
   {
-    "name": "System.Runtime.Serialization.Formatters",
+    "name": "System.Runtime.Extensions",
     "revision": "4.3.0",
-    "@id": "http:nuget/System.Runtime.Serialization.Formatters/4.3.0",
+    "@id": "http:nuget/System.Runtime.Extensions/4.3.0",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "nuget",
-      "externalId": "System.Runtime.Serialization.Formatters/4.3.0",
+      "externalId": "System.Runtime.Extensions/4.3.0",
       "externalIdMetaData": {
         "forge": {
           "name": "nuget",
           "separator": "/"
         },
-        "name": "System.Runtime.Serialization.Formatters",
-        "version": "4.3.0"
+        "pieces": [
+          "System.Runtime.Extensions",
+          "4.3.0"
+        ]
       }
     },
     "relationship": [
       {
-        "related": "http:nuget/System.Runtime.Serialization.Primitives/4.3.0",
+        "related": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "System.Linq",
+    "revision": "4.3.0",
+    "@id": "http:nuget/System.Linq/4.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.Linq/4.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.Linq",
+          "4.3.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/System.Collections/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Diagnostics.Debug/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -1054,7 +962,87 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
+        "related": "http:nuget/System.Runtime.Extensions/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "System.Reflection.Emit.Lightweight",
+    "revision": "4.0.1",
+    "@id": "http:nuget/System.Reflection.Emit.Lightweight/4.0.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.Reflection.Emit.Lightweight/4.0.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.Reflection.Emit.Lightweight",
+          "4.0.1"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/System.Reflection.Emit.ILGeneration/4.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Reflection.Primitives/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Reflection/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "System.Linq.Queryable",
+    "revision": "4.0.1",
+    "@id": "http:nuget/System.Linq.Queryable/4.0.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.Linq.Queryable/4.0.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.Linq.Queryable",
+          "4.0.1"
+        ]
+      }
+    },
+    "relationship": [
+      {
         "related": "http:nuget/System.Collections/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Linq.Expressions/4.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Diagnostics.Debug/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Resources.ResourceManager/4.3.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -1062,57 +1050,40 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:nuget/System.Runtime/4.3.0",
+        "related": "http:nuget/System.Reflection.Extensions/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Linq/4.3.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
   },
   {
-    "name": "System.Runtime.Serialization.Primitives",
-    "revision": "4.3.0",
-    "@id": "http:nuget/System.Runtime.Serialization.Primitives/4.3.0",
+    "name": "System.Interactive.Async",
+    "revision": "3.1.1",
+    "@id": "http:nuget/System.Interactive.Async/3.1.1",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "nuget",
-      "externalId": "System.Runtime.Serialization.Primitives/4.3.0",
+      "externalId": "System.Interactive.Async/3.1.1",
       "externalIdMetaData": {
         "forge": {
           "name": "nuget",
           "separator": "/"
         },
-        "name": "System.Runtime.Serialization.Primitives",
-        "version": "4.3.0"
+        "pieces": [
+          "System.Interactive.Async",
+          "3.1.1"
+        ]
       }
     },
     "relationship": [
       {
-        "related": "http:nuget/System.Resources.ResourceManager/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
+        "related": "http:nuget/NETStandard.Library/2.0.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
-  },
-  {
-    "name": "Microsoft.CSharp",
-    "revision": "4.4.0",
-    "@id": "http:nuget/Microsoft.CSharp/4.4.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "Microsoft.CSharp/4.4.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "Microsoft.CSharp",
-        "version": "4.4.0"
-      }
-    },
-    "relationship": []
   },
   {
     "name": "NETStandard.Library",
@@ -1127,8 +1098,10 @@
           "name": "nuget",
           "separator": "/"
         },
-        "name": "NETStandard.Library",
-        "version": "2.0.0"
+        "pieces": [
+          "NETStandard.Library",
+          "2.0.0"
+        ]
       }
     },
     "relationship": [
@@ -1139,357 +1112,107 @@
     ]
   },
   {
-    "name": "System.Xml.XmlDocument",
-    "revision": "4.3.0",
-    "@id": "http:nuget/System.Xml.XmlDocument/4.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.Xml.XmlDocument/4.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.Xml.XmlDocument",
-        "version": "4.3.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/System.Diagnostics.Debug/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime.Extensions/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Xml.ReaderWriter/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Text.Encoding/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Resources.ResourceManager/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Collections/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Threading/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.IO/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Globalization/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "System.Xml.ReaderWriter",
-    "revision": "4.3.0",
-    "@id": "http:nuget/System.Xml.ReaderWriter/4.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.Xml.ReaderWriter/4.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.Xml.ReaderWriter",
-        "version": "4.3.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/System.Runtime.Extensions/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime.InteropServices/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.IO.FileSystem.Primitives/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Threading.Tasks/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Threading.Tasks.Extensions/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Diagnostics.Debug/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Text.Encoding/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.IO.FileSystem/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Text.RegularExpressions/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Resources.ResourceManager/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Text.Encoding.Extensions/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Collections/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.IO/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Globalization/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "System.IO.FileSystem.Primitives",
-    "revision": "4.3.0",
-    "@id": "http:nuget/System.IO.FileSystem.Primitives/4.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.IO.FileSystem.Primitives/4.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.IO.FileSystem.Primitives",
-        "version": "4.3.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "System.Threading.Tasks.Extensions",
-    "revision": "4.3.0",
-    "@id": "http:nuget/System.Threading.Tasks.Extensions/4.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.Threading.Tasks.Extensions/4.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.Threading.Tasks.Extensions",
-        "version": "4.3.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/System.Threading.Tasks/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Collections/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "System.IO.FileSystem",
-    "revision": "4.3.0",
-    "@id": "http:nuget/System.IO.FileSystem/4.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.IO.FileSystem/4.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.IO.FileSystem",
-        "version": "4.3.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/System.Text.Encoding/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.IO.FileSystem.Primitives/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Threading.Tasks/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime.Handles/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.IO/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "System.Text.RegularExpressions",
-    "revision": "4.3.0",
-    "@id": "http:nuget/System.Text.RegularExpressions/4.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.Text.RegularExpressions/4.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.Text.RegularExpressions",
-        "version": "4.3.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "System.Text.Encoding.Extensions",
-    "revision": "4.3.0",
-    "@id": "http:nuget/System.Text.Encoding.Extensions/4.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.Text.Encoding.Extensions/4.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.Text.Encoding.Extensions",
-        "version": "4.3.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/System.Text.Encoding/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "Microsoft.Extensions.Configuration",
+    "name": "Microsoft.Extensions.Logging",
     "revision": "2.0.0",
-    "@id": "http:nuget/Microsoft.Extensions.Configuration/2.0.0",
+    "@id": "http:nuget/Microsoft.Extensions.Logging/2.0.0",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "nuget",
-      "externalId": "Microsoft.Extensions.Configuration/2.0.0",
+      "externalId": "Microsoft.Extensions.Logging/2.0.0",
       "externalIdMetaData": {
         "forge": {
           "name": "nuget",
           "separator": "/"
         },
-        "name": "Microsoft.Extensions.Configuration",
-        "version": "2.0.0"
+        "pieces": [
+          "Microsoft.Extensions.Logging",
+          "2.0.0"
+        ]
       }
     },
     "relationship": [
       {
-        "related": "http:nuget/Microsoft.Extensions.Configuration.Abstractions/2.0.0",
+        "related": "http:nuget/Microsoft.Extensions.Logging.Abstractions/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/Microsoft.Extensions.DependencyInjection.Abstractions/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/Microsoft.Extensions.Options/2.0.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
   },
   {
-    "name": "Microsoft.Extensions.Configuration.Abstractions",
+    "name": "Microsoft.Extensions.Logging.Abstractions",
     "revision": "2.0.0",
-    "@id": "http:nuget/Microsoft.Extensions.Configuration.Abstractions/2.0.0",
+    "@id": "http:nuget/Microsoft.Extensions.Logging.Abstractions/2.0.0",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "nuget",
-      "externalId": "Microsoft.Extensions.Configuration.Abstractions/2.0.0",
+      "externalId": "Microsoft.Extensions.Logging.Abstractions/2.0.0",
       "externalIdMetaData": {
         "forge": {
           "name": "nuget",
           "separator": "/"
         },
-        "name": "Microsoft.Extensions.Configuration.Abstractions",
-        "version": "2.0.0"
+        "pieces": [
+          "Microsoft.Extensions.Logging.Abstractions",
+          "2.0.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "Microsoft.Extensions.DependencyInjection.Abstractions",
+    "revision": "2.0.0",
+    "@id": "http:nuget/Microsoft.Extensions.DependencyInjection.Abstractions/2.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "Microsoft.Extensions.DependencyInjection.Abstractions/2.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "Microsoft.Extensions.DependencyInjection.Abstractions",
+          "2.0.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "Microsoft.Extensions.Options",
+    "revision": "2.0.0",
+    "@id": "http:nuget/Microsoft.Extensions.Options/2.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "Microsoft.Extensions.Options/2.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "Microsoft.Extensions.Options",
+          "2.0.0"
+        ]
       }
     },
     "relationship": [
       {
         "related": "http:nuget/Microsoft.Extensions.Primitives/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/Microsoft.Extensions.DependencyInjection.Abstractions/2.0.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -1507,8 +1230,10 @@
           "name": "nuget",
           "separator": "/"
         },
-        "name": "Microsoft.Extensions.Primitives",
-        "version": "2.0.0"
+        "pieces": [
+          "Microsoft.Extensions.Primitives",
+          "2.0.0"
+        ]
       }
     },
     "relationship": [
@@ -1531,11 +1256,196 @@
           "name": "nuget",
           "separator": "/"
         },
-        "name": "System.Runtime.CompilerServices.Unsafe",
-        "version": "4.4.0"
+        "pieces": [
+          "System.Runtime.CompilerServices.Unsafe",
+          "4.4.0"
+        ]
       }
     },
     "relationship": []
+  },
+  {
+    "name": "Microsoft.Extensions.Caching.Memory",
+    "revision": "2.0.0",
+    "@id": "http:nuget/Microsoft.Extensions.Caching.Memory/2.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "Microsoft.Extensions.Caching.Memory/2.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "Microsoft.Extensions.Caching.Memory",
+          "2.0.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/Microsoft.Extensions.Caching.Abstractions/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/Microsoft.Extensions.DependencyInjection.Abstractions/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/Microsoft.Extensions.Options/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "Microsoft.Extensions.Caching.Abstractions",
+    "revision": "2.0.0",
+    "@id": "http:nuget/Microsoft.Extensions.Caching.Abstractions/2.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "Microsoft.Extensions.Caching.Abstractions/2.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "Microsoft.Extensions.Caching.Abstractions",
+          "2.0.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/Microsoft.Extensions.Primitives/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "Microsoft.Extensions.DependencyInjection",
+    "revision": "2.0.0",
+    "@id": "http:nuget/Microsoft.Extensions.DependencyInjection/2.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "Microsoft.Extensions.DependencyInjection/2.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "Microsoft.Extensions.DependencyInjection",
+          "2.0.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/Microsoft.Extensions.DependencyInjection.Abstractions/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "System.Collections.Immutable",
+    "revision": "1.4.0",
+    "@id": "http:nuget/System.Collections.Immutable/1.4.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.Collections.Immutable/1.4.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.Collections.Immutable",
+          "1.4.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "System.Diagnostics.DiagnosticSource",
+    "revision": "4.4.1",
+    "@id": "http:nuget/System.Diagnostics.DiagnosticSource/4.4.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.Diagnostics.DiagnosticSource/4.4.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.Diagnostics.DiagnosticSource",
+          "4.4.1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "System.ComponentModel.Annotations",
+    "revision": "4.4.0",
+    "@id": "http:nuget/System.ComponentModel.Annotations/4.4.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.ComponentModel.Annotations/4.4.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.ComponentModel.Annotations",
+          "4.4.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "Microsoft.Extensions.Configuration.Json",
+    "revision": "2.0.0",
+    "@id": "http:nuget/Microsoft.Extensions.Configuration.Json/2.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "Microsoft.Extensions.Configuration.Json/2.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "Microsoft.Extensions.Configuration.Json",
+          "2.0.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/Microsoft.Extensions.Configuration.FileExtensions/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/Microsoft.Extensions.Configuration/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/Newtonsoft.Json/10.0.3",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
   },
   {
     "name": "Microsoft.Extensions.Configuration.FileExtensions",
@@ -1550,17 +1460,19 @@
           "name": "nuget",
           "separator": "/"
         },
-        "name": "Microsoft.Extensions.Configuration.FileExtensions",
-        "version": "2.0.0"
+        "pieces": [
+          "Microsoft.Extensions.Configuration.FileExtensions",
+          "2.0.0"
+        ]
       }
     },
     "relationship": [
       {
-        "related": "http:nuget/Microsoft.Extensions.Configuration/2.0.0",
+        "related": "http:nuget/Microsoft.Extensions.FileProviders.Physical/2.0.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:nuget/Microsoft.Extensions.FileProviders.Physical/2.0.0",
+        "related": "http:nuget/Microsoft.Extensions.Configuration/2.0.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -1578,8 +1490,10 @@
           "name": "nuget",
           "separator": "/"
         },
-        "name": "Microsoft.Extensions.FileProviders.Physical",
-        "version": "2.0.0"
+        "pieces": [
+          "Microsoft.Extensions.FileProviders.Physical",
+          "2.0.0"
+        ]
       }
     },
     "relationship": [
@@ -1606,8 +1520,10 @@
           "name": "nuget",
           "separator": "/"
         },
-        "name": "Microsoft.Extensions.FileSystemGlobbing",
-        "version": "2.0.0"
+        "pieces": [
+          "Microsoft.Extensions.FileSystemGlobbing",
+          "2.0.0"
+        ]
       }
     },
     "relationship": []
@@ -1625,13 +1541,892 @@
           "name": "nuget",
           "separator": "/"
         },
-        "name": "Microsoft.Extensions.FileProviders.Abstractions",
-        "version": "2.0.0"
+        "pieces": [
+          "Microsoft.Extensions.FileProviders.Abstractions",
+          "2.0.0"
+        ]
       }
     },
     "relationship": [
       {
         "related": "http:nuget/Microsoft.Extensions.Primitives/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "Microsoft.Extensions.Configuration",
+    "revision": "2.0.0",
+    "@id": "http:nuget/Microsoft.Extensions.Configuration/2.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "Microsoft.Extensions.Configuration/2.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "Microsoft.Extensions.Configuration",
+          "2.0.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/Microsoft.Extensions.Configuration.Abstractions/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "Microsoft.Extensions.Configuration.Abstractions",
+    "revision": "2.0.0",
+    "@id": "http:nuget/Microsoft.Extensions.Configuration.Abstractions/2.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "Microsoft.Extensions.Configuration.Abstractions/2.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "Microsoft.Extensions.Configuration.Abstractions",
+          "2.0.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/Microsoft.Extensions.Primitives/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "Newtonsoft.Json",
+    "revision": "10.0.3",
+    "@id": "http:nuget/Newtonsoft.Json/10.0.3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "Newtonsoft.Json/10.0.3",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "Newtonsoft.Json",
+          "10.0.3"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/Microsoft.CSharp/4.4.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime.Serialization.Formatters/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Xml.XmlDocument/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/NETStandard.Library/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.ComponentModel.TypeConverter/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime.Serialization.Primitives/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "Microsoft.CSharp",
+    "revision": "4.4.0",
+    "@id": "http:nuget/Microsoft.CSharp/4.4.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "Microsoft.CSharp/4.4.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "Microsoft.CSharp",
+          "4.4.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "System.Runtime.Serialization.Formatters",
+    "revision": "4.3.0",
+    "@id": "http:nuget/System.Runtime.Serialization.Formatters/4.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.Runtime.Serialization.Formatters/4.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.Runtime.Serialization.Formatters",
+          "4.3.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/System.Collections/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Resources.ResourceManager/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Reflection/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime.Serialization.Primitives/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "System.Runtime.Serialization.Primitives",
+    "revision": "4.3.0",
+    "@id": "http:nuget/System.Runtime.Serialization.Primitives/4.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.Runtime.Serialization.Primitives/4.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.Runtime.Serialization.Primitives",
+          "4.3.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Resources.ResourceManager/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "System.Xml.XmlDocument",
+    "revision": "4.3.0",
+    "@id": "http:nuget/System.Xml.XmlDocument/4.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.Xml.XmlDocument/4.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.Xml.XmlDocument",
+          "4.3.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/System.IO/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Globalization/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Collections/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Diagnostics.Debug/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Resources.ResourceManager/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Text.Encoding/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Xml.ReaderWriter/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime.Extensions/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Threading/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "System.Xml.ReaderWriter",
+    "revision": "4.3.0",
+    "@id": "http:nuget/System.Xml.ReaderWriter/4.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.Xml.ReaderWriter/4.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.Xml.ReaderWriter",
+          "4.3.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/System.IO/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Globalization/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.IO.FileSystem.Primitives/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Threading.Tasks/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime.Extensions/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Text.Encoding.Extensions/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime.InteropServices/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Collections/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.IO.FileSystem/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Diagnostics.Debug/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Text.RegularExpressions/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Threading.Tasks.Extensions/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Resources.ResourceManager/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Text.Encoding/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "System.IO.FileSystem.Primitives",
+    "revision": "4.3.0",
+    "@id": "http:nuget/System.IO.FileSystem.Primitives/4.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.IO.FileSystem.Primitives/4.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.IO.FileSystem.Primitives",
+          "4.3.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "System.Text.Encoding.Extensions",
+    "revision": "4.3.0",
+    "@id": "http:nuget/System.Text.Encoding.Extensions/4.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.Text.Encoding.Extensions/4.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.Text.Encoding.Extensions",
+          "4.3.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Text.Encoding/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "System.Runtime.InteropServices",
+    "revision": "4.3.0",
+    "@id": "http:nuget/System.Runtime.InteropServices/4.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.Runtime.InteropServices/4.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.Runtime.InteropServices",
+          "4.3.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Reflection.Primitives/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Reflection/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime.Handles/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "System.Runtime.Handles",
+    "revision": "4.3.0",
+    "@id": "http:nuget/System.Runtime.Handles/4.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.Runtime.Handles/4.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.Runtime.Handles",
+          "4.3.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "System.IO.FileSystem",
+    "revision": "4.3.0",
+    "@id": "http:nuget/System.IO.FileSystem/4.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.IO.FileSystem/4.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.IO.FileSystem",
+          "4.3.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/System.IO/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.IO.FileSystem.Primitives/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/Microsoft.NETCore.Targets/1.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Threading.Tasks/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Text.Encoding/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime.Handles/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "System.Text.RegularExpressions",
+    "revision": "4.3.0",
+    "@id": "http:nuget/System.Text.RegularExpressions/4.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.Text.RegularExpressions/4.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.Text.RegularExpressions",
+          "4.3.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "System.Threading.Tasks.Extensions",
+    "revision": "4.3.0",
+    "@id": "http:nuget/System.Threading.Tasks.Extensions/4.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.Threading.Tasks.Extensions/4.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.Threading.Tasks.Extensions",
+          "4.3.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/System.Collections/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Threading.Tasks/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "System.ComponentModel.TypeConverter",
+    "revision": "4.3.0",
+    "@id": "http:nuget/System.ComponentModel.TypeConverter/4.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.ComponentModel.TypeConverter/4.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.ComponentModel.TypeConverter",
+          "4.3.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/System.Globalization/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Reflection.TypeExtensions/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Reflection.Primitives/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Reflection/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Reflection.Extensions/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime.Extensions/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Threading/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Linq/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Collections/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Collections.Specialized/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.ComponentModel.Primitives/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Resources.ResourceManager/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.ComponentModel/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Collections.NonGeneric/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "System.Collections.Specialized",
+    "revision": "4.3.0",
+    "@id": "http:nuget/System.Collections.Specialized/4.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.Collections.Specialized/4.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.Collections.Specialized",
+          "4.3.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/System.Globalization/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Resources.ResourceManager/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Globalization.Extensions/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime.Extensions/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Threading/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Collections.NonGeneric/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "System.Globalization.Extensions",
+    "revision": "4.3.0",
+    "@id": "http:nuget/System.Globalization.Extensions/4.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.Globalization.Extensions/4.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.Globalization.Extensions",
+          "4.3.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/System.Globalization/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime.InteropServices/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Resources.ResourceManager/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime.Extensions/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "System.Collections.NonGeneric",
+    "revision": "4.3.0",
+    "@id": "http:nuget/System.Collections.NonGeneric/4.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.Collections.NonGeneric/4.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.Collections.NonGeneric",
+          "4.3.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/System.Globalization/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Diagnostics.Debug/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Resources.ResourceManager/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Runtime.Extensions/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Threading/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "System.ComponentModel.Primitives",
+    "revision": "4.3.0",
+    "@id": "http:nuget/System.ComponentModel.Primitives/4.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.ComponentModel.Primitives/4.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.ComponentModel.Primitives",
+          "4.3.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.Resources.ResourceManager/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/System.ComponentModel/4.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "System.ComponentModel",
+    "revision": "4.3.0",
+    "@id": "http:nuget/System.ComponentModel/4.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "System.ComponentModel/4.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "System.ComponentModel",
+          "4.3.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/System.Runtime/4.3.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -1649,8 +2444,10 @@
           "name": "nuget",
           "separator": "/"
         },
-        "name": "Microsoft.EntityFrameworkCore.Sqlite.Design",
-        "version": "2.0.0-preview1-final"
+        "pieces": [
+          "Microsoft.EntityFrameworkCore.Sqlite.Design",
+          "2.0.0-preview1-final"
+        ]
       }
     },
     "relationship": [
@@ -1659,11 +2456,11 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:nuget/NETStandard.Library/2.0.0",
+        "related": "http:nuget/Microsoft.EntityFrameworkCore.Sqlite.Core/2.0.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:nuget/Microsoft.EntityFrameworkCore.Sqlite.Core/2.0.0",
+        "related": "http:nuget/NETStandard.Library/2.0.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -1681,8 +2478,10 @@
           "name": "nuget",
           "separator": "/"
         },
-        "name": "Microsoft.EntityFrameworkCore.Relational.Design",
-        "version": "2.0.0-preview1-final"
+        "pieces": [
+          "Microsoft.EntityFrameworkCore.Relational.Design",
+          "2.0.0-preview1-final"
+        ]
       }
     },
     "relationship": [
@@ -1709,8 +2508,10 @@
           "name": "nuget",
           "separator": "/"
         },
-        "name": "Microsoft.EntityFrameworkCore.Relational",
-        "version": "2.0.0"
+        "pieces": [
+          "Microsoft.EntityFrameworkCore.Relational",
+          "2.0.0"
+        ]
       }
     },
     "relationship": [
@@ -1729,669 +2530,6 @@
     ]
   },
   {
-    "name": "Microsoft.EntityFrameworkCore",
-    "revision": "2.0.0",
-    "@id": "http:nuget/Microsoft.EntityFrameworkCore/2.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "Microsoft.EntityFrameworkCore/2.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "Microsoft.EntityFrameworkCore",
-        "version": "2.0.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/System.Interactive.Async/3.1.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Collections.Immutable/1.4.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.Extensions.DependencyInjection/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Diagnostics.DiagnosticSource/4.4.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.Extensions.Logging/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Remotion.Linq/2.1.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.ComponentModel.Annotations/4.4.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.Extensions.Caching.Memory/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "System.Interactive.Async",
-    "revision": "3.1.1",
-    "@id": "http:nuget/System.Interactive.Async/3.1.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.Interactive.Async/3.1.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.Interactive.Async",
-        "version": "3.1.1"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/NETStandard.Library/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "System.Collections.Immutable",
-    "revision": "1.4.0",
-    "@id": "http:nuget/System.Collections.Immutable/1.4.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.Collections.Immutable/1.4.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.Collections.Immutable",
-        "version": "1.4.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "Microsoft.Extensions.DependencyInjection",
-    "revision": "2.0.0",
-    "@id": "http:nuget/Microsoft.Extensions.DependencyInjection/2.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "Microsoft.Extensions.DependencyInjection/2.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "Microsoft.Extensions.DependencyInjection",
-        "version": "2.0.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/Microsoft.Extensions.DependencyInjection.Abstractions/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "Microsoft.Extensions.DependencyInjection.Abstractions",
-    "revision": "2.0.0",
-    "@id": "http:nuget/Microsoft.Extensions.DependencyInjection.Abstractions/2.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "Microsoft.Extensions.DependencyInjection.Abstractions/2.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "Microsoft.Extensions.DependencyInjection.Abstractions",
-        "version": "2.0.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "System.Diagnostics.DiagnosticSource",
-    "revision": "4.4.1",
-    "@id": "http:nuget/System.Diagnostics.DiagnosticSource/4.4.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.Diagnostics.DiagnosticSource/4.4.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.Diagnostics.DiagnosticSource",
-        "version": "4.4.1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "Microsoft.Extensions.Logging",
-    "revision": "2.0.0",
-    "@id": "http:nuget/Microsoft.Extensions.Logging/2.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "Microsoft.Extensions.Logging/2.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "Microsoft.Extensions.Logging",
-        "version": "2.0.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/Microsoft.Extensions.DependencyInjection.Abstractions/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.Extensions.Logging.Abstractions/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.Extensions.Options/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "Microsoft.Extensions.Logging.Abstractions",
-    "revision": "2.0.0",
-    "@id": "http:nuget/Microsoft.Extensions.Logging.Abstractions/2.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "Microsoft.Extensions.Logging.Abstractions/2.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "Microsoft.Extensions.Logging.Abstractions",
-        "version": "2.0.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "Microsoft.Extensions.Options",
-    "revision": "2.0.0",
-    "@id": "http:nuget/Microsoft.Extensions.Options/2.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "Microsoft.Extensions.Options/2.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "Microsoft.Extensions.Options",
-        "version": "2.0.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/Microsoft.Extensions.Primitives/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.Extensions.DependencyInjection.Abstractions/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "Remotion.Linq",
-    "revision": "2.1.1",
-    "@id": "http:nuget/Remotion.Linq/2.1.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "Remotion.Linq/2.1.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "Remotion.Linq",
-        "version": "2.1.1"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/System.Linq.Queryable/4.0.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Diagnostics.Debug/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime.Extensions/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Reflection.Extensions/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Linq.Expressions/4.1.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.ObjectModel/4.0.12",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Linq/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Collections/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Threading/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Reflection/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "System.Linq.Queryable",
-    "revision": "4.0.1",
-    "@id": "http:nuget/System.Linq.Queryable/4.0.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.Linq.Queryable/4.0.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.Linq.Queryable",
-        "version": "4.0.1"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/System.Diagnostics.Debug/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Reflection.Extensions/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Linq.Expressions/4.1.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Resources.ResourceManager/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Linq/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Collections/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Reflection/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "System.Linq.Expressions",
-    "revision": "4.1.0",
-    "@id": "http:nuget/System.Linq.Expressions/4.1.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.Linq.Expressions/4.1.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.Linq.Expressions",
-        "version": "4.1.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/System.Runtime.Extensions/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Reflection.Emit/4.0.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Reflection.Emit.ILGeneration/4.0.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Reflection.Extensions/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Reflection.TypeExtensions/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Reflection.Emit.Lightweight/4.0.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.ObjectModel/4.0.12",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Linq/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Threading/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Diagnostics.Debug/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Resources.ResourceManager/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Reflection.Primitives/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Collections/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Reflection/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.IO/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Globalization/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "System.Reflection.Emit",
-    "revision": "4.0.1",
-    "@id": "http:nuget/System.Reflection.Emit/4.0.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.Reflection.Emit/4.0.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.Reflection.Emit",
-        "version": "4.0.1"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/System.Reflection.Emit.ILGeneration/4.0.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Reflection.Primitives/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Reflection/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.IO/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "System.Reflection.Emit.ILGeneration",
-    "revision": "4.0.1",
-    "@id": "http:nuget/System.Reflection.Emit.ILGeneration/4.0.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.Reflection.Emit.ILGeneration/4.0.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.Reflection.Emit.ILGeneration",
-        "version": "4.0.1"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/System.Reflection.Primitives/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Reflection/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "System.Reflection.Emit.Lightweight",
-    "revision": "4.0.1",
-    "@id": "http:nuget/System.Reflection.Emit.Lightweight/4.0.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.Reflection.Emit.Lightweight/4.0.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.Reflection.Emit.Lightweight",
-        "version": "4.0.1"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/System.Reflection.Emit.ILGeneration/4.0.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Reflection.Primitives/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Reflection/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "System.ObjectModel",
-    "revision": "4.0.12",
-    "@id": "http:nuget/System.ObjectModel/4.0.12",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.ObjectModel/4.0.12",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.ObjectModel",
-        "version": "4.0.12"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/System.Diagnostics.Debug/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Resources.ResourceManager/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Collections/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Threading/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/System.Runtime/4.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "System.ComponentModel.Annotations",
-    "revision": "4.4.0",
-    "@id": "http:nuget/System.ComponentModel.Annotations/4.4.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "System.ComponentModel.Annotations/4.4.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "System.ComponentModel.Annotations",
-        "version": "4.4.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "Microsoft.Extensions.Caching.Memory",
-    "revision": "2.0.0",
-    "@id": "http:nuget/Microsoft.Extensions.Caching.Memory/2.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "Microsoft.Extensions.Caching.Memory/2.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "Microsoft.Extensions.Caching.Memory",
-        "version": "2.0.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/Microsoft.Extensions.DependencyInjection.Abstractions/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.Extensions.Caching.Abstractions/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/Microsoft.Extensions.Options/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "Microsoft.Extensions.Caching.Abstractions",
-    "revision": "2.0.0",
-    "@id": "http:nuget/Microsoft.Extensions.Caching.Abstractions/2.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "Microsoft.Extensions.Caching.Abstractions/2.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "Microsoft.Extensions.Caching.Abstractions",
-        "version": "2.0.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/Microsoft.Extensions.Primitives/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
     "name": "Microsoft.EntityFrameworkCore.Sqlite.Core",
     "revision": "2.0.0",
     "@id": "http:nuget/Microsoft.EntityFrameworkCore.Sqlite.Core/2.0.0",
@@ -2404,17 +2542,19 @@
           "name": "nuget",
           "separator": "/"
         },
-        "name": "Microsoft.EntityFrameworkCore.Sqlite.Core",
-        "version": "2.0.0"
+        "pieces": [
+          "Microsoft.EntityFrameworkCore.Sqlite.Core",
+          "2.0.0"
+        ]
       }
     },
     "relationship": [
       {
-        "related": "http:nuget/Microsoft.EntityFrameworkCore.Relational/2.0.0",
+        "related": "http:nuget/Microsoft.Data.Sqlite.Core/2.0.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:nuget/Microsoft.Data.Sqlite.Core/2.0.0",
+        "related": "http:nuget/Microsoft.EntityFrameworkCore.Relational/2.0.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -2432,8 +2572,10 @@
           "name": "nuget",
           "separator": "/"
         },
-        "name": "Microsoft.Data.Sqlite.Core",
-        "version": "2.0.0"
+        "pieces": [
+          "Microsoft.Data.Sqlite.Core",
+          "2.0.0"
+        ]
       }
     },
     "relationship": [
@@ -2456,61 +2598,15 @@
           "name": "nuget",
           "separator": "/"
         },
-        "name": "SQLitePCLRaw.core",
-        "version": "1.1.7"
+        "pieces": [
+          "SQLitePCLRaw.core",
+          "1.1.7"
+        ]
       }
     },
     "relationship": [
       {
         "related": "http:nuget/NETStandard.Library/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "Microsoft.EntityFrameworkCore.Design",
-    "revision": "2.0.0",
-    "@id": "http:nuget/Microsoft.EntityFrameworkCore.Design/2.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "Microsoft.EntityFrameworkCore.Design/2.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "Microsoft.EntityFrameworkCore.Design",
-        "version": "2.0.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/Microsoft.EntityFrameworkCore.Relational/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "Microsoft.EntityFrameworkCore.Tools",
-    "revision": "2.0.0",
-    "@id": "http:nuget/Microsoft.EntityFrameworkCore.Tools/2.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "Microsoft.EntityFrameworkCore.Tools/2.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "Microsoft.EntityFrameworkCore.Tools",
-        "version": "2.0.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:nuget/Microsoft.EntityFrameworkCore.Design/2.0.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -2528,17 +2624,19 @@
           "name": "nuget",
           "separator": "/"
         },
-        "name": "Microsoft.EntityFrameworkCore.Sqlite",
-        "version": "2.0.0"
+        "pieces": [
+          "Microsoft.EntityFrameworkCore.Sqlite",
+          "2.0.0"
+        ]
       }
     },
     "relationship": [
       {
-        "related": "http:nuget/SQLitePCLRaw.bundle_green/1.1.7",
+        "related": "http:nuget/Microsoft.EntityFrameworkCore.Sqlite.Core/2.0.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:nuget/Microsoft.EntityFrameworkCore.Sqlite.Core/2.0.0",
+        "related": "http:nuget/SQLitePCLRaw.bundle_green/1.1.7",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -2556,21 +2654,15 @@
           "name": "nuget",
           "separator": "/"
         },
-        "name": "SQLitePCLRaw.bundle_green",
-        "version": "1.1.7"
+        "pieces": [
+          "SQLitePCLRaw.bundle_green",
+          "1.1.7"
+        ]
       }
     },
     "relationship": [
       {
-        "related": "http:nuget/SQLitePCLRaw.core/1.1.7",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
         "related": "http:nuget/SQLitePCLRaw.lib.e_sqlite3.v110_xp/1.1.7",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:nuget/SQLitePCLRaw.lib.e_sqlite3.linux/1.1.7",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -2578,7 +2670,15 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
+        "related": "http:nuget/SQLitePCLRaw.lib.e_sqlite3.linux/1.1.7",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
         "related": "http:nuget/SQLitePCLRaw.lib.e_sqlite3.osx/1.1.7",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/SQLitePCLRaw.core/1.1.7",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -2596,27 +2696,10 @@
           "name": "nuget",
           "separator": "/"
         },
-        "name": "SQLitePCLRaw.lib.e_sqlite3.v110_xp",
-        "version": "1.1.7"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "SQLitePCLRaw.lib.e_sqlite3.linux",
-    "revision": "1.1.7",
-    "@id": "http:nuget/SQLitePCLRaw.lib.e_sqlite3.linux/1.1.7",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "nuget",
-      "externalId": "SQLitePCLRaw.lib.e_sqlite3.linux/1.1.7",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "nuget",
-          "separator": "/"
-        },
-        "name": "SQLitePCLRaw.lib.e_sqlite3.linux",
-        "version": "1.1.7"
+        "pieces": [
+          "SQLitePCLRaw.lib.e_sqlite3.v110_xp",
+          "1.1.7"
+        ]
       }
     },
     "relationship": []
@@ -2634,8 +2717,10 @@
           "name": "nuget",
           "separator": "/"
         },
-        "name": "SQLitePCLRaw.provider.e_sqlite3.netstandard11",
-        "version": "1.1.7"
+        "pieces": [
+          "SQLitePCLRaw.provider.e_sqlite3.netstandard11",
+          "1.1.7"
+        ]
       }
     },
     "relationship": [
@@ -2650,6 +2735,27 @@
     ]
   },
   {
+    "name": "SQLitePCLRaw.lib.e_sqlite3.linux",
+    "revision": "1.1.7",
+    "@id": "http:nuget/SQLitePCLRaw.lib.e_sqlite3.linux/1.1.7",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "SQLitePCLRaw.lib.e_sqlite3.linux/1.1.7",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "SQLitePCLRaw.lib.e_sqlite3.linux",
+          "1.1.7"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
     "name": "SQLitePCLRaw.lib.e_sqlite3.osx",
     "revision": "1.1.7",
     "@id": "http:nuget/SQLitePCLRaw.lib.e_sqlite3.osx/1.1.7",
@@ -2662,8 +2768,10 @@
           "name": "nuget",
           "separator": "/"
         },
-        "name": "SQLitePCLRaw.lib.e_sqlite3.osx",
-        "version": "1.1.7"
+        "pieces": [
+          "SQLitePCLRaw.lib.e_sqlite3.osx",
+          "1.1.7"
+        ]
       }
     },
     "relationship": []
@@ -2681,13 +2789,15 @@
           "name": "nuget",
           "separator": "/"
         },
-        "name": "Microsoft.NETCore.App",
-        "version": "2.0.0"
+        "pieces": [
+          "Microsoft.NETCore.App",
+          "2.0.0"
+        ]
       }
     },
     "relationship": [
       {
-        "related": "http:nuget/Microsoft.NETCore.DotNetHostPolicy/2.0.0",
+        "related": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -2695,7 +2805,7 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:nuget/Microsoft.NETCore.Platforms/2.0.0",
+        "related": "http:nuget/Microsoft.NETCore.DotNetHostPolicy/2.0.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -2713,8 +2823,10 @@
           "name": "nuget",
           "separator": "/"
         },
-        "name": "Microsoft.NETCore.DotNetHostPolicy",
-        "version": "2.0.0"
+        "pieces": [
+          "Microsoft.NETCore.DotNetHostPolicy",
+          "2.0.0"
+        ]
       }
     },
     "relationship": [
@@ -2737,8 +2849,10 @@
           "name": "nuget",
           "separator": "/"
         },
-        "name": "Microsoft.NETCore.DotNetHostResolver",
-        "version": "2.0.0"
+        "pieces": [
+          "Microsoft.NETCore.DotNetHostResolver",
+          "2.0.0"
+        ]
       }
     },
     "relationship": [
@@ -2761,10 +2875,64 @@
           "name": "nuget",
           "separator": "/"
         },
-        "name": "Microsoft.NETCore.DotNetAppHost",
-        "version": "2.0.0"
+        "pieces": [
+          "Microsoft.NETCore.DotNetAppHost",
+          "2.0.0"
+        ]
       }
     },
     "relationship": []
+  },
+  {
+    "name": "Microsoft.EntityFrameworkCore.Design",
+    "revision": "2.0.0",
+    "@id": "http:nuget/Microsoft.EntityFrameworkCore.Design/2.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "Microsoft.EntityFrameworkCore.Design/2.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "Microsoft.EntityFrameworkCore.Design",
+          "2.0.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/Microsoft.EntityFrameworkCore.Relational/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "Microsoft.EntityFrameworkCore.Tools",
+    "revision": "2.0.0",
+    "@id": "http:nuget/Microsoft.EntityFrameworkCore.Tools/2.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "Microsoft.EntityFrameworkCore.Tools/2.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "pieces": [
+          "Microsoft.EntityFrameworkCore.Tools",
+          "2.0.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/Microsoft.EntityFrameworkCore.Design/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
   }
 ]

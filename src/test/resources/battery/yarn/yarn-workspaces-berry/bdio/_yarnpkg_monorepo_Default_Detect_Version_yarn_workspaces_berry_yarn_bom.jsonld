@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "@yarnpkg/monorepo/Default Detect Version/yarn-workspaces-berry yarn/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-7.0.0-SIGQA18-SNAPSHOT",
-        "Tool: IntegrationBdio-22.1.1"
-      ],
-      "spdx:created": "2021-04-30T19:00:24.252Z"
-    },
-    "@id": "uuid:14554086-d0c9-492c-935b-a33b35508441",
     "@type": "BillOfMaterials",
     "relationship": []
   },

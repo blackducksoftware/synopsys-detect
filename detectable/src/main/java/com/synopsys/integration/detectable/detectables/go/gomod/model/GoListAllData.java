@@ -9,8 +9,7 @@ package com.synopsys.integration.detectable.detectables.go.gomod.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class GoListUJsonData {
-
+public class GoListAllData {
     @SerializedName("Path")
     private String path;
 
@@ -24,7 +23,7 @@ public class GoListUJsonData {
         return path;
     }
 
-    public void setPath(final String path) {
+    public void setPath(String path) {
         this.path = path;
     }
 
@@ -32,7 +31,7 @@ public class GoListUJsonData {
         return version;
     }
 
-    public void setVersion(final String version) {
+    public void setVersion(String version) {
         this.version = version;
     }
 
@@ -40,7 +39,7 @@ public class GoListUJsonData {
         return replace;
     }
 
-    public void setReplace(final ReplaceData replace) {
+    public void setReplace(ReplaceData replace) {
         this.replace = replace;
     }
 }
