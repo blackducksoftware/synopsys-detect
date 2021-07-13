@@ -64,6 +64,8 @@ import com.synopsys.integration.detect.lifecycle.run.step.utility.OperationWrapp
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeManager;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
+import com.synopsys.integration.detect.tool.DetectableTool;
+import com.synopsys.integration.detect.tool.DetectableToolResult;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanFindMultipleTargetsOperation;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryUploadOperation;
@@ -225,17 +227,23 @@ public class OperationFactory { //TODO: OperationRunner
         this.auditLog = new OperationAuditLog(utilitySingletons.getOperationWrapper(), operationSystem);
     }
 
-    //START: NOT YET MIGRATED
-    public final DockerOperation executeDocker() {
-        return new DockerOperation(directoryManager, statusEventPublisher, exitCodePublisher, detectDetectableFactory,
-            extractionEnvironmentProvider,
-            codeLocationConverter, operationSystem);
+    public final DetectableToolResult executeDocker() throws DetectUserFriendlyException {
+        return auditLog.namedPublic("Execute Docker", () -> {
+            DetectableTool detectableTool = new DetectableTool(detectDetectableFactory::createDockerDetectable,
+                extractionEnvironmentProvider, codeLocationConverter, "DOCKER", DetectTool.DOCKER,
+                statusEventPublisher, exitCodePublisher, operationSystem);
+
+            return detectableTool.execute(directoryManager.getSourceDirectory());
+        });
     }
 
-    public final BazelOperation executeBazel() {
-        return new BazelOperation(directoryManager, statusEventPublisher, exitCodePublisher, detectDetectableFactory,
-            extractionEnvironmentProvider,
-            codeLocationConverter, operationSystem);
+    public final DetectableToolResult executeBazel() throws DetectUserFriendlyException {
+        return auditLog.namedPublic("Execute Bazel", () -> {
+            DetectableTool detectableTool = new DetectableTool(detectDetectableFactory::createBazelDetectable,
+                extractionEnvironmentProvider, codeLocationConverter, "BAZEL", DetectTool.BAZEL,
+                statusEventPublisher, exitCodePublisher, operationSystem);
+            return detectableTool.execute(directoryManager.getSourceDirectory());
+        });
     }
 
     public final DetectorToolResult executeDetectors() throws DetectUserFriendlyException {
@@ -251,7 +259,6 @@ public class OperationFactory { //TODO: OperationRunner
                 detectConfigurationFactory.createDetectorEvaluationOptions(), detectorToolOptions.getProjectBomTool(), detectorToolOptions.getRequiredDetectors(), fileFinder);
         });
     }
-    //END: NOT YET MIGRATED
 
     public final void phoneHome(BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
         auditLog.namedPublic("Phone Home", () -> blackDuckRunData.getPhoneHomeManager().ifPresent(PhoneHomeManager::startPhoneHome));
