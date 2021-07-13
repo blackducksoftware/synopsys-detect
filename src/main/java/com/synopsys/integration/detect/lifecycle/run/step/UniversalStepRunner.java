@@ -61,7 +61,7 @@ public class UniversalStepRunner {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
             logger.info("Will include the Docker tool.");
-            DetectableToolResult result = operationFactory.executeDocker().execute();
+            DetectableToolResult result = operationFactory.executeDocker();
             logger.info("Docker actions finished.");
             return Optional.ofNullable(result);
         } else {
@@ -74,7 +74,7 @@ public class UniversalStepRunner {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.BAZEL)) {
             logger.info("Will include the Bazel tool.");
-            DetectableToolResult result = operationFactory.executeBazel().execute();
+            DetectableToolResult result = operationFactory.executeBazel();
             logger.info("Bazel actions finished.");
             return Optional.ofNullable(result);
         } else {
