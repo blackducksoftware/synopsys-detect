@@ -1,5 +1,6 @@
 package com.synopsys.integration.detect.battery.docker.util;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -88,6 +89,13 @@ public class DetectCommandBuilder {
 
     public DetectCommandBuilder projectNameVersion(BlackDuckAssertions projectUtil) {
         projectNameVersion(projectUtil.getProjectNameVersion());
+        return this;
+    }
+
+    public DetectCommandBuilder defaultDirectories(DetectDockerTestBuilder test) throws IOException {
+        property(DetectProperties.DETECT_BDIO_OUTPUT_PATH, test.directories().bdioBinding());
+        property(DetectProperties.DETECT_OUTPUT_PATH, test.directories().detectOutputPathBinding());
+        property(DetectProperties.DETECT_TOOLS_OUTPUT_PATH, test.directories().sharedToolsBinding());
         return this;
     }
 }

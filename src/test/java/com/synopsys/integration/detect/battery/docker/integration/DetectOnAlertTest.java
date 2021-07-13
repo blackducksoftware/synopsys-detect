@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import com.synopsys.integration.detect.battery.docker.provider.BuildDockerImageProvider;
 import com.synopsys.integration.detect.battery.docker.util.DetectCommandBuilder;
 import com.synopsys.integration.detect.battery.docker.util.DetectDockerTestBuilder;
-import com.synopsys.integration.detect.battery.util.DockerAssertions;
+import com.synopsys.integration.detect.battery.docker.util.DockerAssertions;
 import com.synopsys.integration.exception.IntegrationException;
 
 @Tag("integration")
@@ -22,7 +22,7 @@ public class DetectOnAlertTest {
         BlackDuckAssertions blackduckAssertions = blackDuckTestConnection.projectVersionAssertions("blackduck-alert", "6.5.1-SNAPSHOT");
         blackduckAssertions.emptyOnBlackDuck();
 
-        DetectCommandBuilder commandBuilder = new DetectCommandBuilder().defaults();
+        DetectCommandBuilder commandBuilder = new DetectCommandBuilder().defaults().defaultDirectories(test);
         commandBuilder.connectToBlackDuck(blackDuckTestConnection);
         commandBuilder.waitForResults();
 

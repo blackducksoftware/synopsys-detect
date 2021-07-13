@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.battery.util;
+package com.synopsys.integration.detect.battery.docker.util;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,8 +10,6 @@ import java.util.regex.Pattern;
 import org.junit.jupiter.api.Assertions;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.detect.battery.docker.util.DockerDetectResult;
-import com.synopsys.integration.detect.battery.docker.util.DockerTestDirectories;
 import com.synopsys.integration.detect.workflow.report.output.FormattedDetectorOutput;
 import com.synopsys.integration.detect.workflow.report.output.FormattedOperationOutput;
 import com.synopsys.integration.detect.workflow.report.output.FormattedOutput;
@@ -131,6 +129,16 @@ public class DockerAssertions {
     }
 
     public void bdioFiles(int bdioCount) {
+        Assertions.assertNotNull(bdioDirectory, "Bdio directory did not exist!");
+        Assertions.assertNotNull(bdioDirectory.listFiles(), "Bdio directory list files was null.");
+        Assertions.assertEquals(bdioCount, Objects.requireNonNull(bdioDirectory.listFiles()).length);
+    }
 
+    public File getOutputDirectory() {
+        return outputDirectory;
+    }
+
+    public void resultProducedAtLocation(String location) {
+        Assertions.assertTrue(locateStatusJson().results.stream().anyMatch(result -> result.location.equals(location)), "Unable to find result: " + location);
     }
 }

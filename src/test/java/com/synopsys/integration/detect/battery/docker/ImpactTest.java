@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import com.synopsys.integration.detect.battery.docker.provider.BuildDockerImageProvider;
 import com.synopsys.integration.detect.battery.docker.util.DetectCommandBuilder;
 import com.synopsys.integration.detect.battery.docker.util.DetectDockerTestBuilder;
-import com.synopsys.integration.detect.battery.util.DockerAssertions;
+import com.synopsys.integration.detect.battery.docker.util.DockerAssertions;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
 @Tag("integration")
@@ -18,7 +18,7 @@ public class ImpactTest {
         DetectDockerTestBuilder test = new DetectDockerTestBuilder("detect-impact-test", "detect-impact-test:1.0.0");
         test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Impact.dockerfile"));
 
-        DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults();
+        DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
         commandBuilder.property(DetectProperties.DETECT_TOOLS, "IMPACT_ANALYSIS");
         commandBuilder.property(DetectProperties.DETECT_IMPACT_ANALYSIS_ENABLED, "true");
         DockerAssertions dockerAssertions = test.run(commandBuilder);
@@ -33,7 +33,7 @@ public class ImpactTest {
         DetectDockerTestBuilder test = new DetectDockerTestBuilder("detect-impact-output-path-test", "detect-impact-test:1.0.0");
         test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Impact.dockerfile"));
 
-        DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults();
+        DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
         commandBuilder.property(DetectProperties.DETECT_TOOLS, "IMPACT_ANALYSIS");
         commandBuilder.property(DetectProperties.DETECT_IMPACT_ANALYSIS_ENABLED, "true");
         commandBuilder.property(DetectProperties.DETECT_IMPACT_ANALYSIS_OUTPUT_PATH, "/tmp");

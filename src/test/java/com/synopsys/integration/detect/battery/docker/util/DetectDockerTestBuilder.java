@@ -3,83 +3,31 @@ package com.synopsys.integration.detect.battery.docker.util;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Assertions;
 
 import com.github.dockerjava.api.DockerClient;
-import com.github.dockerjava.api.model.Bind;
 import com.github.dockerjava.api.model.HostConfig;
 import com.synopsys.integration.detect.battery.docker.provider.DockerImageProvider;
 import com.synopsys.integration.detect.battery.util.DetectJar;
-import com.synopsys.integration.detect.battery.util.DockerAssertions;
-import com.synopsys.integration.detect.configuration.DetectProperties;
 
 public class DetectDockerTestBuilder {
     private final String testId;
     private final String imageName;
     private DockerImageProvider dockerImageProvider;
-    private String projectSourceDirectory = "/opt/project/src";
-    private static String imageResultsPath = "/opt/results"; // (= test output)
-    private static String imageResultsOutputPath = "/opt/results/output";
-    private static String imageResultsBdioPath = "/opt/results/bdio";
-    private static String imageDetectPath = "/opt/detect";
-    private static String imageToolPath = "/opt/tools";
+    private DockerTestDirectories dockerTestDirectories;
+    private String workingDirectory = "/opt/project/src";
 
-    public DetectDockerTestBuilder(final String testId, final String imageName) {
+    public DetectDockerTestBuilder(final String testId, final String imageName) throws IOException {
         this.testId = testId;
         this.imageName = imageName;
-    }
-
-    public void withProjectSourceDirectory(String projectSourceDirectory) {
-        this.projectSourceDirectory = projectSourceDirectory;
+        this.dockerTestDirectories = new DockerTestDirectories(testId);
     }
 
     public void withImageProvider(DockerImageProvider dockerImageProvider) {
         this.dockerImageProvider = dockerImageProvider;
     }
 
-    private DockerTestDirectories setup() throws IOException {
-        File dockerTestDirectory = SharedDockerDirectory.getRoot();
-        File toolsDirectory = new File(dockerTestDirectory, "tools");
-        File resultDirectory = new File(dockerTestDirectory, testId);
-        File resultOutputDirectory = new File(resultDirectory, "output");
-        File resultBdioDirectory = new File(resultDirectory, "bdio");
-
-        if (!dockerTestDirectory.exists()) {
-            Assertions.assertTrue(dockerTestDirectory.mkdirs(), String.format("Failed to create container directory at: %s", dockerTestDirectory.getAbsolutePath()));
-        }
-        if (!toolsDirectory.exists()) {
-            Assertions.assertTrue(toolsDirectory.mkdirs(), String.format("Failed to create container directory at: %s", dockerTestDirectory.getAbsolutePath()));
-        }
-        if (!resultDirectory.exists()) {
-            Assertions.assertTrue(resultDirectory.mkdirs(), String.format("Failed to create container directory at: %s", resultDirectory.getAbsolutePath()));
-        }
-
-        if (resultOutputDirectory.exists()) {
-            try {
-                FileUtils.deleteDirectory(resultOutputDirectory);
-            } catch (IOException e) {
-                Assertions.assertNull(e, "Could not delete results directory.");
-            }
-        }
-        Assertions.assertTrue(resultOutputDirectory.mkdir(), String.format("Failed to create container directory at: %s", resultOutputDirectory.getAbsolutePath()));
-
-        if (resultBdioDirectory.exists()) {
-            try {
-                FileUtils.deleteDirectory(resultBdioDirectory);
-            } catch (IOException e) {
-                Assertions.assertNull(e, "Could not delete bdio directory.");
-            }
-        }
-        Assertions.assertTrue(resultBdioDirectory.mkdir(), String.format("Failed to create container directory at: %s", resultOutputDirectory.getAbsolutePath()));
-
-        File detectJar = DetectJar.findJar();
-        Assertions.assertNotNull(detectJar, "Docker tests require a detect jar.");
-
-        return new DockerTestDirectories(dockerTestDirectory, toolsDirectory, resultDirectory, resultBdioDirectory, resultOutputDirectory, detectJar);
-    }
-
-    private DockerDetectResult runContainer(DockerTestDirectories dockerTestDirectories, DetectCommandBuilder detectCommandBuilder) {
+    private DockerDetectResult runContainer(DetectCommandBuilder detectCommandBuilder) {
         DetectDockerRunner detectDockerRunner = new DetectDockerRunner();
         DockerClient dockerClient = null;
         try {
@@ -95,19 +43,12 @@ public class DetectDockerTestBuilder {
                 Assertions.assertTrue(detectDockerRunner.imageExists(imageName, dockerClient), "Image provider was unable to install the image. Not sure how to help :(");
             }
 
-            detectCommandBuilder.property(DetectProperties.DETECT_OUTPUT_PATH, imageResultsOutputPath);
-            detectCommandBuilder.property(DetectProperties.DETECT_BDIO_OUTPUT_PATH, imageResultsBdioPath);
-            detectCommandBuilder.property(DetectProperties.DETECT_SOURCE_PATH, projectSourceDirectory);
-            detectCommandBuilder.property(DetectProperties.DETECT_TOOLS_OUTPUT_PATH, imageToolPath);
+            File detectJar = DetectJar.findJar();
+            String cmd = "java -jar /opt/detect/" + detectJar.getName() + detectCommandBuilder.buildCommand();
+            this.dockerTestDirectories.withBinding(detectJar.getParentFile(), "/opt/detect/");
 
-            Bind detectBinding = Bind.parse(dockerTestDirectories.getDetectJar().getParentFile().getCanonicalPath() + ":" + imageDetectPath); //mounts access to detect jar, could also be used for 'tools' directory.
-            Bind outputBinding = Bind.parse(dockerTestDirectories.getResultDirectory().getCanonicalPath() + ":" + imageResultsPath);
-            Bind toolBinding = Bind.parse(dockerTestDirectories.getToolsDirectory().getCanonicalPath() + ":" + imageToolPath);
-            HostConfig hostConfig = HostConfig.newHostConfig().withBinds(detectBinding, outputBinding, toolBinding);
-
-            String cmd = "java -jar /opt/detect/" + dockerTestDirectories.getDetectJar().getName() + detectCommandBuilder.buildCommand();
-
-            return detectDockerRunner.runContainer(imageName, cmd, hostConfig, dockerClient);
+            HostConfig hostConfig = new HostConfig().withBinds(this.dockerTestDirectories.getBindings());
+            return detectDockerRunner.runContainer(imageName, cmd, workingDirectory, hostConfig, dockerClient);
         } catch (Exception e) {
             Assertions.assertNull(e, "An exception occurred running a docker test! ");
         }
@@ -116,13 +57,11 @@ public class DetectDockerTestBuilder {
     }
 
     public DockerAssertions run(DetectCommandBuilder commandBuilder) {
-        DockerTestDirectories directories = null;
-        try {
-            directories = setup();
-        } catch (IOException e) {
-            Assertions.fail("Unable to setup docker directory.", e);
-        }
-        DockerDetectResult result = runContainer(directories, commandBuilder);
-        return new DockerAssertions(directories, result);
+        DockerDetectResult result = runContainer(commandBuilder);
+        return new DockerAssertions(this.dockerTestDirectories, result);
+    }
+
+    public DockerTestDirectories directories() {
+        return dockerTestDirectories;
     }
 }

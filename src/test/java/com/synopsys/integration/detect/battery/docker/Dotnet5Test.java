@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import com.synopsys.integration.detect.battery.docker.provider.BuildDockerImageProvider;
 import com.synopsys.integration.detect.battery.docker.util.DetectCommandBuilder;
 import com.synopsys.integration.detect.battery.docker.util.DetectDockerTestBuilder;
-import com.synopsys.integration.detect.battery.util.DockerAssertions;
+import com.synopsys.integration.detect.battery.docker.util.DockerAssertions;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
 @Tag("integration")
@@ -18,7 +18,7 @@ public class Dotnet5Test {
         DetectDockerTestBuilder test = new DetectDockerTestBuilder("detect-dotnet-five", "detect-dotnet-five:1.0.1");
         test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Dotnet5.dockerfile"));
 
-        DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults();
+        DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
         commandBuilder.property(DetectProperties.DETECT_TOOLS, "DETECTOR");
         commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
         DockerAssertions dockerAssertions = test.run(commandBuilder);
