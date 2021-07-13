@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "yarn2/1.0.0/yarn2-lock yarn/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-6.9.0-SNAPSHOT",
-        "Tool: IntegrationBdio-22.0.2"
-      ],
-      "spdx:created": "2021-01-11T17:40:52.806046800Z"
-    },
-    "@id": "uuid:1029e55f-b6b5-4acf-827b-95aa3a6251c1",
     "@type": "BillOfMaterials",
     "relationship": []
   },

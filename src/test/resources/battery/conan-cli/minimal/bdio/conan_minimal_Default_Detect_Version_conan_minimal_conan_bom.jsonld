@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "conan-minimal/Default Detect Version/conan-minimal conan/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-6.8.0-SNAPSHOT",
-        "Tool: IntegrationBdio-22.0.0"
-      ],
-      "spdx:created": "2020-11-18T22:09:38.753Z"
-    },
-    "@id": "uuid:5665d7a5-7abf-4ecd-a18e-1b4dc921662b",
     "@type": "BillOfMaterials",
     "relationship": []
   },

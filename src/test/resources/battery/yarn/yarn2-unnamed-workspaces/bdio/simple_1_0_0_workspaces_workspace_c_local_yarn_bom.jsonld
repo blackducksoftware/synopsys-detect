@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "simple/1.0.0/workspaces/workspace-c/local yarn/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-7.0.0-SIGQA18-SNAPSHOT",
-        "Tool: IntegrationBdio-22.1.1"
-      ],
-      "spdx:created": "2021-05-01T18:10:49.434Z"
-    },
-    "@id": "uuid:57bbbf16-c0ef-4259-bfaf-14874ae53654",
     "@type": "BillOfMaterials",
     "relationship": []
   },

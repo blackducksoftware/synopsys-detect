@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "hier/mynewversion/yarn2-hierarchical-monorepo yarn/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-7.0.0-SIGQA18-SNAPSHOT",
-        "Tool: IntegrationBdio-22.1.1"
-      ],
-      "spdx:created": "2021-04-30T18:57:45.226Z"
-    },
-    "@id": "uuid:7c8ffe1c-6737-4bb0-a49e-18cd5f0e14bd",
     "@type": "BillOfMaterials",
     "relationship": []
   },

@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "dependencies-mess-demo_2.12/0.1/services/service1/services/service1 sbt/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-7.1.0-SNAPSHOT",
-        "Tool: IntegrationBdio-22.1.1"
-      ],
-      "spdx:created": "2021-04-23T18:56:40.441267700Z"
-    },
-    "@id": "uuid:87e8c1ac-7458-4180-b228-b9780e3f59fc",
     "@type": "BillOfMaterials",
     "relationship": []
   },

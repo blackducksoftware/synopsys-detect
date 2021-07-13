@@ -18,16 +18,23 @@
           "name": "detect",
           "separator": "/"
         },
-        "path": "linux-conda"
+        "pieces": [
+          "linux-conda",
+          null
+        ]
       }
     },
     "relationship": [
+      {
+        "related": "http:anaconda/requests/2.14.2-py36_0-linux-64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
       {
         "related": "http:anaconda/readline/6.2-2-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/pip/9.0.1-py36_1-linux-64",
+        "related": "http:anaconda/filelock/2.0.7-py36_0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -35,19 +42,7 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/sqlite/3.13.0-0-linux-64",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:anaconda/conda-build/3.0.15-py36h6663850_0-linux-64",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:anaconda/pkginfo/1.4.1-py36_0-linux-64",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:anaconda/pycparser/2.17-py36_0-linux-64",
+        "related": "http:anaconda/libffi/3.2.1-1-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -55,47 +50,11 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/cryptography/1.8.1-py36_0-linux-64",
+        "related": "http:anaconda/pyyaml/3.12-py36_0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/packaging/16.8-py36_0-linux-64",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:anaconda/yaml/0.1.6-0-linux-64",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:anaconda/tk/8.5.18-0-linux-64",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:anaconda/conda-env/2.6.0-0-linux-64",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:anaconda/jinja2/2.9.6-py36_0-linux-64",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:anaconda/cffi/1.10.0-py36_0-linux-64",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:anaconda/python/3.6.1-2-linux-64",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:anaconda/ruamel_yaml/0.11.14-py36_1-linux-64",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:anaconda/setuptools/27.2.0-py36_0-linux-64",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:anaconda/glob2/0.5-py36_0-linux-64",
+        "related": "http:anaconda/openssl/1.0.2l-0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -107,11 +66,27 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
+        "related": "http:anaconda/xz/5.2.2-1-linux-64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:anaconda/packaging/16.8-py36_0-linux-64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:anaconda/pycparser/2.17-py36_0-linux-64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:anaconda/jinja2/2.9.6-py36_0-linux-64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
         "related": "http:anaconda/markupsafe/1.0-py36_0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/libffi/3.2.1-1-linux-64",
+        "related": "http:anaconda/pkginfo/1.4.1-py36_0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -119,39 +94,11 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/xz/5.2.2-1-linux-64",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:anaconda/beautifulsoup4/4.6.0-py36_0-linux-64",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:anaconda/idna/2.5-py36_0-linux-64",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:anaconda/conda-verify/2.0.0-py36_0-linux-64",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
         "related": "http:anaconda/pycosat/0.6.2-py36_0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/pyyaml/3.12-py36_0-linux-64",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:anaconda/wheel/0.29.0-py36_0-linux-64",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:anaconda/conda/4.3.25-py36_0-linux-64",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:anaconda/openssl/1.0.2l-0-linux-64",
+        "related": "http:anaconda/cryptography/1.8.1-py36_0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -159,18 +106,95 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
+        "related": "http:anaconda/conda/4.3.25-py36_0-linux-64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:anaconda/yaml/0.1.6-0-linux-64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:anaconda/conda-build/3.0.15-py36h6663850_0-linux-64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:anaconda/ruamel_yaml/0.11.14-py36_1-linux-64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:anaconda/tk/8.5.18-0-linux-64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:anaconda/glob2/0.5-py36_0-linux-64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:anaconda/idna/2.5-py36_0-linux-64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
         "related": "http:anaconda/six/1.10.0-py36_0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/filelock/2.0.7-py36_0-linux-64",
+        "related": "http:anaconda/wheel/0.29.0-py36_0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/requests/2.14.2-py36_0-linux-64",
+        "related": "http:anaconda/conda-env/2.6.0-0-linux-64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:anaconda/cffi/1.10.0-py36_0-linux-64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:anaconda/beautifulsoup4/4.6.0-py36_0-linux-64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:anaconda/python/3.6.1-2-linux-64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:anaconda/sqlite/3.13.0-0-linux-64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:anaconda/conda-verify/2.0.0-py36_0-linux-64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:anaconda/setuptools/27.2.0-py36_0-linux-64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:anaconda/pip/9.0.1-py36_1-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
+  },
+  {
+    "name": "requests",
+    "revision": "2.14.2-py36_0-linux-64",
+    "@id": "http:anaconda/requests/2.14.2-py36_0-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "requests/2.14.2-py36_0-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "requests",
+          "2.14.2-py36_0-linux-64"
+        ]
+      }
+    },
+    "relationship": []
   },
   {
     "name": "readline",
@@ -185,654 +209,10 @@
           "name": "anaconda",
           "separator": "/"
         },
-        "name": "readline",
-        "version": "6.2-2-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "pip",
-    "revision": "9.0.1-py36_1-linux-64",
-    "@id": "http:anaconda/pip/9.0.1-py36_1-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "pip/9.0.1-py36_1-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "pip",
-        "version": "9.0.1-py36_1-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "pyopenssl",
-    "revision": "17.0.0-py36_0-linux-64",
-    "@id": "http:anaconda/pyopenssl/17.0.0-py36_0-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "pyopenssl/17.0.0-py36_0-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "pyopenssl",
-        "version": "17.0.0-py36_0-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "sqlite",
-    "revision": "3.13.0-0-linux-64",
-    "@id": "http:anaconda/sqlite/3.13.0-0-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "sqlite/3.13.0-0-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "sqlite",
-        "version": "3.13.0-0-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "conda-build",
-    "revision": "3.0.15-py36h6663850_0-linux-64",
-    "@id": "http:anaconda/conda-build/3.0.15-py36h6663850_0-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "conda-build/3.0.15-py36h6663850_0-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "conda-build",
-        "version": "3.0.15-py36h6663850_0-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "pkginfo",
-    "revision": "1.4.1-py36_0-linux-64",
-    "@id": "http:anaconda/pkginfo/1.4.1-py36_0-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "pkginfo/1.4.1-py36_0-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "pkginfo",
-        "version": "1.4.1-py36_0-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "pycparser",
-    "revision": "2.17-py36_0-linux-64",
-    "@id": "http:anaconda/pycparser/2.17-py36_0-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "pycparser/2.17-py36_0-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "pycparser",
-        "version": "2.17-py36_0-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "pyparsing",
-    "revision": "2.1.4-py36_0-linux-64",
-    "@id": "http:anaconda/pyparsing/2.1.4-py36_0-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "pyparsing/2.1.4-py36_0-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "pyparsing",
-        "version": "2.1.4-py36_0-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "cryptography",
-    "revision": "1.8.1-py36_0-linux-64",
-    "@id": "http:anaconda/cryptography/1.8.1-py36_0-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "cryptography/1.8.1-py36_0-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "cryptography",
-        "version": "1.8.1-py36_0-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "packaging",
-    "revision": "16.8-py36_0-linux-64",
-    "@id": "http:anaconda/packaging/16.8-py36_0-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "packaging/16.8-py36_0-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "packaging",
-        "version": "16.8-py36_0-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "yaml",
-    "revision": "0.1.6-0-linux-64",
-    "@id": "http:anaconda/yaml/0.1.6-0-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "yaml/0.1.6-0-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "yaml",
-        "version": "0.1.6-0-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "tk",
-    "revision": "8.5.18-0-linux-64",
-    "@id": "http:anaconda/tk/8.5.18-0-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "tk/8.5.18-0-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "tk",
-        "version": "8.5.18-0-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "conda-env",
-    "revision": "2.6.0-0-linux-64",
-    "@id": "http:anaconda/conda-env/2.6.0-0-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "conda-env/2.6.0-0-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "conda-env",
-        "version": "2.6.0-0-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "jinja2",
-    "revision": "2.9.6-py36_0-linux-64",
-    "@id": "http:anaconda/jinja2/2.9.6-py36_0-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "jinja2/2.9.6-py36_0-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "jinja2",
-        "version": "2.9.6-py36_0-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "cffi",
-    "revision": "1.10.0-py36_0-linux-64",
-    "@id": "http:anaconda/cffi/1.10.0-py36_0-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "cffi/1.10.0-py36_0-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "cffi",
-        "version": "1.10.0-py36_0-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "python",
-    "revision": "3.6.1-2-linux-64",
-    "@id": "http:anaconda/python/3.6.1-2-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "python/3.6.1-2-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "python",
-        "version": "3.6.1-2-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "ruamel_yaml",
-    "revision": "0.11.14-py36_1-linux-64",
-    "@id": "http:anaconda/ruamel_yaml/0.11.14-py36_1-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "ruamel_yaml/0.11.14-py36_1-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "ruamel_yaml",
-        "version": "0.11.14-py36_1-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "setuptools",
-    "revision": "27.2.0-py36_0-linux-64",
-    "@id": "http:anaconda/setuptools/27.2.0-py36_0-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "setuptools/27.2.0-py36_0-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "setuptools",
-        "version": "27.2.0-py36_0-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "glob2",
-    "revision": "0.5-py36_0-linux-64",
-    "@id": "http:anaconda/glob2/0.5-py36_0-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "glob2/0.5-py36_0-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "glob2",
-        "version": "0.5-py36_0-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "asn1crypto",
-    "revision": "0.22.0-py36_0-linux-64",
-    "@id": "http:anaconda/asn1crypto/0.22.0-py36_0-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "asn1crypto/0.22.0-py36_0-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "asn1crypto",
-        "version": "0.22.0-py36_0-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "patchelf",
-    "revision": "0.9-0-linux-64",
-    "@id": "http:anaconda/patchelf/0.9-0-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "patchelf/0.9-0-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "patchelf",
-        "version": "0.9-0-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "markupsafe",
-    "revision": "1.0-py36_0-linux-64",
-    "@id": "http:anaconda/markupsafe/1.0-py36_0-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "markupsafe/1.0-py36_0-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "markupsafe",
-        "version": "1.0-py36_0-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "libffi",
-    "revision": "3.2.1-1-linux-64",
-    "@id": "http:anaconda/libffi/3.2.1-1-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "libffi/3.2.1-1-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "libffi",
-        "version": "3.2.1-1-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "zlib",
-    "revision": "1.2.8-3-linux-64",
-    "@id": "http:anaconda/zlib/1.2.8-3-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "zlib/1.2.8-3-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "zlib",
-        "version": "1.2.8-3-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "xz",
-    "revision": "5.2.2-1-linux-64",
-    "@id": "http:anaconda/xz/5.2.2-1-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "xz/5.2.2-1-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "xz",
-        "version": "5.2.2-1-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "beautifulsoup4",
-    "revision": "4.6.0-py36_0-linux-64",
-    "@id": "http:anaconda/beautifulsoup4/4.6.0-py36_0-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "beautifulsoup4/4.6.0-py36_0-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "beautifulsoup4",
-        "version": "4.6.0-py36_0-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "idna",
-    "revision": "2.5-py36_0-linux-64",
-    "@id": "http:anaconda/idna/2.5-py36_0-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "idna/2.5-py36_0-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "idna",
-        "version": "2.5-py36_0-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "conda-verify",
-    "revision": "2.0.0-py36_0-linux-64",
-    "@id": "http:anaconda/conda-verify/2.0.0-py36_0-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "conda-verify/2.0.0-py36_0-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "conda-verify",
-        "version": "2.0.0-py36_0-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "pycosat",
-    "revision": "0.6.2-py36_0-linux-64",
-    "@id": "http:anaconda/pycosat/0.6.2-py36_0-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "pycosat/0.6.2-py36_0-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "pycosat",
-        "version": "0.6.2-py36_0-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "pyyaml",
-    "revision": "3.12-py36_0-linux-64",
-    "@id": "http:anaconda/pyyaml/3.12-py36_0-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "pyyaml/3.12-py36_0-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "pyyaml",
-        "version": "3.12-py36_0-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "wheel",
-    "revision": "0.29.0-py36_0-linux-64",
-    "@id": "http:anaconda/wheel/0.29.0-py36_0-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "wheel/0.29.0-py36_0-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "wheel",
-        "version": "0.29.0-py36_0-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "conda",
-    "revision": "4.3.25-py36_0-linux-64",
-    "@id": "http:anaconda/conda/4.3.25-py36_0-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "conda/4.3.25-py36_0-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "conda",
-        "version": "4.3.25-py36_0-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "openssl",
-    "revision": "1.0.2l-0-linux-64",
-    "@id": "http:anaconda/openssl/1.0.2l-0-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "openssl/1.0.2l-0-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "openssl",
-        "version": "1.0.2l-0-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "chardet",
-    "revision": "3.0.4-py36_0-linux-64",
-    "@id": "http:anaconda/chardet/3.0.4-py36_0-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "chardet/3.0.4-py36_0-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "chardet",
-        "version": "3.0.4-py36_0-linux-64"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "six",
-    "revision": "1.10.0-py36_0-linux-64",
-    "@id": "http:anaconda/six/1.10.0-py36_0-linux-64",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "anaconda",
-      "externalId": "six/1.10.0-py36_0-linux-64",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "anaconda",
-          "separator": "/"
-        },
-        "name": "six",
-        "version": "1.10.0-py36_0-linux-64"
+        "pieces": [
+          "readline",
+          "6.2-2-linux-64"
+        ]
       }
     },
     "relationship": []
@@ -850,27 +230,724 @@
           "name": "anaconda",
           "separator": "/"
         },
-        "name": "filelock",
-        "version": "2.0.7-py36_0-linux-64"
+        "pieces": [
+          "filelock",
+          "2.0.7-py36_0-linux-64"
+        ]
       }
     },
     "relationship": []
   },
   {
-    "name": "requests",
-    "revision": "2.14.2-py36_0-linux-64",
-    "@id": "http:anaconda/requests/2.14.2-py36_0-linux-64",
+    "name": "pyopenssl",
+    "revision": "17.0.0-py36_0-linux-64",
+    "@id": "http:anaconda/pyopenssl/17.0.0-py36_0-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
-      "externalId": "requests/2.14.2-py36_0-linux-64",
+      "externalId": "pyopenssl/17.0.0-py36_0-linux-64",
       "externalIdMetaData": {
         "forge": {
           "name": "anaconda",
           "separator": "/"
         },
-        "name": "requests",
-        "version": "2.14.2-py36_0-linux-64"
+        "pieces": [
+          "pyopenssl",
+          "17.0.0-py36_0-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libffi",
+    "revision": "3.2.1-1-linux-64",
+    "@id": "http:anaconda/libffi/3.2.1-1-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "libffi/3.2.1-1-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "libffi",
+          "3.2.1-1-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "pyparsing",
+    "revision": "2.1.4-py36_0-linux-64",
+    "@id": "http:anaconda/pyparsing/2.1.4-py36_0-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "pyparsing/2.1.4-py36_0-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "pyparsing",
+          "2.1.4-py36_0-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "pyyaml",
+    "revision": "3.12-py36_0-linux-64",
+    "@id": "http:anaconda/pyyaml/3.12-py36_0-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "pyyaml/3.12-py36_0-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "pyyaml",
+          "3.12-py36_0-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "openssl",
+    "revision": "1.0.2l-0-linux-64",
+    "@id": "http:anaconda/openssl/1.0.2l-0-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "openssl/1.0.2l-0-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "openssl",
+          "1.0.2l-0-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "asn1crypto",
+    "revision": "0.22.0-py36_0-linux-64",
+    "@id": "http:anaconda/asn1crypto/0.22.0-py36_0-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "asn1crypto/0.22.0-py36_0-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "asn1crypto",
+          "0.22.0-py36_0-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "patchelf",
+    "revision": "0.9-0-linux-64",
+    "@id": "http:anaconda/patchelf/0.9-0-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "patchelf/0.9-0-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "patchelf",
+          "0.9-0-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "xz",
+    "revision": "5.2.2-1-linux-64",
+    "@id": "http:anaconda/xz/5.2.2-1-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "xz/5.2.2-1-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "xz",
+          "5.2.2-1-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "packaging",
+    "revision": "16.8-py36_0-linux-64",
+    "@id": "http:anaconda/packaging/16.8-py36_0-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "packaging/16.8-py36_0-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "packaging",
+          "16.8-py36_0-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "pycparser",
+    "revision": "2.17-py36_0-linux-64",
+    "@id": "http:anaconda/pycparser/2.17-py36_0-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "pycparser/2.17-py36_0-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "pycparser",
+          "2.17-py36_0-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "jinja2",
+    "revision": "2.9.6-py36_0-linux-64",
+    "@id": "http:anaconda/jinja2/2.9.6-py36_0-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "jinja2/2.9.6-py36_0-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "jinja2",
+          "2.9.6-py36_0-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "markupsafe",
+    "revision": "1.0-py36_0-linux-64",
+    "@id": "http:anaconda/markupsafe/1.0-py36_0-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "markupsafe/1.0-py36_0-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "markupsafe",
+          "1.0-py36_0-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "pkginfo",
+    "revision": "1.4.1-py36_0-linux-64",
+    "@id": "http:anaconda/pkginfo/1.4.1-py36_0-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "pkginfo/1.4.1-py36_0-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "pkginfo",
+          "1.4.1-py36_0-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "zlib",
+    "revision": "1.2.8-3-linux-64",
+    "@id": "http:anaconda/zlib/1.2.8-3-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "zlib/1.2.8-3-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "zlib",
+          "1.2.8-3-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "pycosat",
+    "revision": "0.6.2-py36_0-linux-64",
+    "@id": "http:anaconda/pycosat/0.6.2-py36_0-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "pycosat/0.6.2-py36_0-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "pycosat",
+          "0.6.2-py36_0-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "cryptography",
+    "revision": "1.8.1-py36_0-linux-64",
+    "@id": "http:anaconda/cryptography/1.8.1-py36_0-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "cryptography/1.8.1-py36_0-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "cryptography",
+          "1.8.1-py36_0-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "chardet",
+    "revision": "3.0.4-py36_0-linux-64",
+    "@id": "http:anaconda/chardet/3.0.4-py36_0-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "chardet/3.0.4-py36_0-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "chardet",
+          "3.0.4-py36_0-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "conda",
+    "revision": "4.3.25-py36_0-linux-64",
+    "@id": "http:anaconda/conda/4.3.25-py36_0-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "conda/4.3.25-py36_0-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "conda",
+          "4.3.25-py36_0-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "yaml",
+    "revision": "0.1.6-0-linux-64",
+    "@id": "http:anaconda/yaml/0.1.6-0-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "yaml/0.1.6-0-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "yaml",
+          "0.1.6-0-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "conda-build",
+    "revision": "3.0.15-py36h6663850_0-linux-64",
+    "@id": "http:anaconda/conda-build/3.0.15-py36h6663850_0-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "conda-build/3.0.15-py36h6663850_0-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "conda-build",
+          "3.0.15-py36h6663850_0-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "ruamel_yaml",
+    "revision": "0.11.14-py36_1-linux-64",
+    "@id": "http:anaconda/ruamel_yaml/0.11.14-py36_1-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "ruamel_yaml/0.11.14-py36_1-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "ruamel_yaml",
+          "0.11.14-py36_1-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "tk",
+    "revision": "8.5.18-0-linux-64",
+    "@id": "http:anaconda/tk/8.5.18-0-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "tk/8.5.18-0-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "tk",
+          "8.5.18-0-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "glob2",
+    "revision": "0.5-py36_0-linux-64",
+    "@id": "http:anaconda/glob2/0.5-py36_0-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "glob2/0.5-py36_0-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "glob2",
+          "0.5-py36_0-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "idna",
+    "revision": "2.5-py36_0-linux-64",
+    "@id": "http:anaconda/idna/2.5-py36_0-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "idna/2.5-py36_0-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "idna",
+          "2.5-py36_0-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "six",
+    "revision": "1.10.0-py36_0-linux-64",
+    "@id": "http:anaconda/six/1.10.0-py36_0-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "six/1.10.0-py36_0-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "six",
+          "1.10.0-py36_0-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "wheel",
+    "revision": "0.29.0-py36_0-linux-64",
+    "@id": "http:anaconda/wheel/0.29.0-py36_0-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "wheel/0.29.0-py36_0-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "wheel",
+          "0.29.0-py36_0-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "conda-env",
+    "revision": "2.6.0-0-linux-64",
+    "@id": "http:anaconda/conda-env/2.6.0-0-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "conda-env/2.6.0-0-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "conda-env",
+          "2.6.0-0-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "cffi",
+    "revision": "1.10.0-py36_0-linux-64",
+    "@id": "http:anaconda/cffi/1.10.0-py36_0-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "cffi/1.10.0-py36_0-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "cffi",
+          "1.10.0-py36_0-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "beautifulsoup4",
+    "revision": "4.6.0-py36_0-linux-64",
+    "@id": "http:anaconda/beautifulsoup4/4.6.0-py36_0-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "beautifulsoup4/4.6.0-py36_0-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "beautifulsoup4",
+          "4.6.0-py36_0-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "python",
+    "revision": "3.6.1-2-linux-64",
+    "@id": "http:anaconda/python/3.6.1-2-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "python/3.6.1-2-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "python",
+          "3.6.1-2-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "sqlite",
+    "revision": "3.13.0-0-linux-64",
+    "@id": "http:anaconda/sqlite/3.13.0-0-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "sqlite/3.13.0-0-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "sqlite",
+          "3.13.0-0-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "conda-verify",
+    "revision": "2.0.0-py36_0-linux-64",
+    "@id": "http:anaconda/conda-verify/2.0.0-py36_0-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "conda-verify/2.0.0-py36_0-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "conda-verify",
+          "2.0.0-py36_0-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "setuptools",
+    "revision": "27.2.0-py36_0-linux-64",
+    "@id": "http:anaconda/setuptools/27.2.0-py36_0-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "setuptools/27.2.0-py36_0-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "setuptools",
+          "27.2.0-py36_0-linux-64"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "pip",
+    "revision": "9.0.1-py36_1-linux-64",
+    "@id": "http:anaconda/pip/9.0.1-py36_1-linux-64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "anaconda",
+      "externalId": "pip/9.0.1-py36_1-linux-64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "anaconda",
+          "separator": "/"
+        },
+        "pieces": [
+          "pip",
+          "9.0.1-py36_1-linux-64"
+        ]
       }
     },
     "relationship": []

@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "hier/Default Detect Version/yarn2-workspace-hierarchy yarn/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-7.0.0-SIGQA18-SNAPSHOT",
-        "Tool: IntegrationBdio-22.1.1"
-      ],
-      "spdx:created": "2021-04-30T18:33:32.538Z"
-    },
-    "@id": "uuid:bdc0cda1-5846-46d7-9f5b-1a0470e7adf9",
     "@type": "BillOfMaterials",
     "relationship": []
   },
