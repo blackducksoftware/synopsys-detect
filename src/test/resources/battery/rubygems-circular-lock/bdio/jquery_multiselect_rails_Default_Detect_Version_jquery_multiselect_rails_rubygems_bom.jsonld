@@ -1,21 +1,13 @@
 [
   {
     "specVersion": "1.1.0",
-    "spdx:name": "arojoal/jquery-multiselect-rails/master/jquery-multiselect-rails rubygems/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-6.9.0-SNAPSHOT",
-        "Tool: IntegrationBdio-22.0.2"
-      ],
-      "spdx:created": "2021-01-27T19:15:08.892908Z"
-    },
-    "@id": "uuid:042ceae9-1fdb-4315-ab88-bc664942119c",
+    "spdx:name": "jquery-multiselect-rails/Default Detect Version/jquery-multiselect-rails rubygems/bom",
     "@type": "BillOfMaterials",
     "relationship": []
   },
   {
-    "name": "arojoal/jquery-multiselect-rails",
-    "revision": "master",
+    "name": "jquery-multiselect-rails",
+    "revision": "Default Detect Version",
     "@id": "http:detect/jquery-multiselect-rails",
     "@type": "Project",
     "externalIdentifier": {

@@ -18,25 +18,15 @@
           "name": "pypi",
           "separator": "/"
         },
-        "name": "thefuck",
-        "version": "3.23"
+        "pieces": [
+          "thefuck",
+          "3.23"
+        ]
       }
     },
     "relationship": [
       {
-        "related": "http:pypi/pyte/0.8.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:pypi/pexpect/4.7.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:pypi/pytest-docker-pexpect/0.9",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:pypi/psutil/5.6.3",
+        "related": "http:pypi/six/1.12.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -44,23 +34,7 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:pypi/pytest-mock/1.10.4",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:pypi/flake8/3.7.8",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:pypi/setuptools/41.4.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:pypi/six/1.12.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:pypi/mock/3.0.5",
+        "related": "http:pypi/pytest-docker-pexpect/0.9",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -68,11 +42,7 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:pypi/pip/19.1.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:pypi/wheel/0.33.6",
+        "related": "http:pypi/pexpect/4.7.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -80,129 +50,43 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:pypi/pytest/4.6.5",
+        "related": "http:pypi/psutil/5.6.3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/pyte/0.8.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/pytest-mock/1.10.4",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/wheel/0.33.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/setuptools/41.4.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/pip/19.1.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/mock/3.0.5",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
         "related": "http:pypi/pypandoc/1.4",
         "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "pyte",
-    "revision": "0.8.0",
-    "@id": "http:pypi/pyte/0.8.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "pypi",
-      "externalId": "pyte/0.8.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "pypi",
-          "separator": "/"
-        },
-        "name": "pyte",
-        "version": "0.8.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:pypi/wcwidth/0.1.7",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "wcwidth",
-    "revision": "0.1.7",
-    "@id": "http:pypi/wcwidth/0.1.7",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "pypi",
-      "externalId": "wcwidth/0.1.7",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "pypi",
-          "separator": "/"
-        },
-        "name": "wcwidth",
-        "version": "0.1.7"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "pexpect",
-    "revision": "4.7.0",
-    "@id": "http:pypi/pexpect/4.7.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "pypi",
-      "externalId": "pexpect/4.7.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "pypi",
-          "separator": "/"
-        },
-        "name": "pexpect",
-        "version": "4.7.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:pypi/ptyprocess/0.6.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "ptyprocess",
-    "revision": "0.6.0",
-    "@id": "http:pypi/ptyprocess/0.6.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "pypi",
-      "externalId": "ptyprocess/0.6.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "pypi",
-          "separator": "/"
-        },
-        "name": "ptyprocess",
-        "version": "0.6.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "pytest-docker-pexpect",
-    "revision": "0.9",
-    "@id": "http:pypi/pytest-docker-pexpect/0.9",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "pypi",
-      "externalId": "pytest-docker-pexpect/0.9",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "pypi",
-          "separator": "/"
-        },
-        "name": "pytest-docker-pexpect",
-        "version": "0.9"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:pypi/pexpect/4.7.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:pypi/six/1.12.0",
-        "relationshipType": "DYNAMIC_LINK"
       },
       {
         "related": "http:pypi/pytest/4.6.5",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/flake8/3.7.8",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -220,11 +104,43 @@
           "name": "pypi",
           "separator": "/"
         },
-        "name": "six",
-        "version": "1.12.0"
+        "pieces": [
+          "six",
+          "1.12.0"
+        ]
       }
     },
     "relationship": []
+  },
+  {
+    "name": "pytest-benchmark",
+    "revision": "3.2.2",
+    "@id": "http:pypi/pytest-benchmark/3.2.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "pytest-benchmark/3.2.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "pieces": [
+          "pytest-benchmark",
+          "3.2.2"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:pypi/pytest/4.6.5",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/py-cpuinfo/5.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
   },
   {
     "name": "pytest",
@@ -239,8 +155,10 @@
           "name": "pypi",
           "separator": "/"
         },
-        "name": "pytest",
-        "version": "4.6.5"
+        "pieces": [
+          "pytest",
+          "4.6.5"
+        ]
       }
     },
     "relationship": [
@@ -249,23 +167,7 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:pypi/pathlib2/2.3.4",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:pypi/py/1.8.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:pypi/wcwidth/0.1.7",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:pypi/importlib-metadata/0.19",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:pypi/attrs/19.1.0",
+        "related": "http:pypi/more-itertools/7.2.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -273,11 +175,27 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
+        "related": "http:pypi/importlib-metadata/0.19",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/wcwidth/0.1.7",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
         "related": "http:pypi/packaging/19.1",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:pypi/more-itertools/7.2.0",
+        "related": "http:pypi/attrs/19.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/py/1.8.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/pathlib2/2.3.4",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -287,67 +205,43 @@
     ]
   },
   {
-    "name": "pathlib2",
-    "revision": "2.3.4",
-    "@id": "http:pypi/pathlib2/2.3.4",
+    "name": "more-itertools",
+    "revision": "7.2.0",
+    "@id": "http:pypi/more-itertools/7.2.0",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "pypi",
-      "externalId": "pathlib2/2.3.4",
+      "externalId": "more-itertools/7.2.0",
       "externalIdMetaData": {
         "forge": {
           "name": "pypi",
           "separator": "/"
         },
-        "name": "pathlib2",
-        "version": "2.3.4"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:pypi/six/1.12.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:pypi/scandir/1.10.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "scandir",
-    "revision": "1.10.0",
-    "@id": "http:pypi/scandir/1.10.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "pypi",
-      "externalId": "scandir/1.10.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "pypi",
-          "separator": "/"
-        },
-        "name": "scandir",
-        "version": "1.10.0"
+        "pieces": [
+          "more-itertools",
+          "7.2.0"
+        ]
       }
     },
     "relationship": []
   },
   {
-    "name": "py",
-    "revision": "1.8.0",
-    "@id": "http:pypi/py/1.8.0",
+    "name": "atomicwrites",
+    "revision": "1.3.0",
+    "@id": "http:pypi/atomicwrites/1.3.0",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "pypi",
-      "externalId": "py/1.8.0",
+      "externalId": "atomicwrites/1.3.0",
       "externalIdMetaData": {
         "forge": {
           "name": "pypi",
           "separator": "/"
         },
-        "name": "py",
-        "version": "1.8.0"
+        "pieces": [
+          "atomicwrites",
+          "1.3.0"
+        ]
       }
     },
     "relationship": []
@@ -365,8 +259,10 @@
           "name": "pypi",
           "separator": "/"
         },
-        "name": "importlib-metadata",
-        "version": "0.19"
+        "pieces": [
+          "importlib-metadata",
+          "0.19"
+        ]
       }
     },
     "relationship": [
@@ -393,8 +289,10 @@
           "name": "pypi",
           "separator": "/"
         },
-        "name": "zipp",
-        "version": "0.6.0"
+        "pieces": [
+          "zipp",
+          "0.6.0"
+        ]
       }
     },
     "relationship": [
@@ -405,58 +303,73 @@
     ]
   },
   {
-    "name": "more-itertools",
-    "revision": "7.2.0",
-    "@id": "http:pypi/more-itertools/7.2.0",
+    "name": "pathlib2",
+    "revision": "2.3.4",
+    "@id": "http:pypi/pathlib2/2.3.4",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "pypi",
-      "externalId": "more-itertools/7.2.0",
+      "externalId": "pathlib2/2.3.4",
       "externalIdMetaData": {
         "forge": {
           "name": "pypi",
           "separator": "/"
         },
-        "name": "more-itertools",
-        "version": "7.2.0"
+        "pieces": [
+          "pathlib2",
+          "2.3.4"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:pypi/six/1.12.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/scandir/1.10.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "scandir",
+    "revision": "1.10.0",
+    "@id": "http:pypi/scandir/1.10.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "scandir/1.10.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "pieces": [
+          "scandir",
+          "1.10.0"
+        ]
       }
     },
     "relationship": []
   },
   {
-    "name": "attrs",
-    "revision": "19.1.0",
-    "@id": "http:pypi/attrs/19.1.0",
+    "name": "wcwidth",
+    "revision": "0.1.7",
+    "@id": "http:pypi/wcwidth/0.1.7",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "pypi",
-      "externalId": "attrs/19.1.0",
+      "externalId": "wcwidth/0.1.7",
       "externalIdMetaData": {
         "forge": {
           "name": "pypi",
           "separator": "/"
         },
-        "name": "attrs",
-        "version": "19.1.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "atomicwrites",
-    "revision": "1.3.0",
-    "@id": "http:pypi/atomicwrites/1.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "pypi",
-      "externalId": "atomicwrites/1.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "pypi",
-          "separator": "/"
-        },
-        "name": "atomicwrites",
-        "version": "1.3.0"
+        "pieces": [
+          "wcwidth",
+          "0.1.7"
+        ]
       }
     },
     "relationship": []
@@ -474,8 +387,10 @@
           "name": "pypi",
           "separator": "/"
         },
-        "name": "packaging",
-        "version": "19.1"
+        "pieces": [
+          "packaging",
+          "19.1"
+        ]
       }
     },
     "relationship": [
@@ -484,11 +399,11 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:pypi/attrs/19.1.0",
+        "related": "http:pypi/pyparsing/2.4.2",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:pypi/pyparsing/2.4.2",
+        "related": "http:pypi/attrs/19.1.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -506,8 +421,52 @@
           "name": "pypi",
           "separator": "/"
         },
-        "name": "pyparsing",
-        "version": "2.4.2"
+        "pieces": [
+          "pyparsing",
+          "2.4.2"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "attrs",
+    "revision": "19.1.0",
+    "@id": "http:pypi/attrs/19.1.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "attrs/19.1.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "pieces": [
+          "attrs",
+          "19.1.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "py",
+    "revision": "1.8.0",
+    "@id": "http:pypi/py/1.8.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "py/1.8.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "pieces": [
+          "py",
+          "1.8.0"
+        ]
       }
     },
     "relationship": []
@@ -525,60 +484,15 @@
           "name": "pypi",
           "separator": "/"
         },
-        "name": "pluggy",
-        "version": "0.12.0"
+        "pieces": [
+          "pluggy",
+          "0.12.0"
+        ]
       }
     },
     "relationship": [
       {
         "related": "http:pypi/importlib-metadata/0.19",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "psutil",
-    "revision": "5.6.3",
-    "@id": "http:pypi/psutil/5.6.3",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "pypi",
-      "externalId": "psutil/5.6.3",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "pypi",
-          "separator": "/"
-        },
-        "name": "psutil",
-        "version": "5.6.3"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "pytest-benchmark",
-    "revision": "3.2.2",
-    "@id": "http:pypi/pytest-benchmark/3.2.2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "pypi",
-      "externalId": "pytest-benchmark/3.2.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "pypi",
-          "separator": "/"
-        },
-        "name": "pytest-benchmark",
-        "version": "3.2.2"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:pypi/py-cpuinfo/5.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:pypi/pytest/4.6.5",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -596,213 +510,94 @@
           "name": "pypi",
           "separator": "/"
         },
-        "name": "py-cpuinfo",
-        "version": "5.0.0"
+        "pieces": [
+          "py-cpuinfo",
+          "5.0.0"
+        ]
       }
     },
     "relationship": []
   },
   {
-    "name": "pytest-mock",
-    "revision": "1.10.4",
-    "@id": "http:pypi/pytest-mock/1.10.4",
+    "name": "pytest-docker-pexpect",
+    "revision": "0.9",
+    "@id": "http:pypi/pytest-docker-pexpect/0.9",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "pypi",
-      "externalId": "pytest-mock/1.10.4",
+      "externalId": "pytest-docker-pexpect/0.9",
       "externalIdMetaData": {
         "forge": {
           "name": "pypi",
           "separator": "/"
         },
-        "name": "pytest-mock",
-        "version": "1.10.4"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:pypi/pytest/4.6.5",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "flake8",
-    "revision": "3.7.8",
-    "@id": "http:pypi/flake8/3.7.8",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "pypi",
-      "externalId": "flake8/3.7.8",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "pypi",
-          "separator": "/"
-        },
-        "name": "flake8",
-        "version": "3.7.8"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:pypi/pyflakes/2.1.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:pypi/pycodestyle/2.5.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:pypi/typing/3.7.4.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:pypi/entrypoints/0.3",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:pypi/mccabe/0.6.1",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "pyflakes",
-    "revision": "2.1.1",
-    "@id": "http:pypi/pyflakes/2.1.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "pypi",
-      "externalId": "pyflakes/2.1.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "pypi",
-          "separator": "/"
-        },
-        "name": "pyflakes",
-        "version": "2.1.1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "pycodestyle",
-    "revision": "2.5.0",
-    "@id": "http:pypi/pycodestyle/2.5.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "pypi",
-      "externalId": "pycodestyle/2.5.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "pypi",
-          "separator": "/"
-        },
-        "name": "pycodestyle",
-        "version": "2.5.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "typing",
-    "revision": "3.7.4.1",
-    "@id": "http:pypi/typing/3.7.4.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "pypi",
-      "externalId": "typing/3.7.4.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "pypi",
-          "separator": "/"
-        },
-        "name": "typing",
-        "version": "3.7.4.1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "entrypoints",
-    "revision": "0.3",
-    "@id": "http:pypi/entrypoints/0.3",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "pypi",
-      "externalId": "entrypoints/0.3",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "pypi",
-          "separator": "/"
-        },
-        "name": "entrypoints",
-        "version": "0.3"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "mccabe",
-    "revision": "0.6.1",
-    "@id": "http:pypi/mccabe/0.6.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "pypi",
-      "externalId": "mccabe/0.6.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "pypi",
-          "separator": "/"
-        },
-        "name": "mccabe",
-        "version": "0.6.1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "setuptools",
-    "revision": "41.4.0",
-    "@id": "http:pypi/setuptools/41.4.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "pypi",
-      "externalId": "setuptools/41.4.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "pypi",
-          "separator": "/"
-        },
-        "name": "setuptools",
-        "version": "41.4.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "mock",
-    "revision": "3.0.5",
-    "@id": "http:pypi/mock/3.0.5",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "pypi",
-      "externalId": "mock/3.0.5",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "pypi",
-          "separator": "/"
-        },
-        "name": "mock",
-        "version": "3.0.5"
+        "pieces": [
+          "pytest-docker-pexpect",
+          "0.9"
+        ]
       }
     },
     "relationship": [
       {
         "related": "http:pypi/six/1.12.0",
         "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/pytest/4.6.5",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/pexpect/4.7.0",
+        "relationshipType": "DYNAMIC_LINK"
       }
     ]
+  },
+  {
+    "name": "pexpect",
+    "revision": "4.7.0",
+    "@id": "http:pypi/pexpect/4.7.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "pexpect/4.7.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "pieces": [
+          "pexpect",
+          "4.7.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:pypi/ptyprocess/0.6.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "ptyprocess",
+    "revision": "0.6.0",
+    "@id": "http:pypi/ptyprocess/0.6.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "ptyprocess/0.6.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "pieces": [
+          "ptyprocess",
+          "0.6.0"
+        ]
+      }
+    },
+    "relationship": []
   },
   {
     "name": "colorama",
@@ -817,46 +612,10 @@
           "name": "pypi",
           "separator": "/"
         },
-        "name": "colorama",
-        "version": "0.4.1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "pip",
-    "revision": "19.1.1",
-    "@id": "http:pypi/pip/19.1.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "pypi",
-      "externalId": "pip/19.1.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "pypi",
-          "separator": "/"
-        },
-        "name": "pip",
-        "version": "19.1.1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "wheel",
-    "revision": "0.33.6",
-    "@id": "http:pypi/wheel/0.33.6",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "pypi",
-      "externalId": "wheel/0.33.6",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "pypi",
-          "separator": "/"
-        },
-        "name": "wheel",
-        "version": "0.33.6"
+        "pieces": [
+          "colorama",
+          "0.4.1"
+        ]
       }
     },
     "relationship": []
@@ -874,11 +633,175 @@
           "name": "pypi",
           "separator": "/"
         },
-        "name": "decorator",
-        "version": "4.4.0"
+        "pieces": [
+          "decorator",
+          "4.4.0"
+        ]
       }
     },
     "relationship": []
+  },
+  {
+    "name": "psutil",
+    "revision": "5.6.3",
+    "@id": "http:pypi/psutil/5.6.3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "psutil/5.6.3",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "pieces": [
+          "psutil",
+          "5.6.3"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "pyte",
+    "revision": "0.8.0",
+    "@id": "http:pypi/pyte/0.8.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "pyte/0.8.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "pieces": [
+          "pyte",
+          "0.8.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:pypi/wcwidth/0.1.7",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "pytest-mock",
+    "revision": "1.10.4",
+    "@id": "http:pypi/pytest-mock/1.10.4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "pytest-mock/1.10.4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "pieces": [
+          "pytest-mock",
+          "1.10.4"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:pypi/pytest/4.6.5",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "wheel",
+    "revision": "0.33.6",
+    "@id": "http:pypi/wheel/0.33.6",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "wheel/0.33.6",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "pieces": [
+          "wheel",
+          "0.33.6"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "setuptools",
+    "revision": "41.4.0",
+    "@id": "http:pypi/setuptools/41.4.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "setuptools/41.4.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "pieces": [
+          "setuptools",
+          "41.4.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "pip",
+    "revision": "19.1.1",
+    "@id": "http:pypi/pip/19.1.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "pip/19.1.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "pieces": [
+          "pip",
+          "19.1.1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "mock",
+    "revision": "3.0.5",
+    "@id": "http:pypi/mock/3.0.5",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "mock/3.0.5",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "pieces": [
+          "mock",
+          "3.0.5"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:pypi/six/1.12.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
   },
   {
     "name": "pypandoc",
@@ -893,8 +816,10 @@
           "name": "pypi",
           "separator": "/"
         },
-        "name": "pypandoc",
-        "version": "1.4"
+        "pieces": [
+          "pypandoc",
+          "1.4"
+        ]
       }
     },
     "relationship": [
@@ -911,5 +836,152 @@
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
+  },
+  {
+    "name": "flake8",
+    "revision": "3.7.8",
+    "@id": "http:pypi/flake8/3.7.8",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "flake8/3.7.8",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "pieces": [
+          "flake8",
+          "3.7.8"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:pypi/typing/3.7.4.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/pycodestyle/2.5.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/entrypoints/0.3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/pyflakes/2.1.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/mccabe/0.6.1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "typing",
+    "revision": "3.7.4.1",
+    "@id": "http:pypi/typing/3.7.4.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "typing/3.7.4.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "pieces": [
+          "typing",
+          "3.7.4.1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "pycodestyle",
+    "revision": "2.5.0",
+    "@id": "http:pypi/pycodestyle/2.5.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "pycodestyle/2.5.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "pieces": [
+          "pycodestyle",
+          "2.5.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "entrypoints",
+    "revision": "0.3",
+    "@id": "http:pypi/entrypoints/0.3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "entrypoints/0.3",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "pieces": [
+          "entrypoints",
+          "0.3"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "pyflakes",
+    "revision": "2.1.1",
+    "@id": "http:pypi/pyflakes/2.1.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "pyflakes/2.1.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "pieces": [
+          "pyflakes",
+          "2.1.1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "mccabe",
+    "revision": "0.6.1",
+    "@id": "http:pypi/mccabe/0.6.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "mccabe/0.6.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "pieces": [
+          "mccabe",
+          "0.6.1"
+        ]
+      }
+    },
+    "relationship": []
   }
 ]

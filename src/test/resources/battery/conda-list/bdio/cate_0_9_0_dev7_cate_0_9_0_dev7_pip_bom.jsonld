@@ -18,25 +18,15 @@
           "name": "pypi",
           "separator": "/"
         },
-        "name": "cate",
-        "version": "0.9.0.dev7"
+        "pieces": [
+          "cate",
+          "0.9.0.dev7"
+        ]
       }
     },
     "relationship": [
       {
-        "related": "http:pypi/psutil/5.4.3",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:pypi/pyproj/1.9.5.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:pypi/Shapely/1.6.4.post1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:pypi/scipy/1.0.0",
+        "related": "http:pypi/tornado/5.0.1",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -44,11 +34,11 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:pypi/pandas/0.22.0",
+        "related": "http:pypi/Shapely/1.6.4.post1",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:pypi/numpy/1.14.2",
+        "related": "http:pypi/pyproj/1.9.5.1",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -60,107 +50,40 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:pypi/tornado/5.0.1",
+        "related": "http:pypi/pandas/0.22.0",
         "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "psutil",
-    "revision": "5.4.3",
-    "@id": "http:pypi/psutil/5.4.3",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "pypi",
-      "externalId": "psutil/5.4.3",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "pypi",
-          "separator": "/"
-        },
-        "name": "psutil",
-        "version": "5.4.3"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "pyproj",
-    "revision": "1.9.5.1",
-    "@id": "http:pypi/pyproj/1.9.5.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "pypi",
-      "externalId": "pyproj/1.9.5.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "pypi",
-          "separator": "/"
-        },
-        "name": "pyproj",
-        "version": "1.9.5.1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "Shapely",
-    "revision": "1.6.4.post1",
-    "@id": "http:pypi/Shapely/1.6.4.post1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "pypi",
-      "externalId": "Shapely/1.6.4.post1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "pypi",
-          "separator": "/"
-        },
-        "name": "Shapely",
-        "version": "1.6.4.post1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "scipy",
-    "revision": "1.0.0",
-    "@id": "http:pypi/scipy/1.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "pypi",
-      "externalId": "scipy/1.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "pypi",
-          "separator": "/"
-        },
-        "name": "scipy",
-        "version": "1.0.0"
-      }
-    },
-    "relationship": [
+      },
+      {
+        "related": "http:pypi/psutil/5.4.3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
       {
         "related": "http:pypi/numpy/1.14.2",
         "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/scipy/1.0.0",
+        "relationshipType": "DYNAMIC_LINK"
       }
     ]
   },
   {
-    "name": "numpy",
-    "revision": "1.14.2",
-    "@id": "http:pypi/numpy/1.14.2",
+    "name": "tornado",
+    "revision": "5.0.1",
+    "@id": "http:pypi/tornado/5.0.1",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "pypi",
-      "externalId": "numpy/1.14.2",
+      "externalId": "tornado/5.0.1",
       "externalIdMetaData": {
         "forge": {
           "name": "pypi",
           "separator": "/"
         },
-        "name": "numpy",
-        "version": "1.14.2"
+        "pieces": [
+          "tornado",
+          "5.0.1"
+        ]
       }
     },
     "relationship": []
@@ -178,8 +101,10 @@
           "name": "pypi",
           "separator": "/"
         },
-        "name": "xarray",
-        "version": "0.10.2"
+        "pieces": [
+          "xarray",
+          "0.10.2"
+        ]
       }
     },
     "relationship": [
@@ -206,8 +131,10 @@
           "name": "pypi",
           "separator": "/"
         },
-        "name": "pandas",
-        "version": "0.22.0"
+        "pieces": [
+          "pandas",
+          "0.22.0"
+        ]
       }
     },
     "relationship": [
@@ -216,6 +143,69 @@
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
+  },
+  {
+    "name": "numpy",
+    "revision": "1.14.2",
+    "@id": "http:pypi/numpy/1.14.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "numpy/1.14.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "pieces": [
+          "numpy",
+          "1.14.2"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "Shapely",
+    "revision": "1.6.4.post1",
+    "@id": "http:pypi/Shapely/1.6.4.post1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "Shapely/1.6.4.post1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "pieces": [
+          "Shapely",
+          "1.6.4.post1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "pyproj",
+    "revision": "1.9.5.1",
+    "@id": "http:pypi/pyproj/1.9.5.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "pyproj/1.9.5.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "pieces": [
+          "pyproj",
+          "1.9.5.1"
+        ]
+      }
+    },
+    "relationship": []
   },
   {
     "name": "Pillow",
@@ -230,8 +220,10 @@
           "name": "pypi",
           "separator": "/"
         },
-        "name": "Pillow",
-        "version": "5.0.0"
+        "pieces": [
+          "Pillow",
+          "5.0.0"
+        ]
       }
     },
     "relationship": []
@@ -249,8 +241,10 @@
           "name": "pypi",
           "separator": "/"
         },
-        "name": "OWSLib",
-        "version": "0.16.0"
+        "pieces": [
+          "OWSLib",
+          "0.16.0"
+        ]
       }
     },
     "relationship": [
@@ -261,22 +255,50 @@
     ]
   },
   {
-    "name": "tornado",
-    "revision": "5.0.1",
-    "@id": "http:pypi/tornado/5.0.1",
+    "name": "psutil",
+    "revision": "5.4.3",
+    "@id": "http:pypi/psutil/5.4.3",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "pypi",
-      "externalId": "tornado/5.0.1",
+      "externalId": "psutil/5.4.3",
       "externalIdMetaData": {
         "forge": {
           "name": "pypi",
           "separator": "/"
         },
-        "name": "tornado",
-        "version": "5.0.1"
+        "pieces": [
+          "psutil",
+          "5.4.3"
+        ]
       }
     },
     "relationship": []
+  },
+  {
+    "name": "scipy",
+    "revision": "1.0.0",
+    "@id": "http:pypi/scipy/1.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "scipy/1.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "pieces": [
+          "scipy",
+          "1.0.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:pypi/numpy/1.14.2",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
   }
 ]

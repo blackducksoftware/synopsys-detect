@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "scalafmtroot_2.13/2.7.5-SNAPSHOT/org.scalameta/scalafmtroot_2.13/2.7.5-SNAPSHOT sbt/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-7.0.0-SNAPSHOT",
-        "Tool: IntegrationBdio-22.0.2"
-      ],
-      "spdx:created": "2021-03-05T17:53:39.529142800Z"
-    },
-    "@id": "uuid:0bdd4102-042b-45bf-b29e-57127029528f",
     "@type": "BillOfMaterials",
     "relationship": []
   },

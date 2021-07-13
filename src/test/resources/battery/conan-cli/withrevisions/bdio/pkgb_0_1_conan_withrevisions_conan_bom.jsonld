@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "pkgb/0.1/conan-withrevisions conan/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-6.8.0-SNAPSHOT",
-        "Tool: IntegrationBdio-22.0.0"
-      ],
-      "spdx:created": "2020-11-17T00:03:44.502Z"
-    },
-    "@id": "uuid:e6936478-ebb9-48d2-a5b5-1927a842dbdc",
     "@type": "BillOfMaterials",
     "relationship": []
   },
