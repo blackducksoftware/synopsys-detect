@@ -94,7 +94,7 @@ public class IntelligentModeStepRunner {
             () -> runImpactAnalysisOnline(projectNameVersion, projectVersion, codeLocationAccumulator, blackDuckRunData.getBlackDuckServicesFactory()),
             operationFactory::publishImpactSuccess, operationFactory::publishImpactFailure);
 
-        stepHelper.runAsGroup("Wait for Code Locations", OperationType.INTERNAL, () -> {
+        stepHelper.runAsGroup("Wait for Results", OperationType.INTERNAL, () -> {
             CodeLocationResults codeLocationResults = calculateCodeLocations(codeLocationAccumulator);
             waitForCodeLocations(codeLocationResults.getCodeLocationWaitData(), projectNameVersion, blackDuckRunData);
         });
