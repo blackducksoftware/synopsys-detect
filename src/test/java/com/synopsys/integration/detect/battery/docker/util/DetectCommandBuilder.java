@@ -92,7 +92,7 @@ public class DetectCommandBuilder {
         return this;
     }
 
-    public DetectCommandBuilder defaultDirectories(DetectDockerTestBuilder test) throws IOException {
+    public DetectCommandBuilder defaultDirectories(DetectDockerTestRunner test) throws IOException {
         property(DetectProperties.DETECT_BDIO_OUTPUT_PATH, test.directories().bdioBinding());
         property(DetectProperties.DETECT_OUTPUT_PATH, test.directories().detectOutputPathBinding());
         property(DetectProperties.DETECT_TOOLS_OUTPUT_PATH, test.directories().sharedToolsBinding());

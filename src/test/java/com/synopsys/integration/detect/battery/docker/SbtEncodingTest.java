@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detect.battery.docker.provider.BuildDockerImageProvider;
 import com.synopsys.integration.detect.battery.docker.util.DetectCommandBuilder;
-import com.synopsys.integration.detect.battery.docker.util.DetectDockerTestBuilder;
+import com.synopsys.integration.detect.battery.docker.util.DetectDockerTestRunner;
 import com.synopsys.integration.detect.battery.docker.util.DockerAssertions;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
@@ -16,7 +16,7 @@ import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 public class SbtEncodingTest {
     @Test
     void sbtEncoding() throws IOException, InterruptedException {
-        DetectDockerTestBuilder test = new DetectDockerTestBuilder("detect-sbt-encoding", "detect-sbt-encoding:1.0.3");
+        DetectDockerTestRunner test = new DetectDockerTestRunner("detect-sbt-encoding", "detect-sbt-encoding:1.0.3");
         test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("SbtEncoding.dockerfile"));
 
         DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);

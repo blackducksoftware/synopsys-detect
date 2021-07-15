@@ -21,7 +21,7 @@ import org.junitpioneer.jupiter.TempDirectory;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.battery.docker.provider.BuildDockerImageProvider;
 import com.synopsys.integration.detect.battery.docker.util.DetectCommandBuilder;
-import com.synopsys.integration.detect.battery.docker.util.DetectDockerTestBuilder;
+import com.synopsys.integration.detect.battery.docker.util.DetectDockerTestRunner;
 import com.synopsys.integration.detect.battery.docker.util.DockerAssertions;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
@@ -32,7 +32,7 @@ import com.synopsys.integration.exception.IntegrationException;
 public class DetectOnDetectTest {
     @Test
     void detectOnDetect() throws IOException, InterruptedException, IntegrationException {
-        DetectDockerTestBuilder test = new DetectDockerTestBuilder("detect-on-detect", "detect-7.1.0:1.0.0");
+        DetectDockerTestRunner test = new DetectDockerTestRunner("detect-on-detect", "detect-7.1.0:1.0.0");
         test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Detect-7.1.0.dockerfile"));
 
         BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
@@ -64,7 +64,7 @@ public class DetectOnDetectTest {
     @Test
     @ExtendWith(TempDirectory.class)
     public void testDryRunScanWithSnippetMatching(@TempDirectory.TempDir final Path tempOutputDirectory) throws Exception {
-        DetectDockerTestBuilder test = new DetectDockerTestBuilder("detect-on-detect-dryrun", "detect-7.1.0:1.0.0");
+        DetectDockerTestRunner test = new DetectDockerTestRunner("detect-on-detect-dryrun", "detect-7.1.0:1.0.0");
         test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Detect-7.1.0.dockerfile"));
 
         final String projectName = "synopsys-detect-junit";
@@ -87,7 +87,7 @@ public class DetectOnDetectTest {
     @Test
     //Simply verify a risk report is generated at the expected location.
     public void riskReportResultProduced() throws Exception {
-        DetectDockerTestBuilder test = new DetectDockerTestBuilder("detect-on-detect-riskreport-default", "detect-7.1.0:1.0.0");
+        DetectDockerTestRunner test = new DetectDockerTestRunner("detect-on-detect-riskreport-default", "detect-7.1.0:1.0.0");
         test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Detect-7.1.0.dockerfile"));
 
         BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
@@ -108,7 +108,7 @@ public class DetectOnDetectTest {
     @Test
     //Tests that a new project has an empty report, run detect to fill it, tests the report is filled, in a custom location
     public void riskReportPopulatedAtCustomPath() throws Exception {
-        DetectDockerTestBuilder test = new DetectDockerTestBuilder("detect-on-detect-riskreport-custom", "detect-7.1.0:1.0.0");
+        DetectDockerTestRunner test = new DetectDockerTestRunner("detect-on-detect-riskreport-custom", "detect-7.1.0:1.0.0");
         test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Detect-7.1.0.dockerfile"));
 
         BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
@@ -131,7 +131,8 @@ public class DetectOnDetectTest {
         commandBuilder.property(DetectProperties.DETECT_RISK_REPORT_PDF_PATH, reportDirectoryImagePath);
         commandBuilder.tools(DetectTool.DETECTOR);
 
-        test.run(commandBuilder);
+        DockerAssertions dockerAssertions = test.run(commandBuilder);
+        dockerAssertions.resultProducedAtLocation("/opt/report/synopsys_detect_junit_risk_report_default_BlackDuck_RiskReport.pdf");
 
         List<File> pdfFiles = getPdfFiles(reportDirectory);
         assertEquals(1, pdfFiles.size());
