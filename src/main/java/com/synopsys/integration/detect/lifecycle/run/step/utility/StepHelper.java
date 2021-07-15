@@ -71,7 +71,7 @@ public class StepHelper {
     }
 
     public <T> T runAsGroup(String name, OperationType type, OperationWrapper.OperationSupplier<T> supplier) throws DetectUserFriendlyException {
-        Operation operation = operationSystem.startOperation(name + " Tool", type);
+        Operation operation = operationSystem.startOperation(name, type);
         return operationWrapper.named(name, operation, supplier);
     }
 }
