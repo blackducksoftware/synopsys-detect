@@ -132,7 +132,7 @@ public class DetectOnDetectTest {
         commandBuilder.tools(DetectTool.DETECTOR);
 
         DockerAssertions dockerAssertions = test.run(commandBuilder);
-        dockerAssertions.resultProducedAtLocation("/opt/report/synopsys_detect_junit_risk_report_default_BlackDuck_RiskReport.pdf");
+        dockerAssertions.resultProducedAtLocation("/opt/report/synopsys_detect_junit_risk_report_custom_BlackDuck_RiskReport.pdf");
 
         List<File> pdfFiles = getPdfFiles(reportDirectory);
         assertEquals(1, pdfFiles.size());
