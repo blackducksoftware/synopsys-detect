@@ -11,12 +11,10 @@ import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 
 public class Status {
     private final String descriptionKey;
-    private final DetectTool detectTool;
     private final StatusType statusType;
 
-    public Status(String descriptionKey, DetectTool detectTool, StatusType statusType) {
+    public Status(String descriptionKey, StatusType statusType) {
         this.descriptionKey = descriptionKey;
-        this.detectTool = detectTool;
         this.statusType = statusType;
     }
 
@@ -24,15 +22,11 @@ public class Status {
         return descriptionKey;
     }
 
-    public DetectTool getDetectTool() {
-        return detectTool;
-    }
-
     public StatusType getStatusType() {
         return statusType;
     }
 
     public static Status forTool(DetectTool tool, StatusType statusType) {
-        return new Status(tool.toString(), tool, statusType);
+        return new Status(tool.toString(), statusType);
     }
 }

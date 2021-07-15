@@ -88,7 +88,7 @@ public class DetectableTool {
 
         if (!extractable.getPassed()) {
             logger.error("Was not extractable: " + extractable.toDescription());
-            statusEventPublisher.publishStatusSummary(new Status(name, detectTool, StatusType.FAILURE));
+            statusEventPublisher.publishStatusSummary(new Status(name, StatusType.FAILURE));
             exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_GENERAL_ERROR, extractable.toDescription());
             return DetectableToolResult.failed(extractable);
         }
@@ -105,12 +105,12 @@ public class DetectableTool {
 
         if (!extraction.isSuccess()) {
             logger.error("Extraction was not success.");
-            statusEventPublisher.publishStatusSummary(new Status(name, detectTool, StatusType.FAILURE));
+            statusEventPublisher.publishStatusSummary(new Status(name, StatusType.FAILURE));
             exitCodePublisher.publishExitCode(new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, extractable.toDescription()));
             return DetectableToolResult.failed();
         } else {
             logger.debug("Extraction success.");
-            statusEventPublisher.publishStatusSummary(new Status(name, detectTool, StatusType.SUCCESS));
+            statusEventPublisher.publishStatusSummary(new Status(name, StatusType.SUCCESS));
         }
 
         Map<CodeLocation, DetectCodeLocation> detectCodeLocationMap = codeLocationConverter.toDetectCodeLocation(sourcePath, extraction, sourcePath, name);

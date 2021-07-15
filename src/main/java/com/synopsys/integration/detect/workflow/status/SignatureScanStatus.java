@@ -8,7 +8,6 @@
 package com.synopsys.integration.detect.workflow.status;
 
 import com.synopsys.integration.blackduck.codelocation.Result;
-import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 
 public class SignatureScanStatus extends Status {
     public SignatureScanStatus(String scanTargetPath, Result result) {
@@ -16,6 +15,6 @@ public class SignatureScanStatus extends Status {
     }
 
     public SignatureScanStatus(String scanTargetPath, StatusType statusType) {
-        super("Signature scan / Snippet scan on " + scanTargetPath, DetectTool.SIGNATURE_SCAN, statusType);
+        super("Signature scan / Snippet scan on " + scanTargetPath, statusType);
     }
 }

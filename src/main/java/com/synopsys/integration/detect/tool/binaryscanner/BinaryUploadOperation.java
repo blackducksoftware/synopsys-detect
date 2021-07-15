@@ -22,7 +22,6 @@ import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanO
 import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanUploadService;
 import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationException;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
-import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.status.Status;
@@ -61,10 +60,10 @@ public class BinaryUploadOperation {
             throwExceptionForError(binaryScanBatchOutput);
 
             logger.info("Successfully uploaded binary scan file: " + binaryScanFile.getAbsolutePath());
-            statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, DetectTool.BINARY_SCAN, StatusType.SUCCESS));
+            statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.SUCCESS));
             return codeLocationCreationData;
         } catch (IntegrationException e) {
-            statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, DetectTool.BINARY_SCAN, StatusType.FAILURE));
+            statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
             throw new DetectUserFriendlyException("Failed to upload binary scan file.", e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
         }
     }
