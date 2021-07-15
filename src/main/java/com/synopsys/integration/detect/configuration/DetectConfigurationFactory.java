@@ -434,8 +434,8 @@ public class DetectConfigurationFactory {
         Boolean waitForResults = getValue(DetectProperties.DETECT_WAIT_FOR_RESULTS);
         Boolean runRiskReport = getValue(DetectProperties.DETECT_RISK_REPORT_PDF);
         Boolean runNoticesReport = getValue(DetectProperties.DETECT_NOTICES_REPORT);
-        Path riskReportPdfPath = getValue(DetectProperties.DETECT_RISK_REPORT_PDF_PATH).resolvePath(pathResolver);
-        Path noticesReportPath = getValue(DetectProperties.DETECT_NOTICES_REPORT_PATH).resolvePath(pathResolver);
+        Path riskReportPdfPath = getPathOrNull(DetectProperties.DETECT_RISK_REPORT_PDF_PATH);
+        Path noticesReportPath = getPathOrNull(DetectProperties.DETECT_NOTICES_REPORT_PATH);
         List<FilterableEnumValue<PolicyRuleSeverityType>> policySeverities = getValue(DetectProperties.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES);
         List<PolicyRuleSeverityType> severitiesToFailPolicyCheck = FilterableEnumUtils.populatedValues(policySeverities, PolicyRuleSeverityType.class);
 
@@ -483,6 +483,10 @@ public class DetectConfigurationFactory {
             getPathOrNull(DetectProperties.DETECT_SBT_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_LERNA_PATH.getProperty())
         );
+    }
+
+    private Path getPathOrNull(DetectProperty<NullablePathProperty> property) {
+        return getPathOrNull(property.getProperty());
     }
 
     private Path getPathOrNull(NullablePathProperty property) {
