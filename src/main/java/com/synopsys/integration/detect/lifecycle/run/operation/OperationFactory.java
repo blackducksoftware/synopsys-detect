@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
@@ -166,6 +167,7 @@ import com.synopsys.integration.util.NameVersion;
 import com.synopsys.integration.util.OperatingSystemType;
 
 public class OperationFactory { //TODO: OperationRunner
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectDetectableFactory detectDetectableFactory;
     private final DetectFontLoaderFactory detectFontLoaderFactory; //TODO: Eh? Only need it if you want to do risk reports.
 
@@ -601,11 +603,13 @@ public class OperationFactory { //TODO: OperationRunner
     }
 
     public void publishBinaryFailure(String message) {
+        logger.error("Binary scan failure: {}", message);
         statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.BINARY_SCAN, StatusType.FAILURE));
         exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, "BINARY_SCAN");
     }
 
     public void publishImpactFailure(Exception e) {
+        logger.error("Impact analysis failure: {}", e.getMessage());
         statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.IMPACT_ANALYSIS, StatusType.FAILURE));
         exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, "IMPACT_ANALYSIS");
     }
