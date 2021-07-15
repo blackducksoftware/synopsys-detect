@@ -7,10 +7,11 @@
  */
 package com.synopsys.integration.detect.workflow.status;
 
+import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detector.base.DetectorType;
 
 public class DetectorStatus extends Status {
-    public DetectorStatus(final DetectorType detectorType, final StatusType statusType) {
-        super(detectorType.toString(), statusType);
+    public DetectorStatus(DetectorType detectorType, StatusType statusType) {
+        super(detectorType.toString(), DetectTool.DETECTOR, statusType);
     }
 }

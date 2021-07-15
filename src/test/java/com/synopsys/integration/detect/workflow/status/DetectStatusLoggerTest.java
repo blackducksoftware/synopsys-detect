@@ -12,6 +12,7 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 
+import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.workflow.result.AirGapDetectResult;
 import com.synopsys.integration.detect.workflow.result.BlackDuckBomDetectResult;
@@ -58,9 +59,9 @@ public class DetectStatusLoggerTest {
      */
     private List<Status> createStatus() {
         ArrayList<Status> statusSummaries = new ArrayList<>();
-        Status status = new Status("description 1", StatusType.SUCCESS);
+        Status status = new Status("description 1", DetectTool.DETECTOR, StatusType.SUCCESS);
         statusSummaries.add(status);
-        status = new Status("description 2", StatusType.FAILURE);
+        status = new Status("description 2", DetectTool.DETECTOR, StatusType.FAILURE);
         statusSummaries.add(status);
         return statusSummaries;
     }
@@ -101,9 +102,9 @@ public class DetectStatusLoggerTest {
 
     private List<Operation> createOperations() {
         ArrayList<Operation> operations = new ArrayList<>();
-        Operation operation = new Operation(Instant.EPOCH, OperationType.PUBLIC, null, "description 1", StatusType.SUCCESS);
+        Operation operation = new Operation(Instant.EPOCH, OperationType.PUBLIC, null, "description 1", StatusType.SUCCESS, null);
         operations.add(operation);
-        operation = new Operation(Instant.EPOCH, OperationType.PUBLIC, null, "description 2", StatusType.FAILURE);
+        operation = new Operation(Instant.EPOCH, OperationType.PUBLIC, null, "description 2", StatusType.FAILURE, null);
         operations.add(operation);
         return operations;
     }
