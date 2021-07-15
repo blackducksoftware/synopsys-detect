@@ -11,6 +11,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jetbrains.annotations.Nullable;
+
 public class OperationSystem {
     private final Map<String, Operation> operationMap = new HashMap<>(); //TODO: May no longer need it to be a map.
     private final StatusEventPublisher statusEventPublisher;
@@ -31,16 +33,17 @@ public class OperationSystem {
     }
 
     public Operation startOperation(String operationName, OperationType type) {
-        Operation currentOperation = operationMap.computeIfAbsent(operationName, key -> createNewOperation(operationName, type));
+        return startOperation(operationName, type, null);
+    }
+
+    public Operation startOperation(String operationName, OperationType type, @Nullable String phoneHomeKey) {
+        Operation currentOperation = operationMap.computeIfAbsent(operationName, key -> new Operation(operationName, type, phoneHomeKey));
         if (currentOperation.getEndTime().isPresent()) {
             publishOperation(currentOperation);
-            currentOperation = createNewOperation(operationName, type);
+            currentOperation = new Operation(operationName, type, phoneHomeKey);
             operationMap.put(operationName, currentOperation);
         }
         return currentOperation;
     }
 
-    private Operation createNewOperation(String operationName, OperationType type) {
-        return new Operation(operationName, type);
-    }
 }

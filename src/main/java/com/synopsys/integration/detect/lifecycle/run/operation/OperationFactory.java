@@ -283,7 +283,7 @@ public class OperationFactory { //TODO: OperationRunner
     }
 
     public final void publishRapidResults(File jsonFile, RapidScanResultSummary summary) throws DetectUserFriendlyException {
-        auditLog.namedInternal("Publish Rapid Results", () -> statusEventPublisher.publishDetectResult(new RapidScanDetectResult(jsonFile.getCanonicalPath(), summary)));
+        auditLog.namedInternal("Publish Rapid Results", "Rapid", () -> statusEventPublisher.publishDetectResult(new RapidScanDetectResult(jsonFile.getCanonicalPath(), summary)));
     }
     //End Rapid
 
@@ -602,7 +602,7 @@ public class OperationFactory { //TODO: OperationRunner
         return detectConfigurationFactory.createBinaryScanOptions();
     }
 
-    public Optional<File> searchForBinaryTargets(final List<String> multipleTargetFileNamePatterns, final int searchDepth) throws DetectUserFriendlyException {
+    public Optional<File> searchForBinaryTargets(List<String> multipleTargetFileNamePatterns, int searchDepth) throws DetectUserFriendlyException {
         return auditLog.namedInternal("Binary Search For Targets", () -> {
             return new BinaryScanFindMultipleTargetsOperation(fileFinder, directoryManager).searchForMultipleTargets(multipleTargetFileNamePatterns, searchDepth);
         });
@@ -624,7 +624,7 @@ public class OperationFactory { //TODO: OperationRunner
         statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.IMPACT_ANALYSIS, StatusType.SUCCESS));
     }
 
-    public CodeLocationCreationData<BinaryScanBatchOutput> uploadBinaryScanFile(final File binaryUpload, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
+    public CodeLocationCreationData<BinaryScanBatchOutput> uploadBinaryScanFile(File binaryUpload, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
         return auditLog.namedPublic("Binary Upload", () -> {
             return new BinaryUploadOperation(statusEventPublisher, codeLocationNameManager, calculateBinaryScanOptions())
                        .uploadBinaryScanFile(binaryUpload, blackDuckRunData.getBlackDuckServicesFactory().createBinaryScanUploadService(), projectNameVersion);

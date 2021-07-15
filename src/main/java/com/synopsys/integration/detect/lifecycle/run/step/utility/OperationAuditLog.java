@@ -7,6 +7,8 @@
  */
 package com.synopsys.integration.detect.lifecycle.run.step.utility;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.workflow.status.Operation;
 import com.synopsys.integration.detect.workflow.status.OperationSystem;
@@ -17,28 +19,44 @@ public class OperationAuditLog {
     private final OperationWrapper operationWrapper;
     private final OperationSystem operationSystem;
 
-    public OperationAuditLog(OperationWrapper operationWrapper, final OperationSystem operationSystem) {
+    public OperationAuditLog(OperationWrapper operationWrapper, OperationSystem operationSystem) {
         this.operationWrapper = operationWrapper;
         this.operationSystem = operationSystem;
     }
 
     public void namedPublic(String name, OperationWrapper.OperationFunction supplier) throws DetectUserFriendlyException {
-        Operation operation = operationSystem.startOperation(name, OperationType.PUBLIC);
+        namedPublic(name, null, supplier);
+    }
+
+    public void namedPublic(String name, @Nullable String phoneHomeKey, OperationWrapper.OperationFunction supplier) throws DetectUserFriendlyException {
+        Operation operation = operationSystem.startOperation(name, OperationType.PUBLIC, phoneHomeKey);
         operationWrapper.named(name, operation, supplier);
     }
 
     public <T> T namedPublic(String name, OperationWrapper.OperationSupplier<T> supplier) throws DetectUserFriendlyException {
-        Operation operation = operationSystem.startOperation(name, OperationType.PUBLIC);
+        return namedPublic(name, null, supplier);
+    }
+
+    public <T> T namedPublic(String name, @Nullable String phoneHomeKey, OperationWrapper.OperationSupplier<T> supplier) throws DetectUserFriendlyException {
+        Operation operation = operationSystem.startOperation(name, OperationType.PUBLIC, phoneHomeKey);
         return operationWrapper.named(name, operation, supplier);
     }
 
     public void namedInternal(String name, OperationWrapper.OperationFunction supplier) throws DetectUserFriendlyException {
-        Operation operation = operationSystem.startOperation(name, OperationType.INTERNAL);
+        namedInternal(name, null, supplier);
+    }
+
+    public void namedInternal(String name, @Nullable String phoneHomeKey, OperationWrapper.OperationFunction supplier) throws DetectUserFriendlyException {
+        Operation operation = operationSystem.startOperation(name, OperationType.INTERNAL, phoneHomeKey);
         operationWrapper.named(name, operation, supplier);
     }
 
     public <T> T namedInternal(String name, OperationWrapper.OperationSupplier<T> supplier) throws DetectUserFriendlyException {
-        Operation operation = operationSystem.startOperation(name, OperationType.INTERNAL);
+        return namedInternal(name, null, supplier);
+    }
+
+    public <T> T namedInternal(String name, @Nullable String phoneHomeKey, OperationWrapper.OperationSupplier<T> supplier) throws DetectUserFriendlyException {
+        Operation operation = operationSystem.startOperation(name, OperationType.INTERNAL, phoneHomeKey);
         return operationWrapper.named(name, operation, supplier);
     }
 }
