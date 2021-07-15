@@ -7,8 +7,10 @@
  */
 package com.synopsys.integration.detect.workflow.phonehome;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -19,7 +21,8 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
-import com.synopsys.integration.detect.workflow.status.Status;
+import com.synopsys.integration.detect.workflow.status.Operation;
+import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.phonehome.PhoneHomeResponse;
 
@@ -38,7 +41,7 @@ public abstract class PhoneHomeManager {
 
         eventSystem.registerListener(Event.ApplicableCompleted, this::startPhoneHome);
         eventSystem.registerListener(Event.DetectorsProfiled, event -> startPhoneHome(event.getAggregateTimings()));
-        eventSystem.registerListener(Event.StatusSummary, this::appendStatusSummary);
+        eventSystem.registerListener(Event.DetectOperation, this::appendOperationMetadata);
     }
 
     public abstract PhoneHomeResponse phoneHome(Map<String, String> metadata, String... artifactModules);
@@ -87,20 +90,28 @@ public abstract class PhoneHomeManager {
         }
     }
 
-    private void appendStatusSummary(Status status) {
-        additionalMetaData.compute("tools", (k, currentValue) -> {
-            String tool = status.getDetectTool().name();
-            String statusType = StringUtils.left(status.getStatusType().name(), 1); // F for Failure / S for SUCCESS
-            return formatMetadataValue(currentValue, String.format("%s:%s", tool, statusType));
-        });
-        logger.info(additionalMetaData.get("tools"));
+    private void appendOperationMetadata(Operation operation) {
+        Optional<String> phoneHomeKey = operation.getPhoneHomeKey();
+        if (phoneHomeKey.isPresent()) {
+            String status = StatusType.FAILURE.equals(operation.getStatusType()) ? ":" + operation.getStatusType() : ""; // Assume success, mention failure.
+            String runTime = operation.getEndTime()
+                                 .map(endTime -> Duration.between(operation.getStartTime(), endTime))
+                                 .map(duration -> Long.toString(duration.toMillis()))
+                                 .map(duration -> ":" + duration)
+                                 .orElse("");
+            additionalMetaData.compute("operations", (k, currentValue) -> {
+                String operationMetadata = phoneHomeKey.get() + status + runTime;
+                return formatMetadataValue(currentValue, operationMetadata);
+            });
+            logger.info(additionalMetaData.get("operations"));
+        }
     }
 
     private String formatMetadataValue(String currentValue, String newValue) {
         if (StringUtils.isBlank(currentValue)) {
             return newValue;
         }
-        // Filters duplicate tool runs
+        // Filters duplicate operations
         if (!currentValue.contains(newValue)) {
             return String.format("%s,%s", currentValue, newValue);
         }
