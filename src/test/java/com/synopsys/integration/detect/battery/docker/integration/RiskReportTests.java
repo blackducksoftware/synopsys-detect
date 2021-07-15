@@ -44,7 +44,7 @@ public class RiskReportTests {
         test.command.property(DetectProperties.DETECT_RISK_REPORT_PDF, "true");
 
         DockerAssertions dockerAssertions = test.run();
-        dockerAssertions.resultProducedAtLocation("/opt/project/src/gradle_risk_report_default_BlackDuck_RiskReport.pdf");
+        dockerAssertions.resultProducedAtLocation("/opt/project/src/risk_reports_smoke_test_BlackDuck_RiskReport.pdf");
     }
 
     @Test
@@ -56,7 +56,7 @@ public class RiskReportTests {
         test.command.property(DetectProperties.DETECT_RISK_REPORT_PDF, "true");
 
         DockerAssertions dockerAssertions = test.run();
-        dockerAssertions.resultProducedAtLocation("/opt/project/src/gradle_risk_report_default_BlackDuck_RiskReport.pdf");
+        dockerAssertions.resultProducedAtLocation("/opt/project/src/risk_reports_default_not_working_directory_BlackDuck_RiskReport.pdf");
     }
 
     @Test
@@ -67,7 +67,7 @@ public class RiskReportTests {
         test.command.property(DetectProperties.DETECT_RISK_REPORT_PDF_PATH, "/opt/report/"); //simply using a directory that does not exist
 
         DockerAssertions dockerAssertions = test.run();
-        dockerAssertions.resultProducedAtLocation("/opt/report/gradle_risk_report_default_BlackDuck_RiskReport.pdf");
+        dockerAssertions.resultProducedAtLocation("/opt/report/risk_reports_directory_does_not_exist_BlackDuck_RiskReport.pdf");
     }
 
 }
