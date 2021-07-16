@@ -229,23 +229,40 @@ public class OperationFactory { //TODO: OperationRunner
         this.auditLog = new OperationAuditLog(utilitySingletons.getOperationWrapper(), operationSystem);
     }
 
-    public final DetectableToolResult executeDocker() throws DetectUserFriendlyException {
-        return auditLog.namedPublic("Execute Docker", () -> {
+    public final Optional<DetectableTool> checkForDocker() throws DetectUserFriendlyException {//TODO: refactor bazel+docker out of detectable
+        return auditLog.namedInternal("Check For Docker", () -> {
             DetectableTool detectableTool = new DetectableTool(detectDetectableFactory::createDockerDetectable,
                 extractionEnvironmentProvider, codeLocationConverter, "DOCKER", DetectTool.DOCKER,
-                statusEventPublisher, exitCodePublisher, operationSystem);
+                statusEventPublisher, exitCodePublisher);
 
-            return detectableTool.execute(directoryManager.getSourceDirectory());
+            if (detectableTool.initializeAndCheckForApplicable(directoryManager.getSourceDirectory())) {
+                return Optional.of(detectableTool);
+            } else {
+                return Optional.empty();
+            }
         });
     }
 
-    public final DetectableToolResult executeBazel() throws DetectUserFriendlyException {
-        return auditLog.namedPublic("Execute Bazel", () -> {
+    public final Optional<DetectableTool> checkForBazel() throws DetectUserFriendlyException {//TODO: refactor bazel+docker out of detectable
+        return auditLog.namedInternal("Check For Bazel", () -> {
             DetectableTool detectableTool = new DetectableTool(detectDetectableFactory::createBazelDetectable,
                 extractionEnvironmentProvider, codeLocationConverter, "BAZEL", DetectTool.BAZEL,
-                statusEventPublisher, exitCodePublisher, operationSystem);
-            return detectableTool.execute(directoryManager.getSourceDirectory());
+                statusEventPublisher, exitCodePublisher);
+
+            if (detectableTool.initializeAndCheckForApplicable(directoryManager.getSourceDirectory())) {
+                return Optional.of(detectableTool);
+            } else {
+                return Optional.empty();
+            }
         });
+    }
+
+    public DetectableToolResult executeDocker(DetectableTool detectableTool) throws DetectUserFriendlyException {//TODO: refactor bazel+docker out of detectable
+        return auditLog.namedPublic("Execute Docker", "Docker", detectableTool::extract);
+    }
+
+    public DetectableToolResult executeBazel(DetectableTool detectableTool) throws DetectUserFriendlyException {//TODO: refactor bazel+docker out of detectable
+        return auditLog.namedPublic("Execute Bazel", "Bazel", detectableTool::extract);
     }
 
     public final DetectorToolResult executeDetectors() throws DetectUserFriendlyException {

@@ -40,6 +40,10 @@ public class StepHelper {
         }, () -> {}, (e) -> {});
     }
 
+    public <T> Optional<T> runToolIfIncluded(DetectTool detectTool, String name, OperationWrapper.OperationSupplier<T> supplier) throws DetectUserFriendlyException {
+        return runToolIfIncluded(detectTool, name, supplier, () -> {}, (e) -> {});
+    }
+
     public void runToolIfIncludedWithCallbacks(DetectTool detectTool, String name, OperationWrapper.OperationFunction supplier, Runnable successConsumer, Consumer<Exception> errorConsumer)
         throws DetectUserFriendlyException {
         runToolIfIncluded(detectTool, name, () -> {
