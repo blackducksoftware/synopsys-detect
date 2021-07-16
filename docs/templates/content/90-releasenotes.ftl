@@ -5,7 +5,7 @@
 ### Resolved issues
 * (IDETECT-2532) Resolved an issue that could cause multiple versions of Go-Mod dependencies to appear in the BOM.
 * (IDETECT-2668) Resolved an issue that caused Go-Mod dependencies with a replacement version to be omitted.
-* (IDETECT-2722) Resolved an issue that could cause the version to be omitted from Go-Vendr dependencies.
+* (IDETECT-2722) Resolved an issue that caused the version to be omitted from Go-Vendr dependencies when the vendor.conf separated dependency name and version with multiple space characters.
 * (IDETECT-2672) Resolved an issue that could cause the Black Duck access token to appear in the log.
 
 ## Version 7.1.0
