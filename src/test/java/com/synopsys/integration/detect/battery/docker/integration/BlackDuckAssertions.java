@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentVersionView;
 import org.junit.jupiter.api.Assertions;
 
 import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
@@ -51,7 +52,7 @@ public class BlackDuckAssertions {
         List<CodeLocationView> codeLocations = blackDuckApiClient.getAllResponses(optionalProjectVersionWrapper.get().getProjectVersionView().metaCodelocationsLink());
         assertEquals(0, codeLocations.size());
 
-        List<ProjectVersionComponentView> bomComponents = projectBomService.getComponentsForProjectVersion(optionalProjectVersionWrapper.get().getProjectVersionView());
+        List<ProjectVersionComponentVersionView> bomComponents = projectBomService.getComponentsForProjectVersion(optionalProjectVersionWrapper.get().getProjectVersionView());
         assertEquals(0, bomComponents.size());
 
         return optionalProjectVersionWrapper.get();
@@ -102,9 +103,9 @@ public class BlackDuckAssertions {
     }
 
     public void hasComponents(Set<String> componentNames) throws IntegrationException {
-        List<ProjectVersionComponentView> bomComponents = projectBomService.getComponentsForProjectVersion(retrieveProjectVersionWrapper().getProjectVersionView());
+        List<ProjectVersionComponentVersionView> bomComponents = projectBomService.getComponentsForProjectVersion(retrieveProjectVersionWrapper().getProjectVersionView());
         componentNames.forEach(componentName -> {
-            Optional<ProjectVersionComponentView> blackDuckCommonComponent = bomComponents.stream()
+            Optional<ProjectVersionComponentVersionView> blackDuckCommonComponent = bomComponents.stream()
                                                                                  .filter(ProjectVersionComponentView -> componentName.equals(ProjectVersionComponentView.getComponentName()))
                                                                                  .findFirst();
             assertTrue(blackDuckCommonComponent.isPresent());

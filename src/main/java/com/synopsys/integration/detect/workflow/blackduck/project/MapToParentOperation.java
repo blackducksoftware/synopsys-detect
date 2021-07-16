@@ -10,6 +10,7 @@ package com.synopsys.integration.detect.workflow.blackduck.project;
 import java.util.List;
 import java.util.Optional;
 
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentVersionView;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,13 +55,13 @@ public class MapToParentOperation {
                 ProjectVersionView parentProjectVersionView = parentWrapper.get().getProjectVersionView();
 
                 BlackDuckRequestFilter filter = BlackDuckRequestFilter.createFilterWithSingleValue("bomComponentSource", "custom_project");
-                BlackDuckMultipleRequest<ProjectVersionComponentView> spec = new BlackDuckRequestBuilder()
+                BlackDuckMultipleRequest<ProjectVersionComponentVersionView> spec = new BlackDuckRequestBuilder()
                                                                                  .commonGet()
                                                                                  .addBlackDuckFilter(filter)
                                                                                  .buildBlackDuckRequest(parentProjectVersionView.metaComponentsLink());
 
-                List<ProjectVersionComponentView> components = blackDuckService.getAllResponses(spec);
-                Optional<ProjectVersionComponentView> existingProjectComponent = components.stream()
+                List<ProjectVersionComponentVersionView> components = blackDuckService.getAllResponses(spec);
+                Optional<ProjectVersionComponentVersionView> existingProjectComponent = components.stream()
                                                                                      .filter(component -> component.getComponentName().equals(projectName))
                                                                                      .filter(component -> component.getComponentVersionName().equals(projectVersionName))
                                                                                      .findFirst();
