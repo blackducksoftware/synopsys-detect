@@ -31,7 +31,7 @@ By default (property *detect.conan.attempt.package.revision.match* is set to fal
 * channel (defaults to "_")
 * recipe revision
 
-This is the default mode, and currently produces the best results.
+This is the default mode, and currently (as of February 2021) produces the best results.
 
 Enhancements to the ${blackduck_kb} are planned that, for Conan projects with lockfiles
 and the Conan revisions feature enabled,
