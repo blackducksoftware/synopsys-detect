@@ -2,7 +2,8 @@ package com.synopsys.integration.detect.junitextensions;
 
 import java.lang.reflect.Field;
 import java.util.Optional;
-import java.util.function.Function;
+
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 public class FieldSupport {
     public static Optional<Field> find(Class<?> clazz, String fieldName) {
@@ -14,7 +15,7 @@ public class FieldSupport {
         return Optional.empty();
     }
 
-    public static Optional<Object> getFieldValue(Object o, String fieldName) {
+    public static Optional<Object> getValue(Object o, String fieldName) {
         Optional<Field> optionalField = find(o.getClass(), fieldName);
         if (optionalField.isPresent()) {
             Field field = optionalField.get();
@@ -28,11 +29,12 @@ public class FieldSupport {
         return Optional.empty();
     }
 
-    public static <R, F> R useField(Object o, String fieldName, Function<F, R> fieldFunction, F defaultValue) {
-            return getFieldValue(o, fieldName)
-                .map(fieldValue -> (F)fieldValue)
-                .map(fieldFunction)
-                .orElse(fieldFunction.apply(defaultValue));
+    public static <T> T getValueOrDefault(ExtensionContext extensionContext, String fieldName, T defaultValue) {
+        return extensionContext
+                   .getTestInstance()
+                   .flatMap(obj -> getValue(obj, fieldName))
+                   .map(fieldValue -> (T) fieldValue)
+                   .orElse(defaultValue);
     }
 
 }
