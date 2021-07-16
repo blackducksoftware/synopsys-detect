@@ -6,14 +6,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.util.Optional;
+import java.util.function.Function;
 
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
+import org.springframework.util.ReflectionUtils;
 
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
+import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.builder.BuilderStatus;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.SilentIntLogger;
@@ -39,23 +42,9 @@ public class BlackDuckParametersExtension implements ParameterResolver {
             throw new ParameterResolutionException(String.format("Unable to connect to %s.", blackDuckServerConfig.getBlackDuckUrl().string()));
         }
 
-        IntLogger loggerForBlackDuck = new SilentIntLogger();
-        Optional<Object> possibleTestInstance = extensionContext.getTestInstance();
-        if (possibleTestInstance.isPresent()) {
-            Object instance = possibleTestInstance.get();
-            Class<?> clazz = instance.getClass();
-            try {
-                Field loggerField = clazz.getDeclaredField("blackDuckLogger");
-                loggerField.setAccessible(true);
-                Object fieldValue = loggerField.get(instance);
-                if (null != fieldValue && fieldValue instanceof IntLogger) {
-                    loggerForBlackDuck = (IntLogger) fieldValue;
-                }
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-            }
-        }
-
-        return blackDuckServerConfig.createBlackDuckServicesFactory(loggerForBlackDuck);
+        Object testInstance = extensionContext.getTestInstance().get();
+        Function<IntLogger, BlackDuckServicesFactory> createFactory = blackDuckServerConfig::createBlackDuckServicesFactory;
+        return FieldSupport.useField(testInstance, "blackDuckLogger", createFactory, new SilentIntLogger());
     }
 
 }
