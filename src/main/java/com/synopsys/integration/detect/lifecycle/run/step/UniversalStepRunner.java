@@ -88,7 +88,6 @@ public class UniversalStepRunner {
         if (result.anyDetectorsFailed()) {
             operationFactory.publishDetectorFailure();
         }
-        logger.info("Detector actions finished.");
         return result;
     }
 
