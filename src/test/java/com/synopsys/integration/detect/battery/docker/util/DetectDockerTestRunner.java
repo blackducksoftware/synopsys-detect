@@ -10,14 +10,16 @@ import com.github.dockerjava.api.model.HostConfig;
 import com.synopsys.integration.detect.battery.docker.provider.DockerImageProvider;
 import com.synopsys.integration.detect.battery.util.DetectJar;
 
-public class DetectDockerTestBuilder {
+public class DetectDockerTestRunner {
+    public static String WORKING_DIRECTORY_DEFAULT = "/opt/project/src";
+
     private final String testId;
     private final String imageName;
     private DockerImageProvider dockerImageProvider;
     private DockerTestDirectories dockerTestDirectories;
-    private String workingDirectory = "/opt/project/src";
+    private String workingDirectory = WORKING_DIRECTORY_DEFAULT;
 
-    public DetectDockerTestBuilder(final String testId, final String imageName) throws IOException {
+    public DetectDockerTestRunner(final String testId, final String imageName) throws IOException {
         this.testId = testId;
         this.imageName = imageName;
         this.dockerTestDirectories = new DockerTestDirectories(testId);
@@ -25,6 +27,10 @@ public class DetectDockerTestBuilder {
 
     public void withImageProvider(DockerImageProvider dockerImageProvider) {
         this.dockerImageProvider = dockerImageProvider;
+    }
+
+    public void withWorkingDirectory(String workingDirectory) {
+        this.workingDirectory = workingDirectory;
     }
 
     private DockerDetectResult runContainer(DetectCommandBuilder detectCommandBuilder) {

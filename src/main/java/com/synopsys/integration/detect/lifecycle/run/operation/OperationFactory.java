@@ -322,7 +322,7 @@ public class OperationFactory { //TODO: OperationRunner
     }
 
     public final Path generateImpactAnalysisFile(String codeLocationName) throws DetectUserFriendlyException {
-        return auditLog.namedPublic("Generate Impact Analysis File", "Impact", () -> {
+        return auditLog.namedPublic("Generate Impact Analysis File", "ImpactAnalysis", () -> {
             GenerateImpactAnalysisOperation generateImpactAnalysisOperation = new GenerateImpactAnalysisOperation();
             return generateImpactAnalysisOperation.generateImpactAnalysis(directoryManager.getSourceDirectory(), codeLocationName, directoryManager.getImpactAnalysisOutputDirectory().toPath());
         });
@@ -490,13 +490,10 @@ public class OperationFactory { //TODO: OperationRunner
 
     public Optional<File> calculateNoticesDirectory() throws DetectUserFriendlyException { //TODO Should be a decision in boot
         return auditLog.namedInternal("Decide Notices Report Path", "NoticesReport", () -> {
-            if (detectConfigurationFactory.createBlackDuckPostOptions().shouldGenerateNoticesReport()) {
-                File customReportLocation = detectConfigurationFactory.createBlackDuckPostOptions().getNoticesReportPath().toFile();
-                if (customReportLocation.exists() && !customReportLocation.getName().equals(".")) { //TODO- is there a better way to avoid writing to default of .?
-                    return Optional.of(customReportLocation);
-                } else {
-                    return Optional.of(directoryManager.getSourceDirectory());
-                }
+            BlackDuckPostOptions postOptions = detectConfigurationFactory.createBlackDuckPostOptions();
+            if (postOptions.shouldGenerateNoticesReport()) {
+                return Optional.of(postOptions.getNoticesReportPath().map(Path::toFile)
+                                       .orElse(directoryManager.getSourceDirectory()));
             }
             return Optional.empty();
         });
@@ -504,13 +501,10 @@ public class OperationFactory { //TODO: OperationRunner
 
     public Optional<File> calculateRiskReportFileLocation() throws DetectUserFriendlyException { //TODO Should be a decision in boot
         return auditLog.namedInternal("Decide Risk Report Path", () -> {
-            if (detectConfigurationFactory.createBlackDuckPostOptions().shouldGenerateRiskReport()) {
-                File customReportLocation = detectConfigurationFactory.createBlackDuckPostOptions().getRiskReportPdfPath().toFile();
-                if (customReportLocation.exists() && !customReportLocation.getName().equals(".")) { //TODO- is there a better way to avoid writing to default of .?
-                    return Optional.of(customReportLocation);
-                } else {
-                    return Optional.of(directoryManager.getSourceDirectory());
-                }
+            BlackDuckPostOptions postOptions = detectConfigurationFactory.createBlackDuckPostOptions();
+            if (postOptions.shouldGenerateRiskReport()) {
+                return Optional.of(postOptions.getRiskReportPdfPath().map(Path::toFile)
+                                       .orElse(directoryManager.getSourceDirectory()));
             }
             return Optional.empty();
         });

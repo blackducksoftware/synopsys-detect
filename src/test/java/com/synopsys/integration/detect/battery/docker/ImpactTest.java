@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detect.battery.docker.provider.BuildDockerImageProvider;
 import com.synopsys.integration.detect.battery.docker.util.DetectCommandBuilder;
-import com.synopsys.integration.detect.battery.docker.util.DetectDockerTestBuilder;
+import com.synopsys.integration.detect.battery.docker.util.DetectDockerTestRunner;
 import com.synopsys.integration.detect.battery.docker.util.DockerAssertions;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
@@ -15,7 +15,7 @@ import com.synopsys.integration.detect.configuration.DetectProperties;
 public class ImpactTest {
     @Test
     void offlineImpact() throws IOException, InterruptedException {
-        DetectDockerTestBuilder test = new DetectDockerTestBuilder("detect-impact-test", "detect-impact-test:1.0.0");
+        DetectDockerTestRunner test = new DetectDockerTestRunner("detect-impact-test", "detect-impact-test:1.0.0");
         test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Impact.dockerfile"));
 
         DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
@@ -30,7 +30,7 @@ public class ImpactTest {
 
     @Test
     void impactOutputPath() throws IOException, InterruptedException {
-        DetectDockerTestBuilder test = new DetectDockerTestBuilder("detect-impact-output-path-test", "detect-impact-test:1.0.0");
+        DetectDockerTestRunner test = new DetectDockerTestRunner("detect-impact-output-path-test", "detect-impact-test:1.0.0");
         test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Impact.dockerfile"));
 
         DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);

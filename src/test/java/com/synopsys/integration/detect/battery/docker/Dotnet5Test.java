@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detect.battery.docker.provider.BuildDockerImageProvider;
 import com.synopsys.integration.detect.battery.docker.util.DetectCommandBuilder;
-import com.synopsys.integration.detect.battery.docker.util.DetectDockerTestBuilder;
+import com.synopsys.integration.detect.battery.docker.util.DetectDockerTestRunner;
 import com.synopsys.integration.detect.battery.docker.util.DockerAssertions;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
@@ -15,7 +15,7 @@ import com.synopsys.integration.detect.configuration.DetectProperties;
 public class Dotnet5Test {
     @Test
     void detectUsesDotnet5() throws IOException, InterruptedException {
-        DetectDockerTestBuilder test = new DetectDockerTestBuilder("detect-dotnet-five", "detect-dotnet-five:1.0.1");
+        DetectDockerTestRunner test = new DetectDockerTestRunner("detect-dotnet-five", "detect-dotnet-five:1.0.1");
         test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Dotnet5.dockerfile"));
 
         DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);

@@ -61,8 +61,12 @@ public class BlackDuckTestConnection {
         return blackduckApiToken;
     }
 
+    public BlackDuckAssertions projectVersionAssertions(NameVersion projectNameVersion) {
+        return new BlackDuckAssertions(blackDuckServicesFactory, projectNameVersion);
+    }
+
     public BlackDuckAssertions projectVersionAssertions(String projectName, String projectVersion) {
-        return new BlackDuckAssertions(blackDuckServicesFactory, new NameVersion(projectName, projectVersion));
+        return projectVersionAssertions(new NameVersion(projectName, projectVersion));
     }
 
     public boolean trustCert() {
