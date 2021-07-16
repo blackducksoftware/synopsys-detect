@@ -67,6 +67,7 @@ public class DetectableTool {
 
     public boolean initializeAndCheckForApplicable(File sourcePath) { //TODO: Move docker/bazel out of detectable and drop this notion of a detctable tool. Will simplify this logic and make this unneccessary.
         logger.trace("Starting a detectable tool.");
+        this.sourcePath = sourcePath;
 
         DetectableEnvironment detectableEnvironment = new DetectableEnvironment(sourcePath);
         detectable = detectableCreatable.createDetectable(detectableEnvironment);
