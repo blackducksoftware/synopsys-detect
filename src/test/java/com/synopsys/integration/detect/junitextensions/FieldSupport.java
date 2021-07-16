@@ -9,23 +9,30 @@ public class FieldSupport {
         try {
             return Optional.of(clazz.getDeclaredField(fieldName));
         } catch (NoSuchFieldException e) {
-            return Optional.empty();
         }
+
+        return Optional.empty();
     }
 
-    public static <R, F> R useField(Object o, String fieldName, Function<F, R> fieldFunction, F defaultValue) {
+    public static Optional<Object> getFieldValue(Object o, String fieldName) {
         Optional<Field> optionalField = find(o.getClass(), fieldName);
         if (optionalField.isPresent()) {
             Field field = optionalField.get();
+            field.setAccessible(true);
             try {
-                field.setAccessible(true);
-                F fieldValue = (F)field.get(o);
-                return fieldFunction.apply(fieldValue);
+                return Optional.of(field.get(o));
             } catch (IllegalAccessException e) {
             }
         }
 
-        return fieldFunction.apply(defaultValue);
+        return Optional.empty();
+    }
+
+    public static <R, F> R useField(Object o, String fieldName, Function<F, R> fieldFunction, F defaultValue) {
+            return getFieldValue(o, fieldName)
+                .map(fieldValue -> (F)fieldValue)
+                .map(fieldFunction)
+                .orElse(fieldFunction.apply(defaultValue));
     }
 
 }
