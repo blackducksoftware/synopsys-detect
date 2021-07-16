@@ -23,11 +23,12 @@ import com.synopsys.integration.detect.configuration.DetectUserFriendlyException
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
+import com.synopsys.integration.detect.lifecycle.run.step.utility.StepHelper;
+import com.synopsys.integration.detect.tool.DetectableTool;
 import com.synopsys.integration.detect.tool.DetectableToolResult;
 import com.synopsys.integration.detect.tool.UniversalToolsResult;
 import com.synopsys.integration.detect.tool.UniversalToolsResultBuilder;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
-import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.AggregateCodeLocation;
 import com.synopsys.integration.detect.workflow.bdio.AggregateDecision;
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
@@ -42,61 +43,52 @@ import com.synopsys.integration.util.NameVersion;
 public class UniversalStepRunner {
     private OperationFactory operationFactory;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final DetectToolFilter detectToolFilter; //TODO: This should be a decision
+    private final StepHelper stepHelper;
 
-    public UniversalStepRunner(final OperationFactory operationFactory, DetectToolFilter detectToolFilter) { //TODO: Move to Step Helper
+    public UniversalStepRunner(final OperationFactory operationFactory, StepHelper stepHelper) {
         this.operationFactory = operationFactory;
-        this.detectToolFilter = detectToolFilter;
+        this.stepHelper = stepHelper;
     }
 
     public UniversalToolsResult runUniversalTools() throws DetectUserFriendlyException, IntegrationException {
         UniversalToolsResultBuilder resultBuilder = new UniversalToolsResultBuilder();
-        runDocker().ifPresent(resultBuilder::addDetectableToolResult);
-        runBazel().ifPresent(resultBuilder::addDetectableToolResult);
-        runDetectors().ifPresent(resultBuilder::addDetectorToolResult);
+
+        stepHelper.runToolIfIncluded(DetectTool.DOCKER, "Docker", this::runDocker)
+            .ifPresent(resultBuilder::addDetectableToolResult);
+
+        stepHelper.runToolIfIncluded(DetectTool.BAZEL, "Bazel", this::runBazel)
+            .ifPresent(resultBuilder::addDetectableToolResult);
+
+        stepHelper.runToolIfIncluded(DetectTool.DETECTOR, "Detectors", this::runDetectors)
+            .ifPresent(resultBuilder::addDetectorToolResult);
+
         return resultBuilder.build();
     }
 
-    private Optional<DetectableToolResult> runDocker() throws DetectUserFriendlyException, IntegrationException {
-        logger.info(ReportConstants.RUN_SEPARATOR);
-        if (detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
-            logger.info("Will include the Docker tool.");
-            DetectableToolResult result = operationFactory.executeDocker();
-            logger.info("Docker actions finished.");
-            return Optional.ofNullable(result);
+    private DetectableToolResult runDocker() throws DetectUserFriendlyException, IntegrationException {
+        Optional<DetectableTool> potentialTool = operationFactory.checkForDocker();
+        if (potentialTool.isPresent()) {
+            return operationFactory.executeDocker(potentialTool.get());
         } else {
-            logger.info("Docker tool will not be run.");
-            return Optional.empty();
+            return DetectableToolResult.skip();
         }
     }
 
-    private Optional<DetectableToolResult> runBazel() throws DetectUserFriendlyException, IntegrationException {
-        logger.info(ReportConstants.RUN_SEPARATOR);
-        if (detectToolFilter.shouldInclude(DetectTool.BAZEL)) {
-            logger.info("Will include the Bazel tool.");
-            DetectableToolResult result = operationFactory.executeBazel();
-            logger.info("Bazel actions finished.");
-            return Optional.ofNullable(result);
+    private DetectableToolResult runBazel() throws DetectUserFriendlyException, IntegrationException {
+        Optional<DetectableTool> potentialTool = operationFactory.checkForBazel();
+        if (potentialTool.isPresent()) {
+            return operationFactory.executeBazel(potentialTool.get());
         } else {
-            logger.info("Bazel tool will not be run.");
-            return Optional.empty();
+            return DetectableToolResult.skip();
         }
     }
 
-    private Optional<DetectorToolResult> runDetectors() throws DetectUserFriendlyException, IntegrationException {
-        logger.info(ReportConstants.RUN_SEPARATOR);
-        if (detectToolFilter.shouldInclude(DetectTool.DETECTOR)) {
-            logger.info("Will include the detector tool.");
-            DetectorToolResult result = operationFactory.executeDetectors();
-            if (result.anyDetectorsFailed()) {
-                operationFactory.publishDetectorFailure();
-            }
-            logger.info("Detector actions finished.");
-            return Optional.ofNullable(result);
-        } else {
-            logger.info("Detector tool will not be run.");
-            return Optional.empty();
+    private DetectorToolResult runDetectors() throws DetectUserFriendlyException, IntegrationException {
+        DetectorToolResult result = operationFactory.executeDetectors();
+        if (result.anyDetectorsFailed()) {
+            operationFactory.publishDetectorFailure();
         }
+        return result;
     }
 
     public BdioResult generateBdio(UniversalToolsResult universalToolsResult, NameVersion projectNameVersion) throws DetectUserFriendlyException, IntegrationException {
