@@ -55,15 +55,15 @@ public class DetectRun {
 
             ProductRunData productRunData = bootSingletons.getProductRunData(); //TODO: Remove run data from boot singletons
             OperationFactory operationFactory = createOperationFactory(bootSingletons, utilitySingletons, eventSingletons);
+            StepHelper stepHelper = new StepHelper(utilitySingletons.getOperationSystem(), utilitySingletons.getOperationWrapper(), productRunData.getDetectToolFilter());
 
-            UniversalStepRunner stepRunner = new UniversalStepRunner(operationFactory, productRunData.getDetectToolFilter()); //Product independent tools
+            UniversalStepRunner stepRunner = new UniversalStepRunner(operationFactory, stepHelper); //Product independent tools
             UniversalToolsResult universalToolsResult = stepRunner.runUniversalTools();
 
             // combine: processProjectInformation() -> ProjectResult (nameversion, bdio)
             NameVersion nameVersion = stepRunner.determineProjectInformation(universalToolsResult);
             operationFactory.publishProjectNameVersionChosen(nameVersion);
             BdioResult bdio = stepRunner.generateBdio(universalToolsResult, nameVersion);
-            StepHelper stepHelper = new StepHelper(utilitySingletons.getOperationSystem(), utilitySingletons.getOperationWrapper(), productRunData.getDetectToolFilter());
 
             if (productRunData.shouldUseBlackDuckProduct()) {
                 BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
