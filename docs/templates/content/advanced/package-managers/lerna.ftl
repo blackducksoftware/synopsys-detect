@@ -18,7 +18,7 @@ The Lerna detector will execute the same code as the [NPM package lock detector]
 
 The [NPM package lock detector](../../../properties/detectors/npm/) related properties also apply.
 
-Since the Lerna detector is currently not using the NPM Cli, only the [detect.npm.include.dev.dependencies](../../../properties/detectors/npm/#include-npm-development-dependencies) property applies.
+Since the Lerna detector is currently not using the NPM Cli, only the [detect.npm.include.dev.dependencies](../../../properties/detectors/npm/#include-npm-development-dependencies) and [detect.npm.include.peer.dependencies](../../../properties/detectors/npm/#include-npm-peer-dependencies) properties apply.
 
 ## Extracting from npm-shrinkwrap.json
 
@@ -26,7 +26,7 @@ The Lerna detector will execute the same code as the [NPM shrinkwrap detector](.
 
 The [NPM shrinkwrap detector](../../../properties/detectors/npm/) related properties also apply.
 
-Since the Lerna detector is currently not using the NPM Cli, only the [detect.npm.include.dev.dependencies](../../../properties/detectors/npm/#include-npm-development-dependencies) property applies.
+Since the Lerna detector is currently not using the NPM Cli, only the [detect.npm.include.dev.dependencies](../../../properties/detectors/npm/#include-npm-development-dependencies) and [detect.npm.include.peer.dependencies](../../../properties/detectors/npm/#include-npm-peer-dependencies) properties apply.
 
 ## Extracting from yarn.lock
 

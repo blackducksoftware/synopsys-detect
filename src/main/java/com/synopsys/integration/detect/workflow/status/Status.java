@@ -13,7 +13,7 @@ public class Status {
     private final String descriptionKey;
     private final StatusType statusType;
 
-    public Status(final String descriptionKey, final StatusType statusType) {
+    public Status(String descriptionKey, StatusType statusType) {
         this.descriptionKey = descriptionKey;
         this.statusType = statusType;
     }

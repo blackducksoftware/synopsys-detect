@@ -18,236 +18,19 @@
           "name": "detect",
           "separator": "/"
         },
-        "path": "linux-vndr"
+        "pieces": [
+          "linux-vndr",
+          null
+        ]
       }
     },
     "relationship": [
       {
+        "related": "http:golang/github.com%2Fdocker%2Flibnetwork/60e002dd61885e1cd909582f00f7eb4da634518a",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
         "related": "http:golang/github.com%2Fmistifyio%2Fgo-zfs/22c9b32c84eb0d0c6f4043b6e90fc94073de92fa",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fcoreos%2Fgo-semver/v0.2.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fhashicorp%2Fgo-immutable-radix/8e8ed81f8f0bf1bdd829593fdd5c29922c1ea990",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fmiekg%2Fdns/75e6e86cc601825c5dbcd4e0c209eab180997cd7",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fpborman%2Fuuid/v1.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fopencontainers%2Fgo-digest/a6d0ee40d4207ea02364bd3b9e8e77b9159ba1eb",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2FNvveen%2FGotty/a8b993ba6abdb0e0c12b0125c603323a71c7790c",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fcloudflare%2Fcfssl/7fb22c8cba7ecaf98e4082d22d65800cf45e042a",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fpivotal-golang%2Fclock/3fd3c1944c59d9742e1cd333672181cd1a6f9fa0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fgolang%2Fprotobuf/7a211bcf3bce0e3f1d74f9894916e6f116ae83b4",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fstretchr%2Ftestify/4d4bfba8f1d1027c4fdbe371823030df51419987",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fvdemeester%2Fshakers/24d7f1d6a71aa5d9cbe7390e4afb66b7eef9e1b3",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fdocker%2Fgo-metrics/d466d4f6fd960e01820085bd7e1a24426ee7ef18",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fvishvananda%2Fnetns/604eaf189ee867d8c147fafc28def2394e878d25",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fdocker%2Fswarmkit/bd7bafb8a61de1f5f23c8215ce7b9ecbcb30ff21",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/golang.org%2Fx%2Fcrypto/558b6879de74bc843225cde5686419267ff707ca",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fcontainerd%2Fcontainerd/06b9cb35161009dcb7123345749fef02f7cea8e0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fbsphere%2Fle_go/7a984a84b5492ae539b79b62fb4a10afc63c7bcf",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fhashicorp%2Fgo-memdb/cb9a474f84cc5e41b273b20c6927680b2a8776ad",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fcoreos%2Fgo-systemd/v4",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fgotestyourself%2Fgotestyourself/v1.1.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/golang.org%2Fx%2Ftime/a4bde12657593d5e90d0533a3e4fd95e635124cb",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/cloud.google.com%2Fgo/9d965e63e8cceb1b5d7977a202f0fcb8866d6525",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fcoreos%2Fpkg/fa29b1d70f0beaddd4c7021607cc3c3be8ce94b8",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Ftchap%2Fgo-patricia/v2.2.6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fpmezard%2Fgo-difflib/v1.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fugorji%2Fgo/f1f1a805ed361a0e078bb537e4ea78cd37dcf065",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fhashicorp%2Fgo-sockaddr/acd314c5781ea706c710d9ea70069fd2e110d61d",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Ftonistiigi%2Ffsutil/0ac4c11b053b9c5c7c47558f81f96c7100ce50fb",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fdocker%2Fgo-connections/3ede32e2033de7505e6500d6c868c2b9ed9f169d",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fdocker%2Fgo-units/9e638d38cf6977a37a8ea0078f3ee75a7cdb2dd1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fvishvananda%2Fnetlink/bd6d5de5ccef2d66b0a26177928d0d8895d7f969",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fgrpc-ecosystem%2Fgo-grpc-prometheus/6b7015e65d366bf3f19b2b2a000a831940f0f7e0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fseccomp%2Flibseccomp-golang/32f571b70023028bd57d9288c20efbcb237f3ce0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2FMicrosoft%2Fopengcs/v0.3.4",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fdocker%2Flibkv/1d8431073ae03cdaedb198a89722f3aab6d418ef",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fcoreos%2Fetcd/v3.2.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fdavecgh%2Fgo-spew/346938d642f2ec3594ed81d874461961cd0faa76",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Ffluent%2Ffluent-logger-golang/v1.2.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/golang.org%2Fx%2Fsys/07c182904dbd53199946ba614a412c61d3c548f5",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fhashicorp%2Fconsul/v0.5.2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fhashicorp%2Fserf/598c54895cc5a7b1a24a398d635e8c0ea0959870",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fspf13%2Fcobra/v1.5.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fgoogle%2Fcertificate-transparency/d90e65c3a07988180c5b1ece71791c0b6506826e",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fspf13%2Fpflag/9ff6c6923cfffbcd502984b8e0c80539a94968b7",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fprometheus%2Fcommon/ebdfc6da46522d58825777cf1f90490a5b1ef1d8",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fjmespath%2Fgo-jmespath/0b12d6b521d83fc7f755e7cfc1b1fbdd35a01a74",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fsirupsen%2Flogrus/v1.0.3",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Ffsnotify%2Ffsnotify/v1.4.2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fstevvooe%2Fcontinuity/cd7a8e21e2b6f84799f5dd4b65faf49c8d3ee02d",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Ftinylib%2Fmsgp/75ee40d2601edf122ef667e2a07d600d4c44490c",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2FMicrosoft%2Fhcsshim/v0.6.5",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Farmon%2Fgo-metrics/eb0af217e5e9747e41dd5303755356b62d28e3ec",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2FBurntSushi%2Ftoml/f706d00e3de6abe700c994cdd545a1a4915af060",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/golang.org%2Fx%2Fnet/7dcfb8076726a3fdd9353b6b8a1f1b6be6811bd6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fprometheus%2Fprocfs/abf152e5f3e97f2fafac028d2cc06c1feb87ffa5",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fmatttproud%2Fgolang_protobuf_extensions/v1.0.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -255,23 +38,7 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:golang/golang.org%2Fx%2Fsync/de49d9dcd27d4f764488181bea099dfe6179bcf0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fopencontainers%2Fimage-spec/372ad780f63454fbbbbcc7cf80e5b90245c13e13",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fprometheus%2Fclient_golang/52437c81da6b127a9925d17eb3a382a2e5fd395e",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fsean-%2Fseed/e2103e2c35297fb7e17febb81e49b312087a2372",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fsamuel%2Fgo-zookeeper/d0e0d8e11f318e000a8cc434616d69e329edc374",
+        "related": "http:golang/github.com%2Fgogo%2Fprotobuf/v0.4",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -279,107 +46,15 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:golang/github.com%2Fopencontainers%2Frunc/1c81e2a794c6e26a4c650142ae8893c47f619764",
+        "related": "http:golang/github.com%2Ftinylib%2Fmsgp/75ee40d2601edf122ef667e2a07d600d4c44490c",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:golang/github.com%2FRackSec%2Fsrslog/456df3a81436d29ba874f3590eeeee25d666f8a5",
+        "related": "http:golang/github.com%2Fhashicorp%2Fgo-immutable-radix/8e8ed81f8f0bf1bdd829593fdd5c29922c1ea990",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:golang/github.com%2Fmoby%2Fbuildkit/da2b9dc7dab99e824b2b1067ad7d0523e32dd2d9",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/golang.org%2Fx%2Foauth2/96382aa079b72d8c014eb0c50f6c223d1e6a2de0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fdocker%2Flibnetwork/60e002dd61885e1cd909582f00f7eb4da634518a",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fboltdb%2Fbolt/fff57c100f4dea1905678da7e90d92429dff2904",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Farmon%2Fgo-radix/e39d623f12e8e41c7b5529e9a9dd67a1e2261f80",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Finconshreveable%2Fmousetrap/76626ae9c91c4f2a10f34cad8ce83ea42c93bb75",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fpkg%2Ferrors/839d9e913e063e28dfd0e6c7b7512793e0a48be9",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fprometheus%2Fclient_model/fa8ad6fec33561be4280a8f0514318c79d7f6cb6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2FAzure%2Fgo-ansiterm/19f72df4d05d31cbe1c56bfc8045c96babff6c7e",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fgo-check%2Fcheck/4ed411733c5785b40214c70bce814c3a3a689609",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fphilhofer%2Ffwd/98c11a7a6ec829d672b03833c3d69a7fae1ca972",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fkr%2Fpty/5cf931ef8f",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fhashicorp%2Fgo-multierror/fcdddc395df1ddf4247c69bd436e84cfa0733f7e",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Ftonistiigi%2Ffifo/1405643975692217d6720f8b54aeee1bf2cd5cf4",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fdocker%2Flibtrust/9cbd2a1374f46905c68a4eb3694a130610adc62a",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/golang.org%2Fx%2Ftext/f72d8390a633d5dfb0cc84043294db9f6c935756",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fsyndtr%2Fgocapability/2c00daeb6c3b45114c80ac44119e7b8801fdd852",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fimdario%2Fmergo/0.2.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fdocker%2Fdistribution/edc3ab29cdff8694dd6feb85cfeb4b5f1b38ed9c",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fopencontainers%2Fselinux/v1.0.0-rc1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fcontainerd%2Fcontinuity/22694c680ee48fb8f50015b44618517e2bde77e8",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2FGraylog2%2Fgo-gelf/7029da823dad4ef3a876df61065156acb703b2ea",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fdocker%2Fgo-events/9461782956ad83b30282bf90e31fa6a70c255ba9",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:golang/github.com%2Fgorilla%2Fcontext/v1.1",
+        "related": "http:golang/github.com%2Fdocker%2Flibkv/1d8431073ae03cdaedb198a89722f3aab6d418ef",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -387,7 +62,23 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:golang/github.com%2Fgodbus%2Fdbus/v4.0.0",
+        "related": "http:golang/cloud.google.com%2Fgo/9d965e63e8cceb1b5d7977a202f0fcb8866d6525",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Farmon%2Fgo-metrics/eb0af217e5e9747e41dd5303755356b62d28e3ec",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fvishvananda%2Fnetlink/bd6d5de5ccef2d66b0a26177928d0d8895d7f969",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/golang.org%2Fx%2Foauth2/96382aa079b72d8c014eb0c50f6c223d1e6a2de0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fgorilla%2Fcontext/v1.1",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -395,15 +86,55 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
+        "related": "http:golang/github.com%2Fugorji%2Fgo/f1f1a805ed361a0e078bb537e4ea78cd37dcf065",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fdocker%2Fdistribution/edc3ab29cdff8694dd6feb85cfeb4b5f1b38ed9c",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fcoreos%2Fgo-semver/v0.2.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fvdemeester%2Fshakers/24d7f1d6a71aa5d9cbe7390e4afb66b7eef9e1b3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
         "related": "http:golang/google.golang.org%2Fgenproto/d80a6e20e776b0b17a324d0ba1ab50a39c8e8944",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:golang/github.com%2Fhashicorp%2Fgolang-lru/a0d98a5f288019575c6d1f4bb1573fef2d1fcdc4",
+        "related": "http:golang/github.com%2Fdocker%2Fgo-connections/3ede32e2033de7505e6500d6c868c2b9ed9f169d",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:golang/github.com%2Fbeorn7%2Fperks/4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9",
+        "related": "http:golang/github.com%2Fgodbus%2Fdbus/v4.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fopencontainers%2Frunc/1c81e2a794c6e26a4c650142ae8893c47f619764",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fphilhofer%2Ffwd/98c11a7a6ec829d672b03833c3d69a7fae1ca972",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fgoogle%2Fcertificate-transparency/d90e65c3a07988180c5b1ece71791c0b6506826e",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Ftchap%2Fgo-patricia/v2.2.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/golang.org%2Fx%2Ftext/f72d8390a633d5dfb0cc84043294db9f6c935756",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/golang.org%2Fx%2Fsync/de49d9dcd27d4f764488181bea099dfe6179bcf0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -411,15 +142,31 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:golang/github.com%2Fgogo%2Fprotobuf/v0.4",
+        "related": "http:golang/github.com%2FAzure%2Fgo-ansiterm/19f72df4d05d31cbe1c56bfc8045c96babff6c7e",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:golang/github.com%2Fgoogleapis%2Fgax-go/da06d194a00e19ce00d9011a13931c3f6f6887c7",
+        "related": "http:golang/github.com%2Fvishvananda%2Fnetns/604eaf189ee867d8c147fafc28def2394e878d25",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:golang/google.golang.org%2Fapi/3cc2e591b550923a2c5f0ab5a803feda924d5823",
+        "related": "http:golang/github.com%2FRackSec%2Fsrslog/456df3a81436d29ba874f3590eeeee25d666f8a5",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fstevvooe%2Fcontinuity/cd7a8e21e2b6f84799f5dd4b65faf49c8d3ee02d",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fopencontainers%2Fselinux/v1.0.0-rc1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fgo-check%2Fcheck/4ed411733c5785b40214c70bce814c3a3a689609",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fhashicorp%2Fgo-sockaddr/acd314c5781ea706c710d9ea70069fd2e110d61d",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -427,15 +174,151 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:golang/google.golang.org%2Fgrpc/v1.3.0",
+        "related": "http:golang/golang.org%2Fx%2Fcrypto/558b6879de74bc843225cde5686419267ff707ca",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:golang/github.com%2Fhashicorp%2Fmemberlist/v0.1.0",
+        "related": "http:golang/github.com%2Fkr%2Fpty/5cf931ef8f",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:golang/github.com%2Fhashicorp%2Fgo-msgpack/71c2886f5a673a35f909803f38ece5810165097b",
+        "related": "http:golang/github.com%2Ffsnotify%2Ffsnotify/v1.4.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fmatttproud%2Fgolang_protobuf_extensions/v1.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fmiekg%2Fdns/75e6e86cc601825c5dbcd4e0c209eab180997cd7",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fbeorn7%2Fperks/4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Ftonistiigi%2Ffsutil/0ac4c11b053b9c5c7c47558f81f96c7100ce50fb",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fimdario%2Fmergo/0.2.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fhashicorp%2Fconsul/v0.5.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fcloudflare%2Fcfssl/7fb22c8cba7ecaf98e4082d22d65800cf45e042a",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fsirupsen%2Flogrus/v1.0.3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/golang.org%2Fx%2Fnet/7dcfb8076726a3fdd9353b6b8a1f1b6be6811bd6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fcontainerd%2Fcontinuity/22694c680ee48fb8f50015b44618517e2bde77e8",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fprometheus%2Fprocfs/abf152e5f3e97f2fafac028d2cc06c1feb87ffa5",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fjmespath%2Fgo-jmespath/0b12d6b521d83fc7f755e7cfc1b1fbdd35a01a74",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fdocker%2Fgo-metrics/d466d4f6fd960e01820085bd7e1a24426ee7ef18",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2FNvveen%2FGotty/a8b993ba6abdb0e0c12b0125c603323a71c7790c",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fprometheus%2Fclient_golang/52437c81da6b127a9925d17eb3a382a2e5fd395e",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fgoogleapis%2Fgax-go/da06d194a00e19ce00d9011a13931c3f6f6887c7",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fspf13%2Fpflag/9ff6c6923cfffbcd502984b8e0c80539a94968b7",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fcoreos%2Fetcd/v3.2.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Finconshreveable%2Fmousetrap/76626ae9c91c4f2a10f34cad8ce83ea42c93bb75",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fstretchr%2Ftestify/4d4bfba8f1d1027c4fdbe371823030df51419987",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/golang.org%2Fx%2Ftime/a4bde12657593d5e90d0533a3e4fd95e635124cb",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/golang.org%2Fx%2Fsys/07c182904dbd53199946ba614a412c61d3c548f5",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fseccomp%2Flibseccomp-golang/32f571b70023028bd57d9288c20efbcb237f3ce0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fdocker%2Fgo-events/9461782956ad83b30282bf90e31fa6a70c255ba9",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Farmon%2Fgo-radix/e39d623f12e8e41c7b5529e9a9dd67a1e2261f80",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fprometheus%2Fcommon/ebdfc6da46522d58825777cf1f90490a5b1ef1d8",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fopencontainers%2Fimage-spec/372ad780f63454fbbbbcc7cf80e5b90245c13e13",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fsamuel%2Fgo-zookeeper/d0e0d8e11f318e000a8cc434616d69e329edc374",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fsean-%2Fseed/e2103e2c35297fb7e17febb81e49b312087a2372",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/google.golang.org%2Fapi/3cc2e591b550923a2c5f0ab5a803feda924d5823",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Ffluent%2Ffluent-logger-golang/v1.2.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fhashicorp%2Fgo-memdb/cb9a474f84cc5e41b273b20c6927680b2a8776ad",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fpivotal-golang%2Fclock/3fd3c1944c59d9742e1cd333672181cd1a6f9fa0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fpborman%2Fuuid/v1.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -443,10 +326,151 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
+        "related": "http:golang/github.com%2Fhashicorp%2Fgo-msgpack/71c2886f5a673a35f909803f38ece5810165097b",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fhashicorp%2Fgolang-lru/a0d98a5f288019575c6d1f4bb1573fef2d1fcdc4",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fmoby%2Fbuildkit/da2b9dc7dab99e824b2b1067ad7d0523e32dd2d9",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fdavecgh%2Fgo-spew/346938d642f2ec3594ed81d874461961cd0faa76",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/google.golang.org%2Fgrpc/v1.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fbsphere%2Fle_go/7a984a84b5492ae539b79b62fb4a10afc63c7bcf",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2FGraylog2%2Fgo-gelf/7029da823dad4ef3a876df61065156acb703b2ea",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fcoreos%2Fgo-systemd/v4",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fdocker%2Flibtrust/9cbd2a1374f46905c68a4eb3694a130610adc62a",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fcontainerd%2Fcontainerd/06b9cb35161009dcb7123345749fef02f7cea8e0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fhashicorp%2Fserf/598c54895cc5a7b1a24a398d635e8c0ea0959870",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fpkg%2Ferrors/839d9e913e063e28dfd0e6c7b7512793e0a48be9",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Ftonistiigi%2Ffifo/1405643975692217d6720f8b54aeee1bf2cd5cf4",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fsyndtr%2Fgocapability/2c00daeb6c3b45114c80ac44119e7b8801fdd852",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2FBurntSushi%2Ftoml/f706d00e3de6abe700c994cdd545a1a4915af060",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fdocker%2Fswarmkit/bd7bafb8a61de1f5f23c8215ce7b9ecbcb30ff21",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fgrpc-ecosystem%2Fgo-grpc-prometheus/6b7015e65d366bf3f19b2b2a000a831940f0f7e0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2FMicrosoft%2Fhcsshim/v0.6.5",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fboltdb%2Fbolt/fff57c100f4dea1905678da7e90d92429dff2904",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fhashicorp%2Fgo-multierror/fcdddc395df1ddf4247c69bd436e84cfa0733f7e",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fgotestyourself%2Fgotestyourself/v1.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fopencontainers%2Fgo-digest/a6d0ee40d4207ea02364bd3b9e8e77b9159ba1eb",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fprometheus%2Fclient_model/fa8ad6fec33561be4280a8f0514318c79d7f6cb6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fhashicorp%2Fmemberlist/v0.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fcoreos%2Fpkg/fa29b1d70f0beaddd4c7021607cc3c3be8ce94b8",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fdocker%2Fgo-units/9e638d38cf6977a37a8ea0078f3ee75a7cdb2dd1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2FMicrosoft%2Fopengcs/v0.3.4",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
         "related": "http:golang/github.com%2Fmattn%2Fgo-shellwords/v1.0.3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fspf13%2Fcobra/v1.5.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fgolang%2Fprotobuf/7a211bcf3bce0e3f1d74f9894916e6f116ae83b4",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github.com%2Fpmezard%2Fgo-difflib/v1.0.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
+  },
+  {
+    "name": "github.com/docker/libnetwork",
+    "revision": "60e002dd61885e1cd909582f00f7eb4da634518a",
+    "@id": "http:golang/github.com%2Fdocker%2Flibnetwork/60e002dd61885e1cd909582f00f7eb4da634518a",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/docker/libnetwork:60e002dd61885e1cd909582f00f7eb4da634518a",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/docker/libnetwork",
+          "60e002dd61885e1cd909582f00f7eb4da634518a"
+        ]
+      }
+    },
+    "relationship": []
   },
   {
     "name": "github.com/mistifyio/go-zfs",
@@ -461,1072 +485,10 @@
           "name": "golang",
           "separator": ":"
         },
-        "name": "github.com/mistifyio/go-zfs",
-        "version": "22c9b32c84eb0d0c6f4043b6e90fc94073de92fa"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/coreos/go-semver",
-    "revision": "v0.2.0",
-    "@id": "http:golang/github.com%2Fcoreos%2Fgo-semver/v0.2.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/coreos/go-semver:v0.2.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/coreos/go-semver",
-        "version": "v0.2.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/hashicorp/go-immutable-radix",
-    "revision": "8e8ed81f8f0bf1bdd829593fdd5c29922c1ea990",
-    "@id": "http:golang/github.com%2Fhashicorp%2Fgo-immutable-radix/8e8ed81f8f0bf1bdd829593fdd5c29922c1ea990",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/hashicorp/go-immutable-radix:8e8ed81f8f0bf1bdd829593fdd5c29922c1ea990",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/hashicorp/go-immutable-radix",
-        "version": "8e8ed81f8f0bf1bdd829593fdd5c29922c1ea990"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/miekg/dns",
-    "revision": "75e6e86cc601825c5dbcd4e0c209eab180997cd7",
-    "@id": "http:golang/github.com%2Fmiekg%2Fdns/75e6e86cc601825c5dbcd4e0c209eab180997cd7",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/miekg/dns:75e6e86cc601825c5dbcd4e0c209eab180997cd7",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/miekg/dns",
-        "version": "75e6e86cc601825c5dbcd4e0c209eab180997cd7"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/pborman/uuid",
-    "revision": "v1.0",
-    "@id": "http:golang/github.com%2Fpborman%2Fuuid/v1.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/pborman/uuid:v1.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/pborman/uuid",
-        "version": "v1.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/opencontainers/go-digest",
-    "revision": "a6d0ee40d4207ea02364bd3b9e8e77b9159ba1eb",
-    "@id": "http:golang/github.com%2Fopencontainers%2Fgo-digest/a6d0ee40d4207ea02364bd3b9e8e77b9159ba1eb",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/opencontainers/go-digest:a6d0ee40d4207ea02364bd3b9e8e77b9159ba1eb",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/opencontainers/go-digest",
-        "version": "a6d0ee40d4207ea02364bd3b9e8e77b9159ba1eb"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/Nvveen/Gotty",
-    "revision": "a8b993ba6abdb0e0c12b0125c603323a71c7790c",
-    "@id": "http:golang/github.com%2FNvveen%2FGotty/a8b993ba6abdb0e0c12b0125c603323a71c7790c",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/Nvveen/Gotty:a8b993ba6abdb0e0c12b0125c603323a71c7790c",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/Nvveen/Gotty",
-        "version": "a8b993ba6abdb0e0c12b0125c603323a71c7790c"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/cloudflare/cfssl",
-    "revision": "7fb22c8cba7ecaf98e4082d22d65800cf45e042a",
-    "@id": "http:golang/github.com%2Fcloudflare%2Fcfssl/7fb22c8cba7ecaf98e4082d22d65800cf45e042a",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/cloudflare/cfssl:7fb22c8cba7ecaf98e4082d22d65800cf45e042a",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/cloudflare/cfssl",
-        "version": "7fb22c8cba7ecaf98e4082d22d65800cf45e042a"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/pivotal-golang/clock",
-    "revision": "3fd3c1944c59d9742e1cd333672181cd1a6f9fa0",
-    "@id": "http:golang/github.com%2Fpivotal-golang%2Fclock/3fd3c1944c59d9742e1cd333672181cd1a6f9fa0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/pivotal-golang/clock:3fd3c1944c59d9742e1cd333672181cd1a6f9fa0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/pivotal-golang/clock",
-        "version": "3fd3c1944c59d9742e1cd333672181cd1a6f9fa0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/golang/protobuf",
-    "revision": "7a211bcf3bce0e3f1d74f9894916e6f116ae83b4",
-    "@id": "http:golang/github.com%2Fgolang%2Fprotobuf/7a211bcf3bce0e3f1d74f9894916e6f116ae83b4",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/golang/protobuf:7a211bcf3bce0e3f1d74f9894916e6f116ae83b4",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/golang/protobuf",
-        "version": "7a211bcf3bce0e3f1d74f9894916e6f116ae83b4"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/stretchr/testify",
-    "revision": "4d4bfba8f1d1027c4fdbe371823030df51419987",
-    "@id": "http:golang/github.com%2Fstretchr%2Ftestify/4d4bfba8f1d1027c4fdbe371823030df51419987",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/stretchr/testify:4d4bfba8f1d1027c4fdbe371823030df51419987",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/stretchr/testify",
-        "version": "4d4bfba8f1d1027c4fdbe371823030df51419987"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/vdemeester/shakers",
-    "revision": "24d7f1d6a71aa5d9cbe7390e4afb66b7eef9e1b3",
-    "@id": "http:golang/github.com%2Fvdemeester%2Fshakers/24d7f1d6a71aa5d9cbe7390e4afb66b7eef9e1b3",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/vdemeester/shakers:24d7f1d6a71aa5d9cbe7390e4afb66b7eef9e1b3",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/vdemeester/shakers",
-        "version": "24d7f1d6a71aa5d9cbe7390e4afb66b7eef9e1b3"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/docker/go-metrics",
-    "revision": "d466d4f6fd960e01820085bd7e1a24426ee7ef18",
-    "@id": "http:golang/github.com%2Fdocker%2Fgo-metrics/d466d4f6fd960e01820085bd7e1a24426ee7ef18",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/docker/go-metrics:d466d4f6fd960e01820085bd7e1a24426ee7ef18",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/docker/go-metrics",
-        "version": "d466d4f6fd960e01820085bd7e1a24426ee7ef18"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/vishvananda/netns",
-    "revision": "604eaf189ee867d8c147fafc28def2394e878d25",
-    "@id": "http:golang/github.com%2Fvishvananda%2Fnetns/604eaf189ee867d8c147fafc28def2394e878d25",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/vishvananda/netns:604eaf189ee867d8c147fafc28def2394e878d25",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/vishvananda/netns",
-        "version": "604eaf189ee867d8c147fafc28def2394e878d25"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/docker/swarmkit",
-    "revision": "bd7bafb8a61de1f5f23c8215ce7b9ecbcb30ff21",
-    "@id": "http:golang/github.com%2Fdocker%2Fswarmkit/bd7bafb8a61de1f5f23c8215ce7b9ecbcb30ff21",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/docker/swarmkit:bd7bafb8a61de1f5f23c8215ce7b9ecbcb30ff21",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/docker/swarmkit",
-        "version": "bd7bafb8a61de1f5f23c8215ce7b9ecbcb30ff21"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "golang.org/x/crypto",
-    "revision": "558b6879de74bc843225cde5686419267ff707ca",
-    "@id": "http:golang/golang.org%2Fx%2Fcrypto/558b6879de74bc843225cde5686419267ff707ca",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "golang.org/x/crypto:558b6879de74bc843225cde5686419267ff707ca",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "golang.org/x/crypto",
-        "version": "558b6879de74bc843225cde5686419267ff707ca"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/containerd/containerd",
-    "revision": "06b9cb35161009dcb7123345749fef02f7cea8e0",
-    "@id": "http:golang/github.com%2Fcontainerd%2Fcontainerd/06b9cb35161009dcb7123345749fef02f7cea8e0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/containerd/containerd:06b9cb35161009dcb7123345749fef02f7cea8e0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/containerd/containerd",
-        "version": "06b9cb35161009dcb7123345749fef02f7cea8e0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/bsphere/le_go",
-    "revision": "7a984a84b5492ae539b79b62fb4a10afc63c7bcf",
-    "@id": "http:golang/github.com%2Fbsphere%2Fle_go/7a984a84b5492ae539b79b62fb4a10afc63c7bcf",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/bsphere/le_go:7a984a84b5492ae539b79b62fb4a10afc63c7bcf",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/bsphere/le_go",
-        "version": "7a984a84b5492ae539b79b62fb4a10afc63c7bcf"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/hashicorp/go-memdb",
-    "revision": "cb9a474f84cc5e41b273b20c6927680b2a8776ad",
-    "@id": "http:golang/github.com%2Fhashicorp%2Fgo-memdb/cb9a474f84cc5e41b273b20c6927680b2a8776ad",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/hashicorp/go-memdb:cb9a474f84cc5e41b273b20c6927680b2a8776ad",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/hashicorp/go-memdb",
-        "version": "cb9a474f84cc5e41b273b20c6927680b2a8776ad"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/coreos/go-systemd",
-    "revision": "v4",
-    "@id": "http:golang/github.com%2Fcoreos%2Fgo-systemd/v4",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/coreos/go-systemd:v4",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/coreos/go-systemd",
-        "version": "v4"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/gotestyourself/gotestyourself",
-    "revision": "v1.1.0",
-    "@id": "http:golang/github.com%2Fgotestyourself%2Fgotestyourself/v1.1.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/gotestyourself/gotestyourself:v1.1.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/gotestyourself/gotestyourself",
-        "version": "v1.1.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "golang.org/x/time",
-    "revision": "a4bde12657593d5e90d0533a3e4fd95e635124cb",
-    "@id": "http:golang/golang.org%2Fx%2Ftime/a4bde12657593d5e90d0533a3e4fd95e635124cb",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "golang.org/x/time:a4bde12657593d5e90d0533a3e4fd95e635124cb",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "golang.org/x/time",
-        "version": "a4bde12657593d5e90d0533a3e4fd95e635124cb"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "cloud.google.com/go",
-    "revision": "9d965e63e8cceb1b5d7977a202f0fcb8866d6525",
-    "@id": "http:golang/cloud.google.com%2Fgo/9d965e63e8cceb1b5d7977a202f0fcb8866d6525",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "cloud.google.com/go:9d965e63e8cceb1b5d7977a202f0fcb8866d6525",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "cloud.google.com/go",
-        "version": "9d965e63e8cceb1b5d7977a202f0fcb8866d6525"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/coreos/pkg",
-    "revision": "fa29b1d70f0beaddd4c7021607cc3c3be8ce94b8",
-    "@id": "http:golang/github.com%2Fcoreos%2Fpkg/fa29b1d70f0beaddd4c7021607cc3c3be8ce94b8",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/coreos/pkg:fa29b1d70f0beaddd4c7021607cc3c3be8ce94b8",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/coreos/pkg",
-        "version": "fa29b1d70f0beaddd4c7021607cc3c3be8ce94b8"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/tchap/go-patricia",
-    "revision": "v2.2.6",
-    "@id": "http:golang/github.com%2Ftchap%2Fgo-patricia/v2.2.6",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/tchap/go-patricia:v2.2.6",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/tchap/go-patricia",
-        "version": "v2.2.6"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/pmezard/go-difflib",
-    "revision": "v1.0.0",
-    "@id": "http:golang/github.com%2Fpmezard%2Fgo-difflib/v1.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/pmezard/go-difflib:v1.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/pmezard/go-difflib",
-        "version": "v1.0.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/ugorji/go",
-    "revision": "f1f1a805ed361a0e078bb537e4ea78cd37dcf065",
-    "@id": "http:golang/github.com%2Fugorji%2Fgo/f1f1a805ed361a0e078bb537e4ea78cd37dcf065",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/ugorji/go:f1f1a805ed361a0e078bb537e4ea78cd37dcf065",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/ugorji/go",
-        "version": "f1f1a805ed361a0e078bb537e4ea78cd37dcf065"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/hashicorp/go-sockaddr",
-    "revision": "acd314c5781ea706c710d9ea70069fd2e110d61d",
-    "@id": "http:golang/github.com%2Fhashicorp%2Fgo-sockaddr/acd314c5781ea706c710d9ea70069fd2e110d61d",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/hashicorp/go-sockaddr:acd314c5781ea706c710d9ea70069fd2e110d61d",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/hashicorp/go-sockaddr",
-        "version": "acd314c5781ea706c710d9ea70069fd2e110d61d"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/tonistiigi/fsutil",
-    "revision": "0ac4c11b053b9c5c7c47558f81f96c7100ce50fb",
-    "@id": "http:golang/github.com%2Ftonistiigi%2Ffsutil/0ac4c11b053b9c5c7c47558f81f96c7100ce50fb",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/tonistiigi/fsutil:0ac4c11b053b9c5c7c47558f81f96c7100ce50fb",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/tonistiigi/fsutil",
-        "version": "0ac4c11b053b9c5c7c47558f81f96c7100ce50fb"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/docker/go-connections",
-    "revision": "3ede32e2033de7505e6500d6c868c2b9ed9f169d",
-    "@id": "http:golang/github.com%2Fdocker%2Fgo-connections/3ede32e2033de7505e6500d6c868c2b9ed9f169d",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/docker/go-connections:3ede32e2033de7505e6500d6c868c2b9ed9f169d",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/docker/go-connections",
-        "version": "3ede32e2033de7505e6500d6c868c2b9ed9f169d"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/docker/go-units",
-    "revision": "9e638d38cf6977a37a8ea0078f3ee75a7cdb2dd1",
-    "@id": "http:golang/github.com%2Fdocker%2Fgo-units/9e638d38cf6977a37a8ea0078f3ee75a7cdb2dd1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/docker/go-units:9e638d38cf6977a37a8ea0078f3ee75a7cdb2dd1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/docker/go-units",
-        "version": "9e638d38cf6977a37a8ea0078f3ee75a7cdb2dd1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/vishvananda/netlink",
-    "revision": "bd6d5de5ccef2d66b0a26177928d0d8895d7f969",
-    "@id": "http:golang/github.com%2Fvishvananda%2Fnetlink/bd6d5de5ccef2d66b0a26177928d0d8895d7f969",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/vishvananda/netlink:bd6d5de5ccef2d66b0a26177928d0d8895d7f969",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/vishvananda/netlink",
-        "version": "bd6d5de5ccef2d66b0a26177928d0d8895d7f969"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/grpc-ecosystem/go-grpc-prometheus",
-    "revision": "6b7015e65d366bf3f19b2b2a000a831940f0f7e0",
-    "@id": "http:golang/github.com%2Fgrpc-ecosystem%2Fgo-grpc-prometheus/6b7015e65d366bf3f19b2b2a000a831940f0f7e0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/grpc-ecosystem/go-grpc-prometheus:6b7015e65d366bf3f19b2b2a000a831940f0f7e0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/grpc-ecosystem/go-grpc-prometheus",
-        "version": "6b7015e65d366bf3f19b2b2a000a831940f0f7e0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/seccomp/libseccomp-golang",
-    "revision": "32f571b70023028bd57d9288c20efbcb237f3ce0",
-    "@id": "http:golang/github.com%2Fseccomp%2Flibseccomp-golang/32f571b70023028bd57d9288c20efbcb237f3ce0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/seccomp/libseccomp-golang:32f571b70023028bd57d9288c20efbcb237f3ce0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/seccomp/libseccomp-golang",
-        "version": "32f571b70023028bd57d9288c20efbcb237f3ce0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/Microsoft/opengcs",
-    "revision": "v0.3.4",
-    "@id": "http:golang/github.com%2FMicrosoft%2Fopengcs/v0.3.4",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/Microsoft/opengcs:v0.3.4",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/Microsoft/opengcs",
-        "version": "v0.3.4"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/docker/libkv",
-    "revision": "1d8431073ae03cdaedb198a89722f3aab6d418ef",
-    "@id": "http:golang/github.com%2Fdocker%2Flibkv/1d8431073ae03cdaedb198a89722f3aab6d418ef",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/docker/libkv:1d8431073ae03cdaedb198a89722f3aab6d418ef",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/docker/libkv",
-        "version": "1d8431073ae03cdaedb198a89722f3aab6d418ef"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/coreos/etcd",
-    "revision": "v3.2.1",
-    "@id": "http:golang/github.com%2Fcoreos%2Fetcd/v3.2.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/coreos/etcd:v3.2.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/coreos/etcd",
-        "version": "v3.2.1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/davecgh/go-spew",
-    "revision": "346938d642f2ec3594ed81d874461961cd0faa76",
-    "@id": "http:golang/github.com%2Fdavecgh%2Fgo-spew/346938d642f2ec3594ed81d874461961cd0faa76",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/davecgh/go-spew:346938d642f2ec3594ed81d874461961cd0faa76",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/davecgh/go-spew",
-        "version": "346938d642f2ec3594ed81d874461961cd0faa76"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/fluent/fluent-logger-golang",
-    "revision": "v1.2.1",
-    "@id": "http:golang/github.com%2Ffluent%2Ffluent-logger-golang/v1.2.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/fluent/fluent-logger-golang:v1.2.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/fluent/fluent-logger-golang",
-        "version": "v1.2.1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "golang.org/x/sys",
-    "revision": "07c182904dbd53199946ba614a412c61d3c548f5",
-    "@id": "http:golang/golang.org%2Fx%2Fsys/07c182904dbd53199946ba614a412c61d3c548f5",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "golang.org/x/sys:07c182904dbd53199946ba614a412c61d3c548f5",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "golang.org/x/sys",
-        "version": "07c182904dbd53199946ba614a412c61d3c548f5"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/hashicorp/consul",
-    "revision": "v0.5.2",
-    "@id": "http:golang/github.com%2Fhashicorp%2Fconsul/v0.5.2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/hashicorp/consul:v0.5.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/hashicorp/consul",
-        "version": "v0.5.2"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/hashicorp/serf",
-    "revision": "598c54895cc5a7b1a24a398d635e8c0ea0959870",
-    "@id": "http:golang/github.com%2Fhashicorp%2Fserf/598c54895cc5a7b1a24a398d635e8c0ea0959870",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/hashicorp/serf:598c54895cc5a7b1a24a398d635e8c0ea0959870",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/hashicorp/serf",
-        "version": "598c54895cc5a7b1a24a398d635e8c0ea0959870"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/spf13/cobra",
-    "revision": "v1.5.1",
-    "@id": "http:golang/github.com%2Fspf13%2Fcobra/v1.5.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/spf13/cobra:v1.5.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/spf13/cobra",
-        "version": "v1.5.1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/google/certificate-transparency",
-    "revision": "d90e65c3a07988180c5b1ece71791c0b6506826e",
-    "@id": "http:golang/github.com%2Fgoogle%2Fcertificate-transparency/d90e65c3a07988180c5b1ece71791c0b6506826e",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/google/certificate-transparency:d90e65c3a07988180c5b1ece71791c0b6506826e",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/google/certificate-transparency",
-        "version": "d90e65c3a07988180c5b1ece71791c0b6506826e"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/spf13/pflag",
-    "revision": "9ff6c6923cfffbcd502984b8e0c80539a94968b7",
-    "@id": "http:golang/github.com%2Fspf13%2Fpflag/9ff6c6923cfffbcd502984b8e0c80539a94968b7",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/spf13/pflag:9ff6c6923cfffbcd502984b8e0c80539a94968b7",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/spf13/pflag",
-        "version": "9ff6c6923cfffbcd502984b8e0c80539a94968b7"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/prometheus/common",
-    "revision": "ebdfc6da46522d58825777cf1f90490a5b1ef1d8",
-    "@id": "http:golang/github.com%2Fprometheus%2Fcommon/ebdfc6da46522d58825777cf1f90490a5b1ef1d8",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/prometheus/common:ebdfc6da46522d58825777cf1f90490a5b1ef1d8",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/prometheus/common",
-        "version": "ebdfc6da46522d58825777cf1f90490a5b1ef1d8"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/jmespath/go-jmespath",
-    "revision": "0b12d6b521d83fc7f755e7cfc1b1fbdd35a01a74",
-    "@id": "http:golang/github.com%2Fjmespath%2Fgo-jmespath/0b12d6b521d83fc7f755e7cfc1b1fbdd35a01a74",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/jmespath/go-jmespath:0b12d6b521d83fc7f755e7cfc1b1fbdd35a01a74",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/jmespath/go-jmespath",
-        "version": "0b12d6b521d83fc7f755e7cfc1b1fbdd35a01a74"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/sirupsen/logrus",
-    "revision": "v1.0.3",
-    "@id": "http:golang/github.com%2Fsirupsen%2Flogrus/v1.0.3",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/sirupsen/logrus:v1.0.3",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/sirupsen/logrus",
-        "version": "v1.0.3"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/fsnotify/fsnotify",
-    "revision": "v1.4.2",
-    "@id": "http:golang/github.com%2Ffsnotify%2Ffsnotify/v1.4.2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/fsnotify/fsnotify:v1.4.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/fsnotify/fsnotify",
-        "version": "v1.4.2"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/stevvooe/continuity",
-    "revision": "cd7a8e21e2b6f84799f5dd4b65faf49c8d3ee02d",
-    "@id": "http:golang/github.com%2Fstevvooe%2Fcontinuity/cd7a8e21e2b6f84799f5dd4b65faf49c8d3ee02d",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/stevvooe/continuity:cd7a8e21e2b6f84799f5dd4b65faf49c8d3ee02d",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/stevvooe/continuity",
-        "version": "cd7a8e21e2b6f84799f5dd4b65faf49c8d3ee02d"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/tinylib/msgp",
-    "revision": "75ee40d2601edf122ef667e2a07d600d4c44490c",
-    "@id": "http:golang/github.com%2Ftinylib%2Fmsgp/75ee40d2601edf122ef667e2a07d600d4c44490c",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/tinylib/msgp:75ee40d2601edf122ef667e2a07d600d4c44490c",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/tinylib/msgp",
-        "version": "75ee40d2601edf122ef667e2a07d600d4c44490c"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/Microsoft/hcsshim",
-    "revision": "v0.6.5",
-    "@id": "http:golang/github.com%2FMicrosoft%2Fhcsshim/v0.6.5",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/Microsoft/hcsshim:v0.6.5",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/Microsoft/hcsshim",
-        "version": "v0.6.5"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/armon/go-metrics",
-    "revision": "eb0af217e5e9747e41dd5303755356b62d28e3ec",
-    "@id": "http:golang/github.com%2Farmon%2Fgo-metrics/eb0af217e5e9747e41dd5303755356b62d28e3ec",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/armon/go-metrics:eb0af217e5e9747e41dd5303755356b62d28e3ec",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/armon/go-metrics",
-        "version": "eb0af217e5e9747e41dd5303755356b62d28e3ec"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/BurntSushi/toml",
-    "revision": "f706d00e3de6abe700c994cdd545a1a4915af060",
-    "@id": "http:golang/github.com%2FBurntSushi%2Ftoml/f706d00e3de6abe700c994cdd545a1a4915af060",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/BurntSushi/toml:f706d00e3de6abe700c994cdd545a1a4915af060",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/BurntSushi/toml",
-        "version": "f706d00e3de6abe700c994cdd545a1a4915af060"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "golang.org/x/net",
-    "revision": "7dcfb8076726a3fdd9353b6b8a1f1b6be6811bd6",
-    "@id": "http:golang/golang.org%2Fx%2Fnet/7dcfb8076726a3fdd9353b6b8a1f1b6be6811bd6",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "golang.org/x/net:7dcfb8076726a3fdd9353b6b8a1f1b6be6811bd6",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "golang.org/x/net",
-        "version": "7dcfb8076726a3fdd9353b6b8a1f1b6be6811bd6"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/prometheus/procfs",
-    "revision": "abf152e5f3e97f2fafac028d2cc06c1feb87ffa5",
-    "@id": "http:golang/github.com%2Fprometheus%2Fprocfs/abf152e5f3e97f2fafac028d2cc06c1feb87ffa5",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/prometheus/procfs:abf152e5f3e97f2fafac028d2cc06c1feb87ffa5",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/prometheus/procfs",
-        "version": "abf152e5f3e97f2fafac028d2cc06c1feb87ffa5"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/matttproud/golang_protobuf_extensions",
-    "revision": "v1.0.0",
-    "@id": "http:golang/github.com%2Fmatttproud%2Fgolang_protobuf_extensions/v1.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/matttproud/golang_protobuf_extensions:v1.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/matttproud/golang_protobuf_extensions",
-        "version": "v1.0.0"
+        "pieces": [
+          "github.com/mistifyio/go-zfs",
+          "22c9b32c84eb0d0c6f4043b6e90fc94073de92fa"
+        ]
       }
     },
     "relationship": []
@@ -1544,749 +506,10 @@
           "name": "golang",
           "separator": ":"
         },
-        "name": "github.com/opencontainers/runtime-spec",
-        "version": "v1.0.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "golang.org/x/sync",
-    "revision": "de49d9dcd27d4f764488181bea099dfe6179bcf0",
-    "@id": "http:golang/golang.org%2Fx%2Fsync/de49d9dcd27d4f764488181bea099dfe6179bcf0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "golang.org/x/sync:de49d9dcd27d4f764488181bea099dfe6179bcf0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "golang.org/x/sync",
-        "version": "de49d9dcd27d4f764488181bea099dfe6179bcf0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/opencontainers/image-spec",
-    "revision": "372ad780f63454fbbbbcc7cf80e5b90245c13e13",
-    "@id": "http:golang/github.com%2Fopencontainers%2Fimage-spec/372ad780f63454fbbbbcc7cf80e5b90245c13e13",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/opencontainers/image-spec:372ad780f63454fbbbbcc7cf80e5b90245c13e13",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/opencontainers/image-spec",
-        "version": "372ad780f63454fbbbbcc7cf80e5b90245c13e13"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/prometheus/client_golang",
-    "revision": "52437c81da6b127a9925d17eb3a382a2e5fd395e",
-    "@id": "http:golang/github.com%2Fprometheus%2Fclient_golang/52437c81da6b127a9925d17eb3a382a2e5fd395e",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/prometheus/client_golang:52437c81da6b127a9925d17eb3a382a2e5fd395e",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/prometheus/client_golang",
-        "version": "52437c81da6b127a9925d17eb3a382a2e5fd395e"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/sean-/seed",
-    "revision": "e2103e2c35297fb7e17febb81e49b312087a2372",
-    "@id": "http:golang/github.com%2Fsean-%2Fseed/e2103e2c35297fb7e17febb81e49b312087a2372",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/sean-/seed:e2103e2c35297fb7e17febb81e49b312087a2372",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/sean-/seed",
-        "version": "e2103e2c35297fb7e17febb81e49b312087a2372"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/samuel/go-zookeeper",
-    "revision": "d0e0d8e11f318e000a8cc434616d69e329edc374",
-    "@id": "http:golang/github.com%2Fsamuel%2Fgo-zookeeper/d0e0d8e11f318e000a8cc434616d69e329edc374",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/samuel/go-zookeeper:d0e0d8e11f318e000a8cc434616d69e329edc374",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/samuel/go-zookeeper",
-        "version": "d0e0d8e11f318e000a8cc434616d69e329edc374"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/Microsoft/go-winio",
-    "revision": "v0.4.5",
-    "@id": "http:golang/github.com%2FMicrosoft%2Fgo-winio/v0.4.5",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/Microsoft/go-winio:v0.4.5",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/Microsoft/go-winio",
-        "version": "v0.4.5"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/opencontainers/runc",
-    "revision": "1c81e2a794c6e26a4c650142ae8893c47f619764",
-    "@id": "http:golang/github.com%2Fopencontainers%2Frunc/1c81e2a794c6e26a4c650142ae8893c47f619764",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/opencontainers/runc:1c81e2a794c6e26a4c650142ae8893c47f619764",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/opencontainers/runc",
-        "version": "1c81e2a794c6e26a4c650142ae8893c47f619764"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/RackSec/srslog",
-    "revision": "456df3a81436d29ba874f3590eeeee25d666f8a5",
-    "@id": "http:golang/github.com%2FRackSec%2Fsrslog/456df3a81436d29ba874f3590eeeee25d666f8a5",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/RackSec/srslog:456df3a81436d29ba874f3590eeeee25d666f8a5",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/RackSec/srslog",
-        "version": "456df3a81436d29ba874f3590eeeee25d666f8a5"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/moby/buildkit",
-    "revision": "da2b9dc7dab99e824b2b1067ad7d0523e32dd2d9",
-    "@id": "http:golang/github.com%2Fmoby%2Fbuildkit/da2b9dc7dab99e824b2b1067ad7d0523e32dd2d9",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/moby/buildkit:da2b9dc7dab99e824b2b1067ad7d0523e32dd2d9",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/moby/buildkit",
-        "version": "da2b9dc7dab99e824b2b1067ad7d0523e32dd2d9"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "golang.org/x/oauth2",
-    "revision": "96382aa079b72d8c014eb0c50f6c223d1e6a2de0",
-    "@id": "http:golang/golang.org%2Fx%2Foauth2/96382aa079b72d8c014eb0c50f6c223d1e6a2de0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "golang.org/x/oauth2:96382aa079b72d8c014eb0c50f6c223d1e6a2de0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "golang.org/x/oauth2",
-        "version": "96382aa079b72d8c014eb0c50f6c223d1e6a2de0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/docker/libnetwork",
-    "revision": "60e002dd61885e1cd909582f00f7eb4da634518a",
-    "@id": "http:golang/github.com%2Fdocker%2Flibnetwork/60e002dd61885e1cd909582f00f7eb4da634518a",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/docker/libnetwork:60e002dd61885e1cd909582f00f7eb4da634518a",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/docker/libnetwork",
-        "version": "60e002dd61885e1cd909582f00f7eb4da634518a"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/boltdb/bolt",
-    "revision": "fff57c100f4dea1905678da7e90d92429dff2904",
-    "@id": "http:golang/github.com%2Fboltdb%2Fbolt/fff57c100f4dea1905678da7e90d92429dff2904",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/boltdb/bolt:fff57c100f4dea1905678da7e90d92429dff2904",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/boltdb/bolt",
-        "version": "fff57c100f4dea1905678da7e90d92429dff2904"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/armon/go-radix",
-    "revision": "e39d623f12e8e41c7b5529e9a9dd67a1e2261f80",
-    "@id": "http:golang/github.com%2Farmon%2Fgo-radix/e39d623f12e8e41c7b5529e9a9dd67a1e2261f80",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/armon/go-radix:e39d623f12e8e41c7b5529e9a9dd67a1e2261f80",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/armon/go-radix",
-        "version": "e39d623f12e8e41c7b5529e9a9dd67a1e2261f80"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/inconshreveable/mousetrap",
-    "revision": "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75",
-    "@id": "http:golang/github.com%2Finconshreveable%2Fmousetrap/76626ae9c91c4f2a10f34cad8ce83ea42c93bb75",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/inconshreveable/mousetrap:76626ae9c91c4f2a10f34cad8ce83ea42c93bb75",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/inconshreveable/mousetrap",
-        "version": "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/pkg/errors",
-    "revision": "839d9e913e063e28dfd0e6c7b7512793e0a48be9",
-    "@id": "http:golang/github.com%2Fpkg%2Ferrors/839d9e913e063e28dfd0e6c7b7512793e0a48be9",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/pkg/errors:839d9e913e063e28dfd0e6c7b7512793e0a48be9",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/pkg/errors",
-        "version": "839d9e913e063e28dfd0e6c7b7512793e0a48be9"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/prometheus/client_model",
-    "revision": "fa8ad6fec33561be4280a8f0514318c79d7f6cb6",
-    "@id": "http:golang/github.com%2Fprometheus%2Fclient_model/fa8ad6fec33561be4280a8f0514318c79d7f6cb6",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/prometheus/client_model:fa8ad6fec33561be4280a8f0514318c79d7f6cb6",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/prometheus/client_model",
-        "version": "fa8ad6fec33561be4280a8f0514318c79d7f6cb6"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/Azure/go-ansiterm",
-    "revision": "19f72df4d05d31cbe1c56bfc8045c96babff6c7e",
-    "@id": "http:golang/github.com%2FAzure%2Fgo-ansiterm/19f72df4d05d31cbe1c56bfc8045c96babff6c7e",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/Azure/go-ansiterm:19f72df4d05d31cbe1c56bfc8045c96babff6c7e",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/Azure/go-ansiterm",
-        "version": "19f72df4d05d31cbe1c56bfc8045c96babff6c7e"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/go-check/check",
-    "revision": "4ed411733c5785b40214c70bce814c3a3a689609",
-    "@id": "http:golang/github.com%2Fgo-check%2Fcheck/4ed411733c5785b40214c70bce814c3a3a689609",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/go-check/check:4ed411733c5785b40214c70bce814c3a3a689609",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/go-check/check",
-        "version": "4ed411733c5785b40214c70bce814c3a3a689609"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/philhofer/fwd",
-    "revision": "98c11a7a6ec829d672b03833c3d69a7fae1ca972",
-    "@id": "http:golang/github.com%2Fphilhofer%2Ffwd/98c11a7a6ec829d672b03833c3d69a7fae1ca972",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/philhofer/fwd:98c11a7a6ec829d672b03833c3d69a7fae1ca972",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/philhofer/fwd",
-        "version": "98c11a7a6ec829d672b03833c3d69a7fae1ca972"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/kr/pty",
-    "revision": "5cf931ef8f",
-    "@id": "http:golang/github.com%2Fkr%2Fpty/5cf931ef8f",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/kr/pty:5cf931ef8f",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/kr/pty",
-        "version": "5cf931ef8f"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/hashicorp/go-multierror",
-    "revision": "fcdddc395df1ddf4247c69bd436e84cfa0733f7e",
-    "@id": "http:golang/github.com%2Fhashicorp%2Fgo-multierror/fcdddc395df1ddf4247c69bd436e84cfa0733f7e",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/hashicorp/go-multierror:fcdddc395df1ddf4247c69bd436e84cfa0733f7e",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/hashicorp/go-multierror",
-        "version": "fcdddc395df1ddf4247c69bd436e84cfa0733f7e"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/tonistiigi/fifo",
-    "revision": "1405643975692217d6720f8b54aeee1bf2cd5cf4",
-    "@id": "http:golang/github.com%2Ftonistiigi%2Ffifo/1405643975692217d6720f8b54aeee1bf2cd5cf4",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/tonistiigi/fifo:1405643975692217d6720f8b54aeee1bf2cd5cf4",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/tonistiigi/fifo",
-        "version": "1405643975692217d6720f8b54aeee1bf2cd5cf4"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/docker/libtrust",
-    "revision": "9cbd2a1374f46905c68a4eb3694a130610adc62a",
-    "@id": "http:golang/github.com%2Fdocker%2Flibtrust/9cbd2a1374f46905c68a4eb3694a130610adc62a",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/docker/libtrust:9cbd2a1374f46905c68a4eb3694a130610adc62a",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/docker/libtrust",
-        "version": "9cbd2a1374f46905c68a4eb3694a130610adc62a"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "golang.org/x/text",
-    "revision": "f72d8390a633d5dfb0cc84043294db9f6c935756",
-    "@id": "http:golang/golang.org%2Fx%2Ftext/f72d8390a633d5dfb0cc84043294db9f6c935756",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "golang.org/x/text:f72d8390a633d5dfb0cc84043294db9f6c935756",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "golang.org/x/text",
-        "version": "f72d8390a633d5dfb0cc84043294db9f6c935756"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/syndtr/gocapability",
-    "revision": "2c00daeb6c3b45114c80ac44119e7b8801fdd852",
-    "@id": "http:golang/github.com%2Fsyndtr%2Fgocapability/2c00daeb6c3b45114c80ac44119e7b8801fdd852",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/syndtr/gocapability:2c00daeb6c3b45114c80ac44119e7b8801fdd852",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/syndtr/gocapability",
-        "version": "2c00daeb6c3b45114c80ac44119e7b8801fdd852"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/imdario/mergo",
-    "revision": "0.2.1",
-    "@id": "http:golang/github.com%2Fimdario%2Fmergo/0.2.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/imdario/mergo:0.2.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/imdario/mergo",
-        "version": "0.2.1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/docker/distribution",
-    "revision": "edc3ab29cdff8694dd6feb85cfeb4b5f1b38ed9c",
-    "@id": "http:golang/github.com%2Fdocker%2Fdistribution/edc3ab29cdff8694dd6feb85cfeb4b5f1b38ed9c",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/docker/distribution:edc3ab29cdff8694dd6feb85cfeb4b5f1b38ed9c",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/docker/distribution",
-        "version": "edc3ab29cdff8694dd6feb85cfeb4b5f1b38ed9c"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/opencontainers/selinux",
-    "revision": "v1.0.0-rc1",
-    "@id": "http:golang/github.com%2Fopencontainers%2Fselinux/v1.0.0-rc1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/opencontainers/selinux:v1.0.0-rc1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/opencontainers/selinux",
-        "version": "v1.0.0-rc1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/containerd/continuity",
-    "revision": "22694c680ee48fb8f50015b44618517e2bde77e8",
-    "@id": "http:golang/github.com%2Fcontainerd%2Fcontinuity/22694c680ee48fb8f50015b44618517e2bde77e8",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/containerd/continuity:22694c680ee48fb8f50015b44618517e2bde77e8",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/containerd/continuity",
-        "version": "22694c680ee48fb8f50015b44618517e2bde77e8"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/Graylog2/go-gelf",
-    "revision": "7029da823dad4ef3a876df61065156acb703b2ea",
-    "@id": "http:golang/github.com%2FGraylog2%2Fgo-gelf/7029da823dad4ef3a876df61065156acb703b2ea",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/Graylog2/go-gelf:7029da823dad4ef3a876df61065156acb703b2ea",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/Graylog2/go-gelf",
-        "version": "7029da823dad4ef3a876df61065156acb703b2ea"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/docker/go-events",
-    "revision": "9461782956ad83b30282bf90e31fa6a70c255ba9",
-    "@id": "http:golang/github.com%2Fdocker%2Fgo-events/9461782956ad83b30282bf90e31fa6a70c255ba9",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/docker/go-events:9461782956ad83b30282bf90e31fa6a70c255ba9",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/docker/go-events",
-        "version": "9461782956ad83b30282bf90e31fa6a70c255ba9"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/gorilla/context",
-    "revision": "v1.1",
-    "@id": "http:golang/github.com%2Fgorilla%2Fcontext/v1.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/gorilla/context:v1.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/gorilla/context",
-        "version": "v1.1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/go-ini/ini",
-    "revision": "060d7da055ba6ec5ea7a31f116332fe5efa04ce0",
-    "@id": "http:golang/github.com%2Fgo-ini%2Fini/060d7da055ba6ec5ea7a31f116332fe5efa04ce0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/go-ini/ini:060d7da055ba6ec5ea7a31f116332fe5efa04ce0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/go-ini/ini",
-        "version": "060d7da055ba6ec5ea7a31f116332fe5efa04ce0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/godbus/dbus",
-    "revision": "v4.0.0",
-    "@id": "http:golang/github.com%2Fgodbus%2Fdbus/v4.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/godbus/dbus:v4.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/godbus/dbus",
-        "version": "v4.0.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/vbatts/tar-split",
-    "revision": "v0.10.1",
-    "@id": "http:golang/github.com%2Fvbatts%2Ftar-split/v0.10.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/vbatts/tar-split:v0.10.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/vbatts/tar-split",
-        "version": "v0.10.1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "google.golang.org/genproto",
-    "revision": "d80a6e20e776b0b17a324d0ba1ab50a39c8e8944",
-    "@id": "http:golang/google.golang.org%2Fgenproto/d80a6e20e776b0b17a324d0ba1ab50a39c8e8944",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "google.golang.org/genproto:d80a6e20e776b0b17a324d0ba1ab50a39c8e8944",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "google.golang.org/genproto",
-        "version": "d80a6e20e776b0b17a324d0ba1ab50a39c8e8944"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/hashicorp/golang-lru",
-    "revision": "a0d98a5f288019575c6d1f4bb1573fef2d1fcdc4",
-    "@id": "http:golang/github.com%2Fhashicorp%2Fgolang-lru/a0d98a5f288019575c6d1f4bb1573fef2d1fcdc4",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/hashicorp/golang-lru:a0d98a5f288019575c6d1f4bb1573fef2d1fcdc4",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/hashicorp/golang-lru",
-        "version": "a0d98a5f288019575c6d1f4bb1573fef2d1fcdc4"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/beorn7/perks",
-    "revision": "4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9",
-    "@id": "http:golang/github.com%2Fbeorn7%2Fperks/4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/beorn7/perks:4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/beorn7/perks",
-        "version": "4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "github.com/gorilla/mux",
-    "revision": "v1.1",
-    "@id": "http:golang/github.com%2Fgorilla%2Fmux/v1.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "golang",
-      "externalId": "github.com/gorilla/mux:v1.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "golang",
-          "separator": ":"
-        },
-        "name": "github.com/gorilla/mux",
-        "version": "v1.1"
+        "pieces": [
+          "github.com/opencontainers/runtime-spec",
+          "v1.0.0"
+        ]
       }
     },
     "relationship": []
@@ -2304,46 +527,682 @@
           "name": "golang",
           "separator": ":"
         },
-        "name": "github.com/gogo/protobuf",
-        "version": "v0.4"
+        "pieces": [
+          "github.com/gogo/protobuf",
+          "v0.4"
+        ]
       }
     },
     "relationship": []
   },
   {
-    "name": "github.com/googleapis/gax-go",
-    "revision": "da06d194a00e19ce00d9011a13931c3f6f6887c7",
-    "@id": "http:golang/github.com%2Fgoogleapis%2Fgax-go/da06d194a00e19ce00d9011a13931c3f6f6887c7",
+    "name": "github.com/Microsoft/go-winio",
+    "revision": "v0.4.5",
+    "@id": "http:golang/github.com%2FMicrosoft%2Fgo-winio/v0.4.5",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "golang",
-      "externalId": "github.com/googleapis/gax-go:da06d194a00e19ce00d9011a13931c3f6f6887c7",
+      "externalId": "github.com/Microsoft/go-winio:v0.4.5",
       "externalIdMetaData": {
         "forge": {
           "name": "golang",
           "separator": ":"
         },
-        "name": "github.com/googleapis/gax-go",
-        "version": "da06d194a00e19ce00d9011a13931c3f6f6887c7"
+        "pieces": [
+          "github.com/Microsoft/go-winio",
+          "v0.4.5"
+        ]
       }
     },
     "relationship": []
   },
   {
-    "name": "google.golang.org/api",
-    "revision": "3cc2e591b550923a2c5f0ab5a803feda924d5823",
-    "@id": "http:golang/google.golang.org%2Fapi/3cc2e591b550923a2c5f0ab5a803feda924d5823",
+    "name": "github.com/tinylib/msgp",
+    "revision": "75ee40d2601edf122ef667e2a07d600d4c44490c",
+    "@id": "http:golang/github.com%2Ftinylib%2Fmsgp/75ee40d2601edf122ef667e2a07d600d4c44490c",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "golang",
-      "externalId": "google.golang.org/api:3cc2e591b550923a2c5f0ab5a803feda924d5823",
+      "externalId": "github.com/tinylib/msgp:75ee40d2601edf122ef667e2a07d600d4c44490c",
       "externalIdMetaData": {
         "forge": {
           "name": "golang",
           "separator": ":"
         },
-        "name": "google.golang.org/api",
-        "version": "3cc2e591b550923a2c5f0ab5a803feda924d5823"
+        "pieces": [
+          "github.com/tinylib/msgp",
+          "75ee40d2601edf122ef667e2a07d600d4c44490c"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/hashicorp/go-immutable-radix",
+    "revision": "8e8ed81f8f0bf1bdd829593fdd5c29922c1ea990",
+    "@id": "http:golang/github.com%2Fhashicorp%2Fgo-immutable-radix/8e8ed81f8f0bf1bdd829593fdd5c29922c1ea990",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/hashicorp/go-immutable-radix:8e8ed81f8f0bf1bdd829593fdd5c29922c1ea990",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/hashicorp/go-immutable-radix",
+          "8e8ed81f8f0bf1bdd829593fdd5c29922c1ea990"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/docker/libkv",
+    "revision": "1d8431073ae03cdaedb198a89722f3aab6d418ef",
+    "@id": "http:golang/github.com%2Fdocker%2Flibkv/1d8431073ae03cdaedb198a89722f3aab6d418ef",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/docker/libkv:1d8431073ae03cdaedb198a89722f3aab6d418ef",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/docker/libkv",
+          "1d8431073ae03cdaedb198a89722f3aab6d418ef"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/go-ini/ini",
+    "revision": "060d7da055ba6ec5ea7a31f116332fe5efa04ce0",
+    "@id": "http:golang/github.com%2Fgo-ini%2Fini/060d7da055ba6ec5ea7a31f116332fe5efa04ce0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/go-ini/ini:060d7da055ba6ec5ea7a31f116332fe5efa04ce0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/go-ini/ini",
+          "060d7da055ba6ec5ea7a31f116332fe5efa04ce0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "cloud.google.com/go",
+    "revision": "9d965e63e8cceb1b5d7977a202f0fcb8866d6525",
+    "@id": "http:golang/cloud.google.com%2Fgo/9d965e63e8cceb1b5d7977a202f0fcb8866d6525",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "cloud.google.com/go:9d965e63e8cceb1b5d7977a202f0fcb8866d6525",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "cloud.google.com/go",
+          "9d965e63e8cceb1b5d7977a202f0fcb8866d6525"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/armon/go-metrics",
+    "revision": "eb0af217e5e9747e41dd5303755356b62d28e3ec",
+    "@id": "http:golang/github.com%2Farmon%2Fgo-metrics/eb0af217e5e9747e41dd5303755356b62d28e3ec",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/armon/go-metrics:eb0af217e5e9747e41dd5303755356b62d28e3ec",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/armon/go-metrics",
+          "eb0af217e5e9747e41dd5303755356b62d28e3ec"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/vishvananda/netlink",
+    "revision": "bd6d5de5ccef2d66b0a26177928d0d8895d7f969",
+    "@id": "http:golang/github.com%2Fvishvananda%2Fnetlink/bd6d5de5ccef2d66b0a26177928d0d8895d7f969",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/vishvananda/netlink:bd6d5de5ccef2d66b0a26177928d0d8895d7f969",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/vishvananda/netlink",
+          "bd6d5de5ccef2d66b0a26177928d0d8895d7f969"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "golang.org/x/oauth2",
+    "revision": "96382aa079b72d8c014eb0c50f6c223d1e6a2de0",
+    "@id": "http:golang/golang.org%2Fx%2Foauth2/96382aa079b72d8c014eb0c50f6c223d1e6a2de0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "golang.org/x/oauth2:96382aa079b72d8c014eb0c50f6c223d1e6a2de0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "golang.org/x/oauth2",
+          "96382aa079b72d8c014eb0c50f6c223d1e6a2de0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/gorilla/context",
+    "revision": "v1.1",
+    "@id": "http:golang/github.com%2Fgorilla%2Fcontext/v1.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/gorilla/context:v1.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/gorilla/context",
+          "v1.1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/vbatts/tar-split",
+    "revision": "v0.10.1",
+    "@id": "http:golang/github.com%2Fvbatts%2Ftar-split/v0.10.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/vbatts/tar-split:v0.10.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/vbatts/tar-split",
+          "v0.10.1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/ugorji/go",
+    "revision": "f1f1a805ed361a0e078bb537e4ea78cd37dcf065",
+    "@id": "http:golang/github.com%2Fugorji%2Fgo/f1f1a805ed361a0e078bb537e4ea78cd37dcf065",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/ugorji/go:f1f1a805ed361a0e078bb537e4ea78cd37dcf065",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/ugorji/go",
+          "f1f1a805ed361a0e078bb537e4ea78cd37dcf065"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/docker/distribution",
+    "revision": "edc3ab29cdff8694dd6feb85cfeb4b5f1b38ed9c",
+    "@id": "http:golang/github.com%2Fdocker%2Fdistribution/edc3ab29cdff8694dd6feb85cfeb4b5f1b38ed9c",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/docker/distribution:edc3ab29cdff8694dd6feb85cfeb4b5f1b38ed9c",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/docker/distribution",
+          "edc3ab29cdff8694dd6feb85cfeb4b5f1b38ed9c"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/coreos/go-semver",
+    "revision": "v0.2.0",
+    "@id": "http:golang/github.com%2Fcoreos%2Fgo-semver/v0.2.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/coreos/go-semver:v0.2.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/coreos/go-semver",
+          "v0.2.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/vdemeester/shakers",
+    "revision": "24d7f1d6a71aa5d9cbe7390e4afb66b7eef9e1b3",
+    "@id": "http:golang/github.com%2Fvdemeester%2Fshakers/24d7f1d6a71aa5d9cbe7390e4afb66b7eef9e1b3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/vdemeester/shakers:24d7f1d6a71aa5d9cbe7390e4afb66b7eef9e1b3",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/vdemeester/shakers",
+          "24d7f1d6a71aa5d9cbe7390e4afb66b7eef9e1b3"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "google.golang.org/genproto",
+    "revision": "d80a6e20e776b0b17a324d0ba1ab50a39c8e8944",
+    "@id": "http:golang/google.golang.org%2Fgenproto/d80a6e20e776b0b17a324d0ba1ab50a39c8e8944",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "google.golang.org/genproto:d80a6e20e776b0b17a324d0ba1ab50a39c8e8944",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "google.golang.org/genproto",
+          "d80a6e20e776b0b17a324d0ba1ab50a39c8e8944"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/docker/go-connections",
+    "revision": "3ede32e2033de7505e6500d6c868c2b9ed9f169d",
+    "@id": "http:golang/github.com%2Fdocker%2Fgo-connections/3ede32e2033de7505e6500d6c868c2b9ed9f169d",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/docker/go-connections:3ede32e2033de7505e6500d6c868c2b9ed9f169d",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/docker/go-connections",
+          "3ede32e2033de7505e6500d6c868c2b9ed9f169d"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/godbus/dbus",
+    "revision": "v4.0.0",
+    "@id": "http:golang/github.com%2Fgodbus%2Fdbus/v4.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/godbus/dbus:v4.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/godbus/dbus",
+          "v4.0.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/opencontainers/runc",
+    "revision": "1c81e2a794c6e26a4c650142ae8893c47f619764",
+    "@id": "http:golang/github.com%2Fopencontainers%2Frunc/1c81e2a794c6e26a4c650142ae8893c47f619764",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/opencontainers/runc:1c81e2a794c6e26a4c650142ae8893c47f619764",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/opencontainers/runc",
+          "1c81e2a794c6e26a4c650142ae8893c47f619764"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/philhofer/fwd",
+    "revision": "98c11a7a6ec829d672b03833c3d69a7fae1ca972",
+    "@id": "http:golang/github.com%2Fphilhofer%2Ffwd/98c11a7a6ec829d672b03833c3d69a7fae1ca972",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/philhofer/fwd:98c11a7a6ec829d672b03833c3d69a7fae1ca972",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/philhofer/fwd",
+          "98c11a7a6ec829d672b03833c3d69a7fae1ca972"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/google/certificate-transparency",
+    "revision": "d90e65c3a07988180c5b1ece71791c0b6506826e",
+    "@id": "http:golang/github.com%2Fgoogle%2Fcertificate-transparency/d90e65c3a07988180c5b1ece71791c0b6506826e",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/google/certificate-transparency:d90e65c3a07988180c5b1ece71791c0b6506826e",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/google/certificate-transparency",
+          "d90e65c3a07988180c5b1ece71791c0b6506826e"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/tchap/go-patricia",
+    "revision": "v2.2.6",
+    "@id": "http:golang/github.com%2Ftchap%2Fgo-patricia/v2.2.6",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/tchap/go-patricia:v2.2.6",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/tchap/go-patricia",
+          "v2.2.6"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "golang.org/x/text",
+    "revision": "f72d8390a633d5dfb0cc84043294db9f6c935756",
+    "@id": "http:golang/golang.org%2Fx%2Ftext/f72d8390a633d5dfb0cc84043294db9f6c935756",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "golang.org/x/text:f72d8390a633d5dfb0cc84043294db9f6c935756",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "golang.org/x/text",
+          "f72d8390a633d5dfb0cc84043294db9f6c935756"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "golang.org/x/sync",
+    "revision": "de49d9dcd27d4f764488181bea099dfe6179bcf0",
+    "@id": "http:golang/golang.org%2Fx%2Fsync/de49d9dcd27d4f764488181bea099dfe6179bcf0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "golang.org/x/sync:de49d9dcd27d4f764488181bea099dfe6179bcf0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "golang.org/x/sync",
+          "de49d9dcd27d4f764488181bea099dfe6179bcf0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/gorilla/mux",
+    "revision": "v1.1",
+    "@id": "http:golang/github.com%2Fgorilla%2Fmux/v1.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/gorilla/mux:v1.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/gorilla/mux",
+          "v1.1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/Azure/go-ansiterm",
+    "revision": "19f72df4d05d31cbe1c56bfc8045c96babff6c7e",
+    "@id": "http:golang/github.com%2FAzure%2Fgo-ansiterm/19f72df4d05d31cbe1c56bfc8045c96babff6c7e",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/Azure/go-ansiterm:19f72df4d05d31cbe1c56bfc8045c96babff6c7e",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/Azure/go-ansiterm",
+          "19f72df4d05d31cbe1c56bfc8045c96babff6c7e"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/vishvananda/netns",
+    "revision": "604eaf189ee867d8c147fafc28def2394e878d25",
+    "@id": "http:golang/github.com%2Fvishvananda%2Fnetns/604eaf189ee867d8c147fafc28def2394e878d25",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/vishvananda/netns:604eaf189ee867d8c147fafc28def2394e878d25",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/vishvananda/netns",
+          "604eaf189ee867d8c147fafc28def2394e878d25"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/RackSec/srslog",
+    "revision": "456df3a81436d29ba874f3590eeeee25d666f8a5",
+    "@id": "http:golang/github.com%2FRackSec%2Fsrslog/456df3a81436d29ba874f3590eeeee25d666f8a5",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/RackSec/srslog:456df3a81436d29ba874f3590eeeee25d666f8a5",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/RackSec/srslog",
+          "456df3a81436d29ba874f3590eeeee25d666f8a5"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/stevvooe/continuity",
+    "revision": "cd7a8e21e2b6f84799f5dd4b65faf49c8d3ee02d",
+    "@id": "http:golang/github.com%2Fstevvooe%2Fcontinuity/cd7a8e21e2b6f84799f5dd4b65faf49c8d3ee02d",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/stevvooe/continuity:cd7a8e21e2b6f84799f5dd4b65faf49c8d3ee02d",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/stevvooe/continuity",
+          "cd7a8e21e2b6f84799f5dd4b65faf49c8d3ee02d"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/opencontainers/selinux",
+    "revision": "v1.0.0-rc1",
+    "@id": "http:golang/github.com%2Fopencontainers%2Fselinux/v1.0.0-rc1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/opencontainers/selinux:v1.0.0-rc1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/opencontainers/selinux",
+          "v1.0.0-rc1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/go-check/check",
+    "revision": "4ed411733c5785b40214c70bce814c3a3a689609",
+    "@id": "http:golang/github.com%2Fgo-check%2Fcheck/4ed411733c5785b40214c70bce814c3a3a689609",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/go-check/check:4ed411733c5785b40214c70bce814c3a3a689609",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/go-check/check",
+          "4ed411733c5785b40214c70bce814c3a3a689609"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/hashicorp/go-sockaddr",
+    "revision": "acd314c5781ea706c710d9ea70069fd2e110d61d",
+    "@id": "http:golang/github.com%2Fhashicorp%2Fgo-sockaddr/acd314c5781ea706c710d9ea70069fd2e110d61d",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/hashicorp/go-sockaddr:acd314c5781ea706c710d9ea70069fd2e110d61d",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/hashicorp/go-sockaddr",
+          "acd314c5781ea706c710d9ea70069fd2e110d61d"
+        ]
       }
     },
     "relationship": []
@@ -2361,65 +1220,787 @@
           "name": "golang",
           "separator": ":"
         },
-        "name": "github.com/deckarep/golang-set",
-        "version": "ef32fa3046d9f249d399f98ebaf9be944430fd1d"
+        "pieces": [
+          "github.com/deckarep/golang-set",
+          "ef32fa3046d9f249d399f98ebaf9be944430fd1d"
+        ]
       }
     },
     "relationship": []
   },
   {
-    "name": "google.golang.org/grpc",
-    "revision": "v1.3.0",
-    "@id": "http:golang/google.golang.org%2Fgrpc/v1.3.0",
+    "name": "golang.org/x/crypto",
+    "revision": "558b6879de74bc843225cde5686419267ff707ca",
+    "@id": "http:golang/golang.org%2Fx%2Fcrypto/558b6879de74bc843225cde5686419267ff707ca",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "golang",
-      "externalId": "google.golang.org/grpc:v1.3.0",
+      "externalId": "golang.org/x/crypto:558b6879de74bc843225cde5686419267ff707ca",
       "externalIdMetaData": {
         "forge": {
           "name": "golang",
           "separator": ":"
         },
-        "name": "google.golang.org/grpc",
-        "version": "v1.3.0"
+        "pieces": [
+          "golang.org/x/crypto",
+          "558b6879de74bc843225cde5686419267ff707ca"
+        ]
       }
     },
     "relationship": []
   },
   {
-    "name": "github.com/hashicorp/memberlist",
-    "revision": "v0.1.0",
-    "@id": "http:golang/github.com%2Fhashicorp%2Fmemberlist/v0.1.0",
+    "name": "github.com/kr/pty",
+    "revision": "5cf931ef8f",
+    "@id": "http:golang/github.com%2Fkr%2Fpty/5cf931ef8f",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "golang",
-      "externalId": "github.com/hashicorp/memberlist:v0.1.0",
+      "externalId": "github.com/kr/pty:5cf931ef8f",
       "externalIdMetaData": {
         "forge": {
           "name": "golang",
           "separator": ":"
         },
-        "name": "github.com/hashicorp/memberlist",
-        "version": "v0.1.0"
+        "pieces": [
+          "github.com/kr/pty",
+          "5cf931ef8f"
+        ]
       }
     },
     "relationship": []
   },
   {
-    "name": "github.com/hashicorp/go-msgpack",
-    "revision": "71c2886f5a673a35f909803f38ece5810165097b",
-    "@id": "http:golang/github.com%2Fhashicorp%2Fgo-msgpack/71c2886f5a673a35f909803f38ece5810165097b",
+    "name": "github.com/fsnotify/fsnotify",
+    "revision": "v1.4.2",
+    "@id": "http:golang/github.com%2Ffsnotify%2Ffsnotify/v1.4.2",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "golang",
-      "externalId": "github.com/hashicorp/go-msgpack:71c2886f5a673a35f909803f38ece5810165097b",
+      "externalId": "github.com/fsnotify/fsnotify:v1.4.2",
       "externalIdMetaData": {
         "forge": {
           "name": "golang",
           "separator": ":"
         },
-        "name": "github.com/hashicorp/go-msgpack",
-        "version": "71c2886f5a673a35f909803f38ece5810165097b"
+        "pieces": [
+          "github.com/fsnotify/fsnotify",
+          "v1.4.2"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/matttproud/golang_protobuf_extensions",
+    "revision": "v1.0.0",
+    "@id": "http:golang/github.com%2Fmatttproud%2Fgolang_protobuf_extensions/v1.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/matttproud/golang_protobuf_extensions:v1.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/matttproud/golang_protobuf_extensions",
+          "v1.0.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/miekg/dns",
+    "revision": "75e6e86cc601825c5dbcd4e0c209eab180997cd7",
+    "@id": "http:golang/github.com%2Fmiekg%2Fdns/75e6e86cc601825c5dbcd4e0c209eab180997cd7",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/miekg/dns:75e6e86cc601825c5dbcd4e0c209eab180997cd7",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/miekg/dns",
+          "75e6e86cc601825c5dbcd4e0c209eab180997cd7"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/beorn7/perks",
+    "revision": "4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9",
+    "@id": "http:golang/github.com%2Fbeorn7%2Fperks/4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/beorn7/perks:4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/beorn7/perks",
+          "4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/tonistiigi/fsutil",
+    "revision": "0ac4c11b053b9c5c7c47558f81f96c7100ce50fb",
+    "@id": "http:golang/github.com%2Ftonistiigi%2Ffsutil/0ac4c11b053b9c5c7c47558f81f96c7100ce50fb",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/tonistiigi/fsutil:0ac4c11b053b9c5c7c47558f81f96c7100ce50fb",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/tonistiigi/fsutil",
+          "0ac4c11b053b9c5c7c47558f81f96c7100ce50fb"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/imdario/mergo",
+    "revision": "0.2.1",
+    "@id": "http:golang/github.com%2Fimdario%2Fmergo/0.2.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/imdario/mergo:0.2.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/imdario/mergo",
+          "0.2.1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/hashicorp/consul",
+    "revision": "v0.5.2",
+    "@id": "http:golang/github.com%2Fhashicorp%2Fconsul/v0.5.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/hashicorp/consul:v0.5.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/hashicorp/consul",
+          "v0.5.2"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/cloudflare/cfssl",
+    "revision": "7fb22c8cba7ecaf98e4082d22d65800cf45e042a",
+    "@id": "http:golang/github.com%2Fcloudflare%2Fcfssl/7fb22c8cba7ecaf98e4082d22d65800cf45e042a",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/cloudflare/cfssl:7fb22c8cba7ecaf98e4082d22d65800cf45e042a",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/cloudflare/cfssl",
+          "7fb22c8cba7ecaf98e4082d22d65800cf45e042a"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/sirupsen/logrus",
+    "revision": "v1.0.3",
+    "@id": "http:golang/github.com%2Fsirupsen%2Flogrus/v1.0.3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/sirupsen/logrus:v1.0.3",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/sirupsen/logrus",
+          "v1.0.3"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "golang.org/x/net",
+    "revision": "7dcfb8076726a3fdd9353b6b8a1f1b6be6811bd6",
+    "@id": "http:golang/golang.org%2Fx%2Fnet/7dcfb8076726a3fdd9353b6b8a1f1b6be6811bd6",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "golang.org/x/net:7dcfb8076726a3fdd9353b6b8a1f1b6be6811bd6",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "golang.org/x/net",
+          "7dcfb8076726a3fdd9353b6b8a1f1b6be6811bd6"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/containerd/continuity",
+    "revision": "22694c680ee48fb8f50015b44618517e2bde77e8",
+    "@id": "http:golang/github.com%2Fcontainerd%2Fcontinuity/22694c680ee48fb8f50015b44618517e2bde77e8",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/containerd/continuity:22694c680ee48fb8f50015b44618517e2bde77e8",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/containerd/continuity",
+          "22694c680ee48fb8f50015b44618517e2bde77e8"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/prometheus/procfs",
+    "revision": "abf152e5f3e97f2fafac028d2cc06c1feb87ffa5",
+    "@id": "http:golang/github.com%2Fprometheus%2Fprocfs/abf152e5f3e97f2fafac028d2cc06c1feb87ffa5",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/prometheus/procfs:abf152e5f3e97f2fafac028d2cc06c1feb87ffa5",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/prometheus/procfs",
+          "abf152e5f3e97f2fafac028d2cc06c1feb87ffa5"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/jmespath/go-jmespath",
+    "revision": "0b12d6b521d83fc7f755e7cfc1b1fbdd35a01a74",
+    "@id": "http:golang/github.com%2Fjmespath%2Fgo-jmespath/0b12d6b521d83fc7f755e7cfc1b1fbdd35a01a74",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/jmespath/go-jmespath:0b12d6b521d83fc7f755e7cfc1b1fbdd35a01a74",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/jmespath/go-jmespath",
+          "0b12d6b521d83fc7f755e7cfc1b1fbdd35a01a74"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/docker/go-metrics",
+    "revision": "d466d4f6fd960e01820085bd7e1a24426ee7ef18",
+    "@id": "http:golang/github.com%2Fdocker%2Fgo-metrics/d466d4f6fd960e01820085bd7e1a24426ee7ef18",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/docker/go-metrics:d466d4f6fd960e01820085bd7e1a24426ee7ef18",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/docker/go-metrics",
+          "d466d4f6fd960e01820085bd7e1a24426ee7ef18"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/Nvveen/Gotty",
+    "revision": "a8b993ba6abdb0e0c12b0125c603323a71c7790c",
+    "@id": "http:golang/github.com%2FNvveen%2FGotty/a8b993ba6abdb0e0c12b0125c603323a71c7790c",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/Nvveen/Gotty:a8b993ba6abdb0e0c12b0125c603323a71c7790c",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/Nvveen/Gotty",
+          "a8b993ba6abdb0e0c12b0125c603323a71c7790c"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/prometheus/client_golang",
+    "revision": "52437c81da6b127a9925d17eb3a382a2e5fd395e",
+    "@id": "http:golang/github.com%2Fprometheus%2Fclient_golang/52437c81da6b127a9925d17eb3a382a2e5fd395e",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/prometheus/client_golang:52437c81da6b127a9925d17eb3a382a2e5fd395e",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/prometheus/client_golang",
+          "52437c81da6b127a9925d17eb3a382a2e5fd395e"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/googleapis/gax-go",
+    "revision": "da06d194a00e19ce00d9011a13931c3f6f6887c7",
+    "@id": "http:golang/github.com%2Fgoogleapis%2Fgax-go/da06d194a00e19ce00d9011a13931c3f6f6887c7",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/googleapis/gax-go:da06d194a00e19ce00d9011a13931c3f6f6887c7",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/googleapis/gax-go",
+          "da06d194a00e19ce00d9011a13931c3f6f6887c7"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/spf13/pflag",
+    "revision": "9ff6c6923cfffbcd502984b8e0c80539a94968b7",
+    "@id": "http:golang/github.com%2Fspf13%2Fpflag/9ff6c6923cfffbcd502984b8e0c80539a94968b7",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/spf13/pflag:9ff6c6923cfffbcd502984b8e0c80539a94968b7",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/spf13/pflag",
+          "9ff6c6923cfffbcd502984b8e0c80539a94968b7"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/coreos/etcd",
+    "revision": "v3.2.1",
+    "@id": "http:golang/github.com%2Fcoreos%2Fetcd/v3.2.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/coreos/etcd:v3.2.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/coreos/etcd",
+          "v3.2.1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/inconshreveable/mousetrap",
+    "revision": "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75",
+    "@id": "http:golang/github.com%2Finconshreveable%2Fmousetrap/76626ae9c91c4f2a10f34cad8ce83ea42c93bb75",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/inconshreveable/mousetrap:76626ae9c91c4f2a10f34cad8ce83ea42c93bb75",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/inconshreveable/mousetrap",
+          "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/stretchr/testify",
+    "revision": "4d4bfba8f1d1027c4fdbe371823030df51419987",
+    "@id": "http:golang/github.com%2Fstretchr%2Ftestify/4d4bfba8f1d1027c4fdbe371823030df51419987",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/stretchr/testify:4d4bfba8f1d1027c4fdbe371823030df51419987",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/stretchr/testify",
+          "4d4bfba8f1d1027c4fdbe371823030df51419987"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "golang.org/x/time",
+    "revision": "a4bde12657593d5e90d0533a3e4fd95e635124cb",
+    "@id": "http:golang/golang.org%2Fx%2Ftime/a4bde12657593d5e90d0533a3e4fd95e635124cb",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "golang.org/x/time:a4bde12657593d5e90d0533a3e4fd95e635124cb",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "golang.org/x/time",
+          "a4bde12657593d5e90d0533a3e4fd95e635124cb"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "golang.org/x/sys",
+    "revision": "07c182904dbd53199946ba614a412c61d3c548f5",
+    "@id": "http:golang/golang.org%2Fx%2Fsys/07c182904dbd53199946ba614a412c61d3c548f5",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "golang.org/x/sys:07c182904dbd53199946ba614a412c61d3c548f5",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "golang.org/x/sys",
+          "07c182904dbd53199946ba614a412c61d3c548f5"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/seccomp/libseccomp-golang",
+    "revision": "32f571b70023028bd57d9288c20efbcb237f3ce0",
+    "@id": "http:golang/github.com%2Fseccomp%2Flibseccomp-golang/32f571b70023028bd57d9288c20efbcb237f3ce0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/seccomp/libseccomp-golang:32f571b70023028bd57d9288c20efbcb237f3ce0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/seccomp/libseccomp-golang",
+          "32f571b70023028bd57d9288c20efbcb237f3ce0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/docker/go-events",
+    "revision": "9461782956ad83b30282bf90e31fa6a70c255ba9",
+    "@id": "http:golang/github.com%2Fdocker%2Fgo-events/9461782956ad83b30282bf90e31fa6a70c255ba9",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/docker/go-events:9461782956ad83b30282bf90e31fa6a70c255ba9",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/docker/go-events",
+          "9461782956ad83b30282bf90e31fa6a70c255ba9"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/armon/go-radix",
+    "revision": "e39d623f12e8e41c7b5529e9a9dd67a1e2261f80",
+    "@id": "http:golang/github.com%2Farmon%2Fgo-radix/e39d623f12e8e41c7b5529e9a9dd67a1e2261f80",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/armon/go-radix:e39d623f12e8e41c7b5529e9a9dd67a1e2261f80",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/armon/go-radix",
+          "e39d623f12e8e41c7b5529e9a9dd67a1e2261f80"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/prometheus/common",
+    "revision": "ebdfc6da46522d58825777cf1f90490a5b1ef1d8",
+    "@id": "http:golang/github.com%2Fprometheus%2Fcommon/ebdfc6da46522d58825777cf1f90490a5b1ef1d8",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/prometheus/common:ebdfc6da46522d58825777cf1f90490a5b1ef1d8",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/prometheus/common",
+          "ebdfc6da46522d58825777cf1f90490a5b1ef1d8"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/opencontainers/image-spec",
+    "revision": "372ad780f63454fbbbbcc7cf80e5b90245c13e13",
+    "@id": "http:golang/github.com%2Fopencontainers%2Fimage-spec/372ad780f63454fbbbbcc7cf80e5b90245c13e13",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/opencontainers/image-spec:372ad780f63454fbbbbcc7cf80e5b90245c13e13",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/opencontainers/image-spec",
+          "372ad780f63454fbbbbcc7cf80e5b90245c13e13"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/samuel/go-zookeeper",
+    "revision": "d0e0d8e11f318e000a8cc434616d69e329edc374",
+    "@id": "http:golang/github.com%2Fsamuel%2Fgo-zookeeper/d0e0d8e11f318e000a8cc434616d69e329edc374",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/samuel/go-zookeeper:d0e0d8e11f318e000a8cc434616d69e329edc374",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/samuel/go-zookeeper",
+          "d0e0d8e11f318e000a8cc434616d69e329edc374"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/sean-/seed",
+    "revision": "e2103e2c35297fb7e17febb81e49b312087a2372",
+    "@id": "http:golang/github.com%2Fsean-%2Fseed/e2103e2c35297fb7e17febb81e49b312087a2372",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/sean-/seed:e2103e2c35297fb7e17febb81e49b312087a2372",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/sean-/seed",
+          "e2103e2c35297fb7e17febb81e49b312087a2372"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "google.golang.org/api",
+    "revision": "3cc2e591b550923a2c5f0ab5a803feda924d5823",
+    "@id": "http:golang/google.golang.org%2Fapi/3cc2e591b550923a2c5f0ab5a803feda924d5823",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "google.golang.org/api:3cc2e591b550923a2c5f0ab5a803feda924d5823",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "google.golang.org/api",
+          "3cc2e591b550923a2c5f0ab5a803feda924d5823"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/fluent/fluent-logger-golang",
+    "revision": "v1.2.1",
+    "@id": "http:golang/github.com%2Ffluent%2Ffluent-logger-golang/v1.2.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/fluent/fluent-logger-golang:v1.2.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/fluent/fluent-logger-golang",
+          "v1.2.1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/hashicorp/go-memdb",
+    "revision": "cb9a474f84cc5e41b273b20c6927680b2a8776ad",
+    "@id": "http:golang/github.com%2Fhashicorp%2Fgo-memdb/cb9a474f84cc5e41b273b20c6927680b2a8776ad",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/hashicorp/go-memdb:cb9a474f84cc5e41b273b20c6927680b2a8776ad",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/hashicorp/go-memdb",
+          "cb9a474f84cc5e41b273b20c6927680b2a8776ad"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/pivotal-golang/clock",
+    "revision": "3fd3c1944c59d9742e1cd333672181cd1a6f9fa0",
+    "@id": "http:golang/github.com%2Fpivotal-golang%2Fclock/3fd3c1944c59d9742e1cd333672181cd1a6f9fa0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/pivotal-golang/clock:3fd3c1944c59d9742e1cd333672181cd1a6f9fa0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/pivotal-golang/clock",
+          "3fd3c1944c59d9742e1cd333672181cd1a6f9fa0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/pborman/uuid",
+    "revision": "v1.0",
+    "@id": "http:golang/github.com%2Fpborman%2Fuuid/v1.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/pborman/uuid:v1.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/pborman/uuid",
+          "v1.0"
+        ]
       }
     },
     "relationship": []
@@ -2437,8 +2018,577 @@
           "name": "golang",
           "separator": ":"
         },
-        "name": "github.com/aws/aws-sdk-go",
-        "version": "v1.4.22"
+        "pieces": [
+          "github.com/aws/aws-sdk-go",
+          "v1.4.22"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/hashicorp/go-msgpack",
+    "revision": "71c2886f5a673a35f909803f38ece5810165097b",
+    "@id": "http:golang/github.com%2Fhashicorp%2Fgo-msgpack/71c2886f5a673a35f909803f38ece5810165097b",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/hashicorp/go-msgpack:71c2886f5a673a35f909803f38ece5810165097b",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/hashicorp/go-msgpack",
+          "71c2886f5a673a35f909803f38ece5810165097b"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/hashicorp/golang-lru",
+    "revision": "a0d98a5f288019575c6d1f4bb1573fef2d1fcdc4",
+    "@id": "http:golang/github.com%2Fhashicorp%2Fgolang-lru/a0d98a5f288019575c6d1f4bb1573fef2d1fcdc4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/hashicorp/golang-lru:a0d98a5f288019575c6d1f4bb1573fef2d1fcdc4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/hashicorp/golang-lru",
+          "a0d98a5f288019575c6d1f4bb1573fef2d1fcdc4"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/moby/buildkit",
+    "revision": "da2b9dc7dab99e824b2b1067ad7d0523e32dd2d9",
+    "@id": "http:golang/github.com%2Fmoby%2Fbuildkit/da2b9dc7dab99e824b2b1067ad7d0523e32dd2d9",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/moby/buildkit:da2b9dc7dab99e824b2b1067ad7d0523e32dd2d9",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/moby/buildkit",
+          "da2b9dc7dab99e824b2b1067ad7d0523e32dd2d9"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/davecgh/go-spew",
+    "revision": "346938d642f2ec3594ed81d874461961cd0faa76",
+    "@id": "http:golang/github.com%2Fdavecgh%2Fgo-spew/346938d642f2ec3594ed81d874461961cd0faa76",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/davecgh/go-spew:346938d642f2ec3594ed81d874461961cd0faa76",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/davecgh/go-spew",
+          "346938d642f2ec3594ed81d874461961cd0faa76"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "google.golang.org/grpc",
+    "revision": "v1.3.0",
+    "@id": "http:golang/google.golang.org%2Fgrpc/v1.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "google.golang.org/grpc:v1.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "google.golang.org/grpc",
+          "v1.3.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/bsphere/le_go",
+    "revision": "7a984a84b5492ae539b79b62fb4a10afc63c7bcf",
+    "@id": "http:golang/github.com%2Fbsphere%2Fle_go/7a984a84b5492ae539b79b62fb4a10afc63c7bcf",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/bsphere/le_go:7a984a84b5492ae539b79b62fb4a10afc63c7bcf",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/bsphere/le_go",
+          "7a984a84b5492ae539b79b62fb4a10afc63c7bcf"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/Graylog2/go-gelf",
+    "revision": "7029da823dad4ef3a876df61065156acb703b2ea",
+    "@id": "http:golang/github.com%2FGraylog2%2Fgo-gelf/7029da823dad4ef3a876df61065156acb703b2ea",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/Graylog2/go-gelf:7029da823dad4ef3a876df61065156acb703b2ea",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/Graylog2/go-gelf",
+          "7029da823dad4ef3a876df61065156acb703b2ea"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/coreos/go-systemd",
+    "revision": "v4",
+    "@id": "http:golang/github.com%2Fcoreos%2Fgo-systemd/v4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/coreos/go-systemd:v4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/coreos/go-systemd",
+          "v4"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/docker/libtrust",
+    "revision": "9cbd2a1374f46905c68a4eb3694a130610adc62a",
+    "@id": "http:golang/github.com%2Fdocker%2Flibtrust/9cbd2a1374f46905c68a4eb3694a130610adc62a",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/docker/libtrust:9cbd2a1374f46905c68a4eb3694a130610adc62a",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/docker/libtrust",
+          "9cbd2a1374f46905c68a4eb3694a130610adc62a"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/containerd/containerd",
+    "revision": "06b9cb35161009dcb7123345749fef02f7cea8e0",
+    "@id": "http:golang/github.com%2Fcontainerd%2Fcontainerd/06b9cb35161009dcb7123345749fef02f7cea8e0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/containerd/containerd:06b9cb35161009dcb7123345749fef02f7cea8e0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/containerd/containerd",
+          "06b9cb35161009dcb7123345749fef02f7cea8e0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/hashicorp/serf",
+    "revision": "598c54895cc5a7b1a24a398d635e8c0ea0959870",
+    "@id": "http:golang/github.com%2Fhashicorp%2Fserf/598c54895cc5a7b1a24a398d635e8c0ea0959870",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/hashicorp/serf:598c54895cc5a7b1a24a398d635e8c0ea0959870",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/hashicorp/serf",
+          "598c54895cc5a7b1a24a398d635e8c0ea0959870"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/pkg/errors",
+    "revision": "839d9e913e063e28dfd0e6c7b7512793e0a48be9",
+    "@id": "http:golang/github.com%2Fpkg%2Ferrors/839d9e913e063e28dfd0e6c7b7512793e0a48be9",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/pkg/errors:839d9e913e063e28dfd0e6c7b7512793e0a48be9",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/pkg/errors",
+          "839d9e913e063e28dfd0e6c7b7512793e0a48be9"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/tonistiigi/fifo",
+    "revision": "1405643975692217d6720f8b54aeee1bf2cd5cf4",
+    "@id": "http:golang/github.com%2Ftonistiigi%2Ffifo/1405643975692217d6720f8b54aeee1bf2cd5cf4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/tonistiigi/fifo:1405643975692217d6720f8b54aeee1bf2cd5cf4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/tonistiigi/fifo",
+          "1405643975692217d6720f8b54aeee1bf2cd5cf4"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/syndtr/gocapability",
+    "revision": "2c00daeb6c3b45114c80ac44119e7b8801fdd852",
+    "@id": "http:golang/github.com%2Fsyndtr%2Fgocapability/2c00daeb6c3b45114c80ac44119e7b8801fdd852",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/syndtr/gocapability:2c00daeb6c3b45114c80ac44119e7b8801fdd852",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/syndtr/gocapability",
+          "2c00daeb6c3b45114c80ac44119e7b8801fdd852"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/BurntSushi/toml",
+    "revision": "f706d00e3de6abe700c994cdd545a1a4915af060",
+    "@id": "http:golang/github.com%2FBurntSushi%2Ftoml/f706d00e3de6abe700c994cdd545a1a4915af060",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/BurntSushi/toml:f706d00e3de6abe700c994cdd545a1a4915af060",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/BurntSushi/toml",
+          "f706d00e3de6abe700c994cdd545a1a4915af060"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/docker/swarmkit",
+    "revision": "bd7bafb8a61de1f5f23c8215ce7b9ecbcb30ff21",
+    "@id": "http:golang/github.com%2Fdocker%2Fswarmkit/bd7bafb8a61de1f5f23c8215ce7b9ecbcb30ff21",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/docker/swarmkit:bd7bafb8a61de1f5f23c8215ce7b9ecbcb30ff21",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/docker/swarmkit",
+          "bd7bafb8a61de1f5f23c8215ce7b9ecbcb30ff21"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/grpc-ecosystem/go-grpc-prometheus",
+    "revision": "6b7015e65d366bf3f19b2b2a000a831940f0f7e0",
+    "@id": "http:golang/github.com%2Fgrpc-ecosystem%2Fgo-grpc-prometheus/6b7015e65d366bf3f19b2b2a000a831940f0f7e0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/grpc-ecosystem/go-grpc-prometheus:6b7015e65d366bf3f19b2b2a000a831940f0f7e0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/grpc-ecosystem/go-grpc-prometheus",
+          "6b7015e65d366bf3f19b2b2a000a831940f0f7e0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/Microsoft/hcsshim",
+    "revision": "v0.6.5",
+    "@id": "http:golang/github.com%2FMicrosoft%2Fhcsshim/v0.6.5",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/Microsoft/hcsshim:v0.6.5",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/Microsoft/hcsshim",
+          "v0.6.5"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/boltdb/bolt",
+    "revision": "fff57c100f4dea1905678da7e90d92429dff2904",
+    "@id": "http:golang/github.com%2Fboltdb%2Fbolt/fff57c100f4dea1905678da7e90d92429dff2904",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/boltdb/bolt:fff57c100f4dea1905678da7e90d92429dff2904",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/boltdb/bolt",
+          "fff57c100f4dea1905678da7e90d92429dff2904"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/hashicorp/go-multierror",
+    "revision": "fcdddc395df1ddf4247c69bd436e84cfa0733f7e",
+    "@id": "http:golang/github.com%2Fhashicorp%2Fgo-multierror/fcdddc395df1ddf4247c69bd436e84cfa0733f7e",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/hashicorp/go-multierror:fcdddc395df1ddf4247c69bd436e84cfa0733f7e",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/hashicorp/go-multierror",
+          "fcdddc395df1ddf4247c69bd436e84cfa0733f7e"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/gotestyourself/gotestyourself",
+    "revision": "v1.1.0",
+    "@id": "http:golang/github.com%2Fgotestyourself%2Fgotestyourself/v1.1.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/gotestyourself/gotestyourself:v1.1.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/gotestyourself/gotestyourself",
+          "v1.1.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/opencontainers/go-digest",
+    "revision": "a6d0ee40d4207ea02364bd3b9e8e77b9159ba1eb",
+    "@id": "http:golang/github.com%2Fopencontainers%2Fgo-digest/a6d0ee40d4207ea02364bd3b9e8e77b9159ba1eb",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/opencontainers/go-digest:a6d0ee40d4207ea02364bd3b9e8e77b9159ba1eb",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/opencontainers/go-digest",
+          "a6d0ee40d4207ea02364bd3b9e8e77b9159ba1eb"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/prometheus/client_model",
+    "revision": "fa8ad6fec33561be4280a8f0514318c79d7f6cb6",
+    "@id": "http:golang/github.com%2Fprometheus%2Fclient_model/fa8ad6fec33561be4280a8f0514318c79d7f6cb6",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/prometheus/client_model:fa8ad6fec33561be4280a8f0514318c79d7f6cb6",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/prometheus/client_model",
+          "fa8ad6fec33561be4280a8f0514318c79d7f6cb6"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/hashicorp/memberlist",
+    "revision": "v0.1.0",
+    "@id": "http:golang/github.com%2Fhashicorp%2Fmemberlist/v0.1.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/hashicorp/memberlist:v0.1.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/hashicorp/memberlist",
+          "v0.1.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/coreos/pkg",
+    "revision": "fa29b1d70f0beaddd4c7021607cc3c3be8ce94b8",
+    "@id": "http:golang/github.com%2Fcoreos%2Fpkg/fa29b1d70f0beaddd4c7021607cc3c3be8ce94b8",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/coreos/pkg:fa29b1d70f0beaddd4c7021607cc3c3be8ce94b8",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/coreos/pkg",
+          "fa29b1d70f0beaddd4c7021607cc3c3be8ce94b8"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/docker/go-units",
+    "revision": "9e638d38cf6977a37a8ea0078f3ee75a7cdb2dd1",
+    "@id": "http:golang/github.com%2Fdocker%2Fgo-units/9e638d38cf6977a37a8ea0078f3ee75a7cdb2dd1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/docker/go-units:9e638d38cf6977a37a8ea0078f3ee75a7cdb2dd1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/docker/go-units",
+          "9e638d38cf6977a37a8ea0078f3ee75a7cdb2dd1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/Microsoft/opengcs",
+    "revision": "v0.3.4",
+    "@id": "http:golang/github.com%2FMicrosoft%2Fopengcs/v0.3.4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/Microsoft/opengcs:v0.3.4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/Microsoft/opengcs",
+          "v0.3.4"
+        ]
       }
     },
     "relationship": []
@@ -2456,8 +2606,73 @@
           "name": "golang",
           "separator": ":"
         },
-        "name": "github.com/mattn/go-shellwords",
-        "version": "v1.0.3"
+        "pieces": [
+          "github.com/mattn/go-shellwords",
+          "v1.0.3"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/spf13/cobra",
+    "revision": "v1.5.1",
+    "@id": "http:golang/github.com%2Fspf13%2Fcobra/v1.5.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/spf13/cobra:v1.5.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/spf13/cobra",
+          "v1.5.1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/golang/protobuf",
+    "revision": "7a211bcf3bce0e3f1d74f9894916e6f116ae83b4",
+    "@id": "http:golang/github.com%2Fgolang%2Fprotobuf/7a211bcf3bce0e3f1d74f9894916e6f116ae83b4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/golang/protobuf:7a211bcf3bce0e3f1d74f9894916e6f116ae83b4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/golang/protobuf",
+          "7a211bcf3bce0e3f1d74f9894916e6f116ae83b4"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/pmezard/go-difflib",
+    "revision": "v1.0.0",
+    "@id": "http:golang/github.com%2Fpmezard%2Fgo-difflib/v1.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/pmezard/go-difflib:v1.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/pmezard/go-difflib",
+          "v1.0.0"
+        ]
       }
     },
     "relationship": []

@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "ProjectRunner/Default Detect Version/bazel-maven-jar bazel/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-6.5.0-SNAPSHOT",
-        "Tool: IntegrationBdio-21.1.0"
-      ],
-      "spdx:created": "2020-07-07T18:23:14.002Z"
-    },
-    "@id": "uuid:4780196b-2a27-4ba1-8aee-b8cc4027fb92",
     "@type": "BillOfMaterials",
     "relationship": []
   },
@@ -34,36 +26,14 @@
     },
     "relationship": [
       {
-        "related": "http:maven/com.google.guava/guava/18.0",
+        "related": "http:maven/org.apache.commons/commons-io/1.3.2",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:maven/org.apache.commons/commons-io/1.3.2",
+        "related": "http:maven/com.google.guava/guava/18.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
-  },
-  {
-    "name": "guava",
-    "revision": "18.0",
-    "@id": "http:maven/com.google.guava/guava/18.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "com.google.guava:guava:18.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "pieces": [
-          "guava",
-          "18.0"
-        ],
-        "prefix": "com.google.guava"
-      }
-    },
-    "relationship": []
   },
   {
     "name": "commons-io",
@@ -83,6 +53,28 @@
           "1.3.2"
         ],
         "prefix": "org.apache.commons"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "guava",
+    "revision": "18.0",
+    "@id": "http:maven/com.google.guava/guava/18.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.google.guava:guava:18.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "guava",
+          "18.0"
+        ],
+        "prefix": "com.google.guava"
       }
     },
     "relationship": []

@@ -18,74 +18,30 @@
           "name": "detect",
           "separator": "/"
         },
-        "path": "packrat-lock"
+        "pieces": [
+          "packrat-lock",
+          null
+        ]
       }
     },
     "relationship": [
+      {
+        "related": "http:cran/DBI/1.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:cran/rJava/0.9-11",
+        "relationshipType": "DYNAMIC_LINK"
+      },
       {
         "related": "http:cran/RJDBC/0.2-7.1",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:cran/rJava/0.9-11",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
         "related": "http:cran/packrat/0.4.8-1",
         "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:cran/DBI/1.0.0",
-        "relationshipType": "DYNAMIC_LINK"
       }
     ]
-  },
-  {
-    "name": "RJDBC",
-    "revision": "0.2-7.1",
-    "@id": "http:cran/RJDBC/0.2-7.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "cran",
-      "externalId": "RJDBC/0.2-7.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "cran",
-          "separator": "/"
-        },
-        "name": "RJDBC",
-        "version": "0.2-7.1"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:cran/rJava/0.9-11",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:cran/DBI/1.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "rJava",
-    "revision": "0.9-11",
-    "@id": "http:cran/rJava/0.9-11",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "cran",
-      "externalId": "rJava/0.9-11",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "cran",
-          "separator": "/"
-        },
-        "name": "rJava",
-        "version": "0.9-11"
-      }
-    },
-    "relationship": []
   },
   {
     "name": "DBI",
@@ -100,11 +56,64 @@
           "name": "cran",
           "separator": "/"
         },
-        "name": "DBI",
-        "version": "1.0.0"
+        "pieces": [
+          "DBI",
+          "1.0.0"
+        ]
       }
     },
     "relationship": []
+  },
+  {
+    "name": "rJava",
+    "revision": "0.9-11",
+    "@id": "http:cran/rJava/0.9-11",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "cran",
+      "externalId": "rJava/0.9-11",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "cran",
+          "separator": "/"
+        },
+        "pieces": [
+          "rJava",
+          "0.9-11"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "RJDBC",
+    "revision": "0.2-7.1",
+    "@id": "http:cran/RJDBC/0.2-7.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "cran",
+      "externalId": "RJDBC/0.2-7.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "cran",
+          "separator": "/"
+        },
+        "pieces": [
+          "RJDBC",
+          "0.2-7.1"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:cran/DBI/1.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:cran/rJava/0.9-11",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
   },
   {
     "name": "packrat",
@@ -119,8 +128,10 @@
           "name": "cran",
           "separator": "/"
         },
-        "name": "packrat",
-        "version": "0.4.8-1"
+        "pieces": [
+          "packrat",
+          "0.4.8-1"
+        ]
       }
     },
     "relationship": []

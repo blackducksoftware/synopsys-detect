@@ -89,11 +89,12 @@ public class BdioCompare {
         BdioDocument actual = parse(actualJson);
 
         List<BdioNode> missingExpected = new ArrayList<>();
+
         Set<String> actualIds = actual.nodes.stream().skip(1).map(bdioNode -> bdioNode.id).collect(Collectors.toSet());
         Set<String> expectedIds = expected.nodes.stream().skip(1).map(bdioNode -> bdioNode.id).collect(Collectors.toSet());
         Set<String> differentIds = SetUtils.disjunction(actualIds, expectedIds);
 
-        for (String differentId : differentIds) {
+        for (String differentId : differentIds) { //could maybe use assertion set utils but its logic is different enough to make it tricky... -jp
             Optional<BdioNode> expectedNode = expected.nodes.stream().filter(it -> it.id.equals(differentId)).findFirst();
             if (expectedNode.isPresent()) {
                 issues.add(new BdioIssue("An expected component was not found in the bdio with id " + expectedNode.get().toDescription() + "."));

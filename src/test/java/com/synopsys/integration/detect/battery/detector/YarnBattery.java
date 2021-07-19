@@ -22,6 +22,8 @@
  */
 package com.synopsys.integration.detect.battery.detector;
 
+import org.apache.commons.lang3.SystemUtils;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -52,6 +54,7 @@ public class YarnBattery {
 
     @Test
     void yarnWorkspacesAllByDefault() {
+        Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
         DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("yarn-workspaces-simple", "yarn/yarn-workspaces-simple");
         test.sourceDirectoryNamed("yarn-workspaces-simple");
         test.sourceFileFromResource("yarn.lock");
@@ -64,6 +67,7 @@ public class YarnBattery {
 
     @Test
     void yarnWorkspacesAllByFilter() {
+        Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
         DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("yarn-workspaces-simple-allworkspaces", "yarn/yarn-workspaces-simple-allworkspaces");
         test.sourceDirectoryNamed("yarn-workspaces-simple-allworkspaces");
         test.sourceFileFromResource("yarn.lock");
@@ -91,6 +95,7 @@ public class YarnBattery {
 
     @Test
     void yarnWorkspacesSimpleSelectWorkspace() {
+        Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
         DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("yarn-workspaces-simple-selectwksp", "yarn/yarn-workspaces-simple-selectwksp");
         test.sourceDirectoryNamed("yarn-workspaces-simple-selectwksp");
         test.sourceFileFromResource("yarn.lock");
@@ -117,6 +122,7 @@ public class YarnBattery {
 
     @Test
     void yarnYarn2UnnamedWorkspaces() {
+        Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
         DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("yarn2-unnamed-workspaces", "yarn/yarn2-unnamed-workspaces");
         test.sourceDirectoryNamed("yarn2-unnamed-workspaces");
         test.sourceFileFromResource("yarn.lock");
@@ -184,6 +190,7 @@ public class YarnBattery {
 
     @Test
     void yarnWorkspacesExtensive() {
+        Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
         DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("yarn-workspaces-berry", "yarn/yarn-workspaces-berry");
         test.sourceDirectoryNamed("yarn-workspaces-berry");
         test.sourceFileFromResource("yarn.lock");

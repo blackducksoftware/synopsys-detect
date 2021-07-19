@@ -37,8 +37,6 @@ import com.synopsys.integration.configuration.property.types.integer.NullableInt
 import com.synopsys.integration.configuration.property.types.longs.LongProperty;
 import com.synopsys.integration.configuration.property.types.path.NullablePathProperty;
 import com.synopsys.integration.configuration.property.types.path.PathListProperty;
-import com.synopsys.integration.configuration.property.types.path.PathProperty;
-import com.synopsys.integration.configuration.property.types.path.PathValue;
 import com.synopsys.integration.configuration.property.types.string.CaseSensitiveStringListProperty;
 import com.synopsys.integration.configuration.property.types.string.NullableStringProperty;
 import com.synopsys.integration.configuration.property.types.string.StringListProperty;
@@ -377,7 +375,7 @@ public class DetectProperties {
         new DetectProperty<>(new NullableStringProperty("detect.code.location.name"))
             .setInfo("Scan Name", DetectPropertyFromVersion.VERSION_4_0_0)
             .setHelp(
-                "An override for the name Detect will use for the scan (codelocation) it creates. If supplied and multiple scans are found, Detect will append an index to each scan name. When this property is set, detect.project.codelocation.prefix and detect.project.codelocation.suffix are ignored.")
+                "An override for the base name Detect will use for the scan (codelocation) it creates. Detect appends a suffix to the base name that indicates the source (\"scan\" for the signature scanner, \"gradle/bom\" for the Gradle detector, etc.). If this property is set and multiple code locations are generated from the same source, Detect will also append an index to avoid name collisions. When this property is set, detect.project.codelocation.prefix and detect.project.codelocation.suffix are ignored.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced);
 
@@ -760,8 +758,8 @@ public class DetectProperties {
             .setHelp("When set to true, a Black Duck notices report in text form will be created in your source directory.")
             .setGroups(DetectGroup.REPORT, DetectGroup.GLOBAL);
 
-    public static final DetectProperty<PathProperty> DETECT_NOTICES_REPORT_PATH =
-        new DetectProperty<>(new PathProperty("detect.notices.report.path", new PathValue(".")))
+    public static final DetectProperty<NullablePathProperty> DETECT_NOTICES_REPORT_PATH =
+        new DetectProperty<>(new NullablePathProperty("detect.notices.report.path"))
             .setInfo("Notices Report Path", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("The output directory for notices report. Default is the source directory.")
             .setGroups(DetectGroup.REPORT, DetectGroup.GLOBAL, DetectGroup.REPORT_SETTING);
@@ -1120,8 +1118,8 @@ public class DetectProperties {
             .setHelp("When set to true, a Black Duck risk report in PDF form will be created.")
             .setGroups(DetectGroup.REPORT, DetectGroup.GLOBAL, DetectGroup.REPORT_SETTING);
 
-    public static final DetectProperty<PathProperty> DETECT_RISK_REPORT_PDF_PATH =
-        new DetectProperty<>(new PathProperty("detect.risk.report.pdf.path", new PathValue(".")))
+    public static final DetectProperty<NullablePathProperty> DETECT_RISK_REPORT_PDF_PATH =
+        new DetectProperty<>(new NullablePathProperty("detect.risk.report.pdf.path"))
             .setInfo("Risk Report Output Path", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("The output directory for risk report in PDF. Default is the source directory.")
             .setGroups(DetectGroup.REPORT, DetectGroup.GLOBAL);

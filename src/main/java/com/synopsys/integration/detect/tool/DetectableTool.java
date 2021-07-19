@@ -25,7 +25,6 @@ import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
 import com.synopsys.integration.detect.tool.detector.extraction.ExtractionEnvironmentProvider;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.project.DetectToolProjectInfo;
-import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detect.workflow.status.StatusType;
@@ -51,8 +50,12 @@ public class DetectableTool {
     private final StatusEventPublisher statusEventPublisher;
     private final ExitCodePublisher exitCodePublisher;
 
+    //TODO: Move docker/bazel out of detectable and drop this notion of a detctable tool. Will simplify this logic and make this unneccessary.
+    private Detectable detectable;
+    private File sourcePath;
+
     public DetectableTool(DetectableCreatable detectableCreatable, ExtractionEnvironmentProvider extractionEnvironmentProvider, CodeLocationConverter codeLocationConverter,
-        String name, DetectTool detectTool, StatusEventPublisher statusEventPublisher, ExitCodePublisher exitCodePublisher, OperationSystem operationSystem) {
+        String name, DetectTool detectTool, StatusEventPublisher statusEventPublisher, ExitCodePublisher exitCodePublisher) {
         this.codeLocationConverter = codeLocationConverter;
         this.name = name;
         this.detectableCreatable = detectableCreatable;
@@ -62,23 +65,24 @@ public class DetectableTool {
         this.exitCodePublisher = exitCodePublisher;
     }
 
-    public DetectableToolResult execute(File sourcePath) { //TODO: Caller publishes result.
+    public boolean initializeAndCheckForApplicable(File sourcePath) { //TODO: Move docker/bazel out of detectable and drop this notion of a detctable tool. Will simplify this logic and make this unneccessary.
         logger.trace("Starting a detectable tool.");
+        this.sourcePath = sourcePath;
 
         DetectableEnvironment detectableEnvironment = new DetectableEnvironment(sourcePath);
-        Detectable detectable = detectableCreatable.createDetectable(detectableEnvironment);
-
-        //TODO: Replicate? logger.info(String.format("Initializing %s.", detectable.getDescriptiveName()));
-
+        detectable = detectableCreatable.createDetectable(detectableEnvironment);
         DetectableResult applicable = detectable.applicable();
 
         if (!applicable.getPassed()) {
             logger.debug("Was not applicable.");
-            return DetectableToolResult.skip();
+            return false;
         }
 
         logger.debug("Applicable passed.");
+        return true;
+    }
 
+    public DetectableToolResult extract() { //TODO: Move docker/bazel out of detectable and drop this notion of a detctable tool. Will simplify this logic and make this unneccessary.
         DetectableResult extractable;
         try {
             extractable = detectable.extractable();

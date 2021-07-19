@@ -434,8 +434,8 @@ public class DetectConfigurationFactory {
         Boolean waitForResults = getValue(DetectProperties.DETECT_WAIT_FOR_RESULTS);
         Boolean runRiskReport = getValue(DetectProperties.DETECT_RISK_REPORT_PDF);
         Boolean runNoticesReport = getValue(DetectProperties.DETECT_NOTICES_REPORT);
-        Path riskReportPdfPath = getValue(DetectProperties.DETECT_RISK_REPORT_PDF_PATH).resolvePath(pathResolver);
-        Path noticesReportPath = getValue(DetectProperties.DETECT_NOTICES_REPORT_PATH).resolvePath(pathResolver);
+        Path riskReportPdfPath = getPathOrNull(DetectProperties.DETECT_RISK_REPORT_PDF_PATH);
+        Path noticesReportPath = getPathOrNull(DetectProperties.DETECT_NOTICES_REPORT_PATH);
         List<FilterableEnumValue<PolicyRuleSeverityType>> policySeverities = getValue(DetectProperties.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES);
         List<PolicyRuleSeverityType> severitiesToFailPolicyCheck = FilterableEnumUtils.populatedValues(policySeverities, PolicyRuleSeverityType.class);
 
@@ -485,6 +485,10 @@ public class DetectConfigurationFactory {
         );
     }
 
+    private Path getPathOrNull(DetectProperty<NullablePathProperty> property) {
+        return getPathOrNull(property.getProperty());
+    }
+
     private Path getPathOrNull(NullablePathProperty property) {
         return detectConfiguration.getValue(property).map(path -> path.resolvePath(pathResolver)).orElse(null);
     }
@@ -500,5 +504,12 @@ public class DetectConfigurationFactory {
     public String createCodeLocationOverride() {
         return detectConfiguration.getValueOrEmpty(DetectProperties.DETECT_CODE_LOCATION_NAME.getProperty()).orElse(null);
 
+    }
+
+    public DetectorToolOptions createDetectorToolOptions() {
+        String projectBomTool = detectConfiguration.getValueOrEmpty(DetectProperties.DETECT_PROJECT_DETECTOR.getProperty()).orElse(null);
+        List<DetectorType> requiredDetectors = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_REQUIRED_DETECTOR_TYPES.getProperty());
+        boolean buildless = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_BUILDLESS.getProperty());
+        return new DetectorToolOptions(projectBomTool, requiredDetectors, buildless);
     }
 }
