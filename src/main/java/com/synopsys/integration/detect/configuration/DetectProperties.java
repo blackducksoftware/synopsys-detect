@@ -1277,7 +1277,7 @@ public class DetectProperties {
         new DetectProperty<>(new EnumProperty<>("detect.blackduck.scan.mode", BlackduckScanMode.INTELLIGENT, BlackduckScanMode.class))
             .setInfo("Detect Scan Mode", DetectPropertyFromVersion.VERSION_6_9_0)
             .setHelp("Set the Black Duck scanning mode of Detect",
-                "Set the scanning mode of Detect to control how Detect will send data to Black Duck. RAPID will not persist the results and disables select Detect functionality for faster results. Intelligent persists the results and permits all features of Detect. For complete details on the different scan modes, reference the documentation.")
+                "Set the scanning mode of Detect to control how Detect will send data to Black Duck. RAPID will not persist the results and disables select Detect functionality for faster results. INTELLIGENT persists the results and permits all features of Detect.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK)
             .setCategory(DetectCategory.Advanced);
 
