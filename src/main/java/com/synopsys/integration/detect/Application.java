@@ -40,6 +40,7 @@ import com.synopsys.integration.detect.lifecycle.exit.ExitManager;
 import com.synopsys.integration.detect.lifecycle.exit.ExitOptions;
 import com.synopsys.integration.detect.lifecycle.exit.ExitResult;
 import com.synopsys.integration.detect.lifecycle.run.DetectRun;
+import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.run.singleton.BootSingletons;
 import com.synopsys.integration.detect.lifecycle.shutdown.CleanupUtility;
@@ -51,6 +52,7 @@ import com.synopsys.integration.detect.lifecycle.shutdown.ShutdownManager;
 import com.synopsys.integration.detect.workflow.DetectRunId;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
+import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
 import com.synopsys.integration.detect.workflow.report.ReportListener;
 import com.synopsys.integration.detect.workflow.report.output.FormattedOutputManager;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
@@ -116,6 +118,12 @@ public class Application implements ApplicationRunner {
             shouldForceSuccess = detectBootResult.shouldForceSuccess();
 
             runApplication(eventSystem, exitCodeManager, detectBootResult);
+            
+            detectBootResult.getProductRunData()
+                .filter(ProductRunData::shouldUseBlackDuckProduct)
+                .map(ProductRunData::getBlackDuckRunData)
+                .flatMap(BlackDuckRunData::getPhoneHomeManager)
+                .ifPresent(PhoneHomeManager::phoneHomeOperations);
 
             //Create status output file.
             logger.info("");

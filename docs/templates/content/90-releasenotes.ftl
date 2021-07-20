@@ -11,11 +11,15 @@
 
 ## Version 7.2.0
 
+### Changed features
+* Improved the readability of Rapid mode results.
+
 ### Resolved issues
 * (IDETECT-2532) Resolved an issue that could cause multiple versions of Go-Mod dependencies to appear in the BOM.
 * (IDETECT-2668) Resolved an issue that caused Go-Mod dependencies with a replacement version to be omitted.
 * (IDETECT-2722) Resolved an issue that caused the version to be omitted from Go-Vendr dependencies when the vendor.conf separated dependency name and version with multiple space characters.
 * (IDETECT-2672) Resolved an issue that could cause the Black Duck access token to appear in the log.
+* (IDETECT-2739) Resolved an issue that caused the default to be used when the provided Risk Report path did not exist.
 
 ## Version 7.1.0
 

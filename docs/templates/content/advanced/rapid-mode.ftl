@@ -14,27 +14,29 @@ The results are saved to a json file named 'name_version_BlackDuck_DeveloperMode
 
 The results are also printed in the logs:
 ```
-2021-06-18 11:38:18 EDT INFO  [main] --- Rapid Scan Result: (for more detail look in the log for Rapid Scan Result Details)
-2021-06-18 11:38:18 EDT INFO  [main] ---
-2021-06-18 11:38:18 EDT INFO  [main] --- 		Policy Errors = 0
-2021-06-18 11:38:18 EDT INFO  [main] --- 		Policy Warnings = 99
-2021-06-18 11:38:18 EDT INFO  [main] --- 		Security Errors = 7
-2021-06-18 11:38:18 EDT INFO  [main] --- 		Security Warnings = 0
-2021-06-18 11:38:18 EDT INFO  [main] --- 		License Errors = 0
-2021-06-18 11:38:18 EDT INFO  [main] --- 		License Warnings = 0
-2021-06-18 11:38:18 EDT INFO  [main] ---
-2021-06-18 11:38:18 EDT INFO  [main] --- 		Policies Violated:
-2021-06-18 11:38:18 EDT INFO  [main] --- 			Security Vulnerabilities Great Than Or Equal to High
-2021-06-18 11:38:18 EDT INFO  [main] --- 			Warn on Low Security Vulnerabilities
-2021-06-18 11:38:18 EDT INFO  [main] --- 			Warn on Medium Security Vulnerabilities
-2021-06-18 11:38:18 EDT INFO  [main] ---
-2021-06-18 11:38:18 EDT INFO  [main] --- 		Components with Policy Violations:
-2021-06-18 11:38:18 EDT INFO  [main] --- 			Apache PDFBox 2.0.12 (maven:org.apache.pdfbox:pdfbox:2.0.12)
-2021-06-18 11:38:18 EDT INFO  [main] --- 			node-ini 1.3.5 (npmjs:ini/1.3.5)
-2021-06-18 11:38:18 EDT INFO  [main] ---
-2021-06-18 11:38:18 EDT INFO  [main] --- 		Components with Policy Violation Warnings:
-2021-06-18 11:38:18 EDT INFO  [main] --- 			Acorn 5.5.3 (npmjs:acorn/5.5.3)
-2021-06-18 11:38:18 EDT INFO  [main] --- 			Apache ActiveMQ 5.15.9 (maven:org.apache.activemq:activemq-client:5.15.9)
+2021-07-20 13:25:18 EDT INFO  [main] --- Rapid Scan Result: (for more detail look in the log for Rapid Scan Result Details)
+2021-07-20 13:25:18 EDT INFO  [main] ---
+2021-07-20 13:25:18 EDT INFO  [main] --- 		Critical and blocking policy violations for
+2021-07-20 13:25:18 EDT INFO  [main] --- 			* Components: 0
+2021-07-20 13:25:18 EDT INFO  [main] --- 			* Security: 5
+2021-07-20 13:25:18 EDT INFO  [main] --- 			* License: 0
+2021-07-20 13:25:18 EDT INFO  [main] ---
+2021-07-20 13:25:18 EDT INFO  [main] --- 		Other policy violations
+2021-07-20 13:25:18 EDT INFO  [main] --- 			* Components: 101
+2021-07-20 13:25:18 EDT INFO  [main] --- 			* Security: 0
+2021-07-20 13:25:18 EDT INFO  [main] --- 			* License: 0
+2021-07-20 13:25:18 EDT INFO  [main] ---
+2021-07-20 13:25:18 EDT INFO  [main] --- 		Policies Violated:
+2021-07-20 13:25:18 EDT INFO  [main] --- 			Security Vulnerabilities Great Than Or Equal to High
+2021-07-20 13:25:18 EDT INFO  [main] --- 			Warn on Low Security Vulnerabilities
+2021-07-20 13:25:18 EDT INFO  [main] --- 			Warn on Medium Security Vulnerabilities
+2021-07-20 13:25:18 EDT INFO  [main] ---
+2021-07-20 13:25:18 EDT INFO  [main] --- 		Components with Policy Violations:
+2021-07-20 13:25:18 EDT INFO  [main] --- 			Apache PDFBox 2.0.12 (maven:org.apache.pdfbox:pdfbox:2.0.12)
+2021-07-20 13:25:18 EDT INFO  [main] --- 			Handlebars.js 4.0.11 (npmjs:handlebars/4.0.11)
+2021-07-20 13:25:18 EDT INFO  [main] ---
+2021-07-20 13:25:18 EDT INFO  [main] --- 		Components with Policy Violation Warnings:
+2021-07-20 13:25:18 EDT INFO  [main] --- 			Acorn 5.5.3 (npmjs:acorn/5.5.3)
 ```
 
 # Restrictions
