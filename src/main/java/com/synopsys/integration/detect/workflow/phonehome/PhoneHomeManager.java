@@ -8,8 +8,9 @@
 package com.synopsys.integration.detect.workflow.phonehome;
 
 import java.time.Duration;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -34,6 +35,7 @@ public abstract class PhoneHomeManager {
     protected final EventSystem eventSystem;
     protected PhoneHomeResponse currentPhoneHomeResponse;
     protected Map<String, String> additionalMetaData;
+    protected List<Operation> operations = new LinkedList<>();
 
     public PhoneHomeManager(Map<String, String> additionalMetaData, DetectInfo detectInfo, EventSystem eventSystem) {
         this.detectInfo = detectInfo;
@@ -42,10 +44,10 @@ public abstract class PhoneHomeManager {
 
         eventSystem.registerListener(Event.ApplicableCompleted, this::startPhoneHome);
         eventSystem.registerListener(Event.DetectorsProfiled, event -> startPhoneHome(event.getAggregateTimings()));
-        eventSystem.registerListener(Event.DetectOperationsComplete, this::phoneHomeOperations);
+        eventSystem.registerListener(Event.DetectOperation, operations::add);
     }
 
-    private void phoneHomeOperations(Collection<Operation> operations) {
+    public void phoneHomeOperations() {
         if (operations.isEmpty()) {
             return;
         }
