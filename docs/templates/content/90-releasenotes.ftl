@@ -3,7 +3,7 @@
 ## Version 7.2.0
 
 ### Changed features
-* (IDETECT-2726) Improved the readability of Rapid mode results.
+* Improved the readability of Rapid mode results.
 
 ### Resolved issues
 * (IDETECT-2532) Resolved an issue that could cause multiple versions of Go-Mod dependencies to appear in the BOM.
