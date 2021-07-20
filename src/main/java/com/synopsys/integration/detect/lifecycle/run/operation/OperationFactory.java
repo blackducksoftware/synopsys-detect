@@ -266,7 +266,7 @@ public class OperationFactory { //TODO: OperationRunner
     }
 
     public final DetectorToolResult executeDetectors() throws DetectUserFriendlyException {
-        return auditLog.namedPublic("Execute Detectors", () -> {
+        return auditLog.namedPublic("Execute Detectors", "Detectors", () -> {
             DetectorToolOptions detectorToolOptions = detectConfigurationFactory.createDetectorToolOptions();
             DetectorRuleFactory detectorRuleFactory = new DetectorRuleFactory();
             DetectorRuleSet detectRuleSet = detectorRuleFactory.createRules(detectDetectableFactory, detectorToolOptions.isBuildless());
@@ -391,7 +391,7 @@ public class OperationFactory { //TODO: OperationRunner
     }
 
     public File createNoticesReportFile(BlackDuckRunData blackDuckRunData, ProjectVersionWrapper projectVersion, File noticesDirectory) throws DetectUserFriendlyException {
-        return auditLog.namedPublic("Create Notices Report File", () -> {
+        return auditLog.namedPublic("Create Notices Report File", "NoticesReport", () -> {
             ReportService reportService = creatReportService(blackDuckRunData);
             return reportService.createNoticesReportFile(noticesDirectory, projectVersion.getProjectView(), projectVersion.getProjectVersionView());
         });
@@ -492,7 +492,7 @@ public class OperationFactory { //TODO: OperationRunner
     }
 
     public SignatureScanOuputResult signatureScan(ScanBatch scanBatch, ScanBatchRunner scanBatchRunner) throws DetectUserFriendlyException {
-        return auditLog.namedPublic("Execute Signature Scan CLI", () -> new SignatureScanOperation().performScanActions(scanBatch, scanBatchRunner));
+        return auditLog.namedPublic("Execute Signature Scan CLI", "SigScan", () -> new SignatureScanOperation().performScanActions(scanBatch, scanBatchRunner));
     }
 
     public List<SignatureScannerReport> createSignatureScanReport(List<SignatureScanPath> signatureScanPaths, List<ScanCommandOutput> scanCommandOutputList) throws DetectUserFriendlyException {
@@ -506,7 +506,7 @@ public class OperationFactory { //TODO: OperationRunner
     }
 
     public Optional<File> calculateNoticesDirectory() throws DetectUserFriendlyException { //TODO Should be a decision in boot
-        return auditLog.namedInternal("Decide Notices Report Path", "NoticesReport", () -> {
+        return auditLog.namedInternal("Decide Notices Report Path", () -> {
             BlackDuckPostOptions postOptions = detectConfigurationFactory.createBlackDuckPostOptions();
             if (postOptions.shouldGenerateNoticesReport()) {
                 return Optional.of(postOptions.getNoticesReportPath().map(Path::toFile)

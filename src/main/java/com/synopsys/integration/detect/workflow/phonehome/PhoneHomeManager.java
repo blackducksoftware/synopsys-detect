@@ -8,6 +8,7 @@
 package com.synopsys.integration.detect.workflow.phonehome;
 
 import java.time.Duration;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -41,7 +42,17 @@ public abstract class PhoneHomeManager {
 
         eventSystem.registerListener(Event.ApplicableCompleted, this::startPhoneHome);
         eventSystem.registerListener(Event.DetectorsProfiled, event -> startPhoneHome(event.getAggregateTimings()));
-        eventSystem.registerListener(Event.DetectOperation, this::appendOperationMetadata);
+        eventSystem.registerListener(Event.DetectOperationsComplete, this::phoneHomeOperations);
+    }
+
+    private void phoneHomeOperations(Collection<Operation> operations) {
+        if (operations.isEmpty()) {
+            return;
+        }
+        Map<String, String> operationMetadata = new HashMap<>();
+        operations.forEach(operation -> addOperationToMap(operation, operationMetadata));
+        logger.trace("Phoning home {}/{} operations.", operationMetadata.size(), operations.size());
+        safelyPhoneHome(operationMetadata);
     }
 
     public abstract PhoneHomeResponse phoneHome(Map<String, String> metadata, String... artifactModules);
@@ -85,12 +96,12 @@ public abstract class PhoneHomeManager {
 
     public void endPhoneHome() {
         if (currentPhoneHomeResponse != null) {
-            Boolean result = currentPhoneHomeResponse.getImmediateResult();
+            Boolean result = currentPhoneHomeResponse.awaitResult(2);
             logger.trace(String.format("Phone home ended with result: %b", result));
         }
     }
 
-    private void appendOperationMetadata(Operation operation) {
+    private void addOperationToMap(Operation operation, Map<String, String> metadataMap) {
         Optional<String> phoneHomeKey = operation.getPhoneHomeKey();
         if (phoneHomeKey.isPresent()) {
             String status = StatusType.FAILURE.equals(operation.getStatusType()) ? ":" + operation.getStatusType() : ""; // Assume success, mention failure.
@@ -99,7 +110,7 @@ public abstract class PhoneHomeManager {
                                  .map(duration -> Long.toString(duration.toMillis()))
                                  .map(duration -> ":" + duration)
                                  .orElse("");
-            additionalMetaData.compute("operations", (k, currentValue) -> {
+            metadataMap.compute("operations", (k, currentValue) -> {
                 String operationMetadata = phoneHomeKey.get() + status + runTime;
                 return formatMetadataValue(currentValue, operationMetadata);
             });
