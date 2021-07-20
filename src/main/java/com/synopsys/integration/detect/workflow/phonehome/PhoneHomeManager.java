@@ -103,7 +103,6 @@ public abstract class PhoneHomeManager {
                 String operationMetadata = phoneHomeKey.get() + status + runTime;
                 return formatMetadataValue(currentValue, operationMetadata);
             });
-            logger.info(additionalMetaData.get("operations"));
         }
     }
 
