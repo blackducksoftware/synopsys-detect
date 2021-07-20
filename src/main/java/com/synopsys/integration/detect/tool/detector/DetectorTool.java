@@ -97,7 +97,7 @@ public class DetectorTool {
         detectorEvaluator.setDetectorEvaluatorListener(eventBroadcaster);
 
         detectorEvaluator.registerPostApplicableCallback(detectorAggregateEvaluationResult -> {
-            detectorEventPublisher.publishApplicableCompleted(detectorAggregateEvaluationResult.getApplicableDetectorTypes());
+            detectorEventPublisher.publishApplicableCompleted(detectorAggregateEvaluationResult.getApplicableDetectorTypesRecursively());
             detectorEventPublisher.publishSearchCompleted(detectorAggregateEvaluationResult.getEvaluationTree());
             logger.info("");
         });
