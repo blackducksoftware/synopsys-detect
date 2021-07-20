@@ -79,18 +79,18 @@ public class IntelligentModeStepRunner {
 
         logger.debug("Completed Detect Code Location processing.");
 
-        stepHelper.runToolIfIncluded(DetectTool.SIGNATURE_SCAN, "Signature Scanner", () -> {
+        stepHelper.runToolIfIncluded(DetectTool.SIGNATURE_SCAN, "Signature Scanner", "SigScan", () -> {
             SignatureScanStepRunner signatureScanStepRunner = new SignatureScanStepRunner(operationFactory);
             SignatureScannerToolResult signatureScannerToolResult = signatureScanStepRunner.runSignatureScannerOnline(blackDuckRunData, projectNameVersion, dockerTargetData);
             signatureScannerToolResult.getCreationData().ifPresent(codeLocationAccumulator::addWaitableCodeLocation);
         });
 
-        stepHelper.runToolIfIncluded(DetectTool.BINARY_SCAN, "Binary Scanner", () -> {
+        stepHelper.runToolIfIncluded(DetectTool.BINARY_SCAN, "Binary Scanner", "BinaryScan", () -> {
             BinaryScanStepRunner binaryScanStepRunner = new BinaryScanStepRunner(operationFactory);
             binaryScanStepRunner.runBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData).ifPresent(codeLocationAccumulator::addWaitableCodeLocation);
         });
 
-        stepHelper.runToolIfIncludedWithCallbacks(DetectTool.IMPACT_ANALYSIS, "Vulnerability Impact Analysis",
+        stepHelper.runToolIfIncludedWithCallbacks(DetectTool.IMPACT_ANALYSIS, "Vulnerability Impact Analysis", "ImpactAnalysis",
             () -> runImpactAnalysisOnline(projectNameVersion, projectVersion, codeLocationAccumulator, blackDuckRunData.getBlackDuckServicesFactory()),
             operationFactory::publishImpactSuccess, operationFactory::publishImpactFailure);
 

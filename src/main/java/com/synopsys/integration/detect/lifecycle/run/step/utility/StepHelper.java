@@ -10,6 +10,7 @@ package com.synopsys.integration.detect.lifecycle.run.step.utility;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,37 +28,49 @@ public class StepHelper {
     private final OperationWrapper operationWrapper;
     private final DetectToolFilter detectToolFilter;
 
-    public StepHelper(final OperationSystem operationSystem, final OperationWrapper operationWrapper, DetectToolFilter detectToolFilter) {
+    public StepHelper(OperationSystem operationSystem, OperationWrapper operationWrapper, DetectToolFilter detectToolFilter) {
         this.operationSystem = operationSystem;
         this.operationWrapper = operationWrapper;
         this.detectToolFilter = detectToolFilter;
     }
 
     public void runToolIfIncluded(DetectTool detectTool, String name, OperationWrapper.OperationFunction supplier) throws DetectUserFriendlyException {
-        runToolIfIncluded(detectTool, name, () -> {
+        runToolIfIncluded(detectTool, name, null, supplier);
+    }
+
+    public void runToolIfIncluded(DetectTool detectTool, String name, @Nullable String phoneHomeKey, OperationWrapper.OperationFunction supplier) throws DetectUserFriendlyException {
+        runToolIfIncluded(detectTool, name, phoneHomeKey, () -> {
             supplier.execute();
             return true;
         }, () -> {}, (e) -> {});
     }
 
     public <T> Optional<T> runToolIfIncluded(DetectTool detectTool, String name, OperationWrapper.OperationSupplier<T> supplier) throws DetectUserFriendlyException {
-        return runToolIfIncluded(detectTool, name, supplier, () -> {}, (e) -> {});
+        return runToolIfIncluded(detectTool, name, null, supplier);
     }
 
-    public void runToolIfIncludedWithCallbacks(DetectTool detectTool, String name, OperationWrapper.OperationFunction supplier, Runnable successConsumer, Consumer<Exception> errorConsumer)
+    public <T> Optional<T> runToolIfIncluded(DetectTool detectTool, String name, @Nullable String phoneHomeKey, OperationWrapper.OperationSupplier<T> supplier) throws DetectUserFriendlyException {
+        return runToolIfIncluded(detectTool, name, phoneHomeKey, supplier, () -> {}, (e) -> {});
+    }
+
+    public void runToolIfIncludedWithCallbacks(DetectTool detectTool, String name, OperationWrapper.OperationFunction supplier, Runnable successConsumer, Consumer<Exception> errorConsumer) throws DetectUserFriendlyException {
+        runToolIfIncludedWithCallbacks(detectTool, name, null, supplier, successConsumer, errorConsumer);
+    }
+
+    public void runToolIfIncludedWithCallbacks(DetectTool detectTool, String name, @Nullable String phoneHomeKey, OperationWrapper.OperationFunction supplier, Runnable successConsumer, Consumer<Exception> errorConsumer)
         throws DetectUserFriendlyException {
-        runToolIfIncluded(detectTool, name, () -> {
+        runToolIfIncluded(detectTool, name, phoneHomeKey, () -> {
             supplier.execute();
             return true;
         }, successConsumer, errorConsumer);
     }
 
-    private <T> Optional<T> runToolIfIncluded(DetectTool detectTool, String name, OperationWrapper.OperationSupplier<T> supplier, Runnable successConsumer, Consumer<Exception> errorConsumer)
+    private <T> Optional<T> runToolIfIncluded(DetectTool detectTool, String name, @Nullable String phoneHomeKey, OperationWrapper.OperationSupplier<T> supplier, Runnable successConsumer, Consumer<Exception> errorConsumer)
         throws DetectUserFriendlyException {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(detectTool)) {
             logger.info("Will include the " + name + " tool.");
-            Operation operation = operationSystem.startOperation(name + " Tool", OperationType.INTERNAL);
+            Operation operation = operationSystem.startOperation(name + " Tool", OperationType.INTERNAL, phoneHomeKey);
             T value = operationWrapper.namedWithCallbacks(name, operation, supplier, successConsumer, errorConsumer);
             logger.info(name + " actions finished.");
             return Optional.ofNullable(value);

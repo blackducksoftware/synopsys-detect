@@ -8,6 +8,7 @@
 package com.synopsys.integration.detect.workflow.phonehome;
 
 import java.time.Duration;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -19,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.configuration.DetectInfo;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.status.Operation;
@@ -41,7 +43,7 @@ public abstract class PhoneHomeManager {
 
         eventSystem.registerListener(Event.ApplicableCompleted, this::startPhoneHome);
         eventSystem.registerListener(Event.DetectorsProfiled, event -> startPhoneHome(event.getAggregateTimings()));
-        eventSystem.registerListener(Event.DetectOperation, this::appendOperationMetadata);
+        eventSystem.registerListener(Event.DetectOperationStarted, this::appendStartedOperation);
     }
 
     public abstract PhoneHomeResponse phoneHome(Map<String, String> metadata, String... artifactModules);
@@ -54,6 +56,15 @@ public abstract class PhoneHomeManager {
         // sometimes there is not enough time to complete a phone home before
         // detect exits (if the scanner is disabled, for example).
         safelyPhoneHome(new HashMap<>());
+    }
+
+    public void phoneHomeTools(Collection<DetectTool> detectTools) {
+        String toolMetadata = detectTools.stream()
+                                  .map(Enum::name)
+                                  .collect(Collectors.joining(","));
+        Map<String, String> toolMap = new HashMap<>();
+        toolMap.put("tools", toolMetadata);
+        phoneHome(toolMap);
     }
 
     private void startPhoneHome(Set<DetectorType> applicableDetectorTypes) {
@@ -90,7 +101,11 @@ public abstract class PhoneHomeManager {
         }
     }
 
-    private void appendOperationMetadata(Operation operation) {
+    private void appendStartedOperation(Operation operation) {
+        addOperationToMap(operation, additionalMetaData);
+    }
+
+    private void addOperationToMap(Operation operation, Map<String, String> metadataMap) {
         Optional<String> phoneHomeKey = operation.getPhoneHomeKey();
         if (phoneHomeKey.isPresent()) {
             String status = StatusType.FAILURE.equals(operation.getStatusType()) ? ":" + operation.getStatusType() : ""; // Assume success, mention failure.
@@ -99,9 +114,9 @@ public abstract class PhoneHomeManager {
                                  .map(duration -> Long.toString(duration.toMillis()))
                                  .map(duration -> ":" + duration)
                                  .orElse("");
-            additionalMetaData.compute("operations", (k, currentValue) -> {
-                String operationMetadata = phoneHomeKey.get() + status + runTime;
-                return formatMetadataValue(currentValue, operationMetadata);
+            metadataMap.compute("operations", (k, currentValue) -> {
+                String metadata = phoneHomeKey.get() + status + runTime;
+                return formatMetadataValue(currentValue, metadata);
             });
         }
     }

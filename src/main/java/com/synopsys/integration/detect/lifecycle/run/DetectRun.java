@@ -7,12 +7,16 @@
  */
 package com.synopsys.integration.detect.lifecycle.run;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
@@ -27,6 +31,7 @@ import com.synopsys.integration.detect.lifecycle.run.step.utility.StepHelper;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeManager;
 import com.synopsys.integration.detect.tool.UniversalToolsResult;
 import com.synopsys.integration.detect.tool.detector.factory.DetectorFactory;
+import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.util.NameVersion;
@@ -67,6 +72,16 @@ public class DetectRun {
 
             if (productRunData.shouldUseBlackDuckProduct()) {
                 BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
+                DetectToolFilter detectToolFilter = productRunData.getDetectToolFilter();
+
+                // Phone home what we think will run, since operations will likely not be phoned home.
+                blackDuckRunData.getPhoneHomeManager().ifPresent(phoneHomeManager -> {
+                    List<DetectTool> detectTools = Arrays.stream(DetectTool.values())
+                                                       .filter(detectToolFilter::shouldInclude)
+                                                       .collect(Collectors.toList());
+                    phoneHomeManager.phoneHomeTools(detectTools);
+                });
+
                 if (blackDuckRunData.isRapid() && blackDuckRunData.isOnline()) {
                     RapidModeStepRunner rapidModeSteps = new RapidModeStepRunner(operationFactory);
                     rapidModeSteps.runOnline(blackDuckRunData, nameVersion, bdio);
@@ -74,11 +89,12 @@ public class DetectRun {
                     logger.info("Rapid Scan is offline, nothing to do.");
                 } else if (blackDuckRunData.isOnline()) {
                     IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationFactory, stepHelper);
-                    intelligentModeSteps.runOnline(blackDuckRunData, bdio, nameVersion, productRunData.getDetectToolFilter(), universalToolsResult.getDockerTargetData());
+                    intelligentModeSteps.runOnline(blackDuckRunData, bdio, nameVersion, detectToolFilter, universalToolsResult.getDockerTargetData());
                 } else {
                     IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationFactory, stepHelper);
                     intelligentModeSteps.runOffline(nameVersion, universalToolsResult.getDockerTargetData());
                 }
+                operationFactory.phoneHome(blackDuckRunData);
             }
         } catch (Exception e) {
             logger.error("Detect run failed: {}", getExceptionMessage(e));

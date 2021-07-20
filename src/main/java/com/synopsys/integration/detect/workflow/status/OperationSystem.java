@@ -42,6 +42,8 @@ public class OperationSystem {
             publishOperation(currentOperation);
             currentOperation = new Operation(operationName, type, phoneHomeKey);
             operationMap.put(operationName, currentOperation);
+        } else {
+            statusEventPublisher.publishOperationStart(currentOperation);
         }
         return currentOperation;
     }

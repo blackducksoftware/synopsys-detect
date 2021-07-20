@@ -33,4 +33,8 @@ public class StatusEventPublisher {
     public void publishOperation(Operation detectOperation) {
         eventSystem.publishEvent(Event.DetectOperation, detectOperation);
     }
+
+    public void publishOperationStart(Operation detectOperation) {
+        eventSystem.publishEvent(Event.DetectOperationStarted, detectOperation);
+    }
 }
