@@ -22,20 +22,11 @@ public class ShutdownManager {
 
     private CleanupUtility cleanupUtility;
 
-    public ShutdownManager(final CleanupUtility cleanupUtility) {
+    public ShutdownManager(CleanupUtility cleanupUtility) {
         this.cleanupUtility = cleanupUtility;
     }
 
     public void shutdown(DetectBootResult detectBootResult, ShutdownDecision shutdownDecision) {
-        if (shutdownDecision.getPhoneHomeManager() != null) {
-            try {
-                logger.debug("Ending phone home.");
-                shutdownDecision.getPhoneHomeManager().endPhoneHome();
-            } catch (Exception e) {
-                logger.debug(String.format("Error trying to end the phone home task: %s", e.getMessage()));
-            }
-        }
-
         if (shutdownDecision.getDiagnosticSystem() != null) {
             shutdownDecision.getDiagnosticSystem().finish();
         }
@@ -50,6 +41,15 @@ public class ShutdownManager {
             }
         } else {
             logger.info("Skipping cleanup, it is disabled.");
+        }
+
+        if (shutdownDecision.getPhoneHomeManager() != null) {
+            try {
+                logger.debug("Ending phone home.");
+                shutdownDecision.getPhoneHomeManager().endPhoneHome();
+            } catch (Exception e) {
+                logger.debug(String.format("Error trying to end the phone home task: %s", e.getMessage()));
+            }
         }
     }
 

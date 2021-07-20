@@ -23,6 +23,7 @@ public class OperationSystem {
 
     public void publishOperations() {
         operationMap.values().forEach(this::publishOperation);
+        statusEventPublisher.publishOperationsComplete(operationMap.values());
     }
 
     public void publishOperation(Operation operation) {
