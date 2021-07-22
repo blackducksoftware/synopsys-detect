@@ -58,6 +58,8 @@ import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParser
 import com.synopsys.integration.detectable.detectables.cargo.CargoDetectable;
 import com.synopsys.integration.detectable.detectables.cargo.CargoExtractor;
 import com.synopsys.integration.detectable.detectables.cargo.parse.CargoLockParser;
+import com.synopsys.integration.detectable.detectables.carthage.CarthageDetectable;
+import com.synopsys.integration.detectable.detectables.carthage.CarthageExtractor;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOptions;
 import com.synopsys.integration.detectable.detectables.clang.ClangExtractor;
@@ -271,6 +273,10 @@ public class DetectableFactory {
         return new CargoDetectable(environment, fileFinder, cargoExtractor());
     }
 
+    public CarthageDetectable createCarthageDetectable(DetectableEnvironment environment) {
+        return new CarthageDetectable(environment, fileFinder, carthageExtractor());
+    }
+
     public ClangDetectable createClangDetectable(DetectableEnvironment environment, ClangDetectableOptions clangDetectableOptions) {
         return new ClangDetectable(environment, executableRunner, fileFinder, clangPackageManagerFactory().createPackageManagers(), clangExtractor(), clangDetectableOptions, clangPackageManagerRunner());
     }
@@ -444,6 +450,10 @@ public class DetectableFactory {
 
     private CargoExtractor cargoExtractor() {
         return new CargoExtractor(new CargoLockParser());
+    }
+
+    private CarthageExtractor carthageExtractor() {
+        return new CarthageExtractor();
     }
 
     private ClangPackageDetailsTransformer clangPackageDetailsTransformer() {

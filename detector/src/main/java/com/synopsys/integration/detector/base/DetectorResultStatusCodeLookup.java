@@ -13,6 +13,7 @@ import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.detectable.detectable.result.CargoLockfileNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.CartfileResolvedNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExceptionDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExcludedDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
@@ -55,6 +56,7 @@ public class DetectorResultStatusCodeLookup {
         Map<Class, DetectorStatusCode> map = new HashMap<>();
 
         map.put(CargoLockfileNotFoundDetectableResult.class, DetectorStatusCode.CARGO_LOCKFILE_NOT_FOUND);
+        map.put(CartfileResolvedNotFoundDetectableResult.class, DetectorStatusCode.CARTFILE_RESOLVED_FILE_NOT_FOUND);
         map.put(ExceptionDetectableResult.class, DetectorStatusCode.EXCEPTION);
         map.put(ExcludedDetectableResult.class, DetectorStatusCode.EXCLUDED);
         map.put(ExcludedDetectorResult.class, DetectorStatusCode.EXCLUDED);
