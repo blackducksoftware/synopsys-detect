@@ -9,6 +9,6 @@ The Carthage detector parses the Cartfile.resolved file for information on your 
 
 ## Supported Dependency Origins
 
-${solution_name} only reports dependencies declared in a Cartfile.resolved file that have a 'github' [origin](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#origin).  This limited support is a result of the de-centralized nature of the Carthage ecosystem.  Many commonly-used frameworks used in Carthage projects are not open-source, and thus not reported on by Black Duck.
+${solution_name} only reports dependencies declared in a Cartfile.resolved file that have a 'github' [origin](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#origin).  This limited support is a result of the de-centralized nature of the Carthage ecosystem.  Many commonly-used frameworks used in Carthage projects are not open-source, and thus not tracked by Black Duck.
 
 * Note: Even for dependencies from Github that are declared with the 'github' origin, it is possible that some may not be matched by Black Duck, as Black Duck does not track all repositories hosted on GitHub.
