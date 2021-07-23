@@ -35,6 +35,7 @@ public class CarthageExtractor {
                     String name = dependencyDeclarationPieces[1].replace("\"", "");
                     String version = dependencyDeclarationPieces[2].replace("\"", "");
 
+                    // Because the dependency is hosted on GitHub, we must use the github forge in order for KB to match it
                     ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.GITHUB, name, version);
                     // As of Carthage 0.38.0 the dependencies in Cartfile.resolved are produced as a flat list
                     dependencyGraph.addChildToRoot(new Dependency(name, version, externalId));
