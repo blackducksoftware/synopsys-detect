@@ -29,6 +29,7 @@ public class Operation {
     private StatusType statusType;
     private String[] errorMessages;
     private OperationType operationType;
+    @Nullable
     private String phoneHomeKey;
 
     public static Operation of(String name) {
