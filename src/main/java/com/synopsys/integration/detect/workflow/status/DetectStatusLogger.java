@@ -7,8 +7,10 @@
  */
 package com.synopsys.integration.detect.workflow.status;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -17,6 +19,13 @@ import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.log.IntLogger;
 
 public class DetectStatusLogger {
+
+    private static final List<ExitCodeType> doNotRequireAdvice = Arrays.asList(
+            ExitCodeType.SUCCESS, ExitCodeType.FAILURE_POLICY_VIOLATION,
+            ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY, ExitCodeType.FAILURE_PROXY_CONNECTIVITY,
+            ExitCodeType.FAILURE_DETECTOR_REQUIRED, ExitCodeType.FAILURE_BLACKDUCK_VERSION_NOT_SUPPORTED,
+            ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, ExitCodeType.FAILURE_POLARIS_CONNECTIVITY,
+            ExitCodeType.FAILURE_TIMEOUT, ExitCodeType.FAILURE_CONFIGURATION);
 
     public void logDetectStatus(IntLogger logger, List<Status> statusSummaries, List<DetectResult> detectResults, List<DetectIssue> detectIssues, List<Operation> detectOperations, ExitCodeType exitCodeType) {
         logger.info("");
@@ -30,7 +39,13 @@ public class DetectStatusLogger {
         logDetectResults(logger, detectResults);
         logDetectStatus(logger, statusSummaries);
 
+        Optional<String> gettingSupportAdvice = getAdvice(exitCodeType);
+
         logger.info(String.format("Overall Status: %s - %s", exitCodeType.toString(), exitCodeType.getDescription()));
+        if (gettingSupportAdvice.isPresent()) {
+            logger.info("");
+            logger.info(gettingSupportAdvice.get());
+        }
         logger.info("");
         logger.info("===============================");
         logger.info("");
@@ -113,5 +128,12 @@ public class DetectStatusLogger {
         logger.debug("");
         logger.debug("===============================");
         logger.debug("");
+    }
+
+    private Optional<String> getAdvice(ExitCodeType exitCode) {
+        if (!doNotRequireAdvice.contains(exitCode)) {
+            return Optional.of("If you need help troubleshooting this problem, generate a diagnostic zip file by adding '-d' to the command line, and provide it to Synopsys Technical Support. See 'Diagnostic Mode' in the Detect documentation for more information.");
+        }
+        return Optional.empty();
     }
 }
