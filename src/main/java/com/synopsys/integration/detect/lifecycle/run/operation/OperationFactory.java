@@ -37,7 +37,6 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandRunner;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanPathsUtility;
 import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
-import com.synopsys.integration.blackduck.scan.RapidScanService;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
@@ -120,8 +119,10 @@ import com.synopsys.integration.detect.workflow.blackduck.developer.RapidModeGen
 import com.synopsys.integration.detect.workflow.blackduck.developer.RapidModeLogReportOperation;
 import com.synopsys.integration.detect.workflow.blackduck.developer.RapidModeScanOperation;
 import com.synopsys.integration.detect.workflow.blackduck.developer.RapidScanDetectResult;
+import com.synopsys.integration.detect.workflow.blackduck.developer.RapidScanResult;
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultAggregator;
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultSummary;
+import com.synopsys.integration.detect.workflow.blackduck.developer.blackduck.DetectRapidScanService;
 import com.synopsys.integration.detect.workflow.blackduck.policy.PolicyChecker;
 import com.synopsys.integration.detect.workflow.blackduck.project.AddTagsToProjectOperation;
 import com.synopsys.integration.detect.workflow.blackduck.project.AddUserGroupsToProjectOperation;
@@ -284,10 +285,10 @@ public class OperationFactory { //TODO: OperationRunner
     }
 
     //Rapid
-    public final List<DeveloperScanComponentResultView> performRapidScan(BlackDuckRunData blackDuckRunData, BdioResult bdioResult) throws DetectUserFriendlyException {
+    public final RapidScanResult performRapidScan(BlackDuckRunData blackDuckRunData, BdioResult bdioResult) throws DetectUserFriendlyException {
         return auditLog.namedInternal("Project Name Version Chosen", () -> {
-            RapidScanService rapidScanService = blackDuckRunData.getBlackDuckServicesFactory().createRapidScanService();
-            return new RapidModeScanOperation(rapidScanService, detectConfigurationFactory.findTimeoutInSeconds()).run(bdioResult);
+            BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+            return new RapidModeScanOperation(DetectRapidScanService.fromBlackDuckServicesFactory(blackDuckServicesFactory), detectConfigurationFactory.findTimeoutInSeconds()).run(bdioResult);
         });
     }
 
