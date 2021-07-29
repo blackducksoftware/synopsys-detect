@@ -33,8 +33,8 @@ public class AirGapInspectorPaths {
         fontsAirGapPath = determineFontsAirGapPath(detectJar, pathFinder);
     }
 
-    private Path determineInspectorAirGapPath(File detectJar, AirGapPathFinder airGapPathFinder, Path inspectorLocationProperty, String inspectorName) {
-        if (inspectorLocationProperty == null && detectJar != null) {
+    private Path determineInspectorAirGapPath(File detectJar, AirGapPathFinder airGapPathFinder, String inspectorName) {
+        if (detectJar != null) {
             try {
                 return airGapPathFinder.createRelativePackagedInspectorsFile(detectJar.getParentFile(), inspectorName).toPath();
             } catch (Exception e) {
@@ -42,7 +42,6 @@ public class AirGapInspectorPaths {
                 logger.debug(e.getMessage());
             }
         }
-        return inspectorLocationProperty;
     }
 
     private Path determineFontsAirGapPath(File detectJar, AirGapPathFinder airGapPathFinder) {

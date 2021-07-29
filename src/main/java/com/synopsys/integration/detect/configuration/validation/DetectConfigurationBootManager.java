@@ -55,8 +55,8 @@ public class DetectConfigurationBootManager {
 
         List<Property> usedDeprecatedProperties = DetectProperties.allProperties().getProperties()
                                                       .stream()
-                                                      .filter(property -> property.getPropertyDeprecationInfo() != null)
                                                       .filter(property -> detectConfiguration.wasKeyProvided(property.getKey()))
+                                                      .filter(property -> property.getPropertyDeprecationInfo() != null)
                                                       .collect(Collectors.toList());
 
         for (Property property : usedDeprecatedProperties) {

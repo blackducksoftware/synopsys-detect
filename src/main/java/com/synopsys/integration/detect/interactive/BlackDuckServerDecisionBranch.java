@@ -8,7 +8,6 @@
 package com.synopsys.integration.detect.interactive;
 
 import static com.synopsys.integration.detect.configuration.DetectProperties.BLACKDUCK_API_TOKEN;
-import static com.synopsys.integration.detect.configuration.DetectProperties.BLACKDUCK_PASSWORD;
 import static com.synopsys.integration.detect.configuration.DetectProperties.BLACKDUCK_PROXY_HOST;
 import static com.synopsys.integration.detect.configuration.DetectProperties.BLACKDUCK_PROXY_NTLM_DOMAIN;
 import static com.synopsys.integration.detect.configuration.DetectProperties.BLACKDUCK_PROXY_NTLM_WORKSTATION;
@@ -17,7 +16,6 @@ import static com.synopsys.integration.detect.configuration.DetectProperties.BLA
 import static com.synopsys.integration.detect.configuration.DetectProperties.BLACKDUCK_PROXY_USERNAME;
 import static com.synopsys.integration.detect.configuration.DetectProperties.BLACKDUCK_TRUST_CERT;
 import static com.synopsys.integration.detect.configuration.DetectProperties.BLACKDUCK_URL;
-import static com.synopsys.integration.detect.configuration.DetectProperties.BLACKDUCK_USERNAME;
 
 public class BlackDuckServerDecisionBranch implements DecisionTree {
     public static final String SHOULD_USE_API_TOKEN = "Would you like to use an existing API token?";
@@ -36,28 +34,14 @@ public class BlackDuckServerDecisionBranch implements DecisionTree {
     public static final String SET_PROXY_NTLM_WORKSTATION = "What is the ntlm proxy workstation?";
     public static final String SHOULD_TRUST_CERTS = "Would you like to automatically trust certificates?";
     public static final String SET_BLACKDUCK_SERVER_URL = "What is the Black Duck server url?";
-    public static final String WARNING_BLACKDUCK_PASSWORD =
-        "WARNING: If you choose to save the settings, this password will be stored in plain text. You can set this password as an environment variable " + BLACKDUCK_PASSWORD.getProperty().getKeyAsEnvironmentVariable() + ".";
     public static final String WARNING_PROXY_PASSWORD =
         "WARNING: If you choose to save the settings, this password will be stored in plain text. You can set this password as an environment variable " + BLACKDUCK_PROXY_PASSWORD.getProperty().getKeyAsEnvironmentVariable() + ".";
-    public static final String INFO_API_TOKEN_PREFERRED = "You can now configure Black Duck with either an API token -OR- a username and password. The API token must already exist on the Black Duck server, but it is the preferred approach to configure your connection.";
 
     @Override
     public void traverse(InteractivePropertySourceBuilder propertySourceBuilder, InteractiveWriter writer) {
         propertySourceBuilder.setPropertyFromQuestion(BLACKDUCK_URL, SET_BLACKDUCK_SERVER_URL);
 
-        writer.println(INFO_API_TOKEN_PREFERRED);
-        Boolean useApiToken = writer.askYesOrNo(SHOULD_USE_API_TOKEN);
-        if (useApiToken) {
-            propertySourceBuilder.setPropertyFromQuestion(BLACKDUCK_API_TOKEN, SET_API_TOKEN);
-        } else {
-            propertySourceBuilder.setPropertyFromQuestion(BLACKDUCK_USERNAME, SET_USERNAME);
-
-            Boolean setHubPassword = writer.askYesOrNoWithMessage(SHOULD_SET_PASSWORD, WARNING_BLACKDUCK_PASSWORD);
-            if (setHubPassword) {
-                propertySourceBuilder.setPropertyFromSecretQuestion(BLACKDUCK_PASSWORD, SET_PASSWORD);
-            }
-        }
+        propertySourceBuilder.setPropertyFromQuestion(BLACKDUCK_API_TOKEN, SET_API_TOKEN);
 
         Boolean useProxy = writer.askYesOrNo(SHOULD_CONFIGURE_PROXY);
         if (useProxy) {

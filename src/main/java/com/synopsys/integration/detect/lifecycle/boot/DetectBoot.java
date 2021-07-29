@@ -128,7 +128,7 @@ public class DetectBoot {
         logger.debug("Initializing Detect.");
 
         Configuration freemarkerConfiguration = detectBootFactory.createFreemarkerConfiguration();
-        PathResolver pathResolver = detectBootFactory.createPathResolver(detectConfiguration.getValueOrDefault(DetectProperties.DETECT_RESOLVE_TILDE_IN_PATHS.getProperty()));
+        PathResolver pathResolver = detectBootFactory.createPathResolver();
         DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration, pathResolver, gson);
         DirectoryManager directoryManager = detectBootFactory.createDirectoryManager(detectConfigurationFactory);
 

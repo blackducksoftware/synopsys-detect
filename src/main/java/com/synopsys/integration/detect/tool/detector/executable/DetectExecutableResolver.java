@@ -160,7 +160,7 @@ public class DetectExecutableResolver
 
     @Override
     public ExecutableTarget resolvePip() throws DetectableException {
-        return ExecutableTarget.forFile(resolveCachedSystemExecutable(detectExecutableOptions.isPython3() ? "pip3" : "pip", detectExecutableOptions.getPipUserPath()));
+        return ExecutableTarget.forFile(resolveCachedSystemExecutable("pip", detectExecutableOptions.getPipUserPath()));
     }
 
     @Override
@@ -170,7 +170,7 @@ public class DetectExecutableResolver
 
     @Override
     public ExecutableTarget resolvePython() throws DetectableException {
-        return ExecutableTarget.forFile(resolveCachedSystemExecutable(detectExecutableOptions.isPython3() ? "python3" : "python", detectExecutableOptions.getPythonUserPath()));
+        return ExecutableTarget.forFile(resolveCachedSystemExecutable("python", detectExecutableOptions.getPythonUserPath()));
     }
 
     @Override
