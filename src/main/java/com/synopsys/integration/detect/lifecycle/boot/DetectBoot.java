@@ -119,12 +119,6 @@ public class DetectBoot {
             return Optional.of(DetectBootResult.exception(possiblePropertyParseError.get(), detectConfiguration));
         }
 
-        if (deprecationResult.shouldFailFromDeprecations()) {
-            detectConfigurationBootManager.printFailingPropertiesMessages(deprecationResult.getDeprecationMessages());
-
-            return Optional.of(DetectBootResult.exit(detectConfiguration));
-        }
-
         logger.debug("Initializing Detect.");
 
         Configuration freemarkerConfiguration = detectBootFactory.createFreemarkerConfiguration();

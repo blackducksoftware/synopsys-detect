@@ -28,7 +28,7 @@ class HelpJsonOption {
     private String detailedDescription = "";
     private Boolean deprecated = false;
     private String deprecatedDescription = "";
-    private String deprecatedFailInVersion = "";
+    // TODO remove? private String deprecatedFailInVersion = "";
     private String deprecatedRemoveInVersion = "";
     private Boolean strictValues = false;
     private Boolean caseSensitiveValues = false;
@@ -141,13 +141,14 @@ class HelpJsonOption {
         this.deprecatedDescription = deprecatedDescription;
     }
 
-    public String getDeprecatedFailInVersion() {
-        return deprecatedFailInVersion;
-    }
-
-    public void setDeprecatedFailInVersion(String deprecatedFailInVersion) {
-        this.deprecatedFailInVersion = deprecatedFailInVersion;
-    }
+    // TODO remove?
+//    public String getDeprecatedFailInVersion() {
+//        return deprecatedFailInVersion;
+//    }
+//
+//    public void setDeprecatedFailInVersion(String deprecatedFailInVersion) {
+//        this.deprecatedFailInVersion = deprecatedFailInVersion;
+//    }
 
     public String getDeprecatedRemoveInVersion() {
         return deprecatedRemoveInVersion;

@@ -94,7 +94,7 @@ public class HelpJsonWriter {
         helpJsonOption.setDeprecated(property.getPropertyDeprecationInfo() != null);
         if (property.getPropertyDeprecationInfo() != null) {
             helpJsonOption.setDeprecatedDescription(property.getPropertyDeprecationInfo().getDescription());
-            helpJsonOption.setDeprecatedFailInVersion(property.getPropertyDeprecationInfo().getFailInVersion().getDisplayValue());
+            // TODO remove? helpJsonOption.setDeprecatedFailInVersion(property.getPropertyDeprecationInfo().getFailInVersion().getDisplayValue());
             helpJsonOption.setDeprecatedRemoveInVersion(property.getPropertyDeprecationInfo().getRemoveInVersion().getDisplayValue());
         }
         helpJsonOption.setStrictValues(property.isOnlyExampleValues());
