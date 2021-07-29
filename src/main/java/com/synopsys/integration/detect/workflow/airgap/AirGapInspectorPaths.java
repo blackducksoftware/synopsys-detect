@@ -19,28 +19,30 @@ import org.slf4j.LoggerFactory;
 public class AirGapInspectorPaths {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    @Nullable
     private final Path dockerInspectorAirGapPath;
+    @Nullable
     private final Path nugetInspectorAirGapPath;
+    @Nullable
     private final Path gradleInspectorAirGapPath;
     @Nullable
     private final Path fontsAirGapPath;
 
-    public AirGapInspectorPaths(AirGapPathFinder pathFinder, AirGapOptions airGapOptions) {
+    public AirGapInspectorPaths(AirGapPathFinder pathFinder) {
         File detectJar = pathFinder.findDetectJar();
-        dockerInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, airGapOptions.getDockerInspectorPathOverride().orElse(null), AirGapPathFinder.DOCKER);
-        gradleInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, airGapOptions.getGradleInspectorPathOverride().orElse(null), AirGapPathFinder.GRADLE);
-        nugetInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, airGapOptions.getNugetInspectorPathOverride().orElse(null), AirGapPathFinder.NUGET);
+        dockerInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, AirGapPathFinder.DOCKER);
+        gradleInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, AirGapPathFinder.GRADLE);
+        nugetInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, AirGapPathFinder.NUGET);
         fontsAirGapPath = determineFontsAirGapPath(detectJar, pathFinder);
     }
 
     private Path determineInspectorAirGapPath(File detectJar, AirGapPathFinder airGapPathFinder, String inspectorName) {
-        if (detectJar != null) {
-            try {
-                return airGapPathFinder.createRelativePackagedInspectorsFile(detectJar.getParentFile(), inspectorName).toPath();
-            } catch (Exception e) {
-                logger.debug(String.format("Exception encountered when guessing air gap path for %s, returning the detect property instead", inspectorName));
-                logger.debug(e.getMessage());
-            }
+        try {
+            return airGapPathFinder.createRelativePackagedInspectorsFile(detectJar.getParentFile(), inspectorName).toPath();
+        } catch (Exception e) {
+            logger.debug(String.format("Exception encountered when guessing air gap path for %s", inspectorName));
+            logger.debug(e.getMessage());
+            return null;
         }
     }
 
