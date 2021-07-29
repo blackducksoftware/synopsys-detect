@@ -9,7 +9,6 @@ package com.synopsys.integration.detect.workflow.report.output;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -39,25 +38,25 @@ import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.util.NameVersion;
 
 public class FormattedOutputManager {
-    private DetectorToolResult detectorToolResult = null;
-    private Set<String> codeLocations = new HashSet<>();
-    private NameVersion projectNameVersion = null;
+    private final Set<String> codeLocations = new HashSet<>();
     private final List<Status> statusSummaries = new ArrayList<>();
     private final List<DetectResult> detectResults = new ArrayList<>();
     private final List<DetectIssue> detectIssues = new ArrayList<>();
     private final Map<String, List<File>> unrecognizedPaths = new HashMap<>();
-    private SortedMap<String, String> rawMaskedPropertyValues = null;
     private final List<Operation> detectOperations = new LinkedList<>();
+    private DetectorToolResult detectorToolResult = null;
+    private NameVersion projectNameVersion = null;
+    private SortedMap<String, String> rawMaskedPropertyValues = null;
 
     public FormattedOutputManager(EventSystem eventSystem) {
-        eventSystem.registerListener(Event.DetectorsComplete, this::detectorsComplete);
-        eventSystem.registerListener(Event.StatusSummary, this::addStatusSummary);
-        eventSystem.registerListener(Event.Issue, this::addIssue);
-        eventSystem.registerListener(Event.ResultProduced, this::addDetectResult);
-        eventSystem.registerListener(Event.CodeLocationsCompleted, this::codeLocationsCompleted);
+        eventSystem.registerListener(Event.DetectorsComplete, result -> detectorToolResult = result);
+        eventSystem.registerListener(Event.StatusSummary, statusSummaries::add);
+        eventSystem.registerListener(Event.Issue, detectIssues::add);
+        eventSystem.registerListener(Event.ResultProduced, detectResults::add);
+        eventSystem.registerListener(Event.CodeLocationsCompleted, codeLocations::addAll);
         eventSystem.registerListener(Event.UnrecognizedPaths, this::addUnrecognizedPaths);
-        eventSystem.registerListener(Event.ProjectNameVersionChosen, this::projectNameVersionChosen);
-        eventSystem.registerListener(Event.RawMaskedPropertyValuesCollected, this::rawMaskedPropertyValuesCollected);
+        eventSystem.registerListener(Event.ProjectNameVersionChosen, nameVersion -> projectNameVersion = nameVersion);
+        eventSystem.registerListener(Event.RawMaskedPropertyValuesCollected, keyValueMap -> rawMaskedPropertyValues = keyValueMap);
         eventSystem.registerListener(Event.DetectOperationsComplete, detectOperations::addAll);
     }
 
@@ -149,38 +148,11 @@ public class FormattedOutputManager {
         return detectorOutput;
     }
 
-    private void detectorsComplete(DetectorToolResult detectorToolResult) {
-        this.detectorToolResult = detectorToolResult;
-    }
-
-    private void codeLocationsCompleted(Collection<String> codeLocations) {
-        this.codeLocations.addAll(codeLocations);
-    }
-
-    private void projectNameVersionChosen(NameVersion nameVersion) {
-        this.projectNameVersion = nameVersion;
-    }
-
-    public void addStatusSummary(Status status) {
-        statusSummaries.add(status);
-    }
-
-    public void addIssue(DetectIssue issue) {
-        detectIssues.add(issue);
-    }
-
-    public void addDetectResult(DetectResult detectResult) {
-        detectResults.add(detectResult);
-    }
-
-    public void addUnrecognizedPaths(UnrecognizedPaths unrecognizedPaths) {
+    private void addUnrecognizedPaths(UnrecognizedPaths unrecognizedPaths) {
         if (!this.unrecognizedPaths.containsKey(unrecognizedPaths.getGroup())) {
             this.unrecognizedPaths.put(unrecognizedPaths.getGroup(), new ArrayList<>());
         }
         this.unrecognizedPaths.get(unrecognizedPaths.getGroup()).addAll(unrecognizedPaths.getPaths());
     }
 
-    private void rawMaskedPropertyValuesCollected(SortedMap<String, String> keyValueMap) {
-        this.rawMaskedPropertyValues = keyValueMap;
-    }
 }
