@@ -58,7 +58,7 @@ public class FormattedOutputManager {
         eventSystem.registerListener(Event.UnrecognizedPaths, this::addUnrecognizedPaths);
         eventSystem.registerListener(Event.ProjectNameVersionChosen, this::projectNameVersionChosen);
         eventSystem.registerListener(Event.RawMaskedPropertyValuesCollected, this::rawMaskedPropertyValuesCollected);
-        eventSystem.registerListener(Event.DetectOperation, this::addOperation);
+        eventSystem.registerListener(Event.DetectOperationsComplete, detectOperations::addAll);
     }
 
     public FormattedOutput createFormattedOutput(DetectInfo detectInfo) {
@@ -67,24 +67,24 @@ public class FormattedOutputManager {
         formattedOutput.detectVersion = detectInfo.getDetectVersion();
 
         formattedOutput.results = Bds.of(detectResults)
-                                      .map(result -> new FormattedResultOutput(result.getResultLocation(), result.getResultMessage(), removeTabsFromMessages(result.getResultSubMessages())))
-                                      .toList();
+            .map(result -> new FormattedResultOutput(result.getResultLocation(), result.getResultMessage(), removeTabsFromMessages(result.getResultSubMessages())))
+            .toList();
 
         formattedOutput.status = Bds.of(statusSummaries)
-                                     .map(status -> new FormattedStatusOutput(status.getDescriptionKey(), status.getStatusType().toString()))
-                                     .toList();
+            .map(status -> new FormattedStatusOutput(status.getDescriptionKey(), status.getStatusType().toString()))
+            .toList();
 
         formattedOutput.issues = Bds.of(detectIssues)
-                                     .map(issue -> new FormattedIssueOutput(issue.getType().name(), issue.getTitle(), issue.getMessages()))
-                                     .toList();
+            .map(issue -> new FormattedIssueOutput(issue.getType().name(), issue.getTitle(), issue.getMessages()))
+            .toList();
         formattedOutput.operations = visibleOperations();
 
         if (detectorToolResult != null) {
             formattedOutput.detectors = Bds.of(detectorToolResult.getRootDetectorEvaluationTree())
-                                            .flatMap(DetectorEvaluationTree::allDescendentEvaluations)
-                                            .filter(DetectorEvaluation::isApplicable)
-                                            .map(this::convertDetector)
-                                            .toList();
+                .flatMap(DetectorEvaluationTree::allDescendentEvaluations)
+                .filter(DetectorEvaluation::isApplicable)
+                .map(this::convertDetector)
+                .toList();
         }
         if (projectNameVersion != null) {
             formattedOutput.projectName = projectNameVersion.getName();
@@ -92,8 +92,8 @@ public class FormattedOutputManager {
         }
 
         formattedOutput.codeLocations = Bds.of(this.codeLocations)
-                                            .map(FormattedCodeLocationOutput::new)
-                                            .toList();
+            .map(FormattedCodeLocationOutput::new)
+            .toList();
 
         formattedOutput.unrecognizedPaths = new HashMap<>();
         unrecognizedPaths.keySet().forEach(key -> formattedOutput.unrecognizedPaths.put(key, unrecognizedPaths.get(key).stream().map(File::toString).collect(Collectors.toList())));
@@ -105,10 +105,10 @@ public class FormattedOutputManager {
 
     private List<FormattedOperationOutput> visibleOperations() {
         return Bds.of(detectOperations)
-                   .filter(operation -> operation.getOperationType() == OperationType.PUBLIC || operation.getStatusType() != StatusType.SUCCESS) //EITHER a public operation or a failed internal operation
-                   .map(operation -> new FormattedOperationOutput(Operation.formatTimestamp(operation.getStartTime()), Operation.formatTimestamp(operation.getEndTime().orElse(null)), operation.getName(),
-                       operation.getStatusType().name()))
-                   .toList();
+            .filter(operation -> operation.getOperationType() == OperationType.PUBLIC || operation.getStatusType() != StatusType.SUCCESS) //EITHER a public operation or a failed internal operation
+            .map(operation -> new FormattedOperationOutput(Operation.formatTimestamp(operation.getStartTime()), Operation.formatTimestamp(operation.getEndTime().orElse(null)), operation.getName(),
+                operation.getStatusType().name()))
+            .toList();
     }
 
     private List<String> removeTabsFromMessages(List<String> messages) {
@@ -117,10 +117,10 @@ public class FormattedOutputManager {
         }
         // if a line starts with a tab character remove it.  Any other tabs replace it with spaces to preserve a similar look to the messages as the console output.
         return messages.stream()
-                   .filter(StringUtils::isNotBlank)
-                   .map(message -> StringUtils.replaceOnce(message, "\t", ""))
-                   .map(message -> StringUtils.replace(message, "\t", "  "))
-                   .collect(Collectors.toList());
+            .filter(StringUtils::isNotBlank)
+            .map(message -> StringUtils.replaceOnce(message, "\t", ""))
+            .map(message -> StringUtils.replace(message, "\t", "  "))
+            .collect(Collectors.toList());
     }
 
     private FormattedDetectorOutput convertDetector(DetectorEvaluation evaluation) {
@@ -178,10 +178,6 @@ public class FormattedOutputManager {
             this.unrecognizedPaths.put(unrecognizedPaths.getGroup(), new ArrayList<>());
         }
         this.unrecognizedPaths.get(unrecognizedPaths.getGroup()).addAll(unrecognizedPaths.getPaths());
-    }
-
-    public void addOperation(Operation detectOperation) {
-        this.detectOperations.add(detectOperation);
     }
 
     private void rawMaskedPropertyValuesCollected(SortedMap<String, String> keyValueMap) {
