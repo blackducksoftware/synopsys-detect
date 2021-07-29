@@ -37,14 +37,14 @@ public abstract class PhoneHomeManager {
     protected Map<String, String> additionalMetaData;
     protected List<Operation> operations = new LinkedList<>();
 
-    public PhoneHomeManager(Map<String, String> additionalMetaData, DetectInfo detectInfo, EventSystem eventSystem) {
+    protected PhoneHomeManager(Map<String, String> additionalMetaData, DetectInfo detectInfo, EventSystem eventSystem) {
         this.detectInfo = detectInfo;
         this.eventSystem = eventSystem;
         this.additionalMetaData = additionalMetaData;
 
         eventSystem.registerListener(Event.ApplicableCompleted, this::startPhoneHome);
         eventSystem.registerListener(Event.DetectorsProfiled, event -> startPhoneHome(event.getAggregateTimings()));
-        eventSystem.registerListener(Event.DetectOperation, operations::add);
+        eventSystem.registerListener(Event.DetectOperationsComplete, operations::addAll);
     }
 
     public void phoneHomeOperations() {
@@ -80,8 +80,8 @@ public abstract class PhoneHomeManager {
         Map<String, String> metadata = new HashMap<>();
         if (aggregateTimes != null) {
             String applicableBomToolsString = aggregateTimes.keySet().stream()
-                                                  .map(it -> String.format("%s:%s", it.toString(), aggregateTimes.get(it)))
-                                                  .collect(Collectors.joining(","));
+                .map(it -> String.format("%s:%s", it.toString(), aggregateTimes.get(it)))
+                .collect(Collectors.joining(","));
             metadata.put("detectorTimes", applicableBomToolsString);
         }
         safelyPhoneHome(metadata);
@@ -108,10 +108,10 @@ public abstract class PhoneHomeManager {
         if (phoneHomeKey.isPresent()) {
             String status = StatusType.FAILURE.equals(operation.getStatusType()) ? ":" + operation.getStatusType() : ""; // Assume success, mention failure.
             String runTime = operation.getEndTime()
-                                 .map(endTime -> Duration.between(operation.getStartTime(), endTime))
-                                 .map(duration -> Long.toString(duration.toMillis()))
-                                 .map(duration -> ":" + duration)
-                                 .orElse("");
+                .map(endTime -> Duration.between(operation.getStartTime(), endTime))
+                .map(duration -> Long.toString(duration.toMillis()))
+                .map(duration -> ":" + duration)
+                .orElse("");
             metadataMap.compute("operations", (k, currentValue) -> {
                 String operationMetadata = phoneHomeKey.get() + status + runTime;
                 return formatMetadataValue(currentValue, operationMetadata);
