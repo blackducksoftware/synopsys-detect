@@ -12,18 +12,12 @@ import java.util.Map;
 
 public class DeprecationResult {
     private final Map<String, String> additionalNotes;
-    private final Map<String, List<String>> deprecationMessages;
 
-    public DeprecationResult(Map<String, String> additionalNotes, Map<String, List<String>> deprecationMessages) {
+    public DeprecationResult(Map<String, String> additionalNotes) {
         this.additionalNotes = additionalNotes;
-        this.deprecationMessages = deprecationMessages;
     }
 
     public Map<String, String> getAdditionalNotes() {
         return additionalNotes;
-    }
-
-    public Map<String, List<String>> getDeprecationMessages() {
-        return deprecationMessages;
     }
 }

@@ -19,47 +19,44 @@ import static com.synopsys.integration.detect.configuration.DetectProperties.BLA
 
 public class BlackDuckServerDecisionBranch implements DecisionTree {
     public static final String SHOULD_USE_API_TOKEN = "Would you like to use an existing API token?";
-    public static final String SET_API_TOKEN = "What is the API token?";
-    public static final String SET_USERNAME = "What is the username?";
-    public static final String SHOULD_SET_PASSWORD = "Would you like to set the password?";
-    public static final String SET_PASSWORD = "What is the password?";
+    public static final String WHAT_IS_THE_API_TOKEN = "What is the API token?";
     public static final String SHOULD_CONFIGURE_PROXY = "Would you like to configure a proxy?";
-    public static final String SET_PROXY_HOST = "What is the proxy host?";
-    public static final String SET_PROXY_PORT = "What is the proxy port?";
-    public static final String SET_PROXY_USERNAME = "What is the proxy username?";
-    public static final String SHOULD_SET_PROXY_PASSWORD = "Would you like to set the proxy password?";
-    public static final String SET_PROXY_PASSWORD = "What is the proxy password?";
-    public static final String SHOULD_SET_PROXY_NTLM = "Do you use a ntlm proxy?";
-    public static final String SET_PROXY_NTLM_DOMAIN = "What is the ntlm proxy domain?";
-    public static final String SET_PROXY_NTLM_WORKSTATION = "What is the ntlm proxy workstation?";
-    public static final String SHOULD_TRUST_CERTS = "Would you like to automatically trust certificates?";
-    public static final String SET_BLACKDUCK_SERVER_URL = "What is the Black Duck server url?";
+    public static final String WHAT_IS_THE_PROXY_HOST = "What is the proxy host?";
+    public static final String WHAT_IS_THE_PROXY_PORT = "What is the proxy port?";
+    public static final String WHAT_IS_THE_PROXY_USERNAME = "What is the proxy username?";
+    public static final String WOULD_YOU_LIKE_TO_SET_THE_PROXY_PASSWORD = "Would you like to set the proxy password?";
+    public static final String WHAT_IS_THE_PROXY_PASSWORD = "What is the proxy password?";
+    public static final String DO_YOU_USE_A_NTLM_PROXY = "Do you use a ntlm proxy?";
+    public static final String WHAT_IS_THE_NTLM_PROXY_DOMAIN = "What is the ntlm proxy domain?";
+    public static final String WHAT_IS_THE_NTLM_PROXY_WORKSTATION = "What is the ntlm proxy workstation?";
+    public static final String WOULD_YOU_LIKE_TO_AUTOMATICALLY_TRUST_CERTIFICATES = "Would you like to automatically trust certificates?";
+    public static final String WHAT_IS_THE_BLACK_DUCK_SERVER_URL = "What is the Black Duck server url?";
     public static final String WARNING_PROXY_PASSWORD =
         "WARNING: If you choose to save the settings, this password will be stored in plain text. You can set this password as an environment variable " + BLACKDUCK_PROXY_PASSWORD.getProperty().getKeyAsEnvironmentVariable() + ".";
 
     @Override
     public void traverse(InteractivePropertySourceBuilder propertySourceBuilder, InteractiveWriter writer) {
-        propertySourceBuilder.setPropertyFromQuestion(BLACKDUCK_URL, SET_BLACKDUCK_SERVER_URL);
+        propertySourceBuilder.setPropertyFromQuestion(BLACKDUCK_URL, WHAT_IS_THE_BLACK_DUCK_SERVER_URL);
 
-        propertySourceBuilder.setPropertyFromQuestion(BLACKDUCK_API_TOKEN, SET_API_TOKEN);
+        propertySourceBuilder.setPropertyFromSecretQuestion(BLACKDUCK_API_TOKEN, WHAT_IS_THE_API_TOKEN);
 
         Boolean useProxy = writer.askYesOrNo(SHOULD_CONFIGURE_PROXY);
         if (useProxy) {
-            propertySourceBuilder.setPropertyFromQuestion(BLACKDUCK_PROXY_HOST, SET_PROXY_HOST);
-            propertySourceBuilder.setPropertyFromQuestion(BLACKDUCK_PROXY_PORT, SET_PROXY_PORT);
-            propertySourceBuilder.setPropertyFromQuestion(BLACKDUCK_PROXY_USERNAME, SET_PROXY_USERNAME);
-            Boolean setHubPassword = writer.askYesOrNoWithMessage(SHOULD_SET_PROXY_PASSWORD, WARNING_PROXY_PASSWORD);
+            propertySourceBuilder.setPropertyFromQuestion(BLACKDUCK_PROXY_HOST, WHAT_IS_THE_PROXY_HOST);
+            propertySourceBuilder.setPropertyFromQuestion(BLACKDUCK_PROXY_PORT, WHAT_IS_THE_PROXY_PORT);
+            propertySourceBuilder.setPropertyFromQuestion(BLACKDUCK_PROXY_USERNAME, WHAT_IS_THE_PROXY_USERNAME);
+            Boolean setHubPassword = writer.askYesOrNoWithMessage(WOULD_YOU_LIKE_TO_SET_THE_PROXY_PASSWORD, WARNING_PROXY_PASSWORD);
             if (setHubPassword) {
-                propertySourceBuilder.setPropertyFromSecretQuestion(BLACKDUCK_PROXY_PASSWORD, SET_PROXY_PASSWORD);
+                propertySourceBuilder.setPropertyFromSecretQuestion(BLACKDUCK_PROXY_PASSWORD, WHAT_IS_THE_PROXY_PASSWORD);
             }
-            Boolean useNtlmProxy = writer.askYesOrNo(SHOULD_SET_PROXY_NTLM);
+            Boolean useNtlmProxy = writer.askYesOrNo(DO_YOU_USE_A_NTLM_PROXY);
             if (useNtlmProxy) {
-                propertySourceBuilder.setPropertyFromQuestion(BLACKDUCK_PROXY_NTLM_DOMAIN, SET_PROXY_NTLM_DOMAIN);
-                propertySourceBuilder.setPropertyFromQuestion(BLACKDUCK_PROXY_NTLM_WORKSTATION, SET_PROXY_NTLM_WORKSTATION);
+                propertySourceBuilder.setPropertyFromQuestion(BLACKDUCK_PROXY_NTLM_DOMAIN, WHAT_IS_THE_NTLM_PROXY_DOMAIN);
+                propertySourceBuilder.setPropertyFromQuestion(BLACKDUCK_PROXY_NTLM_WORKSTATION, WHAT_IS_THE_NTLM_PROXY_WORKSTATION);
             }
         }
 
-        Boolean trustCert = writer.askYesOrNo(SHOULD_TRUST_CERTS);
+        Boolean trustCert = writer.askYesOrNo(WOULD_YOU_LIKE_TO_AUTOMATICALLY_TRUST_CERTIFICATES);
         if (trustCert) {
             propertySourceBuilder.setProperty(BLACKDUCK_TRUST_CERT, Boolean.TRUE.toString());
         }

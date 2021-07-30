@@ -2,21 +2,18 @@ package com.synopsys.integration.detect.interactive;
 
 import static com.synopsys.integration.detect.interactive.BlackDuckConnectionDecisionBranch.SHOULD_RETRY_CONNECTION;
 import static com.synopsys.integration.detect.interactive.BlackDuckConnectionDecisionBranch.SHOULD_TEST_CONNECTION;
-import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.SET_API_TOKEN;
-import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.SET_BLACKDUCK_SERVER_URL;
-import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.SET_PASSWORD;
-import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.SET_PROXY_HOST;
-import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.SET_PROXY_NTLM_DOMAIN;
-import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.SET_PROXY_NTLM_WORKSTATION;
-import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.SET_PROXY_PASSWORD;
-import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.SET_PROXY_PORT;
-import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.SET_PROXY_USERNAME;
-import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.SET_USERNAME;
+import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.WHAT_IS_THE_API_TOKEN;
+import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.WHAT_IS_THE_BLACK_DUCK_SERVER_URL;
+import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.WHAT_IS_THE_PROXY_HOST;
+import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.WHAT_IS_THE_NTLM_PROXY_DOMAIN;
+import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.WHAT_IS_THE_NTLM_PROXY_WORKSTATION;
+import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.WHAT_IS_THE_PROXY_PASSWORD;
+import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.WHAT_IS_THE_PROXY_PORT;
+import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.WHAT_IS_THE_PROXY_USERNAME;
 import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.SHOULD_CONFIGURE_PROXY;
-import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.SHOULD_SET_PASSWORD;
-import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.SHOULD_SET_PROXY_NTLM;
-import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.SHOULD_SET_PROXY_PASSWORD;
-import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.SHOULD_TRUST_CERTS;
+import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.DO_YOU_USE_A_NTLM_PROXY;
+import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.WOULD_YOU_LIKE_TO_SET_THE_PROXY_PASSWORD;
+import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.WOULD_YOU_LIKE_TO_AUTOMATICALLY_TRUST_CERTIFICATES;
 import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.SHOULD_USE_API_TOKEN;
 import static com.synopsys.integration.detect.interactive.InteractiveModeDecisionTree.SET_PROJECT_NAME;
 import static com.synopsys.integration.detect.interactive.InteractiveModeDecisionTree.SET_PROJECT_VERSION;
@@ -83,20 +80,20 @@ public class InteractiveModeDecisionTreeEndToEndTest {
         testTraverse(
             Bds.mapOf(
                 Pair.of(SHOULD_CONNECT_TO_BLACKDUCK, YES),
-                Pair.of(SET_BLACKDUCK_SERVER_URL, EXPECTED_BLACKDUCK_SERVER_URL),
+                Pair.of(WHAT_IS_THE_BLACK_DUCK_SERVER_URL, EXPECTED_BLACKDUCK_SERVER_URL),
                 Pair.of(SHOULD_USE_API_TOKEN, YES),
-                Pair.of(SET_API_TOKEN, EXPECTED_BLACKDUCK_API_TOKEN),
-                Pair.of(SHOULD_TRUST_CERTS, YES),
+                Pair.of(WHAT_IS_THE_API_TOKEN, EXPECTED_BLACKDUCK_API_TOKEN),
+                Pair.of(WOULD_YOU_LIKE_TO_AUTOMATICALLY_TRUST_CERTIFICATES, YES),
 
                 Pair.of(SHOULD_CONFIGURE_PROXY, YES),
-                Pair.of(SET_PROXY_HOST, EXPECTED_PROXY_HOST),
-                Pair.of(SET_PROXY_PORT, EXPECTED_PROXY_PORT),
-                Pair.of(SET_PROXY_USERNAME, EXPECTED_PROXY_USERNAME),
-                Pair.of(SHOULD_SET_PROXY_PASSWORD, YES),
-                Pair.of(SET_PROXY_PASSWORD, EXPECTED_PROXY_PASSWORD),
-                Pair.of(SHOULD_SET_PROXY_NTLM, YES),
-                Pair.of(SET_PROXY_NTLM_DOMAIN, EXPECTED_PROXY_NTLM_DOMAIN),
-                Pair.of(SET_PROXY_NTLM_WORKSTATION, EXPECTED_PROXY_NTLM_WORKSTATION),
+                Pair.of(WHAT_IS_THE_PROXY_HOST, EXPECTED_PROXY_HOST),
+                Pair.of(WHAT_IS_THE_PROXY_PORT, EXPECTED_PROXY_PORT),
+                Pair.of(WHAT_IS_THE_PROXY_USERNAME, EXPECTED_PROXY_USERNAME),
+                Pair.of(WOULD_YOU_LIKE_TO_SET_THE_PROXY_PASSWORD, YES),
+                Pair.of(WHAT_IS_THE_PROXY_PASSWORD, EXPECTED_PROXY_PASSWORD),
+                Pair.of(DO_YOU_USE_A_NTLM_PROXY, YES),
+                Pair.of(WHAT_IS_THE_NTLM_PROXY_DOMAIN, EXPECTED_PROXY_NTLM_DOMAIN),
+                Pair.of(WHAT_IS_THE_NTLM_PROXY_WORKSTATION, EXPECTED_PROXY_NTLM_WORKSTATION),
 
                 Pair.of(SHOULD_TEST_CONNECTION, NO),
                 Pair.of(SHOULD_SET_PROJECT_NAME_VERSION, NO),
@@ -123,10 +120,10 @@ public class InteractiveModeDecisionTreeEndToEndTest {
         testTraverse(
             Bds.mapOf(
                 Pair.of(SHOULD_CONNECT_TO_BLACKDUCK, YES),
-                Pair.of(SET_BLACKDUCK_SERVER_URL, EXPECTED_BLACKDUCK_SERVER_URL),
+                Pair.of(WHAT_IS_THE_BLACK_DUCK_SERVER_URL, EXPECTED_BLACKDUCK_SERVER_URL),
                 Pair.of(SHOULD_USE_API_TOKEN, YES),
-                Pair.of(SET_API_TOKEN, EXPECTED_BLACKDUCK_API_TOKEN),
-                Pair.of(SHOULD_TRUST_CERTS, YES),
+                Pair.of(WHAT_IS_THE_API_TOKEN, EXPECTED_BLACKDUCK_API_TOKEN),
+                Pair.of(WOULD_YOU_LIKE_TO_AUTOMATICALLY_TRUST_CERTIFICATES, YES),
 
                 Pair.of(SHOULD_CONFIGURE_PROXY, NO),
                 Pair.of(SHOULD_TEST_CONNECTION, NO),
@@ -154,10 +151,10 @@ public class InteractiveModeDecisionTreeEndToEndTest {
         testTraverse(
             Bds.mapOf(
                 Pair.of(SHOULD_CONNECT_TO_BLACKDUCK, YES),
-                Pair.of(SET_BLACKDUCK_SERVER_URL, EXPECTED_BLACKDUCK_SERVER_URL),
+                Pair.of(WHAT_IS_THE_BLACK_DUCK_SERVER_URL, EXPECTED_BLACKDUCK_SERVER_URL),
                 Pair.of(SHOULD_USE_API_TOKEN, YES),
-                Pair.of(SET_API_TOKEN, EXPECTED_BLACKDUCK_API_TOKEN),
-                Pair.of(SHOULD_TRUST_CERTS, YES),
+                Pair.of(WHAT_IS_THE_API_TOKEN, EXPECTED_BLACKDUCK_API_TOKEN),
+                Pair.of(WOULD_YOU_LIKE_TO_AUTOMATICALLY_TRUST_CERTIFICATES, YES),
 
                 Pair.of(SHOULD_CONFIGURE_PROXY, NO),
                 Pair.of(SHOULD_TEST_CONNECTION, NO),
@@ -179,10 +176,10 @@ public class InteractiveModeDecisionTreeEndToEndTest {
         testTraverse(
             Bds.mapOf(
                 Pair.of(SHOULD_CONNECT_TO_BLACKDUCK, YES),
-                Pair.of(SET_BLACKDUCK_SERVER_URL, EXPECTED_BLACKDUCK_SERVER_URL),
+                Pair.of(WHAT_IS_THE_BLACK_DUCK_SERVER_URL, EXPECTED_BLACKDUCK_SERVER_URL),
                 Pair.of(SHOULD_USE_API_TOKEN, YES),
-                Pair.of(SET_API_TOKEN, EXPECTED_BLACKDUCK_API_TOKEN),
-                Pair.of(SHOULD_TRUST_CERTS, YES),
+                Pair.of(WHAT_IS_THE_API_TOKEN, EXPECTED_BLACKDUCK_API_TOKEN),
+                Pair.of(WOULD_YOU_LIKE_TO_AUTOMATICALLY_TRUST_CERTIFICATES, YES),
 
                 Pair.of(SHOULD_CONFIGURE_PROXY, NO),
 
@@ -207,10 +204,10 @@ public class InteractiveModeDecisionTreeEndToEndTest {
         testTraverse(
             Bds.mapOf(
                 Pair.of(SHOULD_CONNECT_TO_BLACKDUCK, YES),
-                Pair.of(SET_BLACKDUCK_SERVER_URL, EXPECTED_BLACKDUCK_SERVER_URL),
+                Pair.of(WHAT_IS_THE_BLACK_DUCK_SERVER_URL, EXPECTED_BLACKDUCK_SERVER_URL),
                 Pair.of(SHOULD_USE_API_TOKEN, YES),
-                Pair.of(SET_API_TOKEN, EXPECTED_BLACKDUCK_API_TOKEN),
-                Pair.of(SHOULD_TRUST_CERTS, YES),
+                Pair.of(WHAT_IS_THE_API_TOKEN, EXPECTED_BLACKDUCK_API_TOKEN),
+                Pair.of(WOULD_YOU_LIKE_TO_AUTOMATICALLY_TRUST_CERTIFICATES, YES),
 
                 Pair.of(SHOULD_TEST_CONNECTION, NO),
                 Pair.of(SHOULD_SET_PROJECT_NAME_VERSION, NO),
@@ -234,10 +231,10 @@ public class InteractiveModeDecisionTreeEndToEndTest {
         testTraverse(
             Bds.mapOf(
                 Pair.of(SHOULD_CONNECT_TO_BLACKDUCK, YES),
-                Pair.of(SET_BLACKDUCK_SERVER_URL, EXPECTED_BLACKDUCK_SERVER_URL),
+                Pair.of(WHAT_IS_THE_BLACK_DUCK_SERVER_URL, EXPECTED_BLACKDUCK_SERVER_URL),
                 Pair.of(SHOULD_USE_API_TOKEN, YES),
-                Pair.of(SET_API_TOKEN, EXPECTED_BLACKDUCK_API_TOKEN),
-                Pair.of(SHOULD_TRUST_CERTS, YES),
+                Pair.of(WHAT_IS_THE_API_TOKEN, EXPECTED_BLACKDUCK_API_TOKEN),
+                Pair.of(WOULD_YOU_LIKE_TO_AUTOMATICALLY_TRUST_CERTIFICATES, YES),
 
                 Pair.of(SHOULD_TEST_CONNECTION, NO),
                 Pair.of(SHOULD_SET_PROJECT_NAME_VERSION, NO),

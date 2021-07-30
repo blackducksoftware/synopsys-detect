@@ -50,7 +50,6 @@ public class DetectConfigurationBootManager {
 
     public DeprecationResult checkForDeprecations(PropertyConfiguration detectConfiguration) throws IllegalAccessException {
         Map<String, String> additionalNotes = new HashMap<>();
-        Map<String, List<String>> deprecationMessages = new HashMap<>();
 
         List<Property> usedDeprecatedProperties = DetectProperties.allProperties().getProperties()
                                                       .stream()
@@ -65,11 +64,10 @@ public class DetectConfigurationBootManager {
 
             additionalNotes.put(propertyKey, "\t *** DEPRECATED ***");
 
-            deprecationMessages.put(propertyKey, Collections.singletonList(deprecationMessage));
             DetectIssue.publish(eventSystem, DetectIssueType.DEPRECATION, propertyKey, deprecationMessage);
         }
 
-        return new DeprecationResult(additionalNotes, deprecationMessages);
+        return new DeprecationResult(additionalNotes);
     }
 
     public void printConfiguration(SortedMap<String, String> maskedRawPropertyValues, Set<String> propertyKeys, Map<String, String> additionalNotes) throws IllegalAccessException {
