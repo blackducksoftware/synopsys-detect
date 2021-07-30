@@ -71,24 +71,6 @@ public class DetectConfigurationFactoryTests {
         Assertions.assertEquals(3, factory.findParallelProcessors());
     }
 
-    @Test
-    public void parallelProcessorsPrefersNewProperty() {
-        DetectConfigurationFactory factory = factoryOf(
-            Pair.of(DetectProperties.DETECT_PARALLEL_PROCESSORS.getProperty(), "5"),
-            Pair.of(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS.getProperty(), "4")
-        );
-
-        Assertions.assertEquals(5, factory.findParallelProcessors());
-    }
-
-    @Test
-    public void parallelProcessorsFallsBackToOldProperty() {
-        DetectConfigurationFactory factory = factoryOf(
-            Pair.of(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS.getProperty(), "5")
-        );
-
-        Assertions.assertEquals(5, factory.findParallelProcessors());
-    }
     //#endregion Parallel Processors
 
 }

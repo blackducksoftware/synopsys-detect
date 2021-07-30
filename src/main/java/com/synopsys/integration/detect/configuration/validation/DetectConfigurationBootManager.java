@@ -50,13 +50,11 @@ public class DetectConfigurationBootManager {
 
     public DeprecationResult checkForDeprecations(PropertyConfiguration detectConfiguration) throws IllegalAccessException {
         Map<String, String> additionalNotes = new HashMap<>();
-        Map<String, List<String>> deprecationMessages = new HashMap<>();
-        boolean shouldFailFromDeprecations = false;
 
         List<Property> usedDeprecatedProperties = DetectProperties.allProperties().getProperties()
                                                       .stream()
-                                                      .filter(property -> property.getPropertyDeprecationInfo() != null)
                                                       .filter(property -> detectConfiguration.wasKeyProvided(property.getKey()))
+                                                      .filter(property -> property.getPropertyDeprecationInfo() != null)
                                                       .collect(Collectors.toList());
 
         for (Property property : usedDeprecatedProperties) {
@@ -66,15 +64,10 @@ public class DetectConfigurationBootManager {
 
             additionalNotes.put(propertyKey, "\t *** DEPRECATED ***");
 
-            deprecationMessages.put(propertyKey, Collections.singletonList(deprecationMessage));
             DetectIssue.publish(eventSystem, DetectIssueType.DEPRECATION, propertyKey, deprecationMessage);
-
-            if (!shouldFailFromDeprecations && detectInfo.getDetectMajorVersion() >= deprecationInfo.getFailInVersion().getIntValue()) {
-                shouldFailFromDeprecations = true;
-            }
         }
 
-        return new DeprecationResult(additionalNotes, deprecationMessages, shouldFailFromDeprecations);
+        return new DeprecationResult(additionalNotes);
     }
 
     public void printConfiguration(SortedMap<String, String> maskedRawPropertyValues, Set<String> propertyKeys, Map<String, String> additionalNotes) throws IllegalAccessException {

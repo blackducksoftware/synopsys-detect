@@ -62,7 +62,6 @@ import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndiv
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
-import com.synopsys.integration.detect.workflow.airgap.AirGapOptions;
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
@@ -94,28 +93,11 @@ public class DetectConfigurationFactory {
 
     //#region Prefer These Over Any Property
     public Long findTimeoutInSeconds() {
-        long timeout = getValue(DetectProperties.DETECT_TIMEOUT);
-        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_TIMEOUT.getProperty())) {
-            return timeout;
-        }
-
-        // If no timeout was passed, check deprecated properties.
-        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_REPORT_TIMEOUT.getProperty())) {
-            timeout = getValue(DetectProperties.DETECT_REPORT_TIMEOUT);
-        }
-        return timeout;
+        return getValue(DetectProperties.DETECT_TIMEOUT);
     }
 
     public int findParallelProcessors() {
-        int provided;
-        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_PARALLEL_PROCESSORS.getProperty())) {
-            provided = getValue(DetectProperties.DETECT_PARALLEL_PROCESSORS);
-        } else if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS.getProperty())) {
-            provided = getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS);
-        } else {
-            provided = getValue(DetectProperties.DETECT_PARALLEL_PROCESSORS);
-        }
-
+        int provided = getValue(DetectProperties.DETECT_PARALLEL_PROCESSORS);
         if (provided > 0) {
             return provided;
         } else {
@@ -257,13 +239,6 @@ public class DetectConfigurationFactory {
         return new DirectoryOptions(sourcePath, outputPath, bdioPath, scanPath, toolsOutputPath, impactOutputPath);
     }
 
-    public AirGapOptions createAirGapOptions() {
-        Path gradleOverride = getPathOrNull(DetectProperties.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH.getProperty());
-        Path nugetOverride = getPathOrNull(DetectProperties.DETECT_NUGET_INSPECTOR_AIR_GAP_PATH.getProperty());
-        Path dockerOverride = getPathOrNull(DetectProperties.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH.getProperty());
-        return new AirGapOptions(dockerOverride, gradleOverride, nugetOverride);
-    }
-
     public DetectExcludedDirectoryFilter createDetectDirectoryFileFilter(Path sourcePath) {
         List<String> directoryExclusionPatterns = collectDirectoryExclusions();
 
@@ -313,10 +288,7 @@ public class DetectConfigurationFactory {
     public ProjectNameVersionOptions createProjectNameVersionOptions(String sourceDirectoryName) {
         String overrideProjectName = getNullableValue(DetectProperties.DETECT_PROJECT_NAME);
         String overrideProjectVersionName = getNullableValue(DetectProperties.DETECT_PROJECT_VERSION_NAME);
-        String defaultProjectVersionText = getValue(DetectProperties.DETECT_DEFAULT_PROJECT_VERSION_TEXT);
-        DefaultVersionNameScheme defaultProjectVersionScheme = getValue(DetectProperties.DETECT_DEFAULT_PROJECT_VERSION_SCHEME);
-        String defaultProjectVersionFormat = getValue(DetectProperties.DETECT_DEFAULT_PROJECT_VERSION_TIMEFORMAT);
-        return new ProjectNameVersionOptions(sourceDirectoryName, overrideProjectName, overrideProjectVersionName, defaultProjectVersionText, defaultProjectVersionScheme, defaultProjectVersionFormat);
+        return new ProjectNameVersionOptions(sourceDirectoryName, overrideProjectName, overrideProjectVersionName);
     }
 
     public boolean createShouldUnmapCodeLocations() {
@@ -395,26 +367,14 @@ public class DetectConfigurationFactory {
         String additionalArguments = PropertyConfigUtils
                                          .getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS.getProperty())
                                          .orElse(null);
-        Path offlineLocalScannerInstallPath = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH.getProperty())
-                                                  .map(path -> path.resolvePath(pathResolver)).orElse(null);
         Path onlineLocalScannerInstallPath = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH.getProperty()).map(path -> path.resolvePath(pathResolver))
                                                  .orElse(null);
-        String userProvidedScannerInstallUrl = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL.getProperty()).orElse(null);
         Integer maxDepth = getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_SEARCH_DEPTH);
-
-        if (offlineLocalScannerInstallPath != null && StringUtils.isNotBlank(userProvidedScannerInstallUrl)) {
-            throw new DetectUserFriendlyException(
-                "You have provided both a Black Duck signature scanner url AND a local Black Duck signature scanner path. Only one of these properties can be set at a time. If both are used together, the *correct* source of the signature scanner can not be determined.",
-                ExitCodeType.FAILURE_GENERAL_ERROR
-            );
-        }
 
         return new BlackDuckSignatureScannerOptions(
             signatureScannerPaths,
             exclusionPatterns,
-            offlineLocalScannerInstallPath,
             onlineLocalScannerInstallPath,
-            userProvidedScannerInstallUrl,
             scanMemory,
             findParallelProcessors(),
             dryRun,
@@ -459,7 +419,6 @@ public class DetectConfigurationFactory {
 
     public DetectExecutableOptions createDetectExecutableOptions() {
         return new DetectExecutableOptions(
-            getValue(DetectProperties.DETECT_PYTHON_PYTHON3),
             getPathOrNull(DetectProperties.DETECT_BASH_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_BAZEL_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_CONAN_PATH.getProperty()),
