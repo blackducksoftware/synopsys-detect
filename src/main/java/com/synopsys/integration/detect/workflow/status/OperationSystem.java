@@ -8,13 +8,13 @@
 package com.synopsys.integration.detect.workflow.status;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collection;
+import java.util.LinkedList;
 
 import org.jetbrains.annotations.Nullable;
 
 public class OperationSystem {
-    private final Map<String, Operation> operationMap = new HashMap<>(); //TODO: May no longer need it to be a map.
+    private final Collection<Operation> operations = new LinkedList<>();
     private final StatusEventPublisher statusEventPublisher;
 
     public OperationSystem(StatusEventPublisher statusEventPublisher) {
@@ -22,15 +22,14 @@ public class OperationSystem {
     }
 
     public void publishOperations() {
-        operationMap.values().forEach(this::publishOperation);
-        statusEventPublisher.publishOperationsComplete(operationMap.values());
+        operations.forEach(this::publishOperationIssues);
+        statusEventPublisher.publishOperationsComplete(operations);
     }
 
-    public void publishOperation(Operation operation) {
+    private void publishOperationIssues(Operation operation) {
         if (operation.getErrorMessages().length > 0) {
             statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, operation.getName(), Arrays.asList(operation.getErrorMessages())));
         }
-        statusEventPublisher.publishOperation(operation);
     }
 
     public Operation startOperation(String operationName, OperationType type) {
@@ -38,13 +37,9 @@ public class OperationSystem {
     }
 
     public Operation startOperation(String operationName, OperationType type, @Nullable String phoneHomeKey) {
-        Operation currentOperation = operationMap.computeIfAbsent(operationName, key -> new Operation(operationName, type, phoneHomeKey));
-        if (currentOperation.getEndTime().isPresent()) {
-            publishOperation(currentOperation);
-            currentOperation = new Operation(operationName, type, phoneHomeKey);
-            operationMap.put(operationName, currentOperation);
-        }
-        return currentOperation;
+        Operation operation = new Operation(operationName, type, phoneHomeKey);
+        operations.add(operation);
+        return operation;
     }
 
 }
