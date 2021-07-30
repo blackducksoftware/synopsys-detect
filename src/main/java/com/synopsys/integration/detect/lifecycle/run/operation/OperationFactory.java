@@ -449,16 +449,8 @@ public class OperationFactory { //TODO: OperationRunner
         return auditLog.namedInternal("Calculate Scanner Install Directory", (OperationWrapper.OperationSupplier<File>) directoryManager::getPermanentDirectory);
     }
 
-    public Optional<File> calculateOfflineLocalScannerInstallPath() throws DetectUserFriendlyException {
-        return auditLog.namedInternal("Calculate Offline Local Scanner Path", () -> detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getOfflineLocalScannerInstallPath().map(Path::toFile));
-    }
-
     public Optional<File> calculateOnlineLocalScannerInstallPath() throws DetectUserFriendlyException {
         return auditLog.namedInternal("Calculate Online Local Scanner Path", () -> detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getOnlineLocalScannerInstallPath().map(Path::toFile));
-    }
-
-    public Optional<String> calculateUserProvidedScannerUrl() throws DetectUserFriendlyException {
-        return auditLog.namedInternal("Calculate User Provided Scanner Url", () -> detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getUserProvidedScannerInstallUrl());
     }
 
     public ScanBatchRunner createScanBatchRunnerWithBlackDuck(BlackDuckRunData blackDuckRunData, File installDirectory) throws DetectUserFriendlyException {

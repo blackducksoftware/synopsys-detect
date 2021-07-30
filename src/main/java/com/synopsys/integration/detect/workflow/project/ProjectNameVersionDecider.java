@@ -50,13 +50,9 @@ public class ProjectNameVersionDecider {
             decidedProjectVersionName = projectVersionOptions.overrideProjectVersionName;
         } else if (chosenToolVersion.isPresent()) {
             decidedProjectVersionName = chosenToolVersion.get();
-        } else if (DefaultVersionNameScheme.TIMESTAMP.equals(projectVersionOptions.defaultProjectVersionScheme)) {
-            logger.debug("A project version name could not be decided. Using the current timestamp.");
-            String timeformat = projectVersionOptions.defaultProjectVersionFormat;
-            decidedProjectVersionName = DateTimeFormatter.ofPattern(timeformat).withZone(ZoneOffset.UTC).format(Instant.now().atZone(ZoneOffset.UTC));
         } else {
             logger.debug("A project version name could not be decided. Using the default version text.");
-            decidedProjectVersionName = projectVersionOptions.defaultProjectVersionText;
+            decidedProjectVersionName = "Default Detect Version";
         }
 
         return new NameVersion(decidedProjectName, decidedProjectVersionName);

@@ -58,32 +58,13 @@ public class PipInspectorTreeParser {
                 }
                 continue;
             }
-
             Dependency currentDependency = parseDependencyFromLine(trimmedLine, sourcePath);
-            int lineLevel = getLineLevel(line);
-            try {
-                history.clearDependenciesDeeperThan(lineLevel);
-            } catch (IllegalStateException e) {
-                logger.warn(String.format("Problem parsing line '%s': %s", line, e.getMessage()));
-            }
-
-            if (project == null) {
-                project = currentDependency;
-            } else if (project.equals(history.getLastDependency())) {
-                graph.addChildToRoot(currentDependency);
-            } else if (history.isEmpty()) {
-                graph.addChildToRoot(currentDependency);
-            } else {
-                graph.addChildWithParents(currentDependency, history.getLastDependency());
-            }
-
+            adjustForIndentLevel(history, line);
+            project = addDependencyToGraph(graph, history, project, currentDependency);
             history.add(currentDependency);
         }
 
-        if (unResolvedPackageCount > 0) {
-            logger.error("The Pip inspector was unable to resolve {} packages. Please check to be sure all packages have been installed with 'pip install'. Refer to 'Python support' in the Detect documentation for important information regarding Python projects.",
-                    unResolvedPackageCount);
-        }
+        adviseIfUnresolvedPackages(unResolvedPackageCount);
 
         if (project != null) {
             CodeLocation codeLocation = new CodeLocation(graph, project.getExternalId());
@@ -91,6 +72,35 @@ public class PipInspectorTreeParser {
         }
 
         return Optional.ofNullable(parseResult);
+    }
+
+    private void adjustForIndentLevel(DependencyHistory history, String line) {
+        int lineLevel = getLineLevel(line);
+        try {
+            history.clearDependenciesDeeperThan(lineLevel);
+        } catch (IllegalStateException e) {
+            logger.warn(String.format("Problem parsing line '%s': %s", line, e.getMessage()));
+        }
+    }
+
+    private Dependency addDependencyToGraph(MutableDependencyGraph graph, DependencyHistory history, Dependency project, Dependency currentDependency) {
+        if (project == null) {
+            project = currentDependency;
+        } else if (project.equals(history.getLastDependency())) {
+            graph.addChildToRoot(currentDependency);
+        } else if (history.isEmpty()) {
+            graph.addChildToRoot(currentDependency);
+        } else {
+            graph.addChildWithParents(currentDependency, history.getLastDependency());
+        }
+        return project;
+    }
+
+    private void adviseIfUnresolvedPackages(int unResolvedPackageCount) {
+        if (unResolvedPackageCount > 0) {
+            logger.error("The Pip inspector was unable to resolve {} packages. Please check to be sure all packages have been installed with 'pip install'. Refer to 'Python support' in the Detect documentation for important information regarding Python projects.",
+                    unResolvedPackageCount);
+        }
     }
 
     private boolean parseErrorsFromLine(String trimmedLine) {

@@ -10,7 +10,6 @@ package com.synopsys.integration.detect.tool.detector.executable;
 import java.nio.file.Path;
 
 public class DetectExecutableOptions {
-    private final boolean isPython3;
     private final Path bashUserPath;
     private final Path bazelUserPath;
     private final Path conanUserPath;
@@ -34,10 +33,9 @@ public class DetectExecutableOptions {
     private final Path sbtUserPath;
     private final Path lernaUserPath;
 
-    public DetectExecutableOptions(boolean isPython3, Path bashUserPath, Path bazelUserPath, Path conanUserPath, Path condaUserPath, Path cpanUserPath, Path cpanmUserPath, Path gradleUserPath, Path mavenUserPath,
+    public DetectExecutableOptions(Path bashUserPath, Path bazelUserPath, Path conanUserPath, Path condaUserPath, Path cpanUserPath, Path cpanmUserPath, Path gradleUserPath, Path mavenUserPath,
         Path npmUserPath, Path pearUserPath, Path pipUserPath, Path pipenvUserPath, Path pythonUserPath, Path rebarUserPath, Path javaUserPath, Path dockerUserPath,
         Path dotnetUserPath, Path gitUserPath, Path goUserPath, Path swiftUserPath, Path sbtUserPath, Path lernaUserPath) {
-        this.isPython3 = isPython3;
         this.bashUserPath = bashUserPath;
         this.bazelUserPath = bazelUserPath;
         this.conanUserPath = conanUserPath;
@@ -140,10 +138,6 @@ public class DetectExecutableOptions {
 
     public Path getLernaUserPath() {
         return lernaUserPath;
-    }
-
-    public boolean isPython3() {
-        return isPython3;
     }
 
     public Path getPipUserPath() {
