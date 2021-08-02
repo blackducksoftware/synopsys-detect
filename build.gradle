@@ -20,7 +20,7 @@ buildscript {
 ext['groovy.version'] = '3.0.0'
 
 group = 'com.synopsys.integration'
-version = '7.3.0-SIGQA2'
+version = '7.3.0-SIGQA3-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
