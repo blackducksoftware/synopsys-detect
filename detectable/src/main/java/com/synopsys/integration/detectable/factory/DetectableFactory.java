@@ -42,6 +42,7 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.SbtRes
 import com.synopsys.integration.detectable.detectable.executable.resolver.SwiftResolver;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
+import com.synopsys.integration.detectable.detectable.inspector.ProjectInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
@@ -166,9 +167,12 @@ import com.synopsys.integration.detectable.detectables.npm.packagejson.NpmPackag
 import com.synopsys.integration.detectable.detectables.npm.packagejson.NpmPackageJsonParseDetectableOptions;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.PackageJsonExtractor;
 import com.synopsys.integration.detectable.detectables.nuget.NugetInspectorExtractor;
+import com.synopsys.integration.detectable.detectables.nuget.NugetParseDetectable;
 import com.synopsys.integration.detectable.detectables.nuget.NugetProjectDetectable;
+import com.synopsys.integration.detectable.detectables.nuget.NugetProjectInspectorExtractor;
 import com.synopsys.integration.detectable.detectables.nuget.NugetSolutionDetectable;
 import com.synopsys.integration.detectable.detectables.nuget.parse.NugetInspectorParser;
+import com.synopsys.integration.detectable.detectables.nuget.parse.NugetProjectInspectorParser;
 import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDetectable;
 import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDetectableOptions;
 import com.synopsys.integration.detectable.detectables.packagist.ComposerLockExtractor;
@@ -373,6 +377,10 @@ public class DetectableFactory {
 
     public NugetSolutionDetectable createNugetSolutionDetectable(DetectableEnvironment environment, NugetInspectorOptions nugetInspectorOptions, NugetInspectorResolver nugetInspectorResolver) {
         return new NugetSolutionDetectable(environment, fileFinder, nugetInspectorResolver, nugetInspectorExtractor(), nugetInspectorOptions);
+    }
+
+    public NugetParseDetectable createNugetParseDetectable(DetectableEnvironment environment, NugetInspectorOptions nugetInspectorOptions, ProjectInspectorResolver projectInspectorResolver) {
+        return new NugetParseDetectable(environment, fileFinder, nugetInspectorOptions, projectInspectorResolver, nugetProjectInspectorExtractor());
     }
 
     public PackratLockDetectable createPackratLockDetectable(DetectableEnvironment environment) {
@@ -637,6 +645,14 @@ public class DetectableFactory {
 
     private NugetInspectorExtractor nugetInspectorExtractor() {
         return new NugetInspectorExtractor(nugetInspectorParser(), fileFinder);
+    }
+
+    private NugetProjectInspectorParser nugetProjectInspectorParser() {
+        return new NugetProjectInspectorParser(gson, externalIdFactory);
+    }
+
+    private NugetProjectInspectorExtractor nugetProjectInspectorExtractor() {
+        return new NugetProjectInspectorExtractor(executableRunner, nugetProjectInspectorParser());
     }
 
     private PackagistParser packagistParser() {

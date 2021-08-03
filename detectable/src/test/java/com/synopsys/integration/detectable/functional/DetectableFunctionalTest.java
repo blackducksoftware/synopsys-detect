@@ -110,6 +110,7 @@ public abstract class DetectableFunctionalTest {
         ExtractionEnvironment extractionEnvironment = new ExtractionEnvironment(outputDirectory.toFile());
         Extraction extraction = detectable.extract(extractionEnvironment);
 
+        Assertions.assertNotNull(extraction, "Detectable did not return an extraction!");
         assertExtraction(extraction);
 
         FileUtils.deleteDirectory(tempDirectory.toFile());
