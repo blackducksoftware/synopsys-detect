@@ -3,6 +3,7 @@
 ## Version 7.3.0
 
 ### New Features
+* Added support for the Carthage package manager.
 
 ### Changed features
 * The Poetry detector is no longer categorized as a PIP detector, and is now categorized under detector type POETRY.
