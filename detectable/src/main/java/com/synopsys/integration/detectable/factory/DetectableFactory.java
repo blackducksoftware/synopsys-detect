@@ -58,6 +58,7 @@ import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParser
 import com.synopsys.integration.detectable.detectables.cargo.CargoDetectable;
 import com.synopsys.integration.detectable.detectables.cargo.CargoExtractor;
 import com.synopsys.integration.detectable.detectables.cargo.parse.CargoLockParser;
+import com.synopsys.integration.detectable.detectables.carthage.CartfileResolvedDependencyDeclarationParser;
 import com.synopsys.integration.detectable.detectables.carthage.CarthageDetectable;
 import com.synopsys.integration.detectable.detectables.carthage.CarthageExtractor;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
@@ -453,7 +454,7 @@ public class DetectableFactory {
     }
 
     private CarthageExtractor carthageExtractor() {
-        return new CarthageExtractor();
+        return new CarthageExtractor(new CartfileResolvedDependencyDeclarationParser());
     }
 
     private ClangPackageDetailsTransformer clangPackageDetailsTransformer() {

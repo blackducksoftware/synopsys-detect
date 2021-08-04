@@ -1,52 +1,30 @@
 package com.synopsys.integration.detectable.detectables.carthage;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.nio.file.Files;
+import java.util.List;
 
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.extraction.Extraction;
 
 public class CarthageExtractor {
-    private static String GITHUB_ORIGIN_ID = "github";
+    private CartfileResolvedDependencyDeclarationParser dependencyDeclarationParser;
 
-    private ExternalIdFactory externalIdFactory = new ExternalIdFactory();
+    public CarthageExtractor(CartfileResolvedDependencyDeclarationParser dependencyDeclarationParser) {
+        this.dependencyDeclarationParser = dependencyDeclarationParser;
+    }
 
-    public Extraction extract(File carthfileResolved) {
-        MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
+    public Extraction extract(File cartfileResolved) {
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(carthfileResolved));
-            String dependencyDeclaration = null;
-            while ((dependencyDeclaration = reader.readLine()) != null) {
-                // Each line in a Cartfile.resolved file is a dependency declaration: <origin> <name/resource> <version>
-                // eg. github "realm/realm-cocoa" "v10.7.2"
-                String[] dependencyDeclarationPieces = dependencyDeclaration.split("\\s+");
-                String origin = dependencyDeclarationPieces[0];
-                // Carthage supports declarations of dependencies via github org/repo, a URL, or a local path
-                // As of now, Detect only supports dependencies with github origins
-                // The KB does not have mappings for binaries, or resources that are not open source.  It has some mappings, though, for GitHub repos
-                if (origin.equals(GITHUB_ORIGIN_ID)) {
-                    String name = dependencyDeclarationPieces[1].replace("\"", "");
-                    String version = dependencyDeclarationPieces[2].replace("\"", "");
+            List<String> dependencyDeclarations = Files.readAllLines(cartfileResolved.toPath());
 
-                    // Because the dependency is hosted on GitHub, we must use the github forge in order for KB to match it
-                    ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.GITHUB, name, version);
-                    // As of Carthage 0.38.0 the dependencies in Cartfile.resolved are produced as a flat list
-                    dependencyGraph.addChildToRoot(new Dependency(name, version, externalId));
-
-                }
-            }
+            DependencyGraph dependencyGraph = dependencyDeclarationParser.parseDependencies(dependencyDeclarations);
+            CodeLocation codeLocation = new CodeLocation(dependencyGraph);
+            // No project info - hoping git can help with that.
+            return new Extraction.Builder().success(codeLocation).build();
         } catch (Exception e) {
-            return new Extraction.Builder().failure(String.format("There was a problem extracting dependencies from %s", carthfileResolved.getAbsolutePath())).build();
+            return new Extraction.Builder().failure(String.format("There was a problem extracting dependencies from %s", cartfileResolved.getAbsolutePath())).build();
         }
-        CodeLocation codeLocation = new CodeLocation(dependencyGraph);
-        // No project info - hoping git can help with that.
-        return new Extraction.Builder().success(codeLocation).build();
     }
 }
