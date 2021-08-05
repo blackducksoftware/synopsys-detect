@@ -13,6 +13,7 @@ import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.Requirements;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectable.result.CartfileResolvedNotFoundDetectableResult;
@@ -22,6 +23,7 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
+@DetectableInfo(language = "various", forge = "GitHub", requirementsMarkdown = "Files: Cartfile, Cartfile.resolved")
 public class CarthageDetectable extends Detectable {
     private static final String CARTFILE_FILENAME = "Cartfile";
     private static final String CARTFILE_RESOLVED_FILENAME = "Cartfile.resolved";
