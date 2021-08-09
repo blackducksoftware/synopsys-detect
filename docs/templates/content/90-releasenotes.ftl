@@ -9,8 +9,6 @@
 * The Poetry detector is no longer categorized as a PIP detector, and is now categorized under detector type POETRY.
 * Simplified the property deprecation lifecycle to the following: Use of deprecated properties will result in logged warnings until the next major version release, at which time those properties will be removed from Detect (and ignored if used). Properties that were deprecated in Detect 6.x have been removed in this release. Properties deprecated in Detect 7.x will be removed in Detect 8.0.0.
 
-### Resolved issues
-
 ## Version 7.2.0
 
 ### Changed features
