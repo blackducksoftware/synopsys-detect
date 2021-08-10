@@ -424,7 +424,7 @@ public class OperationFactory { //TODO: OperationRunner
     public List<SignatureScanPath> createScanPaths(NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws DetectUserFriendlyException {
         return auditLog.namedInternal("Calculate Signature Scan Paths",
             () -> {
-                DetectExcludedDirectoryFilter detectExcludedDirectoryFilter = detectConfigurationFactory.createDetectDirectoryFileFilter(directoryManager.getSourceDirectory().toPath());
+                DetectExcludedDirectoryFilter detectExcludedDirectoryFilter = detectConfigurationFactory.createSignatureScannerFileFilter(directoryManager.getSourceDirectory().toPath());
                 return new CalculateScanPathsOperation(detectConfigurationFactory.createBlackDuckSignatureScannerOptions(), directoryManager, fileFinder,
                     detectExcludedDirectoryFilter::isExcluded)
                            .determinePathsAndExclusions(projectNameVersion, detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getMaxDepth(), dockerTargetData);
