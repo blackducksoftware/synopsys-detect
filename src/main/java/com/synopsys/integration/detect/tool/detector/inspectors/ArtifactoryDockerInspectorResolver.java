@@ -67,12 +67,17 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
     }
 
     private DockerInspectorInfo install() throws IntegrationException, IOException, DetectUserFriendlyException {
+        final Optional<File> airGapDockerFolder = airGapInspectorPaths.getDockerInspectorAirGapFile();
         // TODO: Handle null better.
         final Optional<Path> providedJarPath = dockerDetectableOptions.getDockerInspectorPath();
 
         if (providedJarPath.isPresent()) {
             logger.info("Docker tool will attempt to use the provided docker inspector.");
             return findProvidedJar(providedJarPath.get());
+        } else if (airGapDockerFolder.isPresent()) {
+            logger.info("Docker tool will attempt to use the air gapped docker inspector.");
+            final Optional<DockerInspectorInfo> airGapInspector = findAirGapInspector();
+            return airGapInspector.orElse(null);
         } else {
             logger.info("Docker tool will attempt to download or find docker inspector.");
             final File dockerDirectory = directoryManager.getPermanentDirectory(DOCKER_SHARED_DIRECTORY_NAME);
@@ -80,6 +85,23 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
             final String dockerVersion = dockerDetectableOptions.getDockerInspectorVersion().orElse("");
             return new DockerInspectorInfo(dockerInspectorInstaller.installJar(dockerDirectory, Optional.of(dockerVersion)));
         }
+    }
+
+    private Optional<DockerInspectorInfo> findAirGapInspector() {
+        return getAirGapJar().map(dockerInspectorJar1 -> new DockerInspectorInfo(dockerInspectorJar1, getAirGapInspectorImageTarfiles()));
+    }
+
+    private List<File> getAirGapInspectorImageTarfiles() {
+        final List<File> airGapInspectorImageTarfiles;
+        airGapInspectorImageTarfiles = new ArrayList<>();
+        final String dockerInspectorAirGapPath = airGapInspectorPaths.getDockerInspectorAirGapPath()
+                .map(Path::toString)
+                .orElse(null);
+        for (final String inspectorName : inspectorNames) {
+            final File osImage = new File(dockerInspectorAirGapPath, IMAGE_INSPECTOR_FAMILY + "-" + inspectorName + ".tar");
+            airGapInspectorImageTarfiles.add(osImage);
+        }
+        return airGapInspectorImageTarfiles;
     }
 
     private DockerInspectorInfo findProvidedJar(@NotNull final Path providedJarPath) {
@@ -93,5 +115,28 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
         }
 
         return new DockerInspectorInfo(providedJar);
+    }
+
+    private Optional<File> getAirGapJar() {
+        final Optional<File> airGapDirPath = airGapInspectorPaths.getDockerInspectorAirGapFile();
+        if (!airGapDirPath.isPresent()) {
+            return Optional.empty();
+        }
+
+        logger.debug(String.format("Checking for air gap docker inspector jar file in: %s", airGapDirPath));
+        try {
+            final List<File> possibleJars = fileFinder.findFiles(airGapDirPath.get(), "*.jar", 1);
+            if (possibleJars == null || possibleJars.isEmpty()) {
+                logger.error("Unable to locate air gap jar.");
+                return Optional.empty();
+            } else {
+                final File airGapJarFile = possibleJars.get(0);
+                logger.info(String.format("Found air gap docker inspector: %s", airGapJarFile.getAbsolutePath()));
+                return Optional.of(airGapJarFile);
+            }
+        } catch (final Exception e) {
+            logger.debug(String.format("Did not find a docker inspector jar file in the airgap dir: %s", airGapDirPath));
+            return Optional.empty();
+        }
     }
 }
