@@ -5,7 +5,7 @@ import com.synopsys.integration.detect.verification.VerifyBlackDuckDetectTask
 buildscript {
     ext {
         springBootVersion = '2.4.5'
-        blackDuckCommonVersion = '56.0.0-SNAPSHOT'
+        blackDuckCommonVersion = '58.0.0-SNAPSHOT'
         junitPlatformCustomTestTags = 'docker, battery'
     }
 
@@ -20,7 +20,7 @@ buildscript {
 ext['groovy.version'] = '3.0.0'
 
 group = 'com.synopsys.integration'
-version = '7.2.0-SNAPSHOT'
+version = '7.4.0-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
@@ -228,3 +228,4 @@ task verifyJar() {
         }
     }
 }
+

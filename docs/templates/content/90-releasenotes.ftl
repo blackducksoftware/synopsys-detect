@@ -1,5 +1,26 @@
 # Release notes
 
+## Version 7.3.0
+
+### New Features
+* Added support for the Carthage package manager.
+
+### Changed features
+* The Poetry detector is no longer categorized as a PIP detector, and is now categorized under detector type POETRY.
+* Simplified the property deprecation lifecycle to the following: Use of deprecated properties will result in logged warnings until the next major version release, at which time those properties will be removed from Detect (and ignored if used). Properties that were deprecated in Detect 6.x have been removed in this release. Properties deprecated in Detect 7.x will be removed in Detect 8.0.0.
+
+## Version 7.2.0
+
+### Changed features
+* Improved the readability of Rapid mode results.
+
+### Resolved issues
+* (IDETECT-2532) Resolved an issue that could cause multiple versions of Go-Mod dependencies to appear in the BOM.
+* (IDETECT-2668) Resolved an issue that caused Go-Mod dependencies with a replacement version to be omitted.
+* (IDETECT-2722) Resolved an issue that caused the version to be omitted from Go-Vendr dependencies when the vendor.conf separated dependency name and version with multiple space characters.
+* (IDETECT-2672) Resolved an issue that could cause the Black Duck access token to appear in the log.
+* (IDETECT-2739) Resolved an issue that caused the default to be used when the provided Risk Report path did not exist.
+
 ## Version 7.1.0
 
 ### New Features
@@ -28,9 +49,12 @@
 * Added scripts detect7.sh and detect7.ps1 for invoking ${solution_name} 7.x.x. detect.sh and detect.ps1 will (by default) continue to invoke the latest ${solution_name} 6 version.
 * Added support for Yarn workspaces.
 * Added support for the dependency graph SBT plugin. Resolution cache generation is no longer a requirement of the SBT detector.
-* Added the properties [detect.excluded.directories](../properties/configuration/paths/#detect-excluded-directories-advanced), [detect.excluded.directories.defaults.disabled](../properties/configuration/paths/#detect-excluded-directories-defaults-disabled-advanced), and [detect.excluded.directories.search.depth](../properties/configuration/signature scanner/#detect-excluded-directories-search-depth) to handle exclusions for detector search and signature scanning.
+* Added the properties [detect.excluded.directories](../properties/configuration/paths/#detect-excluded-directories-advanced),
+[detect.excluded.directories.defaults.disabled](../properties/configuration/paths/#detect-excluded-directories-defaults-disabled-advanced), and [detect.excluded.directories.search.depth](../properties/configuration/signature
+scanner/#detect-excluded-directories-search-depth) to handle exclusions for detector search and signature scanning.
 * Added ability to specify excluded directory paths using [glob patterns](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)).
-* Added properties [detect.lerna.excluded.packages](../properties/detectors/lerna/#lerna-packages-excluded-advanced) and [detect.lerna.included.packages](../properties/detectors/lerna/#lerna-packages-included-advanced) to exclude and include specific Lerna packages.
+* Added properties [detect.lerna.excluded.packages](../properties/detectors/lerna/#lerna-packages-excluded-advanced) and [detect.lerna.included.packages](../properties/detectors/lerna/#lerna-packages-included-advanced) to exclude and
+include specific Lerna packages.
 * Added critical security risks to the Black Duck Risk Report pdf.
 * Added detect.target.type to enhance the docker user experience. When set to IMAGE, some tools are automatically disabled and detect optimizes for an image based scan.
 * Added binary scanning of the container filesystem to the default Docker image scanning workflow.
@@ -38,7 +62,8 @@ If you are scanning Docker images and your Black Duck server does not have the b
 use --detect.tools.exluded=BINARY_SCAN to disable the binary scan step.
 
 ### Changed features
-* The following directories will be excluded from signature scan by default, in addition to node_modules: bin, build, .git, .gradle, out, packages, target. Use [detect.excluded.directories.defaults](../properties/configuration/paths/#detect-excluded-directories-defaults-disabled-advanced) to disable these defaults.
+* The following directories will be excluded from signature scan by default, in addition to node_modules: bin, build, .git, .gradle, out, packages, target. Use
+[detect.excluded.directories.defaults](../properties/configuration/paths/#detect-excluded-directories-defaults-disabled-advanced) to disable these defaults.
 * Detect no longer supports the exclusion of individual files during detector search, only directories.
 * Gradle detector no longer uses the gradle inspector. Only the init script is required.
 * The default BDIO format for communicating dependency graphs to Black Duck has been changed from BDIO1 to BDIO2.
@@ -67,7 +92,9 @@ use --detect.tools.exluded=BINARY_SCAN to disable the binary scan step.
 
 ### Changed features
 * Added the timezone to the date format in the default log message format.
-* Reverted deprecations for detect.blackduck.signature.scanner.arguments, detect.blackduck.signature.scanner.copyright.search, detect.blackduck.signature.scanner.dry.run, detect.blackduck.signature.scanner.individual.file.matching, detect.blackduck.signature.scanner.license.search, detect.blackduck.signature.scanner.local.path, detect.blackduck.signature.scanner.paths, detect.blackduck.signature.scanner.snippet.matching, detect.blackduck.signature.scanner.upload.source.mode.
+* Reverted deprecations for detect.blackduck.signature.scanner.arguments, detect.blackduck.signature.scanner.copyright.search, detect.blackduck.signature.scanner.dry.run, detect.blackduck.signature.scanner.individual.file.matching,
+detect.blackduck.signature.scanner.license.search, detect.blackduck.signature.scanner.local.path, detect.blackduck.signature.scanner.paths, detect.blackduck.signature.scanner.snippet.matching,
+detect.blackduck.signature.scanner.upload.source.mode.
 
 ### Resolved issues
 * (IDETECT-1986) Resolved an issue where warnings regarding reflective access appear at the start of Detect.
@@ -90,9 +117,10 @@ use --detect.tools.exluded=BINARY_SCAN to disable the binary scan step.
 * Added date of latest scan for a project version to the risk report pdf.
 * Deprecated properties blackduck.timeout and detect.report.timeout. They have been consolidated into the new property detect.timeout.
 * Deprecated all Detect exclusion properties. Future releases will feature a new property to extend and consolidate these properties.
-* Deprecated all Detect signature scanner properties.  Future releases will feature an alternative mechanism for providing signature scanner arguments to Detect.
+* Deprecated all Detect signature scanner properties. Future releases will feature an alternative mechanism for providing signature scanner arguments to Detect.
 * Deprecated property detect.resolve.tilde.in.paths. Resolving tildes is a shell feature which Detect will no longer support in a future version.
-* Deprecated property detect.python.python3. Due to the January 2020 sunset of Python 2, this property (which toggles between searching for a 'python' and 'python3' executable) is no longer necessary. See: [PEP-394](https://www.python.org/dev/peps/pep-0394/#recommendation)
+* Deprecated property detect.python.python3. Due to the January 2020 sunset of Python 2, this property (which toggles between searching for a 'python' and 'python3' executable) is no longer necessary. See:
+[PEP-394](https://www.python.org/dev/peps/pep-0394/#recommendation)
 * Deprecated properties detect.docker.inspector.air.gap.path, detect.gradle.inspector.air.gap.path, and detect.docker.inspector.air.gap.path as part of an effort to simplify Detect.
 * Deprecated properties detect.default.project.version.scheme, detect.default.project.version.text, detect.default.project.version.timeformat as part of the effort to simplify Detect.
 * Deprecated properties blackduck.username and blackduck.password. Authentication should be performed using an API token.
@@ -133,7 +161,8 @@ use --detect.tools.exluded=BINARY_SCAN to disable the binary scan step.
 * (IDETECT-2202) Impact analysis code locations will now appear in the status.json file.
 
 ### Known issues
-* When running the Docker Inspector on Windows, ${solution_name} may fail to clean up all of its working directories (and log the message "Error trying cleanup") due to the following Docker issue: https://github.com/docker/for-win/issues/394.
+* When running the Docker Inspector on Windows, ${solution_name} may fail to clean up all of its working directories (and log the message "Error trying cleanup") due to the following Docker issue:
+https://github.com/docker/for-win/issues/394.
 * False positives from Gradle are still possible if the replacement dependency is defined within a subproject that has subprojects. Work is being continued to fix this with IDETECT-2218.
 
 ## Version 6.5.0
@@ -174,7 +203,8 @@ and writes them to the status.json file.
 
 ### Resolved issues
 * (IDETECT-2019) Resolved an issue where the pip inspector would not be able to parse the requirements.txt file if pip's version was >= 20.1.
-* (IDETECT-2034) Resolved an issue that would cause a NullPointerException when ${solution_name}'s initial attempt at generating a code location name produced a code location name greater than 250 characters and either code location prefix or code location suffix is not set.
+* (IDETECT-2034) Resolved an issue that would cause a NullPointerException when ${solution_name}'s initial attempt at generating a code location name produced a code location name greater than 250 characters and either code location
+prefix or code location suffix is not set.
 * (IDETECT-1979) Resolved an issue that could cause the CLANG detector to miss some dependencies because it failed to correctly parse complex nested quoted strings within compile_commands.json values.
 * (IDETECT-1966) Resolved an issue that would cause Detect to ignore replacement directives for Go Mod projects.
 
@@ -188,7 +218,8 @@ and writes them to the status.json file.
 * ${solution_name} logs policy violations when it is configured to [fail on policy violations](../properties/configuration/project/#fail-on-policy-violation-severities).
 
 ### Changed features
-* Users can [upload source](../properties/configuration/signature scanner/#upload-source-mode) files when [license search](../properties/configuration/signature scanner/#signature-scanner-license-search) is enabled regardless of whether [snippet matching](../properties/configuration/signature scanner/#snippet-matching) has been enabled.
+* Users can [upload source](../properties/configuration/signature scanner/#upload-source-mode) files when [license search](../properties/configuration/signature scanner/#signature-scanner-license-search) is enabled regardless of whether
+[snippet matching](../properties/configuration/signature scanner/#snippet-matching) has been enabled.
 * ${solution_name} is now compatible with Yocto 3.0.
 * ${solution_name} stops if the Docker Inspector tool applies and ${solution_name} is running on Windows.
 * ${solution_name} configures Docker Inspector's working directories inside ${solution_name}'s run directory.
@@ -196,7 +227,7 @@ and writes them to the status.json file.
 * Moved the location to which ${bash_script_name} downloads the ${solution_name} .jar from /tmp to ~/synopsys-detect/download.
 
 ### Resolved issues
-* (IDETECT-1906) Resolved an issue wherein git extraction might fail if "git log" returned unexpected output.  As a last resort, the commit hash will be used as a version.
+* (IDETECT-1906) Resolved an issue wherein git extraction might fail if "git log" returned unexpected output. As a last resort, the commit hash will be used as a version.
 * (IDETECT-1883) Resolved an issue where ${solution_name} failed to extract project information when parsing a Git repository with a detached head while in buildless mode.
 * (IDETECT-1970) Resolved an issue where the default value for [parallel processors](../properties/configuration/general/#detect-parallel-processors-advanced) was not used. The available runtime processor count was being used instead.
 * (IDETECT-1973) Resolved an issue where the NuGet exe inspector would not resolve from Artifactory.
@@ -227,7 +258,8 @@ and writes them to the status.json file.
 ### Resolved issues
 * Resolved an issue where the download URL for ${solution_name} was being set to an internal URL upon release (IDETECT-1847).
 * Resolved an issue where all transitive dependencies found by the [Pip inspector](../advanced/package-managers/python/#the-pip-detector) were being reported as direct dependencies (IDETECT-1893).
-* Resolved an issue where using pip version 20+ with the [Pip inspector](../advanced/package-managers/python/#the-pip-detector) caused a failure to import a dependency. [GitHub PR](https://github.com/blackducksoftware/synopsys-detect/pull/107) (IDETECT-1868)
+* Resolved an issue where using pip version 20+ with the [Pip inspector](../advanced/package-managers/python/#the-pip-detector) caused a failure to import a dependency. [GitHub
+PR](https://github.com/blackducksoftware/synopsys-detect/pull/107) (IDETECT-1868)
 * Resolved the following vulnerabilities (IDETECT-1872):
 * org.springframework.boot:spring-boot-starter 5.1.7.RELEASE BDSA-2020-0069 (CVE-2020-5398)
 * Resolved an issue where ${solution_name} had the potential to fail on projects that utilized Yarn workspaces (IDETECT-1916).
@@ -249,7 +281,8 @@ and writes them to the status.json file.
 ### Changed features
 * Deprecated all ${polaris_product_name}-related properties.
 * Added [wildcard support](../advanced/includeexcludewildcards/) for several include/exclude list properties.
-* Improved the structure of the dependency information produced by the Yarn detector by changing its approach. It now parses dependency information from yarn.lock and package.json, instead of running the yarn command. Since the yarn command is no longer executed, the detect.yarn.path property has been removed.
+* Improved the structure of the dependency information produced by the Yarn detector by changing its approach. It now parses dependency information from yarn.lock and package.json, instead of running the yarn command. Since the yarn
+command is no longer executed, the detect.yarn.path property has been removed.
 * Improved match accuracy for Bitbake projects by improving external ID generation for dependencies referenced using Git protocols, and dependencies referenced with an epoch and/or revision.
 * Improved the reliability of the Bitbake detector by generating recipe-depends.dot and package-depends.dot files the source directory, instead of a temporary directory.
 * Changed the logging level of ${polaris_product_name} CLI output from DEBUG to INFO.
@@ -275,16 +308,18 @@ and writes them to the status.json file.
 * Detect now logs username, roles, and groups for the current user.
 * Detect now includes the project name/version in every code location name.
 * Detect now takes in a go path, but does not take in go.dep.path; nor does Detect trigger on *.go.
-* The property detect.parallel.processors is added. This property controls the number of parallel threads, and replaces the properties detect.blackduck.signature.scanner.parallel.processors and detect.hub.signature.scanner.parallel.processors.
+* The property detect.parallel.processors is added. This property controls the number of parallel threads, and replaces the properties detect.blackduck.signature.scanner.parallel.processors and
+detect.hub.signature.scanner.parallel.processors.
 * Added the property detect.maven.included.scopes. This is a comma-separated list of Maven scopes. Output is limited to dependencies within these scopes, and is overridden by exclude.
 * Added the property detect.maven.excluded.scopes. This is a comma-separated list of Maven scopes. Output is limited to dependencies outside these scopes, and is overridden by include.
-* Bazel detector: added support for dependencies specified using the maven_install workspace rule.  The detect.bazel.advanced.rules.path property is removed.
+* Bazel detector: added support for dependencies specified using the maven_install workspace rule. The detect.bazel.advanced.rules.path property is removed.
 * When using Detect for static analysis, you can pass the build command to let the Polaris CLI know how to analyze a given project.
 
 ### Changed features
 
 * Architecture is no longer included in BitBake dependencies discovered by Detect. The property detect.bitbake.reference.impl is no longer used and is deprecated.
-* The BitBake detector no longer uses the property detect.bitbake.reference.impl because architecture is no longer required to match with artifacts in the KnowledgeBase. The Bitbake detector now attempts to determine the layer in which a component originated instead of the architecture.
+* The BitBake detector no longer uses the property detect.bitbake.reference.impl because architecture is no longer required to match with artifacts in the KnowledgeBase. The Bitbake detector now attempts to determine the layer in which
+a component originated instead of the architecture.
 * Improved the Detect on-screen logging to be more concise.
 * The PiP inspector is no longer deprecated, and is currently supported.
 * When creating an air gap zip of Detect using the switch -z or --zip, the created zip file is now published to your output directory.
@@ -305,7 +340,8 @@ and writes them to the status.json file.
 * Resolved an issue wherein Detect was not finding the file recipe-depends.dot written to the current directory. Detect now looks in the source directory to a depth of 1 if it cannot find the expected files in the expected location.
 * Resolved an issue wherein Detect was failing if it could not resolve placeholders.
 * Resolved an issue wherein Detect was not handling SSH URLs, which caused Detect to fail in extracting project information from the Git executable. GitCliDetectable now properly handles SSH URLs.
-* Resolved an issue wherein the Detect JAR was downloading for each scan when the script could not communicate with Artifactory. Now, if the script cannot communicate with Artifactory, and there is an existing downloaded Detect, then the previously-downloaded version of Detect runs. However, if you provided a DETECT_LATEST_RELEASE_VERSION and Detect cannot communicate with Artifactory, Detect will not run.
+* Resolved an issue wherein the Detect JAR was downloading for each scan when the script could not communicate with Artifactory. Now, if the script cannot communicate with Artifactory, and there is an existing downloaded Detect, then
+the previously-downloaded version of Detect runs. However, if you provided a DETECT_LATEST_RELEASE_VERSION and Detect cannot communicate with Artifactory, Detect will not run.
 * Resolved an issue wherein Detect was not properly parsing GIT URLs such as git://git.yoctoproject.org/poky.git.
 
 ## Version 5.6.2
@@ -325,7 +361,7 @@ and writes them to the status.json file.
 * Added support for wildcard (*) in the Detect flag blackduck.proxy.ignored.hosts.
 * Added support for --detect.project.tags.
 * Added the properties --detect.parent.project.name and --detect.parent.project.version.name.
-* Added the property  --detect.clone.project.version.latest=true which takes precedence over the exact version name.
+* Added the property --detect.clone.project.version.latest=true which takes precedence over the exact version name.
 * Added support for Yocto 2.0.0.
 * Added support to parse components from the &lt;plugins&gt; block in pom.xml. This only works when detect.detector.buildless=true.
 * Added capability to represent '' and "" as a null value in Detect multiselect custom fields.
@@ -336,8 +372,10 @@ and writes them to the status.json file.
 * Updated the help menu and provided more detailed help options.
 * Diagnostics now includes signature scanner log files.
 * Re-enabled empty aggregate file generation.
-* Polaris no longer runs the the -w switch enabled by default.  To retrieve the issue/policy count, you can use the -w switch.
-* Match accuracy for Docker images is improved by running the signature scanner on a squashed version of the Docker image instead of the container file system. This results in a different name for the code location because the name of the file being scanned is different. For existing projects, the old code location named by default as &lt;repo&gt;_&lt;tag&gt;_containerfilesystem.tar.gz/&lt;repo&gt;/&lt;tag&gt; scan must be removed to ensure it does not contribute stale data to the BOM. Due to the new method of scanning, the code location name has changed.  You must remove the old code location in favor of the new code location.
+* Polaris no longer runs the the -w switch enabled by default. To retrieve the issue/policy count, you can use the -w switch.
+* Match accuracy for Docker images is improved by running the signature scanner on a squashed version of the Docker image instead of the container file system. This results in a different name for the code location because the name of
+the file being scanned is different. For existing projects, the old code location named by default as &lt;repo&gt;_&lt;tag&gt;_containerfilesystem.tar.gz/&lt;repo&gt;/&lt;tag&gt; scan must be removed to ensure it does not contribute
+stale data to the BOM. Due to the new method of scanning, the code location name has changed. You must remove the old code location in favor of the new code location.
 
 ### Resolved issues
 
@@ -359,9 +397,11 @@ and writes them to the status.json file.
 ### New features
 
 * Added support for snippet modes.
-* The property detect.wait.for.results is been added to wait for Black Duck.  The default value is false.  If this property is set to true, Detect won't complete until the normal timeout is reached or the underlying systems with which Detect is communicating are once again idle and ready to receive more data.  The timeout value is controlled by blackduck.timeout.
+* The property detect.wait.for.results is been added to wait for Black Duck. The default value is false. If this property is set to true, Detect won't complete until the normal timeout is reached or the underlying systems with which
+Detect is communicating are once again idle and ready to receive more data. The timeout value is controlled by blackduck.timeout.
 * The shell script and PowerShell script now accept DETECT_JAVA_PATH and DETECT_JAVA_HOME as environment variables for pointing to your Java installation.
-* Added a new property --detect.detector.search.exclusion.paths.  A comma-separated list of directory paths to exclude from a detector search. For example, foo/bar/biz only excludes the biz directory if the parent directory structure is 'foo/bar/'.
+* Added a new property --detect.detector.search.exclusion.paths. A comma-separated list of directory paths to exclude from a detector search. For example, foo/bar/biz only excludes the biz directory if the parent directory structure is
+'foo/bar/'.
 * Detect now uses Git information to determine the default project and version names.
 * There is a new Detect property for overriding the Git executable: detect.git.path.
 
@@ -374,7 +414,8 @@ and writes them to the status.json file.
 * Resolved an issue wherein with two users running Detect on a single system may result in a Permission denied error.
 * Resolved an issue wherein the property -detect.policy.check.fail.on.severities may not be waiting for the snippet scans to complete.
 * Resolved an issue wherein the property --detect.blackduck.signature.scanner.exclusion.name.patterns may not be following the paths.
-* Resolved an issue wherein Detect may fail when the directory specified by --detect.risk.report.pdf.path did not exist.  Detect now attempts to create the directory structure to the specified path. A warning is logged if Detect fails to create the directory.
+* Resolved an issue wherein Detect may fail when the directory specified by --detect.risk.report.pdf.path did not exist. Detect now attempts to create the directory structure to the specified path. A warning is logged if Detect fails to
+create the directory.
 * Resolved an issue wherein properties that had a primary group and additional property group may have been excluded from the group search.
 * Resolved an issue wherein the deprecation warning displayed when the deprecated property was provided by the user.
 * Resolved an issue with aggregate BOM filename generation that could cause the message Unable to relativize path, full source path will be used to display in the log.
@@ -387,9 +428,9 @@ and writes them to the status.json file.
 * The ALL logging level is replaced with the TRACE logging level.
 * The results URL for the Black Duck project BOM is now moved to the Detect Results panel.
 * Renamed Detect Results to Detect Status.
-* Previously, a temp file remained which could contain plain-text user name or password information.  This temp file is now removed.
+* Previously, a temp file remained which could contain plain-text user name or password information. This temp file is now removed.
 * Bazel is added as an acceptable value to the detect.tools properties.
-* Detect now uses the current version of Docker Inspector.  This means that no matter what version of Docker Inspector is currently released, Detect now uses that version.
+* Detect now uses the current version of Docker Inspector. This means that no matter what version of Docker Inspector is currently released, Detect now uses that version.
 
 ## Version 5.4.0
 
@@ -419,7 +460,7 @@ and writes them to the status.json file.
 
 * For getting all logs, the ALL logging level is now TRACE.
 * Improved the error message logged when the property detect.binary.scan.file.path, which must point to a readable file, points to something other than a readable file, such as a directory.
-* Changed the environment variable used to tell the Detect scripts where to download the Detect jar.  The previous value DETECT_JAR_PATH is now changed to DETECT_JAR_DOWNLOAD_DIR.
+* Changed the environment variable used to tell the Detect scripts where to download the Detect jar. The previous value DETECT_JAR_PATH is now changed to DETECT_JAR_DOWNLOAD_DIR.
 * Improved the parsing of packrat.lock files to better represent the relationships between dependencies in the graph.
 * The version of Detect is no longer part of the code location name.
 
@@ -465,7 +506,7 @@ and writes them to the status.json file.
 
 ### Changed features
 
-* The --detect.bom.aggregate.name property now checks for an empty BOM.  If the BOM is empty, it is not uploaded to Black Duck.
+* The --detect.bom.aggregate.name property now checks for an empty BOM. If the BOM is empty, it is not uploaded to Black Duck.
 * Added support for PiP versions 6.0.0 and higher.
 * Improved error messages for Black Duck connection issues.
 * Cosmetic changes: from Black Duck Detect to Synopsys Detect.
@@ -492,7 +533,7 @@ and writes them to the status.json file.
 ### Changed features
 
 * The properties --detect.nuget.path and --detect.nuget.inspector.name are deprecated.
-* The properties detect.suppress.results.output and detect.suppress.configuration.output are deprecated.  The output from these properties is logged instead of written to sysout.
+* The properties detect.suppress.results.output and detect.suppress.configuration.output are deprecated. The output from these properties is logged instead of written to sysout.
 * Improved the reporting of scan registration limit errors.
 
 ## Version 5.0.1

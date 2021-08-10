@@ -181,14 +181,25 @@ To run a container built from a ${solution_name} image, use the Docker CLI's `do
 
 Find available images [here](https://hub.docker.com/repository/docker/blackducksoftware/detect).
 
-The format of image names is: blackducksoftware/detect:[detect_version]-[package_manager]-[package_manager_version]
-* If you want an image with the latest supported release for a major version of Detect, and the latest supported version of a package manager, such images are named in the following format: blackducksoftware/detect:[detect_major_version]-[package_manager]
+The format of image names is: `blackducksoftware/detect:[detect_version]-[package_manager]-[package_manager_version]`
 
-#### ${solution_name} Base Image
+* If you want an image with the latest supported release for a major version of Detect, and the latest supported version of a package manager, such images are named in the following format: `blackducksoftware/detect:[detect_major_version]-[package_manager]`
 
-All Detect images are built from a base ${solution_name} image that can be used to build your own custom ${solution_name} image, to run ${solution_name} in buildless mode, or to run non-detector tools such as the Signature Scanner or Binary Scanner.
+#### ${solution_name} Basic Images
 
-The format of base image names is: blackducksoftware/detect:[detect_version]
+If you wish to build your own custom ${solution_name} image, to run ${solution_name} in buildless mode, or to run non-detector tools such as the Signature Scanner or Binary Scanner, there also exist "simple" ${solution_name} images.  These images contain no package manager files or executables.
+
+The format of "simple" image names is: `blackducksoftware/detect:[detect_version]`
+
+* If you want an image with the latest supported release for a major version of Detect, such images are named in the following format: `blackducksoftware/detect:[detect_major_version]`
+
+##### ${solution_name} Lite Images
+
+If you wish to run ${solution_name} with detectors automatically disabled, there exist "lite" ${solution_name} images.  These images contain no package manager files or executables, and automatically pass the argument --detect.excluded.tools=DETECTOR when running to prevent detectors from running.
+
+The format of "lite" image names is: `blackducksoftware/detect:[detect_version]-lite`
+
+* If you want a lite image with the latest supported release for a major version of Detect, such images are named in the following format: `blackducksoftware/detect:[detect_major_version]-lite`
 
 #### Examples
 

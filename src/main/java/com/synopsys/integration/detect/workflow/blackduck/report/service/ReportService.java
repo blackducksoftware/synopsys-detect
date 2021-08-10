@@ -21,6 +21,7 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import com.synopsys.integration.blackduck.api.generated.view.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
@@ -33,12 +34,6 @@ import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionComponentPolicyStatusType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ReportFormatType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ReportType;
-import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
-import com.synopsys.integration.blackduck.api.generated.view.ComponentPolicyRulesView;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentView;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
-import com.synopsys.integration.blackduck.api.generated.view.ReportView;
 import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationException;
 import com.synopsys.integration.blackduck.http.BlackDuckRequestBuilder;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
@@ -123,22 +118,22 @@ public class ReportService extends DataService {
         reportData.setDistribution(version.getDistribution().toString());
         List<BomComponent> components = new ArrayList<>();
         logger.trace("Getting the Report Contents using the Aggregate Bom Rest Server");
-        List<ProjectVersionComponentView> bomEntries;
+        List<ProjectVersionComponentVersionView> bomEntries;
         try {
             bomEntries = blackDuckApiClient.getAllResponses(version.metaComponentsLink());
         } catch (NoSuchElementException e) {
             throw new BlackDuckIntegrationException("BOM could not be read.  This is likely because you lack sufficient permissions.  Please check your permissions.");
         }
 
-        boolean policyFailure = false;
-        for (ProjectVersionComponentView ProjectVersionComponentView : bomEntries) {
-            String policyStatus = ProjectVersionComponentView.getApprovalStatus().toString();
+        boolean policyFailure = false; //
+        for (ProjectVersionComponentVersionView projectVersionComponentView : bomEntries) {
+            String policyStatus = projectVersionComponentView.getApprovalStatus().toString();
             if (StringUtils.isBlank(policyStatus)) {
                 HttpUrl componentPolicyStatusURL = null;
-                if (!StringUtils.isBlank(ProjectVersionComponentView.getComponentVersion())) {
-                    componentPolicyStatusURL = getComponentPolicyURL(originalVersionUrl, ProjectVersionComponentView.getComponentVersion());
+                if (!StringUtils.isBlank(projectVersionComponentView.getComponentVersion())) {
+                    componentPolicyStatusURL = getComponentPolicyURL(originalVersionUrl, projectVersionComponentView.getComponentVersion());
                 } else {
-                    componentPolicyStatusURL = getComponentPolicyURL(originalVersionUrl, ProjectVersionComponentView.getComponent());
+                    componentPolicyStatusURL = getComponentPolicyURL(originalVersionUrl, projectVersionComponentView.getComponent());
                 }
                 if (!policyFailure) {
                     // FIXME if we could check if Black Duck has the policy module we could remove a lot of the mess
@@ -152,9 +147,9 @@ public class ReportService extends DataService {
                 }
             }
 
-            BomComponent component = createBomComponentFromBomComponentView(ProjectVersionComponentView);
+            BomComponent component = createBomComponentFromBomComponentView(projectVersionComponentView);
             component.setPolicyStatus(policyStatus);
-            populatePolicyRuleInfo(component, ProjectVersionComponentView);
+            populatePolicyRuleInfo(component, projectVersionComponentView);
             components.add(component);
         }
         reportData.setComponents(components);
@@ -214,7 +209,7 @@ public class ReportService extends DataService {
         return new HttpUrl(versionURL.string() + "/" + componentVersionSegments + "/" + "policy-status");
     }
 
-    private BomComponent createBomComponentFromBomComponentView(ProjectVersionComponentView bomEntry) {
+    private BomComponent createBomComponentFromBomComponentView(ProjectVersionComponentVersionView bomEntry) {
         BomComponent component = new BomComponent();
         component.setComponentName(bomEntry.getComponentName());
         component.setComponentURL(bomEntry.getComponent());
@@ -228,7 +223,7 @@ public class ReportService extends DataService {
         return component;
     }
 
-    public void populatePolicyRuleInfo(BomComponent component, ProjectVersionComponentView bomEntry) throws IntegrationException {
+    public void populatePolicyRuleInfo(BomComponent component, ProjectVersionComponentVersionView bomEntry) throws IntegrationException {
         if (bomEntry != null && bomEntry.getApprovalStatus() != null) {
             ProjectVersionComponentPolicyStatusType status = bomEntry.getApprovalStatus();
             if (status == ProjectVersionComponentPolicyStatusType.IN_VIOLATION) {

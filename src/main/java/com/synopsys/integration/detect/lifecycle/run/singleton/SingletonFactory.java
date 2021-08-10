@@ -60,7 +60,7 @@ public class SingletonFactory {
         CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(detectConfigurationFactory.createCodeLocationOverride());
         CodeLocationNameManager codeLocationNameManager = new CodeLocationNameManager(codeLocationNameGenerator);
         CreateBdioCodeLocationsFromDetectCodeLocationsOperation createBdioCodeLocationsFromDetectCodeLocationsOperation = new CreateBdioCodeLocationsFromDetectCodeLocationsOperation(codeLocationNameManager, directoryManager);
-        AirGapInspectorPaths airGapInspectorPaths = new AirGapInspectorPaths(airGapPathFinder, detectConfigurationFactory.createAirGapOptions());
+        AirGapInspectorPaths airGapInspectorPaths = new AirGapInspectorPaths(airGapPathFinder);
         BdioTransformer bdioTransformer = new BdioTransformer();
         DetectExecutableRunner executableRunner = DetectExecutableRunner.newDebug(eventSystem);
         DirectoryExecutableFinder directoryExecutableFinder = DirectoryExecutableFinder.forCurrentOperatingSystem(fileFinder);

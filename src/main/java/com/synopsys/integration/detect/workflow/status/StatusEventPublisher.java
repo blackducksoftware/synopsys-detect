@@ -7,6 +7,8 @@
  */
 package com.synopsys.integration.detect.workflow.status;
 
+import java.util.Collection;
+
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
@@ -30,7 +32,7 @@ public class StatusEventPublisher {
         eventSystem.publishEvent(Event.ResultProduced, detectResult);
     }
 
-    public void publishOperation(Operation detectOperation) {
-        eventSystem.publishEvent(Event.DetectOperation, detectOperation);
+    public void publishOperationsComplete(Collection<Operation> detectOperations) {
+        eventSystem.publishEvent(Event.DetectOperationsComplete, detectOperations);
     }
 }

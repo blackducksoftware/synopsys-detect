@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "@yarnpkg/monorepo/Default Detect Version/packages/plugin-npm/local yarn/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-7.0.0-SIGQA18-SNAPSHOT",
-        "Tool: IntegrationBdio-22.1.1"
-      ],
-      "spdx:created": "2021-05-01T23:45:20.700Z"
-    },
-    "@id": "uuid:5a3982dd-15c6-40d5-af42-6e68f85f771e",
     "@type": "BillOfMaterials",
     "relationship": []
   },

@@ -58,6 +58,9 @@ import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParser
 import com.synopsys.integration.detectable.detectables.cargo.CargoDetectable;
 import com.synopsys.integration.detectable.detectables.cargo.CargoExtractor;
 import com.synopsys.integration.detectable.detectables.cargo.parse.CargoLockParser;
+import com.synopsys.integration.detectable.detectables.carthage.CartfileResolvedDependencyDeclarationParser;
+import com.synopsys.integration.detectable.detectables.carthage.CarthageDetectable;
+import com.synopsys.integration.detectable.detectables.carthage.CarthageExtractor;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOptions;
 import com.synopsys.integration.detectable.detectables.clang.ClangExtractor;
@@ -122,10 +125,10 @@ import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectab
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliExtractor;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCommandExecutor;
-import com.synopsys.integration.detectable.detectables.go.gomod.GoModGraphParser;
-import com.synopsys.integration.detectable.detectables.go.gomod.GoModGraphTransformer;
-import com.synopsys.integration.detectable.detectables.go.gomod.GoModWhyParser;
-import com.synopsys.integration.detectable.detectables.go.gomod.ReplacementDataExtractor;
+import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoGraphParser;
+import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoListParser;
+import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoModWhyParser;
+import com.synopsys.integration.detectable.detectables.go.gomod.process.GoModGraphGenerator;
 import com.synopsys.integration.detectable.detectables.go.vendor.GoVendorDetectable;
 import com.synopsys.integration.detectable.detectables.go.vendor.GoVendorExtractor;
 import com.synopsys.integration.detectable.detectables.go.vendr.GoVndrDetectable;
@@ -269,6 +272,10 @@ public class DetectableFactory {
 
     public CargoDetectable createCargoDetectable(DetectableEnvironment environment) {
         return new CargoDetectable(environment, fileFinder, cargoExtractor());
+    }
+
+    public CarthageDetectable createCarthageDetectable(DetectableEnvironment environment) {
+        return new CarthageDetectable(environment, fileFinder, carthageExtractor());
     }
 
     public ClangDetectable createClangDetectable(DetectableEnvironment environment, ClangDetectableOptions clangDetectableOptions) {
@@ -446,6 +453,10 @@ public class DetectableFactory {
         return new CargoExtractor(new CargoLockParser());
     }
 
+    private CarthageExtractor carthageExtractor() {
+        return new CarthageExtractor(new CartfileResolvedDependencyDeclarationParser());
+    }
+
     private ClangPackageDetailsTransformer clangPackageDetailsTransformer() {
         return new ClangPackageDetailsTransformer(externalIdFactory);
     }
@@ -532,10 +543,6 @@ public class DetectableFactory {
         return new GoDepExtractor(goLockParser());
     }
 
-    private GoModGraphParser goModGraphParser() {
-        return new GoModGraphParser(externalIdFactory);
-    }
-
     private GoModWhyParser goModWhyParser() {
         return new GoModWhyParser();
     }
@@ -544,16 +551,20 @@ public class DetectableFactory {
         return new GoModCommandExecutor(executableRunner);
     }
 
-    private GoModGraphTransformer goModGraphTransformer() {
-        return new GoModGraphTransformer(replacementDataExtractor());
+    private GoModGraphGenerator goModGraphGraphGenerator() {
+        return new GoModGraphGenerator(externalIdFactory);
     }
 
-    private ReplacementDataExtractor replacementDataExtractor() {
-        return new ReplacementDataExtractor(gson);
+    private GoListParser goListParser() {
+        return new GoListParser(gson);
+    }
+
+    private GoGraphParser goGraphParser() {
+        return new GoGraphParser();
     }
 
     private GoModCliExtractor goModCliExtractor() {
-        return new GoModCliExtractor(goModCommandExecutor(), goModGraphParser(), goModGraphTransformer(), goModWhyParser());
+        return new GoModCliExtractor(goModCommandExecutor(), goListParser(), goGraphParser(), goModWhyParser(), goModGraphGraphGenerator());
     }
 
     private GoVndrExtractor goVndrExtractor() {

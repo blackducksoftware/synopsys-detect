@@ -18,7 +18,10 @@
           "name": "detect",
           "separator": "/"
         },
-        "path": "linux-cocoapods"
+        "pieces": [
+          "linux-cocoapods",
+          null
+        ]
       }
     },
     "relationship": [
@@ -27,7 +30,7 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:cocoapods/PromiseKit/4.4.0",
+        "related": "http:cocoapods/SwiftHTTP/2.0.2",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -39,7 +42,7 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:cocoapods/SwiftHTTP/2.0.2",
+        "related": "http:cocoapods/PromiseKit/4.4.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -57,27 +60,31 @@
           "name": "cocoapods",
           "separator": ":"
         },
-        "name": "SwiftyJSON",
-        "version": "3.1.4"
+        "pieces": [
+          "SwiftyJSON",
+          "3.1.4"
+        ]
       }
     },
     "relationship": []
   },
   {
-    "name": "PromiseKit",
-    "revision": "4.4.0",
-    "@id": "http:cocoapods/PromiseKit/4.4.0",
+    "name": "SwiftHTTP",
+    "revision": "2.0.2",
+    "@id": "http:cocoapods/SwiftHTTP/2.0.2",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "cocoapods",
-      "externalId": "PromiseKit:4.4.0",
+      "externalId": "SwiftHTTP:2.0.2",
       "externalIdMetaData": {
         "forge": {
           "name": "cocoapods",
           "separator": ":"
         },
-        "name": "PromiseKit",
-        "version": "4.4.0"
+        "pieces": [
+          "SwiftHTTP",
+          "2.0.2"
+        ]
       }
     },
     "relationship": []
@@ -95,8 +102,10 @@
           "name": "cocoapods",
           "separator": ":"
         },
-        "name": "Socket.IO-Client-Swift",
-        "version": "11.1.1"
+        "pieces": [
+          "Socket.IO-Client-Swift",
+          "11.1.1"
+        ]
       }
     },
     "relationship": [
@@ -119,8 +128,10 @@
           "name": "cocoapods",
           "separator": ":"
         },
-        "name": "StarscreamSocketIO",
-        "version": "8.0.4"
+        "pieces": [
+          "StarscreamSocketIO",
+          "8.0.4"
+        ]
       }
     },
     "relationship": []
@@ -138,27 +149,31 @@
           "name": "cocoapods",
           "separator": ":"
         },
-        "name": "ZIPFoundation",
-        "version": "0.9.9"
+        "pieces": [
+          "ZIPFoundation",
+          "0.9.9"
+        ]
       }
     },
     "relationship": []
   },
   {
-    "name": "SwiftHTTP",
-    "revision": "2.0.2",
-    "@id": "http:cocoapods/SwiftHTTP/2.0.2",
+    "name": "PromiseKit",
+    "revision": "4.4.0",
+    "@id": "http:cocoapods/PromiseKit/4.4.0",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "cocoapods",
-      "externalId": "SwiftHTTP:2.0.2",
+      "externalId": "PromiseKit:4.4.0",
       "externalIdMetaData": {
         "forge": {
           "name": "cocoapods",
           "separator": ":"
         },
-        "name": "SwiftHTTP",
-        "version": "2.0.2"
+        "pieces": [
+          "PromiseKit",
+          "4.4.0"
+        ]
       }
     },
     "relationship": []

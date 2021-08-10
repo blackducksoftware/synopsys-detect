@@ -16,6 +16,7 @@ import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspe
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
 import com.synopsys.integration.detectable.detectables.cargo.CargoDetectable;
+import com.synopsys.integration.detectable.detectables.carthage.CarthageDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 import com.synopsys.integration.detectable.detectables.cocoapods.PodlockDetectable;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliDetectable;
@@ -93,6 +94,10 @@ public class DetectDetectableFactory {
 
     public CargoDetectable createCargoDetectable(DetectableEnvironment environment) {
         return detectableFactory.createCargoDetectable(environment);
+    }
+
+    public CarthageDetectable createCarthageDetectable(DetectableEnvironment environment) {
+        return detectableFactory.createCarthageDetectable(environment);
     }
 
     public ClangDetectable createClangDetectable(DetectableEnvironment environment) {

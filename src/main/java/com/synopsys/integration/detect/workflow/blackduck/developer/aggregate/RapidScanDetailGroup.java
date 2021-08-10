@@ -9,7 +9,7 @@ package com.synopsys.integration.detect.workflow.blackduck.developer.aggregate;
 
 public enum RapidScanDetailGroup {
     LICENSE("License"),
-    POLICY("Policy"),
+    POLICY("Components"),
     SECURITY("Security");
 
     private String displayName;

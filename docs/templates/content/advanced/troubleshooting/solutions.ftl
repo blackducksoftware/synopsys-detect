@@ -210,3 +210,34 @@ The problem may be intermittent.
 There is no harm in leaving the directories behind in the short term,
 but we recommend periodically removing them if the problem occurs frequently.
 Restarting Docker will force Docker to release the locks, and enable you to remove the directories.
+
+## "SpringApplication - Application run failed" upon upgrading to ${solution_name} 7
+
+### Symptom
+
+After upgrading to ${solution_name} 7, ${solution_name} fails with:
+````
+[main] ERROR org.springframework.boot.SpringApplication - Application run failed
+java.lang.IllegalStateException: Unable to load config data resource from pattern 'file:./config/*/application.yaml'
+
+Caused by: java.lang.IllegalStateException: 'config' is not a directory
+````
+
+### Possible cause
+
+${solution_name} 7 upgraded to a newer version of Spring Boot (currently: 2.4.5) which by default looks for a subdirectory in the current working directory called "config".
+If, instead of a directory named "config", there is a file named "config", Spring Boot (and ${solution_name}) fail with the message given above.
+
+### Solution
+
+The easiest workaround is to override the default value of the Spring Boot property *spring.config.location*. If you are using a Spring Boot configuration
+file such as application.properties or application.yml, set the value of *spring.config.location* so Spring Boot will find it.
+That is, set it to the path of the directory in which that file resides (include a trailing slash to indicate that you are specifying a directory), or to the path of the config file itself.
+
+If you are not using a Spring Boot configuration file, set the value of *spring.config.location* to the empty string:
+````
+--spring.config.location=""
+````
+
+Additional details are available in the [Spring Boot documentation](https://docs.spring.io/spring-boot/docs/2.4.5/reference/html/howto.html#howto-change-the-location-of-external-properties).
+

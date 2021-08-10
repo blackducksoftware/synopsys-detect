@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "dependencies-mess-demo_2.12/0.1/api/api1/api/api1 sbt/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-7.1.0-SNAPSHOT",
-        "Tool: IntegrationBdio-22.1.1"
-      ],
-      "spdx:created": "2021-04-23T18:56:40.419315300Z"
-    },
-    "@id": "uuid:5a5d77c5-d3da-4867-9591-5f37d5157e00",
     "@type": "BillOfMaterials",
     "relationship": []
   },

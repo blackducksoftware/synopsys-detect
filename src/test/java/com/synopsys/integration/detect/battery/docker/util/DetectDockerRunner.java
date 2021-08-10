@@ -19,11 +19,12 @@ import com.github.dockerjava.transport.DockerHttpClient;
 import com.synopsys.integration.util.OperatingSystemType;
 
 public class DetectDockerRunner {
-    public DockerDetectResult runContainer(String image, String cmd, HostConfig hostConfig, DockerClient dockerClient) {
+    public DockerDetectResult runContainer(String image, String cmd, String workdir, HostConfig hostConfig, DockerClient dockerClient) {
 
         String containerId = dockerClient.createContainerCmd(image)
                                  .withHostConfig(hostConfig)
                                  .withCmd(cmd.split(" "))
+                                 .withWorkingDir(workdir)
                                  .exec().getId();
 
         try {
@@ -75,9 +76,9 @@ public class DetectDockerRunner {
     public boolean imageExists(final String imageName, DockerClient dockerClient) {
         List<Image> images = dockerClient.listImagesCmd().exec();
         List<String> tags = images.stream()
-                .filter(image -> image.getRepoTags() != null)
-                .flatMap(image -> Arrays.stream(image.getRepoTags()))
-                .collect(Collectors.toList());
+                                .filter(image -> image.getRepoTags() != null)
+                                .flatMap(image -> Arrays.stream(image.getRepoTags()))
+                                .collect(Collectors.toList());
         return tags.contains(imageName);
     }
 }

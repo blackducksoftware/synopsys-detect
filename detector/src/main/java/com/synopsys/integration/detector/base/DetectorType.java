@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 public enum DetectorType {
     BITBAKE,
     CARGO,
+    CARTHAGE,
     COCOAPODS,
     CONAN,
     CONDA,
@@ -34,6 +35,7 @@ public enum DetectorType {
     PACKAGIST,
     PEAR,
     PIP,
+    POETRY,
     RUBYGEMS,
     SBT,
     SWIFT,

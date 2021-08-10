@@ -9,6 +9,9 @@ package com.synopsys.integration.detect.workflow.blackduck;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
+
+import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
 
@@ -17,11 +20,11 @@ public class BlackDuckPostOptions {
 
     private final boolean generateRiskReport;
     private final boolean generateNoticesReport;
-    private final Path riskReportPdfPath;
-    private final Path noticesReportPath;
+    private final @Nullable Path riskReportPdfPath;
+    private final @Nullable Path noticesReportPath;
     private final List<PolicyRuleSeverityType> severitiesToFailPolicyCheck;
 
-    public BlackDuckPostOptions(final boolean waitForResults, final boolean generateRiskReport, final boolean generateNoticesReport, final Path riskReportPdfPath, final Path noticesReportPath,
+    public BlackDuckPostOptions(final boolean waitForResults, final boolean generateRiskReport, final boolean generateNoticesReport, @Nullable final Path riskReportPdfPath, final @Nullable Path noticesReportPath,
         final List<PolicyRuleSeverityType> severitiesToFailPolicyCheck) {
         this.waitForResults = waitForResults;
         this.generateRiskReport = generateRiskReport;
@@ -51,12 +54,12 @@ public class BlackDuckPostOptions {
         return severitiesToFailPolicyCheck.size() > 0;
     }
 
-    public Path getRiskReportPdfPath() {
-        return riskReportPdfPath;
+    public Optional<Path> getRiskReportPdfPath() {
+        return Optional.ofNullable(riskReportPdfPath);
     }
 
-    public Path getNoticesReportPath() {
-        return noticesReportPath;
+    public Optional<Path> getNoticesReportPath() {
+        return Optional.ofNullable(noticesReportPath);
     }
 
     public List<PolicyRuleSeverityType> getSeveritiesToFailPolicyCheck() {

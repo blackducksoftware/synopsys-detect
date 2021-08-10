@@ -12,7 +12,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class Operation {
     public static String formatTimestamp(@Nullable Instant executionTime) {
@@ -29,25 +29,40 @@ public class Operation {
     private StatusType statusType;
     private String[] errorMessages;
     private OperationType operationType;
+    @Nullable
+    private String phoneHomeKey;
 
     public static Operation of(String name) {
-        return new Operation(name, OperationType.PUBLIC);
+        return of(name, null);
+    }
+
+    public static Operation of(String name, @Nullable String phoneHomeKey) {
+        return new Operation(name, OperationType.PUBLIC, phoneHomeKey);
     }
 
     public static Operation silentOf(String name) {
-        return new Operation(name, OperationType.INTERNAL);
+        return silentOf(name, null);
+    }
+
+    public static Operation silentOf(String name, @Nullable String phoneHomeKey) {
+        return new Operation(name, OperationType.INTERNAL, phoneHomeKey);
     }
 
     protected Operation(String name, OperationType type) {
-        this(Instant.now(), type, null, name, StatusType.SUCCESS);
+        this(Instant.now(), type, null, name, StatusType.SUCCESS, null);
     }
 
-    protected Operation(Instant startTime, OperationType operationType, @Nullable Instant endTime, String name, StatusType statusType, String... errorMessages) {
+    protected Operation(String name, OperationType type, @Nullable String phoneHomeKey) {
+        this(Instant.now(), type, null, name, StatusType.SUCCESS, phoneHomeKey);
+    }
+
+    protected Operation(Instant startTime, OperationType operationType, @Nullable Instant endTime, String name, StatusType statusType, @Nullable String phoneHomeKey, String... errorMessages) {
         this.startTime = startTime;
         this.operationType = operationType;
         this.endTime = endTime;
         this.name = name;
         this.statusType = statusType;
+        this.phoneHomeKey = phoneHomeKey;
         this.errorMessages = errorMessages;
     }
 
@@ -92,6 +107,10 @@ public class Operation {
 
     public StatusType getStatusType() {
         return statusType;
+    }
+
+    public Optional<String> getPhoneHomeKey() {
+        return Optional.ofNullable(phoneHomeKey);
     }
 
     public String[] getErrorMessages() {

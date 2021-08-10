@@ -18,39 +18,22 @@
           "name": "pypi",
           "separator": "/"
         },
-        "name": "django-debug-toolbar",
-        "version": "2.0"
+        "pieces": [
+          "django-debug-toolbar",
+          "2.0"
+        ]
       }
     },
     "relationship": [
       {
-        "related": "http:pypi/sqlparse/0.3.0",
+        "related": "http:pypi/Django/2.2.7",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:pypi/Django/2.2.7",
+        "related": "http:pypi/sqlparse/0.3.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
-  },
-  {
-    "name": "sqlparse",
-    "revision": "0.3.0",
-    "@id": "http:pypi/sqlparse/0.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "pypi",
-      "externalId": "sqlparse/0.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "pypi",
-          "separator": "/"
-        },
-        "name": "sqlparse",
-        "version": "0.3.0"
-      }
-    },
-    "relationship": []
   },
   {
     "name": "Django",
@@ -65,17 +48,19 @@
           "name": "pypi",
           "separator": "/"
         },
-        "name": "Django",
-        "version": "2.2.7"
+        "pieces": [
+          "Django",
+          "2.2.7"
+        ]
       }
     },
     "relationship": [
       {
-        "related": "http:pypi/sqlparse/0.3.0",
+        "related": "http:pypi/pytz/2019.3",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:pypi/pytz/2019.3",
+        "related": "http:pypi/sqlparse/0.3.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -93,8 +78,31 @@
           "name": "pypi",
           "separator": "/"
         },
-        "name": "pytz",
-        "version": "2019.3"
+        "pieces": [
+          "pytz",
+          "2019.3"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "sqlparse",
+    "revision": "0.3.0",
+    "@id": "http:pypi/sqlparse/0.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "sqlparse/0.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "pieces": [
+          "sqlparse",
+          "0.3.0"
+        ]
       }
     },
     "relationship": []

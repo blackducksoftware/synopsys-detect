@@ -7,38 +7,38 @@ import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detect.battery.docker.provider.BuildDockerImageProvider;
 import com.synopsys.integration.detect.battery.docker.util.DetectCommandBuilder;
-import com.synopsys.integration.detect.battery.docker.util.DetectDockerTestBuilder;
-import com.synopsys.integration.detect.battery.util.DockerTestAssertions;
+import com.synopsys.integration.detect.battery.docker.util.DetectDockerTestRunner;
+import com.synopsys.integration.detect.battery.docker.util.DockerAssertions;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
-@Tag("docker")
+@Tag("integration")
 public class ImpactTest {
     @Test
     void offlineImpact() throws IOException, InterruptedException {
-        DetectDockerTestBuilder test = new DetectDockerTestBuilder("detect-impact-test", "detect-impact-test:1.0.0");
+        DetectDockerTestRunner test = new DetectDockerTestRunner("detect-impact-test", "detect-impact-test:1.0.0");
         test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Impact.dockerfile"));
 
-        DetectCommandBuilder commandBuilder = DetectCommandBuilder.withDefaults();
+        DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
         commandBuilder.property(DetectProperties.DETECT_TOOLS, "IMPACT_ANALYSIS");
         commandBuilder.property(DetectProperties.DETECT_IMPACT_ANALYSIS_ENABLED, "true");
-        DockerTestAssertions result = test.run(commandBuilder);
+        DockerAssertions dockerAssertions = test.run(commandBuilder);
 
-        result.successfulTool("IMPACT_ANALYSIS");
-        result.logContainsPattern("Vulnerability Impact Analysis generated report at /opt/results/output/runs/", "/impact-analysis/external-method-uses.bdmu");
-        result.successfulOperation("Generate Impact Analysis File");
+        dockerAssertions.successfulTool("IMPACT_ANALYSIS");
+        dockerAssertions.logContainsPattern("Vulnerability Impact Analysis generated report at /opt/results/output/runs/.*/impact-analysis/external-method-uses.bdmu");
+        dockerAssertions.successfulOperation("Generate Impact Analysis File");
     }
 
     @Test
     void impactOutputPath() throws IOException, InterruptedException {
-        DetectDockerTestBuilder test = new DetectDockerTestBuilder("detect-impact-output-path-test", "detect-impact-test:1.0.0");
+        DetectDockerTestRunner test = new DetectDockerTestRunner("detect-impact-output-path-test", "detect-impact-test:1.0.0");
         test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Impact.dockerfile"));
 
-        DetectCommandBuilder commandBuilder = DetectCommandBuilder.withDefaults();
+        DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
         commandBuilder.property(DetectProperties.DETECT_TOOLS, "IMPACT_ANALYSIS");
         commandBuilder.property(DetectProperties.DETECT_IMPACT_ANALYSIS_ENABLED, "true");
         commandBuilder.property(DetectProperties.DETECT_IMPACT_ANALYSIS_OUTPUT_PATH, "/tmp");
-        DockerTestAssertions result = test.run(commandBuilder);
+        DockerAssertions dockerAssertions = test.run(commandBuilder);
 
-        result.logContains("Vulnerability Impact Analysis generated report at /tmp/external-method-uses.bdmu");
+        dockerAssertions.logContains("Vulnerability Impact Analysis generated report at /tmp/external-method-uses.bdmu");
     }
 }

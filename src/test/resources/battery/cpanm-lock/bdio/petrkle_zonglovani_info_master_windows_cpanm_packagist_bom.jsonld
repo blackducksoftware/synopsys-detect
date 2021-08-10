@@ -18,7 +18,10 @@
           "name": "detect",
           "separator": "/"
         },
-        "path": "windows-cpanm"
+        "pieces": [
+          "windows-cpanm",
+          null
+        ]
       }
     },
     "relationship": [
@@ -49,8 +52,10 @@
           "name": "packagist",
           "separator": ":"
         },
-        "name": "smarty/smarty",
-        "version": "v3.1.31"
+        "pieces": [
+          "smarty/smarty",
+          "v3.1.31"
+        ]
       }
     },
     "relationship": []
@@ -68,8 +73,10 @@
           "name": "packagist",
           "separator": ":"
         },
-        "name": "pear/mail_mime",
-        "version": "1.10.0"
+        "pieces": [
+          "pear/mail_mime",
+          "1.10.0"
+        ]
       }
     },
     "relationship": [
@@ -92,39 +99,22 @@
           "name": "packagist",
           "separator": ":"
         },
-        "name": "pear/pear-core-minimal",
-        "version": "dev-master"
+        "pieces": [
+          "pear/pear-core-minimal",
+          "dev-master"
+        ]
       }
     },
     "relationship": [
       {
-        "related": "http:packagist/pear%2Fpear_exception/dev-master",
+        "related": "http:packagist/pear%2Fconsole_getopt/v1.4.1",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:packagist/pear%2Fconsole_getopt/v1.4.1",
+        "related": "http:packagist/pear%2Fpear_exception/dev-master",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
-  },
-  {
-    "name": "pear/pear_exception",
-    "revision": "dev-master",
-    "@id": "http:packagist/pear%2Fpear_exception/dev-master",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "packagist",
-      "externalId": "pear/pear_exception:dev-master",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "packagist",
-          "separator": ":"
-        },
-        "name": "pear/pear_exception",
-        "version": "dev-master"
-      }
-    },
-    "relationship": []
   },
   {
     "name": "pear/console_getopt",
@@ -139,8 +129,31 @@
           "name": "packagist",
           "separator": ":"
         },
-        "name": "pear/console_getopt",
-        "version": "v1.4.1"
+        "pieces": [
+          "pear/console_getopt",
+          "v1.4.1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "pear/pear_exception",
+    "revision": "dev-master",
+    "@id": "http:packagist/pear%2Fpear_exception/dev-master",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "packagist",
+      "externalId": "pear/pear_exception:dev-master",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "packagist",
+          "separator": ":"
+        },
+        "pieces": [
+          "pear/pear_exception",
+          "dev-master"
+        ]
       }
     },
     "relationship": []
@@ -158,8 +171,10 @@
           "name": "packagist",
           "separator": ":"
         },
-        "name": "pear/mail",
-        "version": "dev-trunk"
+        "pieces": [
+          "pear/mail",
+          "dev-trunk"
+        ]
       }
     },
     "relationship": [
@@ -182,21 +197,23 @@
           "name": "packagist",
           "separator": ":"
         },
-        "name": "pear/pear",
-        "version": "dev-master"
+        "pieces": [
+          "pear/pear",
+          "dev-master"
+        ]
       }
     },
     "relationship": [
+      {
+        "related": "http:packagist/pear%2Fconsole_getopt/v1.4.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
       {
         "related": "http:packagist/pear%2Fxml_util/1.2.3",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
         "related": "http:packagist/pear%2Farchive_tar/1.3.11",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:packagist/pear%2Fconsole_getopt/v1.4.1",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -218,8 +235,10 @@
           "name": "packagist",
           "separator": ":"
         },
-        "name": "pear/xml_util",
-        "version": "1.2.3"
+        "pieces": [
+          "pear/xml_util",
+          "1.2.3"
+        ]
       }
     },
     "relationship": [
@@ -242,8 +261,10 @@
           "name": "packagist",
           "separator": ":"
         },
-        "name": "pear/archive_tar",
-        "version": "1.3.11"
+        "pieces": [
+          "pear/archive_tar",
+          "1.3.11"
+        ]
       }
     },
     "relationship": []
@@ -261,8 +282,10 @@
           "name": "packagist",
           "separator": ":"
         },
-        "name": "pear/structures_graph",
-        "version": "dev-trunk"
+        "pieces": [
+          "pear/structures_graph",
+          "dev-trunk"
+        ]
       }
     },
     "relationship": []

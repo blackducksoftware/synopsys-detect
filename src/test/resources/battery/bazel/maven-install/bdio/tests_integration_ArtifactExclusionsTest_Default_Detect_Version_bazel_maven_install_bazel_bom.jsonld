@@ -1,20 +1,12 @@
 [
   {
     "specVersion": "1.1.0",
-    "spdx:name": "__tests_integration_ArtifactExclusionsTest/Default Detect Version/bazel-maven-install bazel/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-6.5.0-SNAPSHOT",
-        "Tool: IntegrationBdio-21.1.0"
-      ],
-      "spdx:created": "2020-07-07T11:12:00.854Z"
-    },
-    "@id": "uuid:111782fe-729a-45d9-8af3-51f7a9f06599",
+    "spdx:name": "tests_integration_ArtifactExclusionsTest/Default Detect Version/bazel-maven-install bazel/bom",
     "@type": "BillOfMaterials",
     "relationship": []
   },
   {
-    "name": "__tests_integration_ArtifactExclusionsTest",
+    "name": "tests_integration_ArtifactExclusionsTest",
     "revision": "Default Detect Version",
     "@id": "http:detect/bazel-maven-install",
     "@type": "Project",
@@ -34,27 +26,11 @@
     },
     "relationship": [
       {
-        "related": "http:maven/com.google.guava/guava/27.0-jre",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
         "related": "http:maven/org.checkerframework/checker-qual/2.5.2",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:maven/org.hamcrest/hamcrest/2.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org.hamcrest/hamcrest-core/2.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/com.google.guava/failureaccess/1.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/com.google.code.findbugs/jsr305/3.0.2",
+        "related": "http:maven/com.google.guava/guava/27.0-jre",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -62,32 +38,26 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
+        "related": "http:maven/org.hamcrest/hamcrest-core/2.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/com.google.code.findbugs/jsr305/3.0.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
         "related": "http:maven/com.google.errorprone/error_prone_annotations/2.2.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.hamcrest/hamcrest/2.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/com.google.guava/failureaccess/1.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
-  },
-  {
-    "name": "guava",
-    "revision": "27.0-jre",
-    "@id": "http:maven/com.google.guava/guava/27.0-jre",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "com.google.guava:guava:27.0-jre",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "pieces": [
-          "guava",
-          "27.0-jre"
-        ],
-        "prefix": "com.google.guava"
-      }
-    },
-    "relationship": []
   },
   {
     "name": "checker-qual",
@@ -112,89 +82,23 @@
     "relationship": []
   },
   {
-    "name": "hamcrest",
-    "revision": "2.1",
-    "@id": "http:maven/org.hamcrest/hamcrest/2.1",
+    "name": "guava",
+    "revision": "27.0-jre",
+    "@id": "http:maven/com.google.guava/guava/27.0-jre",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "maven",
-      "externalId": "org.hamcrest:hamcrest:2.1",
+      "externalId": "com.google.guava:guava:27.0-jre",
       "externalIdMetaData": {
         "forge": {
           "name": "maven",
           "separator": ":"
         },
         "pieces": [
-          "hamcrest",
-          "2.1"
-        ],
-        "prefix": "org.hamcrest"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "hamcrest-core",
-    "revision": "2.1",
-    "@id": "http:maven/org.hamcrest/hamcrest-core/2.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.hamcrest:hamcrest-core:2.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "pieces": [
-          "hamcrest-core",
-          "2.1"
-        ],
-        "prefix": "org.hamcrest"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "failureaccess",
-    "revision": "1.0",
-    "@id": "http:maven/com.google.guava/failureaccess/1.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "com.google.guava:failureaccess:1.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "pieces": [
-          "failureaccess",
-          "1.0"
+          "guava",
+          "27.0-jre"
         ],
         "prefix": "com.google.guava"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "jsr305",
-    "revision": "3.0.2",
-    "@id": "http:maven/com.google.code.findbugs/jsr305/3.0.2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "com.google.code.findbugs:jsr305:3.0.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "pieces": [
-          "jsr305",
-          "3.0.2"
-        ],
-        "prefix": "com.google.code.findbugs"
       }
     },
     "relationship": []
@@ -222,6 +126,50 @@
     "relationship": []
   },
   {
+    "name": "hamcrest-core",
+    "revision": "2.1",
+    "@id": "http:maven/org.hamcrest/hamcrest-core/2.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.hamcrest:hamcrest-core:2.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "hamcrest-core",
+          "2.1"
+        ],
+        "prefix": "org.hamcrest"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "jsr305",
+    "revision": "3.0.2",
+    "@id": "http:maven/com.google.code.findbugs/jsr305/3.0.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.google.code.findbugs:jsr305:3.0.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "jsr305",
+          "3.0.2"
+        ],
+        "prefix": "com.google.code.findbugs"
+      }
+    },
+    "relationship": []
+  },
+  {
     "name": "error_prone_annotations",
     "revision": "2.2.0",
     "@id": "http:maven/com.google.errorprone/error_prone_annotations/2.2.0",
@@ -239,6 +187,50 @@
           "2.2.0"
         ],
         "prefix": "com.google.errorprone"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "hamcrest",
+    "revision": "2.1",
+    "@id": "http:maven/org.hamcrest/hamcrest/2.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.hamcrest:hamcrest:2.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "hamcrest",
+          "2.1"
+        ],
+        "prefix": "org.hamcrest"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "failureaccess",
+    "revision": "1.0",
+    "@id": "http:maven/com.google.guava/failureaccess/1.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.google.guava:failureaccess:1.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "failureaccess",
+          "1.0"
+        ],
+        "prefix": "com.google.guava"
       }
     },
     "relationship": []

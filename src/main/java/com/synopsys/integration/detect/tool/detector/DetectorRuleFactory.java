@@ -10,6 +10,7 @@ package com.synopsys.integration.detect.tool.detector;
 import com.synopsys.integration.detect.tool.detector.factory.DetectDetectableFactory;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
 import com.synopsys.integration.detectable.detectables.cargo.CargoDetectable;
+import com.synopsys.integration.detectable.detectables.carthage.CarthageDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 import com.synopsys.integration.detectable.detectables.cocoapods.PodlockDetectable;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliDetectable;
@@ -68,6 +69,8 @@ public class DetectorRuleFactory {
         //TODO: Verify we still need to pass detector name here. We may now be able to get it from the detectable class - before we could not as it was not instantiated.
         ruleSet.addDetector(DetectorType.CARGO, "Cargo", CargoDetectable.class, detectableFactory::createCargoDetectable).defaults().build();
 
+        ruleSet.addDetector(DetectorType.CARTHAGE, "Carthage", CarthageDetectable.class, detectableFactory::createCarthageDetectable).defaults().build();
+
         ruleSet.addDetector(DetectorType.BITBAKE, "Bitbake", BitbakeDetectable.class, detectableFactory::createBitbakeDetectable).defaults().build();
 
         ruleSet.addDetector(DetectorType.COCOAPODS, "Pod Lock", PodlockDetectable.class, detectableFactory::createPodLockDetectable).defaults().build();
@@ -120,7 +123,7 @@ public class DetectorRuleFactory {
 
         DetectorRule pipEnv = ruleSet.addDetector(DetectorType.PIP, "Pip Env", PipenvDetectable.class, detectableFactory::createPipenvDetectable).defaults().build();
         DetectorRule pipInspector = ruleSet.addDetector(DetectorType.PIP, "Pip Inspector", PipInspectorDetectable.class, detectableFactory::createPipInspectorDetectable).defaults().build();
-        DetectorRule poetry = ruleSet.addDetector(DetectorType.PIP, "Poetry", PoetryDetectable.class, detectableFactory::createPoetryDetectable).defaults().build();
+        DetectorRule poetry = ruleSet.addDetector(DetectorType.POETRY, "Poetry", PoetryDetectable.class, detectableFactory::createPoetryDetectable).defaults().build();
         ruleSet.yield(pipInspector).to(pipEnv);
         ruleSet.yield(poetry).to(pipEnv);
 
@@ -142,6 +145,8 @@ public class DetectorRuleFactory {
 
         ruleSet.addDetector(DetectorType.CARGO, "Cargo", CargoDetectable.class, detectableFactory::createCargoDetectable).defaults().build();
 
+        ruleSet.addDetector(DetectorType.CARTHAGE, "Carthage", CarthageDetectable.class, detectableFactory::createCarthageDetectable).defaults().build();
+
         ruleSet.addDetector(DetectorType.COCOAPODS, "Pod Lock", PodlockDetectable.class, detectableFactory::createPodLockDetectable).defaults().build();
         ruleSet.addDetector(DetectorType.PACKAGIST, "Packrat Lock", PackratLockDetectable.class, detectableFactory::createPackratLockDetectable).defaults().build();
 
@@ -154,7 +159,7 @@ public class DetectorRuleFactory {
 
         ruleSet.addDetector(DetectorType.MAVEN, "Maven Pom Parse", MavenParseDetectable.class, detectableFactory::createMavenParseDetectable).defaults().build();
 
-        ruleSet.addDetector(DetectorType.PIP, "Poetry", PoetryDetectable.class, detectableFactory::createPoetryDetectable).defaults().build();
+        ruleSet.addDetector(DetectorType.POETRY, "Poetry", PoetryDetectable.class, detectableFactory::createPoetryDetectable).defaults().build();
 
         DetectorRule yarnLock = ruleSet.addDetector(DetectorType.YARN, "Yarn Lock", YarnLockDetectable.class, detectableFactory::createYarnLockDetectable).defaults().build();
         DetectorRule npmPackageLock = ruleSet.addDetector(DetectorType.NPM, "Package Lock", NpmPackageLockDetectable.class, detectableFactory::createNpmPackageLockDetectable).defaults().build();

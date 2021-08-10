@@ -10,7 +10,6 @@ package com.synopsys.integration.detectable.detectables.go.gomod.model;
 import com.google.gson.annotations.SerializedName;
 
 public class ReplaceData {
-
     @SerializedName("Path")
     private String path;
 
@@ -21,7 +20,7 @@ public class ReplaceData {
         return path;
     }
 
-    public void setPath(final String path) {
+    public void setPath(String path) {
         this.path = path;
     }
 
@@ -29,7 +28,7 @@ public class ReplaceData {
         return version;
     }
 
-    public void setVersion(final String version) {
+    public void setVersion(String version) {
         this.version = version;
     }
 }

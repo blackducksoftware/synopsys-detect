@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "cat_hs_lib_args_args/Default Detect Version/bazel-haskell-cabal-library bazel/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-6.5.0-SNAPSHOT",
-        "Tool: IntegrationBdio-21.1.0"
-      ],
-      "spdx:created": "2020-07-07T14:33:59.185Z"
-    },
-    "@id": "uuid:b02db525-4e5a-4a54-be33-cc785f6de66c",
     "@type": "BillOfMaterials",
     "relationship": []
   },
@@ -34,14 +26,6 @@
     },
     "relationship": [
       {
-        "related": "http:hackage/optparse-applicative/0.14.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:hackage/transformers-compat/0.6.5",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
         "related": "http:hackage/ansi-terminal/0.9.1",
         "relationshipType": "DYNAMIC_LINK"
       },
@@ -50,52 +34,18 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
+        "related": "http:hackage/transformers-compat/0.6.5",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:hackage/optparse-applicative/0.14.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
         "related": "http:hackage/ansi-wl-pprint/0.6.9",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
-  },
-  {
-    "name": "optparse-applicative",
-    "revision": "0.14.3.0",
-    "@id": "http:hackage/optparse-applicative/0.14.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "hackage",
-      "externalId": "optparse-applicative/0.14.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "hackage",
-          "separator": "/"
-        },
-        "pieces": [
-          "optparse-applicative",
-          "0.14.3.0"
-        ]
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "transformers-compat",
-    "revision": "0.6.5",
-    "@id": "http:hackage/transformers-compat/0.6.5",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "hackage",
-      "externalId": "transformers-compat/0.6.5",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "hackage",
-          "separator": "/"
-        },
-        "pieces": [
-          "transformers-compat",
-          "0.6.5"
-        ]
-      }
-    },
-    "relationship": []
   },
   {
     "name": "ansi-terminal",
@@ -134,6 +84,48 @@
         "pieces": [
           "colour",
           "2.3.5"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "transformers-compat",
+    "revision": "0.6.5",
+    "@id": "http:hackage/transformers-compat/0.6.5",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "hackage",
+      "externalId": "transformers-compat/0.6.5",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "hackage",
+          "separator": "/"
+        },
+        "pieces": [
+          "transformers-compat",
+          "0.6.5"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "optparse-applicative",
+    "revision": "0.14.3.0",
+    "@id": "http:hackage/optparse-applicative/0.14.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "hackage",
+      "externalId": "optparse-applicative/0.14.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "hackage",
+          "separator": "/"
+        },
+        "pieces": [
+          "optparse-applicative",
+          "0.14.3.0"
         ]
       }
     },

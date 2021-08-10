@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "conan-pkgrevonly/Default Detect Version/conan-pkgrevonly conan/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-6.8.0-SNAPSHOT",
-        "Tool: IntegrationBdio-22.0.0"
-      ],
-      "spdx:created": "2020-11-18T22:02:36.432Z"
-    },
-    "@id": "uuid:81eac1e9-6d6d-4d95-95f4-99731614ad61",
     "@type": "BillOfMaterials",
     "relationship": []
   },

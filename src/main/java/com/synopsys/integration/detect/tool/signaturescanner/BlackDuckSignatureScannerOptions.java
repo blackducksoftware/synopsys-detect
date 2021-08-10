@@ -20,11 +20,7 @@ public class BlackDuckSignatureScannerOptions {
     private final List<Path> signatureScannerPaths;
     private final List<String> exclusionPatterns;
     @Nullable
-    private final Path offlineLocalScannerInstallPath;
-    @Nullable
     private final Path onlineLocalScannerInstallPath;
-    @Nullable
-    private final String userProvidedScannerInstallUrl;
 
     private final Integer scanMemory;
     private final Integer parallelProcessors;
@@ -49,9 +45,7 @@ public class BlackDuckSignatureScannerOptions {
     public BlackDuckSignatureScannerOptions(
         List<Path> signatureScannerPaths,
         List<String> exclusionPatterns,
-        @Nullable Path offlineLocalScannerInstallPath,
         @Nullable Path onlineLocalScannerInstallPath,
-        @Nullable String userProvidedScannerInstallUrl,
         Integer scanMemory,
         Integer parallelProcessors,
         Boolean dryRun,
@@ -67,9 +61,7 @@ public class BlackDuckSignatureScannerOptions {
 
         this.signatureScannerPaths = signatureScannerPaths;
         this.exclusionPatterns = exclusionPatterns;
-        this.offlineLocalScannerInstallPath = offlineLocalScannerInstallPath;
         this.onlineLocalScannerInstallPath = onlineLocalScannerInstallPath;
-        this.userProvidedScannerInstallUrl = userProvidedScannerInstallUrl;
         this.scanMemory = scanMemory;
         this.parallelProcessors = parallelProcessors;
         this.dryRun = dryRun;
@@ -128,16 +120,8 @@ public class BlackDuckSignatureScannerOptions {
         return maxDepth;
     }
 
-    public Optional<Path> getOfflineLocalScannerInstallPath() {
-        return Optional.ofNullable(offlineLocalScannerInstallPath);
-    }
-
     public Optional<Path> getOnlineLocalScannerInstallPath() {
         return Optional.ofNullable(onlineLocalScannerInstallPath);
-    }
-
-    public Optional<String> getUserProvidedScannerInstallUrl() {
-        return Optional.ofNullable(userProvidedScannerInstallUrl);
     }
 
     public Optional<IndividualFileMatching> getIndividualFileMatching() {
