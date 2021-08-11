@@ -238,13 +238,7 @@ public class DetectConfigurationFactory {
         return new DirectoryOptions(sourcePath, outputPath, bdioPath, scanPath, toolsOutputPath, impactOutputPath);
     }
 
-    public DetectExcludedDirectoryFilter createSignatureScannerFileFilter(Path sourcePath) {
-        List<String> directoryExclusionPatterns = collectSignatureScannerDirectoryExclusions();
-
-        return new DetectExcludedDirectoryFilter(sourcePath, directoryExclusionPatterns);
-    }
-
-    private List<String> collectSignatureScannerDirectoryExclusions() {
+    public List<String> collectSignatureScannerDirectoryExclusions() {
         List<String> directoryExclusionPatterns = new ArrayList(getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES));
 
         if (!getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_DEFAULTS_DISABLED)) {
@@ -255,12 +249,6 @@ public class DetectConfigurationFactory {
         }
 
         return directoryExclusionPatterns;
-    }
-
-    public DetectExcludedDirectoryFilter createDetectorSearchFileFilter(Path sourcePath) {
-        List<String> directoryExclusionPatterns = collectDetectorSearchDirectoryExclusions();
-
-        return new DetectExcludedDirectoryFilter(sourcePath, directoryExclusionPatterns);
     }
 
     private List<String> collectDetectorSearchDirectoryExclusions() {
@@ -279,7 +267,7 @@ public class DetectConfigurationFactory {
     public DetectorFinderOptions createDetectorFinderOptions(Path sourcePath) {
         //Normal settings
         Integer maxDepth = getValue(DetectProperties.DETECT_DETECTOR_SEARCH_DEPTH);
-        DetectExcludedDirectoryFilter fileFilter = createDetectorSearchFileFilter(sourcePath);
+        DetectExcludedDirectoryFilter fileFilter = new DetectExcludedDirectoryFilter(sourcePath, collectDetectorSearchDirectoryExclusions());
 
         return new DetectorFinderOptions(fileFilter, maxDepth);
     }
