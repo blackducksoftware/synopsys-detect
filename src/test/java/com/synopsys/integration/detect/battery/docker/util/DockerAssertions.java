@@ -3,6 +3,7 @@ package com.synopsys.integration.detect.battery.docker.util;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -129,9 +130,16 @@ public class DockerAssertions {
     }
 
     public void bdioFiles(int bdioCount) {
-        Assertions.assertNotNull(bdioDirectory, "Bdio directory did not exist!");
-        Assertions.assertNotNull(bdioDirectory.listFiles(), "Bdio directory list files was null.");
+        checkBdioDirectory();
         Assertions.assertEquals(bdioCount, Objects.requireNonNull(bdioDirectory.listFiles()).length);
+    }
+
+    public void bdioFileCreated(String requiredBdioFilename) {
+        checkBdioDirectory();
+        Assertions.assertTrue(Arrays.asList(bdioDirectory.listFiles()).stream()
+                .filter(f -> f.getName().equals(requiredBdioFilename))
+                .findAny().isPresent(),
+                String.format("Expected BDIO file %s, but it was not created", requiredBdioFilename));
     }
 
     public File getOutputDirectory() {
@@ -140,5 +148,10 @@ public class DockerAssertions {
 
     public void resultProducedAtLocation(String location) {
         Assertions.assertTrue(locateStatusJson().results.stream().anyMatch(result -> result.location.equals(location)), "Unable to find result: " + location);
+    }
+
+    private void checkBdioDirectory() {
+        Assertions.assertNotNull(bdioDirectory, "Bdio directory did not exist!");
+        Assertions.assertNotNull(bdioDirectory.listFiles(), "Bdio directory list files was null.");
     }
 }
