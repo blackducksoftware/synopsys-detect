@@ -12,7 +12,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import com.synopsys.integration.blackduck.bdio.model.dependency.ProjectDependency;
 import com.synopsys.integration.detect.workflow.bdio.aggregation.AggregateModeDirectOperation;
+import com.synopsys.integration.detect.workflow.bdio.aggregation.AggregateModeSubProjectOperation;
 import com.synopsys.integration.detect.workflow.bdio.aggregation.AggregateModeTransitiveOperation;
 import com.synopsys.integration.detect.workflow.bdio.aggregation.FullAggregateGraph;
 import org.jetbrains.annotations.NotNull;
@@ -64,6 +66,24 @@ class AggregateBdioTransformerTest {
         Set<Dependency> subProjectOneDependencies = aggregatedGraph.getChildrenForParent(subProjectOne);
         assertTrue(subProjectOneDependencies.contains(genComponentDependency("junit", "junit", "4.12")));
         assertTrue(subProjectOneDependencies.contains(genComponentDependency("joda-time", "joda-time", "2.2")));
+    }
+
+    @Test
+    void testSubProjectMode() throws DetectUserFriendlyException {
+
+        DependencyGraph aggregatedGraph = new AggregateModeSubProjectOperation(new FullAggregateGraph(new SimpleBdioFactory())).aggregateCodeLocations(sourceDir, inputCodelocations);
+
+        assertEquals(3, aggregatedGraph.getRootDependencies().size());
+        assertTrue(aggregatedGraph.getRootDependencies().contains(genProjectDependency("com.synopsys.integration", "basic-multiproject", "0.0.0-SNAPSHOT")));
+        assertTrue(aggregatedGraph.getRootDependencies().contains(genProjectDependency("basic-multiproject", "subprojectone", "unspecified")));
+        assertTrue(aggregatedGraph.getRootDependencies().contains(genProjectDependency("basic-multiproject", "subprojecttwo", "unspecified")));
+
+        Dependency subProjectOne = aggregatedGraph.getDependency(genProjectExternalId("basic-multiproject", "subprojectone", "unspecified"));
+        Set<Dependency> subProjectOneDependencies = aggregatedGraph.getChildrenForParent(subProjectOne);
+        assertTrue(subProjectOneDependencies.contains(genComponentDependency("junit", "junit", "4.12")));
+        assertTrue(subProjectOneDependencies.contains(genComponentDependency("joda-time", "joda-time", "2.2")));
+
+        assertTrue(subProjectOne instanceof ProjectDependency);
     }
 
     @Test
