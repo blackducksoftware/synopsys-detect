@@ -106,7 +106,7 @@ public class UniversalStepRunner {
             aggregateDependencyGraph = operationFactory.aggregateDirect(universalToolsResult.getDetectCodeLocations());
         } else if (aggregateDecision.getAggregateMode() == AggregateMode.TRANSITIVE) {
             aggregateDependencyGraph = operationFactory.aggregateTransitive(universalToolsResult.getDetectCodeLocations());
-        } else if (aggregateDecision.getAggregateMode() == AggregateMode.ACCURATE) {
+        } else if (aggregateDecision.getAggregateMode() == AggregateMode.SUBPROJECT) {
             aggregateDependencyGraph = operationFactory.aggregateAccurate(universalToolsResult.getDetectCodeLocations());
         } else {
             throw new DetectUserFriendlyException(
