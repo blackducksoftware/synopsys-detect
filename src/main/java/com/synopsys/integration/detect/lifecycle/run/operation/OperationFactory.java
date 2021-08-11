@@ -166,7 +166,7 @@ import com.synopsys.integration.util.IntEnvironmentVariables;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 import com.synopsys.integration.util.OperatingSystemType;
-import com.synopsys.integration.detect.workflow.bdio.AggregateModeAccurateOperation;
+import com.synopsys.integration.detect.workflow.bdio.AggregateModeSubProjectOperation;
 
 public class OperationFactory { //TODO: OperationRunner
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -581,8 +581,8 @@ public class OperationFactory { //TODO: OperationRunner
         return auditLog.namedPublic("Transitive Aggregate", "TransitiveAggregate", () -> new AggregateModeTransitiveOperation(new SimpleBdioFactory()).aggregateCodeLocations(directoryManager.getSourceDirectory(), detectCodeLocations));
     }
 
-    public DependencyGraph aggregateAccurate(List<DetectCodeLocation> detectCodeLocations) throws DetectUserFriendlyException {
-        return auditLog.namedPublic("Transitive Accurate", () -> new AggregateModeAccurateOperation(new SimpleBdioFactory()).aggregateCodeLocations(directoryManager.getSourceDirectory(), detectCodeLocations));
+    public DependencyGraph aggregateSubProject(List<DetectCodeLocation> detectCodeLocations) throws DetectUserFriendlyException {
+        return auditLog.namedPublic("SubProject Aggregate", () -> new AggregateModeSubProjectOperation(new SimpleBdioFactory()).aggregateCodeLocations(directoryManager.getSourceDirectory(), detectCodeLocations));
     }
 
     public void createAggregateBdio1File(AggregateCodeLocation aggregateCodeLocation) throws DetectUserFriendlyException {

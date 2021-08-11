@@ -28,12 +28,12 @@ import java.util.Arrays;
 import java.util.List;
 
 // TODO this class will probably be almost entirely identical to AggregateModeTransitiveOperation. How do we want to share code between operations??
-public class AggregateModeAccurateOperation {
+public class AggregateModeSubProjectOperation {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final SimpleBdioFactory simpleBdioFactory;
 
-    public AggregateModeAccurateOperation(SimpleBdioFactory simpleBdioFactory) {
+    public AggregateModeSubProjectOperation(SimpleBdioFactory simpleBdioFactory) {
         this.simpleBdioFactory = simpleBdioFactory;
     }
 
