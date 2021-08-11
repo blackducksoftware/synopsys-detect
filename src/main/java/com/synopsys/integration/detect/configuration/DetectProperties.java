@@ -43,7 +43,6 @@ import com.synopsys.integration.configuration.property.types.string.StringListPr
 import com.synopsys.integration.configuration.property.types.string.StringProperty;
 import com.synopsys.integration.configuration.util.Group;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
-import com.synopsys.integration.detect.configuration.enumeration.DefaultVersionNameScheme;
 import com.synopsys.integration.detect.configuration.enumeration.DetectCategory;
 import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
 import com.synopsys.integration.detect.configuration.enumeration.DetectMajorVersion;
@@ -632,7 +631,7 @@ public class DetectProperties {
         new DetectProperty<>(new BooleanProperty("detect.excluded.directories.defaults.disabled", false))
             .setInfo("Detect Excluded Directories Defaults Disabled", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp("If false, Detect will exclude the default directory names. See the detailed help for more information.",
-                "If false, these directories will be excluded by Detect when searching for detectors and will be excluded from signature scan using the Scan CLI '--exclude' flag: bin, build, .git, .gradle, node_modules, out, packages, target."
+                "If false, the following directories will be excluded by Detect when searching for detectors: bin, build, .git, .gradle, node_modules, out, packages, target, .synopsys, and the following directories will be excluded from signature scan using the Scan CLI '--exclude' flag: .git, .gradle, node_modules, .synopsys."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);

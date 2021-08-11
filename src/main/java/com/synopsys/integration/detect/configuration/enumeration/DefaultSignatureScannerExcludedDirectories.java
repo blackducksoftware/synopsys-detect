@@ -7,24 +7,19 @@
  */
 package com.synopsys.integration.detect.configuration.enumeration;
 
-public enum DefaultDetectorExcludedDirectories {
-    BIN("bin"),
-    BUILD("build"),
+public enum DefaultSignatureScannerExcludedDirectories {
     DOT_GRADLE(".gradle"),
     NODE_MODULES("node_modules"),
-    OUT("out"),
-    PACKAGES("packages"),
     GIT(".git"),
-    TARGET("target");
+    SYNOPSYS(".synopsys");
 
     private final String directoryName;
 
-    DefaultDetectorExcludedDirectories(final String directoryName) {
+    DefaultSignatureScannerExcludedDirectories(String directoryName) {
         this.directoryName = directoryName;
     }
 
     public String getDirectoryName() {
         return directoryName;
     }
-
 }
