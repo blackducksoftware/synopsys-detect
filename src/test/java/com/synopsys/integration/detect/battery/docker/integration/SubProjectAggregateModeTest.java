@@ -5,14 +5,12 @@ import com.synopsys.integration.detect.battery.docker.util.DetectCommandBuilder;
 import com.synopsys.integration.detect.battery.docker.util.DetectDockerTestRunner;
 import com.synopsys.integration.detect.battery.docker.util.DockerAssertions;
 import com.synopsys.integration.exception.IntegrationException;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+@Tag("integration")
 public class SubProjectAggregateModeTest {
 
     // Once we're testing against Black Duck 2021.10+, we can verify that the correct project name/version
