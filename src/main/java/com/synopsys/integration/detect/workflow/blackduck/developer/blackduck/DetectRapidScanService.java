@@ -40,19 +40,29 @@ public class DetectRapidScanService {
 
     public static DetectRapidScanService fromBlackDuckServicesFactory(BlackDuckServicesFactory blackDuckServicesFactory) {
         DetectRapidScanWaiter rapidScanWaiter = new DetectRapidScanWaiter(blackDuckServicesFactory.getLogger(), blackDuckServicesFactory.getBlackDuckApiClient());
-        Bdio2StreamUploader bdio2Uploader = new Bdio2StreamUploader(blackDuckServicesFactory.getBlackDuckApiClient(), blackDuckServicesFactory.getApiDiscovery(), blackDuckServicesFactory.getLogger(), ApiDiscovery.DEVELOPER_SCANS_PATH,
-            CONTENT_TYPE);
-        Bdio2FileUploadService bdio2FileUploadService = new Bdio2FileUploadService(blackDuckServicesFactory.getBlackDuckApiClient(), blackDuckServicesFactory.getApiDiscovery(), blackDuckServicesFactory.getLogger(),
-            new Bdio2ContentExtractor(), bdio2Uploader);
+        Bdio2StreamUploader bdio2Uploader = new Bdio2StreamUploader(
+            blackDuckServicesFactory.getBlackDuckApiClient(),
+            blackDuckServicesFactory.getApiDiscovery(),
+            blackDuckServicesFactory.getLogger(),
+            ApiDiscovery.DEVELOPER_SCANS_PATH,
+            CONTENT_TYPE
+        );
+        Bdio2FileUploadService bdio2FileUploadService = new Bdio2FileUploadService(
+            blackDuckServicesFactory.getBlackDuckApiClient(),
+            blackDuckServicesFactory.getApiDiscovery(),
+            blackDuckServicesFactory.getLogger(),
+            new Bdio2ContentExtractor(),
+            bdio2Uploader
+        );
         return new DetectRapidScanService(bdio2FileUploadService, rapidScanWaiter);
     }
 
-    public RapidScanResult performScan(UploadBatch uploadBatch, long timeoutInSeconds, int waitIntervalInSeconds) throws IntegrationException, InterruptedException {
+    public RapidScanResult performUpload(UploadBatch uploadBatch, long timeoutInSeconds, int waitIntervalInSeconds) throws IntegrationException, InterruptedException {
         List<DeveloperScanComponentResultView> allScanComponents = new LinkedList<>();
         List<HttpUrl> allScanUrls = new LinkedList<>();
 
         for (UploadTarget uploadTarget : uploadBatch.getUploadTargets()) {
-            RapidScanResult scanResults = performScan(uploadTarget, timeoutInSeconds, waitIntervalInSeconds);
+            RapidScanResult scanResults = performUpload(uploadTarget, timeoutInSeconds, waitIntervalInSeconds);
             allScanComponents.addAll(scanResults.getComponentResultViews());
             allScanUrls.addAll(scanResults.getScanIds());
         }
@@ -60,9 +70,9 @@ public class DetectRapidScanService {
         return new RapidScanResult(allScanUrls, allScanComponents);
     }
 
-    public RapidScanResult performScan(UploadTarget bdio2File, long timeoutInSeconds, int waitIntervalInSeconds) throws IntegrationException, InterruptedException {
+    public RapidScanResult performUpload(UploadTarget bdio2File, long timeoutInSeconds, int waitIntervalInSeconds) throws IntegrationException, InterruptedException {
         HttpUrl url = bdio2FileUploadService.uploadFile(bdio2File);
-        logger.info("Starting Rapid Scan: " + url);
+        logger.info("Starting Rapid Scan: {}", url);
         return RapidScanResult.forSingleScan(url, rapidScanWaiter.checkScanResult(url, bdio2File.getCodeLocationName(), timeoutInSeconds, waitIntervalInSeconds));
     }
 

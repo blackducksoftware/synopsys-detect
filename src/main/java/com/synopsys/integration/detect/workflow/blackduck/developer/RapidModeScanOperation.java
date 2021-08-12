@@ -36,7 +36,7 @@ public class RapidModeScanOperation {
             logger.debug(String.format("Uploading %s", uploadTarget.getUploadFile().getName()));
             uploadBatch.addUploadTarget(uploadTarget);
         }
-        RapidScanResult results = rapidScanService.performScan(uploadBatch, timeoutInSeconds, DEFAULT_WAIT_INTERVAL_IN_SECONDS);
+        RapidScanResult results = rapidScanService.performUpload(uploadBatch, timeoutInSeconds, DEFAULT_WAIT_INTERVAL_IN_SECONDS);
         logger.debug("Rapid scan result count: {}", results.getComponentResultViews().size());
         return results;
     }

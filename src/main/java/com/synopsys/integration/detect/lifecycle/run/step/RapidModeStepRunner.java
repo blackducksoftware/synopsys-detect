@@ -19,7 +19,7 @@ import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.Ra
 import com.synopsys.integration.util.NameVersion;
 
 public class RapidModeStepRunner {
-    OperationFactory operationFactory;
+    private final OperationFactory operationFactory;
 
     public RapidModeStepRunner(OperationFactory operationFactory) {
         this.operationFactory = operationFactory;
@@ -27,7 +27,7 @@ public class RapidModeStepRunner {
 
     public void runOnline(BlackDuckRunData blackDuckRunData, NameVersion projectVersion, BdioResult bdioResult) throws DetectUserFriendlyException, IOException {
         operationFactory.phoneHome(blackDuckRunData);
-        RapidScanResult rapidScanResult = operationFactory.performRapidScan(blackDuckRunData, bdioResult);
+        RapidScanResult rapidScanResult = operationFactory.performRapidUpload(blackDuckRunData, bdioResult);
         File jsonFile = operationFactory.generateRapidJsonFile(projectVersion, rapidScanResult.getComponentResultViews());
         RapidScanResultSummary summary = operationFactory.logRapidReport(rapidScanResult.getComponentResultViews());
         operationFactory.publishRapidResults(jsonFile, summary);
