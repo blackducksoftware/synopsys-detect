@@ -1,5 +1,10 @@
 # Release notes
 
+# Version 7.5.0
+
+### Changed features
+* The Docker Inspector can now be included when using the [rapid scan mode](../properties/configuration/blackduck%20server/#detect-scan-mode-advanced).
+
 ## Version 7.3.0
 
 ### New Features
