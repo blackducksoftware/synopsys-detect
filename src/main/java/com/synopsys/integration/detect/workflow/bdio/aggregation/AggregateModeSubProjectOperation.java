@@ -16,13 +16,13 @@ import java.util.List;
 
 public class AggregateModeSubProjectOperation {
 
-    private final FullAggregateGraph fullAggregateGraph;
+    private final FullAggregateGraphCreator fullAggregateGraphCreator;
 
-    public AggregateModeSubProjectOperation(FullAggregateGraph fullAggregateGraph) {
-        this.fullAggregateGraph = fullAggregateGraph;
+    public AggregateModeSubProjectOperation(FullAggregateGraphCreator fullAggregateGraphCreator) {
+        this.fullAggregateGraphCreator = fullAggregateGraphCreator;
     }
 
     public DependencyGraph aggregateCodeLocations(final File sourcePath, final List<DetectCodeLocation> codeLocations) throws DetectUserFriendlyException {
-        return fullAggregateGraph.aggregateCodeLocations(new ModernAggregateDependencyCreator(), sourcePath, codeLocations);
+        return fullAggregateGraphCreator.aggregateCodeLocations(new ProjectAggregateNodeCreator(), sourcePath, codeLocations);
     }
 }

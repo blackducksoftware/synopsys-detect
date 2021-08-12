@@ -26,19 +26,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class FullAggregateGraph {
+public class FullAggregateGraphCreator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final SimpleBdioFactory simpleBdioFactory;
 
-    public FullAggregateGraph(SimpleBdioFactory simpleBdioFactory) {
+    public FullAggregateGraphCreator(SimpleBdioFactory simpleBdioFactory) {
         this.simpleBdioFactory = simpleBdioFactory;
     }
 
-    public DependencyGraph aggregateCodeLocations(AggregateDependencyCreator projectDependencyCreator, final File sourcePath, final List<DetectCodeLocation> codeLocations) throws DetectUserFriendlyException {
+    public DependencyGraph aggregateCodeLocations(AggregateNodeCreator projectDependencyCreator, final File sourcePath, final List<DetectCodeLocation> codeLocations) throws DetectUserFriendlyException {
         final MutableDependencyGraph aggregateDependencyGraph = simpleBdioFactory.createMutableDependencyGraph();
 
         for (final DetectCodeLocation detectCodeLocation : codeLocations) {
-            final Dependency codeLocationDependency = createAggregateDependency(projectDependencyCreator, sourcePath, detectCodeLocation);
+            final Dependency codeLocationDependency = createAggregateNode(projectDependencyCreator, sourcePath, detectCodeLocation);
             aggregateDependencyGraph.addChildrenToRoot(codeLocationDependency);
             aggregateDependencyGraph.addGraphAsChildrenToParent(codeLocationDependency, detectCodeLocation.getDependencyGraph());
         }
@@ -46,7 +46,7 @@ public class FullAggregateGraph {
         return aggregateDependencyGraph;
     }
 
-    private Dependency createAggregateDependency(AggregateDependencyCreator projectDependencyCreator, final File sourcePath, final DetectCodeLocation codeLocation) {
+    private Dependency createAggregateNode(AggregateNodeCreator projectDependencyCreator, final File sourcePath, final DetectCodeLocation codeLocation) {
         String name = null;
         String version = null;
         try {

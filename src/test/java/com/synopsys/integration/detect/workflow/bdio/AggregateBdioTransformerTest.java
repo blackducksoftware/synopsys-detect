@@ -16,7 +16,7 @@ import com.synopsys.integration.blackduck.bdio.model.dependency.ProjectDependenc
 import com.synopsys.integration.detect.workflow.bdio.aggregation.AggregateModeDirectOperation;
 import com.synopsys.integration.detect.workflow.bdio.aggregation.AggregateModeSubProjectOperation;
 import com.synopsys.integration.detect.workflow.bdio.aggregation.AggregateModeTransitiveOperation;
-import com.synopsys.integration.detect.workflow.bdio.aggregation.FullAggregateGraph;
+import com.synopsys.integration.detect.workflow.bdio.aggregation.FullAggregateGraphCreator;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -55,7 +55,7 @@ class AggregateBdioTransformerTest {
     @Test
     void testTransitiveMode() throws DetectUserFriendlyException {
 
-        DependencyGraph aggregatedGraph = new AggregateModeTransitiveOperation(new FullAggregateGraph(new SimpleBdioFactory())).aggregateCodeLocations(sourceDir, inputCodelocations);
+        DependencyGraph aggregatedGraph = new AggregateModeTransitiveOperation(new FullAggregateGraphCreator(new SimpleBdioFactory())).aggregateCodeLocations(sourceDir, inputCodelocations);
 
         assertEquals(3, aggregatedGraph.getRootDependencies().size());
         assertTrue(aggregatedGraph.getRootDependencies().contains(genProjectDependency("com.synopsys.integration", "basic-multiproject", "0.0.0-SNAPSHOT")));
@@ -71,7 +71,7 @@ class AggregateBdioTransformerTest {
     @Test
     void testSubProjectMode() throws DetectUserFriendlyException {
 
-        DependencyGraph aggregatedGraph = new AggregateModeSubProjectOperation(new FullAggregateGraph(new SimpleBdioFactory())).aggregateCodeLocations(sourceDir, inputCodelocations);
+        DependencyGraph aggregatedGraph = new AggregateModeSubProjectOperation(new FullAggregateGraphCreator(new SimpleBdioFactory())).aggregateCodeLocations(sourceDir, inputCodelocations);
 
         assertEquals(3, aggregatedGraph.getRootDependencies().size());
         assertTrue(aggregatedGraph.getRootDependencies().contains(genProjectDependency("com.synopsys.integration", "basic-multiproject", "0.0.0-SNAPSHOT")));

@@ -16,13 +16,13 @@ import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 
 public class AggregateModeTransitiveOperation {
 
-    private final FullAggregateGraph fullAggregateGraph;
+    private final FullAggregateGraphCreator fullAggregateGraphCreator;
 
-    public AggregateModeTransitiveOperation(FullAggregateGraph fullAggregateGraph) {
-        this.fullAggregateGraph = fullAggregateGraph;
+    public AggregateModeTransitiveOperation(FullAggregateGraphCreator fullAggregateGraphCreator) {
+        this.fullAggregateGraphCreator = fullAggregateGraphCreator;
     }
 
     public DependencyGraph aggregateCodeLocations(File sourcePath, List<DetectCodeLocation> codeLocations) throws DetectUserFriendlyException {
-        return fullAggregateGraph.aggregateCodeLocations(new LegacyAggregateDependencyCreator(), sourcePath, codeLocations);
+        return fullAggregateGraphCreator.aggregateCodeLocations(new DependencyAggregateNodeCreator(), sourcePath, codeLocations);
     }
 }

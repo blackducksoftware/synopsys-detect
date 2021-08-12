@@ -12,7 +12,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.blackduck.bdio.model.dependency.ProjectDependency;
 
 // This creates aggregate (top level / codelocation / subproject) dependency nodes for BD 2021.10+
-public class ModernAggregateDependencyCreator implements AggregateDependencyCreator {
+public class ProjectAggregateNodeCreator implements AggregateNodeCreator {
     @Override
     public Dependency create(String name, String version, ExternalId externalId) {
         return new ProjectDependency(name, version, externalId);

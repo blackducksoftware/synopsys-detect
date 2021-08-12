@@ -10,11 +10,6 @@ package com.synopsys.integration.detect.workflow.bdio.aggregation;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 
-// This creates aggregate (top level / codelocation / subproject) dependency nodes for
-// any version of BD; only these work before BD 2021.10
-public class LegacyAggregateDependencyCreator implements AggregateDependencyCreator {
-    @Override
-    public Dependency create(String name, String version, ExternalId externalId) {
-        return new Dependency(name, version, externalId);
-    }
+public interface AggregateNodeCreator {
+    Dependency create(String name, String version, ExternalId externalId);
 }

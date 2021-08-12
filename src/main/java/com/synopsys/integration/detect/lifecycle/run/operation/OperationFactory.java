@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.synopsys.integration.detect.workflow.bdio.aggregation.FullAggregateGraph;
+import com.synopsys.integration.detect.workflow.bdio.aggregation.FullAggregateGraphCreator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -579,11 +579,11 @@ public class OperationFactory { //TODO: OperationRunner
     }
 
     public DependencyGraph aggregateTransitive(List<DetectCodeLocation> detectCodeLocations) throws DetectUserFriendlyException {
-        return auditLog.namedPublic("Transitive Aggregate", "TransitiveAggregate", () -> new AggregateModeTransitiveOperation(new FullAggregateGraph(new SimpleBdioFactory())).aggregateCodeLocations(directoryManager.getSourceDirectory(), detectCodeLocations));
+        return auditLog.namedPublic("Transitive Aggregate", "TransitiveAggregate", () -> new AggregateModeTransitiveOperation(new FullAggregateGraphCreator(new SimpleBdioFactory())).aggregateCodeLocations(directoryManager.getSourceDirectory(), detectCodeLocations));
     }
 
     public DependencyGraph aggregateSubProject(List<DetectCodeLocation> detectCodeLocations) throws DetectUserFriendlyException {
-        return auditLog.namedPublic("SubProject Aggregate", () -> new AggregateModeSubProjectOperation(new FullAggregateGraph(new SimpleBdioFactory())).aggregateCodeLocations(directoryManager.getSourceDirectory(), detectCodeLocations));
+        return auditLog.namedPublic("SubProject Aggregate", () -> new AggregateModeSubProjectOperation(new FullAggregateGraphCreator(new SimpleBdioFactory())).aggregateCodeLocations(directoryManager.getSourceDirectory(), detectCodeLocations));
     }
 
     public void createAggregateBdio1File(AggregateCodeLocation aggregateCodeLocation) throws DetectUserFriendlyException {
