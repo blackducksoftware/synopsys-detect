@@ -7,7 +7,7 @@
  */
 package com.synopsys.integration.detect.util.filter;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,7 +27,7 @@ public class DetectToolFilter {
     private final Optional<Boolean> impactEnabled;
     private final RunDecision runDecision;
     private final BlackDuckDecision blackDuckDecision;
-    private final List<DetectTool> rapidTools = Collections.singletonList(DetectTool.DETECTOR);
+    private final List<DetectTool> rapidTools = Arrays.asList(DetectTool.DETECTOR, DetectTool.DOCKER);
 
     public DetectToolFilter(ExcludeIncludeEnumFilter<DetectTool> excludedIncludedFilter, Optional<Boolean> impactEnabled,
         RunDecision runDecision, BlackDuckDecision blackDuckDecision) {
