@@ -34,7 +34,7 @@ public class GradleBattery {
 
     @Test
     void gradleFromProperty() {
-        final DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("gradle-property", "gradle-inspector");
+        DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("gradle-property", "gradle-inspector");
         test.executableThatCopiesFiles(DetectProperties.DETECT_GRADLE_PATH.getProperty(), RESOURCE_FOLDER)
             .onWindows(5, "")
             .onLinux(3, "-DGRADLEEXTRACTIONDIR=");
@@ -47,13 +47,26 @@ public class GradleBattery {
 
     @Test
     void gradleWrapperFromSourceFile() {
-        final DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("gradle-wrapper", "gradle-inspector");
+        DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("gradle-wrapper", "gradle-inspector");
         test.executableSourceFileThatCopiesFiles("gradlew.bat", "gradlew", RESOURCE_FOLDER)
             .onWindows(5, "")
             .onLinux(3, "-DGRADLEEXTRACTIONDIR=");
         test.sourceDirectoryNamed("linux-gradle");
         test.sourceFileNamed("build.gradle");
         test.git("https://github.com/BlackDuckCoPilot/example-gradle-travis", "master");
+        test.expectBdioResources();
+        test.run();
+    }
+
+    @Test
+    void gradleWrapperOnDetect() {
+        DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("gradle-detect-on-detect", "detect-on-detect");
+        test.executableSourceFileThatCopiesFiles("gradlew.bat", "gradlew", RESOURCE_FOLDER)
+            .onWindows(5, "")
+            .onLinux(3, "-DGRADLEEXTRACTIONDIR=");
+        test.sourceDirectoryNamed("detect-on-detect");
+        test.sourceFileNamed("build.gradle");
+        test.property("detect.bom.aggregate.name", "aggregate-detect-on-detect");
         test.expectBdioResources();
         test.run();
     }
