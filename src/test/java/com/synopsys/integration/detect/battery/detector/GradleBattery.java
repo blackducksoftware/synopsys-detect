@@ -60,13 +60,13 @@ public class GradleBattery {
 
     @Test
     void gradleWrapperOnDetect() {
-        DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("gradle-detect-on-detect", "detect-on-detect");
+        DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("gradle-detect-on-detect", "gradle-detect-on-detect");
         test.executableSourceFileThatCopiesFiles("gradlew.bat", "gradlew", RESOURCE_FOLDER)
             .onWindows(5, "")
             .onLinux(3, "-DGRADLEEXTRACTIONDIR=");
-        test.sourceDirectoryNamed("detect-on-detect");
+        test.sourceDirectoryNamed("synopsys-detect");
         test.sourceFileNamed("build.gradle");
-        test.property("detect.bom.aggregate.name", "aggregate-detect-on-detect");
+        test.git("https://github.com/blackducksoftware/synopsys-detect", "master");
         test.expectBdioResources();
         test.run();
     }

@@ -1,0 +1,1926 @@
+[
+  {
+    "specVersion": "1.1.0",
+    "spdx:name": "synopsys-detect/7.5.0-SNAPSHOT/detectable/com.synopsys.integration/detectable/7.5.0-SNAPSHOT gradle/bom",
+    "creationInfo": {
+      "spdx:creator": [
+        "Tool: Detect-7.5.0-SNAPSHOT",
+        "Tool: IntegrationBdio-22.1.4"
+      ],
+      "spdx:created": "2021-08-13T15:14:50.196Z"
+    },
+    "@id": "uuid:0b5f3276-70bf-4167-aa7c-8322162ac13b",
+    "@type": "BillOfMaterials",
+    "relationship": []
+  },
+  {
+    "name": "synopsys-detect",
+    "revision": "7.5.0-SNAPSHOT",
+    "@id": "http:maven/com.synopsys.integration/detectable/7.5.0-SNAPSHOT",
+    "@type": "Project",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.synopsys.integration:detectable:7.5.0-SNAPSHOT",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "detectable",
+          "7.5.0-SNAPSHOT"
+        ],
+        "prefix": "com.synopsys.integration"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.junit.jupiter/junit-jupiter-engine/5.7.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/2.12.3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.junit-pioneer/junit-pioneer/0.3.3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.freemarker/freemarker/2.3.26-incubating",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/net.minidev/json-smart/2.4.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.mockito/mockito-core/2.28.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.slf4j/slf4j-api/1.7.30",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.apache.commons/commons-lang3/3.11",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.codehaus.groovy/groovy-astbuilder/3.0.7",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.mockito/mockito-core/2.%2B",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.tomlj/tomlj/1.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.jetbrains/annotations/20.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/com.moandjiezana.toml/toml4j/0.7.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/com.synopsys.integration/integration-bdio/21.2.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/com.synopsys.integration/integration-common/24.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.apache.commons/commons-lang3/3.10",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.junit.jupiter/junit-jupiter-params/5.7.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.apache.commons/commons-collections4/4.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.skyscreamer/jsonassert/1.5.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.jacoco/org.jacoco.agent/0.8.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.jacoco/org.jacoco.ant/0.8.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.junit.jupiter/junit-jupiter-params/5.4.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.junit.jupiter/junit-jupiter-api/5.7.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/com.paypal.digraph/digraph-parser/1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.jetbrains/annotations/19.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.junit.jupiter/junit-jupiter-api/5.3.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/com.synopsys.integration/integration-rest/6.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "junit-jupiter-engine",
+    "revision": "5.7.1",
+    "@id": "http:maven/org.junit.jupiter/junit-jupiter-engine/5.7.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.junit.jupiter:junit-jupiter-engine:5.7.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "junit-jupiter-engine",
+          "5.7.1"
+        ],
+        "prefix": "org.junit.jupiter"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.apiguardian/apiguardian-api/1.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.junit.jupiter/junit-jupiter-api/5.7.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.junit.platform/junit-platform-engine/1.7.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.junit/junit-bom/5.7.1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "apiguardian-api",
+    "revision": "1.1.0",
+    "@id": "http:maven/org.apiguardian/apiguardian-api/1.1.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.apiguardian:apiguardian-api:1.1.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "apiguardian-api",
+          "1.1.0"
+        ],
+        "prefix": "org.apiguardian"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "junit-jupiter-api",
+    "revision": "5.7.1",
+    "@id": "http:maven/org.junit.jupiter/junit-jupiter-api/5.7.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.junit.jupiter:junit-jupiter-api:5.7.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "junit-jupiter-api",
+          "5.7.1"
+        ],
+        "prefix": "org.junit.jupiter"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.apiguardian/apiguardian-api/1.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.junit.platform/junit-platform-commons/1.7.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.junit/junit-bom/5.7.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.opentest4j/opentest4j/1.2.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "junit-platform-commons",
+    "revision": "1.7.1",
+    "@id": "http:maven/org.junit.platform/junit-platform-commons/1.7.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.junit.platform:junit-platform-commons:1.7.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "junit-platform-commons",
+          "1.7.1"
+        ],
+        "prefix": "org.junit.platform"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.apiguardian/apiguardian-api/1.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "junit-bom",
+    "revision": "5.7.1",
+    "@id": "http:maven/org.junit/junit-bom/5.7.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.junit:junit-bom:5.7.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "junit-bom",
+          "5.7.1"
+        ],
+        "prefix": "org.junit"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.junit.jupiter/junit-jupiter-engine/5.7.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.junit.platform/junit-platform-commons/1.7.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.junit.jupiter/junit-jupiter-api/5.7.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.junit.platform/junit-platform-engine/1.7.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.junit.jupiter/junit-jupiter-params/5.7.1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "junit-platform-engine",
+    "revision": "1.7.1",
+    "@id": "http:maven/org.junit.platform/junit-platform-engine/1.7.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.junit.platform:junit-platform-engine:1.7.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "junit-platform-engine",
+          "1.7.1"
+        ],
+        "prefix": "org.junit.platform"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.apiguardian/apiguardian-api/1.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.junit.platform/junit-platform-commons/1.7.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.opentest4j/opentest4j/1.2.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "opentest4j",
+    "revision": "1.2.0",
+    "@id": "http:maven/org.opentest4j/opentest4j/1.2.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.opentest4j:opentest4j:1.2.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "opentest4j",
+          "1.2.0"
+        ],
+        "prefix": "org.opentest4j"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "junit-jupiter-params",
+    "revision": "5.7.1",
+    "@id": "http:maven/org.junit.jupiter/junit-jupiter-params/5.7.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.junit.jupiter:junit-jupiter-params:5.7.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "junit-jupiter-params",
+          "5.7.1"
+        ],
+        "prefix": "org.junit.jupiter"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.apiguardian/apiguardian-api/1.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.junit.jupiter/junit-jupiter-api/5.7.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.junit/junit-bom/5.7.1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "jackson-dataformat-yaml",
+    "revision": "2.12.3",
+    "@id": "http:maven/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/2.12.3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.3",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "jackson-dataformat-yaml",
+          "2.12.3"
+        ],
+        "prefix": "com.fasterxml.jackson.dataformat"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/com.fasterxml.jackson.core/jackson-core/2.12.3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/com.fasterxml.jackson.core/jackson-databind/2.12.3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/com.fasterxml.jackson/jackson-bom/2.12.3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.yaml/snakeyaml/1.27",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "jackson-core",
+    "revision": "2.12.3",
+    "@id": "http:maven/com.fasterxml.jackson.core/jackson-core/2.12.3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.fasterxml.jackson.core:jackson-core:2.12.3",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "jackson-core",
+          "2.12.3"
+        ],
+        "prefix": "com.fasterxml.jackson.core"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/com.fasterxml.jackson/jackson-bom/2.12.3",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "jackson-bom",
+    "revision": "2.12.3",
+    "@id": "http:maven/com.fasterxml.jackson/jackson-bom/2.12.3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.fasterxml.jackson:jackson-bom:2.12.3",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "jackson-bom",
+          "2.12.3"
+        ],
+        "prefix": "com.fasterxml.jackson"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/2.12.3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/com.fasterxml.jackson.core/jackson-core/2.12.3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/com.fasterxml.jackson.core/jackson-databind/2.12.3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/com.fasterxml.jackson.core/jackson-annotations/2.12.3",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "jackson-databind",
+    "revision": "2.12.3",
+    "@id": "http:maven/com.fasterxml.jackson.core/jackson-databind/2.12.3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.fasterxml.jackson.core:jackson-databind:2.12.3",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "jackson-databind",
+          "2.12.3"
+        ],
+        "prefix": "com.fasterxml.jackson.core"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/com.fasterxml.jackson.core/jackson-core/2.12.3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/com.fasterxml.jackson/jackson-bom/2.12.3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/com.fasterxml.jackson.core/jackson-annotations/2.12.3",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "jackson-annotations",
+    "revision": "2.12.3",
+    "@id": "http:maven/com.fasterxml.jackson.core/jackson-annotations/2.12.3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.fasterxml.jackson.core:jackson-annotations:2.12.3",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "jackson-annotations",
+          "2.12.3"
+        ],
+        "prefix": "com.fasterxml.jackson.core"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/com.fasterxml.jackson/jackson-bom/2.12.3",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "snakeyaml",
+    "revision": "1.27",
+    "@id": "http:maven/org.yaml/snakeyaml/1.27",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.yaml:snakeyaml:1.27",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "snakeyaml",
+          "1.27"
+        ],
+        "prefix": "org.yaml"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "junit-pioneer",
+    "revision": "0.3.3",
+    "@id": "http:maven/org.junit-pioneer/junit-pioneer/0.3.3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.junit-pioneer:junit-pioneer:0.3.3",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "junit-pioneer",
+          "0.3.3"
+        ],
+        "prefix": "org.junit-pioneer"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.junit.jupiter/junit-jupiter-api/5.7.1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "freemarker",
+    "revision": "2.3.26-incubating",
+    "@id": "http:maven/org.freemarker/freemarker/2.3.26-incubating",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.freemarker:freemarker:2.3.26-incubating",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "freemarker",
+          "2.3.26-incubating"
+        ],
+        "prefix": "org.freemarker"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "json-smart",
+    "revision": "2.4.2",
+    "@id": "http:maven/net.minidev/json-smart/2.4.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "net.minidev:json-smart:2.4.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "json-smart",
+          "2.4.2"
+        ],
+        "prefix": "net.minidev"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/net.minidev/accessors-smart/2.4.2",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "accessors-smart",
+    "revision": "2.4.2",
+    "@id": "http:maven/net.minidev/accessors-smart/2.4.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "net.minidev:accessors-smart:2.4.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "accessors-smart",
+          "2.4.2"
+        ],
+        "prefix": "net.minidev"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.ow2.asm/asm/8.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "asm",
+    "revision": "8.0.1",
+    "@id": "http:maven/org.ow2.asm/asm/8.0.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.ow2.asm:asm:8.0.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "asm",
+          "8.0.1"
+        ],
+        "prefix": "org.ow2.asm"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "mockito-core",
+    "revision": "2.28.2",
+    "@id": "http:maven/org.mockito/mockito-core/2.28.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.mockito:mockito-core:2.28.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "mockito-core",
+          "2.28.2"
+        ],
+        "prefix": "org.mockito"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/net.bytebuddy/byte-buddy/1.9.10",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.objenesis/objenesis/2.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/net.bytebuddy/byte-buddy-agent/1.9.10",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "byte-buddy",
+    "revision": "1.9.10",
+    "@id": "http:maven/net.bytebuddy/byte-buddy/1.9.10",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "net.bytebuddy:byte-buddy:1.9.10",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "byte-buddy",
+          "1.9.10"
+        ],
+        "prefix": "net.bytebuddy"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "objenesis",
+    "revision": "2.6",
+    "@id": "http:maven/org.objenesis/objenesis/2.6",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.objenesis:objenesis:2.6",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "objenesis",
+          "2.6"
+        ],
+        "prefix": "org.objenesis"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "byte-buddy-agent",
+    "revision": "1.9.10",
+    "@id": "http:maven/net.bytebuddy/byte-buddy-agent/1.9.10",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "net.bytebuddy:byte-buddy-agent:1.9.10",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "byte-buddy-agent",
+          "1.9.10"
+        ],
+        "prefix": "net.bytebuddy"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "slf4j-api",
+    "revision": "1.7.30",
+    "@id": "http:maven/org.slf4j/slf4j-api/1.7.30",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.slf4j:slf4j-api:1.7.30",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "slf4j-api",
+          "1.7.30"
+        ],
+        "prefix": "org.slf4j"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "commons-lang3",
+    "revision": "3.11",
+    "@id": "http:maven/org.apache.commons/commons-lang3/3.11",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.apache.commons:commons-lang3:3.11",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "commons-lang3",
+          "3.11"
+        ],
+        "prefix": "org.apache.commons"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "groovy-astbuilder",
+    "revision": "3.0.7",
+    "@id": "http:maven/org.codehaus.groovy/groovy-astbuilder/3.0.7",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.codehaus.groovy:groovy-astbuilder:3.0.7",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "groovy-astbuilder",
+          "3.0.7"
+        ],
+        "prefix": "org.codehaus.groovy"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.codehaus.groovy/groovy/3.0.7",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "groovy",
+    "revision": "3.0.7",
+    "@id": "http:maven/org.codehaus.groovy/groovy/3.0.7",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.codehaus.groovy:groovy:3.0.7",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "groovy",
+          "3.0.7"
+        ],
+        "prefix": "org.codehaus.groovy"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "mockito-core",
+    "revision": "2.+",
+    "@id": "http:maven/org.mockito/mockito-core/2.%2B",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.mockito:mockito-core:2.+",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "mockito-core",
+          "2.+"
+        ],
+        "prefix": "org.mockito"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "tomlj",
+    "revision": "1.0.0",
+    "@id": "http:maven/org.tomlj/tomlj/1.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.tomlj:tomlj:1.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "tomlj",
+          "1.0.0"
+        ],
+        "prefix": "org.tomlj"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.antlr/antlr4-runtime/4.7.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/com.google.code.findbugs/jsr305/3.0.2",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "antlr4-runtime",
+    "revision": "4.7.2",
+    "@id": "http:maven/org.antlr/antlr4-runtime/4.7.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.antlr:antlr4-runtime:4.7.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "antlr4-runtime",
+          "4.7.2"
+        ],
+        "prefix": "org.antlr"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "jsr305",
+    "revision": "3.0.2",
+    "@id": "http:maven/com.google.code.findbugs/jsr305/3.0.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.google.code.findbugs:jsr305:3.0.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "jsr305",
+          "3.0.2"
+        ],
+        "prefix": "com.google.code.findbugs"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "annotations",
+    "revision": "20.1.0",
+    "@id": "http:maven/org.jetbrains/annotations/20.1.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.jetbrains:annotations:20.1.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "annotations",
+          "20.1.0"
+        ],
+        "prefix": "org.jetbrains"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "toml4j",
+    "revision": "0.7.1",
+    "@id": "http:maven/com.moandjiezana.toml/toml4j/0.7.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.moandjiezana.toml:toml4j:0.7.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "toml4j",
+          "0.7.1"
+        ],
+        "prefix": "com.moandjiezana.toml"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/com.google.code.gson/gson/2.8.6",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "gson",
+    "revision": "2.8.6",
+    "@id": "http:maven/com.google.code.gson/gson/2.8.6",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.google.code.gson:gson:2.8.6",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "gson",
+          "2.8.6"
+        ],
+        "prefix": "com.google.code.gson"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "integration-bdio",
+    "revision": "21.2.0",
+    "@id": "http:maven/com.synopsys.integration/integration-bdio/21.2.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.synopsys.integration:integration-bdio:21.2.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "integration-bdio",
+          "21.2.0"
+        ],
+        "prefix": "com.synopsys.integration"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/com.synopsys.integration/integration-common/24.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "integration-common",
+    "revision": "24.0.0",
+    "@id": "http:maven/com.synopsys.integration/integration-common/24.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.synopsys.integration:integration-common:24.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "integration-common",
+          "24.0.0"
+        ],
+        "prefix": "com.synopsys.integration"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/com.google.code.gson/gson/2.8.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.slf4j/slf4j-api/1.7.30",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/commons-codec/commons-codec/1.15",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.apache.commons/commons-lang3/3.11",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.apache.commons/commons-text/1.9",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/com.flipkart.zjsonpatch/zjsonpatch/0.4.11",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/commons-beanutils/commons-beanutils/1.9.4",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/commons-io/commons-io/2.8.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.jetbrains/annotations/20.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.apache.httpcomponents/httpclient/4.5.13",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.apache.commons/commons-compress/1.20",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/com.jayway.jsonpath/json-path/2.4.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.apache.httpcomponents/httpmime/4.5.13",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "commons-codec",
+    "revision": "1.15",
+    "@id": "http:maven/commons-codec/commons-codec/1.15",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "commons-codec:commons-codec:1.15",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "commons-codec",
+          "1.15"
+        ],
+        "prefix": "commons-codec"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "commons-text",
+    "revision": "1.9",
+    "@id": "http:maven/org.apache.commons/commons-text/1.9",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.apache.commons:commons-text:1.9",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "commons-text",
+          "1.9"
+        ],
+        "prefix": "org.apache.commons"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.apache.commons/commons-lang3/3.11",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "zjsonpatch",
+    "revision": "0.4.11",
+    "@id": "http:maven/com.flipkart.zjsonpatch/zjsonpatch/0.4.11",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.flipkart.zjsonpatch:zjsonpatch:0.4.11",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "zjsonpatch",
+          "0.4.11"
+        ],
+        "prefix": "com.flipkart.zjsonpatch"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.apache.commons/commons-collections4/4.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/com.fasterxml.jackson.core/jackson-core/2.12.3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/com.fasterxml.jackson.core/jackson-databind/2.12.3",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "commons-collections4",
+    "revision": "4.2",
+    "@id": "http:maven/org.apache.commons/commons-collections4/4.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.apache.commons:commons-collections4:4.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "commons-collections4",
+          "4.2"
+        ],
+        "prefix": "org.apache.commons"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "commons-beanutils",
+    "revision": "1.9.4",
+    "@id": "http:maven/commons-beanutils/commons-beanutils/1.9.4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "commons-beanutils:commons-beanutils:1.9.4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "commons-beanutils",
+          "1.9.4"
+        ],
+        "prefix": "commons-beanutils"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/commons-logging/commons-logging/1.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/commons-collections/commons-collections/3.2.2",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "commons-logging",
+    "revision": "1.2",
+    "@id": "http:maven/commons-logging/commons-logging/1.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "commons-logging:commons-logging:1.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "commons-logging",
+          "1.2"
+        ],
+        "prefix": "commons-logging"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "commons-collections",
+    "revision": "3.2.2",
+    "@id": "http:maven/commons-collections/commons-collections/3.2.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "commons-collections:commons-collections:3.2.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "commons-collections",
+          "3.2.2"
+        ],
+        "prefix": "commons-collections"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "commons-io",
+    "revision": "2.8.0",
+    "@id": "http:maven/commons-io/commons-io/2.8.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "commons-io:commons-io:2.8.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "commons-io",
+          "2.8.0"
+        ],
+        "prefix": "commons-io"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "httpclient",
+    "revision": "4.5.13",
+    "@id": "http:maven/org.apache.httpcomponents/httpclient/4.5.13",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.apache.httpcomponents:httpclient:4.5.13",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "httpclient",
+          "4.5.13"
+        ],
+        "prefix": "org.apache.httpcomponents"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.apache.httpcomponents/httpcore/4.4.13",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/commons-logging/commons-logging/1.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/commons-codec/commons-codec/1.15",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "httpcore",
+    "revision": "4.4.13",
+    "@id": "http:maven/org.apache.httpcomponents/httpcore/4.4.13",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.apache.httpcomponents:httpcore:4.4.13",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "httpcore",
+          "4.4.13"
+        ],
+        "prefix": "org.apache.httpcomponents"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "commons-compress",
+    "revision": "1.20",
+    "@id": "http:maven/org.apache.commons/commons-compress/1.20",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.apache.commons:commons-compress:1.20",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "commons-compress",
+          "1.20"
+        ],
+        "prefix": "org.apache.commons"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "json-path",
+    "revision": "2.4.0",
+    "@id": "http:maven/com.jayway.jsonpath/json-path/2.4.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.jayway.jsonpath:json-path:2.4.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "json-path",
+          "2.4.0"
+        ],
+        "prefix": "com.jayway.jsonpath"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/net.minidev/json-smart/2.4.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.slf4j/slf4j-api/1.7.30",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "httpmime",
+    "revision": "4.5.13",
+    "@id": "http:maven/org.apache.httpcomponents/httpmime/4.5.13",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.apache.httpcomponents:httpmime:4.5.13",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "httpmime",
+          "4.5.13"
+        ],
+        "prefix": "org.apache.httpcomponents"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.apache.httpcomponents/httpclient/4.5.13",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "commons-lang3",
+    "revision": "3.10",
+    "@id": "http:maven/org.apache.commons/commons-lang3/3.10",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.apache.commons:commons-lang3:3.10",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "commons-lang3",
+          "3.10"
+        ],
+        "prefix": "org.apache.commons"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "jsonassert",
+    "revision": "1.5.0",
+    "@id": "http:maven/org.skyscreamer/jsonassert/1.5.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.skyscreamer:jsonassert:1.5.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "jsonassert",
+          "1.5.0"
+        ],
+        "prefix": "org.skyscreamer"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/com.vaadin.external.google/android-json/0.0.20131108.vaadin1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "android-json",
+    "revision": "0.0.20131108.vaadin1",
+    "@id": "http:maven/com.vaadin.external.google/android-json/0.0.20131108.vaadin1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.vaadin.external.google:android-json:0.0.20131108.vaadin1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "android-json",
+          "0.0.20131108.vaadin1"
+        ],
+        "prefix": "com.vaadin.external.google"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "org.jacoco.agent",
+    "revision": "0.8.6",
+    "@id": "http:maven/org.jacoco/org.jacoco.agent/0.8.6",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.jacoco:org.jacoco.agent:0.8.6",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "org.jacoco.agent",
+          "0.8.6"
+        ],
+        "prefix": "org.jacoco"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "org.jacoco.ant",
+    "revision": "0.8.6",
+    "@id": "http:maven/org.jacoco/org.jacoco.ant/0.8.6",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.jacoco:org.jacoco.ant:0.8.6",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "org.jacoco.ant",
+          "0.8.6"
+        ],
+        "prefix": "org.jacoco"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.jacoco/org.jacoco.report/0.8.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.jacoco/org.jacoco.agent/0.8.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.jacoco/org.jacoco.core/0.8.6",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "org.jacoco.report",
+    "revision": "0.8.6",
+    "@id": "http:maven/org.jacoco/org.jacoco.report/0.8.6",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.jacoco:org.jacoco.report:0.8.6",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "org.jacoco.report",
+          "0.8.6"
+        ],
+        "prefix": "org.jacoco"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.jacoco/org.jacoco.core/0.8.6",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "org.jacoco.core",
+    "revision": "0.8.6",
+    "@id": "http:maven/org.jacoco/org.jacoco.core/0.8.6",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.jacoco:org.jacoco.core:0.8.6",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "org.jacoco.core",
+          "0.8.6"
+        ],
+        "prefix": "org.jacoco"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.ow2.asm/asm/8.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.ow2.asm/asm-commons/8.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.ow2.asm/asm-tree/8.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "asm-commons",
+    "revision": "8.0.1",
+    "@id": "http:maven/org.ow2.asm/asm-commons/8.0.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.ow2.asm:asm-commons:8.0.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "asm-commons",
+          "8.0.1"
+        ],
+        "prefix": "org.ow2.asm"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.ow2.asm/asm/8.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.ow2.asm/asm-tree/8.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.ow2.asm/asm-analysis/8.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "asm-tree",
+    "revision": "8.0.1",
+    "@id": "http:maven/org.ow2.asm/asm-tree/8.0.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.ow2.asm:asm-tree:8.0.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "asm-tree",
+          "8.0.1"
+        ],
+        "prefix": "org.ow2.asm"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.ow2.asm/asm/8.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "asm-analysis",
+    "revision": "8.0.1",
+    "@id": "http:maven/org.ow2.asm/asm-analysis/8.0.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.ow2.asm:asm-analysis:8.0.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "asm-analysis",
+          "8.0.1"
+        ],
+        "prefix": "org.ow2.asm"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.ow2.asm/asm-tree/8.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "junit-jupiter-params",
+    "revision": "5.4.2",
+    "@id": "http:maven/org.junit.jupiter/junit-jupiter-params/5.4.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.junit.jupiter:junit-jupiter-params:5.4.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "junit-jupiter-params",
+          "5.4.2"
+        ],
+        "prefix": "org.junit.jupiter"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "digraph-parser",
+    "revision": "1.0",
+    "@id": "http:maven/com.paypal.digraph/digraph-parser/1.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.paypal.digraph:digraph-parser:1.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "digraph-parser",
+          "1.0"
+        ],
+        "prefix": "com.paypal.digraph"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.antlr/antlr4-runtime/4.7.2",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "annotations",
+    "revision": "19.0.0",
+    "@id": "http:maven/org.jetbrains/annotations/19.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.jetbrains:annotations:19.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "annotations",
+          "19.0.0"
+        ],
+        "prefix": "org.jetbrains"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "junit-jupiter-api",
+    "revision": "5.3.1",
+    "@id": "http:maven/org.junit.jupiter/junit-jupiter-api/5.3.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.junit.jupiter:junit-jupiter-api:5.3.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "junit-jupiter-api",
+          "5.3.1"
+        ],
+        "prefix": "org.junit.jupiter"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "integration-rest",
+    "revision": "6.0.1",
+    "@id": "http:maven/com.synopsys.integration/integration-rest/6.0.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.synopsys.integration:integration-rest:6.0.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "integration-rest",
+          "6.0.1"
+        ],
+        "prefix": "com.synopsys.integration"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/com.synopsys.integration/integration-common/24.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  }
+]
