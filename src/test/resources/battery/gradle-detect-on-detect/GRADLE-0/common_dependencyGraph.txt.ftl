@@ -1,3 +1,4 @@
+
 ------------------------------------------------------------
 Project ':common'
 ------------------------------------------------------------
@@ -39,31 +40,31 @@ compileClasspath - Compile classpath for source set 'main'.
 |    +--- com.fasterxml.jackson.core:jackson-core:2.12.3 (*)
 |    \--- com.fasterxml.jackson:jackson-bom:2.12.3 (*)
 \--- com.synopsys.integration:integration-common:24.0.0
-+--- org.apache.httpcomponents:httpclient:4.5.13
-|    +--- org.apache.httpcomponents:httpcore:4.4.13
-|    +--- commons-logging:commons-logging:1.2
-|    \--- commons-codec:commons-codec:1.11 -> 1.15
-+--- org.apache.httpcomponents:httpmime:4.5.13
-|    \--- org.apache.httpcomponents:httpclient:4.5.13 (*)
-+--- org.apache.commons:commons-lang3:3.11
-+--- org.apache.commons:commons-text:1.9
-|    \--- org.apache.commons:commons-lang3:3.11
-+--- commons-io:commons-io:2.8.0
-+--- org.apache.commons:commons-compress:1.20
-+--- commons-codec:commons-codec:1.15
-+--- commons-beanutils:commons-beanutils:1.9.4
-|    +--- commons-logging:commons-logging:1.2
-|    \--- commons-collections:commons-collections:3.2.2
-+--- com.google.code.gson:gson:2.8.6
-+--- org.jetbrains:annotations:20.1.0
-+--- com.jayway.jsonpath:json-path:2.4.0
-|    +--- net.minidev:json-smart:2.3 -> 2.4.2 (*)
-|    \--- org.slf4j:slf4j-api:1.7.25 -> 1.7.30
-+--- org.slf4j:slf4j-api:1.7.30
-\--- com.flipkart.zjsonpatch:zjsonpatch:0.4.11
-+--- com.fasterxml.jackson.core:jackson-databind:2.10.3 -> 2.12.3 (*)
-+--- com.fasterxml.jackson.core:jackson-core:2.10.3 -> 2.12.3 (*)
-\--- org.apache.commons:commons-collections4:4.2
+     +--- org.apache.httpcomponents:httpclient:4.5.13
+     |    +--- org.apache.httpcomponents:httpcore:4.4.13
+     |    +--- commons-logging:commons-logging:1.2
+     |    \--- commons-codec:commons-codec:1.11 -> 1.15
+     +--- org.apache.httpcomponents:httpmime:4.5.13
+     |    \--- org.apache.httpcomponents:httpclient:4.5.13 (*)
+     +--- org.apache.commons:commons-lang3:3.11
+     +--- org.apache.commons:commons-text:1.9
+     |    \--- org.apache.commons:commons-lang3:3.11
+     +--- commons-io:commons-io:2.8.0
+     +--- org.apache.commons:commons-compress:1.20
+     +--- commons-codec:commons-codec:1.15
+     +--- commons-beanutils:commons-beanutils:1.9.4
+     |    +--- commons-logging:commons-logging:1.2
+     |    \--- commons-collections:commons-collections:3.2.2
+     +--- com.google.code.gson:gson:2.8.6
+     +--- org.jetbrains:annotations:20.1.0
+     +--- com.jayway.jsonpath:json-path:2.4.0
+     |    +--- net.minidev:json-smart:2.3 -> 2.4.2 (*)
+     |    \--- org.slf4j:slf4j-api:1.7.25 -> 1.7.30
+     +--- org.slf4j:slf4j-api:1.7.30
+     \--- com.flipkart.zjsonpatch:zjsonpatch:0.4.11
+          +--- com.fasterxml.jackson.core:jackson-databind:2.10.3 -> 2.12.3 (*)
+          +--- com.fasterxml.jackson.core:jackson-core:2.10.3 -> 2.12.3 (*)
+          \--- org.apache.commons:commons-collections4:4.2
 
 compileOnly - Compile only dependencies for source set 'main'. (n)
 No dependencies
@@ -87,18 +88,18 @@ jacocoAgent - The Jacoco agent to use to get coverage data.
 
 jacocoAnt - The Jacoco ant tasks to use to get execute Gradle tasks.
 \--- org.jacoco:org.jacoco.ant:0.8.6
-+--- org.jacoco:org.jacoco.core:0.8.6
-|    +--- org.ow2.asm:asm:8.0.1
-|    +--- org.ow2.asm:asm-commons:8.0.1
-|    |    +--- org.ow2.asm:asm:8.0.1
-|    |    +--- org.ow2.asm:asm-tree:8.0.1
-|    |    |    \--- org.ow2.asm:asm:8.0.1
-|    |    \--- org.ow2.asm:asm-analysis:8.0.1
-|    |         \--- org.ow2.asm:asm-tree:8.0.1 (*)
-|    \--- org.ow2.asm:asm-tree:8.0.1 (*)
-+--- org.jacoco:org.jacoco.report:0.8.6
-|    \--- org.jacoco:org.jacoco.core:0.8.6 (*)
-\--- org.jacoco:org.jacoco.agent:0.8.6
+     +--- org.jacoco:org.jacoco.core:0.8.6
+     |    +--- org.ow2.asm:asm:8.0.1
+     |    +--- org.ow2.asm:asm-commons:8.0.1
+     |    |    +--- org.ow2.asm:asm:8.0.1
+     |    |    +--- org.ow2.asm:asm-tree:8.0.1
+     |    |    |    \--- org.ow2.asm:asm:8.0.1
+     |    |    \--- org.ow2.asm:asm-analysis:8.0.1
+     |    |         \--- org.ow2.asm:asm-tree:8.0.1 (*)
+     |    \--- org.ow2.asm:asm-tree:8.0.1 (*)
+     +--- org.jacoco:org.jacoco.report:0.8.6
+     |    \--- org.jacoco:org.jacoco.core:0.8.6 (*)
+     \--- org.jacoco:org.jacoco.agent:0.8.6
 
 runtime - Runtime dependencies for source set 'main' (deprecated, use 'runtimeOnly' instead). (n)
 No dependencies
@@ -125,31 +126,31 @@ runtimeClasspath - Runtime classpath of source set 'main'.
 |    +--- com.fasterxml.jackson.core:jackson-core:2.12.3 (*)
 |    \--- com.fasterxml.jackson:jackson-bom:2.12.3 (*)
 \--- com.synopsys.integration:integration-common:24.0.0
-+--- org.apache.httpcomponents:httpclient:4.5.13
-|    +--- org.apache.httpcomponents:httpcore:4.4.13
-|    +--- commons-logging:commons-logging:1.2
-|    \--- commons-codec:commons-codec:1.11 -> 1.15
-+--- org.apache.httpcomponents:httpmime:4.5.13
-|    \--- org.apache.httpcomponents:httpclient:4.5.13 (*)
-+--- org.apache.commons:commons-lang3:3.11
-+--- org.apache.commons:commons-text:1.9
-|    \--- org.apache.commons:commons-lang3:3.11
-+--- commons-io:commons-io:2.8.0
-+--- org.apache.commons:commons-compress:1.20
-+--- commons-codec:commons-codec:1.15
-+--- commons-beanutils:commons-beanutils:1.9.4
-|    +--- commons-logging:commons-logging:1.2
-|    \--- commons-collections:commons-collections:3.2.2
-+--- com.google.code.gson:gson:2.8.6
-+--- org.jetbrains:annotations:20.1.0
-+--- com.jayway.jsonpath:json-path:2.4.0
-|    +--- net.minidev:json-smart:2.3 -> 2.4.2 (*)
-|    \--- org.slf4j:slf4j-api:1.7.25 -> 1.7.30
-+--- org.slf4j:slf4j-api:1.7.30
-\--- com.flipkart.zjsonpatch:zjsonpatch:0.4.11
-+--- com.fasterxml.jackson.core:jackson-databind:2.10.3 -> 2.12.3 (*)
-+--- com.fasterxml.jackson.core:jackson-core:2.10.3 -> 2.12.3 (*)
-\--- org.apache.commons:commons-collections4:4.2
+     +--- org.apache.httpcomponents:httpclient:4.5.13
+     |    +--- org.apache.httpcomponents:httpcore:4.4.13
+     |    +--- commons-logging:commons-logging:1.2
+     |    \--- commons-codec:commons-codec:1.11 -> 1.15
+     +--- org.apache.httpcomponents:httpmime:4.5.13
+     |    \--- org.apache.httpcomponents:httpclient:4.5.13 (*)
+     +--- org.apache.commons:commons-lang3:3.11
+     +--- org.apache.commons:commons-text:1.9
+     |    \--- org.apache.commons:commons-lang3:3.11
+     +--- commons-io:commons-io:2.8.0
+     +--- org.apache.commons:commons-compress:1.20
+     +--- commons-codec:commons-codec:1.15
+     +--- commons-beanutils:commons-beanutils:1.9.4
+     |    +--- commons-logging:commons-logging:1.2
+     |    \--- commons-collections:commons-collections:3.2.2
+     +--- com.google.code.gson:gson:2.8.6
+     +--- org.jetbrains:annotations:20.1.0
+     +--- com.jayway.jsonpath:json-path:2.4.0
+     |    +--- net.minidev:json-smart:2.3 -> 2.4.2 (*)
+     |    \--- org.slf4j:slf4j-api:1.7.25 -> 1.7.30
+     +--- org.slf4j:slf4j-api:1.7.30
+     \--- com.flipkart.zjsonpatch:zjsonpatch:0.4.11
+          +--- com.fasterxml.jackson.core:jackson-databind:2.10.3 -> 2.12.3 (*)
+          +--- com.fasterxml.jackson.core:jackson-core:2.10.3 -> 2.12.3 (*)
+          \--- org.apache.commons:commons-collections4:4.2
 
 runtimeElements - Elements of runtime for main. (n)
 No dependencies
@@ -313,13 +314,13 @@ testRuntimeClasspath - Runtime classpath of source set 'test'.
 |    \--- org.objenesis:objenesis:2.6
 +--- org.junit.jupiter:junit-jupiter-api:5.3.1 -> 5.7.1 (*)
 \--- org.junit.jupiter:junit-jupiter-engine:5.7.1
-+--- org.junit:junit-bom:5.7.1 (*)
-+--- org.apiguardian:apiguardian-api:1.1.0
-+--- org.junit.platform:junit-platform-engine:1.7.1
-|    +--- org.apiguardian:apiguardian-api:1.1.0
-|    +--- org.opentest4j:opentest4j:1.2.0
-|    \--- org.junit.platform:junit-platform-commons:1.7.1 (*)
-\--- org.junit.jupiter:junit-jupiter-api:5.7.1 (*)
+     +--- org.junit:junit-bom:5.7.1 (*)
+     +--- org.apiguardian:apiguardian-api:1.1.0
+     +--- org.junit.platform:junit-platform-engine:1.7.1
+     |    +--- org.apiguardian:apiguardian-api:1.1.0
+     |    +--- org.opentest4j:opentest4j:1.2.0
+     |    \--- org.junit.platform:junit-platform-commons:1.7.1 (*)
+     \--- org.junit.jupiter:junit-jupiter-api:5.7.1 (*)
 
 testRuntimeOnly - Runtime only dependencies for source set 'test'. (n)
 \--- org.junit.jupiter:junit-jupiter-engine:5.7.1 (n)
