@@ -1,4 +1,3 @@
-
 ------------------------------------------------------------
 Root project 'synopsys-detect'
 ------------------------------------------------------------
@@ -136,9 +135,9 @@ compileClasspath - Compile classpath for source set 'main'.
 |    \--- org.slf4j:slf4j-api:1.6.6 -> 1.7.30
 +--- org.freemarker:freemarker:2.3.26-incubating
 \--- org.apache.pdfbox:pdfbox:2.0.21
-     +--- org.apache.pdfbox:fontbox:2.0.21
-     |    \--- commons-logging:commons-logging:1.2
-     \--- commons-logging:commons-logging:1.2
++--- org.apache.pdfbox:fontbox:2.0.21
+|    \--- commons-logging:commons-logging:1.2
+\--- commons-logging:commons-logging:1.2
 
 compileOnly - Compile only dependencies for source set 'main'. (n)
 No dependencies
@@ -175,18 +174,18 @@ jacocoAgent - The Jacoco agent to use to get coverage data.
 
 jacocoAnt - The Jacoco ant tasks to use to get execute Gradle tasks.
 \--- org.jacoco:org.jacoco.ant:0.8.6
-     +--- org.jacoco:org.jacoco.core:0.8.6
-     |    +--- org.ow2.asm:asm:8.0.1
-     |    +--- org.ow2.asm:asm-commons:8.0.1
-     |    |    +--- org.ow2.asm:asm:8.0.1
-     |    |    +--- org.ow2.asm:asm-tree:8.0.1
-     |    |    |    \--- org.ow2.asm:asm:8.0.1
-     |    |    \--- org.ow2.asm:asm-analysis:8.0.1
-     |    |         \--- org.ow2.asm:asm-tree:8.0.1 (*)
-     |    \--- org.ow2.asm:asm-tree:8.0.1 (*)
-     +--- org.jacoco:org.jacoco.report:0.8.6
-     |    \--- org.jacoco:org.jacoco.core:0.8.6 (*)
-     \--- org.jacoco:org.jacoco.agent:0.8.6
++--- org.jacoco:org.jacoco.core:0.8.6
+|    +--- org.ow2.asm:asm:8.0.1
+|    +--- org.ow2.asm:asm-commons:8.0.1
+|    |    +--- org.ow2.asm:asm:8.0.1
+|    |    +--- org.ow2.asm:asm-tree:8.0.1
+|    |    |    \--- org.ow2.asm:asm:8.0.1
+|    |    \--- org.ow2.asm:asm-analysis:8.0.1
+|    |         \--- org.ow2.asm:asm-tree:8.0.1 (*)
+|    \--- org.ow2.asm:asm-tree:8.0.1 (*)
++--- org.jacoco:org.jacoco.report:0.8.6
+|    \--- org.jacoco:org.jacoco.core:0.8.6 (*)
+\--- org.jacoco:org.jacoco.agent:0.8.6
 
 productionRuntimeClasspath
 +--- org.slf4j:slf4j-api:1.7.30
@@ -350,9 +349,9 @@ productionRuntimeClasspath
 |    \--- org.slf4j:slf4j-api:1.6.6 -> 1.7.30
 +--- org.freemarker:freemarker:2.3.26-incubating
 \--- org.apache.pdfbox:pdfbox:2.0.21
-     +--- org.apache.pdfbox:fontbox:2.0.21
-     |    \--- commons-logging:commons-logging:1.2
-     \--- commons-logging:commons-logging:1.2
++--- org.apache.pdfbox:fontbox:2.0.21
+|    \--- commons-logging:commons-logging:1.2
+\--- commons-logging:commons-logging:1.2
 
 runtime - Runtime dependencies for source set 'main' (deprecated, use 'runtimeOnly' instead). (n)
 No dependencies
@@ -519,9 +518,9 @@ runtimeClasspath - Runtime classpath of source set 'main'.
 |    \--- org.slf4j:slf4j-api:1.6.6 -> 1.7.30
 +--- org.freemarker:freemarker:2.3.26-incubating
 \--- org.apache.pdfbox:pdfbox:2.0.21
-     +--- org.apache.pdfbox:fontbox:2.0.21
-     |    \--- commons-logging:commons-logging:1.2
-     \--- commons-logging:commons-logging:1.2
++--- org.apache.pdfbox:fontbox:2.0.21
+|    \--- commons-logging:commons-logging:1.2
+\--- commons-logging:commons-logging:1.2
 
 runtimeElements - Elements of runtime for main. (n)
 No dependencies
@@ -693,12 +692,12 @@ testCompileClasspath - Compile classpath for source set 'test'.
 |    \--- org.bouncycastle:bcpkix-jdk15on:1.64
 |         \--- org.bouncycastle:bcprov-jdk15on:1.64
 \--- com.github.docker-java:docker-java-transport-httpclient5:3.2.7
-     +--- com.github.docker-java:docker-java-transport:3.2.7
-     +--- org.apache.httpcomponents.client5:httpclient5:5.0
-     |    +--- org.apache.httpcomponents.core5:httpcore5:5.0
-     |    +--- org.slf4j:slf4j-api:1.7.25 -> 1.7.30
-     |    \--- commons-codec:commons-codec:1.13 -> 1.15
-     \--- net.java.dev.jna:jna:5.5.0
++--- com.github.docker-java:docker-java-transport:3.2.7
++--- org.apache.httpcomponents.client5:httpclient5:5.0
+|    +--- org.apache.httpcomponents.core5:httpcore5:5.0
+|    +--- org.slf4j:slf4j-api:1.7.25 -> 1.7.30
+|    \--- commons-codec:commons-codec:1.13 -> 1.15
+\--- net.java.dev.jna:jna:5.5.0
 
 testCompileOnly - Compile only dependencies for source set 'test'. (n)
 No dependencies
@@ -937,13 +936,13 @@ testRuntimeClasspath - Runtime classpath of source set 'test'.
 |    |    \--- commons-codec:commons-codec:1.13 -> 1.15
 |    \--- net.java.dev.jna:jna:5.5.0
 \--- org.junit.jupiter:junit-jupiter-engine:5.7.1
-     +--- org.junit:junit-bom:5.7.1 (*)
-     +--- org.apiguardian:apiguardian-api:1.1.0
-     +--- org.junit.platform:junit-platform-engine:1.7.1
-     |    +--- org.apiguardian:apiguardian-api:1.1.0
-     |    +--- org.opentest4j:opentest4j:1.2.0
-     |    \--- org.junit.platform:junit-platform-commons:1.7.1 (*)
-     \--- org.junit.jupiter:junit-jupiter-api:5.7.1 (*)
++--- org.junit:junit-bom:5.7.1 (*)
++--- org.apiguardian:apiguardian-api:1.1.0
++--- org.junit.platform:junit-platform-engine:1.7.1
+|    +--- org.apiguardian:apiguardian-api:1.1.0
+|    +--- org.opentest4j:opentest4j:1.2.0
+|    \--- org.junit.platform:junit-platform-commons:1.7.1 (*)
+\--- org.junit.jupiter:junit-jupiter-api:5.7.1 (*)
 
 testRuntimeOnly - Runtime only dependencies for source set 'test'. (n)
 \--- org.junit.jupiter:junit-jupiter-engine:5.7.1 (n)
@@ -956,11 +955,11 @@ testRuntimeOnly - Runtime only dependencies for source set 'test'. (n)
 A web-based, searchable dependency report is available by adding the --scan option.
 
 DETECT META DATA START
-rootProjectPath:/Users/jakem/workspace/synopsys-detect
+rootProjectPath:${sourcePath?replace("\\", "/")}
 rootProjectGroup:com.synopsys.integration
 rootProjectName:synopsys-detect
 rootProjectVersion:7.5.0-SNAPSHOT
-projectPath:/Users/jakem/workspace/synopsys-detect
+projectPath:${sourcePath?replace("\\", "/")}
 projectGroup:com.synopsys.integration
 projectName:synopsys-detect
 projectVersion:7.5.0-SNAPSHOT

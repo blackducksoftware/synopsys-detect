@@ -1,5 +1,5 @@
 DETECT META DATA START
-rootProjectPath:/Users/jakem/workspace/synopsys-detect
+rootProjectPath:${sourcePath?replace("\\", "/")}
 rootProjectGroup:com.synopsys.integration
 rootProjectName:synopsys-detect
 rootProjectVersion:7.5.0-SNAPSHOT

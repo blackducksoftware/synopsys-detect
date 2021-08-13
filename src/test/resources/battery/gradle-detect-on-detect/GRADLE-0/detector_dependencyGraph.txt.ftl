@@ -1,4 +1,3 @@
-
 ------------------------------------------------------------
 Project ':detector'
 ------------------------------------------------------------
@@ -91,18 +90,18 @@ jacocoAgent - The Jacoco agent to use to get coverage data.
 
 jacocoAnt - The Jacoco ant tasks to use to get execute Gradle tasks.
 \--- org.jacoco:org.jacoco.ant:0.8.6
-     +--- org.jacoco:org.jacoco.core:0.8.6
-     |    +--- org.ow2.asm:asm:8.0.1
-     |    +--- org.ow2.asm:asm-commons:8.0.1
-     |    |    +--- org.ow2.asm:asm:8.0.1
-     |    |    +--- org.ow2.asm:asm-tree:8.0.1
-     |    |    |    \--- org.ow2.asm:asm:8.0.1
-     |    |    \--- org.ow2.asm:asm-analysis:8.0.1
-     |    |         \--- org.ow2.asm:asm-tree:8.0.1 (*)
-     |    \--- org.ow2.asm:asm-tree:8.0.1 (*)
-     +--- org.jacoco:org.jacoco.report:0.8.6
-     |    \--- org.jacoco:org.jacoco.core:0.8.6 (*)
-     \--- org.jacoco:org.jacoco.agent:0.8.6
++--- org.jacoco:org.jacoco.core:0.8.6
+|    +--- org.ow2.asm:asm:8.0.1
+|    +--- org.ow2.asm:asm-commons:8.0.1
+|    |    +--- org.ow2.asm:asm:8.0.1
+|    |    +--- org.ow2.asm:asm-tree:8.0.1
+|    |    |    \--- org.ow2.asm:asm:8.0.1
+|    |    \--- org.ow2.asm:asm-analysis:8.0.1
+|    |         \--- org.ow2.asm:asm-tree:8.0.1 (*)
+|    \--- org.ow2.asm:asm-tree:8.0.1 (*)
++--- org.jacoco:org.jacoco.report:0.8.6
+|    \--- org.jacoco:org.jacoco.core:0.8.6 (*)
+\--- org.jacoco:org.jacoco.agent:0.8.6
 
 runtime - Runtime dependencies for source set 'main' (deprecated, use 'runtimeOnly' instead). (n)
 No dependencies
@@ -259,9 +258,9 @@ testCompileClasspath - Compile classpath for source set 'test'.
 |    +--- org.apiguardian:apiguardian-api:1.1.0
 |    \--- org.junit.jupiter:junit-jupiter-api:5.7.1 (*)
 \--- org.mockito:mockito-core:2.+ -> 2.28.2
-     +--- net.bytebuddy:byte-buddy:1.9.10
-     +--- net.bytebuddy:byte-buddy-agent:1.9.10
-     \--- org.objenesis:objenesis:2.6
++--- net.bytebuddy:byte-buddy:1.9.10
++--- net.bytebuddy:byte-buddy-agent:1.9.10
+\--- org.objenesis:objenesis:2.6
 
 testCompileOnly - Compile only dependencies for source set 'test'. (n)
 No dependencies
@@ -372,13 +371,13 @@ testRuntimeClasspath - Runtime classpath of source set 'test'.
 |    +--- net.bytebuddy:byte-buddy-agent:1.9.10
 |    \--- org.objenesis:objenesis:2.6
 \--- org.junit.jupiter:junit-jupiter-engine:5.7.1
-     +--- org.junit:junit-bom:5.7.1 (*)
-     +--- org.apiguardian:apiguardian-api:1.1.0
-     +--- org.junit.platform:junit-platform-engine:1.7.1
-     |    +--- org.apiguardian:apiguardian-api:1.1.0
-     |    +--- org.opentest4j:opentest4j:1.2.0
-     |    \--- org.junit.platform:junit-platform-commons:1.7.1 (*)
-     \--- org.junit.jupiter:junit-jupiter-api:5.7.1 (*)
++--- org.junit:junit-bom:5.7.1 (*)
++--- org.apiguardian:apiguardian-api:1.1.0
++--- org.junit.platform:junit-platform-engine:1.7.1
+|    +--- org.apiguardian:apiguardian-api:1.1.0
+|    +--- org.opentest4j:opentest4j:1.2.0
+|    \--- org.junit.platform:junit-platform-commons:1.7.1 (*)
+\--- org.junit.jupiter:junit-jupiter-api:5.7.1 (*)
 
 testRuntimeOnly - Runtime only dependencies for source set 'test'. (n)
 \--- org.junit.jupiter:junit-jupiter-engine:5.7.1 (n)
@@ -391,11 +390,11 @@ testRuntimeOnly - Runtime only dependencies for source set 'test'. (n)
 A web-based, searchable dependency report is available by adding the --scan option.
 
 DETECT META DATA START
-rootProjectPath:/Users/jakem/workspace/synopsys-detect
+rootProjectPath:${sourcePath?replace("\\", "/")}
 rootProjectGroup:com.synopsys.integration
 rootProjectName:synopsys-detect
 rootProjectVersion:7.5.0-SNAPSHOT
-projectPath:/Users/jakem/workspace/synopsys-detect/detector
+projectPath:${sourcePath?replace("\\", "/")}/detector
 projectGroup:com.synopsys.integration
 projectName:detector
 projectVersion:7.5.0-SNAPSHOT
