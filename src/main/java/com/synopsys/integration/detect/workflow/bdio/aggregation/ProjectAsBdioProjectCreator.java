@@ -9,12 +9,14 @@ package com.synopsys.integration.detect.workflow.bdio.aggregation;
 
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.blackduck.bdio.model.dependency.ProjectDependency;
 
-// This creates aggregate (top level / codelocation / subproject) dependency nodes for
-// any version of BD; required for BD versions older than 2021.10
-public class DependencyAggregateNodeCreator implements AggregateNodeCreator {
+// This creates aggregate (top level / codelocation / subproject) dependency nodes for BD 2021.10+.
+// Using a ProjectDependency tells Bdio2Factory to create a BDIO2 Project node (vs. a Component node)
+// which are only handled correctly by BD 2021.10+
+public class ProjectAsBdioProjectCreator implements ProjectNodeCreator {
     @Override
     public Dependency create(String name, String version, ExternalId externalId) {
-        return new Dependency(name, version, externalId);
+        return new ProjectDependency(name, version, externalId);
     }
 }

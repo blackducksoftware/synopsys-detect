@@ -23,6 +23,6 @@ public class AggregateModeTransitiveOperation {
     }
 
     public DependencyGraph aggregateCodeLocations(File sourcePath, List<DetectCodeLocation> codeLocations) throws DetectUserFriendlyException {
-        return fullAggregateGraphCreator.aggregateCodeLocations(new DependencyAggregateNodeCreator(), sourcePath, codeLocations);
+        return fullAggregateGraphCreator.aggregateCodeLocations(new ProjectAsBdioDependencyCreator(), sourcePath, codeLocations);
     }
 }

@@ -137,8 +137,9 @@ public class DockerAssertions {
     public void bdioFileCreated(String requiredBdioFilename) {
         checkBdioDirectory();
         Assertions.assertTrue(Arrays.asList(bdioDirectory.listFiles()).stream()
-                .filter(f -> f.getName().equals(requiredBdioFilename))
-                .findAny().isPresent(),
+                        .map(File::getName)
+                        .filter(requiredBdioFilename::equals)
+                        .findAny().isPresent(),
                 String.format("Expected BDIO file %s, but it was not created", requiredBdioFilename));
     }
 
