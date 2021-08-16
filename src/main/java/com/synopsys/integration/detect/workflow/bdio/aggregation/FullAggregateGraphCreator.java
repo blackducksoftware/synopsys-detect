@@ -5,17 +5,7 @@
  *
  * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
-package com.synopsys.integration.detect.workflow.bdio;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package com.synopsys.integration.detect.workflow.bdio.aggregation;
 
 import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
@@ -24,23 +14,32 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.util.TriFunction;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.codelocation.FileNameUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class AggregateModeTransitiveOperation {
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class FullAggregateGraphCreator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     private final SimpleBdioFactory simpleBdioFactory;
 
-    public AggregateModeTransitiveOperation(final SimpleBdioFactory simpleBdioFactory) {
+    public FullAggregateGraphCreator(SimpleBdioFactory simpleBdioFactory) {
         this.simpleBdioFactory = simpleBdioFactory;
     }
 
-    public DependencyGraph aggregateCodeLocations(final File sourcePath, final List<DetectCodeLocation> codeLocations) throws DetectUserFriendlyException {
+    public DependencyGraph aggregateCodeLocations(TriFunction<String, String, ExternalId, Dependency> projectDependencyCreator, final File sourcePath, final List<DetectCodeLocation> codeLocations) throws DetectUserFriendlyException {
         final MutableDependencyGraph aggregateDependencyGraph = simpleBdioFactory.createMutableDependencyGraph();
 
         for (final DetectCodeLocation detectCodeLocation : codeLocations) {
-            final Dependency codeLocationDependency = createAggregateDependency(sourcePath, detectCodeLocation);
+            final Dependency codeLocationDependency = createAggregateNode(projectDependencyCreator, sourcePath, detectCodeLocation);
             aggregateDependencyGraph.addChildrenToRoot(codeLocationDependency);
             aggregateDependencyGraph.addGraphAsChildrenToParent(codeLocationDependency, detectCodeLocation.getDependencyGraph());
         }
@@ -48,7 +47,7 @@ public class AggregateModeTransitiveOperation {
         return aggregateDependencyGraph;
     }
 
-    private Dependency createAggregateDependency(final File sourcePath, final DetectCodeLocation codeLocation) {
+    private Dependency createAggregateNode(TriFunction<String, String, ExternalId, Dependency> projectDependencyCreator, final File sourcePath, final DetectCodeLocation codeLocation) {
         String name = null;
         String version = null;
         try {
@@ -75,6 +74,6 @@ public class AggregateModeTransitiveOperation {
         }
         externalIdPieces.add(bomToolType);
         final String[] pieces = externalIdPieces.toArray(ArrayUtils.EMPTY_STRING_ARRAY);
-        return new Dependency(name, version, new ExternalIdFactory().createModuleNamesExternalId(original.getForge(), pieces));
+        return projectDependencyCreator.apply(name, version, new ExternalIdFactory().createModuleNamesExternalId(original.getForge(), pieces));
     }
 }

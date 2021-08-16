@@ -36,7 +36,7 @@ public class CreateAggregateBdio2FileOperation {
     public void writeAggregateBdio2File(AggregateCodeLocation aggregateCodeLocation)
         throws DetectUserFriendlyException {
         BdioMetadata bdioMetadata = bdio2Factory.createBdioMetadata(aggregateCodeLocation.getCodeLocationName(), ZonedDateTime.now(), new ProductList.Builder());
-        Project project = bdio2Factory.createProject(aggregateCodeLocation.getProjectExternalId(), aggregateCodeLocation.getProjectNameVersion().getName(), aggregateCodeLocation.getProjectNameVersion().getVersion());
+        Project project = bdio2Factory.createProject(aggregateCodeLocation.getProjectExternalId(), aggregateCodeLocation.getProjectNameVersion().getName(), aggregateCodeLocation.getProjectNameVersion().getVersion(), true);
         Bdio2Document bdio2Document = bdio2Factory.createBdio2Document(bdioMetadata, project, aggregateCodeLocation.getAggregateDependencyGraph());
 
         Bdio2Writer bdio2Writer = new Bdio2Writer();
