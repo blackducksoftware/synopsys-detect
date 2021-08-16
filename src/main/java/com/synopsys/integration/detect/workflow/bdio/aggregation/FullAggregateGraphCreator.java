@@ -14,6 +14,7 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.util.TriFunction;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.codelocation.FileNameUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -34,7 +35,7 @@ public class FullAggregateGraphCreator {
         this.simpleBdioFactory = simpleBdioFactory;
     }
 
-    public DependencyGraph aggregateCodeLocations(ProjectNodeCreator projectDependencyCreator, final File sourcePath, final List<DetectCodeLocation> codeLocations) throws DetectUserFriendlyException {
+    public DependencyGraph aggregateCodeLocations(TriFunction<String, String, ExternalId, Dependency> projectDependencyCreator, final File sourcePath, final List<DetectCodeLocation> codeLocations) throws DetectUserFriendlyException {
         final MutableDependencyGraph aggregateDependencyGraph = simpleBdioFactory.createMutableDependencyGraph();
 
         for (final DetectCodeLocation detectCodeLocation : codeLocations) {
@@ -46,7 +47,7 @@ public class FullAggregateGraphCreator {
         return aggregateDependencyGraph;
     }
 
-    private Dependency createAggregateNode(ProjectNodeCreator projectDependencyCreator, final File sourcePath, final DetectCodeLocation codeLocation) {
+    private Dependency createAggregateNode(TriFunction<String, String, ExternalId, Dependency> projectDependencyCreator, final File sourcePath, final DetectCodeLocation codeLocation) {
         String name = null;
         String version = null;
         try {
@@ -73,6 +74,6 @@ public class FullAggregateGraphCreator {
         }
         externalIdPieces.add(bomToolType);
         final String[] pieces = externalIdPieces.toArray(ArrayUtils.EMPTY_STRING_ARRAY);
-        return projectDependencyCreator.create(name, version, new ExternalIdFactory().createModuleNamesExternalId(original.getForge(), pieces));
+        return projectDependencyCreator.apply(name, version, new ExternalIdFactory().createModuleNamesExternalId(original.getForge(), pieces));
     }
 }
