@@ -7,6 +7,7 @@
  */
 package com.synopsys.integration.detect.workflow.blackduck.developer.blackduck;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponentResultView;
@@ -19,18 +20,26 @@ import com.synopsys.integration.wait.WaitJobCompleter;
 
 public class DetectRapidScanWaitJobCompleter implements WaitJobCompleter<List<DeveloperScanComponentResultView>> {
     private final BlackDuckApiClient blackDuckApiClient;
-    private final HttpUrl resultUrl;
+    private final List<HttpUrl> resultUrl;
 
-    public DetectRapidScanWaitJobCompleter(BlackDuckApiClient blackDuckApiClient, HttpUrl resultUrl) {
+    public DetectRapidScanWaitJobCompleter(BlackDuckApiClient blackDuckApiClient, List<HttpUrl> resultUrl) {
         this.blackDuckApiClient = blackDuckApiClient;
         this.resultUrl = resultUrl;
     }
 
     @Override
     public List<DeveloperScanComponentResultView> complete() throws IntegrationException {
+        List<DeveloperScanComponentResultView> allComponents = new ArrayList<>();
+        for (HttpUrl url : resultUrl) {
+            allComponents.addAll(getScanResultsForUrl(url));
+        }
+        return allComponents;
+    }
+
+    private List<DeveloperScanComponentResultView> getScanResultsForUrl(HttpUrl url) throws IntegrationException {
         BlackDuckMultipleRequest<DeveloperScanComponentResultView> request =
             new DetectRapidScanRequestBuilder()
-                .createRequest(resultUrl);
+                .createRequest(url);
         return blackDuckApiClient.getAllResponses(request);
     }
 
