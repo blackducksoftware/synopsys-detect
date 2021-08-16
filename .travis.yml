@@ -7,7 +7,7 @@ sudo: false
 install: true
 
 git:
-  depth: false
+  depth: 3
 
 jdk:
 - openjdk8
