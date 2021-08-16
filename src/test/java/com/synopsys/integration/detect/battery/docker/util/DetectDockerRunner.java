@@ -49,7 +49,7 @@ public class DetectDockerRunner {
         } catch (Exception e) {
             Assertions.assertNull(e, "An exception occurred running docker commands.");
         } finally {
-            dockerClient.removeContainerCmd(containerId).exec();
+            dockerClient.removeContainerCmd(containerId).withRemoveVolumes(true).exec();
         }
 
         Assertions.fail("Should have already returned! Something has gone wrong!");
