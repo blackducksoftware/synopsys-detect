@@ -56,7 +56,7 @@ public class DetectRapidScanService {
 
         for (UploadTarget uploadTarget : uploadBatch.getUploadTargets()) {
             HttpUrl url = bdio2FileUploadService.uploadFile(uploadTarget);
-            logger.info("Starting Rapid Scan: {}", url);
+            logger.info("Uploaded Rapid Scan: {}", url);
             allScanUrls.add(url);
         }
 
