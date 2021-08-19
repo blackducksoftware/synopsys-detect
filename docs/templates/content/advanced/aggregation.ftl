@@ -11,15 +11,15 @@ As an alternative, ${solution_name} provides the option (enabled by setting the
 *detect.bom.aggregate.name* property) to aggregate those BDIO files into a single BDIO file, which is uploaded
 to ${blackduck_product_name} producing a single codelocation name.
 
-## For users of ${blackduck_product_name} 2021.10.0 or later
+## For users of ${blackduck_product_name} 2021.8.0 or later
 
-If you are using ${blackduck_product_name} 2021.10.0 or later and you want to use BDIO aggregation,
+If you are using ${blackduck_product_name} 2021.8.0 or later and you want to use BDIO aggregation,
 we recommend you set detect.bom.aggregate.remediation.mode to SUBPROJECT. This takes advantage of
 functionality in newer versions of ${blackduck_product_name} that avoids the issues described below.
 
-## For users of ${blackduck_product_name} older than 2021.10.0
+## For users of ${blackduck_product_name} older than 2021.8.0
 
-For users of ${blackduck_product_name} older than 2021.10.0,
+For users of ${blackduck_product_name} older than 2021.8.0,
 BDIO aggregation involves tradeoffs,
 and it is important to understand those tradeoffs when using it.
 
@@ -36,7 +36,7 @@ direct dependencies at the top level of the graph. The downside of this approach
 
 ## Summary
 
-If you are using ${blackduck_product_name} 2021.10.0 or later, set detect.bom.aggregate.remediation.mode to SUBPROJECT.
+If you are using ${blackduck_product_name} 2021.8.0 or later, set detect.bom.aggregate.remediation.mode to SUBPROJECT.
 
 For users of older ${blackduck_product_name} versions:
 
