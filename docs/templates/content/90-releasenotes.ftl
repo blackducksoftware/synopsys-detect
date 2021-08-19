@@ -1,5 +1,10 @@
 # Release notes
 
+## Version 7.4.0
+
+### New Features
+* Added SUBPROJECT remediation mode, invoked using property detect.bom.aggregate.remediation.mode. Use only with Black Duck 2021.8.0 or later.
+
 ## Version 7.3.0
 
 ### New Features
