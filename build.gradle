@@ -5,7 +5,7 @@ import com.synopsys.integration.detect.verification.VerifyBlackDuckDetectTask
 buildscript {
     ext {
         springBootVersion = '2.4.5'
-        blackDuckCommonVersion = '58.0.0'
+        blackDuckCommonVersion = '58.0.1'
         junitPlatformCustomTestTags = 'docker, battery'
     }
 
@@ -40,6 +40,10 @@ def createArtifactName() {
 
 def createBatteryPath() {
     return "${buildDir}/battery/"
+}
+
+repositories {
+    maven { url "https://sig-repo.synopsys.com/bds-bdio-release" }
 }
 
 subprojects {
