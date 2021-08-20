@@ -88,8 +88,7 @@ class BdioAggregationTest {
 
     @Test
     void testDirectMode() throws DetectUserFriendlyException {
-
-        DependencyGraph aggregatedGraph = new AggregateModeDirectOperation(new SimpleBdioFactory()).aggregateCodeLocations(sourceDir, inputCodelocations);
+        DependencyGraph aggregatedGraph = new AggregateModeDirectOperation(new SimpleBdioFactory()).aggregateCodeLocations(inputCodelocations);
 
         assertEquals(2, aggregatedGraph.getRootDependencies().size());
         assertTrue(aggregatedGraph.getRootDependencies().contains(genComponentDependency("junit", "junit", "4.12")));

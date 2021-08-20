@@ -575,7 +575,7 @@ public class OperationFactory { //TODO: OperationRunner
     }
 
     public DependencyGraph aggregateDirect(List<DetectCodeLocation> detectCodeLocations) throws DetectUserFriendlyException {
-        return auditLog.namedPublic("Direct Aggregate", "DirectAggregate", () -> new AggregateModeDirectOperation(new SimpleBdioFactory()).aggregateCodeLocations(directoryManager.getSourceDirectory(), detectCodeLocations));
+        return auditLog.namedPublic("Direct Aggregate", "DirectAggregate", () -> new AggregateModeDirectOperation(new SimpleBdioFactory()).aggregateCodeLocations(detectCodeLocations));
     }
 
     public DependencyGraph aggregateTransitive(List<DetectCodeLocation> detectCodeLocations) throws DetectUserFriendlyException {
