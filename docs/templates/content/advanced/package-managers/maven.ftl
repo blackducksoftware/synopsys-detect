@@ -17,6 +17,7 @@ The Maven Pom detector also requires either mvnw or mvn:
 1. ${solution_name} looks for mvn on $PATH.
 
 The Maven Pom detector runs `mvn dependency:tree` to get a list of the project's dependencies and then parses the output.
+${solution_name} assumes the output of this command will be in Maven's default logging format. Customizations of Maven's logging format can break ${solution_name}'s parsing.
 
 Scope inclusion/exclusion is performed during the parsing of the output of the `mvn dependency:tree` command.
 
