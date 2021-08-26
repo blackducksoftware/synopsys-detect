@@ -118,9 +118,9 @@ import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocat
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationWaitData;
 import com.synopsys.integration.detect.workflow.blackduck.developer.RapidModeGenerateJsonOperation;
 import com.synopsys.integration.detect.workflow.blackduck.developer.RapidModeLogReportOperation;
-import com.synopsys.integration.detect.workflow.blackduck.developer.RapidModeScanOperation;
+import com.synopsys.integration.detect.workflow.blackduck.developer.RapidModeUploadOperation;
+import com.synopsys.integration.detect.workflow.blackduck.developer.RapidModeWaitOperation;
 import com.synopsys.integration.detect.workflow.blackduck.developer.RapidScanDetectResult;
-import com.synopsys.integration.detect.workflow.blackduck.developer.RapidScanResult;
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultAggregator;
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultSummary;
 import com.synopsys.integration.detect.workflow.blackduck.developer.blackduck.DetectRapidScanService;
@@ -286,10 +286,17 @@ public class OperationFactory { //TODO: OperationRunner
     }
 
     //Rapid
-    public final RapidScanResult performRapidScan(BlackDuckRunData blackDuckRunData, BdioResult bdioResult) throws DetectUserFriendlyException {
-        return auditLog.namedInternal("Project Name Version Chosen", () -> {
+    public final List<HttpUrl> performRapidUpload(BlackDuckRunData blackDuckRunData, BdioResult bdioResult) throws DetectUserFriendlyException {
+        return auditLog.namedInternal("Rapid Upload", () -> {
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
-            return new RapidModeScanOperation(DetectRapidScanService.fromBlackDuckServicesFactory(blackDuckServicesFactory), detectConfigurationFactory.findTimeoutInSeconds()).run(bdioResult);
+            return new RapidModeUploadOperation(DetectRapidScanService.fromBlackDuckServicesFactory(blackDuckServicesFactory)).run(bdioResult);
+        });
+    }
+
+    public List<DeveloperScanComponentResultView> waitForRapidResults(BlackDuckRunData blackDuckRunData, List<HttpUrl> rapidScans) throws DetectUserFriendlyException {
+        return auditLog.namedInternal("Rapid Wait", () -> {
+            BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+            return new RapidModeWaitOperation(blackDuckServicesFactory.getBlackDuckApiClient()).waitForScans(rapidScans, detectConfigurationFactory.findTimeoutInSeconds(), RapidModeWaitOperation.DEFAULT_WAIT_INTERVAL_IN_SECONDS);
         });
     }
 
@@ -425,7 +432,8 @@ public class OperationFactory { //TODO: OperationRunner
     public List<SignatureScanPath> createScanPaths(NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws DetectUserFriendlyException {
         return auditLog.namedInternal("Calculate Signature Scan Paths",
             () -> {
-                DetectExcludedDirectoryFilter detectExcludedDirectoryFilter = detectConfigurationFactory.createDetectDirectoryFileFilter(directoryManager.getSourceDirectory().toPath());
+                List<String> exclusions = detectConfigurationFactory.collectSignatureScannerDirectoryExclusions();
+                DetectExcludedDirectoryFilter detectExcludedDirectoryFilter = new DetectExcludedDirectoryFilter(directoryManager.getSourceDirectory().toPath(), exclusions);
                 return new CalculateScanPathsOperation(detectConfigurationFactory.createBlackDuckSignatureScannerOptions(), directoryManager, fileFinder,
                     detectExcludedDirectoryFilter::isExcluded)
                            .determinePathsAndExclusions(projectNameVersion, detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getMaxDepth(), dockerTargetData);
@@ -574,7 +582,7 @@ public class OperationFactory { //TODO: OperationRunner
     }
 
     public DependencyGraph aggregateDirect(List<DetectCodeLocation> detectCodeLocations) throws DetectUserFriendlyException {
-        return auditLog.namedPublic("Direct Aggregate", "DirectAggregate", () -> new AggregateModeDirectOperation(new SimpleBdioFactory()).aggregateCodeLocations(directoryManager.getSourceDirectory(), detectCodeLocations));
+        return auditLog.namedPublic("Direct Aggregate", "DirectAggregate", () -> new AggregateModeDirectOperation(new SimpleBdioFactory()).aggregateCodeLocations(detectCodeLocations));
     }
 
     public DependencyGraph aggregateTransitive(List<DetectCodeLocation> detectCodeLocations) throws DetectUserFriendlyException {
