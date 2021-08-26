@@ -193,13 +193,13 @@ The format of "simple" image names is: `blackducksoftware/detect:[detect_version
 
 * If you want an image with the latest supported release for a major version of Detect, such images are named in the following format: `blackducksoftware/detect:[detect_major_version]`
 
-##### ${solution_name} Lite Images
+##### ${solution_name} Buildless Images
 
-If you wish to run ${solution_name} with detectors automatically disabled, there exist "lite" ${solution_name} images.  These images contain no package manager files or executables, and automatically pass the argument --detect.excluded.tools=DETECTOR when running to prevent detectors from running.
+If you wish to run ${solution_name} with detectors automatically disabled, there exist "buildless" ${solution_name} images.  These images contain no package manager files or executables, and automatically pass the argument --detect.detector.buildless=true when running to prevent build detectors (those that depend on the presence of build tools) from running.
 
-The format of "lite" image names is: `blackducksoftware/detect:[detect_version]-lite`
+The format of "buildless" image names is: `blackducksoftware/detect:[detect_version]-buildless`
 
-* If you want a lite image with the latest supported release for a major version of Detect, such images are named in the following format: `blackducksoftware/detect:[detect_major_version]-lite`
+* If you want a buildless image with the latest supported release for a major version of Detect, such images are named in the following format: `blackducksoftware/detect:[detect_major_version]-buildless`
 
 #### Examples
 
