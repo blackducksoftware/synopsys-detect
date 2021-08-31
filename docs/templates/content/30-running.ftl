@@ -195,7 +195,7 @@ The format of "simple" image names is: `blackducksoftware/detect:[detect_version
 
 ##### ${solution_name} Buildless Images
 
-If you wish to run ${solution_name} with detectors automatically disabled, there exist "buildless" ${solution_name} images.  These images contain no package manager files or executables, and automatically pass the argument --detect.detector.buildless=true when running to prevent build detectors (those that depend on the presence of build tools) from running.
+If you wish to run ${solution_name} without package managers or build tools available in the Docker container, there exist "buildless" ${solution_name} images.  These images contain no package manager files or executables, and automatically pass the argument --detect.detector.buildless=true when running to prevent build detectors (those that depend on the presence of build tools) from running.
 
 The format of "buildless" image names is: `blackducksoftware/detect:[detect_version]-buildless`
 
