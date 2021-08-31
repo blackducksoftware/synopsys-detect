@@ -103,6 +103,9 @@ import com.synopsys.integration.detectable.detectables.cran.PackratLockDetectabl
 import com.synopsys.integration.detectable.detectables.cran.PackratLockExtractor;
 import com.synopsys.integration.detectable.detectables.cran.parse.PackratDescriptionFileParser;
 import com.synopsys.integration.detectable.detectables.cran.parse.PackratLockFileParser;
+import com.synopsys.integration.detectable.detectables.dart.pubspec.DartPubSpecLockDetectable;
+import com.synopsys.integration.detectable.detectables.dart.pubspec.PubSpecExtractor;
+import com.synopsys.integration.detectable.detectables.dart.pubspec.PubSpecLockParser;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectable;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectableOptions;
 import com.synopsys.integration.detectable.detectables.docker.DockerExtractor;
@@ -292,6 +295,10 @@ public class DetectableFactory {
 
     public CpanCliDetectable createCpanCliDetectable(DetectableEnvironment environment, CpanResolver cpanResolver, CpanmResolver cpanmResolver) {
         return new CpanCliDetectable(environment, fileFinder, cpanResolver, cpanmResolver, cpanCliExtractor());
+    }
+
+    public DartPubSpecLockDetectable createDartPubSpecLockDetectable(DetectableEnvironment environment) {
+        return new DartPubSpecLockDetectable(environment, fileFinder, pubSpecExtractor());
     }
 
     public GemlockDetectable createGemlockDetectable(DetectableEnvironment environment) {
@@ -704,6 +711,14 @@ public class DetectableFactory {
 
     private PoetryExtractor poetryExtractor() {
         return new PoetryExtractor(new PoetryLockParser());
+    }
+
+    private PubSpecExtractor pubSpecExtractor() {
+        return new PubSpecExtractor(pubSpecLockParser());
+    }
+
+    private PubSpecLockParser pubSpecLockParser() {
+        return new PubSpecLockParser(externalIdFactory);
     }
 
     private ToolPoetrySectionParser toolPoetrySectionParser() {
