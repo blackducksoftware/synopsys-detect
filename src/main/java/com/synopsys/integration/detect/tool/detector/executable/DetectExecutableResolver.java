@@ -233,7 +233,7 @@ public class DetectExecutableResolver
 
     @Override
     public @Nullable ExecutableTarget resolveFlutter() throws DetectableException {
-        return ExecutableTarget.forFile(resolveCachedSystemExecutable("dart", detectExecutableOptions.getFlutterUserPath()));
+        return ExecutableTarget.forFile(resolveCachedSystemExecutable("flutter", detectExecutableOptions.getFlutterUserPath()));
     }
 }
 

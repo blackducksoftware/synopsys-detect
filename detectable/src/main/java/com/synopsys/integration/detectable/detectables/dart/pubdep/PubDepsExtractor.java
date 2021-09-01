@@ -19,9 +19,9 @@ import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class PubDepsExtractor {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -64,7 +64,7 @@ public class PubDepsExtractor {
         }
     }
 
-    private ExecutableOutput runPubDepsCommand(File directory, ExecutableTarget exe, List<String> commandArgs) throws ExecutableFailedException {
-        return executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, exe, commandArgs));
+    private ExecutableOutput runPubDepsCommand(File directory, ExecutableTarget exe, List<String> commandArgs) throws ExecutableRunnerException {
+        return executableRunner.execute(ExecutableUtils.createFromTarget(directory, exe, commandArgs));
     }
 }

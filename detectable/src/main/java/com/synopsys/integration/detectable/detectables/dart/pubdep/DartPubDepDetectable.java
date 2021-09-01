@@ -59,19 +59,22 @@ public class DartPubDepDetectable extends Detectable {
     @Override
     public DetectableResult applicable() {
         PassedResultBuilder passedResultBuilder = new PassedResultBuilder();
+
         pubspecYaml = fileFinder.findFile(environment.getDirectory(), PUBSPEC_YAML_FILENAME);
-        if (pubspecYaml == null) {
-            pubspecLock = fileFinder.findFile(environment.getDirectory(), PUBSPEC_LOCK_FILENAME);
-            if (pubspecLock == null) {
-                return new FilesNotFoundDetectableResult(PUBSPEC_LOCK_FILENAME, PUBSPEC_YAML_FILENAME);
-            } else {
-                passedResultBuilder.foundFile(pubspecLock);
-            }
-        } else {
+        pubspecLock = fileFinder.findFile(environment.getDirectory(), PUBSPEC_LOCK_FILENAME);
+
+        if (pubspecLock != null) {
+            passedResultBuilder.foundFile(pubspecLock);
+        } else if (pubspecYaml != null) {
             passedResultBuilder.foundFile(pubspecYaml);
         }
 
-        return passedResultBuilder.build();
+        if (pubspecYaml == null && pubspecLock == null) {
+            return new FilesNotFoundDetectableResult(PUBSPEC_LOCK_FILENAME, PUBSPEC_YAML_FILENAME);
+        } else {
+            return passedResultBuilder.build();
+        }
+
     }
 
     @Override
