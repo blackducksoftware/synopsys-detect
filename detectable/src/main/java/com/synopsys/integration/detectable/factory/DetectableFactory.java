@@ -25,7 +25,9 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.BazelR
 import com.synopsys.integration.detectable.detectable.executable.resolver.CondaResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanmResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.DartResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.DockerResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.FlutterResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GitResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GoResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GradleResolver;
@@ -103,6 +105,10 @@ import com.synopsys.integration.detectable.detectables.cran.PackratLockDetectabl
 import com.synopsys.integration.detectable.detectables.cran.PackratLockExtractor;
 import com.synopsys.integration.detectable.detectables.cran.parse.PackratDescriptionFileParser;
 import com.synopsys.integration.detectable.detectables.cran.parse.PackratLockFileParser;
+import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDepDetectable;
+import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDepsDetectableOptions;
+import com.synopsys.integration.detectable.detectables.dart.pubdep.PubDepsExtractor;
+import com.synopsys.integration.detectable.detectables.dart.pubdep.PubDepsParser;
 import com.synopsys.integration.detectable.detectables.dart.pubspec.DartPubSpecLockDetectable;
 import com.synopsys.integration.detectable.detectables.dart.pubspec.PubSpecExtractor;
 import com.synopsys.integration.detectable.detectables.dart.pubspec.PubSpecLockParser;
@@ -299,6 +305,10 @@ public class DetectableFactory {
 
     public DartPubSpecLockDetectable createDartPubSpecLockDetectable(DetectableEnvironment environment) {
         return new DartPubSpecLockDetectable(environment, fileFinder, pubSpecExtractor());
+    }
+
+    public DartPubDepDetectable createDartPubDepDetectable(DetectableEnvironment environment, DartPubDepsDetectableOptions dartPubDepsDetectableOptions, DartResolver dartResolver, FlutterResolver flutterResolver) {
+        return new DartPubDepDetectable(environment, fileFinder, pubDepsExtractor(), dartPubDepsDetectableOptions, dartResolver, flutterResolver);
     }
 
     public GemlockDetectable createGemlockDetectable(DetectableEnvironment environment) {
@@ -719,6 +729,14 @@ public class DetectableFactory {
 
     private PubSpecLockParser pubSpecLockParser() {
         return new PubSpecLockParser(externalIdFactory);
+    }
+
+    private PubDepsExtractor pubDepsExtractor() {
+        return new PubDepsExtractor(executableRunner, pubDepsParser());
+    }
+
+    private PubDepsParser pubDepsParser() {
+        return new PubDepsParser(externalIdFactory);
     }
 
     private ToolPoetrySectionParser toolPoetrySectionParser() {

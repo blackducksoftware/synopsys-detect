@@ -24,6 +24,7 @@ import com.synopsys.integration.detectable.detectables.conan.lockfile.ConanLockf
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectable;
 import com.synopsys.integration.detectable.detectables.cpan.CpanCliDetectable;
 import com.synopsys.integration.detectable.detectables.cran.PackratLockDetectable;
+import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDepDetectable;
 import com.synopsys.integration.detectable.detectables.dart.pubspec.DartPubSpecLockDetectable;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectable;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
@@ -119,6 +120,10 @@ public class DetectDetectableFactory {
 
     public DartPubSpecLockDetectable createDartPubSpecLockDetectable(DetectableEnvironment environment) {
         return detectableFactory.createDartPubSpecLockDetectable(environment);
+    }
+
+    public DartPubDepDetectable createDartPubDepDetectable(DetectableEnvironment environment) {
+        return detectableFactory.createDartPubDepDetectable(environment, detectableOptionFactory.createDartPubDepsDetectableOptions(), detectExecutableResolver, detectExecutableResolver);
     }
 
     public GemlockDetectable createGemlockDetectable(DetectableEnvironment environment) {

@@ -22,8 +22,10 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.BazelR
 import com.synopsys.integration.detectable.detectable.executable.resolver.CondaResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanmResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.DartResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.DockerResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.DotNetResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.FlutterResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GitResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GoResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GradleResolver;
@@ -41,9 +43,10 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.SwiftR
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanResolver;
 
 public class DetectExecutableResolver
-    implements JavaResolver, GradleResolver, BashResolver, ConanResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver, BazelResolver,
+    implements JavaResolver, GradleResolver, BashResolver, ConanResolver, CondaResolver, CpanmResolver, CpanResolver, DartResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver,
+                   BazelResolver,
                    DockerResolver,
-                   DotNetResolver, GitResolver, SwiftResolver, GoResolver, LernaResolver, SbtResolver {
+                   DotNetResolver, GitResolver, SwiftResolver, GoResolver, LernaResolver, SbtResolver, FlutterResolver {
 
     private final DirectoryExecutableFinder directoryExecutableFinder;
     private final SystemPathExecutableFinder systemPathExecutableFinder;
@@ -221,6 +224,16 @@ public class DetectExecutableResolver
     @Override
     public ExecutableTarget resolveConan(DetectableEnvironment environment) throws DetectableException {
         return ExecutableTarget.forFile(resolveCachedSystemExecutable("conan", detectExecutableOptions.getConanUserPath()));
+    }
+
+    @Override
+    public @Nullable ExecutableTarget resolveDart() throws DetectableException {
+        return ExecutableTarget.forFile(resolveCachedSystemExecutable("dart", detectExecutableOptions.getDartUserPath()));
+    }
+
+    @Override
+    public @Nullable ExecutableTarget resolveFlutter() throws DetectableException {
+        return ExecutableTarget.forFile(resolveCachedSystemExecutable("dart", detectExecutableOptions.getFlutterUserPath()));
     }
 }
 
