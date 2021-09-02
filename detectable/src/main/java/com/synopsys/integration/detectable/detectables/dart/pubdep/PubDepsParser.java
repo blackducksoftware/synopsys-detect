@@ -46,6 +46,7 @@ public class PubDepsParser {
             int depthOfDependency = calculateDepth(line);
             String nameOfDependency = parseNameFromlLine(line);
             if (depthOfDependency == 0) {
+                // non-graph line
                 continue;
             } else if (depthOfDependency == ROOT_DEPTH) {
                 dependencyGraph.addChildToRoot(createDependency(nameOfDependency, resolvedVersions));
@@ -95,7 +96,12 @@ public class PubDepsParser {
     private int calculateDepth(String line) {
         int depth = StringUtils.countMatches(line, "|");
         if (line.contains("'--")) {
+            // |   '-- <name>...
             depth += StringUtils.countMatches(line, "'");
+        }
+        if (!line.equals(line.trim()) && line.trim().startsWith("'--")) {
+            //    '-- collection...
+            depth += 1;
         }
         return depth;
     }

@@ -8,7 +8,7 @@
 package com.synopsys.integration.detectable.detectables.dart.pubdep;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -37,10 +37,9 @@ public class PubDepsExtractor {
     public Extraction extract(File directory, ExecutableTarget dartExe, ExecutableTarget flutterExe, DartPubDepsDetectableOptions dartPubDepsDetectableOptions) {
         try {
 
-            List<String> pubDepsCommand = Arrays.asList(
-                "pub",
-                "deps"
-            );
+            List<String> pubDepsCommand = new ArrayList<>();
+            pubDepsCommand.add("pub");
+            pubDepsCommand.add("deps");
 
             if (dartPubDepsDetectableOptions.isExcludeDevDependencies()) {
                 pubDepsCommand.add("--no-dev");
