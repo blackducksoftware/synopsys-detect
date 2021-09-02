@@ -1,25 +1,20 @@
-package com.synopsys.integration.detectable.detectables.dart.unit;
+package com.synopsys.integration.detectable.detectables.dart.functional;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.dart.pubdep.PubDepsParser;
+import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
 public class PubDepsParserTest {
     @Test
-    public void test() throws IOException, URISyntaxException {
-        File pubDeps = new File(this.getClass().getClassLoader().getResource("detectables/unit/dart/pubDeps.txt").toURI());
-        List<String> pubDepsLines = FileUtils.readLines(pubDeps, StandardCharsets.UTF_8);
+    public void test() {
+        List<String> pubDepsLines = FunctionalTestFiles.asListOfStrings("/dart/pubDeps.txt");
 
         PubDepsParser pubDepsParser = new PubDepsParser(new ExternalIdFactory());
 
