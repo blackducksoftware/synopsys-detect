@@ -11,6 +11,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +35,7 @@ public class PubDepsExtractor {
         this.pubDepsParser = pubDepsParser;
     }
 
-    public Extraction extract(File directory, ExecutableTarget dartExe, ExecutableTarget flutterExe, DartPubDepsDetectableOptions dartPubDepsDetectableOptions) {
+    public Extraction extract(File directory, @Nullable ExecutableTarget dartExe, @Nullable ExecutableTarget flutterExe, DartPubDepsDetectableOptions dartPubDepsDetectableOptions) {
         try {
 
             List<String> pubDepsCommand = new ArrayList<>();
@@ -45,11 +46,20 @@ public class PubDepsExtractor {
                 pubDepsCommand.add("--no-dev");
             }
 
-            ExecutableOutput pubDepsOutput = runPubDepsCommand(directory, dartExe, pubDepsCommand);
-            if (pubDepsOutput.getReturnCode() != 0 && flutterExe != null) {
-                // If command does not work with Dart, it could be because at least one of the packages requires Flutter
-                logger.debug("Running dart pub deps was not successful.  Going to try running flutter pub deps.");
-                pubDepsOutput = runPubDepsCommand(directory, flutterExe, pubDepsCommand);
+            ExecutableOutput pubDepsOutput = null;
+
+            if (dartExe != null) {
+                pubDepsOutput = runPubDepsCommand(directory, dartExe, pubDepsCommand);
+            }
+
+            if (pubDepsOutput == null || pubDepsOutput.getReturnCode() != 0) {
+                if (flutterExe == null) {
+                    return new Extraction.Builder().failure(String.format("An error occurred trying to run %s %s", dartExe.toCommand(), String.join(" ", pubDepsCommand))).build();
+                } else {
+                    // If command does not work with Dart, it could be because at least one of the packages requires Flutter
+                    logger.debug("Running dart pub deps was not successful.  Going to try running flutter pub deps.");
+                    pubDepsOutput = runPubDepsCommand(directory, flutterExe, pubDepsCommand);
+                }
             }
 
             DependencyGraph dependencyGraph = pubDepsParser.parse(pubDepsOutput.getStandardOutputAsList());

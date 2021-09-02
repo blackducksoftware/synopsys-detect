@@ -29,6 +29,8 @@ public class DartPubDepsDetectableTest extends DetectableFunctionalTest {
     protected void setup() throws IOException {
         addFile(Paths.get("pubspec.lock"));
 
+        addFile(Paths.get("pubspec.yaml"));
+
         ExecutableOutput executableOutput = createStandardOutput(
             "http_parser 3.1.5-dev",
             "|-- pedantic 1.9.2",

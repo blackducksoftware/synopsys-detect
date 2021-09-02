@@ -157,6 +157,8 @@ public class DetectorRuleFactory {
         ruleSet.addDetector(DetectorType.COCOAPODS, "Pod Lock", PodlockDetectable.class, detectableFactory::createPodLockDetectable).defaults().build();
         ruleSet.addDetector(DetectorType.PACKAGIST, "Packrat Lock", PackratLockDetectable.class, detectableFactory::createPackratLockDetectable).defaults().build();
 
+        ruleSet.addDetector(DetectorType.DART, "Dart Pub Spec", DartPubSpecLockDetectable.class, detectableFactory::createDartPubSpecLockDetectable).defaults().build();
+
         ruleSet.addDetector(DetectorType.GO_DEP, "Go Lock", GoDepLockDetectable.class, detectableFactory::createGoLockDetectable).defaults().build();
         ruleSet.addDetector(DetectorType.GO_VNDR, "Go Vndr", GoVndrDetectable.class, detectableFactory::createGoVndrDetectable).defaults().build();
         ruleSet.addDetector(DetectorType.GO_VENDOR, "Go Vendor", GoVendorDetectable.class, detectableFactory::createGoVendorDetectable).defaults().build();

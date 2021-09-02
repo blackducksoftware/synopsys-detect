@@ -22,6 +22,7 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.DartRe
 import com.synopsys.integration.detectable.detectable.executable.resolver.FlutterResolver;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutablesNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PubSpecLockNotFoundDetectableResult;
@@ -65,8 +66,13 @@ public class DartPubDepDetectable extends Detectable {
 
         if (pubspecLock != null) {
             passedResultBuilder.foundFile(pubspecLock);
-        } else if (pubspecYaml != null) {
+        }
+        if (pubspecYaml != null) {
             passedResultBuilder.foundFile(pubspecYaml);
+        }
+
+        if (pubspecLock != null && pubspecYaml == null) {
+            return new FileNotFoundDetectableResult(PUBSPEC_YAML_FILENAME);
         }
 
         if (pubspecYaml == null && pubspecLock == null) {

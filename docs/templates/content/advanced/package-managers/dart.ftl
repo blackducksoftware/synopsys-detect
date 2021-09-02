@@ -5,7 +5,7 @@ ${solution_name} has two detectors for Dart:
 * Dart Pub Spec Lock detector
 * Dart Pub Dep detector
 
-Both detectors will run if they find either of the following files:
+Both detectors will run if they find the following files:
 
 * pubspec.yaml
 * pubspeck.lock
