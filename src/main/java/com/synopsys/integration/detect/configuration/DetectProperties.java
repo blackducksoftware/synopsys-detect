@@ -329,27 +329,6 @@ public class DetectProperties {
             .setHelp("If set to true, the signature scanner will, if supported by your Black Duck version, upload source code to Black Duck. Corresponding Signature Scanner CLI Argument: --upload-source.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
 
-    public static final DetectProperty<NullableStringProperty> DETECT_BOM_AGGREGATE_NAME =
-        new DetectProperty<>(new NullableStringProperty("detect.bom.aggregate.name"))
-            .setInfo("Aggregate BDIO File Name", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("If set, this will aggregate all the BOMs to create a single BDIO file with the filename provided.")
-            .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
-            .setCategory(DetectCategory.Advanced);
-
-    public static final DetectProperty<EnumProperty<AggregateMode>> DETECT_BOM_AGGREGATE_REMEDIATION_MODE =
-        new DetectProperty<>(new EnumProperty<>("detect.bom.aggregate.remediation.mode", AggregateMode.TRANSITIVE, AggregateMode.class))
-            .setInfo("BDIO Aggregate Remediation Mode", DetectPropertyFromVersion.VERSION_6_1_0)
-            .setHelp(
-                "If an aggregate BDIO file is being generated and this property is set to DIRECT, the aggregate BDIO file will exclude code location nodes " +
-                        "from the top layer of the dependency tree to preserve the correct identification of direct dependencies in the resulting Black Duck BOM. " +
-                        "When this property is set to TRANSITIVE (the default), component source information is preserved by including code location nodes at the " +
-                        "top of the dependency tree, but all components will appear as TRANSITIVE in the BOM. " +
-                        "SUBPROJECT mode provides both component source information and correct identification of direct and transitive dependencies by " +
-                        "encoding code location nodes as subprojects in the graph. SUBPROJECT mode must only be used with Black Duck 2021.8.0 or later, " +
-                        "and has no effect (is equivalent to TRANSITIVE mode) when detect.bdio2.enabled is set to false.")
-            .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
-            .setCategory(DetectCategory.Advanced);
-
     public static final DetectProperty<BooleanProperty> DETECT_BUILDLESS =
         new DetectProperty<>(new BooleanProperty("detect.detector.buildless", false))
             .setInfo("Buildless Mode", DetectPropertyFromVersion.VERSION_5_4_0)
@@ -933,6 +912,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced);
 
+    @SuppressWarnings("unused") // Dynamic property
     public static final DetectProperty<NullableStringProperty> DETECT_CUSTOM_FIELDS_PROJECT =
         new DetectProperty<>(new NullableStringProperty("detect.custom.fields.project"))
             .setInfo("Custom Fields", DetectPropertyFromVersion.VERSION_5_6_0)
@@ -941,6 +921,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced);
 
+    @SuppressWarnings("unused") // Dynamic property
     public static final DetectProperty<NullableStringProperty> DETECT_CUSTOM_FIELDS_VERSION =
         new DetectProperty<>(new NullableStringProperty("detect.custom.fields.version"))
             .setInfo("Custom Fields", DetectPropertyFromVersion.VERSION_5_6_0)
@@ -1286,19 +1267,47 @@ public class DetectProperties {
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK)
             .setCategory(DetectCategory.Advanced);
 
+    //#endregion Active Properties
+
+    //#region Deprecated Properties
+    // username/password ==> api token
+    public static final String BDIO1_DEPRECATION_MESSAGE = "This property is being removed, along with the option to generate BDIO in BDIO1 format. In the future, BDIO2 format will be the only option.";
+    public static final String AGGREGATION_MODE_DEPRECATION_MESSAGE = "This property is being removed, along with the ability to set the aggregation mode. Detect will only operate in SUBPROJECT mode to more accurately report the dependency graph.";
+
+    @Deprecated
+    public static final DetectProperty<NullableStringProperty> DETECT_BOM_AGGREGATE_NAME =
+        new DetectProperty<>(new NullableStringProperty("detect.bom.aggregate.name"))
+            .setInfo("Aggregate BDIO File Name", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("If set, this will aggregate all the BOMs to create a single BDIO file with the filename provided.")
+            .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(AGGREGATION_MODE_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<EnumProperty<AggregateMode>> DETECT_BOM_AGGREGATE_REMEDIATION_MODE =
+        new DetectProperty<>(new EnumProperty<>("detect.bom.aggregate.remediation.mode", AggregateMode.TRANSITIVE, AggregateMode.class))
+            .setInfo("BDIO Aggregate Remediation Mode", DetectPropertyFromVersion.VERSION_6_1_0)
+            .setHelp(
+                "If an aggregate BDIO file is being generated and this property is set to DIRECT, the aggregate BDIO file will exclude code location nodes " +
+                    "from the top layer of the dependency tree to preserve the correct identification of direct dependencies in the resulting Black Duck BOM. " +
+                    "When this property is set to TRANSITIVE (the default), component source information is preserved by including code location nodes at the " +
+                    "top of the dependency tree, but all components will appear as TRANSITIVE in the BOM. " +
+                    "SUBPROJECT mode provides both component source information and correct identification of direct and transitive dependencies by " +
+                    "encoding code location nodes as subprojects in the graph. SUBPROJECT mode must only be used with Black Duck 2021.8.0 or later, " +
+                    "and has no effect (is equivalent to TRANSITIVE mode) when detect.bdio2.enabled is set to false.")
+            .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(AGGREGATION_MODE_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT);
+
+    @Deprecated
     public static final DetectProperty<BooleanProperty> BLACKDUCK_LEGACY_UPLOAD_ENABLED =
         new DetectProperty<>(new BooleanProperty("blackduck.legacy.upload.enabled", true))
             .setInfo("Use legacy BDIO upload endpoints in Black Duck", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp(
                 "If set to true, Detect will upload the BDIO files to Black Duck using older REST APIs.  Set this to false if you want to use the intelligent persistent scan endpoints in Black Duck.  The intelligent persistent endpoints are a Black Duck feature to be used with a later Black Duck version.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK)
-            .setCategory(DetectCategory.Advanced);
-
-    //#endregion Active Properties
-
-    //#region Deprecated Properties
-    // username/password ==> api token
-    public static final String BDIO1_DEPRECATION_MESSAGE = "This property is being removed, along with the option to generate BDIO in BDIO1 format. In the future, BDIO2 format will be the only option.";
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated("This property is being removed as support for the legacy endpoint is dropped.", DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_BDIO2_ENABLED =
