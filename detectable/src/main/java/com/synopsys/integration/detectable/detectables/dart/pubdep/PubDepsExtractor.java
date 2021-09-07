@@ -10,6 +10,7 @@ package com.synopsys.integration.detectable.detectables.dart.pubdep;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -20,24 +21,27 @@ import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
+import com.synopsys.integration.detectable.detectables.dart.PubSpecYamlNameVersionParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunnerException;
+import com.synopsys.integration.util.NameVersion;
 
 public class PubDepsExtractor {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final DetectableExecutableRunner executableRunner;
     private final PubDepsParser pubDepsParser;
+    private PubSpecYamlNameVersionParser nameVersionParser;
 
-    public PubDepsExtractor(DetectableExecutableRunner executableRunner, PubDepsParser pubDepsParser) {
+    public PubDepsExtractor(DetectableExecutableRunner executableRunner, PubDepsParser pubDepsParser, PubSpecYamlNameVersionParser nameVersionParser) {
         this.executableRunner = executableRunner;
         this.pubDepsParser = pubDepsParser;
+        this.nameVersionParser = nameVersionParser;
     }
 
-    public Extraction extract(File directory, @Nullable ExecutableTarget dartExe, @Nullable ExecutableTarget flutterExe, DartPubDepsDetectableOptions dartPubDepsDetectableOptions) {
+    public Extraction extract(File directory, @Nullable ExecutableTarget dartExe, @Nullable ExecutableTarget flutterExe, DartPubDepsDetectableOptions dartPubDepsDetectableOptions, File pubSpecYamlFile) {
         try {
-
             List<String> pubDepsCommand = new ArrayList<>();
             pubDepsCommand.add("pub");
             pubDepsCommand.add("deps");
@@ -62,12 +66,13 @@ public class PubDepsExtractor {
                 }
             }
 
+            Optional<NameVersion> nameVersion = nameVersionParser.parseNameVersion(pubSpecYamlFile);
+
             DependencyGraph dependencyGraph = pubDepsParser.parse(pubDepsOutput.getStandardOutputAsList());
 
             CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 
-            // No project info - hoping git can help with that.
-            return new Extraction.Builder().success(codeLocation).build();
+            return new Extraction.Builder().success(codeLocation).nameVersionIfPresent(nameVersion).build();
         } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();
         }

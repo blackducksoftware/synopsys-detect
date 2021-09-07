@@ -105,6 +105,7 @@ import com.synopsys.integration.detectable.detectables.cran.PackratLockDetectabl
 import com.synopsys.integration.detectable.detectables.cran.PackratLockExtractor;
 import com.synopsys.integration.detectable.detectables.cran.parse.PackratDescriptionFileParser;
 import com.synopsys.integration.detectable.detectables.cran.parse.PackratLockFileParser;
+import com.synopsys.integration.detectable.detectables.dart.PubSpecYamlNameVersionParser;
 import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDepDetectable;
 import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDepsDetectableOptions;
 import com.synopsys.integration.detectable.detectables.dart.pubdep.PubDepsExtractor;
@@ -724,7 +725,7 @@ public class DetectableFactory {
     }
 
     private PubSpecExtractor pubSpecExtractor() {
-        return new PubSpecExtractor(pubSpecLockParser());
+        return new PubSpecExtractor(pubSpecLockParser(), pubSpecYamlNameVersionParser());
     }
 
     private PubSpecLockParser pubSpecLockParser() {
@@ -732,11 +733,15 @@ public class DetectableFactory {
     }
 
     private PubDepsExtractor pubDepsExtractor() {
-        return new PubDepsExtractor(executableRunner, pubDepsParser());
+        return new PubDepsExtractor(executableRunner, pubDepsParser(), pubSpecYamlNameVersionParser());
     }
 
     private PubDepsParser pubDepsParser() {
         return new PubDepsParser(externalIdFactory);
+    }
+
+    private PubSpecYamlNameVersionParser pubSpecYamlNameVersionParser() {
+        return new PubSpecYamlNameVersionParser();
     }
 
     private ToolPoetrySectionParser toolPoetrySectionParser() {

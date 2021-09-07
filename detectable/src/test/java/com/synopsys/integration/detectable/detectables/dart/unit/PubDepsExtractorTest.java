@@ -31,8 +31,8 @@ public class PubDepsExtractorTest {
     private void testGracefulFailure(ExecutableOutput mockExecutableOutput) throws ExecutableRunnerException {
         DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
         Mockito.when(executableRunner.execute(Mockito.any())).thenReturn(mockExecutableOutput);
-        PubDepsExtractor extractor = new PubDepsExtractor(executableRunner, new PubDepsParser(new ExternalIdFactory()));
-        Extraction extraction = extractor.extract(null, null, null, new DartPubDepsDetectableOptions(false));
+        PubDepsExtractor extractor = new PubDepsExtractor(executableRunner, new PubDepsParser(new ExternalIdFactory()), null);
+        Extraction extraction = extractor.extract(null, null, null, new DartPubDepsDetectableOptions(false), null);
 
         Assertions.assertFalse(extraction.isSuccess() && null == extraction.getError());
     }

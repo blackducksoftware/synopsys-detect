@@ -46,6 +46,8 @@ public class DartPubSpecLockDetectableTest extends DetectableFunctionalTest {
             "    source: hosted",
             "    version: \"0.4.6\""
         );
+
+        addFile(Paths.get("pubspec.yaml"));
     }
 
     @Override

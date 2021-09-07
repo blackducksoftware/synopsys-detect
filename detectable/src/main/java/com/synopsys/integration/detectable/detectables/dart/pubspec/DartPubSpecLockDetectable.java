@@ -71,6 +71,6 @@ public class DartPubSpecLockDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
-        return pubSpecExtractor.extract(pubspecLock);
+        return pubSpecExtractor.extract(pubspecLock, pubspecYaml);
     }
 }

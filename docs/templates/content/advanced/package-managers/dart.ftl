@@ -12,6 +12,8 @@ Both detectors will run if they find the following files:
 
 If ${solution_name} cannot find a pubspec.lock file, but it finds a pubspec.yaml file, it will prompt the user to run the 'pub get' command to generate the pubspec.lock file, and then run ${solution_name} again.
 
+Both detectors parse the pubspec.yaml file to determine project name and version information.
+
 The Dart Pub Spec Lock detector parses the pubspec.lock file for dependency information.  Because the file does not indicate relationships between components, results from this detector will be less accurate than those from the Dart Pub Dep detector.
 
 The Dart Pub Dep detector runs the command 'pub deps' (which requires a pubspec.lock file to be present), and then parses the command's output for dependency information.  The detector will first try to run the command using a dart executable (if found), but if it is unsuccessful because the target project requires the Flutter SDK then it will try using a flutter executable (if found).

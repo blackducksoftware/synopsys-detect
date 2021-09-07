@@ -98,6 +98,6 @@ public class DartPubDepDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
-        return pubDepsExtractor.extract(environment.getDirectory(), dartExe, flutterExe, dartPubDepsDetectableOptions);
+        return pubDepsExtractor.extract(environment.getDirectory(), dartExe, flutterExe, dartPubDepsDetectableOptions, pubspecYaml);
     }
 }
