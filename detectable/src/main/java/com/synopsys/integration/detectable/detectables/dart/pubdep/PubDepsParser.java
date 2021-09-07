@@ -20,10 +20,10 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.detectable.util.DependencyHistory;
 
 public class PubDepsParser {
     private static String UNRESOLVED_VERSION_SUFFIX = "...";  //TODO- name this more appropriately
-    private static int ROOT_DEPTH = 1;
 
     private ExternalIdFactory externalIdFactory;
 
@@ -36,28 +36,31 @@ public class PubDepsParser {
 
         Map<String, String> resolvedVersions = resolveVersionsOfDependencies(pubDepsOutput);
 
-        parseLines(pubDepsOutput, 1, "", resolvedVersions, dependencyGraph);
+        parseLines(pubDepsOutput, resolvedVersions, dependencyGraph);
 
         return dependencyGraph;
     }
 
-    private void parseLines(List<String> lines, int depthOfParent, String nameOfParent, Map<String, String> resolvedVersions, MutableDependencyGraph dependencyGraph) {
+    private void parseLines(List<String> lines, Map<String, String> resolvedVersions, MutableDependencyGraph dependencyGraph) {
+        DependencyHistory dependencyHistory = new DependencyHistory();
         for (String line : lines) {
-            int depthOfDependency = calculateDepth(line);
-            String nameOfDependency = parseNameFromlLine(line);
-            if (depthOfDependency == 0) {
+            int depthOfLine = calculateDepth(line);
+            if (depthOfLine == 0) {
                 // non-graph line
                 continue;
-            } else if (depthOfDependency == ROOT_DEPTH) {
-                dependencyGraph.addChildToRoot(createDependency(nameOfDependency, resolvedVersions));
-            } else if (depthOfDependency == depthOfParent + 1) {
-                // current dep is a child of parent
-                dependencyGraph.addChildWithParent(createDependency(nameOfDependency, resolvedVersions), createDependency(nameOfParent, resolvedVersions));
-            } else if (depthOfDependency <= depthOfParent) {
-                return;
             }
-            List<String> restOfLines = lines.subList(lines.indexOf(line) + 1, lines.size());
-            parseLines(restOfLines, depthOfDependency, nameOfDependency, resolvedVersions, dependencyGraph);
+            int dependencyDepth = depthOfLine - 1;
+            dependencyHistory.clearDependenciesDeeperThan(dependencyDepth);
+
+            String nameOfDependency = parseNameFromlLine(line);
+            Dependency dependency = createDependency(nameOfDependency, resolvedVersions);
+            if (dependencyHistory.isEmpty()) {
+                dependencyGraph.addChildToRoot(dependency);
+            } else {
+                dependencyGraph.addChildWithParent(dependency, dependencyHistory.getLastDependency());
+            }
+            dependencyHistory.add(dependency);
+
         }
     }
 
