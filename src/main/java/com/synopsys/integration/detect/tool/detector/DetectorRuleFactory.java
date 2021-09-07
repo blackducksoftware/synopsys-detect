@@ -18,6 +18,8 @@ import com.synopsys.integration.detectable.detectables.conan.lockfile.ConanLockf
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectable;
 import com.synopsys.integration.detectable.detectables.cpan.CpanCliDetectable;
 import com.synopsys.integration.detectable.detectables.cran.PackratLockDetectable;
+import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDepDetectable;
+import com.synopsys.integration.detectable.detectables.dart.pubspec.DartPubSpecLockDetectable;
 import com.synopsys.integration.detectable.detectables.git.GitDetectable;
 import com.synopsys.integration.detectable.detectables.git.GitParseDetectable;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepLockDetectable;
@@ -81,6 +83,11 @@ public class DetectorRuleFactory {
         ruleSet.addDetector(DetectorType.CONDA, "Conda Cli", CondaCliDetectable.class, detectableFactory::createCondaCliDetectable).defaults().build();
         ruleSet.addDetector(DetectorType.CPAN, "Cpan Cli", CpanCliDetectable.class, detectableFactory::createCpanCliDetectable).defaults().build();
         ruleSet.addDetector(DetectorType.CRAN, "Packrat Lock", PackratLockDetectable.class, detectableFactory::createPackratLockDetectable).defaults().build();
+
+        DetectorRule dartPubSpec = ruleSet.addDetector(DetectorType.DART, "Dart Pub Spec", DartPubSpecLockDetectable.class, detectableFactory::createDartPubSpecLockDetectable).defaults().build();
+        DetectorRule dartPubDeps = ruleSet.addDetector(DetectorType.DART, "Dart Pub Deps", DartPubDepDetectable.class, detectableFactory::createDartPubDepDetectable).defaults().build();
+
+        ruleSet.yield(dartPubSpec).to(dartPubDeps);
 
         ruleSet.addDetector(DetectorType.GO_MOD, "Go Mod Cli", GoModCliDetectable.class, detectableFactory::createGoModCliDetectable).defaults().build();
         ruleSet.addDetector(DetectorType.GO_GRADLE, "Go Gradle", GoGradleDetectable.class, detectableFactory::createGoGradleDetectable).defaults().build();
@@ -149,6 +156,8 @@ public class DetectorRuleFactory {
 
         ruleSet.addDetector(DetectorType.COCOAPODS, "Pod Lock", PodlockDetectable.class, detectableFactory::createPodLockDetectable).defaults().build();
         ruleSet.addDetector(DetectorType.PACKAGIST, "Packrat Lock", PackratLockDetectable.class, detectableFactory::createPackratLockDetectable).defaults().build();
+
+        ruleSet.addDetector(DetectorType.DART, "Dart Pub Spec", DartPubSpecLockDetectable.class, detectableFactory::createDartPubSpecLockDetectable).defaults().build();
 
         ruleSet.addDetector(DetectorType.GO_DEP, "Go Lock", GoDepLockDetectable.class, detectableFactory::createGoLockDetectable).defaults().build();
         ruleSet.addDetector(DetectorType.GO_VNDR, "Go Vndr", GoVndrDetectable.class, detectableFactory::createGoVndrDetectable).defaults().build();

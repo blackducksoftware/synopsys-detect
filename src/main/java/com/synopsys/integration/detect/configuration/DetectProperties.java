@@ -341,12 +341,12 @@ public class DetectProperties {
             .setInfo("BDIO Aggregate Remediation Mode", DetectPropertyFromVersion.VERSION_6_1_0)
             .setHelp(
                 "If an aggregate BDIO file is being generated and this property is set to DIRECT, the aggregate BDIO file will exclude code location nodes " +
-                        "from the top layer of the dependency tree to preserve the correct identification of direct dependencies in the resulting Black Duck BOM. " +
-                        "When this property is set to TRANSITIVE (the default), component source information is preserved by including code location nodes at the " +
-                        "top of the dependency tree, but all components will appear as TRANSITIVE in the BOM. " +
-                        "SUBPROJECT mode provides both component source information and correct identification of direct and transitive dependencies by " +
-                        "encoding code location nodes as subprojects in the graph. SUBPROJECT mode must only be used with Black Duck 2021.8.0 or later, " +
-                        "and has no effect (is equivalent to TRANSITIVE mode) when detect.bdio2.enabled is set to false.")
+                    "from the top layer of the dependency tree to preserve the correct identification of direct dependencies in the resulting Black Duck BOM. " +
+                    "When this property is set to TRANSITIVE (the default), component source information is preserved by including code location nodes at the " +
+                    "top of the dependency tree, but all components will appear as TRANSITIVE in the BOM. " +
+                    "SUBPROJECT mode provides both component source information and correct identification of direct and transitive dependencies by " +
+                    "encoding code location nodes as subprojects in the graph. SUBPROJECT mode must only be used with Black Duck 2021.8.0 or later, " +
+                    "and has no effect (is equivalent to TRANSITIVE mode) when detect.bdio2.enabled is set to false.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced);
 
@@ -407,6 +407,27 @@ public class DetectProperties {
             .setInfo("cpanm Executable", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("The path to the cpanm executable.")
             .setGroups(DetectGroup.CPAN, DetectGroup.GLOBAL);
+
+    public static final DetectProperty<NullablePathProperty> DETECT_DART_PATH =
+        new DetectProperty<>(new NullablePathProperty("detect.dart.path"))
+            .setInfo("dart Executable", DetectPropertyFromVersion.VERSION_7_5_0)
+            .setHelp("The path to the dart executable.")
+            .setGroups(DetectGroup.DART, DetectGroup.GLOBAL);
+
+    public static final DetectProperty<NullablePathProperty> DETECT_FLUTTER_PATH =
+        new DetectProperty<>(new NullablePathProperty("detect.flutter.path"))
+            .setInfo("flutter Executable", DetectPropertyFromVersion.VERSION_7_5_0)
+            .setHelp("The path to the flutter executable.")
+            .setGroups(DetectGroup.DART, DetectGroup.GLOBAL);
+
+    public static final DetectProperty<BooleanProperty> DETECT_PUD_DEPS_EXCLUDE_DEV =
+        new DetectProperty<>(new BooleanProperty("detect.pub.deps.exclude.dev", false))
+            .setInfo("Detect Dart Pub Deps Exclude Dev Dependencies", DetectPropertyFromVersion.VERSION_7_5_0)
+            .setHelp(
+                "If true, the Dart Detector will pass the option --no-dev when running the command 'pub deps'."
+            )
+            .setGroups(DetectGroup.DART, DetectGroup.DETECTOR, DetectGroup.GLOBAL)
+            .setCategory(DetectCategory.Advanced);
 
     public static final DetectProperty<IntegerProperty> DETECT_DETECTOR_SEARCH_DEPTH =
         new DetectProperty<>(new IntegerProperty("detect.detector.search.depth", 0))

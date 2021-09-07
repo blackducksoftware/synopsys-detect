@@ -2,6 +2,9 @@
 
 # Version 7.5.0
 
+### New Features
+* Added support for the Dart package manager.
+
 ### Changed features
 * The following directories are no longer excluded from Signature Scan by default: bin, build, out, packages, target.  .synopsys directories are now excluded from both Detector search and Signature Scan.
 * The Docker Inspector can now be included when using the [rapid scan mode](../properties/configuration/blackduck%20server/#detect-scan-mode-advanced).

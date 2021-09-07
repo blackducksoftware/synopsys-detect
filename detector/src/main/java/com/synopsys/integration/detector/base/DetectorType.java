@@ -20,6 +20,7 @@ public enum DetectorType {
     CONDA,
     CPAN,
     CRAN,
+    DART,
     GIT,
     GO_MOD,
     GO_DEP,
