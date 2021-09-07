@@ -2,7 +2,11 @@
 
 # Version 7.5.0
 
+### New Features
+* Added support for the Dart package manager.
+
 ### Changed features
+* The following directories are no longer excluded from Signature Scan by default: bin, build, out, packages, target.  .synopsys directories are now excluded from both Detector search and Signature Scan.
 * The Docker Inspector can now be included when using the [rapid scan mode](../properties/configuration/blackduck%20server/#detect-scan-mode-advanced).
 * Instead of "lite" Docker images that automatically disable all detectors, ${solution_name} now supports "buildless" Docker images that automatically disable detectors that depend on the presence of build tools, but leave buildless detectors enabled.
 
@@ -17,7 +21,6 @@
 * Added support for the Carthage package manager.
 
 ### Changed features
-* The following directories are no longer excluded from Signature Scan by default: bin, build, out, packages, target.  .synopsys directories are now excluded from both Detector search and Signature Scan.
 * The Poetry detector is no longer categorized as a PIP detector, and is now categorized under detector type POETRY.
 * Simplified the property deprecation lifecycle to the following: Use of deprecated properties will result in logged warnings until the next major version release, at which time those properties will be removed from Detect (and ignored if used). Properties that were deprecated in Detect 6.x have been removed in this release. Properties deprecated in Detect 7.x will be removed in Detect 8.0.0.
 
