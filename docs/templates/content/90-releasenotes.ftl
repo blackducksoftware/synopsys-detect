@@ -10,6 +10,10 @@
 * The Docker Inspector can now be included when using the [rapid scan mode](../properties/configuration/blackduck%20server/#detect-scan-mode-advanced).
 * Instead of "lite" Docker images that automatically disable all detectors, ${solution_name} now supports "buildless" Docker images that automatically disable detectors that depend on the presence of build tools, but leave buildless detectors enabled.
 
+### Resolved issues
+* (IDETECT-2830) Resolved an issue that caused the Gradle detector to fail when run in air gap mode.
+* (IDETECT-2816) Resolved an issue that caused a "Duplicate key" error when running binary scan on multiple files with the same name.
+
 ## Version 7.4.0
 
 ### New Features
