@@ -7,7 +7,7 @@
 
 ### Changed features
 * The following directories are no longer excluded from Signature Scan by default: bin, build, out, packages, target.  .synopsys directories are now excluded from both Detector search and Signature Scan.
-* The Docker Inspector can now be included when using the [rapid scan mode](../properties/configuration/blackduck%20server/#detect-scan-mode-advanced).
+* The Docker Inspector can now be included (using the detect.tools property) when using the [rapid scan mode](../properties/configuration/blackduck%20server/#detect-scan-mode-advanced).
 * Instead of "lite" Docker images that automatically disable all detectors, ${solution_name} now supports "buildless" Docker images that automatically disable detectors that depend on the presence of build tools, but leave buildless detectors enabled.
 
 ### Resolved issues
