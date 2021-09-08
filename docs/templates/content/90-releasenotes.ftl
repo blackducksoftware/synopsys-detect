@@ -59,7 +59,7 @@
 * (IDETECT-2505) Resolved an issue that caused go mod components with +incompatible version suffixes to not be matched on Black Duck.
 * (IDETECT-2629) Resolved an issue that caused go mod projects without source having an empty BOM with the introduction of the detect.go.mod.enable.verification property.
 * (IDETECT-2659) Resolved an issue that caused ${solution_name} to falsely report a missing detector when that detector matched only at a depths > 0 and was included in the value of property detect.required.detector.types.
-* (IDETECT-2696) Resolved an issue that could cause ${solution_name} to fail with "IllegalStateException: Duplicate key < codelocation name>" when creationg >100 codelocations in one run.
+* (IDETECT-2696) Resolved an issue that could cause ${solution_name} to fail with "IllegalStateException: Duplicate key <codelocation name>" when creationg >100 codelocations in one run.
 * (IDETECT-2659) Resolved an issue that caused Detect to falsely report "One or more required detector types were not found" when the required detector ran based on files found in a subdirectory.
 * (IDETECT-2541) Resolved an issue that caused the CLANG detector to fail with "Unable to execute any supported package manager" when run with a non-English locale on an alpine system.
 
@@ -237,7 +237,8 @@ prefix or code location suffix is not set.
 * ${solution_name} logs policy violations when it is configured to [fail on policy violations](../properties/configuration/project/#fail-on-policy-violation-severities).
 
 ### Changed features
-* Users can [upload source](../properties/configuration/signature scanner/#upload-source-mode) files when [license search](../properties/configuration/signature scanner/#signature-scanner-license-search) is enabled regardless of whether [snippet matching](../properties/configuration/signature scanner/#snippet-matching) has been enabled.
+* Users can [upload source](../properties/configuration/signature scanner/#upload-source-mode) files when [license search](../properties/configuration/signature scanner/#signature-scanner-license-search) is enabled regardless of whether
+[snippet matching](../properties/configuration/signature scanner/#snippet-matching) has been enabled.
 * ${solution_name} is now compatible with Yocto 3.0.
 * ${solution_name} stops if the Docker Inspector tool applies and ${solution_name} is running on Windows.
 * ${solution_name} configures Docker Inspector's working directories inside ${solution_name}'s run directory.
@@ -276,7 +277,8 @@ prefix or code location suffix is not set.
 ### Resolved issues
 * Resolved an issue where the download URL for ${solution_name} was being set to an internal URL upon release (IDETECT-1847).
 * Resolved an issue where all transitive dependencies found by the [Pip inspector](../advanced/package-managers/python/#the-pip-detector) were being reported as direct dependencies (IDETECT-1893).
-* Resolved an issue where using pip version 20+ with the [Pip inspector](../advanced/package-managers/python/#the-pip-detector) caused a failure to import a dependency. [GitHub PR](https://github.com/blackducksoftware/synopsys-detect/pull/107) (IDETECT-1868)
+* Resolved an issue where using pip version 20+ with the [Pip inspector](../advanced/package-managers/python/#the-pip-detector) caused a failure to import a dependency. [GitHub
+PR](https://github.com/blackducksoftware/synopsys-detect/pull/107) (IDETECT-1868)
 * Resolved the following vulnerabilities (IDETECT-1872):
 * org.springframework.boot:spring-boot-starter 5.1.7.RELEASE BDSA-2020-0069 (CVE-2020-5398)
 * Resolved an issue where ${solution_name} had the potential to fail on projects that utilized Yarn workspaces (IDETECT-1916).
@@ -298,7 +300,8 @@ prefix or code location suffix is not set.
 ### Changed features
 * Deprecated all ${polaris_product_name}-related properties.
 * Added [wildcard support](../advanced/includeexcludewildcards/) for several include/exclude list properties.
-* Improved the structure of the dependency information produced by the Yarn detector by changing its approach. It now parses dependency information from yarn.lock and package.json, instead of running the yarn command. Since the yarn command is no longer executed, the detect.yarn.path property has been removed.
+* Improved the structure of the dependency information produced by the Yarn detector by changing its approach. It now parses dependency information from yarn.lock and package.json, instead of running the yarn command. Since the yarn
+command is no longer executed, the detect.yarn.path property has been removed.
 * Improved match accuracy for Bitbake projects by improving external ID generation for dependencies referenced using Git protocols, and dependencies referenced with an epoch and/or revision.
 * Improved the reliability of the Bitbake detector by generating recipe-depends.dot and package-depends.dot files the source directory, instead of a temporary directory.
 * Changed the logging level of ${polaris_product_name} CLI output from DEBUG to INFO.
@@ -324,7 +327,8 @@ prefix or code location suffix is not set.
 * Detect now logs username, roles, and groups for the current user.
 * Detect now includes the project name/version in every code location name.
 * Detect now takes in a go path, but does not take in go.dep.path; nor does Detect trigger on *.go.
-* The property detect.parallel.processors is added. This property controls the number of parallel threads, and replaces the properties detect.blackduck.signature.scanner.parallel.processors and detect.hub.signature.scanner.parallel.processors.
+* The property detect.parallel.processors is added. This property controls the number of parallel threads, and replaces the properties detect.blackduck.signature.scanner.parallel.processors and
+detect.hub.signature.scanner.parallel.processors.
 * Added the property detect.maven.included.scopes. This is a comma-separated list of Maven scopes. Output is limited to dependencies within these scopes, and is overridden by exclude.
 * Added the property detect.maven.excluded.scopes. This is a comma-separated list of Maven scopes. Output is limited to dependencies outside these scopes, and is overridden by include.
 * Bazel detector: added support for dependencies specified using the maven_install workspace rule. The detect.bazel.advanced.rules.path property is removed.
