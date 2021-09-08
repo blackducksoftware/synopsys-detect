@@ -39,7 +39,6 @@ public class PubSpecLockParser {
         boolean inDescription = false;
 
         Optional<String> dependencyName = Optional.empty();
-        Optional<String> dependencyVersion = Optional.empty();
 
         for (String line : pubSpecLockLines) {
             String trimmedLine = StringUtils.trimToEmpty(line);
@@ -53,12 +52,11 @@ public class PubSpecLockParser {
             } else if (inDescription && trimmedLine.startsWith(NAME_LINE_KEY)) {
                 dependencyName = parseValueFromLine(trimmedLine, NAME_LINE_KEY);
             } else if (inPackages && trimmedLine.startsWith(VERSION_LINE_KEY)) {
-                dependencyVersion = parseValueFromLine(trimmedLine, VERSION_LINE_KEY);
+                Optional<String> dependencyVersion = parseValueFromLine(trimmedLine, VERSION_LINE_KEY);
                 if (dependencyName.isPresent() && dependencyVersion.isPresent()) {
                     dependencyGraph.addChildToRoot(createDependency(dependencyName.get(), dependencyVersion.get()));
                     // After process dependency, reset name and version variables
                     dependencyName = Optional.empty();
-                    dependencyVersion = Optional.empty();
                 }
             }
         }
