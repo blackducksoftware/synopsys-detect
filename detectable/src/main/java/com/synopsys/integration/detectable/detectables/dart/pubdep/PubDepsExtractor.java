@@ -57,7 +57,7 @@ public class PubDepsExtractor {
             }
 
             if (pubDepsOutput == null || pubDepsOutput.getReturnCode() != 0) {
-                if (flutterExe == null) {
+                if (flutterExe == null && dartExe != null) {
                     return new Extraction.Builder().failure(String.format("An error occurred trying to run %s %s", dartExe.toCommand(), String.join(" ", pubDepsCommand))).build();
                 } else {
                     // If command does not work with Dart, it could be because at least one of the packages requires Flutter
