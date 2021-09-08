@@ -9,12 +9,13 @@ package com.synopsys.integration.detectable.detectables.dart.pubdep;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Optional;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
-import com.synopsys.integration.detectable.detectable.PassedResultBuilder;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
@@ -40,8 +41,8 @@ public class DartPubDepDetectable extends Detectable {
     private PubDepsExtractor pubDepsExtractor;
     private DartPubDepsDetectableOptions dartPubDepsDetectableOptions;
 
-    private File pubspecYaml;
-    private File pubspecLock;
+    private Optional<File> pubspecYaml;
+    private Optional<File> pubspecLock;
 
     private ExecutableTarget dartExe;
     private ExecutableTarget flutterExe;
@@ -59,35 +60,27 @@ public class DartPubDepDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        PassedResultBuilder passedResultBuilder = new PassedResultBuilder();
+        Requirements requirements = new Requirements(fileFinder, environment);
 
-        pubspecYaml = fileFinder.findFile(environment.getDirectory(), PUBSPEC_YAML_FILENAME);
-        pubspecLock = fileFinder.findFile(environment.getDirectory(), PUBSPEC_LOCK_FILENAME);
+        pubspecYaml = requirements.optionalFile(PUBSPEC_YAML_FILENAME);
+        pubspecLock = requirements.optionalFile(PUBSPEC_LOCK_FILENAME);
 
-        if (pubspecLock != null) {
-            passedResultBuilder.foundFile(pubspecLock);
-        }
-        if (pubspecYaml != null) {
-            passedResultBuilder.foundFile(pubspecYaml);
-        }
-
-        if (pubspecLock != null && pubspecYaml == null) {
-            return new FileNotFoundDetectableResult(PUBSPEC_YAML_FILENAME);
-        }
-
-        if (pubspecYaml == null && pubspecLock == null) {
-            return new FilesNotFoundDetectableResult(PUBSPEC_LOCK_FILENAME, PUBSPEC_YAML_FILENAME);
+        if (pubspecYaml.isPresent() || pubspecLock.isPresent()) {
+            return requirements.result();
         } else {
-            return passedResultBuilder.build();
+            return new FilesNotFoundDetectableResult(PUBSPEC_LOCK_FILENAME, PUBSPEC_YAML_FILENAME);
         }
 
     }
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        if (pubspecLock == null && pubspecYaml != null) {
+        if (!pubspecLock.isPresent() && pubspecYaml.isPresent()) {
             return new PubSpecLockNotFoundDetectableResult(environment.getDirectory().getAbsolutePath());
+        } else if (pubspecLock.isPresent() && !pubspecYaml.isPresent()) {
+            return new FileNotFoundDetectableResult(PUBSPEC_LOCK_FILENAME);
         }
+
         dartExe = dartResolver.resolveDart();
         flutterExe = flutterResolver.resolveFlutter();
         if (dartExe == null && flutterExe == null) {
@@ -98,6 +91,7 @@ public class DartPubDepDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
-        return pubDepsExtractor.extract(environment.getDirectory(), dartExe, flutterExe, dartPubDepsDetectableOptions, pubspecYaml);
+        // pubspec.yaml cannot be null - ac 9/8/21
+        return pubDepsExtractor.extract(environment.getDirectory(), dartExe, flutterExe, dartPubDepsDetectableOptions, pubspecYaml.orElse(null));
     }
 }

@@ -84,10 +84,7 @@ public class DetectorRuleFactory {
         ruleSet.addDetector(DetectorType.CPAN, "Cpan Cli", CpanCliDetectable.class, detectableFactory::createCpanCliDetectable).defaults().build();
         ruleSet.addDetector(DetectorType.CRAN, "Packrat Lock", PackratLockDetectable.class, detectableFactory::createPackratLockDetectable).defaults().build();
 
-        DetectorRule dartPubSpec = ruleSet.addDetector(DetectorType.DART, "Dart Pub Spec", DartPubSpecLockDetectable.class, detectableFactory::createDartPubSpecLockDetectable).defaults().build();
-        DetectorRule dartPubDeps = ruleSet.addDetector(DetectorType.DART, "Dart Pub Deps", DartPubDepDetectable.class, detectableFactory::createDartPubDepDetectable).defaults().build();
-
-        ruleSet.yield(dartPubSpec).to(dartPubDeps);
+        ruleSet.addDetector(DetectorType.DART, "Dart Pub Deps", DartPubDepDetectable.class, detectableFactory::createDartPubDepDetectable).defaults().build();
 
         ruleSet.addDetector(DetectorType.GO_MOD, "Go Mod Cli", GoModCliDetectable.class, detectableFactory::createGoModCliDetectable).defaults().build();
         ruleSet.addDetector(DetectorType.GO_GRADLE, "Go Gradle", GoGradleDetectable.class, detectableFactory::createGoGradleDetectable).defaults().build();

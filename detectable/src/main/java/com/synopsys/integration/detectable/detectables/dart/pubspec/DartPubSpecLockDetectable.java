@@ -8,15 +8,17 @@
 package com.synopsys.integration.detectable.detectables.dart.pubspec;
 
 import java.io.File;
+import java.util.Optional;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.detectable.PassedResultBuilder;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
+import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PubSpecLockNotFoundDetectableResult;
@@ -30,8 +32,8 @@ public class DartPubSpecLockDetectable extends Detectable {
 
     private final FileFinder fileFinder;
 
-    private File pubspecYaml;
-    private File pubspecLock;
+    private Optional<File> pubspecYaml;
+    private Optional<File> pubspecLock;
 
     private PubSpecExtractor pubSpecExtractor;
 
@@ -43,34 +45,33 @@ public class DartPubSpecLockDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        PassedResultBuilder passedResultBuilder = new PassedResultBuilder();
+        Requirements requirements = new Requirements(fileFinder, environment);
 
-        pubspecYaml = fileFinder.findFile(environment.getDirectory(), PUBSPEC_YAML_FILENAME);
-        pubspecLock = fileFinder.findFile(environment.getDirectory(), PUBSPEC_LOCK_FILENAME);
+        pubspecYaml = requirements.optionalFile(PUBSPEC_YAML_FILENAME);
+        pubspecLock = requirements.optionalFile(PUBSPEC_LOCK_FILENAME);
 
-        if (pubspecLock != null) {
-            passedResultBuilder.foundFile(pubspecLock);
-        } else if (pubspecYaml != null) {
-            passedResultBuilder.foundFile(pubspecYaml);
-        }
-
-        if (pubspecYaml == null && pubspecLock == null) {
-            return new FilesNotFoundDetectableResult(PUBSPEC_LOCK_FILENAME, PUBSPEC_YAML_FILENAME);
+        if (pubspecYaml.isPresent() || pubspecLock.isPresent()) {
+            return requirements.result();
         } else {
-            return passedResultBuilder.build();
+            return new FilesNotFoundDetectableResult(PUBSPEC_LOCK_FILENAME, PUBSPEC_YAML_FILENAME);
         }
     }
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        if (pubspecLock == null && pubspecYaml != null) {
+        if (pubspecLock.isPresent() && pubspecYaml.isPresent()) {
+            return new PassedDetectableResult();
+        } else if (!pubspecLock.isPresent()) {
             return new PubSpecLockNotFoundDetectableResult(environment.getDirectory().getAbsolutePath());
+        } else {
+            return new FileNotFoundDetectableResult(PUBSPEC_YAML_FILENAME);
         }
-        return new PassedDetectableResult();
+
     }
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
-        return pubSpecExtractor.extract(pubspecLock, pubspecYaml);
+        // pubspec.yaml cannot be null - ac 9/8/21
+        return pubSpecExtractor.extract(pubspecLock.orElse(null), pubspecYaml.orElse(null));
     }
 }
