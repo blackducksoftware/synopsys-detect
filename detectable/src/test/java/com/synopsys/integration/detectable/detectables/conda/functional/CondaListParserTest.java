@@ -1,0 +1,37 @@
+package com.synopsys.integration.detectable.detectables.conda.functional;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
+import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import com.google.gson.Gson;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.model.Forge;
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.detectables.conda.parser.CondaListParser;
+import com.synopsys.integration.detectable.util.FunctionalTestFiles;
+
+public class CondaListParserTest {
+    @Test
+    public void testForgesCorrectlyAssigned() throws IOException {
+        ExternalIdFactory externalIdFactory = new ExternalIdFactory();
+        CondaListParser condaListParser = new CondaListParser(new Gson(), externalIdFactory);
+
+        File condaListFile = FunctionalTestFiles.asFile("/conda/condaListWithPypiAndCondaComponents.txt");
+        String condaListText = FileUtils.readFileToString(condaListFile, StandardCharsets.UTF_8);
+
+        DependencyGraph dependencyGraph = condaListParser.parse(condaListText, "{\n\"platform\":\"test\"\n}");
+
+        ExternalId treeliteRuntimeExternalId = externalIdFactory.createNameVersionExternalId(Forge.PYPI, "treelite-runtime", "2.0.0");
+        Assertions.assertTrue(dependencyGraph.getRootDependencyExternalIds().contains(treeliteRuntimeExternalId));
+
+        ExternalId tkExternalId = externalIdFactory.createNameVersionExternalId(Forge.ANACONDA, "tk", "8.6.11-h5dbffcc_1-test");
+        Assertions.assertTrue(dependencyGraph.getRootDependencyExternalIds().contains(tkExternalId));
+
+    }
+}

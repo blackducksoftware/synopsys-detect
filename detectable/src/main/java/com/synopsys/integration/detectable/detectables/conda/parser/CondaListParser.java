@@ -24,34 +24,44 @@ import com.synopsys.integration.detectable.detectables.conda.model.CondaInfo;
 import com.synopsys.integration.detectable.detectables.conda.model.CondaListElement;
 
 public class CondaListParser {
+    private static final String PYPI_CHANNEL = "pypi";
     private final Gson gson;
     private final ExternalIdFactory externalIdFactory;
 
-    public CondaListParser(final Gson gson, final ExternalIdFactory externalIdFactory) {
+    public CondaListParser(Gson gson, ExternalIdFactory externalIdFactory) {
         this.gson = gson;
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph parse(final String listJsonText, final String infoJsonText) {
-        final Type listType = new TypeToken<ArrayList<CondaListElement>>() {
+    public DependencyGraph parse(String listJsonText, String infoJsonText) {
+        Type listType = new TypeToken<ArrayList<CondaListElement>>() {
         }.getType();
-        final List<CondaListElement> condaList = gson.fromJson(listJsonText, listType);
-        final CondaInfo condaInfo = gson.fromJson(infoJsonText, CondaInfo.class);
-        final String platform = condaInfo.platform;
+        List<CondaListElement> condaList = gson.fromJson(listJsonText, listType);
+        CondaInfo condaInfo = gson.fromJson(infoJsonText, CondaInfo.class);
+        String platform = condaInfo.platform;
 
-        final MutableDependencyGraph graph = new MutableMapDependencyGraph();
+        MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
-        for (final CondaListElement condaListElement : condaList) {
+        for (CondaListElement condaListElement : condaList) {
             graph.addChildToRoot(condaListElementToDependency(platform, condaListElement));
         }
 
         return graph;
     }
 
-    public Dependency condaListElementToDependency(final String platform, final CondaListElement element) {
-        final String name = element.name;
-        final String version = String.format("%s-%s-%s", element.version, element.buildString, platform);
-        final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.ANACONDA, name, version);
+    public Dependency condaListElementToDependency(String platform, CondaListElement element) {
+        String name = element.name;
+        String version;
+        Forge forge;
+        if (element.channel.equals(PYPI_CHANNEL)) {
+            forge = Forge.PYPI;
+            version = element.version;
+        } else {
+            forge = Forge.ANACONDA;
+            version = String.format("%s-%s-%s", element.version, element.buildString, platform);
+        }
+
+        ExternalId externalId = externalIdFactory.createNameVersionExternalId(forge, name, version);
 
         return new Dependency(name, version, externalId);
     }
