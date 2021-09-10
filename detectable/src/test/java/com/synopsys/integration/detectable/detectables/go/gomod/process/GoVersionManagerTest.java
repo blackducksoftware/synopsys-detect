@@ -17,6 +17,7 @@ import com.synopsys.integration.detectable.detectables.go.gomod.model.ReplaceDat
 class GoVersionManagerTest {
     static String MODULE_A_PATH = "example.io/module/a";
     static String MODULE_B_PATH = "example.io/module/b";
+    static String MODULE_NO_VERSION_PATH = "example.io/module/no_version";
     static GoVersionManager goVersionManager;
 
     @BeforeAll
@@ -33,6 +34,10 @@ class GoVersionManagerTest {
         replaceData.setVersion("2.3.4");
         moduleB.setReplace(replaceData);
 
+        GoListAllData noVersionModule = new GoListAllData();
+        noVersionModule.setPath(MODULE_NO_VERSION_PATH);
+        // Explicitly not setting a version here.
+
         GoListAllData incompatibleModule = new GoListAllData();
         incompatibleModule.setPath("example.io/incompatible");
         incompatibleModule.setVersion("2.0.0+incompatible");
@@ -41,7 +46,7 @@ class GoVersionManagerTest {
         gitModule.setPath("example.io/hash");
         gitModule.setVersion("version_with_hash-123abc-456xyz");
 
-        List<GoListAllData> goListAllData = Arrays.asList(moduleA, moduleB, incompatibleModule, gitModule);
+        List<GoListAllData> goListAllData = Arrays.asList(moduleA, moduleB, incompatibleModule, gitModule, noVersionModule);
         goVersionManager = new GoVersionManager(goListAllData);
     }
 
@@ -77,5 +82,11 @@ class GoVersionManagerTest {
         Optional<String> versionForModule = goVersionManager.getVersionForModule(MODULE_B_PATH);
         assertTrue(versionForModule.isPresent());
         assertEquals("2.3.4", versionForModule.get(), "The version should be replaced.");
+    }
+
+    @Test
+    void noVersionTest() {
+        Optional<String> versionForModule = goVersionManager.getVersionForModule(MODULE_NO_VERSION_PATH);
+        assertFalse(versionForModule.isPresent(), "This module should have no version information.");
     }
 }
