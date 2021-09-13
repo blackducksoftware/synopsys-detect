@@ -14,24 +14,33 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.conda.model.CondaListElement;
 
 public class CondaDependencyCreator {
+    private static final String PYPI_CHANNEL = "pypi";
 
     private final ExternalIdFactory externalIdFactory;
-    private CondaForgeMap forgeMap;
-    private CondaVersionMap versionMap;
 
-    public CondaDependencyCreator(ExternalIdFactory externalIdFactory, CondaForgeMap forgeMap, CondaVersionMap versionMap) {
+    public CondaDependencyCreator(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
-        this.forgeMap = forgeMap;
-        this.versionMap = versionMap;
     }
 
     public Dependency createFromCondaListElement(CondaListElement element, String platform) {
+        if (element.channel.equals(PYPI_CHANNEL)) {
+            return getPypiDependency(element);
+        } else {
+            return getAnacondaDependency(element, platform);
+        }
+    }
+
+    private Dependency getAnacondaDependency(CondaListElement element, String platform) {
         String name = element.name;
-        String version = versionMap.getVersionIfElse(element, platform);
-        Forge forge = forgeMap.getForge(element.channel);
+        String version = String.format("%s-%s-%s", element.version, element.buildString, platform);
+        ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.ANACONDA, name, version);
+        return new Dependency(name, version, externalId);
+    }
 
-        ExternalId externalId = externalIdFactory.createNameVersionExternalId(forge, name, version);
-
+    private Dependency getPypiDependency(CondaListElement element) {
+        String name = element.name;
+        String version = element.version;
+        ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.PYPI, name, version);
         return new Dependency(name, version, externalId);
     }
 }

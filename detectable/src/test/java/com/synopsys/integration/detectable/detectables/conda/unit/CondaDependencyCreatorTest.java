@@ -8,13 +8,11 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.conda.model.CondaListElement;
 import com.synopsys.integration.detectable.detectables.conda.parser.CondaDependencyCreator;
-import com.synopsys.integration.detectable.detectables.conda.parser.CondaForgeMap;
-import com.synopsys.integration.detectable.detectables.conda.parser.CondaVersionMap;
 
 public class CondaDependencyCreatorTest {
     @Test
     public void testCorrectVersionAndForge() {
-        CondaDependencyCreator dependencyCreator = new CondaDependencyCreator(new ExternalIdFactory(), new CondaForgeMap(), new CondaVersionMap());
+        CondaDependencyCreator dependencyCreator = new CondaDependencyCreator(new ExternalIdFactory());
 
         String platform = "platform";
 
