@@ -23,7 +23,7 @@ public class CondaDependencyCreator {
     }
 
     public Dependency createFromCondaListElement(CondaListElement element, String platform) {
-        if (element.channel.equals(PYPI_CHANNEL)) {
+        if (PYPI_CHANNEL.equals(element.channel)) {
             return getPypiDependency(element);
         } else {
             return getAnacondaDependency(element, platform);
