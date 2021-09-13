@@ -10,16 +10,14 @@ package com.synopsys.integration.configuration.property;
 import com.synopsys.integration.configuration.util.ProductMajorVersion;
 
 //data class PropertyDeprecationInfo(val description: String, val failInVersion: ProductMajorVersion, val removeInVersion: ProductMajorVersion) {
-//    fun getDeprecationText(): String = "$description It will cause failure in ${failInVersion.getDisplayValue()} and be removed in ${removeInVersion.getDisplayValue()}.";
+//    fun getDeprecationText(): String = "$description It will be removed in ${removeInVersion.getDisplayValue()}.";
 //}
 public class PropertyDeprecationInfo {
     private final String description;
-    private final ProductMajorVersion failInVersion;
     private final ProductMajorVersion removeInVersion;
 
-    public PropertyDeprecationInfo(final String description, final ProductMajorVersion failInVersion, final ProductMajorVersion removeInVersion) {
+    public PropertyDeprecationInfo(final String description, final ProductMajorVersion removeInVersion) {
         this.description = description;
-        this.failInVersion = failInVersion;
         this.removeInVersion = removeInVersion;
     }
 
@@ -27,15 +25,11 @@ public class PropertyDeprecationInfo {
         return description;
     }
 
-    public ProductMajorVersion getFailInVersion() {
-        return failInVersion;
-    }
-
     public ProductMajorVersion getRemoveInVersion() {
         return removeInVersion;
     }
 
     public String getDeprecationText() {
-        return getDescription() + " It will cause failure in " + getFailInVersion().getDisplayValue() + " and be removed in " + getRemoveInVersion().getDisplayValue() + ".";
+        return getDescription() + " It will be removed in " + getRemoveInVersion().getDisplayValue() + ".";
     }
 }

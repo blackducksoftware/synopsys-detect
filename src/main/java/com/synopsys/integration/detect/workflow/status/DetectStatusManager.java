@@ -27,7 +27,7 @@ public class DetectStatusManager {
         eventSystem.registerListener(Event.StatusSummary, this::addStatusSummary);
         eventSystem.registerListener(Event.Issue, this::addIssue);
         eventSystem.registerListener(Event.ResultProduced, this::addDetectResult);
-        eventSystem.registerListener(Event.DetectOperation, this::addDetectOperation);
+        eventSystem.registerListener(Event.DetectOperationsComplete, detectOperations::addAll);
     }
 
     public void addStatusSummary(Status status) {
@@ -42,16 +42,12 @@ public class DetectStatusManager {
         detectResults.add(detectResult);
     }
 
-    public void addDetectOperation(Operation detectOperation) {
-        detectOperations.add(detectOperation);
-    }
-
     public void logDetectResults(IntLogger logger, ExitCodeType exitCodeType) {
         new DetectStatusLogger().logDetectStatus(logger, statusSummaries, detectResults, detectIssues, detectOperations, exitCodeType);
     }
 
     public boolean hasAnyFailure() {
         return statusSummaries.stream()
-                   .anyMatch(it -> it.getStatusType() == StatusType.FAILURE);
+            .anyMatch(it -> it.getStatusType() == StatusType.FAILURE);
     }
 }

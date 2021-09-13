@@ -9,11 +9,13 @@ package com.synopsys.integration.detector.base;
 
 public enum DetectorStatusCode {
     CARGO_LOCKFILE_NOT_FOUND("A Cargo.toml was located in the target project, but the Cargo.lock file was NOT located."),
+    CARTFILE_RESOLVED_FILE_NOT_FOUND("A Cartfile was located in the target project, but the Cartfile.resolved file was NOT located."),
     EXCEPTION("An exception occurred."),
     EXCLUDED("Detector type was excluded."),
     EXECUTABLE_FAILED("During extraction, one or more executables did not execute successfully."),
     EXTRACTION_FAILED("During extraction, one or more exceptions were encountered."),
     EXECUTABLE_NOT_FOUND("The necessary executable was not found."),
+    EXECUTABLES_NOT_FOUND("The necessary executables were not found."),
     FAILED("Detector failed."),
     FILES_NOT_FOUND("Necessary files were not found within the target project."),
     FILE_NOT_FOUND("A file was not found within the target project."),
@@ -27,6 +29,7 @@ public enum DetectorStatusCode {
     PASSED("Detector passed."),
     POETRY_LOCKFILE_NOT_FOUND("A pyproject.toml was located in the target project, but the Poetry.lock file was NOT located."),
     PROPERTY_INSUFFICIENT("The properties are insufficient to run."),
+    PUBSPEC_LOCK_NOT_FOUND("A pubspec.yaml file was found, but a pubspec.lock file was NOT found."),
     SECTION_NOT_FOUND("A necessary section was not found within a file within the target project."),
     SBT_PLUGIN_MISSING("A dependency graph plugin must be installed for the SBT detector to run."),
     UNKNOWN_DETECTOR_RESULT("There was an unknown result."),

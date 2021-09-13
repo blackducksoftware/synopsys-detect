@@ -20,7 +20,6 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,8 +44,8 @@ import com.synopsys.integration.detect.PropertyConfigUtils;
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;
 import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
-import com.synopsys.integration.detect.configuration.enumeration.DefaultDetectorExcludedDirectories;
-import com.synopsys.integration.detect.configuration.enumeration.DefaultVersionNameScheme;
+import com.synopsys.integration.detect.configuration.enumeration.DefaultDetectorSearchExcludedDirectories;
+import com.synopsys.integration.detect.configuration.enumeration.DefaultSignatureScannerExcludedDirectories;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
@@ -62,7 +61,6 @@ import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndiv
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
-import com.synopsys.integration.detect.workflow.airgap.AirGapOptions;
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
@@ -94,28 +92,11 @@ public class DetectConfigurationFactory {
 
     //#region Prefer These Over Any Property
     public Long findTimeoutInSeconds() {
-        long timeout = getValue(DetectProperties.DETECT_TIMEOUT);
-        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_TIMEOUT.getProperty())) {
-            return timeout;
-        }
-
-        // If no timeout was passed, check deprecated properties.
-        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_REPORT_TIMEOUT.getProperty())) {
-            timeout = getValue(DetectProperties.DETECT_REPORT_TIMEOUT);
-        }
-        return timeout;
+        return getValue(DetectProperties.DETECT_TIMEOUT);
     }
 
     public int findParallelProcessors() {
-        int provided;
-        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_PARALLEL_PROCESSORS.getProperty())) {
-            provided = getValue(DetectProperties.DETECT_PARALLEL_PROCESSORS);
-        } else if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS.getProperty())) {
-            provided = getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS);
-        } else {
-            provided = getValue(DetectProperties.DETECT_PARALLEL_PROCESSORS);
-        }
-
+        int provided = getValue(DetectProperties.DETECT_PARALLEL_PROCESSORS);
         if (provided > 0) {
             return provided;
         } else {
@@ -224,8 +205,8 @@ public class DetectConfigurationFactory {
 
         List<FilterableEnumValue<DetectTool>> includedTools = getValue(DetectProperties.DETECT_TOOLS);
         List<FilterableEnumValue<DetectTool>> excludedTools = getValue(DetectProperties.DETECT_TOOLS_EXCLUDED);
-        ExcludeIncludeEnumFilter filter = new ExcludeIncludeEnumFilter(excludedTools, includedTools);
-        return new DetectToolFilter(filter, impactEnabled, runDecision, blackDuckDecision);
+        ExcludeIncludeEnumFilter<DetectTool> filter = new ExcludeIncludeEnumFilter<>(excludedTools, includedTools);
+        return new DetectToolFilter(filter, impactEnabled.orElse(false), runDecision, blackDuckDecision);
     }
 
     public AggregateOptions createAggregateOptions() {
@@ -257,27 +238,27 @@ public class DetectConfigurationFactory {
         return new DirectoryOptions(sourcePath, outputPath, bdioPath, scanPath, toolsOutputPath, impactOutputPath);
     }
 
-    public AirGapOptions createAirGapOptions() {
-        Path gradleOverride = getPathOrNull(DetectProperties.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH.getProperty());
-        Path nugetOverride = getPathOrNull(DetectProperties.DETECT_NUGET_INSPECTOR_AIR_GAP_PATH.getProperty());
-        Path dockerOverride = getPathOrNull(DetectProperties.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH.getProperty());
-        return new AirGapOptions(dockerOverride, gradleOverride, nugetOverride);
-    }
-
-    public DetectExcludedDirectoryFilter createDetectDirectoryFileFilter(Path sourcePath) {
-        List<String> directoryExclusionPatterns = collectDirectoryExclusions();
-
-        return new DetectExcludedDirectoryFilter(sourcePath, directoryExclusionPatterns);
-    }
-
-    private List<String> collectDirectoryExclusions() {
+    public List<String> collectSignatureScannerDirectoryExclusions() {
         List<String> directoryExclusionPatterns = new ArrayList(getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES));
 
         if (!getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_DEFAULTS_DISABLED)) {
-            List<String> defaultExcluded = Arrays.stream(DefaultDetectorExcludedDirectories.values())
-                                               .map(DefaultDetectorExcludedDirectories::getDirectoryName)
-                                               .collect(Collectors.toList());
-            directoryExclusionPatterns.addAll(defaultExcluded);
+            List<String> defaultExcludedFromSignatureScan = Arrays.stream(DefaultSignatureScannerExcludedDirectories.values())
+                                                                .map(DefaultSignatureScannerExcludedDirectories::getDirectoryName)
+                                                                .collect(Collectors.toList());
+            directoryExclusionPatterns.addAll(defaultExcludedFromSignatureScan);
+        }
+
+        return directoryExclusionPatterns;
+    }
+
+    private List<String> collectDetectorSearchDirectoryExclusions() {
+        List<String> directoryExclusionPatterns = new ArrayList(getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES));
+
+        if (!getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_DEFAULTS_DISABLED)) {
+            List<String> defaultExcludedFromDetectorSearch = Arrays.stream(DefaultDetectorSearchExcludedDirectories.values())
+                                                                 .map(DefaultDetectorSearchExcludedDirectories::getDirectoryName)
+                                                                 .collect(Collectors.toList());
+            directoryExclusionPatterns.addAll(defaultExcludedFromDetectorSearch);
         }
 
         return directoryExclusionPatterns;
@@ -286,7 +267,7 @@ public class DetectConfigurationFactory {
     public DetectorFinderOptions createDetectorFinderOptions(Path sourcePath) {
         //Normal settings
         Integer maxDepth = getValue(DetectProperties.DETECT_DETECTOR_SEARCH_DEPTH);
-        DetectExcludedDirectoryFilter fileFilter = createDetectDirectoryFileFilter(sourcePath);
+        DetectExcludedDirectoryFilter fileFilter = new DetectExcludedDirectoryFilter(sourcePath, collectDetectorSearchDirectoryExclusions());
 
         return new DetectorFinderOptions(fileFilter, maxDepth);
     }
@@ -313,10 +294,7 @@ public class DetectConfigurationFactory {
     public ProjectNameVersionOptions createProjectNameVersionOptions(String sourceDirectoryName) {
         String overrideProjectName = getNullableValue(DetectProperties.DETECT_PROJECT_NAME);
         String overrideProjectVersionName = getNullableValue(DetectProperties.DETECT_PROJECT_VERSION_NAME);
-        String defaultProjectVersionText = getValue(DetectProperties.DETECT_DEFAULT_PROJECT_VERSION_TEXT);
-        DefaultVersionNameScheme defaultProjectVersionScheme = getValue(DetectProperties.DETECT_DEFAULT_PROJECT_VERSION_SCHEME);
-        String defaultProjectVersionFormat = getValue(DetectProperties.DETECT_DEFAULT_PROJECT_VERSION_TIMEFORMAT);
-        return new ProjectNameVersionOptions(sourceDirectoryName, overrideProjectName, overrideProjectVersionName, defaultProjectVersionText, defaultProjectVersionScheme, defaultProjectVersionFormat);
+        return new ProjectNameVersionOptions(sourceDirectoryName, overrideProjectName, overrideProjectVersionName);
     }
 
     public boolean createShouldUnmapCodeLocations() {
@@ -381,7 +359,7 @@ public class DetectConfigurationFactory {
         } else {
             signatureScannerPaths = emptyList();
         }
-        List<String> exclusionPatterns = collectDirectoryExclusions();
+        List<String> exclusionPatterns = collectSignatureScannerDirectoryExclusions();
 
         Integer scanMemory = PropertyConfigUtils
                                  .getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_MEMORY.getProperty());
@@ -395,26 +373,14 @@ public class DetectConfigurationFactory {
         String additionalArguments = PropertyConfigUtils
                                          .getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS.getProperty())
                                          .orElse(null);
-        Path offlineLocalScannerInstallPath = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH.getProperty())
-                                                  .map(path -> path.resolvePath(pathResolver)).orElse(null);
         Path onlineLocalScannerInstallPath = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH.getProperty()).map(path -> path.resolvePath(pathResolver))
                                                  .orElse(null);
-        String userProvidedScannerInstallUrl = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL.getProperty()).orElse(null);
         Integer maxDepth = getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_SEARCH_DEPTH);
-
-        if (offlineLocalScannerInstallPath != null && StringUtils.isNotBlank(userProvidedScannerInstallUrl)) {
-            throw new DetectUserFriendlyException(
-                "You have provided both a Black Duck signature scanner url AND a local Black Duck signature scanner path. Only one of these properties can be set at a time. If both are used together, the *correct* source of the signature scanner can not be determined.",
-                ExitCodeType.FAILURE_GENERAL_ERROR
-            );
-        }
 
         return new BlackDuckSignatureScannerOptions(
             signatureScannerPaths,
             exclusionPatterns,
-            offlineLocalScannerInstallPath,
             onlineLocalScannerInstallPath,
-            userProvidedScannerInstallUrl,
             scanMemory,
             findParallelProcessors(),
             dryRun,
@@ -459,13 +425,14 @@ public class DetectConfigurationFactory {
 
     public DetectExecutableOptions createDetectExecutableOptions() {
         return new DetectExecutableOptions(
-            getValue(DetectProperties.DETECT_PYTHON_PYTHON3),
             getPathOrNull(DetectProperties.DETECT_BASH_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_BAZEL_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_CONAN_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_CONDA_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_CPAN_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_CPANM_PATH.getProperty()),
+            getPathOrNull(DetectProperties.DETECT_DART_PATH.getProperty()),
+            getPathOrNull(DetectProperties.DETECT_FLUTTER_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_GRADLE_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_MAVEN_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_NPM_PATH.getProperty()),

@@ -26,16 +26,8 @@ public class OperationSystemTest {
         statusEventPublisher = new StatusEventPublisher(eventSystem);
         detectIssues = new ArrayList<>();
         detectOperations = new ArrayList<>();
-        eventSystem.registerListener(Event.DetectOperation, this::addOperation);
-        eventSystem.registerListener(Event.Issue, this::addIssue);
-    }
-
-    private void addIssue(DetectIssue issue) {
-        detectIssues.add(issue);
-    }
-
-    private void addOperation(Operation operation) {
-        detectOperations.add(operation);
+        eventSystem.registerListener(Event.DetectOperationsComplete, detectOperations::addAll);
+        eventSystem.registerListener(Event.Issue, detectIssues::add);
     }
 
     @Test

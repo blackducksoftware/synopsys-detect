@@ -66,8 +66,8 @@ public class DetectProperty<T extends Property> {
         return this;
     }
 
-    public DetectProperty<T> setDeprecated(String description, ProductMajorVersion failInVersion, ProductMajorVersion removeInVersion) {
-        this.propertyDeprecationInfo = new PropertyDeprecationInfo(description, failInVersion, removeInVersion);
+    public DetectProperty<T> setDeprecated(String description, ProductMajorVersion removeInVersion) {
+        this.propertyDeprecationInfo = new PropertyDeprecationInfo(description, removeInVersion);
         return this;
     }
 

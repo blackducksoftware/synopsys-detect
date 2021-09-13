@@ -100,10 +100,10 @@ public class DetectBootFactory {
         return configuration;
     }
 
-    public PathResolver createPathResolver(Boolean resolveTildes) {
+    public PathResolver createPathResolver() {
         PathResolver pathResolver;
 
-        if (detectInfo.getCurrentOs() != OperatingSystemType.WINDOWS && Boolean.TRUE.equals(resolveTildes)) {
+        if (detectInfo.getCurrentOs() != OperatingSystemType.WINDOWS) {
             logger.info("Tilde's will be automatically resolved to USER HOME.");
             pathResolver = new TildeInPathResolver(SystemUtils.USER_HOME);
         } else {

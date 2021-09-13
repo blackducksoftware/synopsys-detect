@@ -13,9 +13,11 @@ import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.detectable.detectable.result.CargoLockfileNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.CartfileResolvedNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExceptionDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExcludedDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.ExecutablesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FailedDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
@@ -29,6 +31,7 @@ import com.synopsys.integration.detectable.detectable.result.NpmNodeModulesNotFo
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PoetryLockfileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PropertyInsufficientDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.PubSpecLockNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.SbtMissingPluginDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.SectionNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.WrongOperatingSystemResult;
@@ -55,6 +58,8 @@ public class DetectorResultStatusCodeLookup {
         Map<Class, DetectorStatusCode> map = new HashMap<>();
 
         map.put(CargoLockfileNotFoundDetectableResult.class, DetectorStatusCode.CARGO_LOCKFILE_NOT_FOUND);
+        map.put(CartfileResolvedNotFoundDetectableResult.class, DetectorStatusCode.CARTFILE_RESOLVED_FILE_NOT_FOUND);
+        map.put(ExecutablesNotFoundDetectableResult.class, DetectorStatusCode.EXECUTABLES_NOT_FOUND);
         map.put(ExceptionDetectableResult.class, DetectorStatusCode.EXCEPTION);
         map.put(ExcludedDetectableResult.class, DetectorStatusCode.EXCLUDED);
         map.put(ExcludedDetectorResult.class, DetectorStatusCode.EXCLUDED);
@@ -78,6 +83,7 @@ public class DetectorResultStatusCodeLookup {
         map.put(PassedDetectableResult.class, DetectorStatusCode.PASSED);
         map.put(PoetryLockfileNotFoundDetectableResult.class, DetectorStatusCode.POETRY_LOCKFILE_NOT_FOUND);
         map.put(PropertyInsufficientDetectableResult.class, DetectorStatusCode.PROPERTY_INSUFFICIENT);
+        map.put(PubSpecLockNotFoundDetectableResult.class, DetectorStatusCode.PUBSPEC_LOCK_NOT_FOUND);
         map.put(SectionNotFoundDetectableResult.class, DetectorStatusCode.SECTION_NOT_FOUND);
         map.put(SbtMissingPluginDetectableResult.class, DetectorStatusCode.SBT_PLUGIN_MISSING);
         map.put(WrongOperatingSystemResult.class, DetectorStatusCode.WRONG_OPERATING_SYSTEM_RESULT);

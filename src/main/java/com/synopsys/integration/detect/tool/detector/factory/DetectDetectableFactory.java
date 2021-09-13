@@ -16,6 +16,7 @@ import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspe
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
 import com.synopsys.integration.detectable.detectables.cargo.CargoDetectable;
+import com.synopsys.integration.detectable.detectables.carthage.CarthageDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 import com.synopsys.integration.detectable.detectables.cocoapods.PodlockDetectable;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliDetectable;
@@ -23,6 +24,8 @@ import com.synopsys.integration.detectable.detectables.conan.lockfile.ConanLockf
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectable;
 import com.synopsys.integration.detectable.detectables.cpan.CpanCliDetectable;
 import com.synopsys.integration.detectable.detectables.cran.PackratLockDetectable;
+import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDepDetectable;
+import com.synopsys.integration.detectable.detectables.dart.pubspec.DartPubSpecLockDetectable;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectable;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
 import com.synopsys.integration.detectable.detectables.git.GitDetectable;
@@ -95,6 +98,10 @@ public class DetectDetectableFactory {
         return detectableFactory.createCargoDetectable(environment);
     }
 
+    public CarthageDetectable createCarthageDetectable(DetectableEnvironment environment) {
+        return detectableFactory.createCarthageDetectable(environment);
+    }
+
     public ClangDetectable createClangDetectable(DetectableEnvironment environment) {
         return detectableFactory.createClangDetectable(environment, detectableOptionFactory.createClangDetectableOptions());
     }
@@ -109,6 +116,14 @@ public class DetectDetectableFactory {
 
     public CpanCliDetectable createCpanCliDetectable(DetectableEnvironment environment) {
         return detectableFactory.createCpanCliDetectable(environment, detectExecutableResolver, detectExecutableResolver);
+    }
+
+    public DartPubSpecLockDetectable createDartPubSpecLockDetectable(DetectableEnvironment environment) {
+        return detectableFactory.createDartPubSpecLockDetectable(environment);
+    }
+
+    public DartPubDepDetectable createDartPubDepDetectable(DetectableEnvironment environment) {
+        return detectableFactory.createDartPubDepDetectable(environment, detectableOptionFactory.createDartPubDepsDetectableOptions(), detectExecutableResolver, detectExecutableResolver);
     }
 
     public GemlockDetectable createGemlockDetectable(DetectableEnvironment environment) {

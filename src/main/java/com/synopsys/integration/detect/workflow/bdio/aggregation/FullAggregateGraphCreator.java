@@ -5,7 +5,7 @@
  *
  * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
-package com.synopsys.integration.detect.workflow.bdio;
+package com.synopsys.integration.detect.workflow.bdio.aggregation;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -27,20 +27,19 @@ import com.synopsys.integration.detect.configuration.DetectUserFriendlyException
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.codelocation.FileNameUtils;
 
-public class AggregateModeTransitiveOperation {
+public class FullAggregateGraphCreator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     private final SimpleBdioFactory simpleBdioFactory;
 
-    public AggregateModeTransitiveOperation(final SimpleBdioFactory simpleBdioFactory) {
+    public FullAggregateGraphCreator(SimpleBdioFactory simpleBdioFactory) {
         this.simpleBdioFactory = simpleBdioFactory;
     }
 
-    public DependencyGraph aggregateCodeLocations(final File sourcePath, final List<DetectCodeLocation> codeLocations) throws DetectUserFriendlyException {
+    public DependencyGraph aggregateCodeLocations(ProjectNodeCreator projectDependencyCreator, final File sourcePath, final List<DetectCodeLocation> codeLocations) throws DetectUserFriendlyException {
         final MutableDependencyGraph aggregateDependencyGraph = simpleBdioFactory.createMutableDependencyGraph();
 
         for (final DetectCodeLocation detectCodeLocation : codeLocations) {
-            final Dependency codeLocationDependency = createAggregateDependency(sourcePath, detectCodeLocation);
+            final Dependency codeLocationDependency = createAggregateNode(projectDependencyCreator, sourcePath, detectCodeLocation);
             aggregateDependencyGraph.addChildrenToRoot(codeLocationDependency);
             aggregateDependencyGraph.addGraphAsChildrenToParent(codeLocationDependency, detectCodeLocation.getDependencyGraph());
         }
@@ -48,7 +47,7 @@ public class AggregateModeTransitiveOperation {
         return aggregateDependencyGraph;
     }
 
-    private Dependency createAggregateDependency(final File sourcePath, final DetectCodeLocation codeLocation) {
+    private Dependency createAggregateNode(ProjectNodeCreator projectDependencyCreator, final File sourcePath, final DetectCodeLocation codeLocation) {
         String name = null;
         String version = null;
         try {
@@ -75,6 +74,7 @@ public class AggregateModeTransitiveOperation {
         }
         externalIdPieces.add(bomToolType);
         final String[] pieces = externalIdPieces.toArray(ArrayUtils.EMPTY_STRING_ARRAY);
-        return new Dependency(name, version, new ExternalIdFactory().createModuleNamesExternalId(original.getForge(), pieces));
+        return projectDependencyCreator.create(name, version, new ExternalIdFactory().createModuleNamesExternalId(original.getForge(), pieces));
     }
+
 }

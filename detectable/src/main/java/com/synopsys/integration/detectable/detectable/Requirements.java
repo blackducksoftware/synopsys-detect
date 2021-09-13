@@ -10,17 +10,18 @@ package com.synopsys.integration.detectable.detectable;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.explanation.Explanation;
 import com.synopsys.integration.detectable.detectable.explanation.FoundExecutable;
 import com.synopsys.integration.detectable.detectable.explanation.FoundFile;
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
@@ -34,7 +35,7 @@ public class Requirements {
     private final FileFinder fileFinder;
     private final DetectableEnvironment environment;
 
-    public Requirements(final FileFinder fileFinder, final DetectableEnvironment environment) {
+    public Requirements(FileFinder fileFinder, DetectableEnvironment environment) {
         this.fileFinder = fileFinder;
         this.environment = environment;
     }
@@ -58,23 +59,27 @@ public class Requirements {
         explainFile(file);
     }
 
-    public File file(final String filename) {
+    public File file(String filename) {
         return file(environment.getDirectory(), filename);
     }
 
-    public File directory(final String filename) { //We don't include directory in a relevant file.
+    public File directory(String filename) { //We don't include directory in a relevant file.
         return file(environment.getDirectory(), filename, false);
     }
 
-    public File optionalFile(final String filename, RequirementNotMetAction ifNotMet) {
+    public Optional<File> optionalFile(String filename) {
+        return Optional.ofNullable(optionalFile(environment.getDirectory(), filename, () -> {}));
+    }
+
+    public File optionalFile(String filename, RequirementNotMetAction ifNotMet) {
         return optionalFile(environment.getDirectory(), filename, ifNotMet);
     }
 
-    public File optionalFile(File directory, final String filename, RequirementNotMetAction ifNotMet) {
+    public File optionalFile(File directory, String filename, RequirementNotMetAction ifNotMet) {
         return optionalFile(directory, filename, ifNotMet, true);
     }
 
-    public File optionalFile(File directory, final String filename, RequirementNotMetAction ifNotMet, boolean isRelevant) {
+    public File optionalFile(File directory, String filename, RequirementNotMetAction ifNotMet, boolean isRelevant) {
         if (isAlreadyFailed())
             return null;
 
@@ -90,11 +95,11 @@ public class Requirements {
         return file;
     }
 
-    public File file(File directory, final String filename) {
+    public File file(File directory, String filename) {
         return file(directory, filename, true);
     }
 
-    public File file(File directory, final String filename, boolean isRelevant) {
+    public File file(File directory, String filename, boolean isRelevant) {
         //Only difference between Optional File and Required File is Required populate failure, so if optional 'is not met' we can capture that by setting failure.
         return optionalFile(directory, filename, () -> {
             failure = new FileNotFoundDetectableResult(filename);

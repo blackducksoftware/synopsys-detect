@@ -31,6 +31,11 @@ By default (property *detect.conan.attempt.package.revision.match* is set to fal
 * channel (defaults to "_")
 * recipe revision
 
+${solution_name} constructs a KB external ID for namespace "conan" using these fields as follows:
+```
+<name>/<version>@<user>/<channel>#<recipe_revision>
+```
+
 This is the default mode, and currently (as of February 2021) produces the best results.
 
 Enhancements to the ${blackduck_kb} are planned that, for Conan projects with lockfiles
@@ -41,6 +46,11 @@ but it is never provided by the *conan info* command, so this only affects the C
 When this ${blackduck_kb} enhancement becomes available,
 you will be able to improve match accuracy for projects with lockfiles by setting
 property *detect.conan.attempt.package.revision.match* to true.
+
+In this scenario, ${solution_name} constructs a KB external ID for namespace "conan" as follows:
+```
+<name>/<version>@<user>/<channel>#<recipe_revision>:<package_id>#<package_revision>
+```
 
 ## Conan Detector Precedence
 

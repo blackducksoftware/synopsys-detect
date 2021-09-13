@@ -10,11 +10,12 @@ package com.synopsys.integration.detect.tool.binaryscanner;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,23 +39,35 @@ public class BinaryScanFindMultipleTargetsOperation {
         List<File> multipleTargets = fileFinder.findFiles(directoryManager.getSourceDirectory(), patterns, depth);
         if (multipleTargets.size() > 0) {
             logger.info("Binary scan found {} files to archive for binary scan upload.", multipleTargets.size());
-            return Optional.of(zipFilesForUpload(multipleTargets));
+            return Optional.of(zipFilesForUpload(directoryManager.getSourceDirectory(), multipleTargets));
         } else {
             return Optional.empty();
         }
     }
 
-    private File zipFilesForUpload(List<File> multipleTargets) throws DetectUserFriendlyException {
+    private File zipFilesForUpload(File sourceDir, List<File> multipleTargets) throws DetectUserFriendlyException {
         try {
             final String zipPath = "binary-upload.zip";
             File zip = new File(directoryManager.getBinaryOutputDirectory(), zipPath);
-            Map<String, Path> uploadTargets = multipleTargets.stream().collect(Collectors.toMap(File::getName, File::toPath));
+            Map<String, Path> uploadTargets = collectUploadTargetsByRelPath(sourceDir, multipleTargets);
             DetectZipUtil.zip(zip, uploadTargets);
             logger.info("Binary scan created the following zip for upload: " + zip.toPath());
             return zip;
         } catch (IOException e) {
             throw new DetectUserFriendlyException("Unable to create binary scan archive for upload.", e, ExitCodeType.FAILURE_UNKNOWN_ERROR);
         }
+    }
+
+    @NotNull
+    private Map<String, Path> collectUploadTargetsByRelPath(File sourceDir, List<File> multipleTargets) {
+        Path sourcePath = sourceDir.toPath();
+        Map<String, Path> uploadTargets = new HashMap<>(multipleTargets.size());
+        for (File fileToAdd : multipleTargets) {
+            Path pathToAdd = fileToAdd.toPath();
+            Path relativePath = sourcePath.relativize(pathToAdd);
+            uploadTargets.put(relativePath.toString(), pathToAdd);
+        }
+        return uploadTargets;
     }
 
 }

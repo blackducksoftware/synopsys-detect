@@ -95,8 +95,8 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
         final List<File> airGapInspectorImageTarfiles;
         airGapInspectorImageTarfiles = new ArrayList<>();
         final String dockerInspectorAirGapPath = airGapInspectorPaths.getDockerInspectorAirGapPath()
-                                                     .map(Path::toString)
-                                                     .orElse(null);
+                .map(Path::toString)
+                .orElse(null);
         for (final String inspectorName : inspectorNames) {
             final File osImage = new File(dockerInspectorAirGapPath, IMAGE_INSPECTOR_FAMILY + "-" + inspectorName + ".tar");
             airGapInspectorImageTarfiles.add(osImage);
@@ -139,5 +139,4 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
             return Optional.empty();
         }
     }
-
 }

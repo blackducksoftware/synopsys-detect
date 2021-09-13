@@ -25,7 +25,9 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.BazelR
 import com.synopsys.integration.detectable.detectable.executable.resolver.CondaResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanmResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.DartResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.DockerResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.FlutterResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GitResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GoResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GradleResolver;
@@ -59,6 +61,9 @@ import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParser
 import com.synopsys.integration.detectable.detectables.cargo.CargoDetectable;
 import com.synopsys.integration.detectable.detectables.cargo.CargoExtractor;
 import com.synopsys.integration.detectable.detectables.cargo.parse.CargoLockParser;
+import com.synopsys.integration.detectable.detectables.carthage.CartfileResolvedDependencyDeclarationParser;
+import com.synopsys.integration.detectable.detectables.carthage.CarthageDetectable;
+import com.synopsys.integration.detectable.detectables.carthage.CarthageExtractor;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOptions;
 import com.synopsys.integration.detectable.detectables.clang.ClangExtractor;
@@ -101,6 +106,14 @@ import com.synopsys.integration.detectable.detectables.cran.PackratLockDetectabl
 import com.synopsys.integration.detectable.detectables.cran.PackratLockExtractor;
 import com.synopsys.integration.detectable.detectables.cran.parse.PackratDescriptionFileParser;
 import com.synopsys.integration.detectable.detectables.cran.parse.PackratLockFileParser;
+import com.synopsys.integration.detectable.detectables.dart.PubSpecYamlNameVersionParser;
+import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDepDetectable;
+import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDepsDetectableOptions;
+import com.synopsys.integration.detectable.detectables.dart.pubdep.PubDepsExtractor;
+import com.synopsys.integration.detectable.detectables.dart.pubdep.PubDepsParser;
+import com.synopsys.integration.detectable.detectables.dart.pubspec.DartPubSpecLockDetectable;
+import com.synopsys.integration.detectable.detectables.dart.pubspec.PubSpecExtractor;
+import com.synopsys.integration.detectable.detectables.dart.pubspec.PubSpecLockParser;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectable;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectableOptions;
 import com.synopsys.integration.detectable.detectables.docker.DockerExtractor;
@@ -275,6 +288,10 @@ public class DetectableFactory {
         return new CargoDetectable(environment, fileFinder, cargoExtractor());
     }
 
+    public CarthageDetectable createCarthageDetectable(DetectableEnvironment environment) {
+        return new CarthageDetectable(environment, fileFinder, carthageExtractor());
+    }
+
     public ClangDetectable createClangDetectable(DetectableEnvironment environment, ClangDetectableOptions clangDetectableOptions) {
         return new ClangDetectable(environment, executableRunner, fileFinder, clangPackageManagerFactory().createPackageManagers(), clangExtractor(), clangDetectableOptions, clangPackageManagerRunner());
     }
@@ -289,6 +306,14 @@ public class DetectableFactory {
 
     public CpanCliDetectable createCpanCliDetectable(DetectableEnvironment environment, CpanResolver cpanResolver, CpanmResolver cpanmResolver) {
         return new CpanCliDetectable(environment, fileFinder, cpanResolver, cpanmResolver, cpanCliExtractor());
+    }
+
+    public DartPubSpecLockDetectable createDartPubSpecLockDetectable(DetectableEnvironment environment) {
+        return new DartPubSpecLockDetectable(environment, fileFinder, pubSpecExtractor());
+    }
+
+    public DartPubDepDetectable createDartPubDepDetectable(DetectableEnvironment environment, DartPubDepsDetectableOptions dartPubDepsDetectableOptions, DartResolver dartResolver, FlutterResolver flutterResolver) {
+        return new DartPubDepDetectable(environment, fileFinder, pubDepsExtractor(), dartPubDepsDetectableOptions, dartResolver, flutterResolver);
     }
 
     public GemlockDetectable createGemlockDetectable(DetectableEnvironment environment) {
@@ -452,6 +477,10 @@ public class DetectableFactory {
 
     private CargoExtractor cargoExtractor() {
         return new CargoExtractor(new CargoLockParser());
+    }
+
+    private CarthageExtractor carthageExtractor() {
+        return new CarthageExtractor(new CartfileResolvedDependencyDeclarationParser());
     }
 
     private ClangPackageDetailsTransformer clangPackageDetailsTransformer() {
@@ -709,6 +738,26 @@ public class DetectableFactory {
 
     private PoetryExtractor poetryExtractor() {
         return new PoetryExtractor(new PoetryLockParser());
+    }
+
+    private PubSpecExtractor pubSpecExtractor() {
+        return new PubSpecExtractor(pubSpecLockParser(), pubSpecYamlNameVersionParser());
+    }
+
+    private PubSpecLockParser pubSpecLockParser() {
+        return new PubSpecLockParser(externalIdFactory);
+    }
+
+    private PubDepsExtractor pubDepsExtractor() {
+        return new PubDepsExtractor(executableRunner, pubDepsParser(), pubSpecYamlNameVersionParser());
+    }
+
+    private PubDepsParser pubDepsParser() {
+        return new PubDepsParser(externalIdFactory);
+    }
+
+    private PubSpecYamlNameVersionParser pubSpecYamlNameVersionParser() {
+        return new PubSpecYamlNameVersionParser();
     }
 
     private ToolPoetrySectionParser toolPoetrySectionParser() {

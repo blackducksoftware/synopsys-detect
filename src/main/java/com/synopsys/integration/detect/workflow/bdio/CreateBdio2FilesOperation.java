@@ -18,10 +18,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.bdio2.Bdio;
 import com.blackducksoftware.bdio2.BdioMetadata;
 import com.blackducksoftware.bdio2.model.Project;
 import com.blackducksoftware.common.value.Product;
-import com.blackducksoftware.common.value.ProductList;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.SpdxCreator;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
@@ -56,14 +56,13 @@ public class CreateBdio2FilesOperation {
             DependencyGraph dependencyGraph = bdioCodeLocation.getDetectCodeLocation().getDependencyGraph();
 
             // Bdio 2
-            ProductList.Builder productListBuilder = new ProductList.Builder();
             String detectVersion = detectInfo.getDetectVersion();
             SpdxCreator detectCreator = SpdxCreator.createToolSpdxCreator("Detect", detectVersion);
-            Product product = new Product.Builder().name(detectCreator.getIdentifier()).build();
-            productListBuilder.addProduct(product);
 
-            BdioMetadata bdioMetadata = bdio2Factory.createBdioMetadata(codeLocationName, ZonedDateTime.now(), productListBuilder);
-            Project bdio2Project = bdio2Factory.createProject(externalId, projectNameVersion.getName(), projectNameVersion.getVersion());
+            BdioMetadata bdioMetadata = bdio2Factory.createBdioMetadata(codeLocationName, ZonedDateTime.now(), new Product.Builder().name(detectCreator.getIdentifier()).build());
+            bdioMetadata.scanType(Bdio.ScanType.PACKAGE_MANAGER);
+
+            Project bdio2Project = bdio2Factory.createProject(externalId, projectNameVersion.getName(), projectNameVersion.getVersion(), true);
             Bdio2Document bdio2Document = bdio2Factory.createBdio2Document(bdioMetadata, bdio2Project, dependencyGraph);
 
             Bdio2Writer bdio2Writer = new Bdio2Writer();

@@ -14,11 +14,13 @@ import java.util.stream.Collectors;
 public enum DetectorType {
     BITBAKE,
     CARGO,
+    CARTHAGE,
     COCOAPODS,
     CONAN,
     CONDA,
     CPAN,
     CRAN,
+    DART,
     GIT,
     GO_MOD,
     GO_DEP,

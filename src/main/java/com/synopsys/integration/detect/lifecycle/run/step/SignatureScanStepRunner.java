@@ -68,16 +68,8 @@ public class SignatureScanStepRunner {
     }
 
     private ScanBatchRunner resolveOfflineScanBatchRunner() throws DetectUserFriendlyException {
-        Optional<File> localScannerPath = operationFactory.calculateOfflineLocalScannerInstallPath();
-        ScanBatchRunnerUserResult userProvided = findUserProvidedScanBatchRunner(localScannerPath);
-        File installDirectory = determineScanInstallDirectory(userProvided);
-        ScanBatchRunner scanBatchRunner;
-        if (userProvided.getScanBatchRunner().isPresent()) {
-            scanBatchRunner = userProvided.getScanBatchRunner().get();
-        } else {
-            scanBatchRunner = operationFactory.createScanBatchRunnerFromLocalInstall(installDirectory);
-        }
-        return scanBatchRunner;
+        File installDirectory = operationFactory.calculateDetectControlledInstallDirectory();
+        return operationFactory.createScanBatchRunnerFromLocalInstall(installDirectory);
     }
 
     private ScanBatchRunner resolveOnlineScanBatchRunner(BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
@@ -107,11 +99,6 @@ public class SignatureScanStepRunner {
         if (localScannerPath.isPresent()) {
             logger.debug("Signature scanner given an existing path for the scanner - we won't attempt to manage the install.");
             return ScanBatchRunnerUserResult.fromLocalInstall(operationFactory.createScanBatchRunnerFromLocalInstall(localScannerPath.get()), localScannerPath.get());
-        } else if (operationFactory.calculateUserProvidedScannerUrl().isPresent()) {
-            logger.debug("Signature scanner will use the provided url to download/update the scanner.");
-            //TODO ejk - not confident this is right
-            File installDirectory = operationFactory.calculateDetectControlledInstallDirectory();
-            return ScanBatchRunnerUserResult.fromCustomUrl(operationFactory.createScanBatchRunnerWithCustomUrl(operationFactory.calculateUserProvidedScannerUrl().get(), installDirectory));
         }
         return ScanBatchRunnerUserResult.none();
     }

@@ -8,6 +8,8 @@
 package com.synopsys.integration.detect.workflow.blackduck.developer.blackduck;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.HttpStatus;
 
@@ -22,17 +24,33 @@ import com.synopsys.integration.wait.WaitJobCondition;
 
 public class DetectRapidScanWaitJobCondition implements WaitJobCondition {
     private final BlackDuckApiClient blackDuckApiClient;
-    private final HttpUrl resultUrl;
+    private final List<HttpUrl> remainingUrls;
 
-    public DetectRapidScanWaitJobCondition(BlackDuckApiClient blackDuckApiClient, HttpUrl resultUrl) {
+    public DetectRapidScanWaitJobCondition(BlackDuckApiClient blackDuckApiClient, List<HttpUrl> resultUrl) {
         this.blackDuckApiClient = blackDuckApiClient;
-        this.resultUrl = resultUrl;
+        this.remainingUrls = new ArrayList<>();
+        remainingUrls.addAll(resultUrl);
     }
 
     @Override
     public boolean isComplete() throws IntegrationException {
+        if (remainingUrls.isEmpty())
+            return true;
+
+        List<HttpUrl> completed = new ArrayList<>();
+        for (HttpUrl url : remainingUrls) {
+            if (isComplete(url)) {
+                completed.add(url);
+            }
+        }
+
+        remainingUrls.removeAll(completed);
+        return remainingUrls.isEmpty();
+    }
+
+    private boolean isComplete(HttpUrl url) throws IntegrationException {
         BlackDuckResponseRequest request = new DetectRapidScanRequestBuilder()
-                                               .createResponseRequest(resultUrl);
+                                               .createResponseRequest(url);
         try (Response response = blackDuckApiClient.execute(request)) {
             return response.isStatusCodeSuccess();
         } catch (IntegrationRestException ex) {
