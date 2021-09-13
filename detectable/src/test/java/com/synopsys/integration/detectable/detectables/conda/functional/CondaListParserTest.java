@@ -13,14 +13,18 @@ import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.detectables.conda.parser.CondaDependencyCreator;
+import com.synopsys.integration.detectable.detectables.conda.parser.CondaForgeMap;
 import com.synopsys.integration.detectable.detectables.conda.parser.CondaListParser;
+import com.synopsys.integration.detectable.detectables.conda.parser.CondaVersionMap;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 
 public class CondaListParserTest {
     @Test
     public void testForgesCorrectlyAssigned() throws IOException {
         ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        CondaListParser condaListParser = new CondaListParser(new Gson(), externalIdFactory);
+        CondaDependencyCreator dependencyCreator = new CondaDependencyCreator(externalIdFactory, new CondaForgeMap(), new CondaVersionMap());
+        CondaListParser condaListParser = new CondaListParser(new Gson(), dependencyCreator);
 
         File condaListFile = FunctionalTestFiles.asFile("/conda/condaListWithPypiAndCondaComponents.txt");
         String condaListText = FileUtils.readFileToString(condaListFile, StandardCharsets.UTF_8);
