@@ -15,9 +15,6 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.blackduck.bdio.model.dependency.ProjectDependency;
-import com.synopsys.integration.detect.workflow.bdio.aggregation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,10 +22,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponentResultView;
+import com.synopsys.integration.blackduck.bdio.model.dependency.ProjectDependency;
 import com.synopsys.integration.blackduck.bdio2.util.Bdio2Factory;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
@@ -108,6 +107,8 @@ import com.synopsys.integration.detect.workflow.bdio.CreateAggregateCodeLocation
 import com.synopsys.integration.detect.workflow.bdio.CreateBdio1FilesOperation;
 import com.synopsys.integration.detect.workflow.bdio.CreateBdio2FilesOperation;
 import com.synopsys.integration.detect.workflow.bdio.DetectBdioWriter;
+import com.synopsys.integration.detect.workflow.bdio.aggregation.AggregateModeDirectOperation;
+import com.synopsys.integration.detect.workflow.bdio.aggregation.FullAggregateGraphCreator;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
 import com.synopsys.integration.detect.workflow.blackduck.DetectFontLoader;
 import com.synopsys.integration.detect.workflow.blackduck.bdio.IntelligentPersistentUploadOperation;
@@ -459,7 +460,7 @@ public class OperationFactory { //TODO: OperationRunner
     }
 
     public Optional<File> calculateOnlineLocalScannerInstallPath() throws DetectUserFriendlyException {
-        return auditLog.namedInternal("Calculate Online Local Scanner Path", () -> detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getOnlineLocalScannerInstallPath().map(Path::toFile));
+        return auditLog.namedInternal("Calculate Online Local Scanner Path", () -> detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getLocalScannerInstallPath().map(Path::toFile));
     }
 
     public ScanBatchRunner createScanBatchRunnerWithBlackDuck(BlackDuckRunData blackDuckRunData, File installDirectory) throws DetectUserFriendlyException {
@@ -586,11 +587,13 @@ public class OperationFactory { //TODO: OperationRunner
     }
 
     public DependencyGraph aggregateTransitive(List<DetectCodeLocation> detectCodeLocations) throws DetectUserFriendlyException {
-        return auditLog.namedPublic("Transitive Aggregate", "TransitiveAggregate", () -> (new FullAggregateGraphCreator(new SimpleBdioFactory())).aggregateCodeLocations(Dependency::new, directoryManager.getSourceDirectory(), detectCodeLocations));
+        return auditLog.namedPublic("Transitive Aggregate", "TransitiveAggregate",
+            () -> (new FullAggregateGraphCreator(new SimpleBdioFactory())).aggregateCodeLocations(Dependency::new, directoryManager.getSourceDirectory(), detectCodeLocations));
     }
 
     public DependencyGraph aggregateSubProject(List<DetectCodeLocation> detectCodeLocations) throws DetectUserFriendlyException {
-        return auditLog.namedPublic("SubProject Aggregate", "SubProjectAggregate", () -> (new FullAggregateGraphCreator(new SimpleBdioFactory())).aggregateCodeLocations(ProjectDependency::new, directoryManager.getSourceDirectory(), detectCodeLocations));
+        return auditLog.namedPublic("SubProject Aggregate", "SubProjectAggregate",
+            () -> (new FullAggregateGraphCreator(new SimpleBdioFactory())).aggregateCodeLocations(ProjectDependency::new, directoryManager.getSourceDirectory(), detectCodeLocations));
     }
 
     public void createAggregateBdio1File(AggregateCodeLocation aggregateCodeLocation) throws DetectUserFriendlyException {

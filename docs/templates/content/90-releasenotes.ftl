@@ -1,5 +1,10 @@
 # Release notes
 
+# Version 7.6.0
+
+### Resolved issues
+* (IDETECT-2829) Resolved an issue that caused ${solution_name} to use the wrong scan cli when in offline mode and ignore a specified local scan cli.
+
 # Version 7.5.0
 
 ### New Features
