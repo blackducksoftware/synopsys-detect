@@ -1,5 +1,10 @@
 # Release notes
 
+# Version 7.6.0
+
+### Resolved issues
+* (IDETECT-2834) Resolved an issue where GoMod components missing a version were not being properly filtered causing a NullPointerException.
+
 # Version 7.5.0
 
 ### New Features
