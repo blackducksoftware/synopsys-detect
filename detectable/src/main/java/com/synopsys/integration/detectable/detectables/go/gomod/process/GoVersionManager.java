@@ -8,6 +8,7 @@
 package com.synopsys.integration.detectable.detectables.go.gomod.process;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import com.synopsys.integration.detectable.detectables.go.gomod.model.GoListAllData;
@@ -24,17 +25,18 @@ public class GoVersionManager {
 
     public Optional<String> getVersionForModule(String moduleName) {
         return allModules.stream()
-                   .filter(module -> moduleName.equals(module.getPath()))
-                   .map(module -> Optional.ofNullable(module.getReplace())
-                                      .map(ReplaceData::getVersion)
-                                      .orElse(module.getVersion())
-                   )
-                   .map(version -> {
-                       version = handleGitHash(version);
-                       return removeIncompatibleSuffix(version);
+            .filter(module -> moduleName.equals(module.getPath()))
+            .map(module -> Optional.ofNullable(module.getReplace())
+                .map(ReplaceData::getVersion)
+                .orElse(module.getVersion())
+            )
+            .filter(Objects::nonNull)
+            .map(version -> {
+                version = handleGitHash(version);
+                return removeIncompatibleSuffix(version);
 
-                   })
-                   .findFirst();
+            })
+            .findFirst();
     }
 
     private String handleGitHash(String version) {
