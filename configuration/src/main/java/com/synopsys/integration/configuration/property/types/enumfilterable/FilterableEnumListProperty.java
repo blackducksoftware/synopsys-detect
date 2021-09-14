@@ -23,17 +23,6 @@ public class FilterableEnumListProperty<E extends Enum<E>> extends ValuedListPro
     @NotNull
     private final Class<E> enumClass;
 
-    /*
-    Will use all the values of the Enum as the default value.
-     */
-    public FilterableEnumListProperty(@NotNull String key, @NotNull Class<E> enumClass) {
-        this(key, Arrays.stream(enumClass.getEnumConstants())
-                .map(FilterableEnumValue::value)
-                .collect(Collectors.toList()),
-            enumClass
-        );
-    }
-
     public FilterableEnumListProperty(@NotNull String key, @NotNull List<FilterableEnumValue<E>> defaultValue, @NotNull Class<E> enumClass) {
         super(key, new ListValueParser<>(new FilterableEnumValueParser<>(enumClass)), defaultValue);
         this.enumClass = enumClass;
