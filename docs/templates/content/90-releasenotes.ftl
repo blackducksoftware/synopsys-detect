@@ -2,6 +2,10 @@
 
 # Version 7.6.0
 
+### Changed features
+* The the default value for property detect.project.clone.categories has changed to ALL.
+* The detect.project.clone.categories property now support ALL and NONE as options.
+
 ### Resolved issues
 * (IDETECT-2834) Resolved an issue where GoMod components missing a version were not being properly filtered causing a NullPointerException.
 
