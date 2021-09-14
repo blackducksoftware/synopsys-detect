@@ -3,7 +3,7 @@
 # Version 7.6.0
 
 ### Changed features
-* The following clone categories were added to the default value for property detect.project.clone.categories: VERSION_SETTINGS
+* The the default value for property detect.project.clone.categories has changed to ALL.
 * The detect.project.clone.categories property now support ALL and NONE as options.
 
 ### Resolved issues
