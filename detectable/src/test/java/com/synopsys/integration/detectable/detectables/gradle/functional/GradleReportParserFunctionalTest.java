@@ -52,32 +52,32 @@ public class GradleReportParserFunctionalTest {
     void extractCodeLocationTest() {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS); //Does not work on windows due to path issues.
 
-        final GradleReportParser gradleReportParser = new GradleReportParser();
-        final Optional<GradleReport> gradleReport = gradleReportParser.parseReport(FunctionalTestFiles.asFile("/gradle/dependencyGraph.txt"));
+        GradleReportParser gradleReportParser = new GradleReportParser();
+        Optional<GradleReport> gradleReport = gradleReportParser.parseReport(FunctionalTestFiles.asFile("/gradle/dependencyGraph.txt"));
         Assertions.assertTrue(gradleReport.isPresent());
-        final GradleReportTransformer transformer = new GradleReportTransformer(new ExternalIdFactory());
-        final CodeLocation codeLocation = transformer.transform(gradleReport.get());
+        GradleReportTransformer transformer = new GradleReportTransformer(new ExternalIdFactory(), true);
+        CodeLocation codeLocation = transformer.transform(gradleReport.get());
         Assertions.assertNotNull(codeLocation);
 
         Assertions.assertEquals("hub-detect", gradleReport.get().getProjectName());
         Assertions.assertEquals("2.0.0-SNAPSHOT", gradleReport.get().getProjectVersionName());
 
-        final String actual = new Gson().toJson(codeLocation);
+        String actual = new Gson().toJson(codeLocation);
 
         try {
             JSONAssert.assertEquals(FunctionalTestFiles.asString("/gradle/dependencyGraph-expected.json"), actual, false);
-        } catch (final JSONException e) {
+        } catch (JSONException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Test
     void complexTest() {
-        final Optional<CodeLocation> codeLocation = buildCodeLocation("/gradle/parse-tests/complex_dependencyGraph.txt");
+        Optional<CodeLocation> codeLocation = buildCodeLocation("/gradle/parse-tests/complex_dependencyGraph.txt");
         Assertions.assertTrue(codeLocation.isPresent());
-        final DependencyGraph graph = codeLocation.get().getDependencyGraph();
+        DependencyGraph graph = codeLocation.get().getDependencyGraph();
 
-        final MavenGraphAssert graphAssert = new MavenGraphAssert(graph);
+        MavenGraphAssert graphAssert = new MavenGraphAssert(graph);
         graphAssert.hasDependency("non-project:with-nested:1.0.0");
         graphAssert.hasDependency("solo:component:4.12");
         graphAssert.hasDependency("some.group:child:2.2.2");
@@ -97,23 +97,23 @@ public class GradleReportParserFunctionalTest {
         graphAssert.hasRootDependency("some.group:parent:5.0.0");
         graphAssert.hasRootDependency("terminal:child:6.2.3");
 
-        final ExternalId parent = graphAssert.hasDependency("some.group:parent:5.0.0");
-        final ExternalId child = graphAssert.hasDependency("some.group:child:2.2.2");
+        ExternalId parent = graphAssert.hasDependency("some.group:parent:5.0.0");
+        ExternalId child = graphAssert.hasDependency("some.group:child:2.2.2");
         graphAssert.hasParentChildRelationship(parent, child);
     }
 
-    private Optional<CodeLocation> buildCodeLocation(final String resource) {
-        final File file = FunctionalTestFiles.asFile(resource);
-        final GradleReportParser gradleReportParser = new GradleReportParser();
-        final GradleReportTransformer gradleReportTransformer = new GradleReportTransformer(new ExternalIdFactory());
+    private Optional<CodeLocation> buildCodeLocation(String resource) {
+        File file = FunctionalTestFiles.asFile(resource);
+        GradleReportParser gradleReportParser = new GradleReportParser();
+        GradleReportTransformer gradleReportTransformer = new GradleReportTransformer(new ExternalIdFactory(), true);
 
         return gradleReportParser.parseReport(file)
-                   .map(gradleReportTransformer::transform);
+            .map(gradleReportTransformer::transform);
     }
 
     @Test
     void testImplementationsGraph() {
-        final Optional<CodeLocation> codeLocation = buildCodeLocation("/gradle/gradle_implementations_dependencyGraph.txt");
+        Optional<CodeLocation> codeLocation = buildCodeLocation("/gradle/gradle_implementations_dependencyGraph.txt");
         Assertions.assertTrue(codeLocation.isPresent());
         System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(codeLocation.get()));
     }
