@@ -93,7 +93,7 @@ use --detect.tools.exluded=BINARY_SCAN to disable the binary scan step.
 
 ### Changed features
 * The following directories will be excluded from signature scan by default, in addition to node_modules: bin, build, .git, .gradle, out, packages, target. Use
- [detect.excluded.directories.defaults](../properties/configuration/paths/#detect-excluded-directories-defaults-disabled-advanced) to disable these defaults.
+[detect.excluded.directories.defaults](../properties/configuration/paths/#detect-excluded-directories-defaults-disabled-advanced) to disable these defaults.
 * Detect no longer supports the exclusion of individual files during detector search, only directories.
 * Gradle detector no longer uses the gradle inspector. Only the init script is required.
 * The default BDIO format for communicating dependency graphs to Black Duck has been changed from BDIO1 to BDIO2.
@@ -150,7 +150,7 @@ detect.blackduck.signature.scanner.upload.source.mode.
 * Deprecated all Detect signature scanner properties. Future releases will feature an alternative mechanism for providing signature scanner arguments to Detect.
 * Deprecated property detect.resolve.tilde.in.paths. Resolving tildes is a shell feature which Detect will no longer support in a future version.
 * Deprecated property detect.python.python3. Due to the January 2020 sunset of Python 2, this property (which toggles between searching for a 'python' and 'python3' executable) is no longer necessary. See:
- [PEP-394](https://www.python.org/dev/peps/pep-0394/#recommendation)
+[PEP-394](https://www.python.org/dev/peps/pep-0394/#recommendation)
 * Deprecated properties detect.docker.inspector.air.gap.path, detect.gradle.inspector.air.gap.path, and detect.docker.inspector.air.gap.path as part of an effort to simplify Detect.
 * Deprecated properties detect.default.project.version.scheme, detect.default.project.version.text, detect.default.project.version.timeformat as part of the effort to simplify Detect.
 * Deprecated properties blackduck.username and blackduck.password. Authentication should be performed using an API token.
