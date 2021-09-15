@@ -30,17 +30,23 @@ import com.synopsys.integration.detectable.detectables.gradle.inspection.model.G
 public class GradleReportTransformer {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExternalIdFactory externalIdFactory;
+    private final boolean includeUnresolvedConfigurations;
 
-    public GradleReportTransformer(ExternalIdFactory externalIdFactory) {
+    public GradleReportTransformer(ExternalIdFactory externalIdFactory, boolean includeUnresolvedConfigurations) {
         this.externalIdFactory = externalIdFactory;
+        this.includeUnresolvedConfigurations = includeUnresolvedConfigurations;
     }
 
     public CodeLocation transform(GradleReport gradleReport) {
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
         for (GradleConfiguration configuration : gradleReport.getConfigurations()) {
-            logger.trace(String.format("Adding configuration to the graph: %s", configuration.getName()));
-            addConfigurationToGraph(graph, configuration);
+            if (configuration.isUnresolved() && !includeUnresolvedConfigurations) {
+                logger.trace("Skipping adding unresolved configuration to the graph: {}", configuration.getName());
+            } else {
+                logger.trace("Adding configuration to the graph: {}", configuration.getName());
+                addConfigurationToGraph(graph, configuration);
+            }
         }
 
         ExternalId projectId = externalIdFactory.createMavenExternalId(gradleReport.getProjectGroup(), gradleReport.getProjectName(), gradleReport.getProjectVersionName());
@@ -51,11 +57,11 @@ public class GradleReportTransformer {
         }
     }
 
-    private void addConfigurationToGraph(final MutableDependencyGraph graph, final GradleConfiguration configuration) {
-        final DependencyHistory history = new DependencyHistory();
+    private void addConfigurationToGraph(MutableDependencyGraph graph, GradleConfiguration configuration) {
+        DependencyHistory history = new DependencyHistory();
         Optional<Integer> skipUntil = Optional.empty();
 
-        for (final GradleTreeNode currentNode : configuration.getChildren()) {
+        for (GradleTreeNode currentNode : configuration.getChildren()) {
 
             if (skipUntil.isPresent() && currentNode.getLevel() <= skipUntil.get()) {
                 skipUntil = Optional.empty();
@@ -69,9 +75,9 @@ public class GradleReportTransformer {
                 continue;
             }
 
-            final GradleGav gav = currentNode.getGav().get(); // TODO: Why are we not doing an isPresent() check here?
-            final ExternalId externalId = externalIdFactory.createMavenExternalId(gav.getName(), gav.getGroup(), gav.getVersion());
-            final Dependency currentDependency = new Dependency(gav.getGroup(), gav.getVersion(), externalId);
+            GradleGav gav = currentNode.getGav().get(); // TODO: Why are we not doing an isPresent() check here?
+            ExternalId externalId = externalIdFactory.createMavenExternalId(gav.getName(), gav.getGroup(), gav.getVersion());
+            Dependency currentDependency = new Dependency(gav.getGroup(), gav.getVersion(), externalId);
 
             if (history.isEmpty()) {
                 graph.addChildToRoot(currentDependency);

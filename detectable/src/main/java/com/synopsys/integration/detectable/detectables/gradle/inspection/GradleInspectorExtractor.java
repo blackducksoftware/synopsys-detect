@@ -59,30 +59,29 @@ public class GradleInspectorExtractor {
             List<CodeLocation> codeLocations = new ArrayList<>();
             String projectName = null;
             String projectVersion = null;
-            if (reportFiles != null) {
-                reportFiles.stream()
-                    .map(gradleReportParser::parseReport)
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
-                    .map(gradleReportTransformer::transform)
-                    .forEach(codeLocations::add);
 
-                if (rootProjectMetadataFile != null) {
-                    Optional<NameVersion> projectNameVersion = gradleRootMetadataParser.parseRootProjectNameVersion(rootProjectMetadataFile);
-                    if (projectNameVersion.isPresent()) {
-                        projectName = projectNameVersion.get().getName();
-                        projectVersion = projectNameVersion.get().getVersion();
-                    }
-                } else {
-                    logger.warn("Gradle inspector did not create a meta data report so no project version information was found.");
+            reportFiles.stream()
+                .map(gradleReportParser::parseReport)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(gradleReportTransformer::transform)
+                .forEach(codeLocations::add);
+
+            if (rootProjectMetadataFile != null) {
+                Optional<NameVersion> projectNameVersion = gradleRootMetadataParser.parseRootProjectNameVersion(rootProjectMetadataFile);
+                if (projectNameVersion.isPresent()) {
+                    projectName = projectNameVersion.get().getName();
+                    projectVersion = projectNameVersion.get().getVersion();
                 }
+            } else {
+                logger.warn("Gradle inspector did not create a meta data report so no project version information was found.");
             }
 
             return new Extraction.Builder()
-                       .success(codeLocations)
-                       .projectName(projectName)
-                       .projectVersion(projectVersion)
-                       .build();
+                .success(codeLocations)
+                .projectName(projectName)
+                .projectVersion(projectVersion)
+                .build();
         } catch (IOException e) {
             return new Extraction.Builder().exception(e).build();
         }
