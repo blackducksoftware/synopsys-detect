@@ -7,9 +7,7 @@
  */
 package com.synopsys.integration.configuration.property.types.enumfilterable;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
