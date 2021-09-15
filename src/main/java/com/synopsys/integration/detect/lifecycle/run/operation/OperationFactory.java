@@ -606,7 +606,7 @@ public class OperationFactory { //TODO: OperationRunner
     public void createAggregateBdio2File(AggregateCodeLocation aggregateCodeLocation) throws DetectUserFriendlyException {
         auditLog.namedInternal("Create Bdio Code Locations", () -> {
             DetectBdioWriter detectBdioWriter = new DetectBdioWriter(new SimpleBdioFactory(), detectInfo);
-            new CreateAggregateBdio2FileOperation(new Bdio2Factory()).writeAggregateBdio2File(aggregateCodeLocation);
+            new CreateAggregateBdio2FileOperation(new Bdio2Factory(), detectInfo).writeAggregateBdio2File(aggregateCodeLocation);
         });
     }
 
