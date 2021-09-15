@@ -35,6 +35,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.UnitTest;
@@ -43,6 +44,7 @@ import com.synopsys.integration.detectable.detectables.gradle.inspection.model.G
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportParser;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportTransformer;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
+import com.synopsys.integration.detectable.util.graph.GraphAssert;
 import com.synopsys.integration.detectable.util.graph.MavenGraphAssert;
 
 @UnitTest
@@ -73,7 +75,7 @@ public class GradleReportParserFunctionalTest {
 
     @Test
     void complexTest() {
-        Optional<CodeLocation> codeLocation = buildCodeLocation("/gradle/parse-tests/complex_dependencyGraph.txt");
+        Optional<CodeLocation> codeLocation = buildCodeLocation("/gradle/parse-tests/complex_dependencyGraph.txt", true);
         Assertions.assertTrue(codeLocation.isPresent());
         DependencyGraph graph = codeLocation.get().getDependencyGraph();
 
@@ -102,10 +104,10 @@ public class GradleReportParserFunctionalTest {
         graphAssert.hasParentChildRelationship(parent, child);
     }
 
-    private Optional<CodeLocation> buildCodeLocation(String resource) {
+    private Optional<CodeLocation> buildCodeLocation(String resource, boolean includeUnresolvedConfigurations) {
         File file = FunctionalTestFiles.asFile(resource);
         GradleReportParser gradleReportParser = new GradleReportParser();
-        GradleReportTransformer gradleReportTransformer = new GradleReportTransformer(new ExternalIdFactory(), true);
+        GradleReportTransformer gradleReportTransformer = new GradleReportTransformer(new ExternalIdFactory(), includeUnresolvedConfigurations);
 
         return gradleReportParser.parseReport(file)
             .map(gradleReportTransformer::transform);
@@ -113,8 +115,25 @@ public class GradleReportParserFunctionalTest {
 
     @Test
     void testImplementationsGraph() {
-        Optional<CodeLocation> codeLocation = buildCodeLocation("/gradle/gradle_implementations_dependencyGraph.txt");
+        Optional<CodeLocation> codeLocation = buildCodeLocation("/gradle/gradle_implementations_dependencyGraph.txt", true);
         Assertions.assertTrue(codeLocation.isPresent());
+
+        DependencyGraph dependencyGraph = codeLocation.get().getDependencyGraph();
+        GraphAssert graphAssert = new GraphAssert(Forge.MAVEN, dependencyGraph);
+        graphAssert.hasRootSize(7);
+
+        System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(codeLocation.get()));
+    }
+
+    @Test
+    void testUnresolvedConfigurations() {
+        Optional<CodeLocation> codeLocation = buildCodeLocation("/gradle/gradle_implementations_dependencyGraph.txt", false);
+        Assertions.assertTrue(codeLocation.isPresent());
+
+        DependencyGraph dependencyGraph = codeLocation.get().getDependencyGraph();
+        GraphAssert graphAssert = new GraphAssert(Forge.MAVEN, dependencyGraph);
+        graphAssert.hasRootSize(0);
+        
         System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(codeLocation.get()));
     }
 }
