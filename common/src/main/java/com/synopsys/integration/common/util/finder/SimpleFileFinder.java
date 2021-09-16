@@ -8,7 +8,9 @@
 package com.synopsys.integration.common.util.finder;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -24,7 +26,7 @@ public class SimpleFileFinder implements FileFinder {
         if (depth < 0) {
             return foundFiles;
         }
-        if (Files.isSymbolicLink(directoryToSearch.toPath()) && !followSymLinks) {
+        if ((Files.isSymbolicLink(directoryToSearch.toPath()) && !followSymLinks) || !linkPointsToValidDirectory(directoryToSearch)) {
             return foundFiles;
         }
         File[] allFiles = directoryToSearch.listFiles();
@@ -44,6 +46,19 @@ public class SimpleFileFinder implements FileFinder {
         }
 
         return foundFiles;
+    }
+
+    private boolean linkPointsToValidDirectory(File directory) {
+        Path linkTarget;
+        try {
+            linkTarget = directory.toPath().toRealPath();
+        } catch (IOException e) {
+            return false;
+        }
+        if (!Files.isDirectory(linkTarget)) {
+            return false;
+        }
+        return true;
     }
 
     @NotNull
