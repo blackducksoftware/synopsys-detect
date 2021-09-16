@@ -24,6 +24,7 @@ package com.synopsys.integration.common.test.util.finder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.condition.OS.WINDOWS;
 
 import java.io.File;
@@ -62,12 +63,19 @@ public class SimpleFileFinderTest {
         }
     }
 
-    // TODO need a test for symlinks ARE followed
-
     @Test
     @DisabledOnOs(WINDOWS)
     public void testSymlinksNotFollowed() throws IOException {
-        // Create a subDir with a symlink that loops back to its parent
+        testSymlinks(false);
+    }
+
+    @Test
+    public void testSymLinksAreFollowed() throws IOException {
+        testSymlinks(true);
+    }
+
+    public void testSymlinks(boolean followSymLinks) throws IOException {
+        // Create a subDir with a symlink that points to isolated directory
         File initialDirectory = initialDirectoryPath.toFile();
         File subDir = new File(initialDirectory, "sub");
         subDir.mkdirs();
@@ -82,10 +90,15 @@ public class SimpleFileFinderTest {
 
         SimpleFileFinder finder = new SimpleFileFinder();
         List<String> filenamePatterns = Arrays.asList("sub", "linkToInitial", "regularDir", "regularFile");
-        List<File> foundFiles = finder.findFiles(initialDirectoryPath.toFile(), filenamePatterns, false, 10);
+        List<File> foundFiles = finder.findFiles(initialDirectoryPath.toFile(), filenamePatterns, followSymLinks, 10);
 
-        // make sure symlink not followed during dir traversal
-        assertEquals(4, foundFiles.size());
+        if (followSymLinks) {
+            // make sure symlink followed during dir traversal, enters cyclical link and finds duplicate files
+            assertTrue(foundFiles.size() > 4);
+        } else {
+            // make sure symlink not followed during dir traversal
+            assertEquals(4, foundFiles.size());
+        }
     }
 
     @Test

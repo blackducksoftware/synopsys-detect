@@ -24,7 +24,7 @@ public class SimpleFileFinder implements FileFinder {
         if (depth < 0) {
             return foundFiles;
         }
-        if (Files.isSymbolicLink(directoryToSearch.toPath())) {
+        if (Files.isSymbolicLink(directoryToSearch.toPath()) && !followSymLinks) {
             return foundFiles;
         }
         File[] allFiles = directoryToSearch.listFiles();
@@ -37,7 +37,7 @@ public class SimpleFileFinder implements FileFinder {
                 foundFiles.add(file);
             }
             if (!matches || findInsideMatchingDirectories) {
-                if (file.isDirectory() && !Files.isSymbolicLink(file.toPath())) {
+                if (file.isDirectory() && (!Files.isSymbolicLink(file.toPath()) || followSymLinks)) {
                     foundFiles.addAll(findFiles(file, filter, followSymLinks, depth - 1, findInsideMatchingDirectories));
                 }
             }

@@ -72,7 +72,7 @@ public class ExclusionPatternCreatorTest {
     }
 
     @Test
-    public void testDoesCreateRedundantExclusions() throws IOException {
+    public void testDoesNotCreateRedundantExclusions() throws IOException {
         File root = new File("root");
         root.mkdir();
         File foo = new File("root", "foo");
