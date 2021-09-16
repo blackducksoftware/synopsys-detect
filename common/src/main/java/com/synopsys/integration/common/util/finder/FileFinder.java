@@ -20,7 +20,7 @@ public interface FileFinder {
     // Find with predicate
     @Nullable
     default File findFile(File directoryToSearch, Predicate<File> filter) {
-        return findFile(directoryToSearch, filter, false, 0);
+        return findFile(directoryToSearch, filter, true, 0);
     }
 
     @Nullable
@@ -34,7 +34,7 @@ public interface FileFinder {
 
     @NotNull
     default List<File> findFiles(File directoryToSearch, Predicate<File> filter) {
-        return findFiles(directoryToSearch, filter, false, 0);
+        return findFiles(directoryToSearch, filter, true, 0);
     }
 
     @NotNull
@@ -48,7 +48,7 @@ public interface FileFinder {
     // Find with file pame patterns
     @Nullable
     default File findFile(File directoryToSearch, String filenamePattern) {
-        return findFile(directoryToSearch, filenamePattern, false, 0);
+        return findFile(directoryToSearch, filenamePattern, true, 0);
     }
 
     @Nullable
@@ -62,7 +62,7 @@ public interface FileFinder {
 
     @NotNull
     default List<File> findFiles(File directoryToSearch, String filenamePattern) {
-        return findFiles(directoryToSearch, Collections.singletonList(filenamePattern), false, 0);
+        return findFiles(directoryToSearch, Collections.singletonList(filenamePattern), true, 0);
     }
 
     @NotNull
@@ -72,7 +72,7 @@ public interface FileFinder {
 
     @NotNull
     default List<File> findFiles(File directoryToSearch, List<String> filenamePatterns) {
-        return findFiles(directoryToSearch, filenamePatterns, false, 0);
+        return findFiles(directoryToSearch, filenamePatterns, true, 0);
     }
 
     @NotNull
