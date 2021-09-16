@@ -42,18 +42,17 @@ public class NpmCliParser {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public NpmParseResult generateCodeLocation(String npmLsOutput) {
+    public NpmParseResult generateCodeLocation(String npmLsOutput, NpmDependencyTypeFilter npmDependencyTypeFilter) {
         if (StringUtils.isBlank(npmLsOutput)) {
             logger.error("Ran into an issue creating and writing to file");
             return null;
         }
 
         logger.debug("Generating results from npm ls -json");
-
-        return convertNpmJsonFileToCodeLocation(npmLsOutput);
+        return convertNpmJsonFileToCodeLocation(npmLsOutput, npmDependencyTypeFilter);
     }
 
-    public NpmParseResult convertNpmJsonFileToCodeLocation(String npmLsOutput) {
+    public NpmParseResult convertNpmJsonFileToCodeLocation(String npmLsOutput, NpmDependencyTypeFilter npmDependencyTypeFilter) {
         JsonObject npmJson = JsonParser.parseString(npmLsOutput).getAsJsonObject();
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
@@ -68,7 +67,7 @@ public class NpmCliParser {
             projectVersion = projectVersionElement.getAsString();
         }
 
-        populateChildren(graph, null, npmJson.getAsJsonObject(JSON_DEPENDENCIES), true);
+        populateChildren(graph, null, npmJson.getAsJsonObject(JSON_DEPENDENCIES), true, npmDependencyTypeFilter);
 
         ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, projectName, projectVersion);
 
@@ -78,22 +77,23 @@ public class NpmCliParser {
 
     }
 
-    private void populateChildren(MutableDependencyGraph graph, Dependency parentDependency, JsonObject parentNodeChildren, boolean isRootDependency) {
+    private void populateChildren(MutableDependencyGraph graph, Dependency parentDependency, JsonObject parentNodeChildren, boolean isRootDependency, NpmDependencyTypeFilter npmDependencyTypeFilter) {
         if (parentNodeChildren == null) {
             return;
         }
+
         Set<Entry<String, JsonElement>> elements = parentNodeChildren.entrySet();
         elements.stream()
             .filter(Objects::nonNull)
             .filter(elementEntry -> elementEntry.getValue().isJsonObject())
-            .forEach(elementEntry -> processChild(elementEntry, graph, parentDependency, isRootDependency));
+            .filter(elementEntry -> npmDependencyTypeFilter.shouldInclude(elementEntry.getKey(), isRootDependency))
+            .forEach(elementEntry -> processChild(elementEntry, graph, parentDependency, isRootDependency, npmDependencyTypeFilter));
     }
 
-    private void processChild(Entry<String, JsonElement> elementEntry, MutableDependencyGraph graph, Dependency parentDependency, boolean isRootDependency) {
+    private void processChild(Entry<String, JsonElement> elementEntry, MutableDependencyGraph graph, Dependency parentDependency, boolean isRootDependency, NpmDependencyTypeFilter npmDependencyTypeFilter) {
         JsonObject element = elementEntry.getValue().getAsJsonObject();
         String name = elementEntry.getKey();
         String version = Optional.ofNullable(element.getAsJsonPrimitive(JSON_VERSION))
-                             .filter(Objects::nonNull)
                              .filter(JsonPrimitive::isString)
                              .map(JsonPrimitive::getAsString)
                              .orElse(null);
@@ -104,7 +104,7 @@ public class NpmCliParser {
             ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, name, version);
             Dependency child = new Dependency(name, version, externalId);
 
-            populateChildren(graph, child, children, false);
+            populateChildren(graph, child, children, false, npmDependencyTypeFilter);
             if (isRootDependency) {
                 graph.addChildToRoot(child);
             } else {

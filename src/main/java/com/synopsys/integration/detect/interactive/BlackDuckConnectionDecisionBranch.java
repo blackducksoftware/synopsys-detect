@@ -10,6 +10,7 @@ package com.synopsys.integration.detect.interactive;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.types.path.SimplePathResolver;
@@ -28,11 +29,13 @@ public class BlackDuckConnectionDecisionBranch implements DecisionTree {
     private final DetectInfo detectInfo;
     private final List<PropertySource> existingPropertySources;
     private final BlackDuckConnectivityChecker blackDuckConnectivityChecker;
+    private final Gson gson;
 
-    public BlackDuckConnectionDecisionBranch(DetectInfo detectInfo, BlackDuckConnectivityChecker blackDuckConnectivityChecker, List<PropertySource> existingPropertySources) {
+    public BlackDuckConnectionDecisionBranch(DetectInfo detectInfo, BlackDuckConnectivityChecker blackDuckConnectivityChecker, List<PropertySource> existingPropertySources, Gson gson) {
         this.detectInfo = detectInfo;
         this.existingPropertySources = existingPropertySources;
         this.blackDuckConnectivityChecker = blackDuckConnectivityChecker;
+        this.gson = gson;
     }
 
     @Override
@@ -52,7 +55,7 @@ public class BlackDuckConnectionDecisionBranch implements DecisionTree {
                     propertySources.add(0, interactivePropertySource);
 
                     PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);
-                    DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(propertyConfiguration, new SimplePathResolver());
+                    DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(propertyConfiguration, new SimplePathResolver(), gson);
                     BlackDuckConfigFactory blackDuckConfigFactory = new BlackDuckConfigFactory(detectInfo, detectConfigurationFactory.createBlackDuckConnectionDetails());
                     BlackDuckServerConfig blackDuckServerConfig = blackDuckConfigFactory.createServerConfig(new SilentIntLogger());
 

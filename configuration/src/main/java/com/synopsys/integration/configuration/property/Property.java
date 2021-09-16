@@ -70,8 +70,8 @@ public abstract class Property {
         return this;
     }
 
-    public Property setDeprecated(String description, ProductMajorVersion failInVersion, ProductMajorVersion removeInVersion) {
-        this.propertyDeprecationInfo = new PropertyDeprecationInfo(description, failInVersion, removeInVersion);
+    public Property setDeprecated(String description, ProductMajorVersion removeInVersion) {
+        this.propertyDeprecationInfo = new PropertyDeprecationInfo(description, removeInVersion);
         return this;
     }
 

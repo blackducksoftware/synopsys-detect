@@ -11,11 +11,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
@@ -28,15 +28,17 @@ public class NpmPackageJsonParseDetectable extends Detectable {
     private final FileFinder fileFinder;
     private final PackageJsonExtractor packageJsonExtractor;
     private final boolean includeDevDependencies;
+    private final boolean includePeerDependencies;
 
     private File packageJsonFile;
 
-    public NpmPackageJsonParseDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final PackageJsonExtractor packageJsonExtractor,
-        final NpmPackageJsonParseDetectableOptions npmPackageJsonParseDetectableOptions) {
+    public NpmPackageJsonParseDetectable(DetectableEnvironment environment, FileFinder fileFinder, PackageJsonExtractor packageJsonExtractor,
+        NpmPackageJsonParseDetectableOptions npmPackageJsonParseDetectableOptions) {
         super(environment);
         this.fileFinder = fileFinder;
         this.packageJsonExtractor = packageJsonExtractor;
         this.includeDevDependencies = npmPackageJsonParseDetectableOptions.shouldIncludeDevDependencies();
+        this.includePeerDependencies = npmPackageJsonParseDetectableOptions.shouldIncludePeerDependencies();
     }
 
     @Override
@@ -52,10 +54,10 @@ public class NpmPackageJsonParseDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        try (final InputStream packageJsonInputStream = new FileInputStream(packageJsonFile)) {
-            return packageJsonExtractor.extract(packageJsonInputStream, includeDevDependencies);
-        } catch (final Exception e) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
+        try (InputStream packageJsonInputStream = new FileInputStream(packageJsonFile)) {
+            return packageJsonExtractor.extract(packageJsonInputStream, includeDevDependencies, includePeerDependencies);
+        } catch (Exception e) {
             return new Extraction.Builder().exception(e).failure(String.format("Failed to parse %s", PACKAGE_JSON)).build();
         }
     }

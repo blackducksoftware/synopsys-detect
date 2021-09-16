@@ -7,9 +7,11 @@
  */
 package com.synopsys.integration.configuration.source;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiConsumer;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.context.properties.source.ConfigurationProperty;
@@ -35,9 +37,13 @@ public class SpringConfigurationPropertySource implements PropertySource {
         this.configurablePropertyResolver = configurablePropertyResolver;
     }
 
-    // TODO - this should return an Optional
-    public static List<SpringConfigurationPropertySource> fromConfigurableEnvironment(ConfigurableEnvironment configurableEnvironment) {
-        return fromConfigurableEnvironment(configurableEnvironment, true);
+    public static List<SpringConfigurationPropertySource> fromConfigurableEnvironmentSafely(ConfigurableEnvironment configurableEnvironment, BiConsumer<String, Exception> unknownConsumer) {
+        try {
+            return new ArrayList<>(fromConfigurableEnvironment(configurableEnvironment, false));
+        } catch (RuntimeException e) {
+            unknownConsumer.accept("An unknown property source was found, will ignore unknown property source and proceed.", e);
+            return new ArrayList<>(fromConfigurableEnvironment(configurableEnvironment, true));
+        }
     }
 
     // TODO - this should return an Optional

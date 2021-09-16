@@ -26,23 +26,15 @@ public class OperationSystemTest {
         statusEventPublisher = new StatusEventPublisher(eventSystem);
         detectIssues = new ArrayList<>();
         detectOperations = new ArrayList<>();
-        eventSystem.registerListener(Event.DetectOperation, this::addOperation);
-        eventSystem.registerListener(Event.Issue, this::addIssue);
-    }
-
-    private void addIssue(DetectIssue issue) {
-        detectIssues.add(issue);
-    }
-
-    private void addOperation(Operation operation) {
-        detectOperations.add(operation);
+        eventSystem.registerListener(Event.DetectOperationsComplete, detectOperations::addAll);
+        eventSystem.registerListener(Event.Issue, detectIssues::add);
     }
 
     @Test
     public void testStartOperation() {
         OperationSystem operationSystem = new OperationSystem(statusEventPublisher);
         String operationName = "myOperation";
-        operationSystem.beginOperation(operationName);
+        Operation operation = operationSystem.startOperation(operationName, OperationType.PUBLIC);
         operationSystem.publishOperations();
         assertTrue(detectIssues.isEmpty());
         assertFalse(detectOperations.isEmpty());
@@ -57,8 +49,9 @@ public class OperationSystemTest {
     public void testStartReplaceOperation() {
         OperationSystem operationSystem = new OperationSystem(statusEventPublisher);
         String operationName = "myOperation";
-        operationSystem.completeWithFailure(operationName);
-        operationSystem.beginOperation(operationName);
+        Operation operation = operationSystem.startOperation(operationName, OperationType.PUBLIC);
+        operation.fail();
+        Operation operation2 = operationSystem.startOperation(operationName, OperationType.PUBLIC);
         operationSystem.publishOperations();
         Operation completedOperation = detectOperations.get(0);
         Operation startedOperation = detectOperations.get(1);
@@ -73,8 +66,8 @@ public class OperationSystemTest {
     public void testBeginAndSuccessOperation() {
         OperationSystem operationSystem = new OperationSystem(statusEventPublisher);
         String operationName = "myOperation";
-        operationSystem.beginOperation(operationName);
-        operationSystem.completeWithSuccess(operationName);
+        Operation operation = operationSystem.startOperation(operationName, OperationType.PUBLIC);
+        operation.success();
         operationSystem.publishOperations();
         Operation publishedOperation = detectOperations.get(0);
         assertOperationWithSuccess(operationName, publishedOperation);
@@ -84,8 +77,8 @@ public class OperationSystemTest {
     public void testBeginAndFailOperation() {
         OperationSystem operationSystem = new OperationSystem(statusEventPublisher);
         String operationName = "myOperation";
-        operationSystem.beginOperation(operationName);
-        operationSystem.completeWithFailure(operationName);
+        Operation operation = operationSystem.startOperation(operationName, OperationType.PUBLIC);
+        operation.fail();
         operationSystem.publishOperations();
         Operation publishedOperation = detectOperations.get(0);
         assertOperationWithFailure(operationName, publishedOperation);
@@ -95,8 +88,8 @@ public class OperationSystemTest {
     public void testBeginAndErrorOperation() {
         OperationSystem operationSystem = new OperationSystem(statusEventPublisher);
         String operationName = "myOperation";
-        operationSystem.beginOperation(operationName);
-        operationSystem.completeWithError(operationName, "Unit test error message");
+        Operation operation = operationSystem.startOperation(operationName, OperationType.PUBLIC);
+        operation.error("Error");
         operationSystem.publishOperations();
         Operation publishedOperation = detectOperations.get(0);
         assertOperationWithError(operationName, publishedOperation);
@@ -106,7 +99,8 @@ public class OperationSystemTest {
     public void testSuccessOperation() {
         OperationSystem operationSystem = new OperationSystem(statusEventPublisher);
         String operationName = "myOperation";
-        operationSystem.completeWithSuccess(operationName);
+        Operation operation = operationSystem.startOperation(operationName, OperationType.PUBLIC);
+        operation.success();
         operationSystem.publishOperations();
         Operation publishedOperation = detectOperations.get(0);
         assertOperationWithSuccess(operationName, publishedOperation);
@@ -116,7 +110,8 @@ public class OperationSystemTest {
     public void testFailOperation() {
         OperationSystem operationSystem = new OperationSystem(statusEventPublisher);
         String operationName = "myOperation";
-        operationSystem.completeWithFailure(operationName);
+        Operation operation = operationSystem.startOperation(operationName, OperationType.PUBLIC);
+        operation.fail();
         operationSystem.publishOperations();
         Operation publishedOperation = detectOperations.get(0);
         assertOperationWithFailure(operationName, publishedOperation);
@@ -126,7 +121,8 @@ public class OperationSystemTest {
     public void testErrorOperation() {
         OperationSystem operationSystem = new OperationSystem(statusEventPublisher);
         String operationName = "myOperation";
-        operationSystem.completeWithError(operationName, "Unit test error message");
+        Operation operation = operationSystem.startOperation(operationName, OperationType.PUBLIC);
+        operation.error("Unit test failure.");
         operationSystem.publishOperations();
         Operation publishedOperation = detectOperations.get(0);
         assertOperationWithError(operationName, publishedOperation);

@@ -1,0 +1,30 @@
+[
+  {
+    "specVersion": "1.1.0",
+    "spdx:name": "dependencies-mess-demo_2.12/0.1/dependencies-mess-demo/dependencies-mess-demo_2.12/0.1 sbt/bom",
+    "@type": "BillOfMaterials",
+    "relationship": []
+  },
+  {
+    "name": "dependencies-mess-demo_2.12",
+    "revision": "0.1",
+    "@id": "http:maven/dependencies-mess-demo/dependencies-mess-demo_2.12/0.1",
+    "@type": "Project",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "dependencies-mess-demo:dependencies-mess-demo_2.12:0.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "dependencies-mess-demo_2.12",
+          "0.1"
+        ],
+        "prefix": "dependencies-mess-demo"
+      }
+    },
+    "relationship": []
+  }
+]

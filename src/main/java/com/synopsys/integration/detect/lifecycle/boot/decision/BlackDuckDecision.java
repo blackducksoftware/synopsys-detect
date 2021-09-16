@@ -7,25 +7,29 @@
  */
 package com.synopsys.integration.detect.lifecycle.boot.decision;
 
+import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
+
 public class BlackDuckDecision {
     private boolean shouldRun;
     private boolean isOffline;
+    private BlackduckScanMode scanMode;
 
-    public BlackDuckDecision(final boolean shouldRun, final boolean isOffline) {
+    public BlackDuckDecision(final boolean shouldRun, final boolean isOffline, final BlackduckScanMode scanMode) {
         this.shouldRun = shouldRun;
         this.isOffline = isOffline;
+        this.scanMode = scanMode;
     }
 
     public static BlackDuckDecision skip() {
-        return new BlackDuckDecision(false, true);
+        return new BlackDuckDecision(false, true, null);
     }
 
     public static BlackDuckDecision runOffline() {
-        return new BlackDuckDecision(true, true);
+        return new BlackDuckDecision(true, true, null);
     }
 
-    public static BlackDuckDecision runOnline() {
-        return new BlackDuckDecision(true, false);
+    public static BlackDuckDecision runOnline(BlackduckScanMode scanMode) {
+        return new BlackDuckDecision(true, false, scanMode);
     }
 
     public boolean shouldRun() {
@@ -34,5 +38,9 @@ public class BlackDuckDecision {
 
     public boolean isOffline() {
         return isOffline;
+    }
+
+    public BlackduckScanMode scanMode() {
+        return scanMode;
     }
 }

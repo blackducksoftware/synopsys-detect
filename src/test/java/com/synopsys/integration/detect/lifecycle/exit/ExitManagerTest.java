@@ -23,11 +23,10 @@ public class ExitManagerTest {
         ExitCodeManager exitCodeManager = new ExitCodeManager(eventSystem, exitCodeUtility);
         ExitManager exitManager = new ExitManager(eventSystem, exitCodeManager, statusManager);
 
-        ExitOptions exitOptions = new ExitOptions(startTime, true, false, true);
+        ExitOptions exitOptions = new ExitOptions(startTime, false, true);
         ExitResult exitResult = exitManager.exit(exitOptions);
 
         assertEquals(startTime, exitOptions.getStartTime());
-        assertTrue(exitOptions.shouldLogResults());
         assertFalse(exitResult.shouldForceSuccess());
         assertTrue(exitResult.shouldPerformExit());
         assertEquals(ExitCodeType.SUCCESS, exitResult.getExitCodeType());
@@ -43,11 +42,10 @@ public class ExitManagerTest {
         exitCodeManager.addExitCodeRequest(new ExitCodeRequest(ExitCodeType.FAILURE_CONFIGURATION, "JUnit failure code."));
         ExitManager exitManager = new ExitManager(eventSystem, exitCodeManager, statusManager);
 
-        ExitOptions exitOptions = new ExitOptions(startTime, true, true, true);
+        ExitOptions exitOptions = new ExitOptions(startTime, true, true);
         ExitResult exitResult = exitManager.exit(exitOptions);
 
         assertEquals(startTime, exitOptions.getStartTime());
-        assertTrue(exitOptions.shouldLogResults());
         assertTrue(exitResult.shouldForceSuccess());
         assertTrue(exitResult.shouldPerformExit());
         assertEquals(ExitCodeType.FAILURE_CONFIGURATION, exitResult.getExitCodeType());
@@ -63,11 +61,10 @@ public class ExitManagerTest {
         exitCodeManager.addExitCodeRequest(new ExitCodeRequest(ExitCodeType.FAILURE_CONFIGURATION, "JUnit failure code."));
         ExitManager exitManager = new ExitManager(eventSystem, exitCodeManager, statusManager);
 
-        ExitOptions exitOptions = new ExitOptions(startTime, true, false, false);
+        ExitOptions exitOptions = new ExitOptions(startTime, false, false);
         ExitResult exitResult = exitManager.exit(exitOptions);
 
         assertEquals(startTime, exitOptions.getStartTime());
-        assertTrue(exitOptions.shouldLogResults());
         assertFalse(exitResult.shouldForceSuccess());
         assertFalse(exitResult.shouldPerformExit());
         assertEquals(ExitCodeType.FAILURE_CONFIGURATION, exitResult.getExitCodeType());

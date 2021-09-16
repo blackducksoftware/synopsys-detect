@@ -28,6 +28,10 @@ public class RapidScanResultAggregator {
                                                                .sorted(Comparator.comparing(RapidScanComponentDetail::getComponentIdentifier))
                                                                .collect(Collectors.toList());
         Map<RapidScanDetailGroup, RapidScanComponentGroupDetail> aggregatedDetails = new HashMap<>();
+        aggregatedDetails.put(RapidScanDetailGroup.POLICY, new RapidScanComponentGroupDetail(RapidScanDetailGroup.POLICY));
+        aggregatedDetails.put(RapidScanDetailGroup.SECURITY, new RapidScanComponentGroupDetail(RapidScanDetailGroup.SECURITY));
+        aggregatedDetails.put(RapidScanDetailGroup.LICENSE, new RapidScanComponentGroupDetail(RapidScanDetailGroup.LICENSE));
+
         RapidScanResultSummary.Builder summaryBuilder = new RapidScanResultSummary.Builder();
         for (RapidScanComponentDetail detail : sortedByComponent) {
             summaryBuilder.addDetailData(detail);
@@ -35,9 +39,9 @@ public class RapidScanResultAggregator {
             RapidScanDetailGroup licenseGroupName = detail.getLicenseDetails().getGroup();
             RapidScanDetailGroup componentGroupName = detail.getComponentDetails().getGroup();
 
-            RapidScanComponentGroupDetail aggregatedSecurityDetail = aggregatedDetails.computeIfAbsent(detail.getSecurityDetails().getGroup(), ignoredKey -> new RapidScanComponentGroupDetail(securityGroupName));
-            RapidScanComponentGroupDetail aggregatedLicenseDetail = aggregatedDetails.computeIfAbsent(detail.getLicenseDetails().getGroup(), ignoredKey -> new RapidScanComponentGroupDetail(licenseGroupName));
-            RapidScanComponentGroupDetail aggregatedComponentDetail = aggregatedDetails.computeIfAbsent(detail.getComponentDetails().getGroup(), ignoredKey -> new RapidScanComponentGroupDetail(componentGroupName));
+            RapidScanComponentGroupDetail aggregatedSecurityDetail = aggregatedDetails.get(detail.getSecurityDetails().getGroup());
+            RapidScanComponentGroupDetail aggregatedLicenseDetail = aggregatedDetails.get(detail.getLicenseDetails().getGroup());
+            RapidScanComponentGroupDetail aggregatedComponentDetail = aggregatedDetails.get(detail.getComponentDetails().getGroup());
 
             aggregatedComponentDetail.addErrors(detail.getComponentDetails().getErrorMessages());
             aggregatedComponentDetail.addWarnings(detail.getComponentDetails().getWarningMessages());

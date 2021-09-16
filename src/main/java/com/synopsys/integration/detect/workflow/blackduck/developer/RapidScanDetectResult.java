@@ -44,27 +44,35 @@ public class RapidScanDetectResult implements DetectResult {
         String policyGroupName = RapidScanDetailGroup.POLICY.getDisplayName();
         String securityGroupName = RapidScanDetailGroup.SECURITY.getDisplayName();
         String licenseGroupName = RapidScanDetailGroup.LICENSE.getDisplayName();
-        String errorCountFormat = "\t%s Errors = %d";
-        String warningCountFormat = "\t%s Warnings = %d";
+        String countFormat = "\t\t* %s: %d";
         String indentedMessageFormat = "\t\t%s";
 
         List<String> resultMessages = new LinkedList<>();
         resultMessages.add("");
-        resultMessages.add(String.format(errorCountFormat, policyGroupName, summary.getPolicyErrorCount()));
-        resultMessages.add(String.format(warningCountFormat, policyGroupName, summary.getPolicyWarningCount()));
-        resultMessages.add(String.format(errorCountFormat, securityGroupName, summary.getSecurityErrorCount()));
-        resultMessages.add(String.format(warningCountFormat, securityGroupName, summary.getSecurityWarningCount()));
-        resultMessages.add(String.format(errorCountFormat, licenseGroupName, summary.getLicenseErrorCount()));
-        resultMessages.add(String.format(warningCountFormat, licenseGroupName, summary.getLicenseWarningCount()));
+        resultMessages.add("\tCritical and blocking policy violations for");
+        resultMessages.add(String.format(countFormat, policyGroupName, summary.getPolicyErrorCount()));
+        resultMessages.add(String.format(countFormat, securityGroupName, summary.getSecurityErrorCount()));
+        resultMessages.add(String.format(countFormat, licenseGroupName, summary.getLicenseErrorCount()));
+        resultMessages.add("");
+        resultMessages.add("\tOther policy violations");
+        resultMessages.add(String.format(countFormat, policyGroupName, summary.getPolicyWarningCount()));
+        resultMessages.add(String.format(countFormat, securityGroupName, summary.getSecurityWarningCount()));
+        resultMessages.add(String.format(countFormat, licenseGroupName, summary.getLicenseWarningCount()));
         resultMessages.add("");
         resultMessages.add("\tPolicies Violated:");
-        summary.getPolicyViolationNames().forEach(policy -> resultMessages.add(String.format(indentedMessageFormat, policy)));
+        summary.getPolicyViolationNames().stream()
+            .sorted()
+            .forEach(policy -> resultMessages.add(String.format(indentedMessageFormat, policy)));
         resultMessages.add("");
         resultMessages.add("\tComponents with Policy Violations:");
-        summary.getComponentsViolatingPolicy().forEach(component -> resultMessages.add(String.format(indentedMessageFormat, component)));
+        summary.getComponentsViolatingPolicy().stream()
+            .sorted()
+            .forEach(component -> resultMessages.add(String.format(indentedMessageFormat, component)));
         resultMessages.add("");
         resultMessages.add("\tComponents with Policy Violation Warnings:");
-        summary.getComponentsViolatingPolicyWarnings().forEach(component -> resultMessages.add(String.format(indentedMessageFormat, component)));
+        summary.getComponentsViolatingPolicyWarnings().stream()
+            .sorted()
+            .forEach(component -> resultMessages.add(String.format(indentedMessageFormat, component)));
         return resultMessages;
     }
 }

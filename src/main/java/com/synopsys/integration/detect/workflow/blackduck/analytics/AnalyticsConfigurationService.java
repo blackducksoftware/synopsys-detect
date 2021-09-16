@@ -11,7 +11,11 @@ import java.io.IOException;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.api.core.BlackDuckPath;
+import com.synopsys.integration.blackduck.api.core.response.UrlSingleResponse;
+import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
+import com.synopsys.integration.blackduck.http.BlackDuckRequestBuilder;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
+import com.synopsys.integration.blackduck.service.request.BlackDuckSingleRequest;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.HttpMethod;
 import com.synopsys.integration.rest.HttpUrl;
@@ -19,26 +23,18 @@ import com.synopsys.integration.rest.request.Request;
 import com.synopsys.integration.rest.response.Response;
 
 public class AnalyticsConfigurationService {
-    private static final BlackDuckPath INTEGRATION_SETTINGS_PATH = new BlackDuckPath("/api/internal/integration-settings");
+    private static final BlackDuckPath<AnalyticsSetting> INTEGRATION_SETTINGS_PATH = new BlackDuckPath<>("/api/internal/integration-settings/analytics", AnalyticsSetting.class, false);
     private static final String MIME_TYPE = "application/vnd.blackducksoftware.integration-setting-1+json";
 
-    private final Gson gson;
+    public AnalyticsSetting fetchAnalyticsSetting(ApiDiscovery apiDiscovery, BlackDuckApiClient blackDuckApiClient) throws IntegrationException, IOException {
+        UrlSingleResponse<AnalyticsSetting> urlResponse = apiDiscovery.metaSingleResponse(INTEGRATION_SETTINGS_PATH);
 
-    public AnalyticsConfigurationService(Gson gson) {
-        this.gson = gson;
+        BlackDuckSingleRequest<AnalyticsSetting> spec = new BlackDuckRequestBuilder()
+            .commonGet()
+            .acceptMimeType(MIME_TYPE)
+            .buildBlackDuckRequest(urlResponse);
+
+        return blackDuckApiClient.getResponse(spec);
     }
 
-    public AnalyticsSetting fetchAnalyticsSetting(BlackDuckApiClient blackDuckService) throws IntegrationException, IOException {
-        HttpUrl url = blackDuckService.getUrl(INTEGRATION_SETTINGS_PATH).appendRelativeUrl("/analytics");
-
-        Request request = new Request.Builder()
-                              .url(url)
-                              .method(HttpMethod.GET)
-                              .acceptMimeType(MIME_TYPE)
-                              .build();
-        try (Response response = blackDuckService.execute(request)) {
-            response.throwExceptionForError();
-            return gson.fromJson(response.getContentString(), AnalyticsSetting.class);
-        }
-    }
 }

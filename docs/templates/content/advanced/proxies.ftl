@@ -49,7 +49,7 @@ For example:
     ${r"set BLACKDUCK_PROXY_PORT"}=$ProxyPort
     ${r"set BLACKDUCK_PROXY_PASSWORD"}=$ProxyUsername
     ${r"set BLACKDUCK_PROXY_USERNAME"}=$ProxyPassword
-    powershell "Import-Module FULL_PATH_TO_DOWNLOADED_SCRIPT/detect.ps1; detect"
+    powershell "Import-Module FULL_PATH_TO_DOWNLOADED_SCRIPT/detect7.ps1; detect"
 
 For additional information on these properties, including alternate key formats, see the [Shell script configuration reference](../advanced/script-configuration/).
 

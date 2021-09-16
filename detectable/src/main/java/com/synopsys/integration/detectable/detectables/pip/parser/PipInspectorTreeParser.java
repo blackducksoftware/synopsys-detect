@@ -47,35 +47,24 @@ public class PipInspectorTreeParser {
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
         DependencyHistory history = new DependencyHistory();
         Dependency project = null;
-
+        int unResolvedPackageCount = 0;
         for (String line : pipInspectorOutputAsList) {
             String trimmedLine = StringUtils.trimToEmpty(line);
             if (StringUtils.isEmpty(trimmedLine) || !trimmedLine.contains(SEPARATOR) || trimmedLine.startsWith(UNKNOWN_REQUIREMENTS_PREFIX) || trimmedLine.startsWith(UNPARSEABLE_REQUIREMENTS_PREFIX) || trimmedLine.startsWith(
                 UNKNOWN_PACKAGE_PREFIX)) {
-                parseErrorsFromLine(trimmedLine);
+                boolean wasUnresolved = parseErrorsFromLine(trimmedLine);
+                if (wasUnresolved) {
+                    unResolvedPackageCount++;
+                }
                 continue;
             }
-
             Dependency currentDependency = parseDependencyFromLine(trimmedLine, sourcePath);
-            int lineLevel = getLineLevel(line);
-            try {
-                history.clearDependenciesDeeperThan(lineLevel);
-            } catch (IllegalStateException e) {
-                logger.warn(String.format("Problem parsing line '%s': %s", line, e.getMessage()));
-            }
-
-            if (project == null) {
-                project = currentDependency;
-            } else if (project.equals(history.getLastDependency())) {
-                graph.addChildToRoot(currentDependency);
-            } else if (history.isEmpty()) {
-                graph.addChildToRoot(currentDependency);
-            } else {
-                graph.addChildWithParents(currentDependency, history.getLastDependency());
-            }
-
+            adjustForIndentLevel(history, line);
+            project = addDependencyToGraph(graph, history, project, currentDependency);
             history.add(currentDependency);
         }
+
+        adviseIfUnresolvedPackages(unResolvedPackageCount);
 
         if (project != null) {
             CodeLocation codeLocation = new CodeLocation(graph, project.getExternalId());
@@ -85,7 +74,37 @@ public class PipInspectorTreeParser {
         return Optional.ofNullable(parseResult);
     }
 
-    private void parseErrorsFromLine(String trimmedLine) {
+    private void adjustForIndentLevel(DependencyHistory history, String line) {
+        int lineLevel = getLineLevel(line);
+        try {
+            history.clearDependenciesDeeperThan(lineLevel);
+        } catch (IllegalStateException e) {
+            logger.warn(String.format("Problem parsing line '%s': %s", line, e.getMessage()));
+        }
+    }
+
+    private Dependency addDependencyToGraph(MutableDependencyGraph graph, DependencyHistory history, Dependency project, Dependency currentDependency) {
+        if (project == null) {
+            project = currentDependency;
+        } else if (project.equals(history.getLastDependency())) {
+            graph.addChildToRoot(currentDependency);
+        } else if (history.isEmpty()) {
+            graph.addChildToRoot(currentDependency);
+        } else {
+            graph.addChildWithParents(currentDependency, history.getLastDependency());
+        }
+        return project;
+    }
+
+    private void adviseIfUnresolvedPackages(int unResolvedPackageCount) {
+        if (unResolvedPackageCount > 0) {
+            logger.error("The Pip inspector was unable to resolve {} packages. Please check to be sure all packages have been installed with 'pip install'. Refer to 'Python support' in the Detect documentation for important information regarding Python projects.",
+                    unResolvedPackageCount);
+        }
+    }
+
+    private boolean parseErrorsFromLine(String trimmedLine) {
+        boolean unResolvedPackage = false;
         if (trimmedLine.startsWith(UNKNOWN_REQUIREMENTS_PREFIX)) {
             logger.error(String.format("Pip inspector could not find requirements file @ %s", trimmedLine.substring(UNKNOWN_REQUIREMENTS_PREFIX.length())));
         }
@@ -96,7 +115,9 @@ public class PipInspectorTreeParser {
 
         if (trimmedLine.startsWith(UNKNOWN_PACKAGE_PREFIX)) {
             logger.error(String.format("Pip inspector could not resolve the package: %s", trimmedLine.substring(UNKNOWN_PACKAGE_PREFIX.length())));
+            unResolvedPackage = true;
         }
+        return unResolvedPackage;
     }
 
     private Dependency parseDependencyFromLine(String line, String sourcePath) {

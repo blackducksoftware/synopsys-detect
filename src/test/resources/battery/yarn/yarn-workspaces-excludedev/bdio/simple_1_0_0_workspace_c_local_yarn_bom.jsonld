@@ -1,0 +1,29 @@
+[
+  {
+    "specVersion": "1.1.0",
+    "spdx:name": "simple/1.0.0/workspace-c/local yarn/bom",
+    "@type": "BillOfMaterials",
+    "relationship": []
+  },
+  {
+    "name": "simple",
+    "revision": "1.0.0",
+    "@id": "http:npmjs/workspace-c/local",
+    "@type": "Project",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "workspace-c/local",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "workspace-c",
+          "local"
+        ]
+      }
+    },
+    "relationship": []
+  }
+]

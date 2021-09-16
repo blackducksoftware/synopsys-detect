@@ -1,0 +1,258 @@
+[
+  {
+    "specVersion": "1.1.0",
+    "spdx:name": "@yarnpkg/monorepo/Default Detect Version/packages/plugin-npm/local yarn/bom",
+    "@type": "BillOfMaterials",
+    "relationship": []
+  },
+  {
+    "name": "@yarnpkg/monorepo",
+    "revision": "Default Detect Version",
+    "@id": "http:npmjs/packages%2Fplugin-npm/local",
+    "@type": "Project",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "packages/plugin-npm/local",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "packages/plugin-npm",
+          "local"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/tslib/1.13.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/ssri/6.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/%40types%2Fssri/6.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/enquirer/2.3.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/%40types%2Fsemver/7.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/semver/7.3.2",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "tslib",
+    "revision": "1.13.0",
+    "@id": "http:npmjs/tslib/1.13.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "tslib/1.13.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "tslib",
+          "1.13.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "ssri",
+    "revision": "6.0.1",
+    "@id": "http:npmjs/ssri/6.0.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "ssri/6.0.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "ssri",
+          "6.0.1"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/figgy-pudding/3.5.1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "figgy-pudding",
+    "revision": "3.5.1",
+    "@id": "http:npmjs/figgy-pudding/3.5.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "figgy-pudding/3.5.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "figgy-pudding",
+          "3.5.1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "@types/ssri",
+    "revision": "6.0.1",
+    "@id": "http:npmjs/%40types%2Fssri/6.0.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "@types/ssri/6.0.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "@types/ssri",
+          "6.0.1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "enquirer",
+    "revision": "2.3.6",
+    "@id": "http:npmjs/enquirer/2.3.6",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "enquirer/2.3.6",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "enquirer",
+          "2.3.6"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/ansi-colors/4.1.1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "ansi-colors",
+    "revision": "4.1.1",
+    "@id": "http:npmjs/ansi-colors/4.1.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "ansi-colors/4.1.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "ansi-colors",
+          "4.1.1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "@types/semver",
+    "revision": "7.1.0",
+    "@id": "http:npmjs/%40types%2Fsemver/7.1.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "@types/semver/7.1.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "@types/semver",
+          "7.1.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/%40types%2Fnode/10.12.18",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "@types/node",
+    "revision": "10.12.18",
+    "@id": "http:npmjs/%40types%2Fnode/10.12.18",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "@types/node/10.12.18",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "@types/node",
+          "10.12.18"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "semver",
+    "revision": "7.3.2",
+    "@id": "http:npmjs/semver/7.3.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "semver/7.3.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "semver",
+          "7.3.2"
+        ]
+      }
+    },
+    "relationship": []
+  }
+]

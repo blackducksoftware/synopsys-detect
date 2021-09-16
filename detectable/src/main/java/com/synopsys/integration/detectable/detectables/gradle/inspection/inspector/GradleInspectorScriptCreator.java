@@ -38,15 +38,15 @@ public class GradleInspectorScriptCreator {
         this.configuration = configuration;
     }
 
-    public File createOfflineGradleInspector(File templateFile, GradleInspectorScriptOptions scriptOptions, String airGapLibraryPaths) throws DetectableException {
-        return createGradleInspector(templateFile, scriptOptions, airGapLibraryPaths);
+    public File createOfflineGradleInspector(File targetFile, GradleInspectorScriptOptions scriptOptions, String airGapLibraryPaths) throws DetectableException {
+        return createGradleInspector(targetFile, scriptOptions, airGapLibraryPaths);
     }
 
-    public File createOnlineGradleInspector(File templateFile, GradleInspectorScriptOptions scriptOptions) throws DetectableException {
-        return createGradleInspector(templateFile, scriptOptions, null);
+    public File createOnlineGradleInspector(File targetFile, GradleInspectorScriptOptions scriptOptions) throws DetectableException {
+        return createGradleInspector(targetFile, scriptOptions, null);
     }
 
-    private File createGradleInspector(File templateFile, GradleInspectorScriptOptions scriptOptions, String airGapLibraryPaths) throws DetectableException {
+    private File createGradleInspector(File targetFile, GradleInspectorScriptOptions scriptOptions, String airGapLibraryPaths) throws DetectableException {
         logger.debug("Generating the gradle script file.");
         Map<String, String> gradleScriptData = new HashMap<>();
 
@@ -58,12 +58,12 @@ public class GradleInspectorScriptCreator {
         gradleScriptData.put("customRepositoryUrl", scriptOptions.getGradleInspectorRepositoryUrl());
 
         try {
-            populateGradleScriptWithData(templateFile, gradleScriptData);
+            populateGradleScriptWithData(targetFile, gradleScriptData);
         } catch (IOException | TemplateException e) {
-            throw new DetectableException("Failed to generate the Gradle Inspector script from the given template file: " + templateFile.toString(), e);
+            throw new DetectableException("Failed to generate the Gradle Inspector script from the given template file: " + targetFile.toString(), e);
         }
-        logger.trace(String.format("Successfully created Gradle Inspector: %s", templateFile.toString()));
-        return templateFile;
+        logger.trace(String.format("Successfully created Gradle Inspector: %s", targetFile.toString()));
+        return targetFile;
     }
 
     private void populateGradleScriptWithData(File targetFile, Map<String, String> gradleScriptData) throws IOException, TemplateException {

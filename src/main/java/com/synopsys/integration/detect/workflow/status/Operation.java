@@ -12,7 +12,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class Operation {
     public static String formatTimestamp(@Nullable Instant executionTime) {
@@ -28,37 +28,65 @@ public class Operation {
     private String name;
     private StatusType statusType;
     private String[] errorMessages;
+    private OperationType operationType;
+    @Nullable
+    private String phoneHomeKey;
 
     public static Operation of(String name) {
-        return new Operation(name);
+        return of(name, null);
     }
 
-    protected Operation(String name) {
-        this(Instant.now(), null, name, StatusType.SUCCESS);
+    public static Operation of(String name, @Nullable String phoneHomeKey) {
+        return new Operation(name, OperationType.PUBLIC, phoneHomeKey);
     }
 
-    protected Operation(Instant startTime, @Nullable Instant endTime, String name, StatusType statusType, String... errorMessages) {
+    public static Operation silentOf(String name) {
+        return silentOf(name, null);
+    }
+
+    public static Operation silentOf(String name, @Nullable String phoneHomeKey) {
+        return new Operation(name, OperationType.INTERNAL, phoneHomeKey);
+    }
+
+    protected Operation(String name, OperationType type) {
+        this(Instant.now(), type, null, name, StatusType.SUCCESS, null);
+    }
+
+    protected Operation(String name, OperationType type, @Nullable String phoneHomeKey) {
+        this(Instant.now(), type, null, name, StatusType.SUCCESS, phoneHomeKey);
+    }
+
+    protected Operation(Instant startTime, OperationType operationType, @Nullable Instant endTime, String name, StatusType statusType, @Nullable String phoneHomeKey, String... errorMessages) {
         this.startTime = startTime;
+        this.operationType = operationType;
         this.endTime = endTime;
         this.name = name;
         this.statusType = statusType;
+        this.phoneHomeKey = phoneHomeKey;
         this.errorMessages = errorMessages;
+    }
+
+    public void finish() {
+        if (getEndTime().isPresent())
+            return;
+
+        endTime = Instant.now();
     }
 
     public void success() {
         this.statusType = StatusType.SUCCESS;
-        endTime = Instant.now();
+        finish();
     }
 
     public void fail() {
         this.statusType = StatusType.FAILURE;
-        endTime = Instant.now();
+        finish();
     }
 
     public void error(String... errorMessages) {
         this.statusType = StatusType.FAILURE;
         this.errorMessages = errorMessages;
-        endTime = Instant.now();
+        finish();
     }
 
     public Instant getStartTime() {
@@ -69,6 +97,10 @@ public class Operation {
         return Optional.ofNullable(endTime);
     }
 
+    public Instant getEndTimeOrStartTime() {
+        return getEndTime().orElse(getStartTime());
+    }
+
     public String getName() {
         return name;
     }
@@ -77,7 +109,15 @@ public class Operation {
         return statusType;
     }
 
+    public Optional<String> getPhoneHomeKey() {
+        return Optional.ofNullable(phoneHomeKey);
+    }
+
     public String[] getErrorMessages() {
         return errorMessages;
+    }
+
+    public OperationType getOperationType() {
+        return operationType;
     }
 }

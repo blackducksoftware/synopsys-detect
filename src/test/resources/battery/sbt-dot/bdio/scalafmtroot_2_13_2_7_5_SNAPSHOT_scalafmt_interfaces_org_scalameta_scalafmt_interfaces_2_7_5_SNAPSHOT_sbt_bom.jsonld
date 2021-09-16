@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "scalafmtroot_2.13/2.7.5-SNAPSHOT/scalafmt-interfaces/org.scalameta/scalafmt-interfaces/2.7.5-SNAPSHOT sbt/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-7.0.0-SNAPSHOT",
-        "Tool: IntegrationBdio-22.0.2"
-      ],
-      "spdx:created": "2021-03-05T17:53:39.532141300Z"
-    },
-    "@id": "uuid:349c1127-93be-4d08-9972-4d352175d5ee",
     "@type": "BillOfMaterials",
     "relationship": []
   },

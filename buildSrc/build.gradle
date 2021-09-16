@@ -1,7 +1,7 @@
 buildscript {
     ext {
         springBootVersion = '2.4.3'
-        blackDuckCommonVersion = '54.0.0'
+        blackDuckCommonVersion = '57.0.0'
     }
     apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-repositories.gradle', to: buildscript
     apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-dependencies.gradle', to: buildscript
@@ -26,7 +26,7 @@ dependencyManagement {
 
 dependencies {
     implementation "org.freemarker:freemarker:2.3.26-incubating"
-    implementation("com.synopsys.integration:common-gradle-plugin:1.8.1") {
+    implementation("com.synopsys.integration:common-gradle-plugin:1.11.1") {
         exclude group: 'org.springframework', module: 'spring-core'
     }
     implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"

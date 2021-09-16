@@ -12,11 +12,11 @@ import java.io.File;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
@@ -32,15 +32,17 @@ public class NpmShrinkwrapDetectable extends Detectable {
     private final FileFinder fileFinder;
     private final NpmLockfileExtractor npmLockfileExtractor;
     private final boolean includeDevDependencies;
+    private final boolean includePeerDependencies;
 
     private File lockfile;
     private File packageJson;
 
-    public NpmShrinkwrapDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final NpmLockfileExtractor npmLockfileExtractor, final NpmLockfileOptions npmLockfileOptions) {
+    public NpmShrinkwrapDetectable(DetectableEnvironment environment, FileFinder fileFinder, NpmLockfileExtractor npmLockfileExtractor, NpmLockfileOptions npmLockfileOptions) {
         super(environment);
         this.fileFinder = fileFinder;
         this.npmLockfileExtractor = npmLockfileExtractor;
         this.includeDevDependencies = npmLockfileOptions.shouldIncludeDeveloperDependencies();
+        this.includePeerDependencies = npmLockfileOptions.shouldIncludePeerDependencies();
     }
 
     @Override
@@ -57,8 +59,8 @@ public class NpmShrinkwrapDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment environment) {
-        return npmLockfileExtractor.extract(lockfile, packageJson, includeDevDependencies);
+    public Extraction extract(ExtractionEnvironment environment) {
+        return npmLockfileExtractor.extract(lockfile, packageJson, includeDevDependencies, includePeerDependencies);
     }
 
 }

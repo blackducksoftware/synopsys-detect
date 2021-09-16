@@ -29,13 +29,13 @@ import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.OperatingSystemType;
 
 public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
+    private static final String INTEGRATION_NUGET_INSPECTOR_NAME = "IntegrationNugetInspector";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final DetectExecutableResolver executableResolver;
     private final DetectableExecutableRunner executableRunner;
     private final DetectInfo detectInfo;
     private final FileFinder fileFinder;
-    private final String nugetInspectorName;
     private final List<String> packagesRepoUrl;
     private final NugetInspectorLocator nugetInspectorLocator;
     private final DotNetRuntimeManager dotNetRuntimeManager;
@@ -44,13 +44,12 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
     private NugetInspector resolvedNugetInspector;
 
     public LocatorNugetInspectorResolver(DetectExecutableResolver executableResolver, DetectableExecutableRunner executableRunner, DetectInfo detectInfo,
-        FileFinder fileFinder, String nugetInspectorName, List<String> packagesRepoUrl, NugetInspectorLocator nugetInspectorLocator,
+        FileFinder fileFinder, List<String> packagesRepoUrl, NugetInspectorLocator nugetInspectorLocator,
         DotNetRuntimeManager dotNetRuntimeManager) {
         this.executableResolver = executableResolver;
         this.executableRunner = executableRunner;
         this.detectInfo = detectInfo;
         this.fileFinder = fileFinder;
-        this.nugetInspectorName = nugetInspectorName;
         this.packagesRepoUrl = packagesRepoUrl;
         this.nugetInspectorLocator = nugetInspectorLocator;
         this.dotNetRuntimeManager = dotNetRuntimeManager;
@@ -88,7 +87,10 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
 
         if (useDotnet) {
             File dotnetFolder;
-            if (dotNetRuntimeManager.isRuntimeAvailable(3, 1)) {
+            if (dotNetRuntimeManager.isRuntimeAvailable(5)) {
+                dotnetFolder = nugetInspectorLocator.locateDotnet5Inspector();
+                return findDotnetCoreInspector(dotnetFolder, dotnetExecutable, "NugetDotnet5Inspector.dll");
+            } else if (dotNetRuntimeManager.isRuntimeAvailable(3, 1)) {
                 dotnetFolder = nugetInspectorLocator.locateDotnet3Inspector();
                 return findDotnetCoreInspector(dotnetFolder, dotnetExecutable, "NugetDotnet3Inspector.dll");
             } else {
@@ -108,7 +110,7 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
 
     //original inspector
     private NugetInspector findExeInspector(File nupkgFolder) throws DetectableException {
-        String exeName = nugetInspectorName + ".exe";
+        String exeName = INTEGRATION_NUGET_INSPECTOR_NAME + ".exe";
         Function<String, NugetInspector> constructor = (String exePath) -> new ExeNugetInspector(executableRunner, exePath);
         return findInspector(nupkgFolder, exeName, constructor);
     }

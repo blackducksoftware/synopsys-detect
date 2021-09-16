@@ -8,59 +8,38 @@
 package com.synopsys.integration.detect.workflow.status;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collection;
+import java.util.LinkedList;
+
+import org.jetbrains.annotations.Nullable;
 
 public class OperationSystem {
-    private final Map<String, Operation> operationMap = new HashMap<>();
+    private final Collection<Operation> operations = new LinkedList<>();
     private final StatusEventPublisher statusEventPublisher;
 
     public OperationSystem(StatusEventPublisher statusEventPublisher) {
         this.statusEventPublisher = statusEventPublisher;
     }
 
-    public void beginOperation(String operationName) {
-        startOperation(operationName);
-    }
-
-    public void completeWithSuccess(String operationName) {
-        Operation operation = operationMap.computeIfAbsent(operationName, this::createNewOperation);
-        operation.success();
-    }
-
-    public void completeWithFailure(String operationName) {
-        Operation operation = operationMap.computeIfAbsent(operationName, this::createNewOperation);
-        operation.fail();
-
-    }
-
-    public void completeWithError(String operationName, String... errorMessages) {
-        Operation operation = operationMap.computeIfAbsent(operationName, this::createNewOperation);
-        operation.error(errorMessages);
-    }
-
     public void publishOperations() {
-        operationMap.values().forEach(this::publishOperation);
+        operations.forEach(this::publishOperationIssues);
+        statusEventPublisher.publishOperationsComplete(operations);
     }
 
-    public void publishOperation(Operation operation) {
+    private void publishOperationIssues(Operation operation) {
         if (operation.getErrorMessages().length > 0) {
             statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, operation.getName(), Arrays.asList(operation.getErrorMessages())));
         }
-        statusEventPublisher.publishOperation(operation);
     }
 
-    private Operation startOperation(String operationName) {
-        Operation currentOperation = operationMap.computeIfAbsent(operationName, this::createNewOperation);
-        if (currentOperation.getEndTime().isPresent()) {
-            publishOperation(currentOperation);
-            currentOperation = createNewOperation(operationName);
-            operationMap.put(operationName, currentOperation);
-        }
-        return currentOperation;
+    public Operation startOperation(String operationName, OperationType type) {
+        return startOperation(operationName, type, null);
     }
 
-    private Operation createNewOperation(String operationName) {
-        return Operation.of(operationName);
+    public Operation startOperation(String operationName, OperationType type, @Nullable String phoneHomeKey) {
+        Operation operation = new Operation(operationName, type, phoneHomeKey);
+        operations.add(operation);
+        return operation;
     }
+
 }

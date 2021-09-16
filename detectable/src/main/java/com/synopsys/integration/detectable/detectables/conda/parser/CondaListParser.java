@@ -16,44 +16,32 @@ import com.google.gson.reflect.TypeToken;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.conda.model.CondaInfo;
 import com.synopsys.integration.detectable.detectables.conda.model.CondaListElement;
 
 public class CondaListParser {
     private final Gson gson;
-    private final ExternalIdFactory externalIdFactory;
+    private final CondaDependencyCreator dependencyCreator;
 
-    public CondaListParser(final Gson gson, final ExternalIdFactory externalIdFactory) {
+    public CondaListParser(Gson gson, CondaDependencyCreator dependencyCreator) {
         this.gson = gson;
-        this.externalIdFactory = externalIdFactory;
+        this.dependencyCreator = dependencyCreator;
     }
 
-    public DependencyGraph parse(final String listJsonText, final String infoJsonText) {
-        final Type listType = new TypeToken<ArrayList<CondaListElement>>() {
+    public DependencyGraph parse(String listJsonText, String infoJsonText) {
+        Type listType = new TypeToken<ArrayList<CondaListElement>>() {
         }.getType();
-        final List<CondaListElement> condaList = gson.fromJson(listJsonText, listType);
-        final CondaInfo condaInfo = gson.fromJson(infoJsonText, CondaInfo.class);
-        final String platform = condaInfo.platform;
+        List<CondaListElement> condaList = gson.fromJson(listJsonText, listType);
+        CondaInfo condaInfo = gson.fromJson(infoJsonText, CondaInfo.class);
+        String platform = condaInfo.platform;
 
-        final MutableDependencyGraph graph = new MutableMapDependencyGraph();
+        MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
-        for (final CondaListElement condaListElement : condaList) {
-            graph.addChildToRoot(condaListElementToDependency(platform, condaListElement));
+        for (CondaListElement condaListElement : condaList) {
+            graph.addChildToRoot(dependencyCreator.createFromCondaListElement(condaListElement, platform));
         }
 
         return graph;
-    }
-
-    public Dependency condaListElementToDependency(final String platform, final CondaListElement element) {
-        final String name = element.name;
-        final String version = String.format("%s-%s-%s", element.version, element.buildString, platform);
-        final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.ANACONDA, name, version);
-
-        return new Dependency(name, version, externalId);
     }
 
 }

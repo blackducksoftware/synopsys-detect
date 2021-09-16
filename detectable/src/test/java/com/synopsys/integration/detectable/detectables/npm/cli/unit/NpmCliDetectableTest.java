@@ -26,11 +26,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import com.google.gson.Gson;
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.executable.resolver.NpmResolver;
-import com.synopsys.integration.common.util.finder.FileFinder;
-import com.synopsys.integration.detectable.detectables.npm.NpmPackageJsonDiscoverer;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliDetectable;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliExtractor;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliExtractorOptions;
@@ -41,13 +39,13 @@ public class NpmCliDetectableTest {
     @Test
     public void testApplicable() {
 
-        final NpmResolver npmResolver = null;
-        final NpmCliExtractor npmCliExtractor = null;
+        NpmResolver npmResolver = null;
+        NpmCliExtractor npmCliExtractor = null;
 
-        final DetectableEnvironment environment = MockDetectableEnvironment.empty();
-        final FileFinder fileFinder = MockFileFinder.withFileNamed("package.json");
+        DetectableEnvironment environment = MockDetectableEnvironment.empty();
+        FileFinder fileFinder = MockFileFinder.withFileNamed("package.json");
 
-        final NpmCliDetectable detectable = new NpmCliDetectable(environment, fileFinder, npmResolver, npmCliExtractor, new NpmPackageJsonDiscoverer(new Gson()), new NpmCliExtractorOptions(false, ""));
+        NpmCliDetectable detectable = new NpmCliDetectable(environment, fileFinder, npmResolver, npmCliExtractor, new NpmCliExtractorOptions(false, false, ""));
 
         assertTrue(detectable.applicable().getPassed());
     }

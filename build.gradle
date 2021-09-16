@@ -4,14 +4,13 @@ import com.synopsys.integration.detect.verification.VerifyBlackDuckDetectTask
 
 buildscript {
     ext {
-        springBootVersion = '2.4.3'
-        blackDuckCommonVersion = '54.0.0'
-        junitPlatformDefaultTestTags = 'integration, performance, battery'
+        springBootVersion = '2.4.5'
+        blackDuckCommonVersion = '58.0.2'
+        junitPlatformCustomTestTags = 'docker, battery'
     }
 
     apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-repositories.gradle', to: buildscript
     apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-dependencies.gradle', to: buildscript
-
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
     }
@@ -21,7 +20,7 @@ buildscript {
 ext['groovy.version'] = '3.0.0'
 
 group = 'com.synopsys.integration'
-version = '7.0.0-SNAPSHOT'
+version = '7.6.0-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
@@ -43,6 +42,10 @@ def createBatteryPath() {
     return "${buildDir}/battery/"
 }
 
+repositories {
+    maven { url "https://sig-repo.synopsys.com/bds-bdio-release" }
+}
+
 subprojects {
     group = rootProject.group
     version = rootProject.version
@@ -58,6 +61,8 @@ allprojects {
         implementation "org.slf4j:slf4j-api:1.7.30"
         implementation "org.apache.commons:commons-lang3:3.10" /* this could be managed by blackduck common */
         implementation 'org.jetbrains:annotations:19.0.0'
+        implementation 'net.minidev:json-smart:2.4.2'
+        implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.3'
 
         testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
         testImplementation 'org.mockito:mockito-core:2.+'
@@ -90,37 +95,41 @@ dependencies {
     implementation project(':configuration')
     implementation project(':detectable')
     implementation project(':detector')
-    implementation project(':polaris')
 
     implementation 'ch.qos.logback:logback-classic:1.2.3'
 
     implementation 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.8'
     implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
     implementation 'com.synopsys:method-analyzer-core:0.1.0'
 
     implementation 'org.apache.maven.shared:maven-invoker:3.0.0'
     implementation "org.springframework.boot:spring-boot"
-    implementation 'org.yaml:snakeyaml:1.24'
+    implementation 'org.yaml:snakeyaml:1.27'
     implementation 'org.zeroturnaround:zt-zip:1.13'
     implementation 'org.freemarker:freemarker:2.3.26-incubating'
+    implementation 'org.apache.pdfbox:pdfbox:2.0.21'
 
     // spring-boot-starter-test *can* provide these, but we choose to be more explicit about the dependencies we ACTUALLY use
     testImplementation 'org.assertj:assertj-core:3.13.2'
     testImplementation 'org.skyscreamer:jsonassert:1.5.0'
+    testImplementation 'org.mockito:mockito-inline:2.+'
 
     testImplementation project(':configuration').sourceSets.test.output
     testImplementation project(':common-test')
+    testImplementation 'com.github.docker-java:docker-java-core:3.2.7'
+    testImplementation 'com.github.docker-java:docker-java-transport-httpclient5:3.2.7'
 }
 
 springBoot { mainClass = 'com.synopsys.integration.detect.Application' }
 
-tasks['testBattery'].doFirst {
-    def batteryPath = new File(createBatteryPath())
-    batteryPath.mkdirs()
-    environment 'BATTERY_TESTS_DETECT_JAR_PATH', createArtifactName()
-    environment 'BATTERY_TESTS_PATH', batteryPath.getCanonicalPath()
-    environment 'BATTERY_TESTS_JAVA_PATH', org.gradle.internal.jvm.Jvm.current().javaExecutable.getCanonicalPath()
+if (project.tasks.findByName('testBattery')) {
+    tasks['testBattery'].doFirst {
+        def batteryPath = new File(createBatteryPath())
+        batteryPath.mkdirs()
+        environment 'BATTERY_TESTS_DETECT_JAR_PATH', createArtifactName()
+        environment 'BATTERY_TESTS_PATH', batteryPath.getCanonicalPath()
+        environment 'BATTERY_TESTS_JAVA_PATH', org.gradle.internal.jvm.Jvm.current().javaExecutable.getCanonicalPath()
+    }
 }
 
 task updateBattery(type: UpdateBatteryTask) {}
@@ -158,7 +167,7 @@ task createAirGapZip(type: JavaExec) {
     classpath = files(createArtifactName())
     classpath += sourceSets.main.runtimeClasspath
     main = 'com.synopsys.integration.detect.Application'
-    args = ['--detect.gradle.path=gradlew', "--detect.output.path=${buildDir}/libs/", '-z']
+    args = [System.getProperty("os.name").toLowerCase().contains("windows") ? '--detect.gradle.path=gradlew.bat' : '--detect.gradle.path=gradlew', "--detect.output.path=${buildDir}/libs/", '-z']
     standardOutput = new ByteArrayOutputStream()
     doLast {
         createAirGapZip.ext.airGapPath = parseAirGapZipPath(standardOutput)
@@ -206,9 +215,21 @@ task publishAirGapZipWithoutDocker() {
 
 task signJar() {
     dependsOn build
+    finalizedBy 'verifyJar'
     doLast {
         exec {
-            commandLine 'jarsigner', '-tsa', 'http://tsa.starfieldtech.com/', '-storetype', 'pkcs12', '-storepass', "${jarSigningKeystorePassword}", '-keystore', "${jarSigningKeystorePath}", "${createArtifactName()}", "${jarSigningCertificateAlias}"
+            commandLine 'jarsigner', '-tsa', 'http://rfc3161timestamp.globalsign.com/advanced', '-storetype', 'pkcs12', '-storepass', "${jarSigningKeystorePassword}", '-keystore', "${jarSigningKeystorePath}", "${createArtifactName()}", "${jarSigningCertificateAlias}"
         }
     }
 }
+
+task verifyJar() {
+    dependsOn signJar
+    doLast {
+        exec {
+            // returns 0 if successfully verified as signed; non-0 if not
+            commandLine 'jarsigner', '-verify', '-strict', "${createArtifactName()}"
+        }
+    }
+}
+

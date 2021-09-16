@@ -45,6 +45,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 
+import com.synopsys.integration.common.util.finder.SimpleFileFinder;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
 
@@ -80,11 +81,13 @@ public class DetectorFinderTest {
         File subSubDir2 = new File(subDir, "subSubDir2");
         subSubDir2.mkdir();
 
-        DetectorRuleSet detectorRuleSet = new DetectorRuleSet(new ArrayList<>(0), new HashMap<>(0), new HashMap<>());
-        DetectorFinderOptions options = createFinderOptions(true);
+        DetectorRuleSet detectorRuleSet = new DetectorRuleSet(new ArrayList<>(0), new HashMap<>(0));
+        Predicate<File> fileFilter = f -> true;
+        int maximumDepth = 10;
+        DetectorFinderOptions options = new DetectorFinderOptions(fileFilter, maximumDepth, false);
 
         DetectorFinder finder = new DetectorFinder();
-        Optional<DetectorEvaluationTree> tree = finder.findDetectors(initialDirectory, detectorRuleSet, options);
+        Optional<DetectorEvaluationTree> tree = finder.findDetectors(initialDirectory, detectorRuleSet, options, new SimpleFileFinder());
 
         // make sure both dirs were found
         Set<DetectorEvaluationTree> testDirs = tree.get().getChildren();
@@ -108,11 +111,11 @@ public class DetectorFinderTest {
 
         File initialDirectory = createDirWithSymLink("testSymLinksNotFollowed");
 
-        DetectorRuleSet detectorRuleSet = new DetectorRuleSet(new ArrayList<>(0), new HashMap<>(0), new HashMap<>(0));
+        DetectorRuleSet detectorRuleSet = new DetectorRuleSet(new ArrayList<>(0), new HashMap<>(0));
         DetectorFinderOptions options = createFinderOptions(false);
 
         DetectorFinder finder = new DetectorFinder();
-        Optional<DetectorEvaluationTree> tree = finder.findDetectors(initialDirectory, detectorRuleSet, options);
+        Optional<DetectorEvaluationTree> tree = finder.findDetectors(initialDirectory, detectorRuleSet, options, new SimpleFileFinder());
 
         // make sure the symlink was omitted from results
         //        final Set<DetectorEvaluationTree> subDirResults = tree.get().getChildren().iterator().next().getChildren();
@@ -138,11 +141,11 @@ public class DetectorFinderTest {
 
         File initialDirectory = createDirWithSymLink("testSymLinksFollowed");
 
-        DetectorRuleSet detectorRuleSet = new DetectorRuleSet(new ArrayList<>(0), new HashMap<>(0), new HashMap<>(0));
+        DetectorRuleSet detectorRuleSet = new DetectorRuleSet(new ArrayList<>(0), new HashMap<>(0));
         DetectorFinderOptions options = createFinderOptions(true);
 
         DetectorFinder finder = new DetectorFinder();
-        Optional<DetectorEvaluationTree> tree = finder.findDetectors(initialDirectory, detectorRuleSet, options);
+        Optional<DetectorEvaluationTree> tree = finder.findDetectors(initialDirectory, detectorRuleSet, options, new SimpleFileFinder());
 
         // make sure the symlink was omitted from results
         //        final Set<DetectorEvaluationTree> subDirResults = tree.get().getChildren().iterator().next().getChildren();
@@ -164,7 +167,7 @@ public class DetectorFinderTest {
     @NotNull
     private DetectorFinderOptions createFinderOptions(boolean followSymLinks) {
         Predicate<File> fileFilter = f -> true;
-        final int maximumDepth = 10;
+        int maximumDepth = 10;
         return new DetectorFinderOptions(fileFilter, maximumDepth, followSymLinks);
     }
 

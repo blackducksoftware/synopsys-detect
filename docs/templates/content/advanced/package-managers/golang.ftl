@@ -35,8 +35,9 @@ The Go Mod Cli (GO_MOD) detector:
 
 * discovers dependencies of go language (GoLang) projects.
 * attempts to run on your project if a go.mod file is found in your source directory.
-* requires that the *go* executable is on the PATH.
+* requires that the *go* executable is on the PATH or the executable path is set with [detect.go.path](../../../properties/detectors/go/#go-executable).
 * runs *go list -m* and *go mod graph*, and parses the output of both to discover dependencies.
+* runs *go mod why* to remove unused components in a build environment. Use [detect.go.mod.enable.verification=false](../../../properties/detectors/go/#go-mod-dependency-verification) to disable this step.
 
 <a name="govendordetector"></a>
 ## The Go Vendor (GO_VENDOR) detector

@@ -7,6 +7,7 @@
  */
 package com.synopsys.integration.detector.evaluation;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -28,20 +29,41 @@ public class DetectorAggregateEvaluationResult {
     }
 
     public List<DetectorEvaluation> getDetectorEvaluations() {
-        return evaluationTree.getOrderedEvaluations();
+        return getDetectorEvaluations(evaluationTree);
     }
 
     public Set<DetectorType> getApplicableDetectorTypes() {
-        return getDetectorEvaluations().stream()
-                   .filter(DetectorEvaluation::isApplicable)
-                   .map(DetectorEvaluation::getDetectorRule)
-                   .map(DetectorRule::getDetectorType)
-                   .collect(Collectors.toSet());
+        return getApplicableDetectorTypes(evaluationTree);
+    }
+
+    public Set<DetectorType> getApplicableDetectorTypesRecursively() {
+        return getApplicableDetectorTypesRecursively(evaluationTree);
     }
 
     public Integer getExtractionCount() {
         return Math.toIntExact(getDetectorEvaluations().stream()
                                    .filter(DetectorEvaluation::isExtractable)
                                    .count());
+    }
+
+    private Set<DetectorType> getApplicableDetectorTypesRecursively(DetectorEvaluationTree givenEvaluationTree) {
+        Set<DetectorType> applied = new HashSet<>();
+        applied.addAll(getApplicableDetectorTypes(givenEvaluationTree));
+        for (DetectorEvaluationTree childEvaluationTree : givenEvaluationTree.getChildren()) {
+            applied.addAll(getApplicableDetectorTypesRecursively(childEvaluationTree));
+        }
+        return applied;
+    }
+
+    private List<DetectorEvaluation> getDetectorEvaluations(DetectorEvaluationTree givenEvaluationTree) {
+        return givenEvaluationTree.getOrderedEvaluations();
+    }
+
+    private Set<DetectorType> getApplicableDetectorTypes(DetectorEvaluationTree givenEvaluationTree) {
+        return getDetectorEvaluations(givenEvaluationTree).stream()
+                .filter(DetectorEvaluation::isApplicable)
+                .map(DetectorEvaluation::getDetectorRule)
+                .map(DetectorRule::getDetectorType)
+                .collect(Collectors.toSet());
     }
 }

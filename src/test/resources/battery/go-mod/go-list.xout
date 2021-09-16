@@ -1,1 +1,7 @@
-github.com/sagikazarmark/modern-go-application
+{
+	"Path": "github.com/sagikazarmark/modern-go-application",
+	"Main": true,
+	"Dir": "/Users/user1/go/modern-go-application",
+	"GoMod": "/Users/user1/go/modern-go-application/go.mod",
+	"GoVersion": "1.14"
+}

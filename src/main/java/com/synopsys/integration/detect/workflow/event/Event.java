@@ -31,7 +31,6 @@ public class Event {
     public static final EventType<DetectorEvaluationTree> SearchCompleted = new EventType<>(DetectorEvaluationTree.class);
     public static final EventType<Set<DetectorType>> ApplicableCompleted = new EventType(Set.class);
     public static final EventType<DetectorEvaluationTree> PreparationsCompleted = new EventType<>(DetectorEvaluationTree.class);
-    public static final EventType<DetectorEvaluationTree> DiscoveriesCompleted = new EventType<>(DetectorEvaluationTree.class);
     public static final EventType<DetectorEvaluationTree> ExtractionsCompleted = new EventType<>(DetectorEvaluationTree.class);
     public static final EventType<DetectorToolResult> DetectorsComplete = new EventType<>(DetectorToolResult.class);
     public static final EventType<DetectorTimings> DetectorsProfiled = new EventType<>(DetectorTimings.class);
@@ -42,9 +41,6 @@ public class Event {
     public static final EventType<Integer> ExtractionCount = new EventType<>(Integer.class);
     public static final EventType<DetectorEvaluation> ExtractionStarted = new EventType<>(DetectorEvaluation.class);
     public static final EventType<DetectorEvaluation> ExtractionEnded = new EventType<>(DetectorEvaluation.class);
-    public static final EventType<Integer> DiscoveryCount = new EventType<>(Integer.class);
-    public static final EventType<DetectorEvaluation> DiscoveryStarted = new EventType<>(DetectorEvaluation.class);
-    public static final EventType<DetectorEvaluation> DiscoveryEnded = new EventType<>(DetectorEvaluation.class);
     public static final EventType<DetectCodeLocationNamesResult> DetectCodeLocationNamesCalculated = new EventType<>(DetectCodeLocationNamesResult.class);
     public static final EventType<Collection<String>> CodeLocationsCompleted = new EventType(Collection.class);
     public static final EventType<ExitCodeRequest> ExitCode = new EventType<>(ExitCodeRequest.class);
@@ -56,5 +52,5 @@ public class Event {
     public static final EventType<ExecutedExecutable> Executable = new EventType<>(ExecutedExecutable.class);
     public static final EventType<UnrecognizedPaths> UnrecognizedPaths = new EventType<>(UnrecognizedPaths.class);
     public static final EventType<SortedMap<String, String>> RawMaskedPropertyValuesCollected = new EventType(SortedMap.class);
-    public static final EventType<Operation> DetectOperation = new EventType(Operation.class);
+    public static final EventType<Collection<Operation>> DetectOperationsComplete = new EventType(Collection.class);
 }

@@ -1,0 +1,107 @@
+[
+  {
+    "specVersion": "1.1.0",
+    "spdx:name": "simple/1.0.0/yarn-workspaces-simple-allworkspaces yarn/bom",
+    "@type": "BillOfMaterials",
+    "relationship": []
+  },
+  {
+    "name": "simple",
+    "revision": "1.0.0",
+    "@id": "http:detect/yarn-workspaces-simple-allworkspaces",
+    "@type": "Project",
+    "externalIdentifier": {
+      "externalSystemTypeId": "detect",
+      "externalId": "yarn-workspaces-simple-allworkspaces",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "detect",
+          "separator": "/"
+        },
+        "pieces": [
+          "yarn-workspaces-simple-allworkspaces",
+          null
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/semver/7.3.4",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "semver",
+    "revision": "7.3.4",
+    "@id": "http:npmjs/semver/7.3.4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "semver/7.3.4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "semver",
+          "7.3.4"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/lru-cache/6.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "lru-cache",
+    "revision": "6.0.0",
+    "@id": "http:npmjs/lru-cache/6.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "lru-cache/6.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "lru-cache",
+          "6.0.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/yallist/4.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "yallist",
+    "revision": "4.0.0",
+    "@id": "http:npmjs/yallist/4.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "yallist/4.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "yallist",
+          "4.0.0"
+        ]
+      }
+    },
+    "relationship": []
+  }
+]

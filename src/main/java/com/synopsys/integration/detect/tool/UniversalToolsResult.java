@@ -7,35 +7,39 @@
  */
 package com.synopsys.integration.detect.tool;
 
-import com.synopsys.integration.util.NameVersion;
+import java.util.List;
+
+import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
+import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
+import com.synopsys.integration.detect.workflow.project.DetectToolProjectInfo;
 
 public class UniversalToolsResult {
-    public NameVersion getNameVersion() {
-        return nameVersion;
+    private final boolean anyFailed;
+    private final DockerTargetData dockerTargetData;
+    private final List<DetectToolProjectInfo> detectToolProjectInfo;
+    private final List<DetectCodeLocation> detectCodeLocations;
+
+    public UniversalToolsResult(boolean anyFailed, final DockerTargetData dockerTargetData, final List<DetectToolProjectInfo> detectToolProjectInfo,
+        final List<DetectCodeLocation> detectCodeLocations) {
+        this.anyFailed = anyFailed;
+        this.dockerTargetData = dockerTargetData;
+        this.detectToolProjectInfo = detectToolProjectInfo;
+        this.detectCodeLocations = detectCodeLocations;
     }
 
-    private enum UniversalToolsResultType {
-        FAILED,
-        SUCCESS
+    public boolean didAnyFail() {
+        return anyFailed;
     }
 
-    private final UniversalToolsResultType resultType;
-    private final NameVersion nameVersion;
-
-    public UniversalToolsResult(final UniversalToolsResultType resultType, final NameVersion nameVersion) {
-        this.resultType = resultType;
-        this.nameVersion = nameVersion;
+    public DockerTargetData getDockerTargetData() {
+        return dockerTargetData;
     }
 
-    public static UniversalToolsResult failure(final NameVersion nameVersion) {
-        return new UniversalToolsResult(UniversalToolsResultType.FAILED, nameVersion);
+    public List<DetectToolProjectInfo> getDetectToolProjectInfo() {
+        return detectToolProjectInfo;
     }
 
-    public static UniversalToolsResult success(final NameVersion nameVersion) {
-        return new UniversalToolsResult(UniversalToolsResultType.SUCCESS, nameVersion);
-    }
-
-    public boolean anyFailed() {
-        return resultType == UniversalToolsResultType.FAILED;
+    public List<DetectCodeLocation> getDetectCodeLocations() {
+        return detectCodeLocations;
     }
 }

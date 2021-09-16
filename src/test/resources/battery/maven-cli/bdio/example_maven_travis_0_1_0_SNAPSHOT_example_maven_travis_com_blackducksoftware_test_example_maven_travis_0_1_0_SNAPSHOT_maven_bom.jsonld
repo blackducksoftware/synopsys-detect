@@ -18,14 +18,24 @@
           "name": "maven",
           "separator": ":"
         },
-        "group": "com.blackducksoftware.test",
-        "name": "example-maven-travis",
-        "version": "0.1.0-SNAPSHOT"
+        "pieces": [
+          "example-maven-travis",
+          "0.1.0-SNAPSHOT"
+        ],
+        "prefix": "com.blackducksoftware.test"
       }
     },
     "relationship": [
       {
-        "related": "http:maven/org.springframework/spring-context/4.2.5.RELEASE",
+        "related": "http:maven/commons-logging/commons-logging/1.0.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/commons-collections/commons-collections/1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.apache.poi/poi/3.6",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -33,7 +43,11 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:maven/commons-logging/commons-logging/1.0.2",
+        "related": "http:maven/commons-codec/commons-codec/1.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/commons-beanutils/commons-beanutils/1.9.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -45,7 +59,11 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:maven/commons-beanutils/commons-beanutils/1.9.0",
+        "related": "http:maven/com.google.code.findbugs/jsr305/3.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.springframework/spring-context/4.2.5.RELEASE",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -53,192 +71,14 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:maven/com.google.code.findbugs/jsr305/3.0.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
         "related": "http:maven/commons-io/commons-io/2.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/commons-collections/commons-collections/1.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
         "related": "http:maven/javax.inject/javax.inject/1",
         "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org.apache.poi/poi/3.6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/commons-codec/commons-codec/1.6",
-        "relationshipType": "DYNAMIC_LINK"
       }
     ]
-  },
-  {
-    "name": "spring-context",
-    "revision": "4.2.5.RELEASE",
-    "@id": "http:maven/org.springframework/spring-context/4.2.5.RELEASE",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.springframework:spring-context:4.2.5.RELEASE",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.springframework",
-        "name": "spring-context",
-        "version": "4.2.5.RELEASE"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org.springframework/spring-aop/4.2.5.RELEASE",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org.springframework/spring-beans/4.2.5.RELEASE",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org.springframework/spring-expression/4.2.5.RELEASE",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org.springframework/spring-core/4.2.5.RELEASE",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "spring-aop",
-    "revision": "4.2.5.RELEASE",
-    "@id": "http:maven/org.springframework/spring-aop/4.2.5.RELEASE",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.springframework:spring-aop:4.2.5.RELEASE",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.springframework",
-        "name": "spring-aop",
-        "version": "4.2.5.RELEASE"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/aopalliance/aopalliance/1.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "aopalliance",
-    "revision": "1.0",
-    "@id": "http:maven/aopalliance/aopalliance/1.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "aopalliance:aopalliance:1.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "aopalliance",
-        "name": "aopalliance",
-        "version": "1.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "spring-beans",
-    "revision": "4.2.5.RELEASE",
-    "@id": "http:maven/org.springframework/spring-beans/4.2.5.RELEASE",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.springframework:spring-beans:4.2.5.RELEASE",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.springframework",
-        "name": "spring-beans",
-        "version": "4.2.5.RELEASE"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "spring-expression",
-    "revision": "4.2.5.RELEASE",
-    "@id": "http:maven/org.springframework/spring-expression/4.2.5.RELEASE",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.springframework:spring-expression:4.2.5.RELEASE",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.springframework",
-        "name": "spring-expression",
-        "version": "4.2.5.RELEASE"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "spring-core",
-    "revision": "4.2.5.RELEASE",
-    "@id": "http:maven/org.springframework/spring-core/4.2.5.RELEASE",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.springframework:spring-core:4.2.5.RELEASE",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.springframework",
-        "name": "spring-core",
-        "version": "4.2.5.RELEASE"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "commons-net",
-    "revision": "3.3",
-    "@id": "http:maven/commons-net/commons-net/3.3",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "commons-net:commons-net:3.3",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "commons-net",
-        "name": "commons-net",
-        "version": "3.3"
-      }
-    },
-    "relationship": []
   },
   {
     "name": "commons-logging",
@@ -253,154 +93,11 @@
           "name": "maven",
           "separator": ":"
         },
-        "group": "commons-logging",
-        "name": "commons-logging",
-        "version": "1.0.2"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "commons-fileupload",
-    "revision": "1.2.1",
-    "@id": "http:maven/commons-fileupload/commons-fileupload/1.2.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "commons-fileupload:commons-fileupload:1.2.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "commons-fileupload",
-        "name": "commons-fileupload",
-        "version": "1.2.1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "args4j",
-    "revision": "2.33",
-    "@id": "http:maven/args4j/args4j/2.33",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "args4j:args4j:2.33",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "args4j",
-        "name": "args4j",
-        "version": "2.33"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "commons-beanutils",
-    "revision": "1.9.0",
-    "@id": "http:maven/commons-beanutils/commons-beanutils/1.9.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "commons-beanutils:commons-beanutils:1.9.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "commons-beanutils",
-        "name": "commons-beanutils",
-        "version": "1.9.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "httpclient",
-    "revision": "4.3.5",
-    "@id": "http:maven/org.apache.httpcomponents/httpclient/4.3.5",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.apache.httpcomponents:httpclient:4.3.5",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.apache.httpcomponents",
-        "name": "httpclient",
-        "version": "4.3.5"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org.apache.httpcomponents/httpcore/4.3.2",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "httpcore",
-    "revision": "4.3.2",
-    "@id": "http:maven/org.apache.httpcomponents/httpcore/4.3.2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.apache.httpcomponents:httpcore:4.3.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.apache.httpcomponents",
-        "name": "httpcore",
-        "version": "4.3.2"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "jsr305",
-    "revision": "3.0.1",
-    "@id": "http:maven/com.google.code.findbugs/jsr305/3.0.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "com.google.code.findbugs:jsr305:3.0.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "com.google.code.findbugs",
-        "name": "jsr305",
-        "version": "3.0.1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "commons-io",
-    "revision": "2.0",
-    "@id": "http:maven/commons-io/commons-io/2.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "commons-io:commons-io:2.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "commons-io",
-        "name": "commons-io",
-        "version": "2.0"
+        "pieces": [
+          "commons-logging",
+          "1.0.2"
+        ],
+        "prefix": "commons-logging"
       }
     },
     "relationship": []
@@ -418,29 +115,11 @@
           "name": "maven",
           "separator": ":"
         },
-        "group": "commons-collections",
-        "name": "commons-collections",
-        "version": "1.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "javax.inject",
-    "revision": "1",
-    "@id": "http:maven/javax.inject/javax.inject/1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "javax.inject:javax.inject:1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "javax.inject",
-        "name": "javax.inject",
-        "version": "1"
+        "pieces": [
+          "commons-collections",
+          "1.0"
+        ],
+        "prefix": "commons-collections"
       }
     },
     "relationship": []
@@ -458,9 +137,11 @@
           "name": "maven",
           "separator": ":"
         },
-        "group": "org.apache.poi",
-        "name": "poi",
-        "version": "3.6"
+        "pieces": [
+          "poi",
+          "3.6"
+        ],
+        "prefix": "org.apache.poi"
       }
     },
     "relationship": [
@@ -483,9 +164,33 @@
           "name": "maven",
           "separator": ":"
         },
-        "group": "log4j",
-        "name": "log4j",
-        "version": "1.2.13"
+        "pieces": [
+          "log4j",
+          "1.2.13"
+        ],
+        "prefix": "log4j"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "commons-net",
+    "revision": "3.3",
+    "@id": "http:maven/commons-net/commons-net/3.3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "commons-net:commons-net:3.3",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "commons-net",
+          "3.3"
+        ],
+        "prefix": "commons-net"
       }
     },
     "relationship": []
@@ -503,9 +208,346 @@
           "name": "maven",
           "separator": ":"
         },
-        "group": "commons-codec",
-        "name": "commons-codec",
-        "version": "1.6"
+        "pieces": [
+          "commons-codec",
+          "1.6"
+        ],
+        "prefix": "commons-codec"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "commons-beanutils",
+    "revision": "1.9.0",
+    "@id": "http:maven/commons-beanutils/commons-beanutils/1.9.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "commons-beanutils:commons-beanutils:1.9.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "commons-beanutils",
+          "1.9.0"
+        ],
+        "prefix": "commons-beanutils"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "commons-fileupload",
+    "revision": "1.2.1",
+    "@id": "http:maven/commons-fileupload/commons-fileupload/1.2.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "commons-fileupload:commons-fileupload:1.2.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "commons-fileupload",
+          "1.2.1"
+        ],
+        "prefix": "commons-fileupload"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "args4j",
+    "revision": "2.33",
+    "@id": "http:maven/args4j/args4j/2.33",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "args4j:args4j:2.33",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "args4j",
+          "2.33"
+        ],
+        "prefix": "args4j"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "jsr305",
+    "revision": "3.0.1",
+    "@id": "http:maven/com.google.code.findbugs/jsr305/3.0.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.google.code.findbugs:jsr305:3.0.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "jsr305",
+          "3.0.1"
+        ],
+        "prefix": "com.google.code.findbugs"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "spring-context",
+    "revision": "4.2.5.RELEASE",
+    "@id": "http:maven/org.springframework/spring-context/4.2.5.RELEASE",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.springframework:spring-context:4.2.5.RELEASE",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "spring-context",
+          "4.2.5.RELEASE"
+        ],
+        "prefix": "org.springframework"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.springframework/spring-core/4.2.5.RELEASE",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.springframework/spring-expression/4.2.5.RELEASE",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.springframework/spring-beans/4.2.5.RELEASE",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.springframework/spring-aop/4.2.5.RELEASE",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "spring-core",
+    "revision": "4.2.5.RELEASE",
+    "@id": "http:maven/org.springframework/spring-core/4.2.5.RELEASE",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.springframework:spring-core:4.2.5.RELEASE",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "spring-core",
+          "4.2.5.RELEASE"
+        ],
+        "prefix": "org.springframework"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "spring-expression",
+    "revision": "4.2.5.RELEASE",
+    "@id": "http:maven/org.springframework/spring-expression/4.2.5.RELEASE",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.springframework:spring-expression:4.2.5.RELEASE",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "spring-expression",
+          "4.2.5.RELEASE"
+        ],
+        "prefix": "org.springframework"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "spring-beans",
+    "revision": "4.2.5.RELEASE",
+    "@id": "http:maven/org.springframework/spring-beans/4.2.5.RELEASE",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.springframework:spring-beans:4.2.5.RELEASE",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "spring-beans",
+          "4.2.5.RELEASE"
+        ],
+        "prefix": "org.springframework"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "spring-aop",
+    "revision": "4.2.5.RELEASE",
+    "@id": "http:maven/org.springframework/spring-aop/4.2.5.RELEASE",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.springframework:spring-aop:4.2.5.RELEASE",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "spring-aop",
+          "4.2.5.RELEASE"
+        ],
+        "prefix": "org.springframework"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/aopalliance/aopalliance/1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "aopalliance",
+    "revision": "1.0",
+    "@id": "http:maven/aopalliance/aopalliance/1.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "aopalliance:aopalliance:1.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "aopalliance",
+          "1.0"
+        ],
+        "prefix": "aopalliance"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "httpclient",
+    "revision": "4.3.5",
+    "@id": "http:maven/org.apache.httpcomponents/httpclient/4.3.5",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.apache.httpcomponents:httpclient:4.3.5",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "httpclient",
+          "4.3.5"
+        ],
+        "prefix": "org.apache.httpcomponents"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.apache.httpcomponents/httpcore/4.3.2",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "httpcore",
+    "revision": "4.3.2",
+    "@id": "http:maven/org.apache.httpcomponents/httpcore/4.3.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.apache.httpcomponents:httpcore:4.3.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "httpcore",
+          "4.3.2"
+        ],
+        "prefix": "org.apache.httpcomponents"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "commons-io",
+    "revision": "2.0",
+    "@id": "http:maven/commons-io/commons-io/2.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "commons-io:commons-io:2.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "commons-io",
+          "2.0"
+        ],
+        "prefix": "commons-io"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "javax.inject",
+    "revision": "1",
+    "@id": "http:maven/javax.inject/javax.inject/1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "javax.inject:javax.inject:1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "javax.inject",
+          "1"
+        ],
+        "prefix": "javax.inject"
       }
     },
     "relationship": []

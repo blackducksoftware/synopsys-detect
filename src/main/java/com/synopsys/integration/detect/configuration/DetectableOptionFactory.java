@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +36,9 @@ import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOpti
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliExtractorOptions;
 import com.synopsys.integration.detectable.detectables.conan.lockfile.ConanLockfileExtractorOptions;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectableOptions;
+import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDepsDetectableOptions;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectableOptions;
+import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorOptions;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptOptions;
 import com.synopsys.integration.detectable.detectables.lerna.LernaOptions;
@@ -105,6 +106,11 @@ public class DetectableOptionFactory {
         return new CondaCliDetectableOptions(environmentName);
     }
 
+    public DartPubDepsDetectableOptions createDartPubDepsDetectableOptions() {
+        Boolean excludeDevDependencies = getValue(DetectProperties.DETECT_PUD_DEPS_EXCLUDE_DEV);
+        return new DartPubDepsDetectableOptions(excludeDevDependencies);
+    }
+
     public MavenParseOptions createMavenParseOptions() {
         Boolean includePlugins = getValue(DetectProperties.DETECT_MAVEN_INCLUDE_PLUGINS);
         return new MavenParseOptions(includePlugins);
@@ -133,17 +139,17 @@ public class DetectableOptionFactory {
             dockerPlatformTopLayerId);
     }
 
+    public GoModCliDetectableOptions createGoModCliDetectableOptions() {
+        Boolean dependencyVerificationEnabled = getValue(DetectProperties.DETECT_GO_ENABLE_VERIFICATION);
+        return new GoModCliDetectableOptions(dependencyVerificationEnabled);
+    }
+
     public GradleInspectorOptions createGradleInspectorOptions() {
         List<String> excludedProjectNames = getValue(DetectProperties.DETECT_GRADLE_EXCLUDED_PROJECTS);
         List<String> includedProjectNames = getValue(DetectProperties.DETECT_GRADLE_INCLUDED_PROJECTS);
         List<String> excludedConfigurationNames = getValue(DetectProperties.DETECT_GRADLE_EXCLUDED_CONFIGURATIONS);
         List<String> includedConfigurationNames = getValue(DetectProperties.DETECT_GRADLE_INCLUDED_CONFIGURATIONS);
-        String configuredGradleInspectorRepositoryUrl = getNullableValue(DetectProperties.DETECT_GRADLE_INSPECTOR_REPOSITORY_URL);
         String customRepository = ArtifactoryConstants.GRADLE_INSPECTOR_MAVEN_REPO;
-        if (StringUtils.isNotBlank(configuredGradleInspectorRepositoryUrl)) {
-            logger.warn("Using a custom gradle repository will not be supported in the future.");
-            customRepository = configuredGradleInspectorRepositoryUrl;
-        }
 
         String onlineInspectorVersion = getNullableValue(DetectProperties.DETECT_GRADLE_INSPECTOR_VERSION);
         GradleInspectorScriptOptions scriptOptions = new GradleInspectorScriptOptions(excludedProjectNames, includedProjectNames, excludedConfigurationNames, includedConfigurationNames, customRepository, onlineInspectorVersion);
@@ -184,18 +190,21 @@ public class DetectableOptionFactory {
 
     public NpmCliExtractorOptions createNpmCliExtractorOptions() {
         Boolean includeDevDependencies = getValue(DetectProperties.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES);
+        Boolean includePeerDependencies = getValue(DetectProperties.DETECT_NPM_INCLUDE_PEER_DEPENDENCIES);
         String npmArguments = getNullableValue(DetectProperties.DETECT_NPM_ARGUMENTS);
-        return new NpmCliExtractorOptions(includeDevDependencies, npmArguments);
+        return new NpmCliExtractorOptions(includeDevDependencies, includePeerDependencies, npmArguments);
     }
 
     public NpmLockfileOptions createNpmLockfileOptions() {
         Boolean includeDevDependencies = getValue(DetectProperties.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES);
-        return new NpmLockfileOptions(includeDevDependencies);
+        Boolean includePeerDependencies = getValue(DetectProperties.DETECT_NPM_INCLUDE_PEER_DEPENDENCIES);
+        return new NpmLockfileOptions(includeDevDependencies, includePeerDependencies);
     }
 
     public NpmPackageJsonParseDetectableOptions createNpmPackageJsonParseDetectableOptions() {
         Boolean includeDevDependencies = getValue(DetectProperties.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES);
-        return new NpmPackageJsonParseDetectableOptions(includeDevDependencies);
+        Boolean includePeerDependencies = getValue(DetectProperties.DETECT_NPM_INCLUDE_PEER_DEPENDENCIES);
+        return new NpmPackageJsonParseDetectableOptions(includeDevDependencies, includePeerDependencies);
     }
 
     public PearCliDetectableOptions createPearCliDetectableOptions() {
@@ -225,15 +234,18 @@ public class DetectableOptionFactory {
     }
 
     public SbtResolutionCacheOptions createSbtResolutionCacheDetectableOptions() {
+        String sbtCommandAdditionalArguments = getNullableValue(DetectProperties.DETECT_SBT_ARGUMENTS);
         List<String> includedConfigurations = getValue(DetectProperties.DETECT_SBT_INCLUDED_CONFIGURATIONS);
         List<String> excludedConfigurations = getValue(DetectProperties.DETECT_SBT_EXCLUDED_CONFIGURATIONS);
         Integer reportDepth = getValue(DetectProperties.DETECT_SBT_REPORT_DEPTH);
-        return new SbtResolutionCacheOptions(includedConfigurations, excludedConfigurations, reportDepth, getFollowSymLinks());
+        return new SbtResolutionCacheOptions(sbtCommandAdditionalArguments, includedConfigurations, excludedConfigurations, reportDepth, getFollowSymLinks());
     }
 
     public YarnLockOptions createYarnLockOptions() {
         Boolean useProductionOnly = getValue(DetectProperties.DETECT_YARN_PROD_ONLY);
-        return new YarnLockOptions(useProductionOnly);
+        List<String> excludedWorkspaces = getValue(DetectProperties.DETECT_YARN_EXCLUDED_WORKSPACES);
+        List<String> includedWorkspaces = getValue(DetectProperties.DETECT_YARN_INCLUDED_WORKSPACES);
+        return new YarnLockOptions(useProductionOnly, excludedWorkspaces, includedWorkspaces);
     }
 
     public NugetInspectorOptions createNugetInspectorOptions() {
@@ -247,9 +259,8 @@ public class DetectableOptionFactory {
 
     public NugetLocatorOptions createNugetInstallerOptions() {
         List<String> packagesRepoUrl = getValue(DetectProperties.DETECT_NUGET_PACKAGES_REPO_URL);
-        String nugetInspectorName = getValue(DetectProperties.DETECT_NUGET_INSPECTOR_NAME);
         String nugetInspectorVersion = getNullableValue(DetectProperties.DETECT_NUGET_INSPECTOR_VERSION);
-        return new NugetLocatorOptions(packagesRepoUrl, nugetInspectorName, nugetInspectorVersion);
+        return new NugetLocatorOptions(packagesRepoUrl, nugetInspectorVersion);
     }
 
     private Set<WorkspaceRule> deriveBazelDependencyRules(List<FilterableEnumValue<WorkspaceRule>> bazelDependencyRulesPropertyValues) {

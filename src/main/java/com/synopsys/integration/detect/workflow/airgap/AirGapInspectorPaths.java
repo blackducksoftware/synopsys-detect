@@ -11,33 +11,51 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.Optional;
 
+import javax.annotation.Nullable;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class AirGapInspectorPaths {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    @Nullable
     private final Path dockerInspectorAirGapPath;
+    @Nullable
     private final Path nugetInspectorAirGapPath;
+    @Nullable
     private final Path gradleInspectorAirGapPath;
+    @Nullable
+    private final Path fontsAirGapPath;
 
-    public AirGapInspectorPaths(final AirGapPathFinder pathFinder, final AirGapOptions airGapOptions) {
-        final File detectJar = pathFinder.findDetectJar();
-        dockerInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, airGapOptions.getDockerInspectorPathOverride().orElse(null), AirGapPathFinder.DOCKER);
-        gradleInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, airGapOptions.getGradleInspectorPathOverride().orElse(null), AirGapPathFinder.GRADLE);
-        nugetInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, airGapOptions.getNugetInspectorPathOverride().orElse(null), AirGapPathFinder.NUGET);
+    public AirGapInspectorPaths(AirGapPathFinder pathFinder) {
+        File detectJar = pathFinder.findDetectJar();
+        dockerInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, AirGapPathFinder.DOCKER);
+        gradleInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, AirGapPathFinder.GRADLE);
+        nugetInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, AirGapPathFinder.NUGET);
+        fontsAirGapPath = determineFontsAirGapPath(detectJar, pathFinder);
     }
 
-    private Path determineInspectorAirGapPath(final File detectJar, final AirGapPathFinder airGapPathFinder, final Path inspectorLocationProperty, final String inspectorName) {
-        if (inspectorLocationProperty == null && detectJar != null) {
+    private Path determineInspectorAirGapPath(File detectJar, AirGapPathFinder airGapPathFinder, String inspectorName) {
+        try {
+            return airGapPathFinder.createRelativePackagedInspectorsFile(detectJar.getParentFile(), inspectorName).toPath();
+        } catch (Exception e) {
+            logger.debug(String.format("Exception encountered when guessing air gap path for %s", inspectorName));
+            logger.debug(e.getMessage());
+            return null;
+        }
+    }
+
+    private Path determineFontsAirGapPath(File detectJar, AirGapPathFinder airGapPathFinder) {
+        if (detectJar != null) {
             try {
-                return airGapPathFinder.createRelativePackagedInspectorsFile(detectJar.getParentFile(), inspectorName).toPath();
-            } catch (final Exception e) {
-                logger.debug(String.format("Exception encountered when guessing air gap path for %s, returning the detect property instead", inspectorName));
+                return airGapPathFinder.createRelativeFontsFile(detectJar.getParentFile()).toPath();
+            } catch (Exception e) {
+                logger.debug(String.format("Exception encountered when guessing air gap path for fonts, returning the detect property instead"));
                 logger.debug(e.getMessage());
             }
         }
-        return inspectorLocationProperty;
+        return null;
     }
 
     public Optional<Path> getDockerInspectorAirGapPath() {
@@ -62,5 +80,13 @@ public class AirGapInspectorPaths {
 
     public Optional<File> getGradleInspectorAirGapFile() {
         return getGradleInspectorAirGapPath().map(Path::toFile).filter(File::exists);
+    }
+
+    public Optional<Path> getFontsAirGapPath() {
+        return Optional.ofNullable(fontsAirGapPath);
+    }
+
+    public Optional<File> getFontsAirGapDirectory() {
+        return getFontsAirGapPath().map(Path::toFile).filter(File::exists);
     }
 }

@@ -42,7 +42,7 @@ public class GitParseDetectableTest extends DetectableFunctionalTest {
 
     @Override
     public void setup() throws IOException {
-        final Path gitDirectory = addDirectory(Paths.get(".git"));
+        Path gitDirectory = addDirectory(Paths.get(".git"));
         addFile(gitDirectory.resolve("config"),
             "[core]",
             "	repositoryformatversion = 0",
@@ -67,12 +67,12 @@ public class GitParseDetectableTest extends DetectableFunctionalTest {
 
     @NotNull
     @Override
-    public Detectable create(@NotNull final DetectableEnvironment environment) {
+    public Detectable create(@NotNull DetectableEnvironment environment) {
         return detectableFactory.createGitParseDetectable(environment);
     }
 
     @Override
-    public void assertExtraction(@NotNull final Extraction extraction) {
+    public void assertExtraction(@NotNull Extraction extraction) {
         Assertions.assertEquals(0, extraction.getCodeLocations().size(), "Git should not produce a dependency graph. It is for project info only.");
         Assertions.assertEquals("blackducksoftware/synopsys-detect", extraction.getProjectName());
         Assertions.assertEquals("master", extraction.getProjectVersion());

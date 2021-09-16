@@ -49,6 +49,11 @@ public class NpmDependencyConverter {
                 List<NpmRequires> rootDevRequires = convertNameVersionMapToRequires(packageJson.devDependencies);
                 project.addAllDevDependencies(rootDevRequires);
             }
+
+            if (packageJson.peerDependencies != null) {
+                List<NpmRequires> rootPeerRequires = convertNameVersionMapToRequires(packageJson.peerDependencies);
+                project.addAllPeerDependencies(rootPeerRequires);
+            }
         }
 
         return project;
@@ -65,7 +70,7 @@ public class NpmDependencyConverter {
             String packageName = packageEntry.getKey();
             PackageLockDependency packageLockDependency = packageEntry.getValue();
 
-            NpmDependency dependency = createNpmDependency(packageName, packageLockDependency.version, packageLockDependency.dev);
+            NpmDependency dependency = createNpmDependency(packageName, packageLockDependency.version, packageLockDependency.dev, packageLockDependency.peer);
             dependency.setParent(parent);
             children.add(dependency);
 
@@ -78,14 +83,12 @@ public class NpmDependencyConverter {
         return children;
     }
 
-    private NpmDependency createNpmDependency(String name, String version, Boolean isDev) {
+    private NpmDependency createNpmDependency(String name, String version, Boolean isDev, Boolean isPeer) {
         ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, name, version);
         Dependency graphDependency = new Dependency(name, version, externalId);
-        boolean dev = false;
-        if (isDev != null && isDev) {
-            dev = true;
-        }
-        return new NpmDependency(name, version, dev, graphDependency);
+        boolean dev = isDev != null && isDev;
+        boolean peer = isPeer != null && isPeer;
+        return new NpmDependency(name, version, dev, peer, graphDependency);
 
     }
 

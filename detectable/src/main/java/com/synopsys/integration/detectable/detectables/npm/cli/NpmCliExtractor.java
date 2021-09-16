@@ -8,19 +8,27 @@
 package com.synopsys.integration.detectable.detectables.npm.cli;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.npm.cli.parse.NpmCliParser;
+import com.synopsys.integration.detectable.detectables.npm.cli.parse.NpmDependencyTypeFilter;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmParseResult;
+import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.executable.ExecutableOutput;
 
@@ -31,23 +39,27 @@ public class NpmCliExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectableExecutableRunner executableRunner;
     private final NpmCliParser npmCliParser;
+    private final Gson gson;
 
-    public NpmCliExtractor(DetectableExecutableRunner executableRunner, NpmCliParser npmCliParser) {
+    public NpmCliExtractor(DetectableExecutableRunner executableRunner, NpmCliParser npmCliParser, Gson gson) {
         this.executableRunner = executableRunner;
         this.npmCliParser = npmCliParser;
+        this.gson = gson;
     }
 
-    public Extraction extract(File directory, ExecutableTarget npmExe, NpmCliExtractorOptions npmCliExtractorOptions) {//TODO: Extractor should not use DetectableOptions
+    public Extraction extract(File directory, ExecutableTarget npmExe, @Nullable String npmArguments, boolean includeDevDependencies, boolean includePeerDependencies, File packageJsonFile) {
+        PackageJson packageJson;
+        try {
+            packageJson = parsePackageJson(packageJsonFile);
+        } catch (IOException e) {
+            return new Extraction.Builder().exception(e).build();
+        }
 
-        boolean includeDevDeps = npmCliExtractorOptions.shouldIncludeDevDependencies();
         List<String> exeArgs = new ArrayList<>();
         exeArgs.add("ls");
         exeArgs.add("-json");
-        if (!includeDevDeps) {
-            exeArgs.add("-prod");
-        }
 
-        npmCliExtractorOptions.getNpmArguments()
+        Optional.ofNullable(npmArguments)
             .map(arg -> arg.split(" "))
             .ifPresent(additionalArguments -> exeArgs.addAll(Arrays.asList(additionalArguments)));
 
@@ -66,11 +78,19 @@ public class NpmCliExtractor {
         } else if (StringUtils.isNotBlank(standardOutput)) {
             logger.debug("Parsing npm ls file.");
             logger.debug(standardOutput);
-            NpmParseResult result = npmCliParser.generateCodeLocation(standardOutput);
-            return new Extraction.Builder().success(result.getCodeLocation()).projectName(result.getProjectName()).projectVersion(result.getProjectVersion()).build();
+            NpmDependencyTypeFilter npmDependencyTypeFilter = new NpmDependencyTypeFilter(packageJson.devDependencies.keySet(), packageJson.peerDependencies.keySet(), includeDevDependencies, includePeerDependencies);
+            NpmParseResult result = npmCliParser.generateCodeLocation(standardOutput, npmDependencyTypeFilter);
+            String projectName = result.getProjectName() != null ? result.getProjectName() : packageJson.name;
+            String projectVersion = result.getProjectVersion() != null ? result.getProjectVersion() : packageJson.version;
+            return new Extraction.Builder().success(result.getCodeLocation()).projectName(projectName).projectVersion(projectVersion).build();
         } else {
             logger.error("Nothing returned from npm ls -json command");
             return new Extraction.Builder().failure("Npm returned error after running npm ls.").build();
         }
+    }
+
+    private PackageJson parsePackageJson(File packageJson) throws IOException {
+        String packageJsonText = FileUtils.readFileToString(packageJson, StandardCharsets.UTF_8);
+        return gson.fromJson(packageJsonText, PackageJson.class);
     }
 }

@@ -28,6 +28,7 @@ import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 import org.mockito.Mockito;
 
+import com.google.gson.Gson;
 import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.Property;
@@ -47,6 +48,6 @@ class DetectConfigurationFactoryTestUtils {
         final PropertySource inMemoryPropertySource = new MapPropertySource("test", propertyMap);
         final PropertyConfiguration propertyConfiguration = new PropertyConfiguration(Collections.singletonList(inMemoryPropertySource));
 
-        return new DetectConfigurationFactory(propertyConfiguration, new SimplePathResolver());
+        return new DetectConfigurationFactory(propertyConfiguration, new SimplePathResolver(), new Gson());
     }
 }

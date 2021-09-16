@@ -19,11 +19,11 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectableOptions;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorInfo;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
@@ -94,11 +94,11 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
     private List<File> getAirGapInspectorImageTarfiles() {
         List<File> airGapInspectorImageTarfiles;
         airGapInspectorImageTarfiles = new ArrayList<>();
-        String dockerInspectorAirGapPath = airGapInspectorPaths.getDockerInspectorAirGapPath()
+        final String dockerInspectorAirGapPath = airGapInspectorPaths.getDockerInspectorAirGapPath()
                                                      .map(Path::toString)
                                                      .orElse(null);
-        for (String inspectorName : inspectorNames) {
-            File osImage = new File(dockerInspectorAirGapPath, IMAGE_INSPECTOR_FAMILY + "-" + inspectorName + ".tar");
+        for (final String inspectorName : inspectorNames) {
+            final File osImage = new File(dockerInspectorAirGapPath, IMAGE_INSPECTOR_FAMILY + "-" + inspectorName + ".tar");
             airGapInspectorImageTarfiles.add(osImage);
         }
         return airGapInspectorImageTarfiles;
@@ -139,5 +139,4 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
             return Optional.empty();
         }
     }
-
 }

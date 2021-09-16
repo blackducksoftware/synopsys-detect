@@ -13,9 +13,9 @@ import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
 
-import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmParseResult;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.parse.NpmLockfilePackager;
+import com.synopsys.integration.detectable.extraction.Extraction;
 
 public class NpmLockfileExtractor {
     private final NpmLockfilePackager npmLockfileParser;
@@ -27,7 +27,7 @@ public class NpmLockfileExtractor {
     /*
     packageJson is optional
      */
-    public Extraction extract(File lockfile, File packageJson, boolean includeDevDependencies) {
+    public Extraction extract(File lockfile, File packageJson, boolean includeDevDependencies, boolean includePeerDependencies) {
         try {
             String lockText = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
             String packageText = null;
@@ -35,7 +35,7 @@ public class NpmLockfileExtractor {
                 packageText = FileUtils.readFileToString(packageJson, StandardCharsets.UTF_8);
             }
 
-            NpmParseResult result = npmLockfileParser.parse(packageText, lockText, includeDevDependencies);
+            NpmParseResult result = npmLockfileParser.parse(packageText, lockText, includeDevDependencies, includePeerDependencies);
 
             return new Extraction.Builder()
                        .success(result.getCodeLocation())

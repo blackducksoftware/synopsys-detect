@@ -17,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.Discovery;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectable.explanation.Explanation;
 import com.synopsys.integration.detectable.extraction.Extraction;
@@ -41,10 +40,6 @@ public class DetectorEvaluation {
 
     private ExtractionEnvironment extractionEnvironment;
     private Extraction extraction;
-    private Discovery discovery;
-
-    private DetectorEvaluation fallbackTo;
-    private DetectorEvaluation fallbackFrom;
 
     // The detector evaluation is built over time. The only thing you need at the start is the rule this evaluation represents.
     public DetectorEvaluation(DetectorRule detectorRule) {
@@ -83,18 +78,6 @@ public class DetectorEvaluation {
         return isExtractable() && this.extraction != null && this.extraction.getResult() == Extraction.ExtractionResultType.EXCEPTION;
     }
 
-    public boolean wasDiscoverySuccessful() {
-        return isExtractable() && this.discovery != null && this.discovery.getResult() == Discovery.DiscoveryResultType.SUCCESS;
-    }
-
-    public boolean wasDiscoveryFailure() {
-        return isExtractable() && this.discovery != null && this.discovery.getResult() == Discovery.DiscoveryResultType.FAILURE;
-    }
-
-    public boolean wasDiscoveryException() {
-        return isExtractable() && this.discovery != null && this.discovery.getResult() == Discovery.DiscoveryResultType.EXCEPTION;
-    }
-
     public List<Explanation> getAllExplanations() {
         List<Explanation> explanations = new ArrayList<>();
         if (applicable != null) {
@@ -126,14 +109,6 @@ public class DetectorEvaluation {
         return isSearchable() && this.applicable != null && this.applicable.getPassed();
     }
 
-    public void setDiscovery(Discovery discovery) {
-        this.discovery = discovery;
-    }
-
-    public Discovery getDiscovery() {
-        return discovery;
-    }
-
     public String getApplicabilityMessage() {
         return getDetectorResultDescription(applicable).orElse(NO_MESSAGE);
     }
@@ -146,14 +121,6 @@ public class DetectorEvaluation {
         return isApplicable() && this.extractable != null && this.extractable.getPassed();
     }
 
-    public boolean isFallbackExtractable() {
-        return fallbackTo != null && (fallbackTo.isExtractable() || fallbackTo.isFallbackExtractable());
-    }
-
-    public boolean isPreviousExtractable() {
-        return fallbackFrom != null && (fallbackFrom.isExtractable() || fallbackFrom.isPreviousExtractable());
-    }
-
     public String getExtractabilityMessage() {
         return getDetectorResultDescription(extractable).orElse(NO_MESSAGE);
     }
@@ -161,8 +128,6 @@ public class DetectorEvaluation {
     public DetectorStatusType getStatus() {
         if (getExtraction() != null && getExtraction().getResult().equals(Extraction.ExtractionResultType.SUCCESS)) {
             return DetectorStatusType.SUCCESS;
-        } else if (fallbackFrom != null && fallbackFrom.isExtractable()) {
-            return DetectorStatusType.DEFERRED;
         }
         return DetectorStatusType.FAILURE;
     }
@@ -218,17 +183,6 @@ public class DetectorEvaluation {
         return "Passed";
     }
 
-    public Optional<DetectorEvaluation> getSuccessfulFallback() {
-        if (fallbackTo != null) {
-            if (fallbackTo.isExtractable()) {
-                return Optional.of(fallbackTo);
-            } else {
-                return fallbackTo.getSuccessfulFallback();
-            }
-        }
-        return Optional.empty();
-    }
-
     private Optional<String> getDetectorResultDescription(DetectorResult detectorResult) {
         String description = null;
 
@@ -261,32 +215,6 @@ public class DetectorEvaluation {
 
     public void setDetectable(Detectable detectable) {
         this.detectable = detectable;
-    }
-
-    public DetectorEvaluation getFallbackTo() {
-        return fallbackTo;
-    }
-
-    public List<DetectorEvaluation> getFallbacks() {
-        if (fallbackTo != null) {
-            List<DetectorEvaluation> fallbacks = new ArrayList<>();
-            fallbacks.add(fallbackTo);
-            fallbacks.addAll(fallbackTo.getFallbacks());
-            return fallbacks;
-        }
-        return new ArrayList<>();
-    }
-
-    public void setFallbackTo(DetectorEvaluation fallbackTo) {
-        this.fallbackTo = fallbackTo;
-    }
-
-    public DetectorEvaluation getFallbackFrom() {
-        return fallbackFrom;
-    }
-
-    public void setFallbackFrom(DetectorEvaluation fallbackFrom) {
-        this.fallbackFrom = fallbackFrom;
     }
 
     public DetectorType getDetectorType() {

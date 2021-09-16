@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detect.tool.detector.DetectDetectableFactory;
 import com.synopsys.integration.detect.tool.detector.DetectorRuleFactory;
+import com.synopsys.integration.detect.tool.detector.factory.DetectDetectableFactory;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detector.rule.DetectorRule;
@@ -56,7 +56,6 @@ public class HelpJsonManager {
         helpData.setNestable(rule.isNestable());
         helpData.setNestInvisible(rule.isNestInvisible());
         helpData.setYieldsTo(ruleSet.getYieldsTo(rule).stream().map(DetectorRule::getDescriptiveName).collect(Collectors.toList()));
-        helpData.setFallbackTo(ruleSet.getFallbackFrom(rule).map(DetectorRule::getDescriptiveName).orElse(""));
 
         //Attempt to create the detectable.
         //Not currently possible. Need a full DetectableConfiguration to be able to make Detectables.

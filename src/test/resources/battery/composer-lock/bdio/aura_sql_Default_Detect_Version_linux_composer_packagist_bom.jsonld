@@ -18,16 +18,19 @@
           "name": "detect",
           "separator": "/"
         },
-        "path": "linux-composer"
+        "pieces": [
+          "linux-composer",
+          null
+        ]
       }
     },
     "relationship": [
       {
-        "related": "http:packagist/pds%2Fskeleton/1.0.0",
+        "related": "http:packagist/psr%2Flog/1.1.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:packagist/psr%2Flog/1.1.0",
+        "related": "http:packagist/pds%2Fskeleton/1.0.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -35,25 +38,6 @@
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
-  },
-  {
-    "name": "pds/skeleton",
-    "revision": "1.0.0",
-    "@id": "http:packagist/pds%2Fskeleton/1.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "packagist",
-      "externalId": "pds/skeleton:1.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "packagist",
-          "separator": ":"
-        },
-        "name": "pds/skeleton",
-        "version": "1.0.0"
-      }
-    },
-    "relationship": []
   },
   {
     "name": "psr/log",
@@ -68,8 +52,31 @@
           "name": "packagist",
           "separator": ":"
         },
-        "name": "psr/log",
-        "version": "1.1.0"
+        "pieces": [
+          "psr/log",
+          "1.1.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "pds/skeleton",
+    "revision": "1.0.0",
+    "@id": "http:packagist/pds%2Fskeleton/1.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "packagist",
+      "externalId": "pds/skeleton:1.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "packagist",
+          "separator": ":"
+        },
+        "pieces": [
+          "pds/skeleton",
+          "1.0.0"
+        ]
       }
     },
     "relationship": []
@@ -87,25 +94,27 @@
           "name": "packagist",
           "separator": ":"
         },
-        "name": "phpunit/phpunit",
-        "version": "5.5.4"
+        "pieces": [
+          "phpunit/phpunit",
+          "5.5.4"
+        ]
       }
     },
     "relationship": [
+      {
+        "related": "http:packagist/symfony%2Fyaml/v3.4.31",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:packagist/sebastian%2Fobject-enumerator/1.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
       {
         "related": "http:packagist/sebastian%2Fcomparator/1.2.4",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:packagist/phpunit%2Fphpunit-mock-objects/3.4.4",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:packagist/sebastian%2Fglobal-state/1.1.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:packagist/phpunit%2Fphp-code-coverage/4.0.8",
+        "related": "http:packagist/sebastian%2Fenvironment/2.0.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -117,6 +126,18 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
+        "related": "http:packagist/sebastian%2Fresource-operations/1.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:packagist/phpunit%2Fphp-code-coverage/4.0.8",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:packagist/phpunit%2Fphp-text-template/1.2.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
         "related": "http:packagist/phpunit%2Fphp-file-iterator/1.4.5",
         "relationshipType": "DYNAMIC_LINK"
       },
@@ -125,95 +146,100 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:packagist/symfony%2Fyaml/v3.4.31",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:packagist/sebastian%2Fresource-operations/1.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:packagist/myclabs%2Fdeep-copy/1.9.3",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:packagist/sebastian%2Fobject-enumerator/1.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
         "related": "http:packagist/sebastian%2Fdiff/1.4.3",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:packagist/phpunit%2Fphp-text-template/1.2.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:packagist/sebastian%2Fenvironment/2.0.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
         "related": "http:packagist/sebastian%2Fversion/2.0.1",
         "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "sebastian/comparator",
-    "revision": "1.2.4",
-    "@id": "http:packagist/sebastian%2Fcomparator/1.2.4",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "packagist",
-      "externalId": "sebastian/comparator:1.2.4",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "packagist",
-          "separator": ":"
-        },
-        "name": "sebastian/comparator",
-        "version": "1.2.4"
-      }
-    },
-    "relationship": [
+      },
       {
-        "related": "http:packagist/sebastian%2Fexporter/1.2.2",
+        "related": "http:packagist/sebastian%2Fglobal-state/1.1.1",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:packagist/phpunit%2Fphpunit/5.5.4",
+        "related": "http:packagist/phpunit%2Fphpunit-mock-objects/3.4.4",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:packagist/sebastian%2Fdiff/1.4.3",
+        "related": "http:packagist/myclabs%2Fdeep-copy/1.9.3",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
   },
   {
-    "name": "sebastian/exporter",
-    "revision": "1.2.2",
-    "@id": "http:packagist/sebastian%2Fexporter/1.2.2",
+    "name": "symfony/yaml",
+    "revision": "v3.4.31",
+    "@id": "http:packagist/symfony%2Fyaml/v3.4.31",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "packagist",
-      "externalId": "sebastian/exporter:1.2.2",
+      "externalId": "symfony/yaml:v3.4.31",
       "externalIdMetaData": {
         "forge": {
           "name": "packagist",
           "separator": ":"
         },
-        "name": "sebastian/exporter",
-        "version": "1.2.2"
+        "pieces": [
+          "symfony/yaml",
+          "v3.4.31"
+        ]
       }
     },
     "relationship": [
       {
-        "related": "http:packagist/phpunit%2Fphpunit/5.5.4",
+        "related": "http:packagist/symfony%2Fpolyfill-ctype/v1.12.0",
         "relationshipType": "DYNAMIC_LINK"
-      },
+      }
+    ]
+  },
+  {
+    "name": "symfony/polyfill-ctype",
+    "revision": "v1.12.0",
+    "@id": "http:packagist/symfony%2Fpolyfill-ctype/v1.12.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "packagist",
+      "externalId": "symfony/polyfill-ctype:v1.12.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "packagist",
+          "separator": ":"
+        },
+        "pieces": [
+          "symfony/polyfill-ctype",
+          "v1.12.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "sebastian/object-enumerator",
+    "revision": "1.0.0",
+    "@id": "http:packagist/sebastian%2Fobject-enumerator/1.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "packagist",
+      "externalId": "sebastian/object-enumerator:1.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "packagist",
+          "separator": ":"
+        },
+        "pieces": [
+          "sebastian/object-enumerator",
+          "1.0.0"
+        ]
+      }
+    },
+    "relationship": [
       {
         "related": "http:packagist/sebastian%2Frecursion-context/1.0.5",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:packagist/phpunit%2Fphpunit/5.5.4",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -231,11 +257,77 @@
           "name": "packagist",
           "separator": ":"
         },
-        "name": "sebastian/recursion-context",
-        "version": "1.0.5"
+        "pieces": [
+          "sebastian/recursion-context",
+          "1.0.5"
+        ]
       }
     },
     "relationship": [
+      {
+        "related": "http:packagist/phpunit%2Fphpunit/5.5.4",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "sebastian/comparator",
+    "revision": "1.2.4",
+    "@id": "http:packagist/sebastian%2Fcomparator/1.2.4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "packagist",
+      "externalId": "sebastian/comparator:1.2.4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "packagist",
+          "separator": ":"
+        },
+        "pieces": [
+          "sebastian/comparator",
+          "1.2.4"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:packagist/sebastian%2Fexporter/1.2.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:packagist/sebastian%2Fdiff/1.4.3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:packagist/phpunit%2Fphpunit/5.5.4",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "sebastian/exporter",
+    "revision": "1.2.2",
+    "@id": "http:packagist/sebastian%2Fexporter/1.2.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "packagist",
+      "externalId": "sebastian/exporter:1.2.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "packagist",
+          "separator": ":"
+        },
+        "pieces": [
+          "sebastian/exporter",
+          "1.2.2"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:packagist/sebastian%2Frecursion-context/1.0.5",
+        "relationshipType": "DYNAMIC_LINK"
+      },
       {
         "related": "http:packagist/phpunit%2Fphpunit/5.5.4",
         "relationshipType": "DYNAMIC_LINK"
@@ -255,207 +347,10 @@
           "name": "packagist",
           "separator": ":"
         },
-        "name": "sebastian/diff",
-        "version": "1.4.3"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:packagist/phpunit%2Fphpunit/5.5.4",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "phpunit/phpunit-mock-objects",
-    "revision": "3.4.4",
-    "@id": "http:packagist/phpunit%2Fphpunit-mock-objects/3.4.4",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "packagist",
-      "externalId": "phpunit/phpunit-mock-objects:3.4.4",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "packagist",
-          "separator": ":"
-        },
-        "name": "phpunit/phpunit-mock-objects",
-        "version": "3.4.4"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:packagist/sebastian%2Fexporter/1.2.2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:packagist/phpunit%2Fphpunit/5.5.4",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:packagist/phpunit%2Fphp-text-template/1.2.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:packagist/doctrine%2Finstantiator/1.2.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "phpunit/php-text-template",
-    "revision": "1.2.1",
-    "@id": "http:packagist/phpunit%2Fphp-text-template/1.2.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "packagist",
-      "externalId": "phpunit/php-text-template:1.2.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "packagist",
-          "separator": ":"
-        },
-        "name": "phpunit/php-text-template",
-        "version": "1.2.1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "doctrine/instantiator",
-    "revision": "1.2.0",
-    "@id": "http:packagist/doctrine%2Finstantiator/1.2.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "packagist",
-      "externalId": "doctrine/instantiator:1.2.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "packagist",
-          "separator": ":"
-        },
-        "name": "doctrine/instantiator",
-        "version": "1.2.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:packagist/phpunit%2Fphpunit/5.5.4",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "sebastian/global-state",
-    "revision": "1.1.1",
-    "@id": "http:packagist/sebastian%2Fglobal-state/1.1.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "packagist",
-      "externalId": "sebastian/global-state:1.1.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "packagist",
-          "separator": ":"
-        },
-        "name": "sebastian/global-state",
-        "version": "1.1.1"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:packagist/phpunit%2Fphpunit/5.5.4",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "phpunit/php-code-coverage",
-    "revision": "4.0.8",
-    "@id": "http:packagist/phpunit%2Fphp-code-coverage/4.0.8",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "packagist",
-      "externalId": "phpunit/php-code-coverage:4.0.8",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "packagist",
-          "separator": ":"
-        },
-        "name": "phpunit/php-code-coverage",
-        "version": "4.0.8"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:packagist/sebastian%2Fcode-unit-reverse-lookup/1.0.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:packagist/phpunit%2Fphpunit/5.5.4",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:packagist/phpunit%2Fphp-token-stream/2.0.2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:packagist/phpunit%2Fphp-text-template/1.2.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:packagist/sebastian%2Fenvironment/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:packagist/phpunit%2Fphp-file-iterator/1.4.5",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:packagist/sebastian%2Fversion/2.0.1",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "sebastian/code-unit-reverse-lookup",
-    "revision": "1.0.1",
-    "@id": "http:packagist/sebastian%2Fcode-unit-reverse-lookup/1.0.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "packagist",
-      "externalId": "sebastian/code-unit-reverse-lookup:1.0.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "packagist",
-          "separator": ":"
-        },
-        "name": "sebastian/code-unit-reverse-lookup",
-        "version": "1.0.1"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:packagist/phpunit%2Fphpunit/5.5.4",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "phpunit/php-token-stream",
-    "revision": "2.0.2",
-    "@id": "http:packagist/phpunit%2Fphp-token-stream/2.0.2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "packagist",
-      "externalId": "phpunit/php-token-stream:2.0.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "packagist",
-          "separator": ":"
-        },
-        "name": "phpunit/php-token-stream",
-        "version": "2.0.2"
+        "pieces": [
+          "sebastian/diff",
+          "1.4.3"
+        ]
       }
     },
     "relationship": [
@@ -478,8 +373,10 @@
           "name": "packagist",
           "separator": ":"
         },
-        "name": "sebastian/environment",
-        "version": "2.0.0"
+        "pieces": [
+          "sebastian/environment",
+          "2.0.0"
+        ]
       }
     },
     "relationship": [
@@ -488,44 +385,6 @@
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
-  },
-  {
-    "name": "phpunit/php-file-iterator",
-    "revision": "1.4.5",
-    "@id": "http:packagist/phpunit%2Fphp-file-iterator/1.4.5",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "packagist",
-      "externalId": "phpunit/php-file-iterator:1.4.5",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "packagist",
-          "separator": ":"
-        },
-        "name": "phpunit/php-file-iterator",
-        "version": "1.4.5"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "sebastian/version",
-    "revision": "2.0.1",
-    "@id": "http:packagist/sebastian%2Fversion/2.0.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "packagist",
-      "externalId": "sebastian/version:2.0.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "packagist",
-          "separator": ":"
-        },
-        "name": "sebastian/version",
-        "version": "2.0.1"
-      }
-    },
-    "relationship": []
   },
   {
     "name": "phpspec/prophecy",
@@ -540,21 +399,15 @@
           "name": "packagist",
           "separator": ":"
         },
-        "name": "phpspec/prophecy",
-        "version": "1.8.1"
+        "pieces": [
+          "phpspec/prophecy",
+          "1.8.1"
+        ]
       }
     },
     "relationship": [
       {
-        "related": "http:packagist/phpdocumentor%2Freflection-docblock/4.3.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
         "related": "http:packagist/sebastian%2Fcomparator/1.2.4",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:packagist/phpunit%2Fphpunit/5.5.4",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -562,7 +415,41 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
+        "related": "http:packagist/phpunit%2Fphpunit/5.5.4",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
         "related": "http:packagist/doctrine%2Finstantiator/1.2.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:packagist/phpdocumentor%2Freflection-docblock/4.3.1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "doctrine/instantiator",
+    "revision": "1.2.0",
+    "@id": "http:packagist/doctrine%2Finstantiator/1.2.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "packagist",
+      "externalId": "doctrine/instantiator:1.2.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "packagist",
+          "separator": ":"
+        },
+        "pieces": [
+          "doctrine/instantiator",
+          "1.2.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:packagist/phpunit%2Fphpunit/5.5.4",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -580,8 +467,10 @@
           "name": "packagist",
           "separator": ":"
         },
-        "name": "phpdocumentor/reflection-docblock",
-        "version": "4.3.1"
+        "pieces": [
+          "phpdocumentor/reflection-docblock",
+          "4.3.1"
+        ]
       }
     },
     "relationship": [
@@ -594,15 +483,15 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
+        "related": "http:packagist/phpdocumentor%2Ftype-resolver/0.4.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
         "related": "http:packagist/webmozart%2Fassert/1.5.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
         "related": "http:packagist/doctrine%2Finstantiator/1.2.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:packagist/phpdocumentor%2Ftype-resolver/0.4.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -620,11 +509,43 @@
           "name": "packagist",
           "separator": ":"
         },
-        "name": "phpdocumentor/reflection-common",
-        "version": "1.0.1"
+        "pieces": [
+          "phpdocumentor/reflection-common",
+          "1.0.1"
+        ]
       }
     },
     "relationship": [
+      {
+        "related": "http:packagist/phpunit%2Fphpunit/5.5.4",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "phpdocumentor/type-resolver",
+    "revision": "0.4.0",
+    "@id": "http:packagist/phpdocumentor%2Ftype-resolver/0.4.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "packagist",
+      "externalId": "phpdocumentor/type-resolver:0.4.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "packagist",
+          "separator": ":"
+        },
+        "pieces": [
+          "phpdocumentor/type-resolver",
+          "0.4.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:packagist/phpdocumentor%2Freflection-common/1.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
       {
         "related": "http:packagist/phpunit%2Fphpunit/5.5.4",
         "relationshipType": "DYNAMIC_LINK"
@@ -644,8 +565,10 @@
           "name": "packagist",
           "separator": ":"
         },
-        "name": "webmozart/assert",
-        "version": "1.5.0"
+        "pieces": [
+          "webmozart/assert",
+          "1.5.0"
+        ]
       }
     },
     "relationship": [
@@ -655,53 +578,6 @@
       },
       {
         "related": "http:packagist/symfony%2Fpolyfill-ctype/v1.12.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "symfony/polyfill-ctype",
-    "revision": "v1.12.0",
-    "@id": "http:packagist/symfony%2Fpolyfill-ctype/v1.12.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "packagist",
-      "externalId": "symfony/polyfill-ctype:v1.12.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "packagist",
-          "separator": ":"
-        },
-        "name": "symfony/polyfill-ctype",
-        "version": "v1.12.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "phpdocumentor/type-resolver",
-    "revision": "0.4.0",
-    "@id": "http:packagist/phpdocumentor%2Ftype-resolver/0.4.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "packagist",
-      "externalId": "phpdocumentor/type-resolver:0.4.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "packagist",
-          "separator": ":"
-        },
-        "name": "phpdocumentor/type-resolver",
-        "version": "0.4.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:packagist/phpdocumentor%2Freflection-common/1.0.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:packagist/phpunit%2Fphpunit/5.5.4",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -719,37 +595,15 @@
           "name": "packagist",
           "separator": ":"
         },
-        "name": "phpunit/php-timer",
-        "version": "1.0.9"
+        "pieces": [
+          "phpunit/php-timer",
+          "1.0.9"
+        ]
       }
     },
     "relationship": [
       {
         "related": "http:packagist/phpunit%2Fphpunit/5.5.4",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "symfony/yaml",
-    "revision": "v3.4.31",
-    "@id": "http:packagist/symfony%2Fyaml/v3.4.31",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "packagist",
-      "externalId": "symfony/yaml:v3.4.31",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "packagist",
-          "separator": ":"
-        },
-        "name": "symfony/yaml",
-        "version": "v3.4.31"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:packagist/symfony%2Fpolyfill-ctype/v1.12.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -767,11 +621,242 @@
           "name": "packagist",
           "separator": ":"
         },
-        "name": "sebastian/resource-operations",
-        "version": "1.0.0"
+        "pieces": [
+          "sebastian/resource-operations",
+          "1.0.0"
+        ]
       }
     },
     "relationship": []
+  },
+  {
+    "name": "phpunit/php-code-coverage",
+    "revision": "4.0.8",
+    "@id": "http:packagist/phpunit%2Fphp-code-coverage/4.0.8",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "packagist",
+      "externalId": "phpunit/php-code-coverage:4.0.8",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "packagist",
+          "separator": ":"
+        },
+        "pieces": [
+          "phpunit/php-code-coverage",
+          "4.0.8"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:packagist/sebastian%2Fversion/2.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:packagist/sebastian%2Fenvironment/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:packagist/phpunit%2Fphp-token-stream/2.0.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:packagist/phpunit%2Fphpunit/5.5.4",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:packagist/phpunit%2Fphp-text-template/1.2.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:packagist/phpunit%2Fphp-file-iterator/1.4.5",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:packagist/sebastian%2Fcode-unit-reverse-lookup/1.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "sebastian/version",
+    "revision": "2.0.1",
+    "@id": "http:packagist/sebastian%2Fversion/2.0.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "packagist",
+      "externalId": "sebastian/version:2.0.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "packagist",
+          "separator": ":"
+        },
+        "pieces": [
+          "sebastian/version",
+          "2.0.1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "phpunit/php-token-stream",
+    "revision": "2.0.2",
+    "@id": "http:packagist/phpunit%2Fphp-token-stream/2.0.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "packagist",
+      "externalId": "phpunit/php-token-stream:2.0.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "packagist",
+          "separator": ":"
+        },
+        "pieces": [
+          "phpunit/php-token-stream",
+          "2.0.2"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:packagist/phpunit%2Fphpunit/5.5.4",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "phpunit/php-text-template",
+    "revision": "1.2.1",
+    "@id": "http:packagist/phpunit%2Fphp-text-template/1.2.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "packagist",
+      "externalId": "phpunit/php-text-template:1.2.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "packagist",
+          "separator": ":"
+        },
+        "pieces": [
+          "phpunit/php-text-template",
+          "1.2.1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "phpunit/php-file-iterator",
+    "revision": "1.4.5",
+    "@id": "http:packagist/phpunit%2Fphp-file-iterator/1.4.5",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "packagist",
+      "externalId": "phpunit/php-file-iterator:1.4.5",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "packagist",
+          "separator": ":"
+        },
+        "pieces": [
+          "phpunit/php-file-iterator",
+          "1.4.5"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "sebastian/code-unit-reverse-lookup",
+    "revision": "1.0.1",
+    "@id": "http:packagist/sebastian%2Fcode-unit-reverse-lookup/1.0.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "packagist",
+      "externalId": "sebastian/code-unit-reverse-lookup:1.0.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "packagist",
+          "separator": ":"
+        },
+        "pieces": [
+          "sebastian/code-unit-reverse-lookup",
+          "1.0.1"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:packagist/phpunit%2Fphpunit/5.5.4",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "sebastian/global-state",
+    "revision": "1.1.1",
+    "@id": "http:packagist/sebastian%2Fglobal-state/1.1.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "packagist",
+      "externalId": "sebastian/global-state:1.1.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "packagist",
+          "separator": ":"
+        },
+        "pieces": [
+          "sebastian/global-state",
+          "1.1.1"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:packagist/phpunit%2Fphpunit/5.5.4",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "phpunit/phpunit-mock-objects",
+    "revision": "3.4.4",
+    "@id": "http:packagist/phpunit%2Fphpunit-mock-objects/3.4.4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "packagist",
+      "externalId": "phpunit/phpunit-mock-objects:3.4.4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "packagist",
+          "separator": ":"
+        },
+        "pieces": [
+          "phpunit/phpunit-mock-objects",
+          "3.4.4"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:packagist/sebastian%2Fexporter/1.2.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:packagist/phpunit%2Fphpunit/5.5.4",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:packagist/phpunit%2Fphp-text-template/1.2.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:packagist/doctrine%2Finstantiator/1.2.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
   },
   {
     "name": "myclabs/deep-copy",
@@ -786,41 +871,15 @@
           "name": "packagist",
           "separator": ":"
         },
-        "name": "myclabs/deep-copy",
-        "version": "1.9.3"
+        "pieces": [
+          "myclabs/deep-copy",
+          "1.9.3"
+        ]
       }
     },
     "relationship": [
       {
         "related": "http:packagist/phpunit%2Fphpunit/5.5.4",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "sebastian/object-enumerator",
-    "revision": "1.0.0",
-    "@id": "http:packagist/sebastian%2Fobject-enumerator/1.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "packagist",
-      "externalId": "sebastian/object-enumerator:1.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "packagist",
-          "separator": ":"
-        },
-        "name": "sebastian/object-enumerator",
-        "version": "1.0.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:packagist/phpunit%2Fphpunit/5.5.4",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:packagist/sebastian%2Frecursion-context/1.0.5",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]

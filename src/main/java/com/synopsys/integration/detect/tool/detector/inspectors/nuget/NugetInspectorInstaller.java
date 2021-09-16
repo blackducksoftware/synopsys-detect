@@ -31,6 +31,11 @@ public class NugetInspectorInstaller {
         this.artifactResolver = artifactResolver;
     }
 
+    public File installDotNet5(final File destination, @Nullable final String overrideVersion) throws DetectableException {
+        logger.debug("Will attempt to resolve the dotnet5 inspector version.");
+        return installInspector(destination, overrideVersion, ArtifactoryConstants.NUGET_DOTNET5_INSPECTOR_REPO, ArtifactoryConstants.NUGET_DOTNET5_INSPECTOR_PROPERTY, ArtifactoryConstants.NUGET_DOTNET5_INSPECTOR_VERSION_OVERRIDE);
+    }
+
     public File installDotNet3(final File destination, @Nullable final String overrideVersion) throws DetectableException {
         logger.debug("Will attempt to resolve the dotnet3 inspector version.");
         return installInspector(destination, overrideVersion, ArtifactoryConstants.NUGET_DOTNET3_INSPECTOR_REPO, ArtifactoryConstants.NUGET_DOTNET3_INSPECTOR_PROPERTY, ArtifactoryConstants.NUGET_DOTNET3_INSPECTOR_VERSION_OVERRIDE);

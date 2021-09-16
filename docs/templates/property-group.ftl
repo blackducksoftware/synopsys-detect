@@ -84,7 +84,7 @@ ${option.description}
 
 ${option.detailedDescription!""}
 
-**DEPRECATED: ${option.deprecatedDescription!"This property is deprecated."} It will cause failure in ${option.deprecatedFailInVersion} and be removed in ${option.deprecatedRemoveInVersion}.**
+**DEPRECATED: ${option.deprecatedDescription!"This property is deprecated."} It will be removed in ${option.deprecatedRemoveInVersion}.**
 
 |Details||
 |---|---|

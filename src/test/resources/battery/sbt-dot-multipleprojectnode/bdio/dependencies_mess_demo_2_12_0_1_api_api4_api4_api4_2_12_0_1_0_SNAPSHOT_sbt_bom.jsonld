@@ -1,0 +1,30 @@
+[
+  {
+    "specVersion": "1.1.0",
+    "spdx:name": "dependencies-mess-demo_2.12/0.1/api/api4/api4/api4_2.12/0.1.0-SNAPSHOT sbt/bom",
+    "@type": "BillOfMaterials",
+    "relationship": []
+  },
+  {
+    "name": "dependencies-mess-demo_2.12",
+    "revision": "0.1",
+    "@id": "http:maven/api4/api4_2.12/0.1.0-SNAPSHOT",
+    "@type": "Project",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "api4:api4_2.12:0.1.0-SNAPSHOT",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "api4_2.12",
+          "0.1.0-SNAPSHOT"
+        ],
+        "prefix": "api4"
+      }
+    },
+    "relationship": []
+  }
+]

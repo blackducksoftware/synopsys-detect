@@ -10,6 +10,7 @@ package com.synopsys.integration.detect.workflow.blackduck.policy;
 import java.util.List;
 import java.util.Optional;
 
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentVersionView;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,13 +67,13 @@ public class PolicyChecker {
     public void fetchAndLogPolicyViolations(ProjectVersionView projectVersionView) throws IntegrationException {
         logger.info("Searching BOM for components in violation of policy rules.");
 
-        List<ProjectVersionComponentView> bomComponents = projectBomService.getComponentsForProjectVersion(projectVersionView);
-        for (ProjectVersionComponentView projectVersionComponentView : bomComponents) {
+        List<ProjectVersionComponentVersionView> bomComponents = projectBomService.getComponentsForProjectVersion(projectVersionView);
+        for (ProjectVersionComponentVersionView projectVersionComponentView : bomComponents) {
             if (projectVersionComponentView.getPolicyStatus().equals(ProjectVersionComponentPolicyStatusType.NOT_IN_VIOLATION)) {
                 continue;
             }
 
-            for (ComponentPolicyRulesView componentPolicyRulesView : blackDuckService.getAllResponses(projectVersionComponentView, ProjectVersionComponentView.POLICY_RULES_LINK_RESPONSE)) {
+            for (ComponentPolicyRulesView componentPolicyRulesView : blackDuckService.getAllResponses(projectVersionComponentView.metaPolicyRulesLink())) {
                 String componentId = projectVersionComponentView.getComponentName();
                 if (StringUtils.isNotBlank(projectVersionComponentView.getComponentVersionName())) {
                     componentId += ":" + projectVersionComponentView.getComponentVersionName();

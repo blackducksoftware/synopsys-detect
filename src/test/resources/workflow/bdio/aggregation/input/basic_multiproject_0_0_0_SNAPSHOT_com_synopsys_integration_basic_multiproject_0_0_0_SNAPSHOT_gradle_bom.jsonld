@@ -1,0 +1,118 @@
+[
+  {
+    "specVersion": "1.1.0",
+    "spdx:name": "basic-multiproject/0.0.0-SNAPSHOT/com.synopsys.integration/basic-multiproject/0.0.0-SNAPSHOT gradle/bom",
+    "creationInfo": {
+      "spdx:creator": [
+        "Tool: Detect-6.9.1",
+        "Tool: IntegrationBdio-22.0.2"
+      ],
+      "spdx:created": "2021-05-07T20:45:53.311Z"
+    },
+    "@id": "uuid:eae7e181-2c55-450d-953d-1ca4077fa1ad",
+    "@type": "BillOfMaterials",
+    "relationship": []
+  },
+  {
+    "name": "basic-multiproject",
+    "revision": "0.0.0-SNAPSHOT",
+    "@id": "http:maven/com.synopsys.integration/basic-multiproject/0.0.0-SNAPSHOT",
+    "@type": "Project",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.synopsys.integration:basic-multiproject:0.0.0-SNAPSHOT",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "basic-multiproject",
+          "0.0.0-SNAPSHOT"
+        ],
+        "prefix": "com.synopsys.integration"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/junit/junit/4.12",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/joda-time/joda-time/2.2",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "junit",
+    "revision": "4.12",
+    "@id": "http:maven/junit/junit/4.12",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "junit:junit:4.12",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "junit",
+          "4.12"
+        ],
+        "prefix": "junit"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.hamcrest/hamcrest-core/1.3",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "hamcrest-core",
+    "revision": "1.3",
+    "@id": "http:maven/org.hamcrest/hamcrest-core/1.3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.hamcrest:hamcrest-core:1.3",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "hamcrest-core",
+          "1.3"
+        ],
+        "prefix": "org.hamcrest"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "joda-time",
+    "revision": "2.2",
+    "@id": "http:maven/joda-time/joda-time/2.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "joda-time:joda-time:2.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "joda-time",
+          "2.2"
+        ],
+        "prefix": "joda-time"
+      }
+    },
+    "relationship": []
+  }
+]

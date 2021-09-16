@@ -1,0 +1,29 @@
+[
+  {
+    "specVersion": "1.1.0",
+    "spdx:name": "simple/1.0.0/yarn-workspaces-excludedev yarn/bom",
+    "@type": "BillOfMaterials",
+    "relationship": []
+  },
+  {
+    "name": "simple",
+    "revision": "1.0.0",
+    "@id": "http:detect/yarn-workspaces-excludedev",
+    "@type": "Project",
+    "externalIdentifier": {
+      "externalSystemTypeId": "detect",
+      "externalId": "yarn-workspaces-excludedev",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "detect",
+          "separator": "/"
+        },
+        "pieces": [
+          "yarn-workspaces-excludedev",
+          null
+        ]
+      }
+    },
+    "relationship": []
+  }
+]

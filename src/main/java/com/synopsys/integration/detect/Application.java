@@ -9,6 +9,8 @@ package com.synopsys.integration.detect;
 
 import java.io.File;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
@@ -23,27 +25,34 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.common.util.finder.FileFinder;
+import com.synopsys.integration.common.util.finder.SimpleFileFinder;
+import com.synopsys.integration.configuration.source.PropertySource;
+import com.synopsys.integration.configuration.source.SpringConfigurationPropertySource;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectInfoUtility;
-import com.synopsys.integration.detect.lifecycle.DetectContext;
+import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
+import com.synopsys.integration.detect.configuration.help.DetectArgumentStateParser;
 import com.synopsys.integration.detect.lifecycle.boot.DetectBoot;
 import com.synopsys.integration.detect.lifecycle.boot.DetectBootFactory;
 import com.synopsys.integration.detect.lifecycle.boot.DetectBootResult;
 import com.synopsys.integration.detect.lifecycle.exit.ExitManager;
 import com.synopsys.integration.detect.lifecycle.exit.ExitOptions;
 import com.synopsys.integration.detect.lifecycle.exit.ExitResult;
-import com.synopsys.integration.detect.lifecycle.run.RunContext;
-import com.synopsys.integration.detect.lifecycle.run.RunManager;
+import com.synopsys.integration.detect.lifecycle.run.DetectRun;
+import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
+import com.synopsys.integration.detect.lifecycle.run.singleton.BootSingletons;
 import com.synopsys.integration.detect.lifecycle.shutdown.CleanupUtility;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeManager;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeUtility;
 import com.synopsys.integration.detect.lifecycle.shutdown.ShutdownDecider;
 import com.synopsys.integration.detect.lifecycle.shutdown.ShutdownDecision;
 import com.synopsys.integration.detect.lifecycle.shutdown.ShutdownManager;
-import com.synopsys.integration.detect.workflow.DetectRun;
+import com.synopsys.integration.detect.workflow.DetectRunId;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
+import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
 import com.synopsys.integration.detect.workflow.report.ReportListener;
 import com.synopsys.integration.detect.workflow.report.output.FormattedOutputManager;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
@@ -94,25 +103,27 @@ public class Application implements ApplicationRunner {
 
         //Before boot even begins, we create a new Spring context for Detect to work within.
         logger.debug("Initializing detect.");
-        DetectRun detectRun = DetectRun.createDefault();
-        DetectContext detectContext = new DetectContext(detectRun);
+        DetectRunId detectRunId = DetectRunId.createDefault();
 
         Gson gson = BlackDuckServicesFactory.createDefaultGsonBuilder().setPrettyPrinting().create();
         DetectInfo detectInfo = DetectInfoUtility.createDefaultDetectInfo();
-        detectContext.registerBean(gson);
-        detectContext.registerBean(detectInfo);
+        FileFinder fileFinder = new SimpleFileFinder();
 
-        boolean printOutput = true;
         boolean shouldForceSuccess = false;
 
-        Optional<DetectBootResult> detectBootResultOptional = bootApplication(detectRun, applicationArguments.getSourceArgs(), eventSystem, detectContext, exitCodeManager, gson, detectInfo);
+        Optional<DetectBootResult> detectBootResultOptional = bootApplication(detectRunId, applicationArguments.getSourceArgs(), eventSystem, exitCodeManager, gson, detectInfo, fileFinder);
 
         if (detectBootResultOptional.isPresent()) {
             DetectBootResult detectBootResult = detectBootResultOptional.get();
-            printOutput = detectBootResult.shouldPrintOutput();
             shouldForceSuccess = detectBootResult.shouldForceSuccess();
 
-            runApplication(detectContext, detectRun, eventSystem, exitCodeManager, detectBootResult);
+            runApplication(eventSystem, exitCodeManager, detectBootResult);
+            
+            detectBootResult.getProductRunData()
+                .filter(ProductRunData::shouldUseBlackDuckProduct)
+                .map(ProductRunData::getBlackDuckRunData)
+                .flatMap(BlackDuckRunData::getPhoneHomeManager)
+                .ifPresent(PhoneHomeManager::phoneHomeOperations);
 
             //Create status output file.
             logger.info("");
@@ -126,16 +137,21 @@ public class Application implements ApplicationRunner {
 
         logger.debug("All Detect actions completed.");
 
-        exitApplication(exitManager, startTime, printOutput, shouldForceSuccess);
+        exitApplication(exitManager, startTime, shouldForceSuccess);
     }
 
-    private Optional<DetectBootResult> bootApplication(DetectRun detectRun, String[] sourceArgs, EventSystem eventSystem, DetectContext detectContext, ExitCodeManager exitCodeManager, Gson gson, DetectInfo detectInfo) {
+    private Optional<DetectBootResult> bootApplication(DetectRunId detectRunId, String[] sourceArgs, EventSystem eventSystem, ExitCodeManager exitCodeManager, Gson gson, DetectInfo detectInfo,
+        FileFinder fileFinder) {
         Optional<DetectBootResult> bootResult = Optional.empty();
         try {
             logger.debug("Detect boot begin.");
+            DetectArgumentStateParser detectArgumentStateParser = new DetectArgumentStateParser();
+            DetectArgumentState detectArgumentState = detectArgumentStateParser.parseArgs(sourceArgs);
+            List<PropertySource> propertySources = new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironmentSafely(environment, logger::error));
 
-            DetectBootFactory detectBootFactory = new DetectBootFactory(detectRun, detectInfo, gson, eventSystem);
-            DetectBoot detectBoot = detectBootFactory.createDetectBoot(detectBootFactory.createPropertySourcesFromEnvironment(environment), sourceArgs, detectContext);
+            DetectBootFactory detectBootFactory = new DetectBootFactory(detectRunId, detectInfo, gson, eventSystem, fileFinder);
+            DetectBoot detectBoot = new DetectBoot(eventSystem, gson, detectBootFactory, detectArgumentState, propertySources);
+
             bootResult = detectBoot.boot(detectInfo.getDetectVersion());
 
             logger.debug("Detect boot completed.");
@@ -146,14 +162,13 @@ public class Application implements ApplicationRunner {
         return bootResult;
     }
 
-    private void runApplication(DetectContext detectContext, DetectRun detectRun, EventSystem eventSystem, ExitCodeManager exitCodeManager, DetectBootResult detectBootResult) {
+    private void runApplication(EventSystem eventSystem, ExitCodeManager exitCodeManager, DetectBootResult detectBootResult) {
+        Optional<BootSingletons> optionalRunContext = detectBootResult.getBootSingletons();
         Optional<ProductRunData> optionalProductRunData = detectBootResult.getProductRunData();
-        if (detectBootResult.getBootType() == DetectBootResult.BootType.RUN && optionalProductRunData.isPresent()) {
+        if (detectBootResult.getBootType() == DetectBootResult.BootType.RUN && optionalProductRunData.isPresent() && optionalRunContext.isPresent()) {
             logger.debug("Detect will attempt to run.");
-            ProductRunData productRunData = optionalProductRunData.get();
-            RunManager runManager = new RunManager(exitCodeManager);
-            RunContext runContext = new RunContext(detectContext, productRunData);
-            runManager.run(runContext);
+            DetectRun detectRun = new DetectRun(exitCodeManager);
+            detectRun.run(optionalRunContext.get());
 
         } else {
             logger.debug("Detect will NOT attempt to run.");
@@ -190,8 +205,8 @@ public class Application implements ApplicationRunner {
         }
     }
 
-    private void exitApplication(ExitManager exitManager, long startTime, boolean printOutput, boolean shouldForceSuccess) {
-        ExitOptions exitOptions = new ExitOptions(startTime, printOutput, shouldForceSuccess, SHOULD_EXIT);
+    private void exitApplication(ExitManager exitManager, long startTime, boolean shouldForceSuccess) {
+        ExitOptions exitOptions = new ExitOptions(startTime, shouldForceSuccess, SHOULD_EXIT);
         ExitResult exitResult = exitManager.exit(exitOptions);
 
         if (exitResult.shouldForceSuccess()) {

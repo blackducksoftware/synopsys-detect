@@ -30,86 +30,35 @@ package com.synopsys.integration.detect.lifecycle.boot.decision;
  * under the License.
  */
 
-import java.io.File;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.builder.BuilderStatus;
-import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
-import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
-import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
-import com.synopsys.integration.detect.lifecycle.run.RunOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
-import com.synopsys.integration.detect.util.filter.DetectToolFilter;
-import com.synopsys.integration.polaris.common.configuration.PolarisServerConfigBuilder;
+import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 
 public class ProductDecider {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public ProductDecision decide(DetectConfigurationFactory detectConfigurationFactory, File userHome, DetectToolFilter detectToolFilter) throws DetectUserFriendlyException {
-        BlackDuckConnectionDetails blackDuckConnectionDetails = detectConfigurationFactory.createBlackDuckConnectionDetails();
-        BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions();
-        RunOptions runOptions = detectConfigurationFactory.createRunOptions();
-        return new ProductDecision(determineBlackDuck(blackDuckConnectionDetails, blackDuckSignatureScannerOptions, runOptions),
-            determinePolaris(detectConfigurationFactory, userHome, detectToolFilter, runOptions));
-    }
-
-    public PolarisDecision determinePolaris(DetectConfigurationFactory detectConfigurationFactory, File userHome, DetectToolFilter detectToolFilter, RunOptions runOptions) {
-        if (!detectToolFilter.shouldInclude(DetectTool.POLARIS)) {
-            logger.debug("Polaris will NOT run because it is excluded.");
-            return PolarisDecision.skip();
-        }
-
-        if (runOptions.shouldPerformRapidModeScan()) {
-            logger.debug("Polaris will NOT run because BlackDuck {} scan configured.", BlackduckScanMode.RAPID.name());
-            return PolarisDecision.skip();
-        }
-
-        PolarisServerConfigBuilder polarisServerConfigBuilder = detectConfigurationFactory.createPolarisServerConfigBuilder(userHome);
-        BuilderStatus builderStatus = polarisServerConfigBuilder.validateAndGetBuilderStatus();
-        if (!builderStatus.isValid()) {
-            String polarisUrl = polarisServerConfigBuilder.getUrl();
-            if (StringUtils.isBlank(polarisUrl)) {
-                logger.debug("Polaris will NOT run: The Polaris url must be provided.");
-            } else {
-                logger.debug("Polaris will NOT run: " + builderStatus.getFullErrorMessage());
-            }
-            return PolarisDecision.skip();
-        } else {
-            logger.debug("Polaris will run: An access token and url were found.");
-            return PolarisDecision.runOnline(polarisServerConfigBuilder.build());
-        }
-    }
-
-    public BlackDuckDecision determineBlackDuck(BlackDuckConnectionDetails blackDuckConnectionDetails, BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, RunOptions runOptions) {
+    public BlackDuckDecision decideBlackDuck(BlackDuckConnectionDetails blackDuckConnectionDetails, BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, BlackduckScanMode scanMode, BdioOptions bdioOptions) {
         boolean offline = blackDuckConnectionDetails.getOffline();
         Optional<String> blackDuckUrl = blackDuckConnectionDetails.getBlackDuckUrl();
-        Optional<String> signatureScannerHostUrl = blackDuckSignatureScannerOptions.getUserProvidedScannerInstallUrl();
-        Optional<Path> signatureScannerOfflineLocalPath = blackDuckSignatureScannerOptions.getOfflineLocalScannerInstallPath();
-        if (offline && runOptions.shouldPerformRapidModeScan()) {
-            logger.debug("Black Duck will NOT run: Black Duck offline mode is set to true and Black Duck {} scan is enabled which requires online mode", BlackduckScanMode.RAPID.name());
+        if (scanMode == BlackduckScanMode.RAPID && !bdioOptions.isBdio2Enabled()) {
+            logger.debug("Black Duck will NOT run: Detect will not generate BDIO2 files and Black Duck {} scan is enabled which requires BDIO2 file generation", scanMode.name());
+            return BlackDuckDecision.skip();
+        } else if (scanMode == BlackduckScanMode.INTELLIGENT && !bdioOptions.isBdio2Enabled() && !bdioOptions.isLegacyUploadEnabled()) {
+            logger.debug("Black Duck will NOT run: Detect will not generate BDIO2 files and Black Duck {} scan is enabled which requires BDIO2 file generation", scanMode.name());
             return BlackDuckDecision.skip();
         } else if (offline) {
             logger.debug("Black Duck will run: Black Duck offline mode was set to true.");
             return BlackDuckDecision.runOffline();
-        } else if ((runOptions.getScanMode() == BlackduckScanMode.RAPID || runOptions.getScanMode() == BlackduckScanMode.INTELLIGENT) && !runOptions.shouldUseBdio2()) {
-            logger.debug("Black Duck will NOT run: Detect will not generate BDIO2 files and Black Duck {} scan is enabled which requires BDIO2 file generation", runOptions.getScanMode().name());
-            return BlackDuckDecision.skip();
-        } else if (signatureScannerHostUrl.isPresent()) {
-            logger.info("A Black Duck signature scanner url was provided, which requires Black Duck offline mode.");
-            return BlackDuckDecision.runOffline();
-        } else if (signatureScannerOfflineLocalPath.isPresent()) {
-            logger.info("A local Black Duck signature scanner path was provided, which requires Black Duck offline mode.");
-            return BlackDuckDecision.runOffline();
         } else if (blackDuckUrl.isPresent()) {
-            logger.debug("Black Duck will run: A Black Duck url was found.");
-            return BlackDuckDecision.runOnline();
+            logger.debug("Black Duck will run ONLINE: A Black Duck url was found.");
+            return BlackDuckDecision.runOnline(scanMode);
         } else {
             logger.debug("Black Duck will NOT run: The Black Duck url must be provided or offline mode must be set to true.");
             return BlackDuckDecision.skip();

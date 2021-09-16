@@ -1,21 +1,13 @@
 [
   {
     "specVersion": "1.1.0",
-    "spdx:name": "rails/rails/main/rails rubygems/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-6.9.0-SNAPSHOT",
-        "Tool: IntegrationBdio-22.0.2"
-      ],
-      "spdx:created": "2021-01-28T11:42:49.917486Z"
-    },
-    "@id": "uuid:bb16d503-4852-47b9-85ec-a690e0b20d2a",
+    "spdx:name": "rails/Default Detect Version/rails rubygems/bom",
     "@type": "BillOfMaterials",
     "relationship": []
   },
   {
-    "name": "rails/rails",
-    "revision": "main",
+    "name": "rails",
+    "revision": "Default Detect Version",
     "@id": "http:detect/rails",
     "@type": "Project",
     "externalIdentifier": {

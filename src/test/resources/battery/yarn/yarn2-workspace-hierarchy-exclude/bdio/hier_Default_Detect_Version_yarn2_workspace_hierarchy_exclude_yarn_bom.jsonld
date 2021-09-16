@@ -1,0 +1,29 @@
+[
+  {
+    "specVersion": "1.1.0",
+    "spdx:name": "hier/Default Detect Version/yarn2-workspace-hierarchy-exclude yarn/bom",
+    "@type": "BillOfMaterials",
+    "relationship": []
+  },
+  {
+    "name": "hier",
+    "revision": "Default Detect Version",
+    "@id": "http:detect/yarn2-workspace-hierarchy-exclude",
+    "@type": "Project",
+    "externalIdentifier": {
+      "externalSystemTypeId": "detect",
+      "externalId": "yarn2-workspace-hierarchy-exclude",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "detect",
+          "separator": "/"
+        },
+        "pieces": [
+          "yarn2-workspace-hierarchy-exclude",
+          null
+        ]
+      }
+    },
+    "relationship": []
+  }
+]

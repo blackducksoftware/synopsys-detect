@@ -10,7 +10,6 @@ package com.synopsys.integration.detect.tool.detector;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
@@ -19,19 +18,18 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.tool.detector.extraction.ExtractionEnvironmentProvider;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
-import com.synopsys.integration.detect.workflow.nameversion.DetectorNameVersionHandler;
-import com.synopsys.integration.detect.workflow.nameversion.PreferredDetectorNameVersionHandler;
+import com.synopsys.integration.detect.workflow.nameversion.DetectorEvaluationNameVersionDecider;
+import com.synopsys.integration.detect.workflow.nameversion.DetectorNameVersionDecider;
 import com.synopsys.integration.detect.workflow.report.util.DetectorEvaluationUtils;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.status.DetectorStatus;
@@ -45,11 +43,10 @@ import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.evaluation.DetectorAggregateEvaluationResult;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluator;
-import com.synopsys.integration.detector.evaluation.DiscoveryFilter;
 import com.synopsys.integration.detector.finder.DetectorFinder;
-import com.synopsys.integration.detector.finder.DetectorFinderDirectoryListException;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
+import com.synopsys.integration.util.NameVersion;
 
 public class DetectorTool {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -75,17 +72,12 @@ public class DetectorTool {
     }
 
     public DetectorToolResult performDetectors(File directory, DetectorRuleSet detectorRuleSet, DetectorFinderOptions detectorFinderOptions, DetectorEvaluationOptions evaluationOptions, String projectDetector,
-        List<DetectorType> requiredDetectors)
-        throws DetectUserFriendlyException {
+        List<DetectorType> requiredDetectors, FileFinder fileFinder) {
         logger.debug("Initializing detector system.");
         Optional<DetectorEvaluationTree> possibleRootEvaluation;
-        try {
-            logger.debug("Starting detector file system traversal.");
-            possibleRootEvaluation = detectorFinder.findDetectors(directory, detectorRuleSet, detectorFinderOptions);
 
-        } catch (DetectorFinderDirectoryListException e) {
-            throw new DetectUserFriendlyException("Detect was unable to list a directory while searching for detectors.", e, ExitCodeType.FAILURE_DETECTOR);
-        }
+        logger.debug("Starting detector file system traversal.");
+        possibleRootEvaluation = detectorFinder.findDetectors(directory, detectorRuleSet, detectorFinderOptions, fileFinder);
 
         if (!possibleRootEvaluation.isPresent()) {
             logger.error("The source directory could not be searched for detectors - detector tool failed.");
@@ -98,15 +90,14 @@ public class DetectorTool {
         List<DetectorEvaluation> detectorEvaluations = rootEvaluation.allDescendentEvaluations();
 
         logger.trace("Setting up detector events.");
-        DetectorNameVersionHandler detectorNameVersionHandler = createNameVersionHandler(projectDetector);
-        DiscoveryFilter discoveryFilter = new DetectDiscoveryFilter(eventSystem, detectorNameVersionHandler);
+        //DetectorNameVersionHandler detectorNameVersionHandler = createNameVersionHandler(projectDetector);
         DetectorEvaluatorBroadcaster eventBroadcaster = new DetectorEvaluatorBroadcaster(eventSystem);
 
-        DetectorEvaluator detectorEvaluator = new DetectorEvaluator(evaluationOptions, extractionEnvironmentProvider::createExtractionEnvironment, discoveryFilter);
+        DetectorEvaluator detectorEvaluator = new DetectorEvaluator(evaluationOptions, extractionEnvironmentProvider::createExtractionEnvironment);
         detectorEvaluator.setDetectorEvaluatorListener(eventBroadcaster);
 
         detectorEvaluator.registerPostApplicableCallback(detectorAggregateEvaluationResult -> {
-            detectorEventPublisher.publishApplicableCompleted(detectorAggregateEvaluationResult.getApplicableDetectorTypes());
+            detectorEventPublisher.publishApplicableCompleted(detectorAggregateEvaluationResult.getApplicableDetectorTypesRecursively());
             detectorEventPublisher.publishSearchCompleted(detectorAggregateEvaluationResult.getEvaluationTree());
             logger.info("");
         });
@@ -117,18 +108,15 @@ public class DetectorTool {
 
             Integer extractionCount = detectorAggregateEvaluationResult.getExtractionCount();
             detectorEventPublisher.publishExtractionCount(extractionCount);
-            detectorEventPublisher.publishDiscoveryCount(extractionCount); //right now discovery and extraction are the same. -jp 8/14/19
 
             logger.debug("Total number of detectors: {}", extractionCount);
         });
-
-        detectorEvaluator.registerPostDiscoveryCallback(detectorAggregateEvaluationResult -> detectorEventPublisher.publishDiscoveriesCompleted(detectorAggregateEvaluationResult.getEvaluationTree()));
 
         detectorEvaluator.registerPostExtractionCallback(detectorAggregateEvaluationResult -> detectorEventPublisher.publishExtractionsCompleted(detectorAggregateEvaluationResult.getEvaluationTree()));
 
         DetectorAggregateEvaluationResult evaluationResult = detectorEvaluator.evaluate(rootEvaluation);
 
-        logger.debug("Finished detectors.");
+        logger.debug("Finished detectors."); // TODO- finished extractions?
 
         printExplanations(rootEvaluation);
 
@@ -136,12 +124,16 @@ public class DetectorTool {
         publishStatusEvents(statusMap);
         publishFileEvents(detectorEvaluations);
         detectorIssuePublisher.publishEvents(statusEventPublisher, rootEvaluation);
-        publishMissingDetectorEvents(requiredDetectors, evaluationResult.getApplicableDetectorTypes());
+        publishMissingDetectorEvents(requiredDetectors, evaluationResult.getApplicableDetectorTypesRecursively());
 
         Map<CodeLocation, DetectCodeLocation> codeLocationMap = createCodeLocationMap(detectorEvaluations, directory);
 
+        DetectorEvaluationNameVersionDecider detectorEvaluationNameVersionDecider = new DetectorEvaluationNameVersionDecider(new DetectorNameVersionDecider());
+        Optional<NameVersion> bomToolProjectNameVersion = detectorEvaluationNameVersionDecider.decideSuggestion(detectorEvaluations, projectDetector);
+        logger.debug("Finished evaluating detectors for project info.");
+
         DetectorToolResult detectorToolResult = new DetectorToolResult(
-            detectorNameVersionHandler.finalDecision().getChosenNameVersion().orElse(null),
+            bomToolProjectNameVersion.orElse(null),
             new ArrayList<>(codeLocationMap.values()),
             evaluationResult.getApplicableDetectorTypes(),
             new HashSet<>(),
@@ -179,35 +171,6 @@ public class DetectorTool {
         logger.info(ReportConstants.RUN_SEPARATOR);
     }
 
-    private DetectorNameVersionHandler createNameVersionHandler(String projectDetector) {
-        Optional<DetectorType> preferredProjectDetector = Optional.empty();
-        if (StringUtils.isNotBlank(projectDetector)) {
-            preferredProjectDetector = preferredDetectorTypeFromString(projectDetector);
-        }
-
-        DetectorNameVersionHandler detectorNameVersionHandler;
-        if (preferredProjectDetector.isPresent()) {
-            detectorNameVersionHandler = new PreferredDetectorNameVersionHandler(preferredProjectDetector.get());
-        } else {
-            detectorNameVersionHandler = new DetectorNameVersionHandler(Collections.singletonList(DetectorType.GIT));
-        }
-
-        return detectorNameVersionHandler;
-    }
-
-    private Optional<DetectorType> preferredDetectorTypeFromString(String detectorTypeRaw) {
-        String detectorType = detectorTypeRaw.trim().toUpperCase();
-        if (StringUtils.isNotBlank(detectorType)) {
-            if (DetectorType.getPossibleNames().contains(detectorType)) {
-                return Optional.of(DetectorType.valueOf(detectorType));
-            } else {
-                logger.info("A valid preferred detector type was not provided, deciding project name automatically.");
-                return Optional.empty();
-            }
-        }
-        return Optional.empty();
-    }
-
     private Map<DetectorType, StatusType> extractStatus(List<DetectorEvaluation> detectorEvaluations) {
         EnumMap<DetectorType, StatusType> statusMap = new EnumMap<>(DetectorType.class);
         for (DetectorEvaluation detectorEvaluation : detectorEvaluations) {
@@ -237,8 +200,6 @@ public class DetectorTool {
                         logger.warn("An issue occurred in the detector system, an unknown evaluation status was created. Please contact support.");
                     }
                 }
-            } else if (detectorEvaluation.isFallbackExtractable() || detectorEvaluation.isPreviousExtractable()) {
-                statusType = StatusType.SUCCESS;
             } else {
                 statusType = StatusType.FAILURE;
             }

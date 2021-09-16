@@ -58,7 +58,7 @@ public class NpmDevExclusionTest {
 
     @Test
     public void testDevDependencyNotExists() {
-        NpmParseResult result = npmLockfileParser.parse(packageJsonText, packageLockText, false);
+        NpmParseResult result = npmLockfileParser.parse(packageJsonText, packageLockText, false, false);
         GraphAssert graphAssert = new GraphAssert(Forge.NPMJS, result.getCodeLocation().getDependencyGraph());
         graphAssert.hasNoDependency(childDev);
         graphAssert.hasNoDependency(parentDev);
@@ -67,7 +67,7 @@ public class NpmDevExclusionTest {
 
     @Test
     public void testDevDependencyExists() {
-        NpmParseResult result = npmLockfileParser.parse(packageJsonText, packageLockText, true);
+        NpmParseResult result = npmLockfileParser.parse(packageJsonText, packageLockText, true, false);
         GraphAssert graphAssert = new GraphAssert(Forge.NPMJS, result.getCodeLocation().getDependencyGraph());
         graphAssert.hasDependency(childDev);
         graphAssert.hasDependency(parentDev);

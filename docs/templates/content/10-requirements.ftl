@@ -6,7 +6,7 @@ Requirements for ${solution_name}
 
 * Normally, access to the internet is required to download and run ${solution_name} and components from GitHub and other locations. For running without internet access, refer to [Air gap and offline modes](../advanced/air-gap/).
 * Minimum 8GB RAM.
-* Java: OpenJDK versions 8 or 11. If using Java 11: 11.0.5 or higher is required.
+* Java: OpenJDK 64-bit version 8, 11, 13, 14, or 15. If using Java 11: 11.0.5 or higher is required.
 * curl versions 7.34.0 or later.
 * Bash.
 * If using ${powershell_script_name}: PowerShell versions 4.0 or higher.
@@ -20,10 +20,6 @@ For connecting to ${blackduck_product_name}:
 * The ${blackduck_product_name} notifications module must be enabled.
 * A ${blackduck_product_name} user with the [required roles](../advanced/BD-user-role-requirements/).
 * On Alpine Linux you will also need to override the Java installation used by the ${blackduck_signature_scanner_name} as described [here](../advanced/troubleshooting/solutions/#solution_8).
-
-## ${polaris_product_name} requirements
-
-A licensed installation of Polaris with access credentials.
 
 ## Project type-specific requirements
 

@@ -7,6 +7,7 @@
  */
 package com.synopsys.integration.detect.lifecycle.shutdown;
 
+import com.synopsys.integration.blackduck.exception.BlackDuckTimeoutExceededException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +20,7 @@ import com.synopsys.integration.rest.exception.IntegrationRestException;
 public class ExitCodeUtility {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final String BLACKDUCK_ERROR_MESSAGE = "An unrecoverable error occurred - most likely this is due to your environment and/or configuration. Please double check the Detect documentation: https://detect.synopsys.com/doc/";
+    private static final String BLACKDUCK_TIMEOUT_ERROR_MESSAGE = "The Black Duck server did not respond within the timeout period.";
 
     public ExitCodeType getExitCodeFromExceptionDetails(final Exception e) {
         final ExitCodeType exceptionExitCodeType;
@@ -29,6 +31,10 @@ public class ExitCodeUtility {
             }
             final DetectUserFriendlyException friendlyException = (DetectUserFriendlyException) e;
             exceptionExitCodeType = friendlyException.getExitCodeType();
+        } else if (e instanceof BlackDuckTimeoutExceededException) {
+            logger.error(BLACKDUCK_TIMEOUT_ERROR_MESSAGE);
+            logger.error(e.getMessage());
+            exceptionExitCodeType = ExitCodeType.FAILURE_TIMEOUT;
         } else if (e instanceof BlackDuckApiException) {
             final BlackDuckApiException be = (BlackDuckApiException) e;
 

@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "conan-lock/Default Detect Version/conan-lock conan/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-6.8.0-SNAPSHOT",
-        "Tool: IntegrationBdio-22.0.0"
-      ],
-      "spdx:created": "2020-12-10T12:09:55.458Z"
-    },
-    "@id": "uuid:b19524ff-e445-41b1-9000-4ed7772eb37c",
     "@type": "BillOfMaterials",
     "relationship": []
   },

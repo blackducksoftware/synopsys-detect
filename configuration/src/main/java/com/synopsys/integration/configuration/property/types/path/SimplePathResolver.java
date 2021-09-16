@@ -13,6 +13,6 @@ import java.nio.file.Paths;
 public class SimplePathResolver implements PathResolver {
     @Override
     public Path resolvePath(final String filePath) {
-        return Paths.get(filePath);
+        return Paths.get(filePath).toAbsolutePath();
     }
 }

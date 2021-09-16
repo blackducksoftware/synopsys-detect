@@ -20,10 +20,10 @@ import com.synopsys.integration.detect.workflow.status.DetectStatusManager;
 import com.synopsys.integration.log.Slf4jIntLogger;
 
 public class ExitManager {
-    private Logger logger = LoggerFactory.getLogger(ExitManager.class);
-    private EventSystem eventSystem;
-    private ExitCodeManager exitCodeManager;
-    private DetectStatusManager statusManager;
+    private final Logger logger = LoggerFactory.getLogger(ExitManager.class);
+    private final EventSystem eventSystem;
+    private final ExitCodeManager exitCodeManager;
+    private final DetectStatusManager statusManager;
 
     public ExitManager(EventSystem eventSystem, ExitCodeManager exitCodeManager, DetectStatusManager statusManager) {
         this.eventSystem = eventSystem;
@@ -33,7 +33,6 @@ public class ExitManager {
 
     public ExitResult exit(ExitOptions exitOptions) {
         long startTime = exitOptions.getStartTime();
-        boolean logResults = exitOptions.shouldLogResults();
         boolean forceSuccessExit = exitOptions.shouldForceSuccessExit();
         boolean shouldExit = exitOptions.shouldExit();
 
@@ -46,9 +45,7 @@ public class ExitManager {
         ExitCodeType finalExitCode = exitCodeManager.getWinningExitCode();
 
         //Print detect's status
-        if (logResults) {
-            statusManager.logDetectResults(new Slf4jIntLogger(logger), finalExitCode);
-        }
+        statusManager.logDetectResults(new Slf4jIntLogger(logger), finalExitCode);
 
         //Print duration of run
         long endTime = System.currentTimeMillis();

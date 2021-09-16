@@ -18,47 +18,30 @@
           "name": "npmjs",
           "separator": "/"
         },
-        "name": "example-npm-travis",
-        "version": "1.0.0"
+        "pieces": [
+          "example-npm-travis",
+          "1.0.0"
+        ]
       }
     },
     "relationship": [
-      {
-        "related": "http:npmjs/moment/2.24.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
       {
         "related": "http:npmjs/uuid/3.3.3",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:npmjs/request/2.88.0",
+        "related": "http:npmjs/moment/2.24.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
         "related": "http:npmjs/express/4.17.1",
         "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/request/2.88.0",
+        "relationshipType": "DYNAMIC_LINK"
       }
     ]
-  },
-  {
-    "name": "moment",
-    "revision": "2.24.0",
-    "@id": "http:npmjs/moment/2.24.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "moment/2.24.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "moment",
-        "version": "2.24.0"
-      }
-    },
-    "relationship": []
   },
   {
     "name": "uuid",
@@ -73,1159 +56,31 @@
           "name": "npmjs",
           "separator": "/"
         },
-        "name": "uuid",
-        "version": "3.3.3"
+        "pieces": [
+          "uuid",
+          "3.3.3"
+        ]
       }
     },
     "relationship": []
   },
   {
-    "name": "request",
-    "revision": "2.88.0",
-    "@id": "http:npmjs/request/2.88.0",
+    "name": "moment",
+    "revision": "2.24.0",
+    "@id": "http:npmjs/moment/2.24.0",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "npmjs",
-      "externalId": "request/2.88.0",
+      "externalId": "moment/2.24.0",
       "externalIdMetaData": {
         "forge": {
           "name": "npmjs",
           "separator": "/"
         },
-        "name": "request",
-        "version": "2.88.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/mime-types/2.1.24",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/json-stringify-safe/5.0.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/safe-buffer/5.1.2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/forever-agent/0.6.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/tough-cookie/2.4.3",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/har-validator/5.1.3",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/extend/3.0.2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/form-data/2.3.3",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/isstream/0.1.2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/combined-stream/1.0.8",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/uuid/3.3.3",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/performance-now/2.1.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/aws-sign2/0.7.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/is-typedarray/1.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/oauth-sign/0.9.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/aws4/1.8.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/tunnel-agent/0.6.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/http-signature/1.2.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/caseless/0.12.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/qs/6.5.2",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "mime-types",
-    "revision": "2.1.24",
-    "@id": "http:npmjs/mime-types/2.1.24",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "mime-types/2.1.24",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "mime-types",
-        "version": "2.1.24"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/mime-db/1.40.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "mime-db",
-    "revision": "1.40.0",
-    "@id": "http:npmjs/mime-db/1.40.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "mime-db/1.40.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "mime-db",
-        "version": "1.40.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "json-stringify-safe",
-    "revision": "5.0.1",
-    "@id": "http:npmjs/json-stringify-safe/5.0.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "json-stringify-safe/5.0.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "json-stringify-safe",
-        "version": "5.0.1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "safe-buffer",
-    "revision": "5.1.2",
-    "@id": "http:npmjs/safe-buffer/5.1.2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "safe-buffer/5.1.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "safe-buffer",
-        "version": "5.1.2"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "forever-agent",
-    "revision": "0.6.1",
-    "@id": "http:npmjs/forever-agent/0.6.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "forever-agent/0.6.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "forever-agent",
-        "version": "0.6.1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "tough-cookie",
-    "revision": "2.4.3",
-    "@id": "http:npmjs/tough-cookie/2.4.3",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "tough-cookie/2.4.3",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "tough-cookie",
-        "version": "2.4.3"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/punycode/1.4.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/psl/1.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "punycode",
-    "revision": "1.4.1",
-    "@id": "http:npmjs/punycode/1.4.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "punycode/1.4.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "punycode",
-        "version": "1.4.1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "psl",
-    "revision": "1.3.0",
-    "@id": "http:npmjs/psl/1.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "psl/1.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "psl",
-        "version": "1.3.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "har-validator",
-    "revision": "5.1.3",
-    "@id": "http:npmjs/har-validator/5.1.3",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "har-validator/5.1.3",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "har-validator",
-        "version": "5.1.3"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/ajv/6.10.2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/har-schema/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "ajv",
-    "revision": "6.10.2",
-    "@id": "http:npmjs/ajv/6.10.2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "ajv/6.10.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "ajv",
-        "version": "6.10.2"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/json-schema-traverse/0.4.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/fast-deep-equal/2.0.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/fast-json-stable-stringify/2.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/uri-js/4.2.2",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "json-schema-traverse",
-    "revision": "0.4.1",
-    "@id": "http:npmjs/json-schema-traverse/0.4.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "json-schema-traverse/0.4.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "json-schema-traverse",
-        "version": "0.4.1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "fast-deep-equal",
-    "revision": "2.0.1",
-    "@id": "http:npmjs/fast-deep-equal/2.0.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "fast-deep-equal/2.0.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "fast-deep-equal",
-        "version": "2.0.1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "fast-json-stable-stringify",
-    "revision": "2.0.0",
-    "@id": "http:npmjs/fast-json-stable-stringify/2.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "fast-json-stable-stringify/2.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "fast-json-stable-stringify",
-        "version": "2.0.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "uri-js",
-    "revision": "4.2.2",
-    "@id": "http:npmjs/uri-js/4.2.2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "uri-js/4.2.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "uri-js",
-        "version": "4.2.2"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/punycode/2.1.1",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "punycode",
-    "revision": "2.1.1",
-    "@id": "http:npmjs/punycode/2.1.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "punycode/2.1.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "punycode",
-        "version": "2.1.1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "har-schema",
-    "revision": "2.0.0",
-    "@id": "http:npmjs/har-schema/2.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "har-schema/2.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "har-schema",
-        "version": "2.0.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "extend",
-    "revision": "3.0.2",
-    "@id": "http:npmjs/extend/3.0.2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "extend/3.0.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "extend",
-        "version": "3.0.2"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "form-data",
-    "revision": "2.3.3",
-    "@id": "http:npmjs/form-data/2.3.3",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "form-data/2.3.3",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "form-data",
-        "version": "2.3.3"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/mime-types/2.1.24",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/asynckit/0.4.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/combined-stream/1.0.8",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "asynckit",
-    "revision": "0.4.0",
-    "@id": "http:npmjs/asynckit/0.4.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "asynckit/0.4.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "asynckit",
-        "version": "0.4.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "combined-stream",
-    "revision": "1.0.8",
-    "@id": "http:npmjs/combined-stream/1.0.8",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "combined-stream/1.0.8",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "combined-stream",
-        "version": "1.0.8"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/delayed-stream/1.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "delayed-stream",
-    "revision": "1.0.0",
-    "@id": "http:npmjs/delayed-stream/1.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "delayed-stream/1.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "delayed-stream",
-        "version": "1.0.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "isstream",
-    "revision": "0.1.2",
-    "@id": "http:npmjs/isstream/0.1.2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "isstream/0.1.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "isstream",
-        "version": "0.1.2"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "performance-now",
-    "revision": "2.1.0",
-    "@id": "http:npmjs/performance-now/2.1.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "performance-now/2.1.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "performance-now",
-        "version": "2.1.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "aws-sign2",
-    "revision": "0.7.0",
-    "@id": "http:npmjs/aws-sign2/0.7.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "aws-sign2/0.7.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "aws-sign2",
-        "version": "0.7.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "is-typedarray",
-    "revision": "1.0.0",
-    "@id": "http:npmjs/is-typedarray/1.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "is-typedarray/1.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "is-typedarray",
-        "version": "1.0.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "oauth-sign",
-    "revision": "0.9.0",
-    "@id": "http:npmjs/oauth-sign/0.9.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "oauth-sign/0.9.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "oauth-sign",
-        "version": "0.9.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "aws4",
-    "revision": "1.8.0",
-    "@id": "http:npmjs/aws4/1.8.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "aws4/1.8.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "aws4",
-        "version": "1.8.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "tunnel-agent",
-    "revision": "0.6.0",
-    "@id": "http:npmjs/tunnel-agent/0.6.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "tunnel-agent/0.6.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "tunnel-agent",
-        "version": "0.6.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/safe-buffer/5.1.2",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "http-signature",
-    "revision": "1.2.0",
-    "@id": "http:npmjs/http-signature/1.2.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "http-signature/1.2.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "http-signature",
-        "version": "1.2.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/sshpk/1.16.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/jsprim/1.4.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/assert-plus/1.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "sshpk",
-    "revision": "1.16.1",
-    "@id": "http:npmjs/sshpk/1.16.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "sshpk/1.16.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "sshpk",
-        "version": "1.16.1"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/jsbn/0.1.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/assert-plus/1.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/ecc-jsbn/0.1.2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/safer-buffer/2.1.2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/asn1/0.2.4",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/tweetnacl/0.14.5",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/getpass/0.1.7",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/dashdash/1.14.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/bcrypt-pbkdf/1.0.2",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "jsbn",
-    "revision": "0.1.1",
-    "@id": "http:npmjs/jsbn/0.1.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "jsbn/0.1.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "jsbn",
-        "version": "0.1.1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "assert-plus",
-    "revision": "1.0.0",
-    "@id": "http:npmjs/assert-plus/1.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "assert-plus/1.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "assert-plus",
-        "version": "1.0.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "ecc-jsbn",
-    "revision": "0.1.2",
-    "@id": "http:npmjs/ecc-jsbn/0.1.2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "ecc-jsbn/0.1.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "ecc-jsbn",
-        "version": "0.1.2"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/jsbn/0.1.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/safer-buffer/2.1.2",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "safer-buffer",
-    "revision": "2.1.2",
-    "@id": "http:npmjs/safer-buffer/2.1.2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "safer-buffer/2.1.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "safer-buffer",
-        "version": "2.1.2"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "asn1",
-    "revision": "0.2.4",
-    "@id": "http:npmjs/asn1/0.2.4",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "asn1/0.2.4",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "asn1",
-        "version": "0.2.4"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/safer-buffer/2.1.2",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "tweetnacl",
-    "revision": "0.14.5",
-    "@id": "http:npmjs/tweetnacl/0.14.5",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "tweetnacl/0.14.5",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "tweetnacl",
-        "version": "0.14.5"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "getpass",
-    "revision": "0.1.7",
-    "@id": "http:npmjs/getpass/0.1.7",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "getpass/0.1.7",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "getpass",
-        "version": "0.1.7"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/assert-plus/1.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "dashdash",
-    "revision": "1.14.1",
-    "@id": "http:npmjs/dashdash/1.14.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "dashdash/1.14.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "dashdash",
-        "version": "1.14.1"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/assert-plus/1.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "bcrypt-pbkdf",
-    "revision": "1.0.2",
-    "@id": "http:npmjs/bcrypt-pbkdf/1.0.2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "bcrypt-pbkdf/1.0.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "bcrypt-pbkdf",
-        "version": "1.0.2"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/tweetnacl/0.14.5",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "jsprim",
-    "revision": "1.4.1",
-    "@id": "http:npmjs/jsprim/1.4.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "jsprim/1.4.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "jsprim",
-        "version": "1.4.1"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/json-schema/0.2.3",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/assert-plus/1.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/extsprintf/1.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/verror/1.10.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "json-schema",
-    "revision": "0.2.3",
-    "@id": "http:npmjs/json-schema/0.2.3",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "json-schema/0.2.3",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "json-schema",
-        "version": "0.2.3"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "extsprintf",
-    "revision": "1.3.0",
-    "@id": "http:npmjs/extsprintf/1.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "extsprintf/1.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "extsprintf",
-        "version": "1.3.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "verror",
-    "revision": "1.10.0",
-    "@id": "http:npmjs/verror/1.10.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "verror/1.10.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "verror",
-        "version": "1.10.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/core-util-is/1.0.2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/assert-plus/1.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/extsprintf/1.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "core-util-is",
-    "revision": "1.0.2",
-    "@id": "http:npmjs/core-util-is/1.0.2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "core-util-is/1.0.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "core-util-is",
-        "version": "1.0.2"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "caseless",
-    "revision": "0.12.0",
-    "@id": "http:npmjs/caseless/0.12.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "caseless/0.12.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "caseless",
-        "version": "0.12.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "qs",
-    "revision": "6.5.2",
-    "@id": "http:npmjs/qs/6.5.2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "qs/6.5.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "qs",
-        "version": "6.5.2"
+        "pieces": [
+          "moment",
+          "2.24.0"
+        ]
       }
     },
     "relationship": []
@@ -1243,25 +98,15 @@
           "name": "npmjs",
           "separator": "/"
         },
-        "name": "express",
-        "version": "4.17.1"
+        "pieces": [
+          "express",
+          "4.17.1"
+        ]
       }
     },
     "relationship": [
       {
-        "related": "http:npmjs/etag/1.8.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/cookie/0.4.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/merge-descriptors/1.0.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/methods/1.1.2",
+        "related": "http:npmjs/proxy-addr/2.0.5",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -1269,71 +114,11 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:npmjs/proxy-addr/2.0.5",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/vary/1.1.2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/qs/6.7.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/finalhandler/1.1.2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/body-parser/1.19.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/cookie-signature/1.0.6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/encodeurl/1.0.2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
         "related": "http:npmjs/range-parser/1.2.1",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:npmjs/content-disposition/0.5.3",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/path-to-regexp/0.1.7",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/send/0.17.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/array-flatten/1.1.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/content-type/1.0.4",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/type-is/1.6.18",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/safe-buffer/5.1.2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/fresh/0.5.2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/setprototypeof/1.1.1",
+        "related": "http:npmjs/qs/6.7.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -1345,15 +130,7 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:npmjs/accepts/1.3.7",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/escape-html/1.0.3",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/serve-static/1.14.1",
+        "related": "http:npmjs/etag/1.8.1",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -1361,87 +138,163 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
+        "related": "http:npmjs/cookie-signature/1.0.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/array-flatten/1.1.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
         "related": "http:npmjs/statuses/1.5.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/methods/1.1.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/type-is/1.6.18",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/escape-html/1.0.3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/cookie/0.4.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/path-to-regexp/0.1.7",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/accepts/1.3.7",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/fresh/0.5.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/finalhandler/1.1.2",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
         "related": "http:npmjs/on-finished/2.3.0",
         "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/send/0.17.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/content-disposition/0.5.3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/encodeurl/1.0.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/vary/1.1.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/merge-descriptors/1.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/setprototypeof/1.1.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/body-parser/1.19.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/content-type/1.0.4",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/safe-buffer/5.1.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/serve-static/1.14.1",
+        "relationshipType": "DYNAMIC_LINK"
       }
     ]
   },
   {
-    "name": "etag",
-    "revision": "1.8.1",
-    "@id": "http:npmjs/etag/1.8.1",
+    "name": "proxy-addr",
+    "revision": "2.0.5",
+    "@id": "http:npmjs/proxy-addr/2.0.5",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "npmjs",
-      "externalId": "etag/1.8.1",
+      "externalId": "proxy-addr/2.0.5",
       "externalIdMetaData": {
         "forge": {
           "name": "npmjs",
           "separator": "/"
         },
-        "name": "etag",
-        "version": "1.8.1"
+        "pieces": [
+          "proxy-addr",
+          "2.0.5"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/forwarded/0.1.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/ipaddr.js/1.9.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "forwarded",
+    "revision": "0.1.2",
+    "@id": "http:npmjs/forwarded/0.1.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "forwarded/0.1.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "forwarded",
+          "0.1.2"
+        ]
       }
     },
     "relationship": []
   },
   {
-    "name": "cookie",
-    "revision": "0.4.0",
-    "@id": "http:npmjs/cookie/0.4.0",
+    "name": "ipaddr.js",
+    "revision": "1.9.0",
+    "@id": "http:npmjs/ipaddr.js/1.9.0",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "npmjs",
-      "externalId": "cookie/0.4.0",
+      "externalId": "ipaddr.js/1.9.0",
       "externalIdMetaData": {
         "forge": {
           "name": "npmjs",
           "separator": "/"
         },
-        "name": "cookie",
-        "version": "0.4.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "merge-descriptors",
-    "revision": "1.0.1",
-    "@id": "http:npmjs/merge-descriptors/1.0.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "merge-descriptors/1.0.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "merge-descriptors",
-        "version": "1.0.1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "methods",
-    "revision": "1.1.2",
-    "@id": "http:npmjs/methods/1.1.2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "methods/1.1.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "methods",
-        "version": "1.1.2"
+        "pieces": [
+          "ipaddr.js",
+          "1.9.0"
+        ]
       }
     },
     "relationship": []
@@ -1459,8 +312,10 @@
           "name": "npmjs",
           "separator": "/"
         },
-        "name": "debug",
-        "version": "2.6.9"
+        "pieces": [
+          "debug",
+          "2.6.9"
+        ]
       }
     },
     "relationship": [
@@ -1483,638 +338,10 @@
           "name": "npmjs",
           "separator": "/"
         },
-        "name": "ms",
-        "version": "2.0.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "proxy-addr",
-    "revision": "2.0.5",
-    "@id": "http:npmjs/proxy-addr/2.0.5",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "proxy-addr/2.0.5",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "proxy-addr",
-        "version": "2.0.5"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/ipaddr.js/1.9.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/forwarded/0.1.2",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "ipaddr.js",
-    "revision": "1.9.0",
-    "@id": "http:npmjs/ipaddr.js/1.9.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "ipaddr.js/1.9.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "ipaddr.js",
-        "version": "1.9.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "forwarded",
-    "revision": "0.1.2",
-    "@id": "http:npmjs/forwarded/0.1.2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "forwarded/0.1.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "forwarded",
-        "version": "0.1.2"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "vary",
-    "revision": "1.1.2",
-    "@id": "http:npmjs/vary/1.1.2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "vary/1.1.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "vary",
-        "version": "1.1.2"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "qs",
-    "revision": "6.7.0",
-    "@id": "http:npmjs/qs/6.7.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "qs/6.7.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "qs",
-        "version": "6.7.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "finalhandler",
-    "revision": "1.1.2",
-    "@id": "http:npmjs/finalhandler/1.1.2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "finalhandler/1.1.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "finalhandler",
-        "version": "1.1.2"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/escape-html/1.0.3",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/encodeurl/1.0.2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/debug/2.6.9",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/parseurl/1.3.3",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/statuses/1.5.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/unpipe/1.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/on-finished/2.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "escape-html",
-    "revision": "1.0.3",
-    "@id": "http:npmjs/escape-html/1.0.3",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "escape-html/1.0.3",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "escape-html",
-        "version": "1.0.3"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "encodeurl",
-    "revision": "1.0.2",
-    "@id": "http:npmjs/encodeurl/1.0.2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "encodeurl/1.0.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "encodeurl",
-        "version": "1.0.2"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "parseurl",
-    "revision": "1.3.3",
-    "@id": "http:npmjs/parseurl/1.3.3",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "parseurl/1.3.3",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "parseurl",
-        "version": "1.3.3"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "statuses",
-    "revision": "1.5.0",
-    "@id": "http:npmjs/statuses/1.5.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "statuses/1.5.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "statuses",
-        "version": "1.5.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "unpipe",
-    "revision": "1.0.0",
-    "@id": "http:npmjs/unpipe/1.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "unpipe/1.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "unpipe",
-        "version": "1.0.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "on-finished",
-    "revision": "2.3.0",
-    "@id": "http:npmjs/on-finished/2.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "on-finished/2.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "on-finished",
-        "version": "2.3.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/ee-first/1.1.1",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "ee-first",
-    "revision": "1.1.1",
-    "@id": "http:npmjs/ee-first/1.1.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "ee-first/1.1.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "ee-first",
-        "version": "1.1.1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "body-parser",
-    "revision": "1.19.0",
-    "@id": "http:npmjs/body-parser/1.19.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "body-parser/1.19.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "body-parser",
-        "version": "1.19.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/http-errors/1.7.2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/content-type/1.0.4",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/type-is/1.6.18",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/bytes/3.1.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/debug/2.6.9",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/raw-body/2.4.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/qs/6.7.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/depd/1.1.2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/iconv-lite/0.4.24",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/on-finished/2.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "http-errors",
-    "revision": "1.7.2",
-    "@id": "http:npmjs/http-errors/1.7.2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "http-errors/1.7.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "http-errors",
-        "version": "1.7.2"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/setprototypeof/1.1.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/statuses/1.5.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/toidentifier/1.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/depd/1.1.2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/inherits/2.0.3",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "setprototypeof",
-    "revision": "1.1.1",
-    "@id": "http:npmjs/setprototypeof/1.1.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "setprototypeof/1.1.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "setprototypeof",
-        "version": "1.1.1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "toidentifier",
-    "revision": "1.0.0",
-    "@id": "http:npmjs/toidentifier/1.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "toidentifier/1.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "toidentifier",
-        "version": "1.0.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "depd",
-    "revision": "1.1.2",
-    "@id": "http:npmjs/depd/1.1.2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "depd/1.1.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "depd",
-        "version": "1.1.2"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "inherits",
-    "revision": "2.0.3",
-    "@id": "http:npmjs/inherits/2.0.3",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "inherits/2.0.3",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "inherits",
-        "version": "2.0.3"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "content-type",
-    "revision": "1.0.4",
-    "@id": "http:npmjs/content-type/1.0.4",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "content-type/1.0.4",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "content-type",
-        "version": "1.0.4"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "type-is",
-    "revision": "1.6.18",
-    "@id": "http:npmjs/type-is/1.6.18",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "type-is/1.6.18",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "type-is",
-        "version": "1.6.18"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/mime-types/2.1.24",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/media-typer/0.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "media-typer",
-    "revision": "0.3.0",
-    "@id": "http:npmjs/media-typer/0.3.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "media-typer/0.3.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "media-typer",
-        "version": "0.3.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "bytes",
-    "revision": "3.1.0",
-    "@id": "http:npmjs/bytes/3.1.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "bytes/3.1.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "bytes",
-        "version": "3.1.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "raw-body",
-    "revision": "2.4.0",
-    "@id": "http:npmjs/raw-body/2.4.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "raw-body/2.4.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "raw-body",
-        "version": "2.4.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/http-errors/1.7.2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/bytes/3.1.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/unpipe/1.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/iconv-lite/0.4.24",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "iconv-lite",
-    "revision": "0.4.24",
-    "@id": "http:npmjs/iconv-lite/0.4.24",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "iconv-lite/0.4.24",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "iconv-lite",
-        "version": "0.4.24"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/safer-buffer/2.1.2",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "cookie-signature",
-    "revision": "1.0.6",
-    "@id": "http:npmjs/cookie-signature/1.0.6",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "cookie-signature/1.0.6",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "cookie-signature",
-        "version": "1.0.6"
+        "pieces": [
+          "ms",
+          "2.0.0"
+        ]
       }
     },
     "relationship": []
@@ -2132,218 +359,31 @@
           "name": "npmjs",
           "separator": "/"
         },
-        "name": "range-parser",
-        "version": "1.2.1"
+        "pieces": [
+          "range-parser",
+          "1.2.1"
+        ]
       }
     },
     "relationship": []
   },
   {
-    "name": "content-disposition",
-    "revision": "0.5.3",
-    "@id": "http:npmjs/content-disposition/0.5.3",
+    "name": "qs",
+    "revision": "6.7.0",
+    "@id": "http:npmjs/qs/6.7.0",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "npmjs",
-      "externalId": "content-disposition/0.5.3",
+      "externalId": "qs/6.7.0",
       "externalIdMetaData": {
         "forge": {
           "name": "npmjs",
           "separator": "/"
         },
-        "name": "content-disposition",
-        "version": "0.5.3"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/safe-buffer/5.1.2",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "path-to-regexp",
-    "revision": "0.1.7",
-    "@id": "http:npmjs/path-to-regexp/0.1.7",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "path-to-regexp/0.1.7",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "path-to-regexp",
-        "version": "0.1.7"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "send",
-    "revision": "0.17.1",
-    "@id": "http:npmjs/send/0.17.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "send/0.17.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "send",
-        "version": "0.17.1"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:npmjs/etag/1.8.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/fresh/0.5.2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/mime/1.6.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/debug/2.6.9",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/ms/2.1.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/depd/1.1.2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/http-errors/1.7.2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/escape-html/1.0.3",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/encodeurl/1.0.2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/destroy/1.0.4",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/range-parser/1.2.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/statuses/1.5.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:npmjs/on-finished/2.3.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "fresh",
-    "revision": "0.5.2",
-    "@id": "http:npmjs/fresh/0.5.2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "fresh/0.5.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "fresh",
-        "version": "0.5.2"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "mime",
-    "revision": "1.6.0",
-    "@id": "http:npmjs/mime/1.6.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "mime/1.6.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "mime",
-        "version": "1.6.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "ms",
-    "revision": "2.1.1",
-    "@id": "http:npmjs/ms/2.1.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "ms/2.1.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "ms",
-        "version": "2.1.1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "destroy",
-    "revision": "1.0.4",
-    "@id": "http:npmjs/destroy/1.0.4",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "destroy/1.0.4",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "destroy",
-        "version": "1.0.4"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "array-flatten",
-    "revision": "1.1.1",
-    "@id": "http:npmjs/array-flatten/1.1.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "npmjs",
-      "externalId": "array-flatten/1.1.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "npmjs",
-          "separator": "/"
-        },
-        "name": "array-flatten",
-        "version": "1.1.1"
+        "pieces": [
+          "qs",
+          "6.7.0"
+        ]
       }
     },
     "relationship": []
@@ -2361,8 +401,318 @@
           "name": "npmjs",
           "separator": "/"
         },
-        "name": "utils-merge",
-        "version": "1.0.1"
+        "pieces": [
+          "utils-merge",
+          "1.0.1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "depd",
+    "revision": "1.1.2",
+    "@id": "http:npmjs/depd/1.1.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "depd/1.1.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "depd",
+          "1.1.2"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "etag",
+    "revision": "1.8.1",
+    "@id": "http:npmjs/etag/1.8.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "etag/1.8.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "etag",
+          "1.8.1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "parseurl",
+    "revision": "1.3.3",
+    "@id": "http:npmjs/parseurl/1.3.3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "parseurl/1.3.3",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "parseurl",
+          "1.3.3"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "cookie-signature",
+    "revision": "1.0.6",
+    "@id": "http:npmjs/cookie-signature/1.0.6",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "cookie-signature/1.0.6",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "cookie-signature",
+          "1.0.6"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "array-flatten",
+    "revision": "1.1.1",
+    "@id": "http:npmjs/array-flatten/1.1.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "array-flatten/1.1.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "array-flatten",
+          "1.1.1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "statuses",
+    "revision": "1.5.0",
+    "@id": "http:npmjs/statuses/1.5.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "statuses/1.5.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "statuses",
+          "1.5.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "methods",
+    "revision": "1.1.2",
+    "@id": "http:npmjs/methods/1.1.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "methods/1.1.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "methods",
+          "1.1.2"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "type-is",
+    "revision": "1.6.18",
+    "@id": "http:npmjs/type-is/1.6.18",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "type-is/1.6.18",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "type-is",
+          "1.6.18"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/media-typer/0.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/mime-types/2.1.24",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "media-typer",
+    "revision": "0.3.0",
+    "@id": "http:npmjs/media-typer/0.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "media-typer/0.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "media-typer",
+          "0.3.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "mime-types",
+    "revision": "2.1.24",
+    "@id": "http:npmjs/mime-types/2.1.24",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "mime-types/2.1.24",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "mime-types",
+          "2.1.24"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/mime-db/1.40.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "mime-db",
+    "revision": "1.40.0",
+    "@id": "http:npmjs/mime-db/1.40.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "mime-db/1.40.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "mime-db",
+          "1.40.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "escape-html",
+    "revision": "1.0.3",
+    "@id": "http:npmjs/escape-html/1.0.3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "escape-html/1.0.3",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "escape-html",
+          "1.0.3"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "cookie",
+    "revision": "0.4.0",
+    "@id": "http:npmjs/cookie/0.4.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "cookie/0.4.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "cookie",
+          "0.4.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "path-to-regexp",
+    "revision": "0.1.7",
+    "@id": "http:npmjs/path-to-regexp/0.1.7",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "path-to-regexp/0.1.7",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "path-to-regexp",
+          "0.1.7"
+        ]
       }
     },
     "relationship": []
@@ -2380,8 +730,10 @@
           "name": "npmjs",
           "separator": "/"
         },
-        "name": "accepts",
-        "version": "1.3.7"
+        "pieces": [
+          "accepts",
+          "1.3.7"
+        ]
       }
     },
     "relationship": [
@@ -2408,8 +760,690 @@
           "name": "npmjs",
           "separator": "/"
         },
-        "name": "negotiator",
-        "version": "0.6.2"
+        "pieces": [
+          "negotiator",
+          "0.6.2"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "fresh",
+    "revision": "0.5.2",
+    "@id": "http:npmjs/fresh/0.5.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "fresh/0.5.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "fresh",
+          "0.5.2"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "finalhandler",
+    "revision": "1.1.2",
+    "@id": "http:npmjs/finalhandler/1.1.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "finalhandler/1.1.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "finalhandler",
+          "1.1.2"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/encodeurl/1.0.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/debug/2.6.9",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/escape-html/1.0.3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/parseurl/1.3.3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/unpipe/1.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/on-finished/2.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/statuses/1.5.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "encodeurl",
+    "revision": "1.0.2",
+    "@id": "http:npmjs/encodeurl/1.0.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "encodeurl/1.0.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "encodeurl",
+          "1.0.2"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "unpipe",
+    "revision": "1.0.0",
+    "@id": "http:npmjs/unpipe/1.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "unpipe/1.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "unpipe",
+          "1.0.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "on-finished",
+    "revision": "2.3.0",
+    "@id": "http:npmjs/on-finished/2.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "on-finished/2.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "on-finished",
+          "2.3.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/ee-first/1.1.1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "ee-first",
+    "revision": "1.1.1",
+    "@id": "http:npmjs/ee-first/1.1.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "ee-first/1.1.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "ee-first",
+          "1.1.1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "send",
+    "revision": "0.17.1",
+    "@id": "http:npmjs/send/0.17.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "send/0.17.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "send",
+          "0.17.1"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/http-errors/1.7.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/debug/2.6.9",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/escape-html/1.0.3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/fresh/0.5.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/range-parser/1.2.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/destroy/1.0.4",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/on-finished/2.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/encodeurl/1.0.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/depd/1.1.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/mime/1.6.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/ms/2.1.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/etag/1.8.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/statuses/1.5.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "http-errors",
+    "revision": "1.7.2",
+    "@id": "http:npmjs/http-errors/1.7.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "http-errors/1.7.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "http-errors",
+          "1.7.2"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/inherits/2.0.3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/toidentifier/1.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/depd/1.1.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/setprototypeof/1.1.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/statuses/1.5.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "inherits",
+    "revision": "2.0.3",
+    "@id": "http:npmjs/inherits/2.0.3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "inherits/2.0.3",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "inherits",
+          "2.0.3"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "toidentifier",
+    "revision": "1.0.0",
+    "@id": "http:npmjs/toidentifier/1.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "toidentifier/1.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "toidentifier",
+          "1.0.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "setprototypeof",
+    "revision": "1.1.1",
+    "@id": "http:npmjs/setprototypeof/1.1.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "setprototypeof/1.1.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "setprototypeof",
+          "1.1.1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "destroy",
+    "revision": "1.0.4",
+    "@id": "http:npmjs/destroy/1.0.4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "destroy/1.0.4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "destroy",
+          "1.0.4"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "mime",
+    "revision": "1.6.0",
+    "@id": "http:npmjs/mime/1.6.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "mime/1.6.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "mime",
+          "1.6.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "ms",
+    "revision": "2.1.1",
+    "@id": "http:npmjs/ms/2.1.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "ms/2.1.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "ms",
+          "2.1.1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "content-disposition",
+    "revision": "0.5.3",
+    "@id": "http:npmjs/content-disposition/0.5.3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "content-disposition/0.5.3",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "content-disposition",
+          "0.5.3"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/safe-buffer/5.1.2",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "safe-buffer",
+    "revision": "5.1.2",
+    "@id": "http:npmjs/safe-buffer/5.1.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "safe-buffer/5.1.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "safe-buffer",
+          "5.1.2"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "vary",
+    "revision": "1.1.2",
+    "@id": "http:npmjs/vary/1.1.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "vary/1.1.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "vary",
+          "1.1.2"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "merge-descriptors",
+    "revision": "1.0.1",
+    "@id": "http:npmjs/merge-descriptors/1.0.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "merge-descriptors/1.0.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "merge-descriptors",
+          "1.0.1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "body-parser",
+    "revision": "1.19.0",
+    "@id": "http:npmjs/body-parser/1.19.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "body-parser/1.19.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "body-parser",
+          "1.19.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/depd/1.1.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/type-is/1.6.18",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/http-errors/1.7.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/debug/2.6.9",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/content-type/1.0.4",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/qs/6.7.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/on-finished/2.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/raw-body/2.4.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/iconv-lite/0.4.24",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/bytes/3.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "content-type",
+    "revision": "1.0.4",
+    "@id": "http:npmjs/content-type/1.0.4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "content-type/1.0.4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "content-type",
+          "1.0.4"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "raw-body",
+    "revision": "2.4.0",
+    "@id": "http:npmjs/raw-body/2.4.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "raw-body/2.4.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "raw-body",
+          "2.4.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/http-errors/1.7.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/unpipe/1.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/iconv-lite/0.4.24",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/bytes/3.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "iconv-lite",
+    "revision": "0.4.24",
+    "@id": "http:npmjs/iconv-lite/0.4.24",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "iconv-lite/0.4.24",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "iconv-lite",
+          "0.4.24"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/safer-buffer/2.1.2",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "safer-buffer",
+    "revision": "2.1.2",
+    "@id": "http:npmjs/safer-buffer/2.1.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "safer-buffer/2.1.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "safer-buffer",
+          "2.1.2"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "bytes",
+    "revision": "3.1.0",
+    "@id": "http:npmjs/bytes/3.1.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "bytes/3.1.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "bytes",
+          "3.1.0"
+        ]
       }
     },
     "relationship": []
@@ -2427,13 +1461,15 @@
           "name": "npmjs",
           "separator": "/"
         },
-        "name": "serve-static",
-        "version": "1.14.1"
+        "pieces": [
+          "serve-static",
+          "1.14.1"
+        ]
       }
     },
     "relationship": [
       {
-        "related": "http:npmjs/escape-html/1.0.3",
+        "related": "http:npmjs/send/0.17.1",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -2441,13 +1477,1169 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:npmjs/parseurl/1.3.3",
+        "related": "http:npmjs/escape-html/1.0.3",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:npmjs/send/0.17.1",
+        "related": "http:npmjs/parseurl/1.3.3",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
+  },
+  {
+    "name": "request",
+    "revision": "2.88.0",
+    "@id": "http:npmjs/request/2.88.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "request/2.88.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "request",
+          "2.88.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/uuid/3.3.3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/oauth-sign/0.9.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/extend/3.0.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/har-validator/5.1.3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/caseless/0.12.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/performance-now/2.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/isstream/0.1.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/forever-agent/0.6.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/tough-cookie/2.4.3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/qs/6.5.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/tunnel-agent/0.6.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/http-signature/1.2.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/aws-sign2/0.7.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/is-typedarray/1.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/json-stringify-safe/5.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/mime-types/2.1.24",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/aws4/1.8.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/combined-stream/1.0.8",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/safe-buffer/5.1.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/form-data/2.3.3",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "oauth-sign",
+    "revision": "0.9.0",
+    "@id": "http:npmjs/oauth-sign/0.9.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "oauth-sign/0.9.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "oauth-sign",
+          "0.9.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "extend",
+    "revision": "3.0.2",
+    "@id": "http:npmjs/extend/3.0.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "extend/3.0.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "extend",
+          "3.0.2"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "har-validator",
+    "revision": "5.1.3",
+    "@id": "http:npmjs/har-validator/5.1.3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "har-validator/5.1.3",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "har-validator",
+          "5.1.3"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/ajv/6.10.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/har-schema/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "ajv",
+    "revision": "6.10.2",
+    "@id": "http:npmjs/ajv/6.10.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "ajv/6.10.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "ajv",
+          "6.10.2"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/json-schema-traverse/0.4.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/uri-js/4.2.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/fast-json-stable-stringify/2.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/fast-deep-equal/2.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "json-schema-traverse",
+    "revision": "0.4.1",
+    "@id": "http:npmjs/json-schema-traverse/0.4.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "json-schema-traverse/0.4.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "json-schema-traverse",
+          "0.4.1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "uri-js",
+    "revision": "4.2.2",
+    "@id": "http:npmjs/uri-js/4.2.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "uri-js/4.2.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "uri-js",
+          "4.2.2"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/punycode/2.1.1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "punycode",
+    "revision": "2.1.1",
+    "@id": "http:npmjs/punycode/2.1.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "punycode/2.1.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "punycode",
+          "2.1.1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "fast-json-stable-stringify",
+    "revision": "2.0.0",
+    "@id": "http:npmjs/fast-json-stable-stringify/2.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "fast-json-stable-stringify/2.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "fast-json-stable-stringify",
+          "2.0.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "fast-deep-equal",
+    "revision": "2.0.1",
+    "@id": "http:npmjs/fast-deep-equal/2.0.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "fast-deep-equal/2.0.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "fast-deep-equal",
+          "2.0.1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "har-schema",
+    "revision": "2.0.0",
+    "@id": "http:npmjs/har-schema/2.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "har-schema/2.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "har-schema",
+          "2.0.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "caseless",
+    "revision": "0.12.0",
+    "@id": "http:npmjs/caseless/0.12.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "caseless/0.12.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "caseless",
+          "0.12.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "performance-now",
+    "revision": "2.1.0",
+    "@id": "http:npmjs/performance-now/2.1.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "performance-now/2.1.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "performance-now",
+          "2.1.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "isstream",
+    "revision": "0.1.2",
+    "@id": "http:npmjs/isstream/0.1.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "isstream/0.1.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "isstream",
+          "0.1.2"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "forever-agent",
+    "revision": "0.6.1",
+    "@id": "http:npmjs/forever-agent/0.6.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "forever-agent/0.6.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "forever-agent",
+          "0.6.1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "tough-cookie",
+    "revision": "2.4.3",
+    "@id": "http:npmjs/tough-cookie/2.4.3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "tough-cookie/2.4.3",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "tough-cookie",
+          "2.4.3"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/punycode/1.4.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/psl/1.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "punycode",
+    "revision": "1.4.1",
+    "@id": "http:npmjs/punycode/1.4.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "punycode/1.4.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "punycode",
+          "1.4.1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "psl",
+    "revision": "1.3.0",
+    "@id": "http:npmjs/psl/1.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "psl/1.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "psl",
+          "1.3.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "qs",
+    "revision": "6.5.2",
+    "@id": "http:npmjs/qs/6.5.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "qs/6.5.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "qs",
+          "6.5.2"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "tunnel-agent",
+    "revision": "0.6.0",
+    "@id": "http:npmjs/tunnel-agent/0.6.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "tunnel-agent/0.6.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "tunnel-agent",
+          "0.6.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/safe-buffer/5.1.2",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "http-signature",
+    "revision": "1.2.0",
+    "@id": "http:npmjs/http-signature/1.2.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "http-signature/1.2.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "http-signature",
+          "1.2.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/assert-plus/1.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/jsprim/1.4.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/sshpk/1.16.1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "assert-plus",
+    "revision": "1.0.0",
+    "@id": "http:npmjs/assert-plus/1.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "assert-plus/1.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "assert-plus",
+          "1.0.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "jsprim",
+    "revision": "1.4.1",
+    "@id": "http:npmjs/jsprim/1.4.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "jsprim/1.4.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "jsprim",
+          "1.4.1"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/assert-plus/1.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/verror/1.10.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/json-schema/0.2.3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/extsprintf/1.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "verror",
+    "revision": "1.10.0",
+    "@id": "http:npmjs/verror/1.10.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "verror/1.10.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "verror",
+          "1.10.0"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/assert-plus/1.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/extsprintf/1.3.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/core-util-is/1.0.2",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "extsprintf",
+    "revision": "1.3.0",
+    "@id": "http:npmjs/extsprintf/1.3.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "extsprintf/1.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "extsprintf",
+          "1.3.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "core-util-is",
+    "revision": "1.0.2",
+    "@id": "http:npmjs/core-util-is/1.0.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "core-util-is/1.0.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "core-util-is",
+          "1.0.2"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "json-schema",
+    "revision": "0.2.3",
+    "@id": "http:npmjs/json-schema/0.2.3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "json-schema/0.2.3",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "json-schema",
+          "0.2.3"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "sshpk",
+    "revision": "1.16.1",
+    "@id": "http:npmjs/sshpk/1.16.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "sshpk/1.16.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "sshpk",
+          "1.16.1"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/ecc-jsbn/0.1.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/assert-plus/1.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/tweetnacl/0.14.5",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/getpass/0.1.7",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/jsbn/0.1.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/safer-buffer/2.1.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/dashdash/1.14.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/bcrypt-pbkdf/1.0.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/asn1/0.2.4",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "ecc-jsbn",
+    "revision": "0.1.2",
+    "@id": "http:npmjs/ecc-jsbn/0.1.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "ecc-jsbn/0.1.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "ecc-jsbn",
+          "0.1.2"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/jsbn/0.1.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/safer-buffer/2.1.2",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "jsbn",
+    "revision": "0.1.1",
+    "@id": "http:npmjs/jsbn/0.1.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "jsbn/0.1.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "jsbn",
+          "0.1.1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "tweetnacl",
+    "revision": "0.14.5",
+    "@id": "http:npmjs/tweetnacl/0.14.5",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "tweetnacl/0.14.5",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "tweetnacl",
+          "0.14.5"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "getpass",
+    "revision": "0.1.7",
+    "@id": "http:npmjs/getpass/0.1.7",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "getpass/0.1.7",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "getpass",
+          "0.1.7"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/assert-plus/1.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "dashdash",
+    "revision": "1.14.1",
+    "@id": "http:npmjs/dashdash/1.14.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "dashdash/1.14.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "dashdash",
+          "1.14.1"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/assert-plus/1.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "bcrypt-pbkdf",
+    "revision": "1.0.2",
+    "@id": "http:npmjs/bcrypt-pbkdf/1.0.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "bcrypt-pbkdf/1.0.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "bcrypt-pbkdf",
+          "1.0.2"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/tweetnacl/0.14.5",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "asn1",
+    "revision": "0.2.4",
+    "@id": "http:npmjs/asn1/0.2.4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "asn1/0.2.4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "asn1",
+          "0.2.4"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/safer-buffer/2.1.2",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "aws-sign2",
+    "revision": "0.7.0",
+    "@id": "http:npmjs/aws-sign2/0.7.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "aws-sign2/0.7.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "aws-sign2",
+          "0.7.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "is-typedarray",
+    "revision": "1.0.0",
+    "@id": "http:npmjs/is-typedarray/1.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "is-typedarray/1.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "is-typedarray",
+          "1.0.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "json-stringify-safe",
+    "revision": "5.0.1",
+    "@id": "http:npmjs/json-stringify-safe/5.0.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "json-stringify-safe/5.0.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "json-stringify-safe",
+          "5.0.1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "aws4",
+    "revision": "1.8.0",
+    "@id": "http:npmjs/aws4/1.8.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "aws4/1.8.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "aws4",
+          "1.8.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "combined-stream",
+    "revision": "1.0.8",
+    "@id": "http:npmjs/combined-stream/1.0.8",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "combined-stream/1.0.8",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "combined-stream",
+          "1.0.8"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/delayed-stream/1.0.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "delayed-stream",
+    "revision": "1.0.0",
+    "@id": "http:npmjs/delayed-stream/1.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "delayed-stream/1.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "delayed-stream",
+          "1.0.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "form-data",
+    "revision": "2.3.3",
+    "@id": "http:npmjs/form-data/2.3.3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "form-data/2.3.3",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "form-data",
+          "2.3.3"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:npmjs/asynckit/0.4.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/mime-types/2.1.24",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:npmjs/combined-stream/1.0.8",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "asynckit",
+    "revision": "0.4.0",
+    "@id": "http:npmjs/asynckit/0.4.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npmjs",
+      "externalId": "asynckit/0.4.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "npmjs",
+          "separator": "/"
+        },
+        "pieces": [
+          "asynckit",
+          "0.4.0"
+        ]
+      }
+    },
+    "relationship": []
   }
 ]
