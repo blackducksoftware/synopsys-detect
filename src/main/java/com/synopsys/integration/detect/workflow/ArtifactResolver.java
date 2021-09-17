@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +50,7 @@ public class ArtifactResolver {
      * @param overrideArtifactPattern The pattern to use when the override version is provided of the full artifact location.
      * @return the location of the artifact
      */
-    public String resolveArtifactLocation(String artifactoryBaseUrl, String repositoryUrl, String propertyKey, String overrideVersion, String overrideArtifactPattern) throws IntegrationException, IOException {
+    public String resolveArtifactLocation(String artifactoryBaseUrl, String repositoryUrl, String propertyKey, @Nullable String overrideVersion, @Nullable String overrideArtifactPattern) throws IntegrationException, IOException {
         if (StringUtils.isNotBlank(overrideVersion) && StringUtils.isNotBlank(overrideArtifactPattern)) {
             logger.debug("An override version was provided, will resolve using the given version.");
             String repoUrl = artifactoryBaseUrl + repositoryUrl;
@@ -123,13 +124,18 @@ public class ArtifactResolver {
         Request request = new Request.Builder().url(new HttpUrl(source)).build();
         IntHttpClient restConnection = connectionFactory.createConnection(source, new Slf4jIntLogger(logger));
         try (Response response = restConnection.execute(request)) {
-            logger.debug("Deleting existing file.");
-            FileUtils.deleteQuietly(target);
-            logger.debug("Writing to file.");
-            InputStream jarBytesInputStream = response.getContent();
-            FileUtils.copyInputStreamToFile(jarBytesInputStream, target);
-            logger.debug("Successfully wrote response to file.");
-            return target;
+            if (response.isStatusCodeSuccess()) {
+                logger.debug("Deleting existing file.");
+                FileUtils.deleteQuietly(target);
+                logger.debug("Writing to file.");
+                InputStream jarBytesInputStream = response.getContent();
+                FileUtils.copyInputStreamToFile(jarBytesInputStream, target);
+                logger.debug("Successfully wrote response to file.");
+                return target;
+            } else {
+                logger.trace("Unable to download artifact. Response code: " + response.getStatusCode() + " " + response.getStatusMessage());
+                throw new IntegrationException("Unable to download artifact. Response code: " + response.getStatusCode() + " " + response.getStatusMessage());
+            }
         }
     }
 

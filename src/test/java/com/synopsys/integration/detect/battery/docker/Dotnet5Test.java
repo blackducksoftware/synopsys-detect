@@ -10,6 +10,7 @@ import com.synopsys.integration.detect.battery.docker.util.DetectCommandBuilder;
 import com.synopsys.integration.detect.battery.docker.util.DetectDockerTestRunner;
 import com.synopsys.integration.detect.battery.docker.util.DockerAssertions;
 import com.synopsys.integration.detect.configuration.DetectProperties;
+import com.synopsys.integration.detector.base.DetectorType;
 
 @Tag("integration")
 public class Dotnet5Test {
@@ -26,5 +27,23 @@ public class Dotnet5Test {
         dockerAssertions.successfulDetectorType("NUGET");
         dockerAssertions.atLeastOneBdioFile();
         dockerAssertions.logContains("https://sig-repo.synopsys.com/bds-integrations-nuget-release/"); // Verify we are using the EXTERNAL artifactory to download the inspector.
+    }
+
+    @Test
+    void projectInspectorParses() throws IOException, InterruptedException {
+        DetectDockerTestRunner test = new DetectDockerTestRunner("detect-dotnet-project-inspector", "detect-dotnet-five:1.0.1");
+        test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Dotnet5.dockerfile"));
+
+        DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
+        commandBuilder.property(DetectProperties.DETECT_TOOLS, "DETECTOR");
+        commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
+        commandBuilder.property(DetectProperties.DETECT_BUILDLESS, "true");
+        commandBuilder.property(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES, DetectorType.NUGET.toString());
+        commandBuilder.debug();
+        DockerAssertions dockerAssertions = test.run(commandBuilder);
+
+        dockerAssertions.successfulDetectorType("NUGET");
+        dockerAssertions.atLeastOneBdioFile();
+
     }
 }

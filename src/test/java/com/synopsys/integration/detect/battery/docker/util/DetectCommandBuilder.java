@@ -98,4 +98,8 @@ public class DetectCommandBuilder {
         property(DetectProperties.DETECT_TOOLS_OUTPUT_PATH, test.directories().sharedToolsBinding());
         return this;
     }
+
+    public void debug() {
+        property(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION, "TRACE");
+    }
 }

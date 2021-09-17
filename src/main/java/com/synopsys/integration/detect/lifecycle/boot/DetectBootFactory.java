@@ -47,6 +47,7 @@ import com.synopsys.integration.detect.tool.detector.executable.DetectExecutable
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
 import com.synopsys.integration.detect.tool.detector.executable.DirectoryExecutableFinder;
 import com.synopsys.integration.detect.tool.detector.executable.SystemPathExecutableFinder;
+import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryZipInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorInstaller;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
@@ -120,6 +121,7 @@ public class DetectBootFactory {
     public AirGapCreator createAirGapCreator(ConnectionDetails connectionDetails, DetectExecutableOptions detectExecutableOptions, Configuration freemarkerConfiguration) {
         ConnectionFactory connectionFactory = new ConnectionFactory(connectionDetails);
         ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
+        ArtifactoryZipInstaller artifactoryZipInstaller = new ArtifactoryZipInstaller(artifactResolver);
 
         DirectoryExecutableFinder directoryExecutableFinder = DirectoryExecutableFinder.forCurrentOperatingSystem(fileFinder);
         SystemPathExecutableFinder systemPathExecutableFinder = new SystemPathExecutableFinder(directoryExecutableFinder);
@@ -128,7 +130,7 @@ public class DetectBootFactory {
         DetectExecutableRunner runner = DetectExecutableRunner.newDebug(eventSystem);
         GradleAirGapCreator gradleAirGapCreator = new GradleAirGapCreator(detectExecutableResolver, runner, freemarkerConfiguration);
 
-        NugetAirGapCreator nugetAirGapCreator = new NugetAirGapCreator(new NugetInspectorInstaller(artifactResolver));
+        NugetAirGapCreator nugetAirGapCreator = new NugetAirGapCreator(new NugetInspectorInstaller(artifactoryZipInstaller));
         DockerAirGapCreator dockerAirGapCreator = new DockerAirGapCreator(new DockerInspectorInstaller(artifactResolver));
         DetectFontAirGapCreator detectFontAirGapCreator = new DetectFontAirGapCreator(new DetectFontInstaller(artifactResolver));
 

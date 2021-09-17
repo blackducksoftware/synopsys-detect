@@ -37,6 +37,7 @@ import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliDetectable;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmPackageLockDetectable;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmShrinkwrapDetectable;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.NpmPackageJsonParseDetectable;
+import com.synopsys.integration.detectable.detectables.nuget.NugetParseDetectable;
 import com.synopsys.integration.detectable.detectables.nuget.NugetProjectDetectable;
 import com.synopsys.integration.detectable.detectables.nuget.NugetSolutionDetectable;
 import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDetectable;
@@ -179,6 +180,8 @@ public class DetectorRuleFactory {
         ruleSet.yield(npmPackageJsonParse).to(yarnLock);
         ruleSet.yield(npmPackageLock).to(yarnLock);
         ruleSet.yield(npmShrinkwrap).to(yarnLock);
+
+        ruleSet.addDetector(DetectorType.NUGET, "NuGet Project Inspector", NugetParseDetectable.class, detectableFactory::createNugetParseDetectable).defaults().build();
 
         ruleSet.addDetector(DetectorType.PACKAGIST, "Composer", ComposerLockDetectable.class, detectableFactory::createComposerDetectable).defaults().build();
 

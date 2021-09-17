@@ -12,6 +12,7 @@ import com.synopsys.integration.detect.tool.detector.executable.DetectExecutable
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
+import com.synopsys.integration.detectable.detectable.inspector.ProjectInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
@@ -45,6 +46,7 @@ import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliDetectable;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmPackageLockDetectable;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmShrinkwrapDetectable;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.NpmPackageJsonParseDetectable;
+import com.synopsys.integration.detectable.detectables.nuget.NugetParseDetectable;
 import com.synopsys.integration.detectable.detectables.nuget.NugetProjectDetectable;
 import com.synopsys.integration.detectable.detectables.nuget.NugetSolutionDetectable;
 import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDetectable;
@@ -69,10 +71,11 @@ public class DetectDetectableFactory {
     private final GradleInspectorResolver gradleInspectorResolver;
     private final NugetInspectorResolver nugetInspectorResolver;
     private final PipInspectorResolver pipInspectorResolver;
+    private final ProjectInspectorResolver projectInspectorResolver;
 
     public DetectDetectableFactory(DetectableFactory detectableFactory, DetectableOptionFactory detectableOptionFactory, DetectExecutableResolver detectExecutableResolver,
         DockerInspectorResolver dockerInspectorResolver, GradleInspectorResolver gradleInspectorResolver, NugetInspectorResolver nugetInspectorResolver,
-        PipInspectorResolver pipInspectorResolver) {
+        PipInspectorResolver pipInspectorResolver, ProjectInspectorResolver projectInspectorResolver) {
         this.detectableFactory = detectableFactory;
         this.detectableOptionFactory = detectableOptionFactory;
         this.detectExecutableResolver = detectExecutableResolver;
@@ -80,6 +83,7 @@ public class DetectDetectableFactory {
         this.gradleInspectorResolver = gradleInspectorResolver;
         this.nugetInspectorResolver = nugetInspectorResolver;
         this.pipInspectorResolver = pipInspectorResolver;
+        this.projectInspectorResolver = projectInspectorResolver;
     }
 
     public DockerDetectable createDockerDetectable(DetectableEnvironment environment) {
@@ -261,5 +265,9 @@ public class DetectDetectableFactory {
             detectableOptionFactory.createYarnLockOptions(),
             detectableOptionFactory.createLernaOptions()
         );
+    }
+
+    public NugetParseDetectable createNugetParseDetectable(DetectableEnvironment detectableEnvironment) {
+        return detectableFactory.createNugetParseDetectable(detectableEnvironment, detectableOptionFactory.createNugetInspectorOptions(), projectInspectorResolver);
     }
 }
