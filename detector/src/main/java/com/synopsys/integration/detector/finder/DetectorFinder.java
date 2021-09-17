@@ -47,10 +47,10 @@ public class DetectorFinder {
 
         if (Files.isSymbolicLink(directory.toPath())) {
             if (!options.followSymLinks()) {
-                logger.info("Skipping file as it is a symbolic link and following symbolic links has been disabled: " + directoryString);
+                logger.debug("Skipping file as it is a symbolic link and following symbolic links has been disabled: " + directoryString);
                 return Optional.empty();
             } else {
-                logger.info("Following symbolic link: " + directoryString);
+                logger.debug("Following symbolic link: " + directoryString);
                 Path linkTarget;
                 try {
                     linkTarget = directory.toPath().toRealPath();
@@ -75,7 +75,7 @@ public class DetectorFinder {
         Set<DetectorEvaluationTree> children = new HashSet<>();
 
         List<File> subDirectories = fileFinder.findFiles(directory, options.getFileFilter());
-        logger.info("filteredSubDirectories: {}", subDirectories.toString());
+        logger.debug("filteredSubDirectories: {}", subDirectories.toString());
 
         for (File subDirectory : subDirectories) {
             Optional<DetectorEvaluationTree> childEvaluationSet = findDetectors(subDirectory, detectorRuleSet, depth + 1, options, fileFinder);

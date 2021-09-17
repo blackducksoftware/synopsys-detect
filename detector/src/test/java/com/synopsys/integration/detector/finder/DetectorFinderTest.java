@@ -68,7 +68,7 @@ public class DetectorFinderTest {
 
     @Test
     @DisabledOnOs(WINDOWS) //TODO: See if we can fix on windows.
-    public void testSimple() throws DetectorFinderDirectoryListException {
+    public void testSimple() {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
         File initialDirectory = initialDirectoryPath.toFile();
@@ -106,43 +106,23 @@ public class DetectorFinderTest {
 
     @Test
     @DisabledOnOs(WINDOWS) //TODO: See if we can fix on windows.
-    public void testSymLinksNotFollowed() throws IOException, DetectorFinderDirectoryListException {
-        Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
-
-        File initialDirectory = createDirWithSymLink("testSymLinksNotFollowed");
-
-        DetectorRuleSet detectorRuleSet = new DetectorRuleSet(new ArrayList<>(0), new HashMap<>(0));
-        DetectorFinderOptions options = createFinderOptions(false);
-
-        DetectorFinder finder = new DetectorFinder();
-        Optional<DetectorEvaluationTree> tree = finder.findDetectors(initialDirectory, detectorRuleSet, options, new SimpleFileFinder());
-
-        // make sure the symlink was omitted from results
-        //        final Set<DetectorEvaluationTree> subDirResults = tree.get().getChildren().iterator().next().getChildren();
-        Set<DetectorEvaluationTree> testDirs = tree.get().getChildren();
-        DetectorEvaluationTree symLinkTestDir = null;
-        for (DetectorEvaluationTree testDir : testDirs) {
-            if (testDir.getDirectory().getName().equals("testSymLinksNotFollowed")) {
-                symLinkTestDir = testDir;
-                break;
-            }
-        }
-        Set<DetectorEvaluationTree> subDirResults = symLinkTestDir.getChildren();
-
-        assertEquals(1, subDirResults.size());
-        String subDirContentsName = subDirResults.iterator().next().getDirectory().getName();
-        assertEquals("regularDir", subDirContentsName);
+    public void testSymLinksNotFollowed() throws IOException {
+        testSymLinks(false);
     }
 
     @Test
     @DisabledOnOs(WINDOWS) //TODO: See if we can fix on windows.
-    public void testSymLinksFollowed() throws IOException, DetectorFinderDirectoryListException {
+    public void testSymLinksFollowed() throws IOException {
+        testSymLinks(true);
+    }
+
+    private void testSymLinks(boolean followSymLinks) throws IOException {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
-        File initialDirectory = createDirWithSymLink("testSymLinksFollowed");
+        File initialDirectory = createDirWithSymLink("testSymLinks");
 
         DetectorRuleSet detectorRuleSet = new DetectorRuleSet(new ArrayList<>(0), new HashMap<>(0));
-        DetectorFinderOptions options = createFinderOptions(true);
+        DetectorFinderOptions options = createFinderOptions(followSymLinks);
 
         DetectorFinder finder = new DetectorFinder();
         Optional<DetectorEvaluationTree> tree = finder.findDetectors(initialDirectory, detectorRuleSet, options, new SimpleFileFinder());
@@ -152,16 +132,22 @@ public class DetectorFinderTest {
         Set<DetectorEvaluationTree> testDirs = tree.get().getChildren();
         DetectorEvaluationTree symLinkTestDir = null;
         for (DetectorEvaluationTree testDir : testDirs) {
-            if (testDir.getDirectory().getName().equals("testSymLinksNotFollowed")) {
+            if (testDir.getDirectory().getName().equals("testSymLinks")) {
                 symLinkTestDir = testDir;
                 break;
             }
         }
         Set<DetectorEvaluationTree> subDirResults = symLinkTestDir.getChildren();
 
-        assertEquals(2, subDirResults.size());
-        //String subDirContentsName = subDirResults.iterator().next().getDirectory().getName();
-        //assertEquals("regularDir", subDirContentsName);
+        if (followSymLinks) {
+            assertEquals(2, subDirResults.size());
+        } else {
+            assertEquals(1, subDirResults.size());
+            String subDirContentsName = subDirResults.iterator().next().getDirectory().getName();
+            assertEquals("regularDir", subDirContentsName);
+        }
+
+        FileUtils.deleteDirectory(initialDirectory);
     }
 
     @NotNull
