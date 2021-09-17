@@ -39,7 +39,7 @@ public class SimpleFileFinder implements FileFinder {
                 foundFiles.add(file);
             }
             if (!matches || findInsideMatchingDirectories) {
-                if (file.isDirectory() && (!Files.isSymbolicLink(file.toPath()) || followSymLinks)) {
+                if (file.isDirectory() || (Files.isSymbolicLink(file.toPath()) && followSymLinks)) {
                     foundFiles.addAll(findFiles(file, filter, followSymLinks, depth - 1, findInsideMatchingDirectories));
                 }
             }
