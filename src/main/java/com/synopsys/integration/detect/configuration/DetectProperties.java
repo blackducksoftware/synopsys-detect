@@ -1301,9 +1301,8 @@ public class DetectProperties {
     public static final DetectProperty<BooleanProperty> DETECT_FOLLOW_SYMLINKS =
         new DetectProperty<>(new BooleanProperty("detect.follow.symbolic.links", true))
             .setInfo("Follow Symbolic Links", DetectPropertyFromVersion.VERSION_7_0_0)
-            // TODO detect.blackduck.signature.scanner.exclusion.name.patterns is deprected!
             .setHelp(
-                "If set to true, Detect will follow symbolic links when performing the detector search, when searching for files that detectors need, and when searching for patterns provided via property detect.blackduck.signature.scanner.exclusion.name.patterns.")
+                "If set to true, Detect will follow symbolic links when performing the detector search, when searching for files that detectors need, and when searching for patterns provided via property detect.excluded.directories.")
             .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL);
 
     public static final DetectProperty<EnumProperty<BlackduckScanMode>> DETECT_BLACKDUCK_SCAN_MODE =
