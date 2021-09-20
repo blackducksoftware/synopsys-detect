@@ -50,6 +50,8 @@ import com.synopsys.integration.detect.tool.detector.executable.SystemPathExecut
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryZipInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorInstaller;
+import com.synopsys.integration.detect.tool.detector.inspectors.projectinspector.ArtifactoryProjectInspectorInstaller;
+import com.synopsys.integration.detect.tool.detector.inspectors.projectinspector.ProjectInspectorExecutableLocator;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.DetectRunId;
 import com.synopsys.integration.detect.workflow.airgap.AirGapCreator;
@@ -58,6 +60,7 @@ import com.synopsys.integration.detect.workflow.airgap.DetectFontAirGapCreator;
 import com.synopsys.integration.detect.workflow.airgap.DockerAirGapCreator;
 import com.synopsys.integration.detect.workflow.airgap.GradleAirGapCreator;
 import com.synopsys.integration.detect.workflow.airgap.NugetAirGapCreator;
+import com.synopsys.integration.detect.workflow.airgap.ProjectInspectorAirGapCreator;
 import com.synopsys.integration.detect.workflow.blackduck.analytics.AnalyticsConfigurationService;
 import com.synopsys.integration.detect.workflow.blackduck.font.DetectFontInstaller;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
@@ -131,10 +134,15 @@ public class DetectBootFactory {
         GradleAirGapCreator gradleAirGapCreator = new GradleAirGapCreator(detectExecutableResolver, runner, freemarkerConfiguration);
 
         NugetAirGapCreator nugetAirGapCreator = new NugetAirGapCreator(new NugetInspectorInstaller(artifactoryZipInstaller));
+
+        ProjectInspectorExecutableLocator projectInspectorExecutableLocator = new ProjectInspectorExecutableLocator(detectInfo);
+        ArtifactoryProjectInspectorInstaller projectInspectorInstaller = new ArtifactoryProjectInspectorInstaller(detectInfo, artifactoryZipInstaller, projectInspectorExecutableLocator);
+        ProjectInspectorAirGapCreator projectInspectorAirGapCreator = new ProjectInspectorAirGapCreator(projectInspectorInstaller);
+
         DockerAirGapCreator dockerAirGapCreator = new DockerAirGapCreator(new DockerInspectorInstaller(artifactResolver));
         DetectFontAirGapCreator detectFontAirGapCreator = new DetectFontAirGapCreator(new DetectFontInstaller(artifactResolver));
 
-        return new AirGapCreator(new AirGapPathFinder(), eventSystem, gradleAirGapCreator, nugetAirGapCreator, dockerAirGapCreator, detectFontAirGapCreator);
+        return new AirGapCreator(new AirGapPathFinder(), eventSystem, gradleAirGapCreator, nugetAirGapCreator, dockerAirGapCreator, detectFontAirGapCreator, projectInspectorAirGapCreator);
     }
 
     public HelpJsonManager createHelpJsonManager() {

@@ -120,10 +120,10 @@ public class DetectorFactory {
 
         Optional<File> projectInspectorAirgapPath = airGapInspectorPaths.getProjectInspectorAirGapFile();
         if (projectInspectorAirgapPath.isPresent()) {
-            return new AirgapProjectInspectorResolver(airGapInspectorPaths, projectInspectorExecutableLocator);
+            return new AirgapProjectInspectorResolver(airGapInspectorPaths, projectInspectorExecutableLocator, detectInfo);
         } else {
-            ArtifactoryProjectInspectorInstaller artifactoryProjectInspectorInstaller = new ArtifactoryProjectInspectorInstaller(detectInfo, directoryManager, artifactoryZipInstaller, projectInspectorExecutableLocator);
-            return new OnlineProjectInspectorResolver(artifactoryProjectInspectorInstaller);
+            ArtifactoryProjectInspectorInstaller artifactoryProjectInspectorInstaller = new ArtifactoryProjectInspectorInstaller(detectInfo, artifactoryZipInstaller, projectInspectorExecutableLocator);
+            return new OnlineProjectInspectorResolver(artifactoryProjectInspectorInstaller, directoryManager);
         }
     }
 
