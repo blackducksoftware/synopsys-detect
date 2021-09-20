@@ -29,10 +29,13 @@ public class DetectorFinder {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public Optional<DetectorEvaluationTree> findDetectors(File initialDirectory, DetectorRuleSet detectorRuleSet, DetectorFinderOptions options, FileFinder fileFinder) {
-        return findDetectors(initialDirectory, detectorRuleSet, 0, options, fileFinder);
+        List<DetectorEvaluation> evaluations = detectorRuleSet.getOrderedDetectorRules().stream()
+                                                   .map(DetectorEvaluation::new)
+                                                   .collect(Collectors.toList());
+        return findDetectors(initialDirectory, detectorRuleSet, evaluations, 0, options, fileFinder);
     }
 
-    private Optional<DetectorEvaluationTree> findDetectors(File directory, DetectorRuleSet detectorRuleSet, int depth, DetectorFinderOptions options, FileFinder fileFinder) {
+    private Optional<DetectorEvaluationTree> findDetectors(File directory, DetectorRuleSet detectorRuleSet, List<DetectorEvaluation> evaluations, int depth, DetectorFinderOptions options, FileFinder fileFinder) {
 
         if (depth > options.getMaximumDepth()) {
             logger.trace("Skipping directory as it exceeds max depth: " + directory.toString());
@@ -67,10 +70,6 @@ public class DetectorFinder {
         }
 
         logger.info("Traversing directory: " + directory.getPath()); //TODO: Finding the perfect log level here is important. At INFO, we log a lot during a deep traversal but if we don't we might look stuck.
-        // TODO why not do this only once?
-        List<DetectorEvaluation> evaluations = detectorRuleSet.getOrderedDetectorRules().stream()
-                                                   .map(DetectorEvaluation::new)
-                                                   .collect(Collectors.toList());
 
         Set<DetectorEvaluationTree> children = new HashSet<>();
 
@@ -78,7 +77,7 @@ public class DetectorFinder {
         logger.debug("filteredSubDirectories: {}", subDirectories.toString());
 
         for (File subDirectory : subDirectories) {
-            Optional<DetectorEvaluationTree> childEvaluationSet = findDetectors(subDirectory, detectorRuleSet, depth + 1, options, fileFinder);
+            Optional<DetectorEvaluationTree> childEvaluationSet = findDetectors(subDirectory, detectorRuleSet, evaluations, depth + 1, options, fileFinder);
             childEvaluationSet.ifPresent(children::add);
         }
 
