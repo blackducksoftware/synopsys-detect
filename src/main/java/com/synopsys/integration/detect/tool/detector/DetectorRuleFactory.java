@@ -161,7 +161,6 @@ public class DetectorRuleFactory {
         ruleSet.addDetector(DetectorType.GO_VNDR, "Go Vndr", GoVndrDetectable.class, detectableFactory::createGoVndrDetectable).defaults().build();
         ruleSet.addDetector(DetectorType.GO_VENDOR, "Go Vendor", GoVendorDetectable.class, detectableFactory::createGoVendorDetectable).defaults().build();
 
-        //ruleSet.addDetector(DetectorType.GRADLE, "Gradle Parse", GradleParseDetectable.class, detectableFactory::createGradleParseDetectable).defaults().build();
         ruleSet.addDetector(DetectorType.GRADLE, "Gradle Project Inspector", GradleProjectInspectorDetectable.class, detectableFactory::createGradleProjectInspectorDetectable).defaults().build();
         ruleSet.addDetector(DetectorType.GO_GRADLE, "Go Gradle", GoGradleDetectable.class, detectableFactory::createGoGradleDetectable).defaults().build();
 

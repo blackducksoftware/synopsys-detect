@@ -152,11 +152,8 @@ import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleR
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportParser;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportTransformer;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleRootMetadataParser;
-import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleParseDetectable;
-import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleParseExtractor;
 import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleProjectInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleProjectInspectorExtractor;
-import com.synopsys.integration.detectable.detectables.gradle.parsing.parse.BuildGradleParser;
 import com.synopsys.integration.detectable.detectables.lerna.LernaDetectable;
 import com.synopsys.integration.detectable.detectables.lerna.LernaExtractor;
 import com.synopsys.integration.detectable.detectables.lerna.LernaOptions;
@@ -355,10 +352,6 @@ public class DetectableFactory {
 
     public GradleDetectable createGradleDetectable(DetectableEnvironment environment, GradleInspectorOptions gradleInspectorOptions, GradleInspectorResolver gradleInspectorResolver, GradleResolver gradleResolver) {
         return new GradleDetectable(environment, fileFinder, gradleResolver, gradleInspectorResolver, gradleInspectorExtractor(), gradleInspectorOptions);
-    }
-
-    public GradleParseDetectable createGradleParseDetectable(DetectableEnvironment environment) {
-        return new GradleParseDetectable(environment, fileFinder, gradleParseExtractor());
     }
 
     public GradleProjectInspectorDetectable createMavenGradleInspectorDetectable(DetectableEnvironment detectableEnvironment, ProjectInspectorResolver projectInspectorResolver) {
@@ -919,14 +912,6 @@ public class DetectableFactory {
 
     private MavenParseExtractor mavenParseExtractor() {
         return new MavenParseExtractor(externalIdFactory, saxParser());
-    }
-
-    private BuildGradleParser buildGradleParser() {
-        return new BuildGradleParser(externalIdFactory);
-    }
-
-    private GradleParseExtractor gradleParseExtractor() {
-        return new GradleParseExtractor(buildGradleParser());
     }
 
     private SwiftCliParser swiftCliParser() {

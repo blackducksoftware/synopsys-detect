@@ -37,7 +37,6 @@ import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectab
 import com.synopsys.integration.detectable.detectables.go.vendor.GoVendorDetectable;
 import com.synopsys.integration.detectable.detectables.go.vendr.GoVndrDetectable;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleDetectable;
-import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleParseDetectable;
 import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleProjectInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.lerna.LernaDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomDetectable;
@@ -166,10 +165,6 @@ public class DetectDetectableFactory {
 
     public GradleDetectable createGradleDetectable(DetectableEnvironment environment) {
         return detectableFactory.createGradleDetectable(environment, detectableOptionFactory.createGradleInspectorOptions(), gradleInspectorResolver, detectExecutableResolver);
-    }
-
-    public GradleParseDetectable createGradleParseDetectable(DetectableEnvironment environment) {
-        return detectableFactory.createGradleParseDetectable(environment);
     }
 
     public GemspecParseDetectable createGemspecParseDetectable(DetectableEnvironment environment) {
