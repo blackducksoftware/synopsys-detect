@@ -312,13 +312,23 @@ public class DetectConfigurationFactory {
         Integer projectTier = getNullableValue(DetectProperties.DETECT_PROJECT_TIER);
         String projectDescription = getNullableValue(DetectProperties.DETECT_PROJECT_DESCRIPTION);
         String projectVersionNotes = getNullableValue(DetectProperties.DETECT_PROJECT_VERSION_NOTES);
-        List<ProjectCloneCategoriesType> cloneCategories = getValue(DetectProperties.DETECT_PROJECT_CLONE_CATEGORIES);
+        List<FilterableEnumValue<ProjectCloneCategoriesType>> filterableCloneCategories = getValue(DetectProperties.DETECT_PROJECT_CLONE_CATEGORIES);
+        List<ProjectCloneCategoriesType> cloneCategories = FilterableEnumUtils.populatedValues(filterableCloneCategories, ProjectCloneCategoriesType.class);
         Boolean projectLevelAdjustments = getValue(DetectProperties.DETECT_PROJECT_LEVEL_ADJUSTMENTS);
         Boolean forceProjectVersionUpdate = getValue(DetectProperties.DETECT_PROJECT_VERSION_UPDATE);
         String projectVersionNickname = getNullableValue(DetectProperties.DETECT_PROJECT_VERSION_NICKNAME);
 
-        return new ProjectSyncOptions(projectVersionPhase, projectVersionDistribution, projectTier, projectDescription, projectVersionNotes, cloneCategories, forceProjectVersionUpdate,
-            projectVersionNickname, projectLevelAdjustments);
+        return new ProjectSyncOptions(
+            projectVersionPhase,
+            projectVersionDistribution,
+            projectTier,
+            projectDescription,
+            projectVersionNotes,
+            cloneCategories,
+            forceProjectVersionUpdate,
+            projectVersionNickname,
+            projectLevelAdjustments
+        );
     }
 
     public ParentProjectMapOptions createParentProjectMapOptions() {

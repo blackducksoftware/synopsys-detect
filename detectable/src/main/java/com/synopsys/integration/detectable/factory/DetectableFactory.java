@@ -98,6 +98,7 @@ import com.synopsys.integration.detectable.detectables.conan.lockfile.parser.Con
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectable;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliExtractor;
+import com.synopsys.integration.detectable.detectables.conda.parser.CondaDependencyCreator;
 import com.synopsys.integration.detectable.detectables.conda.parser.CondaListParser;
 import com.synopsys.integration.detectable.detectables.cpan.CpanCliDetectable;
 import com.synopsys.integration.detectable.detectables.cpan.CpanCliExtractor;
@@ -522,7 +523,11 @@ public class DetectableFactory {
     }
 
     private CondaListParser condaListParser() {
-        return new CondaListParser(gson, externalIdFactory);
+        return new CondaListParser(gson, condaDependencyCreator());
+    }
+
+    private CondaDependencyCreator condaDependencyCreator() {
+        return new CondaDependencyCreator(externalIdFactory);
     }
 
     private CondaCliExtractor condaCliExtractor() {

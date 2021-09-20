@@ -18,4 +18,7 @@ public class CondaListElement {
 
     @SerializedName("build_string")
     public String buildString;
+
+    @SerializedName("channel")
+    public String channel;
 }
