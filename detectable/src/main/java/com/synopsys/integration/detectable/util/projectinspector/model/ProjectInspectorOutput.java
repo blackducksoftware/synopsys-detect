@@ -5,7 +5,7 @@
  *
  * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
-package com.synopsys.integration.detectable.detectables.nuget.model.projectinspector;
+package com.synopsys.integration.detectable.util.projectinspector.model;
 
 import java.util.Map;
 

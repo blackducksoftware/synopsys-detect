@@ -5,7 +5,7 @@
  *
  * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
-package com.synopsys.integration.detectable.detectables.nuget;
+package com.synopsys.integration.detectable.detectables.maven.parsing;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,20 +20,19 @@ import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
-import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.util.projectinspector.ProjectInspectorParser;
 
-public class NugetProjectInspectorExtractor {
+public class MavenProjectInspectorExtractor {
     private final DetectableExecutableRunner executableRunner;
     private final ProjectInspectorParser projectInspectorParser;
 
-    public NugetProjectInspectorExtractor(DetectableExecutableRunner executableRunner, ProjectInspectorParser projectInspectorParser) {
+    public MavenProjectInspectorExtractor(DetectableExecutableRunner executableRunner, ProjectInspectorParser projectInspectorParser) {
         this.executableRunner = executableRunner;
         this.projectInspectorParser = projectInspectorParser;
     }
 
-    public Extraction extract(File targetDirectory, File outputDirectory, ExecutableTarget inspector, NugetInspectorOptions nugetInspectorOptions) throws ExecutableFailedException {
+    public Extraction extract(File targetDirectory, File outputDirectory, ExecutableTarget inspector) throws ExecutableFailedException {
         File outputFile = new File(outputDirectory, "inspection.json");
 
         List<String> arguments = new LinkedList<>();

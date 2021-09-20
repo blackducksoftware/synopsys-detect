@@ -10,7 +10,7 @@ import com.google.gson.Gson;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectables.nuget.parse.NugetProjectInspectorParser;
+import com.synopsys.integration.detectable.util.projectinspector.ProjectInspectorParser;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
@@ -18,7 +18,7 @@ public class NugetProjectInspectorParseTest {
     @Test
     void checkParse() {
         String inspectorOutput = FunctionalTestFiles.asString("/nuget/project_inspector/ConsoleApp.json");
-        List<CodeLocation> codeLocations = new NugetProjectInspectorParser(new Gson(), new ExternalIdFactory()).parse(inspectorOutput);
+        List<CodeLocation> codeLocations = new ProjectInspectorParser(new Gson(), new ExternalIdFactory()).parse(inspectorOutput);
 
         Assertions.assertEquals(2, codeLocations.size());
         Assertions.assertEquals(new File("C:\\Users\\jordanp\\source\\repos\\ConsoleApp3\\ConsoleApp1\\ConsoleApp1.csproj"), codeLocations.get(0).getSourcePath().orElse(null));
