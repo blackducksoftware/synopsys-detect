@@ -31,23 +31,23 @@ import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 @DetectableInfo(language = "C#", forge = "NuGet.org", requirementsMarkdown = "File: a project file with one of the following extensions: .csproj, .sln")
-public class NugetParseDetectable extends Detectable {
+public class NugetProjectInspectorDetectable extends Detectable {
     static final List<String> SUPPORTED_PROJECT_PATTERNS = Arrays.asList("*.csproj", "*.sln");
 
     private final FileFinder fileFinder;
     private final NugetInspectorOptions nugetInspectorOptions;
-    private final ProjectInspectorResolver nugetInspectorResolver;
+    private final ProjectInspectorResolver projectInspectorResolver;
     private final NugetProjectInspectorExtractor nugetProjectInspectorExtractor;
 
     private ExecutableTarget inspector;
     private List<File> projectFiles = new ArrayList<>();
 
-    public NugetParseDetectable(final DetectableEnvironment detectableEnvironment, final FileFinder fileFinder, final NugetInspectorOptions nugetInspectorOptions,
-        ProjectInspectorResolver nugetInspectorResolver, NugetProjectInspectorExtractor nugetProjectInspectorExtractor) {
+    public NugetProjectInspectorDetectable(final DetectableEnvironment detectableEnvironment, final FileFinder fileFinder, final NugetInspectorOptions nugetInspectorOptions,
+        ProjectInspectorResolver projectInspectorResolver, NugetProjectInspectorExtractor nugetProjectInspectorExtractor) {
         super(detectableEnvironment);
         this.fileFinder = fileFinder;
         this.nugetInspectorOptions = nugetInspectorOptions;
-        this.nugetInspectorResolver = nugetInspectorResolver;
+        this.projectInspectorResolver = projectInspectorResolver;
         this.nugetProjectInspectorExtractor = nugetProjectInspectorExtractor;
     }
 
@@ -66,13 +66,13 @@ public class NugetParseDetectable extends Detectable {
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        inspector = nugetInspectorResolver.resolveProjectInspector();
+        inspector = projectInspectorResolver.resolveProjectInspector();
 
         if (inspector == null) {
-            return new InspectorNotFoundDetectableResult("nuget");
+            return new InspectorNotFoundDetectableResult("Project Inspector");
         }
 
-        return new PassedDetectableResult(new FoundInspector(inspector.getClass().getSimpleName())); //TODO: Inspector should describe itself.
+        return new PassedDetectableResult(new FoundInspector("Project Inspector"));
     }
 
     @Override

@@ -180,8 +180,8 @@ import com.synopsys.integration.detectable.detectables.npm.packagejson.NpmPackag
 import com.synopsys.integration.detectable.detectables.npm.packagejson.NpmPackageJsonParseDetectableOptions;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.PackageJsonExtractor;
 import com.synopsys.integration.detectable.detectables.nuget.NugetInspectorExtractor;
-import com.synopsys.integration.detectable.detectables.nuget.NugetParseDetectable;
 import com.synopsys.integration.detectable.detectables.nuget.NugetProjectDetectable;
+import com.synopsys.integration.detectable.detectables.nuget.NugetProjectInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.nuget.NugetProjectInspectorExtractor;
 import com.synopsys.integration.detectable.detectables.nuget.NugetSolutionDetectable;
 import com.synopsys.integration.detectable.detectables.nuget.parse.NugetInspectorParser;
@@ -404,8 +404,8 @@ public class DetectableFactory {
         return new NugetSolutionDetectable(environment, fileFinder, nugetInspectorResolver, nugetInspectorExtractor(), nugetInspectorOptions);
     }
 
-    public NugetParseDetectable createNugetParseDetectable(DetectableEnvironment environment, NugetInspectorOptions nugetInspectorOptions, ProjectInspectorResolver projectInspectorResolver) {
-        return new NugetParseDetectable(environment, fileFinder, nugetInspectorOptions, projectInspectorResolver, nugetProjectInspectorExtractor());
+    public NugetProjectInspectorDetectable createNugetParseDetectable(DetectableEnvironment environment, NugetInspectorOptions nugetInspectorOptions, ProjectInspectorResolver projectInspectorResolver) {
+        return new NugetProjectInspectorDetectable(environment, fileFinder, nugetInspectorOptions, projectInspectorResolver, nugetProjectInspectorExtractor());
     }
 
     public PackratLockDetectable createPackratLockDetectable(DetectableEnvironment environment) {

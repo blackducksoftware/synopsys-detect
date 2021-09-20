@@ -46,8 +46,8 @@ import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliDetectable;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmPackageLockDetectable;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmShrinkwrapDetectable;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.NpmPackageJsonParseDetectable;
-import com.synopsys.integration.detectable.detectables.nuget.NugetParseDetectable;
 import com.synopsys.integration.detectable.detectables.nuget.NugetProjectDetectable;
+import com.synopsys.integration.detectable.detectables.nuget.NugetProjectInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.nuget.NugetSolutionDetectable;
 import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDetectable;
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectable;
@@ -267,7 +267,7 @@ public class DetectDetectableFactory {
         );
     }
 
-    public NugetParseDetectable createNugetParseDetectable(DetectableEnvironment detectableEnvironment) {
+    public NugetProjectInspectorDetectable createNugetParseDetectable(DetectableEnvironment detectableEnvironment) {
         return detectableFactory.createNugetParseDetectable(detectableEnvironment, detectableOptionFactory.createNugetInspectorOptions(), projectInspectorResolver);
     }
 }
