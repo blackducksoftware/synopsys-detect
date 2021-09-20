@@ -59,33 +59,54 @@ public class GradleReportTransformer {
 
     private void addConfigurationToGraph(MutableDependencyGraph graph, GradleConfiguration configuration) {
         DependencyHistory history = new DependencyHistory();
-        Optional<Integer> skipUntil = Optional.empty();
 
+        TreeNodeSkipper treeNodeSkipper = null;
         for (GradleTreeNode currentNode : configuration.getChildren()) {
-
-            if (skipUntil.isPresent() && currentNode.getLevel() <= skipUntil.get()) {
-                skipUntil = Optional.empty();
-            } else if (skipUntil.isPresent()) {
+            if (treeNodeSkipper != null && treeNodeSkipper.shouldSkip(currentNode)) {
                 continue;
+            } else if (treeNodeSkipper != null) {
+                treeNodeSkipper = null;
             }
 
-            history.clearDependenciesDeeperThan(currentNode.getLevel());
-            if (currentNode.getNodeType() != GradleTreeNode.NodeType.GAV) {
-                skipUntil = Optional.of(currentNode.getLevel());
-                continue;
-            }
-
-            GradleGav gav = currentNode.getGav().get(); // TODO: Why are we not doing an isPresent() check here?
-            ExternalId externalId = externalIdFactory.createMavenExternalId(gav.getName(), gav.getGroup(), gav.getVersion());
-            Dependency currentDependency = new Dependency(gav.getGroup(), gav.getVersion(), externalId);
-
-            if (history.isEmpty()) {
-                graph.addChildToRoot(currentDependency);
+            if (currentNode.getNodeType() == GradleTreeNode.NodeType.GAV) {
+                history.clearDependenciesDeeperThan(currentNode.getLevel());
+                Optional<GradleGav> currentNodeGav = currentNode.getGav();
+                if (currentNodeGav.isPresent()) {
+                    addGavToGraph(currentNodeGav.get(), history, graph);
+                } else {
+                    // We know this is a GradleTreeNode.NodeType.GAV
+                    // So if its missing data, something is probably wrong.
+                    logger.debug("Missing expected GAV from known NodeType.");
+                }
             } else {
-                graph.addChildWithParents(currentDependency, history.getLastDependency());
+                treeNodeSkipper = new TreeNodeSkipper(currentNode);
             }
-            history.add(currentDependency);
+        }
+    }
+
+    private void addGavToGraph(GradleGav gav, DependencyHistory history, MutableDependencyGraph graph) {
+        ExternalId externalId = externalIdFactory.createMavenExternalId(gav.getName(), gav.getGroup(), gav.getVersion());
+        Dependency currentDependency = new Dependency(gav.getGroup(), gav.getVersion(), externalId);
+
+        if (history.isEmpty()) {
+            graph.addChildToRoot(currentDependency);
+        } else {
+            graph.addChildWithParents(currentDependency, history.getLastDependency());
+        }
+        history.add(currentDependency);
+    }
+
+    private static class TreeNodeSkipper {
+        private final GradleTreeNode startingNode;
+
+        private TreeNodeSkipper(GradleTreeNode startingNode) {
+            this.startingNode = startingNode;
         }
 
+        public boolean shouldSkip(GradleTreeNode nodeInQuestion) {
+            return startingNode == nodeInQuestion
+                       || nodeInQuestion.getLevel() > startingNode.getLevel();
+        }
     }
+
 }

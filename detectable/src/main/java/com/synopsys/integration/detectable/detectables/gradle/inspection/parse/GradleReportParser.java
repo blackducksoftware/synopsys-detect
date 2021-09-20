@@ -39,26 +39,28 @@ public class GradleReportParser {
 
     private final GradleReportConfigurationParser gradleReportConfigurationParser = new GradleReportConfigurationParser();
 
-    public Optional<GradleReport> parseReport(final File reportFile) {
+    public Optional<GradleReport> parseReport(File reportFile) {
         GradleReport gradleReport = new GradleReport();
         boolean processingMetaData = false;
-        final List<String> configurationLines = new ArrayList<>();
-        try (final InputStream dependenciesInputStream = new FileInputStream(reportFile); final BufferedReader reader = new BufferedReader(new InputStreamReader(dependenciesInputStream, StandardCharsets.UTF_8))) {
+        List<String> configurationLines = new ArrayList<>();
+        try (InputStream dependenciesInputStream = new FileInputStream(reportFile); BufferedReader reader = new BufferedReader(new InputStreamReader(dependenciesInputStream, StandardCharsets.UTF_8))) {
             while (reader.ready()) {
-                final String line = reader.readLine();
+                String line = reader.readLine();
                 /*
                   The meta data section will be at the end of the file after all of the "gradle dependencies" output
                  */
+                boolean shouldContinue = false;
                 if (line.startsWith(DETECT_META_DATA_HEADER)) {
                     processingMetaData = true;
-                    continue;
-                }
-                if (line.startsWith(DETECT_META_DATA_FOOTER)) {
+                    shouldContinue = true;
+                } else if (line.startsWith(DETECT_META_DATA_FOOTER)) {
                     processingMetaData = false;
-                    continue;
-                }
-                if (processingMetaData) {
+                    shouldContinue = true;
+                } else if (processingMetaData) {
                     setGradleReportInfo(gradleReport, line);
+                    shouldContinue = true;
+                }
+                if (shouldContinue) {
                     continue;
                 }
 
@@ -72,7 +74,7 @@ public class GradleReportParser {
             }
 
             parseConfigurationLines(configurationLines, gradleReport);
-        } catch (final Exception e) {
+        } catch (Exception e) {
             logger.debug(String.format("Failed to read report file: %s", reportFile.getAbsolutePath()), e);
             gradleReport = null;
         }
@@ -92,16 +94,16 @@ public class GradleReportParser {
         }
     }
 
-    private void parseConfigurationLines(final List<String> configurationLines, final GradleReport gradleReport) {
+    private void parseConfigurationLines(List<String> configurationLines, GradleReport gradleReport) {
         if (configurationLines.size() > 1 && isConfigurationHeader(configurationLines)) {
-            final String header = configurationLines.get(0);
-            final List<String> dependencyTree = configurationLines.stream().skip(1).collect(Collectors.toList());
-            final GradleConfiguration configuration = gradleReportConfigurationParser.parse(header, dependencyTree);
+            String header = configurationLines.get(0);
+            List<String> dependencyTree = configurationLines.stream().skip(1).collect(Collectors.toList());
+            GradleConfiguration configuration = gradleReportConfigurationParser.parse(header, dependencyTree);
             gradleReport.getConfigurations().add(configuration);
         }
     }
 
-    private boolean isConfigurationHeader(final List<String> lines) {
+    private boolean isConfigurationHeader(List<String> lines) {
         if (lines.get(0).contains(" - ")) {
             return true;
         } else {

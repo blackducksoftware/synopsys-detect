@@ -15,7 +15,8 @@ import org.apache.commons.lang3.StringUtils;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleConfiguration;
 
 public class GradleReportConfigurationParser {
-    private final String UNRESOLVED_SUFFIX = "(n)";
+    private static final String UNRESOLVED_SUFFIX = "(n)";
+
     private final GradleReportLineParser parser = new GradleReportLineParser();
 
     public GradleConfiguration parse(String header, List<String> dependencyLines) {
