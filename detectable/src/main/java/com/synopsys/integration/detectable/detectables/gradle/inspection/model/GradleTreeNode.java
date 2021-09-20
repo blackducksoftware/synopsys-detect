@@ -9,8 +9,10 @@ package com.synopsys.integration.detectable.detectables.gradle.inspection.model;
 
 import java.util.Optional;
 
-public class GradleTreeNode {
-    public GradleTreeNode(final NodeType nodeType, final int level, final GradleGav gav, final String projectName) {
+import com.synopsys.integration.util.Stringable;
+
+public class GradleTreeNode extends Stringable {
+    public GradleTreeNode(NodeType nodeType, int level, GradleGav gav, String projectName) {
         this.nodeType = nodeType;
         this.level = level;
         this.gav = gav;
@@ -44,15 +46,15 @@ public class GradleTreeNode {
     private final GradleGav gav;
     private final String projectName;
 
-    public static GradleTreeNode newProject(final int level) {
+    public static GradleTreeNode newProject(int level) {
         return new GradleTreeNode(NodeType.PROJECT, level, null, "");
     }
 
-    public static GradleTreeNode newGav(final int level, final String name, final String group, final String version) {
+    public static GradleTreeNode newGav(int level, String name, String group, String version) {
         return new GradleTreeNode(NodeType.GAV, level, new GradleGav(name, group, version), null);
     }
 
-    public static GradleTreeNode newUnknown(final int level) {
+    public static GradleTreeNode newUnknown(int level) {
         return new GradleTreeNode(NodeType.UNKNOWN, level, null, null);
     }
 }

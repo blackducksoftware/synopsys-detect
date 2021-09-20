@@ -65,6 +65,7 @@ public class GradleReportTransformer {
             if (treeNodeSkipper != null && treeNodeSkipper.shouldSkip(currentNode)) {
                 continue;
             } else if (treeNodeSkipper != null) {
+                // TreeNodeSkipper has stopped skipping lines.
                 treeNodeSkipper = null;
             }
 
@@ -76,7 +77,7 @@ public class GradleReportTransformer {
                 } else {
                     // We know this is a GradleTreeNode.NodeType.GAV
                     // So if its missing data, something is probably wrong.
-                    logger.debug("Missing expected GAV from known NodeType.");
+                    logger.debug("Missing expected GAV from known NodeType. {}", currentNode);
                 }
             } else {
                 treeNodeSkipper = new TreeNodeSkipper(currentNode);
