@@ -50,13 +50,13 @@ public class ProjectInspectorParser {
 
         //and add them to the graph
         MutableDependencyGraph mutableDependencyGraph = new MutableMapDependencyGraph();
-        module.dependencies.forEach(dependency -> {
-            Dependency graphDependency = lookup.get(dependency.id);
-            dependency.includedBy.forEach(parent -> {
+        module.dependencies.forEach(moduleDependency -> {
+            Dependency dependency = lookup.get(moduleDependency.id);
+            moduleDependency.includedBy.forEach(parent -> {
                 if (parent.equals("DIRECT")) {
-                    mutableDependencyGraph.addChildToRoot(graphDependency);
+                    mutableDependencyGraph.addChildToRoot(dependency);
                 } else {
-                    mutableDependencyGraph.addChildWithParent(graphDependency, lookup.get(parent));
+                    mutableDependencyGraph.addChildWithParent(dependency, lookup.get(parent));
                 }
             });
         });
