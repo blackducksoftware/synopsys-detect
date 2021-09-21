@@ -48,6 +48,7 @@ public enum DetectGroup implements Group {
     CONAN("conan", DETECTORS),
     CONDA("conda", DETECTORS),
     CPAN("cpan", DETECTORS),
+    DART("dart", DETECTORS),
     DOCKER("docker", DETECTORS),
     GO("go", DETECTORS),
     GRADLE("gradle", DETECTORS),

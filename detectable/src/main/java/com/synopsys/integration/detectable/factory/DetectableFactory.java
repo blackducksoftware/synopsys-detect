@@ -25,7 +25,9 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.BazelR
 import com.synopsys.integration.detectable.detectable.executable.resolver.CondaResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanmResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.DartResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.DockerResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.FlutterResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GitResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GoResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GradleResolver;
@@ -95,6 +97,7 @@ import com.synopsys.integration.detectable.detectables.conan.lockfile.parser.Con
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectable;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliExtractor;
+import com.synopsys.integration.detectable.detectables.conda.parser.CondaDependencyCreator;
 import com.synopsys.integration.detectable.detectables.conda.parser.CondaListParser;
 import com.synopsys.integration.detectable.detectables.cpan.CpanCliDetectable;
 import com.synopsys.integration.detectable.detectables.cpan.CpanCliExtractor;
@@ -103,6 +106,14 @@ import com.synopsys.integration.detectable.detectables.cran.PackratLockDetectabl
 import com.synopsys.integration.detectable.detectables.cran.PackratLockExtractor;
 import com.synopsys.integration.detectable.detectables.cran.parse.PackratDescriptionFileParser;
 import com.synopsys.integration.detectable.detectables.cran.parse.PackratLockFileParser;
+import com.synopsys.integration.detectable.detectables.dart.PubSpecYamlNameVersionParser;
+import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDepDetectable;
+import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDepsDetectableOptions;
+import com.synopsys.integration.detectable.detectables.dart.pubdep.PubDepsExtractor;
+import com.synopsys.integration.detectable.detectables.dart.pubdep.PubDepsParser;
+import com.synopsys.integration.detectable.detectables.dart.pubspec.DartPubSpecLockDetectable;
+import com.synopsys.integration.detectable.detectables.dart.pubspec.PubSpecExtractor;
+import com.synopsys.integration.detectable.detectables.dart.pubspec.PubSpecLockParser;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectable;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectableOptions;
 import com.synopsys.integration.detectable.detectables.docker.DockerExtractor;
@@ -292,6 +303,14 @@ public class DetectableFactory {
 
     public CpanCliDetectable createCpanCliDetectable(DetectableEnvironment environment, CpanResolver cpanResolver, CpanmResolver cpanmResolver) {
         return new CpanCliDetectable(environment, fileFinder, cpanResolver, cpanmResolver, cpanCliExtractor());
+    }
+
+    public DartPubSpecLockDetectable createDartPubSpecLockDetectable(DetectableEnvironment environment) {
+        return new DartPubSpecLockDetectable(environment, fileFinder, pubSpecExtractor());
+    }
+
+    public DartPubDepDetectable createDartPubDepDetectable(DetectableEnvironment environment, DartPubDepsDetectableOptions dartPubDepsDetectableOptions, DartResolver dartResolver, FlutterResolver flutterResolver) {
+        return new DartPubDepDetectable(environment, fileFinder, pubDepsExtractor(), dartPubDepsDetectableOptions, dartResolver, flutterResolver);
     }
 
     public GemlockDetectable createGemlockDetectable(DetectableEnvironment environment) {
@@ -484,7 +503,11 @@ public class DetectableFactory {
     }
 
     private CondaListParser condaListParser() {
-        return new CondaListParser(gson, externalIdFactory);
+        return new CondaListParser(gson, condaDependencyCreator());
+    }
+
+    private CondaDependencyCreator condaDependencyCreator() {
+        return new CondaDependencyCreator(externalIdFactory);
     }
 
     private CondaCliExtractor condaCliExtractor() {
@@ -704,6 +727,26 @@ public class DetectableFactory {
 
     private PoetryExtractor poetryExtractor() {
         return new PoetryExtractor(new PoetryLockParser());
+    }
+
+    private PubSpecExtractor pubSpecExtractor() {
+        return new PubSpecExtractor(pubSpecLockParser(), pubSpecYamlNameVersionParser());
+    }
+
+    private PubSpecLockParser pubSpecLockParser() {
+        return new PubSpecLockParser(externalIdFactory);
+    }
+
+    private PubDepsExtractor pubDepsExtractor() {
+        return new PubDepsExtractor(executableRunner, pubDepsParser(), pubSpecYamlNameVersionParser());
+    }
+
+    private PubDepsParser pubDepsParser() {
+        return new PubDepsParser(externalIdFactory);
+    }
+
+    private PubSpecYamlNameVersionParser pubSpecYamlNameVersionParser() {
+        return new PubSpecYamlNameVersionParser();
     }
 
     private ToolPoetrySectionParser toolPoetrySectionParser() {

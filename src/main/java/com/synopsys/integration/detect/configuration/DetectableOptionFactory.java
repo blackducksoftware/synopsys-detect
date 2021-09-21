@@ -36,6 +36,7 @@ import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOpti
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliExtractorOptions;
 import com.synopsys.integration.detectable.detectables.conan.lockfile.ConanLockfileExtractorOptions;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectableOptions;
+import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDepsDetectableOptions;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectableOptions;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorOptions;
@@ -103,6 +104,11 @@ public class DetectableOptionFactory {
     public CondaCliDetectableOptions createCondaOptions() {
         String environmentName = getNullableValue(DetectProperties.DETECT_CONDA_ENVIRONMENT_NAME);
         return new CondaCliDetectableOptions(environmentName);
+    }
+
+    public DartPubDepsDetectableOptions createDartPubDepsDetectableOptions() {
+        Boolean excludeDevDependencies = getValue(DetectProperties.DETECT_PUD_DEPS_EXCLUDE_DEV);
+        return new DartPubDepsDetectableOptions(excludeDevDependencies);
     }
 
     public MavenParseOptions createMavenParseOptions() {

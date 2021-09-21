@@ -16,7 +16,7 @@ import com.synopsys.integration.blackduck.api.core.response.LinkSingleResponse;
 import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
 
 public class ImpactAnalysisUploadView extends BlackDuckView {
-    public static final Map<String, LinkBlackDuckResponse<?>> links = new HashMap<>();
+    protected static final Map<String, LinkBlackDuckResponse<?>> links = new HashMap<>();
 
     public static final String CODE_LOCATION_LINK = "codelocation";
     public static final String SCAN_BOM_ENTRIES_LINK = "scan-bom-entries";

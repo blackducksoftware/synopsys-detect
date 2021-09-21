@@ -30,6 +30,7 @@ import com.synopsys.integration.configuration.property.types.enumextended.Extend
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumValue;
 import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumListProperty;
 import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumUtils;
+import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumValue;
 import com.synopsys.integration.configuration.property.types.enums.EnumListProperty;
 import com.synopsys.integration.configuration.property.types.enums.EnumProperty;
 import com.synopsys.integration.configuration.property.types.integer.IntegerProperty;
@@ -386,6 +387,27 @@ public class DetectProperties {
             .setInfo("cpanm Executable", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("The path to the cpanm executable.")
             .setGroups(DetectGroup.CPAN, DetectGroup.GLOBAL);
+
+    public static final DetectProperty<NullablePathProperty> DETECT_DART_PATH =
+        new DetectProperty<>(new NullablePathProperty("detect.dart.path"))
+            .setInfo("dart Executable", DetectPropertyFromVersion.VERSION_7_5_0)
+            .setHelp("The path to the dart executable.")
+            .setGroups(DetectGroup.DART, DetectGroup.GLOBAL);
+
+    public static final DetectProperty<NullablePathProperty> DETECT_FLUTTER_PATH =
+        new DetectProperty<>(new NullablePathProperty("detect.flutter.path"))
+            .setInfo("flutter Executable", DetectPropertyFromVersion.VERSION_7_5_0)
+            .setHelp("The path to the flutter executable.")
+            .setGroups(DetectGroup.DART, DetectGroup.GLOBAL);
+
+    public static final DetectProperty<BooleanProperty> DETECT_PUD_DEPS_EXCLUDE_DEV =
+        new DetectProperty<>(new BooleanProperty("detect.pub.deps.exclude.dev", false))
+            .setInfo("Detect Dart Pub Deps Exclude Dev Dependencies", DetectPropertyFromVersion.VERSION_7_5_0)
+            .setHelp(
+                "If true, the Dart Detector will pass the option --no-dev when running the command 'pub deps'."
+            )
+            .setGroups(DetectGroup.DART, DetectGroup.DETECTOR, DetectGroup.GLOBAL)
+            .setCategory(DetectCategory.Advanced);
 
     public static final DetectProperty<IntegerProperty> DETECT_DETECTOR_SEARCH_DEPTH =
         new DetectProperty<>(new IntegerProperty("detect.detector.search.depth", 0))
@@ -930,11 +952,9 @@ public class DetectProperties {
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced);
 
-    public static final DetectProperty<EnumListProperty<ProjectCloneCategoriesType>> DETECT_PROJECT_CLONE_CATEGORIES =
+    public static final DetectProperty<FilterableEnumListProperty<ProjectCloneCategoriesType>> DETECT_PROJECT_CLONE_CATEGORIES =
         new DetectProperty<>(
-            new EnumListProperty<>("detect.project.clone.categories",
-                Arrays.asList(ProjectCloneCategoriesType.COMPONENT_DATA, ProjectCloneCategoriesType.VULN_DATA, ProjectCloneCategoriesType.LICENSE_TERM_FULFILLMENT, ProjectCloneCategoriesType.CUSTOM_FIELD_DATA),
-                ProjectCloneCategoriesType.class))
+            new FilterableEnumListProperty<>("detect.project.clone.categories", singletonList(FilterableEnumValue.allValue()), ProjectCloneCategoriesType.class))
             .setInfo("Clone Project Categories", DetectPropertyFromVersion.VERSION_4_2_0)
             .setHelp(
                 "The value of this property is used to set the 'Cloning' settings on created Black Duck projects. If property detect.project.version.update is set to true, the value of this property is used to set the 'Cloning' settings on updated Black Duck projects.")
@@ -1298,6 +1318,8 @@ public class DetectProperties {
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced)
             .setDeprecated(AGGREGATION_MODE_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT);
+
+
 
     @Deprecated
     public static final DetectProperty<BooleanProperty> BLACKDUCK_LEGACY_UPLOAD_ENABLED =
