@@ -42,7 +42,7 @@ public class GradleReportTransformer {
 
         for (GradleConfiguration configuration : gradleReport.getConfigurations()) {
             if (configuration.isUnresolved() && !includeUnresolvedConfigurations) {
-                logger.trace("Skipping adding unresolved configuration to the graph: {}", configuration.getName());
+                logger.trace("Excluding unresolved configuration from the graph: {}", configuration.getName());
             } else {
                 logger.trace("Adding configuration to the graph: {}", configuration.getName());
                 addConfigurationToGraph(graph, configuration);
