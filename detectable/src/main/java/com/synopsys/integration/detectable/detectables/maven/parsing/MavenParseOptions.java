@@ -11,7 +11,7 @@ public class MavenParseOptions {
     private final boolean includePlugins;
     private final boolean enableLegacyMode;
 
-    public MavenParseOptions(final boolean enableLegacyMode, final boolean includePlugins) {
+    public MavenParseOptions(final boolean includePlugins, final boolean enableLegacyMode) {
         this.includePlugins = includePlugins;
         this.enableLegacyMode = enableLegacyMode;
     }
