@@ -7,26 +7,22 @@
  */
 package com.synopsys.integration.detectable.detectables.nuget;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
-import com.synopsys.integration.detectable.detectable.PassedResultBuilder;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
-import com.synopsys.integration.detectable.detectable.explanation.FoundInspector;
 import com.synopsys.integration.detectable.detectable.inspector.ProjectInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.InspectorNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
+import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorExtractor;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
@@ -37,47 +33,37 @@ public class NugetProjectInspectorDetectable extends Detectable {
     private final FileFinder fileFinder;
     private final NugetInspectorOptions nugetInspectorOptions;
     private final ProjectInspectorResolver projectInspectorResolver;
-    private final NugetProjectInspectorExtractor nugetProjectInspectorExtractor;
+    private final ProjectInspectorExtractor projectInspectorExtractor;
 
     private ExecutableTarget inspector;
-    private List<File> projectFiles = new ArrayList<>();
 
     public NugetProjectInspectorDetectable(final DetectableEnvironment detectableEnvironment, final FileFinder fileFinder, final NugetInspectorOptions nugetInspectorOptions,
-        ProjectInspectorResolver projectInspectorResolver, NugetProjectInspectorExtractor nugetProjectInspectorExtractor) {
+        ProjectInspectorResolver projectInspectorResolver, ProjectInspectorExtractor projectInspectorExtractor) {
         super(detectableEnvironment);
         this.fileFinder = fileFinder;
         this.nugetInspectorOptions = nugetInspectorOptions;
         this.projectInspectorResolver = projectInspectorResolver;
-        this.nugetProjectInspectorExtractor = nugetProjectInspectorExtractor;
+        this.projectInspectorExtractor = projectInspectorExtractor;
     }
 
     @Override
     public DetectableResult applicable() {
-        projectFiles = fileFinder.findFiles(environment.getDirectory(), SUPPORTED_PROJECT_PATTERNS);
-
-        if (projectFiles != null && projectFiles.size() > 0) {
-            PassedResultBuilder passedResultBuilder = new PassedResultBuilder();
-            projectFiles.forEach(passedResultBuilder::foundFile);
-            return passedResultBuilder.build();
-        } else {
-            return new FilesNotFoundDetectableResult(SUPPORTED_PROJECT_PATTERNS);
-        }
+        Requirements requirements = new Requirements(fileFinder, environment);
+        requirements.anyFileMatchesPatterns(SUPPORTED_PROJECT_PATTERNS);
+        return requirements.result();
     }
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        inspector = projectInspectorResolver.resolveProjectInspector();
-
-        if (inspector == null) {
-            return new InspectorNotFoundDetectableResult("Project Inspector");
-        }
-
-        return new PassedDetectableResult(new FoundInspector("Project Inspector"));
+        Requirements requirements = new Requirements(fileFinder, environment);
+        inspector = requirements.executable(projectInspectorResolver::resolveProjectInspector, "Project Inspector");
+        return requirements.result();
     }
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
-        return nugetProjectInspectorExtractor.extract(environment.getDirectory(), extractionEnvironment.getOutputDirectory(), inspector, nugetInspectorOptions);
+        List<String> arguments = Collections.emptyList();
+        return projectInspectorExtractor.extract(arguments, environment.getDirectory(), extractionEnvironment.getOutputDirectory(), inspector);
     }
 
 }

@@ -153,7 +153,6 @@ import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.G
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportTransformer;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleRootMetadataParser;
 import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleProjectInspectorDetectable;
-import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleProjectInspectorExtractor;
 import com.synopsys.integration.detectable.detectables.lerna.LernaDetectable;
 import com.synopsys.integration.detectable.detectables.lerna.LernaExtractor;
 import com.synopsys.integration.detectable.detectables.lerna.LernaOptions;
@@ -168,7 +167,6 @@ import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseD
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseExtractor;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseOptions;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenProjectInspectorDetectable;
-import com.synopsys.integration.detectable.detectables.maven.parsing.MavenProjectInspectorExtractor;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliDetectable;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliExtractor;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliExtractorOptions;
@@ -184,7 +182,6 @@ import com.synopsys.integration.detectable.detectables.npm.packagejson.PackageJs
 import com.synopsys.integration.detectable.detectables.nuget.NugetInspectorExtractor;
 import com.synopsys.integration.detectable.detectables.nuget.NugetProjectDetectable;
 import com.synopsys.integration.detectable.detectables.nuget.NugetProjectInspectorDetectable;
-import com.synopsys.integration.detectable.detectables.nuget.NugetProjectInspectorExtractor;
 import com.synopsys.integration.detectable.detectables.nuget.NugetSolutionDetectable;
 import com.synopsys.integration.detectable.detectables.nuget.parse.NugetInspectorParser;
 import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDetectable;
@@ -212,6 +209,8 @@ import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryDetectab
 import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryExtractor;
 import com.synopsys.integration.detectable.detectables.pip.poetry.parser.PoetryLockParser;
 import com.synopsys.integration.detectable.detectables.pip.poetry.parser.ToolPoetrySectionParser;
+import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorExtractor;
+import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorParser;
 import com.synopsys.integration.detectable.detectables.rebar.RebarDetectable;
 import com.synopsys.integration.detectable.detectables.rebar.RebarExtractor;
 import com.synopsys.integration.detectable.detectables.rebar.parse.Rebar3TreeParser;
@@ -248,7 +247,6 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.section.YarnLockDependencySpecParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.section.YarnLockEntrySectionParserSet;
-import com.synopsys.integration.detectable.util.projectinspector.ProjectInspectorParser;
 
 /*
  Entry point for creating detectables using most
@@ -355,7 +353,7 @@ public class DetectableFactory {
     }
 
     public GradleProjectInspectorDetectable createMavenGradleInspectorDetectable(DetectableEnvironment detectableEnvironment, ProjectInspectorResolver projectInspectorResolver) {
-        return new GradleProjectInspectorDetectable(detectableEnvironment, fileFinder, projectInspectorResolver, gradleProjectInspectorExtractor());
+        return new GradleProjectInspectorDetectable(detectableEnvironment, fileFinder, projectInspectorResolver, projectInspectorExtractor());
     }
 
     public GemspecParseDetectable createGemspecParseDetectable(DetectableEnvironment environment, GemspecParseDetectableOptions gemspecParseDetectableOptions) {
@@ -374,8 +372,8 @@ public class DetectableFactory {
         return new MavenParseDetectable(environment, fileFinder, mavenParseExtractor(), mavenParseOptions);
     }
 
-    public MavenProjectInspectorDetectable createMavenProjectInspectorDetectable(DetectableEnvironment detectableEnvironment, ProjectInspectorResolver projectInspectorResolver) {
-        return new MavenProjectInspectorDetectable(detectableEnvironment, fileFinder, projectInspectorResolver, mavenProjectInspectorExtractor());
+    public MavenProjectInspectorDetectable createMavenProjectInspectorDetectable(DetectableEnvironment detectableEnvironment, ProjectInspectorResolver projectInspectorResolver, MavenParseOptions mavenParseOptions) {
+        return new MavenProjectInspectorDetectable(detectableEnvironment, fileFinder, projectInspectorResolver, projectInspectorExtractor(), mavenParseOptions);
     }
 
     public ConanLockfileDetectable createConanLockfileDetectable(DetectableEnvironment environment, ConanLockfileExtractorOptions conanLockfileExtractorOptions) {
@@ -411,7 +409,7 @@ public class DetectableFactory {
     }
 
     public NugetProjectInspectorDetectable createNugetParseDetectable(DetectableEnvironment environment, NugetInspectorOptions nugetInspectorOptions, ProjectInspectorResolver projectInspectorResolver) {
-        return new NugetProjectInspectorDetectable(environment, fileFinder, nugetInspectorOptions, projectInspectorResolver, nugetProjectInspectorExtractor());
+        return new NugetProjectInspectorDetectable(environment, fileFinder, nugetInspectorOptions, projectInspectorResolver, projectInspectorExtractor());
     }
 
     public PackratLockDetectable createPackratLockDetectable(DetectableEnvironment environment) {
@@ -690,8 +688,8 @@ public class DetectableFactory {
         return new ProjectInspectorParser(gson, externalIdFactory);
     }
 
-    private NugetProjectInspectorExtractor nugetProjectInspectorExtractor() {
-        return new NugetProjectInspectorExtractor(executableRunner, projectInspectorParser());
+    private ProjectInspectorExtractor projectInspectorExtractor() {
+        return new ProjectInspectorExtractor(executableRunner, projectInspectorParser());
     }
 
     private PackagistParser packagistParser() {
@@ -936,14 +934,6 @@ public class DetectableFactory {
 
     private LernaExtractor lernaExtractor(NpmLockfileOptions npmLockfileOptions, YarnLockOptions yarnLockOptions, LernaOptions lernaOptions) {
         return new LernaExtractor(lernaPackageDiscoverer(), lernaPackager(npmLockfileOptions, yarnLockOptions, lernaOptions), lernaOptions);
-    }
-
-    private MavenProjectInspectorExtractor mavenProjectInspectorExtractor() {
-        return new MavenProjectInspectorExtractor(executableRunner, projectInspectorParser());
-    }
-
-    private GradleProjectInspectorExtractor gradleProjectInspectorExtractor() {
-        return new GradleProjectInspectorExtractor(executableRunner, projectInspectorParser());
     }
 
     //#endregion Utility

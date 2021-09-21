@@ -9,13 +9,14 @@ package com.synopsys.integration.detectable.detectables.maven.parsing;
 
 import java.io.File;
 
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.PropertyInsufficientDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
@@ -38,9 +39,13 @@ public class MavenParseDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        Requirements requirements = new Requirements(fileFinder, environment);
-        pomXmlFile = requirements.file(POM_XML_FILENAME);
-        return requirements.result();
+        if (mavenParseOptions.isEnableLegacyMode()) {
+            Requirements requirements = new Requirements(fileFinder, environment);
+            pomXmlFile = requirements.file(POM_XML_FILENAME);
+            return requirements.result();
+        } else {
+            return new PropertyInsufficientDetectableResult("Maven legacy buildless parse must be enabled.");
+        }
     }
 
     @Override

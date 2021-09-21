@@ -32,22 +32,21 @@ public class ProjectInspectorAirGapCreator {
 
     public void installDependencies(File installFolder) throws DetectUserFriendlyException {
         logger.info("Installing project inspector for linux.");
-        installThenCopy(installFolder, AirgapProjectInspectorResolver.LINUX_DIR, ArtifactoryConstants.PROJECT_INSPECTOR_LINUX_PROPERTY);
+        install(installFolder, AirgapProjectInspectorResolver.LINUX_DIR, ArtifactoryConstants.PROJECT_INSPECTOR_LINUX_PROPERTY);
 
         logger.info("Installing project inspector for windows.");
-        installThenCopy(installFolder, AirgapProjectInspectorResolver.WINDOWS_DIR, ArtifactoryConstants.PROJECT_INSPECTOR_WINDOWS_PROPERTY);
+        install(installFolder, AirgapProjectInspectorResolver.WINDOWS_DIR, ArtifactoryConstants.PROJECT_INSPECTOR_WINDOWS_PROPERTY);
 
         logger.info("Installing project inspector for mac.");
-        installThenCopy(installFolder, AirgapProjectInspectorResolver.MAC_DIR, ArtifactoryConstants.PROJECT_INSPECTOR_MAC_PROPERTY);
+        install(installFolder, AirgapProjectInspectorResolver.MAC_DIR, ArtifactoryConstants.PROJECT_INSPECTOR_MAC_PROPERTY);
     }
 
-    private void installThenCopy(File container, String targetDirectory, String propertyName) throws DetectUserFriendlyException {
+    private void install(File container, String targetDirectory, String propertyName) throws DetectUserFriendlyException {
         try {
             File destination = new File(container, targetDirectory);
-            File downloaded = projectInspectorInstaller.downloadZip(propertyName, destination);
-
-            FileUtils.copyDirectory(downloaded, destination);
-            FileUtils.deleteDirectory(downloaded);
+            File downloaded = projectInspectorInstaller.downloadZip(propertyName, destination); // actually downloads it to 'destination/zipName'
+            FileUtils.copyDirectory(downloaded, destination); //move 'destination/zipName' to 'destination'
+            FileUtils.deleteDirectory(downloaded); //delete 'destination/zipName'
         } catch (DetectableException | IOException e) {
             throw new DetectUserFriendlyException("An error occurred installing project-inspector to the " + targetDirectory + " folder.", e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }

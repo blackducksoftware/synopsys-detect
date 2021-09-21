@@ -10,7 +10,7 @@ import com.google.gson.Gson;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.util.projectinspector.ProjectInspectorParser;
+import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorParser;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 

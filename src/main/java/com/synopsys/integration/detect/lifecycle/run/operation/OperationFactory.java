@@ -272,7 +272,7 @@ public class OperationFactory { //TODO: OperationRunner
         return auditLog.namedPublic("Execute Detectors", "Detectors", () -> {
             DetectorToolOptions detectorToolOptions = detectConfigurationFactory.createDetectorToolOptions();
             DetectorRuleFactory detectorRuleFactory = new DetectorRuleFactory();
-            DetectorRuleSet detectRuleSet = detectorRuleFactory.createRules(detectDetectableFactory, detectorToolOptions.isBuildless(), detectorToolOptions.isMavenLegacy());
+            DetectorRuleSet detectRuleSet = detectorRuleFactory.createRules(detectDetectableFactory, detectorToolOptions.isBuildless());
             File sourcePath = directoryManager.getSourceDirectory();
 
             DetectorTool detectorTool = new DetectorTool(new DetectorFinder(), extractionEnvironmentProvider, eventSystem, codeLocationConverter, new DetectorIssuePublisher(), statusEventPublisher, exitCodePublisher,

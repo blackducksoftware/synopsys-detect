@@ -42,19 +42,19 @@ public class AirgapProjectInspectorResolver implements ProjectInspectorResolver 
     public ExecutableTarget resolveProjectInspector() throws DetectableException {
         if (!hasResolvedInspector) {
             hasResolvedInspector = true;
-            resolve();
+            inspector = resolve();
         }
         return inspector;
     }
 
-    private void resolve() throws DetectableException {
+    private ExecutableTarget resolve() throws DetectableException {
         if (airGapInspectorPaths.getProjectInspectorAirGapFile().isPresent()) {
             File airgapPath = airGapInspectorPaths.getProjectInspectorAirGapFile().get();
             File platformPath = new File(airgapPath, determinePlatformDirectory());
-            inspector = ExecutableTarget.forFile(projectInspectorExecutableLocator.findExecutable(platformPath));
+            return ExecutableTarget.forFile(projectInspectorExecutableLocator.findExecutable(platformPath));
         } else {
             logger.debug("Could not locate project inspector executable in Air Gap zip.");
-            inspector = null;
+            return null;
         }
     }
 

@@ -269,7 +269,7 @@ public class DetectDetectableFactory {
     }
 
     public MavenProjectInspectorDetectable createMavenProjectInspectorDetectable(DetectableEnvironment detectableEnvironment) {
-        return detectableFactory.createMavenProjectInspectorDetectable(detectableEnvironment, projectInspectorResolver);
+        return detectableFactory.createMavenProjectInspectorDetectable(detectableEnvironment, projectInspectorResolver, detectableOptionFactory.createMavenParseOptions());
     }
 
     public GradleProjectInspectorDetectable createGradleProjectInspectorDetectable(DetectableEnvironment detectableEnvironment) {

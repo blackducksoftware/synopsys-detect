@@ -5,7 +5,7 @@
  *
  * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
-package com.synopsys.integration.detectable.util.projectinspector;
+package com.synopsys.integration.detectable.detectables.projectinspector;
 
 import java.io.File;
 import java.util.HashMap;
@@ -20,8 +20,8 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.util.projectinspector.model.ProjectInspectorModule;
-import com.synopsys.integration.detectable.util.projectinspector.model.ProjectInspectorOutput;
+import com.synopsys.integration.detectable.detectables.projectinspector.model.ProjectInspectorModule;
+import com.synopsys.integration.detectable.detectables.projectinspector.model.ProjectInspectorOutput;
 
 public class ProjectInspectorParser {
     private final Gson gson;

@@ -17,7 +17,7 @@ public class OnlineProjectInspectorResolver implements com.synopsys.integration.
     private final ArtifactoryProjectInspectorInstaller projectInspectorInstaller;
     private final DirectoryManager directoryManager;
 
-    private boolean hasResolvedInspector;
+    private boolean hasResolvedInspector = false;
     private ExecutableTarget inspector = null;
 
     public OnlineProjectInspectorResolver(ArtifactoryProjectInspectorInstaller projectInspectorInstaller, DirectoryManager directoryManager) {
