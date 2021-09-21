@@ -13,6 +13,7 @@ import com.synopsys.integration.detect.configuration.connection.ConnectionDetail
 import com.synopsys.integration.detect.lifecycle.run.step.utility.OperationWrapper;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
+import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryZipInstaller;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
@@ -23,6 +24,7 @@ public class UtilitySingletons {
     private final ExternalIdFactory externalIdFactory;
     private final ConnectionDetails connectionDetails;
     private final ArtifactResolver artifactResolver;
+    private final ArtifactoryZipInstaller artifactoryZipInstaller;
     private final CodeLocationNameManager codeLocationNameManager;
     private final CreateBdioCodeLocationsFromDetectCodeLocationsOperation createBdioCodeLocationsFromDetectCodeLocationsOperation;
     private final AirGapInspectorPaths airGapInspectorPaths;
@@ -36,7 +38,7 @@ public class UtilitySingletons {
         final CodeLocationNameManager codeLocationNameManager,
         final CreateBdioCodeLocationsFromDetectCodeLocationsOperation createBdioCodeLocationsFromDetectCodeLocationsOperation, final AirGapInspectorPaths airGapInspectorPaths, final BdioTransformer bdioTransformer,
         final DetectExecutableRunner executableRunner, final DetectExecutableResolver detectExecutableResolver, final OperationSystem operationSystem,
-        final OperationWrapper operationWrapper) {
+        final OperationWrapper operationWrapper, ArtifactoryZipInstaller artifactoryZipInstaller) {
         this.externalIdFactory = externalIdFactory;
         this.connectionDetails = connectionDetails;
         this.artifactResolver = artifactResolver;
@@ -48,6 +50,7 @@ public class UtilitySingletons {
         this.detectExecutableResolver = detectExecutableResolver;
         this.operationSystem = operationSystem;
         this.operationWrapper = operationWrapper;
+        this.artifactoryZipInstaller = artifactoryZipInstaller;
     }
 
     public ExternalIdFactory getExternalIdFactory() {
@@ -92,5 +95,9 @@ public class UtilitySingletons {
 
     public OperationWrapper getOperationWrapper() {
         return operationWrapper;
+    }
+
+    public ArtifactoryZipInstaller getArtifactoryZipInstaller() {
+        return artifactoryZipInstaller;
     }
 }

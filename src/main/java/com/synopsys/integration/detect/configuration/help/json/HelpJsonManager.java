@@ -39,7 +39,7 @@ public class HelpJsonManager {
     private List<HelpJsonDetector> createHelpJsonDetectorList(boolean buildless) {
         DetectorRuleFactory ruleFactory = new DetectorRuleFactory();
         // TODO: Is there a better way to build a fake set of rules?
-        DetectDetectableFactory mockFactory = new DetectDetectableFactory(null, null, null, null, null, null, null);
+        DetectDetectableFactory mockFactory = new DetectDetectableFactory(null, null, null, null, null, null, null, null);
         DetectorRuleSet ruleSet = ruleFactory.createRules(mockFactory, buildless);
         return ruleSet.getOrderedDetectorRules()
                    .stream()

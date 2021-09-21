@@ -25,7 +25,7 @@ import org.apache.commons.compress.utils.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DetectZipUtil {
+public class DetectZipUtil { //TODO: Add method for extracting without the wrapper method.
     private static final Logger logger = LoggerFactory.getLogger(DetectZipUtil.class);
 
     public static void unzip(final File zip, final File dest) throws IOException {

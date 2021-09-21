@@ -113,7 +113,8 @@ public class DetectableOptionFactory {
 
     public MavenParseOptions createMavenParseOptions() {
         Boolean includePlugins = getValue(DetectProperties.DETECT_MAVEN_INCLUDE_PLUGINS);
-        return new MavenParseOptions(includePlugins);
+        Boolean legacyMode = getValue(DetectProperties.DETECT_MAVEN_BUILDLESS_LEGACY_MODE);
+        return new MavenParseOptions(includePlugins, legacyMode);
     }
 
     public DockerDetectableOptions createDockerDetectableOptions() {

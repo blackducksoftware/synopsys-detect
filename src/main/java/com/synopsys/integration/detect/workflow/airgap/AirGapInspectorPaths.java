@@ -26,6 +26,9 @@ public class AirGapInspectorPaths {
     @Nullable
     private final Path gradleInspectorAirGapPath;
     @Nullable
+    private final Path projectInspectorAirGapPath;
+
+    @Nullable
     private final Path fontsAirGapPath;
 
     public AirGapInspectorPaths(AirGapPathFinder pathFinder) {
@@ -33,6 +36,7 @@ public class AirGapInspectorPaths {
         dockerInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, AirGapPathFinder.DOCKER);
         gradleInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, AirGapPathFinder.GRADLE);
         nugetInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, AirGapPathFinder.NUGET);
+        projectInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, AirGapPathFinder.PROJECT_INSPECTOR);
         fontsAirGapPath = determineFontsAirGapPath(detectJar, pathFinder);
     }
 
@@ -70,6 +74,10 @@ public class AirGapInspectorPaths {
         return Optional.ofNullable(gradleInspectorAirGapPath);
     }
 
+    public Optional<Path> getProjectInspectorAirGapPath() {
+        return Optional.ofNullable(projectInspectorAirGapPath);
+    }
+
     public Optional<File> getNugetInspectorAirGapFile() {
         return getNugetInspectorAirGapPath().map(Path::toFile).filter(File::exists);
     }
@@ -80,6 +88,10 @@ public class AirGapInspectorPaths {
 
     public Optional<File> getGradleInspectorAirGapFile() {
         return getGradleInspectorAirGapPath().map(Path::toFile).filter(File::exists);
+    }
+
+    public Optional<File> getProjectInspectorAirGapFile() {
+        return getProjectInspectorAirGapPath().map(Path::toFile).filter(File::exists);
     }
 
     public Optional<Path> getFontsAirGapPath() {
