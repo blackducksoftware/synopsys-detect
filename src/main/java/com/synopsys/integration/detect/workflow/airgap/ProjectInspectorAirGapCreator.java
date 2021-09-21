@@ -30,15 +30,15 @@ public class ProjectInspectorAirGapCreator {
         this.projectInspectorInstaller = projectInspectorInstaller;
     }
 
-    public void installDependencies(File nugetFolder) throws DetectUserFriendlyException {
+    public void installDependencies(File installFolder) throws DetectUserFriendlyException {
         logger.info("Installing project inspector for linux.");
-        installThenCopy(nugetFolder, AirgapProjectInspectorResolver.LINUX_DIR, ArtifactoryConstants.PROJECT_INSPECTOR_LINUX_PROPERTY);
+        installThenCopy(installFolder, AirgapProjectInspectorResolver.LINUX_DIR, ArtifactoryConstants.PROJECT_INSPECTOR_LINUX_PROPERTY);
 
         logger.info("Installing project inspector for windows.");
-        installThenCopy(nugetFolder, AirgapProjectInspectorResolver.WINDOWS_DIR, ArtifactoryConstants.PROJECT_INSPECTOR_WINDOWS_PROPERTY);
+        installThenCopy(installFolder, AirgapProjectInspectorResolver.WINDOWS_DIR, ArtifactoryConstants.PROJECT_INSPECTOR_WINDOWS_PROPERTY);
 
         logger.info("Installing project inspector for mac.");
-        installThenCopy(nugetFolder, AirgapProjectInspectorResolver.MAC_DIR, ArtifactoryConstants.PROJECT_INSPECTOR_MAC_PROPERTY);
+        installThenCopy(installFolder, AirgapProjectInspectorResolver.MAC_DIR, ArtifactoryConstants.PROJECT_INSPECTOR_MAC_PROPERTY);
     }
 
     private void installThenCopy(File container, String targetDirectory, String propertyName) throws DetectUserFriendlyException {

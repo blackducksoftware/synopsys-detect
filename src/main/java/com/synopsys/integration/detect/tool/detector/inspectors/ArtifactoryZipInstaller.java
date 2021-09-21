@@ -44,27 +44,27 @@ public class ArtifactoryZipInstaller {
     @NotNull
     public File installZipFromSource(final File dest, String ext, final String source) throws IntegrationException {
         logger.debug("Resolved inspector url: " + source);
-        final String nupkgName = artifactResolver.parseFileName(source);
-        logger.debug("Parsed artifact name: " + nupkgName);
-        final String inspectorFolderName = nupkgName.replace(ext, "");
+        final String zipName = artifactResolver.parseFileName(source);
+        logger.debug("Parsed artifact name: " + zipName);
+        final String inspectorFolderName = zipName.replace(ext, "");
         final File inspectorFolder = new File(dest, inspectorFolderName);
         if (!inspectorFolder.exists()) {
             logger.debug("Downloading inspector.");
-            final File nupkgFile = new File(dest, nupkgName);
+            final File zipFile = new File(dest, zipName);
             try {
-                artifactResolver.downloadArtifact(nupkgFile, source);
+                artifactResolver.downloadArtifact(zipFile, source);
             } catch (IOException e) {
                 throw new IntegrationException("Failed to download artifact: " + source, e);
             }
             logger.debug("Extracting inspector.");
             try {
-                DetectZipUtil.unzip(nupkgFile, inspectorFolder, Charset.defaultCharset());
+                DetectZipUtil.unzip(zipFile, inspectorFolder, Charset.defaultCharset());
             } catch (IOException e) {
                 logger.trace("Exception extracting:", e);
-                throw new IntegrationException("Failed to unzip artifact: " + nupkgFile, e);
+                throw new IntegrationException("Failed to unzip artifact: " + zipFile, e);
             }
             logger.debug("Unzipped, deleting downloaded zip.");
-            FileUtils.deleteQuietly(nupkgFile);
+            FileUtils.deleteQuietly(zipFile);
         } else {
             logger.debug("Inspector is already downloaded, folder exists.");
         }
