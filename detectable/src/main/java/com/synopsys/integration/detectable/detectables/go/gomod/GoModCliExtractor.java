@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -24,7 +25,7 @@ import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoListPars
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoModWhyParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.process.GoModGraphGenerator;
 import com.synopsys.integration.detectable.detectables.go.gomod.process.GoRelationshipManager;
-import com.synopsys.integration.detectable.detectables.go.gomod.process.GoVersionManager;
+import com.synopsys.integration.detectable.detectables.go.gomod.process.GoReplacementManager;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 
@@ -34,14 +35,16 @@ public class GoModCliExtractor {
     private final GoGraphParser goGraphParser;
     private final GoModWhyParser goModWhyParser;
     private final GoModGraphGenerator goModGraphGenerator;
+    private final ExternalIdFactory externalIdFactory;
 
     public GoModCliExtractor(GoModCommandExecutor goModCommandExecutor, GoListParser goListParser, GoGraphParser goGraphParser, GoModWhyParser goModWhyParser,
-        GoModGraphGenerator goModGraphGenerator) {
+        GoModGraphGenerator goModGraphGenerator, ExternalIdFactory externalIdFactory) {
         this.goModCommandExecutor = goModCommandExecutor;
         this.goListParser = goListParser;
         this.goGraphParser = goGraphParser;
         this.goModWhyParser = goModWhyParser;
         this.goModGraphGenerator = goModGraphGenerator;
+        this.externalIdFactory = externalIdFactory;
     }
 
     public Extraction extract(File directory, ExecutableTarget goExe, boolean dependencyVerificationEnabled) {
@@ -52,7 +55,7 @@ public class GoModCliExtractor {
             Set<String> moduleExclusions = moduleExclusions(directory, goExe, dependencyVerificationEnabled);
 
             GoRelationshipManager goRelationshipManager = new GoRelationshipManager(goGraphRelationships, moduleExclusions);
-            GoVersionManager goVersionManager = new GoVersionManager(goListAllModules);
+            GoReplacementManager goVersionManager = new GoReplacementManager(goListAllModules, externalIdFactory);
             List<CodeLocation> codeLocations = goListModules.stream()
                                                    .map(goListModule -> goModGraphGenerator.generateGraph(goListModule, goRelationshipManager, goVersionManager))
                                                    .collect(Collectors.toList());

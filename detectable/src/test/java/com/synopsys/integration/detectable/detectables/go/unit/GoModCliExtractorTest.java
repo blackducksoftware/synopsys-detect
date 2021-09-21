@@ -55,13 +55,8 @@ public class GoModCliExtractorTest {
                 return result;
             }
         };
-        Mockito.doAnswer(executableAnswer).when(executableRunner).execute(Mockito.any(Executable.class));
-        GoModWhyParser goModWhyParser = new GoModWhyParser();
-        GoModCommandExecutor goModCommandExecutor = new GoModCommandExecutor(executableRunner);
-        GoModGraphGenerator goModGraphGenerator = new GoModGraphGenerator(new ExternalIdFactory());
-        GoListParser goListParser = new GoListParser(new GsonBuilder().create());
-        GoGraphParser goGraphParser = new GoGraphParser();
-        GoModCliExtractor goModCliExtractor = new GoModCliExtractor(goModCommandExecutor, goListParser, goGraphParser, goModWhyParser, goModGraphGenerator);
+
+        GoModCliExtractor goModCliExtractor = buildGoModCliExtractor(executableRunner, executableAnswer);
 
         boolean wasSuccessful = true;
         Extraction extraction = goModCliExtractor.extract(directory, goExe, true);
@@ -102,15 +97,8 @@ public class GoModCliExtractorTest {
                 return result;
             }
         };
-        Mockito.doAnswer(executableAnswer).when(executableRunner).execute(Mockito.any(Executable.class));
 
-        GoModWhyParser goModWhyParser = new GoModWhyParser();
-        GoModCommandExecutor goModCommandExecutor = new GoModCommandExecutor(executableRunner);
-        GoModGraphGenerator goModGraphGenerator = new GoModGraphGenerator(new ExternalIdFactory());
-        GoListParser goListParser = new GoListParser(new GsonBuilder().create());
-        GoGraphParser goGraphParser = new GoGraphParser();
-        GoModCliExtractor goModCliExtractor = new GoModCliExtractor(goModCommandExecutor, goListParser, goGraphParser, goModWhyParser, goModGraphGenerator);
-
+        GoModCliExtractor goModCliExtractor = buildGoModCliExtractor(executableRunner, executableAnswer);
         boolean wasSuccessful = true;
         Extraction extraction = goModCliExtractor.extract(directory, goExe, true);
         if (extraction.getError() instanceof ArrayIndexOutOfBoundsException) {
@@ -118,6 +106,18 @@ public class GoModCliExtractorTest {
         }
 
         Assertions.assertTrue(wasSuccessful);
+    }
+
+    private GoModCliExtractor buildGoModCliExtractor(DetectableExecutableRunner executableRunner, Answer<ExecutableOutput> executableAnswer) throws ExecutableRunnerException {
+        Mockito.doAnswer(executableAnswer).when(executableRunner).execute(Mockito.any(Executable.class));
+
+        GoModWhyParser goModWhyParser = new GoModWhyParser();
+        GoModCommandExecutor goModCommandExecutor = new GoModCommandExecutor(executableRunner);
+        GoModGraphGenerator goModGraphGenerator = new GoModGraphGenerator(new ExternalIdFactory());
+        GoListParser goListParser = new GoListParser(new GsonBuilder().create());
+        GoGraphParser goGraphParser = new GoGraphParser();
+        ExternalIdFactory externalIdFactory = new ExternalIdFactory();
+        return new GoModCliExtractor(goModCommandExecutor, goListParser, goGraphParser, goModWhyParser, goModGraphGenerator, externalIdFactory);
     }
 
     private ExecutableOutput goListOutput() {
