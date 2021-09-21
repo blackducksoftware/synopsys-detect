@@ -66,15 +66,19 @@ public class SimpleFileFinderTest {
     @Test
     @DisabledOnOs(WINDOWS)
     public void testSymlinksNotFollowed() throws IOException {
-        testSymlinks(false);
+        List<File> files = findFiles(false);
+        // make sure symlink not followed during dir traversal
+        assertEquals(4, files.size());
     }
 
     @Test
     public void testSymLinksAreFollowed() throws IOException {
-        testSymlinks(true);
+        List<File> files = findFiles(true);
+        // make sure symlink followed during dir traversal, enters cyclical link and finds duplicate files
+        assertTrue(files.size() > 4);
     }
 
-    public void testSymlinks(boolean followSymLinks) throws IOException {
+    private List<File> findFiles(boolean followSymLinks) throws IOException {
         // Create a subDir with a symlink that points to isolated directory
         File initialDirectory = initialDirectoryPath.toFile();
         File subDir = new File(initialDirectory, "sub");
@@ -90,15 +94,7 @@ public class SimpleFileFinderTest {
 
         SimpleFileFinder finder = new SimpleFileFinder();
         List<String> filenamePatterns = Arrays.asList("sub", "linkToInitial", "regularDir", "regularFile");
-        List<File> foundFiles = finder.findFiles(initialDirectoryPath.toFile(), filenamePatterns, followSymLinks, 10);
-
-        if (followSymLinks) {
-            // make sure symlink followed during dir traversal, enters cyclical link and finds duplicate files
-            assertTrue(foundFiles.size() > 4);
-        } else {
-            // make sure symlink not followed during dir traversal
-            assertEquals(4, foundFiles.size());
-        }
+        return finder.findFiles(initialDirectoryPath.toFile(), filenamePatterns, followSymLinks, 10);
     }
 
     @Test
