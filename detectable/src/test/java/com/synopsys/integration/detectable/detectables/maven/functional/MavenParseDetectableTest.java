@@ -81,7 +81,7 @@ public class MavenParseDetectableTest extends DetectableFunctionalTest {
     @NotNull
     @Override
     public Detectable create(@NotNull final DetectableEnvironment detectableEnvironment) {
-        return detectableFactory.createMavenParseDetectable(detectableEnvironment, new MavenParseOptions(false, false));
+        return detectableFactory.createMavenParseDetectable(detectableEnvironment, new MavenParseOptions(false, true));
     }
 
     @Override
