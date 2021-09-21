@@ -73,7 +73,7 @@ public class GradleReportParserFunctionalTest {
 
     @Test
     void complexTest() {
-        final Optional<CodeLocation> codeLocation = buildCodeLocation("/gradle/parse-tests/complex_dependencyGraph.txt");
+        final Optional<CodeLocation> codeLocation = buildCodeLocation("/gradle/complex_dependencyGraph.txt");
         Assertions.assertTrue(codeLocation.isPresent());
         final DependencyGraph graph = codeLocation.get().getDependencyGraph();
 
