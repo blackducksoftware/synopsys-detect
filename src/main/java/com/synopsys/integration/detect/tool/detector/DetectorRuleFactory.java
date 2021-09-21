@@ -32,6 +32,7 @@ import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleProj
 import com.synopsys.integration.detectable.detectables.lerna.LernaDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomWrapperDetectable;
+import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseDetectable;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenProjectInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliDetectable;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmPackageLockDetectable;
@@ -57,9 +58,9 @@ import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.detector.rule.DetectorRuleSetBuilder;
 
 public class DetectorRuleFactory {
-    public DetectorRuleSet createRules(DetectDetectableFactory detectableFactory, boolean buildless) {
+    public DetectorRuleSet createRules(DetectDetectableFactory detectableFactory, boolean buildless, boolean mavenParseLegacy) {
         if (buildless) {
-            return createBuildlessRules(detectableFactory);
+            return createBuildlessRules(detectableFactory, mavenParseLegacy);
         } else {
             return createRules(detectableFactory);
         }
@@ -145,7 +146,7 @@ public class DetectorRuleFactory {
         return ruleSet.build();
     }
 
-    private DetectorRuleSet createBuildlessRules(DetectDetectableFactory detectableFactory) {
+    private DetectorRuleSet createBuildlessRules(DetectDetectableFactory detectableFactory, boolean mavenParseLegacy) {
         DetectorRuleSetBuilder ruleSet = new DetectorRuleSetBuilder();
 
         ruleSet.addDetector(DetectorType.CARGO, "Cargo", CargoDetectable.class, detectableFactory::createCargoDetectable).defaults().build();
@@ -164,8 +165,11 @@ public class DetectorRuleFactory {
         ruleSet.addDetector(DetectorType.GRADLE, "Gradle Project Inspector", GradleProjectInspectorDetectable.class, detectableFactory::createGradleProjectInspectorDetectable).defaults().build();
         ruleSet.addDetector(DetectorType.GO_GRADLE, "Go Gradle", GoGradleDetectable.class, detectableFactory::createGoGradleDetectable).defaults().build();
 
-        //ruleSet.addDetector(DetectorType.MAVEN, "Maven Pom Parse", MavenParseDetectable.class, detectableFactory::createMavenParseDetectable).defaults().build();
-        ruleSet.addDetector(DetectorType.MAVEN, "Maven Project Inspector", MavenProjectInspectorDetectable.class, detectableFactory::createMavenProjectInspectorDetectable).defaults().build();
+        if (mavenParseLegacy) { //TODO: Remove when legacy property is removed.
+            ruleSet.addDetector(DetectorType.MAVEN, "Maven Pom Parse", MavenParseDetectable.class, detectableFactory::createMavenParseDetectable).defaults().build();
+        } else {
+            ruleSet.addDetector(DetectorType.MAVEN, "Maven Project Inspector", MavenProjectInspectorDetectable.class, detectableFactory::createMavenProjectInspectorDetectable).defaults().build();
+        }
 
         ruleSet.addDetector(DetectorType.POETRY, "Poetry", PoetryDetectable.class, detectableFactory::createPoetryDetectable).defaults().build();
 

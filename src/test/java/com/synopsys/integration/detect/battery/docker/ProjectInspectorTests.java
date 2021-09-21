@@ -24,12 +24,11 @@ public class ProjectInspectorTests {
         commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
         commandBuilder.property(DetectProperties.DETECT_BUILDLESS, "true");
         commandBuilder.property(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES, DetectorType.NUGET.toString());
-        commandBuilder.debug();
         DockerAssertions dockerAssertions = test.run(commandBuilder);
 
         dockerAssertions.successfulDetectorType("NUGET");
         dockerAssertions.atLeastOneBdioFile();
-        dockerAssertions.logContains("Project Inspector");
+        dockerAssertions.logContains("NuGet Project Inspector");
     }
 
     @Test
@@ -42,12 +41,29 @@ public class ProjectInspectorTests {
         commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
         commandBuilder.property(DetectProperties.DETECT_BUILDLESS, "true");
         commandBuilder.property(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES, DetectorType.GRADLE.toString());
-        commandBuilder.debug();
         DockerAssertions dockerAssertions = test.run(commandBuilder);
 
         dockerAssertions.successfulDetectorType("GRADLE");
         dockerAssertions.atLeastOneBdioFile();
-        dockerAssertions.logContains("Project Inspector");
+        dockerAssertions.logContains("Gradle Project Inspector");
+    }
+
+    @Test
+    void mavenProjectInspectorLegacyIsTheDefault() throws IOException, InterruptedException {
+        DetectDockerTestRunner test = new DetectDockerTestRunner("detect-maven-project-inspector-legacy", "maven-simple:1.0.0");
+        test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("SimpleMaven.dockerfile"));
+
+        DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
+        commandBuilder.property(DetectProperties.DETECT_TOOLS, "DETECTOR");
+        commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
+        commandBuilder.property(DetectProperties.DETECT_BUILDLESS, "true");
+        commandBuilder.property(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES, DetectorType.MAVEN.toString());
+        DockerAssertions dockerAssertions = test.run(commandBuilder);
+
+        dockerAssertions.successfulDetectorType("MAVEN");
+        dockerAssertions.atLeastOneBdioFile();
+        dockerAssertions.logDoesNotContain("Maven Project Inspector");
+        dockerAssertions.logContains("Maven Pom Parse");
     }
 
     @Test
@@ -60,11 +76,11 @@ public class ProjectInspectorTests {
         commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
         commandBuilder.property(DetectProperties.DETECT_BUILDLESS, "true");
         commandBuilder.property(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES, DetectorType.MAVEN.toString());
-        commandBuilder.debug();
+        commandBuilder.property(DetectProperties.DETECT_MAVEN_BUILDLESS_LEGACY_MODE, "false");
         DockerAssertions dockerAssertions = test.run(commandBuilder);
 
         dockerAssertions.successfulDetectorType("MAVEN");
         dockerAssertions.atLeastOneBdioFile();
-        dockerAssertions.logContains("Project Inspector");
+        dockerAssertions.logContains("Maven Project Inspector");
     }
 }

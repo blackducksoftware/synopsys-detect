@@ -15,11 +15,13 @@ public class DetectorToolOptions {
     private final String projectBomTool;
     private final List<DetectorType> requiredDetectors;
     private final boolean buildless;
+    private final boolean mavenLegacy;
 
-    public DetectorToolOptions(String projectBomTool, List<DetectorType> requiredDetectors, boolean buildless) {
+    public DetectorToolOptions(String projectBomTool, List<DetectorType> requiredDetectors, boolean buildless, boolean mavenLegacy) {
         this.projectBomTool = projectBomTool;
         this.requiredDetectors = requiredDetectors;
         this.buildless = buildless;
+        this.mavenLegacy = mavenLegacy;
     }
 
     public String getProjectBomTool() {
@@ -32,5 +34,9 @@ public class DetectorToolOptions {
 
     public boolean isBuildless() {
         return buildless;
+    }
+
+    public boolean isMavenLegacy() {
+        return mavenLegacy;
     }
 }

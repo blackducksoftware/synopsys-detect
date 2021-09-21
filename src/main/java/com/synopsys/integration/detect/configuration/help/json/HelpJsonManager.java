@@ -40,7 +40,7 @@ public class HelpJsonManager {
         DetectorRuleFactory ruleFactory = new DetectorRuleFactory();
         // TODO: Is there a better way to build a fake set of rules?
         DetectDetectableFactory mockFactory = new DetectDetectableFactory(null, null, null, null, null, null, null, null);
-        DetectorRuleSet ruleSet = ruleFactory.createRules(mockFactory, buildless);
+        DetectorRuleSet ruleSet = ruleFactory.createRules(mockFactory, buildless, true);
         return ruleSet.getOrderedDetectorRules()
                    .stream()
                    .map(detectorRule -> convertDetectorRule(detectorRule, ruleSet))

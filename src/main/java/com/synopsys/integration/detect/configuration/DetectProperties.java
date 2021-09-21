@@ -772,12 +772,23 @@ public class DetectProperties {
                 "If set, Detect will include only dependencies outside of the given Maven scope. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN);
 
+    @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_MAVEN_INCLUDE_PLUGINS =
         new DetectProperty<>(new BooleanProperty("detect.maven.include.plugins", false))
             .setInfo("Maven Include Plugins", DetectPropertyFromVersion.VERSION_5_6_0)
-            .setHelp("Whether or not detect will include the plugins section when parsing a pom.xml.")
+            .setHelp("Whether or not detect will include the plugins section when parsing a pom.xml in buildless legacy mode. ")
             .setGroups(DetectGroup.MAVEN, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced);
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated("This property is being removed. The project inspector will be used to parse maven projects. Please configure the project inspector to include modules.", DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<BooleanProperty> DETECT_MAVEN_BUILDLESS_LEGACY_MODE =
+        new DetectProperty<>(new BooleanProperty("detect.maven.buildless.legacy.mode", true))
+            .setInfo("Maven Buildless Legacy Mode", DetectPropertyFromVersion.VERSION_7_5_0)
+            .setHelp("Legacy maven parsing supports plugins but the newer project inspector parser does not. Setting to false enables the project inspector for maven.")
+            .setGroups(DetectGroup.MAVEN, DetectGroup.GLOBAL)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated("This property is being removed. The legacy maven buildless parser is being replaced by the project inspector.", DetectMajorVersion.EIGHT);
 
     public static final DetectProperty<BooleanProperty> DETECT_NOTICES_REPORT =
         new DetectProperty<>(new BooleanProperty("detect.notices.report", false))

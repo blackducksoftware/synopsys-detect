@@ -112,6 +112,10 @@ public class DockerAssertions {
         Assertions.assertTrue(dockerDetectResult.getDetectLogs().contains(thing), "Expected logs to contain '" + thing + "' but they did not.");
     }
 
+    public void logDoesNotContain(String thing) {
+        Assertions.assertFalse(dockerDetectResult.getDetectLogs().contains(thing), "Expected logs to NOT contain '" + thing + "' but they did.");
+    }
+
     public void successfulOperation(String operationName) {
         successfulOperationStatusJson(operationName);
         successfulThingLogged(operationName);
@@ -137,10 +141,10 @@ public class DockerAssertions {
     public void bdioFileCreated(String requiredBdioFilename) {
         checkBdioDirectory();
         Assertions.assertTrue(Arrays.asList(bdioDirectory.listFiles()).stream()
-                        .map(File::getName)
-                        .filter(requiredBdioFilename::equals)
-                        .findAny().isPresent(),
-                String.format("Expected BDIO file %s, but it was not created", requiredBdioFilename));
+                                  .map(File::getName)
+                                  .filter(requiredBdioFilename::equals)
+                                  .findAny().isPresent(),
+            String.format("Expected BDIO file %s, but it was not created", requiredBdioFilename));
     }
 
     public File getOutputDirectory() {

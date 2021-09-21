@@ -487,6 +487,7 @@ public class DetectConfigurationFactory {
         String projectBomTool = detectConfiguration.getValueOrEmpty(DetectProperties.DETECT_PROJECT_DETECTOR.getProperty()).orElse(null);
         List<DetectorType> requiredDetectors = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_REQUIRED_DETECTOR_TYPES.getProperty());
         boolean buildless = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_BUILDLESS.getProperty());
-        return new DetectorToolOptions(projectBomTool, requiredDetectors, buildless);
+        boolean mavenLegacy = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_MAVEN_BUILDLESS_LEGACY_MODE.getProperty());
+        return new DetectorToolOptions(projectBomTool, requiredDetectors, buildless, mavenLegacy);
     }
 }
