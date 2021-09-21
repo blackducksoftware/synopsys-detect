@@ -30,29 +30,29 @@ public class BuildGradleParser {
     private final Logger logger = LoggerFactory.getLogger(BuildGradleParser.class);
     private final ExternalIdFactory externalIdFactory;
 
-    public BuildGradleParser(final ExternalIdFactory externalIdFactory) {
+    public BuildGradleParser(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public Optional<DependencyGraph> parse(final InputStream inputStream) {
-        final MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
+    public Optional<DependencyGraph> parse(InputStream inputStream) {
+        MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
 
         try {
-            final String sourceContents = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-            final AstBuilder astBuilder = new AstBuilder();
-            final List<ASTNode> nodes = astBuilder.buildFromString(CompilePhase.CONVERSION, sourceContents);
+            String sourceContents = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+            AstBuilder astBuilder = new AstBuilder();
+            List<ASTNode> nodes = astBuilder.buildFromString(CompilePhase.CONVERSION, sourceContents);
 
-            final DependenciesVisitor dependenciesVisitor = new DependenciesVisitor(externalIdFactory);
-            for (final ASTNode node : nodes) {
+            DependenciesVisitor dependenciesVisitor = new DependenciesVisitor(externalIdFactory);
+            for (ASTNode node : nodes) {
                 node.visit(dependenciesVisitor);
             }
 
-            final List<Dependency> dependencies = dependenciesVisitor.getDependencies();
+            List<Dependency> dependencies = dependenciesVisitor.getDependencies();
             dependencyGraph.addChildrenToRoot(dependencies);
 
             return Optional.of(dependencyGraph);
-        } catch (final IOException e) {
-            logger.error("Could not get the build file contents: " + e.getMessage());
+        } catch (IOException e) {
+            logger.error("Could not get the build file contents: {}", e.getMessage());
         }
 
         return Optional.empty();
