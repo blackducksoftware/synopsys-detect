@@ -20,7 +20,7 @@ public class BlackDuckSignatureScannerOptions {
     private final List<Path> signatureScannerPaths;
     private final List<String> exclusionPatterns;
     @Nullable
-    private final Path onlineLocalScannerInstallPath;
+    private final Path localScannerInstallPath;
 
     private final Integer scanMemory;
     private final Integer parallelProcessors;
@@ -46,7 +46,7 @@ public class BlackDuckSignatureScannerOptions {
     public BlackDuckSignatureScannerOptions(
         List<Path> signatureScannerPaths,
         List<String> exclusionPatterns,
-        @Nullable Path onlineLocalScannerInstallPath,
+        @Nullable Path localScannerInstallPath,
         Integer scanMemory,
         Integer parallelProcessors,
         Boolean dryRun,
@@ -63,7 +63,7 @@ public class BlackDuckSignatureScannerOptions {
 
         this.signatureScannerPaths = signatureScannerPaths;
         this.exclusionPatterns = exclusionPatterns;
-        this.onlineLocalScannerInstallPath = onlineLocalScannerInstallPath;
+        this.localScannerInstallPath = localScannerInstallPath;
         this.scanMemory = scanMemory;
         this.parallelProcessors = parallelProcessors;
         this.dryRun = dryRun;
@@ -123,8 +123,8 @@ public class BlackDuckSignatureScannerOptions {
         return maxDepth;
     }
 
-    public Optional<Path> getOnlineLocalScannerInstallPath() {
-        return Optional.ofNullable(onlineLocalScannerInstallPath);
+    public Optional<Path> getLocalScannerInstallPath() {
+        return Optional.ofNullable(localScannerInstallPath);
     }
 
     public Optional<IndividualFileMatching> getIndividualFileMatching() {

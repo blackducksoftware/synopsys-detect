@@ -10,8 +10,9 @@
 * The the default value for property detect.project.clone.categories has changed to ALL.
 
 ### Resolved issues
-* (IDETECT-2820) Resolved an issue where pypi components in conda projects were not being matched.
 * (IDETECT-2834) Resolved an issue where GoMod components missing a version were not being properly filtered causing a NullPointerException.
+* (IDETECT-2829) Resolved an issue that caused ${solution_name} to use the wrong scan cli when in offline mode and ignore a specified local scan cli.
+* (IDETECT-2820) Resolved an issue where pypi components in conda projects were not being matched.
 
 # Version 7.5.0
 
