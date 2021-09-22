@@ -120,7 +120,7 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
         logger.debug("Searching for: " + inspectorName);
         File toolsFolder = new File(nupkgFolder, "tools");
         logger.debug("Searching in: " + toolsFolder.getAbsolutePath());
-        File foundExecutable = fileFinder.findFiles(toolsFolder, inspectorName, 3)
+        File foundExecutable = fileFinder.findFiles(toolsFolder, inspectorName, false, 3)
                                    .stream()
                                    .findFirst()
                                    .filter(File::exists)

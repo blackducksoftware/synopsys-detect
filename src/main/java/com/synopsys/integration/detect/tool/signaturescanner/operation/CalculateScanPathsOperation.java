@@ -36,7 +36,7 @@ public class CalculateScanPathsOperation {
     private final FileFinder fileFinder;
     private final Predicate<File> fileFilter;
 
-    public CalculateScanPathsOperation(final BlackDuckSignatureScannerOptions signatureScannerOptions, final DirectoryManager directoryManager, final FileFinder fileFinder, final Predicate<File> fileFilter) {
+    public CalculateScanPathsOperation(BlackDuckSignatureScannerOptions signatureScannerOptions, DirectoryManager directoryManager, FileFinder fileFinder, Predicate<File> fileFilter) {
         this.signatureScannerOptions = signatureScannerOptions;
         this.directoryManager = directoryManager;
         this.fileFinder = fileFinder;
@@ -47,19 +47,20 @@ public class CalculateScanPathsOperation {
         List<Path> providedSignatureScanPaths = signatureScannerOptions.getSignatureScannerPaths();
         boolean userProvidedScanTargets = null != providedSignatureScanPaths && !providedSignatureScanPaths.isEmpty();
         List<String> exclusionPatterns = signatureScannerOptions.getExclusionPatterns();
+        boolean followSymLinks = signatureScannerOptions.followSymLinks();
 
         List<SignatureScanPath> signatureScanPaths = new ArrayList<>();
         if (null != projectNameVersion.getName() && null != projectNameVersion.getVersion() && userProvidedScanTargets) { //TODO: Why are we doing this? -jp
             for (Path path : providedSignatureScanPaths) {
                 logger.info(String.format("Registering explicit scan path %s", path));
-                SignatureScanPath scanPath = createScanPath(path, maxDepth, exclusionPatterns);
+                SignatureScanPath scanPath = createScanPath(path, maxDepth, exclusionPatterns, followSymLinks);
                 signatureScanPaths.add(scanPath);
             }
         } else if (dockerTargetData != null && dockerTargetData.getSquashedImage().isPresent()) {
-            SignatureScanPath scanPath = createScanPath(dockerTargetData.getSquashedImage().get().getCanonicalFile().toPath(), maxDepth, exclusionPatterns);
+            SignatureScanPath scanPath = createScanPath(dockerTargetData.getSquashedImage().get().getCanonicalFile().toPath(), maxDepth, exclusionPatterns, followSymLinks);
             signatureScanPaths.add(scanPath);
         } else if (dockerTargetData != null && dockerTargetData.getProvidedImageTar().isPresent()) {
-            SignatureScanPath scanPath = createScanPath(dockerTargetData.getProvidedImageTar().get().getCanonicalFile().toPath(), maxDepth, exclusionPatterns);
+            SignatureScanPath scanPath = createScanPath(dockerTargetData.getProvidedImageTar().get().getCanonicalFile().toPath(), maxDepth, exclusionPatterns, followSymLinks);
             signatureScanPaths.add(scanPath);
         } else {
             Path sourcePath = directoryManager.getSourceDirectory().getAbsoluteFile().toPath();
@@ -68,13 +69,13 @@ public class CalculateScanPathsOperation {
             } else {
                 logger.info(String.format("No scan targets provided - registering the source path %s to scan", sourcePath));
             }
-            SignatureScanPath scanPath = createScanPath(sourcePath, maxDepth, exclusionPatterns);
+            SignatureScanPath scanPath = createScanPath(sourcePath, maxDepth, exclusionPatterns, followSymLinks);
             signatureScanPaths.add(scanPath);
         }
         return signatureScanPaths;
     }
 
-    private SignatureScanPath createScanPath(Path path, Integer maxDepth, List<String> exclusionPatterns) {
+    private SignatureScanPath createScanPath(Path path, Integer maxDepth, List<String> exclusionPatterns, boolean followSymLinks) {
         File target = path.toFile();
         ExclusionPatternCreator exclusionPatternCreator = new ExclusionPatternCreator(fileFinder, fileFilter, target);
 
@@ -85,7 +86,7 @@ public class CalculateScanPathsOperation {
                                          .filter(this::isCorrectlyFormattedExclusion)
                                          .collect(Collectors.toSet()));
 
-        scanExclusionPatterns.addAll(exclusionPatternCreator.determineExclusionPatterns(maxDepth, exclusionPatterns));
+        scanExclusionPatterns.addAll(exclusionPatternCreator.determineExclusionPatterns(followSymLinks, maxDepth, exclusionPatterns));
 
         SignatureScanPath signatureScanPath = new SignatureScanPath();
         signatureScanPath.setTargetPath(target);

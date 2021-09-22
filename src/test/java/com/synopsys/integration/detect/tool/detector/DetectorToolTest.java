@@ -244,8 +244,8 @@ public class DetectorToolTest {
 
     private DetectorFinderOptions createFinderOptions() {
         Predicate<File> fileFilter = f -> true;
-        int maximumDepth = 10;
-        return new DetectorFinderOptions(fileFilter, maximumDepth);
+        final int maximumDepth = 10;
+        return new DetectorFinderOptions(fileFilter, maximumDepth, false);
     }
 
     private DetectorEvaluationOptions createEvaluationOptions() {
@@ -253,7 +253,7 @@ public class DetectorToolTest {
         List<FilterableEnumValue<DetectorType>> included = Collections.singletonList(FilterableEnumValue.value(DetectorType.GO_MOD));
         ExcludeIncludeEnumFilter detectorFilter = new ExcludeIncludeEnumFilter(excluded, included);
 
-        return new DetectorEvaluationOptions(false, (rule -> detectorFilter.shouldInclude(rule.getDetectorType())));
+        return new DetectorEvaluationOptions(false, false, (rule -> detectorFilter.shouldInclude(rule.getDetectorType())));
 
     }
 

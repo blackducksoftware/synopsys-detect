@@ -14,12 +14,14 @@ public class BitbakeDetectableOptions {
     private final List<String> sourceArguments;
     private final List<String> packageNames;
     private final Integer searchDepth;
+    private final boolean followSymLinks;
 
-    public BitbakeDetectableOptions(final String buildEnvName, final List<String> sourceArguments, final List<String> packageNames, final Integer searchDepth) {
+    public BitbakeDetectableOptions(String buildEnvName, List<String> sourceArguments, List<String> packageNames, Integer searchDepth, boolean followSymLinks) {
         this.buildEnvName = buildEnvName;
         this.sourceArguments = sourceArguments;
         this.packageNames = packageNames;
         this.searchDepth = searchDepth;
+        this.followSymLinks = followSymLinks;
     }
 
     public String getBuildEnvName() {
@@ -36,5 +38,9 @@ public class BitbakeDetectableOptions {
 
     public Integer getSearchDepth() {
         return searchDepth;
+    }
+
+    public boolean isFollowSymLinks() {
+        return followSymLinks;
     }
 }

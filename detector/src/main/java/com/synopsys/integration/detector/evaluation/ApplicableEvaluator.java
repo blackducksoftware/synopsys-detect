@@ -22,7 +22,7 @@ import com.synopsys.integration.detector.result.DetectorResult;
 import com.synopsys.integration.detector.rule.DetectorRule;
 
 public class ApplicableEvaluator extends Evaluator {
-    private Logger logger = LoggerFactory.getLogger(ApplicableEvaluator.class);
+    private final Logger logger = LoggerFactory.getLogger(ApplicableEvaluator.class);
     private final DetectorRuleSetEvaluator detectorRuleSetEvaluator = new DetectorRuleSetEvaluator();
 
     public ApplicableEvaluator(DetectorEvaluationOptions evaluationOptions) {
@@ -47,7 +47,8 @@ public class ApplicableEvaluator extends Evaluator {
             DetectorRule detectorRule = detectorEvaluation.getDetectorRule();
             logger.trace("Evaluating detector: {}", detectorRule.getDescriptiveName());
 
-            SearchEnvironment searchEnvironment = new SearchEnvironment(detectorEvaluationTree.getDepthFromRoot(), getEvaluationOptions().getDetectorFilter(), getEvaluationOptions().isForceNested(), appliedInParent, appliedSoFar);
+            SearchEnvironment searchEnvironment = new SearchEnvironment(detectorEvaluationTree.getDepthFromRoot(), getEvaluationOptions().getDetectorFilter(), getEvaluationOptions().isForceNested(),
+                getEvaluationOptions().isFollowSymLinks(), appliedInParent, appliedSoFar);
             detectorEvaluation.setSearchEnvironment(searchEnvironment);
 
             DetectorResult searchableResult = detectorRuleSetEvaluator.evaluateSearchable(detectorEvaluationTree.getDetectorRuleSet(), detectorEvaluation.getDetectorRule(), searchEnvironment);

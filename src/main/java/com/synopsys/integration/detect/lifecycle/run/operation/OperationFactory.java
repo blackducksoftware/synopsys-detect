@@ -622,9 +622,9 @@ public class OperationFactory { //TODO: OperationRunner
         return detectConfigurationFactory.createBinaryScanOptions();
     }
 
-    public Optional<File> searchForBinaryTargets(List<String> multipleTargetFileNamePatterns, int searchDepth) throws DetectUserFriendlyException {
+    public Optional<File> searchForBinaryTargets(List<String> multipleTargetFileNamePatterns, int searchDepth, boolean followSymLinks) throws DetectUserFriendlyException {
         return auditLog.namedInternal("Binary Search For Targets", () -> {
-            return new BinaryScanFindMultipleTargetsOperation(fileFinder, directoryManager).searchForMultipleTargets(multipleTargetFileNamePatterns, searchDepth);
+            return new BinaryScanFindMultipleTargetsOperation(fileFinder, directoryManager).searchForMultipleTargets(multipleTargetFileNamePatterns, followSymLinks, searchDepth);
         });
     }
 

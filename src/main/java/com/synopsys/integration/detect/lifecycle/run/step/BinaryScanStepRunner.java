@@ -27,11 +27,11 @@ public class BinaryScanStepRunner {
     private OperationFactory operationFactory;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public BinaryScanStepRunner(final OperationFactory operationFactory) {
+    public BinaryScanStepRunner(OperationFactory operationFactory) {
         this.operationFactory = operationFactory;
     }
 
-    public Optional<CodeLocationCreationData<BinaryScanBatchOutput>> runBinaryScan(final DockerTargetData dockerTargetData, final NameVersion projectNameVersion, final BlackDuckRunData blackDuckRunData)
+    public Optional<CodeLocationCreationData<BinaryScanBatchOutput>> runBinaryScan(DockerTargetData dockerTargetData, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
         throws DetectUserFriendlyException {
         Optional<File> binaryScanFile = determineBinaryScanFileTarget(dockerTargetData);
         if (binaryScanFile.isPresent()) {
@@ -48,7 +48,7 @@ public class BinaryScanStepRunner {
             logger.info("Binary upload will upload single file.");
             binaryUpload = binaryScanOptions.getSingleTargetFilePath().get().toFile();
         } else if (binaryScanOptions.getMultipleTargetFileNamePatterns().stream().anyMatch(StringUtils::isNotBlank)) {
-            Optional<File> multipleUploadTarget = operationFactory.searchForBinaryTargets(binaryScanOptions.getMultipleTargetFileNamePatterns(), binaryScanOptions.getSearchDepth());
+            Optional<File> multipleUploadTarget = operationFactory.searchForBinaryTargets(binaryScanOptions.getMultipleTargetFileNamePatterns(), binaryScanOptions.getSearchDepth(), binaryScanOptions.isFollowSymLinks());
             if (multipleUploadTarget.isPresent()) {
                 binaryUpload = multipleUploadTarget.get();
             } else {

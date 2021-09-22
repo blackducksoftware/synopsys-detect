@@ -269,7 +269,7 @@ public class DetectConfigurationFactory {
         Integer maxDepth = getValue(DetectProperties.DETECT_DETECTOR_SEARCH_DEPTH);
         DetectExcludedDirectoryFilter fileFilter = new DetectExcludedDirectoryFilter(sourcePath, collectDetectorSearchDirectoryExclusions());
 
-        return new DetectorFinderOptions(fileFilter, maxDepth);
+        return new DetectorFinderOptions(fileFilter, maxDepth, getFollowSymLinks());
     }
 
     public DetectorEvaluationOptions createDetectorEvaluationOptions() {
@@ -280,7 +280,7 @@ public class DetectConfigurationFactory {
         List<FilterableEnumValue<DetectorType>> included = getValue(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES);
         ExcludeIncludeEnumFilter detectorFilter = new ExcludeIncludeEnumFilter(excluded, included);
 
-        return new DetectorEvaluationOptions(forceNestedSearch, (rule -> detectorFilter.shouldInclude(rule.getDetectorType())));
+        return new DetectorEvaluationOptions(forceNestedSearch, getFollowSymLinks(), (rule -> detectorFilter.shouldInclude(rule.getDetectorType())));
     }
 
     public BdioOptions createBdioOptions() {
@@ -378,6 +378,7 @@ public class DetectConfigurationFactory {
         Boolean uploadSource = getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_UPLOAD_SOURCE_MODE);
         Boolean licenseSearch = getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LICENSE_SEARCH);
         Boolean copyrightSearch = getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_COPYRIGHT_SEARCH);
+        Boolean followSymLinks = getFollowSymLinks();
         String codeLocationPrefix = getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX);
         String codeLocationSuffix = getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX);
         String additionalArguments = PropertyConfigUtils
@@ -402,7 +403,8 @@ public class DetectConfigurationFactory {
             maxDepth,
             findIndividualFileMatching(),
             licenseSearch,
-            copyrightSearch
+            copyrightSearch,
+            followSymLinks
         );
     }
 
@@ -424,7 +426,7 @@ public class DetectConfigurationFactory {
         String codeLocationPrefix = getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX);
         String codeLocationSuffix = getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX);
         Integer searchDepth = getValue(DetectProperties.DETECT_BINARY_SCAN_SEARCH_DEPTH);
-        return new BinaryScanOptions(singleTarget, multipleTargets, codeLocationPrefix, codeLocationSuffix, searchDepth);
+        return new BinaryScanOptions(singleTarget, multipleTargets, codeLocationPrefix, codeLocationSuffix, searchDepth, getFollowSymLinks());
     }
 
     public ImpactAnalysisOptions createImpactAnalysisOptions() {
@@ -476,6 +478,10 @@ public class DetectConfigurationFactory {
 
     private <P, T extends ValuedProperty<P>> P getValue(DetectProperty<T> detectProperty) {
         return detectConfiguration.getValue(detectProperty.getProperty());
+    }
+
+    private boolean getFollowSymLinks() {
+        return getValue(DetectProperties.DETECT_FOLLOW_SYMLINKS);
     }
 
     public String createCodeLocationOverride() {

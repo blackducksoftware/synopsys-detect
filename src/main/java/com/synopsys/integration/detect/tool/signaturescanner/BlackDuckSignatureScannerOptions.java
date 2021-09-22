@@ -41,6 +41,7 @@ public class BlackDuckSignatureScannerOptions {
     private final IndividualFileMatching individualFileMatching;
     private final Boolean licenseSearch;
     private final Boolean copyrightSearch;
+    private final Boolean followSymLinks;
 
     public BlackDuckSignatureScannerOptions(
         List<Path> signatureScannerPaths,
@@ -57,7 +58,8 @@ public class BlackDuckSignatureScannerOptions {
         Integer maxDepth,
         @Nullable IndividualFileMatching individualFileMatching,
         Boolean licenseSearch,
-        Boolean copyrightSearch) {
+        Boolean copyrightSearch,
+        Boolean followSymLinks) {
 
         this.signatureScannerPaths = signatureScannerPaths;
         this.exclusionPatterns = exclusionPatterns;
@@ -74,6 +76,7 @@ public class BlackDuckSignatureScannerOptions {
         this.individualFileMatching = individualFileMatching;
         this.licenseSearch = licenseSearch;
         this.copyrightSearch = copyrightSearch;
+        this.followSymLinks = followSymLinks;
     }
 
     public List<Path> getSignatureScannerPaths() {
@@ -134,5 +137,9 @@ public class BlackDuckSignatureScannerOptions {
 
     public Boolean getCopyrightSearch() {
         return copyrightSearch;
+    }
+
+    public Boolean followSymLinks() {
+        return followSymLinks;
     }
 }
