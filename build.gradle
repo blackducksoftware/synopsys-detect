@@ -193,7 +193,7 @@ task createAirGapZipWithoutDocker(type: JavaExec) {
     classpath = files(createArtifactName())
     classpath += sourceSets.main.runtimeClasspath
     main = 'com.synopsys.integration.detect.Application'
-    args = ['--detect.gradle.path=gradlew', '-z', 'GRADLE,NUGET']
+    args = ['--detect.gradle.path=gradlew', '-z', 'GRADLE,NUGET,PROJECT']
     standardOutput = new ByteArrayOutputStream()
     doLast {
         createAirGapZipWithoutDocker.ext.airGapPath = parseAirGapZipPath(standardOutput)
