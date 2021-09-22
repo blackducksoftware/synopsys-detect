@@ -34,7 +34,7 @@ public class GoModGraphGenerator {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public CodeLocation generateGraph(GoListModule projectModule, GoRelationshipManager goRelationshipManager, GoReplacementManager goVersionManager) {
+    public CodeLocation generateGraph(GoListModule projectModule, GoRelationshipManager goRelationshipManager, GoModDependencyManager goVersionManager) {
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
         String moduleName = projectModule.getPath();
         if (goRelationshipManager.hasRelationshipsFor(moduleName)) {
@@ -46,13 +46,13 @@ public class GoModGraphGenerator {
         return new CodeLocation(graph, externalIdFactory.createNameVersionExternalId(Forge.GOLANG, projectModule.getPath(), projectModule.getVersion()));
     }
 
-    private void addModuleToGraph(String moduleName, @Nullable Dependency parent, MutableDependencyGraph graph, GoRelationshipManager goRelationshipManager, GoReplacementManager goReplacementManager) {
+    private void addModuleToGraph(String moduleName, @Nullable Dependency parent, MutableDependencyGraph graph, GoRelationshipManager goRelationshipManager, GoModDependencyManager goModDependencyManager) {
         if (parent == null && goRelationshipManager.isNotUsedByMainModule(moduleName)) {
             logger.debug("Excluding module '{}' because it is not used by the main module.", moduleName);
             return;
         }
 
-        Dependency dependency = goReplacementManager.getReplacementForModule(moduleName);
+        Dependency dependency = goModDependencyManager.getDependencyForModule(moduleName);
         if (parent != null) {
             graph.addChildWithParent(dependency, parent);
         } else {
@@ -63,7 +63,7 @@ public class GoModGraphGenerator {
             fullyGraphedModules.add(moduleName);
             List<GoGraphRelationship> projectRelationships = goRelationshipManager.getRelationshipsFor(moduleName);
             for (GoGraphRelationship projectRelationship : projectRelationships) {
-                addModuleToGraph(projectRelationship.getChild().getName(), dependency, graph, goRelationshipManager, goReplacementManager);
+                addModuleToGraph(projectRelationship.getChild().getName(), dependency, graph, goRelationshipManager, goModDependencyManager);
             }
         }
     }

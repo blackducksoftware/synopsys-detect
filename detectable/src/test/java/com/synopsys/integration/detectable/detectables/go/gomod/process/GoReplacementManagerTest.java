@@ -20,7 +20,7 @@ class GoReplacementManagerTest {
     static String MODULE_A_PATH = "example.io/module/a";
     static String MODULE_B_PATH = "example.io/module/b";
     static String MODULE_NO_VERSION_PATH = "example.io/module/no_version";
-    static GoReplacementManager goReplacementManager;
+    static GoModDependencyManager goReplacementManager;
     static ExternalIdFactory externalIdFactory;
 
     @BeforeAll
@@ -51,7 +51,7 @@ class GoReplacementManagerTest {
 
         List<GoListAllData> goListAllData = Arrays.asList(moduleA, moduleB, incompatibleModule, gitModule, noVersionModule);
         externalIdFactory = new ExternalIdFactory();
-        goReplacementManager = new GoReplacementManager(goListAllData, externalIdFactory);
+        goReplacementManager = new GoModDependencyManager(goListAllData, externalIdFactory);
     }
 
     @Test
@@ -83,7 +83,7 @@ class GoReplacementManagerTest {
 
     @Test
     void replacementTest() {
-        Dependency dependencyForModule = goReplacementManager.getReplacementForModule(MODULE_B_PATH);
+        Dependency dependencyForModule = goReplacementManager.getDependencyForModule(MODULE_B_PATH);
         assertEquals("2.3.4", dependencyForModule.getVersion(), "The version should be replaced.");
         assertEquals(MODULE_A_PATH, dependencyForModule.getName(), "The path should be replaced.");
     }

@@ -23,9 +23,9 @@ import com.synopsys.integration.detectable.detectables.go.gomod.model.GoListModu
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoGraphParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoListParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoModWhyParser;
+import com.synopsys.integration.detectable.detectables.go.gomod.process.GoModDependencyManager;
 import com.synopsys.integration.detectable.detectables.go.gomod.process.GoModGraphGenerator;
 import com.synopsys.integration.detectable.detectables.go.gomod.process.GoRelationshipManager;
-import com.synopsys.integration.detectable.detectables.go.gomod.process.GoReplacementManager;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 
@@ -55,7 +55,7 @@ public class GoModCliExtractor {
             Set<String> moduleExclusions = moduleExclusions(directory, goExe, dependencyVerificationEnabled);
 
             GoRelationshipManager goRelationshipManager = new GoRelationshipManager(goGraphRelationships, moduleExclusions);
-            GoReplacementManager goVersionManager = new GoReplacementManager(goListAllModules, externalIdFactory);
+            GoModDependencyManager goVersionManager = new GoModDependencyManager(goListAllModules, externalIdFactory);
             List<CodeLocation> codeLocations = goListModules.stream()
                                                    .map(goListModule -> goModGraphGenerator.generateGraph(goListModule, goRelationshipManager, goVersionManager))
                                                    .collect(Collectors.toList());
