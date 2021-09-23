@@ -13,7 +13,7 @@ class GradleRootMetadataParserTest {
 
     @Test
     void parseRootProjectNameVersion() {
-        List<String> lines = FunctionalTestFiles.asListOfStrings("/gradle/parse-tests/rootProjectMetadata.txt");
+        List<String> lines = FunctionalTestFiles.asListOfStrings("/gradle/rootProjectMetadata.txt");
         GradleRootMetadataParser parser = new GradleRootMetadataParser();
 
         NameVersion nameVersion = parser.parseRootProjectNameVersion(lines);
