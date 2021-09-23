@@ -72,6 +72,7 @@ public class SimpleFileFinderTest {
     }
 
     @Test
+    @DisabledOnOs(WINDOWS)
     public void testSymLinksAreFollowed() throws IOException {
         List<File> files = findFiles(true);
         // make sure symlink followed during dir traversal, enters cyclical link and finds duplicate files
