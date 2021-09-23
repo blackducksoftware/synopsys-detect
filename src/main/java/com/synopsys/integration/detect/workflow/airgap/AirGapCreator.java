@@ -9,8 +9,6 @@ package com.synopsys.integration.detect.workflow.airgap;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -55,7 +53,7 @@ public class AirGapCreator {
             logger.info("Detect is in Air Gap Creation mode.");
             logger.info("Detect will create an air gap of itself and then exit.");
             logger.info("The created air gap zip will not be cleaned up.");
-            logger.info(String.format("Specify desired inspectors after -z argument in a comma separated list of ALL, NONE, %s", Arrays.stream(AirGapType.values()).map(Enum::name).collect(Collectors.joining(", "))));
+            logger.info("Specify desired air gap zip type after -z argument in with either FULL or NO_DOCKER.");
             logger.info(ReportConstants.RUN_SEPARATOR);
             logger.info(ReportConstants.RUN_SEPARATOR);
             logger.info("");
