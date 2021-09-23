@@ -52,10 +52,10 @@ public class NugetProjectInspectorTest extends DetectableFunctionalTest {
     protected void setup() throws IOException {
         addFile(Paths.get("Example.csproj"));
 
-        String source = getSourceDirectory().toFile().getCanonicalPath();
+        String source = getSourceDirectory().toFile().getPath();
         File jsonFile = new File(getOutputDirectory().toFile(), "inspection.json");
         String inspector = new File("inspector").getCanonicalPath();
-        addExecutableOutput(createStandardOutput(""), inspector, "inspect", "--dir", source, "--output-file", jsonFile.getCanonicalPath());
+        addExecutableOutput(createStandardOutput(""), inspector, "inspect", "--dir", source, "--output-file", jsonFile.getPath());
 
         addOutputFile(jsonFile.toPath(), FunctionalTestFiles.asListOfStrings("/nuget/project_inspector/ConsoleApp.json"));
     }
