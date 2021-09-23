@@ -53,7 +53,7 @@ public class AirGapCreator {
             logger.info("Detect is in Air Gap Creation mode.");
             logger.info("Detect will create an air gap of itself and then exit.");
             logger.info("The created air gap zip will not be cleaned up.");
-            logger.info("Specify desired air gap zip type after -z argument in with either FULL or NO_DOCKER.");
+            logger.info("Specify desired air gap zip type after the -z argument. Available options are FULL or NO_DOCKER. Default is FULL.");
             logger.info(ReportConstants.RUN_SEPARATOR);
             logger.info(ReportConstants.RUN_SEPARATOR);
             logger.info("");
