@@ -28,36 +28,36 @@ public class ExclusionPatternCreator {
     private final Predicate<File> fileFilter;
     private final File scanTarget;
 
-    public ExclusionPatternCreator(final FileFinder fileFinder, final Predicate<File> fileFilter, final File scanTarget) {
+    public ExclusionPatternCreator(FileFinder fileFinder, Predicate<File> fileFilter, File scanTarget) {
         this.fileFinder = fileFinder;
         this.fileFilter = fileFilter;
         this.scanTarget = scanTarget;
     }
 
-    public Set<String> determineExclusionPatterns(final int maxDepth, final List<String> exclusionPatterns) {
+    public Set<String> determineExclusionPatterns(boolean followSymLinks, int maxDepth, List<String> exclusionPatterns) {
         if (CollectionUtils.isEmpty(exclusionPatterns) && scanTarget.isDirectory()) {
             return Collections.emptySet();
         }
-        final Set<String> scanExclusionPatterns = new HashSet<>();
+        Set<String> scanExclusionPatterns = new HashSet<>();
 
         // Now use patterns to resolve exclusions that we will format and pass on to the signature scanner
         try {
-            final String scanTargetPath = scanTarget.getCanonicalPath();
+            String scanTargetPath = scanTarget.getCanonicalPath();
             // TODO should we only collect directories since the scanner can only exclude directories?
-            final List<File> matchingFiles = fileFinder.findFiles(scanTarget, fileFilter, maxDepth, false); //TODO: re-add the depth hit message creator?
-            for (final File matchingFile : matchingFiles) {
-                final String matchingFilePath = matchingFile.getCanonicalPath();
-                final String scanExclusionPattern = createExclusionPatternFromPaths(scanTargetPath, matchingFilePath);
+            List<File> matchingFiles = fileFinder.findFiles(scanTarget, fileFilter, followSymLinks, maxDepth, false); //TODO: re-add the depth hit message creator?
+            for (File matchingFile : matchingFiles) {
+                String matchingFilePath = matchingFile.getCanonicalPath();
+                String scanExclusionPattern = createExclusionPatternFromPaths(scanTargetPath, matchingFilePath);
                 scanExclusionPatterns.add(scanExclusionPattern);
             }
-        } catch (final IOException e) {
+        } catch (IOException e) {
             logger.warn("Problem encountered finding the exclusion patterns for the scanner. " + e.getMessage());
             logger.debug(e.getMessage(), e);
         }
         return scanExclusionPatterns;
     }
 
-    private String createExclusionPatternFromPaths(final String rootPath, final String targetPath) {
+    private String createExclusionPatternFromPaths(String rootPath, String targetPath) {
         String scanExclusionPattern = targetPath.replace(rootPath, "/");
         if (scanExclusionPattern.contains("\\\\")) {
             scanExclusionPattern = scanExclusionPattern.replace("\\\\", "/");

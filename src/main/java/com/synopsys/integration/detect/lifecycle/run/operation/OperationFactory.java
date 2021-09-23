@@ -460,7 +460,7 @@ public class OperationFactory { //TODO: OperationRunner
     }
 
     public Optional<File> calculateOnlineLocalScannerInstallPath() throws DetectUserFriendlyException {
-        return auditLog.namedInternal("Calculate Online Local Scanner Path", () -> detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getOnlineLocalScannerInstallPath().map(Path::toFile));
+        return auditLog.namedInternal("Calculate Online Local Scanner Path", () -> detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getLocalScannerInstallPath().map(Path::toFile));
     }
 
     public ScanBatchRunner createScanBatchRunnerWithBlackDuck(BlackDuckRunData blackDuckRunData, File installDirectory) throws DetectUserFriendlyException {
@@ -622,9 +622,9 @@ public class OperationFactory { //TODO: OperationRunner
         return detectConfigurationFactory.createBinaryScanOptions();
     }
 
-    public Optional<File> searchForBinaryTargets(List<String> multipleTargetFileNamePatterns, int searchDepth) throws DetectUserFriendlyException {
+    public Optional<File> searchForBinaryTargets(List<String> multipleTargetFileNamePatterns, int searchDepth, boolean followSymLinks) throws DetectUserFriendlyException {
         return auditLog.namedInternal("Binary Search For Targets", () -> {
-            return new BinaryScanFindMultipleTargetsOperation(fileFinder, directoryManager).searchForMultipleTargets(multipleTargetFileNamePatterns, searchDepth);
+            return new BinaryScanFindMultipleTargetsOperation(fileFinder, directoryManager).searchForMultipleTargets(multipleTargetFileNamePatterns, followSymLinks, searchDepth);
         });
     }
 

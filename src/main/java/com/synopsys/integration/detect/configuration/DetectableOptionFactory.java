@@ -88,7 +88,7 @@ public class DetectableOptionFactory {
         List<String> sourceArguments = getValue(DetectProperties.DETECT_BITBAKE_SOURCE_ARGUMENTS);
         List<String> packageNames = getValue(DetectProperties.DETECT_BITBAKE_PACKAGE_NAMES);
         Integer searchDepth = getValue(DetectProperties.DETECT_BITBAKE_SEARCH_DEPTH);
-        return new BitbakeDetectableOptions(buildEnvName, sourceArguments, packageNames, searchDepth);
+        return new BitbakeDetectableOptions(buildEnvName, sourceArguments, packageNames, searchDepth, getFollowSymLinks());
     }
 
     public ClangDetectableOptions createClangDetectableOptions() {
@@ -113,7 +113,8 @@ public class DetectableOptionFactory {
 
     public MavenParseOptions createMavenParseOptions() {
         Boolean includePlugins = getValue(DetectProperties.DETECT_MAVEN_INCLUDE_PLUGINS);
-        return new MavenParseOptions(includePlugins);
+        Boolean legacyMode = getValue(DetectProperties.DETECT_MAVEN_BUILDLESS_LEGACY_MODE);
+        return new MavenParseOptions(includePlugins, legacyMode);
     }
 
     public DockerDetectableOptions createDockerDetectableOptions() {
@@ -239,7 +240,7 @@ public class DetectableOptionFactory {
         List<String> includedConfigurations = getValue(DetectProperties.DETECT_SBT_INCLUDED_CONFIGURATIONS);
         List<String> excludedConfigurations = getValue(DetectProperties.DETECT_SBT_EXCLUDED_CONFIGURATIONS);
         Integer reportDepth = getValue(DetectProperties.DETECT_SBT_REPORT_DEPTH);
-        return new SbtResolutionCacheOptions(sbtCommandAdditionalArguments, includedConfigurations, excludedConfigurations, reportDepth);
+        return new SbtResolutionCacheOptions(sbtCommandAdditionalArguments, includedConfigurations, excludedConfigurations, reportDepth, getFollowSymLinks());
     }
 
     public YarnLockOptions createYarnLockOptions() {
@@ -300,5 +301,9 @@ public class DetectableOptionFactory {
 
     private <P, T extends ValuedProperty<P>> P getValue(DetectProperty<T> detectProperty) {
         return detectConfiguration.getValue(detectProperty.getProperty());
+    }
+
+    private boolean getFollowSymLinks() {
+        return getValue(DetectProperties.DETECT_FOLLOW_SYMLINKS);
     }
 }

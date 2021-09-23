@@ -24,6 +24,7 @@ package com.synopsys.integration.common.test.util.finder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.condition.OS.WINDOWS;
 
 import java.io.File;
@@ -65,25 +66,35 @@ public class SimpleFileFinderTest {
     @Test
     @DisabledOnOs(WINDOWS)
     public void testSymlinksNotFollowed() throws IOException {
-        // Create a subDir with a symlink that loops back to its parent
-        final File initialDirectory = initialDirectoryPath.toFile();
-        final File subDir = new File(initialDirectory, "sub");
+        List<File> files = findFiles(false);
+        // make sure symlink not followed during dir traversal
+        assertEquals(4, files.size());
+    }
+
+    @Test
+    public void testSymLinksAreFollowed() throws IOException {
+        List<File> files = findFiles(true);
+        // make sure symlink followed during dir traversal, enters cyclical link and finds duplicate files
+        assertTrue(files.size() > 4);
+    }
+
+    private List<File> findFiles(boolean followSymLinks) throws IOException {
+        // Create a subDir with a symlink that points to isolated directory
+        File initialDirectory = initialDirectoryPath.toFile();
+        File subDir = new File(initialDirectory, "sub");
         subDir.mkdirs();
-        final File link = new File(subDir, "linkToInitial");
-        final Path linkPath = link.toPath();
+        File link = new File(subDir, "linkToInitial");
+        Path linkPath = link.toPath();
         Files.createSymbolicLink(linkPath, initialDirectoryPath);
 
-        final File regularDir = new File(subDir, "regularDir");
+        File regularDir = new File(subDir, "regularDir");
         regularDir.mkdir();
-        final File regularFile = new File(subDir, "regularFile");
+        File regularFile = new File(subDir, "regularFile");
         regularFile.createNewFile();
 
-        final SimpleFileFinder finder = new SimpleFileFinder();
-        final List<String> filenamePatterns = Arrays.asList("sub", "linkToInitial", "regularDir", "regularFile");
-        final List<File> foundFiles = finder.findFiles(initialDirectoryPath.toFile(), filenamePatterns, 10);
-
-        // make sure symlink not followed during dir traversal
-        assertEquals(4, foundFiles.size());
+        SimpleFileFinder finder = new SimpleFileFinder();
+        List<String> filenamePatterns = Arrays.asList("sub", "linkToInitial", "regularDir", "regularFile");
+        return finder.findFiles(initialDirectoryPath.toFile(), filenamePatterns, followSymLinks, 10);
     }
 
     @Test
@@ -102,7 +113,7 @@ public class SimpleFileFinderTest {
 
         SimpleFileFinder fileFinder = new SimpleFileFinder();
         Predicate<File> filter = file -> file.getName().startsWith("sub");
-        List<File> foundFiles = fileFinder.findFiles(initialDirectoryPath.toFile(), filter, 10);
+        List<File> foundFiles = fileFinder.findFiles(initialDirectoryPath.toFile(), filter, false, 10);
 
         assertEquals(2, foundFiles.size());
         assertFalse(foundFiles.contains(subDirChild2));

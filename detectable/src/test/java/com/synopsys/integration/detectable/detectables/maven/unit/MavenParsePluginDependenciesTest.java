@@ -41,9 +41,9 @@ import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseExtractor;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseOptions;
+import com.synopsys.integration.detectable.extraction.Extraction;
 
 public class MavenParsePluginDependenciesTest {
 
@@ -106,7 +106,7 @@ public class MavenParsePluginDependenciesTest {
     @Test
     public void testIncludingPluginDependencies() throws Exception {
         final MavenParseExtractor pomXmlParser = new MavenParseExtractor(new ExternalIdFactory(), SAXParserFactory.newInstance().newSAXParser());
-        final Extraction extraction = pomXmlParser.extract(getInput(), new MavenParseOptions(true));
+        final Extraction extraction = pomXmlParser.extract(getInput(), new MavenParseOptions(true, true));
         final DependencyGraph dependencyGraph = extraction.getCodeLocations().get(0).getDependencyGraph();
 
         final Set<String> externalIds = dependencyGraph.getRootDependencies().stream().map(dependency -> dependency.getExternalId().createExternalId()).collect(Collectors.toSet());

@@ -20,7 +20,7 @@ public class BlackDuckSignatureScannerOptions {
     private final List<Path> signatureScannerPaths;
     private final List<String> exclusionPatterns;
     @Nullable
-    private final Path onlineLocalScannerInstallPath;
+    private final Path localScannerInstallPath;
 
     private final Integer scanMemory;
     private final Integer parallelProcessors;
@@ -41,11 +41,12 @@ public class BlackDuckSignatureScannerOptions {
     private final IndividualFileMatching individualFileMatching;
     private final Boolean licenseSearch;
     private final Boolean copyrightSearch;
+    private final Boolean followSymLinks;
 
     public BlackDuckSignatureScannerOptions(
         List<Path> signatureScannerPaths,
         List<String> exclusionPatterns,
-        @Nullable Path onlineLocalScannerInstallPath,
+        @Nullable Path localScannerInstallPath,
         Integer scanMemory,
         Integer parallelProcessors,
         Boolean dryRun,
@@ -57,11 +58,12 @@ public class BlackDuckSignatureScannerOptions {
         Integer maxDepth,
         @Nullable IndividualFileMatching individualFileMatching,
         Boolean licenseSearch,
-        Boolean copyrightSearch) {
+        Boolean copyrightSearch,
+        Boolean followSymLinks) {
 
         this.signatureScannerPaths = signatureScannerPaths;
         this.exclusionPatterns = exclusionPatterns;
-        this.onlineLocalScannerInstallPath = onlineLocalScannerInstallPath;
+        this.localScannerInstallPath = localScannerInstallPath;
         this.scanMemory = scanMemory;
         this.parallelProcessors = parallelProcessors;
         this.dryRun = dryRun;
@@ -74,6 +76,7 @@ public class BlackDuckSignatureScannerOptions {
         this.individualFileMatching = individualFileMatching;
         this.licenseSearch = licenseSearch;
         this.copyrightSearch = copyrightSearch;
+        this.followSymLinks = followSymLinks;
     }
 
     public List<Path> getSignatureScannerPaths() {
@@ -120,8 +123,8 @@ public class BlackDuckSignatureScannerOptions {
         return maxDepth;
     }
 
-    public Optional<Path> getOnlineLocalScannerInstallPath() {
-        return Optional.ofNullable(onlineLocalScannerInstallPath);
+    public Optional<Path> getLocalScannerInstallPath() {
+        return Optional.ofNullable(localScannerInstallPath);
     }
 
     public Optional<IndividualFileMatching> getIndividualFileMatching() {
@@ -134,5 +137,9 @@ public class BlackDuckSignatureScannerOptions {
 
     public Boolean getCopyrightSearch() {
         return copyrightSearch;
+    }
+
+    public Boolean followSymLinks() {
+        return followSymLinks;
     }
 }

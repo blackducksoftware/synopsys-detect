@@ -11,6 +11,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +34,7 @@ public class SignatureScanStepRunner {
 
     private final OperationFactory operationFactory;
 
-    public SignatureScanStepRunner(final OperationFactory operationFactory) {
+    public SignatureScanStepRunner(OperationFactory operationFactory) {
         this.operationFactory = operationFactory;
     }
 
@@ -58,7 +59,7 @@ public class SignatureScanStepRunner {
         executeScan(scanBatch, scanBatchRunner, scanPaths);
     }
 
-    private SignatureScanOuputResult executeScan(final ScanBatch scanBatch, final ScanBatchRunner scanBatchRunner, final List<SignatureScanPath> scanPaths) throws DetectUserFriendlyException {
+    private SignatureScanOuputResult executeScan(ScanBatch scanBatch, ScanBatchRunner scanBatchRunner, List<SignatureScanPath> scanPaths) throws DetectUserFriendlyException {
         SignatureScanOuputResult scanOuputResult = operationFactory.signatureScan(scanBatch, scanBatchRunner);
 
         List<SignatureScannerReport> reports = operationFactory.createSignatureScanReport(scanPaths, scanOuputResult.getScanCommandOutputs());
@@ -68,11 +69,14 @@ public class SignatureScanStepRunner {
     }
 
     private ScanBatchRunner resolveOfflineScanBatchRunner() throws DetectUserFriendlyException {
-        File installDirectory = operationFactory.calculateDetectControlledInstallDirectory();
-        return operationFactory.createScanBatchRunnerFromLocalInstall(installDirectory);
+        return resolveScanBatchRunner(null);
     }
 
     private ScanBatchRunner resolveOnlineScanBatchRunner(BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
+        return resolveScanBatchRunner(blackDuckRunData);
+    }
+
+    private ScanBatchRunner resolveScanBatchRunner(@Nullable BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
         Optional<File> localScannerPath = operationFactory.calculateOnlineLocalScannerInstallPath();
         ScanBatchRunnerUserResult userProvided = findUserProvidedScanBatchRunner(localScannerPath);
         File installDirectory = determineScanInstallDirectory(userProvided);
@@ -81,7 +85,11 @@ public class SignatureScanStepRunner {
         if (userProvided.getScanBatchRunner().isPresent()) {
             scanBatchRunner = userProvided.getScanBatchRunner().get();
         } else {
-            scanBatchRunner = operationFactory.createScanBatchRunnerWithBlackDuck(blackDuckRunData, installDirectory);
+            if (blackDuckRunData != null) {
+                scanBatchRunner = operationFactory.createScanBatchRunnerWithBlackDuck(blackDuckRunData, installDirectory);
+            } else {
+                scanBatchRunner = operationFactory.createScanBatchRunnerFromLocalInstall(installDirectory);
+            }
         }
 
         return scanBatchRunner;

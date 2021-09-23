@@ -330,27 +330,6 @@ public class DetectProperties {
             .setHelp("If set to true, the signature scanner will, if supported by your Black Duck version, upload source code to Black Duck. Corresponding Signature Scanner CLI Argument: --upload-source.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
 
-    public static final DetectProperty<NullableStringProperty> DETECT_BOM_AGGREGATE_NAME =
-        new DetectProperty<>(new NullableStringProperty("detect.bom.aggregate.name"))
-            .setInfo("Aggregate BDIO File Name", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("If set, this will aggregate all the BOMs to create a single BDIO file with the filename provided.")
-            .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
-            .setCategory(DetectCategory.Advanced);
-
-    public static final DetectProperty<EnumProperty<AggregateMode>> DETECT_BOM_AGGREGATE_REMEDIATION_MODE =
-        new DetectProperty<>(new EnumProperty<>("detect.bom.aggregate.remediation.mode", AggregateMode.TRANSITIVE, AggregateMode.class))
-            .setInfo("BDIO Aggregate Remediation Mode", DetectPropertyFromVersion.VERSION_6_1_0)
-            .setHelp(
-                "If an aggregate BDIO file is being generated and this property is set to DIRECT, the aggregate BDIO file will exclude code location nodes " +
-                    "from the top layer of the dependency tree to preserve the correct identification of direct dependencies in the resulting Black Duck BOM. " +
-                    "When this property is set to TRANSITIVE (the default), component source information is preserved by including code location nodes at the " +
-                    "top of the dependency tree, but all components will appear as TRANSITIVE in the BOM. " +
-                    "SUBPROJECT mode provides both component source information and correct identification of direct and transitive dependencies by " +
-                    "encoding code location nodes as subprojects in the graph. SUBPROJECT mode must only be used with Black Duck 2021.8.0 or later, " +
-                    "and has no effect (is equivalent to TRANSITIVE mode) when detect.bdio2.enabled is set to false.")
-            .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
-            .setCategory(DetectCategory.Advanced);
-
     public static final DetectProperty<BooleanProperty> DETECT_BUILDLESS =
         new DetectProperty<>(new BooleanProperty("detect.detector.buildless", false))
             .setInfo("Buildless Mode", DetectPropertyFromVersion.VERSION_5_4_0)
@@ -780,13 +759,6 @@ public class DetectProperties {
                 "If set, Detect will include only dependencies outside of the given Maven scope. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN);
 
-    public static final DetectProperty<BooleanProperty> DETECT_MAVEN_INCLUDE_PLUGINS =
-        new DetectProperty<>(new BooleanProperty("detect.maven.include.plugins", false))
-            .setInfo("Maven Include Plugins", DetectPropertyFromVersion.VERSION_5_6_0)
-            .setHelp("Whether or not detect will include the plugins section when parsing a pom.xml.")
-            .setGroups(DetectGroup.MAVEN, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced);
-
     public static final DetectProperty<BooleanProperty> DETECT_NOTICES_REPORT =
         new DetectProperty<>(new BooleanProperty("detect.notices.report", false))
             .setInfo("Generate Notices Report", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -963,6 +935,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced);
 
+    @SuppressWarnings("unused") // Dynamic property
     public static final DetectProperty<NullableStringProperty> DETECT_CUSTOM_FIELDS_PROJECT =
         new DetectProperty<>(new NullableStringProperty("detect.custom.fields.project"))
             .setInfo("Custom Fields", DetectPropertyFromVersion.VERSION_5_6_0)
@@ -971,6 +944,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced);
 
+    @SuppressWarnings("unused") // Dynamic property
     public static final DetectProperty<NullableStringProperty> DETECT_CUSTOM_FIELDS_VERSION =
         new DetectProperty<>(new NullableStringProperty("detect.custom.fields.version"))
             .setInfo("Custom Fields", DetectPropertyFromVersion.VERSION_5_6_0)
@@ -1306,6 +1280,13 @@ public class DetectProperties {
             .setHelp("If set to true, Detect will wait for Synopsys products until results are available or the detect.report.timeout is exceeded.")
             .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL);
 
+    public static final DetectProperty<BooleanProperty> DETECT_FOLLOW_SYMLINKS =
+        new DetectProperty<>(new BooleanProperty("detect.follow.symbolic.links", true))
+            .setInfo("Follow Symbolic Links", DetectPropertyFromVersion.VERSION_7_0_0)
+            .setHelp(
+                "If set to true, Detect will follow symbolic links when performing the detector search, when searching for files that detectors need, and when searching for patterns provided via property detect.excluded.directories.")
+            .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL);
+
     public static final DetectProperty<EnumProperty<BlackduckScanMode>> DETECT_BLACKDUCK_SCAN_MODE =
         new DetectProperty<>(new EnumProperty<>("detect.blackduck.scan.mode", BlackduckScanMode.INTELLIGENT, BlackduckScanMode.class))
             .setInfo("Detect Scan Mode", DetectPropertyFromVersion.VERSION_6_9_0)
@@ -1314,19 +1295,49 @@ public class DetectProperties {
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK)
             .setCategory(DetectCategory.Advanced);
 
+    //#endregion Active Properties
+
+    //#region Deprecated Properties
+    // username/password ==> api token
+    public static final String BDIO1_DEPRECATION_MESSAGE = "This property is being removed, along with the option to generate BDIO in BDIO1 format. In the future, BDIO2 format will be the only option.";
+    public static final String AGGREGATION_MODE_DEPRECATION_MESSAGE = "This property is being removed, along with the ability to set the aggregation mode. Detect will only operate in SUBPROJECT mode to more accurately report the dependency graph.";
+
+    @Deprecated
+    public static final DetectProperty<NullableStringProperty> DETECT_BOM_AGGREGATE_NAME =
+        new DetectProperty<>(new NullableStringProperty("detect.bom.aggregate.name"))
+            .setInfo("Aggregate BDIO File Name", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("If set, this will aggregate all the BOMs to create a single BDIO file with the filename provided.")
+            .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(AGGREGATION_MODE_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<EnumProperty<AggregateMode>> DETECT_BOM_AGGREGATE_REMEDIATION_MODE =
+        new DetectProperty<>(new EnumProperty<>("detect.bom.aggregate.remediation.mode", AggregateMode.TRANSITIVE, AggregateMode.class))
+            .setInfo("BDIO Aggregate Remediation Mode", DetectPropertyFromVersion.VERSION_6_1_0)
+            .setHelp(
+                "If an aggregate BDIO file is being generated and this property is set to DIRECT, the aggregate BDIO file will exclude code location nodes " +
+                    "from the top layer of the dependency tree to preserve the correct identification of direct dependencies in the resulting Black Duck BOM. " +
+                    "When this property is set to TRANSITIVE (the default), component source information is preserved by including code location nodes at the " +
+                    "top of the dependency tree, but all components will appear as TRANSITIVE in the BOM. " +
+                    "SUBPROJECT mode provides both component source information and correct identification of direct and transitive dependencies by " +
+                    "encoding code location nodes as subprojects in the graph. SUBPROJECT mode must only be used with Black Duck 2021.8.0 or later, " +
+                    "and has no effect (is equivalent to TRANSITIVE mode) when detect.bdio2.enabled is set to false.")
+            .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(AGGREGATION_MODE_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT);
+
+
+
+    @Deprecated
     public static final DetectProperty<BooleanProperty> BLACKDUCK_LEGACY_UPLOAD_ENABLED =
         new DetectProperty<>(new BooleanProperty("blackduck.legacy.upload.enabled", true))
             .setInfo("Use legacy BDIO upload endpoints in Black Duck", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp(
                 "If set to true, Detect will upload the BDIO files to Black Duck using older REST APIs.  Set this to false if you want to use the intelligent persistent scan endpoints in Black Duck.  The intelligent persistent endpoints are a Black Duck feature to be used with a later Black Duck version.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK)
-            .setCategory(DetectCategory.Advanced);
-
-    //#endregion Active Properties
-
-    //#region Deprecated Properties
-    // username/password ==> api token
-    public static final String BDIO1_DEPRECATION_MESSAGE = "This property is being removed, along with the option to generate BDIO in BDIO1 format. In the future, BDIO2 format will be the only option.";
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated("This property is being removed as support for the legacy endpoint is dropped.", DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_BDIO2_ENABLED =
@@ -1349,6 +1360,24 @@ public class DetectProperties {
             .setDeprecated(
                 "This property is being removed because it no longer provides functionality. The gradle inspector library is no longer used to gather Gradle dependencies. The init script generated by Detect has all the necessary functionality.",
                 DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<BooleanProperty> DETECT_MAVEN_INCLUDE_PLUGINS =
+        new DetectProperty<>(new BooleanProperty("detect.maven.include.plugins", false))
+            .setInfo("Maven Include Plugins", DetectPropertyFromVersion.VERSION_5_6_0)
+            .setHelp("Whether or not detect will include the plugins section when parsing a pom.xml in buildless legacy mode. ")
+            .setGroups(DetectGroup.MAVEN, DetectGroup.GLOBAL)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated("This property is being removed. The project inspector will be used to parse maven projects. Please configure the project inspector to include modules.", DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<BooleanProperty> DETECT_MAVEN_BUILDLESS_LEGACY_MODE =
+        new DetectProperty<>(new BooleanProperty("detect.maven.buildless.legacy.mode", true))
+            .setInfo("Maven Buildless Legacy Mode", DetectPropertyFromVersion.VERSION_7_5_0)
+            .setHelp("Legacy maven parsing supports plugins but the newer project inspector parser does not. Setting to false enables the project inspector for maven.")
+            .setGroups(DetectGroup.MAVEN, DetectGroup.GLOBAL)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated("This property is being removed. The legacy maven buildless parser is being replaced by the project inspector.", DetectMajorVersion.EIGHT);
 
     // Accessor to get all properties
     public static Properties allProperties() throws IllegalAccessException {

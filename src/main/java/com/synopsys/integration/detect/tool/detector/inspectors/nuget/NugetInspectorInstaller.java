@@ -8,27 +8,22 @@
 package com.synopsys.integration.detect.tool.detector.inspectors.nuget;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.util.DetectZipUtil;
-import com.synopsys.integration.detect.workflow.ArtifactResolver;
+import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryZipInstaller;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.exception.IntegrationException;
 
 public class NugetInspectorInstaller {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final ArtifactResolver artifactResolver;
+    private final ArtifactoryZipInstaller artifactoryZipInstaller;
 
-    public NugetInspectorInstaller(final ArtifactResolver artifactResolver) {
-        this.artifactResolver = artifactResolver;
+    public NugetInspectorInstaller(final ArtifactoryZipInstaller artifactoryZipInstaller) {
+        this.artifactoryZipInstaller = artifactoryZipInstaller;
     }
 
     public File installDotNet5(final File destination, @Nullable final String overrideVersion) throws DetectableException {
@@ -53,29 +48,9 @@ public class NugetInspectorInstaller {
 
     private File installInspector(final File destination, @Nullable final String overrideVersion, final String inspectorRepo, final String inspectorProperty, final String inspectorVersionOverride) throws DetectableException {
         try {
-            final String source = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, inspectorRepo, inspectorProperty, StringUtils.defaultString(overrideVersion), inspectorVersionOverride);
-            return installFromSource(destination, source);
+            return artifactoryZipInstaller.installZipFromSource(destination, ".nupkg", ArtifactoryConstants.ARTIFACTORY_URL, inspectorRepo, inspectorProperty, StringUtils.defaultString(overrideVersion), inspectorVersionOverride);
         } catch (final Exception e) {
             throw new DetectableException("Unable to install the nuget inspector from Artifactory.", e);
         }
-    }
-
-    private File installFromSource(final File dest, final String source) throws IntegrationException, IOException {
-        logger.debug("Resolved the nuget inspector url: " + source);
-        final String nupkgName = artifactResolver.parseFileName(source);
-        logger.debug("Parsed artifact name: " + nupkgName);
-        final String inspectorFolderName = nupkgName.replace(".nupkg", "");
-        final File inspectorFolder = new File(dest, inspectorFolderName);
-        if (!inspectorFolder.exists()) {
-            logger.debug("Downloading nuget inspector.");
-            final File nupkgFile = new File(dest, nupkgName);
-            artifactResolver.downloadArtifact(nupkgFile, source);
-            logger.debug("Extracting nuget inspector.");
-            DetectZipUtil.unzip(nupkgFile, inspectorFolder, Charset.defaultCharset());
-            FileUtils.deleteQuietly(nupkgFile);
-        } else {
-            logger.debug("Inspector is already downloaded, folder exists.");
-        }
-        return inspectorFolder;
     }
 }

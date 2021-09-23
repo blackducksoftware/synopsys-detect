@@ -43,7 +43,7 @@ The results are also printed in the logs:
 
 When Rapid Scan is enabled, ${solution_name} will only run certain tools to ensure results are calculated as fast as possible.
 
-The currently supported tools are: DETECTOR
+The currently supported tools are: DETECTOR and DOCKER.
 
 All other tools are disabled when running in Rapid Scan mode.
 

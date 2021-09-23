@@ -28,6 +28,7 @@ import com.synopsys.integration.detectable.detectable.inspector.nuget.impl.ExeNu
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.OperatingSystemType;
 
+//TODO: Consider refactoring to be easier to follow. This could just be DetectNugetInspectorResolver. The locators could be installers, consider an executable locator for that code.
 public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
     private static final String INTEGRATION_NUGET_INSPECTOR_NAME = "IntegrationNugetInspector";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -119,7 +120,7 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
         logger.debug("Searching for: " + inspectorName);
         File toolsFolder = new File(nupkgFolder, "tools");
         logger.debug("Searching in: " + toolsFolder.getAbsolutePath());
-        File foundExecutable = fileFinder.findFiles(toolsFolder, inspectorName, 3)
+        File foundExecutable = fileFinder.findFiles(toolsFolder, inspectorName, false, 3)
                                    .stream()
                                    .findFirst()
                                    .filter(File::exists)

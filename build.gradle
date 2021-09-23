@@ -20,7 +20,7 @@ buildscript {
 ext['groovy.version'] = '3.0.0'
 
 group = 'com.synopsys.integration'
-version = '7.6.0-SNAPSHOT'
+version = '7.6.0-SIGQA5-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
@@ -193,7 +193,7 @@ task createAirGapZipWithoutDocker(type: JavaExec) {
     classpath = files(createArtifactName())
     classpath += sourceSets.main.runtimeClasspath
     main = 'com.synopsys.integration.detect.Application'
-    args = ['--detect.gradle.path=gradlew', '-z', 'GRADLE,NUGET']
+    args = ['--detect.gradle.path=gradlew', '-z', 'GRADLE,NUGET,PROJECT']
     standardOutput = new ByteArrayOutputStream()
     doLast {
         createAirGapZipWithoutDocker.ext.airGapPath = parseAirGapZipPath(standardOutput)

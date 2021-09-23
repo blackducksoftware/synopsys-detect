@@ -39,7 +39,7 @@ public class SyncProjectOperation {
         return projectService.syncProjectAndVersion(projectSyncModel, forceUpdate);
     }
 
-    public ProjectSyncModel createProjectSyncModel(NameVersion projectNameVersion, CloneFindResult cloneFindResult, ProjectSyncOptions projectSyncOptions) throws DetectUserFriendlyException {
+    public ProjectSyncModel createProjectSyncModel(NameVersion projectNameVersion, CloneFindResult cloneFindResult, ProjectSyncOptions projectSyncOptions) {
         ProjectSyncModel projectSyncModel = ProjectSyncModel.createWithDefaults(projectNameVersion.getName(), projectNameVersion.getVersion());
 
         // TODO: Handle a boolean property not being set in detect configuration - ie need to determine if this property actually exists in the ConfigurableEnvironment - just omit this one?
@@ -64,9 +64,7 @@ public class SyncProjectOperation {
         }
 
         List<ProjectCloneCategoriesType> cloneCategories = projectSyncOptions.getCloneCategories();
-        if (!cloneCategories.isEmpty()) {
-            projectSyncModel.setCloneCategories(cloneCategories);
-        }
+        projectSyncModel.setCloneCategories(cloneCategories);
 
         String nickname = projectSyncOptions.getProjectVersionNickname();
         if (StringUtils.isNotBlank(nickname)) {
@@ -74,7 +72,7 @@ public class SyncProjectOperation {
         }
 
         if (cloneFindResult.getCloneUrl().isPresent()) {
-            logger.debug("Cloning project version from release url: " + cloneFindResult.getCloneUrl().get());
+            logger.debug("Cloning project version from release url: {}", cloneFindResult.getCloneUrl().get());
             projectSyncModel.setCloneFromReleaseUrl(cloneFindResult.getCloneUrl().get().string());
         }
 

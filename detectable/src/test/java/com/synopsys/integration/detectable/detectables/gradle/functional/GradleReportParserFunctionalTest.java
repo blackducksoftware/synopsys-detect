@@ -75,7 +75,7 @@ public class GradleReportParserFunctionalTest {
 
     @Test
     void complexTest() {
-        Optional<CodeLocation> codeLocation = buildCodeLocation("/gradle/parse-tests/complex_dependencyGraph.txt", true);
+        final Optional<CodeLocation> codeLocation = buildCodeLocation("/gradle/complex_dependencyGraph.txt", true);
         Assertions.assertTrue(codeLocation.isPresent());
         DependencyGraph graph = codeLocation.get().getDependencyGraph();
 
@@ -133,7 +133,7 @@ public class GradleReportParserFunctionalTest {
         DependencyGraph dependencyGraph = codeLocation.get().getDependencyGraph();
         GraphAssert graphAssert = new GraphAssert(Forge.MAVEN, dependencyGraph);
         graphAssert.hasRootSize(0);
-        
+
         System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(codeLocation.get()));
     }
 }
