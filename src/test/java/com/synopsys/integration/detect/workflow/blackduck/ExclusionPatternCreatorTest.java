@@ -40,7 +40,7 @@ public class ExclusionPatternCreatorTest {
 
         DetectExcludedDirectoryFilter filter = new DetectExcludedDirectoryFilter(root.toPath(), providedPatterns);
         ExclusionPatternCreator exclusionPatternCreator = new ExclusionPatternCreator(new SimpleFileFinder(), file -> filter.isExcluded(file), root);
-        assertEqualCollections(resultingExclusions, exclusionPatternCreator.determineExclusionPatterns(3, providedPatterns));
+        assertEqualCollections(resultingExclusions, exclusionPatternCreator.determineExclusionPatterns(false, 3, providedPatterns));
 
         FileUtils.deleteDirectory(root);
     }
@@ -72,7 +72,7 @@ public class ExclusionPatternCreatorTest {
     }
 
     @Test
-    public void testDoesCreateRedundantExclusions() throws IOException {
+    public void testDoesNotCreateRedundantExclusions() throws IOException {
         File root = new File("root");
         root.mkdir();
         File foo = new File("root", "foo");
@@ -84,7 +84,7 @@ public class ExclusionPatternCreatorTest {
 
         DetectExcludedDirectoryFilter filter = new DetectExcludedDirectoryFilter(root.toPath(), toExclude);
         ExclusionPatternCreator exclusionPatternCreator = new ExclusionPatternCreator(new SimpleFileFinder(), file -> filter.isExcluded(file), root);
-        Set<String> exlusionPatterns = exclusionPatternCreator.determineExclusionPatterns(2, toExclude);
+        Set<String> exlusionPatterns = exclusionPatternCreator.determineExclusionPatterns(false, 2, toExclude);
 
         Assertions.assertEquals(1, exlusionPatterns.size());
         Assertions.assertTrue(exlusionPatterns.contains("/foo/"));

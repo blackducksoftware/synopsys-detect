@@ -36,15 +36,17 @@ public class AirGapCreator {
     private final NugetAirGapCreator nugetAirGapCreator;
     private final DockerAirGapCreator dockerAirGapCreator;
     private final DetectFontAirGapCreator detectFontAirGapCreator;
+    private final ProjectInspectorAirGapCreator projectInspectorAirGapCreator;
 
     public AirGapCreator(AirGapPathFinder airGapPathFinder, EventSystem eventSystem, GradleAirGapCreator gradleAirGapCreator, NugetAirGapCreator nugetAirGapCreator, DockerAirGapCreator dockerAirGapCreator,
-        DetectFontAirGapCreator detectFontAirGapCreator) {
+        DetectFontAirGapCreator detectFontAirGapCreator, ProjectInspectorAirGapCreator projectInspectorAirGapCreator) {
         this.airGapPathFinder = airGapPathFinder;
         this.eventSystem = eventSystem;
         this.gradleAirGapCreator = gradleAirGapCreator;
         this.nugetAirGapCreator = nugetAirGapCreator;
         this.dockerAirGapCreator = dockerAirGapCreator;
         this.detectFontAirGapCreator = detectFontAirGapCreator;
+        this.projectInspectorAirGapCreator = projectInspectorAirGapCreator;
     }
 
     public File createAirGapZip(DetectFilter inspectorFilter, File outputPath, String airGapSuffix, String gradleInspectorVersion) throws DetectUserFriendlyException {
@@ -128,6 +130,17 @@ public class AirGapCreator {
             nugetAirGapCreator.installNugetDependencies(nugetFolder);
         } else {
             logger.info("Will NOT include NUGET inspector.");
+        }
+
+        logger.info(ReportConstants.RUN_SEPARATOR);
+
+        if (inspectorFilter.shouldInclude(AirGapInspectors.PROJECT.name())) {
+            logger.info("Will include PROJECT inspector.");
+            logger.info("Installing project inspector dependencies.");
+            File projectFolder = airGapPathFinder.createRelativePackagedInspectorsFile(zipFolder, AirGapPathFinder.PROJECT_INSPECTOR);
+            projectInspectorAirGapCreator.installDependencies(projectFolder);
+        } else {
+            logger.info("Will NOT include PROJECT inspector.");
         }
 
         logger.info(ReportConstants.RUN_SEPARATOR);

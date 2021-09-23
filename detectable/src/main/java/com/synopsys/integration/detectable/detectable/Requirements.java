@@ -25,6 +25,7 @@ import com.synopsys.integration.detectable.detectable.explanation.FoundFile;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
 public class Requirements {
@@ -156,6 +157,16 @@ public class Requirements {
         if (failure != null)
             return failure;
         return new PassedDetectableResult(explanations, relevantFiles);
+    }
+
+    public void anyFileMatchesPatterns(List<String> patterns) {
+        List<File> anyFiles = fileFinder.findFiles(environment.getDirectory(), patterns);
+
+        if (anyFiles.size() > 0) {
+            anyFiles.forEach(foundFile -> explanations.add(new FoundFile(foundFile)));
+        } else {
+            failure = new FilesNotFoundDetectableResult(patterns);
+        }
     }
 }
 

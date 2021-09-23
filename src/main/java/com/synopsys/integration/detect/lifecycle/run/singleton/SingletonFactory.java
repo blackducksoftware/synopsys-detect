@@ -23,6 +23,7 @@ import com.synopsys.integration.detect.tool.detector.executable.DetectExecutable
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
 import com.synopsys.integration.detect.tool.detector.executable.DirectoryExecutableFinder;
 import com.synopsys.integration.detect.tool.detector.executable.SystemPathExecutableFinder;
+import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryZipInstaller;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detect.workflow.airgap.AirGapPathFinder;
@@ -56,6 +57,7 @@ public class SingletonFactory {
         ConnectionDetails connectionDetails = detectConfigurationFactory.createConnectionDetails();
         ConnectionFactory connectionFactory = new ConnectionFactory(connectionDetails);
         ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
+        ArtifactoryZipInstaller artifactoryZipInstaller = new ArtifactoryZipInstaller(artifactResolver);
         AirGapPathFinder airGapPathFinder = new AirGapPathFinder();
         CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(detectConfigurationFactory.createCodeLocationOverride());
         CodeLocationNameManager codeLocationNameManager = new CodeLocationNameManager(codeLocationNameGenerator);
@@ -70,7 +72,7 @@ public class SingletonFactory {
         OperationWrapper operationWrapper = new OperationWrapper(exitCodeManager);
 
         return new UtilitySingletons(externalIdFactory, connectionDetails, artifactResolver, codeLocationNameManager, createBdioCodeLocationsFromDetectCodeLocationsOperation, airGapInspectorPaths, bdioTransformer,
-            executableRunner, detectExecutableResolver, operationSystem, operationWrapper);
+            executableRunner, detectExecutableResolver, operationSystem, operationWrapper, artifactoryZipInstaller);
     }
 
     public EventSingletons createEventSingletons() {

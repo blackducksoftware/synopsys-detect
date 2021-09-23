@@ -30,13 +30,13 @@ public class BinaryScanFindMultipleTargetsOperation {
     private FileFinder fileFinder;
     private DirectoryManager directoryManager;
 
-    public BinaryScanFindMultipleTargetsOperation(final FileFinder fileFinder, final DirectoryManager directoryManager) {
+    public BinaryScanFindMultipleTargetsOperation(FileFinder fileFinder, DirectoryManager directoryManager) {
         this.fileFinder = fileFinder;
         this.directoryManager = directoryManager;
     }
 
-    public Optional<File> searchForMultipleTargets(List<String> patterns, int depth) throws DetectUserFriendlyException {
-        List<File> multipleTargets = fileFinder.findFiles(directoryManager.getSourceDirectory(), patterns, depth);
+    public Optional<File> searchForMultipleTargets(List<String> patterns, boolean followSymLinks, int depth) throws DetectUserFriendlyException {
+        List<File> multipleTargets = fileFinder.findFiles(directoryManager.getSourceDirectory(), patterns, followSymLinks, depth);
         if (multipleTargets.size() > 0) {
             logger.info("Binary scan found {} files to archive for binary scan upload.", multipleTargets.size());
             return Optional.of(zipFilesForUpload(directoryManager.getSourceDirectory(), multipleTargets));
@@ -47,7 +47,7 @@ public class BinaryScanFindMultipleTargetsOperation {
 
     private File zipFilesForUpload(File sourceDir, List<File> multipleTargets) throws DetectUserFriendlyException {
         try {
-            final String zipPath = "binary-upload.zip";
+            String zipPath = "binary-upload.zip";
             File zip = new File(directoryManager.getBinaryOutputDirectory(), zipPath);
             Map<String, Path> uploadTargets = collectUploadTargetsByRelPath(sourceDir, multipleTargets);
             DetectZipUtil.zip(zip, uploadTargets);

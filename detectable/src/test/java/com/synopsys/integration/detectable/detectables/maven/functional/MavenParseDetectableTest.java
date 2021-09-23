@@ -33,8 +33,8 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseOptions;
+import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
@@ -81,7 +81,7 @@ public class MavenParseDetectableTest extends DetectableFunctionalTest {
     @NotNull
     @Override
     public Detectable create(@NotNull final DetectableEnvironment detectableEnvironment) {
-        return detectableFactory.createMavenParseDetectable(detectableEnvironment, new MavenParseOptions(false));
+        return detectableFactory.createMavenParseDetectable(detectableEnvironment, new MavenParseOptions(false, true));
     }
 
     @Override

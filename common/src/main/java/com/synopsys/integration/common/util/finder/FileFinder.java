@@ -19,13 +19,13 @@ import org.jetbrains.annotations.Nullable;
 public interface FileFinder {
     // Find with predicate
     @Nullable
-    default File findFile(final File directoryToSearch, final Predicate<File> filter) {
-        return findFile(directoryToSearch, filter, 0);
+    default File findFile(File directoryToSearch, Predicate<File> filter) {
+        return findFile(directoryToSearch, filter, true, 0);
     }
 
     @Nullable
-    default File findFile(final File directoryToSearch, final Predicate<File> filter, final int depth) {
-        final List<File> files = findFiles(directoryToSearch, filter, depth);
+    default File findFile(File directoryToSearch, Predicate<File> filter, boolean followSymLinks, int depth) {
+        List<File> files = findFiles(directoryToSearch, filter, followSymLinks, depth);
         if (files != null && files.size() > 0) {
             return files.get(0);
         }
@@ -33,27 +33,27 @@ public interface FileFinder {
     }
 
     @NotNull
-    default List<File> findFiles(final File directoryToSearch, final Predicate<File> filter) {
-        return findFiles(directoryToSearch, filter, 0);
+    default List<File> findFiles(File directoryToSearch, Predicate<File> filter) {
+        return findFiles(directoryToSearch, filter, true, 0);
     }
 
     @NotNull
-    default List<File> findFiles(final File directoryToSearch, final Predicate<File> filter, final int depth) {
-        return findFiles(directoryToSearch, filter, depth, true);
+    default List<File> findFiles(File directoryToSearch, Predicate<File> filter, boolean followSymLinks, int depth) {
+        return findFiles(directoryToSearch, filter, followSymLinks, depth, true);
     }
 
     @NotNull
-    List<File> findFiles(File directoryToSearch, final Predicate<File> filter, int depth, boolean findInsideMatchingDirectories);
+    List<File> findFiles(File directoryToSearch, Predicate<File> filter, boolean followSymLinks, int depth, boolean findInsideMatchingDirectories);
 
     // Find with file pame patterns
     @Nullable
-    default File findFile(final File directoryToSearch, final String filenamePattern) {
-        return findFile(directoryToSearch, filenamePattern, 0);
+    default File findFile(File directoryToSearch, String filenamePattern) {
+        return findFile(directoryToSearch, filenamePattern, true, 0);
     }
 
     @Nullable
-    default File findFile(final File directoryToSearch, final String filenamePattern, final int depth) {
-        final List<File> files = findFiles(directoryToSearch, Collections.singletonList(filenamePattern), depth);
+    default File findFile(File directoryToSearch, String filenamePattern, boolean followSymLinks, int depth) {
+        List<File> files = findFiles(directoryToSearch, Collections.singletonList(filenamePattern), followSymLinks, depth);
         if (files != null && files.size() > 0) {
             return files.get(0);
         }
@@ -61,32 +61,32 @@ public interface FileFinder {
     }
 
     @NotNull
-    default List<File> findFiles(final File directoryToSearch, final String filenamePattern) {
-        return findFiles(directoryToSearch, Collections.singletonList(filenamePattern), 0);
+    default List<File> findFiles(File directoryToSearch, String filenamePattern) {
+        return findFiles(directoryToSearch, Collections.singletonList(filenamePattern), true, 0);
     }
 
     @NotNull
-    default List<File> findFiles(final File directoryToSearch, final String filenamePattern, final int depth) {
-        return findFiles(directoryToSearch, Collections.singletonList(filenamePattern), depth);
+    default List<File> findFiles(File directoryToSearch, String filenamePattern, boolean followSymLinks, int depth) {
+        return findFiles(directoryToSearch, Collections.singletonList(filenamePattern), followSymLinks, depth);
     }
 
     @NotNull
-    default List<File> findFiles(final File directoryToSearch, final List<String> filenamePatterns) {
-        return findFiles(directoryToSearch, filenamePatterns, 0);
+    default List<File> findFiles(File directoryToSearch, List<String> filenamePatterns) {
+        return findFiles(directoryToSearch, filenamePatterns, true, 0);
     }
 
     @NotNull
-    default List<File> findFiles(final File directoryToSearch, final List<String> filenamePatterns, final int depth) {
-        return findFiles(directoryToSearch, filenamePatterns, depth, true);
+    default List<File> findFiles(File directoryToSearch, List<String> filenamePatterns, boolean followSymLinks, int depth) {
+        return findFiles(directoryToSearch, filenamePatterns, followSymLinks, depth, true);
     }
 
     @NotNull
-    default List<File> findFiles(final File directoryToSearch, final List<String> filenamePatterns, final int depth, final boolean findInsideMatchingDirectories) {
+    default List<File> findFiles(File directoryToSearch, List<String> filenamePatterns, boolean followSymLinks, int depth, boolean findInsideMatchingDirectories) {
         Predicate<File> wildcardFilter = file -> {
             WildcardFileFilter filter = new WildcardFileFilter(filenamePatterns);
             return filter.accept(file);
         };
-        return findFiles(directoryToSearch, wildcardFilter, depth, findInsideMatchingDirectories);
+        return findFiles(directoryToSearch, wildcardFilter, followSymLinks, depth, findInsideMatchingDirectories);
     }
 
 }

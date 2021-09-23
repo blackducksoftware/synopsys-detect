@@ -15,10 +15,10 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeRecipe;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
 import com.synopsys.integration.exception.IntegrationException;
@@ -50,7 +50,7 @@ public class BitbakeSession {
         this.bashExecutable = bashExecutable;
     }
 
-    public Optional<File> executeBitbakeForDependencies(File sourceDirectory, String packageName, Integer searchDepth)
+    public Optional<File> executeBitbakeForDependencies(File sourceDirectory, String packageName, boolean followSymLinks, Integer searchDepth)
         throws ExecutableRunnerException, IOException {
 
         String bitbakeCommand = "bitbake -g " + packageName;
@@ -62,14 +62,14 @@ public class BitbakeSession {
             return Optional.empty();
         }
 
-        return findTaskDependsFile(sourceDirectory, workingDirectory, searchDepth);
+        return findTaskDependsFile(sourceDirectory, workingDirectory, followSymLinks, searchDepth);
 
     }
 
-    private Optional<File> findTaskDependsFile(File sourceDirectory, File outputDirectory, Integer searchDepth) {
-        File file = fileFinder.findFile(outputDirectory, TASK_DEPENDS_FILE_NAME, searchDepth);
+    private Optional<File> findTaskDependsFile(File sourceDirectory, File outputDirectory, boolean followSymLinks, Integer searchDepth) {
+        File file = fileFinder.findFile(outputDirectory, TASK_DEPENDS_FILE_NAME, followSymLinks, searchDepth);
         if (file == null) {
-            file = fileFinder.findFile(sourceDirectory, TASK_DEPENDS_FILE_NAME, searchDepth);
+            file = fileFinder.findFile(sourceDirectory, TASK_DEPENDS_FILE_NAME, followSymLinks, searchDepth);
         }
 
         return Optional.ofNullable(file);

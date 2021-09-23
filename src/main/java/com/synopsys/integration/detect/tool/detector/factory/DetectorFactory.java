@@ -22,6 +22,7 @@ import com.synopsys.integration.detect.tool.detector.executable.DetectExecutable
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryDockerInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryGradleInspectorResolver;
+import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryZipInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.LocalPipInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.AirgapNugetInspectorLocator;
@@ -33,11 +34,16 @@ import com.synopsys.integration.detect.tool.detector.inspectors.nuget.OnlineNuge
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.runtime.DotNetRuntimeFinder;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.runtime.DotNetRuntimeManager;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.runtime.DotNetRuntimeParser;
+import com.synopsys.integration.detect.tool.detector.inspectors.projectinspector.AirgapProjectInspectorResolver;
+import com.synopsys.integration.detect.tool.detector.inspectors.projectinspector.ArtifactoryProjectInspectorInstaller;
+import com.synopsys.integration.detect.tool.detector.inspectors.projectinspector.OnlineProjectInspectorResolver;
+import com.synopsys.integration.detect.tool.detector.inspectors.projectinspector.ProjectInspectorExecutableLocator;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
+import com.synopsys.integration.detectable.detectable.inspector.ProjectInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptCreator;
@@ -57,6 +63,7 @@ public class DetectorFactory {
     private final DirectoryManager directoryManager;
     private final AirGapInspectorPaths airGapInspectorPaths;
     private final ArtifactResolver artifactResolver;
+    private final ArtifactoryZipInstaller artifactoryZipInstaller;
 
     public DetectorFactory(BootSingletons bootSingletons, UtilitySingletons utilitySingletons) {
         gson = bootSingletons.getGson();
@@ -71,6 +78,7 @@ public class DetectorFactory {
         externalIdFactory = utilitySingletons.getExternalIdFactory();
         airGapInspectorPaths = utilitySingletons.getAirGapInspectorPaths();
         artifactResolver = utilitySingletons.getArtifactResolver();
+        artifactoryZipInstaller = utilitySingletons.getArtifactoryZipInstaller();
     }
 
     public DetectableFactory detectableFactory() {
@@ -78,7 +86,8 @@ public class DetectorFactory {
     }
 
     public DetectDetectableFactory detectDetectableFactory() throws DetectUserFriendlyException {
-        return new DetectDetectableFactory(detectableFactory(), detectableOptionFactory, detectExecutableResolver, dockerInspectorResolver(), gradleInspectorResolver(), nugetInspectorResolver(detectInfo), pipInspectorResolver());
+        return new DetectDetectableFactory(detectableFactory(), detectableOptionFactory, detectExecutableResolver, dockerInspectorResolver(), gradleInspectorResolver(), nugetInspectorResolver(detectInfo), pipInspectorResolver(),
+            projectInspectorResolver(detectInfo));
     }
 
     private DockerInspectorResolver dockerInspectorResolver() throws DetectUserFriendlyException {
@@ -97,13 +106,25 @@ public class DetectorFactory {
         if (nugetAirGapPath.isPresent()) {
             locator = new AirgapNugetInspectorLocator(airGapInspectorPaths);
         } else {
-            NugetInspectorInstaller installer = new NugetInspectorInstaller(artifactResolver);
+            NugetInspectorInstaller installer = new NugetInspectorInstaller(artifactoryZipInstaller);
             locator = new OnlineNugetInspectorLocator(installer, directoryManager, installerOptions.getNugetInspectorVersion().orElse(null));
         }
 
         DotNetRuntimeFinder runtimeFinder = new DotNetRuntimeFinder(executableRunner, detectExecutableResolver, directoryManager.getPermanentDirectory());
         DotNetRuntimeManager dotNetRuntimeManager = new DotNetRuntimeManager(runtimeFinder, new DotNetRuntimeParser());
         return new LocatorNugetInspectorResolver(detectExecutableResolver, executableRunner, detectInfo, fileFinder, installerOptions.getPackagesRepoUrl(), locator, dotNetRuntimeManager);
+    }
+
+    private ProjectInspectorResolver projectInspectorResolver(DetectInfo detectInfo) {
+        ProjectInspectorExecutableLocator projectInspectorExecutableLocator = new ProjectInspectorExecutableLocator(detectInfo);
+
+        Optional<File> projectInspectorAirgapPath = airGapInspectorPaths.getProjectInspectorAirGapFile();
+        if (projectInspectorAirgapPath.isPresent()) {
+            return new AirgapProjectInspectorResolver(airGapInspectorPaths, projectInspectorExecutableLocator, detectInfo);
+        } else {
+            ArtifactoryProjectInspectorInstaller artifactoryProjectInspectorInstaller = new ArtifactoryProjectInspectorInstaller(detectInfo, artifactoryZipInstaller, projectInspectorExecutableLocator);
+            return new OnlineProjectInspectorResolver(artifactoryProjectInspectorInstaller, directoryManager);
+        }
     }
 
     private PipInspectorResolver pipInspectorResolver() {

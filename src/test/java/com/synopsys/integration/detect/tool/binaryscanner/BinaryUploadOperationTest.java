@@ -47,7 +47,7 @@ import com.synopsys.integration.exception.IntegrationException;
 public class BinaryUploadOperationTest {
     @Test
     public void testShouldFailOnDirectory() throws DetectUserFriendlyException {
-        BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("."), Collections.singletonList(""), "", "", 0);
+        BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("."), Collections.singletonList(""), "", "", 0, false);
         OperationFactory operationFactory = Mockito.mock(OperationFactory.class);
 
         Mockito.when(operationFactory.calculateBinaryScanOptions()).thenReturn(binaryScanOptions);
@@ -79,7 +79,7 @@ public class BinaryUploadOperationTest {
         Mockito.when(directoryManager.getBinaryOutputDirectory()).thenReturn(rootDirectory);
 
         BinaryScanFindMultipleTargetsOperation multipleTargets = new BinaryScanFindMultipleTargetsOperation(fileFinder, directoryManager);
-        Optional<File> zip = multipleTargets.searchForMultipleTargets(targetPaths, 3);
+        Optional<File> zip = multipleTargets.searchForMultipleTargets(targetPaths, false, 3);
         Assertions.assertTrue(zip.isPresent());
         Assertions.assertTrue(zip.get().isFile());
         Assertions.assertTrue(zip.get().canRead());

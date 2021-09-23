@@ -18,6 +18,7 @@ public class AirGapPathFinder {
     public static final String NUGET = "nuget";
     public static final String GRADLE = "gradle";
     public static final String DOCKER = "docker";
+    public static final String PROJECT_INSPECTOR = "project-inspector";
 
     public File findDetectJar() {
         try {
