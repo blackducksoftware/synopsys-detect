@@ -4,6 +4,7 @@
 
 ### New Features
 * Added the property [detect.follow.symbolic.links](../properties/configuration/general/#follow-symbolic-links) which can be used to enable ${solution_name} to follow symbolic links when searching directories.
+* Added support for Open Container Initiative (OCI) images provided to ${solution_name} using the *detect.docker.tar* property.
 
 ### Changed features
 * The detect.project.clone.categories property now supports ALL and NONE as options.
