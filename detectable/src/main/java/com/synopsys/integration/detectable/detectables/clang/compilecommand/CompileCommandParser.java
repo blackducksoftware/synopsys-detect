@@ -25,9 +25,9 @@ public class CompileCommandParser {
     }
 
     public List<String> parseCommand(CompileCommand compileCommand, Map<String, String> optionOverrides) {
-        String commandString = compileCommand.command;
+        String commandString = compileCommand.getCommand();
         if (StringUtils.isBlank(commandString)) {
-            commandString = String.join(" ", compileCommand.arguments);
+            commandString = String.join(" ", compileCommand.getArguments());
         }
         List<String> options = commandParser.parseCommandString(commandString);
 

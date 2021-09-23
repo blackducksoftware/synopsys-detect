@@ -41,7 +41,7 @@ public class CompileCommandParserTest {
     @Test
     public void testGetCompilerCmd() {
         CompileCommand sampleCommand = new CompileCommand();
-        sampleCommand.command = "g++ -DDOUBLEQUOTED=\"A value for the compiler\" -DSINGLEQUOTED='Another value for the compiler' file.c -o file.o";
+        sampleCommand.setCommand("g++ -DDOUBLEQUOTED=\"A value for the compiler\" -DSINGLEQUOTED='Another value for the compiler' file.c -o file.o");
 
         CompileCommandParser commandParser = new CompileCommandParser(new CommandParser());
         List<String> compilerCommand = commandParser.parseCommand(sampleCommand, Collections.emptyMap());
@@ -52,7 +52,7 @@ public class CompileCommandParserTest {
     @Test
     public void testGetCompilerArgs() {
         CompileCommand sampleCommand = new CompileCommand();
-        sampleCommand.command = "g++ -DDOUBLEQUOTED=\"A value for the compiler\" -DSINGLEQUOTED='Another value for the compiler' file.c -o file.o";
+        sampleCommand.setCommand("g++ -DDOUBLEQUOTED=\"A value for the compiler\" -DSINGLEQUOTED='Another value for the compiler' file.c -o file.o");
 
         Map<String, String> optionOverrides = new HashMap<>();
         optionOverrides.put("-o", "/dev/null");
@@ -77,7 +77,7 @@ public class CompileCommandParserTest {
     @Test
     public void testComplexCompileCommand() {
         CompileCommand command = new CompileCommand();
-        command.command = "/usr/bin/clang++-3.6 -DCMAKE_BUILD_TYPE=\\\"Debug\\\" -DCMAKE_CC_FLAGS=\"\\\" -ggdb -Wstrict-aliasing=2 -pedantic -fPIC --std=c11\\\"\"  -c ./pb.cc";
+        command.setCommand("/usr/bin/clang++-3.6 -DCMAKE_BUILD_TYPE=\\\"Debug\\\" -DCMAKE_CC_FLAGS=\"\\\" -ggdb -Wstrict-aliasing=2 -pedantic -fPIC --std=c11\\\"\"  -c ./pb.cc");
 
         CompileCommandParser commandParser = new CompileCommandParser(new CommandParser());
         List<String> result = commandParser.parseCommand(command, Collections.emptyMap());
@@ -94,7 +94,7 @@ public class CompileCommandParserTest {
     @Test
     public void testCrazyNestedQuoting() {
         CompileCommand command = new CompileCommand();
-        command.command = "X=\"\\\" a  b\\\"\"";
+        command.setCommand("X=\"\\\" a  b\\\"\"");
 
         CompileCommandParser commandParser = new CompileCommandParser(new CommandParser());
         List<String> result = commandParser.parseCommand(command, Collections.emptyMap());
@@ -107,9 +107,9 @@ public class CompileCommandParserTest {
     @Test
     public void testEscapedDoubleQuotedTerm() {
         CompileCommand command = new CompileCommand();
-        command.directory = "dir";
-        command.command = "X=\\\"'a' 'b'\\\"";
-        command.file = "test.cc";
+        command.setDirectory("dir");
+        command.setCommand("X=\\\"'a' 'b'\\\"");
+        command.setFile("test.cc");
 
         CompileCommandParser commandParser = new CompileCommandParser(new CommandParser());
         List<String> result = commandParser.parseCommand(command, Collections.emptyMap());
