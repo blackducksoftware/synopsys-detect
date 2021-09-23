@@ -66,10 +66,10 @@ public class FilePathGenerator {
         try {
             List<String> command = commandParser.parseCommand(compileCommand, optionOverrides);
             command.addAll(Arrays.asList("-M", "-MF", depsMkFile.getAbsolutePath()));
-            Executable executable = Executable.create(new File(compileCommand.directory), Collections.emptyMap(), command);
+            Executable executable = Executable.create(new File(compileCommand.getDirectory()), Collections.emptyMap(), command);
             executableRunner.execute(executable);
         } catch (ExecutableRunnerException e) {
-            logger.debug(String.format("Error generating dependencies file for command '%s': %s", compileCommand.command, e.getMessage()));
+            logger.debug(String.format("Error generating dependencies file for command '%s': %s", compileCommand.getCommand(), e.getMessage()));
             return Optional.empty();
         }
         return Optional.of(depsMkFile);
@@ -77,7 +77,7 @@ public class FilePathGenerator {
 
     private String deriveDependenciesListFilename(CompileCommand compileCommand) {
         int randomInt = random.nextInt(1000);
-        String sourceFilenameBase = getFilenameBase(compileCommand.file);
+        String sourceFilenameBase = getFilenameBase(compileCommand.getFile());
         return String.format(DEPS_MK_FILENAME_PATTERN, sourceFilenameBase, randomInt);
     }
 

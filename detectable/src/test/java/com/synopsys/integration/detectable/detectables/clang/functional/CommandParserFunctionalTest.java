@@ -49,10 +49,10 @@ public class CommandParserFunctionalTest {
 
         assertEquals(182, compileCommands.size());
         CompileCommand first = compileCommands.get(0);
-        assertEquals("/home/jslave/sean/mainline/nsulate/src", first.directory);
-        assertTrue(first.command.startsWith("/usr/bin/env CCACHE_CPP2=yes /usr/bin/ccache /usr/bin/clang++-3.6   -DAVX2=1 -DCMAKE_BUILD_TYPE=\\\"Debug\\\""));
-        assertEquals("/home/jslave/sean/mainline/nsulate/src/cli.pb.cc", first.file);
-        assertEquals(0, first.arguments.length);
+        assertEquals("/home/jslave/sean/mainline/nsulate/src", first.getDirectory());
+        assertTrue(first.getCommand().startsWith("/usr/bin/env CCACHE_CPP2=yes /usr/bin/ccache /usr/bin/clang++-3.6   -DAVX2=1 -DCMAKE_BUILD_TYPE=\\\"Debug\\\""));
+        assertEquals("/home/jslave/sean/mainline/nsulate/src/cli.pb.cc", first.getFile());
+        assertEquals(0, first.getArguments().length);
     }
 
     @Test
