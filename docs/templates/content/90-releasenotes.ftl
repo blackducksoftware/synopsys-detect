@@ -9,6 +9,7 @@
 * The detect.project.clone.categories property now supports ALL and NONE as options.
 * The the default value for property detect.project.clone.categories has changed to ALL.
 * Deprecated detect.bom.aggregate.name, detect.bom.aggregate.remediation.mode, and blackduck.legacy.upload.enabled. In version 8, ${solution_name} will only operate in SUBPROJECT mode to report the dependency graph with greater accuracy.
+* The Air Gap Zip generation options no longer support individual package managers. Instead either a FULL air gap can be created, or a NO_DOCKER air gap can be created. This is to help support project inspector which spans multiple package managers.
 
 ### Resolved issues
 * (IDETECT-2834) Resolved an issue where GoMod components missing a version were not being properly filtered causing a NullPointerException.

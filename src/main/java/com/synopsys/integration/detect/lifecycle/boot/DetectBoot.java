@@ -18,7 +18,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,9 +46,10 @@ import com.synopsys.integration.detect.lifecycle.boot.decision.RunDecision;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBoot;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.run.singleton.BootSingletons;
-import com.synopsys.integration.detect.util.filter.DetectOverrideableFilter;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.airgap.AirGapCreator;
+import com.synopsys.integration.detect.workflow.airgap.AirGapType;
+import com.synopsys.integration.detect.workflow.airgap.AirGapTypeDecider;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticDecision;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.synopsys.integration.detect.workflow.event.Event;
@@ -136,17 +136,12 @@ public class DetectBoot {
 
         if (detectArgumentState.isGenerateAirGapZip()) {
             try {
-                DetectOverrideableFilter inspectorFilter = DetectOverrideableFilter.createArgumentValueFilter(detectArgumentState);
+                AirGapType airGapType = new AirGapTypeDecider().decide(detectArgumentState);
                 AirGapCreator airGapCreator = detectBootFactory.createAirGapCreator(detectConfigurationFactory.createConnectionDetails(), detectConfigurationFactory.createDetectExecutableOptions(), freemarkerConfiguration);
                 String gradleInspectorVersion = detectConfiguration.getValueOrEmpty(DetectProperties.DETECT_GRADLE_INSPECTOR_VERSION.getProperty())
                                                     .orElse(null);
 
-                String airGapSuffix = inspectorFilter.getIncludedSet()
-                                          .stream()
-                                          .sorted()
-                                          .collect(Collectors.joining("-"));
-
-                File airGapZip = airGapCreator.createAirGapZip(inspectorFilter, directoryManager.getRunHomeDirectory(), airGapSuffix, gradleInspectorVersion);
+                File airGapZip = airGapCreator.createAirGapZip(airGapType, directoryManager.getRunHomeDirectory(), gradleInspectorVersion);
 
                 return Optional.of(DetectBootResult.exit(detectConfiguration, airGapZip, directoryManager, diagnosticSystem));
             } catch (DetectUserFriendlyException e) {
