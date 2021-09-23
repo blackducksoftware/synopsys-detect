@@ -16,11 +16,11 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.go.gomod.model.GoListAllData;
 import com.synopsys.integration.detectable.detectables.go.gomod.model.ReplaceData;
 
-class GoReplacementManagerTest {
+class GoModDependencyManagerTest {
     static String MODULE_A_PATH = "example.io/module/a";
     static String MODULE_B_PATH = "example.io/module/b";
     static String MODULE_NO_VERSION_PATH = "example.io/module/no_version";
-    static GoModDependencyManager goReplacementManager;
+    static GoModDependencyManager goModDependencyManager;
     static ExternalIdFactory externalIdFactory;
 
     @BeforeAll
@@ -51,52 +51,60 @@ class GoReplacementManagerTest {
 
         List<GoListAllData> goListAllData = Arrays.asList(moduleA, moduleB, incompatibleModule, gitModule, noVersionModule);
         externalIdFactory = new ExternalIdFactory();
-        goReplacementManager = new GoModDependencyManager(goListAllData, externalIdFactory);
+        goModDependencyManager = new GoModDependencyManager(goListAllData, externalIdFactory);
     }
 
     @Test
     void versionWithIncompatible() {
-        Optional<String> versionForModule = goReplacementManager.getVersionForModule("example.io/incompatible");
+        Dependency dependency = goModDependencyManager.getDependencyForModule("example.io/incompatible");
+        Optional<String> versionForModule = Optional.ofNullable(dependency.getVersion());
         assertTrue(versionForModule.isPresent());
         assertEquals("2.0.0", versionForModule.get());
     }
 
     @Test
     void versionWithGitHash() {
-        Optional<String> versionForModule = goReplacementManager.getVersionForModule("example.io/hash");
+        Dependency dependency = goModDependencyManager.getDependencyForModule("example.io/hash");
+        Optional<String> versionForModule = Optional.ofNullable(dependency.getVersion());
         assertTrue(versionForModule.isPresent());
         assertEquals("456xyz", versionForModule.get());
     }
 
     @Test
     void nonExistentModuleVersionTest() {
-        Optional<String> versionForModule = goReplacementManager.getVersionForModule("non-existent.io/module");
+        Dependency dependency = goModDependencyManager.getDependencyForModule("non-existent.io/module");
+        Optional<String> versionForModule = Optional.ofNullable(dependency.getVersion());
         assertFalse(versionForModule.isPresent());
     }
 
     @Test
     void happyPathTest() {
-        Optional<String> versionForModule = goReplacementManager.getVersionForModule(MODULE_A_PATH);
+        Dependency dependency = goModDependencyManager.getDependencyForModule(MODULE_A_PATH);
+        Optional<String> versionForModule = Optional.ofNullable(dependency.getVersion());
         assertTrue(versionForModule.isPresent());
         assertEquals("1.0.0", versionForModule.get());
     }
 
     @Test
     void replacementTest() {
-        Dependency dependencyForModule = goReplacementManager.getDependencyForModule(MODULE_B_PATH);
+        Dependency dependencyForModule = goModDependencyManager.getDependencyForModule(MODULE_B_PATH);
         assertEquals("2.3.4", dependencyForModule.getVersion(), "The version should be replaced.");
         assertEquals(MODULE_A_PATH, dependencyForModule.getName(), "The path should be replaced.");
     }
 
     @Test
     void noVersionTest() {
-        Optional<String> versionForModule = goReplacementManager.getVersionForModule(MODULE_NO_VERSION_PATH);
+        Dependency dependency = goModDependencyManager.getDependencyForModule(MODULE_NO_VERSION_PATH);
+        Optional<String> versionForModule = Optional.ofNullable(dependency.getVersion());
         assertFalse(versionForModule.isPresent(), "This module should have no version information.");
     }
 
     @Test
     void nonExistentModulePathTest() {
-        Optional<String> pathForModule = goReplacementManager.getPathForModule("non-existent.io/module");
-        assertFalse(pathForModule.isPresent());
+        Dependency dependency = goModDependencyManager.getDependencyForModule("non-existent.io/module");
+        Optional<String> pathForModule = Optional.ofNullable(dependency.getName());
+        Optional<String> versionForModule = Optional.ofNullable(dependency.getVersion());
+        assertTrue(pathForModule.isPresent());
+        assertFalse(versionForModule.isPresent(), "If a module cannot be mapped to a dependency, a default dependency should be created with a null version.");
     }
 }

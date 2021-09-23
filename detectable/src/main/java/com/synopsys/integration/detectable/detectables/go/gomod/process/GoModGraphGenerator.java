@@ -34,13 +34,13 @@ public class GoModGraphGenerator {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public CodeLocation generateGraph(GoListModule projectModule, GoRelationshipManager goRelationshipManager, GoModDependencyManager goVersionManager) {
+    public CodeLocation generateGraph(GoListModule projectModule, GoRelationshipManager goRelationshipManager, GoModDependencyManager goModDependencyManager) {
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
         String moduleName = projectModule.getPath();
         if (goRelationshipManager.hasRelationshipsFor(moduleName)) {
             goRelationshipManager.getRelationshipsFor(moduleName).stream()
                 .map(relationship -> relationship.getChild().getName())
-                .forEach(childName -> addModuleToGraph(childName, null, graph, goRelationshipManager, goVersionManager));
+                .forEach(childName -> addModuleToGraph(childName, null, graph, goRelationshipManager, goModDependencyManager));
         }
 
         return new CodeLocation(graph, externalIdFactory.createNameVersionExternalId(Forge.GOLANG, projectModule.getPath(), projectModule.getVersion()));

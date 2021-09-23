@@ -55,9 +55,9 @@ public class GoModCliExtractor {
             Set<String> moduleExclusions = moduleExclusions(directory, goExe, dependencyVerificationEnabled);
 
             GoRelationshipManager goRelationshipManager = new GoRelationshipManager(goGraphRelationships, moduleExclusions);
-            GoModDependencyManager goVersionManager = new GoModDependencyManager(goListAllModules, externalIdFactory);
+            GoModDependencyManager goModDependencyManager = new GoModDependencyManager(goListAllModules, externalIdFactory);
             List<CodeLocation> codeLocations = goListModules.stream()
-                                                   .map(goListModule -> goModGraphGenerator.generateGraph(goListModule, goRelationshipManager, goVersionManager))
+                                                   .map(goListModule -> goModGraphGenerator.generateGraph(goListModule, goRelationshipManager, goModDependencyManager))
                                                    .collect(Collectors.toList());
 
             // No project info - hoping git can help with that.

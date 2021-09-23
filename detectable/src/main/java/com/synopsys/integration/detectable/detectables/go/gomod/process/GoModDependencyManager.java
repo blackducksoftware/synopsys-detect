@@ -60,14 +60,6 @@ public class GoModDependencyManager {
         return modulesAsDependencies.getOrDefault(moduleName, convertToDependency(moduleName, null));
     }
 
-    public Optional<String> getPathForModule(String moduleName) {
-        return Optional.ofNullable(modulesAsDependencies.get(moduleName)).map(Dependency::getName);
-    }
-
-    public Optional<String> getVersionForModule(String moduleName) {
-        return Optional.ofNullable(modulesAsDependencies.get(moduleName)).map(Dependency::getVersion);
-    }
-
     private String handleGitHash(String version) {
         if (version.contains("-")) { //The KB only supports the git hash, unfortunately we must strip out the rest. This gets just the commit has from a go.mod psuedo version.
             String[] versionPieces = version.split("-");
