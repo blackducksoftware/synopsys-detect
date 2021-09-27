@@ -4,6 +4,7 @@
 
 ### New Features
 * Added the property [detect.follow.symbolic.links](../properties/configuration/general/#follow-symbolic-links) which can be used to enable ${solution_name} to follow symbolic links when searching directories.
+* Added support for Open Container Initiative (OCI) images provided to ${solution_name} using the *detect.docker.tar* property.
 
 ### Changed features
 * The detect.project.clone.categories property now supports ALL and NONE as options.
@@ -14,6 +15,7 @@
 * (IDETECT-2834) Resolved an issue where GoMod components missing a version were not being properly filtered causing a NullPointerException.
 * (IDETECT-2829) Resolved an issue that caused ${solution_name} to use the wrong scan cli when in offline mode and ignore a specified local scan cli.
 * (IDETECT-2820) Resolved an issue where pypi components in conda projects were not being matched.
+* (IDETECT-2773) Resolved an issue where ${solution_name} was not replacing module paths as specified in go mod replace statements.
 
 # Version 7.5.0
 
