@@ -15,6 +15,7 @@
 * (IDETECT-2834) Resolved an issue where GoMod components missing a version were not being properly filtered causing a NullPointerException.
 * (IDETECT-2829) Resolved an issue that caused ${solution_name} to use the wrong scan cli when in offline mode and ignore a specified local scan cli.
 * (IDETECT-2820) Resolved an issue where pypi components in conda projects were not being matched.
+* (IDETECT-2773) Resolved an issue where ${solution_name} was not replacing module paths as specified in go mod replace statements.
 
 # Version 7.5.0
 
