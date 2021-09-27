@@ -30,17 +30,23 @@ import com.synopsys.integration.detectable.detectables.gradle.inspection.model.G
 public class GradleReportTransformer {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExternalIdFactory externalIdFactory;
+    private final boolean includeUnresolvedConfigurations;
 
-    public GradleReportTransformer(ExternalIdFactory externalIdFactory) {
+    public GradleReportTransformer(ExternalIdFactory externalIdFactory, boolean includeUnresolvedConfigurations) {
         this.externalIdFactory = externalIdFactory;
+        this.includeUnresolvedConfigurations = includeUnresolvedConfigurations;
     }
 
     public CodeLocation transform(GradleReport gradleReport) {
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
         for (GradleConfiguration configuration : gradleReport.getConfigurations()) {
-            logger.trace(String.format("Adding configuration to the graph: %s", configuration.getName()));
-            addConfigurationToGraph(graph, configuration);
+            if (configuration.isResolved() || includeUnresolvedConfigurations) {
+                logger.trace("Adding configuration to the graph: {}", configuration.getName());
+                addConfigurationToGraph(graph, configuration);
+            } else {
+                logger.trace("Excluding unresolved configuration from the graph: {}", configuration.getName());
+            }
         }
 
         ExternalId projectId = externalIdFactory.createMavenExternalId(gradleReport.getProjectGroup(), gradleReport.getProjectName(), gradleReport.getProjectVersionName());
@@ -51,35 +57,62 @@ public class GradleReportTransformer {
         }
     }
 
-    private void addConfigurationToGraph(final MutableDependencyGraph graph, final GradleConfiguration configuration) {
-        final DependencyHistory history = new DependencyHistory();
-        Optional<Integer> skipUntil = Optional.empty();
+    private void addConfigurationToGraph(MutableDependencyGraph graph, GradleConfiguration configuration) {
+        DependencyHistory history = new DependencyHistory();
 
-        for (final GradleTreeNode currentNode : configuration.getChildren()) {
-
-            if (skipUntil.isPresent() && currentNode.getLevel() <= skipUntil.get()) {
-                skipUntil = Optional.empty();
-            } else if (skipUntil.isPresent()) {
+        TreeNodeSkipper treeNodeSkipper = new TreeNodeSkipper();
+        for (GradleTreeNode currentNode : configuration.getChildren()) {
+            if (treeNodeSkipper.shouldSkip(currentNode)) {
                 continue;
             }
 
-            history.clearDependenciesDeeperThan(currentNode.getLevel());
-            if (currentNode.getNodeType() != GradleTreeNode.NodeType.GAV) {
-                skipUntil = Optional.of(currentNode.getLevel());
-                continue;
-            }
-
-            final GradleGav gav = currentNode.getGav().get(); // TODO: Why are we not doing an isPresent() check here?
-            final ExternalId externalId = externalIdFactory.createMavenExternalId(gav.getName(), gav.getGroup(), gav.getVersion());
-            final Dependency currentDependency = new Dependency(gav.getGroup(), gav.getVersion(), externalId);
-
-            if (history.isEmpty()) {
-                graph.addChildToRoot(currentDependency);
+            if (currentNode.getNodeType() == GradleTreeNode.NodeType.GAV) {
+                history.clearDependenciesDeeperThan(currentNode.getLevel());
+                Optional<GradleGav> currentNodeGav = currentNode.getGav();
+                if (currentNodeGav.isPresent()) {
+                    addGavToGraph(currentNodeGav.get(), history, graph);
+                } else {
+                    // We know this is a GradleTreeNode.NodeType.GAV
+                    // So if its missing data, something is probably wrong.
+                    logger.debug("Missing expected GAV from known NodeType. {}", currentNode);
+                }
             } else {
-                graph.addChildWithParents(currentDependency, history.getLastDependency());
+                treeNodeSkipper.skipUntilLineLevel(currentNode.getLevel());
             }
-            history.add(currentDependency);
+        }
+    }
+
+    private void addGavToGraph(GradleGav gav, DependencyHistory history, MutableDependencyGraph graph) {
+        ExternalId externalId = externalIdFactory.createMavenExternalId(gav.getName(), gav.getGroup(), gav.getVersion());
+        Dependency currentDependency = new Dependency(gav.getGroup(), gav.getVersion(), externalId);
+
+        if (history.isEmpty()) {
+            graph.addChildToRoot(currentDependency);
+        } else {
+            graph.addChildWithParents(currentDependency, history.getLastDependency());
+        }
+        history.add(currentDependency);
+    }
+
+    private static class TreeNodeSkipper {
+        private Optional<Integer> skipUntilLineLevel = Optional.empty();
+
+        public boolean shouldSkip(GradleTreeNode nodeInQuestion) {
+            if (skipUntilLineLevel.isPresent()) {
+                if (nodeInQuestion.getLevel() > skipUntilLineLevel.get()) {
+                    return true;
+                } else {
+                    skipUntilLineLevel = Optional.empty();
+                    return false;
+                }
+            } else {
+                return false;
+            }
         }
 
+        public void skipUntilLineLevel(int lineLevel) {
+            skipUntilLineLevel = Optional.of(lineLevel);
+        }
     }
+
 }

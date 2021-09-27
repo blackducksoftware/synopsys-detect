@@ -43,8 +43,8 @@ public class ReplacedGradleGav implements GradleGavId {
     @Override
     public StringDependencyId toDependencyId() {
         String id = String.format("%s:%s%s", getGroup(), getArtifact(), getVersion()
-                                                                            .map(version -> ":" + version)
-                                                                            .orElse(""));
+            .map(it -> ":" + it)
+            .orElse(""));
         return new StringDependencyId(id);
     }
 }

@@ -35,6 +35,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.UnitTest;
@@ -43,6 +44,7 @@ import com.synopsys.integration.detectable.detectables.gradle.inspection.model.G
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportParser;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportTransformer;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
+import com.synopsys.integration.detectable.util.graph.GraphAssert;
 import com.synopsys.integration.detectable.util.graph.MavenGraphAssert;
 
 @UnitTest
@@ -52,32 +54,32 @@ public class GradleReportParserFunctionalTest {
     void extractCodeLocationTest() {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS); //Does not work on windows due to path issues.
 
-        final GradleReportParser gradleReportParser = new GradleReportParser();
-        final Optional<GradleReport> gradleReport = gradleReportParser.parseReport(FunctionalTestFiles.asFile("/gradle/dependencyGraph.txt"));
+        GradleReportParser gradleReportParser = new GradleReportParser();
+        Optional<GradleReport> gradleReport = gradleReportParser.parseReport(FunctionalTestFiles.asFile("/gradle/dependencyGraph.txt"));
         Assertions.assertTrue(gradleReport.isPresent());
-        final GradleReportTransformer transformer = new GradleReportTransformer(new ExternalIdFactory());
-        final CodeLocation codeLocation = transformer.transform(gradleReport.get());
+        GradleReportTransformer transformer = new GradleReportTransformer(new ExternalIdFactory(), true);
+        CodeLocation codeLocation = transformer.transform(gradleReport.get());
         Assertions.assertNotNull(codeLocation);
 
         Assertions.assertEquals("hub-detect", gradleReport.get().getProjectName());
         Assertions.assertEquals("2.0.0-SNAPSHOT", gradleReport.get().getProjectVersionName());
 
-        final String actual = new Gson().toJson(codeLocation);
+        String actual = new Gson().toJson(codeLocation);
 
         try {
             JSONAssert.assertEquals(FunctionalTestFiles.asString("/gradle/dependencyGraph-expected.json"), actual, false);
-        } catch (final JSONException e) {
+        } catch (JSONException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Test
     void complexTest() {
-        final Optional<CodeLocation> codeLocation = buildCodeLocation("/gradle/complex_dependencyGraph.txt");
+        final Optional<CodeLocation> codeLocation = buildCodeLocation("/gradle/complex_dependencyGraph.txt", true);
         Assertions.assertTrue(codeLocation.isPresent());
-        final DependencyGraph graph = codeLocation.get().getDependencyGraph();
+        DependencyGraph graph = codeLocation.get().getDependencyGraph();
 
-        final MavenGraphAssert graphAssert = new MavenGraphAssert(graph);
+        MavenGraphAssert graphAssert = new MavenGraphAssert(graph);
         graphAssert.hasDependency("non-project:with-nested:1.0.0");
         graphAssert.hasDependency("solo:component:4.12");
         graphAssert.hasDependency("some.group:child:2.2.2");
@@ -97,24 +99,41 @@ public class GradleReportParserFunctionalTest {
         graphAssert.hasRootDependency("some.group:parent:5.0.0");
         graphAssert.hasRootDependency("terminal:child:6.2.3");
 
-        final ExternalId parent = graphAssert.hasDependency("some.group:parent:5.0.0");
-        final ExternalId child = graphAssert.hasDependency("some.group:child:2.2.2");
+        ExternalId parent = graphAssert.hasDependency("some.group:parent:5.0.0");
+        ExternalId child = graphAssert.hasDependency("some.group:child:2.2.2");
         graphAssert.hasParentChildRelationship(parent, child);
     }
 
-    private Optional<CodeLocation> buildCodeLocation(final String resource) {
-        final File file = FunctionalTestFiles.asFile(resource);
-        final GradleReportParser gradleReportParser = new GradleReportParser();
-        final GradleReportTransformer gradleReportTransformer = new GradleReportTransformer(new ExternalIdFactory());
+    private Optional<CodeLocation> buildCodeLocation(String resource, boolean includeUnresolvedConfigurations) {
+        File file = FunctionalTestFiles.asFile(resource);
+        GradleReportParser gradleReportParser = new GradleReportParser();
+        GradleReportTransformer gradleReportTransformer = new GradleReportTransformer(new ExternalIdFactory(), includeUnresolvedConfigurations);
 
         return gradleReportParser.parseReport(file)
-                   .map(gradleReportTransformer::transform);
+            .map(gradleReportTransformer::transform);
     }
 
     @Test
     void testImplementationsGraph() {
-        final Optional<CodeLocation> codeLocation = buildCodeLocation("/gradle/gradle_implementations_dependencyGraph.txt");
+        Optional<CodeLocation> codeLocation = buildCodeLocation("/gradle/gradle_implementations_dependencyGraph.txt", true);
         Assertions.assertTrue(codeLocation.isPresent());
+
+        DependencyGraph dependencyGraph = codeLocation.get().getDependencyGraph();
+        GraphAssert graphAssert = new GraphAssert(Forge.MAVEN, dependencyGraph);
+        graphAssert.hasRootSize(7);
+
+        System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(codeLocation.get()));
+    }
+
+    @Test
+    void testUnresolvedConfigurations() {
+        Optional<CodeLocation> codeLocation = buildCodeLocation("/gradle/gradle_implementations_dependencyGraph.txt", false);
+        Assertions.assertTrue(codeLocation.isPresent());
+
+        DependencyGraph dependencyGraph = codeLocation.get().getDependencyGraph();
+        GraphAssert graphAssert = new GraphAssert(Forge.MAVEN, dependencyGraph);
+        graphAssert.hasRootSize(0);
+
         System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(codeLocation.get()));
     }
 }

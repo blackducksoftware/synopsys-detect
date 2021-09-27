@@ -9,10 +9,12 @@ package com.synopsys.integration.detectable.detectables.gradle.inspection;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,36 +57,38 @@ public class GradleInspectorExtractor {
 
             File rootProjectMetadataFile = fileFinder.findFile(outputDirectory, "rootProjectMetadata.txt");
             List<File> reportFiles = fileFinder.findFiles(outputDirectory, "*_dependencyGraph.txt");
-
             List<CodeLocation> codeLocations = new ArrayList<>();
-            String projectName = null;
-            String projectVersion = null;
-            if (reportFiles != null) {
-                reportFiles.stream()
-                    .map(gradleReportParser::parseReport)
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
-                    .map(gradleReportTransformer::transform)
-                    .forEach(codeLocations::add);
 
-                if (rootProjectMetadataFile != null) {
-                    Optional<NameVersion> projectNameVersion = gradleRootMetadataParser.parseRootProjectNameVersion(rootProjectMetadataFile);
-                    if (projectNameVersion.isPresent()) {
-                        projectName = projectNameVersion.get().getName();
-                        projectVersion = projectNameVersion.get().getVersion();
-                    }
-                } else {
-                    logger.warn("Gradle inspector did not create a meta data report so no project version information was found.");
-                }
+            reportFiles.stream()
+                .map(gradleReportParser::parseReport)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(gradleReportTransformer::transform)
+                .forEach(codeLocations::add);
+
+            Optional<NameVersion> projectNameVersion = Optional.empty();
+            if (rootProjectMetadataFile != null) {
+                projectNameVersion = parseRootProjectMetadataFile(rootProjectMetadataFile);
+            } else {
+                logger.warn("Gradle inspector did not create a meta data report so no project version information was found.");
             }
 
             return new Extraction.Builder()
-                       .success(codeLocations)
-                       .projectName(projectName)
-                       .projectVersion(projectVersion)
-                       .build();
+                .success(codeLocations)
+                .nameVersionIfPresent(projectNameVersion)
+                .build();
         } catch (IOException e) {
             return new Extraction.Builder().exception(e).build();
+        }
+    }
+
+    private Optional<NameVersion> parseRootProjectMetadataFile(File rootProjectMetadataFile) {
+        try {
+            List<String> rootProjectMetadataLines = FileUtils.readLines(rootProjectMetadataFile, StandardCharsets.UTF_8);
+            return Optional.of(gradleRootMetadataParser.parseRootProjectNameVersion(rootProjectMetadataLines));
+        } catch (IOException e) {
+            logger.warn("Failed to parse file {}", rootProjectMetadataFile.getAbsolutePath());
+            return Optional.empty();
         }
     }
 
