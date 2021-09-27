@@ -75,8 +75,7 @@ public class GradleInspectorExtractor {
 
             return new Extraction.Builder()
                 .success(codeLocations)
-                .projectName(projectNameVersion.map(NameVersion::getName).orElse(null))
-                .projectVersion(projectNameVersion.map(NameVersion::getVersion).orElse(null))
+                .nameVersionIfPresent(projectNameVersion)
                 .build();
         } catch (IOException e) {
             return new Extraction.Builder().exception(e).build();
