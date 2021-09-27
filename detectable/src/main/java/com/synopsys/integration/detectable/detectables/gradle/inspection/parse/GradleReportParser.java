@@ -49,28 +49,20 @@ public class GradleReportParser {
                 /*
                   The meta data section will be at the end of the file after all of the "gradle dependencies" output
                  */
-                boolean shouldContinue = false;
                 if (line.startsWith(DETECT_META_DATA_HEADER)) {
                     processingMetaData = true;
-                    shouldContinue = true;
                 } else if (line.startsWith(DETECT_META_DATA_FOOTER)) {
                     processingMetaData = false;
-                    shouldContinue = true;
                 } else if (processingMetaData) {
                     setGradleReportInfo(gradleReport, line);
-                    shouldContinue = true;
-                }
-                if (shouldContinue) {
-                    continue;
-                }
-
-                if (StringUtils.isBlank(line)) {
-                    parseConfigurationLines(configurationLines, gradleReport);
-                    configurationLines.clear();
                 } else {
-                    configurationLines.add(line);
+                    if (StringUtils.isBlank(line)) {
+                        parseConfigurationLines(configurationLines, gradleReport);
+                        configurationLines.clear();
+                    } else {
+                        configurationLines.add(line);
+                    }
                 }
-
             }
 
             parseConfigurationLines(configurationLines, gradleReport);
