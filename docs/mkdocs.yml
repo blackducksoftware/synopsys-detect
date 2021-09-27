@@ -12,7 +12,29 @@
 site_name: Synopsys Detect
 theme:
   name: 'material'
+  features:
+    - navigation.indexes
 docs_dir: 'generated'
 markdown_extensions:
   - toc:
       permalink: "#"
+nav:
+     - <b>Documentation</b>: index.md
+     - Overview: 00-introduction.md
+     - Getting Started:
+       - 15-gettingstarted/index.md
+       - Key Concepts and Terms: 15-gettingstarted/terms.md
+       - How Synopsys Detect Works: 15-gettingstarted/howitworks.md
+       - Synopsys Detect Basic Workflow: 15-gettingstarted/workflow.md
+       - Configuring Synopsys Detect Processing: 15-gettingstarted/configuring.md
+       - Users and Roles: 15-gettingstarted/usersandroles.md
+       - Getting Help: 15-gettingstarted/gettinghelp.md
+     - Requirements: 10-requirements.md
+     - Quick Start: 20-quickstart.md
+     - Running: 30-running.md
+     - Configuring: 40-configuring.md
+     - Quick Reference: 70-quickreference.md
+     - Release notes: 90-releasenotes.md
+
+
+
