@@ -60,13 +60,10 @@ public class GradleReportTransformer {
     private void addConfigurationToGraph(MutableDependencyGraph graph, GradleConfiguration configuration) {
         DependencyHistory history = new DependencyHistory();
 
-        TreeNodeSkipper treeNodeSkipper = null;
+        TreeNodeSkipper treeNodeSkipper = new TreeNodeSkipper();
         for (GradleTreeNode currentNode : configuration.getChildren()) {
-            if (treeNodeSkipper != null && treeNodeSkipper.shouldSkip(currentNode)) {
+            if (treeNodeSkipper.shouldSkip(currentNode)) {
                 continue;
-            } else if (treeNodeSkipper != null) {
-                // TreeNodeSkipper has stopped skipping lines.
-                treeNodeSkipper = null;
             }
 
             if (currentNode.getNodeType() == GradleTreeNode.NodeType.GAV) {
@@ -80,7 +77,7 @@ public class GradleReportTransformer {
                     logger.debug("Missing expected GAV from known NodeType. {}", currentNode);
                 }
             } else {
-                treeNodeSkipper = new TreeNodeSkipper(currentNode);
+                treeNodeSkipper.skipUntilLineLevel(currentNode.getLevel());
             }
         }
     }
@@ -98,15 +95,23 @@ public class GradleReportTransformer {
     }
 
     private static class TreeNodeSkipper {
-        private final GradleTreeNode startingNode;
-
-        private TreeNodeSkipper(GradleTreeNode startingNode) {
-            this.startingNode = startingNode;
-        }
+        private Optional<Integer> skipUntilLineLevel = Optional.empty();
 
         public boolean shouldSkip(GradleTreeNode nodeInQuestion) {
-            return startingNode == nodeInQuestion
-                       || nodeInQuestion.getLevel() > startingNode.getLevel();
+            if (skipUntilLineLevel.isPresent()) {
+                if (nodeInQuestion.getLevel() > skipUntilLineLevel.get()) {
+                    return true;
+                } else {
+                    skipUntilLineLevel = Optional.empty();
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+
+        public void skipUntilLineLevel(int lineLevel) {
+            skipUntilLineLevel = Optional.of(lineLevel);
         }
     }
 
