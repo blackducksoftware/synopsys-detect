@@ -41,11 +41,11 @@ public class GradleReportTransformer {
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
         for (GradleConfiguration configuration : gradleReport.getConfigurations()) {
-            if (configuration.isUnresolved() && !includeUnresolvedConfigurations) {
-                logger.trace("Excluding unresolved configuration from the graph: {}", configuration.getName());
-            } else {
+            if (configuration.isResolved() || includeUnresolvedConfigurations) {
                 logger.trace("Adding configuration to the graph: {}", configuration.getName());
                 addConfigurationToGraph(graph, configuration);
+            } else {
+                logger.trace("Excluding unresolved configuration from the graph: {}", configuration.getName());
             }
         }
 

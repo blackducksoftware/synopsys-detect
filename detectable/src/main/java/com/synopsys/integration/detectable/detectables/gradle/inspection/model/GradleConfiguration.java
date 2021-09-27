@@ -35,6 +35,10 @@ public class GradleConfiguration {
         return unresolved;
     }
 
+    public boolean isResolved() {
+        return !isUnresolved();
+    }
+
     public void setUnresolved(boolean unresolved) {
         this.unresolved = unresolved;
     }
