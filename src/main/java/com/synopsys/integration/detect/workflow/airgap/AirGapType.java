@@ -7,9 +7,7 @@
  */
 package com.synopsys.integration.detect.workflow.airgap;
 
-public enum AirGapInspectors {
-    DOCKER,
-    GRADLE,
-    NUGET,
-    PROJECT
+public enum AirGapType {
+    FULL,
+    NO_DOCKER
 }

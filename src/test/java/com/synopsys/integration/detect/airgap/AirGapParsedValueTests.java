@@ -27,45 +27,34 @@ import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
 import com.synopsys.integration.detect.configuration.help.DetectArgumentStateParser;
-import com.synopsys.integration.detect.util.filter.DetectOverrideableFilter;
-import com.synopsys.integration.detect.workflow.airgap.AirGapInspectors;
+import com.synopsys.integration.detect.workflow.airgap.AirGapType;
+import com.synopsys.integration.detect.workflow.airgap.AirGapTypeDecider;
 
 public class AirGapParsedValueTests {
 
     DetectArgumentStateParser parser = new DetectArgumentStateParser();
 
     @Test
-    public void allIncluded() {
-        String[] args = new String[] { "-z", "ALL" };
+    public void fullAirGap() {
+        String[] args = new String[] { "-z", "FULL" };
         DetectArgumentState state = parser.parseArgs(args);
-        DetectOverrideableFilter filter = DetectOverrideableFilter.createArgumentValueFilter(state);
-
-        Assertions.assertTrue(filter.shouldInclude(AirGapInspectors.DOCKER.name()));
-        Assertions.assertTrue(filter.shouldInclude(AirGapInspectors.GRADLE.name()));
-        Assertions.assertTrue(filter.shouldInclude(AirGapInspectors.NUGET.name()));
+        AirGapType type = new AirGapTypeDecider().decide(state);
+        Assertions.assertEquals(AirGapType.FULL, type);
     }
 
     @Test
-    public void dockerNotIncluded() {
-        String[] args = new String[] { "-z", "GRADLE,NUGET" };
+    public void noDocker() {
+        String[] args = new String[] { "-z", "NO_DOCKER" };
         DetectArgumentState state = parser.parseArgs(args);
-        DetectOverrideableFilter filter = DetectOverrideableFilter.createArgumentValueFilter(state);
-
-        Assertions.assertFalse(filter.shouldInclude(AirGapInspectors.DOCKER.name()));
-
-        Assertions.assertTrue(filter.shouldInclude(AirGapInspectors.GRADLE.name()));
-        Assertions.assertTrue(filter.shouldInclude(AirGapInspectors.NUGET.name()));
+        AirGapType type = new AirGapTypeDecider().decide(state);
+        Assertions.assertEquals(AirGapType.NO_DOCKER, type);
     }
 
     @Test
-    public void onlyNugetIncluded() {
-        String[] args = new String[] { "-z", "NUGET" };
+    public void defaultIsFull() {
+        String[] args = new String[] { "-z" };
         DetectArgumentState state = parser.parseArgs(args);
-        DetectOverrideableFilter filter = DetectOverrideableFilter.createArgumentValueFilter(state);
-
-        Assertions.assertFalse(filter.shouldInclude(AirGapInspectors.DOCKER.name()));
-        Assertions.assertFalse(filter.shouldInclude(AirGapInspectors.GRADLE.name()));
-
-        Assertions.assertTrue(filter.shouldInclude(AirGapInspectors.NUGET.name()));
+        AirGapType type = new AirGapTypeDecider().decide(state);
+        Assertions.assertEquals(AirGapType.FULL, type);
     }
 }

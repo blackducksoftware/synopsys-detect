@@ -3,7 +3,7 @@
 # Version 7.6.0
 
 ### New Features
-* Added the property [detect.follow.symbolic.links](../properties/configuration/general/#follow-symbolic-links) which can be used to enable ${solution_name} to follow symbolic links when searching directories.
+* Added the property [detect.follow.symbolic.links](../properties/configuration/general/#follow-symbolic-links) which can be used to enable ${solution_name} to follow symbolic links when searching directories for detectors, when creating exclusions for signature scan, and when creating binary scan targets.
 * Added support for Open Container Initiative (OCI) images provided to ${solution_name} using the *detect.docker.tar* property.
 * Added the property [detect.gradle.include.unresolved.configurations](../properties/detectors/gradle/#gradle-include-unresolved-configurations-advanced) for toggling the inclusion of [unresolved Gradle configurations](https://docs.gradle.org/7.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs).
 
@@ -11,6 +11,7 @@
 * The detect.project.clone.categories property now supports ALL and NONE as options.
 * The the default value for property detect.project.clone.categories has changed to ALL.
 * Deprecated detect.bom.aggregate.name, detect.bom.aggregate.remediation.mode, and blackduck.legacy.upload.enabled. In version 8, ${solution_name} will only operate in SUBPROJECT aggregation mode to report the dependency graph with greater accuracy.
+* The Air Gap Zip generation options no longer support individual package managers. Instead either a FULL air gap can be created, or a NO_DOCKER air gap can be created. This is to help support project inspector which spans multiple package managers.
 
 ### Resolved issues
 * (IDETECT-2834) Resolved an issue where GoMod components missing a version were not being properly filtered causing a NullPointerException.
