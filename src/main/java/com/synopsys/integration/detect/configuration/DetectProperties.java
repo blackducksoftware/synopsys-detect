@@ -607,6 +607,14 @@ public class DetectProperties {
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
+    public static final DetectProperty<BooleanProperty> DETECT_GRADLE_INCLUDE_UNRESOLVED_CONFIGURATIONS =
+        new DetectProperty<>(new BooleanProperty("detect.gradle.include.unresolved.configurations", false))
+            .setInfo("Gradle Include Unresolved Configurations", DetectPropertyFromVersion.VERSION_7_6_0)
+            .setHelp("When set to true, dependencies discovered from unresolved Gradle configurations will be included. It is set to false by default for a more accurate BOM.",
+                "Including dependencies from unresolved Gradle configurations could lead to false positives. Dependency versions from an unresolved configuration may differ from a resolved one. See https://docs.gradle.org/7.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs")
+            .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
+            .setCategory(DetectCategory.Advanced);
+
     public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_GRADLE_INCLUDED_PROJECTS =
         new DetectProperty<>(new CaseSensitiveStringListProperty("detect.gradle.included.projects"))
             .setInfo("Gradle Include Projects", DetectPropertyFromVersion.VERSION_3_0_0)

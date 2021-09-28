@@ -16,11 +16,13 @@ public class GradleInspectorOptions {
     private final String gradleBuildCommand;
     private final GradleInspectorScriptOptions gradleInspectorScriptOptions;
     private final ProxyInfo proxyInfo;
+    private final boolean includeUnresolvedConfigurations;
 
-    public GradleInspectorOptions(final String gradleBuildCommand, final GradleInspectorScriptOptions gradleInspectorScriptOptions, final ProxyInfo proxyInfo) {
+    public GradleInspectorOptions(String gradleBuildCommand, GradleInspectorScriptOptions gradleInspectorScriptOptions, ProxyInfo proxyInfo, boolean includeUnresolvedConfigurations) {
         this.gradleBuildCommand = gradleBuildCommand;
         this.gradleInspectorScriptOptions = gradleInspectorScriptOptions;
         this.proxyInfo = proxyInfo;
+        this.includeUnresolvedConfigurations = includeUnresolvedConfigurations;
     }
 
     public Optional<String> getGradleBuildCommand() {
@@ -33,5 +35,9 @@ public class GradleInspectorOptions {
 
     public ProxyInfo getproxyInfo() {
         return proxyInfo;
+    }
+
+    public boolean shouldIncludeUnresolvedConfigurations() {
+        return includeUnresolvedConfigurations;
     }
 }

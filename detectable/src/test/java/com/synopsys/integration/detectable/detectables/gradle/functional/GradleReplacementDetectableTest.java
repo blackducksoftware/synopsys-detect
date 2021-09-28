@@ -90,7 +90,7 @@ public class GradleReplacementDetectableTest extends DetectableFunctionalTest {
     @Override
     public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
         GradleInspectorOptions gradleInspectorOptions = new GradleInspectorOptions("", new GradleInspectorScriptOptions(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), "", ""),
-            ProxyInfo.NO_PROXY_INFO);
+            ProxyInfo.NO_PROXY_INFO, true);
         return detectableFactory.createGradleDetectable(detectableEnvironment, gradleInspectorOptions, () -> new File("gradle-inspector"), (environment) -> ExecutableTarget.forFile(new File("gradle")));
     }
 

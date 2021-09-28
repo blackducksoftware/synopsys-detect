@@ -151,11 +151,12 @@ public class DetectableOptionFactory {
         List<String> excludedConfigurationNames = getValue(DetectProperties.DETECT_GRADLE_EXCLUDED_CONFIGURATIONS);
         List<String> includedConfigurationNames = getValue(DetectProperties.DETECT_GRADLE_INCLUDED_CONFIGURATIONS);
         String customRepository = ArtifactoryConstants.GRADLE_INSPECTOR_MAVEN_REPO;
+        boolean includeUnresolvedConfigurations = getValue(DetectProperties.DETECT_GRADLE_INCLUDE_UNRESOLVED_CONFIGURATIONS);
 
         String onlineInspectorVersion = getNullableValue(DetectProperties.DETECT_GRADLE_INSPECTOR_VERSION);
         GradleInspectorScriptOptions scriptOptions = new GradleInspectorScriptOptions(excludedProjectNames, includedProjectNames, excludedConfigurationNames, includedConfigurationNames, customRepository, onlineInspectorVersion);
         String gradleBuildCommand = getNullableValue(DetectProperties.DETECT_GRADLE_BUILD_COMMAND);
-        return new GradleInspectorOptions(gradleBuildCommand, scriptOptions, proxyInfo);
+        return new GradleInspectorOptions(gradleBuildCommand, scriptOptions, proxyInfo, includeUnresolvedConfigurations);
     }
 
     public LernaOptions createLernaOptions() {
@@ -223,8 +224,8 @@ public class DetectableOptionFactory {
     public PipInspectorDetectableOptions createPipInspectorDetectableOptions() {
         String pipProjectName = getNullableValue(DetectProperties.DETECT_PIP_PROJECT_NAME);
         List<Path> requirementsFilePath = getValue(DetectProperties.DETECT_PIP_REQUIREMENTS_PATH).stream()
-                                              .map(it -> it.resolvePath(pathResolver))
-                                              .collect(Collectors.toList());
+            .map(it -> it.resolvePath(pathResolver))
+            .collect(Collectors.toList());
         return new PipInspectorDetectableOptions(pipProjectName, requirementsFilePath);
     }
 
