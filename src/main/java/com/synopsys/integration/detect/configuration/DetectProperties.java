@@ -467,7 +467,8 @@ public class DetectProperties {
         new DetectProperty<>(new NullableStringProperty("detect.docker.image"))
             .setInfo("Docker Image Name", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
-                "The Docker image name to inspect. For Detect to run Docker Inspector, either this property, detect.docker.tar, or detect.docker.image.id must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images. detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties).")
+                "The Docker image name (repo:tag) to inspect.",
+                "For Detect to run Docker Inspector, either this property, detect.docker.tar, or detect.docker.image.id must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images. detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties). When a value of this property is provided, Docker Inspector will use the Docker engine to pull the image.")
             .setExample("centos:centos8")
             .setGroups(DetectGroup.DOCKER, DetectGroup.SOURCE_PATH);
 
@@ -475,7 +476,8 @@ public class DetectProperties {
         new DetectProperty<>(new NullableStringProperty("detect.docker.image.id"))
             .setInfo("Docker Image ID", DetectPropertyFromVersion.VERSION_6_1_0)
             .setHelp(
-                "The ID (shown in the 'IMAGE ID' column of 'docker images' output) of the target Docker image. The target image must already be local (must appear in the output of 'docker images'). detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties).")
+                "The ID (shown in the 'IMAGE ID' column of 'docker images' output) of the target Docker image. The target image must already be local (must appear in the output of 'docker images').",
+                "detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties).")
             .setExample("0d120b6ccaa8")
             .setGroups(DetectGroup.DOCKER, DetectGroup.SOURCE_PATH)
             .setExample("fe1cc5b91830");
@@ -523,9 +525,10 @@ public class DetectProperties {
 
     public static final DetectProperty<NullableStringProperty> DETECT_DOCKER_TAR =
         new DetectProperty<>(new NullableStringProperty("detect.docker.tar"))
-            .setInfo("Docker Image Archive File", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setInfo("Image Archive File", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
-                "A Docker image saved to a .tar file using the 'docker save' command. The file must be readable by all. detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties).")
+                "An image .tar file which is either a Docker image saved to a file using the 'docker save' command, or an Open Container Initiative (OCI) image .tar file. The file must be readable by all.",
+                "detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties).")
             .setExample("./ubuntu21_04.tar")
             .setGroups(DetectGroup.DOCKER, DetectGroup.SOURCE_PATH);
 
@@ -601,6 +604,14 @@ public class DetectProperties {
             .setInfo("Gradle Include Configurations", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("A comma-separated list of Gradle configurations to include.",
                 "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those Gradle configurations specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
+            .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
+            .setCategory(DetectCategory.Advanced);
+
+    public static final DetectProperty<BooleanProperty> DETECT_GRADLE_INCLUDE_UNRESOLVED_CONFIGURATIONS =
+        new DetectProperty<>(new BooleanProperty("detect.gradle.include.unresolved.configurations", false))
+            .setInfo("Gradle Include Unresolved Configurations", DetectPropertyFromVersion.VERSION_7_6_0)
+            .setHelp("When set to true, dependencies discovered from unresolved Gradle configurations will be included. It is set to false by default for a more accurate BOM.",
+                "Including dependencies from unresolved Gradle configurations could lead to false positives. Dependency versions from an unresolved configuration may differ from a resolved one. See https://docs.gradle.org/7.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs")
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
@@ -927,7 +938,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced);
 
-    @SuppressWarnings("unused") // Dynamic property
+    // Dynamic property
     public static final DetectProperty<NullableStringProperty> DETECT_CUSTOM_FIELDS_PROJECT =
         new DetectProperty<>(new NullableStringProperty("detect.custom.fields.project"))
             .setInfo("Custom Fields", DetectPropertyFromVersion.VERSION_5_6_0)
@@ -936,7 +947,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced);
 
-    @SuppressWarnings("unused") // Dynamic property
+    // Dynamic property
     public static final DetectProperty<NullableStringProperty> DETECT_CUSTOM_FIELDS_VERSION =
         new DetectProperty<>(new NullableStringProperty("detect.custom.fields.version"))
             .setInfo("Custom Fields", DetectPropertyFromVersion.VERSION_5_6_0)
@@ -1276,7 +1287,7 @@ public class DetectProperties {
         new DetectProperty<>(new BooleanProperty("detect.follow.symbolic.links", true))
             .setInfo("Follow Symbolic Links", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp(
-                "If set to true, Detect will follow symbolic links when performing the detector search, when searching for files that detectors need, and when searching for patterns provided via property detect.excluded.directories.")
+                "If set to true, Detect will follow symbolic links when searching for detectors, when searching for files that select detectors (such as Bitbake and Sbt) need, when searching for directories to exclude from signature scan, and when searching for binary scan targets.  Symbolic links are not supported for Impact Analysis.")
             .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL);
 
     public static final DetectProperty<EnumProperty<BlackduckScanMode>> DETECT_BLACKDUCK_SCAN_MODE =
@@ -1318,8 +1329,6 @@ public class DetectProperties {
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced)
             .setDeprecated(AGGREGATION_MODE_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT);
-
-
 
     @Deprecated
     public static final DetectProperty<BooleanProperty> BLACKDUCK_LEGACY_UPLOAD_ENABLED =

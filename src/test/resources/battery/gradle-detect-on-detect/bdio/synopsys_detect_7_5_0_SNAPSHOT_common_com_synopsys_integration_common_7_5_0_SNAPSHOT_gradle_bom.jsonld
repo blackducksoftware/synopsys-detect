@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "synopsys-detect/7.5.0-SNAPSHOT/common/com.synopsys.integration/common/7.5.0-SNAPSHOT gradle/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-7.5.0-SNAPSHOT",
-        "Tool: IntegrationBdio-22.1.4"
-      ],
-      "spdx:created": "2021-08-13T18:40:29.769Z"
-    },
-    "@id": "uuid:97a5d97b-91a4-4869-8bc9-be33a4b9720f",
     "@type": "BillOfMaterials",
     "relationship": []
   },
@@ -67,15 +59,7 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:maven/org.mockito/mockito-core/2.%2B",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
         "related": "http:maven/org.jacoco/org.jacoco.ant/0.8.6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org.junit.jupiter/junit-jupiter-params/5.4.2",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -87,19 +71,7 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:maven/org.jetbrains/annotations/19.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org.junit.jupiter/junit-jupiter-api/5.3.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
         "related": "http:maven/com.synopsys.integration/integration-common/24.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org.apache.commons/commons-lang3/3.10",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -830,28 +802,6 @@
     "relationship": []
   },
   {
-    "name": "mockito-core",
-    "revision": "2.+",
-    "@id": "http:maven/org.mockito/mockito-core/2.%2B",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.mockito:mockito-core:2.+",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "pieces": [
-          "mockito-core",
-          "2.+"
-        ],
-        "prefix": "org.mockito"
-      }
-    },
-    "relationship": []
-  },
-  {
     "name": "org.jacoco.ant",
     "revision": "0.8.6",
     "@id": "http:maven/org.jacoco/org.jacoco.ant/0.8.6",
@@ -1038,28 +988,6 @@
     ]
   },
   {
-    "name": "junit-jupiter-params",
-    "revision": "5.4.2",
-    "@id": "http:maven/org.junit.jupiter/junit-jupiter-params/5.4.2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.junit.jupiter:junit-jupiter-params:5.4.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "pieces": [
-          "junit-jupiter-params",
-          "5.4.2"
-        ],
-        "prefix": "org.junit.jupiter"
-      }
-    },
-    "relationship": []
-  },
-  {
     "name": "annotations",
     "revision": "20.1.0",
     "@id": "http:maven/org.jetbrains/annotations/20.1.0",
@@ -1077,50 +1005,6 @@
           "20.1.0"
         ],
         "prefix": "org.jetbrains"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "annotations",
-    "revision": "19.0.0",
-    "@id": "http:maven/org.jetbrains/annotations/19.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.jetbrains:annotations:19.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "pieces": [
-          "annotations",
-          "19.0.0"
-        ],
-        "prefix": "org.jetbrains"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "junit-jupiter-api",
-    "revision": "5.3.1",
-    "@id": "http:maven/org.junit.jupiter/junit-jupiter-api/5.3.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.junit.jupiter:junit-jupiter-api:5.3.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "pieces": [
-          "junit-jupiter-api",
-          "5.3.1"
-        ],
-        "prefix": "org.junit.jupiter"
       }
     },
     "relationship": []
@@ -1561,27 +1445,5 @@
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
-  },
-  {
-    "name": "commons-lang3",
-    "revision": "3.10",
-    "@id": "http:maven/org.apache.commons/commons-lang3/3.10",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.apache.commons:commons-lang3:3.10",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "pieces": [
-          "commons-lang3",
-          "3.10"
-        ],
-        "prefix": "org.apache.commons"
-      }
-    },
-    "relationship": []
   }
 ]

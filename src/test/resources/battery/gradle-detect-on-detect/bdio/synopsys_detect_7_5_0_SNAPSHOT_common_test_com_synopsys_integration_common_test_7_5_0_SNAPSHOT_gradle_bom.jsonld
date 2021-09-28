@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "synopsys-detect/7.5.0-SNAPSHOT/common-test/com.synopsys.integration/common-test/7.5.0-SNAPSHOT gradle/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-7.5.0-SNAPSHOT",
-        "Tool: IntegrationBdio-22.1.4"
-      ],
-      "spdx:created": "2021-08-13T18:40:29.753Z"
-    },
-    "@id": "uuid:353ad3b4-a384-42e2-b942-7827379fb991",
     "@type": "BillOfMaterials",
     "relationship": []
   },
@@ -63,15 +55,7 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:maven/org.mockito/mockito-core/2.%2B",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
         "related": "http:maven/org.jacoco/org.jacoco.ant/0.8.6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org.junit.jupiter/junit-jupiter-params/5.4.2",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -796,28 +780,6 @@
     "relationship": []
   },
   {
-    "name": "mockito-core",
-    "revision": "2.+",
-    "@id": "http:maven/org.mockito/mockito-core/2.%2B",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.mockito:mockito-core:2.+",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "pieces": [
-          "mockito-core",
-          "2.+"
-        ],
-        "prefix": "org.mockito"
-      }
-    },
-    "relationship": []
-  },
-  {
     "name": "org.jacoco.ant",
     "revision": "0.8.6",
     "@id": "http:maven/org.jacoco/org.jacoco.ant/0.8.6",
@@ -1002,28 +964,6 @@
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
-  },
-  {
-    "name": "junit-jupiter-params",
-    "revision": "5.4.2",
-    "@id": "http:maven/org.junit.jupiter/junit-jupiter-params/5.4.2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.junit.jupiter:junit-jupiter-params:5.4.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "pieces": [
-          "junit-jupiter-params",
-          "5.4.2"
-        ],
-        "prefix": "org.junit.jupiter"
-      }
-    },
-    "relationship": []
   },
   {
     "name": "annotations",

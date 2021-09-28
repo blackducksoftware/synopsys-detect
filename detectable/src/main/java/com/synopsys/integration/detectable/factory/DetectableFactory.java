@@ -349,7 +349,7 @@ public class DetectableFactory {
     }
 
     public GradleDetectable createGradleDetectable(DetectableEnvironment environment, GradleInspectorOptions gradleInspectorOptions, GradleInspectorResolver gradleInspectorResolver, GradleResolver gradleResolver) {
-        return new GradleDetectable(environment, fileFinder, gradleResolver, gradleInspectorResolver, gradleInspectorExtractor(), gradleInspectorOptions);
+        return new GradleDetectable(environment, fileFinder, gradleResolver, gradleInspectorResolver, gradleInspectorExtractor(gradleInspectorOptions), gradleInspectorOptions);
     }
 
     public GradleProjectInspectorDetectable createMavenGradleInspectorDetectable(DetectableEnvironment detectableEnvironment, ProjectInspectorResolver projectInspectorResolver) {
@@ -598,7 +598,7 @@ public class DetectableFactory {
     }
 
     private GoModCliExtractor goModCliExtractor() {
-        return new GoModCliExtractor(goModCommandExecutor(), goListParser(), goGraphParser(), goModWhyParser(), goModGraphGraphGenerator());
+        return new GoModCliExtractor(goModCommandExecutor(), goListParser(), goGraphParser(), goModWhyParser(), goModGraphGraphGenerator(), externalIdFactory);
     }
 
     private GoVndrExtractor goVndrExtractor() {
@@ -613,8 +613,8 @@ public class DetectableFactory {
         return new GradleReportParser();
     }
 
-    private GradleReportTransformer gradleReportTransformer() {
-        return new GradleReportTransformer(externalIdFactory);
+    private GradleReportTransformer gradleReportTransformer(GradleInspectorOptions gradleInspectorOptions) {
+        return new GradleReportTransformer(externalIdFactory, gradleInspectorOptions.shouldIncludeUnresolvedConfigurations());
     }
 
     private GradleRootMetadataParser gradleRootMetadataParser() {
@@ -868,8 +868,8 @@ public class DetectableFactory {
         return new GradleRunner(executableRunner);
     }
 
-    private GradleInspectorExtractor gradleInspectorExtractor() {
-        return new GradleInspectorExtractor(fileFinder, gradleRunner(), gradleReportParser(), gradleReportTransformer(), gradleRootMetadataParser());
+    private GradleInspectorExtractor gradleInspectorExtractor(GradleInspectorOptions gradleInspectorOptions) {
+        return new GradleInspectorExtractor(fileFinder, gradleRunner(), gradleReportParser(), gradleReportTransformer(gradleInspectorOptions), gradleRootMetadataParser());
     }
 
     private DockerExtractor dockerExtractor() {
