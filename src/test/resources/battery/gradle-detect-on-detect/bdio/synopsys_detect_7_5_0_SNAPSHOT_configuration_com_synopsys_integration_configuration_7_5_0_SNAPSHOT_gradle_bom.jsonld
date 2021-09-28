@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "synopsys-detect/7.5.0-SNAPSHOT/configuration/com.synopsys.integration/configuration/7.5.0-SNAPSHOT gradle/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-7.5.0-SNAPSHOT",
-        "Tool: IntegrationBdio-22.1.4"
-      ],
-      "spdx:created": "2021-08-13T18:40:29.789Z"
-    },
-    "@id": "uuid:503d032a-5e3a-47db-bfe0-c6c8fcf62ec2",
     "@type": "BillOfMaterials",
     "relationship": []
   },
@@ -76,10 +68,6 @@
       },
       {
         "related": "http:maven/org.springframework/spring-test/5.3.6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org.mockito/mockito-core/2.%2B",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -1037,28 +1025,6 @@
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
-  },
-  {
-    "name": "mockito-core",
-    "revision": "2.+",
-    "@id": "http:maven/org.mockito/mockito-core/2.%2B",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.mockito:mockito-core:2.+",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "pieces": [
-          "mockito-core",
-          "2.+"
-        ],
-        "prefix": "org.mockito"
-      }
-    },
-    "relationship": []
   },
   {
     "name": "org.jacoco.ant",
