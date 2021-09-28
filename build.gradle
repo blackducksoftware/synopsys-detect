@@ -161,13 +161,17 @@ String parseAirGapZipPath(ByteArrayOutputStream standardOutput) {
     return path
 }
 
+String findGradle() {
+    return System.getProperty("os.name").toLowerCase().contains("windows") ? '--detect.gradle.path=gradlew.bat' : '--detect.gradle.path=gradlew';
+}
+
 task createAirGapZip(type: JavaExec) {
     dependsOn build
 
     classpath = files(createArtifactName())
     classpath += sourceSets.main.runtimeClasspath
     main = 'com.synopsys.integration.detect.Application'
-    args = [System.getProperty("os.name").toLowerCase().contains("windows") ? '--detect.gradle.path=gradlew.bat' : '--detect.gradle.path=gradlew', "--detect.output.path=${buildDir}/libs/", '-z']
+    args = [findGradle(), "--detect.output.path=${buildDir}/libs/", '-z']
     standardOutput = new ByteArrayOutputStream()
     doLast {
         createAirGapZip.ext.airGapPath = parseAirGapZipPath(standardOutput)
@@ -193,18 +197,18 @@ task createAirGapZipWithoutDocker(type: JavaExec) {
     classpath = files(createArtifactName())
     classpath += sourceSets.main.runtimeClasspath
     main = 'com.synopsys.integration.detect.Application'
-    args = ['--detect.gradle.path=gradlew', '-z', 'GRADLE,NUGET,PROJECT']
     standardOutput = new ByteArrayOutputStream()
     doLast {
         createAirGapZipWithoutDocker.ext.airGapPath = parseAirGapZipPath(standardOutput)
     }
+    args = [findGradle(), '-z', 'NO_DOCKER']
 }
 
 task publishAirGapZipWithoutDocker() {
     dependsOn createAirGapZipWithoutDocker
 
     doLast {
-        def airGapZipName = "${project.name}-${version}-air-gap-gradle-nuget.zip"
+        def airGapZipName = "${project.name}-${version}-air-gap-no-docker.zip"
         def airGapZipLocation = createAirGapZipWithoutDocker.airGapPath
         exec {
             commandLine 'curl', '--insecure', '-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT',
