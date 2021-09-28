@@ -3,7 +3,7 @@
 # Version 7.6.0
 
 ### New Features
-* Added the property [detect.follow.symbolic.links](../properties/configuration/general/#follow-symbolic-links) which can be used to enable ${solution_name} to follow symbolic links when searching directories.
+* Added the property [detect.follow.symbolic.links](../properties/configuration/general/#follow-symbolic-links) which can be used to enable ${solution_name} to follow symbolic links when searching directories for detectors, when creating exclusions for signature scan, and when creating binary scan targets.
 * Added support for Open Container Initiative (OCI) images provided to ${solution_name} using the *detect.docker.tar* property.
 * Added the property [detect.gradle.include.unresolved.configurations](../properties/detectors/gradle/#gradle-include-unresolved-configurations-advanced) for toggling the inclusion of [unresolved Gradle configurations](https://docs.gradle.org/7.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs).
 
