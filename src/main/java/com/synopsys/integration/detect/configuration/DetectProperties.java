@@ -1287,7 +1287,7 @@ public class DetectProperties {
         new DetectProperty<>(new BooleanProperty("detect.follow.symbolic.links", true))
             .setInfo("Follow Symbolic Links", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp(
-                "If set to true, Detect will follow symbolic links when performing the detector search, when searching for files that detectors need, and when searching for patterns provided via property detect.excluded.directories.")
+                "If set to true, Detect will follow symbolic links when searching for detectors, when searching for files that select detectors (such as Bitbake and Sbt) need, when searching for directories to exclude from signature scan, and when searching for binary scan targets.  Symbolic links are not supported for Impact Analysis.")
             .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL);
 
     public static final DetectProperty<EnumProperty<BlackduckScanMode>> DETECT_BLACKDUCK_SCAN_MODE =

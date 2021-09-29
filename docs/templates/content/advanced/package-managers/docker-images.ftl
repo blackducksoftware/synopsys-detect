@@ -1,13 +1,23 @@
 # Docker image support
 
 On Linux, Mac, and Windows 10 Enterprise, ${solution_name} can invoke Docker Inspector to inspect Linux Docker images to discover packages installed by the Linux package manager.
-For simple use cases, add either ```--detect.docker.image={repo}:{tag}``` or ```--detect.docker.tar={path to a Docker saved tarfile}``` to the ${solution_name} command line.
+For simple use cases, add ```--detect.docker.image={repo}:{tag}```, ```--detect.docker.tar={path to an image archive}```,
+```--detect.docker.image.id={image id}```,
+to the ${solution_name} command line.
 
 The documentation for Docker Inspector is available [here](https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/187596884/Black+Duck+Docker+Inspector).
 
-When passed a value for either detect.docker.image or detect.docker.tar,
+When passed a value for *detect.docker.image*, *detect.docker.image.id*, or *detect.docker.tar*,
 ${solution_name} runs Docker Inspector on the given image (the "target image"),
 creating one code location.
+
+## Supported image formats
+
+Images passed to ${solution_name} via the *detect.docker.image* property must either be pullable using the machine's docker engine (via the equivalent of a "docker pull" command) or already exist in the local docker cache. ${solution_name} will save these to a file using the equivalent of a "docker save" command.
+
+Images passed to ${solution_name} via the *detect.docker.image.id* property must already exist in the local docker cache. ${solution_name} will save these to a file using the equivalent of a "docker save" command.
+
+Image files passed to ${solution_name} via the *detect.docker.tar* property must be .tar files, and the contents must conform to either of the following image format specifications: 1. [Docker Image Specification v1.2.0](https://github.com/moby/moby/blob/master/image/spec/v1.2.md) (the format produced by the "docker save" command), or 2. [Open Container Initiative Image (OCI) Format Specification](https://github.com/opencontainers/image-spec/blob/main/spec.md).
 
 ## ${solution_name} workflow
 

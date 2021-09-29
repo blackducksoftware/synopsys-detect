@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "synopsys-detect/7.5.0-SNAPSHOT/detector/com.synopsys.integration/detector/7.5.0-SNAPSHOT gradle/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-7.5.0-SNAPSHOT",
-        "Tool: IntegrationBdio-22.1.4"
-      ],
-      "spdx:created": "2021-08-13T18:40:29.781Z"
-    },
-    "@id": "uuid:2dfc47a8-e420-4675-851a-94ef9e9f5ed4",
     "@type": "BillOfMaterials",
     "relationship": []
   },
@@ -43,7 +35,19 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
+        "related": "http:maven/org.jacoco/org.jacoco.ant/0.8.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
         "related": "http:maven/org.junit-pioneer/junit-pioneer/0.3.3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.junit.jupiter/junit-jupiter-api/5.7.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.jetbrains/annotations/20.1.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -64,34 +68,6 @@
       },
       {
         "related": "http:maven/org.apache.commons/commons-lang3/3.11",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org.mockito/mockito-core/2.%2B",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org.jacoco/org.jacoco.ant/0.8.6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org.junit.jupiter/junit-jupiter-params/5.4.2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org.junit.jupiter/junit-jupiter-api/5.7.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org.jetbrains/annotations/20.1.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org.jetbrains/annotations/19.0.0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org.apache.commons/commons-lang3/3.10",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -552,6 +528,236 @@
     "relationship": []
   },
   {
+    "name": "org.jacoco.ant",
+    "revision": "0.8.6",
+    "@id": "http:maven/org.jacoco/org.jacoco.ant/0.8.6",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.jacoco:org.jacoco.ant:0.8.6",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "org.jacoco.ant",
+          "0.8.6"
+        ],
+        "prefix": "org.jacoco"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.jacoco/org.jacoco.report/0.8.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.jacoco/org.jacoco.agent/0.8.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.jacoco/org.jacoco.core/0.8.6",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "org.jacoco.report",
+    "revision": "0.8.6",
+    "@id": "http:maven/org.jacoco/org.jacoco.report/0.8.6",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.jacoco:org.jacoco.report:0.8.6",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "org.jacoco.report",
+          "0.8.6"
+        ],
+        "prefix": "org.jacoco"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.jacoco/org.jacoco.core/0.8.6",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "org.jacoco.core",
+    "revision": "0.8.6",
+    "@id": "http:maven/org.jacoco/org.jacoco.core/0.8.6",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.jacoco:org.jacoco.core:0.8.6",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "org.jacoco.core",
+          "0.8.6"
+        ],
+        "prefix": "org.jacoco"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.ow2.asm/asm/8.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.ow2.asm/asm-commons/8.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.ow2.asm/asm-tree/8.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "asm",
+    "revision": "8.0.1",
+    "@id": "http:maven/org.ow2.asm/asm/8.0.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.ow2.asm:asm:8.0.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "asm",
+          "8.0.1"
+        ],
+        "prefix": "org.ow2.asm"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "asm-commons",
+    "revision": "8.0.1",
+    "@id": "http:maven/org.ow2.asm/asm-commons/8.0.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.ow2.asm:asm-commons:8.0.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "asm-commons",
+          "8.0.1"
+        ],
+        "prefix": "org.ow2.asm"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.ow2.asm/asm/8.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.ow2.asm/asm-tree/8.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.ow2.asm/asm-analysis/8.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "asm-tree",
+    "revision": "8.0.1",
+    "@id": "http:maven/org.ow2.asm/asm-tree/8.0.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.ow2.asm:asm-tree:8.0.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "asm-tree",
+          "8.0.1"
+        ],
+        "prefix": "org.ow2.asm"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.ow2.asm/asm/8.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "asm-analysis",
+    "revision": "8.0.1",
+    "@id": "http:maven/org.ow2.asm/asm-analysis/8.0.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.ow2.asm:asm-analysis:8.0.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "asm-analysis",
+          "8.0.1"
+        ],
+        "prefix": "org.ow2.asm"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.ow2.asm/asm-tree/8.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "org.jacoco.agent",
+    "revision": "0.8.6",
+    "@id": "http:maven/org.jacoco/org.jacoco.agent/0.8.6",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.jacoco:org.jacoco.agent:0.8.6",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "org.jacoco.agent",
+          "0.8.6"
+        ],
+        "prefix": "org.jacoco"
+      }
+    },
+    "relationship": []
+  },
+  {
     "name": "junit-pioneer",
     "revision": "0.3.3",
     "@id": "http:maven/org.junit-pioneer/junit-pioneer/0.3.3",
@@ -577,6 +783,28 @@
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
+  },
+  {
+    "name": "annotations",
+    "revision": "20.1.0",
+    "@id": "http:maven/org.jetbrains/annotations/20.1.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.jetbrains:annotations:20.1.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "annotations",
+          "20.1.0"
+        ],
+        "prefix": "org.jetbrains"
+      }
+    },
+    "relationship": []
   },
   {
     "name": "json-smart",
@@ -631,28 +859,6 @@
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
-  },
-  {
-    "name": "asm",
-    "revision": "8.0.1",
-    "@id": "http:maven/org.ow2.asm/asm/8.0.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.ow2.asm:asm:8.0.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "pieces": [
-          "asm",
-          "8.0.1"
-        ],
-        "prefix": "org.ow2.asm"
-      }
-    },
-    "relationship": []
   },
   {
     "name": "mockito-core",
@@ -756,28 +962,6 @@
     "relationship": []
   },
   {
-    "name": "org.jacoco.agent",
-    "revision": "0.8.6",
-    "@id": "http:maven/org.jacoco/org.jacoco.agent/0.8.6",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.jacoco:org.jacoco.agent:0.8.6",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "pieces": [
-          "org.jacoco.agent",
-          "0.8.6"
-        ],
-        "prefix": "org.jacoco"
-      }
-    },
-    "relationship": []
-  },
-  {
     "name": "slf4j-api",
     "revision": "1.7.30",
     "@id": "http:maven/org.slf4j/slf4j-api/1.7.30",
@@ -815,302 +999,6 @@
         "pieces": [
           "commons-lang3",
           "3.11"
-        ],
-        "prefix": "org.apache.commons"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "mockito-core",
-    "revision": "2.+",
-    "@id": "http:maven/org.mockito/mockito-core/2.%2B",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.mockito:mockito-core:2.+",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "pieces": [
-          "mockito-core",
-          "2.+"
-        ],
-        "prefix": "org.mockito"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "org.jacoco.ant",
-    "revision": "0.8.6",
-    "@id": "http:maven/org.jacoco/org.jacoco.ant/0.8.6",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.jacoco:org.jacoco.ant:0.8.6",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "pieces": [
-          "org.jacoco.ant",
-          "0.8.6"
-        ],
-        "prefix": "org.jacoco"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org.jacoco/org.jacoco.report/0.8.6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org.jacoco/org.jacoco.agent/0.8.6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org.jacoco/org.jacoco.core/0.8.6",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "org.jacoco.report",
-    "revision": "0.8.6",
-    "@id": "http:maven/org.jacoco/org.jacoco.report/0.8.6",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.jacoco:org.jacoco.report:0.8.6",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "pieces": [
-          "org.jacoco.report",
-          "0.8.6"
-        ],
-        "prefix": "org.jacoco"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org.jacoco/org.jacoco.core/0.8.6",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "org.jacoco.core",
-    "revision": "0.8.6",
-    "@id": "http:maven/org.jacoco/org.jacoco.core/0.8.6",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.jacoco:org.jacoco.core:0.8.6",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "pieces": [
-          "org.jacoco.core",
-          "0.8.6"
-        ],
-        "prefix": "org.jacoco"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org.ow2.asm/asm/8.0.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org.ow2.asm/asm-commons/8.0.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org.ow2.asm/asm-tree/8.0.1",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "asm-commons",
-    "revision": "8.0.1",
-    "@id": "http:maven/org.ow2.asm/asm-commons/8.0.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.ow2.asm:asm-commons:8.0.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "pieces": [
-          "asm-commons",
-          "8.0.1"
-        ],
-        "prefix": "org.ow2.asm"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org.ow2.asm/asm/8.0.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org.ow2.asm/asm-tree/8.0.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org.ow2.asm/asm-analysis/8.0.1",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "asm-tree",
-    "revision": "8.0.1",
-    "@id": "http:maven/org.ow2.asm/asm-tree/8.0.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.ow2.asm:asm-tree:8.0.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "pieces": [
-          "asm-tree",
-          "8.0.1"
-        ],
-        "prefix": "org.ow2.asm"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org.ow2.asm/asm/8.0.1",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "asm-analysis",
-    "revision": "8.0.1",
-    "@id": "http:maven/org.ow2.asm/asm-analysis/8.0.1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.ow2.asm:asm-analysis:8.0.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "pieces": [
-          "asm-analysis",
-          "8.0.1"
-        ],
-        "prefix": "org.ow2.asm"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org.ow2.asm/asm-tree/8.0.1",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "junit-jupiter-params",
-    "revision": "5.4.2",
-    "@id": "http:maven/org.junit.jupiter/junit-jupiter-params/5.4.2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.junit.jupiter:junit-jupiter-params:5.4.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "pieces": [
-          "junit-jupiter-params",
-          "5.4.2"
-        ],
-        "prefix": "org.junit.jupiter"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "annotations",
-    "revision": "20.1.0",
-    "@id": "http:maven/org.jetbrains/annotations/20.1.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.jetbrains:annotations:20.1.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "pieces": [
-          "annotations",
-          "20.1.0"
-        ],
-        "prefix": "org.jetbrains"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "annotations",
-    "revision": "19.0.0",
-    "@id": "http:maven/org.jetbrains/annotations/19.0.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.jetbrains:annotations:19.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "pieces": [
-          "annotations",
-          "19.0.0"
-        ],
-        "prefix": "org.jetbrains"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "commons-lang3",
-    "revision": "3.10",
-    "@id": "http:maven/org.apache.commons/commons-lang3/3.10",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.apache.commons:commons-lang3:3.10",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "pieces": [
-          "commons-lang3",
-          "3.10"
         ],
         "prefix": "org.apache.commons"
       }

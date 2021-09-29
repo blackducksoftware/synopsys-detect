@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "synopsys-detect/7.5.0-SNAPSHOT/com.synopsys.integration/synopsys-detect/7.5.0-SNAPSHOT gradle/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-7.5.0-SNAPSHOT",
-        "Tool: IntegrationBdio-22.1.4"
-      ],
-      "spdx:created": "2021-08-13T18:40:29.799Z"
-    },
-    "@id": "uuid:9464726a-2dff-4a15-8aec-810bef7b6c93",
     "@type": "BillOfMaterials",
     "relationship": []
   },
@@ -71,10 +63,6 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:maven/org.mockito/mockito-core/2.%2B",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
         "related": "http:maven/org.mockito/mockito-core/3.6.28",
         "relationshipType": "DYNAMIC_LINK"
       },
@@ -132,10 +120,6 @@
       },
       {
         "related": "http:maven/org.junit.jupiter/junit-jupiter-api/5.7.1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org.mockito/mockito-inline/2.%2B",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -852,28 +836,6 @@
           "3.13.2"
         ],
         "prefix": "org.assertj"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "mockito-core",
-    "revision": "2.+",
-    "@id": "http:maven/org.mockito/mockito-core/2.%2B",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.mockito:mockito-core:2.+",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "pieces": [
-          "mockito-core",
-          "2.+"
-        ],
-        "prefix": "org.mockito"
       }
     },
     "relationship": []
@@ -2742,28 +2704,6 @@
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
-  },
-  {
-    "name": "mockito-inline",
-    "revision": "2.+",
-    "@id": "http:maven/org.mockito/mockito-inline/2.%2B",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.mockito:mockito-inline:2.+",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "pieces": [
-          "mockito-inline",
-          "2.+"
-        ],
-        "prefix": "org.mockito"
-      }
-    },
-    "relationship": []
   },
   {
     "name": "annotations",
