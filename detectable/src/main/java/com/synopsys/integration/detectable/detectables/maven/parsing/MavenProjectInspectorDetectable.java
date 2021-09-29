@@ -25,7 +25,7 @@ import com.synopsys.integration.detectable.detectables.projectinspector.ProjectI
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "C#", forge = "NuGet.org", requirementsMarkdown = "File: a project file with one of the following extensions: .csproj, .sln")
+@DetectableInfo(language = "various", forge = "Maven Central", requirementsMarkdown = "File: pom.xml.")
 public class MavenProjectInspectorDetectable extends Detectable {
     private static final String POM_XML_FILENAME = "pom.xml";
 

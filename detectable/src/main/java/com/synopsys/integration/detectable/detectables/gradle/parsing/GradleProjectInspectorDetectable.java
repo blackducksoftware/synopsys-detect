@@ -24,7 +24,7 @@ import com.synopsys.integration.detectable.detectables.projectinspector.ProjectI
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "C#", forge = "NuGet.org", requirementsMarkdown = "File: a project file with one of the following extensions: .csproj, .sln")
+@DetectableInfo(language = "various", forge = "Maven Central", requirementsMarkdown = "File: build.gradle")
 public class GradleProjectInspectorDetectable extends Detectable {
     public static final String BUILD_GRADLE_FILENAME = "build.gradle";
 
