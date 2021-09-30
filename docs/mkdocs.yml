@@ -23,12 +23,22 @@ nav:
      - Overview: 00-introduction.md
      - Getting Started:
        - 15-gettingstarted/index.md
-       - Key Concepts and Terms: 15-gettingstarted/terms.md
-       - How Synopsys Detect Works: 15-gettingstarted/howitworks.md
-       - Synopsys Detect Basic Workflow: 15-gettingstarted/workflow.md
-       - Configuring Synopsys Detect Processing: 15-gettingstarted/configuring.md
-       - Users and Roles: 15-gettingstarted/usersandroles.md
-       - Getting Help: 15-gettingstarted/gettinghelp.md
+       - 15-gettingstarted/terms.md
+       - 15-gettingstarted/howitworks.md
+       - 15-gettingstarted/workflow.md
+       - 15-gettingstarted/configuring.md
+       - 15-gettingstarted/usersandroles.md
+       - 15-gettingstarted/gettinghelp.md
+     - Getting and Running Detect:
+       - 23-downloadingandrunning/index.md
+       - 23-downloadingandrunning/10-codeverification.md
+       - 23-downloadingandrunning/20-includingexcluding.md
+       - 23-downloadingandrunning/30-downloadlocations.md
+       - 23-downloadingandrunning/40-airgap.md
+       - 23-downloadingandrunning/50-rapidscan.md
+       - 23-downloadingandrunning/60-statusfile.md
+       - 23-downloadingandrunning/70-proxy.md
+       - 23-downloadingandrunning/80-concurrent.md
      - Requirements: 10-requirements.md
      - Quick Start: 20-quickstart.md
      - Running: 30-running.md
