@@ -4,7 +4,7 @@ import com.synopsys.integration.detect.verification.VerifyBlackDuckDetectTask
 
 buildscript {
     ext {
-        springBootVersion = '2.4.5'
+        springBootVersion = '2.5.5'
         blackDuckCommonVersion = '58.0.2'
         junitPlatformCustomTestTags = 'docker, battery'
     }
@@ -15,6 +15,29 @@ buildscript {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
     }
 }
+
+// start region: NATIVE EXPERIMENT
+
+plugins {
+    id 'application'
+    id 'org.springframework.experimental.aot' version '0.10.4'
+    id 'org.graalvm.buildtools.native' version "0.9.5"
+}
+
+
+graalvmNative {
+    binaries {
+        main {
+            // Main options
+            imageName = 'detect-native' // The name of the native image, defaults to the project name
+            mainClass = 'com.synopsys.integration.detect.Application'
+            fallback = false // don't create JVM dependent image if effort to create native image fails
+            buildArgs('--allow-incomplete-classpath') // args passed to native-image executable
+        }
+    }
+}
+
+// END region: NATIVE EXPERIMENT
 
 //TODO Remove this when the Spock dependency, Spock 2.0, is officially released. Upgrade to a Spring Boot version that depends on Groovy 3.0.0 and Spock 2.0 by default.
 ext['groovy.version'] = '3.0.0'
@@ -44,6 +67,7 @@ def createBatteryPath() {
 
 repositories {
     maven { url "https://sig-repo.synopsys.com/bds-bdio-release" }
+    maven { url 'https://repo.spring.io/release' }
 }
 
 subprojects {

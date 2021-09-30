@@ -1,3 +1,10 @@
+pluginManagement {
+    repositories {
+        maven { url 'https://repo.spring.io/release' }
+        gradlePluginPortal()
+    }
+}
+
 rootProject.name = 'synopsys-detect'
 
 include 'detectable'
