@@ -32,4 +32,7 @@ public class ProjectInspectorDependency {
 
     @SerializedName("Artifacts")
     public List<String> artifacts;
+
+    @SerializedName("MavenCoordinates")
+    public ProjectInspectorMavenCoordinate mavenCoordinate;
 }

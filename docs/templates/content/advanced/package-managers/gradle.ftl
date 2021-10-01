@@ -30,6 +30,9 @@ ${solution_name} will pass along supplied [proxy host](../../../properties/confi
 <a name="gradleinspectorwithproxy"></a>
 
 <a name="gradleparsedetector"></a>
+
 # Gradle parse detector
 
-TBD
+The buildless gradle detector uses Project Inspector to find dependencies.
+
+It currently only supports "build.gradle" and does not support Kotlin build files.
