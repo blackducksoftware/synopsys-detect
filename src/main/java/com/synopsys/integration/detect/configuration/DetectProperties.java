@@ -896,7 +896,8 @@ public class DetectProperties {
     public static final DetectProperty<PathListProperty> DETECT_PIP_REQUIREMENTS_PATH =
         new DetectProperty<>(new PathListProperty("detect.pip.requirements.path", emptyList()))
             .setInfo("PIP Requirements Path", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("A comma-separated list of paths to requirements files, to be used to analyze requirements files with a filename other than requirements.txt or to specify which requirements files should be analyzed.")
+            .setHelp("A comma-separated list of paths to requirements files, to be used to analyze requirements files with a filename other than requirements.txt or to specify which requirements files should be analyzed.",
+                    "This property should only be set if you want the PIP Inspector Detector to run. For example: If your project uses Pipenv, do not set this property.")
             .setGroups(DetectGroup.PIP, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<BooleanProperty> DETECT_PIP_ONLY_PROJECT_TREE =
