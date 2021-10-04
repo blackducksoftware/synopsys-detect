@@ -6,11 +6,15 @@
 * Added the property [detect.follow.symbolic.links](../properties/configuration/general/#follow-symbolic-links) which can be used to enable ${solution_name} to follow symbolic links when searching directories for detectors, when creating exclusions for signature scan, and when creating binary scan targets.
 * Added support for Open Container Initiative (OCI) images provided to ${solution_name} using the *detect.docker.tar* property.
 * Added the property [detect.gradle.include.unresolved.configurations](../properties/detectors/gradle/#gradle-include-unresolved-configurations-advanced) for toggling the inclusion of [unresolved Gradle configurations](https://docs.gradle.org/7.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs).
+* Added Project Inspector support for MAVEN and GRADLE when resolving buildless dependencies.
+* Added support for NUGET buildless using the Project Inspector.
 
 ### Changed features
 * The detect.project.clone.categories property now supports ALL and NONE as options.
 * The the default value for property detect.project.clone.categories has changed to ALL.
 * Deprecated detect.bom.aggregate.name, detect.bom.aggregate.remediation.mode, and blackduck.legacy.upload.enabled. In version 8, ${solution_name} will only operate in SUBPROJECT aggregation mode to report the dependency graph with greater accuracy.
+* Maven defaults to the legacy buildless parser, Project Inspector must be enabled with detect.maven.buildless.legacy.mode. In version 8, it will default to Project Inspector.
+* Deprecated detect.maven.include.plugins as Project Inspector does not support plugins. In version 8, we will only support the Project Inspector Maven implementation which will have it's own configuration mechanism.
 * The Air Gap Zip generation options no longer support individual package managers. Instead either a FULL air gap can be created, or a NO_DOCKER air gap can be created. This is to help support project inspector which spans multiple package managers.
 
 ### Resolved issues
