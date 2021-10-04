@@ -12,17 +12,16 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.configuration.parse.ListValueParser;
-import com.synopsys.integration.configuration.property.base.ValuedListProperty;
+import com.synopsys.integration.configuration.property.base.ValuedProperty;
 import com.synopsys.integration.configuration.util.EnumPropertyUtils;
 import com.synopsys.integration.configuration.util.PropertyUtils;
 
-public class FilterableEnumListProperty<E extends Enum<E>> extends ValuedListProperty<FilterableEnumValue<E>> {
+public class FilterableEnumListProperty<E extends Enum<E>> extends ValuedProperty<FilterableEnumList<E>> {
     @NotNull
     private final Class<E> enumClass;
 
     public FilterableEnumListProperty(@NotNull String key, @NotNull List<FilterableEnumValue<E>> defaultValue, @NotNull Class<E> enumClass) {
-        super(key, new ListValueParser<>(new FilterableEnumValueParser<>(enumClass)), defaultValue);
+        super(key, new FilterableEnumListParser<>(enumClass), new FilterableEnumList<>(defaultValue, enumClass));
         this.enumClass = enumClass;
     }
 
@@ -40,7 +39,7 @@ public class FilterableEnumListProperty<E extends Enum<E>> extends ValuedListPro
     @Nullable
     @Override
     public String describeDefault() {
-        return PropertyUtils.describeObjectList(getDefaultValue());
+        return PropertyUtils.describeObjectList(getDefaultValue().toFilterableValues());
     }
 
     @Nullable

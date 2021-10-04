@@ -8,11 +8,9 @@
 package com.synopsys.integration.detect.configuration;
 
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.Nullable;
@@ -22,8 +20,6 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.base.NullableProperty;
 import com.synopsys.integration.configuration.property.base.ValuedProperty;
-import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumUtils;
-import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumValue;
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetLocatorOptions;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
@@ -77,10 +73,8 @@ public class DetectableOptionFactory {
     public BazelDetectableOptions createBazelDetectableOptions() {
         String targetName = getNullableValue(DetectProperties.DETECT_BAZEL_TARGET);
         List<String> bazelCqueryAdditionalOptions = getValue(DetectProperties.DETECT_BAZEL_CQUERY_OPTIONS);
-
-        List<FilterableEnumValue<WorkspaceRule>> bazelDependencyRulesPropertyValues = getValue(DetectProperties.DETECT_BAZEL_DEPENDENCY_RULE);
-        Set<WorkspaceRule> bazelDependencyRules = deriveBazelDependencyRules(bazelDependencyRulesPropertyValues);
-        return new BazelDetectableOptions(targetName, bazelDependencyRules, bazelCqueryAdditionalOptions);
+        List<WorkspaceRule> bazelDependencyRules = getValue(DetectProperties.DETECT_BAZEL_DEPENDENCY_RULE).representedValues();
+        return new BazelDetectableOptions(targetName, new HashSet<>(bazelDependencyRules), bazelCqueryAdditionalOptions);
     }
 
     public BitbakeDetectableOptions createBitbakeDetectableOptions() {
@@ -224,8 +218,8 @@ public class DetectableOptionFactory {
     public PipInspectorDetectableOptions createPipInspectorDetectableOptions() {
         String pipProjectName = getNullableValue(DetectProperties.DETECT_PIP_PROJECT_NAME);
         List<Path> requirementsFilePath = getValue(DetectProperties.DETECT_PIP_REQUIREMENTS_PATH).stream()
-            .map(it -> it.resolvePath(pathResolver))
-            .collect(Collectors.toList());
+                                              .map(it -> it.resolvePath(pathResolver))
+                                              .collect(Collectors.toList());
         return new PipInspectorDetectableOptions(pipProjectName, requirementsFilePath);
     }
 
@@ -263,36 +257,6 @@ public class DetectableOptionFactory {
         List<String> packagesRepoUrl = getValue(DetectProperties.DETECT_NUGET_PACKAGES_REPO_URL);
         String nugetInspectorVersion = getNullableValue(DetectProperties.DETECT_NUGET_INSPECTOR_VERSION);
         return new NugetLocatorOptions(packagesRepoUrl, nugetInspectorVersion);
-    }
-
-    private Set<WorkspaceRule> deriveBazelDependencyRules(List<FilterableEnumValue<WorkspaceRule>> bazelDependencyRulesPropertyValues) {
-        Set<WorkspaceRule> bazelDependencyRules = new HashSet<>();
-        if (noneSpecified(bazelDependencyRulesPropertyValues)) {
-            // Leave bazelDependencyRules empty
-        } else if (allSpecified(bazelDependencyRulesPropertyValues)) {
-            bazelDependencyRules.addAll(Arrays.asList(WorkspaceRule.values()));
-        } else {
-            bazelDependencyRules.addAll(FilterableEnumUtils.toPresentValues(bazelDependencyRulesPropertyValues));
-        }
-        return bazelDependencyRules;
-    }
-
-    private boolean noneSpecified(List<FilterableEnumValue<WorkspaceRule>> rulesPropertyValues) {
-        boolean noneWasSpecified = false;
-        if (rulesPropertyValues == null ||
-                FilterableEnumUtils.containsNone(rulesPropertyValues) ||
-                (FilterableEnumUtils.toPresentValues(rulesPropertyValues).isEmpty() && !FilterableEnumUtils.containsAll(rulesPropertyValues))) {
-            noneWasSpecified = true;
-        }
-        return noneWasSpecified;
-    }
-
-    private boolean allSpecified(List<FilterableEnumValue<WorkspaceRule>> userProvidedRules) {
-        boolean allWasSpecified = false;
-        if (userProvidedRules != null && FilterableEnumUtils.containsAll(userProvidedRules)) {
-            allWasSpecified = true;
-        }
-        return allWasSpecified;
     }
 
     private <P, T extends NullableProperty<P>> P getNullableValue(DetectProperty<T> detectProperty) {

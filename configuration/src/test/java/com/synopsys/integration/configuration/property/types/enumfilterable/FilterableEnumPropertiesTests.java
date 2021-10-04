@@ -83,7 +83,7 @@ class FilterableEnumPropertiesTests {
         final FilterableEnumListProperty<Example> property = new FilterableEnumListProperty<>("enum.list", Arrays.asList(FilterableEnumValue.value(Example.ANOTHER), FilterableEnumValue.value(Example.THING)), Example.class);
         final PropertyConfiguration config = configOf(Pair.of("enum.valued", "ANOTHER,THING"));
 
-        final List<FilterableEnumValue<Example>> value = config.getValue(property);
+        final List<FilterableEnumValue<Example>> value = config.getValue(property).toFilterableValues();
 
         if (FilterableEnumUtils.containsNone(value)) {
             fail("Expected type to be Value instead of None.");
@@ -93,6 +93,6 @@ class FilterableEnumPropertiesTests {
             Assertions.assertEquals(Arrays.asList(FilterableEnumValue.value(Example.ANOTHER), FilterableEnumValue.value(Example.THING)), value);
         }
 
-        PropertyTestHelpUtil.assertAllListHelpValid(property, Arrays.asList("THING", "ANOTHER", "THIRD", "NONE", "ALL"));
+        PropertyTestHelpUtil.assertAllHelpValid(property, Arrays.asList("THING", "ANOTHER", "THIRD", "NONE", "ALL"));
     }
 }

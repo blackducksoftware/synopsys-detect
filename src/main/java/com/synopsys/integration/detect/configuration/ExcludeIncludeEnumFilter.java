@@ -9,6 +9,7 @@ package com.synopsys.integration.detect.configuration;
 
 import java.util.List;
 
+import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumList;
 import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumUtils;
 import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumValue;
 
@@ -19,6 +20,11 @@ public class ExcludeIncludeEnumFilter<T extends Enum<T>> {
     public ExcludeIncludeEnumFilter(List<FilterableEnumValue<T>> excluded, List<FilterableEnumValue<T>> included) {
         this.excluded = excluded;
         this.included = included;
+    }
+
+    public ExcludeIncludeEnumFilter(FilterableEnumList<T> excluded, FilterableEnumList<T> included) {
+        this.excluded = excluded.toFilterableValues();
+        this.included = included.toFilterableValues();
     }
 
     private boolean willExclude(T value) {

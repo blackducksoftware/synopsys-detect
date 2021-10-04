@@ -41,6 +41,7 @@ public class FilterableEnumUtils {
                    .anyMatch(value::equals);
     }
 
+    //The set of values actually PRESENT in the underlying collection, regardless of NONE, ALL. Example LIST(ALL, VALUE1, VALUE2) -> [VALUE1, VALUE2]
     public static <T extends Enum<T>> List<T> toPresentValues(@NotNull List<FilterableEnumValue<T>> filterableList) {
         return filterableList.stream()
                    .map(FilterableEnumValue::getValue)
@@ -49,7 +50,8 @@ public class FilterableEnumUtils {
                    .collect(Collectors.toList());
     }
 
-    public static <T extends Enum<T>> List<T> populatedValues(@NotNull List<FilterableEnumValue<T>> filterableList, Class<T> enumClass) {
+    //The set of values REPRESENTED by the underlying collection, basically ALL and NONE are resolved to their actual values. So LIST(ALL) -> [VALUE1, VALUE2 ...]
+    public static <T extends Enum<T>> List<T> representedValues(@NotNull List<FilterableEnumValue<T>> filterableList, Class<T> enumClass) {
         if (FilterableEnumUtils.containsNone(filterableList)) {
             return new ArrayList<>();
         } else if (FilterableEnumUtils.containsAll(filterableList)) {
