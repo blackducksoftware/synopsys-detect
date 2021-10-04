@@ -29,22 +29,42 @@ nav:
        - 15-gettingstarted/configuring.md
        - 15-gettingstarted/usersandroles.md
        - 15-gettingstarted/gettinghelp.md
-     - Getting and Running Detect:
-       - 23-downloadingandrunning/index.md
-       - 23-downloadingandrunning/10-codeverification.md
-       - 23-downloadingandrunning/20-includingexcluding.md
-       - 23-downloadingandrunning/30-downloadlocations.md
-       - 23-downloadingandrunning/40-airgap.md
-       - 23-downloadingandrunning/50-rapidscan.md
-       - 23-downloadingandrunning/60-statusfile.md
-       - 23-downloadingandrunning/70-proxy.md
-       - 23-downloadingandrunning/80-concurrent.md
      - Requirements: 10-requirements.md
      - Quick Start: 20-quickstart.md
-     - Running: 30-running.md
+     - Getting and Running Detect:
+       - 23-downloadingandrunning/index.md
+       - 23-downloadingandrunning/codeverification.md
+       - 23-downloadingandrunning/includingexcluding.md
+       - 23-downloadingandrunning/downloadlocations.md
+       - 23-downloadingandrunning/airgap.md
+       - 23-downloadingandrunning/rapidscan.md
+       - 23-downloadingandrunning/statusfile.md
+       - 23-downloadingandrunning/proxy.md
+       - 23-downloadingandrunning/concurrent.md
+     - Project, Version, and Code Location Naming: naming.md
      - Configuring: 40-configuring.md
-     - Quick Reference: 70-quickreference.md
+     - Viewing and Managing Scan Results: scanresults.md
+     - Troubleshooting:
+       - troubleshooting/index.md
+       - troubleshooting/general-troubleshooting.md
+       - troubleshooting/solutions.md
+     - Shell Script Reference:
+       - scripts/index.md
+       - scripts/script-configuration.md
+       - scripts/script-escaping-special-characters.md
+     - Components:
+       - components/index.md
+       - components/tools.md
+       - components/detectors.md
+       - components/inspectors.md
+     - Properties:
+       - properties/index.md
+       - properties/all-properties.md
+     - Package Manager Information
      - Release notes: 90-releasenotes.md
+     - Find a home for
+     - Running: 30-running.md
+     - Quick Reference: 70-quickreference.md
 
 
 
