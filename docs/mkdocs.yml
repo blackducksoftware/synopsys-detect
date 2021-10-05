@@ -50,15 +50,13 @@ nav:
        - 50-results/reports.md
      - Troubleshooting:
        - 60-troubleshooting/index.md
-       - 60-troubleshooting/general-troubleshooting.md
        - 60-troubleshooting/diagnosticmode.md
-       - advanced/exit-codes.md
+       - advanced/troubleshooting/exit-codes.md
        - 60-troubleshooting/solutions.md
        - 60-troubleshooting/usage-metrics.md
      - Shell Script Reference:
-       - scripts/index.md
-       - scripts/script-configuration.md
-       - scripts/script-escaping-special-characters.md
+       - 70-scripts/index.md
+       - 70-scripts/script-escaping-special-characters.md
      - Components:
        - components/index.md
        - components/tools.md
