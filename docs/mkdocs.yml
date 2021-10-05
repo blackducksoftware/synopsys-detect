@@ -38,16 +38,23 @@ nav:
        - 23-downloadingandrunning/downloadlocations.md
        - 23-downloadingandrunning/airgap.md
        - 23-downloadingandrunning/rapidscan.md
-       - 23-downloadingandrunning/statusfile.md
-       - 23-downloadingandrunning/proxy.md
+       - advanced/status-file.md
+       - 23-downloadingandrunning/proxies.md
        - 23-downloadingandrunning/concurrent.md
-     - Project, Version, and Code Location Naming: naming.md
+     - Naming:
+       - 27-naming/index.md
+       - 27-naming/aggregation.md
      - Configuring: 40-configuring.md
-     - Viewing and Managing Scan Results: scanresults.md
+     - Results:
+       - 50-results/index.md
+       - 50-results/reports.md
      - Troubleshooting:
-       - troubleshooting/index.md
-       - troubleshooting/general-troubleshooting.md
-       - troubleshooting/solutions.md
+       - 60-troubleshooting/index.md
+       - 60-troubleshooting/general-troubleshooting.md
+       - 60-troubleshooting/diagnosticmode.md
+       - advanced/exit-codes.md
+       - 60-troubleshooting/solutions.md
+       - 60-troubleshooting/usage-metrics.md
      - Shell Script Reference:
        - scripts/index.md
        - scripts/script-configuration.md
