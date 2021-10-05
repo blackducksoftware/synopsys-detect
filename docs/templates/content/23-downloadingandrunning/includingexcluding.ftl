@@ -1,9 +1,9 @@
-## Including and excluding tools and detectors
+# Including and Excluding Tools and Detectors
 
 [Properties](../properties/all-properties/) provide a variety of additional options for configuring ${solution_name} behavior. One of the
 most fundamental ways to modify ${solution_name} is by including and excluding [tools](../components/tools/) and [detectors](../components/detectors/).
 
-### Tools
+## Tools
 
 By default, all tools are eligible to run; the set of tools that actually run
 depends on the properties you set.
@@ -23,7 +23,7 @@ Refer to [Tools](../components/tools/) for the list of tool names.
 
 Refer to [Properties](../properties/all-properties/) for details.
 
-### Detectors
+## Detectors
 
 By default, all detectors are eligible to run.  The set of detectors that actually
 run depends on the files existing in your project directory.

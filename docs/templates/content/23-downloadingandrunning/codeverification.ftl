@@ -1,4 +1,4 @@
-# ${solution_name} code verification
+# ${solution_name} Code Verification
 
 Two methods are available to verify that the ${solution_name} code you run has not been tampered with since it was built by ${company_name}:
 code signature verification and checksum verification.
