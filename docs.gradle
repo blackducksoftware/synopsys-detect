@@ -13,8 +13,15 @@ task generateDocs(type: GenerateDocsTask) {
     dependsOn helpJson
 }
 
-task docs() {
+task copyNav(type: Copy) {
     dependsOn generateDocs
+    from "docs"
+    into "docs/generated"
+    include "nav.md"
+}
+
+task docs() {
+    dependsOn copyNav
 
     doLast {
         exec {

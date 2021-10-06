@@ -1,28 +1,20 @@
-# Detect generates markdown from the source code using the gradle task 'docs'.
-# The task uses freemarker ftl files inside 'templates' and the files inside 'static' to create files fed to mkdocs.
-# The generated markdown is placed inside 'generated' and 'mkdocs build' is run against that markdown and creates a 'site' directory.
-# Neither the 'generated' folder nor the mkdocs 'site' folder should be added to source control.
-# After running the 'docs' task, the 'site' folder can be uploaded to gh-pages.
-# To build, install pip and python, then execute:
-#   pip install mkdocs
-#   pip install mkdocs-material
-#   pip install mkdocs-literate-nav
-# To view the docs, you must execute:
-#   At project root: gradlew docs
-#   At docs/site: mkdocs serve
-site_name: Synopsys Detect
-theme:
-  name: 'material'
-  features:
-    - navigation.indexes
-docs_dir: 'generated'
-plugins:
-  - search
-  - literate-nav:
-      nav_file: nav.md
-markdown_extensions:
-  - toc:
-      permalink: "#"
+- [Help Topics](index.md)
+- [Getting Started](15-gettingstarted/)
+- [Requirements](10-requirements.md/)
+- [Quick Start](20-quickstart.md)
+- [Getting and Running Detect](23-downloadingandrunning/)
+- [Naming](27-naming/)
+- [Configuring](40-configuring.md)
+- [Results](50-results/)
+- [Troubleshooting](60-troubleshooting/)
+- [Shell Script Reference](70-scripts/)
+- [Components](components/)
+- [Properties](properties/)
+- [Package Manager Information](packagemgrs/)
+- [Release Notes](90-releasenotes.md)
+## - */
+## - *.md
+
 #nav:
 #     - <b>Documentation</b>: index.md
 #     - Overview: 00-introduction.md
