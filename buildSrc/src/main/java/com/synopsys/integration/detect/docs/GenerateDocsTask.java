@@ -62,8 +62,8 @@ public class GenerateDocsTask extends DefaultTask {
         HelpJsonData helpJson = new Gson().fromJson(reader, HelpJsonData.class);
 
         File outputDir = project.file("docs/generated");
-        File advancedDir = new File(outputDir, "advanced");
-        File troubleshootingDir = new File(advancedDir, "troubleshooting");
+        File runningDir = new File(outputDir, "downloadingandrunning");
+        File troubleshootingDir = new File(outputDir, "troubleshooting");
 
         FileUtils.deleteDirectory(outputDir);
         troubleshootingDir.mkdirs();
@@ -72,7 +72,7 @@ public class GenerateDocsTask extends DefaultTask {
 
         createFromFreemarker(templateProvider, troubleshootingDir, "exit-codes", new ExitCodePage(helpJson.getExitCodes()));
 
-        createFromFreemarker(templateProvider, advancedDir, "status-file", new DetectorStatusCodes(helpJson.getDetectorStatusCodes()));
+        createFromFreemarker(templateProvider, runningDir, "status-file", new DetectorStatusCodes(helpJson.getDetectorStatusCodes()));
 
         handleDetectors(templateProvider, outputDir, helpJson);
         handleProperties(templateProvider, outputDir, helpJson);
