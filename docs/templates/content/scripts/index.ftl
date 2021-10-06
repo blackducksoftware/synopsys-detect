@@ -11,7 +11,7 @@ In Command or Batch, an environment variable is set as follows:
 
 In PowerShell, an environment variable is set as follows:
     $Env:ENV_VAR_NAME = value
-Note it is generally recommended to run the Detect PowerShell script from a Command line, not from within PowerShell itself.
+Note it is generally recommended to run the ${solution_name} PowerShell script from a Command line, not from within PowerShell itself.
 
 | Variable             | Purpose                                             | Value           | Notes                                      |
 | -------------------- | --------------------------------------------------- | --------------- | ------------------------------------------ |

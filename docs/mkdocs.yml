@@ -23,8 +23,3 @@ plugins:
 markdown_extensions:
   - toc:
       permalink: "#"
-
-# TODO:
-#     - Find a home for any unused content:
-#     - Running: 30-running.md
-#     - Quick Reference: 70-quickreference.md

@@ -16,7 +16,8 @@ Requirements for ${solution_name}
 
 For connecting to ${blackduck_product_name}:
 
-* Licensed installation of the current version of ${blackduck_product_name} with access credentials.  Visit [this page](${blackduck_release_page}) to determine the current version of Black Duck.
+* Licensed installation of the current version of ${blackduck_product_name} with access credentials.
+Visit [this page](${blackduck_release_page}) to determine the current version of ${blackduck_product_name}.
 * The ${blackduck_product_name} notifications module must be enabled.
 * A ${blackduck_product_name} user with the [required roles](../advanced/BD-user-role-requirements/).
 * On Alpine Linux you will also need to override the Java installation used by the ${blackduck_signature_scanner_name} as described [here](../advanced/troubleshooting/solutions/#solution_8).

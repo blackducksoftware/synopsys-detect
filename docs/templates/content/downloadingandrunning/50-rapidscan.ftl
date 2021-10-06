@@ -51,14 +51,14 @@ Rapid mode should be run with aggregation so server-side metrics can be properly
 
 Rapid Scan requires Black Duck policies. Rapid Scan only reports components that violates policies. If no policies are violated or there are no defined policies, then no components are returned.
 
-Detect will fail with FAILURE_POLICY_VIOLATION if any component violate polices with a CRITICAL or BLOCKER severity.
+${solution_name} will fail with FAILURE_POLICY_VIOLATION if any component violate polices with a CRITICAL or BLOCKER severity.
 
 See Black Duck documentation for a list of policy conditions that are supported by Rapid Scan.
 
-The Detect property detect.policy.check.fail.on.severities does not apply to Rapid Scanning.
+The ${solution_name} property detect.policy.check.fail.on.severities does not apply to Rapid Scanning.
 
-Detect does not create a Project or Version on Black Duck in Rapid Mode.
+${solution_name} does not create a Project or Version on Black Duck in Rapid Mode.
 
-Detect cannot create a Risk or Notices report for Rapid Scans.
+${solution_name} cannot create a Risk or Notices report for Rapid Scans.
 
 Rapid Scan requires bdio2 and will not run if bdio2 is not enabled.

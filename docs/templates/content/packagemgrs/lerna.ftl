@@ -44,7 +44,7 @@ With the [detect.lerna.include.private](../../../properties/detectors/lerna/#inc
 
 ${solution_name} executes commands against the Lerna executable to determine package information.
 
-${solution_name} will attempt to find the Lerna executable, but if the user wishes to override the executable Detect uses, they can supply a path to the executable using [detect.lerna.path](../../../detectors/lerna/#lerna-executable)
+${solution_name} will attempt to find the Lerna executable, but if the user wishes to override the executable ${solution_name} uses, they can supply a path to the executable using [detect.lerna.path](../../../detectors/lerna/#lerna-executable)
 
 ## Excluding Packages
 
