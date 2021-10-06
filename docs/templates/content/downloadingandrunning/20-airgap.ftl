@@ -2,7 +2,7 @@
 
 To run ${solution_name} on an air-gapped computer or network, you must first download and install
 files that ${solution_name} normally downloads as it runs. These include inspectors
-for Docker, Gradle, and NuGet.
+for Docker, Gradle, NuGet and more.
 
 ## Downloading or creating an air gap zip
 

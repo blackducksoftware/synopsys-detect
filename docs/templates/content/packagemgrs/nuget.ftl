@@ -116,3 +116,9 @@ The NuGet inspectors derive dependency information from the first type of file i
 5. XML of the project file
 
 After discovering dependencies, the dotnet inspector (NugetDotnet3Inspector or BlackduckNugetInspector) and the classic inspector (IntegrationNugetInspector) use NuGet client libraries to collect further information about the dependencies and write it to a JSON file (`<projectname>_inspection.json`). ${solution_name} then parses that file for the dependency information.
+
+# NuGet parse detector
+
+The buildless NuGet detector uses Project Inspector to find dependencies.
+
+It only supports ".csproj" and ".sln" files.
