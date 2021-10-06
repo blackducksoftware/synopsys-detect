@@ -52,6 +52,8 @@ public class GoModCommandExecutor {
             String version = matcher.group();
             String[] parts = version.split("\\.");
             if (Integer.parseInt(parts[0]) > 1 || Integer.parseInt(parts[1]) >= 14) {
+                // TODO: Why are we passing -u into these commands? We don't do anything with the "update" block. I think this slows down the run and risks introducing more errors. JM 10/2021
+                // https://pkg.go.dev/cmd/go/internal/list it appears -u only checks for package updates.
                 return execute(directory, goExe, FAILURE_MSG_QUERYING_FOR_THE_GO_MOD_GRAPH, "list", "-mod=readonly", "-m", "-u", "-json", "all");
             } else {
                 return execute(directory, goExe, FAILURE_MSG_QUERYING_FOR_THE_GO_MOD_GRAPH, "list", "-m", "-u", "-json", "all");
