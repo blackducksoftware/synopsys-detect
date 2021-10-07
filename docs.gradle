@@ -14,6 +14,8 @@ task generateDocs(type: GenerateDocsTask) {
 }
 
 task docs() {
+    dependsOn generateDocs
+
     doLast {
         exec {
             commandLine 'mkdocs', 'build'
