@@ -143,7 +143,7 @@ public class PropertyConfiguration {
 
     //region Advanced Usage
     public Optional<String> getRaw(@NotNull final Property property) {
-        assertPropertyNotNull(property, "Must supply a property get raw keys.");
+        assertPropertyNotNull(property, "Must supply a property get raw values.");
         return resolveKey(property.getKey());
     }
 
@@ -165,7 +165,7 @@ public class PropertyConfiguration {
 
     @NotNull
     public Map<String, String> getRaw(@NotNull final Set<String> keys) {
-        Assert.notNull(keys, "Must supply a set of keys to get raw keys");
+        Assert.notNull(keys, "Must supply a set of keys to get raw values");
         return getRaw(keys::contains);
     }
 
