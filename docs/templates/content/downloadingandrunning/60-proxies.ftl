@@ -51,7 +51,7 @@ For example:
     ${r"set BLACKDUCK_PROXY_USERNAME"}=$ProxyPassword
     powershell "Import-Module FULL_PATH_TO_DOWNLOADED_SCRIPT/detect7.ps1; detect"
 
-For additional information on these properties, including alternate key formats, see the [Shell script configuration reference](../advanced/script-configuration/).
+For additional information on these properties, including alternate key formats, see the [Shell script configuration reference](../scripts/index.md).
 
 When using ${powershell_script_name} to execute ${solution_name}, ${solution_name} also receives the proxy details
 from these environment variables, so no additional configuration is required for ${solution_name}.

@@ -10,7 +10,7 @@ Air gap archives are available for download from the
 [${division_name} ${binary_repo_type} server](${binary_repo_ui_url_base}/${binary_repo_repo}/${binary_repo_pkg_path}/${project_name}).
 
 As an alternative, you can create an air gap archive by running ${solution_name} with the
-[-z or --zip command line option](../../70-quickreference/#synopsys-detect-modes).
+-z or --zip command line option.
 Optionally you can follow --zip with a space and an argument (for example: --zip FULL) to customize the air gap zip. Possible values: FULL (produce a full air gap zip; the default), NO_DOCKER (do not include the Docker Inspector).
 The archive created contains the ${solution_name} .jar and the inspectors.
 
@@ -19,6 +19,4 @@ The archive created contains the ${solution_name} .jar and the inspectors.
 Before running ${solution_name} in air gap mode, unzip the air gap archive to create the air gap directory.
 
 To run ${solution_name} in air gap mode, invoke the ${solution_name} .jar file at the top level of
-the air gap directory. Refer to [Running the ${solution_name} .jar](../../30-running/#running-the-synopsys-detect-jar) for more information.
-
-
+the air gap directory. Refer to [Running the ${solution_name} .jar](index.md#running-the-synopsys-detect-jar) for more information.

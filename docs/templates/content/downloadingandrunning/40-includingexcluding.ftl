@@ -1,7 +1,7 @@
 # Including and Excluding Tools, Detectors, Directories, etc.
 
-[Properties](../properties/all-properties/) provide a variety of additional options for configuring ${solution_name} behavior. One of the
-most fundamental ways to modify ${solution_name} is by including and excluding [tools](../components/tools/) and [detectors](../components/detectors/).
+[Properties](../properties/all-properties.md) provide a variety of additional options for configuring ${solution_name} behavior. One of the
+most fundamental ways to modify ${solution_name} is by including and excluding [tools](../components/10-tools.md) and [detectors](../components/detectors.md).
 
 ## Tools
 
@@ -19,9 +19,9 @@ To exclude specific tools, use:
 
 Exclusions take precedence over inclusions.
 
-Refer to [Tools](../components/tools/) for the list of tool names.
+Refer to [Tools](../components/10-tools.md) for the list of tool names.
 
-Refer to [Properties](../properties/all-properties/) for details.
+Refer to [Properties](../properties/all-properties.md) for details.
 
 ## Detectors
 
@@ -41,9 +41,9 @@ To exclude specific detectors, use:
 
 Exclusions take precedence over inclusions.
 
-Refer to [Detectors](../components/detectors/) for the list of detector names.
+Refer to [Detectors](../components/detectors.md) for the list of detector names.
 
-Refer to [Properties](../properties/all-properties/) for details.
+Refer to [Properties](../properties/all-properties.md) for details.
 
 ## Package Manager Exclusions
 
@@ -70,7 +70,7 @@ Use [detect.excluded.directories](../../properties/configuration/paths/#detect-e
 
 ### Exclude directories by name
 
-This property accepts explicit directory names, as well as globbing-style wildcard patterns. See [here](../includeexcludewildcards/#property-wildcard-support) for more info.
+This property accepts explicit directory names, as well as globbing-style wildcard patterns. See [here](../configuring/propertywildcards) for more info.
 
 Examples
 

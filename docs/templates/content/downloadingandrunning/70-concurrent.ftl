@@ -13,16 +13,16 @@ The rest of this page addresses scenarios that do not involved inspecting Docker
 The recommended way for a single user to execute multiple ${solution_name} runs concurrently and
 avoid the collisions mentioned above is to:
 
-1. Run ${solution_name} using the air gap capability. This avoids downloading the ${solution_name} script, .jar, or inspectors during execution.
+1. Run ${solution_name} using the [air gap](20-airgap.md) capability. This avoids downloading the ${solution_name} script, .jar, or inspectors during execution.
 1. Manually download and install the ${blackduck_signature_scanner_name}, and point ${solution_name} to it. This avoids downloading the ${blackduck_signature_scanner_name} during execution.
 1. Ensure that concurrent runs do not attempt to create or update the same ${blackduck_product_name} project/version, or the same codelocation.
 
 To accomplish the first two:
 
 1. Log into ${blackduck_product_name}, and under Tools > Legacy Downloads, download and unzip the ${blackduck_signature_scanner_name}.
-1. Download the ${solution_name} gradle-nuget air gap zip from [${division_name} ${binary_repo_type} server](${binary_repo_ui_url_base}/${binary_repo_repo}/${binary_repo_pkg_path}/${project_name}) and unzip it.
+1. Download the ${solution_name} "no docker" air gap zip from [${division_name} ${binary_repo_type} server](${binary_repo_ui_url_base}/${binary_repo_repo}/${binary_repo_pkg_path}/${project_name}) and unzip it. More details on using air gap mode can be found on the [air gap page](20-airgap.md).
 1. Run ${solution_name} as shown in this example:
 
 ````
-java -jar {airgap dir}/synopsys-detect-6.4.0.jar --detect.nuget.inspector.air.gap.path={airgap dir}/packaged-inspectors/nuget/ --detect.gradle.inspector.air.gap.path={airgap dir}/packaged-inspectors/gradle/ --detect.blackduck.signature.scanner.local.path={scan.cli-yourBlackDuckVersion dir}
+java -jar {airgap dir}/synopsys-detect-{version}.jar --detect.blackduck.signature.scanner.local.path={scan.cli-yourBlackDuckVersion dir}
 ````

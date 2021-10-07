@@ -13,4 +13,4 @@ Path property value examples (applicable when executing the ${solution_name} .ja
 * Windows: --detect.npm.path="C:\Program Files\nodejs\npm.cmd"
 
 When running ${solution_name} using one of the scripts, remember to also apply quoting and escaping rules that
-apply. For more information refer to [Quoting and escaping shell script arguments](../script-escaping-special-characters/).
+apply. For more information refer to [Quoting and escaping shell script arguments](../scripts/script-escaping-special-characters.md).

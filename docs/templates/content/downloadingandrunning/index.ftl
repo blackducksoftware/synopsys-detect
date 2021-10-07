@@ -76,7 +76,7 @@ Several aspects of script functionality can be configured, including:
 * The download location.
 * Where to find Java.
 
-Information on how to configure the scripts is in [Shell script configuration](../advanced/script-configuration/).
+Information on how to configure the scripts is in [Shell script configuration](../scripts).
 
 #### Linux or Mac
 
@@ -94,7 +94,7 @@ Append any command line arguments to the end, separated by spaces. For example:
 bash <(curl -s -L https://detect.synopsys.com/detect7.sh) --blackduck.url=https://blackduck.mydomain.com --blackduck.api.token=myaccesstoken
 ````
 
-See [Quoting and escaping shell script arguments](../advanced/script-escaping-special-characters/) for details about quoting and escaping arguments.
+See [Quoting and escaping shell script arguments](../scripts/script-escaping-special-characters) for details about quoting and escaping arguments.
 
 #### Windows
 
@@ -113,7 +113,7 @@ Append any command line arguments to the end, separated by spaces. For example:
 powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect" --blackduck.url=https://blackduck.mydomain.com --blackduck.api.token=myaccesstoken
 ````
 
-See [Quoting and escaping shell script arguments](../advanced/script-escaping-special-characters/) for details about quoting and escaping arguments.
+See [Quoting and escaping shell script arguments](../scripts/script-escaping-special-characters) for details about quoting and escaping arguments.
 
 ### Running a specific version of ${solution_name}
 
@@ -215,8 +215,9 @@ ${solution_name} can be configured to perform additional tasks, including the fo
 
 * Enable any of the supported snippet matching modes in the [${blackduck_signature_scanner_name}](../properties/configuration/signature scanner/).
 * Enable the [${impact_analysis_name}](../properties/configuration/impact analysis/#vulnerability-impact-analysis-enabled) on any Java project.
-* Run [${blackduck_binary_scan_capability}](../properties/configuration/signature scanner/#binary-scan-target) on a given binary files.
-* Run the ${dockerinspector_name} on a given [Docker image](../advanced/package-managers/docker-images/).
+* Run [${blackduck_binary_scan_capability}](../properties/configuration/binary scanner) on a given binary files.
+
+* Run the ${dockerinspector_name} on a given [Docker image](../packagemgrs/docker-images/).
 * Generate a [report](../properties/configuration/report/).
 * Fail on [policy violation](../properties/configuration/project/#fail-on-policy-violation-severities-advanced).
 
@@ -237,6 +238,6 @@ Versions of ${blackduck_product_name} prior to 2018.12.4 accept only BDIO 1.
 ${blackduck_product_name} versions 2018.12.4 and higher accept either BDIO 1 or BDIO 2.
 By default, ${solution_name} produces BDIO 2 files.
 
-Use the [BDIO2 enabled property](../properties/configuration/paths/#bdio-2-enabled) to select BDIO 1 format
+Use the [BDIO2 enabled property](../properties/configuration/paths/#bdio-2-enabled-deprecated) to select BDIO 1 format
 (by disabling BDIO 2 format).
 

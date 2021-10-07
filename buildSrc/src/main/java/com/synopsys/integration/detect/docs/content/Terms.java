@@ -26,7 +26,7 @@ public class Terms {
         termMap.put("bash_script_name", "detect7.sh");
         termMap.put("powershell_script_name", "detect7.ps1");
         termMap.put("binary_repo_url_base", "https://sig-repo.synopsys.com");
-        termMap.put("binary_repo_ui_url_base", "https://sig-repo.synopsys.com/webapp/#/artifacts/browse/tree/General");
+        termMap.put("binary_repo_ui_url_base", "https://sig-repo.synopsys.com/artifactory");
         termMap.put("binary_repo_repo", "bds-integrations-release");
         termMap.put("binary_repo_pkg_path", "com/synopsys/integration");
         termMap.put("script_repo_url_base", "https://detect.synopsys.com");
