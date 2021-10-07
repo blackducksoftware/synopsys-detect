@@ -2,11 +2,10 @@
 
 ${solution_name} has two detectors for Gradle:
 
-* [Gradle inspector detector](#gradleinspectordetector)
-* [Gradle parse detector](#gradleparsedetector)
+* Gradle inspector detector
+* Gradle parse detector
 
-<a name="gradleinspectordetector"></a>
-# Gradle inspector detector
+## Gradle inspector detector
 
 The Gradle inspector detector discovers dependencies of Gradle projects.
 
@@ -24,14 +23,11 @@ Filtering (including/excluding projects and configurations) is performed by the 
 
 The init-detect.gradle script configures each project with the custom 'gatherDependencies' task, which will invoke the 'dependencies' Gradle task on each project. This ensures the same output as previous versions is produced. The inspector consumes the output of `gradlew gatherDependencies` task.
 
-<a name="gradleinspectorwithproxy"></a>
-###Running the Gradle inspector with a proxy
+### Running the Gradle inspector with a proxy
+
 ${solution_name} will pass along supplied [proxy host](../../../properties/configuration/proxy/#proxy-host-advanced) and [proxy port](../../../properties/configuration/proxy/#proxy-port-advanced) properties to the Gradle daemon if applicable.
-<a name="gradleinspectorwithproxy"></a>
 
-<a name="gradleparsedetector"></a>
-
-# Gradle parse detector
+## Gradle parse detector
 
 The buildless gradle detector uses Project Inspector to find dependencies.
 

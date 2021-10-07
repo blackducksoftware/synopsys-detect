@@ -14,15 +14,15 @@ If no lockfile is present at the root of the project, Lerna extraction will fail
 
 ## Extracting from package-lock.json
 
-The Lerna detector will execute the same code as the [NPM package lock detector](../../../advanced/package-managers/npm/#npm-package-lock).
+The Lerna detector will execute the same code as the [NPM package lock detector](npm.md#npm-package-lock).
 
-The [NPM package lock detector](../../../properties/detectors/npm/) related properties also apply.
+The [NPM package lock detector](../properties/detectors/npm.md) related properties also apply.
 
 Since the Lerna detector is currently not using the NPM Cli, only the [detect.npm.include.dev.dependencies](../../../properties/detectors/npm/#include-npm-development-dependencies) and [detect.npm.include.peer.dependencies](../../../properties/detectors/npm/#include-npm-peer-dependencies) properties apply.
 
 ## Extracting from npm-shrinkwrap.json
 
-The Lerna detector will execute the same code as the [NPM shrinkwrap detector](../../../advanced/package-managers/npm/#npm-shrinkwrap).
+The Lerna detector will execute the same code as the [NPM shrinkwrap detector](npm.md#npm-shrinkwrap).
 
 The [NPM shrinkwrap detector](../../../properties/detectors/npm/) related properties also apply.
 
@@ -30,9 +30,9 @@ Since the Lerna detector is currently not using the NPM Cli, only the [detect.np
 
 ## Extracting from yarn.lock
 
-The Lerna detector will execute the same code as the [Yarn detector](../../../advanced/package-managers/yarn/#yarn-support).
+The Lerna detector will execute the same code as the [Yarn detector](yarn.md#yarn-support).
 
-The [Yarn detector related properties](../../../properties/detectors/yarn/) also apply.
+The [Yarn detector related properties](../properties/detectors/yarn.md) also apply.
 
 Yarn workspaces are not currently supported by the Lerna detector.
 
@@ -44,8 +44,8 @@ With the [detect.lerna.include.private](../../../properties/detectors/lerna/#inc
 
 ${solution_name} executes commands against the Lerna executable to determine package information.
 
-${solution_name} will attempt to find the Lerna executable, but if the user wishes to override the executable ${solution_name} uses, they can supply a path to the executable using [detect.lerna.path](../../../detectors/lerna/#lerna-executable)
+${solution_name} will attempt to find the Lerna executable, but if the user wishes to override the executable ${solution_name} uses, they can supply a path to the executable using [detect.lerna.path](../properties/detectors/lerna.md#lerna-executable)
 
 ## Excluding Packages
 
-The Lerna detector includes/excludes Lerna packages found when it runs `lerna ls --all --json` as specified by [detect.lerna.packages.included](../../../properties/detectors/lerna/#lerna-packages-included-advanced) and [detect.lerna.packages.excluded](../../../properties/detectors/lerna/#lerna-packages-excluded-advanced).
+The Lerna detector includes/excludes Lerna packages found when it runs `lerna ls --all --json` as specified by [detect.lerna.packages.included](../properties/detectors/lerna.md#lerna-packages-included-advanced) and [detect.lerna.packages.excluded](../properties/detectors/lerna.md#lerna-packages-excluded-advanced).

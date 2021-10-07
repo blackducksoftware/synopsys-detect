@@ -2,21 +2,20 @@
 
 ${solution_name} has three detectors for Python:
 
-* [Pip detector](#pipdetector)
-* [Pipenv detector](#pipenvdetector)
-* [Poetry detector](#poetrydetector)
+* Pip detector
+* Pipenv detector
+* Poetry detector
 
-<a name="pipdetector"></a>
 ## The Pip detector
 
 The Pip detector discovers dependencies of Python projects.
 
-The Pip detector attempts to run on your project if any of the following are true: a setup.py file is found, a requirements.txt is found, or a requirements file is provided using the [--detect.pip.requirements.path](../../../properties/detectors/pip/#pip-requirements-path) property.
+The Pip detector attempts to run on your project if any of the following are true: a setup.py file is found, a requirements.txt is found, or a requirements file is provided using the [--detect.pip.requirements.path](../properties/detectors/pip.md#pip-requirements-path) property.
 
 The Pip detector requires Python and pip executables:
 
-* ${solution_name} looks for python (or python3 if the python3 property is set to true) on $PATH. You can override this by setting [--detect.python.python.path](../../../properties/detectors/pip/#python-executable)
-* ${solution_name} looks for pip (or pip3 if the python3 property is set to true) on $PATH. You can override this by setting [--detect.pip.path](../../../properties/detectors/pip/#pip-executable)
+* ${solution_name} looks for python on $PATH. You can override this by setting [--detect.python.path](../properties/detectors/python.md#python-executable)
+* ${solution_name} looks for pip on $PATH. You can override this by setting [--detect.pip.path](../properties/detectors/pip.md#pip-executable)
 
 The Pip detector runs the [pip-inspector.py script](https://github.com/blackducksoftware/synopsys-detect/blob/master/src/main/resources/pip-inspector.py), which uses Python/pip libraries to query the pip cache for the project, which may or may not be a virtual environment, for dependency information:
 
@@ -41,7 +40,6 @@ pip install -r requirements.txt
 * If there are any dependencies specified in requirements.txt that are not specified in setup.py, then provide the requirements.txt file using the ${solution_name} property.
 * If you are using a virtual environment, be sure to switch to that virtual environment when you run ${solution_name}. This also applies when you are using a tool such as Poetry that sets up a Python virtual environment.
 
-<a name="pipenvdetector"></a>
 ## Pipenv detector
 
 The Pipenv detector discovers dependencies of Python projects.
@@ -60,7 +58,6 @@ The Pipenv detector runs `pipenv run pip freeze` and `pipenv graph --bare --json
 
 To troubleshoot of the Pipenv detector, start by running `pipenv graph --bare --json-tree`, and making sure that the output looks correct since this is the basis from which ${solution_name} constructs the BDIO. If the output of `pipenv graph --bare --json-tree` does not look correct, make sure the packages (dependencies) are installed into the Pipenv virtual environment (`pipenv install`).
 
-<a name="poetrydetector"></a>
 ## Poetry detector
 
 The Poetry detector discovers dependencies of Python projects.

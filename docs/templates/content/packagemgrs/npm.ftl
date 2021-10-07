@@ -17,7 +17,7 @@ This is the most accurate way ${solution_name} supports npm as lock file contain
 
 ## npm shrinkwrap
 
-The npm shrinkwrap detector uses the [npm-shrinkwrap.json](https://docs.npmjs.com/files/shrinkwrap.json) file.
+The npm shrinkwrap detector uses the [npm-shrinkwrap.json](https://docs.npmjs.com/cli/v7/configuring-npm/npm-shrinkwrap-json) file.
 
 It is the same as a package-lock.json but is a publishable lockfile. ${solution_name} always chooses shrinkwrap over package lock.
 

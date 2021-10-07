@@ -1,10 +1,8 @@
 # Bazel support
 
-As of ${solution_name} versions 5.2.0 and higher, ${solution_name} provides limited support for Bazel projects.
+${solution_name} provides very limited support for Bazel projects.
 
-As of ${solution_name} version 5.2.0, ${solution_name} supports dependencies specified in *maven_jar* workspace rules.
-As of ${solution_name} version 6.0.0, ${solution_name} also supports dependencies specified in *maven_install* workspace rules.
-As of ${solution_name} version 6.4.0, ${solution_name} also supports dependencies specified in *haskell_cabal_library* workspace rules.
+${solution_name} supports dependencies specified in *maven_jar*, *maven_install*, and *haskell_cabal_library* workspace rules only.
 
 The Bazel tool attempts to run on your project if you provide a Bazel build target using the Bazel target property.
 

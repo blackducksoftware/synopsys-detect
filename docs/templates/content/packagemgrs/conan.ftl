@@ -9,7 +9,7 @@ ${solution_name} has two detectors for Conan:
 
 ${solution_name} will run a Conan Detector if either of the following is true:
 
-* ${solution_name} finds or is provided (via the *detect.conan.lockfile.path* property) a Conan lockfile. (If no lockfile is provided, ${solution_name} looks for a file named conan.lock.) In this case, the Conan Lockfile detector runs and discovers dependency details using the contents of the Conan lockfile.
+* ${solution_name} finds or is provided (via the *detect.conan.lockfile.path* property) a Conan lockfile. (If no lockfile is provided, ${solution_name} looks for a file named conan.lock.) In this case, the Conan Lockfile detector runs and discovers dependency details using the contents of the Conan lockfile. The Conan Lockfile detector should always be preferred due to the additional information (package revisions) that may be provided by lockfiles.
 * ${solution_name} finds a file named *conanfile.txt* or *conanfile.py*. In this case, the Conan CLI detector runs and discovers dependency details by running the *conan info* command on the Conan project and parsing the output.
 
 In order for ${solution_name} to generate dependency details that will reliably match components
