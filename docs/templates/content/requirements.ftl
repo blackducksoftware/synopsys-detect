@@ -5,7 +5,7 @@
 Requirements for ${solution_name}
 
 * Normally, access to the internet is required to download and run ${solution_name} and components from GitHub and other locations. For running without internet access,
-refer to [Air gap and offline modes](downloadingandrunning/20-airgap.md).
+refer to [Air Gap Mode](downloadingandrunning/20-airgap.md).
 * Minimum 8GB RAM.
 * Java: OpenJDK 64-bit version 8, 11, 13, 14, or 15. If using Java 11: 11.0.5 or higher is required.
 * curl versions 7.34.0 or later.
