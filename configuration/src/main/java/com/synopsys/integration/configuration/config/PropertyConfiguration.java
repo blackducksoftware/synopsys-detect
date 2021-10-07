@@ -158,6 +158,12 @@ public class PropertyConfiguration {
     }
 
     @NotNull
+    public Optional<String> getRaw(@NotNull final String key) {
+        Assert.notNull(key, "Must supply a key to get a raw value");
+        return resolveFromCache(key).getResolutionInfo().map(PropertyResolutionInfo::getRaw);
+    }
+
+    @NotNull
     public Map<String, String> getRaw(@NotNull final Set<String> keys) {
         Assert.notNull(keys, "Must supply a set of keys to get raw keys");
         return getRaw(keys::contains);
