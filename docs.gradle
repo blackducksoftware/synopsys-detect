@@ -13,16 +13,7 @@ task generateDocs(type: GenerateDocsTask) {
     dependsOn helpJson
 }
 
-task copyNav(type: Copy) {
-    dependsOn generateDocs
-    from "docs"
-    into "docs/generated"
-    include "nav.md"
-}
-
 task docs() {
-    dependsOn copyNav
-
     doLast {
         exec {
             commandLine 'mkdocs', 'build'

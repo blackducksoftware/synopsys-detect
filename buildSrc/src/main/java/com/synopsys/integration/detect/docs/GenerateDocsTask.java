@@ -52,6 +52,7 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 public class GenerateDocsTask extends DefaultTask {
+    public static final String NAVIGATION_FILENAME = "nav.md";
     private final IntLogger logger = new Slf4jIntLogger(this.getLogger());
 
     @TaskAction
@@ -60,7 +61,7 @@ public class GenerateDocsTask extends DefaultTask {
         File file = new File("synopsys-detect-" + project.getVersion() + "-help.json");
         Reader reader = new FileReader(file);
         HelpJsonData helpJson = new Gson().fromJson(reader, HelpJsonData.class);
-
+        File docsDir = project.file("docs");
         File outputDir = project.file("docs/generated");
         File runningDir = new File(outputDir, "downloadingandrunning");
         File troubleshootingDir = new File(outputDir, "troubleshooting");
@@ -68,12 +69,10 @@ public class GenerateDocsTask extends DefaultTask {
         FileUtils.deleteDirectory(outputDir);
         troubleshootingDir.mkdirs();
 
+        FileUtils.copyFile(new File(docsDir, NAVIGATION_FILENAME), new File(outputDir, NAVIGATION_FILENAME));
         TemplateProvider templateProvider = new TemplateProvider(project.file("docs/templates"), project.getVersion().toString());
-
         createFromFreemarker(templateProvider, troubleshootingDir, "exit-codes", new ExitCodePage(helpJson.getExitCodes()));
-
         createFromFreemarker(templateProvider, runningDir, "status-file", new DetectorStatusCodes(helpJson.getDetectorStatusCodes()));
-
         handleDetectors(templateProvider, outputDir, helpJson);
         handleProperties(templateProvider, outputDir, helpJson);
         handleContent(outputDir, templateProvider);
