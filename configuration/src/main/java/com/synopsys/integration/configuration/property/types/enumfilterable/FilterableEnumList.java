@@ -7,7 +7,9 @@
  */
 package com.synopsys.integration.configuration.property.types.enumfilterable;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class FilterableEnumList<T extends Enum<T>> {
     private final List<FilterableEnumValue<T>> providedValues;
@@ -30,12 +32,20 @@ public class FilterableEnumList<T extends Enum<T>> {
         return FilterableEnumUtils.containsValue(providedValues, value);
     }
 
+    public boolean isEmpty() {
+        return providedValues.isEmpty();
+    }
+
     public List<T> toPresentValues() {
         return FilterableEnumUtils.toPresentValues(providedValues);
     }
 
     public List<T> representedValues() {
         return FilterableEnumUtils.representedValues(providedValues, enumClass);
+    }
+
+    public Set<T> representedValueSet() {
+        return new HashSet<>(representedValues());
     }
 
     public List<FilterableEnumValue<T>> toFilterableValues() {
