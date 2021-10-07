@@ -8,9 +8,9 @@
 package com.synopsys.integration.detect.configuration;
 
 import java.nio.file.Path;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.Nullable;
@@ -73,8 +73,8 @@ public class DetectableOptionFactory {
     public BazelDetectableOptions createBazelDetectableOptions() {
         String targetName = getNullableValue(DetectProperties.DETECT_BAZEL_TARGET);
         List<String> bazelCqueryAdditionalOptions = getValue(DetectProperties.DETECT_BAZEL_CQUERY_OPTIONS);
-        List<WorkspaceRule> bazelDependencyRules = getValue(DetectProperties.DETECT_BAZEL_DEPENDENCY_RULE).representedValues();
-        return new BazelDetectableOptions(targetName, new HashSet<>(bazelDependencyRules), bazelCqueryAdditionalOptions);
+        Set<WorkspaceRule> bazelDependencyRules = getValue(DetectProperties.DETECT_BAZEL_DEPENDENCY_RULE).representedValueSet();
+        return new BazelDetectableOptions(targetName, bazelDependencyRules, bazelCqueryAdditionalOptions);
     }
 
     public BitbakeDetectableOptions createBitbakeDetectableOptions() {
