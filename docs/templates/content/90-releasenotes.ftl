@@ -1,5 +1,11 @@
 # Release notes
 
+# Version 7.7.0
+
+### Resolved issues
+
+* Resolved an issue where ${solution_name} would incorrectly resolve the relative path "." when processing signature scan targets (IDETECT-2808).
+
 # Version 7.6.0
 
 ### New Features
