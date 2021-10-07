@@ -31,7 +31,7 @@ public class EnumValueParser<T extends Enum<T>> extends ValueParser<T> {
         if (enumValue.isPresent()) {
             return enumValue.get();
         } else {
-            throw new ValueParseException(value, "enum", "Unable to convert '$value' to one of " + String.join(",", EnumPropertyUtils.getEnumNames(enumClass)));
+            throw new ValueParseException(value, enumClass.getSimpleName(), "Value '" + value + "' must be one of " + String.join(",", EnumPropertyUtils.getEnumNames(enumClass)));
         }
     }
 }
