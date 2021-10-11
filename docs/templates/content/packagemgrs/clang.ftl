@@ -18,7 +18,7 @@ when run with the following option:
 
 The Clang detector runs when it finds a compile_commands.json file
 in the project directory. If the compile_commands.json file resides in a sub-directory,
-adjust the [detector search depth](../../../properties/configuration/paths/#detector-search-depth)
+adjust the [detector search depth](../properties/configuration/paths.md#detector-search-depth)
 to enable ${solution_name} to find it.
 Make sure the directory in which the compile_commands.json is located is not
 being [excluded from detector search](../downloadingandrunning/40-includingexcluding.md#directory-exclusions).

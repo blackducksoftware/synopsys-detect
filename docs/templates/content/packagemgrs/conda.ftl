@@ -9,4 +9,4 @@ The Conda detector requires that the *conda* executable is on the PATH, or that 
 The Conda detector runs `conda list -n [environment_name] --json` and `conda info --json`, and parses the output of both commands to discover dependencies.
 
 Note: To specify a Conda environment to be referenced when running `conda list`, pass the name of the environment using `--detect.conda.environment.name` (if not passed, `-n` flag is omitted).
-Refer to [Properties](../../../properties/detectors/conda/) for details.
+Refer to [Properties](../properties/detectors/conda.md) for details.

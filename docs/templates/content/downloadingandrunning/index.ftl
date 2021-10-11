@@ -9,21 +9,21 @@ Before you download and run ${solution_name}, you need to make the following dec
 - Do you want to run ${solution_name} before you build or after?
 - In which directory do you want to run ${solution_name}?
 - Do you want to run ${solution_name} as a script or a .jar file; this affects which version is run.
-- What [tools and detectors](../components) do you want to include or exclude?
+- What [tools and detectors](../components/index.md) do you want to include or exclude?
 - Do you want to run ${solution_name} offline, or connected to ${blackduck_product_name}.
 
 ## Positioning ${solution_name} in the build process
 
 ### Build mode
 
-In [build mode](../components/detectors/#build-detectors-versus-buildless-detectors), which is the default,
+In [build mode](../components/detectors.md#build-detectors-versus-buildless-detectors), which is the default,
 ${solution_name} should be executed as a post-build step in the build environment of the project.
 Building your project prior to running ${solution_name} is often required for the detector to run successfully,
 and helps ensure that the build artifacts are available for signature scanning.
 
 ### Buildless mode
 
-In [buildless mode](../components/detectors/#build-detectors-versus-buildless-detectors),
+In [buildless mode](../components/detectors.md#build-detectors-versus-buildless-detectors),
 ${solution_name} makes its best effort to discover dependencies without the benefit of
 build artifacts or build tools. In buildless mode, there is no requirement that ${solution_name} must run as a post-build step.
 Results from buildless mode may be less accurate than results from build mode.
@@ -31,7 +31,7 @@ Results from buildless mode may be less accurate than results from build mode.
 ## Choosing the working directory
 
 You can run ${solution_name} from any directory. If you are not running ${solution_name} from the project directory,
-provide the project directory using the [source path property](../properties/configuration/paths/#source-path). When that property is not set,
+provide the project directory using the [source path property](../properties/configuration/paths.md#source-path). When that property is not set,
 ${solution_name} assumes the current working directory is the project directory.
 
 ## Choosing a run method (script, .jar, or Docker container)
@@ -76,9 +76,9 @@ Several aspects of script functionality can be configured, including:
 * The download location.
 * Where to find Java.
 
-Information on how to configure the scripts is in [Shell script configuration](../scripts).
+Information on how to configure the scripts is in [Shell script configuration](../scripts/index.md).
 
-#### Linux or Mac
+### Running the script on Linux or Mac
 
 On Linux or Mac, execute the ${solution_name} script (${bash_script_name}, which is a Bash script) from Bash.
 
@@ -94,9 +94,23 @@ Append any command line arguments to the end, separated by spaces. For example:
 bash <(curl -s -L https://detect.synopsys.com/detect7.sh) --blackduck.url=https://blackduck.mydomain.com --blackduck.api.token=myaccesstoken
 ````
 
-See [Quoting and escaping shell script arguments](../scripts/script-escaping-special-characters) for details about quoting and escaping arguments.
+See [Quoting and escaping shell script arguments](../scripts/script-escaping-special-characters.md) for details about quoting and escaping arguments.
 
-#### Windows
+#### To run a specific version of ${solution_name}:
+
+````
+export DETECT_LATEST_RELEASE_VERSION={${solution_name} version}
+bash <(curl -s -L https://detect.synopsys.com/detect7.sh)
+````
+
+For example, to run ${solution_name} version 5.5.0:
+
+````
+export DETECT_LATEST_RELEASE_VERSION=5.5.0
+bash <(curl -s -L https://detect.synopsys.com/detect7.sh)
+````
+
+### Running the script on Windows
 
 On Windows, execute the ${solution_name} script (${powershell_script_name}, which is a PowerShell script) from
 the [Command Prompt](https://en.wikipedia.org/wiki/Cmd.exe).
@@ -113,29 +127,7 @@ Append any command line arguments to the end, separated by spaces. For example:
 powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect" --blackduck.url=https://blackduck.mydomain.com --blackduck.api.token=myaccesstoken
 ````
 
-See [Quoting and escaping shell script arguments](../scripts/script-escaping-special-characters) for details about quoting and escaping arguments.
-
-### Running a specific version of ${solution_name}
-
-#### Linux or Mac (Bash)
-
-To run a specific version of ${solution_name}:
-
-````
-export DETECT_LATEST_RELEASE_VERSION={${solution_name} version}
-bash <(curl -s -L https://detect.synopsys.com/detect7.sh)
-````
-
-For example, to run ${solution_name} version 5.5.0:
-
-````
-export DETECT_LATEST_RELEASE_VERSION=5.5.0
-bash <(curl -s -L https://detect.synopsys.com/detect7.sh)
-````
-
-#### Windows (Command Prompt)
-
-To run a specific version of ${solution_name}:
+#### To run a specific version of ${solution_name}:
 
 ````
 set DETECT_LATEST_RELEASE_VERSION={${solution_name} version}
@@ -148,6 +140,8 @@ For example, to run ${solution_name} version 5.5.0:
 set DETECT_LATEST_RELEASE_VERSION=5.5.0
 powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect"
 ````
+
+See [Quoting and escaping shell script arguments](../scripts/script-escaping-special-characters.md) for details about quoting and escaping arguments.
 
 ## Running the ${solution_name} .jar
 
@@ -206,29 +200,29 @@ ${solution_name} can be used with ${blackduck_product_name} to perform Software 
 When ${blackduck_product_name} connection details are provided, ${solution_name} executes
 the following by default:
 
-* The [detector tool](../components/detectors/), which runs the appropriate package manager-specific detector; the Maven detector
+* The [detector tool](../components/detectors.md), which runs the appropriate package manager-specific detector; the Maven detector
 for Maven projects, the Gradle detector for Gradle projects, and so forth.
-* The [${blackduck_signature_scanner_name}](../properties/configuration/signature scanner/), which performs a ${blackduck_signature_scan_act} on the
+* The [${blackduck_signature_scanner_name}](../properties/configuration/signature scanner.md), which performs a ${blackduck_signature_scan_act} on the
 project directory.
 
 ${solution_name} can be configured to perform additional tasks, including the following:
 
-* Enable any of the supported snippet matching modes in the [${blackduck_signature_scanner_name}](../properties/configuration/signature scanner/).
-* Enable the [${impact_analysis_name}](../properties/configuration/impact analysis/#vulnerability-impact-analysis-enabled) on any Java project.
-* Run [${blackduck_binary_scan_capability}](../properties/configuration/binary scanner) on a given binary files.
+* Enable any of the supported snippet matching modes in the [${blackduck_signature_scanner_name}](../properties/configuration/signature scanner.md).
+* Enable the [${impact_analysis_name}](../properties/configuration/impact analysis.md#vulnerability-impact-analysis-enabled) on any Java project.
+* Run [${blackduck_binary_scan_capability}](../properties/configuration/binary scanner.md) on a given binary files.
 
-* Run the ${dockerinspector_name} on a given [Docker image](../packagemgrs/docker-images/).
-* Generate a [report](../properties/configuration/report/).
-* Fail on [policy violation](../properties/configuration/project/#fail-on-policy-violation-severities-advanced).
+* Run the ${dockerinspector_name} on a given [Docker image](../packagemgrs/docker-images.md).
+* Generate a [report](../properties/configuration/report.md).
+* Fail on [policy violation](../properties/configuration/project.md#fail-on-policy-violation-severities-advanced).
 
-Refer to [${blackduck_product_name} Server properties](../properties/configuration/blackduck server/)
-and [${blackduck_signature_scanner_name} properties](../properties/configuration/signature scanner/) for details.
+Refer to [${blackduck_product_name} Server properties](../properties/configuration/blackduck server.md)
+and [${blackduck_signature_scanner_name} properties](../properties/configuration/signature scanner.md) for details.
 
 ### Offline mode
 
 If you do not have a ${blackduck_product_name} instance, or if your network is down, you can still run ${solution_name} in offline mode.
 In offline mode, ${solution_name} creates the BDIO content and the dry run ${blackduck_signature_scan_act} output files without attempting to upload them to ${blackduck_product_name}.
-You can run ${solution_name} in offline mode using the [offline mode property](../properties/configuration/blackduck server/#offline-mode).
+You can run ${solution_name} in offline mode using the [offline mode property](../properties/configuration/blackduck server.md#offline-mode).
 
 ### BDIO format
 
@@ -238,6 +232,6 @@ Versions of ${blackduck_product_name} prior to 2018.12.4 accept only BDIO 1.
 ${blackduck_product_name} versions 2018.12.4 and higher accept either BDIO 1 or BDIO 2.
 By default, ${solution_name} produces BDIO 2 files.
 
-Use the [BDIO2 enabled property](../properties/configuration/paths/#bdio-2-enabled-deprecated) to select BDIO 1 format
+Use the [BDIO2 enabled property](../properties/configuration/paths.md#bdio-2-enabled-deprecated) to select BDIO 1 format
 (by disabling BDIO 2 format).
 

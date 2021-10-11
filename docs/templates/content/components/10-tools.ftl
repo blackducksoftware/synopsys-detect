@@ -2,7 +2,7 @@
 
 Each ${solution_name} run consists of running any applicable ${solution_name} tools.
 
-The available ${solution_name} tools in order of execution, with the corresponding [detect tools property](../../properties/configuration/paths/#detect-tools-included)
+The available ${solution_name} tools in order of execution, with the corresponding [detect tools property](../properties/configuration/paths.md#detect-tools-included)
 value specified in parentheses are:
 
 * [Docker Inspector](../packagemgrs/docker-images.md) (--detect.tools=DOCKER)

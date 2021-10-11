@@ -1,11 +1,11 @@
 # Release notes
 
-# Version 7.6.0
+## Version 7.6.0
 
 ### New Features
-* Added the property [detect.follow.symbolic.links](../properties/configuration/general/#follow-symbolic-links) which can be used to enable ${solution_name} to follow symbolic links when searching directories for detectors, when creating exclusions for signature scan, and when creating binary scan targets.
+* Added the property [detect.follow.symbolic.links](properties/configuration/general.md#follow-symbolic-links) which can be used to enable ${solution_name} to follow symbolic links when searching directories for detectors, when creating exclusions for signature scan, and when creating binary scan targets.
 * Added support for Open Container Initiative (OCI) images provided to ${solution_name} using the *detect.docker.tar* property.
-* Added the property [detect.gradle.include.unresolved.configurations](../properties/detectors/gradle/#gradle-include-unresolved-configurations-advanced) for toggling the inclusion of [unresolved Gradle configurations](https://docs.gradle.org/7.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs).
+* Added the property [detect.gradle.include.unresolved.configurations](properties/detectors/gradle.md#gradle-include-unresolved-configurations-advanced) for toggling the inclusion of [unresolved Gradle configurations](https://docs.gradle.org/7.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs).
 * Added Project Inspector support for MAVEN and GRADLE when resolving buildless dependencies.
 * Added support for NUGET buildless using the Project Inspector.
 
@@ -23,14 +23,14 @@
 * (IDETECT-2820) Resolved an issue where pypi components in conda projects were not being matched.
 * (IDETECT-2773) Resolved an issue where ${solution_name} was not replacing module paths as specified in go mod replace statements.
 
-# Version 7.5.0
+## Version 7.5.0
 
 ### New Features
 * Added support for the Dart package manager.
 
 ### Changed features
 * The following directories are no longer excluded from Signature Scan by default: bin, build, out, packages, target.  .synopsys directories are now excluded from both Detector search and Signature Scan.
-* The Docker Inspector can now be included (using the detect.tools property) when using the [rapid scan mode](../properties/configuration/blackduck%20server/#detect-scan-mode-advanced).
+* The Docker Inspector can now be included (using the detect.tools property) when using the [rapid scan mode](properties/configuration/blackduck%20server.md#detect-scan-mode-advanced).
 * Instead of "lite" Docker images that automatically disable all detectors, ${solution_name} now supports "buildless" Docker images that automatically disable detectors that depend on the presence of build tools, but leave buildless detectors enabled.
 
 ### Resolved issues
@@ -66,11 +66,11 @@
 ## Version 7.1.0
 
 ### New Features
-* Added ability to specify custom fonts to be used during risk report generation. See [here](../advanced/reports/#risk-report-generation) for more details.
-* There now exist Docker images that can be used to run ${solution_name} from within a container.  See [Running ${solution_name} from within a Docker container](/30-running/#running-synopsys-detect-from-within-a-docker-container) for more details.
+* Added ability to specify custom fonts to be used during risk report generation. See [here](results/reports.md#risk-report-generation) for more details.
+* There now exist Docker images that can be used to run ${solution_name} from within a container.  See [Running ${solution_name} from within a Docker container](downloadingandrunning/80-runincontainer.md#running-synopsys-detect-from-within-a-docker-container) for more details.
 * Added detect.go.mod.enable.verification for disabling the `go mod why` check that ${solution_name} uses to filter out unused dependencies.
 * Added support for dotnet 5 when running the NuGet inspector.
-* Added a new property [detect.npm.include.peer.dependencies](../properties/detectors/npm/#include-npm-peer-dependencies) which allows the users to filter out NPM peer dependencies from their BOM.
+* Added a new property [detect.npm.include.peer.dependencies](properties/detectors/npm.md#include-npm-peer-dependencies) which allows the users to filter out NPM peer dependencies from their BOM.
 
 ### Changed features
 * The following clone categories were added to the default value for property detect.project.clone.categories: LICENSE_TERM_FULFILLMENT, CUSTOM_FIELD_DATA
@@ -91,11 +91,10 @@
 * Added scripts detect7.sh and detect7.ps1 for invoking ${solution_name} 7.x.x. detect.sh and detect.ps1 will (by default) continue to invoke the latest ${solution_name} 6 version.
 * Added support for Yarn workspaces.
 * Added support for the dependency graph SBT plugin. Resolution cache generation is no longer a requirement of the SBT detector.
-* Added the properties [detect.excluded.directories](../properties/configuration/paths/#detect-excluded-directories-advanced),
-[detect.excluded.directories.defaults.disabled](../properties/configuration/paths/#detect-excluded-directories-defaults-disabled-advanced), and [detect.excluded.directories.search.depth](../properties/configuration/signature
-scanner/#detect-excluded-directories-search-depth) to handle exclusions for detector search and signature scanning.
+* Added the properties [detect.excluded.directories](properties/configuration/paths.md#detect-excluded-directories-advanced),
+[detect.excluded.directories.defaults.disabled](properties/configuration/paths.md#detect-excluded-directories-defaults-disabled-advanced), and [detect.excluded.directories.search.depth](properties/configuration/signature scanner.md#detect-excluded-directories-search-depth) to handle exclusions for detector search and signature scanning.
 * Added ability to specify excluded directory paths using [glob patterns](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)).
-* Added properties [detect.lerna.excluded.packages](../properties/detectors/lerna/#lerna-packages-excluded-advanced) and [detect.lerna.included.packages](../properties/detectors/lerna/#lerna-packages-included-advanced) to exclude and
+* Added properties [detect.lerna.excluded.packages](properties/detectors/lerna.md#lerna-packages-excluded-advanced) and [detect.lerna.included.packages](properties/detectors/lerna.md#lerna-packages-included-advanced) to exclude and
 include specific Lerna packages.
 * Added critical security risks to the Black Duck Risk Report pdf.
 * Added detect.target.type to enhance the docker user experience. When set to IMAGE, some tools are automatically disabled and detect optimizes for an image based scan.
@@ -105,7 +104,7 @@ use --detect.tools.exluded=BINARY_SCAN to disable the binary scan step.
 
 ### Changed features
 * The following directories will be excluded from signature scan by default, in addition to node_modules: bin, build, .git, .gradle, out, packages, target. Use
-[detect.excluded.directories.defaults](../properties/configuration/paths/#detect-excluded-directories-defaults-disabled-advanced) to disable these defaults.
+[detect.excluded.directories.defaults](properties/configuration/paths.md#detect-excluded-directories-defaults-disabled-advanced) to disable these defaults.
 * Detect no longer supports the exclusion of individual files during detector search, only directories.
 * Gradle detector no longer uses the gradle inspector. Only the init script is required.
 * The default BDIO format for communicating dependency graphs to Black Duck has been changed from BDIO1 to BDIO2.
@@ -162,7 +161,7 @@ detect.blackduck.signature.scanner.upload.source.mode.
 * Deprecated all Detect signature scanner properties. Future releases will feature an alternative mechanism for providing signature scanner arguments to Detect.
 * Deprecated property detect.resolve.tilde.in.paths. Resolving tildes is a shell feature which Detect will no longer support in a future version.
 * Deprecated property detect.python.python3. Due to the January 2020 sunset of Python 2, this property (which toggles between searching for a 'python' and 'python3' executable) is no longer necessary. See:
-[PEP-394](https://www.python.org/dev/peps/pep-0394/#recommendation)
+[PEP-394](https://www.python.org/dev/peps/pep-0394.md#recommendation)
 * Deprecated properties detect.docker.inspector.air.gap.path, detect.gradle.inspector.air.gap.path, and detect.docker.inspector.air.gap.path as part of an effort to simplify Detect.
 * Deprecated properties detect.default.project.version.scheme, detect.default.project.version.text, detect.default.project.version.timeformat as part of the effort to simplify Detect.
 * Deprecated properties blackduck.username and blackduck.password. Authentication should be performed using an API token.
@@ -209,13 +208,13 @@ https://github.com/docker/for-win/issues/394.
 
 ## Version 6.5.0
 ### New features
-* Added [properties](../properties/configuration/debug/#diagnostic-mode) for enabling diagnostic mode.
-* ${solution_name} now supports Vulnerability Impact Analysis. Enabled using [Vulnerability Impact Analysis Enabled](../properties/configuration/impact%20analysis/#vulnerability-impact-analysis-enabled) property.
+* Added [properties](properties/configuration/debug.md#diagnostic-mode) for enabling diagnostic mode.
+* ${solution_name} now supports Vulnerability Impact Analysis. Enabled using [Vulnerability Impact Analysis Enabled](properties/configuration/impact%20analysis.md#vulnerability-impact-analysis-enabled) property.
 
 ### Changed features
 * Enabling diagnostic mode is now controlled through two new properties.
-* [--detect.diagnostic](../properties/configuration/debug/#diagnostic-mode)
-* [--detect.diagnostic.extended](../properties/configuration/debug/#diagnostic-mode-extended)
+* [--detect.diagnostic](properties/configuration/debug.md#diagnostic-mode)
+* [--detect.diagnostic.extended](properties/configuration/debug.md#diagnostic-mode-extended)
 * The *detect.bazel.dependency.type* property now accepts a comma-separated list of dependency types, or the value *NONE*, or the value *ALL*.
 
 ### Resolved issues
@@ -237,7 +236,7 @@ https://github.com/docker/for-win/issues/394.
 * Eliminated any need for the ${blackduck_product_name} Global Code Scanner overall role.
 * The CLANG detector collects any dependency files not recognized by the Linux package manager that reside outside the source directory (the directory containing the compile_commands.json file),
 and writes them to the status.json file.
-* Added the property [detect.blackduck.signature.scanner.copyright.search](../properties/configuration/signature scanner/#signature-scanner-copyright-search-advanced).
+* Added the property [detect.blackduck.signature.scanner.copyright.search](properties/configuration/signature scanner.md#signature-scanner-copyright-search-advanced).
 * Removed PipEnv from the list of buildless detectors as it was never buildless.
 * Improved output for signature scanner status, and included descriptions for exit codes when reporting overall status.
 * Status.json file now collects code location data generated by all tools, not just detectors.
@@ -257,11 +256,11 @@ prefix or code location suffix is not set.
 ### New features
 * The Yarn detector now extracts project information from package.json files. Git is no longer the default supplier of project information for Yarn projects.
 * Added Yarn Detector support for dependencies that are missing a fuzzy version in a lockfile dependency declaration.
-* ${solution_name} logs policy violations when it is configured to [fail on policy violations](../properties/configuration/project/#fail-on-policy-violation-severities).
+* ${solution_name} logs policy violations when it is configured to [fail on policy violations](properties/configuration/project.md#fail-on-policy-violation-severities).
 
 ### Changed features
-* Users can [upload source](../properties/configuration/signature scanner/#upload-source-mode) files when [license search](../properties/configuration/signature scanner/#signature-scanner-license-search) is enabled regardless of whether
-[snippet matching](../properties/configuration/signature scanner/#snippet-matching) has been enabled.
+* Users can [upload source](properties/configuration/signature scanner.md#upload-source-mode) files when [license search](properties/configuration/signature scanner.md#signature-scanner-license-search) is enabled regardless of whether
+[snippet matching](properties/configuration/signature scanner.md#snippet-matching) has been enabled.
 * ${solution_name} is now compatible with Yocto 3.0.
 * ${solution_name} stops if the Docker Inspector tool applies and ${solution_name} is running on Windows.
 * ${solution_name} configures Docker Inspector's working directories inside ${solution_name}'s run directory.
@@ -271,7 +270,7 @@ prefix or code location suffix is not set.
 ### Resolved issues
 * (IDETECT-1906) Resolved an issue wherein git extraction might fail if "git log" returned unexpected output. As a last resort, the commit hash will be used as a version.
 * (IDETECT-1883) Resolved an issue where ${solution_name} failed to extract project information when parsing a Git repository with a detached head while in buildless mode.
-* (IDETECT-1970) Resolved an issue where the default value for [parallel processors](../properties/configuration/general/#detect-parallel-processors-advanced) was not used. The available runtime processor count was being used instead.
+* (IDETECT-1970) Resolved an issue where the default value for [parallel processors](properties/configuration/general.md#detect-parallel-processors-advanced) was not used. The available runtime processor count was being used instead.
 * (IDETECT-1973) Resolved an issue where the NuGet exe inspector would not resolve from Artifactory.
 * (IDETECT-1965) Resolved an issue where ${solution_name} would fail to resolve environment variables where it did so previously.
 * (IDETECT-1974) Resolved an issue wherein the Yarn detector was throwing an exception for dependencies not defined in the yarn.lock file.
@@ -283,46 +282,46 @@ prefix or code location suffix is not set.
 
 ## Version 6.2.0
 ### New features
-* The ${solution_name} .jar file is now signed, enabling [code verification](../advanced/verifying/) by users.
-* [Simple proxy information](../advanced/package-managers/gradle/#running-the-gradle-inspector-with-a-proxy) will be forwarded to the Gradle Inspector.
-* Detect now creates a status file describing the results of the run which includes things like [issues, results and status codes.](../advanced/status-file/)
+* The ${solution_name} .jar file is now signed, enabling [code verification](downloadingandrunning/30-verification.md) by users.
+* [Simple proxy information](packagemgrs/gradle.md#running-the-gradle-inspector-with-a-proxy) will be forwarded to the Gradle Inspector.
+* Detect now creates a status file describing the results of the run which includes things like [issues, results and status codes.](downloadingandrunning/status-file.md)
 * The property configuration table in the log now includes the origin of the property's value.
-* Added the property [detect.blackduck.signature.scanner.license.search](../properties/configuration/signature scanner/#signature-scanner-license-search-advanced).
-* Added the property [detect.blackduck.signature.scanner.individual.file.matching](../properties/configuration/signature scanner/#individual-file-matching-advanced).
+* Added the property [detect.blackduck.signature.scanner.license.search](properties/configuration/signature scanner.md#signature-scanner-license-search-advanced).
+* Added the property [detect.blackduck.signature.scanner.individual.file.matching](properties/configuration/signature scanner.md#individual-file-matching-advanced).
 * If an executable returns a nonzero exit code, Detect will now log the executable output automatically.
-* Added page for [deprecated properties](../properties/deprecated-properties/) in help.
+* Added page for deprecated properties in help.
 * Detect-generated risk reports now feature Synopsys logo and branding.
 
 ### Changed features
-* The [PipEnv Detector](../advanced/package-managers/python/#pipenv-detector) now parses a json representation of the dependency tree.
+* The PipEnv Detector now parses a json representation of the dependency tree.
 * Powershell download speed increased.
 
 ### Resolved issues
 * Resolved an issue where the download URL for ${solution_name} was being set to an internal URL upon release (IDETECT-1847).
-* Resolved an issue where all transitive dependencies found by the [Pip inspector](../advanced/package-managers/python/#the-pip-detector) were being reported as direct dependencies (IDETECT-1893).
-* Resolved an issue where using pip version 20+ with the [Pip inspector](../advanced/package-managers/python/#the-pip-detector) caused a failure to import a dependency. [GitHub
+* Resolved an issue where all transitive dependencies found by the Pip inspector were being reported as direct dependencies (IDETECT-1893).
+* Resolved an issue where using pip version 20+ with the Pip inspector caused a failure to import a dependency. [GitHub
 PR](https://github.com/blackducksoftware/synopsys-detect/pull/107) (IDETECT-1868)
 * Resolved the following vulnerabilities (IDETECT-1872):
 * org.springframework.boot:spring-boot-starter 5.1.7.RELEASE BDSA-2020-0069 (CVE-2020-5398)
 * Resolved an issue where ${solution_name} had the potential to fail on projects that utilized Yarn workspaces (IDETECT-1916).
-* Note: Yarn workspaces are not currently supported. See [yarn workspace support](../advanced/package-managers/yarn/#yarn-workspace-support).
+* Note: Yarn workspaces are not currently supported. See [yarn workspace support](packagemgrs/yarn.md#yarn-workspace-support).
 * Resolved an issue in the Bazel Detector that caused it to fail for the maven_install rule when the tags field contained multiple tags with a mixture of formats (IDETECT-1925).
 * When parsing package.xml files, Detect will no longer raise a SAXParseException when the file contains a doctype declaration, and will continue parsing the rest of the file (IDETECT-1866).
 * Resolved an issue that could cause generation of an invalid Black Duck Input/Output (BDIO) file when the only differences between two component names/versions are non-alphanumeric characters (IDETECT-1856).
 
 ## Version 6.1.0
 ### New features
-* Added the property [detect.bdio2.enabled](../properties/configuration/paths/#bdio-2-enabled).
-* Added the property [detect.pip.only.project.tree](../properties/detectors/pip/#pip-include-only-project-tree).
-* Added the property [detect.bitbake.search.depth](../properties/detectors/bitbake/#bitbake-search-depth).
-* Added the property [detect.bazel.cquery.options](../properties/detectors/bazel/#bazel-cquery-additional-options).
-* Added the property [detect.docker.image.id](../properties/detectors/docker/#docker-image-id).
-* Added the property [detect.docker.platform.top.layer.id](../properties/detectors/docker/#platform-top-layer-id-advanced).
-* Added the property [detect.bom.aggregate.remediation.mode](../properties/configuration/project/#bdio-aggregate-remediation-mode-advanced)
+* Added the property [detect.bdio2.enabled](properties/configuration/paths.md#bdio-2-enabled).
+* Added the property [detect.pip.only.project.tree](properties/detectors/pip.md#pip-include-only-project-tree).
+* Added the property [detect.bitbake.search.depth](properties/detectors/bitbake.md#bitbake-search-depth).
+* Added the property [detect.bazel.cquery.options](properties/detectors/bazel.md#bazel-cquery-additional-options).
+* Added the property [detect.docker.image.id](properties/detectors/docker.md#docker-image-id).
+* Added the property [detect.docker.platform.top.layer.id](properties/detectors/docker.md#platform-top-layer-id-advanced).
+* Added the property [detect.bom.aggregate.remediation.mode](properties/configuration/project.md#bdio-aggregate-remediation-mode-advanced)
 
 ### Changed features
 * Deprecated all ${polaris_product_name}-related properties.
-* Added [wildcard support](../advanced/includeexcludewildcards/) for several include/exclude list properties.
+* Added wildcard support for several include/exclude list properties.
 * Improved the structure of the dependency information produced by the Yarn detector by changing its approach. It now parses dependency information from yarn.lock and package.json, instead of running the yarn command. Since the yarn
 command is no longer executed, the detect.yarn.path property has been removed.
 * Improved match accuracy for Bitbake projects by improving external ID generation for dependencies referenced using Git protocols, and dependencies referenced with an epoch and/or revision.
@@ -522,7 +521,7 @@ create the directory.
 
 ### Resolved issues
 
-* Resolved an issue wherein build scan failures may occur in TFS with the error [COPY Operation] noSuchPath in source, path provided: //license/ownership.
+* Resolved an issue wherein build scan failures may occur in TFS with the error `[COPY Operation] noSuchPath in source, path provided: //license/ownership`.
 * Resolved an issue wherein if the property detect.clone.project.version.name is set to a non-existent project version, the log messages are now improved to make it easier to recognize the problem.
 
 ### Changed features

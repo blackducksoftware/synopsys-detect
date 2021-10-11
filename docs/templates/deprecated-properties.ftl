@@ -1,3 +1,5 @@
+# Deprecated Properties
+
 This page lists ${solution_name}'s deprecated properties; for both active and deprecated properties, refer to [all properties](../all-properties).
 
 <#list groups as group>

@@ -11,7 +11,7 @@ including:
 
 Loaded font files are used to create the risk report pdf. 
 
-You may specify a custom regular font and/or a custom bold font by placing a .ttf font file in a directory called "custom-regular" and/or "custom-bold", respectively, that is a child to the directory at detect-output-directory/tools/fonts, where 'detect-output-directory' is determined by [detect.output.path](../../properties/configuration/paths/#detect-output-path)
+You may specify a custom regular font and/or a custom bold font by placing a .ttf font file in a directory called "custom-regular" and/or "custom-bold", respectively, that is a child to the directory at detect-output-directory/tools/fonts, where 'detect-output-directory' is determined by [detect.output.path](../properties/configuration/paths.md#detect-output-path)
 
 Examples
 

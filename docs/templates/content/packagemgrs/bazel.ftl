@@ -10,7 +10,7 @@ The Bazel tool also requires a bazel executable on $PATH.
 
 ${solution_name} attempts to determine the workspace dependency rule (*maven_install*, *maven_jar*, or *haskell_cabal_library*) from the WORKSPACE file.
 In case it cannot, you can specify which rule you use with the Bazel dependency type property.
-Refer to [Properties](../../../properties/detectors/bazel/) for details.
+Refer to [Properties](../properties/detectors/bazel.md) for details.
 
 ## Processing for the *maven_install* workspace rule
 

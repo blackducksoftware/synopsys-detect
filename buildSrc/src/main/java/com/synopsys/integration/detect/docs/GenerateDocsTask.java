@@ -52,7 +52,7 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 public class GenerateDocsTask extends DefaultTask {
-    public static final String NAVIGATION_FILENAME = "nav.md";
+    public static final String NAVIGATION_FILENAME = "ditamap.xml";
     private final IntLogger logger = new Slf4jIntLogger(this.getLogger());
 
     @TaskAction
@@ -172,7 +172,7 @@ public class GenerateDocsTask extends DefaultTask {
         for (HelpJsonOption helpJsonOption : helpJson.getOptions()) {
             String groupLocation = getGroupLocation(groupLocations, helpJsonOption.getGroup());
             String encodedPropertyLocation = encodePropertyLocation(helpJsonOption.getPropertyName());
-            helpJsonOption.setLocation(String.format("%s/#%s", groupLocation, encodedPropertyLocation)); //ex: superGroup/key/#property_name
+            helpJsonOption.setLocation(String.format("%s.md#%s", groupLocation, encodedPropertyLocation)); //ex: superGroup/key/#property_name
         }
 
         Map<String, List<HelpJsonOption>> groupedOptions = helpJson.getOptions().stream()
@@ -196,6 +196,12 @@ public class GenerateDocsTask extends DefaultTask {
             String groupLocation = getGroupLocation(groupLocations, group.getKey());
 
             // TODO: We only have to do this because we added "(Advanced)" to the section header of advanced properties. Putting property info in the name is not scalable and leads to fixes like this.
+            for (HelpJsonOption option : advanced) {
+                System.out.printf("\tOption: name: %s; key: %s; location: %s\n",
+                option.getPropertyName(),
+                option.getPropertyKey(),
+                option.getLocation());
+            }
             advanced.forEach(property -> property.setLocation(String.format("%s-advanced", property.getLocation())));
             deprecated.forEach(property -> property.setLocation(String.format("%s-deprecated", property.getLocation())));
 

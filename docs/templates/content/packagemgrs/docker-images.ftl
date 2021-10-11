@@ -146,4 +146,4 @@ system accurately, the ${solution_name} user must have permission to create symb
 ### A Docker bug may affect ${solution_name} during clean up
 
 For important information on a Docker for Windows bug that might affect ${solution_name}, refer to the
-[troubleshooting page](../../troubleshooting/solutions/#on-windows-error-trying-cleanup).
+[troubleshooting page](../troubleshooting/solutions.md#on-windows-error-trying-cleanup).

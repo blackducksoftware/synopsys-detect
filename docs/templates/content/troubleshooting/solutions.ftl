@@ -43,7 +43,7 @@ The detector search depth needs to be increased. The default value (0) limits th
 are located in subdirectories and/or there are sub-projects, this depth should be increased to enable ${solution_name} to find the relevant files, so it
 will run the appropriate detector(s).
 
-See [detector search depth](../../../properties/configuration/paths/#detector-search-depth) for more details.
+See [detector search depth](../properties/configuration/paths.md#detector-search-depth) for more details.
 
 ## Docker Inspector error fails after logging: "The ${blackduck_product_name} url must be specified"
 
@@ -111,7 +111,7 @@ The ${blackduck_product_name} server certificate is not in Java's keystore.
 1. Determine the Java home directory for that *java* executable.
 1. Run [keytool](https://docs.oracle.com/en/java/javase/11/tools/keytool.html) to install the ${blackduck_product_name} server certificate into the keystore in that Java home directory.
 
-Although not recommended, it is possible to disable the certificate check with the [trust cert property](../../../properties/configuration/blackduck server/#trust-all-ssl-certificates-advanced).
+Although not recommended, it is possible to disable the certificate check with the [trust cert property](../properties/configuration/blackduck server.md#trust-all-ssl-certificates-advanced).
 
 ## Not Extractable: NUGET - Solution INFO [main] -- Exception occurred: java.nio.file.InvalidPathException
 

@@ -18,6 +18,6 @@ The Dart Pub Spec Lock detector parses the pubspec.lock file for dependency info
 
 The Dart Pub Dep detector runs the command 'pub deps' (which requires a pubspec.lock file to be present), and then parses the command's output for dependency information.  The detector will first try to run the command using a dart executable (if found), but if it is unsuccessful because the target project requires the Flutter SDK then it will try using a flutter executable (if found).
 
-You may specify the location of dart and flutter executables using the [detect.dart.path](../../../properties/detectors/dart/#dart-executable) and [detect.flutter.path](../../../properties/detectors/dart/#flutter-executable) properties, respectively.
+You may specify the location of dart and flutter executables using the [detect.dart.path](../properties/detectors/dart.md#dart-executable) and [detect.flutter.path](../properties/detectors/dart.md#flutter-executable) properties, respectively.
 
-If you wish to exclude dev dependencies, you may do so using the [detect.pub.deps.exclude.dev](../../../properties/detectors/dart/#detect-dart-pub-deps-exclude-dev-dependencies-advanced) property, which will cause the detector to pass the --no-dev option when running 'pub deps'.
+If you wish to exclude dev dependencies, you may do so using the [detect.pub.deps.exclude.dev](../properties/detectors/dart.md#detect-dart-pub-deps-exclude-dev-dependencies-advanced) property, which will cause the detector to pass the --no-dev option when running 'pub deps'.

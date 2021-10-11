@@ -25,7 +25,7 @@ The init-detect.gradle script configures each project with the custom 'gatherDep
 
 ### Running the Gradle inspector with a proxy
 
-${solution_name} will pass along supplied [proxy host](../../../properties/configuration/proxy/#proxy-host-advanced) and [proxy port](../../../properties/configuration/proxy/#proxy-port-advanced) properties to the Gradle daemon if applicable.
+${solution_name} will pass along supplied [proxy host](../properties/configuration/proxy.md#proxy-host-advanced) and [proxy port](../properties/configuration/proxy.md#proxy-port-advanced) properties to the Gradle daemon if applicable.
 
 ## Gradle parse detector
 

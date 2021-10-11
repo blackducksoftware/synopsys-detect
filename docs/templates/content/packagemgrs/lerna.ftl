@@ -18,15 +18,15 @@ The Lerna detector will execute the same code as the [NPM package lock detector]
 
 The [NPM package lock detector](../properties/detectors/npm.md) related properties also apply.
 
-Since the Lerna detector is currently not using the NPM Cli, only the [detect.npm.include.dev.dependencies](../../../properties/detectors/npm/#include-npm-development-dependencies) and [detect.npm.include.peer.dependencies](../../../properties/detectors/npm/#include-npm-peer-dependencies) properties apply.
+Since the Lerna detector is currently not using the NPM Cli, only the [detect.npm.include.dev.dependencies](../properties/detectors/npm.md#include-npm-development-dependencies) and [detect.npm.include.peer.dependencies](../properties/detectors/npm.md#include-npm-peer-dependencies) properties apply.
 
 ## Extracting from npm-shrinkwrap.json
 
 The Lerna detector will execute the same code as the [NPM shrinkwrap detector](npm.md#npm-shrinkwrap).
 
-The [NPM shrinkwrap detector](../../../properties/detectors/npm/) related properties also apply.
+The [NPM shrinkwrap detector](../properties/detectors/npm.md/) related properties also apply.
 
-Since the Lerna detector is currently not using the NPM Cli, only the [detect.npm.include.dev.dependencies](../../../properties/detectors/npm/#include-npm-development-dependencies) and [detect.npm.include.peer.dependencies](../../../properties/detectors/npm/#include-npm-peer-dependencies) properties apply.
+Since the Lerna detector is currently not using the NPM Cli, only the [detect.npm.include.dev.dependencies](../properties/detectors/npm.md#include-npm-development-dependencies) and [detect.npm.include.peer.dependencies](../properties/detectors/npm.md#include-npm-peer-dependencies) properties apply.
 
 ## Extracting from yarn.lock
 
@@ -38,7 +38,7 @@ Yarn workspaces are not currently supported by the Lerna detector.
 
 ## Private packages
 
-With the [detect.lerna.include.private](../../../properties/detectors/lerna/#include-lerna-packages-defined-as-private46) property, users can specify whether or not to include private packages as defined by Lerna.
+With the [detect.lerna.include.private](../properties/detectors/lerna.md#include-lerna-packages-defined-as-private46) property, users can specify whether or not to include private packages as defined by Lerna.
 
 ## Lerna path
 
