@@ -70,7 +70,7 @@ Use [detect.excluded.directories](../properties/configuration/paths.md#detect-ex
 
 ### Exclude directories by name
 
-This property accepts explicit directory names, as well as globbing-style wildcard patterns. See [here](../configuring/propertywildcards) for more info.
+This property accepts explicit directory names, as well as globbing-style wildcard patterns. See [here](../configuring/propertywildcards.md) for more info.
 
 Examples
 

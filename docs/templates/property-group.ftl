@@ -30,7 +30,7 @@ ${option.detailedDescription!""}
 |Acceptable Values|Any|
 </#if>
 |Strict|${option.strictValues?then("Yes", "No")}|
-|Example|${option.example!""}|
+|Example|<#noautoesc>`${option.example!""}`</#noautoesc>|
 
 </#list> 
 
@@ -63,7 +63,7 @@ ${option.detailedDescription!""}
 |Acceptable Values|Any|
 </#if>
 |Strict|${option.strictValues?then("Yes", "No")}|
-|Example|${option.example!""}|
+|Example|<#noautoesc>`${option.example!""}`</#noautoesc>|
 
 </#list> 
 
