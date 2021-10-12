@@ -1,6 +1,6 @@
 <#ftl output_format="Markdown">
 
-# All Properties
+# Properties
 
 This page lists all ${solution_name} properties including deprecated and advanced.  For most use cases, refer to [basic properties](basic-properties.md).
 

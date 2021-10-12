@@ -1,6 +1,6 @@
-# Project, Version, and Code Location (Scan) Naming
+# Project, Version, and Code Location Naming
 
-The following sections describe the project, version, and code location naming in ${solution_name}.
+The following sections describe the project, version, and code location (scan) naming in ${solution_name}.
 
 ## Project and version naming
 
