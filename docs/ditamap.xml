@@ -7,6 +7,7 @@
     <topicref href="gettingstarted/20-howitworks.md" format="markdown"/>
     <topicref href="gettingstarted/30-workflow.md" format="markdown"/>
     <topicref href="gettingstarted/40-configuring.md" format="markdown"/>
+    <topicref href="gettingstarted/phases.md" format="markdown"/>
     <topicref href="gettingstarted/50-usersandroles.md" format="markdown"/>
     <topicref href="gettingstarted/60-gettinghelp.md" format="markdown"/>
   </topicref>
@@ -30,6 +31,12 @@
   </topicref>
 
   <topicref href="configuring/index.md" format="markdown">
+    <topicref href="configuring/commandline.md" format="markdown"/>
+    <topicref href="configuring/envvars.md" format="markdown"/>
+    <topicref href="configuring/configfile.md" format="markdown"/>
+    <topicref href="configuring/profiles.md" format="markdown"/>
+    <topicref href="configuring/othermethods.md" format="markdown"/>
+    <topicref href="configuring/credentials.md" format="markdown"/>
     <topicref href="configuring/pathproperties.md" format="markdown"/>
     <topicref href="configuring/propertywildcards.md" format="markdown"/>
   </topicref>
