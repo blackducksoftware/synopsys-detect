@@ -4,7 +4,7 @@ This page lists ${solution_name}'s deprecated properties; for both active and de
 
 <#list groups as group>
 
-[${group.groupName}](../${group.location})
+## [${group.groupName}](../${group.location})
 
 | Property | Description |
 | --- | --- |

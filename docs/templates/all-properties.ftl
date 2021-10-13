@@ -6,7 +6,7 @@ This page lists all ${solution_name} properties including deprecated and advance
 
 <#list groups as group>
 
-[${group.groupName}](${group.location}.md)
+## [${group.groupName}](${group.location}.md)
 
 | Property | Description |
 | --- | --- |

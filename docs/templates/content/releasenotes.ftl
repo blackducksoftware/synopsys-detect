@@ -30,7 +30,7 @@
 
 ### Changed features
 * The following directories are no longer excluded from Signature Scan by default: bin, build, out, packages, target.  .synopsys directories are now excluded from both Detector search and Signature Scan.
-* The Docker Inspector can now be included (using the detect.tools property) when using the [rapid scan mode](properties/configuration/blackduck%20server.md#detect-scan-mode-advanced).
+* The Docker Inspector can now be included (using the detect.tools property) when using the [rapid scan mode](properties/configuration/blackduck-server.md#detect-scan-mode-advanced).
 * Instead of "lite" Docker images that automatically disable all detectors, ${solution_name} now supports "buildless" Docker images that automatically disable detectors that depend on the presence of build tools, but leave buildless detectors enabled.
 
 ### Resolved issues
@@ -209,7 +209,7 @@ https://github.com/docker/for-win/issues/394.
 ## Version 6.5.0
 ### New features
 * Added [properties](properties/configuration/debug.md#diagnostic-mode) for enabling diagnostic mode.
-* ${solution_name} now supports Vulnerability Impact Analysis. Enabled using [Vulnerability Impact Analysis Enabled](properties/configuration/impact%20analysis.md#vulnerability-impact-analysis-enabled) property.
+* ${solution_name} now supports Vulnerability Impact Analysis. Enabled using [Vulnerability Impact Analysis Enabled](properties/configuration/impact-analysis.md#vulnerability-impact-analysis-enabled) property.
 
 ### Changed features
 * Enabling diagnostic mode is now controlled through two new properties.

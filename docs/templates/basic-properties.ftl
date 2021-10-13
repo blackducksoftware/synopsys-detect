@@ -4,7 +4,7 @@ This page lists ${solution_name}'s basic properties; for advanced and deprecated
 
 <#list groups as group>
 
-[${group.groupName}](${group.location}.md)
+## [${group.groupName}](${group.location}.md)
 
 | Property | Description |
 | --- | --- |
