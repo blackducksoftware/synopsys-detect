@@ -202,27 +202,27 @@ the following by default:
 
 * The [detector tool](../components/detectors.md), which runs the appropriate package manager-specific detector; the Maven detector
 for Maven projects, the Gradle detector for Gradle projects, and so forth.
-* The [${blackduck_signature_scanner_name}](../properties/configuration/signature scanner.md), which performs a ${blackduck_signature_scan_act} on the
+* The [${blackduck_signature_scanner_name}](../properties/configuration/signature-scanner.md), which performs a ${blackduck_signature_scan_act} on the
 project directory.
 
 ${solution_name} can be configured to perform additional tasks, including the following:
 
-* Enable any of the supported snippet matching modes in the [${blackduck_signature_scanner_name}](../properties/configuration/signature scanner.md).
-* Enable the [${impact_analysis_name}](../properties/configuration/impact analysis.md#vulnerability-impact-analysis-enabled) on any Java project.
-* Run [${blackduck_binary_scan_capability}](../properties/configuration/binary scanner.md) on a given binary files.
+* Enable any of the supported snippet matching modes in the [${blackduck_signature_scanner_name}](../properties/configuration/signature-scanner.md).
+* Enable the [${impact_analysis_name}](../properties/configuration/impact-analysis.md#vulnerability-impact-analysis-enabled) on any Java project.
+* Run [${blackduck_binary_scan_capability}](../properties/configuration/binary-scanner.md) on a given binary files.
 
 * Run the ${dockerinspector_name} on a given [Docker image](../packagemgrs/docker-images.md).
 * Generate a [report](../properties/configuration/report.md).
 * Fail on [policy violation](../properties/configuration/project.md#fail-on-policy-violation-severities-advanced).
 
-Refer to [${blackduck_product_name} Server properties](../properties/configuration/blackduck server.md)
-and [${blackduck_signature_scanner_name} properties](../properties/configuration/signature scanner.md) for details.
+Refer to [${blackduck_product_name} Server properties](../properties/configuration/blackduck-server.md)
+and [${blackduck_signature_scanner_name} properties](../properties/configuration/signature-scanner.md) for details.
 
 ### Offline mode
 
 If you do not have a ${blackduck_product_name} instance, or if your network is down, you can still run ${solution_name} in offline mode.
 In offline mode, ${solution_name} creates the BDIO content and the dry run ${blackduck_signature_scan_act} output files without attempting to upload them to ${blackduck_product_name}.
-You can run ${solution_name} in offline mode using the [offline mode property](../properties/configuration/blackduck server.md#offline-mode).
+You can run ${solution_name} in offline mode using the [offline mode property](../properties/configuration/blackduck-server.md#offline-mode).
 
 ### BDIO format
 

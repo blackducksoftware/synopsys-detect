@@ -59,20 +59,20 @@
     <topicref href="properties/deprecated-properties.md" format="markdown"/>
 
     <topicref href="properties/configuration/index.md" format="markdown">
-      <topicref href="properties/configuration/binary scanner.md" format="markdown"/>
-      <topicref href="properties/configuration/blackduck server.md" format="markdown"/>
+      <topicref href="properties/configuration/binary-scanner.md" format="markdown"/>
+      <topicref href="properties/configuration/blackduck-server.md" format="markdown"/>
       <topicref href="properties/configuration/cleanup.md" format="markdown"/>
       <topicref href="properties/configuration/debug.md" format="markdown"/>
       <topicref href="properties/configuration/default.md" format="markdown"/>
       <topicref href="properties/configuration/detector.md" format="markdown"/>
       <topicref href="properties/configuration/general.md" format="markdown"/>
-      <topicref href="properties/configuration/impact analysis.md" format="markdown"/>
+      <topicref href="properties/configuration/impact-analysis.md" format="markdown"/>
       <topicref href="properties/configuration/logging.md" format="markdown"/>
       <topicref href="properties/configuration/paths.md" format="markdown"/>
       <topicref href="properties/configuration/project.md" format="markdown"/>
       <topicref href="properties/configuration/proxy.md" format="markdown"/>
       <topicref href="properties/configuration/report.md" format="markdown"/>
-      <topicref href="properties/configuration/signature scanner.md" format="markdown"/>
+      <topicref href="properties/configuration/signature-scanner.md" format="markdown"/>
     </topicref>
 
     <topicref href="properties/detectors/index.md" format="markdown">

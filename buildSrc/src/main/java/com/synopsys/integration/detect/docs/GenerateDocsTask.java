@@ -260,7 +260,6 @@ public class GenerateDocsTask extends DefaultTask {
             String optionGroup = makeLinkSafe(option.getGroup());
             final String defaultSuperGroup = "Configuration";
             String rawSuperGroup = option.getSuperGroup();
-            System.out.printf("rawSuperGroup: %s; option group: %s\n", rawSuperGroup, optionGroup);
             String superGroup;
             if (StringUtils.isBlank(rawSuperGroup)) {
                 superGroup = defaultSuperGroup;

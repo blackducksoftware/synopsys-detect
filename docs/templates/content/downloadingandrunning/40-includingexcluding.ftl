@@ -101,4 +101,4 @@ ${solution_name} uses FileSystem::getPatchMatcher and its glob syntax implementa
 ### Related properties:
 
 * [detect.excluded.directories.defaults.disabled](../properties/configuration/paths.md#detect-excluded-directories-defaults-disabled-advanced)
-* [detect.excluded.directories.search.depth](../properties/configuration/signature scanner.md#detect-excluded-directories-search-depth)
+* [detect.excluded.directories.search.depth](../properties/configuration/signature-scanner.md#detect-excluded-directories-search-depth)

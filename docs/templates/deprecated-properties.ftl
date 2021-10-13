@@ -1,10 +1,10 @@
 # Deprecated Properties
 
-This page lists ${solution_name}'s deprecated properties; for both active and deprecated properties, refer to [all properties](../all-properties).
+This page lists ${solution_name}'s deprecated properties; for both active and deprecated properties, refer to [all properties](all-properties.md).
 
 <#list groups as group>
 
-## [${group.groupName}](../${group.location})
+## [${group.groupName}](${group.location}.md)
 
 | Property | Description |
 | --- | --- |

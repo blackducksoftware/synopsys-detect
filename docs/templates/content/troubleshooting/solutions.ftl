@@ -111,7 +111,7 @@ The ${blackduck_product_name} server certificate is not in Java's keystore.
 1. Determine the Java home directory for that *java* executable.
 1. Run [keytool](https://docs.oracle.com/en/java/javase/11/tools/keytool.html) to install the ${blackduck_product_name} server certificate into the keystore in that Java home directory.
 
-Although not recommended, it is possible to disable the certificate check with the [trust cert property](../properties/configuration/blackduck server.md#trust-all-ssl-certificates-advanced).
+Although not recommended, it is possible to disable the certificate check with the [trust cert property](../properties/configuration/blackduck-server.md#trust-all-ssl-certificates-advanced).
 
 ## Not Extractable: NUGET - Solution INFO [main] -- Exception occurred: java.nio.file.InvalidPathException
 
