@@ -161,6 +161,10 @@ public class GenerateDocsTask extends DefaultTask {
         return encoded.toString().toLowerCase();
     }
 
+    private String makeLinkSafe(String linkText) {
+        return linkText.replace(" ", "-");
+    }
+
     private void handleProperties(TemplateProvider templateProvider, File outputDir, HelpJsonData helpJson) throws IntegrationException, IOException, TemplateException {
         Map<String, String> superGroups = createSuperGroupLookup(helpJson);
 
@@ -170,13 +174,13 @@ public class GenerateDocsTask extends DefaultTask {
 
         // Updating the location on all the json options so that a new object with only 1 new property did not have to be created (and then populated) from the existing.
         for (HelpJsonOption helpJsonOption : helpJson.getOptions()) {
-            String groupLocation = getGroupLocation(groupLocations, helpJsonOption.getGroup());
+            String groupLocation = getGroupLocation(groupLocations, makeLinkSafe(helpJsonOption.getGroup()));
             String encodedPropertyLocation = encodePropertyLocation(helpJsonOption.getPropertyName());
             helpJsonOption.setLocation(String.format("%s.md#%s", groupLocation, encodedPropertyLocation)); //ex: superGroup/key/#property_name
         }
 
         Map<String, List<HelpJsonOption>> groupedOptions = helpJson.getOptions().stream()
-                                                                     .collect(Collectors.groupingBy(HelpJsonOption::getGroup));
+                                                                     .collect(Collectors.groupingBy(o -> makeLinkSafe(o.getGroup())));
 
         List<SplitGroup> splitGroupOptions = new ArrayList<>();
         for (Map.Entry<String, List<HelpJsonOption>> group : groupedOptions.entrySet()) {
@@ -238,7 +242,7 @@ public class GenerateDocsTask extends DefaultTask {
     }
 
     private String getGroupLocation(Map<String, String> groupLocationMap, String group) throws IntegrationException {
-        return getOrThrow(groupLocationMap, group, String.format("Missing group location: %s", group));
+        return getOrThrow(groupLocationMap, makeLinkSafe(group), String.format("Missing group location: %s", group));
     }
 
     private <K, V> V getOrThrow(Map<K, V> map, K key, String missingMessage) throws IntegrationException {
@@ -253,8 +257,10 @@ public class GenerateDocsTask extends DefaultTask {
         Map<String, String> lookup = new HashMap<>();
 
         helpJson.getOptions().forEach(option -> {
+            String optionGroup = makeLinkSafe(option.getGroup());
             final String defaultSuperGroup = "Configuration";
             String rawSuperGroup = option.getSuperGroup();
+            System.out.printf("rawSuperGroup: %s; option group: %s\n", rawSuperGroup, optionGroup);
             String superGroup;
             if (StringUtils.isBlank(rawSuperGroup)) {
                 superGroup = defaultSuperGroup;
@@ -262,14 +268,14 @@ public class GenerateDocsTask extends DefaultTask {
                 superGroup = rawSuperGroup;
             }
 
-            if (lookup.containsKey(option.getGroup()) && !superGroup.equals(lookup.get(option.getGroup()))) {
+            if (lookup.containsKey(optionGroup) && !superGroup.equals(lookup.get(optionGroup))) {
                 throw new RuntimeException(String.format("The created detect help JSON had a key '%s' whose super key '%s' did not match a different options super key in the same key '%s'.",
-                    option.getGroup(),
+                        optionGroup,
                     superGroup,
-                    lookup.get(option.getGroup())
+                    lookup.get(optionGroup)
                 ));
-            } else if (!lookup.containsKey(option.getGroup())) {
-                lookup.put(option.getGroup(), superGroup);
+            } else if (!lookup.containsKey(optionGroup)) {
+                lookup.put(optionGroup, superGroup);
             }
         });
 
