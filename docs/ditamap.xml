@@ -3,13 +3,13 @@
 <map>
   <topicref href="introduction.md" format="markdown"/>
   <topicref href="gettingstarted/index.md" format="markdown">
-    <topicref href="gettingstarted/10-terms.md" format="markdown"/>
-    <topicref href="gettingstarted/20-howitworks.md" format="markdown"/>
-    <topicref href="gettingstarted/30-workflow.md" format="markdown"/>
-    <topicref href="gettingstarted/40-configuring.md" format="markdown"/>
+    <topicref href="gettingstarted/terms.md" format="markdown"/>
+    <topicref href="gettingstarted/howitworks.md" format="markdown"/>
+    <topicref href="gettingstarted/workflow.md" format="markdown"/>
+    <topicref href="gettingstarted/configuring.md" format="markdown"/>
     <topicref href="gettingstarted/phases.md" format="markdown"/>
-    <topicref href="gettingstarted/50-usersandroles.md" format="markdown"/>
-    <topicref href="gettingstarted/60-gettinghelp.md" format="markdown"/>
+    <topicref href="gettingstarted/usersandroles.md" format="markdown"/>
+    <topicref href="gettingstarted/gettinghelp.md" format="markdown"/>
   </topicref>
 
   <topicref href="requirements.md" format="markdown"/>
@@ -17,13 +17,13 @@
 
   <topicref href="downloadingandrunning/index.md" format="markdown">
     <topicref href="downloadingandrunning/downloadlocations.md" format="markdown"/>
-    <topicref href="downloadingandrunning/20-airgap.md" format="markdown"/>
-    <topicref href="downloadingandrunning/30-verification.md" format="markdown"/>
-    <topicref href="downloadingandrunning/40-includingexcluding.md" format="markdown"/>
-    <topicref href="downloadingandrunning/50-rapidscan.md" format="markdown"/>
-    <topicref href="downloadingandrunning/60-proxies.md" format="markdown"/>
-    <topicref href="downloadingandrunning/70-concurrent.md" format="markdown"/>
-    <topicref href="downloadingandrunning/80-runincontainer.md" format="markdown"/>
+    <topicref href="downloadingandrunning/airgap.md" format="markdown"/>
+    <topicref href="downloadingandrunning/verification.md" format="markdown"/>
+    <topicref href="downloadingandrunning/includingexcluding.md" format="markdown"/>
+    <topicref href="downloadingandrunning/rapidscan.md" format="markdown"/>
+    <topicref href="downloadingandrunning/proxies.md" format="markdown"/>
+    <topicref href="downloadingandrunning/concurrent.md" format="markdown"/>
+    <topicref href="downloadingandrunning/runincontainer.md" format="markdown"/>
   </topicref>
 
   <topicref href="naming/index.md" format="markdown">
@@ -56,9 +56,9 @@
   </topicref>
 
   <topicref href="components/index.md" format="markdown">
-    <topicref href="components/10-tools.md" format="markdown"/>
+    <topicref href="components/tools.md" format="markdown"/>
     <topicref href="components/detectors.md" format="markdown"/>
-    <topicref href="components/zz-inspectors.md" format="markdown"/>
+    <topicref href="components/inspectors.md" format="markdown"/>
   </topicref>
 
   <topicref href="properties/all-properties.md" format="markdown">

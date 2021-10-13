@@ -11,4 +11,4 @@ The ${solution_name} PowerShell script:
 The ${solution_name} .jar and air gap zip files: 
 [${binary_repo_url_base}/bds-integrations-release/com/synopsys/integration/synopsys-detect](${binary_repo_url_base}/bds-integrations-release/com/synopsys/integration/synopsys-detect)
 
-For certain types of projects, ${solution_name} automatically downloads one or more [inspectors](../components/zz-inspectors.md) as needed.
+For certain types of projects, ${solution_name} automatically downloads one or more [inspectors](../components/inspectors.md) as needed.

@@ -67,7 +67,7 @@
 
 ### New Features
 * Added ability to specify custom fonts to be used during risk report generation. See [here](results/reports.md#risk-report-generation) for more details.
-* There now exist Docker images that can be used to run ${solution_name} from within a container.  See [Running ${solution_name} from within a Docker container](downloadingandrunning/80-runincontainer.md#running-synopsys-detect-from-within-a-docker-container) for more details.
+* There now exist Docker images that can be used to run ${solution_name} from within a container.  See [Running ${solution_name} from within a Docker container](downloadingandrunning/runincontainer.md#running-synopsys-detect-from-within-a-docker-container) for more details.
 * Added detect.go.mod.enable.verification for disabling the `go mod why` check that ${solution_name} uses to filter out unused dependencies.
 * Added support for dotnet 5 when running the NuGet inspector.
 * Added a new property [detect.npm.include.peer.dependencies](properties/detectors/npm.md#include-npm-peer-dependencies) which allows the users to filter out NPM peer dependencies from their BOM.
@@ -282,7 +282,7 @@ prefix or code location suffix is not set.
 
 ## Version 6.2.0
 ### New features
-* The ${solution_name} .jar file is now signed, enabling [code verification](downloadingandrunning/30-verification.md) by users.
+* The ${solution_name} .jar file is now signed, enabling [code verification](downloadingandrunning/verification.md) by users.
 * [Simple proxy information](packagemgrs/gradle.md#running-the-gradle-inspector-with-a-proxy) will be forwarded to the Gradle Inspector.
 * Detect now creates a status file describing the results of the run which includes things like [issues, results and status codes.](downloadingandrunning/status-file.md)
 * The property configuration table in the log now includes the origin of the property's value.

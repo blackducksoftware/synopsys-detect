@@ -21,7 +21,7 @@ in the project directory. If the compile_commands.json file resides in a sub-dir
 adjust the [detector search depth](../properties/configuration/paths.md#detector-search-depth)
 to enable ${solution_name} to find it.
 Make sure the directory in which the compile_commands.json is located is not
-being [excluded from detector search](../downloadingandrunning/40-includingexcluding.md#directory-exclusions).
+being [excluded from detector search](../downloadingandrunning/includingexcluding.md#directory-exclusions).
 
 For each compile command in the compile_commands.json file, the Clang detector
 runs a version of the command that is (slightly) modified to ensure that it does

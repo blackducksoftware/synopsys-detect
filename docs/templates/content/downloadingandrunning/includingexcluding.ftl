@@ -1,7 +1,7 @@
 # Including and Excluding Tools, Detectors, Directories, etc.
 
 [Properties](../properties/all-properties.md) provide a variety of additional options for configuring ${solution_name} behavior. One of the
-most fundamental ways to modify ${solution_name} is by including and excluding [tools](../components/10-tools.md) and [detectors](../components/detectors.md).
+most fundamental ways to modify ${solution_name} is by including and excluding [tools](../components/tools.md) and [detectors](../components/detectors.md).
 
 ## Tools
 
@@ -19,7 +19,7 @@ To exclude specific tools, use:
 
 Exclusions take precedence over inclusions.
 
-Refer to [Tools](../components/10-tools.md) for the list of tool names.
+Refer to [Tools](../components/tools.md) for the list of tool names.
 
 Refer to [Properties](../properties/all-properties.md) for details.
 
