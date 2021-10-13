@@ -11,6 +11,4 @@ To view and manage your scan ${solution_name} scan results, do the following tas
 - Open the ${blackduck_product_name} Project BOM URL in a browser to view the scan results in ${blackduck_product_name}.
 - To find your scan in ${blackduck_product_name}, go to your ${blackduck_product_name} instance and click Scans to see a list of scans on the Scans page.
 
-For help with viewing and analyzing your scan results go to the ${blackduck_product_name} Help page navigation menu at https://<Your hub host>/doc/Welcome.htm
-
-
+For help with viewing and analyzing your scan results go to the ${blackduck_product_name} Help page navigation menu at https://{Your hub host}/doc/Welcome.htm

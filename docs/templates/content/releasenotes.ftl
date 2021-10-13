@@ -82,7 +82,7 @@
 * (IDETECT-2505) Resolved an issue that caused go mod components with +incompatible version suffixes to not be matched on Black Duck.
 * (IDETECT-2629) Resolved an issue that caused go mod projects without source having an empty BOM with the introduction of the detect.go.mod.enable.verification property.
 * (IDETECT-2659) Resolved an issue that caused ${solution_name} to falsely report a missing detector when that detector matched only at a depths > 0 and was included in the value of property detect.required.detector.types.
-* (IDETECT-2696) Resolved an issue that could cause ${solution_name} to fail with "IllegalStateException: Duplicate key <codelocation name>" when creationg >100 codelocations in one run.
+* (IDETECT-2696) Resolved an issue that could cause ${solution_name} to fail with "IllegalStateException: Duplicate key {codelocation name}" when creationg >100 codelocations in one run.
 * (IDETECT-2659) Resolved an issue that caused Detect to falsely report "One or more required detector types were not found" when the required detector ran based on files found in a subdirectory.
 * (IDETECT-2541) Resolved an issue that caused the CLANG detector to fail with "Unable to execute any supported package manager" when run with a non-English locale on an alpine system.
 
