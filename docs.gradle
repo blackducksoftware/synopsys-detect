@@ -24,6 +24,17 @@ task docs() {
     }
 }
 
+task ditadocs() {
+    dependsOn docs
+
+    doLast {
+        exec {
+            commandLine 'dita', '--input=ditamap.xml', '--format=sig-webhelp', '-o', 'ditasite'
+            workingDir "docs/generated"
+        }
+    }
+}
+
 task servedocs() {
     dependsOn docs
 
