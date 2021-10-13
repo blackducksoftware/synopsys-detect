@@ -16,7 +16,7 @@
   <topicref href="quickstart.md" format="markdown"/>
 
   <topicref href="downloadingandrunning/index.md" format="markdown">
-    <topicref href="downloadingandrunning/10-downloadlocations.md" format="markdown"/>
+    <topicref href="downloadingandrunning/downloadlocations.md" format="markdown"/>
     <topicref href="downloadingandrunning/20-airgap.md" format="markdown"/>
     <topicref href="downloadingandrunning/30-verification.md" format="markdown"/>
     <topicref href="downloadingandrunning/40-includingexcluding.md" format="markdown"/>
