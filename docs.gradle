@@ -24,15 +24,28 @@ task docs() {
     }
 }
 
-task ditadocs() {
-    dependsOn docs
+task ditazip(type: Zip) {
+    dependsOn generateDocs
+
+    archiveName "${project.name}-${version}-ditasource.zip"
+    from 'docs/generated'
+    destinationDir(file("${buildDir}/libs/"))
+}
+
+task ditasite() {
+    dependsOn generateDocs
 
     doLast {
         exec {
-            commandLine 'dita', '--input=ditamap.xml', '--format=sig-webhelp', '-o', 'ditasite'
+            commandLine 'dita', '--input=ditamap.xml', '--format=sig-webhelp', '-o', '../ditasite'
             workingDir "docs/generated"
         }
     }
+}
+
+task ditadocs() {
+    dependsOn ditasite
+    dependsOn ditazip
 }
 
 task servedocs() {
