@@ -33,7 +33,7 @@ The following tables show which detectors run in the default (build) mode, and w
 ## Build detectors
 
 By default, ${solution_name} requires that you are able to build the project you are scanning. This allows ${solution_name} to get the most accurate results possible.
-Build detectors can communicate with package managers and run commands for example: *mvn dependency:tree*, and/or inspectors; such as the [Gradle inspector](zz-inspectors.md#gradle-inspector) to derive dependency information.
+Build detectors can communicate with package managers and run commands for example: *mvn dependency:tree*, and/or inspectors; such as the [Gradle inspector](inspectors.md#gradle-inspector) to derive dependency information.
 Not all build detectors run external commands or communicate with external systems but all build detectors return accurate results.
 
 Each applicable detector's required executables (as shown in the following table) must be present and findable on your system. ${solution_name} uses
