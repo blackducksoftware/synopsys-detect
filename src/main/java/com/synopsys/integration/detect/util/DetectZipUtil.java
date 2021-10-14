@@ -34,14 +34,18 @@ public class DetectZipUtil { //TODO: Add method for extracting without the wrapp
 
     public static void zip(final File zip, final Map<String, Path> entries) throws IOException {
         try (final FileOutputStream fileStream = new FileOutputStream(zip)) {
-            try (final ZipOutputStream outputStream = new ZipOutputStream(fileStream)) {
-                for (final Map.Entry<String, Path> entry : entries.entrySet()) {
-                    logger.info("Adding entry '{}' to zip as '{}'.", entry.getValue().toString(), entry.getKey());
-                    outputStream.putNextEntry(new ZipEntry(entry.getKey()));
-                    final byte[] bytes = Files.readAllBytes(entry.getValue());
-                    outputStream.write(bytes, 0, bytes.length);
-                    outputStream.closeEntry();
-                }
+            zip(fileStream, entries);
+        }
+    }
+
+    public static void zip(final OutputStream stream, final Map<String, Path> entries) throws IOException {
+        try (final ZipOutputStream outputStream = new ZipOutputStream(stream)) {
+            for (final Map.Entry<String, Path> entry : entries.entrySet()) {
+                logger.info("Adding entry '{}' to zip as '{}'.", entry.getValue().toString(), entry.getKey());
+                outputStream.putNextEntry(new ZipEntry(entry.getKey()));
+                final byte[] bytes = Files.readAllBytes(entry.getValue());
+                outputStream.write(bytes, 0, bytes.length);
+                outputStream.closeEntry();
             }
         }
     }

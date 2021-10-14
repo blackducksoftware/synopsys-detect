@@ -7,55 +7,59 @@
  */
 package com.synopsys.integration.detect.workflow.blackduck.developer.blackduck;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
-import com.synopsys.integration.blackduck.bdio2.Bdio2FileUploadService;
-import com.synopsys.integration.blackduck.bdio2.Bdio2StreamUploader;
 import com.synopsys.integration.blackduck.bdio2.util.Bdio2ContentExtractor;
 import com.synopsys.integration.blackduck.codelocation.upload.UploadBatch;
 import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.HttpUrl;
 
 public class DetectRapidScanService {
     public static final String CONTENT_TYPE = "application/vnd.blackducksoftware.developer-scan-1-ld-2+json";
 
-    private final Bdio2FileUploadService bdio2FileUploadService;
+    private final RapidScanUploadService bdio2FileUploadService;
+    private final DirectoryManager directoryManager;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public DetectRapidScanService(Bdio2FileUploadService bdio2FileUploadService) {
+    public DetectRapidScanService(RapidScanUploadService bdio2FileUploadService, DirectoryManager directoryManager) {
         this.bdio2FileUploadService = bdio2FileUploadService;
+        this.directoryManager = directoryManager;
     }
 
-    public static DetectRapidScanService fromBlackDuckServicesFactory(BlackDuckServicesFactory blackDuckServicesFactory) {
-        Bdio2StreamUploader bdio2Uploader = new Bdio2StreamUploader(
+    public static DetectRapidScanService fromBlackDuckServicesFactory(DirectoryManager directoryManager, BlackDuckServicesFactory blackDuckServicesFactory) {
+        RapidScanConfigBdio2StreamUploader bdio2Uploader = new RapidScanConfigBdio2StreamUploader(
             blackDuckServicesFactory.getBlackDuckApiClient(),
             blackDuckServicesFactory.getApiDiscovery(),
             blackDuckServicesFactory.getLogger(),
             ApiDiscovery.DEVELOPER_SCANS_PATH,
             CONTENT_TYPE
         );
-        Bdio2FileUploadService bdio2FileUploadService = new Bdio2FileUploadService(
+        RapidScanUploadService bdio2FileUploadService = new RapidScanUploadService(
             blackDuckServicesFactory.getBlackDuckApiClient(),
             blackDuckServicesFactory.getApiDiscovery(),
             blackDuckServicesFactory.getLogger(),
             new Bdio2ContentExtractor(),
             bdio2Uploader
         );
-        return new DetectRapidScanService(bdio2FileUploadService);
+        return new DetectRapidScanService(bdio2FileUploadService, directoryManager);
     }
 
-    public List<HttpUrl> performUpload(UploadBatch uploadBatch) throws IntegrationException {
+    public List<HttpUrl> performUpload(UploadBatch uploadBatch, @Nullable File rapidScanConfig) throws IntegrationException, IOException {
         List<HttpUrl> allScanUrls = new LinkedList<>();
 
         for (UploadTarget uploadTarget : uploadBatch.getUploadTargets()) {
-            HttpUrl url = bdio2FileUploadService.uploadFile(uploadTarget);
+            HttpUrl url = bdio2FileUploadService.uploadFile(directoryManager.getRapidOutputDirectory(), uploadTarget, rapidScanConfig);
             logger.info("Uploaded Rapid Scan: {}", url);
             allScanUrls.add(url);
         }
