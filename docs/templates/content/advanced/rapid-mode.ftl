@@ -4,6 +4,8 @@ Rapid Scan or Rapid Scan Mode is a new way of running ${solution_name} with Blac
 
 It is enabled by adding [--detect.blackduck.scan.mode=RAPID](../properties/configuration/blackduck%20server/#detect-scan-mode-advanced) to a run of detect.
 
+The rapid scan can be configured by providing a file named '.bd-rapid-scan.yaml' in the source directory. ${solution_name} will automatically upload the config file during a rapid scan.
+
 # Overview
 
 Unlike persistent scans, no data is stored on Black Duck and all scans are done transiently. These scans are primarily intended to be fast.
