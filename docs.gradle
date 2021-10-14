@@ -24,7 +24,7 @@ task docs() {
     }
 }
 
-task ditazip(type: Zip) {
+task ditasourcezip(type: Zip) {
     dependsOn generateDocs
 
     archiveName "${project.name}-${version}-ditasource.zip"
@@ -32,6 +32,9 @@ task ditazip(type: Zip) {
     destinationDir(file("${buildDir}/libs/"))
 }
 
+// Requires Synopsys-configured dita:
+// 1. git clone https://sig-gitlab.internal.synopsys.com/doc/docs-dita-tools.git
+// 2. Add docs-dita-tools/dita-ot/bin to your PATH
 task ditasite() {
     dependsOn generateDocs
 
@@ -44,7 +47,7 @@ task ditasite() {
 }
 
 task helpzip(type: Zip) {
-    dependsOn generateDocs
+    dependsOn ditasite
 
     archiveName "${project.name}-${version}-help.zip"
     from 'docs/ditasite'
@@ -52,8 +55,8 @@ task helpzip(type: Zip) {
 }
 
 task ditadocs() {
-    dependsOn ditasite
-    dependsOn ditazip
+    dependsOn ditasourcezip
+    dependsOn helpzip
 }
 
 task servedocs() {
