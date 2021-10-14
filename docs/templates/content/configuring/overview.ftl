@@ -1,4 +1,4 @@
-# Methods for Configuring
+# Configuring ${solution_name}
 
 ${solution_name} is configured by assigning values to properties.
 

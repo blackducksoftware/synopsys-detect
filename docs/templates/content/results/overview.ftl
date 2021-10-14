@@ -1,6 +1,6 @@
 # Viewing and Managing Scan Results
 
-To view and manage your scan ${solution_name} scan results, do the following tasks.
+To view and manage your ${solution_name} scan results, do the following tasks.
 
 - In the ${solution_name} output, look for "Detect Result" and copy the Black Duck Project BOM URL as shown in the following example:
 

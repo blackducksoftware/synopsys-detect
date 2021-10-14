@@ -1,4 +1,4 @@
-# Troubleshooting ${solution_name}
+# Troubleshooting
 
 ## Getting information
 

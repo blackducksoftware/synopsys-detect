@@ -1,4 +1,4 @@
-# Configuring ${solution_name}
+# Configuration Overview
 
 What ${solution_name} looks at and how it performs its analysis depends on how you configure ${solution_name}.
 

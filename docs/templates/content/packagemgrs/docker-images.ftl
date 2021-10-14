@@ -45,7 +45,7 @@ This scan creates another code location.
 
 ${solution_name} by default
 runs ${blackduck_binary_scan_capability} on the container file system.
-Refer to [${solution_name}'s scan target](#scantarget) for more details.
+Refer to [${solution_name}'s scan target](#synopsys-detects-scan-target) for more details.
 This also creates a code location.
 
 ## File permissions
@@ -61,7 +61,7 @@ Docker image tarfiles passed to ${solution_name} via the *detect.docker.tar* pro
 
 For more complex use cases, you may need to pass Docker Inspector property values to Docker Inspector using ${solution_name}. To do this, construct the ${solution_name} property name by prefixing the Docker Inspector property name with ```detect.docker.passthrough.```.
 
-For example, suppose you need to set Docker Inspector's service.timeout value (the length of time Docker Inspector waits for a response from the Image Inspector services that it uses) to 480000 milliseconds. You add the prefix to the Docker Inspector property name to derive the ${solution_name} property name ```detect.docker.passthrough.service.timeout```. Therefore, add ```--detect.docker.passthrough.service.timeout=480000``` to the ${solution_name} command line.
+For example, suppose you need to set Docker Inspector's `service.timeout` value (the length of time Docker Inspector waits for a response from the Image Inspector services that it uses) to 480000 milliseconds. You add the prefix to the Docker Inspector property name to derive the ${solution_name} property name ```detect.docker.passthrough.service.timeout```. Therefore, add ```--detect.docker.passthrough.service.timeout=480000``` to the ${solution_name} command line.
 
 For example:
 ```
@@ -84,11 +84,12 @@ When a Docker image is run; for example, using a `docker run` command, a contain
 
 When ${solution_name} invokes both Docker Inspector because either detect.docker.image or detect.docker.tar is set, and the ${blackduck_signature_scanner_name}, as it does by default, the target of that ${blackduck_signature_scan_act} is the initial container file system constructed by Docker Inspector, packaged in a way to optimize results from ${blackduck_product_name}'s matching algorithms. Rather than directly running the ${blackduck_signature_scanner_name} on the initial container file system, ${solution_name} runs the ${blackduck_signature_scanner_name} on a new image; in other words, the squashed image, constructed using the initial container file system built by Docker Inspector. Packaging the initial container file system in a Docker image triggers matching algorithms within ${blackduck_product_name} that optimize match results for Linux file systems.
 
-In earlier versions of ${solution_name} / Docker Inspector, ${solution_name} ran the ${blackduck_signature_scanner_name} directly on the target image. This approach had the disadvantage of potentially producing false positives under certain circumstances. For example, suppose your target image consists of multiple layers. If version 1 of a package is installed in layer 0, and then replaced with a newer version of that package in layer 1, both versions exist in the image, even though the initial container file system only includes version 2. A ${blackduck_signature_scan_act} of the target image shows both versions, even though version 1 has been effectively replaced with version 2. The current ${solution_name} / Docker Inspector functionality avoids this potential for false positives.
+In earlier versions of ${solution_name} / Docker Inspector, ${solution_name} ran the ${blackduck_signature_scanner_name} directly on the target image. This approach had the disadvantage of potentially producing false positives under certain circumstances. For example, suppose your target image consists of multiple layers. If version 1 of a package is installed in layer 0,
+and then replaced with a newer version of that package (version 2) in layer 1, both versions exist in the image, even though the initial container file system only includes version 2. A ${blackduck_signature_scan_act} of the target image shows both versions, even though version 1 has been effectively replaced with version 2. The current ${solution_name} / Docker Inspector functionality avoids this potential for false positives.
 
 By default, ${solution_name} also runs ${blackduck_binary_scan_capability} on the initial container file system.
 If your ${blackduck_product_name} server does not have ${blackduck_binary_scan_capability} enabled, you
-should disable ${blackduck_binary_scan_capability}. For example, you might set: *--detect.tools.excluded=BINARY_SCAN*.
+should disable ${blackduck_binary_scan_capability}. For example, you might set: `--detect.tools.excluded=BINARY_SCAN`.
 
 ## Isolating application components
 
@@ -98,18 +99,19 @@ For example, if you build your application on ubuntu:latest (your Dockerfile sta
 
 First, find the layer ID of the platform's top layer. To do this task:
 
-Run the docker inspect command on the base image; in our example this is ubuntu:latest.
-Find the last element in the RootFS.Layers array. This is the platform top layer ID. In the following example, this is sha256:b079b3fa8d1b4b30a71a6e81763ed3da1327abaf0680ed3ed9f00ad1d5de5e7c.
+Run the `docker inspect` command on the base image; in our example this is *ubuntu:latest*.
+Find the last element in the *RootFS.Layers* array. This is the platform top layer ID. In the following example, the platform top layer ID is
+*sha256:b079b3fa8d1b4b30a71a6e81763ed3da1327abaf0680ed3ed9f00ad1d5de5e7c*.
 Set the value of the Docker Inspector property docker.platform.top.layer.id to the platform top layer ID. For example:
-
+````
 ./detect7.sh ... --detect.docker.image={your application image} --detect.docker.platform.top.layer.id=sha256:b079b3fa8d1b4b30a71a6e81763ed3da1327abaf0680ed3ed9f00ad1d5de5e7c
-
+````
 In this mode, there may be some loss in match accuracy from the ${blackduck_signature_scanner_name} because, in this scenario, the ${blackduck_signature_scanner_name} may be deprived of some contextual information, such as the operating system files that enable it to determine the Linux distribution, and that that may negatively affect its ability to accurately identify components.
 
 ## Inspecting Windows Docker images
 
 Given a Windows Image, Docker Inspector, since it can only discover packages using
-a Linux package manager will not contribute any components to the BOM, but will
+a Linux package manager, will not contribute any components to the BOM, but will
 return the container filesystem (in the form of a squashed image),
 which ${solution_name} will scan using the ${blackduck_signature_scanner_name}.
 

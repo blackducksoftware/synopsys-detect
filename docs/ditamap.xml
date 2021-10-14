@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
-<map>
+<map id="detect-user-guide" xml:lang="en-US">
+  <title>Detect User Guide</title>
   <topicref href="introduction.md" format="markdown"/>
-  <topicref href="gettingstarted/index.md" format="markdown">
+  <topicref href="gettingstarted/overview.md" format="markdown">
     <topicref href="gettingstarted/terms.md" format="markdown"/>
     <topicref href="gettingstarted/howitworks.md" format="markdown"/>
     <topicref href="gettingstarted/workflow.md" format="markdown"/>
     <topicref href="gettingstarted/configuring.md" format="markdown"/>
     <topicref href="gettingstarted/phases.md" format="markdown"/>
+
+
+    <topicref href="requirements.md" format="markdown"/>
     <topicref href="gettingstarted/usersandroles.md" format="markdown"/>
+    <topicref href="quickstart.md" format="markdown"/>
     <topicref href="gettingstarted/gettinghelp.md" format="markdown"/>
   </topicref>
 
-  <topicref href="requirements.md" format="markdown"/>
-  <topicref href="quickstart.md" format="markdown"/>
-
-  <topicref href="downloadingandrunning/index.md" format="markdown">
+  <topicref href="downloadingandrunning/overview.md" format="markdown">
     <topicref href="downloadingandrunning/downloadlocations.md" format="markdown"/>
     <topicref href="downloadingandrunning/airgap.md" format="markdown"/>
     <topicref href="downloadingandrunning/verification.md" format="markdown"/>
@@ -26,11 +28,13 @@
     <topicref href="downloadingandrunning/runincontainer.md" format="markdown"/>
   </topicref>
 
-  <topicref href="naming/index.md" format="markdown">
-    <topicref href="naming/aggregation.md" format="markdown"/>
+  <topicref href="components/overview.md" format="markdown">
+    <topicref href="components/tools.md" format="markdown"/>
+    <topicref href="components/detectors.md" format="markdown"/>
+    <topicref href="components/inspectors.md" format="markdown"/>
   </topicref>
 
-  <topicref href="configuring/index.md" format="markdown">
+  <topicref href="configuring/overview.md" format="markdown">
     <topicref href="configuring/commandline.md" format="markdown"/>
     <topicref href="configuring/envvars.md" format="markdown"/>
     <topicref href="configuring/configfile.md" format="markdown"/>
@@ -39,33 +43,20 @@
     <topicref href="configuring/credentials.md" format="markdown"/>
     <topicref href="configuring/pathproperties.md" format="markdown"/>
     <topicref href="configuring/propertywildcards.md" format="markdown"/>
-  </topicref>
 
-  <topicref href="results/index.md" format="markdown">
-    <topicref href="results/reports.md" format="markdown"/>
-  </topicref>
+    <topicref href="scripts/overview.md" format="markdown">
+      <topicref href="scripts/script-escaping-special-characters.md" format="markdown"/>
+    </topicref>
 
-  <topicref href="troubleshooting/index.md" format="markdown">
-    <topicref href="troubleshooting/diagnosticmode.md" format="markdown"/>
-    <topicref href="troubleshooting/solutions.md" format="markdown"/>
-    <topicref href="troubleshooting/usage-metrics.md" format="markdown"/>
-  </topicref>
-
-  <topicref href="scripts/index.md" format="markdown">
-    <topicref href="scripts/script-escaping-special-characters.md" format="markdown"/>
-  </topicref>
-
-  <topicref href="components/index.md" format="markdown">
-    <topicref href="components/tools.md" format="markdown"/>
-    <topicref href="components/detectors.md" format="markdown"/>
-    <topicref href="components/inspectors.md" format="markdown"/>
+    <topicref href="naming/projectversionscannaming.md" format="markdown"/>
+    <topicref href="naming/aggregation.md" format="markdown"/>
   </topicref>
 
   <topicref href="properties/all-properties.md" format="markdown">
     <topicref href="properties/basic-properties.md" format="markdown"/>
     <topicref href="properties/deprecated-properties.md" format="markdown"/>
 
-    <topicref href="properties/configuration/index.md" format="markdown">
+    <topicref href="properties/configuration/overview.md" format="markdown">
       <topicref href="properties/configuration/binary-scanner.md" format="markdown"/>
       <topicref href="properties/configuration/blackduck-server.md" format="markdown"/>
       <topicref href="properties/configuration/cleanup.md" format="markdown"/>
@@ -82,7 +73,7 @@
       <topicref href="properties/configuration/signature-scanner.md" format="markdown"/>
     </topicref>
 
-    <topicref href="properties/detectors/index.md" format="markdown">
+    <topicref href="properties/detectors/overview.md" format="markdown">
       <topicref href="properties/detectors/bazel.md" format="markdown"/>
       <topicref href="properties/detectors/bitbake.md" format="markdown"/>
       <topicref href="properties/detectors/conan.md" format="markdown"/>
@@ -107,7 +98,17 @@
     </topicref>
   </topicref>
 
-  <topicref href="packagemgrs/index.md" format="markdown">
+  <topicref href="results/overview.md" format="markdown">
+    <topicref href="results/reports.md" format="markdown"/>
+  </topicref>
+
+  <topicref href="troubleshooting/overview.md" format="markdown">
+    <topicref href="troubleshooting/diagnosticmode.md" format="markdown"/>
+    <topicref href="troubleshooting/solutions.md" format="markdown"/>
+    <topicref href="troubleshooting/usage-metrics.md" format="markdown"/>
+  </topicref>
+
+  <topicref href="packagemgrs/overview.md" format="markdown">
     <topicref href="packagemgrs/bazel.md" format="markdown"/>
     <topicref href="packagemgrs/bitbake.md" format="markdown"/>
     <topicref href="packagemgrs/cargo.md" format="markdown"/>
@@ -120,7 +121,6 @@
     <topicref href="packagemgrs/golang.md" format="markdown"/>
     <topicref href="packagemgrs/gradle.md" format="markdown"/>
     <topicref href="packagemgrs/hex.md" format="markdown"/>
-    <topicref href="packagemgrs/index.md" format="markdown"/>
     <topicref href="packagemgrs/lerna.md" format="markdown"/>
     <topicref href="packagemgrs/maven.md" format="markdown"/>
     <topicref href="packagemgrs/npm.md" format="markdown"/>

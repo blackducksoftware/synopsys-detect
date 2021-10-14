@@ -9,7 +9,7 @@ Before you download and run ${solution_name}, you need to make the following dec
 - Do you want to run ${solution_name} before you build or after?
 - In which directory do you want to run ${solution_name}?
 - Do you want to run ${solution_name} as a script or a .jar file; this affects which version is run.
-- What [tools and detectors](../components/index.md) do you want to include or exclude?
+- What [tools and detectors](../components/overview.md) do you want to include or exclude?
 - Do you want to run ${solution_name} offline, or connected to ${blackduck_product_name}.
 
 ## Positioning ${solution_name} in the build process
@@ -76,7 +76,7 @@ Several aspects of script functionality can be configured, including:
 * The download location.
 * Where to find Java.
 
-Information on how to configure the scripts is in [Shell script configuration](../scripts/index.md).
+Information on how to configure the scripts is in [Shell script configuration](../scripts/overview.md).
 
 ### Running the script on Linux or Mac
 
