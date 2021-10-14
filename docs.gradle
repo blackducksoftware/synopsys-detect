@@ -43,6 +43,14 @@ task ditasite() {
     }
 }
 
+task helpzip(type: Zip) {
+    dependsOn generateDocs
+
+    archiveName "${project.name}-${version}-help.zip"
+    from 'docs/ditasite'
+    destinationDir(file("${buildDir}/libs/"))
+}
+
 task ditadocs() {
     dependsOn ditasite
     dependsOn ditazip
