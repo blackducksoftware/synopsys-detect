@@ -271,6 +271,13 @@ public class DetectProperties {
                 "For example: Suppose you are running in bash on Linux and want to use the signature scanner's ability to read a list of directories to exclude from a file (using the signature scanner --exclude-from option). You tell the signature scanner read excluded directories from a file named excludes.txt in your home directory with: --detect.blackduck.signature.scanner.arguments='--exclude-from \\${HOME}/excludes.txt'")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL);
 
+    public static final DetectProperty<NullableStringProperty> PROJECT_INSPECTOR_ARGUMENTS =
+        new DetectProperty<>(new NullableStringProperty("detect.project.inspector.arguments"))
+            .setInfo("Project Inspector Additional Arguments", DetectPropertyFromVersion.VERSION_6_0_0)
+            .setHelp("Additional arguments to be used across all invocations of the project inspector.")
+            .setGroups(DetectGroup.DEFAULT)
+            .setCategory(DetectCategory.Advanced);
+
     public static final DetectProperty<BooleanProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_COPYRIGHT_SEARCH =
         new DetectProperty<>(new BooleanProperty("detect.blackduck.signature.scanner.copyright.search", false))
             .setInfo("Signature Scanner Copyright Search", DetectPropertyFromVersion.VERSION_6_4_0)
@@ -897,7 +904,7 @@ public class DetectProperties {
         new DetectProperty<>(new PathListProperty("detect.pip.requirements.path", emptyList()))
             .setInfo("PIP Requirements Path", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("A comma-separated list of paths to requirements files, to be used to analyze requirements files with a filename other than requirements.txt or to specify which requirements files should be analyzed.",
-                    "This property should only be set if you want the PIP Inspector Detector to run. For example: If your project uses Pipenv, do not set this property.")
+                "This property should only be set if you want the PIP Inspector Detector to run. For example: If your project uses Pipenv, do not set this property.")
             .setGroups(DetectGroup.PIP, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<BooleanProperty> DETECT_PIP_ONLY_PROJECT_TREE =
