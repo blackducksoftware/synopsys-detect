@@ -1,4 +1,4 @@
-# Components
+# ${solution_name} Components
 
 This page introduces the components in ${solution_name} that are used to examine your code so that the output from one or more of these can be analyzed.
 
