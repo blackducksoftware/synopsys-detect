@@ -32,6 +32,19 @@ task ditasourcezip(type: Zip) {
     destinationDir(file("${buildDir}/libs/"))
 }
 
+task publishDitaSource() {
+    dependsOn ditasourcezip
+
+    doLast {
+        def ditaSourceZipName = "${project.name}-${version}-ditasource.zip"
+        def ditaSourceZipLocation = "${buildDir}/libs/${ditaSourceZipName}"
+        exec {
+            commandLine 'curl', '--insecure', '-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT',
+                    "${project.ext.deployArtifactoryUrl}/${project.ext.artifactoryRepo}/com/synopsys/integration/${project.name}/${version}/${ditaSourceZipName}", '-T', "${ditaSourceZipLocation}", '-f'
+        }
+    }
+}
+
 // Requires Synopsys-configured dita:
 // 1. git clone https://sig-gitlab.internal.synopsys.com/doc/docs-dita-tools.git
 // 2. Add docs-dita-tools/dita-ot/bin to your PATH
