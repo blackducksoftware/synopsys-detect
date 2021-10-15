@@ -113,7 +113,7 @@ The ${blackduck_product_name} server certificate is not in Java's keystore.
 
 Although not recommended, it is possible to disable the certificate check with the [trust cert property](../properties/configuration/blackduck-server.md#trust-all-ssl-certificates-advanced).
 
-## Not Extractable: NUGET - Solution INFO [main] -- Exception occurred: java.nio.file.InvalidPathException
+## Not Extractable: NUGET - Solution INFO \[main\] -- Exception occurred: java.nio.file.InvalidPathException
 
 ### Symptom
 
