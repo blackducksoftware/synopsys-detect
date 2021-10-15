@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
 <map id="detect-user-guide" xml:lang="en-US">
-  <title>Detect User Guide</title>
+  <title>${solution_name} ${program_version}</title>
   <topicref href="introduction.md" format="markdown"/>
   <topicref href="gettingstarted/overview.md" format="markdown">
     <topicref href="gettingstarted/terms.md" format="markdown"/>

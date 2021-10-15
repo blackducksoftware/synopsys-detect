@@ -52,7 +52,9 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 public class GenerateDocsTask extends DefaultTask {
-    public static final String NAVIGATION_FILENAME = "ditamap.xml";
+    public static final String DITAMAP_NAME = "ditamap";
+    public static final String DITAMAP_EXT = "xml";
+    public static final String TEMPLATE_EXT = "ftl";
     private final IntLogger logger = new Slf4jIntLogger(this.getLogger());
 
     @TaskAction
@@ -69,10 +71,14 @@ public class GenerateDocsTask extends DefaultTask {
         FileUtils.deleteDirectory(outputDir);
         troubleshootingDir.mkdirs();
 
-        FileUtils.copyFile(new File(docsDir, NAVIGATION_FILENAME), new File(outputDir, NAVIGATION_FILENAME));
         TemplateProvider templateProvider = new TemplateProvider(project.file("docs/templates"), project.getVersion().toString());
-        createFromFreemarker(templateProvider, troubleshootingDir, "exit-codes", new ExitCodePage(helpJson.getExitCodes()));
-        createFromFreemarker(templateProvider, runningDir, "status-file", new DetectorStatusCodes(helpJson.getDetectorStatusCodes()));
+
+        String ditaMapTemplateRelPath = String.format("%s.%s", DITAMAP_NAME, TEMPLATE_EXT);
+        File ditaMapFile = new File(outputDir, String.format("%s.%s", DITAMAP_NAME, DITAMAP_EXT));
+        createFromFreemarker(templateProvider, ditaMapTemplateRelPath, ditaMapFile, new HashMap<String, String>());
+
+        createMarkdownFromFreemarker(templateProvider, troubleshootingDir, "exit-codes", new ExitCodePage(helpJson.getExitCodes()));
+        createMarkdownFromFreemarker(templateProvider, runningDir, "status-file", new DetectorStatusCodes(helpJson.getDetectorStatusCodes()));
         handleDetectors(templateProvider, outputDir, helpJson);
         handleProperties(templateProvider, outputDir, helpJson);
         handleContent(outputDir, templateProvider);
@@ -95,22 +101,26 @@ public class GenerateDocsTask extends DefaultTask {
     }
 
     private void createContentMarkdownFromTemplate(File templatesDir, File contentDir, File templateFile, File baseOutputDir, TemplateProvider templateProvider) throws IOException, TemplateException {
-        String helpContentTemplateRelativePath = templatesDir.toPath().relativize(templateFile.toPath()).toString(); // TODO: Verify this is the correct substitution.
+        String helpContentTemplateRelativePath = templatesDir.toPath().relativize(templateFile.toPath()).toString();
         File outputFile = deriveOutputFileForContentTemplate(contentDir, templateFile, baseOutputDir);
         logger.alwaysLog(String.format("Generating markdown from template file: %s --> %s", helpContentTemplateRelativePath, outputFile.getCanonicalPath()));
         createFromFreemarker(templateProvider, helpContentTemplateRelativePath, outputFile, new HashMap<String, String>());
     }
 
     private File deriveOutputFileForContentTemplate(File contentDir, File helpContentTemplateFile, File baseOutputDir) {
-        String templateSubDir = contentDir.toPath().relativize(helpContentTemplateFile.toPath().getParent()).toString(); // TODO: Verify this is the correct substitution.
+        String templateSubDir = contentDir.toPath().relativize(helpContentTemplateFile.toPath().getParent()).toString();
         File outputDir = new File(baseOutputDir, templateSubDir);
         String outputFileName = String.format("%s.md", FilenameUtils.removeExtension(helpContentTemplateFile.getName()));
 
         return new File(outputDir, outputFileName);
     }
 
-    private void createFromFreemarker(TemplateProvider templateProvider, File outputDir, String templateName, Object data) throws IOException, TemplateException {
+    private void createMarkdownFromFreemarker(TemplateProvider templateProvider, File outputDir, String templateName, Object data) throws IOException, TemplateException {
         createFromFreemarker(templateProvider, String.format("%s.ftl", templateName), new File(outputDir, String.format("%s.md", templateName)), data);
+    }
+
+    private void createFromFreemarker(TemplateProvider templateProvider, File outputDir, String templateName, String targetExt, Object data) throws IOException, TemplateException {
+        createFromFreemarker(templateProvider, String.format("%s.ftl", templateName), new File(outputDir, String.format("%s.%s", templateName, targetExt)), data);
     }
 
     private void createFromFreemarker(TemplateProvider templateProvider, String templateRelativePath, File to, Object data) throws IOException, TemplateException {
@@ -133,7 +143,7 @@ public class GenerateDocsTask extends DefaultTask {
                                              .sorted(Comparator.comparing(Detector::getDetectorType).thenComparing(Detector::getDetectorName))
                                              .collect(Collectors.toList());
 
-        createFromFreemarker(templateProvider, outputDir, "detectors", new DetectorsPage(buildless, build));
+        createMarkdownFromFreemarker(templateProvider, outputDir, "detectors", new DetectorsPage(buildless, build));
     }
 
     private String encodePropertyLocation(String propertyName) {
@@ -236,9 +246,9 @@ public class GenerateDocsTask extends DefaultTask {
             deprecatedPropertyTableData.add(deprecatedPropertyTableGroup);
         }
 
-        createFromFreemarker(templateProvider, propertiesFolder, "basic-properties", new SimplePropertyTablePage(simplePropertyTableData));
-        createFromFreemarker(templateProvider, propertiesFolder, "deprecated-properties", new DeprecatedPropertyTablePage(deprecatedPropertyTableData));
-        createFromFreemarker(templateProvider, propertiesFolder, "all-properties", new AdvancedPropertyTablePage(splitGroupOptions));
+        createMarkdownFromFreemarker(templateProvider, propertiesFolder, "basic-properties", new SimplePropertyTablePage(simplePropertyTableData));
+        createMarkdownFromFreemarker(templateProvider, propertiesFolder, "deprecated-properties", new DeprecatedPropertyTablePage(deprecatedPropertyTableData));
+        createMarkdownFromFreemarker(templateProvider, propertiesFolder, "all-properties", new AdvancedPropertyTablePage(splitGroupOptions));
     }
 
     private String getGroupLocation(Map<String, String> groupLocationMap, String group) throws IntegrationException {
