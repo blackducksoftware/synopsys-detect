@@ -40,7 +40,7 @@ task ditasite() {
 
     doLast {
         exec {
-            commandLine 'dita', '--input=ditamap.xml', '--format=sig-webhelp', '-o', '../ditasite'
+            commandLine 'dita', '--input=detect.ditamap', '--format=sig-webhelp', '-o', '../ditasite'
             workingDir "docs/generated"
         }
     }
@@ -51,7 +51,7 @@ task helppdf() {
 
     doLast {
         exec {
-            commandLine 'dita', '--input=ditamap.xml', '--format=sig-pdf', "--outputFile.base=${project.name}-${version}-help", '-o', '../../build/libs'
+            commandLine 'dita', '--input=detect.ditamap', '--format=sig-pdf', "--outputFile.base=${project.name}-${version}-help", '-o', '../../build/libs'
             workingDir "docs/generated"
         }
     }

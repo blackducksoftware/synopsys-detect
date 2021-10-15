@@ -52,9 +52,9 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 public class GenerateDocsTask extends DefaultTask {
-    public static final String DITAMAP_NAME = "ditamap";
-    public static final String DITAMAP_EXT = "xml";
-    public static final String TEMPLATE_EXT = "ftl";
+
+    private static final String DITAMAP_TEMPLATE_FILENAME = "ditamap.ftl";
+    private static final String DITAMAP_OUTPUT_FILENAME = "detect.ditamap";
     private final IntLogger logger = new Slf4jIntLogger(this.getLogger());
 
     @TaskAction
@@ -73,10 +73,7 @@ public class GenerateDocsTask extends DefaultTask {
 
         TemplateProvider templateProvider = new TemplateProvider(project.file("docs/templates"), project.getVersion().toString());
 
-        String ditaMapTemplateRelPath = String.format("%s.%s", DITAMAP_NAME, TEMPLATE_EXT);
-        File ditaMapFile = new File(outputDir, String.format("%s.%s", DITAMAP_NAME, DITAMAP_EXT));
-        createFromFreemarker(templateProvider, ditaMapTemplateRelPath, ditaMapFile, new HashMap<String, String>());
-
+        createFromFreemarker(templateProvider, DITAMAP_TEMPLATE_FILENAME, new File(outputDir, DITAMAP_OUTPUT_FILENAME), new HashMap<String, String>(0));
         createMarkdownFromFreemarker(templateProvider, troubleshootingDir, "exit-codes", new ExitCodePage(helpJson.getExitCodes()));
         createMarkdownFromFreemarker(templateProvider, runningDir, "status-file", new DetectorStatusCodes(helpJson.getDetectorStatusCodes()));
         handleDetectors(templateProvider, outputDir, helpJson);
