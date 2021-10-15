@@ -1,5 +1,13 @@
 # Release notes
 
+## Version 7.7.0
+
+### New Features
+* Added support for uploading rapid scan config file when a file named '.bd-rapid-scan.yaml' is present in the source directory.
+
+### Resolved issues
+* Resolved an issue where ${solution_name} would incorrectly resolve the relative path "." when processing signature scan targets (IDETECT-2808).
+
 ## Version 7.6.0
 
 ### New Features
