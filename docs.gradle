@@ -71,12 +71,6 @@ task helpzip(type: Zip) {
     destinationDir(file("${buildDir}/libs/"))
 }
 
-task ditadocs() {
-    dependsOn ditasourcezip
-    dependsOn helpzip
-    dependsOn helppdf
-}
-
 task servedocs() {
     dependsOn docs
 
