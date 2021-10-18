@@ -951,7 +951,7 @@ public class DetectProperties {
         new DetectProperty<>(new NullableStringProperty("detect.custom.fields.project"))
             .setInfo("Custom Fields", DetectPropertyFromVersion.VERSION_5_6_0)
             .setHelp(
-                "A  list of custom fields with a label and comma-separated value starting from index 0. For each index, provide one label and one value. For example, to set a custom field with label 'example' to 'one,two': detect.custom.fields.project[0].label='example' and detect.custom.fields.project[0].value='one,two'. To set another field, use index 1. Note that these will not show up in the detect configuration log.")
+                "A  list of custom fields with a label and comma-separated value starting from index 0. For each index, provide one label and one value. For example, to set a custom field with label 'example' to 'one,two': `detect.custom.fields.project[0].label='example'` and `detect.custom.fields.project[0].value='one,two'`. To set another field, use index 1. Note that these will not show up in the detect configuration log.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced);
 
@@ -960,7 +960,7 @@ public class DetectProperties {
         new DetectProperty<>(new NullableStringProperty("detect.custom.fields.version"))
             .setInfo("Custom Fields", DetectPropertyFromVersion.VERSION_5_6_0)
             .setHelp(
-                "A  list of custom fields with a label and comma-separated value starting from index 0. For each index, provide one label and one value. For example , to set a custom field with label 'example' to 'one,two': detect.custom.fields.version[0].label='example' and detect.custom.fields.version[0].value='one,two'. To set another field, use index 1. Note that these will not show up in the detect configuration log.")
+                "A  list of custom fields with a label and comma-separated value starting from index 0. For each index, provide one label and one value. For example , to set a custom field with label 'example' to 'one,two': `detect.custom.fields.version[0].label='example'` and `detect.custom.fields.version[0].value='one,two'`. To set another field, use index 1. Note that these will not show up in the detect configuration log.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced);
 
