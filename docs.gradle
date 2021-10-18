@@ -13,17 +13,6 @@ task generateDocs(type: GenerateDocsTask) {
     dependsOn helpJson
 }
 
-task docs() {
-    dependsOn generateDocs
-
-    doLast {
-        exec {
-            commandLine 'mkdocs', 'build'
-            workingDir "docs"
-        }
-    }
-}
-
 task ditasourcezip(type: Zip) {
     dependsOn generateDocs
 
@@ -62,6 +51,7 @@ task ditasite() {
 	    if (outputLine.matches(".*\\[keyref\\].*\\[DOTJ047I\\].*"))
 		throw new Exception("dita found invalid key references. Square brackets around doc text must be escaped if not inside back quotes.")
 	}
+        println "To browse the webhelp: Open docs/ditasite/index.html in a browser"
     }
 }
 
@@ -84,13 +74,6 @@ task helpzip(type: Zip) {
     destinationDir(file("${buildDir}/libs/"))
 }
 
-task servedocs() {
-    dependsOn docs
-
-    doLast {
-        exec {
-            commandLine 'mkdocs', 'serve'
-            workingDir "docs"
-        }
-    }
+task docs() {
+    dependsOn ditasite
 }
