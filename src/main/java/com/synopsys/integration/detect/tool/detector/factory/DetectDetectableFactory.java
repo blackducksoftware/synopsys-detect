@@ -265,14 +265,14 @@ public class DetectDetectableFactory {
     }
 
     public NugetProjectInspectorDetectable createNugetParseDetectable(DetectableEnvironment detectableEnvironment) {
-        return detectableFactory.createNugetParseDetectable(detectableEnvironment, detectableOptionFactory.createNugetInspectorOptions(), projectInspectorResolver);
+        return detectableFactory.createNugetParseDetectable(detectableEnvironment, detectableOptionFactory.createNugetInspectorOptions(), projectInspectorResolver, detectableOptionFactory.createProjectInspectorOptions());
     }
 
     public MavenProjectInspectorDetectable createMavenProjectInspectorDetectable(DetectableEnvironment detectableEnvironment) {
-        return detectableFactory.createMavenProjectInspectorDetectable(detectableEnvironment, projectInspectorResolver, detectableOptionFactory.createMavenParseOptions());
+        return detectableFactory.createMavenProjectInspectorDetectable(detectableEnvironment, projectInspectorResolver, detectableOptionFactory.createMavenParseOptions(), detectableOptionFactory.createProjectInspectorOptions());
     }
 
     public GradleProjectInspectorDetectable createGradleProjectInspectorDetectable(DetectableEnvironment detectableEnvironment) {
-        return detectableFactory.createMavenGradleInspectorDetectable(detectableEnvironment, projectInspectorResolver);
+        return detectableFactory.createMavenGradleInspectorDetectable(detectableEnvironment, projectInspectorResolver, detectableOptionFactory.createProjectInspectorOptions());
     }
 }

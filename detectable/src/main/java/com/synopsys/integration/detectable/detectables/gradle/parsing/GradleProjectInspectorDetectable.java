@@ -20,6 +20,7 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableFaile
 import com.synopsys.integration.detectable.detectable.inspector.ProjectInspectorResolver;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorExtractor;
+import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorOptions;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
@@ -30,15 +31,17 @@ public class GradleProjectInspectorDetectable extends Detectable {
     private final FileFinder fileFinder;
     private final ProjectInspectorResolver projectInspectorResolver;
     private final ProjectInspectorExtractor projectInspectorExtractor;
+    private final ProjectInspectorOptions projectInspectorOptions;
 
     private ExecutableTarget inspector;
 
     public GradleProjectInspectorDetectable(final DetectableEnvironment environment, FileFinder fileFinder, ProjectInspectorResolver projectInspectorResolver,
-        ProjectInspectorExtractor projectInspectorExtractor) {
+        ProjectInspectorExtractor projectInspectorExtractor, ProjectInspectorOptions projectInspectorOptions) {
         super(environment);
         this.fileFinder = fileFinder;
         this.projectInspectorResolver = projectInspectorResolver;
         this.projectInspectorExtractor = projectInspectorExtractor;
+        this.projectInspectorOptions = projectInspectorOptions;
     }
 
     @Override
@@ -57,7 +60,7 @@ public class GradleProjectInspectorDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
-        return projectInspectorExtractor.extract(Collections.emptyList(), environment.getDirectory(), extractionEnvironment.getOutputDirectory(), inspector);
+        return projectInspectorExtractor.extract(projectInspectorOptions, Collections.emptyList(), environment.getDirectory(), extractionEnvironment.getOutputDirectory(), inspector);
     }
 
 }

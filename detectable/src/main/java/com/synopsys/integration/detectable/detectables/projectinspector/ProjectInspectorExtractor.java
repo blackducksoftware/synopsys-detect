@@ -10,8 +10,10 @@ package com.synopsys.integration.detectable.detectables.projectinspector;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 
@@ -31,7 +33,7 @@ public class ProjectInspectorExtractor {
         this.projectInspectorParser = projectInspectorParser;
     }
 
-    public Extraction extract(List<String> extra, File targetDirectory, File outputDirectory, ExecutableTarget inspector) throws ExecutableFailedException {
+    public Extraction extract(ProjectInspectorOptions projectInspectorOptions, List<String> extra, File targetDirectory, File outputDirectory, ExecutableTarget inspector) throws ExecutableFailedException {
         File outputFile = new File(outputDirectory, "inspection.json");
 
         List<String> arguments = new LinkedList<>();
@@ -41,6 +43,10 @@ public class ProjectInspectorExtractor {
         arguments.add("--output-file");
         arguments.add(outputFile.toString());
         arguments.addAll(extra);
+
+        Optional.ofNullable(projectInspectorOptions.getAdditionalArguments())
+            .map(arg -> arg.split(" "))
+            .ifPresent(additionalArguments -> arguments.addAll(Arrays.asList(additionalArguments)));
 
         executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(targetDirectory, inspector, arguments));
 
