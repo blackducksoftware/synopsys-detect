@@ -273,8 +273,8 @@ public class DetectProperties {
 
     public static final DetectProperty<NullableStringProperty> PROJECT_INSPECTOR_ARGUMENTS =
         new DetectProperty<>(new NullableStringProperty("detect.project.inspector.arguments"))
-            .setInfo("Project Inspector Additional Arguments", DetectPropertyFromVersion.VERSION_6_0_0)
-            .setHelp("Additional arguments to be used across all invocations of the project inspector.")
+            .setInfo("Project Inspector Additional Arguments", DetectPropertyFromVersion.VERSION_7_7_0)
+            .setHelp("A comma-separated list of additional options to pass to all invocations of the project inspector.")
             .setGroups(DetectGroup.DEFAULT)
             .setCategory(DetectCategory.Advanced);
 
