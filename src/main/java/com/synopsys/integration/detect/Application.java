@@ -118,7 +118,7 @@ public class Application implements ApplicationRunner {
             shouldForceSuccess = detectBootResult.shouldForceSuccess();
 
             runApplication(eventSystem, exitCodeManager, detectBootResult);
-            
+
             detectBootResult.getProductRunData()
                 .filter(ProductRunData::shouldUseBlackDuckProduct)
                 .map(ProductRunData::getBlackDuckRunData)
@@ -157,7 +157,9 @@ public class Application implements ApplicationRunner {
             logger.debug("Detect boot completed.");
         } catch (Exception e) {
             logger.error("Detect boot failed.");
+            logger.error("");
             exitCodeManager.requestExitCode(e);
+            logger.error("");
         }
         return bootResult;
     }

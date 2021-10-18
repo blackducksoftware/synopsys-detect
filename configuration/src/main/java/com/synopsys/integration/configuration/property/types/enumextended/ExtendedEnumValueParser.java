@@ -46,7 +46,7 @@ class ExtendedEnumValueParser<E extends Enum<E>, B extends Enum<B>> extends Valu
         combinedOptions.addAll(EnumPropertyUtils.getEnumNames(enumClassE));
         combinedOptions.addAll(EnumPropertyUtils.getEnumNames(enumClassB));
         final String optionText = String.join(",", combinedOptions);
-        throw new ValueParseException(value, "either enum", "Value was must be one of " + optionText);
+        throw new ValueParseException(value, enumClassE.getSimpleName() + " or " + enumClassB.getSimpleName(), "Value was must be one of " + optionText);
     }
 }
 

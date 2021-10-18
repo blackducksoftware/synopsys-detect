@@ -365,6 +365,7 @@ public class DetectConfigurationFactory {
         if (signatureScannerPathValues != null) {
             signatureScannerPaths = signatureScannerPathValues.stream()
                                         .map(it -> it.resolvePath(pathResolver))
+                                        .map(Path::toAbsolutePath)
                                         .collect(Collectors.toList());
         } else {
             signatureScannerPaths = emptyList();

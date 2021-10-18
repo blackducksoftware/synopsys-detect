@@ -45,6 +45,7 @@ public class DirectoryManager {
         IMPACT_ANALYSIS("impact-analysis"),
         LOG("logs"),
         EXECUTABLES("executables"),
+        RAPID("rapid"),
         RELEVANT("relevant"),
         REPORT("reports"),
         SCAN("scan"),
@@ -73,15 +74,15 @@ public class DirectoryManager {
 
     public DirectoryManager(DirectoryOptions directoryOptions, DetectRunId detectRunId) {
         sourceDirectory = directoryOptions.getSourcePathOverride()
-                              .map(Path::toFile)
-                              .orElse(new File(System.getProperty("user.dir")));
+            .map(Path::toFile)
+            .orElse(new File(System.getProperty("user.dir")));
         logger.info("Source directory: " + sourceDirectory.getAbsolutePath());
 
         userHome = new File(System.getProperty("user.home"));
 
         File outputDirectory = directoryOptions.getOutputPathOverride()
-                                   .map(Path::toFile)
-                                   .orElse(new File(userHome, "blackduck"));
+            .map(Path::toFile)
+            .orElse(new File(userHome, "blackduck"));
         if (outputDirectory.getAbsolutePath().contains("systemprofile")) {
             logger.warn("You appear to be running in 'systemprofile' which can happen when detect is invoked by a system account or as a service.");
             logger.warn("If detect has full access to the output directory, no further action is necessary.");
@@ -157,6 +158,10 @@ public class DirectoryManager {
 
     public File getScanOutputDirectory() {
         return getRunDirectory(RunDirectory.SCAN);
+    }
+
+    public File getRapidOutputDirectory() {
+        return getRunDirectory(RunDirectory.RAPID);
     }
 
     public File getBinaryOutputDirectory() {

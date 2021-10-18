@@ -8,7 +8,6 @@
 package com.synopsys.integration.detectable.detectables.gradle.parsing;
 
 import java.util.Collections;
-import java.util.List;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
@@ -24,7 +23,7 @@ import com.synopsys.integration.detectable.detectables.projectinspector.ProjectI
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "C#", forge = "NuGet.org", requirementsMarkdown = "File: a project file with one of the following extensions: .csproj, .sln")
+@DetectableInfo(language = "various", forge = "Maven Central", requirementsMarkdown = "File: build.gradle")
 public class GradleProjectInspectorDetectable extends Detectable {
     public static final String BUILD_GRADLE_FILENAME = "build.gradle";
 
@@ -58,8 +57,7 @@ public class GradleProjectInspectorDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
-        List<String> arguments = Collections.emptyList();
-        return projectInspectorExtractor.extract(arguments, environment.getDirectory(), extractionEnvironment.getOutputDirectory(), inspector);
+        return projectInspectorExtractor.extract(Collections.emptyList(), environment.getDirectory(), extractionEnvironment.getOutputDirectory(), inspector);
     }
 
 }

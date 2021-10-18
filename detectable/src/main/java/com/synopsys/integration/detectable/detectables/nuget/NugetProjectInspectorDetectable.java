@@ -31,7 +31,6 @@ public class NugetProjectInspectorDetectable extends Detectable {
     static final List<String> SUPPORTED_PROJECT_PATTERNS = Arrays.asList("*.csproj", "*.sln");
 
     private final FileFinder fileFinder;
-    private final NugetInspectorOptions nugetInspectorOptions;
     private final ProjectInspectorResolver projectInspectorResolver;
     private final ProjectInspectorExtractor projectInspectorExtractor;
 
@@ -41,7 +40,6 @@ public class NugetProjectInspectorDetectable extends Detectable {
         ProjectInspectorResolver projectInspectorResolver, ProjectInspectorExtractor projectInspectorExtractor) {
         super(detectableEnvironment);
         this.fileFinder = fileFinder;
-        this.nugetInspectorOptions = nugetInspectorOptions;
         this.projectInspectorResolver = projectInspectorResolver;
         this.projectInspectorExtractor = projectInspectorExtractor;
     }
@@ -62,8 +60,7 @@ public class NugetProjectInspectorDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
-        List<String> arguments = Collections.emptyList();
-        return projectInspectorExtractor.extract(arguments, environment.getDirectory(), extractionEnvironment.getOutputDirectory(), inspector);
+        return projectInspectorExtractor.extract(Collections.emptyList(), environment.getDirectory(), extractionEnvironment.getOutputDirectory(), inspector);
     }
 
 }
