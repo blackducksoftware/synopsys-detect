@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 
 import com.github.dockerjava.api.DockerClient;
@@ -28,24 +29,7 @@ public class DetectDockerRunner {
                                  .exec().getId();
 
         try {
-            dockerClient.startContainerCmd(containerId).exec();
-
-            int exitCode = dockerClient.waitContainerCmd(containerId)
-                               .exec(new WaitContainerResultCallback())
-                               .awaitStatusCode();
-
-            String logs = dockerClient.logContainerCmd(containerId)
-                              .withStdErr(true)
-                              .withStdOut(true)
-                              .exec(new LogContainerTestCallback()).awaitCompletion().toString();
-
-            try {
-                dockerClient.stopContainerCmd(containerId).exec();
-            } catch (NotModifiedException e) {
-                //Container already stopped, we do not care.
-            }
-
-            return new DockerDetectResult(exitCode, logs);
+            return runContainer(dockerClient, containerId);
         } catch (Exception e) {
             Assertions.assertNull(e, "An exception occurred running docker commands.");
         } finally {
@@ -54,6 +38,28 @@ public class DetectDockerRunner {
 
         Assertions.fail("Should have already returned! Something has gone wrong!");
         return null;
+    }
+
+    @NotNull
+    private DockerDetectResult runContainer(DockerClient dockerClient, String containerId) throws InterruptedException {
+        dockerClient.startContainerCmd(containerId).exec();
+
+        int exitCode = dockerClient.waitContainerCmd(containerId)
+                           .exec(new WaitContainerResultCallback())
+                           .awaitStatusCode();
+
+        String logs = dockerClient.logContainerCmd(containerId)
+                          .withStdErr(true)
+                          .withStdOut(true)
+                          .exec(new LogContainerTestCallback()).awaitCompletion().toString();
+
+        try {
+            dockerClient.stopContainerCmd(containerId).exec();
+        } catch (NotModifiedException e) {
+            //Container already stopped, we do not care.
+        }
+
+        return new DockerDetectResult(exitCode, logs);
     }
 
     public DockerClient connectToDocker() {
