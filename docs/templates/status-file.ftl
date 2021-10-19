@@ -1,6 +1,6 @@
 # Status File
 
-As of detect 6.2.0 an output status file is created in the run folder with the name "status.json" and is meant to summarize the detect run in a machine readable format.
+${solution_name} creates an output status file in the run folder with the name "status.json" which contains a summary of the detect run in a machine readable format.
 
 The file includes status codes, issues encountered and results produced. As additional processes consume this file, additional information will be added. The format is intended to evolve over time.
 

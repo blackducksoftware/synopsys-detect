@@ -9,8 +9,6 @@
     <topicref href="gettingstarted/workflow.md" format="markdown"/>
     <topicref href="gettingstarted/configuring.md" format="markdown"/>
     <topicref href="gettingstarted/phases.md" format="markdown"/>
-
-
     <topicref href="requirements.md" format="markdown"/>
     <topicref href="gettingstarted/usersandroles.md" format="markdown"/>
     <topicref href="quickstart.md" format="markdown"/>
@@ -23,6 +21,7 @@
     <topicref href="downloadingandrunning/verification.md" format="markdown"/>
     <topicref href="downloadingandrunning/includingexcluding.md" format="markdown"/>
     <topicref href="downloadingandrunning/rapidscan.md" format="markdown"/>
+    <topicref href="downloadingandrunning/status-file.md" format="markdown"/>
     <topicref href="downloadingandrunning/proxies.md" format="markdown"/>
     <topicref href="downloadingandrunning/concurrent.md" format="markdown"/>
     <topicref href="downloadingandrunning/runincontainer.md" format="markdown"/>
@@ -104,6 +103,7 @@
 
   <topicref href="troubleshooting/overview.md" format="markdown">
     <topicref href="troubleshooting/diagnosticmode.md" format="markdown"/>
+    <topicref href="troubleshooting/exit-codes.md" format="markdown"/>
     <topicref href="troubleshooting/solutions.md" format="markdown"/>
     <topicref href="troubleshooting/usage-metrics.md" format="markdown"/>
   </topicref>
