@@ -46,6 +46,7 @@ import com.synopsys.integration.detectable.detectables.pear.PearCliDetectable;
 import com.synopsys.integration.detectable.detectables.pip.PipInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.pip.PipenvDetectable;
 import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryDetectable;
+import com.synopsys.integration.detectable.detectables.pnpm.cli.PnpmCliDetectable;
 import com.synopsys.integration.detectable.detectables.rebar.RebarDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemlock.GemlockDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectable;
@@ -105,6 +106,9 @@ public class DetectorRuleFactory {
         DetectorRule npmPackageLock = ruleSet.addDetector(DetectorType.NPM, "Package Lock", NpmPackageLockDetectable.class, detectableFactory::createNpmPackageLockDetectable).defaultLock().build();
         DetectorRule npmShrinkwrap = ruleSet.addDetector(DetectorType.NPM, "Shrinkwrap", NpmShrinkwrapDetectable.class, detectableFactory::createNpmShrinkwrapDetectable).defaultLock().build();
         DetectorRule npmCli = ruleSet.addDetector(DetectorType.NPM, "Npm Cli", NpmCliDetectable.class, detectableFactory::createNpmCliDetectable).defaults().build();
+        DetectorRule pnpmCli = ruleSet.addDetector(DetectorType.PNPM, "Pnpm Cli", PnpmCliDetectable.class, detectableFactory::createPnpmCliDetectable).defaults().build();
+        //TODO- should anything yield to pnpm cli?  It currently has same triggers as npm...should it?
+        ruleSet.yield(npmCli).to(pnpmCli);
 
         ruleSet.yield(npmPackageLock).to(lernaDetectable);
         ruleSet.yield(npmShrinkwrap).to(lernaDetectable);

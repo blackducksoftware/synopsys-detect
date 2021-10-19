@@ -51,6 +51,7 @@ import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDet
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pip.PipInspectorDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pip.PipenvDetectableOptions;
+import com.synopsys.integration.detectable.detectables.pnpm.cli.PnpmCliExtractorOptions;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorOptions;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectableOptions;
 import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheOptions;
@@ -225,9 +226,15 @@ public class DetectableOptionFactory {
     public PipInspectorDetectableOptions createPipInspectorDetectableOptions() {
         String pipProjectName = getNullableValue(DetectProperties.DETECT_PIP_PROJECT_NAME);
         List<Path> requirementsFilePath = getValue(DetectProperties.DETECT_PIP_REQUIREMENTS_PATH).stream()
-            .map(it -> it.resolvePath(pathResolver))
-            .collect(Collectors.toList());
+                                              .map(it -> it.resolvePath(pathResolver))
+                                              .collect(Collectors.toList());
         return new PipInspectorDetectableOptions(pipProjectName, requirementsFilePath);
+    }
+
+    public PnpmCliExtractorOptions createPnpmCliExtractorOptions() {
+        Boolean includeDevDependencies = getValue(DetectProperties.DETECT_PNPM_INCLUDE_DEV_DEPENDENCIES);
+        String pnpmArguments = getNullableValue(DetectProperties.DETECT_PNPM_ARGUMENTS);
+        return new PnpmCliExtractorOptions(includeDevDependencies, pnpmArguments);
     }
 
     public ProjectInspectorOptions createProjectInspectorOptions() {
@@ -286,8 +293,8 @@ public class DetectableOptionFactory {
     private boolean noneSpecified(List<FilterableEnumValue<WorkspaceRule>> rulesPropertyValues) {
         boolean noneWasSpecified = false;
         if (rulesPropertyValues == null ||
-            FilterableEnumUtils.containsNone(rulesPropertyValues) ||
-            (FilterableEnumUtils.toPresentValues(rulesPropertyValues).isEmpty() && !FilterableEnumUtils.containsAll(rulesPropertyValues))) {
+                FilterableEnumUtils.containsNone(rulesPropertyValues) ||
+                (FilterableEnumUtils.toPresentValues(rulesPropertyValues).isEmpty() && !FilterableEnumUtils.containsAll(rulesPropertyValues))) {
             noneWasSpecified = true;
         }
         return noneWasSpecified;
