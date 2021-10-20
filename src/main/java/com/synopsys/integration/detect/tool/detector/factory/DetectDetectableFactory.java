@@ -56,6 +56,7 @@ import com.synopsys.integration.detectable.detectables.pip.PipInspectorDetectabl
 import com.synopsys.integration.detectable.detectables.pip.PipenvDetectable;
 import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryDetectable;
 import com.synopsys.integration.detectable.detectables.pnpm.cli.PnpmCliDetectable;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockDetectable;
 import com.synopsys.integration.detectable.detectables.rebar.RebarDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemlock.GemlockDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectable;
@@ -234,6 +235,10 @@ public class DetectDetectableFactory {
 
     public PnpmCliDetectable createPnpmCliDetectable(DetectableEnvironment environment) {
         return detectableFactory.createPnpmCliDetectable(environment, detectExecutableResolver, detectableOptionFactory.createPnpmCliExtractorOptions());
+    }
+
+    public PnpmLockDetectable createPnpmLockDetectable(DetectableEnvironment environment) {
+        return detectableFactory.createPnpmLockDetectable(environment);
     }
 
     public PodlockDetectable createPodLockDetectable(DetectableEnvironment environment) {

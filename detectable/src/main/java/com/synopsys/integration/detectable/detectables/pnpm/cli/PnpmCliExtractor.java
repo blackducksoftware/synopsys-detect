@@ -43,6 +43,7 @@ public class PnpmCliExtractor {
             return new Extraction.Builder().exception(e).build();
         }
 
+        //TODO- is --prod essentially --no-dev? if so, then we can have detectable just pass args in to extractor, make this a shared extractor
         List<String> pnpmListArgs = new ArrayList<>();
         pnpmListArgs.add("ls");
         pnpmListArgs.add("--json");

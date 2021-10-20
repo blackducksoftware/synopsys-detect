@@ -50,7 +50,7 @@ public class PnpmCliParser {
 
     public NpmParseResult convertNpmJsonFileToCodeLocation(String pnpmLsOutput, boolean includeDevDependencies) {
         JsonArray pnpmListArray = JsonParser.parseString(pnpmLsOutput)
-                                      .getAsJsonArray(); // pnpm wraps list output in an array TODO- why?
+                                      .getAsJsonArray(); // pnpm wraps list output in an array TODO- why? there
         JsonObject npmJson = pnpmListArray.get(0).getAsJsonObject();
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
@@ -60,7 +60,7 @@ public class PnpmCliParser {
         String projectVersion = projectNameElement != null ? projectVersionElement.getAsString() : null;
 
         populateChildren(graph, null, npmJson.getAsJsonObject(JSON_DEPENDENCIES), true);
-        if (includeDevDependencies) {
+        if (includeDevDependencies && npmJson.has(JSON_DEV_DEPENDENCIES)) {
             populateChildren(graph, null, npmJson.getAsJsonObject(JSON_DEV_DEPENDENCIES), true);
         }
 

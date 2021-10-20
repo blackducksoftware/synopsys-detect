@@ -214,6 +214,9 @@ import com.synopsys.integration.detectable.detectables.pnpm.cli.PnpmCliDetectabl
 import com.synopsys.integration.detectable.detectables.pnpm.cli.PnpmCliExtractor;
 import com.synopsys.integration.detectable.detectables.pnpm.cli.PnpmCliExtractorOptions;
 import com.synopsys.integration.detectable.detectables.pnpm.cli.PnpmCliParser;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockDetectable;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockExtractor;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockYamlParser;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorExtractor;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorOptions;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorParser;
@@ -440,6 +443,10 @@ public class DetectableFactory {
 
     public PnpmCliDetectable createPnpmCliDetectable(DetectableEnvironment environment, PnpmResolver pnpmResolver, PnpmCliExtractorOptions pnpmCliExtractorOptions) {
         return new PnpmCliDetectable(environment, fileFinder, pnpmResolver, pnpmCliExtractor(), pnpmCliExtractorOptions);
+    }
+
+    public PnpmLockDetectable createPnpmLockDetectable(DetectableEnvironment environment) {
+        return new PnpmLockDetectable(environment, fileFinder, pnpmLockExtractor());
     }
 
     public PodlockDetectable createPodLockDetectable(DetectableEnvironment environment) {
@@ -758,6 +765,14 @@ public class DetectableFactory {
 
     private PnpmCliExtractor pnpmCliExtractor() {
         return new PnpmCliExtractor(executableRunner, pnpmCliParser(), gson);
+    }
+
+    private PnpmLockExtractor pnpmLockExtractor() {
+        return new PnpmLockExtractor(gson, pnpmLockYamlParser());
+    }
+
+    private PnpmLockYamlParser pnpmLockYamlParser() {
+        return new PnpmLockYamlParser();
     }
 
     private PnpmCliParser pnpmCliParser() {
