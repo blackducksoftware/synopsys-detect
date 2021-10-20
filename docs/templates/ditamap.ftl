@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
 <map id="detect-user-guide" xml:lang="en-US">
-  <title>${solution_name} ${program_version}</title>
+  <title>${solution_name}</title>
+  <topicref href="releasenotes.md" format="markdown"/>
   <topicref href="introduction.md" format="markdown"/>
   <topicref href="gettingstarted/overview.md" format="markdown">
     <topicref href="gettingstarted/terms.md" format="markdown"/>
@@ -131,7 +132,6 @@
     <topicref href="packagemgrs/yocto-bitbake.md" format="markdown"/>
   </topicref>
 
-  <topicref href="releasenotes.md" format="markdown"/>
 </map>
 
 
