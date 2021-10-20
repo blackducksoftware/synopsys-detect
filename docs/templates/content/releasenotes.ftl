@@ -628,3 +628,5 @@ create the directory.
 * The term BOM_TOOL is now replaced with DETECTOR.
 * You can no longer supply ranges for the Inspector versions.
 * Enhanced the code location naming conventions.
+
+Documentation version: ${program_version}
