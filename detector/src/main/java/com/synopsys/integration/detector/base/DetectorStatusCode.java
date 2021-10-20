@@ -26,6 +26,8 @@ public enum DetectorStatusCode {
     NOT_NESTABLE("Not nestable and a detector already applied in parent directory."),
     NOT_SELF_NESTABLE("Nestable but this detector already applied in a parent directory."),
     NPM_NODE_MODULES_NOT_FOUND("A package.json was located in the target project, but the node_modules folder was NOT located."),
+    PNPM_NODE_MODULES_NOT_FOUND("A package.json was located in the target project, but the node_modules folder was NOT located."),
+    NODE_MODULES_NOT_FOUND("A package.json was located in the target project, but the node_modules folder was NOT located."),
     PASSED("Detector passed."),
     POETRY_LOCKFILE_NOT_FOUND("A pyproject.toml was located in the target project, but the Poetry.lock file was NOT located."),
     PROPERTY_INSUFFICIENT("The properties are insufficient to run."),

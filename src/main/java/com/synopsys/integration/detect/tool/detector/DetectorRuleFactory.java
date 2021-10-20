@@ -107,6 +107,7 @@ public class DetectorRuleFactory {
         DetectorRule npmShrinkwrap = ruleSet.addDetector(DetectorType.NPM, "Shrinkwrap", NpmShrinkwrapDetectable.class, detectableFactory::createNpmShrinkwrapDetectable).defaultLock().build();
         DetectorRule npmCli = ruleSet.addDetector(DetectorType.NPM, "Npm Cli", NpmCliDetectable.class, detectableFactory::createNpmCliDetectable).defaults().build();
         DetectorRule pnpmCli = ruleSet.addDetector(DetectorType.PNPM, "Pnpm Cli", PnpmCliDetectable.class, detectableFactory::createPnpmCliDetectable).defaults().build();
+
         //TODO- should anything yield to pnpm cli?  It currently has same triggers as npm...should it?
         ruleSet.yield(npmCli).to(pnpmCli);
 

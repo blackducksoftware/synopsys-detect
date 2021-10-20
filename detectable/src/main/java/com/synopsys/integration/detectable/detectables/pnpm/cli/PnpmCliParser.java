@@ -38,19 +38,19 @@ public class PnpmCliParser {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public NpmParseResult generateCodeLocation(String npmLsOutput, boolean includeDevDependencies) {
-        if (StringUtils.isBlank(npmLsOutput)) {
+    public NpmParseResult generateCodeLocation(String pnpmLsOutput, boolean includeDevDependencies) {
+        if (StringUtils.isBlank(pnpmLsOutput)) {
             logger.error("Ran into an issue creating and writing to file");
             return null;
         }
 
         logger.debug("Generating results from pnpm ls -json");
-        return convertNpmJsonFileToCodeLocation(npmLsOutput, includeDevDependencies);
+        return convertNpmJsonFileToCodeLocation(pnpmLsOutput, includeDevDependencies);
     }
 
-    public NpmParseResult convertNpmJsonFileToCodeLocation(String npmLsOutput, boolean includeDevDependencies) {
-        JsonArray pnpmListArray = JsonParser.parseString(npmLsOutput)
-                                      .getAsJsonArray(); // pnpm wraps list output in an array TODO- does this have something to do with workspaces/there monorepo support?  shoudl there be a code location for each element in the array?
+    public NpmParseResult convertNpmJsonFileToCodeLocation(String pnpmLsOutput, boolean includeDevDependencies) {
+        JsonArray pnpmListArray = JsonParser.parseString(pnpmLsOutput)
+                                      .getAsJsonArray(); // pnpm wraps list output in an array TODO- why?
         JsonObject npmJson = pnpmListArray.get(0).getAsJsonObject();
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
