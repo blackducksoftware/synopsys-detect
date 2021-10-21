@@ -132,6 +132,33 @@
     <topicref href="packagemgrs/yocto-bitbake.md" format="markdown"/>
   </topicref>
 
+  <keydef keys="company_name"><topicmeta><keywords><keyword>Synopsys</keyword></keywords></topicmeta></keydef>
+  <keydef keys="division_name"><topicmeta><keywords><keyword>Synopsys SIG</keyword></keywords></topicmeta></keydef>
+  <keydef keys="binary_repo_type"><topicmeta><keywords><keyword>Artifactory</keyword></keywords></topicmeta></keydef>
+  <keydef keys="solution_name"><topicmeta><keywords><keyword>Synopsys Detect</keyword></keywords></topicmeta></keydef>
+  <keydef keys="project_name"><topicmeta><keywords><keyword>synopsys-detect</keyword></keywords></topicmeta></keydef>
+  <keydef keys="source_repo_organization"><topicmeta><keywords><keyword>blackducksoftware</keyword></keywords></topicmeta></keydef>
+  <keydef keys="image_repo_organization"><topicmeta><keywords><keyword>blackducksoftware</keyword></keywords></topicmeta></keydef>
+  <keydef keys="blackduck_release_page"><topicmeta><keywords><keyword>https://github.com/blackducksoftware/hub/releases</keyword></keywords></topicmeta></keydef>
+  <keydef keys="bash_script_name"><topicmeta><keywords><keyword>detect7.sh</keyword></keywords></topicmeta></keydef>
+  <keydef keys="powershell_script_name"><topicmeta><keywords><keyword>detect7.ps1</keyword></keywords></topicmeta></keydef>
+  <keydef keys="binary_repo_url_base"><topicmeta><keywords><keyword>https://sig-repo.synopsys.com</keyword></keywords></topicmeta></keydef>
+  <keydef keys="binary_repo_ui_url_base"><topicmeta><keywords><keyword>https://sig-repo.synopsys.com/ui/repos/tree/General</keyword></keywords></topicmeta></keydef>
+  <keydef keys="binary_repo_repo"><topicmeta><keywords><keyword>bds-integrations-release</keyword></keywords></topicmeta></keydef>
+  <keydef keys="binary_repo_pkg_path"><topicmeta><keywords><keyword>com/synopsys/integration</keyword></keywords></topicmeta></keydef>
+  <keydef keys="script_repo_url_base"><topicmeta><keywords><keyword>https://detect.synopsys.com</keyword></keywords></topicmeta></keydef>
+  <keydef keys="spring_boot_config_doc_url"><topicmeta><keywords><keyword>https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html</keyword></keywords></topicmeta></keydef>
+  <keydef keys="blackduck_product_name"><topicmeta><keywords><keyword>Black Duck</keyword></keywords></topicmeta></keydef>
+  <keydef keys="coverity_product_name"><topicmeta><keywords><keyword>Coverity</keyword></keywords></topicmeta></keydef>
+  <keydef keys="blackduck_signature_scanner_name"><topicmeta><keywords><keyword>Black Duck Signature Scanner</keyword></keywords></topicmeta></keydef>
+  <keydef keys="blackduck_signature_scan_act"><topicmeta><keywords><keyword>Black Duck signature scan</keyword></keywords></topicmeta></keydef>
+  <keydef keys="blackduck_binary_scan_capability"><topicmeta><keywords><keyword>Black Duck - Binary Analysis</keyword></keywords></topicmeta></keydef>
+  <keydef keys="polaris_product_name"><topicmeta><keywords><keyword>Polaris</keyword></keywords></topicmeta></keydef>
+  <keydef keys="dockerinspector_name"><topicmeta><keywords><keyword>Black Duck Docker Inspector</keyword></keywords></topicmeta></keydef>
+  <keydef keys="blackduck_kb"><topicmeta><keywords><keyword>Black Duck KnowledgeBase</keyword></keywords></topicmeta></keydef>
+  <keydef keys="impact_analysis_name"><topicmeta><keywords><keyword>Vulnerability Impact Analysis Tool</keyword></keywords></topicmeta></keydef>
+  <keydef keys="professional_services"><topicmeta><keywords><keyword>Synopsys Software Integrity Group Client Services</keyword></keywords></topicmeta></keydef>
+
 </map>
 
 
