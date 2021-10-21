@@ -28,8 +28,6 @@ public class PnpmLockDetectable extends Detectable {
     private File pnpmLockYaml;
     private File packageJson;
 
-    //TODO- what about optional dependencies?
-
     public PnpmLockDetectable(DetectableEnvironment environment, FileFinder fileFinder, PnpmLockExtractor pnpmLockExtractor) {
         super(environment);
         this.fileFinder = fileFinder;

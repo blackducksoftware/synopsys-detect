@@ -768,11 +768,11 @@ public class DetectableFactory {
     }
 
     private PnpmLockExtractor pnpmLockExtractor() {
-        return new PnpmLockExtractor(gson, pnpmLockYamlParser());
+        return new PnpmLockExtractor(gson, pnpmLockYamlParser(), externalIdFactory);
     }
 
     private PnpmLockYamlParser pnpmLockYamlParser() {
-        return new PnpmLockYamlParser();
+        return new PnpmLockYamlParser(externalIdFactory);
     }
 
     private PnpmCliParser pnpmCliParser() {

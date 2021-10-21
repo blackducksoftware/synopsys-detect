@@ -1,74 +1,95 @@
 package com.synopsys.integration.detectable.detectables.pnpm.lockfile;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
 
-import com.synopsys.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
-import com.synopsys.integration.bdio.model.dependencyid.StringDependencyId;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmPackageId;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
+import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.bdio.model.Forge;
+import com.synopsys.integration.bdio.model.dependency.Dependency;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYaml;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmPackage;
+import com.synopsys.integration.util.NameVersion;
 
 public class PnpmLockYamlParser {
-    private static final String DEPENDENCIES = "dependencies";
-    private static final String DEV_DEPENDENCIES = "devDependencies";
-    //TODO- optioinalDependencies
-    private static final String PACKAGES = "packages";
-    public static final String STRING_ID_NAME_VERSION_SEPARATOR = "@";
+    private final ExternalIdFactory externalIdFactory;
 
-    public CodeLocation parse(File pnpmLockYamlFile, boolean includeDevDependencies) throws FileNotFoundException {
-        Yaml yaml = new Yaml();
-        Map<String, Object> yarnLockYaml = yaml.load(new FileReader(pnpmLockYamlFile));
+    public PnpmLockYamlParser(ExternalIdFactory externalIdFactory) {
+        this.externalIdFactory = externalIdFactory;
+    }
 
-        // Use objects, no casting!
-        // store dependencies, dev dependencies, optiioina dependencies as "root ids"
-        // iterate through packages, if matches a root id, add to root, then make relationships for all its children
+    public DependencyGraph parse(File pnpmLockYamlFile, boolean includeDevDependencies) throws IOException {
+        Yaml yaml = new Yaml(new Constructor(PnpmLockYaml.class));
+        PnpmLockYaml pnpmLockYaml = yaml.load(new FileReader(pnpmLockYamlFile));
 
-        List<PnpmPackageId> dependencies = extractPackages((Map<String, Object>) yarnLockYaml.get(DEPENDENCIES));
-        List<PnpmPackageId> devDependencies = extractPackages((Map<String, Object>) yarnLockYaml.get(DEV_DEPENDENCIES));
-        Map<String, Object> packages = (Map<String, Object>) yarnLockYaml.get(PACKAGES);
+        List<String> rootPackageIds = extractRootPackageIds(pnpmLockYaml, includeDevDependencies);
+        Map<String, PnpmPackage> packageMap = pnpmLockYaml.packages;
 
-        LazyExternalIdDependencyGraphBuilder graphBuilder = new LazyExternalIdDependencyGraphBuilder(); //TODO- do we need lazy graph builder?
+        MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
 
-        addDependenciesToGraph(graphBuilder, dependencies, packages);
+        buildGraph(dependencyGraph, rootPackageIds, packageMap, includeDevDependencies);
+
+        return dependencyGraph;
+    }
+
+    private void buildGraph(MutableDependencyGraph graphBuilder, List<String> rootPackageIds, Map<String, PnpmPackage> packageMap, boolean includeDevDependencies) {
+        for (Map.Entry<String, PnpmPackage> packageEntry : packageMap.entrySet()) {
+            String packageId = packageEntry.getKey();
+            if (rootPackageIds.contains(packageId)) {
+                graphBuilder.addChildToRoot(buildDependencyFromPackageId(packageId));
+            } else {
+                PnpmPackage pnpmPackage = packageEntry.getValue();
+                if (pnpmPackage.dev.equals("false") || includeDevDependencies) { //TODO- do we need this check if we don't add devDependencies to root package ids?
+                    for (Map.Entry<String, String> dependency : pnpmPackage.dependencies.entrySet()) {
+                        String dependencyPackageId = convertRawEntryToPackageId(dependency);
+                        Dependency child = buildDependencyFromPackageId(dependencyPackageId);
+                        graphBuilder.addChildWithParent(child, buildDependencyFromPackageId(packageId));
+                    }
+                }
+            }
+        }
+    }
+
+    private List<String> extractRootPackageIds(PnpmLockYaml pnpmLockYaml, boolean includeDevDependencies) {
+        Map<String, String> rawPackageInfo = new HashMap<>(pnpmLockYaml.dependencies);
         if (includeDevDependencies) {
-            addDependenciesToGraph(graphBuilder, devDependencies, packages);
+            rawPackageInfo.putAll(pnpmLockYaml.devDependencies);
         }
-
-        return null;
-    }
-
-    private void addDependenciesToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder, List<PnpmPackageId> dependencies, Map<String, Object> packages) {
-        for (PnpmPackageId pnpmPackage : dependencies) {
-            addToGraph(graphBuilder, packages, pnpmPackage, null);
-        }
-    }
-
-    private void addToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder, Map<String, Object> packages, PnpmPackageId pnpmPackage, PnpmPackageId parent) {
-        if (parent == null) {
-            graphBuilder.addChildToRoot(generatePackageDependencyId(pnpmPackage.getName(), pnpmPackage.getVersion()));
-        } else {
-
-        }
-    }
-
-    private List<PnpmPackageId> extractPackages(Map<String, Object> deps) {
-        return deps.entrySet().stream()
-                   .map(this::convertRawEntryToPackage)
+        return rawPackageInfo.entrySet().stream()
+                   .map(this::convertRawEntryToPackageId)
                    .collect(Collectors.toList());
     }
 
-    private PnpmPackageId convertRawEntryToPackage(Map.Entry<String, Object> entry) {
-        //TODO- make sure to trim/normalize raw def (account for 's around name)
-        return new PnpmPackageId(entry.getKey(), (String) entry.getValue());
+    private String convertRawEntryToPackageId(Map.Entry<String, String> entry) {
+        String name = entry.getKey();
+        if (name.startsWith("'") && name.endsWith("'")) {
+            name = name.substring(1, name.length() - 1);
+        }
+        String version = entry.getValue();
+        return String.format("/%s/%s", name, version);
     }
 
-    private StringDependencyId generatePackageDependencyId(String name, String version) {
-        return new StringDependencyId(name + STRING_ID_NAME_VERSION_SEPARATOR + version);
+    private NameVersion parseNameVersionFromId(String id) {
+        // ids follow format: /name/version, where name often contains slashes
+        int indexOfLastSlash = id.lastIndexOf("/");
+        String name = id.substring(1, indexOfLastSlash);
+        String version = id.substring(indexOfLastSlash + 1);
+
+        return new NameVersion(name, version);
+    }
+
+    private Dependency buildDependencyFromPackageId(String packageId) {
+        NameVersion nameVersion = parseNameVersionFromId(packageId);
+        return new Dependency(externalIdFactory.createNameVersionExternalId(Forge.NPMJS, nameVersion.getName(), nameVersion.getVersion()));
     }
 }
