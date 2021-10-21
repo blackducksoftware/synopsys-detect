@@ -64,7 +64,8 @@ public class GenerateDocsTask extends DefaultTask {
         Reader reader = new FileReader(file);
         HelpJsonData helpJson = new Gson().fromJson(reader, HelpJsonData.class);
         File docsDir = project.file("docs");
-        File outputDir = project.file("docs/generated");
+        File sourceMarkdownDir = new File(docsDir, "markdown");
+        File outputDir = project.file("docs/generated"); // TODO use new File(docsDir, "generated")
         File runningDir = new File(outputDir, "downloadingandrunning");
         File troubleshootingDir = new File(outputDir, "troubleshooting");
 
@@ -73,6 +74,8 @@ public class GenerateDocsTask extends DefaultTask {
 
         TemplateProvider templateProvider = new TemplateProvider(project.file("docs/templates"), project.getVersion().toString());
 
+
+        FileUtils.copyDirectory(sourceMarkdownDir, outputDir);
         createFromFreemarker(templateProvider, DITAMAP_TEMPLATE_FILENAME, new File(outputDir, DITAMAP_OUTPUT_FILENAME), new HashMap<String, String>(0));
         createMarkdownFromFreemarker(templateProvider, troubleshootingDir, "exit-codes", new ExitCodePage(helpJson.getExitCodes()));
         createMarkdownFromFreemarker(templateProvider, runningDir, "status-file", new DetectorStatusCodes(helpJson.getDetectorStatusCodes()));
