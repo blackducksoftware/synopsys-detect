@@ -4,6 +4,7 @@
 
 ### New Features
 * Added support for uploading rapid scan config file when a file named '.bd-rapid-scan.yaml' is present in the source directory.
+* Added the property detect.project.inspector.arguments for providing additional arguments to the project inspector across all invocations.
 
 ### Resolved issues
 * (IDETECT-2808, IDETECT-2863) Resolved an issue where ${solution_name} would incorrectly resolve relative paths when processing signature scan targets.
@@ -627,3 +628,5 @@ create the directory.
 * The term BOM_TOOL is now replaced with DETECTOR.
 * You can no longer supply ranges for the Inspector versions.
 * Enhanced the code location naming conventions.
+
+Documentation version: ${program_version}
