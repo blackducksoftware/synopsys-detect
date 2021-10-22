@@ -9,35 +9,4 @@ public class PnpmLockYaml {
 
     public Map<String, PnpmPackage> packages;
 
-    public PnpmLockYaml() { }
-
-    public PnpmLockYaml(Map<String, String> dependencies, Map<String, String> devDependencies, Map<String, PnpmPackage> packages) {
-        this.dependencies = dependencies;
-        this.devDependencies = devDependencies;
-        this.packages = packages;
-    }
-
-    public Map<String, String> getDependencies() {
-        return dependencies;
-    }
-
-    public void setDependencies(Map<String, String> dependencies) {
-        this.dependencies = dependencies;
-    }
-
-    public Map<String, String> getDevDependencies() {
-        return devDependencies;
-    }
-
-    public void setDevDependencies(Map<String, String> devDependencies) {
-        this.devDependencies = devDependencies;
-    }
-
-    public Map<String, PnpmPackage> getPackages() {
-        return packages;
-    }
-
-    public void setPackages(Map<String, PnpmPackage> packages) {
-        this.packages = packages;
-    }
 }
