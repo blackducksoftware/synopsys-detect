@@ -51,8 +51,7 @@ import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDet
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pip.PipInspectorDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pip.PipenvDetectableOptions;
-import com.synopsys.integration.detectable.detectables.pnpm.cli.PnpmCliExtractorOptions;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockExtractorOptions;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmDetectableOptions;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorOptions;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectableOptions;
 import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheOptions;
@@ -232,16 +231,10 @@ public class DetectableOptionFactory {
         return new PipInspectorDetectableOptions(pipProjectName, requirementsFilePath);
     }
 
-    public PnpmCliExtractorOptions createPnpmCliExtractorOptions() {
-        Boolean includeDevDependencies = getValue(DetectProperties.DETECT_PNPM_INCLUDE_DEV_DEPENDENCIES);
-        String pnpmArguments = getNullableValue(DetectProperties.DETECT_PNPM_ARGUMENTS);
-        return new PnpmCliExtractorOptions(includeDevDependencies, pnpmArguments);
-    }
-
-    public PnpmLockExtractorOptions createPnpmLockExtractorOptions() {
+    public PnpmDetectableOptions createPnpmDetectableOptions() {
         Boolean includeDevDependencies = getValue(DetectProperties.DETECT_PNPM_INCLUDE_DEV_DEPENDENCIES);
         Boolean includeOptionalDependencies = getValue(DetectProperties.DETECT_PNPM_INCLUDE_OPTIONAL_DEPENDENCIES);
-        return new PnpmLockExtractorOptions(includeDevDependencies, includeOptionalDependencies);
+        return new PnpmDetectableOptions(includeDevDependencies, includeOptionalDependencies);
     }
 
     public ProjectInspectorOptions createProjectInspectorOptions() {

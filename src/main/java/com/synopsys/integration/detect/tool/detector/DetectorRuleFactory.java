@@ -46,8 +46,7 @@ import com.synopsys.integration.detectable.detectables.pear.PearCliDetectable;
 import com.synopsys.integration.detectable.detectables.pip.PipInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.pip.PipenvDetectable;
 import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryDetectable;
-import com.synopsys.integration.detectable.detectables.pnpm.cli.PnpmCliDetectable;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockDetectable;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmDetectable;
 import com.synopsys.integration.detectable.detectables.rebar.RebarDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemlock.GemlockDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectable;
@@ -107,11 +106,7 @@ public class DetectorRuleFactory {
         DetectorRule npmPackageLock = ruleSet.addDetector(DetectorType.NPM, "Package Lock", NpmPackageLockDetectable.class, detectableFactory::createNpmPackageLockDetectable).defaultLock().build();
         DetectorRule npmShrinkwrap = ruleSet.addDetector(DetectorType.NPM, "Shrinkwrap", NpmShrinkwrapDetectable.class, detectableFactory::createNpmShrinkwrapDetectable).defaultLock().build();
         DetectorRule npmCli = ruleSet.addDetector(DetectorType.NPM, "Npm Cli", NpmCliDetectable.class, detectableFactory::createNpmCliDetectable).defaults().build();
-        DetectorRule pnpmCli = ruleSet.addDetector(DetectorType.PNPM, "Pnpm Cli", PnpmCliDetectable.class, detectableFactory::createPnpmCliDetectable).defaults().build();
-        DetectorRule pnpmLock = ruleSet.addDetector(DetectorType.PNPM, "Pnpm Lock", PnpmLockDetectable.class, detectableFactory::createPnpmLockDetectable).defaults().build();
-
-        //TODO- should anything yield to pnpm cli?  It currently has same triggers as npm...should it?
-        ruleSet.yield(npmCli).to(pnpmCli);
+        DetectorRule pnpm = ruleSet.addDetector(DetectorType.PNPM, "Pnpm", PnpmDetectable.class, detectableFactory::createPnpmDetectable).defaults().build();
 
         ruleSet.yield(npmPackageLock).to(lernaDetectable);
         ruleSet.yield(npmShrinkwrap).to(lernaDetectable);
@@ -126,8 +121,7 @@ public class DetectorRuleFactory {
         ruleSet.yield(npmPackageLock).to(yarnLock);
         ruleSet.yield(npmShrinkwrap).to(yarnLock);
 
-        ruleSet.yield(npmCli).to(pnpmLock);
-        ruleSet.yield(pnpmCli).to(pnpmLock); //TODO- should one pnpm detector yield to the other?  I think they're both equally reliable, cli might be faster?
+        ruleSet.yield(npmCli).to(pnpm);
 
         DetectorRule nugetSolution = ruleSet.addDetector(DetectorType.NUGET, "Solution", NugetSolutionDetectable.class, detectableFactory::createNugetSolutionDetectable).defaults().build();
         //The Project detectable is "notNestable" because it will falsely apply under a solution (the solution includes all of the projects).
@@ -184,6 +178,7 @@ public class DetectorRuleFactory {
         DetectorRule npmPackageLock = ruleSet.addDetector(DetectorType.NPM, "Package Lock", NpmPackageLockDetectable.class, detectableFactory::createNpmPackageLockDetectable).defaults().build();
         DetectorRule npmShrinkwrap = ruleSet.addDetector(DetectorType.NPM, "Shrinkwrap", NpmShrinkwrapDetectable.class, detectableFactory::createNpmShrinkwrapDetectable).defaults().build();
         DetectorRule npmPackageJsonParse = ruleSet.addDetector(DetectorType.NPM, "Package Json Parse", NpmPackageJsonParseDetectable.class, detectableFactory::createNpmPackageJsonParseDetectable).defaults().build();
+        DetectorRule pnpm = ruleSet.addDetector(DetectorType.PNPM, "Pnpm", PnpmDetectable.class, detectableFactory::createPnpmDetectable).defaults().build();
 
         ruleSet.yield(npmShrinkwrap).to(npmPackageLock);
         ruleSet.yield(npmPackageJsonParse).to(npmPackageLock);
@@ -192,6 +187,8 @@ public class DetectorRuleFactory {
         ruleSet.yield(npmPackageJsonParse).to(yarnLock);
         ruleSet.yield(npmPackageLock).to(yarnLock);
         ruleSet.yield(npmShrinkwrap).to(yarnLock);
+
+        ruleSet.yield(npmPackageJsonParse).to(pnpm);
 
         ruleSet.addDetector(DetectorType.NUGET, "NuGet Project Inspector", NugetProjectInspectorDetectable.class, detectableFactory::createNugetParseDetectable).defaults().build();
 

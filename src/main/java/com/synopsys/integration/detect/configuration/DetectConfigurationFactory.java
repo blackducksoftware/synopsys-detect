@@ -452,7 +452,6 @@ public class DetectConfigurationFactory {
             getPathOrNull(DetectProperties.DETECT_PEAR_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_PIP_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_PIPENV_PATH.getProperty()),
-            getPathOrNull(DetectProperties.DETECT_PNPM_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_PYTHON_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_HEX_REBAR3_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_JAVA_PATH.getProperty()),

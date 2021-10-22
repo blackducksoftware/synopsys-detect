@@ -1,3 +1,10 @@
+/*
+ * detectable
+ *
+ * Copyright (c) 2021 Synopsys, Inc.
+ *
+ * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
+ */
 package com.synopsys.integration.detectable.detectables.pnpm.lockfile;
 
 import java.io.File;
@@ -16,25 +23,25 @@ import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 @DetectableInfo(language = "Node JS", forge = "npmjs", requirementsMarkdown = "Files: pnpm-lock.yaml and package.json.")
-public class PnpmLockDetectable extends Detectable {
+public class PnpmDetectable extends Detectable {
     public static final String PNPM_LOCK_YAML_FILENAME = "pnpm-lock.yaml";
     public static final String PACKAGE_JSON = "package.json";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final FileFinder fileFinder;
-    private final PnpmLockExtractor pnpmLockExtractor;
-    private final PnpmLockExtractorOptions pnpmLockExtractorOptions;
+    private final PnpmExtractor pnpmExtractor;
+    private final PnpmDetectableOptions pnpmDetectableOptions;
 
     private File pnpmLockYaml;
     private File packageJson;
 
-    public PnpmLockDetectable(DetectableEnvironment environment, FileFinder fileFinder, PnpmLockExtractor pnpmLockExtractor,
-        PnpmLockExtractorOptions pnpmLockExtractorOptions) {
+    public PnpmDetectable(DetectableEnvironment environment, FileFinder fileFinder, PnpmExtractor pnpmExtractor,
+        PnpmDetectableOptions pnpmDetectableOptions) {
         super(environment);
         this.fileFinder = fileFinder;
-        this.pnpmLockExtractor = pnpmLockExtractor;
-        this.pnpmLockExtractorOptions = pnpmLockExtractorOptions;
+        this.pnpmExtractor = pnpmExtractor;
+        this.pnpmDetectableOptions = pnpmDetectableOptions;
     }
 
     @Override
@@ -52,6 +59,6 @@ public class PnpmLockDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
-        return pnpmLockExtractor.extract(pnpmLockYaml, packageJson, pnpmLockExtractorOptions.shouldIncludeDevDependencies(), pnpmLockExtractorOptions.shouldIncludeOptionalDependencies());
+        return pnpmExtractor.extract(pnpmLockYaml, packageJson, pnpmDetectableOptions.shouldIncludeDevDependencies(), pnpmDetectableOptions.shouldIncludeOptionalDependencies());
     }
 }

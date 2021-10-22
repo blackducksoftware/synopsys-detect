@@ -1,3 +1,10 @@
+/*
+ * detectable
+ *
+ * Copyright (c) 2021 Synopsys, Inc.
+ *
+ * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
+ */
 package com.synopsys.integration.detectable.detectables.pnpm.lockfile;
 
 import java.io.File;
@@ -17,12 +24,12 @@ import com.synopsys.integration.detectable.detectables.npm.packagejson.model.Pac
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.util.NameVersion;
 
-public class PnpmLockExtractor {
+public class PnpmExtractor {
     private final Gson gson;
     private final PnpmLockYamlParser pnpmLockYamlParser;
     private final ExternalIdFactory externalIdFactory;
 
-    public PnpmLockExtractor(Gson gson, PnpmLockYamlParser pnpmLockYamlParser, ExternalIdFactory externalIdFactory) {
+    public PnpmExtractor(Gson gson, PnpmLockYamlParser pnpmLockYamlParser, ExternalIdFactory externalIdFactory) {
         this.gson = gson;
         this.pnpmLockYamlParser = pnpmLockYamlParser;
         this.externalIdFactory = externalIdFactory;

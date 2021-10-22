@@ -38,7 +38,6 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.NpmRes
 import com.synopsys.integration.detectable.detectable.executable.resolver.PearResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PipResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PipenvResolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.PnpmResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PythonResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.Rebar3Resolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.SbtResolver;
@@ -210,13 +209,9 @@ import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryDetectab
 import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryExtractor;
 import com.synopsys.integration.detectable.detectables.pip.poetry.parser.PoetryLockParser;
 import com.synopsys.integration.detectable.detectables.pip.poetry.parser.ToolPoetrySectionParser;
-import com.synopsys.integration.detectable.detectables.pnpm.cli.PnpmCliDetectable;
-import com.synopsys.integration.detectable.detectables.pnpm.cli.PnpmCliExtractor;
-import com.synopsys.integration.detectable.detectables.pnpm.cli.PnpmCliExtractorOptions;
-import com.synopsys.integration.detectable.detectables.pnpm.cli.PnpmCliParser;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockDetectable;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockExtractor;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockExtractorOptions;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmDetectable;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmDetectableOptions;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmExtractor;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockYamlParser;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorExtractor;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorOptions;
@@ -442,12 +437,8 @@ public class DetectableFactory {
         return new PipInspectorDetectable(environment, fileFinder, pythonResolver, pipResolver, pipInspectorResolver, pipInspectorExtractor(), pipInspectorDetectableOptions);
     }
 
-    public PnpmCliDetectable createPnpmCliDetectable(DetectableEnvironment environment, PnpmResolver pnpmResolver, PnpmCliExtractorOptions pnpmCliExtractorOptions) {
-        return new PnpmCliDetectable(environment, fileFinder, pnpmResolver, pnpmCliExtractor(), pnpmCliExtractorOptions);
-    }
-
-    public PnpmLockDetectable createPnpmLockDetectable(DetectableEnvironment environment, PnpmLockExtractorOptions pnpmLockExtractorOptions) {
-        return new PnpmLockDetectable(environment, fileFinder, pnpmLockExtractor(), pnpmLockExtractorOptions);
+    public PnpmDetectable createPnpmDetectable(DetectableEnvironment environment, PnpmDetectableOptions pnpmLockExtractorOptions) {
+        return new PnpmDetectable(environment, fileFinder, pnpmLockExtractor(), pnpmLockExtractorOptions);
     }
 
     public PodlockDetectable createPodLockDetectable(DetectableEnvironment environment) {
@@ -764,20 +755,12 @@ public class DetectableFactory {
         return new PipInspectorExtractor(executableRunner, pipInspectorTreeParser());
     }
 
-    private PnpmCliExtractor pnpmCliExtractor() {
-        return new PnpmCliExtractor(executableRunner, pnpmCliParser(), gson);
-    }
-
-    private PnpmLockExtractor pnpmLockExtractor() {
-        return new PnpmLockExtractor(gson, pnpmLockYamlParser(), externalIdFactory);
+    private PnpmExtractor pnpmLockExtractor() {
+        return new PnpmExtractor(gson, pnpmLockYamlParser(), externalIdFactory);
     }
 
     private PnpmLockYamlParser pnpmLockYamlParser() {
         return new PnpmLockYamlParser(externalIdFactory);
-    }
-
-    private PnpmCliParser pnpmCliParser() {
-        return new PnpmCliParser(externalIdFactory);
     }
 
     private PoetryExtractor poetryExtractor() {

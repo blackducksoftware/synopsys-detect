@@ -1,10 +1,17 @@
+/*
+ * detectable
+ *
+ * Copyright (c) 2021 Synopsys, Inc.
+ *
+ * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
+ */
 package com.synopsys.integration.detectable.detectables.pnpm.lockfile;
 
-public class PnpmLockExtractorOptions {
+public class PnpmDetectableOptions {
     private boolean includeDevDependencies;
     private boolean includeOptionalDependencies;
 
-    public PnpmLockExtractorOptions(boolean includeDevDependencies, boolean includeOptionalDependencies) {
+    public PnpmDetectableOptions(boolean includeDevDependencies, boolean includeOptionalDependencies) {
         this.includeDevDependencies = includeDevDependencies;
         this.includeOptionalDependencies = includeOptionalDependencies;
     }

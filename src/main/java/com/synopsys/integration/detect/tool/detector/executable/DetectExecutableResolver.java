@@ -36,7 +36,6 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.NpmRes
 import com.synopsys.integration.detectable.detectable.executable.resolver.PearResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PipResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PipenvResolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.PnpmResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PythonResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.Rebar3Resolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.SbtResolver;
@@ -44,7 +43,7 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.SwiftR
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanResolver;
 
 public class DetectExecutableResolver
-    implements JavaResolver, GradleResolver, BashResolver, ConanResolver, CondaResolver, CpanmResolver, CpanResolver, DartResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver, PipenvResolver, PnpmResolver, MavenResolver,
+    implements JavaResolver, GradleResolver, BashResolver, ConanResolver, CondaResolver, CpanmResolver, CpanResolver, DartResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver,
                    NpmResolver,
                    BazelResolver,
                    DockerResolver,
@@ -238,9 +237,5 @@ public class DetectExecutableResolver
         return ExecutableTarget.forFile(resolveCachedSystemExecutable("flutter", detectExecutableOptions.getFlutterUserPath()));
     }
 
-    @Override
-    public ExecutableTarget resolvePnpm(DetectableEnvironment environment) throws DetectableException {
-        return ExecutableTarget.forFile(resolveCachedSystemExecutable("pnpm", detectExecutableOptions.getPnpmUserPath()));
-    }
 }
 
