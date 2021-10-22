@@ -937,6 +937,12 @@ public class DetectProperties {
             .setHelp("Set this value to false if you would like to exclude your dev dependencies when ran.")
             .setGroups(DetectGroup.PNPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
 
+    public static final DetectProperty<BooleanProperty> DETECT_PNPM_INCLUDE_OPTIONAL_DEPENDENCIES =
+        new DetectProperty<>(new BooleanProperty("detect.pnpm.include.optional.dependencies", true))
+            .setInfo("Include pnpm Optional Dependencies", DetectPropertyFromVersion.VERSION_7_8_0)
+            .setHelp("Set this value to false if you would like to exclude your optional dependencies when ran.")
+            .setGroups(DetectGroup.PNPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
+
     public static final DetectProperty<NullableStringProperty> DETECT_PNPM_ARGUMENTS =
         new DetectProperty<>(new NullableStringProperty("detect.pnpm.arguments"))
             .setInfo("Additional pnpm Command Arguments", DetectPropertyFromVersion.VERSION_7_8_0)

@@ -28,9 +28,9 @@ public class PnpmLockExtractor {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public Extraction extract(File yarnLockYamlFile, @Nullable File packageJsonFile, boolean includeDevDependencies) {
+    public Extraction extract(File yarnLockYamlFile, @Nullable File packageJsonFile, boolean includeDevDependencies, boolean includeOptionalDependencies) {
         try {
-            DependencyGraph dependencyGraph = pnpmLockYamlParser.parse(yarnLockYamlFile, includeDevDependencies);
+            DependencyGraph dependencyGraph = pnpmLockYamlParser.parse(yarnLockYamlFile, includeDevDependencies, includeOptionalDependencies);
             Optional<NameVersion> nameVersion = parseNameVersionFromPackageJson(packageJsonFile);
             CodeLocation codeLocation = new CodeLocation(dependencyGraph, externalIdFactory.createNameVersionExternalId(Forge.NPMJS, nameVersion.get().getName(), nameVersion.get().getVersion()));
             return new Extraction.Builder().success(codeLocation)

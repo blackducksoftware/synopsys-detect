@@ -29,30 +29,30 @@ public class PnpmLockYamlParser {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph parse(File pnpmLockYamlFile, boolean includeDevDependencies) throws IOException {
+    public DependencyGraph parse(File pnpmLockYamlFile, boolean includeDevDependencies, boolean includeOptionalDependencies) throws IOException {
         Representer representer = new Representer();
         representer.getPropertyUtils().setSkipMissingProperties(true);
         Yaml yaml = new Yaml(new Constructor(PnpmLockYaml.class), representer);
         PnpmLockYaml pnpmLockYaml = yaml.load(new FileReader(pnpmLockYamlFile));
 
-        List<String> rootPackageIds = extractRootPackageIds(pnpmLockYaml, includeDevDependencies);
+        List<String> rootPackageIds = extractRootPackageIds(pnpmLockYaml, includeDevDependencies, includeOptionalDependencies);
         Map<String, PnpmPackage> packageMap = pnpmLockYaml.packages;
 
         MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
 
-        buildGraph(dependencyGraph, rootPackageIds, packageMap, includeDevDependencies);
+        buildGraph(dependencyGraph, rootPackageIds, packageMap, includeDevDependencies, includeOptionalDependencies);
 
         return dependencyGraph;
     }
 
-    private void buildGraph(MutableDependencyGraph graphBuilder, List<String> rootPackageIds, Map<String, PnpmPackage> packageMap, boolean includeDevDependencies) {
+    private void buildGraph(MutableDependencyGraph graphBuilder, List<String> rootPackageIds, Map<String, PnpmPackage> packageMap, boolean includeDevDependencies, boolean includeOptionalDependencies) {
         for (Map.Entry<String, PnpmPackage> packageEntry : packageMap.entrySet()) {
             String packageId = packageEntry.getKey();
             if (rootPackageIds.contains(packageId)) {
                 graphBuilder.addChildToRoot(buildDependencyFromPackageId(packageId));
             }
             PnpmPackage pnpmPackage = packageEntry.getValue();
-            if ((!pnpmPackage.isDev() || includeDevDependencies) && pnpmPackage.hasDependencies()) {
+            if (shouldAddDependenciesToGraph(pnpmPackage, includeDevDependencies, includeOptionalDependencies)) {
                 for (Map.Entry<String, String> dependency : pnpmPackage.dependencies.entrySet()) {
                     String dependencyPackageId = convertRawEntryToPackageId(dependency);
                     Dependency child = buildDependencyFromPackageId(dependencyPackageId);
@@ -62,10 +62,13 @@ public class PnpmLockYamlParser {
         }
     }
 
-    private List<String> extractRootPackageIds(PnpmLockYaml pnpmLockYaml, boolean includeDevDependencies) {
+    private List<String> extractRootPackageIds(PnpmLockYaml pnpmLockYaml, boolean includeDevDependencies, boolean includeOptionalDependencies) {
         Map<String, String> rawPackageInfo = new HashMap<>(pnpmLockYaml.dependencies);
         if (includeDevDependencies) {
             rawPackageInfo.putAll(pnpmLockYaml.devDependencies);
+        }
+        if (includeOptionalDependencies) {
+            rawPackageInfo.putAll(pnpmLockYaml.optionalDependencies);
         }
         return rawPackageInfo.entrySet().stream()
                    .map(this::convertRawEntryToPackageId)
@@ -93,5 +96,11 @@ public class PnpmLockYamlParser {
     private Dependency buildDependencyFromPackageId(String packageId) {
         NameVersion nameVersion = parseNameVersionFromId(packageId);
         return new Dependency(externalIdFactory.createNameVersionExternalId(Forge.NPMJS, nameVersion.getName(), nameVersion.getVersion()));
+    }
+
+    private boolean shouldAddDependenciesToGraph(PnpmPackage pnpmPackage, boolean includeDevDependencies, boolean includeOptionalDependencies) {
+        return (!pnpmPackage.isDev() || includeDevDependencies) &&
+                   (!pnpmPackage.isOptional() || includeOptionalDependencies) &&
+                   pnpmPackage.hasDependencies();
     }
 }

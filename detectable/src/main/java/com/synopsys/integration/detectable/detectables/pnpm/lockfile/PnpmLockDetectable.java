@@ -52,6 +52,6 @@ public class PnpmLockDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
-        return pnpmLockExtractor.extract(pnpmLockYaml, packageJson, pnpmLockExtractorOptions.shouldIncludeDevDependencies());
+        return pnpmLockExtractor.extract(pnpmLockYaml, packageJson, pnpmLockExtractorOptions.shouldIncludeDevDependencies(), pnpmLockExtractorOptions.shouldIncludeOptionalDependencies());
     }
 }

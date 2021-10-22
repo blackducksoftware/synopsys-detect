@@ -240,7 +240,8 @@ public class DetectableOptionFactory {
 
     public PnpmLockExtractorOptions createPnpmLockExtractorOptions() {
         Boolean includeDevDependencies = getValue(DetectProperties.DETECT_PNPM_INCLUDE_DEV_DEPENDENCIES);
-        return new PnpmLockExtractorOptions(includeDevDependencies);
+        Boolean includeOptionalDependencies = getValue(DetectProperties.DETECT_PNPM_INCLUDE_OPTIONAL_DEPENDENCIES);
+        return new PnpmLockExtractorOptions(includeDevDependencies, includeOptionalDependencies);
     }
 
     public ProjectInspectorOptions createProjectInspectorOptions() {
