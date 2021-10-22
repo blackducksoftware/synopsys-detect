@@ -7,6 +7,8 @@ public class PnpmLockYaml {
 
     public Map<String, String> devDependencies;
 
+    public Map<String, String> optionalDependencies;
+
     public Map<String, PnpmPackage> packages;
 
 }
