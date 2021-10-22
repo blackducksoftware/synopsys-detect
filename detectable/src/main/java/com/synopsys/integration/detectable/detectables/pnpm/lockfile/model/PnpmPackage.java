@@ -12,24 +12,16 @@ import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 
 public class PnpmPackage {
-    private static final String TRUE = "true";
-
-    public String dev;
-    public String optional;
+    public Boolean dev;
+    public Boolean optional;
     public Map<String, String> dependencies;
 
     public boolean isDev() {
-        if (dev == null) {
-            return false;
-        }
-        return dev.equals(TRUE);
+        return dev != null ? dev : false;
     }
 
     public boolean isOptional() {
-        if (optional == null) {
-            return false;
-        }
-        return optional.equals(TRUE);
+        return optional != null ? optional : false;
     }
 
     public boolean hasDependencies() {

@@ -25,12 +25,10 @@ import com.synopsys.integration.detectable.detectable.result.GivenFileNotFoundDe
 import com.synopsys.integration.detectable.detectable.result.GoPkgLockfileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.InspectorNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.MaxDepthExceededDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.NodeModulesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.NotNestableDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.NotSelfNestableDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.NpmNodeModulesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.PnpmNodeModulesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PoetryLockfileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PropertyInsufficientDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PubSpecLockNotFoundDetectableResult;
@@ -81,8 +79,6 @@ public class DetectorResultStatusCodeLookup {
         map.put(NotSelfNestableDetectorResult.class, DetectorStatusCode.NOT_SELF_NESTABLE);
         map.put(NotSelfNestableDetectableResult.class, DetectorStatusCode.NOT_SELF_NESTABLE);
         map.put(NpmNodeModulesNotFoundDetectableResult.class, DetectorStatusCode.NPM_NODE_MODULES_NOT_FOUND);
-        map.put(NodeModulesNotFoundDetectableResult.class, DetectorStatusCode.NODE_MODULES_NOT_FOUND);
-        map.put(PnpmNodeModulesNotFoundDetectableResult.class, DetectorStatusCode.PNPM_NODE_MODULES_NOT_FOUND);
         map.put(PassedDetectorResult.class, DetectorStatusCode.PASSED);
         map.put(PassedDetectableResult.class, DetectorStatusCode.PASSED);
         map.put(PoetryLockfileNotFoundDetectableResult.class, DetectorStatusCode.POETRY_LOCKFILE_NOT_FOUND);

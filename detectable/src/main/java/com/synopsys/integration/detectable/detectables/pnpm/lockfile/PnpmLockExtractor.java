@@ -16,30 +16,24 @@ import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.util.NameVersion;
 
-public class PnpmExtractor {
+public class PnpmLockExtractor {
     private final Gson gson;
     private final PnpmLockYamlParser pnpmLockYamlParser;
-    private final ExternalIdFactory externalIdFactory;
 
-    public PnpmExtractor(Gson gson, PnpmLockYamlParser pnpmLockYamlParser, ExternalIdFactory externalIdFactory) {
+    public PnpmLockExtractor(Gson gson, PnpmLockYamlParser pnpmLockYamlParser) {
         this.gson = gson;
         this.pnpmLockYamlParser = pnpmLockYamlParser;
-        this.externalIdFactory = externalIdFactory;
     }
 
     public Extraction extract(File yarnLockYamlFile, @Nullable File packageJsonFile, boolean includeDevDependencies, boolean includeOptionalDependencies) {
         try {
-            DependencyGraph dependencyGraph = pnpmLockYamlParser.parse(yarnLockYamlFile, includeDevDependencies, includeOptionalDependencies);
             Optional<NameVersion> nameVersion = parseNameVersionFromPackageJson(packageJsonFile);
-            CodeLocation codeLocation = new CodeLocation(dependencyGraph, externalIdFactory.createNameVersionExternalId(Forge.NPMJS, nameVersion.get().getName(), nameVersion.get().getVersion()));
+            CodeLocation codeLocation = pnpmLockYamlParser.parse(yarnLockYamlFile, includeDevDependencies, includeOptionalDependencies, nameVersion.orElse(null));
             return new Extraction.Builder().success(codeLocation)
                        .nameVersionIfPresent(nameVersion)
                        .build();
@@ -51,10 +45,8 @@ public class PnpmExtractor {
     private Optional<NameVersion> parseNameVersionFromPackageJson(File packageJsonFile) throws IOException {
         String packageJsonText = FileUtils.readFileToString(packageJsonFile, StandardCharsets.UTF_8);
         PackageJson packageJson = gson.fromJson(packageJsonText, PackageJson.class);
-        String projectName = packageJson.name;
-        String projectVersion = packageJson.version;
-        if (projectName != null && projectVersion != null) {
-            return Optional.of(new NameVersion(projectName, projectVersion));
+        if (packageJson != null && packageJson.name != null && packageJson.version != null) {
+            return Optional.of(new NameVersion(packageJson.name, packageJson.version));
         }
         return Optional.empty();
     }

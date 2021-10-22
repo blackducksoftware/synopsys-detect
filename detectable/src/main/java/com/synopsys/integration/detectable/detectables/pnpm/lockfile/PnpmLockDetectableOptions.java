@@ -7,11 +7,11 @@
  */
 package com.synopsys.integration.detectable.detectables.pnpm.lockfile;
 
-public class PnpmDetectableOptions {
+public class PnpmLockDetectableOptions {
     private boolean includeDevDependencies;
     private boolean includeOptionalDependencies;
 
-    public PnpmDetectableOptions(boolean includeDevDependencies, boolean includeOptionalDependencies) {
+    public PnpmLockDetectableOptions(boolean includeDevDependencies, boolean includeOptionalDependencies) {
         this.includeDevDependencies = includeDevDependencies;
         this.includeOptionalDependencies = includeOptionalDependencies;
     }

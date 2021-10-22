@@ -23,21 +23,21 @@ import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 @DetectableInfo(language = "Node JS", forge = "npmjs", requirementsMarkdown = "Files: pnpm-lock.yaml and package.json.")
-public class PnpmDetectable extends Detectable {
+public class PnpmLockDetectable extends Detectable {
     public static final String PNPM_LOCK_YAML_FILENAME = "pnpm-lock.yaml";
     public static final String PACKAGE_JSON = "package.json";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final FileFinder fileFinder;
-    private final PnpmExtractor pnpmExtractor;
-    private final PnpmDetectableOptions pnpmDetectableOptions;
+    private final PnpmLockExtractor pnpmExtractor;
+    private final PnpmLockDetectableOptions pnpmDetectableOptions;
 
     private File pnpmLockYaml;
     private File packageJson;
 
-    public PnpmDetectable(DetectableEnvironment environment, FileFinder fileFinder, PnpmExtractor pnpmExtractor,
-        PnpmDetectableOptions pnpmDetectableOptions) {
+    public PnpmLockDetectable(DetectableEnvironment environment, FileFinder fileFinder, PnpmLockExtractor pnpmExtractor,
+        PnpmLockDetectableOptions pnpmDetectableOptions) {
         super(environment);
         this.fileFinder = fileFinder;
         this.pnpmExtractor = pnpmExtractor;
