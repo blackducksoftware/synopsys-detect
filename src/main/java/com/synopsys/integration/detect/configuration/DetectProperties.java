@@ -925,12 +925,6 @@ public class DetectProperties {
             .setHelp("The path to the Pipenv executable.")
             .setGroups(DetectGroup.PIP, DetectGroup.GLOBAL);
 
-    public static final DetectProperty<NullablePathProperty> DETECT_PNPM_PATH =
-        new DetectProperty<>(new NullablePathProperty("detect.pnpm.path"))
-            .setInfo("pnpm Executable", DetectPropertyFromVersion.VERSION_7_8_0)
-            .setHelp("Path of the pnpm executable.")
-            .setGroups(DetectGroup.PATHS, DetectGroup.PNPM, DetectGroup.GLOBAL);
-
     public static final DetectProperty<BooleanProperty> DETECT_PNPM_INCLUDE_DEV_DEPENDENCIES =
         new DetectProperty<>(new BooleanProperty("detect.pnpm.include.dev.dependencies", true))
             .setInfo("Include pnpm Development Dependencies", DetectPropertyFromVersion.VERSION_7_8_0)
@@ -942,13 +936,6 @@ public class DetectProperties {
             .setInfo("Include pnpm Optional Dependencies", DetectPropertyFromVersion.VERSION_7_8_0)
             .setHelp("Set this value to false if you would like to exclude your optional dependencies when ran.")
             .setGroups(DetectGroup.PNPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
-
-    public static final DetectProperty<NullableStringProperty> DETECT_PNPM_ARGUMENTS =
-        new DetectProperty<>(new NullableStringProperty("detect.pnpm.arguments"))
-            .setInfo("Additional pnpm Command Arguments", DetectPropertyFromVersion.VERSION_7_8_0)
-            .setHelp("A space-separated list of additional arguments that Detect will add at then end of the pnpm ls command line when Detect executes the pnpm CLI Detector on a pnpm project.")
-            .setExample("--depth=4")
-            .setGroups(DetectGroup.PNPM, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<NullablePathProperty> DETECT_SWIFT_PATH =
         new DetectProperty<>(new NullablePathProperty("detect.swift.path"))

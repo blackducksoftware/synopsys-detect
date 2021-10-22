@@ -1,5 +1,10 @@
 # Release notes
 
+# Version 7.8.0
+
+### New Features
+* Added support for the pnpm package manager.
+
 # Version 7.7.0
 
 ### New Features
