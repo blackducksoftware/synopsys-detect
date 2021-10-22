@@ -52,6 +52,9 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 public class GenerateDocsTask extends DefaultTask {
+
+    private static final String DITAMAP_TEMPLATE_FILENAME = "ditamap.ftl";
+    private static final String DITAMAP_OUTPUT_FILENAME = "detect.ditamap";
     private final IntLogger logger = new Slf4jIntLogger(this.getLogger());
 
     @TaskAction
@@ -60,20 +63,19 @@ public class GenerateDocsTask extends DefaultTask {
         File file = new File("synopsys-detect-" + project.getVersion() + "-help.json");
         Reader reader = new FileReader(file);
         HelpJsonData helpJson = new Gson().fromJson(reader, HelpJsonData.class);
-
+        File docsDir = project.file("docs");
         File outputDir = project.file("docs/generated");
-        File advancedDir = new File(outputDir, "advanced");
-        File troubleshootingDir = new File(advancedDir, "troubleshooting");
+        File runningDir = new File(outputDir, "downloadingandrunning");
+        File troubleshootingDir = new File(outputDir, "troubleshooting");
 
         FileUtils.deleteDirectory(outputDir);
         troubleshootingDir.mkdirs();
 
         TemplateProvider templateProvider = new TemplateProvider(project.file("docs/templates"), project.getVersion().toString());
 
-        createFromFreemarker(templateProvider, troubleshootingDir, "exit-codes", new ExitCodePage(helpJson.getExitCodes()));
-
-        createFromFreemarker(templateProvider, advancedDir, "status-file", new DetectorStatusCodes(helpJson.getDetectorStatusCodes()));
-
+        createFromFreemarker(templateProvider, DITAMAP_TEMPLATE_FILENAME, new File(outputDir, DITAMAP_OUTPUT_FILENAME), new HashMap<String, String>(0));
+        createMarkdownFromFreemarker(templateProvider, troubleshootingDir, "exit-codes", new ExitCodePage(helpJson.getExitCodes()));
+        createMarkdownFromFreemarker(templateProvider, runningDir, "status-file", new DetectorStatusCodes(helpJson.getDetectorStatusCodes()));
         handleDetectors(templateProvider, outputDir, helpJson);
         handleProperties(templateProvider, outputDir, helpJson);
         handleContent(outputDir, templateProvider);
@@ -96,22 +98,26 @@ public class GenerateDocsTask extends DefaultTask {
     }
 
     private void createContentMarkdownFromTemplate(File templatesDir, File contentDir, File templateFile, File baseOutputDir, TemplateProvider templateProvider) throws IOException, TemplateException {
-        String helpContentTemplateRelativePath = templatesDir.toPath().relativize(templateFile.toPath()).toString(); // TODO: Verify this is the correct substitution.
+        String helpContentTemplateRelativePath = templatesDir.toPath().relativize(templateFile.toPath()).toString();
         File outputFile = deriveOutputFileForContentTemplate(contentDir, templateFile, baseOutputDir);
         logger.alwaysLog(String.format("Generating markdown from template file: %s --> %s", helpContentTemplateRelativePath, outputFile.getCanonicalPath()));
         createFromFreemarker(templateProvider, helpContentTemplateRelativePath, outputFile, new HashMap<String, String>());
     }
 
     private File deriveOutputFileForContentTemplate(File contentDir, File helpContentTemplateFile, File baseOutputDir) {
-        String templateSubDir = contentDir.toPath().relativize(helpContentTemplateFile.toPath().getParent()).toString(); // TODO: Verify this is the correct substitution.
+        String templateSubDir = contentDir.toPath().relativize(helpContentTemplateFile.toPath().getParent()).toString();
         File outputDir = new File(baseOutputDir, templateSubDir);
         String outputFileName = String.format("%s.md", FilenameUtils.removeExtension(helpContentTemplateFile.getName()));
 
         return new File(outputDir, outputFileName);
     }
 
-    private void createFromFreemarker(TemplateProvider templateProvider, File outputDir, String templateName, Object data) throws IOException, TemplateException {
+    private void createMarkdownFromFreemarker(TemplateProvider templateProvider, File outputDir, String templateName, Object data) throws IOException, TemplateException {
         createFromFreemarker(templateProvider, String.format("%s.ftl", templateName), new File(outputDir, String.format("%s.md", templateName)), data);
+    }
+
+    private void createFromFreemarker(TemplateProvider templateProvider, File outputDir, String templateName, String targetExt, Object data) throws IOException, TemplateException {
+        createFromFreemarker(templateProvider, String.format("%s.ftl", templateName), new File(outputDir, String.format("%s.%s", templateName, targetExt)), data);
     }
 
     private void createFromFreemarker(TemplateProvider templateProvider, String templateRelativePath, File to, Object data) throws IOException, TemplateException {
@@ -134,7 +140,7 @@ public class GenerateDocsTask extends DefaultTask {
                                              .sorted(Comparator.comparing(Detector::getDetectorType).thenComparing(Detector::getDetectorName))
                                              .collect(Collectors.toList());
 
-        createFromFreemarker(templateProvider, outputDir, "detectors", new DetectorsPage(buildless, build));
+        createMarkdownFromFreemarker(templateProvider, outputDir, "detectors", new DetectorsPage(buildless, build));
     }
 
     private String encodePropertyLocation(String propertyName) {
@@ -162,6 +168,10 @@ public class GenerateDocsTask extends DefaultTask {
         return encoded.toString().toLowerCase();
     }
 
+    private String makeLinkSafe(String linkText) {
+        return linkText.replace(" ", "-");
+    }
+
     private void handleProperties(TemplateProvider templateProvider, File outputDir, HelpJsonData helpJson) throws IntegrationException, IOException, TemplateException {
         Map<String, String> superGroups = createSuperGroupLookup(helpJson);
 
@@ -171,13 +181,13 @@ public class GenerateDocsTask extends DefaultTask {
 
         // Updating the location on all the json options so that a new object with only 1 new property did not have to be created (and then populated) from the existing.
         for (HelpJsonOption helpJsonOption : helpJson.getOptions()) {
-            String groupLocation = getGroupLocation(groupLocations, helpJsonOption.getGroup());
+            String groupLocation = getGroupLocation(groupLocations, makeLinkSafe(helpJsonOption.getGroup()));
             String encodedPropertyLocation = encodePropertyLocation(helpJsonOption.getPropertyName());
-            helpJsonOption.setLocation(String.format("%s/#%s", groupLocation, encodedPropertyLocation)); //ex: superGroup/key/#property_name
+            helpJsonOption.setLocation(String.format("%s.md#%s", groupLocation, encodedPropertyLocation)); //ex: superGroup/key/#property_name
         }
 
         Map<String, List<HelpJsonOption>> groupedOptions = helpJson.getOptions().stream()
-                                                                     .collect(Collectors.groupingBy(HelpJsonOption::getGroup));
+                                                                     .collect(Collectors.groupingBy(o -> makeLinkSafe(o.getGroup())));
 
         List<SplitGroup> splitGroupOptions = new ArrayList<>();
         for (Map.Entry<String, List<HelpJsonOption>> group : groupedOptions.entrySet()) {
@@ -233,13 +243,13 @@ public class GenerateDocsTask extends DefaultTask {
             deprecatedPropertyTableData.add(deprecatedPropertyTableGroup);
         }
 
-        createFromFreemarker(templateProvider, propertiesFolder, "basic-properties", new SimplePropertyTablePage(simplePropertyTableData));
-        createFromFreemarker(templateProvider, propertiesFolder, "deprecated-properties", new DeprecatedPropertyTablePage(deprecatedPropertyTableData));
-        createFromFreemarker(templateProvider, propertiesFolder, "all-properties", new AdvancedPropertyTablePage(splitGroupOptions));
+        createMarkdownFromFreemarker(templateProvider, propertiesFolder, "basic-properties", new SimplePropertyTablePage(simplePropertyTableData));
+        createMarkdownFromFreemarker(templateProvider, propertiesFolder, "deprecated-properties", new DeprecatedPropertyTablePage(deprecatedPropertyTableData));
+        createMarkdownFromFreemarker(templateProvider, propertiesFolder, "all-properties", new AdvancedPropertyTablePage(splitGroupOptions));
     }
 
     private String getGroupLocation(Map<String, String> groupLocationMap, String group) throws IntegrationException {
-        return getOrThrow(groupLocationMap, group, String.format("Missing group location: %s", group));
+        return getOrThrow(groupLocationMap, makeLinkSafe(group), String.format("Missing group location: %s", group));
     }
 
     private <K, V> V getOrThrow(Map<K, V> map, K key, String missingMessage) throws IntegrationException {
@@ -254,6 +264,7 @@ public class GenerateDocsTask extends DefaultTask {
         Map<String, String> lookup = new HashMap<>();
 
         helpJson.getOptions().forEach(option -> {
+            String optionGroup = makeLinkSafe(option.getGroup());
             final String defaultSuperGroup = "Configuration";
             String rawSuperGroup = option.getSuperGroup();
             String superGroup;
@@ -263,14 +274,14 @@ public class GenerateDocsTask extends DefaultTask {
                 superGroup = rawSuperGroup;
             }
 
-            if (lookup.containsKey(option.getGroup()) && !superGroup.equals(lookup.get(option.getGroup()))) {
+            if (lookup.containsKey(optionGroup) && !superGroup.equals(lookup.get(optionGroup))) {
                 throw new RuntimeException(String.format("The created detect help JSON had a key '%s' whose super key '%s' did not match a different options super key in the same key '%s'.",
-                    option.getGroup(),
+                        optionGroup,
                     superGroup,
-                    lookup.get(option.getGroup())
+                    lookup.get(optionGroup)
                 ));
-            } else if (!lookup.containsKey(option.getGroup())) {
-                lookup.put(option.getGroup(), superGroup);
+            } else if (!lookup.containsKey(optionGroup)) {
+                lookup.put(optionGroup, superGroup);
             }
         });
 

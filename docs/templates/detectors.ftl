@@ -11,7 +11,7 @@ or properties you have set.
 
 By default, detectors only search the project directory. In some cases, such as when your project contains sub-projects,
 or when package manager files reside in sub-directories, you may need to tell ${solution_name} to search sub-directories
-by increasing the detector search depth. For more information, refer to [detector search depth](../../properties/configuration/paths/#detector-search-depth).
+by increasing the detector search depth. For more information, refer to [detector search depth](../properties/configuration/paths.md#detector-search-depth).
 
 Detectors then check that your environment is extractable, meaning you have all the relevant executables such as NPM or a Gradle wrapper, and all relevant downloads are present or available, such as the Docker or NuGet inspector.
 
@@ -26,14 +26,14 @@ ${solution_name}'s build detectors work in this environment and produce the most
 
 If you can't build your project, you may still be able to use ${solution_name}'s buildless detectors. The results from buildless detectors may not be as accurate as the results from
 build detectors, but buildless detectors can run without accessing the tools required to build the project. You can choose to run
-buildless detectors using the [buildless mode property](../../properties/configuration/general/#buildless-mode).
+buildless detectors using the [buildless mode property](../properties/configuration/general.md#buildless-mode).
 
 The following tables show which detectors run in the default (build) mode, and which detectors run in buildless mode. There is some overlap across the two lists.
 
 ## Build detectors
 
 By default, ${solution_name} requires that you are able to build the project you are scanning. This allows ${solution_name} to get the most accurate results possible.
-Build detectors can communicate with package managers and run commands for example: *mvn dependency:tree*, and/or inspectors; such as the [Gradle inspector](../inspectors/#gradle-inspector) to derive dependency information.
+Build detectors can communicate with package managers and run commands for example: *mvn dependency:tree*, and/or inspectors; such as the [Gradle inspector](inspectors.md#gradle-inspector) to derive dependency information.
 Not all build detectors run external commands or communicate with external systems but all build detectors return accurate results.
 
 Each applicable detector's required executables (as shown in the following table) must be present and findable on your system. ${solution_name} uses

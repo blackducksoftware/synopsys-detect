@@ -20,7 +20,7 @@ buildscript {
 ext['groovy.version'] = '3.0.0'
 
 group = 'com.synopsys.integration'
-version = '7.7.0-SIGQA3-SNAPSHOT'
+version = '7.8.0-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
@@ -209,10 +209,15 @@ task publishAirGapZipWithoutDocker() {
 
     doLast {
         def airGapZipName = "${project.name}-${version}-air-gap-no-docker.zip"
+        def airGapZipNameLegacy = "${project.name}-${version}-air-gap-gradle-nuget.zip" //MUST remain for down-stream projects until late 2022
         def airGapZipLocation = createAirGapZipWithoutDocker.airGapPath
         exec {
             commandLine 'curl', '--insecure', '-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT',
                     "${project.ext.deployArtifactoryUrl}/${project.ext.artifactoryRepo}/com/synopsys/integration/${project.name}/${version}/${airGapZipName}", '-T', "${airGapZipLocation}", '-f'
+        }
+        exec {
+            commandLine 'curl', '--insecure', '-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT',
+                    "${project.ext.deployArtifactoryUrl}/${project.ext.artifactoryRepo}/com/synopsys/integration/${project.name}/${version}/${airGapZipNameLegacy}", '-T', "${airGapZipLocation}", '-f'
         }
     }
 }
@@ -236,4 +241,6 @@ task verifyJar() {
         }
     }
 }
+
+artifactoryPublish.dependsOn publishDitaSource
 

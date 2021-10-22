@@ -1,12 +1,12 @@
 # Status File
 
-As of detect 6.2.0 an output status file is created in the run folder with the name "status.json" and is meant to summarize the detect run in a machine readable format.
+${solution_name} creates an output status file in the run folder with the name "status.json" which contains a summary of the detect run in a machine readable format.
 
 The file includes status codes, issues encountered and results produced. As additional processes consume this file, additional information will be added. The format is intended to evolve over time.
 
 * As Detect shuts down, by default, it performs cleanup operations which include deleting the status file.  You can disable clean up by setting ```--detect.cleanup=false```.
 
-##Body
+## Body
 ```
 {
 "formatVersion": The version of the status file format. Will change as new features are introduced.
@@ -23,7 +23,7 @@ The file includes status codes, issues encountered and results produced. As addi
 }
 ```
 
-##Detector
+## Detector
 ```
 {
 "folder": The folder the detector applied to.
@@ -45,14 +45,14 @@ The file includes status codes, issues encountered and results produced. As addi
 <path>". ]
 }
 ```
-###Detector Status Codes
+## #Detector Status Codes
 | Status Code | Description |
 | --- | --- |
 <#list statusCodes as statusCode>
     | ${statusCode.statusCode} | ${statusCode.statusCodeDescription} |
 </#list>
 
-##Status
+## Status
 ```
 {
 "key": The normalized key this status element describes such as "GIT".
@@ -60,7 +60,7 @@ The file includes status codes, issues encountered and results produced. As addi
 }
 ```
 
-##Issues
+## Issues
 ```
 {
 "type": A key describing the type of issue, currently "EXCEPTION", "DEPRECATION" or "DETECTOR".
@@ -69,7 +69,7 @@ The file includes status codes, issues encountered and results produced. As addi
 }
 ```
 
-##Results
+## Results
 
 A result is a URL, file path to output, or messages produced by the ${solution_name} run: a Black Duck Bill Of Materials, Risk Report, Notices Report, Air Gap zip, or Rapid Scan results.
 ```
@@ -80,7 +80,7 @@ A result is a URL, file path to output, or messages produced by the ${solution_n
 }
 ```
 
-##Property Values
+## Property Values
 
 A map of every property key to it's string value that detect found. These are only properties to which detect has a known key,
 so pass-through properties like docker and dynamic properties like custom fields are not included. Passwords and other sensitive fields are masked.
@@ -92,7 +92,7 @@ so pass-through properties like docker and dynamic properties like custom fields
   }
 ```
 
-##Operations
+## Operations
 A list of information regarding internal execution of detect to describe when portions of detect run and what their status is.
 This information is intended to be used when detect fails and the reason for the failure needs to be determined.
 
@@ -103,7 +103,7 @@ This information is intended to be used when detect fails and the reason for the
 "status": "SUCCESS" or "FAILURE"
 ```
 
-##Unrecognized Paths
+## Unrecognized Paths
 
 For those detectors that support it (currently, only CLANG), a list of file paths to dependencies that
 (a) were not recognized by the package manager, and (b) reside outside the source directory.

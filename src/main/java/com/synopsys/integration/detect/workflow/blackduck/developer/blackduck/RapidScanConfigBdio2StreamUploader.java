@@ -72,7 +72,7 @@ public class RapidScanConfigBdio2StreamUploader {
         HttpUrl url = apiDiscovery.metaSingleResponse(scanPath).getUrl();
         BlackDuckResponseRequest request = new BlackDuckRequestBuilder()
             .postFile(zippedConfigAndHeader, ContentType.create("application/zip"))
-            .addHeader(HEADER_CONTENT_TYPE, contentType)
+            .addHeader(HEADER_CONTENT_TYPE, "application/vnd.blackducksoftware.developer-scan-1-ld-2-yaml-1+zip")
             .apply(editor)
             .buildBlackDuckResponseRequest(url);
         HttpUrl responseUrl = blackDuckApiClient.executePostRequestAndRetrieveURL(request);

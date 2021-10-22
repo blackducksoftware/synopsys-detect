@@ -2,7 +2,7 @@
 # ${groupName}
 
 <#list simple as option>
-##${option.propertyName}
+## ${option.propertyName}
 ```<#noautoesc>
 <#if option.hasAcceptableValues>
 --${option.propertyKey}=${option.acceptableValues?join(",")} 
@@ -30,12 +30,12 @@ ${option.detailedDescription!""}
 |Acceptable Values|Any|
 </#if>
 |Strict|${option.strictValues?then("Yes", "No")}|
-|Example|${option.example!""}|
+|Example|<#noautoesc>`${option.example!""}`</#noautoesc>|
 
 </#list> 
 
 <#list advanced as option>
-##${option.propertyName} (Advanced)
+## ${option.propertyName} (Advanced)
 ```<#noautoesc>
 <#if option.hasAcceptableValues>
 --${option.propertyKey}=${option.acceptableValues?join(",")} 
@@ -63,13 +63,13 @@ ${option.detailedDescription!""}
 |Acceptable Values|Any|
 </#if>
 |Strict|${option.strictValues?then("Yes", "No")}|
-|Example|${option.example!""}|
+|Example|<#noautoesc>`${option.example!""}`</#noautoesc>|
 
 </#list> 
 
 
 <#list deprecated as option>
-##${option.propertyName} (Deprecated) 
+## ${option.propertyName} (Deprecated) 
 ```<#noautoesc>
 <#if option.hasAcceptableValues>
 --${option.propertyKey}=${option.acceptableValues?join(",")} 
