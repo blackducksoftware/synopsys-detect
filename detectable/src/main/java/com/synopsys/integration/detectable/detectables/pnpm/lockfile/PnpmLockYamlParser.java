@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
+import org.yaml.snakeyaml.representer.Representer;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
@@ -29,7 +30,9 @@ public class PnpmLockYamlParser {
     }
 
     public DependencyGraph parse(File pnpmLockYamlFile, boolean includeDevDependencies) throws IOException {
-        Yaml yaml = new Yaml(new Constructor(PnpmLockYaml.class));
+        Representer representer = new Representer();
+        representer.getPropertyUtils().setSkipMissingProperties(true);
+        Yaml yaml = new Yaml(new Constructor(PnpmLockYaml.class), representer);
         PnpmLockYaml pnpmLockYaml = yaml.load(new FileReader(pnpmLockYamlFile));
 
         List<String> rootPackageIds = extractRootPackageIds(pnpmLockYaml, includeDevDependencies);
@@ -47,14 +50,13 @@ public class PnpmLockYamlParser {
             String packageId = packageEntry.getKey();
             if (rootPackageIds.contains(packageId)) {
                 graphBuilder.addChildToRoot(buildDependencyFromPackageId(packageId));
-            } else {
-                PnpmPackage pnpmPackage = packageEntry.getValue();
-                if (pnpmPackage.dev.equals("false") || includeDevDependencies) { //TODO- do we need this check if we don't add devDependencies to root package ids?
-                    for (Map.Entry<String, String> dependency : pnpmPackage.dependencies.entrySet()) {
-                        String dependencyPackageId = convertRawEntryToPackageId(dependency);
-                        Dependency child = buildDependencyFromPackageId(dependencyPackageId);
-                        graphBuilder.addChildWithParent(child, buildDependencyFromPackageId(packageId));
-                    }
+            }
+            PnpmPackage pnpmPackage = packageEntry.getValue();
+            if ((!pnpmPackage.isDev() || includeDevDependencies) && pnpmPackage.hasDependencies()) {
+                for (Map.Entry<String, String> dependency : pnpmPackage.dependencies.entrySet()) {
+                    String dependencyPackageId = convertRawEntryToPackageId(dependency);
+                    Dependency child = buildDependencyFromPackageId(dependencyPackageId);
+                    graphBuilder.addChildWithParent(child, buildDependencyFromPackageId(packageId));
                 }
             }
         }

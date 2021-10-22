@@ -52,6 +52,7 @@ import com.synopsys.integration.detectable.detectables.pear.PearCliDetectableOpt
 import com.synopsys.integration.detectable.detectables.pip.PipInspectorDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pip.PipenvDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pnpm.cli.PnpmCliExtractorOptions;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockExtractorOptions;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorOptions;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectableOptions;
 import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheOptions;
@@ -235,6 +236,11 @@ public class DetectableOptionFactory {
         Boolean includeDevDependencies = getValue(DetectProperties.DETECT_PNPM_INCLUDE_DEV_DEPENDENCIES);
         String pnpmArguments = getNullableValue(DetectProperties.DETECT_PNPM_ARGUMENTS);
         return new PnpmCliExtractorOptions(includeDevDependencies, pnpmArguments);
+    }
+
+    public PnpmLockExtractorOptions createPnpmLockExtractorOptions() {
+        Boolean includeDevDependencies = getValue(DetectProperties.DETECT_PNPM_INCLUDE_DEV_DEPENDENCIES);
+        return new PnpmLockExtractorOptions(includeDevDependencies);
     }
 
     public ProjectInspectorOptions createProjectInspectorOptions() {

@@ -216,6 +216,7 @@ import com.synopsys.integration.detectable.detectables.pnpm.cli.PnpmCliExtractor
 import com.synopsys.integration.detectable.detectables.pnpm.cli.PnpmCliParser;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockDetectable;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockExtractor;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockExtractorOptions;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockYamlParser;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorExtractor;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorOptions;
@@ -445,8 +446,8 @@ public class DetectableFactory {
         return new PnpmCliDetectable(environment, fileFinder, pnpmResolver, pnpmCliExtractor(), pnpmCliExtractorOptions);
     }
 
-    public PnpmLockDetectable createPnpmLockDetectable(DetectableEnvironment environment) {
-        return new PnpmLockDetectable(environment, fileFinder, pnpmLockExtractor());
+    public PnpmLockDetectable createPnpmLockDetectable(DetectableEnvironment environment, PnpmLockExtractorOptions pnpmLockExtractorOptions) {
+        return new PnpmLockDetectable(environment, fileFinder, pnpmLockExtractor(), pnpmLockExtractorOptions);
     }
 
     public PodlockDetectable createPodLockDetectable(DetectableEnvironment environment) {

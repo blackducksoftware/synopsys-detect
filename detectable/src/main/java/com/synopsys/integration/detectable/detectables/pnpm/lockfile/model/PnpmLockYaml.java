@@ -11,6 +11,12 @@ public class PnpmLockYaml {
 
     public PnpmLockYaml() { }
 
+    public PnpmLockYaml(Map<String, String> dependencies, Map<String, String> devDependencies, Map<String, PnpmPackage> packages) {
+        this.dependencies = dependencies;
+        this.devDependencies = devDependencies;
+        this.packages = packages;
+    }
+
     public Map<String, String> getDependencies() {
         return dependencies;
     }
