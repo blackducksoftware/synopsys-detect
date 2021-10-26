@@ -47,6 +47,7 @@ import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDet
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pip.PipInspectorDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pip.PipenvDetectableOptions;
+import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorOptions;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectableOptions;
 import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheOptions;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
@@ -221,6 +222,11 @@ public class DetectableOptionFactory {
             .map(it -> it.resolvePath(pathResolver))
             .collect(Collectors.toList());
         return new PipInspectorDetectableOptions(pipProjectName, requirementsFilePath);
+    }
+
+    public ProjectInspectorOptions createProjectInspectorOptions() {
+        String additionalArguments = detectConfiguration.getValue(DetectProperties.PROJECT_INSPECTOR_ARGUMENTS.getProperty()).orElse(null);
+        return new ProjectInspectorOptions(additionalArguments);
     }
 
     public GemspecParseDetectableOptions createGemspecParseDetectableOptions() {

@@ -10,6 +10,10 @@ package com.synopsys.integration.detect.lifecycle.run.step;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponentResultView;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
@@ -22,6 +26,7 @@ import com.synopsys.integration.util.NameVersion;
 
 public class RapidModeStepRunner {
     private final OperationFactory operationFactory;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public RapidModeStepRunner(OperationFactory operationFactory) {
         this.operationFactory = operationFactory;
@@ -29,7 +34,9 @@ public class RapidModeStepRunner {
 
     public void runOnline(BlackDuckRunData blackDuckRunData, NameVersion projectVersion, BdioResult bdioResult) throws DetectUserFriendlyException, IOException {
         operationFactory.phoneHome(blackDuckRunData);
-        List<HttpUrl> rapidScanUrls = operationFactory.performRapidUpload(blackDuckRunData, bdioResult);
+        Optional<File> rapidScanConfig = operationFactory.findRapidScanConfig();
+        rapidScanConfig.ifPresent(config -> logger.info("Found rapid scan config file: " + config.toString()));
+        List<HttpUrl> rapidScanUrls = operationFactory.performRapidUpload(blackDuckRunData, bdioResult, rapidScanConfig.orElse(null));
         List<DeveloperScanComponentResultView> rapidResults = operationFactory.waitForRapidResults(blackDuckRunData, rapidScanUrls);
         File jsonFile = operationFactory.generateRapidJsonFile(projectVersion, rapidResults);
         RapidScanResultSummary summary = operationFactory.logRapidReport(rapidResults);

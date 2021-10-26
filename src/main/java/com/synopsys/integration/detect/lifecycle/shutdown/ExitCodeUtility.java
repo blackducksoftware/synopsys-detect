@@ -7,11 +7,12 @@
  */
 package com.synopsys.integration.detect.lifecycle.shutdown;
 
-import com.synopsys.integration.blackduck.exception.BlackDuckTimeoutExceededException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.exception.BlackDuckApiException;
+import com.synopsys.integration.blackduck.exception.BlackDuckTimeoutExceededException;
+import com.synopsys.integration.configuration.config.InvalidPropertyException;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.exception.IntegrationException;
@@ -53,18 +54,12 @@ public class ExitCodeUtility {
             logger.error(BLACKDUCK_ERROR_MESSAGE);
             logger.debug(e.getMessage(), e);
             exceptionExitCodeType = ExitCodeType.FAILURE_GENERAL_ERROR;
+        } else if (e instanceof InvalidPropertyException) {
+            logger.error("A configuration error occured");
+            logger.debug(e.getMessage(), e);
+            exceptionExitCodeType = ExitCodeType.FAILURE_CONFIGURATION;
         } else {
-            logger.error("An unknown/unexpected error occurred");
-            if (e.getMessage() != null) {
-                logger.error(e.getMessage());
-            } else if (e instanceof NullPointerException) {
-                logger.error("Null Pointer Exception");
-            } else {
-                logger.error(e.getClass().getSimpleName());
-            }
-            if (e.getStackTrace().length >= 1) {
-                logger.error("Thrown at " + e.getStackTrace()[0].toString());
-            }
+            logUnrecognizedException(e);
             exceptionExitCodeType = ExitCodeType.FAILURE_UNKNOWN_ERROR;
         }
         if (e.getMessage() != null) {
@@ -72,5 +67,19 @@ public class ExitCodeUtility {
         }
 
         return exceptionExitCodeType;
+    }
+
+    private void logUnrecognizedException(Exception e) {
+        logger.error("An unknown/unexpected error occurred");
+        if (e.getMessage() != null) {
+            logger.error(e.getMessage());
+        } else if (e instanceof NullPointerException) {
+            logger.error("Null Pointer Exception");
+        } else {
+            logger.error(e.getClass().getSimpleName());
+        }
+        if (e.getStackTrace().length >= 1) {
+            logger.error("Thrown at " + e.getStackTrace()[0].toString());
+        }
     }
 }

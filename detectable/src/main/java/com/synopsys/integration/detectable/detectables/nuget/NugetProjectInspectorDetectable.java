@@ -23,6 +23,7 @@ import com.synopsys.integration.detectable.detectable.inspector.ProjectInspector
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorExtractor;
+import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorOptions;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
@@ -33,15 +34,17 @@ public class NugetProjectInspectorDetectable extends Detectable {
     private final FileFinder fileFinder;
     private final ProjectInspectorResolver projectInspectorResolver;
     private final ProjectInspectorExtractor projectInspectorExtractor;
+    private final ProjectInspectorOptions projectInspectorOptions;
 
     private ExecutableTarget inspector;
 
     public NugetProjectInspectorDetectable(final DetectableEnvironment detectableEnvironment, final FileFinder fileFinder, final NugetInspectorOptions nugetInspectorOptions,
-        ProjectInspectorResolver projectInspectorResolver, ProjectInspectorExtractor projectInspectorExtractor) {
+        ProjectInspectorResolver projectInspectorResolver, ProjectInspectorExtractor projectInspectorExtractor, ProjectInspectorOptions projectInspectorOptions) {
         super(detectableEnvironment);
         this.fileFinder = fileFinder;
         this.projectInspectorResolver = projectInspectorResolver;
         this.projectInspectorExtractor = projectInspectorExtractor;
+        this.projectInspectorOptions = projectInspectorOptions;
     }
 
     @Override
@@ -60,7 +63,7 @@ public class NugetProjectInspectorDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
-        return projectInspectorExtractor.extract(Collections.emptyList(), environment.getDirectory(), extractionEnvironment.getOutputDirectory(), inspector);
+        return projectInspectorExtractor.extract(projectInspectorOptions, Collections.emptyList(), environment.getDirectory(), extractionEnvironment.getOutputDirectory(), inspector);
     }
 
 }

@@ -6,13 +6,20 @@
 # To build, install pip and python, then execute:
 #   pip install mkdocs
 #   pip install mkdocs-material
+#   pip install mkdocs-literate-nav
 # To view the docs, you must execute:
 #   At project root: gradlew docs
 #   At docs/site: mkdocs serve
 site_name: Synopsys Detect
 theme:
   name: 'material'
+  features:
+    - navigation.indexes
 docs_dir: 'generated'
+plugins:
+  - search
+  - literate-nav:
+      nav_file: nav.md
 markdown_extensions:
   - toc:
       permalink: "#"
