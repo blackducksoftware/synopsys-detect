@@ -43,6 +43,7 @@
     <topicref href="configuring/credentials.md" format="markdown"/>
     <topicref href="configuring/pathproperties.md" format="markdown"/>
     <topicref href="configuring/propertywildcards.md" format="markdown"/>
+    <topicref href="configuring/javaregex.md" format="markdown"/>
 
     <topicref href="scripts/overview.md" format="markdown">
       <topicref href="scripts/script-escaping-special-characters.md" format="markdown"/>
