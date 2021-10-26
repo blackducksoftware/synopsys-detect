@@ -1,4 +1,4 @@
-# Java Regular Expression Support
+# Java regular expression support
 
 The values of the following ${solution_name} property can utilize Java regular expressions described below:
 

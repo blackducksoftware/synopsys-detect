@@ -1,4 +1,4 @@
-# Property Wildcard Support
+# Property wildcard support
 
 The values of the following ${solution_name} properties can utilize filename globbing-style wildcards described below:
 
