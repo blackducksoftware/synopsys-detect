@@ -2,8 +2,8 @@
 <!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
 <map id="detect-user-guide" xml:lang="en-US">
   <title>${solution_name}</title>
-  <topicref href="releasenotes.md" format="markdown"/>
   <topicref href="introduction.md" format="markdown"/>
+  <topicref href="releasenotes.md" format="markdown"/>
   <topicref href="gettingstarted/overview.md" format="markdown">
     <topicref href="gettingstarted/terms.md" format="markdown"/>
     <topicref href="gettingstarted/howitworks.md" format="markdown"/>
