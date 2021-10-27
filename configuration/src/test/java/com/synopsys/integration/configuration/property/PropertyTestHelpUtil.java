@@ -90,8 +90,6 @@ public class PropertyTestHelpUtil {
         assertHasTypeDescription(property);
         Assertions.assertFalse(property.describeType().startsWith(NULLABLE_TYPE_DESCRIPTION_PREFIX),
             String.format("%s is a %s so its type description should not start with '%s'.", property.getClass().getSimpleName(), ValuedProperty.class.getSimpleName(), NULLABLE_TYPE_DESCRIPTION_PREFIX));
-        Assertions.assertFalse(property.describeType().endsWith(VALUED_TYPE_DESCRIPTION_POSTFIX),
-            String.format("%s is a %s so its type description should not end with '%s'.", property.getClass().getSimpleName(), ValuedProperty.class.getSimpleName(), VALUED_TYPE_DESCRIPTION_POSTFIX));
     }
 
     public static <T> void assertValidTypeDescription(final ValuedListProperty<T> property) {
