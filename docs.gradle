@@ -13,27 +13,6 @@ task generateDocs(type: GenerateDocsTask) {
     dependsOn helpJson
 }
 
-task ditasourcezip(type: Zip) {
-    dependsOn generateDocs
-
-    archiveName "${project.name}-${version}-ditasource.zip"
-    from 'docs/generated'
-    destinationDir(file("${buildDir}/libs/"))
-}
-
-task publishDitaSource() {
-    dependsOn ditasourcezip
-
-    doLast {
-        def ditaSourceZipName = "${project.name}-${version}-ditasource.zip"
-        def ditaSourceZipLocation = "${buildDir}/libs/${ditaSourceZipName}"
-        exec {
-            commandLine 'curl', '--insecure', '-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT',
-                    "${project.ext.deployArtifactoryUrl}/${project.ext.artifactoryRepo}/com/synopsys/integration/${project.name}/${version}/${ditaSourceZipName}", '-T', "${ditaSourceZipLocation}", '-f'
-        }
-    }
-}
-
 // Requires Synopsys-configured dita:
 // 1. git clone https://sig-gitlab.internal.synopsys.com/doc/docs-dita-tools.git
 // 2. Add docs-dita-tools/dita-ot/bin to your PATH
@@ -52,6 +31,28 @@ task ditasite() {
 		throw new Exception("dita found invalid key references. Square brackets around doc text must be escaped if not inside back quotes.")
 	}
         println "To browse the webhelp: Open docs/ditasite/index.html in a browser"
+    }
+}
+
+task ditasourcezip(type: Zip) {
+    // depending on ditasite does some validation of the files going into the dita source zip
+    dependsOn ditasite
+
+    archiveName "${project.name}-${version}-ditasource.zip"
+    from 'docs/generated'
+    destinationDir(file("${buildDir}/libs/"))
+}
+
+task publishDitaSource() {
+    dependsOn ditasourcezip
+
+    doLast {
+        def ditaSourceZipName = "${project.name}-${version}-ditasource.zip"
+        def ditaSourceZipLocation = "${buildDir}/libs/${ditaSourceZipName}"
+        exec {
+            commandLine 'curl', '--insecure', '-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT',
+                    "${project.ext.deployArtifactoryUrl}/${project.ext.artifactoryRepo}/com/synopsys/integration/${project.name}/${version}/${ditaSourceZipName}", '-T', "${ditaSourceZipLocation}", '-f'
+        }
     }
 }
 
