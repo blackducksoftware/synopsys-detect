@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
@@ -46,7 +47,7 @@ public class PnpmYamlTransformer {
         return createCodeLocation(dependencyGraph, projectNameVersion);
     }
 
-    private void buildGraph(MutableDependencyGraph graphBuilder, List<String> rootPackageIds, Map<String, PnpmPackage> packageMap, boolean includeDevDependencies, boolean includeOptionalDependencies) throws IntegrationException {
+    private void buildGraph(MutableDependencyGraph graphBuilder, List<String> rootPackageIds, Map<String, @Nullable PnpmPackage> packageMap, boolean includeDevDependencies, boolean includeOptionalDependencies) throws IntegrationException {
         if (packageMap == null) {
             throw new IntegrationException("Could not parse 'packages' section of the pnpm-lock.yaml file.");
         }
@@ -83,10 +84,7 @@ public class PnpmYamlTransformer {
     }
 
     private String convertRawEntryToPackageId(Map.Entry<String, String> entry) {
-        String name = entry.getKey();
-        if (name.startsWith("'") && name.endsWith("'")) {
-            name = name.substring(1, name.length() - 1);
-        }
+        String name = StringUtils.strip(entry.getKey(), "'");
         String version = entry.getValue();
         return String.format("/%s/%s", name, version);
     }
