@@ -52,6 +52,7 @@ import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndividualFileMatchingMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
+import com.synopsys.integration.detectable.detectable.enums.DependencyType;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.log.LogLevel;
@@ -230,7 +231,7 @@ public class DetectProperties {
         new DetectProperty<>(new StringListProperty("detect.binary.scan.file.name.patterns", emptyList()))
             .setInfo("Binary Scan Filename Patterns", DetectPropertyFromVersion.VERSION_6_0_0)
             .setHelp(
-                "If specified, all files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified. Search depth is controlled by property detect.binary.scan.search.depth. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+                "If specified, all files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified. Search depth is controlled by property detect.binary.scan.search.depth. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.BINARY_SCANNER, DetectGroup.SOURCE_PATH)
             .setExample("*.jar");
 
@@ -274,7 +275,7 @@ public class DetectProperties {
     public static final DetectProperty<NullableStringProperty> PROJECT_INSPECTOR_ARGUMENTS =
         new DetectProperty<>(new NullableStringProperty("detect.project.inspector.arguments"))
             .setInfo("Project Inspector Additional Arguments", DetectPropertyFromVersion.VERSION_7_7_0)
-            .setHelp("A space-separated list of additional options to pass to all invocations of the project inspector.")
+            .setHelp("A comma-separated list of additional options to pass to all invocations of the project inspector.")
             .setGroups(DetectGroup.DEFAULT)
             .setCategory(DetectCategory.Advanced);
 
@@ -594,7 +595,7 @@ public class DetectProperties {
         new DetectProperty<>(new CaseSensitiveStringListProperty("detect.gradle.excluded.configurations"))
             .setInfo("Gradle Exclude Configurations", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("A comma-separated list of Gradle configurations to exclude.",
-                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle configurations specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle configurations specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
@@ -602,7 +603,7 @@ public class DetectProperties {
         new DetectProperty<>(new CaseSensitiveStringListProperty("detect.gradle.excluded.projects"))
             .setInfo("Gradle Exclude Projects", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("A comma-separated list of Gradle sub-projects to exclude.",
-                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle sub-projects specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle sub-projects specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
@@ -610,7 +611,7 @@ public class DetectProperties {
         new DetectProperty<>(new CaseSensitiveStringListProperty("detect.gradle.included.configurations"))
             .setInfo("Gradle Include Configurations", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("A comma-separated list of Gradle configurations to include.",
-                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those Gradle configurations specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those Gradle configurations specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
@@ -626,7 +627,7 @@ public class DetectProperties {
         new DetectProperty<>(new CaseSensitiveStringListProperty("detect.gradle.included.projects"))
             .setInfo("Gradle Include Projects", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("A comma-separated list of Gradle sub-projects to include.",
-                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those sub-projects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those sub-projects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
@@ -646,7 +647,7 @@ public class DetectProperties {
         new DetectProperty<>(new StringListProperty("detect.excluded.directories", emptyList()))
             .setInfo("Detect Excluded Directories", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp("A comma-separated list of names, name patterns, relative paths, or path patterns of directories that Detect should exclude.",
-                "Subdirectories whose name or path is resolved from the patterns in this list will not be searched when determining which detectors to run, and will be excluded from signature scan using the Scan CLI '--exclude' flag. Refer to the <i>Downloading and Running Synopsys Detect</i> > <i>Including and Excluding Tools, Detectors, Directories, etc.</i> page for more details."
+                "Subdirectories whose name or path is resolved from the patterns in this list will not be searched when determining which detectors to run, and will be excluded from signature scan using the Scan CLI '--exclude' flag. Refer to the <i>Advanced</i> > <i>Exclusions in Detect</i> page for more details."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -702,7 +703,7 @@ public class DetectProperties {
         new DetectProperty<>(new CaseSensitiveStringListProperty("detect.lerna.excluded.packages"))
             .setInfo("Lerna Packages Excluded", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp("A comma-separated list of Lerna packages to exclude.",
-                "As Detect parses the output of lerna ls --all --json, Detect will exclude any Lerna packages specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+                "As Detect parses the output of lerna ls --all --json, Detect will exclude any Lerna packages specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.LERNA, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
@@ -710,7 +711,7 @@ public class DetectProperties {
         new DetectProperty<>(new CaseSensitiveStringListProperty("detect.lerna.included.packages"))
             .setInfo("Lerna Packages Included", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp("A comma-separated list of Lerna packages to include.",
-                "As Detect parses the output of lerna ls --all --json2, if this property is set, Detect will include only those Lerna packages specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+                "As Detect parses the output of lerna ls --all --json2, if this property is set, Detect will include only those Lerna packages specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.LERNA, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
@@ -737,7 +738,7 @@ public class DetectProperties {
         new DetectProperty<>(new CaseSensitiveStringListProperty("detect.maven.excluded.modules"))
             .setInfo("Maven Modules Excluded", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("A comma-separated list of Maven modules (sub-projects) to exclude.",
-                "As Detect parses the mvn dependency:tree output for dependencies, Detect will skip any Maven modules specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+                "As Detect parses the mvn dependency:tree output for dependencies, Detect will skip any Maven modules specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
@@ -745,7 +746,7 @@ public class DetectProperties {
         new DetectProperty<>(new CaseSensitiveStringListProperty("detect.maven.included.modules"))
             .setInfo("Maven Modules Included", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("A comma-separated list of Maven modules (sub-projects) to include.",
-                "As Detect parses the mvn dependency:tree output for dependencies, if this property is set, Detect will include only those Maven modules specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+                "As Detect parses the mvn dependency:tree output for dependencies, if this property is set, Detect will include only those Maven modules specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
@@ -759,14 +760,14 @@ public class DetectProperties {
         new DetectProperty<>(new CaseSensitiveStringListProperty("detect.maven.included.scopes"))
             .setInfo("Dependency Scope Included", DetectPropertyFromVersion.VERSION_6_0_0)
             .setHelp("A comma separated list of Maven scopes. Output will be limited to dependencies within these scopes (overridden by exclude).",
-                "If set, Detect will include only dependencies of the given Maven scope. This property accepts filename globbing-style wildcards. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+                "If set, Detect will include only dependencies of the given Maven scope. This property accepts filename globbing-style wildcards. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_MAVEN_EXCLUDED_SCOPES =
         new DetectProperty<>(new CaseSensitiveStringListProperty("detect.maven.excluded.scopes"))
             .setInfo("Dependency Scope Excluded", DetectPropertyFromVersion.VERSION_6_0_0)
             .setHelp("A comma separated list of Maven scopes. Output will be limited to dependencies outside these scopes (overrides include).",
-                "If set, Detect will include only dependencies outside of the given Maven scope. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+                "If set, Detect will include only dependencies outside of the given Maven scope. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<BooleanProperty> DETECT_NOTICES_REPORT =
@@ -925,16 +926,11 @@ public class DetectProperties {
             .setHelp("The path to the Pipenv executable.")
             .setGroups(DetectGroup.PIP, DetectGroup.GLOBAL);
 
-    public static final DetectProperty<BooleanProperty> DETECT_PNPM_INCLUDE_DEV_DEPENDENCIES =
-        new DetectProperty<>(new BooleanProperty("detect.pnpm.include.dev.dependencies", true))
-            .setInfo("Include pnpm Development Dependencies", DetectPropertyFromVersion.VERSION_7_8_0)
-            .setHelp("Set this value to false if you would like to exclude your dev dependencies when ran.")
-            .setGroups(DetectGroup.PNPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
-
-    public static final DetectProperty<BooleanProperty> DETECT_PNPM_INCLUDE_OPTIONAL_DEPENDENCIES =
-        new DetectProperty<>(new BooleanProperty("detect.pnpm.include.optional.dependencies", true))
-            .setInfo("Include pnpm Optional Dependencies", DetectPropertyFromVersion.VERSION_7_8_0)
-            .setHelp("Set this value to false if you would like to exclude your optional dependencies when ran.")
+    public static final DetectProperty<FilterableEnumListProperty<DependencyType>> DETECT_PNPM_DEPENDENCY_TYPES =
+        new DetectProperty<>(new FilterableEnumListProperty<>("detect.pnpm.dependency.types", emptyList(), DependencyType.class))
+            .setInfo("pnpm Dependency Types", DetectPropertyFromVersion.VERSION_7_8_0)
+            .setHelp("Set this value to indicate which types of pnpm dependencies you want Detect to report.",
+                "If you want Detect to report a specific type(s) of dependencies, pass a comma-separated list of such types (ex. APP, DEV, OPTIONAL).  By default, all types will be reported.")
             .setGroups(DetectGroup.PNPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<NullablePathProperty> DETECT_SWIFT_PATH =
@@ -1183,7 +1179,7 @@ public class DetectProperties {
     public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_SBT_EXCLUDED_CONFIGURATIONS =
         new DetectProperty<>(new CaseSensitiveStringListProperty("detect.sbt.excluded.configurations"))
             .setInfo("SBT Configurations Excluded", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("The names of the sbt configurations to exclude.", "This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+            .setHelp("The names of the sbt configurations to exclude.", "This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.SBT, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
             .setDeprecated(SBT_REPORT_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT);
@@ -1191,7 +1187,7 @@ public class DetectProperties {
     public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_SBT_INCLUDED_CONFIGURATIONS =
         new DetectProperty<>(new CaseSensitiveStringListProperty("detect.sbt.included.configurations"))
             .setInfo("SBT Configurations Included", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("The names of the sbt configurations to include.", "This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+            .setHelp("The names of the sbt configurations to include.", "This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.SBT, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
             .setDeprecated(SBT_REPORT_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT);
@@ -1270,7 +1266,7 @@ public class DetectProperties {
         new DetectProperty<>(new CaseSensitiveStringListProperty("detect.yarn.excluded.workspaces"))
             .setInfo("Yarn Exclude Workspaces", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp("A comma-separated list of Yarn workspaces (specified by the workspace directory's relative path) to exclude.",
-                "By default, Detect includes all workspaces, but will skip any Yarn workspaces specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+                "By default, Detect includes all workspaces, but will skip any Yarn workspaces specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.YARN, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
             .setExample("workspaces/workspace-a,workspaces/*-test");
@@ -1279,7 +1275,7 @@ public class DetectProperties {
         new DetectProperty<>(new CaseSensitiveStringListProperty("detect.yarn.included.workspaces"))
             .setInfo("Yarn Include Workspaces", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp("A comma-separated list of Yarn workspaces (specified by the workspace directory's relative path) to include.",
-                "By default, Detect includes all workspaces. If workspaces are excluded or included, Detect will include any workspace included by this property that is not excluded. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+                "By default, Detect includes all workspaces. If workspaces are excluded or included, Detect will include any workspace included by this property that is not excluded. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.YARN, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
             .setExample("workspaces/workspace-a,workspaces/workspace-b");

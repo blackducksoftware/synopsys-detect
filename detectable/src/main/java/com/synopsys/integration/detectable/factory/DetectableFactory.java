@@ -209,8 +209,8 @@ import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryDetectab
 import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryExtractor;
 import com.synopsys.integration.detectable.detectables.pip.poetry.parser.PoetryLockParser;
 import com.synopsys.integration.detectable.detectables.pip.poetry.parser.ToolPoetrySectionParser;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmDependencyFilter;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockDetectable;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockExtractor;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockYamlParser;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmYamlTransformer;
@@ -438,8 +438,8 @@ public class DetectableFactory {
         return new PipInspectorDetectable(environment, fileFinder, pythonResolver, pipResolver, pipInspectorResolver, pipInspectorExtractor(), pipInspectorDetectableOptions);
     }
 
-    public PnpmLockDetectable createPnpmLockDetectable(DetectableEnvironment environment, PnpmLockDetectableOptions pnpmLockExtractorOptions) {
-        return new PnpmLockDetectable(environment, fileFinder, pnpmLockExtractor(), pnpmLockExtractorOptions);
+    public PnpmLockDetectable createPnpmLockDetectable(DetectableEnvironment environment, PnpmDependencyFilter pnpmDependencyFilter) {
+        return new PnpmLockDetectable(environment, fileFinder, pnpmLockExtractor(), pnpmDependencyFilter);
     }
 
     public PodlockDetectable createPodLockDetectable(DetectableEnvironment environment) {

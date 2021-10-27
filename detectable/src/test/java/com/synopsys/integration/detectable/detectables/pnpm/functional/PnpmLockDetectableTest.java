@@ -2,6 +2,7 @@ package com.synopsys.integration.detectable.detectables.pnpm.functional;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
@@ -9,7 +10,8 @@ import org.junit.jupiter.api.Assertions;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockDetectableOptions;
+import com.synopsys.integration.detectable.detectable.enums.DependencyType;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmDependencyFilter;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
@@ -55,7 +57,7 @@ public class PnpmLockDetectableTest extends DetectableFunctionalTest {
 
     @Override
     public @NotNull Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
-        return detectableFactory.createPnpmLockDetectable(detectableEnvironment, new PnpmLockDetectableOptions(true, true));
+        return detectableFactory.createPnpmLockDetectable(detectableEnvironment, new PnpmDependencyFilter(Arrays.asList(DependencyType.APP, DependencyType.DEV)));
     }
 
     @Override

@@ -30,10 +30,10 @@ public class PnpmLockExtractor {
         this.pnpmLockYamlParser = pnpmLockYamlParser;
     }
 
-    public Extraction extract(File yarnLockYamlFile, @Nullable File packageJsonFile, boolean includeDevDependencies, boolean includeOptionalDependencies) {
+    public Extraction extract(File yarnLockYamlFile, @Nullable File packageJsonFile, PnpmDependencyFilter pnpmDependencyFilter) {
         try {
             Optional<NameVersion> nameVersion = parseNameVersionFromPackageJson(packageJsonFile);
-            CodeLocation codeLocation = pnpmLockYamlParser.parse(yarnLockYamlFile, includeDevDependencies, includeOptionalDependencies, nameVersion.orElse(null));
+            CodeLocation codeLocation = pnpmLockYamlParser.parse(yarnLockYamlFile, pnpmDependencyFilter, nameVersion.orElse(null));
             return new Extraction.Builder().success(codeLocation)
                        .nameVersionIfPresent(nameVersion)
                        .build();

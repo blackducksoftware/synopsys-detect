@@ -20,10 +20,12 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.base.NullableProperty;
 import com.synopsys.integration.configuration.property.base.ValuedProperty;
+import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumList;
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetLocatorOptions;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
+import com.synopsys.integration.detectable.detectable.enums.DependencyType;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
@@ -47,7 +49,7 @@ import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDet
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pip.PipInspectorDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pip.PipenvDetectableOptions;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockDetectableOptions;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmDependencyFilter;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorOptions;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectableOptions;
 import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheOptions;
@@ -220,15 +222,14 @@ public class DetectableOptionFactory {
     public PipInspectorDetectableOptions createPipInspectorDetectableOptions() {
         String pipProjectName = getNullableValue(DetectProperties.DETECT_PIP_PROJECT_NAME);
         List<Path> requirementsFilePath = getValue(DetectProperties.DETECT_PIP_REQUIREMENTS_PATH).stream()
-            .map(it -> it.resolvePath(pathResolver))
-            .collect(Collectors.toList());
+                                              .map(it -> it.resolvePath(pathResolver))
+                                              .collect(Collectors.toList());
         return new PipInspectorDetectableOptions(pipProjectName, requirementsFilePath);
     }
 
-    public PnpmLockDetectableOptions createPnpmDetectableOptions() {
-        Boolean includeDevDependencies = getValue(DetectProperties.DETECT_PNPM_INCLUDE_DEV_DEPENDENCIES);
-        Boolean includeOptionalDependencies = getValue(DetectProperties.DETECT_PNPM_INCLUDE_OPTIONAL_DEPENDENCIES);
-        return new PnpmLockDetectableOptions(includeDevDependencies, includeOptionalDependencies);
+    public PnpmDependencyFilter createPnpmDependencyFilter() {
+        FilterableEnumList<DependencyType> dependencyTypes = getValue(DetectProperties.DETECT_PNPM_DEPENDENCY_TYPES);
+        return new PnpmDependencyFilter(dependencyTypes.representedValues());
     }
 
     public ProjectInspectorOptions createProjectInspectorOptions() {

@@ -34,20 +34,20 @@ public class PnpmYamlTransformer {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public CodeLocation generateCodeLocation(PnpmLockYaml pnpmLockYaml, boolean includeDevDependencies, boolean includeOptionalDependencies, @Nullable NameVersion projectNameVersion) throws IntegrationException {
-        List<String> rootPackageIds = extractRootPackageIds(pnpmLockYaml, includeDevDependencies, includeOptionalDependencies);
+    public CodeLocation generateCodeLocation(PnpmLockYaml pnpmLockYaml, PnpmDependencyFilter pnpmDependencyFilter, @Nullable NameVersion projectNameVersion) throws IntegrationException {
+        List<String> rootPackageIds = extractRootPackageIds(pnpmLockYaml, pnpmDependencyFilter);
         if (rootPackageIds.isEmpty()) {
             throw new IntegrationException("Could not parse any direct dependencies when parsing the pnpm-lock.yaml file.");
         }
 
         MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
 
-        buildGraph(dependencyGraph, rootPackageIds, pnpmLockYaml.packages, includeDevDependencies, includeOptionalDependencies);
+        buildGraph(dependencyGraph, rootPackageIds, pnpmLockYaml.packages, pnpmDependencyFilter);
 
         return createCodeLocation(dependencyGraph, projectNameVersion);
     }
 
-    private void buildGraph(MutableDependencyGraph graphBuilder, List<String> rootPackageIds, Map<String, @Nullable PnpmPackage> packageMap, boolean includeDevDependencies, boolean includeOptionalDependencies) throws IntegrationException {
+    private void buildGraph(MutableDependencyGraph graphBuilder, List<String> rootPackageIds, Map<String, @Nullable PnpmPackage> packageMap, PnpmDependencyFilter pnpmDependencyFilter) throws IntegrationException {
         if (packageMap == null) {
             throw new IntegrationException("Could not parse 'packages' section of the pnpm-lock.yaml file.");
         }
@@ -57,7 +57,7 @@ public class PnpmYamlTransformer {
                 graphBuilder.addChildToRoot(buildDependencyFromPackageId(packageId));
             }
             PnpmPackage pnpmPackage = packageEntry.getValue();
-            if (shouldAddDependenciesToGraph(pnpmPackage, includeDevDependencies, includeOptionalDependencies)) {
+            if (shouldAddDependenciesToGraph(pnpmPackage, pnpmDependencyFilter)) {
                 for (Map.Entry<String, String> dependency : pnpmPackage.dependencies.entrySet()) {
                     String dependencyPackageId = convertRawEntryToPackageId(dependency);
                     Dependency child = buildDependencyFromPackageId(dependencyPackageId);
@@ -67,15 +67,15 @@ public class PnpmYamlTransformer {
         }
     }
 
-    private List<String> extractRootPackageIds(PnpmLockYaml pnpmLockYaml, boolean includeDevDependencies, boolean includeOptionalDependencies) {
+    private List<String> extractRootPackageIds(PnpmLockYaml pnpmLockYaml, PnpmDependencyFilter pnpmDependencyFilter) {
         Map<String, String> rawPackageInfo = new HashMap<>();
-        if (pnpmLockYaml.dependencies != null) {
+        if (pnpmDependencyFilter.shouldReportDependencies() && pnpmLockYaml.dependencies != null) {
             rawPackageInfo.putAll(pnpmLockYaml.dependencies);
         }
-        if (includeDevDependencies && pnpmLockYaml.devDependencies != null) {
+        if (pnpmDependencyFilter.shouldReportDevDependencies() && pnpmLockYaml.devDependencies != null) {
             rawPackageInfo.putAll(pnpmLockYaml.devDependencies);
         }
-        if (includeOptionalDependencies && pnpmLockYaml.optionalDependencies != null) {
+        if (pnpmDependencyFilter.shouldReportOptionalDependencies() && pnpmLockYaml.optionalDependencies != null) {
             rawPackageInfo.putAll(pnpmLockYaml.optionalDependencies);
         }
         return rawPackageInfo.entrySet().stream()
@@ -103,9 +103,9 @@ public class PnpmYamlTransformer {
         return new Dependency(externalIdFactory.createNameVersionExternalId(Forge.NPMJS, nameVersion.getName(), nameVersion.getVersion()));
     }
 
-    private boolean shouldAddDependenciesToGraph(PnpmPackage pnpmPackage, boolean includeDevDependencies, boolean includeOptionalDependencies) {
-        return (!pnpmPackage.isDev() || includeDevDependencies) &&
-                   (!pnpmPackage.isOptional() || includeOptionalDependencies) &&
+    private boolean shouldAddDependenciesToGraph(PnpmPackage pnpmPackage, PnpmDependencyFilter pnpmDependencyFilter) {
+        return (!pnpmPackage.isDev() || pnpmDependencyFilter.shouldReportDevDependencies()) &&
+                   (!pnpmPackage.isOptional() || pnpmDependencyFilter.shouldReportOptionalDependencies()) &&
                    pnpmPackage.hasDependencies();
     }
 
