@@ -35,8 +35,7 @@ import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.base.NullableProperty;
 import com.synopsys.integration.configuration.property.base.ValuedProperty;
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumValue;
-import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumUtils;
-import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumValue;
+import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumList;
 import com.synopsys.integration.configuration.property.types.path.NullablePathProperty;
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.configuration.property.types.path.PathValue;
@@ -203,8 +202,8 @@ public class DetectConfigurationFactory {
     public DetectToolFilter createToolFilter(RunDecision runDecision, BlackDuckDecision blackDuckDecision) {
         Optional<Boolean> impactEnabled = Optional.of(detectConfiguration.getValue(DetectProperties.DETECT_IMPACT_ANALYSIS_ENABLED.getProperty()));
 
-        List<FilterableEnumValue<DetectTool>> includedTools = getValue(DetectProperties.DETECT_TOOLS);
-        List<FilterableEnumValue<DetectTool>> excludedTools = getValue(DetectProperties.DETECT_TOOLS_EXCLUDED);
+        FilterableEnumList<DetectTool> includedTools = getValue(DetectProperties.DETECT_TOOLS);
+        FilterableEnumList<DetectTool> excludedTools = getValue(DetectProperties.DETECT_TOOLS_EXCLUDED);
         ExcludeIncludeEnumFilter<DetectTool> filter = new ExcludeIncludeEnumFilter<>(excludedTools, includedTools);
         return new DetectToolFilter(filter, impactEnabled.orElse(false), runDecision, blackDuckDecision);
     }
@@ -276,9 +275,9 @@ public class DetectConfigurationFactory {
         Boolean forceNestedSearch = getValue(DetectProperties.DETECT_DETECTOR_SEARCH_CONTINUE);
 
         //Detector Filter
-        List<FilterableEnumValue<DetectorType>> excluded = getValue(DetectProperties.DETECT_EXCLUDED_DETECTOR_TYPES);
-        List<FilterableEnumValue<DetectorType>> included = getValue(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES);
-        ExcludeIncludeEnumFilter detectorFilter = new ExcludeIncludeEnumFilter(excluded, included);
+        FilterableEnumList<DetectorType> excluded = getValue(DetectProperties.DETECT_EXCLUDED_DETECTOR_TYPES);
+        FilterableEnumList<DetectorType> included = getValue(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES);
+        ExcludeIncludeEnumFilter<DetectorType> detectorFilter = new ExcludeIncludeEnumFilter<>(excluded, included);
 
         return new DetectorEvaluationOptions(forceNestedSearch, getFollowSymLinks(), (rule -> detectorFilter.shouldInclude(rule.getDetectorType())));
     }
@@ -312,8 +311,7 @@ public class DetectConfigurationFactory {
         Integer projectTier = getNullableValue(DetectProperties.DETECT_PROJECT_TIER);
         String projectDescription = getNullableValue(DetectProperties.DETECT_PROJECT_DESCRIPTION);
         String projectVersionNotes = getNullableValue(DetectProperties.DETECT_PROJECT_VERSION_NOTES);
-        List<FilterableEnumValue<ProjectCloneCategoriesType>> filterableCloneCategories = getValue(DetectProperties.DETECT_PROJECT_CLONE_CATEGORIES);
-        List<ProjectCloneCategoriesType> cloneCategories = FilterableEnumUtils.populatedValues(filterableCloneCategories, ProjectCloneCategoriesType.class);
+        List<ProjectCloneCategoriesType> cloneCategories = getValue(DetectProperties.DETECT_PROJECT_CLONE_CATEGORIES).representedValues();
         Boolean projectLevelAdjustments = getValue(DetectProperties.DETECT_PROJECT_LEVEL_ADJUSTMENTS);
         Boolean forceProjectVersionUpdate = getValue(DetectProperties.DETECT_PROJECT_VERSION_UPDATE);
         String projectVersionNickname = getNullableValue(DetectProperties.DETECT_PROJECT_VERSION_NICKNAME);
@@ -415,8 +413,7 @@ public class DetectConfigurationFactory {
         Boolean runNoticesReport = getValue(DetectProperties.DETECT_NOTICES_REPORT);
         Path riskReportPdfPath = getPathOrNull(DetectProperties.DETECT_RISK_REPORT_PDF_PATH);
         Path noticesReportPath = getPathOrNull(DetectProperties.DETECT_NOTICES_REPORT_PATH);
-        List<FilterableEnumValue<PolicyRuleSeverityType>> policySeverities = getValue(DetectProperties.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES);
-        List<PolicyRuleSeverityType> severitiesToFailPolicyCheck = FilterableEnumUtils.populatedValues(policySeverities, PolicyRuleSeverityType.class);
+        List<PolicyRuleSeverityType> severitiesToFailPolicyCheck = getValue(DetectProperties.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES).representedValues();
 
         return new BlackDuckPostOptions(waitForResults, runRiskReport, runNoticesReport, riskReportPdfPath, noticesReportPath, severitiesToFailPolicyCheck);
     }

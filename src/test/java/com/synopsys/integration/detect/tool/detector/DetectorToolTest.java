@@ -40,6 +40,7 @@ import org.mockito.Mockito;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.common.util.finder.SimpleFileFinder;
+import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumList;
 import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumValue;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.ExcludeIncludeEnumFilter;
@@ -206,29 +207,29 @@ public class DetectorToolTest {
         CodeLocation codeLocation = new CodeLocation(dependencyGraph, relevantFile);
         Extraction.Builder builder = new Extraction.Builder();
         return builder.relevantFiles(relevantFile)
-                   .codeLocations(codeLocation)
-                   .projectName("test-project")
-                   .projectVersion("1.0")
-                   .unrecognizedPaths(Collections.emptyList());
+            .codeLocations(codeLocation)
+            .projectName("test-project")
+            .projectVersion("1.0")
+            .unrecognizedPaths(Collections.emptyList());
 
     }
 
     private Extraction createSuccessExtraction() {
         return createExtractionBuilder()
-                   .success()
-                   .build();
+            .success()
+            .build();
     }
 
     private Extraction createFailExtraction() {
         return createExtractionBuilder()
-                   .failure("JUnit extraction failure")
-                   .build();
+            .failure("JUnit extraction failure")
+            .build();
     }
 
     private Extraction createExceptionExtraction() {
         return createExtractionBuilder()
-                   .exception(new RuntimeException("JUnit Extraction Exception"))
-                   .build();
+            .exception(new RuntimeException("JUnit Extraction Exception"))
+            .build();
     }
 
     private DetectorRule<GoModCliDetectable> createRule(GoModCliDetectable detectable) {
@@ -249,9 +250,9 @@ public class DetectorToolTest {
     }
 
     private DetectorEvaluationOptions createEvaluationOptions() {
-        List<FilterableEnumValue<DetectorType>> excluded = Collections.emptyList();
-        List<FilterableEnumValue<DetectorType>> included = Collections.singletonList(FilterableEnumValue.value(DetectorType.GO_MOD));
-        ExcludeIncludeEnumFilter detectorFilter = new ExcludeIncludeEnumFilter(excluded, included);
+        FilterableEnumList<DetectorType> excluded = new FilterableEnumList<>(Collections.emptyList(), DetectorType.class);
+        FilterableEnumList<DetectorType> included = new FilterableEnumList<>(Collections.singletonList(FilterableEnumValue.value(DetectorType.GO_MOD)), DetectorType.class);
+        ExcludeIncludeEnumFilter<DetectorType> detectorFilter = new ExcludeIncludeEnumFilter<>(excluded, included);
 
         return new DetectorEvaluationOptions(false, false, (rule -> detectorFilter.shouldInclude(rule.getDetectorType())));
 
