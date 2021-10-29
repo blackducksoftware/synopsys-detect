@@ -98,6 +98,9 @@ public class SignatureScanStepRunner {
     private File determineScanInstallDirectory(ScanBatchRunnerUserResult userProvided) throws DetectUserFriendlyException {
         if (userProvided.getInstallDirectory().isPresent()) {
             return userProvided.getInstallDirectory().get();
+        } else if (false) {
+            //TODO- here we could check for cached install?  do we want a cached install to take preference over a online install, like the explicitly provided local install?
+            return null;
         } else {
             return operationFactory.calculateDetectControlledInstallDirectory();
         }
