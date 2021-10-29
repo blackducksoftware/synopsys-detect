@@ -647,7 +647,7 @@ public class DetectProperties {
         new DetectProperty<>(new StringListProperty("detect.excluded.directories", emptyList()))
             .setInfo("Detect Excluded Directories", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp("A comma-separated list of names, name patterns, relative paths, or path patterns of directories that Detect should exclude.",
-                "Subdirectories whose name or path is resolved from the patterns in this list will not be searched when determining which detectors to run, and will be excluded from signature scan using the Scan CLI '--exclude' flag. Refer to the <i>Configuring Synopsys Detect</i> > <i>Exclusions in Detect</i> page for more details."
+                "Subdirectories whose name or path is resolved from the patterns in this list will not be searched when determining which detectors to run, and will be excluded from signature scan using the Scan CLI '--exclude' flag. Refer to the <i>Downloading and Running Synopsys Detect</i> > <i>Including and Excluding Tools, Detectors, Directories, etc.</i> page for more details."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
