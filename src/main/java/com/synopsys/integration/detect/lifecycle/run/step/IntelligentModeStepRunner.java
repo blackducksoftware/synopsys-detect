@@ -135,9 +135,9 @@ public class IntelligentModeStepRunner {
     private void publishPostResults(BdioResult bdioResult, ProjectVersionWrapper projectVersionWrapper, DetectToolFilter detectToolFilter) {
         if ((!bdioResult.getUploadTargets().isEmpty() || detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN))) {
             Optional<String> componentsLink = Optional.ofNullable(projectVersionWrapper)
-                                                  .map(ProjectVersionWrapper::getProjectVersionView)
-                                                  .flatMap(projectVersionView -> projectVersionView.getFirstLinkSafely(ProjectVersionView.COMPONENTS_LINK))
-                                                  .map(HttpUrl::string);
+                .map(ProjectVersionWrapper::getProjectVersionView)
+                .flatMap(projectVersionView -> projectVersionView.getFirstLinkSafely(ProjectVersionView.COMPONENTS_LINK))
+                .map(HttpUrl::string);
 
             if (componentsLink.isPresent()) {
                 DetectResult detectResult = new BlackDuckBomDetectResult(componentsLink.get());
@@ -148,8 +148,11 @@ public class IntelligentModeStepRunner {
 
     private void checkPolicy(ProjectVersionView projectVersionView, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
         logger.info("Checking to see if Detect should check policy for violations.");
-        if (operationFactory.createBlackDuckPostOptions().shouldPerformPolicyCheck()) {
-            operationFactory.checkPolicy(blackDuckRunData, projectVersionView);
+        if (operationFactory.createBlackDuckPostOptions().shouldPerformSeverityPolicyCheck()) {
+            operationFactory.checkPolicyBySeverity(blackDuckRunData, projectVersionView);
+        }
+        if (operationFactory.createBlackDuckPostOptions().shouldPerformNamePolicyCheck()) {
+            operationFactory.checkPolicyByName(blackDuckRunData, projectVersionView);
         }
     }
 

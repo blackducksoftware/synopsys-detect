@@ -13,6 +13,7 @@ import static java.util.Collections.singletonList;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -932,11 +933,17 @@ public class DetectProperties {
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL);
 
     public static final DetectProperty<FilterableEnumListProperty<PolicyRuleSeverityType>> DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES =
-        new DetectProperty<>(
-            new FilterableEnumListProperty<>("detect.policy.check.fail.on.severities", FilterableEnumUtils.noneList(), PolicyRuleSeverityType.class))
+        new DetectProperty<>(new FilterableEnumListProperty<>("detect.policy.check.fail.on.severities", FilterableEnumUtils.noneList(), PolicyRuleSeverityType.class))
             .setInfo("Fail on Policy Violation Severities", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp(
-                "A comma-separated list of policy violation severities that will fail Detect. If this is set to NONE, Detect will not fail due to policy violations. A value of ALL is equivalent to all of the other possible values except NONE.")
+            .setHelp("A comma-separated list of policy violation severities that will fail Detect.",
+                "If this is set to NONE, Detect will not fail due to policy violations. A value of ALL is equivalent to all of the other possible values except NONE. This property does not change the behavior of detect.policy.check.fail.on.names.")
+            .setGroups(DetectGroup.PROJECT, DetectGroup.GLOBAL, DetectGroup.PROJECT_SETTING, DetectGroup.POLICY);
+
+    public static final DetectProperty<StringListProperty> DETECT_POLICY_CHECK_FAIL_ON_NAMES =
+        new DetectProperty<>(new StringListProperty("detect.policy.check.fail.on.names", Collections.emptyList()))
+            .setInfo("Fail on Policy Names with Violations", DetectPropertyFromVersion.VERSION_7_8_0)
+            .setHelp("A comma-separated list of policy names with a non-zero number of violations that will fail Detect.",
+                "If left unset, Detect will not fail due to policy names. This property does not change the behavior of detect.policy.check.fail.on.severities.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.GLOBAL, DetectGroup.PROJECT_SETTING, DetectGroup.POLICY);
 
     public static final DetectProperty<NullableStringProperty> DETECT_PROJECT_APPLICATION_ID =

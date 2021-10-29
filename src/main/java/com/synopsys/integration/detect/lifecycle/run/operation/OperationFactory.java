@@ -26,6 +26,7 @@ import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
+import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponentResultView;
 import com.synopsys.integration.blackduck.bdio.model.dependency.ProjectDependency;
@@ -381,10 +382,21 @@ public class OperationFactory { //TODO: OperationRunner
         });
     }
 
-    public void checkPolicy(BlackDuckRunData blackDuckRunData, ProjectVersionView projectVersionView) throws DetectUserFriendlyException {
-        auditLog.namedPublic("Check for Policy", () -> {
+    public void checkPolicyBySeverity(BlackDuckRunData blackDuckRunData, ProjectVersionView projectVersionView) throws DetectUserFriendlyException {
+        auditLog.namedPublic("Check for Policy by Severity", "PolicyCheckSeverity", () -> {
             PolicyChecker policyChecker = new PolicyChecker(exitCodePublisher, blackDuckRunData.getBlackDuckServicesFactory().getBlackDuckApiClient(), blackDuckRunData.getBlackDuckServicesFactory().createProjectBomService());
-            policyChecker.checkPolicy(detectConfigurationFactory.createBlackDuckPostOptions().getSeveritiesToFailPolicyCheck(), projectVersionView);
+            BlackDuckPostOptions blackDuckPostOptions = detectConfigurationFactory.createBlackDuckPostOptions();
+            List<PolicyRuleSeverityType> severitiesToFailPolicyCheck = blackDuckPostOptions.getSeveritiesToFailPolicyCheck();
+            policyChecker.checkPolicy(severitiesToFailPolicyCheck, projectVersionView);
+        });
+    }
+
+    public void checkPolicyByName(BlackDuckRunData blackDuckRunData, ProjectVersionView projectVersionView) throws DetectUserFriendlyException {
+        auditLog.namedPublic("Check for Policy by Name", "PolicyCheckName", () -> {
+            PolicyChecker policyChecker = new PolicyChecker(exitCodePublisher, blackDuckRunData.getBlackDuckServicesFactory().getBlackDuckApiClient(), blackDuckRunData.getBlackDuckServicesFactory().createProjectBomService());
+            BlackDuckPostOptions blackDuckPostOptions = detectConfigurationFactory.createBlackDuckPostOptions();
+            List<String> policyNamesToFailPolicyCheck = blackDuckPostOptions.getPolicyNamesToFailPolicyCheck();
+            policyChecker.checkPolicyByName(policyNamesToFailPolicyCheck, projectVersionView);
         });
     }
 
