@@ -135,6 +135,7 @@
     <topicref href="packagemgrs/maven.md" format="markdown"/>
     <topicref href="packagemgrs/npm.md" format="markdown"/>
     <topicref href="packagemgrs/nuget.md" format="markdown"/>
+    <topicref href="packagemgrs/pnpm.md" format="markdown"/>
     <topicref href="packagemgrs/python.md" format="markdown"/>
     <topicref href="packagemgrs/sbt.md" format="markdown"/>
     <topicref href="packagemgrs/yarn.md" format="markdown"/>

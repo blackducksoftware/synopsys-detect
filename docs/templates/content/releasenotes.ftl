@@ -1,5 +1,10 @@
 # Release notes
 
+## Version 7.8.0
+
+### New Features
+* Added support for the pnpm package manager.
+
 ## Version 7.7.0
 
 ### New Features
@@ -9,7 +14,6 @@
 ### Resolved issues
 * (IDETECT-2808, IDETECT-2863) Resolved an issue where ${solution_name} would incorrectly resolve relative paths when processing signature scan targets.
 * (IDETECT-2859) Resolved an issue where ${solution_name} was using an outdated cookie spec when making a request, resulting in a warning message.
-
 
 ## Version 7.6.0
 
