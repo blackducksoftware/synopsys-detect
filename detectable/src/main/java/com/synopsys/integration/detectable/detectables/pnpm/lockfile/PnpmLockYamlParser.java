@@ -28,12 +28,12 @@ public class PnpmLockYamlParser {
         this.pnpmTransformer = pnpmTransformer;
     }
 
-    public CodeLocation parse(File pnpmLockYamlFile, PnpmDependencyFilter pnpmDependencyFilter, @Nullable NameVersion projectNameVersion) throws IOException, IntegrationException {
+    public CodeLocation parse(File pnpmLockYamlFile, DependencyTypeFilter dependencyTypeFilter, @Nullable NameVersion projectNameVersion) throws IOException, IntegrationException {
         Representer representer = new Representer();
         representer.getPropertyUtils().setSkipMissingProperties(true);
         Yaml yaml = new Yaml(new Constructor(PnpmLockYaml.class), representer);
         PnpmLockYaml pnpmLockYaml = yaml.load(new FileReader(pnpmLockYamlFile));
 
-        return pnpmTransformer.generateCodeLocation(pnpmLockYaml, pnpmDependencyFilter, projectNameVersion);
+        return pnpmTransformer.generateCodeLocation(pnpmLockYaml, dependencyTypeFilter, projectNameVersion);
     }
 }
