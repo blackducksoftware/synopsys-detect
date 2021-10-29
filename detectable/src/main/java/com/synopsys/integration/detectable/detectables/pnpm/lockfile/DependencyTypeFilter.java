@@ -8,26 +8,23 @@
 package com.synopsys.integration.detectable.detectables.pnpm.lockfile;
 
 import java.util.List;
+import java.util.function.Consumer;
+
+import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.detectable.detectable.enums.DependencyType;
 
-public class PnpmDependencyFilter {
-    private List<DependencyType> dependencyTypes;
+public class DependencyTypeFilter {
+    private final List<DependencyType> dependencyTypes;
 
-    public PnpmDependencyFilter(List<DependencyType> dependencyTypes) {
+    public DependencyTypeFilter(List<DependencyType> dependencyTypes) {
         this.dependencyTypes = dependencyTypes;
     }
 
-    public boolean shouldReportDependencies() {
-        return dependencyTypes.contains(DependencyType.APP);
-    }
-
-    public boolean shouldReportDevDependencies() {
-        return dependencyTypes.contains(DependencyType.DEV);
-    }
-
-    public boolean shouldReportOptionalDependencies() {
-        return dependencyTypes.contains(DependencyType.OPTIONAL);
+    public <T> void ifReportingType(DependencyType dependencyType, @Nullable T dependency, Consumer<T> reporter) {
+        if (dependency != null && shouldReportDependencyType(dependencyType)) {
+            reporter.accept(dependency);
+        }
     }
 
     public boolean shouldReportDependencyType(DependencyType dependencyType) {

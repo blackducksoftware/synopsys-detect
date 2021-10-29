@@ -31,17 +31,17 @@ public class PnpmLockDetectable extends Detectable {
 
     private final FileFinder fileFinder;
     private final PnpmLockExtractor pnpmExtractor;
-    private final PnpmDependencyFilter pnpmDependencyFilter;
+    private final DependencyTypeFilter dependencyTypeFilter;
 
     private File pnpmLockYaml;
     private File packageJson;
 
     public PnpmLockDetectable(DetectableEnvironment environment, FileFinder fileFinder, PnpmLockExtractor pnpmExtractor,
-        PnpmDependencyFilter pnpmDependencyFilter) {
+        DependencyTypeFilter dependencyTypeFilter) {
         super(environment);
         this.fileFinder = fileFinder;
         this.pnpmExtractor = pnpmExtractor;
-        this.pnpmDependencyFilter = pnpmDependencyFilter;
+        this.dependencyTypeFilter = dependencyTypeFilter;
     }
 
     @Override
@@ -59,6 +59,6 @@ public class PnpmLockDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
-        return pnpmExtractor.extract(pnpmLockYaml, packageJson, pnpmDependencyFilter);
+        return pnpmExtractor.extract(pnpmLockYaml, packageJson, dependencyTypeFilter);
     }
 }
