@@ -29,20 +29,17 @@ echo "basename=\"\${f%.*}\"" >> ${convertOneScript}
 echo "targetfile=../../markdown/\${basename}.md" >> ${convertOneScript}
 echo "targetdir=\$(dirname \$targetfile)" >> ${convertOneScript}
 echo "mkdir -p \${targetdir}" >> ${convertOneScript}
-echo "echo \">>> \$f -> \${targetfile}\"" >> ${convertOneScript}
-echo "sed 's/\\\${\\([a-z_]*\\)}/[\\1]/g'  \${basename}.ftl > ../../markdown/\${basename}.md" >> ${convertOneScript}
+echo "echo \"Converting \$f -> \${targetfile}\"" >> ${convertOneScript}
+echo "sed 's/\\\${\\([a-z_]*\\)}/[\\1]/g'  \${basename}.ftl > \${targetfile}" >> ${convertOneScript}
 
-echo "echo \"\${targetfile} lines to check:\" >> \${2}" >> ${convertOneScript}
-echo "grep '\[[^]]*\[' ../../markdown/\${basename}.md >> \${2}" >> ${convertOneScript}
+echo "echo \"\${targetfile} links/references to check/fix:\" >> \${2}" >> ${convertOneScript}
+echo "grep '\[[^]]*\[' \${targetfile} >> \${2}" >> ${convertOneScript}
 
 chmod +x ${convertOneScript}
-
-#echo "SCRIPT:"
-#cat ${convertOneScript}
-#echo "==="
 
 cd $templatesDir
 pwd
 find . -name "*.ftl" -exec $convertOneScript {} ${concernsFile} \;
 
+echo ""
 cat $concernsFile
