@@ -32,8 +32,18 @@ echo "mkdir -p \${targetdir}" >> ${convertOneScript}
 echo "echo \"Converting \$f -> \${targetfile}\"" >> ${convertOneScript}
 echo "sed 's/\\\${\\([a-z_]*\\)}/[\\1]/g'  \${basename}.ftl > \${targetfile}" >> ${convertOneScript}
 
-echo "echo \"\${targetfile} links/references to check/fix:\" >> \${2}" >> ${convertOneScript}
+echo "echo \"------------------------\" >> \${2}" >> ${convertOneScript}
+echo "echo \"\${targetfile} warnings, including links/references to check/fix:\" >> \${2}" >> ${convertOneScript}
 echo "grep '\[[^]]*\[' \${targetfile} >> \${2}" >> ${convertOneScript}
+
+echo "sectioncount=\$(grep '^##' \${targetfile} | wc -l)" >> ${convertOneScript}
+
+echo "if (( \$sectioncount > 1 )); then"  >> ${convertOneScript}
+echo "    echo 'Heading 2 count is greater than one' >> \${2}" >> ${convertOneScript}
+echo "fi" >> ${convertOneScript}
+echo "echo \"       \" >> \${2}" >> ${convertOneScript}
+
+#echo "echo SECTION COUNT: \${sectioncount}" >> ${convertOneScript}
 
 chmod +x ${convertOneScript}
 
@@ -43,3 +53,5 @@ find . -name "*.ftl" -exec $convertOneScript {} ${concernsFile} \;
 
 echo ""
 cat $concernsFile
+echo ""
+echo "These warnings are in $concernsFile"
