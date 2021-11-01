@@ -8,9 +8,12 @@
 package com.synopsys.integration.detect.tool.detector.inspectors.nuget;
 
 import java.io.File;
+import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.synopsys.integration.detect.tool.cache.CachedToolInstaller;
+import com.synopsys.integration.detect.tool.cache.InstalledTool;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.function.ThrowingBiFunction;
@@ -20,11 +23,13 @@ public class OnlineNugetInspectorLocator implements NugetInspectorLocator {
     private final DirectoryManager directoryManager;
     @Nullable
     private final String overrideVersion;
+    private final CachedToolInstaller cachedToolInstaller;
 
-    public OnlineNugetInspectorLocator(final NugetInspectorInstaller nugetInspectorInstaller, final DirectoryManager directoryManager, @Nullable final String overrideVersion) {
+    public OnlineNugetInspectorLocator(NugetInspectorInstaller nugetInspectorInstaller, DirectoryManager directoryManager, @Nullable String overrideVersion, CachedToolInstaller cachedToolInstaller) {
         this.nugetInspectorInstaller = nugetInspectorInstaller;
         this.directoryManager = directoryManager;
         this.overrideVersion = overrideVersion;
+        this.cachedToolInstaller = cachedToolInstaller;
     }
 
     @Override
@@ -47,12 +52,21 @@ public class OnlineNugetInspectorLocator implements NugetInspectorLocator {
         return locateInspector(nugetInspectorInstaller::installExeInspector);
     }
 
-    private File locateInspector(final ThrowingBiFunction<File, String, File, DetectableException> inspectorInstaller) throws DetectableException {
+    private File locateInspector(ThrowingBiFunction<File, String, File, DetectableException> inspectorInstaller) throws DetectableException {
+        File inspector;
+        Optional<File> cachedInstall = cachedToolInstaller.installCachedTool(InstalledTool.NUGET_INSPECTOR);
         try {
-            final File nugetDirectory = directoryManager.getPermanentDirectory("nuget");
-            return inspectorInstaller.apply(nugetDirectory, overrideVersion);
-        } catch (final Exception e) {
+            File nugetDirectory = directoryManager.getPermanentDirectory("nuget");
+            inspector = inspectorInstaller.apply(nugetDirectory, overrideVersion);
+        } catch (Exception e) {
+            if (cachedInstall.isPresent()) {
+                return cachedInstall.get();
+            }
             throw new DetectableException("Unable to install the nuget inspector from Artifactory.", e);
         }
+        if (inspector == null && cachedInstall.isPresent()) {
+            return cachedInstall.get();
+        }
+        return inspector;
     }
 }

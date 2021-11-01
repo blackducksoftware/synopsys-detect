@@ -169,7 +169,7 @@ public class Application implements ApplicationRunner {
         Optional<ProductRunData> optionalProductRunData = detectBootResult.getProductRunData();
         if (detectBootResult.getBootType() == DetectBootResult.BootType.RUN && optionalProductRunData.isPresent() && optionalRunContext.isPresent()) {
             logger.debug("Detect will attempt to run.");
-            DetectRun detectRun = new DetectRun(exitCodeManager);
+            DetectRun detectRun = new DetectRun(exitCodeManager, eventSystem);
             detectRun.run(optionalRunContext.get());
 
         } else {

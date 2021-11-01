@@ -14,17 +14,22 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.detect.tool.cache.InstalledTool;
+import com.synopsys.integration.detect.tool.cache.InstalledToolData;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryZipInstaller;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
+import com.synopsys.integration.detect.workflow.event.Event;
+import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 
 public class NugetInspectorInstaller {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ArtifactoryZipInstaller artifactoryZipInstaller;
-    // TODO- EventSystem
+    private final EventSystem eventSystem;
 
-    public NugetInspectorInstaller(ArtifactoryZipInstaller artifactoryZipInstaller) {
+    public NugetInspectorInstaller(ArtifactoryZipInstaller artifactoryZipInstaller, EventSystem eventSystem) {
         this.artifactoryZipInstaller = artifactoryZipInstaller;
+        this.eventSystem = eventSystem;
     }
 
     public File installDotNet5(File destination, @Nullable String overrideVersion) throws DetectableException {
@@ -49,7 +54,9 @@ public class NugetInspectorInstaller {
 
     private File installInspector(File destination, @Nullable String overrideVersion, String inspectorRepo, String inspectorProperty, String inspectorVersionOverride) throws DetectableException {
         try {
-            return artifactoryZipInstaller.installZipFromSource(destination, ".nupkg", ArtifactoryConstants.ARTIFACTORY_URL, inspectorRepo, inspectorProperty, StringUtils.defaultString(overrideVersion), inspectorVersionOverride);
+            File inspector = artifactoryZipInstaller.installZipFromSource(destination, ".nupkg", ArtifactoryConstants.ARTIFACTORY_URL, inspectorRepo, inspectorProperty, StringUtils.defaultString(overrideVersion), inspectorVersionOverride);
+            eventSystem.publishEvent(Event.InstalledTool, new InstalledToolData(InstalledTool.NUGET_INSPECTOR, inspector.getAbsolutePath()));
+            return inspector;
         } catch (Exception e) {
             throw new DetectableException("Unable to install the nuget inspector from Artifactory.", e);
         }

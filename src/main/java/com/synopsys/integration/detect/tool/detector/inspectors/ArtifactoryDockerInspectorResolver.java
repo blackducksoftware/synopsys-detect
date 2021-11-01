@@ -19,11 +19,13 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.tool.cache.CachedToolInstaller;
+import com.synopsys.integration.detect.tool.cache.InstalledTool;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectableOptions;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorInfo;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
@@ -42,16 +44,18 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
     private final FileFinder fileFinder;
     private final DockerInspectorInstaller dockerInspectorInstaller;
     private final DockerDetectableOptions dockerDetectableOptions;
+    private final CachedToolInstaller cachedToolInstaller;
 
     private DockerInspectorInfo resolvedInfo;
 
     public ArtifactoryDockerInspectorResolver(DirectoryManager directoryManager, AirGapInspectorPaths airGapInspectorPaths, FileFinder fileFinder, DockerInspectorInstaller dockerInspectorInstaller,
-        DockerDetectableOptions dockerDetectableOptions) {
+        DockerDetectableOptions dockerDetectableOptions, CachedToolInstaller cachedToolInstaller) {
         this.directoryManager = directoryManager;
         this.airGapInspectorPaths = airGapInspectorPaths;
         this.fileFinder = fileFinder;
         this.dockerInspectorInstaller = dockerInspectorInstaller;
         this.dockerDetectableOptions = dockerDetectableOptions;
+        this.cachedToolInstaller = cachedToolInstaller;
     }
 
     @Override
@@ -83,7 +87,20 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
             File dockerDirectory = directoryManager.getPermanentDirectory(DOCKER_SHARED_DIRECTORY_NAME);
             // TODO: Handle null better.
             String dockerVersion = dockerDetectableOptions.getDockerInspectorVersion().orElse("");
-            return new DockerInspectorInfo(dockerInspectorInstaller.installJar(dockerDirectory, Optional.of(dockerVersion)));
+
+            File inspector = null;
+            Optional<File> cachedInstall = cachedToolInstaller.installCachedTool(InstalledTool.DOCKER_INSPECTOR);
+            try {
+                inspector = dockerInspectorInstaller.installJar(dockerDirectory, Optional.of(dockerVersion));
+            } catch (Exception e) {
+                if (!cachedInstall.isPresent()) {
+                    throw e;
+                }
+            }
+            if (inspector == null && cachedInstall.isPresent()) {
+                return new DockerInspectorInfo(cachedInstall.get());
+            }
+            return new DockerInspectorInfo(inspector);
         }
     }
 
@@ -94,11 +111,11 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
     private List<File> getAirGapInspectorImageTarfiles() {
         List<File> airGapInspectorImageTarfiles;
         airGapInspectorImageTarfiles = new ArrayList<>();
-        final String dockerInspectorAirGapPath = airGapInspectorPaths.getDockerInspectorAirGapPath()
-                                                     .map(Path::toString)
-                                                     .orElse(null);
-        for (final String inspectorName : inspectorNames) {
-            final File osImage = new File(dockerInspectorAirGapPath, IMAGE_INSPECTOR_FAMILY + "-" + inspectorName + ".tar");
+        String dockerInspectorAirGapPath = airGapInspectorPaths.getDockerInspectorAirGapPath()
+                                               .map(Path::toString)
+                                               .orElse(null);
+        for (String inspectorName : inspectorNames) {
+            File osImage = new File(dockerInspectorAirGapPath, IMAGE_INSPECTOR_FAMILY + "-" + inspectorName + ".tar");
             airGapInspectorImageTarfiles.add(osImage);
         }
         return airGapInspectorImageTarfiles;

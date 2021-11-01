@@ -137,7 +137,8 @@ public class DetectBoot {
         if (detectArgumentState.isGenerateAirGapZip()) {
             try {
                 AirGapType airGapType = new AirGapTypeDecider().decide(detectArgumentState);
-                AirGapCreator airGapCreator = detectBootFactory.createAirGapCreator(detectConfigurationFactory.createConnectionDetails(), detectConfigurationFactory.createDetectExecutableOptions(), freemarkerConfiguration);
+                AirGapCreator airGapCreator = detectBootFactory.createAirGapCreator(detectConfigurationFactory.createConnectionDetails(), detectConfigurationFactory.createDetectExecutableOptions(), freemarkerConfiguration,
+                    detectConfigurationFactory.createCachedToolInstaller(directoryManager.getSourceDirectory().toPath()));
                 String gradleInspectorVersion = detectConfiguration.getValueOrEmpty(DetectProperties.DETECT_GRADLE_INSPECTOR_VERSION.getProperty())
                                                     .orElse(null);
 

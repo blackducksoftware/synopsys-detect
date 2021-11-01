@@ -9,6 +9,7 @@ package com.synopsys.integration.detect.tool.detector.inspectors.projectinspecto
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -16,8 +17,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.configuration.DetectInfo;
+import com.synopsys.integration.detect.tool.cache.CachedToolInstaller;
+import com.synopsys.integration.detect.tool.cache.InstalledTool;
+import com.synopsys.integration.detect.tool.cache.InstalledToolData;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryZipInstaller;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
+import com.synopsys.integration.detect.workflow.event.Event;
+import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.OperatingSystemType;
@@ -27,12 +33,16 @@ public class ArtifactoryProjectInspectorInstaller {
     private final DetectInfo detectInfo;
     private final ArtifactoryZipInstaller artifactoryZipInstaller;
     private final ProjectInspectorExecutableLocator projectInspectorExecutableLocator;
+    private final EventSystem eventSystem;
+    private final CachedToolInstaller cachedToolInstaller;
 
     public ArtifactoryProjectInspectorInstaller(DetectInfo detectInfo,
-        ArtifactoryZipInstaller artifactoryZipInstaller, ProjectInspectorExecutableLocator projectInspectorExecutableLocator) {
+        ArtifactoryZipInstaller artifactoryZipInstaller, ProjectInspectorExecutableLocator projectInspectorExecutableLocator, EventSystem eventSystem, CachedToolInstaller cachedToolInstaller) {
         this.detectInfo = detectInfo;
         this.artifactoryZipInstaller = artifactoryZipInstaller;
         this.projectInspectorExecutableLocator = projectInspectorExecutableLocator;
+        this.eventSystem = eventSystem;
+        this.cachedToolInstaller = cachedToolInstaller;
     }
 
     @Nullable
@@ -55,9 +65,17 @@ public class ArtifactoryProjectInspectorInstaller {
     @NotNull //Returns location of extracted zip or throws
     public File downloadZip(String property, File installDirectory) throws DetectableException {
         try {
-            return artifactoryZipInstaller.installZipFromSource(installDirectory, ".zip", ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.PROJECT_INSPECTOR_REPO, property);
+            File zip = artifactoryZipInstaller.installZipFromSource(installDirectory, ".zip", ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.PROJECT_INSPECTOR_REPO, property);
+            eventSystem.publishEvent(Event.InstalledTool, new InstalledToolData(InstalledTool.PROJECT_INSPECTOR, zip.getAbsolutePath()));
+            return zip;
         } catch (IntegrationException | IOException e) {
-            throw new DetectableException("Unable to install the project inspector from Artifactory.", e);
+            // remote install has failed
+            Optional<File> cachedInstall = cachedToolInstaller.installCachedTool(InstalledTool.PROJECT_INSPECTOR);
+            if (cachedInstall.isPresent()) {
+                return cachedInstall.get();
+            } else {
+                throw new DetectableException("Unable to install the project inspector from Artifactory.", e);
+            }
         }
     }
 

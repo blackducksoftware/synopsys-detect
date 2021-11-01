@@ -40,6 +40,7 @@ import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.types.path.SimplePathResolver;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
+import com.synopsys.integration.detect.tool.cache.CachedToolInstaller;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.DetectRunId;
 import com.synopsys.integration.detect.workflow.blackduck.DetectFontLoader;
@@ -61,7 +62,7 @@ public class FontLoaderTestIT {
         Gson gson = new Gson();
         DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(propertyConfiguration, new SimplePathResolver(), gson);
         ConnectionFactory connectionFactory = new ConnectionFactory(detectConfigurationFactory.createConnectionDetails());
-        ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
+        ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson, new CachedToolInstaller(null, gson));
         DetectFontInstaller installer = new DetectFontInstaller(artifactResolver);
         DirectoryOptions directoryOptions = new DirectoryOptions(null, null, null, null, fontDirectory.toPath(), null);
         DirectoryManager directoryManager = new DirectoryManager(directoryOptions, DetectRunId.createDefault());

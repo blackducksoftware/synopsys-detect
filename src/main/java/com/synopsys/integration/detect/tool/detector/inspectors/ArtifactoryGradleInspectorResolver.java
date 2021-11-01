@@ -13,6 +13,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.detect.tool.cache.CachedToolInstaller;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -32,17 +33,19 @@ public class ArtifactoryGradleInspectorResolver implements GradleInspectorResolv
     private final GradleInspectorScriptOptions gradleInspectorScriptOptions;
     private final AirGapInspectorPaths airGapInspectorPaths;
     private final DirectoryManager directoryManager;
+    private final CachedToolInstaller cachedToolInstaller;
 
     private File generatedGradleScriptPath = null;
     private boolean hasResolvedInspector = false;
 
     public ArtifactoryGradleInspectorResolver(Configuration configuration, GradleInspectorScriptOptions gradleInspectorScriptOptions,
         AirGapInspectorPaths airGapInspectorPaths,
-        DirectoryManager directoryManager) {
+        DirectoryManager directoryManager, CachedToolInstaller cachedToolInstaller) {
         this.configuration = configuration;
         this.gradleInspectorScriptOptions = gradleInspectorScriptOptions;
         this.airGapInspectorPaths = airGapInspectorPaths;
         this.directoryManager = directoryManager;
+        this.cachedToolInstaller = cachedToolInstaller;
     }
 
     @Override
