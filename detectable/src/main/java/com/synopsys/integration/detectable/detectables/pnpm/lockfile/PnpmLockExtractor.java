@@ -10,6 +10,7 @@ package com.synopsys.integration.detectable.detectables.pnpm.lockfile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
@@ -17,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectable.enums.DependencyType;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.util.NameVersion;
@@ -30,13 +32,13 @@ public class PnpmLockExtractor {
         this.pnpmLockYamlParser = pnpmLockYamlParser;
     }
 
-    public Extraction extract(File yarnLockYamlFile, @Nullable File packageJsonFile, DependencyTypeFilter dependencyTypeFilter) {
+    public Extraction extract(File yarnLockYamlFile, @Nullable File packageJsonFile, List<DependencyType> dependencyTypes) {
         try {
             Optional<NameVersion> nameVersion = parseNameVersionFromPackageJson(packageJsonFile);
-            CodeLocation codeLocation = pnpmLockYamlParser.parse(yarnLockYamlFile, dependencyTypeFilter, nameVersion.orElse(null));
+            CodeLocation codeLocation = pnpmLockYamlParser.parse(yarnLockYamlFile, dependencyTypes, nameVersion.orElse(null));
             return new Extraction.Builder().success(codeLocation)
-                .nameVersionIfPresent(nameVersion)
-                .build();
+                       .nameVersionIfPresent(nameVersion)
+                       .build();
         } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();
         }

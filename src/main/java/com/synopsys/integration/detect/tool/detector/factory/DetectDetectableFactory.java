@@ -233,7 +233,7 @@ public class DetectDetectableFactory {
     }
 
     public PnpmLockDetectable createPnpmLockDetectable(DetectableEnvironment environment) {
-        return detectableFactory.createPnpmLockDetectable(environment, detectableOptionFactory.createPnpmDependencyFilter());
+        return detectableFactory.createPnpmLockDetectable(environment, detectableOptionFactory.createPnpmDependencyTypes());
     }
 
     public PodlockDetectable createPodLockDetectable(DetectableEnvironment environment) {

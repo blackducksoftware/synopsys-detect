@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.enums.DependencyType;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.DependencyTypeFilter;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockExtractor;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockYamlParser;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmYamlTransformer;
@@ -18,6 +17,6 @@ public class PnpmLockExtractorTest {
 
     @Test
     public void testNoFailureOnNullPackageJson() {
-        extractor.extract(new File("pnpm-lock.yaml"), null, new DependencyTypeFilter(Arrays.asList(DependencyType.OPTIONAL, DependencyType.DEV)));
+        extractor.extract(new File("pnpm-lock.yaml"), null, Arrays.asList(DependencyType.OPTIONAL, DependencyType.DEV));
     }
 }

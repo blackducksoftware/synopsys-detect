@@ -35,20 +35,20 @@ public class PnpmYamlTransformer {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public CodeLocation generateCodeLocation(PnpmLockYaml pnpmLockYaml, DependencyTypeFilter dependencyTypeFilter, @Nullable NameVersion projectNameVersion) throws IntegrationException {
-        List<String> rootPackageIds = extractRootPackageIds(pnpmLockYaml, dependencyTypeFilter);
+    public CodeLocation generateCodeLocation(PnpmLockYaml pnpmLockYaml, List<DependencyType> dependencyTypes, @Nullable NameVersion projectNameVersion) throws IntegrationException {
+        List<String> rootPackageIds = extractRootPackageIds(pnpmLockYaml, dependencyTypes);
         if (rootPackageIds.isEmpty()) {
             throw new IntegrationException("Could not parse any direct dependencies when parsing the pnpm-lock.yaml file.");
         }
 
         MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
 
-        buildGraph(dependencyGraph, rootPackageIds, pnpmLockYaml.packages, dependencyTypeFilter);
+        buildGraph(dependencyGraph, rootPackageIds, pnpmLockYaml.packages, dependencyTypes);
 
         return createCodeLocation(dependencyGraph, projectNameVersion);
     }
 
-    private void buildGraph(MutableDependencyGraph graphBuilder, List<String> rootPackageIds, Map<String, @Nullable PnpmPackage> packageMap, DependencyTypeFilter dependencyTypeFilter) throws IntegrationException {
+    private void buildGraph(MutableDependencyGraph graphBuilder, List<String> rootPackageIds, Map<String, @Nullable PnpmPackage> packageMap, List<DependencyType> dependencyTypes) throws IntegrationException {
         if (packageMap == null) {
             throw new IntegrationException("Could not parse 'packages' section of the pnpm-lock.yaml file.");
         }
@@ -59,25 +59,31 @@ public class PnpmYamlTransformer {
             }
             PnpmPackage pnpmPackage = packageEntry.getValue();
 
-            dependencyTypeFilter.ifReportingType(pnpmPackage.getDependencyType(), pnpmPackage.dependencies, dependencies -> {
-                for (Map.Entry<String, String> dependency : dependencies.entrySet()) {
+            if (dependencyTypes.contains(pnpmPackage.getDependencyType())) {
+                for (Map.Entry<String, String> dependency : pnpmPackage.getDependencies().entrySet()) {
                     String dependencyPackageId = convertRawEntryToPackageId(dependency);
                     Dependency child = buildDependencyFromPackageId(dependencyPackageId);
                     graphBuilder.addChildWithParent(child, buildDependencyFromPackageId(packageId));
                 }
-            });
+            }
         }
     }
 
-    private List<String> extractRootPackageIds(PnpmLockYaml pnpmLockYaml, DependencyTypeFilter dependencyTypeFilter) {
+    private List<String> extractRootPackageIds(PnpmLockYaml pnpmLockYaml, List<DependencyType> dependencyTypes) {
         Map<String, String> rawPackageInfo = new HashMap<>();
-        dependencyTypeFilter.ifReportingType(DependencyType.APP, pnpmLockYaml.dependencies, rawPackageInfo::putAll);
-        dependencyTypeFilter.ifReportingType(DependencyType.DEV, pnpmLockYaml.devDependencies, rawPackageInfo::putAll);
-        dependencyTypeFilter.ifReportingType(DependencyType.OPTIONAL, pnpmLockYaml.optionalDependencies, rawPackageInfo::putAll);
+        if (dependencyTypes.contains(DependencyType.APP) && pnpmLockYaml.dependencies != null) {
+            rawPackageInfo.putAll(pnpmLockYaml.dependencies);
+        }
+        if (dependencyTypes.contains(DependencyType.DEV) && pnpmLockYaml.devDependencies != null) {
+            rawPackageInfo.putAll(pnpmLockYaml.devDependencies);
+        }
+        if (dependencyTypes.contains(DependencyType.OPTIONAL) && pnpmLockYaml.optionalDependencies != null) {
+            rawPackageInfo.putAll(pnpmLockYaml.optionalDependencies);
+        }
 
         return rawPackageInfo.entrySet().stream()
-            .map(this::convertRawEntryToPackageId)
-            .collect(Collectors.toList());
+                   .map(this::convertRawEntryToPackageId)
+                   .collect(Collectors.toList());
     }
 
     private String convertRawEntryToPackageId(Map.Entry<String, String> entry) {

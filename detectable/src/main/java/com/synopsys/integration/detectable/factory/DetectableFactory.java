@@ -7,6 +7,8 @@
  */
 package com.synopsys.integration.detectable.factory;
 
+import java.util.List;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -19,6 +21,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.common.util.parse.CommandParser;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.enums.DependencyType;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BashResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BazelResolver;
@@ -209,7 +212,6 @@ import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryDetectab
 import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryExtractor;
 import com.synopsys.integration.detectable.detectables.pip.poetry.parser.PoetryLockParser;
 import com.synopsys.integration.detectable.detectables.pip.poetry.parser.ToolPoetrySectionParser;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.DependencyTypeFilter;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockDetectable;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockExtractor;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockYamlParser;
@@ -438,8 +440,8 @@ public class DetectableFactory {
         return new PipInspectorDetectable(environment, fileFinder, pythonResolver, pipResolver, pipInspectorResolver, pipInspectorExtractor(), pipInspectorDetectableOptions);
     }
 
-    public PnpmLockDetectable createPnpmLockDetectable(DetectableEnvironment environment, DependencyTypeFilter dependencyTypeFilter) {
-        return new PnpmLockDetectable(environment, fileFinder, pnpmLockExtractor(), dependencyTypeFilter);
+    public PnpmLockDetectable createPnpmLockDetectable(DetectableEnvironment environment, List<DependencyType> dependencyTypes) {
+        return new PnpmLockDetectable(environment, fileFinder, pnpmLockExtractor(), dependencyTypes);
     }
 
     public PodlockDetectable createPodLockDetectable(DetectableEnvironment environment) {

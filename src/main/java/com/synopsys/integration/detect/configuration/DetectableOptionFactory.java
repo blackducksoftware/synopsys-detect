@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.base.NullableProperty;
 import com.synopsys.integration.configuration.property.base.ValuedProperty;
-import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumList;
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetLocatorOptions;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
@@ -49,7 +48,6 @@ import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDet
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pip.PipInspectorDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pip.PipenvDetectableOptions;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.DependencyTypeFilter;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorOptions;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectableOptions;
 import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheOptions;
@@ -222,14 +220,13 @@ public class DetectableOptionFactory {
     public PipInspectorDetectableOptions createPipInspectorDetectableOptions() {
         String pipProjectName = getNullableValue(DetectProperties.DETECT_PIP_PROJECT_NAME);
         List<Path> requirementsFilePath = getValue(DetectProperties.DETECT_PIP_REQUIREMENTS_PATH).stream()
-            .map(it -> it.resolvePath(pathResolver))
-            .collect(Collectors.toList());
+                                              .map(it -> it.resolvePath(pathResolver))
+                                              .collect(Collectors.toList());
         return new PipInspectorDetectableOptions(pipProjectName, requirementsFilePath);
     }
 
-    public DependencyTypeFilter createPnpmDependencyFilter() {
-        FilterableEnumList<DependencyType> dependencyTypes = getValue(DetectProperties.DETECT_PNPM_DEPENDENCY_TYPES);
-        return new DependencyTypeFilter(dependencyTypes.representedValues());
+    public List<DependencyType> createPnpmDependencyTypes() {
+        return getValue(DetectProperties.DETECT_PNPM_DEPENDENCY_TYPES).representedValues();
     }
 
     public ProjectInspectorOptions createProjectInspectorOptions() {

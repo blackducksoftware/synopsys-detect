@@ -7,13 +7,19 @@
  */
 package com.synopsys.integration.detectable.detectables.pnpm.lockfile.model;
 
+import java.util.HashMap;
 import java.util.Map;
+
+import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.detectable.detectable.enums.DependencyType;
 
 public class PnpmPackage {
+    @Nullable
     public Boolean dev;
+    @Nullable
     public Boolean optional;
+    @Nullable
     public Map<String, String> dependencies;
 
     private boolean isDev() {
@@ -22,6 +28,13 @@ public class PnpmPackage {
 
     private boolean isOptional() {
         return optional != null ? optional : false;
+    }
+
+    public Map<String, String> getDependencies() {
+        if (dependencies != null && !dependencies.isEmpty()) {
+            return dependencies;
+        }
+        return new HashMap<>();
     }
 
     public DependencyType getDependencyType() {
@@ -33,5 +46,5 @@ public class PnpmPackage {
         }
         return DependencyType.APP;
     }
-    
+
 }
