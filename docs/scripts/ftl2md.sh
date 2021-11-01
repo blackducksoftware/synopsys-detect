@@ -39,7 +39,7 @@ echo "grep '\[[^]]*\[' \${targetfile} >> \${2}" >> ${convertOneScript}
 echo "sectioncount=\$(grep '^##' \${targetfile} | wc -l)" >> ${convertOneScript}
 
 echo "if (( \$sectioncount > 1 )); then"  >> ${convertOneScript}
-echo "    echo 'Heading 2 count is greater than one' >> \${2}" >> ${convertOneScript}
+echo "    echo \"Heading 2 count (\${sectioncount}) is greater than one\" >> \${2}" >> ${convertOneScript}
 echo "fi" >> ${convertOneScript}
 echo "echo \"       \" >> \${2}" >> ${convertOneScript}
 
