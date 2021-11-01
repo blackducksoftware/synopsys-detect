@@ -21,12 +21,16 @@ echo "#!/bin/bash" > ${convertOneScript}
 echo "# Arg: path of .ftl file relative to docs/templates/content" >> ${convertOneScript}
 echo "f=\$1" >> ${convertOneScript}
 echo "basename=\"\${f%.*}\"" >> ${convertOneScript}
-echo "echo \">>> \$f -> ../../markdown/\${basename}.md\"" >> ${convertOneScript}
+echo "targetfile=../../markdown/\${basename}.md" >> ${convertOneScript}
+echo "targetdir=\$(dirname \$targetfile)" >> ${convertOneScript}
+echo "mkdir -p \${targetdir}" >> ${convertOneScript}
+echo "echo \">>> \$f -> \${targetfile}\"" >> ${convertOneScript}
 echo "sed 's/\\\${\\([a-z_]*\\)}/[\\1]/g'  \${basename}.ftl > ../../markdown/\${basename}.md" >> ${convertOneScript}
 echo "echo \"CONCERNS:\"" >> ${convertOneScript}
-echo "grep '\\[\\[' ../../markdown/\${basename}.md" >> ${convertOneScript}
+echo "grep '\\[.*\\[' ../../markdown/\${basename}.md" >> ${convertOneScript}
 
 chmod +x ${convertOneScript}
+
 #echo "SCRIPT:"
 #cat ${convertOneScript}
 #echo "==="
