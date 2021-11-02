@@ -33,6 +33,7 @@
     <topicref href="downloadingandrunning/runningscript.md" format="markdown"/>
     <topicref href="downloadingandrunning/runningjar.md" format="markdown"/>
     <topicref href="downloadingandrunning/choosingtargettype.md" format="markdown"/>
+    <topicref href="downloadingandrunning/runningwithblackduck.md" format="markdown"/>
     <topicref href="downloadingandrunning/downloadlocations.md" format="markdown"/>
     <topicref href="downloadingandrunning/airgap.md" format="markdown"/>
     <topicref href="downloadingandrunning/verification.md" format="markdown"/>
@@ -134,7 +135,17 @@
     <topicref href="packagemgrs/conan.md" format="markdown"/>
     <topicref href="packagemgrs/conda.md" format="markdown"/>
     <topicref href="packagemgrs/dart.md" format="markdown"/>
-    <topicref href="packagemgrs/docker-images.md" format="markdown"/>
+
+    <topicref href="packagemgrs/docker/intro.md" format="markdown"/>
+    <topicref href="packagemgrs/docker/formats.md" format="markdown"/>
+    <topicref href="packagemgrs/docker/workflow.md" format="markdown"/>
+    <topicref href="packagemgrs/docker/filepermissions.md" format="markdown"/>
+    <topicref href="packagemgrs/docker/properties.md" format="markdown"/>
+    <topicref href="packagemgrs/docker/scantarget.md" format="markdown"/>
+    <topicref href="packagemgrs/docker/isolatingapplication.md" format="markdown"/>
+    <topicref href="packagemgrs/docker/windowsimages.md" format="markdown"/>
+    <topicref href="packagemgrs/docker/runningonwindows.md" format="markdown"/>
+
     <topicref href="packagemgrs/golang.md" format="markdown"/>
     <topicref href="packagemgrs/gradle.md" format="markdown"/>
     <topicref href="packagemgrs/hex.md" format="markdown"/>

@@ -17,7 +17,7 @@ project directory.
 * Enable any of the supported snippet matching modes in the [Black Duck Signature Scanner](../properties/configuration/signature-scanner.md).
 * Enable the [Vulnerability Impact Analysis Tool](../properties/configuration/impact-analysis.md#vulnerability-impact-analysis-enabled) on any Java project.
 * Run [Black Duck - Binary Analysis](../properties/configuration/binary-scanner.md) on a given binary files.
-* Run the [dockerinspector_name] on a given [Docker image](../packagemgrs/docker-images.md).
+* Run the [dockerinspector_name] on a given [Docker image](../packagemgrs/docker/intro.md).
 * Generate a [report](../properties/configuration/report.md).
 * Fail on [policy violation](../properties/configuration/project.md#fail-on-policy-violation-severities-advanced).
 
