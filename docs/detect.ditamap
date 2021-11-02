@@ -14,7 +14,21 @@
   <topicref href="introduction.md" format="markdown"/>
   <topicref href="releasenotes.md" format="markdown"/>
   <topicref href="gettingstarted/overview.md" format="markdown">
-    <topicref href="gettingstarted/terms.md" format="markdown"/>
+
+    <topicref href="gettingstarted/terms/intro.md" format="markdown">
+      <topicref href="gettingstarted/terms/sca.md" format="markdown"/>
+      <topicref href="gettingstarted/terms/run.md" format="markdown"/>
+      <topicref href="gettingstarted/terms/script.md" format="markdown"/>
+      <topicref href="gettingstarted/terms/jar.md" format="markdown"/>
+      <topicref href="gettingstarted/terms/tools.md" format="markdown"/>
+      <topicref href="gettingstarted/terms/detectors.md" format="markdown"/>
+      <topicref href="gettingstarted/terms/properties.md" format="markdown"/>
+      <topicref href="gettingstarted/terms/inspectors.md" format="markdown"/>
+      <topicref href="gettingstarted/terms/scans.md" format="markdown"/>
+      <topicref href="gettingstarted/terms/bdio.md" format="markdown"/>
+      <topicref href="gettingstarted/terms/impactanalysis.md" format="markdown"/>
+    </topicref>
+
     <topicref href="gettingstarted/howitworks.md" format="markdown"/>
     <topicref href="gettingstarted/workflow.md" format="markdown"/>
     <topicref href="gettingstarted/configuring.md" format="markdown"/>
@@ -136,15 +150,16 @@
     <topicref href="packagemgrs/conda.md" format="markdown"/>
     <topicref href="packagemgrs/dart.md" format="markdown"/>
 
-    <topicref href="packagemgrs/docker/intro.md" format="markdown"/>
-    <topicref href="packagemgrs/docker/formats.md" format="markdown"/>
-    <topicref href="packagemgrs/docker/workflow.md" format="markdown"/>
-    <topicref href="packagemgrs/docker/filepermissions.md" format="markdown"/>
-    <topicref href="packagemgrs/docker/properties.md" format="markdown"/>
-    <topicref href="packagemgrs/docker/scantarget.md" format="markdown"/>
-    <topicref href="packagemgrs/docker/isolatingapplication.md" format="markdown"/>
-    <topicref href="packagemgrs/docker/windowsimages.md" format="markdown"/>
-    <topicref href="packagemgrs/docker/runningonwindows.md" format="markdown"/>
+    <topicref href="packagemgrs/docker/intro.md" format="markdown">
+      <topicref href="packagemgrs/docker/formats.md" format="markdown"/>
+      <topicref href="packagemgrs/docker/workflow.md" format="markdown"/>
+      <topicref href="packagemgrs/docker/filepermissions.md" format="markdown"/>
+      <topicref href="packagemgrs/docker/properties.md" format="markdown"/>
+      <topicref href="packagemgrs/docker/scantarget.md" format="markdown"/>
+      <topicref href="packagemgrs/docker/isolatingapplication.md" format="markdown"/>
+      <topicref href="packagemgrs/docker/windowsimages.md" format="markdown"/>
+      <topicref href="packagemgrs/docker/runningonwindows.md" format="markdown"/>
+    </topicref>
 
     <topicref href="packagemgrs/golang.md" format="markdown"/>
     <topicref href="packagemgrs/gradle.md" format="markdown"/>
