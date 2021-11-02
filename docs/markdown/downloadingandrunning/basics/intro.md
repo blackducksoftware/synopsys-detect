@@ -1,3 +1,3 @@
-# Basics
+# Planning
 
-TBD.
+This section covers several choices worth considering before running [solution_name].
