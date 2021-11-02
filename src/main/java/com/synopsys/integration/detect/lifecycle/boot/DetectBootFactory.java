@@ -92,8 +92,9 @@ public class DetectBootFactory {
     }
 
     public BootSingletons createRunDependencies(ProductRunData productRunData, PropertyConfiguration detectConfiguration, DetectableOptionFactory detectableOptionFactory, DetectConfigurationFactory detectConfigurationFactory,
-        DirectoryManager directoryManager, Configuration configuration) {
-        return new BootSingletons(productRunData, detectRunId, gson, detectInfo, fileFinder, eventSystem, createDetectorProfiler(), detectConfiguration, detectableOptionFactory, detectConfigurationFactory, directoryManager, configuration);
+        DirectoryManager directoryManager, Configuration configuration, CachedToolInstaller cachedToolInstaller) {
+        return new BootSingletons(productRunData, detectRunId, gson, detectInfo, fileFinder, eventSystem, createDetectorProfiler(), detectConfiguration, detectableOptionFactory, detectConfigurationFactory, directoryManager, configuration,
+            cachedToolInstaller);
     }
 
     public Configuration createFreemarkerConfiguration() {

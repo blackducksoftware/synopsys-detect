@@ -18,7 +18,6 @@ import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.types.path.SimplePathResolver;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
-import com.synopsys.integration.detect.tool.cache.CachedToolInstaller;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 
 @Tag("integration")
@@ -41,7 +40,7 @@ public class DetectFontInstallerTestIT {
         PropertyConfiguration propertyConfiguration = new PropertyConfiguration(Collections.emptyList());
         DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(propertyConfiguration, new SimplePathResolver(), gson);
         ConnectionFactory connectionFactory = new ConnectionFactory(detectConfigurationFactory.createConnectionDetails());
-        ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson, new CachedToolInstaller(null, gson));
+        ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
         DetectFontInstaller installer = new DetectFontInstaller(artifactResolver);
         installer.installFonts(targetDirectory);
         String[] fileList = targetDirectory.list();

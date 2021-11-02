@@ -67,9 +67,9 @@ public class DetectorFactory {
     private final ArtifactResolver artifactResolver;
     private final ArtifactoryZipInstaller artifactoryZipInstaller;
     private final EventSystem eventSystem;
-    private final CachedToolInstaller cachedToolInstaller; //TODO- how tf do I gt this here??
+    private final CachedToolInstaller cachedToolInstaller;
 
-    public DetectorFactory(BootSingletons bootSingletons, UtilitySingletons utilitySingletons, EventSystem eventSystem, CachedToolInstaller cachedToolInstaller) {
+    public DetectorFactory(BootSingletons bootSingletons, UtilitySingletons utilitySingletons, EventSystem eventSystem) {
         gson = bootSingletons.getGson();
         detectInfo = bootSingletons.getDetectInfo();
         configuration = bootSingletons.getConfiguration();
@@ -84,7 +84,7 @@ public class DetectorFactory {
         artifactResolver = utilitySingletons.getArtifactResolver();
         artifactoryZipInstaller = utilitySingletons.getArtifactoryZipInstaller();
         this.eventSystem = eventSystem;
-        this.cachedToolInstaller = cachedToolInstaller;
+        this.cachedToolInstaller = bootSingletons.getCachedToolInstaller();
     }
 
     public DetectableFactory detectableFactory() {

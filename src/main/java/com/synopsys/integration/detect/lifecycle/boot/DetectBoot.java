@@ -46,6 +46,7 @@ import com.synopsys.integration.detect.lifecycle.boot.decision.RunDecision;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBoot;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.run.singleton.BootSingletons;
+import com.synopsys.integration.detect.tool.cache.CachedToolInstaller;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.airgap.AirGapCreator;
 import com.synopsys.integration.detect.workflow.airgap.AirGapType;
@@ -125,6 +126,7 @@ public class DetectBoot {
         PathResolver pathResolver = detectBootFactory.createPathResolver();
         DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration, pathResolver, gson);
         DirectoryManager directoryManager = detectBootFactory.createDirectoryManager(detectConfigurationFactory);
+        CachedToolInstaller cachedToolInstaller = detectConfigurationFactory.createCachedToolInstaller(directoryManager.getSourceDirectory().toPath());
 
         DiagnosticSystem diagnosticSystem = null;
         DiagnosticDecision diagnosticDecision = DiagnosticDecision.decide(detectArgumentState, detectConfiguration);
@@ -182,7 +184,7 @@ public class DetectBoot {
             return Optional.of(DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem));
         }
 
-        BootSingletons bootSingletons = detectBootFactory.createRunDependencies(productRunData, detectConfiguration, detectableOptionFactory, detectConfigurationFactory, directoryManager, freemarkerConfiguration);
+        BootSingletons bootSingletons = detectBootFactory.createRunDependencies(productRunData, detectConfiguration, detectableOptionFactory, detectConfigurationFactory, directoryManager, freemarkerConfiguration, cachedToolInstaller);
         return Optional.of(DetectBootResult.run(bootSingletons, detectConfiguration, productRunData, directoryManager, diagnosticSystem));
     }
 

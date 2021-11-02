@@ -26,7 +26,6 @@ import com.synopsys.integration.detect.lifecycle.run.step.UniversalStepRunner;
 import com.synopsys.integration.detect.lifecycle.run.step.utility.StepHelper;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeManager;
 import com.synopsys.integration.detect.tool.UniversalToolsResult;
-import com.synopsys.integration.detect.tool.cache.CachedToolInstaller;
 import com.synopsys.integration.detect.tool.detector.factory.DetectorFactory;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
@@ -44,13 +43,9 @@ public class DetectRun {
     }
 
     private OperationFactory createOperationFactory(BootSingletons bootSingletons, UtilitySingletons utilitySingletons, EventSingletons eventSingletons) throws DetectUserFriendlyException {
-        DetectorFactory detectorFactory = new DetectorFactory(bootSingletons, utilitySingletons, eventSystem, bootSingletons.getDetectConfigurationFactory().createCachedToolInstaller());
+        DetectorFactory detectorFactory = new DetectorFactory(bootSingletons, utilitySingletons, eventSystem);
         DetectFontLoaderFactory detectFontLoaderFactory = new DetectFontLoaderFactory(bootSingletons, utilitySingletons);
         return new OperationFactory(detectorFactory.detectDetectableFactory(), detectFontLoaderFactory, bootSingletons, utilitySingletons, eventSingletons, exitCodeManager);
-    }
-
-    private CachedToolInstaller createCachedToolInstaller(BootSingletons bootSingletons) {
-        String sourcePath = bootSingletons.getDetectConfigurationFactory().
     }
 
     public void run(BootSingletons bootSingletons) {
