@@ -27,8 +27,11 @@ task ditasite() {
             standardOutput = stdOut
         }
 	for (String outputLine: stdOut.toString().split('\n')) {
+	    if (outputLine.matches(".*\\[DOT.*\\].*\\[ERROR\\].*"))
+		throw new Exception("dita error. To run dita by hand: cd docs/generated; dita --input detect.ditamap --format=sig-webhelp --output=../ditasite -v")
+
 	    if (outputLine.matches(".*\\[keyref\\].*\\[DOTJ047I\\].*"))
-		throw new Exception("dita found invalid key references. Square brackets around doc text must be escaped if not inside back quotes.")
+		throw new Exception("dita found invalid key references. Square brackets around doc text must be escaped if not inside back quotes. To run dita by hand: cd docs/generated; dita --input detect.ditamap --format=sig-webhelp --output=../ditasite -v")
 	}
         println "To browse the webhelp: Open docs/ditasite/index.html in a browser"
     }
