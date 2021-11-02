@@ -152,11 +152,10 @@
   <keydef keys="blackduck_release_page"><topicmeta><keywords><keyword>https://github.com/blackducksoftware/hub/releases</keyword></keywords></topicmeta></keydef>
   <keydef keys="bash_script_name"><topicmeta><keywords><keyword>detect7.sh</keyword></keywords></topicmeta></keydef>
   <keydef keys="powershell_script_name"><topicmeta><keywords><keyword>detect7.ps1</keyword></keywords></topicmeta></keydef>
-  <keydef keys="binary_repo_url_base"><topicmeta><keywords><keyword>https://sig-repo.synopsys.com</keyword></keywords></topicmeta></keydef>
-  <keydef keys="binary_repo_ui_url_base"><topicmeta><keywords><keyword>https://sig-repo.synopsys.com/ui/repos/tree/General</keyword></keywords></topicmeta></keydef>
-  <keydef keys="binary_repo_repo"><topicmeta><keywords><keyword>bds-integrations-release</keyword></keywords></topicmeta></keydef>
-  <keydef keys="binary_repo_pkg_path"><topicmeta><keywords><keyword>com/synopsys/integration</keyword></keywords></topicmeta></keydef>
-  <keydef keys="script_repo_url_base"><topicmeta><keywords><keyword>https://detect.synopsys.com</keyword></keywords></topicmeta></keydef>
+  <keydef keys="script_repo_url_bash"><topicmeta><keywords><keyword>https://detect.synopsys.com/detect7.sh</keyword></keywords></topicmeta></keydef>
+  <keydef keys="script_repo_url_powershell"><topicmeta><keywords><keyword>https://detect.synopsys.com/detect7.ps1</keyword></keywords></topicmeta></keydef>
+  <keydef keys="binary_repo_url_project">   <topicmeta><keywords><keyword>https://sig-repo.synopsys.com/bds-integration-release/com/synopsys/integration/synopsys-detect</keyword></keywords></topicmeta></keydef>
+  <keydef keys="binary_repo_ui_url_project"><topicmeta><keywords><keyword>https://sig-repo.synopsys.com/ui/repos/tree/General/bds-integration-release/com/synopsys/integration/synopsys-detect</keyword></keywords></topicmeta></keydef>
   <keydef keys="spring_boot_config_doc_url"><topicmeta><keywords><keyword>https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html</keyword></keywords></topicmeta></keydef>
   <keydef keys="blackduck_product_name"><topicmeta><keywords><keyword>Black Duck</keyword></keywords></topicmeta></keydef>
   <keydef keys="coverity_product_name"><topicmeta><keywords><keyword>Coverity</keyword></keywords></topicmeta></keydef>

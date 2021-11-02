@@ -18,7 +18,7 @@ refer to [Air Gap Mode](downloadingandrunning/airgap.md).
 For connecting to [blackduck_product_name]:
 
 * Licensed installation of the current version of [blackduck_product_name] with access credentials.
-Visit [this page]([blackduck_release_page]) to determine the current version of [blackduck_product_name].
+Visit [blackduck_release_page] to determine the current version of [blackduck_product_name].
 * The [blackduck_product_name] notifications module must be enabled.
 * A [blackduck_product_name] user with the [required roles](gettingstarted/usersandroles.md).
 * On Alpine Linux you will also need to override the Java installation used by the [blackduck_signature_scanner_name] as

@@ -45,7 +45,7 @@ This scan creates another code location.
 
 [solution_name] by default
 runs [blackduck_binary_scan_capability] on the container file system.
-Refer to [[solution_name]'s scan target](#synopsys-detects-scan-target) for more details.
+Refer to [Synopsys Detect's scan target](#synopsys-detects-scan-target) for more details.
 This also creates a code location.
 
 ## File permissions

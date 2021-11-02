@@ -8,8 +8,8 @@ value specified in parentheses are:
 * [Docker Inspector](../packagemgrs/docker-images.md) (--detect.tools=DOCKER)
 * [Bazel](../packagemgrs/bazel.md) (--detect.tools=BAZEL)
 * [Detector](detectors.md) (--detect.tools=DETECTOR)
-* [[blackduck_signature_scanner_name]](../downloadingandrunning/overview.md#running-with-black-duck) (--detect.tools=SIGNATURE_SCAN)
-* [[blackduck_binary_scan_capability]](../downloadingandrunning/overview.md#running-with-black-duck) (--detect.tools=BINARY_SCAN)
-* [[impact_analysis_name]](../downloadingandrunning/overview.md#running-with-black-duck) (--detect.tools=IMPACT_ANALYSIS)
+* [Black Duck Signature Scanner](../downloadingandrunning/overview.md#running-with-black-duck) (--detect.tools=SIGNATURE_SCAN)
+* [Black Duck - Binary Analysis](../downloadingandrunning/overview.md#running-with-black-duck) (--detect.tools=BINARY_SCAN)
+* [Vulnerability Impact Analysis Tool](../downloadingandrunning/overview.md#running-with-black-duck) (--detect.tools=IMPACT_ANALYSIS)
 
 The detector tool runs any applicable [detectors](detectors.md).

@@ -23,7 +23,7 @@ them to the commands your build runs.
 ## Common problems
 
 - See if you can reproduce the problem using the latest version of [solution_name] with the latest version of [blackduck_product_name]. If not, the problem may be either fixed, or due to incompatible [solution_name] / [blackduck_product_name] versions.
-- Remember to consider the possibility that the [blackduck_product_name] user lacks the necessary permissions (to create the project, update the BOM, receive notifications, etc.) in [blackduck_product_name]. For more information, see [[blackduck_product_name] user role requirements](../gettingstarted/usersandroles.md).
+- Remember to consider the possibility that the [blackduck_product_name] user lacks the necessary permissions (to create the project, update the BOM, receive notifications, etc.) in [blackduck_product_name]. For more information, see [Black Duck user role requirements](../gettingstarted/usersandroles.md).
 - Remember to consider the possibility that the [blackduck_product_name] server (registration key) may not have required capabilities enabled (binary upload, snippet scanning, etc.).
 
 ### Incorrect or missing components

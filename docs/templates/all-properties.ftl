@@ -27,3 +27,5 @@ This page lists all ${solution_name} properties including deprecated and advance
 </#list>
 
 </#list>
+
+Documentation version: ${program_version}

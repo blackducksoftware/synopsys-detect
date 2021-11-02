@@ -20,7 +20,7 @@ avoid the collisions mentioned above is to:
 To accomplish the first two:
 
 1. Log into [blackduck_product_name], and under Tools > Legacy Downloads, download and unzip the [blackduck_signature_scanner_name].
-1. Download the [solution_name] "no docker" air gap zip from [[division_name] [binary_repo_type] server]([binary_repo_ui_url_base]/[binary_repo_repo]/[binary_repo_pkg_path]/[project_name]) and unzip it. More details on using air gap mode can be found on the [air gap page](airgap.md).
+1. Download the [solution_name] "no docker" air gap zip from [division_name] [binary_repo_type] server, [binary_repo_ui_url_project], and unzip it. More details on using air gap mode can be found on the [air gap page](airgap.md).
 1. Run [solution_name] as shown in this example:
 
 ````

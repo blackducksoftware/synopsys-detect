@@ -145,7 +145,7 @@ See [Quoting and escaping shell script arguments](../scripts/script-escaping-spe
 
 ## Running the [solution_name] .jar
 
-Recent versions of the [solution_name] .jar file are available for download from [binary_repo_url_base]/[binary_repo_repo]/com/synopsys/integration/[project_name].
+Recent versions of the [solution_name] .jar file are available for download from [binary_repo_url_project].
 
 To run [solution_name] by invoking the .jar file:
 
@@ -156,7 +156,7 @@ java -jar {path to .jar file}
 For example:
 
 ````
-curl -O [binary_repo_url_base]/[binary_repo_repo]/com/synopsys/integration/[project_name]/5.6.2/synopsys-detect-5.6.2.jar
+curl -O [binary_repo_url_project]/5.6.2/synopsys-detect-5.6.2.jar
 java -jar synopsys-detect-5.6.2.jar
 ````
 
@@ -202,21 +202,20 @@ the following by default:
 
 * The [detector tool](../components/detectors.md), which runs the appropriate package manager-specific detector; the Maven detector
 for Maven projects, the Gradle detector for Gradle projects, and so forth.
-* The [[blackduck_signature_scanner_name]](../properties/configuration/signature-scanner.md), which performs a [blackduck_signature_scan_act] on the
+* The [Black Duck Signature Scanner](../properties/configuration/signature-scanner.md), which performs a [blackduck_signature_scan_act] on the
 project directory.
 
 [solution_name] can be configured to perform additional tasks, including the following:
 
-* Enable any of the supported snippet matching modes in the [[blackduck_signature_scanner_name]](../properties/configuration/signature-scanner.md).
-* Enable the [[impact_analysis_name]](../properties/configuration/impact-analysis.md#vulnerability-impact-analysis-enabled) on any Java project.
-* Run [[blackduck_binary_scan_capability]](../properties/configuration/binary-scanner.md) on a given binary files.
-
+* Enable any of the supported snippet matching modes in the [Black Duck Signature Scanner](../properties/configuration/signature-scanner.md).
+* Enable the [Vulnerability Impact Analysis Tool](../properties/configuration/impact-analysis.md#vulnerability-impact-analysis-enabled) on any Java project.
+* Run [Black Duck - Binary Analysis](../properties/configuration/binary-scanner.md) on a given binary files.
 * Run the [dockerinspector_name] on a given [Docker image](../packagemgrs/docker-images.md).
 * Generate a [report](../properties/configuration/report.md).
 * Fail on [policy violation](../properties/configuration/project.md#fail-on-policy-violation-severities-advanced).
 
-Refer to [[blackduck_product_name] Server properties](../properties/configuration/blackduck-server.md)
-and [[blackduck_signature_scanner_name] properties](../properties/configuration/signature-scanner.md) for details.
+Refer to [Black Duck Server properties](../properties/configuration/blackduck-server.md)
+and [Black Duck Signature Scanner properties](../properties/configuration/signature-scanner.md) for details.
 
 ### Offline mode
 

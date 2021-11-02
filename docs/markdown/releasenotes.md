@@ -82,7 +82,7 @@
 
 ### New Features
 * Added ability to specify custom fonts to be used during risk report generation. See [here](results/reports.md#risk-report-generation) for more details.
-* There now exist Docker images that can be used to run [solution_name] from within a container.  See [Running [solution_name] from within a Docker container](downloadingandrunning/runincontainer.md#running-synopsys-detect-from-within-a-docker-container) for more details.
+* There now exist Docker images that can be used to run [solution_name] from within a container.  See [Running Synopsys Detect from within a Docker container](downloadingandrunning/runincontainer.md#running-synopsys-detect-from-within-a-docker-container) for more details.
 * Added detect.go.mod.enable.verification for disabling the `go mod why` check that [solution_name] uses to filter out unused dependencies.
 * Added support for dotnet 5 when running the NuGet inspector.
 * Added a new property [detect.npm.include.peer.dependencies](properties/detectors/npm.md#include-npm-peer-dependencies) which allows the users to filter out NPM peer dependencies from their BOM.
@@ -633,4 +633,3 @@ create the directory.
 * You can no longer supply ranges for the Inspector versions.
 * Enhanced the code location naming conventions.
 
-Documentation version: [program_version]
