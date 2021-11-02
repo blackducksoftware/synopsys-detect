@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
 <map id="detect-user-guide" xml:lang="en-US">
-  <title>${solution_name}</title>
+  <title>Synopsys Detect</title>
   <topicmeta>
     <shortdesc>Synopsys Detect 7.7.0-SIGQA9</shortdesc>
     <!-- zoomin bundle name -->

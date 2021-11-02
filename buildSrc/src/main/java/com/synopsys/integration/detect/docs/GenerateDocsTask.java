@@ -47,9 +47,6 @@ import freemarker.template.TemplateException;
 
 public class GenerateDocsTask extends DefaultTask {
 
-    private static final String DITAMAP_TEMPLATE_FILENAME = "ditamap.ftl";
-    private static final String DITAMAP_OUTPUT_FILENAME = "detect.ditamap";
-
     @TaskAction
     public void generateDocs() throws IOException, TemplateException, IntegrationException {
         Project project = getProject();
@@ -68,12 +65,12 @@ public class GenerateDocsTask extends DefaultTask {
         // Metadata that Zoomin needs
         FileUtils.copyFileToDirectory(new File(docsDir, "custom.properties"), outputDir);
         FileUtils.copyFileToDirectory(new File(docsDir, "integrations-classification.xml"), outputDir);
+        FileUtils.copyFileToDirectory(new File(docsDir, "detect.ditamap"), outputDir);
 
         TemplateProvider templateProvider = new TemplateProvider(project.file("docs/templates"), project.getVersion().toString());
 
 
         FileUtils.copyDirectory(sourceMarkdownDir, outputDir);
-        createFromFreemarker(templateProvider, DITAMAP_TEMPLATE_FILENAME, new File(outputDir, DITAMAP_OUTPUT_FILENAME), new HashMap<String, String>(0));
         createMarkdownFromFreemarker(templateProvider, troubleshootingDir, "exit-codes", new ExitCodePage(helpJson.getExitCodes()));
         createMarkdownFromFreemarker(templateProvider, runningDir, "status-file", new DetectorStatusCodes(helpJson.getDetectorStatusCodes()));
         handleDetectors(templateProvider, outputDir, helpJson);
