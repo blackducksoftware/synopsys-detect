@@ -55,7 +55,14 @@
     <topicref href="downloadingandrunning/downloadlocations.md" format="markdown"/>
     <topicref href="downloadingandrunning/airgap.md" format="markdown"/>
     <topicref href="downloadingandrunning/verification.md" format="markdown"/>
-    <topicref href="downloadingandrunning/includingexcluding.md" format="markdown"/>
+
+    <topicref href="downloadingandrunning/includingexcluding/intro.md" format="markdown">
+      <topicref href="downloadingandrunning/includingexcluding/tools.md" format="markdown"/>
+      <topicref href="downloadingandrunning/includingexcluding/detectors.md" format="markdown"/>
+      <topicref href="downloadingandrunning/includingexcluding/pkgmgrs.md" format="markdown"/>
+      <topicref href="downloadingandrunning/includingexcluding/directories.md" format="markdown"/>
+    </topicref>
+
     <topicref href="downloadingandrunning/rapidscan.md" format="markdown"/>
     <topicref href="downloadingandrunning/status-file.md" format="markdown"/>
     <topicref href="downloadingandrunning/proxies.md" format="markdown"/>
