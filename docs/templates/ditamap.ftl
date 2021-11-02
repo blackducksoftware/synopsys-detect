@@ -2,6 +2,15 @@
 <!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
 <map id="detect-user-guide" xml:lang="en-US">
   <title>${solution_name}</title>
+  <topicmeta>
+    <shortdesc>Synopsys Detect 7.7.0-SIGQA9</shortdesc>
+    <!-- zoomin bundle name -->
+    <othermeta name="bundle" content="integrations-detect"/>
+  </topicmeta>
+  <!-- link to zoomin classification map -->
+  <topicref processing-role="resource-only" format="xml" type="xml"
+    href="integrations-classification.xml" outputclass="classmapdata" scope="local"/>
+
   <topicref href="introduction.md" format="markdown"/>
   <topicref href="releasenotes.md" format="markdown"/>
   <topicref href="gettingstarted/overview.md" format="markdown">

@@ -1318,7 +1318,7 @@ public class DetectProperties {
     //#region Deprecated Properties
     // username/password ==> api token
     public static final String BDIO1_DEPRECATION_MESSAGE = "This property is being removed, along with the option to generate BDIO in BDIO1 format. In the future, BDIO2 format will be the only option.";
-    public static final String AGGREGATION_MODE_DEPRECATION_MESSAGE = "This property is being removed, along with the ability to set the aggregation mode. Detect will only operate in SUBPROJECT mode to more accurately report the dependency graph.";
+    public static final String AGGREGATION_MODE_DEPRECATION_MESSAGE = "This property is being removed, along with the ability to set the aggregation mode. Detect will only operate in SUBPROJECT aggregation mode to more accurately report the dependency graph.";
 
     @Deprecated
     public static final DetectProperty<NullableStringProperty> DETECT_BOM_AGGREGATE_NAME =
@@ -1338,8 +1338,8 @@ public class DetectProperties {
                     "from the top layer of the dependency tree to preserve the correct identification of direct dependencies in the resulting Black Duck BOM. " +
                     "When this property is set to TRANSITIVE (the default), component source information is preserved by including code location nodes at the " +
                     "top of the dependency tree, but all components will appear as TRANSITIVE in the BOM. " +
-                    "SUBPROJECT mode provides both component source information and correct identification of direct and transitive dependencies by " +
-                    "encoding code location nodes as subprojects in the graph. SUBPROJECT mode must only be used with Black Duck 2021.8.0 or later, " +
+                    "SUBPROJECT aggregation mode provides both component source information and correct identification of direct and transitive dependencies by " +
+                    "encoding code location nodes as subprojects in the graph. SUBPROJECT aggregation mode must only be used with Black Duck 2021.8.0 or later, " +
                     "and has no effect (is equivalent to TRANSITIVE mode) when detect.bdio2.enabled is set to false.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced)

@@ -71,6 +71,10 @@ public class GenerateDocsTask extends DefaultTask {
         FileUtils.deleteDirectory(outputDir);
         troubleshootingDir.mkdirs();
 
+        // Metadata that Zoomin needs
+        FileUtils.copyFileToDirectory(new File(docsDir, "custom.properties"), outputDir);
+        FileUtils.copyFileToDirectory(new File(docsDir, "integrations-classification.xml"), outputDir);
+
         TemplateProvider templateProvider = new TemplateProvider(project.file("docs/templates"), project.getVersion().toString());
 
         createFromFreemarker(templateProvider, DITAMAP_TEMPLATE_FILENAME, new File(outputDir, DITAMAP_OUTPUT_FILENAME), new HashMap<String, String>(0));
