@@ -5,7 +5,7 @@
 Requirements for [solution_name]
 
 * Normally, access to the internet is required to download and run [solution_name] and components from GitHub and other locations. For running without internet access,
-refer to [Air Gap Mode](downloadingandrunning/airgap.md).
+refer to [Air Gap Mode](../downloadingandrunning/airgap.md).
 * Minimum 8GB RAM.
 * Java: OpenJDK 64-bit version 8, 11, 13, 14, or 15. If using Java 11: 11.0.5 or higher is required.
 * curl versions 7.34.0 or later.
@@ -20,9 +20,9 @@ For connecting to [blackduck_product_name]:
 * Licensed installation of the current version of [blackduck_product_name] with access credentials.
 Visit [blackduck_release_page] to determine the current version of [blackduck_product_name].
 * The [blackduck_product_name] notifications module must be enabled.
-* A [blackduck_product_name] user with the [required roles](gettingstarted/usersandroles.md).
+* A [blackduck_product_name] user with the [required roles](usersandroles.md).
 * On Alpine Linux you will also need to override the Java installation used by the [blackduck_signature_scanner_name] as
-described [here](troubleshooting/solutions.md#black-duck-signature-scanner-fails-on-alpine-linux).
+described [here](../troubleshooting/solutions.md#black-duck-signature-scanner-fails-on-alpine-linux).
 
 ## Project type-specific requirements
 

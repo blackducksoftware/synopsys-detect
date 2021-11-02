@@ -19,9 +19,9 @@
     <topicref href="gettingstarted/workflow.md" format="markdown"/>
     <topicref href="gettingstarted/configuring.md" format="markdown"/>
     <topicref href="gettingstarted/phases.md" format="markdown"/>
-    <topicref href="requirements.md" format="markdown"/>
+    <topicref href="gettingstarted/requirements.md" format="markdown"/>
     <topicref href="gettingstarted/usersandroles.md" format="markdown"/>
-    <topicref href="quickstart.md" format="markdown"/>
+    <topicref href="gettingstarted/quickstart.md" format="markdown"/>
     <topicref href="gettingstarted/gettinghelp.md" format="markdown"/>
   </topicref>
 
