@@ -387,7 +387,7 @@ public class OperationFactory { //TODO: OperationRunner
             PolicyChecker policyChecker = new PolicyChecker(exitCodePublisher, blackDuckRunData.getBlackDuckServicesFactory().getBlackDuckApiClient(), blackDuckRunData.getBlackDuckServicesFactory().createProjectBomService());
             BlackDuckPostOptions blackDuckPostOptions = detectConfigurationFactory.createBlackDuckPostOptions();
             List<PolicyRuleSeverityType> severitiesToFailPolicyCheck = blackDuckPostOptions.getSeveritiesToFailPolicyCheck();
-            policyChecker.checkPolicy(severitiesToFailPolicyCheck, projectVersionView);
+            policyChecker.checkPolicyBySeverity(severitiesToFailPolicyCheck, projectVersionView);
         });
     }
 

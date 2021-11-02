@@ -68,7 +68,7 @@ public class PolicyChecker {
         }
     }
 
-    public void checkPolicy(List<PolicyRuleSeverityType> policySeverities, ProjectVersionView projectVersionView) throws IntegrationException {
+    public void checkPolicyBySeverity(List<PolicyRuleSeverityType> policySeverities, ProjectVersionView projectVersionView) throws IntegrationException {
         Optional<PolicyStatusDescription> policyStatusDescriptionOptional = fetchPolicyStatusDescription(projectVersionView);
 
         if (policyStatusDescriptionOptional.isPresent()) {
@@ -87,14 +87,14 @@ public class PolicyChecker {
         }
     }
 
-    public Optional<PolicyStatusDescription> fetchPolicyStatusDescription(ProjectVersionView version) throws IntegrationException {
+    private Optional<PolicyStatusDescription> fetchPolicyStatusDescription(ProjectVersionView version) throws IntegrationException {
         return Bdo.of(projectBomService.getPolicyStatusForVersion(version))
             .peek(policyStatus -> logger.info(String.format("Policy Status: %s", policyStatus.getOverallStatus().name())))
             .map(PolicyStatusDescription::new)
             .toOptional();
     }
 
-    public void fetchAndLogPolicyViolations(ProjectVersionView projectVersionView) throws IntegrationException {
+    private void fetchAndLogPolicyViolations(ProjectVersionView projectVersionView) throws IntegrationException {
         logger.info("Searching BOM for components in violation of policy rules.");
 
         List<ProjectVersionComponentVersionView> bomComponents = projectBomService.getComponentsForProjectVersion(projectVersionView);
@@ -140,6 +140,7 @@ public class PolicyChecker {
             .anyMatch(severityCount -> severityCount > 0);
     }
 
+    // TODO: This won't work without using internal api media types. This should be replaced once the API is made public. - JM 11/2021
     private Optional<List<ActivePolicyRule>> fetchActivePolicyRulesForVersion(ProjectVersionView version) throws IntegrationException {
         String ACTIVE_POLICY_RULES = "active-policy-rules";
         LinkMultipleResponses<ActivePolicyRule> rulesLink = new LinkMultipleResponses<>(ACTIVE_POLICY_RULES, ActivePolicyRule.class);
