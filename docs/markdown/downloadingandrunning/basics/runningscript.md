@@ -7,7 +7,7 @@ Several aspects of script functionality can be configured, including:
 * The download location.
 * Where to find Java.
 
-Information on how to configure the scripts is in [Shell script configuration](../scripts/overview.md).
+Information on how to configure the scripts is in [Shell script configuration](../../scripts/overview.md).
 
 ## Running the script on Linux or Mac
 
@@ -25,7 +25,7 @@ Append any command line arguments to the end, separated by spaces. For example:
 bash <(curl -s -L https://detect.synopsys.com/detect7.sh) --blackduck.url=https://blackduck.mydomain.com --blackduck.api.token=myaccesstoken
 ````
 
-See [Quoting and escaping shell script arguments](../scripts/script-escaping-special-characters.md) for details about quoting and escaping arguments.
+See [Quoting and escaping shell script arguments](../../scripts/script-escaping-special-characters.md) for details about quoting and escaping arguments.
 
 ### To run a specific version of [solution_name]:
 
@@ -72,4 +72,4 @@ set DETECT_LATEST_RELEASE_VERSION=5.5.0
 powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect"
 ````
 
-See [Quoting and escaping shell script arguments](../scripts/script-escaping-special-characters.md) for details about quoting and escaping arguments.
+See [Quoting and escaping shell script arguments](../../scripts/script-escaping-special-characters.md) for details about quoting and escaping arguments.
