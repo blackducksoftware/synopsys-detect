@@ -1,6 +1,6 @@
 # Status File
 
-${solution_name} creates an output status file in the run folder with the name "status.json" which contains a summary of the detect run in a machine readable format.
+[solution_name] creates an output status file in the run folder with the name "status.json" which contains a summary of the detect run in a machine readable format.
 
 The file includes status codes, issues encountered and results produced. As additional processes consume this file, additional information will be added. The format is intended to evolve over time.
 
@@ -10,7 +10,7 @@ The file includes status codes, issues encountered and results produced. As addi
 ```
 {
 "formatVersion": The version of the status file format. Will change as new features are introduced.
-"detectVersion": The version of ${solution_name} that created the status file.
+"detectVersion": The version of [solution_name] that created the status file.
 "projectName": The project name.
 "projectVersion": The project version.
 "detectors": [ List of Detectors, see details below. ]
@@ -71,7 +71,7 @@ The file includes status codes, issues encountered and results produced. As addi
 
 ## Results
 
-A result is a URL, file path to output, or messages produced by the ${solution_name} run: a Black Duck Bill Of Materials, Risk Report, Notices Report, Air Gap zip, or Rapid Scan results.
+A result is a URL, file path to output, or messages produced by the [solution_name] run: a Black Duck Bill Of Materials, Risk Report, Notices Report, Air Gap zip, or Rapid Scan results.
 ```
 {
 "location": The path to the result.
@@ -116,6 +116,6 @@ For those detectors that support it (currently, only CLANG), a list of file path
 ## Code Locations
 ````
 {
-"codeLocationName": The name of a code location produced by this run of ${solution_name}.
+"codeLocationName": The name of a code location produced by this run of [solution_name].
 }
 ````

@@ -1,6 +1,6 @@
 # Basic Properties
 
-This page lists ${solution_name}'s basic properties; for advanced and deprecated properties, refer to [all properties](all-properties.md).
+This page lists [solution_name]'s basic properties; for advanced and deprecated properties, refer to [all properties](all-properties.md).
 
 <#list groups as group>
 

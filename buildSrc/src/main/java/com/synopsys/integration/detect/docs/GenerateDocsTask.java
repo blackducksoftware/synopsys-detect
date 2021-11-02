@@ -75,6 +75,7 @@ public class GenerateDocsTask extends DefaultTask {
         createMarkdownFromFreemarker(templateProvider, runningDir, "status-file", new DetectorStatusCodes(helpJson.getDetectorStatusCodes()));
         handleDetectors(templateProvider, outputDir, helpJson);
         handleProperties(templateProvider, outputDir, helpJson);
+        createFromFreemarker(templateProvider, "downloadlocations.ftl", new File(runningDir, "downloadlocations.md"), new HashMap<String, String>(0));
     }
 
     private void createMarkdownFromFreemarker(TemplateProvider templateProvider, File outputDir, String templateName, Object data) throws IOException, TemplateException {

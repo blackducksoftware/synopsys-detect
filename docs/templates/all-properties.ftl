@@ -2,7 +2,7 @@
 
 # Properties
 
-This page lists all ${solution_name} properties including deprecated and advanced.  For most use cases, refer to [basic properties](basic-properties.md).
+This page lists all [solution_name] properties including deprecated and advanced.  For most use cases, refer to [basic properties](basic-properties.md).
 
 <#list groups as group>
 
