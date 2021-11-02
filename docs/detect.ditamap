@@ -25,7 +25,14 @@
     <topicref href="gettingstarted/gettinghelp.md" format="markdown"/>
   </topicref>
 
-  <topicref href="downloadingandrunning/overview.md" format="markdown">
+  <topicref href="downloadingandrunning/intro.md" format="markdown">
+    <topicref href="downloadingandrunning/decidinghowtouse.md" format="markdown"/>
+    <topicref href="downloadingandrunning/positioning.md" format="markdown"/>
+    <topicref href="downloadingandrunning/choosingworkingdir.md" format="markdown"/>
+    <topicref href="downloadingandrunning/choosingrunmethod.md" format="markdown"/>
+    <topicref href="downloadingandrunning/runningscript.md" format="markdown"/>
+    <topicref href="downloadingandrunning/runningjar.md" format="markdown"/>
+    <topicref href="downloadingandrunning/choosingtargettype.md" format="markdown"/>
     <topicref href="downloadingandrunning/downloadlocations.md" format="markdown"/>
     <topicref href="downloadingandrunning/airgap.md" format="markdown"/>
     <topicref href="downloadingandrunning/verification.md" format="markdown"/>
