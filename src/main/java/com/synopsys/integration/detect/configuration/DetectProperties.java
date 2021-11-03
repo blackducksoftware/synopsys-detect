@@ -52,6 +52,7 @@ import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndividualFileMatchingMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
+import com.synopsys.integration.detectable.detectable.enums.DependencyType;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.log.LogLevel;
@@ -924,6 +925,13 @@ public class DetectProperties {
             .setInfo("Pipenv Executable", DetectPropertyFromVersion.VERSION_4_1_0)
             .setHelp("The path to the Pipenv executable.")
             .setGroups(DetectGroup.PIP, DetectGroup.GLOBAL);
+
+    public static final DetectProperty<FilterableEnumListProperty<DependencyType>> DETECT_PNPM_DEPENDENCY_TYPES =
+        new DetectProperty<>(new FilterableEnumListProperty<>("detect.pnpm.dependency.types", emptyList(), DependencyType.class))
+            .setInfo("pnpm Dependency Types", DetectPropertyFromVersion.VERSION_7_8_0)
+            .setHelp("Set this value to indicate which types of pnpm dependencies you want Detect to report.",
+                "If you want Detect to report a specific type(s) of dependencies, pass a comma-separated list of such types (ex. APP, DEV, OPTIONAL).  By default, all types will be reported.")
+            .setGroups(DetectGroup.PNPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<NullablePathProperty> DETECT_SWIFT_PATH =
         new DetectProperty<>(new NullablePathProperty("detect.swift.path"))

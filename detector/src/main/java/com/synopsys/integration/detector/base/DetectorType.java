@@ -36,6 +36,7 @@ public enum DetectorType {
     PACKAGIST,
     PEAR,
     PIP,
+    PNPM,
     POETRY,
     RUBYGEMS,
     SBT,

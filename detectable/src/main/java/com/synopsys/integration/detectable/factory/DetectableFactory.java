@@ -7,6 +7,8 @@
  */
 package com.synopsys.integration.detectable.factory;
 
+import java.util.List;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -19,6 +21,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.common.util.parse.CommandParser;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.enums.DependencyType;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BashResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BazelResolver;
@@ -209,6 +212,10 @@ import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryDetectab
 import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryExtractor;
 import com.synopsys.integration.detectable.detectables.pip.poetry.parser.PoetryLockParser;
 import com.synopsys.integration.detectable.detectables.pip.poetry.parser.ToolPoetrySectionParser;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockDetectable;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockExtractor;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockYamlParser;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmYamlTransformer;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorExtractor;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorOptions;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorParser;
@@ -431,6 +438,10 @@ public class DetectableFactory {
         PythonResolver pythonResolver,
         PipResolver pipResolver) {
         return new PipInspectorDetectable(environment, fileFinder, pythonResolver, pipResolver, pipInspectorResolver, pipInspectorExtractor(), pipInspectorDetectableOptions);
+    }
+
+    public PnpmLockDetectable createPnpmLockDetectable(DetectableEnvironment environment, List<DependencyType> dependencyTypes) {
+        return new PnpmLockDetectable(environment, fileFinder, pnpmLockExtractor(), dependencyTypes);
     }
 
     public PodlockDetectable createPodLockDetectable(DetectableEnvironment environment) {
@@ -745,6 +756,18 @@ public class DetectableFactory {
 
     private PipInspectorExtractor pipInspectorExtractor() {
         return new PipInspectorExtractor(executableRunner, pipInspectorTreeParser());
+    }
+
+    private PnpmLockExtractor pnpmLockExtractor() {
+        return new PnpmLockExtractor(gson, pnpmLockYamlParser());
+    }
+
+    private PnpmLockYamlParser pnpmLockYamlParser() {
+        return new PnpmLockYamlParser(pnpmTransformer());
+    }
+
+    private PnpmYamlTransformer pnpmTransformer() {
+        return new PnpmYamlTransformer(externalIdFactory);
     }
 
     private PoetryExtractor poetryExtractor() {
