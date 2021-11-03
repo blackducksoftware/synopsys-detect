@@ -7,10 +7,9 @@
  */
 package com.synopsys.integration.detectable.detectables.pnpm.lockfile.model;
 
-import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.detectable.detectable.enums.DependencyType;
@@ -32,10 +31,7 @@ public class PnpmPackage {
     }
 
     public Map<String, String> getDependencies() {
-        if (MapUtils.isNotEmpty(dependencies)) {
-            return dependencies;
-        }
-        return new HashMap<>();
+        return MapUtils.emptyIfNull(dependencies);
     }
 
     public DependencyType getDependencyType() {
