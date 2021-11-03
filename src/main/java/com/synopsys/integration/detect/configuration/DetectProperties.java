@@ -88,7 +88,7 @@ public class DetectProperties {
         new DetectProperty<>(new StringListProperty("blackduck.proxy.ignored.hosts", emptyList()))
             .setInfo("Bypass Proxy Hosts", DetectPropertyFromVersion.VERSION_4_2_0)
             .setHelp("A comma separated list of regular expression host patterns that should not use the proxy.",
-                "These patterns must adhere to Java regular expressions: https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html")
+                "This property accepts Java regular expressions. Refer to the <i>Configuring Synopsys Detect</i> > <i>Java regular expression support</i> page for more details.")
             .setGroups(DetectGroup.PROXY, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT)
             .setCategory(DetectCategory.Advanced)
             .setExample("blackduck[0-9]+.mycompany.com");
