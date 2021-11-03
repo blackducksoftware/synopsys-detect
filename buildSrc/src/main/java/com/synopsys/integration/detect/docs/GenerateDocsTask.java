@@ -13,8 +13,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -22,10 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
@@ -45,17 +41,11 @@ import com.synopsys.integration.detect.docs.pages.DetectorsPage;
 import com.synopsys.integration.detect.docs.pages.ExitCodePage;
 import com.synopsys.integration.detect.docs.pages.SimplePropertyTablePage;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.log.IntLogger;
-import com.synopsys.integration.log.Slf4jIntLogger;
 
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 public class GenerateDocsTask extends DefaultTask {
-
-    private static final String DITAMAP_TEMPLATE_FILENAME = "ditamap.ftl";
-    private static final String DITAMAP_OUTPUT_FILENAME = "detect.ditamap";
-    private final IntLogger logger = new Slf4jIntLogger(this.getLogger());
 
     @TaskAction
     public void generateDocs() throws IOException, TemplateException, IntegrationException {
@@ -64,7 +54,8 @@ public class GenerateDocsTask extends DefaultTask {
         Reader reader = new FileReader(file);
         HelpJsonData helpJson = new Gson().fromJson(reader, HelpJsonData.class);
         File docsDir = project.file("docs");
-        File outputDir = project.file("docs/generated");
+        File sourceMarkdownDir = new File(docsDir, "markdown");
+        File outputDir = project.file("docs/generated"); // TODO use new File(docsDir, "generated")
         File runningDir = new File(outputDir, "downloadingandrunning");
         File troubleshootingDir = new File(outputDir, "troubleshooting");
 
@@ -74,54 +65,21 @@ public class GenerateDocsTask extends DefaultTask {
         // Metadata that Zoomin needs
         FileUtils.copyFileToDirectory(new File(docsDir, "custom.properties"), outputDir);
         FileUtils.copyFileToDirectory(new File(docsDir, "integrations-classification.xml"), outputDir);
+        FileUtils.copyFileToDirectory(new File(docsDir, "detect.ditamap"), outputDir);
 
         TemplateProvider templateProvider = new TemplateProvider(project.file("docs/templates"), project.getVersion().toString());
 
-        createFromFreemarker(templateProvider, DITAMAP_TEMPLATE_FILENAME, new File(outputDir, DITAMAP_OUTPUT_FILENAME), new HashMap<String, String>(0));
+
+        FileUtils.copyDirectory(sourceMarkdownDir, outputDir);
         createMarkdownFromFreemarker(templateProvider, troubleshootingDir, "exit-codes", new ExitCodePage(helpJson.getExitCodes()));
         createMarkdownFromFreemarker(templateProvider, runningDir, "status-file", new DetectorStatusCodes(helpJson.getDetectorStatusCodes()));
         handleDetectors(templateProvider, outputDir, helpJson);
         handleProperties(templateProvider, outputDir, helpJson);
-        handleContent(outputDir, templateProvider);
-    }
-
-    private void handleContent(File outputDir, TemplateProvider templateProvider) throws IOException, TemplateException {
-        Project project = getProject();
-        File templatesDir = new File(project.getProjectDir(), "docs/templates");
-        File contentDir = new File(templatesDir, "content");
-
-        // TODO: Not sure this method of tree walking actually works.
-        try (Stream<Path> paths = Files.walk(contentDir.toPath())) {
-            List<Path> foundFreemarkerFiles = paths.filter(it -> FilenameUtils.isExtension(it.getFileName().toString(), "ftl"))
-                                                        .collect(Collectors.toList());
-
-            for (Path foundFreemarkerFilePath : foundFreemarkerFiles) {
-                createContentMarkdownFromTemplate(templatesDir, contentDir, foundFreemarkerFilePath.toFile(), outputDir, templateProvider);
-            }
-        }
-    }
-
-    private void createContentMarkdownFromTemplate(File templatesDir, File contentDir, File templateFile, File baseOutputDir, TemplateProvider templateProvider) throws IOException, TemplateException {
-        String helpContentTemplateRelativePath = templatesDir.toPath().relativize(templateFile.toPath()).toString();
-        File outputFile = deriveOutputFileForContentTemplate(contentDir, templateFile, baseOutputDir);
-        logger.alwaysLog(String.format("Generating markdown from template file: %s --> %s", helpContentTemplateRelativePath, outputFile.getCanonicalPath()));
-        createFromFreemarker(templateProvider, helpContentTemplateRelativePath, outputFile, new HashMap<String, String>());
-    }
-
-    private File deriveOutputFileForContentTemplate(File contentDir, File helpContentTemplateFile, File baseOutputDir) {
-        String templateSubDir = contentDir.toPath().relativize(helpContentTemplateFile.toPath().getParent()).toString();
-        File outputDir = new File(baseOutputDir, templateSubDir);
-        String outputFileName = String.format("%s.md", FilenameUtils.removeExtension(helpContentTemplateFile.getName()));
-
-        return new File(outputDir, outputFileName);
+        createFromFreemarker(templateProvider, "downloadlocations.ftl", new File(runningDir, "downloadlocations.md"), new HashMap<String, String>(0));
     }
 
     private void createMarkdownFromFreemarker(TemplateProvider templateProvider, File outputDir, String templateName, Object data) throws IOException, TemplateException {
         createFromFreemarker(templateProvider, String.format("%s.ftl", templateName), new File(outputDir, String.format("%s.md", templateName)), data);
-    }
-
-    private void createFromFreemarker(TemplateProvider templateProvider, File outputDir, String templateName, String targetExt, Object data) throws IOException, TemplateException {
-        createFromFreemarker(templateProvider, String.format("%s.ftl", templateName), new File(outputDir, String.format("%s.%s", templateName, targetExt)), data);
     }
 
     private void createFromFreemarker(TemplateProvider templateProvider, String templateRelativePath, File to, Object data) throws IOException, TemplateException {
