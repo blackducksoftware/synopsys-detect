@@ -16,5 +16,4 @@ them to the commands your build runs.
 
 ## More complex issues
 
-- For a diagnostiz zip containing files needed for troubleshooting: Run [solution_name] with `--detect.diagnostic.extended=true`. This will generate a diagnostic zip that contains many useful output files, intermediate files, and logs, including the generated BDIO files and [solution_name] and [blackduck_signature_scanner_name] logs. Review every file in this diagnostic zip for important clues. If you contact Synopsys Technical Support for help, you will need to provide this file.
-
+For more complex issues, including any issue that requires help from Synopsys Technical Support, refer to [Diagnostic mode](diagnosticmode.md).
