@@ -6,8 +6,7 @@ for Docker, Gradle, NuGet and more.
 
 ## Downloading or creating an air gap zip
 
-Air gap archives are available for download from the
-[division_name] [binary_repo_type] server: [binary_repo_ui_url_project].
+Air gap archives are available for download from the location specified in [download locations](downloadlocations.md).
 
 As an alternative, you can create an air gap archive by running [solution_name] with the
 -z or --zip command line option.

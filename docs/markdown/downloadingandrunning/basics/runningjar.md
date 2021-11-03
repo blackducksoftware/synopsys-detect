@@ -1,6 +1,6 @@
 # Running the [solution_name] .jar
 
-Recent versions of the [solution_name] .jar file are available for download from [binary_repo_url_project].
+Recent versions of the [solution_name] .jar file are available for download from the location specified in [download locations](../downloadlocations.md).
 
 To run [solution_name] by invoking the .jar file:
 
@@ -11,7 +11,7 @@ java -jar {path to .jar file}
 For example:
 
 ````
-curl -O [binary_repo_url_project]/5.6.2/synopsys-detect-5.6.2.jar
+curl -O https://sig-repo.synopsys.com/bds-integrations-release/com/synopsys/integration/synopsys-detect/5.6.2/synopsys-detect-5.6.2.jar
 java -jar synopsys-detect-5.6.2.jar
 ````
 
@@ -19,5 +19,5 @@ You can use the [solution_name] Bash script ([bash_script_name]) to download the
 
 ````
 export DETECT_DOWNLOAD_ONLY=1
-./[bash_script_name]
+./detect7.sh
 ````

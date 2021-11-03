@@ -6,7 +6,7 @@ When running behind a proxy:
 2. The script ([bash_script_name] or [powershell_script_name]) requires proxy details to do a version
 check on, and/or download the [solution_name] .jar file.
 3. [solution_name]; in other words, the code in the .jar file, requires proxy details to download inspectors and
-connect to [blackduck_product_name] and [polaris_product_name].
+connect to [blackduck_product_name].
 
 ## Providing proxy details to [solution_name]
 

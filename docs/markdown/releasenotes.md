@@ -335,13 +335,13 @@ PR](https://github.com/blackducksoftware/synopsys-detect/pull/107) (IDETECT-1868
 * Added the property [detect.bom.aggregate.remediation.mode](properties/configuration/project.md#bdio-aggregate-remediation-mode-advanced)
 
 ### Changed features
-* Deprecated all [polaris_product_name]-related properties.
+* Deprecated all Polaris properties.
 * Added wildcard support for several include/exclude list properties.
 * Improved the structure of the dependency information produced by the Yarn detector by changing its approach. It now parses dependency information from yarn.lock and package.json, instead of running the yarn command. Since the yarn
 command is no longer executed, the detect.yarn.path property has been removed.
 * Improved match accuracy for Bitbake projects by improving external ID generation for dependencies referenced using Git protocols, and dependencies referenced with an epoch and/or revision.
 * Improved the reliability of the Bitbake detector by generating recipe-depends.dot and package-depends.dot files the source directory, instead of a temporary directory.
-* Changed the logging level of [polaris_product_name] CLI output from DEBUG to INFO.
+* Changed the logging level of Polaris CLI output from DEBUG to INFO.
 * Added support for the Noto-CJK font (for Chinese, Japanese, and Korean text) in the risk report.
 
 ### Resolved issues
