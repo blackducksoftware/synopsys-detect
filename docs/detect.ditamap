@@ -144,7 +144,9 @@
     <topicref href="results/reports.md" format="markdown"/>
   </topicref>
 
-  <topicref href="troubleshooting/overview.md" format="markdown">
+  <topicref href="troubleshooting/intro.md" format="markdown">
+    <topicref href="troubleshooting/gettinginfo.md" format="markdown"/>
+    <topicref href="troubleshooting/commonproblems.md" format="markdown"/>
     <topicref href="troubleshooting/diagnosticmode.md" format="markdown"/>
     <topicref href="troubleshooting/exit-codes.md" format="markdown"/>
     <topicref href="troubleshooting/solutions.md" format="markdown"/>
