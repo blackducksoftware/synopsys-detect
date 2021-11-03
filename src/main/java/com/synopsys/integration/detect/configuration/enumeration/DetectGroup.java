@@ -60,6 +60,7 @@ public enum DetectGroup implements Group {
     PACKAGIST("packagist", DETECTORS),
     PEAR("pear", DETECTORS),
     PIP("pip", DETECTORS),
+    PNPM("pnpm", DETECTORS),
     PYTHON("python", DETECTORS),
     RUBY("ruby", DETECTORS),
     SBT("sbt", DETECTORS),

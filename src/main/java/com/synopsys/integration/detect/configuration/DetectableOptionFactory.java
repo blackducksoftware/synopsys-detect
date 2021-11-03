@@ -24,6 +24,7 @@ import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetLocatorOptions;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
+import com.synopsys.integration.detectable.detectable.enums.DependencyType;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
@@ -219,9 +220,13 @@ public class DetectableOptionFactory {
     public PipInspectorDetectableOptions createPipInspectorDetectableOptions() {
         String pipProjectName = getNullableValue(DetectProperties.DETECT_PIP_PROJECT_NAME);
         List<Path> requirementsFilePath = getValue(DetectProperties.DETECT_PIP_REQUIREMENTS_PATH).stream()
-            .map(it -> it.resolvePath(pathResolver))
-            .collect(Collectors.toList());
+                                              .map(it -> it.resolvePath(pathResolver))
+                                              .collect(Collectors.toList());
         return new PipInspectorDetectableOptions(pipProjectName, requirementsFilePath);
+    }
+
+    public List<DependencyType> createPnpmDependencyTypes() {
+        return getValue(DetectProperties.DETECT_PNPM_DEPENDENCY_TYPES).representedValues();
     }
 
     public ProjectInspectorOptions createProjectInspectorOptions() {
