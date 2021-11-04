@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+import com.synopsys.integration.detectable.detectable.util.ToolVersionLogger;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -112,7 +113,7 @@ public class GoModCliExtractorTest {
         Mockito.doAnswer(executableAnswer).when(executableRunner).execute(Mockito.any(Executable.class));
 
         GoModWhyParser goModWhyParser = new GoModWhyParser();
-        GoModCommandExecutor goModCommandExecutor = new GoModCommandExecutor(executableRunner);
+        GoModCommandExecutor goModCommandExecutor = new GoModCommandExecutor(executableRunner, new ToolVersionLogger());
         GoModGraphGenerator goModGraphGenerator = new GoModGraphGenerator(new ExternalIdFactory());
         GoListParser goListParser = new GoListParser(new GsonBuilder().create());
         GoGraphParser goGraphParser = new GoGraphParser();
