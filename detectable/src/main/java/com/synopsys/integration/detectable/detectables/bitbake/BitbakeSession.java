@@ -66,6 +66,20 @@ public class BitbakeSession {
 
     }
 
+    public void logBitbakeVersion() {
+        if (logger.isDebugEnabled()) {
+            try {
+                ExecutableOutput executableOutput = runBitbake("bitbake --version");
+                List<String> stdOut = executableOutput.getStandardOutputAsList();
+                if (stdOut.size() > 0) {
+                    logger.debug(stdOut.get(0));
+                }
+            } catch (Exception e) {
+                logger.debug("Unable to log bitbake version: {}", e.getMessage());
+            }
+        }
+    }
+
     private Optional<File> findTaskDependsFile(File sourceDirectory, File outputDirectory, boolean followSymLinks, Integer searchDepth) {
         File file = fileFinder.findFile(outputDirectory, TASK_DEPENDS_FILE_NAME, followSymLinks, searchDepth);
         if (file == null) {

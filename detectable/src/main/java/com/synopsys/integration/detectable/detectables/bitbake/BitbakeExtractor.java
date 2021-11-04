@@ -59,6 +59,7 @@ public class BitbakeExtractor {
         List<CodeLocation> codeLocations = new ArrayList<>();
 
         BitbakeSession bitbakeSession = new BitbakeSession(fileFinder, executableRunner, bitbakeRecipesParser, sourceDirectory, buildEnvScript, sourceArguments, bash);
+        bitbakeSession.logBitbakeVersion();
         for (String packageName : packageNames) {
             try {
                 BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, sourceDirectory, packageName, followSymLinks, searchDepth);
