@@ -1,6 +1,6 @@
 # Diagnostic mode
 
-[solution_name]'s diagnostic mode produces a diagnostiz zip containing files needed for troubleshooting. 
+[solution_name]'s diagnostic mode produces a diagnostic zip containing files needed for troubleshooting. 
 Diagnostic mode automatically enables debug logging (where possible), saves all output (logs, BDIO, and inspector files) to a zip file, and notifies you of the location of the zip.
 If you contact Synopsys Technical Support for help troubleshooting an issue, you will need to provide this file.
 
