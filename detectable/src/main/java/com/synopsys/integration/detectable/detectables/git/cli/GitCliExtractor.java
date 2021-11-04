@@ -19,7 +19,7 @@ import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.util.ToolVersionLogger;
+import com.synopsys.integration.detectable.util.OldToolVersionLogger;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunnerException;
@@ -41,7 +41,7 @@ public class GitCliExtractor {
 
     public Extraction extract(ExecutableTarget gitExecutable, File directory) {
         try {
-            ToolVersionLogger.log(executableRunner, directory, gitExecutable);
+            OldToolVersionLogger.log(executableRunner, directory, gitExecutable);
             String repoName = getRepoName(gitExecutable, directory);
             String branch = getRepoBranch(gitExecutable, directory);
 

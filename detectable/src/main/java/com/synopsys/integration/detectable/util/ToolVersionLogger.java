@@ -7,30 +7,23 @@
  */
 package com.synopsys.integration.detectable.util;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-
+import com.synopsys.integration.executable.ExecutableOutput;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.synopsys.integration.detectable.ExecutableTarget;
-import com.synopsys.integration.detectable.ExecutableUtils;
-import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 
 public class ToolVersionLogger {
-    private static final Logger logger = LoggerFactory.getLogger(ToolVersionLogger.class);
 
-    public static void log(DetectableExecutableRunner executableRunner, File directory, ExecutableTarget conanExe) {
-        if (!logger.isDebugEnabled()) {
-            return;
-        }
-        List<String> versionArgument = Arrays.asList("--version");
-        try {
-            executableRunner.execute(ExecutableUtils.createFromTarget(directory, conanExe, versionArgument));
-            // At DEBUG, commands executed and their output are logged, so it would be redundant to log 'em again here
-        } catch (Exception e) {
-            logger.warn("Unable to determine {} version: {}", conanExe.toCommand(), e.getMessage());
+    @FunctionalInterface
+    public interface ExceptionThrowingSupplier<T> {
+        public T get() throws Exception;
+    }
+
+    public void logOutputSafelyIfDebug(Logger logger, ExceptionThrowingSupplier<ExecutableOutput> executor, String toolName) {
+        if (logger.isDebugEnabled()) {
+            try {
+                logger.debug(executor.get().getStandardOutput());
+            } catch (Exception e) {
+                logger.debug("Unable to log {} version: {}", toolName, e.getMessage());
+            }
         }
     }
 }

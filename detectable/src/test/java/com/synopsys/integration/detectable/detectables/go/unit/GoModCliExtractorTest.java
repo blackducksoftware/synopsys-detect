@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import com.synopsys.integration.detectable.detectable.util.ToolVersionLogger;
+import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

@@ -13,7 +13,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import com.synopsys.integration.detectable.detectable.util.ToolVersionLogger;
+import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import org.xml.sax.SAXException;
 
 import com.google.gson.Gson;
@@ -674,7 +674,7 @@ public class DetectableFactory {
         NodeElementParser nodeElementParser = new NodeElementParser(conanInfoLineAnalyzer);
         ConanInfoNodeParser conanInfoNodeParser = new ConanInfoNodeParser(conanInfoLineAnalyzer, nodeElementParser);
         ConanInfoParser conanInfoParser = new ConanInfoParser(conanInfoNodeParser, conanCodeLocationGenerator, externalIdFactory);
-        return new ConanCliExtractor(executableRunner, conanInfoParser);
+        return new ConanCliExtractor(executableRunner, conanInfoParser, toolVersionLogger);
     }
 
     private NpmCliParser npmCliDependencyFinder() {

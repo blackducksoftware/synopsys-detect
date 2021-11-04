@@ -23,7 +23,7 @@ import com.synopsys.integration.detectable.detectable.executable.DetectableExecu
 import com.synopsys.integration.detectable.detectables.pip.model.NameVersionCodeLocation;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipInspectorTreeParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.util.ToolVersionLogger;
+import com.synopsys.integration.detectable.util.OldToolVersionLogger;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class PipInspectorExtractor {
@@ -36,8 +36,8 @@ public class PipInspectorExtractor {
     }
 
     public Extraction extract(File directory, ExecutableTarget pythonExe, ExecutableTarget pipExe, File pipInspector, File setupFile, List<Path> requirementFilePaths, String providedProjectName) {
-        ToolVersionLogger.log(executableRunner, directory, pythonExe);
-        ToolVersionLogger.log(executableRunner, directory, pipExe);
+        OldToolVersionLogger.log(executableRunner, directory, pythonExe);
+        OldToolVersionLogger.log(executableRunner, directory, pipExe);
         Extraction extractionResult;
         try {
             String projectName = getProjectName(directory, pythonExe, setupFile, providedProjectName);

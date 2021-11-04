@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.synopsys.integration.detectable.detectable.util.ToolVersionLogger;
+import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;

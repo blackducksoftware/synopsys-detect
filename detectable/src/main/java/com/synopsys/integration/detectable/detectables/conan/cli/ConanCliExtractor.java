@@ -31,14 +31,16 @@ public class ConanCliExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectableExecutableRunner executableRunner;
     private final ConanInfoParser conanInfoParser;
+    private final ToolVersionLogger toolVersionLogger;
 
-    public ConanCliExtractor(DetectableExecutableRunner executableRunner, ConanInfoParser conanInfoParser) {
+    public ConanCliExtractor(DetectableExecutableRunner executableRunner, ConanInfoParser conanInfoParser, ToolVersionLogger toolVersionLogger) {
         this.executableRunner = executableRunner;
         this.conanInfoParser = conanInfoParser;
+        this.toolVersionLogger = toolVersionLogger;
     }
 
     public Extraction extract(File projectDir, ExecutableTarget conanExe, ConanCliExtractorOptions conanCliExtractorOptions) {
-        ToolVersionLogger.log(executableRunner, projectDir, conanExe);
+        toolVersionLogger.logOutputSafelyIfDebug(logger, () -> executableRunner.execute(ExecutableUtils.createFromTarget(projectDir, conanExe, "--version")), "conan");
         List<String> exeArgs = generateConanInfoCmdArgs(projectDir, conanCliExtractorOptions);
         ExecutableOutput conanInfoOutput;
         try {
