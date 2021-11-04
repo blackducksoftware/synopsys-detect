@@ -22,26 +22,20 @@ import com.synopsys.integration.detect.configuration.DetectUserFriendlyException
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
-import com.synopsys.integration.detect.tool.cache.InstalledTool;
-import com.synopsys.integration.detect.tool.cache.InstalledToolData;
 import com.synopsys.integration.detect.tool.signaturescanner.ScanBatchRunnerUserResult;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScanPath;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerReport;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerToolResult;
 import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanOuputResult;
-import com.synopsys.integration.detect.workflow.event.Event;
-import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.util.NameVersion;
 
 public class SignatureScanStepRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final OperationFactory operationFactory;
-    private final EventSystem eventSystem;
 
-    public SignatureScanStepRunner(OperationFactory operationFactory, EventSystem eventSystem) {
+    public SignatureScanStepRunner(OperationFactory operationFactory) {
         this.operationFactory = operationFactory;
-        this.eventSystem = eventSystem;
     }
 
     public SignatureScannerToolResult runSignatureScannerOnline(BlackDuckRunData blackDuckRunData, NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws DetectUserFriendlyException {
@@ -98,18 +92,12 @@ public class SignatureScanStepRunner {
             }
         }
 
-        //TODO- here is where we publish InstalledTool event
-        eventSystem.publishEvent(Event.InstalledTool, new InstalledToolData(InstalledTool.SIGNATURE_SCANNER, installDirectory.getAbsolutePath()));
-
         return scanBatchRunner;
     }
 
     private File determineScanInstallDirectory(ScanBatchRunnerUserResult userProvided) throws DetectUserFriendlyException {
         if (userProvided.getInstallDirectory().isPresent()) {
             return userProvided.getInstallDirectory().get();
-        } else if (false) {
-            //TODO- here we could check for cached install?  do we want a cached install to take preference over a online install, like the explicitly provided local install?
-            return null;
         } else {
             return operationFactory.calculateDetectControlledInstallDirectory();
         }

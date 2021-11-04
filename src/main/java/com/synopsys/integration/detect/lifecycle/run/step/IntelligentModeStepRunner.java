@@ -36,7 +36,6 @@ import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationResults;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationWaitData;
-import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.result.BlackDuckBomDetectResult;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
@@ -50,17 +49,15 @@ public class IntelligentModeStepRunner {
     private OperationFactory operationFactory;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private StepHelper stepHelper;
-    private final EventSystem eventSystem;
 
-    public IntelligentModeStepRunner(OperationFactory operationFactory, StepHelper stepHelper, EventSystem eventSystem) {
+    public IntelligentModeStepRunner(OperationFactory operationFactory, StepHelper stepHelper) {
         this.operationFactory = operationFactory;
         this.stepHelper = stepHelper;
-        this.eventSystem = eventSystem;
     }
 
     public void runOffline(NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws DetectUserFriendlyException {
         stepHelper.runToolIfIncluded(DetectTool.SIGNATURE_SCAN, "Signature Scanner", () -> { //Internal: Sig scan publishes it's own status.
-            SignatureScanStepRunner signatureScanStepRunner = new SignatureScanStepRunner(operationFactory, eventSystem);
+            SignatureScanStepRunner signatureScanStepRunner = new SignatureScanStepRunner(operationFactory);
             signatureScanStepRunner.runSignatureScannerOffline(projectNameVersion, dockerTargetData);
         });
         stepHelper.runToolIfIncludedWithCallbacks(DetectTool.IMPACT_ANALYSIS, "Vulnerability Impact Analysis",  /* because it does not publish it's own status */ () -> generateImpactAnalysis(projectNameVersion),
@@ -83,7 +80,7 @@ public class IntelligentModeStepRunner {
         logger.debug("Completed Detect Code Location processing.");
 
         stepHelper.runToolIfIncluded(DetectTool.SIGNATURE_SCAN, "Signature Scanner", () -> {
-            SignatureScanStepRunner signatureScanStepRunner = new SignatureScanStepRunner(operationFactory, eventSystem);
+            SignatureScanStepRunner signatureScanStepRunner = new SignatureScanStepRunner(operationFactory);
             SignatureScannerToolResult signatureScannerToolResult = signatureScanStepRunner.runSignatureScannerOnline(blackDuckRunData, projectNameVersion, dockerTargetData);
             signatureScannerToolResult.getCreationData().ifPresent(codeLocationAccumulator::addWaitableCodeLocation);
         });

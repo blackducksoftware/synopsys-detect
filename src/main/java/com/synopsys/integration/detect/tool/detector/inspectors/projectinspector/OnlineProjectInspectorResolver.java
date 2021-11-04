@@ -8,7 +8,11 @@
 package com.synopsys.integration.detect.tool.detector.inspectors.projectinspector;
 
 import java.io.File;
+import java.util.Optional;
 
+import com.synopsys.integration.detect.tool.cache.InstalledTool;
+import com.synopsys.integration.detect.tool.cache.InstalledToolLocator;
+import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -16,13 +20,18 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 public class OnlineProjectInspectorResolver implements com.synopsys.integration.detectable.detectable.inspector.ProjectInspectorResolver {
     private final ArtifactoryProjectInspectorInstaller projectInspectorInstaller;
     private final DirectoryManager directoryManager;
+    private final InstalledToolManager installedToolManager;
+    private final InstalledToolLocator installedToolLocator;
 
     private boolean hasResolvedInspector = false;
     private ExecutableTarget inspector = null;
 
-    public OnlineProjectInspectorResolver(ArtifactoryProjectInspectorInstaller projectInspectorInstaller, DirectoryManager directoryManager) {
+    public OnlineProjectInspectorResolver(ArtifactoryProjectInspectorInstaller projectInspectorInstaller, DirectoryManager directoryManager, InstalledToolManager installedToolManager,
+        InstalledToolLocator installedToolLocator) {
         this.projectInspectorInstaller = projectInspectorInstaller;
         this.directoryManager = directoryManager;
+        this.installedToolManager = installedToolManager;
+        this.installedToolLocator = installedToolLocator;
     }
 
     @Override
@@ -31,6 +40,16 @@ public class OnlineProjectInspectorResolver implements com.synopsys.integration.
             hasResolvedInspector = true;
             File installDirectory = directoryManager.getPermanentDirectory("project-inspector");
             inspector = ExecutableTarget.forFile(projectInspectorInstaller.install(installDirectory));
+
+            if (inspector == null) {
+                // remote install has failed
+                Optional<File> cachedInstall = installedToolLocator.locateTool(InstalledTool.PROJECT_INSPECTOR);
+                if (cachedInstall.isPresent()) {
+                    return ExecutableTarget.forFile(cachedInstall.get());
+                } else {
+                    throw new DetectableException("Unable to install the project inspector from Artifactory.");
+                }
+            }
         }
 
         return inspector;

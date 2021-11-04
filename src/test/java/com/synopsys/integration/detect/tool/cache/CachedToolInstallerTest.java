@@ -15,7 +15,7 @@ public class CachedToolInstallerTest {
     public void testInstallDummyTool() throws URISyntaxException {
         URI pathToToolCacheFileUri = this.getClass().getClassLoader().getResource("tool/cache/detect-tool-cache.json").toURI();
         Path pathToToolCacheFile = Paths.get(pathToToolCacheFileUri);
-        CachedToolInstaller cachedToolInstaller = new CachedToolInstaller(pathToToolCacheFile, new Gson());
-        Assertions.assertTrue(cachedToolInstaller.installCachedTool(InstalledTool.DOCKER_INSPECTOR).isPresent());
+        InstalledToolLocator cachedToolInstaller = new InstalledToolLocator(pathToToolCacheFile, new Gson());
+        Assertions.assertTrue(cachedToolInstaller.locateTool(InstalledTool.DOCKER_INSPECTOR).isPresent());
     }
 }

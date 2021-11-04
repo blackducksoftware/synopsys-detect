@@ -642,13 +642,6 @@ public class DetectProperties {
             .setHelp("The path to the rebar3 executable.")
             .setGroups(DetectGroup.HEX, DetectGroup.GLOBAL);
 
-    public static final DetectProperty<NullablePathProperty> DETECT_INSPECTOR_CACHE_FILE_PATH =
-        new DetectProperty<>(new NullablePathProperty("detect.inspector.cache.file.path"))
-            .setInfo("Inspector Cache File Path", DetectPropertyFromVersion.VERSION_7_8_0)
-            .setHelp("The path to the file which Detect will read from and write to regarding data on your most recently downloaded inspectors.",
-                "If set, Detect will look for a 'detect-inspectors.json' file at the provided location to read data regarding locations of any inspectors you've already installed (ex. Nuget Inspector, Project Inspector).  Detect will update this file whenever an inspector is downloaded.  If Detect tries to download an inspector, and the download fails, Detect will look for an already downloaded inspector at a path recorded in the file.  The default of this property is the source path.")
-            .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL);
-
     public static final DetectProperty<StringListProperty> DETECT_EXCLUDED_DIRECTORIES =
         new DetectProperty<>(new StringListProperty("detect.excluded.directories", emptyList()))
             .setInfo("Detect Excluded Directories", DetectPropertyFromVersion.VERSION_7_0_0)

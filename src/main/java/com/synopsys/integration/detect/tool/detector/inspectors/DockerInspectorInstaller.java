@@ -15,22 +15,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
-import com.synopsys.integration.detect.tool.cache.InstalledTool;
-import com.synopsys.integration.detect.tool.cache.InstalledToolData;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
-import com.synopsys.integration.detect.workflow.event.Event;
-import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class DockerInspectorInstaller {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ArtifactResolver artifactResolver;
-    private final EventSystem eventSystem;
 
-    public DockerInspectorInstaller(ArtifactResolver artifactResolver, EventSystem eventSystem) {
+    public DockerInspectorInstaller(ArtifactResolver artifactResolver) {
         this.artifactResolver = artifactResolver;
-        this.eventSystem = eventSystem;
     }
 
     public File installJar(File dockerDirectory, Optional<String> dockerVersion) throws IntegrationException, IOException, DetectUserFriendlyException {
@@ -51,8 +45,6 @@ public class DockerInspectorInstaller {
         logger.debug(String.format("Downloading docker inspector from '%s' to '%s'.", location, dockerDirectory.getAbsolutePath()));
         File jarFile = artifactResolver.downloadOrFindArtifact(dockerDirectory, location);
         logger.info("Found online docker inspector: " + jarFile.getAbsolutePath());
-
-        eventSystem.publishEvent(Event.InstalledTool, new InstalledToolData(InstalledTool.DOCKER_INSPECTOR, jarFile.getAbsolutePath()));
 
         return jarFile;
     }

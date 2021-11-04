@@ -21,8 +21,9 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
-import com.synopsys.integration.detect.tool.cache.CachedToolInstaller;
 import com.synopsys.integration.detect.tool.cache.InstalledTool;
+import com.synopsys.integration.detect.tool.cache.InstalledToolLocator;
+import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -44,18 +45,20 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
     private final FileFinder fileFinder;
     private final DockerInspectorInstaller dockerInspectorInstaller;
     private final DockerDetectableOptions dockerDetectableOptions;
-    private final CachedToolInstaller cachedToolInstaller;
+    private final InstalledToolManager installedToolManager;
+    private final InstalledToolLocator installedToolLocator;
 
     private DockerInspectorInfo resolvedInfo;
 
     public ArtifactoryDockerInspectorResolver(DirectoryManager directoryManager, AirGapInspectorPaths airGapInspectorPaths, FileFinder fileFinder, DockerInspectorInstaller dockerInspectorInstaller,
-        DockerDetectableOptions dockerDetectableOptions, CachedToolInstaller cachedToolInstaller) {
+        DockerDetectableOptions dockerDetectableOptions, InstalledToolManager installedToolManager, InstalledToolLocator installedToolLocator) {
         this.directoryManager = directoryManager;
         this.airGapInspectorPaths = airGapInspectorPaths;
         this.fileFinder = fileFinder;
         this.dockerInspectorInstaller = dockerInspectorInstaller;
         this.dockerDetectableOptions = dockerDetectableOptions;
-        this.cachedToolInstaller = cachedToolInstaller;
+        this.installedToolManager = installedToolManager;
+        this.installedToolLocator = installedToolLocator;
     }
 
     @Override
@@ -89,7 +92,7 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
             String dockerVersion = dockerDetectableOptions.getDockerInspectorVersion().orElse("");
 
             File inspector = null;
-            Optional<File> cachedInstall = cachedToolInstaller.installCachedTool(InstalledTool.DOCKER_INSPECTOR);
+            Optional<File> cachedInstall = installedToolLocator.locateTool(InstalledTool.DOCKER_INSPECTOR);
             try {
                 inspector = dockerInspectorInstaller.installJar(dockerDirectory, Optional.of(dockerVersion));
             } catch (Exception e) {
@@ -97,10 +100,15 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
                     throw e;
                 }
             }
-            if (inspector == null && cachedInstall.isPresent()) {
-                return new DockerInspectorInfo(cachedInstall.get());
+            if (inspector == null) {
+                if (cachedInstall.isPresent()) {
+                    return new DockerInspectorInfo(cachedInstall.get());
+                }
+                return null;
+            } else {
+                installedToolManager.saveInstalledToolLocation(InstalledTool.DOCKER_INSPECTOR, inspector.getAbsolutePath());
+                return new DockerInspectorInfo(inspector);
             }
-            return new DockerInspectorInfo(inspector);
         }
     }
 

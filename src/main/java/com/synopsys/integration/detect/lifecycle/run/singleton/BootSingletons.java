@@ -14,7 +14,8 @@ import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
-import com.synopsys.integration.detect.tool.cache.CachedToolInstaller;
+import com.synopsys.integration.detect.tool.cache.InstalledToolLocator;
+import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
 import com.synopsys.integration.detect.workflow.DetectRunId;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -41,13 +42,14 @@ public class BootSingletons {
     private final DirectoryManager directoryManager;
     private final Configuration configuration;
 
-    private final CachedToolInstaller cachedToolInstaller;
+    private final InstalledToolManager installedToolManager;
+    private final InstalledToolLocator installedToolLocator;
 
     public BootSingletons(ProductRunData productRunData, DetectRunId detectRunId, Gson gson, DetectInfo detectInfo, FileFinder fileFinder, EventSystem eventSystem,
         DetectorProfiler detectorProfiler,
         PropertyConfiguration detectConfiguration, DetectableOptionFactory detectableOptionFactory, DetectConfigurationFactory detectConfigurationFactory,
         DirectoryManager directoryManager,
-        Configuration configuration, CachedToolInstaller cachedToolInstaller) {
+        Configuration configuration, InstalledToolManager installedToolManager, InstalledToolLocator installedToolLocator) {
         this.productRunData = productRunData;
         this.detectRunId = detectRunId;
         this.gson = gson;
@@ -60,7 +62,8 @@ public class BootSingletons {
         this.detectableOptionFactory = detectableOptionFactory;
         this.directoryManager = directoryManager;
         this.configuration = configuration;
-        this.cachedToolInstaller = cachedToolInstaller;
+        this.installedToolManager = installedToolManager;
+        this.installedToolLocator = installedToolLocator;
     }
 
     public ProductRunData getProductRunData() {
@@ -111,7 +114,11 @@ public class BootSingletons {
         return detectableOptionFactory;
     }
 
-    public CachedToolInstaller getCachedToolInstaller() {
-        return cachedToolInstaller;
+    public InstalledToolManager getInstalledToolManager() {
+        return installedToolManager;
+    }
+
+    public InstalledToolLocator getInstalledToolLocator() {
+        return installedToolLocator;
     }
 }

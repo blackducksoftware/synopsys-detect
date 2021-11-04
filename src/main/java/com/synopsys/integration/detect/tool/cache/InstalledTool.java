@@ -10,6 +10,8 @@ package com.synopsys.integration.detect.tool.cache;
 public enum InstalledTool {
     DOCKER_INSPECTOR,
     NUGET_INSPECTOR,
-    PROJECT_INSPECTOR,
-    SIGNATURE_SCANNER
+    NUGET_INSPECTOR_3,
+    NUGET_INSPECTOR_5,
+    NUGET_INSPECTOR_EXE,
+    PROJECT_INSPECTOR
 }

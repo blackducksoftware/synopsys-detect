@@ -18,7 +18,8 @@ import com.synopsys.integration.detect.configuration.DetectUserFriendlyException
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.lifecycle.run.singleton.BootSingletons;
 import com.synopsys.integration.detect.lifecycle.run.singleton.UtilitySingletons;
-import com.synopsys.integration.detect.tool.cache.CachedToolInstaller;
+import com.synopsys.integration.detect.tool.cache.InstalledToolLocator;
+import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryDockerInspectorResolver;
@@ -41,7 +42,6 @@ import com.synopsys.integration.detect.tool.detector.inspectors.projectinspector
 import com.synopsys.integration.detect.tool.detector.inspectors.projectinspector.ProjectInspectorExecutableLocator;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
-import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
@@ -66,10 +66,10 @@ public class DetectorFactory {
     private final AirGapInspectorPaths airGapInspectorPaths;
     private final ArtifactResolver artifactResolver;
     private final ArtifactoryZipInstaller artifactoryZipInstaller;
-    private final EventSystem eventSystem;
-    private final CachedToolInstaller cachedToolInstaller;
+    private final InstalledToolManager installedToolManager;
+    private final InstalledToolLocator installedToolLocator;
 
-    public DetectorFactory(BootSingletons bootSingletons, UtilitySingletons utilitySingletons, EventSystem eventSystem) {
+    public DetectorFactory(BootSingletons bootSingletons, UtilitySingletons utilitySingletons) {
         gson = bootSingletons.getGson();
         detectInfo = bootSingletons.getDetectInfo();
         configuration = bootSingletons.getConfiguration();
@@ -83,8 +83,8 @@ public class DetectorFactory {
         airGapInspectorPaths = utilitySingletons.getAirGapInspectorPaths();
         artifactResolver = utilitySingletons.getArtifactResolver();
         artifactoryZipInstaller = utilitySingletons.getArtifactoryZipInstaller();
-        this.eventSystem = eventSystem;
-        this.cachedToolInstaller = bootSingletons.getCachedToolInstaller();
+        this.installedToolManager = bootSingletons.getInstalledToolManager();
+        this.installedToolLocator = bootSingletons.getInstalledToolLocator();
     }
 
     public DetectableFactory detectableFactory() {
@@ -97,12 +97,12 @@ public class DetectorFactory {
     }
 
     private DockerInspectorResolver dockerInspectorResolver() throws DetectUserFriendlyException {
-        DockerInspectorInstaller dockerInspectorInstaller = new DockerInspectorInstaller(artifactResolver, eventSystem);
-        return new ArtifactoryDockerInspectorResolver(directoryManager, airGapInspectorPaths, fileFinder, dockerInspectorInstaller, detectableOptionFactory.createDockerDetectableOptions(), cachedToolInstaller);
+        DockerInspectorInstaller dockerInspectorInstaller = new DockerInspectorInstaller(artifactResolver);
+        return new ArtifactoryDockerInspectorResolver(directoryManager, airGapInspectorPaths, fileFinder, dockerInspectorInstaller, detectableOptionFactory.createDockerDetectableOptions(), installedToolManager, installedToolLocator);
     }
 
     private GradleInspectorResolver gradleInspectorResolver() throws DetectUserFriendlyException {
-        return new ArtifactoryGradleInspectorResolver(configuration, detectableOptionFactory.createGradleInspectorOptions().getGradleInspectorScriptOptions(), airGapInspectorPaths, directoryManager, cachedToolInstaller);
+        return new ArtifactoryGradleInspectorResolver(configuration, detectableOptionFactory.createGradleInspectorOptions().getGradleInspectorScriptOptions(), airGapInspectorPaths, directoryManager);
     }
 
     private NugetInspectorResolver nugetInspectorResolver(DetectInfo detectInfo) throws DetectUserFriendlyException {
@@ -112,8 +112,8 @@ public class DetectorFactory {
         if (nugetAirGapPath.isPresent()) {
             locator = new AirgapNugetInspectorLocator(airGapInspectorPaths);
         } else {
-            NugetInspectorInstaller installer = new NugetInspectorInstaller(artifactoryZipInstaller, eventSystem);
-            locator = new OnlineNugetInspectorLocator(installer, directoryManager, installerOptions.getNugetInspectorVersion().orElse(null), cachedToolInstaller);
+            NugetInspectorInstaller installer = new NugetInspectorInstaller(artifactoryZipInstaller);
+            locator = new OnlineNugetInspectorLocator(installer, directoryManager, installerOptions.getNugetInspectorVersion().orElse(null), installedToolManager, installedToolLocator);
         }
 
         DotNetRuntimeFinder runtimeFinder = new DotNetRuntimeFinder(executableRunner, detectExecutableResolver, directoryManager.getPermanentDirectory());
@@ -128,8 +128,8 @@ public class DetectorFactory {
         if (projectInspectorAirgapPath.isPresent()) {
             return new AirgapProjectInspectorResolver(airGapInspectorPaths, projectInspectorExecutableLocator, detectInfo);
         } else {
-            ArtifactoryProjectInspectorInstaller artifactoryProjectInspectorInstaller = new ArtifactoryProjectInspectorInstaller(detectInfo, artifactoryZipInstaller, projectInspectorExecutableLocator, eventSystem, cachedToolInstaller);
-            return new OnlineProjectInspectorResolver(artifactoryProjectInspectorInstaller, directoryManager);
+            ArtifactoryProjectInspectorInstaller artifactoryProjectInspectorInstaller = new ArtifactoryProjectInspectorInstaller(detectInfo, artifactoryZipInstaller, projectInspectorExecutableLocator);
+            return new OnlineProjectInspectorResolver(artifactoryProjectInspectorInstaller, directoryManager, installedToolManager, installedToolLocator);
         }
     }
 

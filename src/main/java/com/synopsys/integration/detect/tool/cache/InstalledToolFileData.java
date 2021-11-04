@@ -10,18 +10,16 @@ package com.synopsys.integration.detect.tool.cache;
 import java.util.HashMap;
 import java.util.Map;
 
-//TODO- evaluate the naming in this class
-public class CachedToolFileData {
-    public static final String CACHED_TOOL_FILE_NAME = "detect-tool-cache.json";
+public class InstalledToolFileData {
+    public static final String INSTALLED_TOOL_FILE_NAME = "detect-installed-tools.json";
     private Map<InstalledTool, String> installedToolJsonKeyMap;
 
-    public CachedToolFileData() {
+    public InstalledToolFileData() {
         Map<InstalledTool, String> map = new HashMap<>();
 
         map.put(InstalledTool.DOCKER_INSPECTOR, "docker-inspector");
         map.put(InstalledTool.NUGET_INSPECTOR, "nuget-inspector");
         map.put(InstalledTool.PROJECT_INSPECTOR, "project-inspector");
-        map.put(InstalledTool.SIGNATURE_SCANNER, "signature-scanner");
 
         this.installedToolJsonKeyMap = map;
     }

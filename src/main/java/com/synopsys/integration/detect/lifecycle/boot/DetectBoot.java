@@ -46,7 +46,8 @@ import com.synopsys.integration.detect.lifecycle.boot.decision.RunDecision;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBoot;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.run.singleton.BootSingletons;
-import com.synopsys.integration.detect.tool.cache.CachedToolInstaller;
+import com.synopsys.integration.detect.tool.cache.InstalledToolLocator;
+import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.airgap.AirGapCreator;
 import com.synopsys.integration.detect.workflow.airgap.AirGapType;
@@ -70,13 +71,15 @@ public class DetectBoot {
     private final DetectBootFactory detectBootFactory;
     private final DetectArgumentState detectArgumentState;
     private final List<PropertySource> propertySources;
+    private final InstalledToolManager installedToolManager;
 
-    public DetectBoot(EventSystem eventSystem, Gson gson, DetectBootFactory detectBootFactory, DetectArgumentState detectArgumentState, List<PropertySource> propertySources) {
+    public DetectBoot(EventSystem eventSystem, Gson gson, DetectBootFactory detectBootFactory, DetectArgumentState detectArgumentState, List<PropertySource> propertySources, InstalledToolManager installedToolManager) {
         this.eventSystem = eventSystem;
         this.gson = gson;
         this.detectBootFactory = detectBootFactory;
         this.detectArgumentState = detectArgumentState;
         this.propertySources = propertySources;
+        this.installedToolManager = installedToolManager;
     }
 
     public Optional<DetectBootResult> boot(String detectVersion) throws IOException, IllegalAccessException {
@@ -126,7 +129,7 @@ public class DetectBoot {
         PathResolver pathResolver = detectBootFactory.createPathResolver();
         DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration, pathResolver, gson);
         DirectoryManager directoryManager = detectBootFactory.createDirectoryManager(detectConfigurationFactory);
-        CachedToolInstaller cachedToolInstaller = detectConfigurationFactory.createCachedToolInstaller(directoryManager.getSourceDirectory().toPath());
+        InstalledToolLocator installedToolLocator = new InstalledToolLocator(directoryManager.getPermanentDirectory().toPath(), gson);
 
         DiagnosticSystem diagnosticSystem = null;
         DiagnosticDecision diagnosticDecision = DiagnosticDecision.decide(detectArgumentState, detectConfiguration);
@@ -139,8 +142,7 @@ public class DetectBoot {
         if (detectArgumentState.isGenerateAirGapZip()) {
             try {
                 AirGapType airGapType = new AirGapTypeDecider().decide(detectArgumentState);
-                AirGapCreator airGapCreator = detectBootFactory.createAirGapCreator(detectConfigurationFactory.createConnectionDetails(), detectConfigurationFactory.createDetectExecutableOptions(), freemarkerConfiguration,
-                    detectConfigurationFactory.createCachedToolInstaller(directoryManager.getSourceDirectory().toPath()));
+                AirGapCreator airGapCreator = detectBootFactory.createAirGapCreator(detectConfigurationFactory.createConnectionDetails(), detectConfigurationFactory.createDetectExecutableOptions(), freemarkerConfiguration);
                 String gradleInspectorVersion = detectConfiguration.getValueOrEmpty(DetectProperties.DETECT_GRADLE_INSPECTOR_VERSION.getProperty())
                                                     .orElse(null);
 
@@ -184,7 +186,9 @@ public class DetectBoot {
             return Optional.of(DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem));
         }
 
-        BootSingletons bootSingletons = detectBootFactory.createRunDependencies(productRunData, detectConfiguration, detectableOptionFactory, detectConfigurationFactory, directoryManager, freemarkerConfiguration, cachedToolInstaller);
+        BootSingletons bootSingletons = detectBootFactory
+                                            .createRunDependencies(productRunData, detectConfiguration, detectableOptionFactory, detectConfigurationFactory, directoryManager, freemarkerConfiguration, installedToolManager,
+                                                installedToolLocator);
         return Optional.of(DetectBootResult.run(bootSingletons, detectConfiguration, productRunData, directoryManager, diagnosticSystem));
     }
 

@@ -49,6 +49,7 @@ import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeUtility;
 import com.synopsys.integration.detect.lifecycle.shutdown.ShutdownDecider;
 import com.synopsys.integration.detect.lifecycle.shutdown.ShutdownDecision;
 import com.synopsys.integration.detect.lifecycle.shutdown.ShutdownManager;
+import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
 import com.synopsys.integration.detect.workflow.DetectRunId;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -100,6 +101,7 @@ public class Application implements ApplicationRunner {
 
         ReportListener.createDefault(eventSystem);
         FormattedOutputManager formattedOutputManager = new FormattedOutputManager(eventSystem);
+        InstalledToolManager installedToolManager = new InstalledToolManager(); // TODO- pass this around
 
         //Before boot even begins, we create a new Spring context for Detect to work within.
         logger.debug("Initializing detect.");
@@ -111,7 +113,7 @@ public class Application implements ApplicationRunner {
 
         boolean shouldForceSuccess = false;
 
-        Optional<DetectBootResult> detectBootResultOptional = bootApplication(detectRunId, applicationArguments.getSourceArgs(), eventSystem, exitCodeManager, gson, detectInfo, fileFinder);
+        Optional<DetectBootResult> detectBootResultOptional = bootApplication(detectRunId, applicationArguments.getSourceArgs(), eventSystem, exitCodeManager, gson, detectInfo, fileFinder, installedToolManager);
 
         if (detectBootResultOptional.isPresent()) {
             DetectBootResult detectBootResult = detectBootResultOptional.get();
@@ -130,6 +132,9 @@ public class Application implements ApplicationRunner {
             detectBootResult.getDirectoryManager()
                 .ifPresent(directoryManager -> createStatusOutputFile(formattedOutputManager, detectInfo, directoryManager));
 
+            //Create installed tool cache file. TODO- make sure we're not overriding/losing data that we dont have to/want to (should read old file before writing new one)
+            detectBootResult.getDirectoryManager().ifPresent(directoryManager -> createCachedToolsFile(installedToolManager, directoryManager));
+
             shutdownApplication(detectBootResult, exitCodeManager);
         } else {
             logger.info("Will not create status file, detect did not boot.");
@@ -141,7 +146,7 @@ public class Application implements ApplicationRunner {
     }
 
     private Optional<DetectBootResult> bootApplication(DetectRunId detectRunId, String[] sourceArgs, EventSystem eventSystem, ExitCodeManager exitCodeManager, Gson gson, DetectInfo detectInfo,
-        FileFinder fileFinder) {
+        FileFinder fileFinder, InstalledToolManager installedToolManager) {
         Optional<DetectBootResult> bootResult = Optional.empty();
         try {
             logger.debug("Detect boot begin.");
@@ -150,7 +155,7 @@ public class Application implements ApplicationRunner {
             List<PropertySource> propertySources = new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironmentSafely(environment, logger::error));
 
             DetectBootFactory detectBootFactory = new DetectBootFactory(detectRunId, detectInfo, gson, eventSystem, fileFinder);
-            DetectBoot detectBoot = new DetectBoot(eventSystem, gson, detectBootFactory, detectArgumentState, propertySources);
+            DetectBoot detectBoot = new DetectBoot(eventSystem, gson, detectBootFactory, detectArgumentState, propertySources, installedToolManager);
 
             bootResult = detectBoot.boot(detectInfo.getDetectVersion());
 
@@ -169,7 +174,7 @@ public class Application implements ApplicationRunner {
         Optional<ProductRunData> optionalProductRunData = detectBootResult.getProductRunData();
         if (detectBootResult.getBootType() == DetectBootResult.BootType.RUN && optionalProductRunData.isPresent() && optionalRunContext.isPresent()) {
             logger.debug("Detect will attempt to run.");
-            DetectRun detectRun = new DetectRun(exitCodeManager, eventSystem);
+            DetectRun detectRun = new DetectRun(exitCodeManager);
             detectRun.run(optionalRunContext.get());
 
         } else {
@@ -192,6 +197,10 @@ public class Application implements ApplicationRunner {
             logger.warn("There was a problem writing the status output file. The detect run was not affected.");
             logger.debug("The problem creating the status file was: ", e);
         }
+    }
+
+    private void createCachedToolsFile(InstalledToolManager installedToolManager, DirectoryManager directoryManager) {
+        //TODO- implement
     }
 
     private void shutdownApplication(DetectBootResult detectBootResult, ExitCodeManager exitCodeManager) {
