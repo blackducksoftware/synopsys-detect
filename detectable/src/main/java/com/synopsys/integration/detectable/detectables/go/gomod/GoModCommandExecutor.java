@@ -33,6 +33,7 @@ public class GoModCommandExecutor {
     private static final String FAILURE_MSG_QUERYING_GO_FOR_THE_LIST_OF_MODULES = "Querying go for the list of modules failed: ";
     private static final String FAILURE_MSG_QUERYING_FOR_THE_VERSION = "Querying for the version failed: ";
     private static final String FAILURE_MSG_QUERYING_FOR_GO_MOD_WHY = "Querying for the go modules compiled into the binary failed:";
+    private static final String FAILURE_MSG_LOGGING_VERSION = "Attempt to log go executable version failed: ";
     private static final Pattern GENERATE_GO_LIST_U_JSON_OUTPUT_PATTERN = Pattern.compile("\\d+\\.[\\d.]+");
 
     private final DetectableExecutableRunner executableRunner;
@@ -43,6 +44,19 @@ public class GoModCommandExecutor {
 
     List<String> generateGoListOutput(File directory, ExecutableTarget goExe) throws ExecutableRunnerException, DetectableException {
         return execute(directory, goExe, FAILURE_MSG_QUERYING_GO_FOR_THE_LIST_OF_MODULES, "list", "-m", "-json");
+    }
+
+    void logGoVersion(File directory, ExecutableTarget goExe) throws ExecutableRunnerException, DetectableException {
+        if (logger.isDebugEnabled()) {
+            try {
+                List<String> output = execute(directory, goExe, FAILURE_MSG_LOGGING_VERSION, "version");
+                if (output.size() > 0) {
+                    logger.debug(output.get(0));
+                }
+            } catch (Exception e) {
+                logger.debug("Unable to log go version: {}", e.getMessage());
+            }
+        }
     }
 
     List<String> generateGoListUJsonOutput(File directory, ExecutableTarget goExe) throws ExecutableRunnerException, DetectableException {
