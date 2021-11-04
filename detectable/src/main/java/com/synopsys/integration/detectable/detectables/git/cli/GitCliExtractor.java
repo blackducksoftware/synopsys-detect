@@ -12,7 +12,9 @@ import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Optional;
 
+import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.ExecutableTarget;
@@ -29,19 +31,21 @@ import com.synopsys.integration.log.Slf4jIntLogger;
 public class GitCliExtractor {
     private static final String TAG_TOKEN = "tag: ";
 
-    private final IntLogger logger = new Slf4jIntLogger(LoggerFactory.getLogger(this.getClass()));
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final DetectableExecutableRunner executableRunner;
     private final GitUrlParser gitUrlParser;
+    private final ToolVersionLogger toolVersionLogger;
 
-    public GitCliExtractor(DetectableExecutableRunner executableRunner, GitUrlParser gitUrlParser) {
+    public GitCliExtractor(DetectableExecutableRunner executableRunner, GitUrlParser gitUrlParser, ToolVersionLogger toolVersionLogger) {
         this.executableRunner = executableRunner;
         this.gitUrlParser = gitUrlParser;
+        this.toolVersionLogger = toolVersionLogger;
     }
 
     public Extraction extract(ExecutableTarget gitExecutable, File directory) {
         try {
-            OldToolVersionLogger.log(executableRunner, directory, gitExecutable);
+            toolVersionLogger.logOutputSafelyIfDebug(logger, () -> executableRunner.execute(ExecutableUtils.createFromTarget(directory, gitExecutable, "--version")), "git");
             String repoName = getRepoName(gitExecutable, directory);
             String branch = getRepoBranch(gitExecutable, directory);
 

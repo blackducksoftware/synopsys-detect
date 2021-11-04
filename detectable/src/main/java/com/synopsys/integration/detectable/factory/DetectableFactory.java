@@ -583,7 +583,7 @@ public class DetectableFactory {
     }
 
     private GitCliExtractor gitCliExtractor() {
-        return new GitCliExtractor(executableRunner, gitUrlParser());
+        return new GitCliExtractor(executableRunner, gitUrlParser(), toolVersionLogger);
     }
 
     private GoLockParser goLockParser() {
