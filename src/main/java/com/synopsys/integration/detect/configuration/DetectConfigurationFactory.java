@@ -54,7 +54,6 @@ import com.synopsys.integration.detect.lifecycle.boot.decision.RunDecision;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions;
 import com.synopsys.integration.detect.lifecycle.run.AggregateOptions;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
-import com.synopsys.integration.detect.tool.cache.CachedToolInstaller;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableOptions;
 import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
@@ -171,11 +170,6 @@ public class DetectConfigurationFactory {
         Boolean ignoreFailures = getValue(DetectProperties.DETECT_IGNORE_CONNECTION_FAILURES);
         Boolean testConnections = getValue(DetectProperties.DETECT_TEST_CONNECTION);
         return new ProductBootOptions(ignoreFailures, testConnections);
-    }
-
-    public CachedToolInstaller createCachedToolInstaller(Path sourcePath) {
-        Path pathToInspectorCacheFile = getPathOrDefault(DetectProperties.DETECT_INSPECTOR_CACHE_FILE_PATH, sourcePath);
-        return new CachedToolInstaller(pathToInspectorCacheFile, gson);
     }
 
     public ConnectionDetails createConnectionDetails() throws DetectUserFriendlyException {
