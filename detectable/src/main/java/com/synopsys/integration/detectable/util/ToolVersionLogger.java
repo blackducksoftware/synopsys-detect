@@ -7,12 +7,24 @@
  */
 package com.synopsys.integration.detectable.util;
 
-import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.ExecutableUtils;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+
 public class ToolVersionLogger {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    public void log(DetectableExecutableRunner executableRunner, ExecutableTarget executableTarget, File projectDir) {
+        log(executableRunner, executableTarget, projectDir, "--version");
+    }
+
+    public void log(DetectableExecutableRunner executableRunner, ExecutableTarget executableTarget, File projectDir, String versionArgument) {
+        log(() -> executableRunner.execute(ExecutableUtils.createFromTarget(projectDir, executableTarget, versionArgument)));
+    }
 
     @FunctionalInterface
     public interface ToolExecutor {
