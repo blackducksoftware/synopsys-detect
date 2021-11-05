@@ -21,6 +21,7 @@ import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.enums.DependencyType;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
+import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonFiles;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
@@ -34,15 +35,17 @@ public class PnpmLockDetectable extends Detectable {
     private final FileFinder fileFinder;
     private final PnpmLockExtractor pnpmExtractor;
     private final List<DependencyType> dependencyTypes;
+    private final PackageJsonFiles packageJsonFiles;
 
     private File pnpmLockYaml;
     private File packageJson;
 
-    public PnpmLockDetectable(DetectableEnvironment environment, FileFinder fileFinder, PnpmLockExtractor pnpmExtractor, List<DependencyType> dependencyTypes) {
+    public PnpmLockDetectable(DetectableEnvironment environment, FileFinder fileFinder, PnpmLockExtractor pnpmExtractor, List<DependencyType> dependencyTypes, PackageJsonFiles packageJsonFiles) {
         super(environment);
         this.fileFinder = fileFinder;
         this.pnpmExtractor = pnpmExtractor;
         this.dependencyTypes = dependencyTypes;
+        this.packageJsonFiles = packageJsonFiles;
     }
 
     @Override
@@ -60,6 +63,7 @@ public class PnpmLockDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
-        return pnpmExtractor.extract(pnpmLockYaml, packageJson, dependencyTypes);
+        PnpmLinkedPackageResolver linkedPackageResolver = new PnpmLinkedPackageResolver(pnpmLockYaml.getParentFile(), packageJsonFiles); // we are assuming parent of the lock file we are parsing is the project root
+        return pnpmExtractor.extract(pnpmLockYaml, packageJson, dependencyTypes, linkedPackageResolver);
     }
 }

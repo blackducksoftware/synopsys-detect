@@ -13,6 +13,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class PnpmLockYaml {
     @Nullable
+    public Map<String, PnpmProjectPackage> importers;
+
+    @Nullable
     public Map<String, String> dependencies;
 
     @Nullable
