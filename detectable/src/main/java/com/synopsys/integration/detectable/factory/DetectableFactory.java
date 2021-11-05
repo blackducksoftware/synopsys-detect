@@ -441,7 +441,7 @@ public class DetectableFactory {
     }
 
     public PnpmLockDetectable createPnpmLockDetectable(DetectableEnvironment environment, List<DependencyType> dependencyTypes) {
-        return new PnpmLockDetectable(environment, fileFinder, pnpmLockExtractor(), dependencyTypes);
+        return new PnpmLockDetectable(environment, fileFinder, pnpmLockExtractor(), dependencyTypes, packageJsonFiles());
     }
 
     public PodlockDetectable createPodLockDetectable(DetectableEnvironment environment) {
@@ -759,7 +759,7 @@ public class DetectableFactory {
     }
 
     private PnpmLockExtractor pnpmLockExtractor() {
-        return new PnpmLockExtractor(gson, pnpmLockYamlParser());
+        return new PnpmLockExtractor(pnpmLockYamlParser(), packageJsonFiles());
     }
 
     private PnpmLockYamlParser pnpmLockYamlParser() {
