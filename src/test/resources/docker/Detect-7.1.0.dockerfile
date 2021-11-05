@@ -1,4 +1,4 @@
-FROM gradle:5.2.0-jdk11-slim
+FROM gradle:6.9-jdk11
 
 ENV SRC_DIR=/opt/project/src
 ENV JAVA_TOOL_OPTIONS="-Dhttps.protocols=TLSv1.2"
