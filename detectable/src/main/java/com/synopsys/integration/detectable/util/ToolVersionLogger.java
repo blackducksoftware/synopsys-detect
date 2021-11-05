@@ -19,7 +19,7 @@ public class ToolVersionLogger {
         public void execute() throws Exception;
     }
 
-    public void logOutputSafelyIfDebug(ToolExecutor showToolVersionExecutor) {
+    public void log(ToolExecutor showToolVersionExecutor) {
         if (logger.isDebugEnabled()) {
             try {
                 showToolVersionExecutor.execute(); // executors log output at debug

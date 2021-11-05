@@ -40,7 +40,7 @@ public class ConanCliExtractor {
     }
 
     public Extraction extract(File projectDir, ExecutableTarget conanExe, ConanCliExtractorOptions conanCliExtractorOptions) {
-        toolVersionLogger.logOutputSafelyIfDebug(() -> executableRunner.execute(ExecutableUtils.createFromTarget(projectDir, conanExe, "--version")));
+        toolVersionLogger.log(() -> executableRunner.execute(ExecutableUtils.createFromTarget(projectDir, conanExe, "--version")));
         List<String> exeArgs = generateConanInfoCmdArgs(projectDir, conanCliExtractorOptions);
         ExecutableOutput conanInfoOutput;
         try {
