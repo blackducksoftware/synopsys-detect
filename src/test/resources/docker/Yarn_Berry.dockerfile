@@ -22,5 +22,5 @@ RUN mkdir -p ${SRC_DIR}
 
 RUN git clone --depth 1 -b @yarnpkg/shell/2.4.1 https://github.com/yarnpkg/berry.git ${SRC_DIR}
 
-#RUN cd ${SRC_DIR} \
-   #&& git checkout 6b9df772ac785f73e6d08f0fc8c3f1718f296671 && yarn build:cli
+RUN cd ${SRC_DIR} \
+   && yarn build:cli
