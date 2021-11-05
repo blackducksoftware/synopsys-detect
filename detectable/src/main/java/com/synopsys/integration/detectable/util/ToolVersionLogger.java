@@ -23,17 +23,17 @@ public class ToolVersionLogger {
         this.executableRunner = executableRunner;
     }
 
-    public void log(ExecutableTarget executableTarget, File projectDir) {
-        log(executableTarget, projectDir, "--version");
+    public void log(File projectDir, ExecutableTarget executableTarget) {
+        log(projectDir, executableTarget, "--version");
     }
 
-    public void log(ExecutableTarget executableTarget, File projectDir, String versionArgument) {
+    public void log(File projectDir, ExecutableTarget executableTarget, String versionArgument) {
         log(() -> executableRunner.execute(ExecutableUtils.createFromTarget(projectDir, executableTarget, versionArgument)));
     }
 
     @FunctionalInterface
     public interface ToolExecutor {
-        public void execute() throws Exception;
+        void execute() throws Exception;
     }
 
     public void log(ToolExecutor showToolVersionExecutor) {
