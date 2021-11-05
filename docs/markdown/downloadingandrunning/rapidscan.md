@@ -4,7 +4,7 @@ Rapid Scan or Rapid Scan Mode is a new way of running [solution_name] with Black
 
 It is enabled by adding [--detect.blackduck.scan.mode=RAPID](../properties/configuration/blackduck-server.md#detect-scan-mode-advanced) to a run of detect.
 
-The rapid scan can be configured by providing a file named '.bd-rapid-scan.yaml' in the source directory. [solution_name] will automatically upload the config file during a rapid scan.
+Policy overrides for a rapid scan can be provided using a scan custom config file, see Scan Custom Config File for details on how to provide the file and it's content.
 
 # Overview
 
@@ -64,3 +64,30 @@ The [solution_name] property detect.policy.check.fail.on.severities does not app
 [solution_name] cannot create a Risk or Notices report for Rapid Scans.
 
 Rapid Scan requires bdio2 and will not run if bdio2 is not enabled.
+
+# Scan Custom Config File
+
+Rapid scan policy overrides can be provided in a file named '.bd-rapid-scan.yaml' in the source directory. The file name must match exactly. 
+
+[solution_name] will automatically upload the config file during a rapid scan when present. 
+
+The file is a YAML file intended to be checked-in to SCM alongside other build config files. 
+
+NOTE that this file format is dependent on Black Duck and in the future, different versions of Black Duck may require a different file format.
+  
+```
+version: 1.0
+policy:
+  overrides:
+  - policyName: policyA
+    components:
+    - name: component1
+      version: version1
+    - name: component2
+  - policyName: policyB
+    components:
+    - name: component3
+      version: version3
+```
+
+Each policy override must apply to a list of specific components, on a specific version (e.g. component1 + version1) or on all versions (e.g. component2).
