@@ -43,7 +43,7 @@ public class GitCliExtractor {
 
     public Extraction extract(ExecutableTarget gitExecutable, File directory) {
         try {
-            toolVersionLogger.logOutputSafelyIfDebug(() -> executableRunner.execute(ExecutableUtils.createFromTarget(directory, gitExecutable, "--version")), "git");
+            toolVersionLogger.logOutputSafelyIfDebug(() -> executableRunner.execute(ExecutableUtils.createFromTarget(directory, gitExecutable, "--version")));
             String repoName = getRepoName(gitExecutable, directory);
             String branch = getRepoBranch(gitExecutable, directory);
 

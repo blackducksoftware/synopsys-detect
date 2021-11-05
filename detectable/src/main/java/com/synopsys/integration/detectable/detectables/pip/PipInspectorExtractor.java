@@ -38,8 +38,8 @@ public class PipInspectorExtractor {
     }
 
     public Extraction extract(File directory, ExecutableTarget pythonExe, ExecutableTarget pipExe, File pipInspector, File setupFile, List<Path> requirementFilePaths, String providedProjectName) {
-        toolVersionLogger.logOutputSafelyIfDebug(() -> executableRunner.execute(ExecutableUtils.createFromTarget(directory, pythonExe, "--version")), "python");
-        toolVersionLogger.logOutputSafelyIfDebug(() -> executableRunner.execute(ExecutableUtils.createFromTarget(directory, pipExe, "--version")), "pip");
+        toolVersionLogger.logOutputSafelyIfDebug(() -> executableRunner.execute(ExecutableUtils.createFromTarget(directory, pythonExe, "--version")));
+        toolVersionLogger.logOutputSafelyIfDebug(() -> executableRunner.execute(ExecutableUtils.createFromTarget(directory, pipExe, "--version")));
         Extraction extractionResult;
         try {
             String projectName = getProjectName(directory, pythonExe, setupFile, providedProjectName);

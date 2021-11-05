@@ -19,12 +19,12 @@ public class ToolVersionLogger {
         public void execute() throws Exception;
     }
 
-    public void logOutputSafelyIfDebug(ToolExecutor showToolVersionExecutor, String toolName) {
+    public void logOutputSafelyIfDebug(ToolExecutor showToolVersionExecutor) {
         if (logger.isDebugEnabled()) {
             try {
                 showToolVersionExecutor.execute(); // executors log output at debug
             } catch (Exception e) {
-                logger.debug("Unable to log {} version: {}", toolName, e.getMessage());
+                logger.debug("Unable to log tool version: {}", e.getMessage());
             }
         }
     }
