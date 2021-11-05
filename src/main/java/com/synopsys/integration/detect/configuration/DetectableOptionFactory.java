@@ -46,8 +46,8 @@ import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmLockfileO
 import com.synopsys.integration.detectable.detectables.npm.packagejson.NpmPackageJsonParseDetectableOptions;
 import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectableOptions;
-import com.synopsys.integration.detectable.detectables.pip.PipInspectorDetectableOptions;
-import com.synopsys.integration.detectable.detectables.pip.PipenvDetectableOptions;
+import com.synopsys.integration.detectable.detectables.pip.inspector.PipInspectorDetectableOptions;
+import com.synopsys.integration.detectable.detectables.pipenv.PipenvDetectableOptions;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorOptions;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectableOptions;
 import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheOptions;
@@ -220,8 +220,8 @@ public class DetectableOptionFactory {
     public PipInspectorDetectableOptions createPipInspectorDetectableOptions() {
         String pipProjectName = getNullableValue(DetectProperties.DETECT_PIP_PROJECT_NAME);
         List<Path> requirementsFilePath = getValue(DetectProperties.DETECT_PIP_REQUIREMENTS_PATH).stream()
-                                              .map(it -> it.resolvePath(pathResolver))
-                                              .collect(Collectors.toList());
+            .map(it -> it.resolvePath(pathResolver))
+            .collect(Collectors.toList());
         return new PipInspectorDetectableOptions(pipProjectName, requirementsFilePath);
     }
 

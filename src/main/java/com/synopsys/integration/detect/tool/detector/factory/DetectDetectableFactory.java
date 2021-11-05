@@ -52,10 +52,10 @@ import com.synopsys.integration.detectable.detectables.nuget.NugetProjectInspect
 import com.synopsys.integration.detectable.detectables.nuget.NugetSolutionDetectable;
 import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDetectable;
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectable;
-import com.synopsys.integration.detectable.detectables.pip.PipInspectorDetectable;
-import com.synopsys.integration.detectable.detectables.pip.PipenvDetectable;
-import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryDetectable;
+import com.synopsys.integration.detectable.detectables.pip.inspector.PipInspectorDetectable;
+import com.synopsys.integration.detectable.detectables.pipenv.PipenvDetectable;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockDetectable;
+import com.synopsys.integration.detectable.detectables.poetry.PoetryDetectable;
 import com.synopsys.integration.detectable.detectables.rebar.RebarDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemlock.GemlockDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectable;
