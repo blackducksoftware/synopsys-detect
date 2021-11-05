@@ -70,7 +70,7 @@ public class BitbakeSession {
     }
 
     public void logBitbakeVersion() {
-        toolVersionLogger.logOutputSafelyIfDebug(logger, () -> runBitbake("bitbake --version"), "bitbake");
+        toolVersionLogger.logOutputSafelyIfDebug(() -> runBitbake("bitbake --version"), "bitbake");
     }
 
     private Optional<File> findTaskDependsFile(File sourceDirectory, File outputDirectory, boolean followSymLinks, Integer searchDepth) {

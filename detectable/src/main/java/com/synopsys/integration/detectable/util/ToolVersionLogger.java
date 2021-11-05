@@ -9,18 +9,20 @@ package com.synopsys.integration.detectable.util;
 
 import com.synopsys.integration.executable.ExecutableOutput;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ToolVersionLogger {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @FunctionalInterface
-    public interface ExceptionThrowingSupplier<T> {
-        public T get() throws Exception;
+    public interface ToolExecutor {
+        public void execute() throws Exception;
     }
 
-    public void logOutputSafelyIfDebug(Logger logger, ExceptionThrowingSupplier<ExecutableOutput> executor, String toolName) {
+    public void logOutputSafelyIfDebug(ToolExecutor showToolVersionExecutor, String toolName) {
         if (logger.isDebugEnabled()) {
             try {
-                logger.debug(executor.get().getStandardOutput());
+                showToolVersionExecutor.execute(); // executors log output at debug
             } catch (Exception e) {
                 logger.debug("Unable to log {} version: {}", toolName, e.getMessage());
             }

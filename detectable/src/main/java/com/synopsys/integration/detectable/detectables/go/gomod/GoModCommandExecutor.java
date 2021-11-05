@@ -49,7 +49,7 @@ public class GoModCommandExecutor {
     }
 
     void logGoVersion(File directory, ExecutableTarget goExe) {
-        toolVersionLogger.logOutputSafelyIfDebug(logger, () -> executableRunner.execute(ExecutableUtils.createFromTarget(directory, goExe, "version")), "go");
+        toolVersionLogger.logOutputSafelyIfDebug(() -> executableRunner.execute(ExecutableUtils.createFromTarget(directory, goExe, "version")), "go");
     }
 
     List<String> generateGoListUJsonOutput(File directory, ExecutableTarget goExe) throws ExecutableRunnerException, DetectableException {

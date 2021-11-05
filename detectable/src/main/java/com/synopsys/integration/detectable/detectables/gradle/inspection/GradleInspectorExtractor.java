@@ -55,7 +55,7 @@ public class GradleInspectorExtractor {
 
     public Extraction extract(File directory, ExecutableTarget gradleExe, @Nullable String gradleCommand, ProxyInfo proxyInfo, File gradleInspector, File outputDirectory) throws ExecutableFailedException {
         try {
-            toolVersionLogger.logOutputSafelyIfDebug(logger, () -> gradleRunner.getExecutableRunner().execute(ExecutableUtils.createFromTarget(directory, gradleExe, "--version")), "gradle");
+            toolVersionLogger.logOutputSafelyIfDebug(() -> gradleRunner.getExecutableRunner().execute(ExecutableUtils.createFromTarget(directory, gradleExe, "--version")), "gradle");
             gradleRunner.runGradleDependencies(directory, gradleExe, gradleInspector, gradleCommand, proxyInfo, outputDirectory);
 
             File rootProjectMetadataFile = fileFinder.findFile(outputDirectory, "rootProjectMetadata.txt");
