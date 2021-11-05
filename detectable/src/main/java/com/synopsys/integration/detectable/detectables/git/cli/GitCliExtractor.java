@@ -21,7 +21,6 @@ import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.util.OldToolVersionLogger;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunnerException;
@@ -31,7 +30,7 @@ import com.synopsys.integration.log.Slf4jIntLogger;
 public class GitCliExtractor {
     private static final String TAG_TOKEN = "tag: ";
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final IntLogger logger = new Slf4jIntLogger(LoggerFactory.getLogger(this.getClass()));
 
     private final DetectableExecutableRunner executableRunner;
     private final GitUrlParser gitUrlParser;
