@@ -41,7 +41,7 @@ public class MavenCliExtractor {
 
     //TODO: Limit 'extractors' to 'execute' and 'read', delegate all other work.
     public Extraction extract(File directory, ExecutableTarget mavenExe, MavenCliExtractorOptions mavenCliExtractorOptions) throws ExecutableFailedException {
-        toolVersionLogger.log(() -> executableRunner.execute(ExecutableUtils.createFromTarget(directory, mavenExe, "--version")));
+        toolVersionLogger.log(executableRunner, mavenExe, directory);
         List<String> commandArguments = commandParser.parseCommandString(mavenCliExtractorOptions.getMavenBuildCommand().orElse("")).stream()
                                             .filter(arg -> !arg.equals("dependency:tree"))
                                             .collect(Collectors.toList());
