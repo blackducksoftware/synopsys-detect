@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.detectable.ExecutableTarget;
@@ -23,21 +24,22 @@ import com.synopsys.integration.detectable.detectable.executable.DetectableExecu
 import com.synopsys.integration.detectable.detectables.pip.model.NameVersionCodeLocation;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipInspectorTreeParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.util.OldToolVersionLogger;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class PipInspectorExtractor {
     private final DetectableExecutableRunner executableRunner;
     private final PipInspectorTreeParser pipInspectorTreeParser;
+    private final ToolVersionLogger toolVersionLogger;
 
-    public PipInspectorExtractor(DetectableExecutableRunner executableRunner, PipInspectorTreeParser pipInspectorTreeParser) {
+    public PipInspectorExtractor(DetectableExecutableRunner executableRunner, PipInspectorTreeParser pipInspectorTreeParser, ToolVersionLogger toolVersionLogger) {
         this.executableRunner = executableRunner;
         this.pipInspectorTreeParser = pipInspectorTreeParser;
+        this.toolVersionLogger = toolVersionLogger;
     }
 
     public Extraction extract(File directory, ExecutableTarget pythonExe, ExecutableTarget pipExe, File pipInspector, File setupFile, List<Path> requirementFilePaths, String providedProjectName) {
-        OldToolVersionLogger.log(executableRunner, directory, pythonExe);
-        OldToolVersionLogger.log(executableRunner, directory, pipExe);
+        toolVersionLogger.logOutputSafelyIfDebug(() -> executableRunner.execute(ExecutableUtils.createFromTarget(directory, pythonExe, "--version")), "python");
+        toolVersionLogger.logOutputSafelyIfDebug(() -> executableRunner.execute(ExecutableUtils.createFromTarget(directory, pipExe, "--version")), "pip");
         Extraction extractionResult;
         try {
             String projectName = getProjectName(directory, pythonExe, setupFile, providedProjectName);

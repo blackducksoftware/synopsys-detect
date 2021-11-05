@@ -23,7 +23,6 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.util.OldToolVersionLogger;
 import com.synopsys.integration.executable.ExecutableOutput;
 
 public class MavenCliExtractor {
@@ -42,8 +41,7 @@ public class MavenCliExtractor {
 
     //TODO: Limit 'extractors' to 'execute' and 'read', delegate all other work.
     public Extraction extract(File directory, ExecutableTarget mavenExe, MavenCliExtractorOptions mavenCliExtractorOptions) throws ExecutableFailedException {
-        //toolVersionLogger.logOutputSafelyIfDebug(logger, () -> executableRunner.execute(ExecutableUtils.createFromTarget(directory, conanExe, versionArgument)), "maven");
-        OldToolVersionLogger.log(executableRunner, directory, mavenExe);
+        toolVersionLogger.logOutputSafelyIfDebug(() -> executableRunner.execute(ExecutableUtils.createFromTarget(directory, mavenExe, "--version")), "maven");
         List<String> commandArguments = commandParser.parseCommandString(mavenCliExtractorOptions.getMavenBuildCommand().orElse("")).stream()
                                             .filter(arg -> !arg.equals("dependency:tree"))
                                             .collect(Collectors.toList());

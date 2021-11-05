@@ -758,7 +758,7 @@ public class DetectableFactory {
     }
 
     private PipInspectorExtractor pipInspectorExtractor() {
-        return new PipInspectorExtractor(executableRunner, pipInspectorTreeParser());
+        return new PipInspectorExtractor(executableRunner, pipInspectorTreeParser(), toolVersionLogger);
     }
 
     private PnpmLockExtractor pnpmLockExtractor() {
