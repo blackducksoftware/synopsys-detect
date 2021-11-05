@@ -17,12 +17,17 @@ import java.io.File;
 
 public class ToolVersionLogger {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final DetectableExecutableRunner executableRunner;
 
-    public void log(DetectableExecutableRunner executableRunner, ExecutableTarget executableTarget, File projectDir) {
-        log(executableRunner, executableTarget, projectDir, "--version");
+    public ToolVersionLogger(DetectableExecutableRunner executableRunner) {
+        this.executableRunner = executableRunner;
     }
 
-    public void log(DetectableExecutableRunner executableRunner, ExecutableTarget executableTarget, File projectDir, String versionArgument) {
+    public void log(ExecutableTarget executableTarget, File projectDir) {
+        log(executableTarget, projectDir, "--version");
+    }
+
+    public void log(ExecutableTarget executableTarget, File projectDir, String versionArgument) {
         log(() -> executableRunner.execute(ExecutableUtils.createFromTarget(projectDir, executableTarget, versionArgument)));
     }
 

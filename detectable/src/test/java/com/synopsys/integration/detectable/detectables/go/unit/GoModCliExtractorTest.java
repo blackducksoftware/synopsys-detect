@@ -113,7 +113,7 @@ public class GoModCliExtractorTest {
         Mockito.doAnswer(executableAnswer).when(executableRunner).execute(Mockito.any(Executable.class));
 
         GoModWhyParser goModWhyParser = new GoModWhyParser();
-        GoModCommandExecutor goModCommandExecutor = new GoModCommandExecutor(executableRunner, new ToolVersionLogger());
+        GoModCommandExecutor goModCommandExecutor = new GoModCommandExecutor(executableRunner, new ToolVersionLogger(executableRunner));
         GoModGraphGenerator goModGraphGenerator = new GoModGraphGenerator(new ExternalIdFactory());
         GoListParser goListParser = new GoListParser(new GsonBuilder().create());
         GoGraphParser goGraphParser = new GoGraphParser();

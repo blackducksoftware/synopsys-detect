@@ -273,7 +273,7 @@ public class DetectableFactory {
         this.executableRunner = executableRunner;
         this.externalIdFactory = externalIdFactory;
         this.gson = gson;
-        this.toolVersionLogger = new ToolVersionLogger();
+        this.toolVersionLogger = new ToolVersionLogger(executableRunner);
     }
 
     //#region Detectables
