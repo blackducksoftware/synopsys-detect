@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,10 +38,11 @@ public class BitbakeSession {
     private final File buildEnvScript;
     private final List<String> sourceArguments;
     private final ExecutableTarget bashExecutable;
+    private final ToolVersionLogger toolVersionLogger;
 
-    public BitbakeSession(FileFinder fileFinder, DetectableExecutableRunner executableRunner, BitbakeRecipesParser bitbakeRecipesParser, File workingDirectory, File buildEnvScript,
-        List<String> sourceArguments,
-        ExecutableTarget bashExecutable) {
+    public BitbakeSession(FileFinder fileFinder, DetectableExecutableRunner executableRunner, BitbakeRecipesParser bitbakeRecipesParser,
+                          File workingDirectory, File buildEnvScript, List<String> sourceArguments,
+                          ExecutableTarget bashExecutable, ToolVersionLogger toolVersionLogger) {
         this.fileFinder = fileFinder;
         this.executableRunner = executableRunner;
         this.bitbakeRecipesParser = bitbakeRecipesParser;
@@ -48,6 +50,7 @@ public class BitbakeSession {
         this.buildEnvScript = buildEnvScript;
         this.sourceArguments = sourceArguments;
         this.bashExecutable = bashExecutable;
+        this.toolVersionLogger = toolVersionLogger;
     }
 
     public Optional<File> executeBitbakeForDependencies(File sourceDirectory, String packageName, boolean followSymLinks, Integer searchDepth)
@@ -64,6 +67,10 @@ public class BitbakeSession {
 
         return findTaskDependsFile(sourceDirectory, workingDirectory, followSymLinks, searchDepth);
 
+    }
+
+    public void logBitbakeVersion() {
+        toolVersionLogger.log(() -> runBitbake("bitbake --version"));
     }
 
     private Optional<File> findTaskDependsFile(File sourceDirectory, File outputDirectory, boolean followSymLinks, Integer searchDepth) {

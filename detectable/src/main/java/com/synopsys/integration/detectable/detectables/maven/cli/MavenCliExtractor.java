@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.common.util.Bds;
@@ -22,23 +23,25 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import com.synopsys.integration.executable.ExecutableOutput;
 
 public class MavenCliExtractor {
     private final DetectableExecutableRunner executableRunner;
     private final MavenCodeLocationPackager mavenCodeLocationPackager;
     private final CommandParser commandParser;
+    private final ToolVersionLogger toolVersionLogger;
 
-    public MavenCliExtractor(DetectableExecutableRunner executableRunner, MavenCodeLocationPackager mavenCodeLocationPackager, CommandParser commandParser) {
+    public MavenCliExtractor(DetectableExecutableRunner executableRunner, MavenCodeLocationPackager mavenCodeLocationPackager, CommandParser commandParser,
+                             ToolVersionLogger toolVersionLogger) {
         this.executableRunner = executableRunner;
         this.mavenCodeLocationPackager = mavenCodeLocationPackager;
         this.commandParser = commandParser;
+        this.toolVersionLogger = toolVersionLogger;
     }
 
     //TODO: Limit 'extractors' to 'execute' and 'read', delegate all other work.
     public Extraction extract(File directory, ExecutableTarget mavenExe, MavenCliExtractorOptions mavenCliExtractorOptions) throws ExecutableFailedException {
-        ToolVersionLogger.log(executableRunner, directory, mavenExe);
+        toolVersionLogger.log(directory, mavenExe);
         List<String> commandArguments = commandParser.parseCommandString(mavenCliExtractorOptions.getMavenBuildCommand().orElse("")).stream()
                                             .filter(arg -> !arg.equals("dependency:tree"))
                                             .collect(Collectors.toList());

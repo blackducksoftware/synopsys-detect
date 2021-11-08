@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.synopsys.integration.detectable.ExecutableUtils;
+import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -27,7 +29,6 @@ import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.G
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportTransformer;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleRootMetadataParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
 import com.synopsys.integration.util.NameVersion;
 
@@ -39,20 +40,22 @@ public class GradleInspectorExtractor {
     private final GradleReportParser gradleReportParser;
     private final GradleReportTransformer gradleReportTransformer;
     private final GradleRootMetadataParser gradleRootMetadataParser;
+    private final ToolVersionLogger toolVersionLogger;
 
     public GradleInspectorExtractor(FileFinder fileFinder, GradleRunner gradleRunner, GradleReportParser gradleReportParser,
         GradleReportTransformer gradleReportTransformer,
-        GradleRootMetadataParser gradleRootMetadataParser) {
+        GradleRootMetadataParser gradleRootMetadataParser, ToolVersionLogger toolVersionLogger) {
         this.fileFinder = fileFinder;
         this.gradleRunner = gradleRunner;
         this.gradleReportParser = gradleReportParser;
         this.gradleReportTransformer = gradleReportTransformer;
         this.gradleRootMetadataParser = gradleRootMetadataParser;
+        this.toolVersionLogger = toolVersionLogger;
     }
 
     public Extraction extract(File directory, ExecutableTarget gradleExe, @Nullable String gradleCommand, ProxyInfo proxyInfo, File gradleInspector, File outputDirectory) throws ExecutableFailedException {
         try {
-            ToolVersionLogger.log(gradleRunner.getExecutableRunner(), directory, gradleExe);
+            toolVersionLogger.log(directory, gradleExe);
             gradleRunner.runGradleDependencies(directory, gradleExe, gradleInspector, gradleCommand, proxyInfo, outputDirectory);
 
             File rootProjectMetadataFile = fileFinder.findFile(outputDirectory, "rootProjectMetadata.txt");

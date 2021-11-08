@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.synopsys.integration.executable.ExecutableRunner;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -31,14 +32,16 @@ public class ConanCliExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectableExecutableRunner executableRunner;
     private final ConanInfoParser conanInfoParser;
+    private final ToolVersionLogger toolVersionLogger;
 
-    public ConanCliExtractor(DetectableExecutableRunner executableRunner, ConanInfoParser conanInfoParser) {
+    public ConanCliExtractor(DetectableExecutableRunner executableRunner, ConanInfoParser conanInfoParser, ToolVersionLogger toolVersionLogger) {
         this.executableRunner = executableRunner;
         this.conanInfoParser = conanInfoParser;
+        this.toolVersionLogger = toolVersionLogger;
     }
 
     public Extraction extract(File projectDir, ExecutableTarget conanExe, ConanCliExtractorOptions conanCliExtractorOptions) {
-        ToolVersionLogger.log(executableRunner, projectDir, conanExe);
+        toolVersionLogger.log(projectDir, conanExe);
         List<String> exeArgs = generateConanInfoCmdArgs(projectDir, conanCliExtractorOptions);
         ExecutableOutput conanInfoOutput;
         try {

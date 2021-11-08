@@ -13,6 +13,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import org.xml.sax.SAXException;
 
 import com.google.gson.Gson;
@@ -265,12 +266,14 @@ public class DetectableFactory {
     private final DetectableExecutableRunner executableRunner;
     private final ExternalIdFactory externalIdFactory;
     private final Gson gson;
+    private final ToolVersionLogger toolVersionLogger;
 
     public DetectableFactory(FileFinder fileFinder, DetectableExecutableRunner executableRunner, ExternalIdFactory externalIdFactory, Gson gson) {
         this.fileFinder = fileFinder;
         this.executableRunner = executableRunner;
         this.externalIdFactory = externalIdFactory;
         this.gson = gson;
+        this.toolVersionLogger = new ToolVersionLogger(executableRunner);
     }
 
     //#region Detectables
@@ -580,7 +583,7 @@ public class DetectableFactory {
     }
 
     private GitCliExtractor gitCliExtractor() {
-        return new GitCliExtractor(executableRunner, gitUrlParser());
+        return new GitCliExtractor(executableRunner, gitUrlParser(), toolVersionLogger);
     }
 
     private GoLockParser goLockParser() {
@@ -596,7 +599,7 @@ public class DetectableFactory {
     }
 
     private GoModCommandExecutor goModCommandExecutor() {
-        return new GoModCommandExecutor(executableRunner);
+        return new GoModCommandExecutor(executableRunner, toolVersionLogger);
     }
 
     private GoModGraphGenerator goModGraphGraphGenerator() {
@@ -648,7 +651,7 @@ public class DetectableFactory {
     }
 
     private MavenCliExtractor mavenCliExtractor() {
-        return new MavenCliExtractor(executableRunner, mavenCodeLocationPackager(), commandParser());
+        return new MavenCliExtractor(executableRunner, mavenCodeLocationPackager(), commandParser(), toolVersionLogger);
     }
 
     private CommandParser commandParser() {
@@ -671,7 +674,7 @@ public class DetectableFactory {
         NodeElementParser nodeElementParser = new NodeElementParser(conanInfoLineAnalyzer);
         ConanInfoNodeParser conanInfoNodeParser = new ConanInfoNodeParser(conanInfoLineAnalyzer, nodeElementParser);
         ConanInfoParser conanInfoParser = new ConanInfoParser(conanInfoNodeParser, conanCodeLocationGenerator, externalIdFactory);
-        return new ConanCliExtractor(executableRunner, conanInfoParser);
+        return new ConanCliExtractor(executableRunner, conanInfoParser, toolVersionLogger);
     }
 
     private NpmCliParser npmCliDependencyFinder() {
@@ -755,7 +758,7 @@ public class DetectableFactory {
     }
 
     private PipInspectorExtractor pipInspectorExtractor() {
-        return new PipInspectorExtractor(executableRunner, pipInspectorTreeParser());
+        return new PipInspectorExtractor(executableRunner, pipInspectorTreeParser(), toolVersionLogger);
     }
 
     private PnpmLockExtractor pnpmLockExtractor() {
@@ -867,7 +870,7 @@ public class DetectableFactory {
     }
 
     private BitbakeExtractor bitbakeExtractor() {
-        return new BitbakeExtractor(executableRunner, fileFinder, graphParserTransformer(), bitbakeGraphTransformer(), bitbakeRecipesParser(), bitbakeRecipesToLayerMap());
+        return new BitbakeExtractor(executableRunner, fileFinder, graphParserTransformer(), bitbakeGraphTransformer(), bitbakeRecipesParser(), bitbakeRecipesToLayerMap(), toolVersionLogger);
     }
 
     private GraphParserTransformer graphParserTransformer() {
@@ -895,7 +898,8 @@ public class DetectableFactory {
     }
 
     private GradleInspectorExtractor gradleInspectorExtractor(GradleInspectorOptions gradleInspectorOptions) {
-        return new GradleInspectorExtractor(fileFinder, gradleRunner(), gradleReportParser(), gradleReportTransformer(gradleInspectorOptions), gradleRootMetadataParser());
+        return new GradleInspectorExtractor(fileFinder, gradleRunner(), gradleReportParser(), gradleReportTransformer(gradleInspectorOptions), gradleRootMetadataParser(),
+                toolVersionLogger);
     }
 
     private DockerExtractor dockerExtractor() {

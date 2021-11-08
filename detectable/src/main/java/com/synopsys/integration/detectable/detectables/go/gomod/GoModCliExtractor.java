@@ -68,6 +68,7 @@ public class GoModCliExtractor {
     }
 
     private List<GoListModule> listModules(File directory, ExecutableTarget goExe) throws DetectableException, ExecutableRunnerException {
+        goModCommandExecutor.logGoVersion(directory, goExe);
         List<String> listOutput = goModCommandExecutor.generateGoListOutput(directory, goExe);
         return goListParser.parseGoListModuleJsonOutput(listOutput);
     }
