@@ -40,9 +40,9 @@ public class BitbakeSession {
     private final ExecutableTarget bashExecutable;
     private final ToolVersionLogger toolVersionLogger;
 
-    public BitbakeSession(FileFinder fileFinder, DetectableExecutableRunner executableRunner, BitbakeRecipesParser bitbakeRecipesParser, File workingDirectory, File buildEnvScript,
-        List<String> sourceArguments,
-        ExecutableTarget bashExecutable, ToolVersionLogger toolVersionLogger) {
+    public BitbakeSession(FileFinder fileFinder, DetectableExecutableRunner executableRunner, BitbakeRecipesParser bitbakeRecipesParser,
+                          File workingDirectory, File buildEnvScript, List<String> sourceArguments,
+                          ExecutableTarget bashExecutable, ToolVersionLogger toolVersionLogger) {
         this.fileFinder = fileFinder;
         this.executableRunner = executableRunner;
         this.bitbakeRecipesParser = bitbakeRecipesParser;
