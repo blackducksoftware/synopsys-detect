@@ -21,11 +21,17 @@ task ditasite() {
 
     doLast {
         ByteArrayOutputStream stdOut = new ByteArrayOutputStream()
+        ByteArrayOutputStream stdError = new ByteArrayOutputStream()
         exec {
             commandLine 'dita', '-v', '--input=detect.ditamap', '--format=sig-webhelp', '-o', '../ditasite'
             workingDir "docs/generated"
             standardOutput = stdOut
+            errorOutput = stdError
         }
+	for (String outputLine: stdError.toString().split('\n')) {
+	    if (outputLine.matches(".*File.*file:.*not found.*"))
+		throw new Exception("dita error: invalid link: " + outputLine)
+	}
 	for (String outputLine: stdOut.toString().split('\n')) {
 	    if (outputLine.matches(".*\\[DOT.*\\].*\\[ERROR\\].*"))
 		throw new Exception("dita error. To run dita by hand: cd docs/generated; dita --input detect.ditamap --format=sig-webhelp --output=../ditasite -v")
