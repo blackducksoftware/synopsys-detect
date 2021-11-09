@@ -25,7 +25,6 @@ import com.synopsys.integration.blackduck.service.model.PolicyStatusDescription;
 import com.synopsys.integration.common.util.Bdo;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
-import com.synopsys.integration.detect.workflow.blackduck.PolicyRulesUtil;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class PolicyChecker {
@@ -73,7 +72,7 @@ public class PolicyChecker {
                 continue;
             }
 
-            for (ComponentPolicyRulesView componentPolicyRulesView : blackDuckService.getAllResponses(PolicyRulesUtil.metaPolicyRulesLink(projectVersionComponentView))) {
+            for (ComponentPolicyRulesView componentPolicyRulesView : blackDuckService.getAllResponses(projectVersionComponentView.metaPolicyRulesLink())) {
                 String componentId = projectVersionComponentView.getComponentName();
                 if (StringUtils.isNotBlank(projectVersionComponentView.getComponentVersionName())) {
                     componentId += ":" + projectVersionComponentView.getComponentVersionName();

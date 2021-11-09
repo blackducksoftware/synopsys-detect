@@ -44,7 +44,6 @@ import com.synopsys.integration.blackduck.http.BlackDuckRequestBuilder;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.DataService;
 import com.synopsys.integration.blackduck.service.request.BlackDuckResponseRequest;
-import com.synopsys.integration.detect.workflow.blackduck.PolicyRulesUtil;
 import com.synopsys.integration.detect.workflow.blackduck.report.BomComponent;
 import com.synopsys.integration.detect.workflow.blackduck.report.PolicyRule;
 import com.synopsys.integration.detect.workflow.blackduck.report.ReportData;
@@ -233,7 +232,7 @@ public class ReportService extends DataService {
         if (bomEntry != null && bomEntry.getApprovalStatus() != null) {
             ProjectVersionComponentPolicyStatusType status = bomEntry.getApprovalStatus();
             if (status == ProjectVersionComponentPolicyStatusType.IN_VIOLATION) {
-                List<ComponentPolicyRulesView> rules = blackDuckApiClient.getAllResponses(PolicyRulesUtil.metaPolicyRulesLink(bomEntry));
+                List<ComponentPolicyRulesView> rules = blackDuckApiClient.getAllResponses(bomEntry.metaPolicyRulesLink());
                 List<PolicyRule> rulesViolated = new ArrayList<>();
                 for (ComponentPolicyRulesView policyRuleView : rules) {
                     PolicyRule ruleViolated = new PolicyRule(policyRuleView.getName(), policyRuleView.getDescription());
