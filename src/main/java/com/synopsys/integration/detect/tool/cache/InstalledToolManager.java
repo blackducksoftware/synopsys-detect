@@ -11,13 +11,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class InstalledToolManager {
-    private Map<InstalledTool, String> installedTools = new HashMap<>();
+    private final InstalledToolFileData installedToolFileData;
 
-    public Map<InstalledTool, String> getInstalledTools() {
+    private Map<String, String> installedTools = new HashMap<>();
+
+    public InstalledToolManager(InstalledToolFileData installedToolFileData) {
+        this.installedToolFileData = installedToolFileData;
+    }
+
+    public Map<String, String> getInstalledTools() {
         return installedTools;
     }
 
+    public void addPreExistingInstallData(Map<String, String> preExistingInstallData) {
+        preExistingInstallData.forEach((tool, installPath) -> installedTools.putIfAbsent(tool, installPath));
+    }
+
     public void saveInstalledToolLocation(InstalledTool tool, String location) {
-        installedTools.put(tool, location);
+        installedTools.put(installedToolFileData.getToolJsonKey(tool), location);
     }
 }

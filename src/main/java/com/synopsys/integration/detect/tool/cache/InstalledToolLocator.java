@@ -20,8 +20,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 public class InstalledToolLocator {
-    private JsonObject installedToolFileData;
-    private InstalledToolFileData installedToolDataKeyMap = new InstalledToolFileData();
+    private JsonObject installedToolData;
+    private InstalledToolFileData installedToolFileData = new InstalledToolFileData();
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -33,15 +33,15 @@ public class InstalledToolLocator {
                 installedToolDataFile = new File(installedToolDataFile, InstalledToolFileData.INSTALLED_TOOL_FILE_NAME);
             }
             String installedToolDataFileText = FileUtils.readFileToString(installedToolDataFile, Charset.defaultCharset());
-            installedToolFileData = gson.fromJson(installedToolDataFileText, JsonObject.class);
+            installedToolData = gson.fromJson(installedToolDataFileText, JsonObject.class);
         } catch (Exception e) {
             logger.debug(String.format("Encountered error parsing information on installed tools from file: %s", installedToolDataFile.getAbsolutePath()));
         }
     }
 
     public Optional<File> locateTool(InstalledTool tool) {
-        String key = installedToolDataKeyMap.getToolJsonKey(tool);
-        String installedToolLocation = installedToolFileData.get(key).getAsString();
+        String key = installedToolFileData.getToolJsonKey(tool);
+        String installedToolLocation = installedToolData.get(key).getAsString();
         File installedTool = new File(installedToolLocation);
         if (installedTool.exists()) {
             return Optional.of(installedTool);
