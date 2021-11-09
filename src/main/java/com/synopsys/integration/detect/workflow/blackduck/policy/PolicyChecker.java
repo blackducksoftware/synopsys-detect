@@ -10,7 +10,6 @@ package com.synopsys.integration.detect.workflow.blackduck.policy;
 import java.util.List;
 import java.util.Optional;
 
-import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentVersionView;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +17,7 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionComponentPolicyStatusType;
 import com.synopsys.integration.blackduck.api.generated.view.ComponentPolicyRulesView;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentView;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentVersionView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.dataservice.ProjectBomService;
@@ -26,6 +25,7 @@ import com.synopsys.integration.blackduck.service.model.PolicyStatusDescription;
 import com.synopsys.integration.common.util.Bdo;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
+import com.synopsys.integration.detect.workflow.blackduck.PolicyRulesUtil;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class PolicyChecker {
@@ -59,9 +59,9 @@ public class PolicyChecker {
 
     public Optional<PolicyStatusDescription> fetchPolicyStatusDescription(ProjectVersionView version) throws IntegrationException {
         return Bdo.of(projectBomService.getPolicyStatusForVersion(version))
-                   .peek(policyStatus -> logger.info(String.format("Policy Status: %s", policyStatus.getOverallStatus().name())))
-                   .map(PolicyStatusDescription::new)
-                   .toOptional();
+            .peek(policyStatus -> logger.info(String.format("Policy Status: %s", policyStatus.getOverallStatus().name())))
+            .map(PolicyStatusDescription::new)
+            .toOptional();
     }
 
     public void fetchAndLogPolicyViolations(ProjectVersionView projectVersionView) throws IntegrationException {
@@ -73,7 +73,7 @@ public class PolicyChecker {
                 continue;
             }
 
-            for (ComponentPolicyRulesView componentPolicyRulesView : blackDuckService.getAllResponses(projectVersionComponentView.metaPolicyRulesLink())) {
+            for (ComponentPolicyRulesView componentPolicyRulesView : blackDuckService.getAllResponses(PolicyRulesUtil.metaPolicyRulesLink(projectVersionComponentView))) {
                 String componentId = projectVersionComponentView.getComponentName();
                 if (StringUtils.isNotBlank(projectVersionComponentView.getComponentVersionName())) {
                     componentId += ":" + projectVersionComponentView.getComponentVersionName();
@@ -106,8 +106,8 @@ public class PolicyChecker {
 
     private boolean arePolicySeveritiesViolated(PolicyStatusDescription policyStatusDescription, List<PolicyRuleSeverityType> policySeverities) {
         return policySeverities.stream()
-                   .map(policyStatusDescription::getCountOfSeverity)
-                   .anyMatch(severityCount -> severityCount > 0);
+            .map(policyStatusDescription::getCountOfSeverity)
+            .anyMatch(severityCount -> severityCount > 0);
     }
 
 }

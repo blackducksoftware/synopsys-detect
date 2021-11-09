@@ -5,7 +5,7 @@ import com.synopsys.integration.detect.verification.VerifyBlackDuckDetectTask
 buildscript {
     ext {
         springBootVersion = '2.4.5'
-        blackDuckCommonVersion = '59.0.0'
+        blackDuckCommonVersion = '59.0.1'
         junitPlatformCustomTestTags = 'docker, battery'
     }
 
@@ -209,7 +209,8 @@ task publishAirGapZipWithoutDocker() {
 
     doLast {
         def airGapZipName = "${project.name}-${version}-air-gap-no-docker.zip"
-        def airGapZipNameLegacy = "${project.name}-${version}-air-gap-gradle-nuget.zip" //MUST remain for down-stream projects until late 2022
+        def airGapZipNameLegacy = "${project.name}-${version}-air-gap-gradle-nuget.zip"
+        //MUST remain for down-stream projects until late 2022
         def airGapZipLocation = createAirGapZipWithoutDocker.airGapPath
         exec {
             commandLine 'curl', '--insecure', '-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT',

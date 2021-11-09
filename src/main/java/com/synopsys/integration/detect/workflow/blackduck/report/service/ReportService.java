@@ -21,7 +21,6 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import com.synopsys.integration.blackduck.api.generated.view.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
@@ -34,11 +33,18 @@ import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionComponentPolicyStatusType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ReportFormatType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ReportType;
+import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
+import com.synopsys.integration.blackduck.api.generated.view.ComponentPolicyRulesView;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentVersionView;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
+import com.synopsys.integration.blackduck.api.generated.view.ReportView;
 import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationException;
 import com.synopsys.integration.blackduck.http.BlackDuckRequestBuilder;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.DataService;
 import com.synopsys.integration.blackduck.service.request.BlackDuckResponseRequest;
+import com.synopsys.integration.detect.workflow.blackduck.PolicyRulesUtil;
 import com.synopsys.integration.detect.workflow.blackduck.report.BomComponent;
 import com.synopsys.integration.detect.workflow.blackduck.report.PolicyRule;
 import com.synopsys.integration.detect.workflow.blackduck.report.ReportData;
@@ -167,16 +173,16 @@ public class ReportService extends DataService {
         }
 
         Date dateOfLatestScan = Collections.max(codeLocations.stream()
-                                                    .map(CodeLocationView::getUpdatedAt)
-                                                    .collect(Collectors.toList()));
+            .map(CodeLocationView::getUpdatedAt)
+            .collect(Collectors.toList()));
 
         return convertDateToLocalDateTime(dateOfLatestScan);
     }
 
     private LocalDateTime convertDateToLocalDateTime(Date date) {
         return date.toInstant()
-                   .atZone(ZoneId.systemDefault())
-                   .toLocalDateTime();
+            .atZone(ZoneId.systemDefault())
+            .toLocalDateTime();
     }
 
     public File createReportPdfFile(File outputDirectory, ProjectView project, ProjectVersionView version) throws IntegrationException {
@@ -227,7 +233,7 @@ public class ReportService extends DataService {
         if (bomEntry != null && bomEntry.getApprovalStatus() != null) {
             ProjectVersionComponentPolicyStatusType status = bomEntry.getApprovalStatus();
             if (status == ProjectVersionComponentPolicyStatusType.IN_VIOLATION) {
-                List<ComponentPolicyRulesView> rules = blackDuckApiClient.getAllResponses(bomEntry.metaPolicyRulesLink());
+                List<ComponentPolicyRulesView> rules = blackDuckApiClient.getAllResponses(PolicyRulesUtil.metaPolicyRulesLink(bomEntry));
                 List<PolicyRule> rulesViolated = new ArrayList<>();
                 for (ComponentPolicyRulesView policyRuleView : rules) {
                     PolicyRule ruleViolated = new PolicyRule(policyRuleView.getName(), policyRuleView.getDescription());
