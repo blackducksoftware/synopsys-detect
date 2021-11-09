@@ -16,6 +16,6 @@ public class InstalledToolLocatorTest {
         URI pathToToolCacheFileUri = this.getClass().getClassLoader().getResource("tool/cache/detect-installed-tools.json").toURI();
         Path pathToToolCacheFile = Paths.get(pathToToolCacheFileUri);
         InstalledToolLocator cachedToolInstaller = new InstalledToolLocator(pathToToolCacheFile, new Gson());
-        Assertions.assertTrue(cachedToolInstaller.locateTool(InstalledTool.DOCKER_INSPECTOR).isPresent());
+        Assertions.assertTrue(cachedToolInstaller.locateTool("docker-inspector").isPresent());
     }
 }

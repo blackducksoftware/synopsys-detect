@@ -12,7 +12,6 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.detect.tool.cache.InstalledTool;
 import com.synopsys.integration.detect.tool.cache.InstalledToolLocator;
 import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -20,6 +19,11 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 import com.synopsys.integration.function.ThrowingBiFunction;
 
 public class OnlineNugetInspectorLocator implements NugetInspectorLocator {
+    private static final String NUGET_INSPECTOR_INSTALLED_TOOL_JSON_KEY = "nuget-inspector";
+    private static final String NUGET_INSPECTOR_5_INSTALLED_TOOL_JSON_KEY = "nuget-inspector5";
+    private static final String NUGET_INSPECTOR_3_INSTALLED_TOOL_JSON_KEY = "nuget-inspector3";
+    private static final String NUGET_INSPECTOR_EXE_INSTALLED_TOOL_JSON_KEY = "nuget-inspector-exe";
+
     private final NugetInspectorInstaller nugetInspectorInstaller;
     private final DirectoryManager directoryManager;
     @Nullable
@@ -38,27 +42,27 @@ public class OnlineNugetInspectorLocator implements NugetInspectorLocator {
 
     @Override
     public File locateDotnet5Inspector() throws DetectableException {
-        return locateInspector(nugetInspectorInstaller::installDotNet5, InstalledTool.NUGET_INSPECTOR_5);
+        return locateInspector(nugetInspectorInstaller::installDotNet5, NUGET_INSPECTOR_5_INSTALLED_TOOL_JSON_KEY);
     }
 
     @Override
     public File locateDotnet3Inspector() throws DetectableException {
-        return locateInspector(nugetInspectorInstaller::installDotNet3, InstalledTool.NUGET_INSPECTOR_3);
+        return locateInspector(nugetInspectorInstaller::installDotNet3, NUGET_INSPECTOR_3_INSTALLED_TOOL_JSON_KEY);
     }
 
     @Override
     public File locateDotnetInspector() throws DetectableException {
-        return locateInspector(nugetInspectorInstaller::installDotNet, InstalledTool.NUGET_INSPECTOR);
+        return locateInspector(nugetInspectorInstaller::installDotNet, NUGET_INSPECTOR_INSTALLED_TOOL_JSON_KEY);
     }
 
     @Override
     public File locateExeInspector() throws DetectableException {
-        return locateInspector(nugetInspectorInstaller::installExeInspector, InstalledTool.NUGET_INSPECTOR_EXE);
+        return locateInspector(nugetInspectorInstaller::installExeInspector, NUGET_INSPECTOR_EXE_INSTALLED_TOOL_JSON_KEY);
     }
 
-    private File locateInspector(ThrowingBiFunction<File, String, File, DetectableException> inspectorInstaller, InstalledTool inspectorType) throws DetectableException {
+    private File locateInspector(ThrowingBiFunction<File, String, File, DetectableException> inspectorInstaller, String inspectorKey) throws DetectableException {
         File inspector;
-        Optional<File> cachedInstall = installedToolLocator.locateTool(inspectorType);
+        Optional<File> cachedInstall = installedToolLocator.locateTool(inspectorKey);
         try {
             File nugetDirectory = directoryManager.getPermanentDirectory("nuget");
             inspector = inspectorInstaller.apply(nugetDirectory, overrideVersion);
@@ -73,7 +77,7 @@ public class OnlineNugetInspectorLocator implements NugetInspectorLocator {
                 return cachedInstall.get();
             }
         } else {
-            installedToolManager.saveInstalledToolLocation(inspectorType, inspector.getAbsolutePath());
+            installedToolManager.saveInstalledToolLocation(inspectorKey, inspector.getAbsolutePath());
         }
         return inspector;
     }

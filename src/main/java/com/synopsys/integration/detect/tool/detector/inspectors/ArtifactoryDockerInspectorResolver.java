@@ -21,7 +21,6 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
-import com.synopsys.integration.detect.tool.cache.InstalledTool;
 import com.synopsys.integration.detect.tool.cache.InstalledToolLocator;
 import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
@@ -35,6 +34,7 @@ import com.synopsys.integration.exception.IntegrationException;
 public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolver {
     private static final String IMAGE_INSPECTOR_FAMILY = "blackduck-imageinspector";
     private static final List<String> inspectorNames = Arrays.asList("ubuntu", "alpine", "centos");
+    private static final String INSTALLED_TOOL_JSON_KEY = "docker-inspector";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -92,7 +92,7 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
             String dockerVersion = dockerDetectableOptions.getDockerInspectorVersion().orElse("");
 
             File inspector = null;
-            Optional<File> cachedInstall = installedToolLocator.locateTool(InstalledTool.DOCKER_INSPECTOR);
+            Optional<File> cachedInstall = installedToolLocator.locateTool(INSTALLED_TOOL_JSON_KEY);
             try {
                 inspector = dockerInspectorInstaller.installJar(dockerDirectory, Optional.of(dockerVersion));
             } catch (Exception e) {
@@ -106,7 +106,7 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
                 }
                 return null;
             } else {
-                installedToolManager.saveInstalledToolLocation(InstalledTool.DOCKER_INSPECTOR, inspector.getAbsolutePath());
+                installedToolManager.saveInstalledToolLocation(INSTALLED_TOOL_JSON_KEY, inspector.getAbsolutePath());
                 return new DockerInspectorInfo(inspector);
             }
         }

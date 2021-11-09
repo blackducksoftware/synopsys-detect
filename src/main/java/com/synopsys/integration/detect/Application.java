@@ -8,11 +8,9 @@
 package com.synopsys.integration.detect;
 
 import java.io.File;
-import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
@@ -26,7 +24,6 @@ import org.springframework.core.env.ConfigurableEnvironment;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.common.util.finder.SimpleFileFinder;
@@ -52,7 +49,7 @@ import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeUtility;
 import com.synopsys.integration.detect.lifecycle.shutdown.ShutdownDecider;
 import com.synopsys.integration.detect.lifecycle.shutdown.ShutdownDecision;
 import com.synopsys.integration.detect.lifecycle.shutdown.ShutdownManager;
-import com.synopsys.integration.detect.tool.cache.InstalledToolFileData;
+import com.synopsys.integration.detect.tool.cache.InstalledToolData;
 import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
 import com.synopsys.integration.detect.workflow.DetectRunId;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
@@ -105,7 +102,7 @@ public class Application implements ApplicationRunner {
 
         ReportListener.createDefault(eventSystem);
         FormattedOutputManager formattedOutputManager = new FormattedOutputManager(eventSystem);
-        InstalledToolManager installedToolManager = new InstalledToolManager(new InstalledToolFileData());
+        InstalledToolManager installedToolManager = new InstalledToolManager();
 
         //Before boot even begins, we create a new Spring context for Detect to work within.
         logger.debug("Initializing detect.");
@@ -207,14 +204,13 @@ public class Application implements ApplicationRunner {
         logger.info("");
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         try {
-            File installedToolsDataFile = new File(installedToolsDataFileDir, InstalledToolFileData.INSTALLED_TOOL_FILE_NAME);
+            File installedToolsDataFile = new File(installedToolsDataFileDir, InstalledToolManager.INSTALLED_TOOL_FILE_NAME);
             if (installedToolsDataFile.exists()) {
                 // Read existing file data, pass to InstalledToolManager
-                Type mapType = new TypeToken<Map<String, String>>() {}.getType();
-                Map<String, String> existingInstalledToolsData = gson.fromJson(FileUtils.readFileToString(installedToolsDataFile, Charset.defaultCharset()), mapType);
+                InstalledToolData existingInstalledToolsData = gson.fromJson(FileUtils.readFileToString(installedToolsDataFile, Charset.defaultCharset()), InstalledToolData.class);
                 installedToolManager.addPreExistingInstallData(existingInstalledToolsData);
             }
-            String json = gson.toJson(installedToolManager.getInstalledTools());
+            String json = gson.toJson(installedToolManager.getInstalledToolData());
             FileUtils.writeStringToFile(installedToolsDataFile, json, Charset.defaultCharset());
         } catch (Exception e) {
             logger.warn("There was a problem writing the installed tools data file. The detect run was not affected.");

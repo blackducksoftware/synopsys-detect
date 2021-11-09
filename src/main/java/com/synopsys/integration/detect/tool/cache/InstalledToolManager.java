@@ -11,23 +11,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class InstalledToolManager {
-    private final InstalledToolFileData installedToolFileData;
+    public static final String INSTALLED_TOOL_FILE_NAME = "detect-installed-tools.json";
+
+    private final String jsonFileFormatVersion = "0.1.0";
 
     private Map<String, String> installedTools = new HashMap<>();
 
-    public InstalledToolManager(InstalledToolFileData installedToolFileData) {
-        this.installedToolFileData = installedToolFileData;
+    public InstalledToolData getInstalledToolData() {
+        InstalledToolData installedToolData = new InstalledToolData();
+        installedToolData.toolData = installedTools;
+        installedToolData.version = jsonFileFormatVersion;
+        return installedToolData;
     }
 
-    public Map<String, String> getInstalledTools() {
-        return installedTools;
+    public void addPreExistingInstallData(InstalledToolData preExistingInstallData) {
+        preExistingInstallData.toolData.forEach((tool, installPath) -> installedTools.putIfAbsent(tool, installPath));
     }
 
-    public void addPreExistingInstallData(Map<String, String> preExistingInstallData) {
-        preExistingInstallData.forEach((tool, installPath) -> installedTools.putIfAbsent(tool, installPath));
-    }
-
-    public void saveInstalledToolLocation(InstalledTool tool, String location) {
-        installedTools.put(installedToolFileData.getToolJsonKey(tool), location);
+    public void saveInstalledToolLocation(String toolKey, String location) {
+        installedTools.put(toolKey, location);
     }
 }

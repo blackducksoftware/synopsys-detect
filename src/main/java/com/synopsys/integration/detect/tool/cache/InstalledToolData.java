@@ -7,20 +7,14 @@
  */
 package com.synopsys.integration.detect.tool.cache;
 
+import java.util.Map;
+
+import com.google.gson.annotations.SerializedName;
+
 public class InstalledToolData {
-    private InstalledTool tool;
-    private String pathToTool;
+    @SerializedName("version")
+    public String version;
+    @SerializedName("tools")
+    public Map<String, String> toolData;
 
-    public InstalledToolData(InstalledTool tool, String pathToTool) {
-        this.tool = tool;
-        this.pathToTool = pathToTool;
-    }
-
-    public InstalledTool getTool() {
-        return tool;
-    }
-
-    public String getPathToTool() {
-        return pathToTool;
-    }
 }
