@@ -112,6 +112,7 @@ public class DetectorRuleFactory {
         ruleSet.yield(npmShrinkwrap).to(lernaDetectable);
         ruleSet.yield(npmCli).to(lernaDetectable);
         ruleSet.yield(yarnLock).to(lernaDetectable);
+        ruleSet.yield(pnpmLock).to(lernaDetectable);
 
         ruleSet.yield(npmShrinkwrap).to(npmPackageLock);
         ruleSet.yield(npmCli).to(npmPackageLock);
@@ -122,7 +123,6 @@ public class DetectorRuleFactory {
         ruleSet.yield(npmShrinkwrap).to(yarnLock);
 
         ruleSet.yield(npmCli).to(pnpmLock);
-        //TODO- in at least one sample project, both lerna and pnpm were applicable.  In that case, Lerna wasn't extractable and thus Overall Status: FAILURE_DETECTOR.  Should one yield to the other?
 
         DetectorRule nugetSolution = ruleSet.addDetector(DetectorType.NUGET, "Solution", NugetSolutionDetectable.class, detectableFactory::createNugetSolutionDetectable).defaults().build();
         //The Project detectable is "notNestable" because it will falsely apply under a solution (the solution includes all of the projects).

@@ -68,6 +68,9 @@ public class PnpmLockDetectableTest extends DetectableFunctionalTest {
     public void assertExtraction(@NotNull Extraction extraction) {
         Assertions.assertEquals(1, extraction.getCodeLocations().size());
 
+        Assertions.assertEquals("project", extraction.getProjectName());
+        Assertions.assertEquals("version", extraction.getProjectVersion());
+
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, extraction.getCodeLocations().get(0).getDependencyGraph());
         graphAssert.hasRootSize(2);
         graphAssert.hasRootDependency("material-design-icons", "3.0.1");

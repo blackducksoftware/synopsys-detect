@@ -1,0 +1,48 @@
+lockfileVersion: 5.3
+
+importers:
+
+  .:
+    specifiers:
+      react: ^17.0.2
+      react-dom: ^17.0.2
+      react-is: ^17.0.2
+      styled-components: ^5.3.3
+      typescript: ^4.3.4
+    devDependencies:
+      '@babel/cli': 7.15.7_@babel+core@7.15.8
+      '@babel/code-frame': 7.10.4
+
+  packages/@styled-icons/bootstrap:
+    specifiers:
+      '@babel/runtime': ^7.15.4
+      '@styled-icons/pack-builder': ^1.0.0
+    dependencies:
+      '@babel/runtime': 7.15.4
+      '@styled-icons/styled-icon': link:../linkedProjectPackage
+
+packages:
+
+  /@babel/code-frame/7.10.4:
+    resolution: {integrity: sha512-vG6SvB6oYEhvgisZNFRmRCUkLz11c7rp+tbNTynGqc6mS1d5ATd/sGyV6W0KZZnXRKMTzZDRgQT3Ou9jhpAfUg==}
+    dependencies:
+      '@babel/highlight': 7.14.5
+    dev: true
+
+  /@babel/cli/7.15.7_@babel+core@7.15.8:
+    resolution: {integrity: sha512-YW5wOprO2LzMjoWZ5ZG6jfbY9JnkDxuHDwvnrThnuYtByorova/I0HNXJedrUfwuXFQfYOjcqDA4PU3qlZGZjg==}
+    engines: {node: '>=6.9.0'}
+    hasBin: true
+    optionalDependencies:
+      '@babel/core': ^7.0.0-0
+    dev: true
+
+  /@babel/runtime/7.15.4:
+    resolution: {integrity: sha512-99catp6bHCaxr4sJ/DbTGgHS4+Rs2RVd2g7iOap6SLGPDknRK9ztKNsE/Fg6QhSeh1FGE5f6gHGQmvvn3I3xhw==}
+    engines: {node: '>=6.9.0'}
+    dependencies:
+      regenerator-runtime: 0.13.7
+
+  /@babel/core/7.12.9:
+    resolution: {integrity: sha512-gTXYh3M5wb7FRXQy+FErKFAv90BnlOuNn1QkCK2lREoPAjrQCO49+HVSrFoe5uakFAF5eenS75KbO2vQiLrTMQ==}
+    engines: {node: '>=6.9.0'}

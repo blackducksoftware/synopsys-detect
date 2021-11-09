@@ -85,10 +85,10 @@ public class PnpmYamlTransformerTest {
         pnpmLockYaml.dependencies = null;
         pnpmLockYaml.devDependencies = null;
         pnpmLockYaml.optionalDependencies = null;
-        try {
-            pnpmTransformer.generateCodeLocation(pnpmLockYaml, Arrays.asList(DependencyType.APP, DependencyType.DEV, DependencyType.OPTIONAL), projectNameVersion, linkedPackageResolver);
-        } catch (IntegrationException e) {
-        }
+
+        Assertions.assertThrows(IntegrationException.class,
+            () -> pnpmTransformer.generateCodeLocation(pnpmLockYaml, Arrays.asList(DependencyType.APP, DependencyType.DEV, DependencyType.OPTIONAL), projectNameVersion, linkedPackageResolver)
+        );
     }
 
     @Test

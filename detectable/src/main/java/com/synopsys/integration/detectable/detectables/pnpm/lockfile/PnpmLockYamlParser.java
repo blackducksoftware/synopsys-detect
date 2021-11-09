@@ -35,6 +35,7 @@ public class PnpmLockYamlParser {
         this.pnpmTransformer = pnpmTransformer;
     }
 
+    //TODO- can we improve this by utilizing streams?
     public List<CodeLocation> parse(File pnpmLockYamlFile, List<DependencyType> dependencyTypes, @Nullable NameVersion projectNameVersion, PnpmLinkedPackageResolver linkedPackageResolver) throws IOException, IntegrationException {
         Representer representer = new Representer();
         representer.getPropertyUtils().setSkipMissingProperties(true);
