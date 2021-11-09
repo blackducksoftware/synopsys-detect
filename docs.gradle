@@ -13,6 +13,10 @@ task generateDocs(type: GenerateDocsTask) {
     dependsOn helpJson
 }
 
+String findDita() {
+    return System.getProperty("os.name").toLowerCase().contains("windows") ? 'dita.bat' : 'dita';
+}
+
 // Requires Synopsys-configured dita:
 // 1. git clone https://sig-gitlab.internal.synopsys.com/doc/docs-dita-tools.git
 // 2. Add docs-dita-tools/dita-ot/bin to your PATH
@@ -23,7 +27,7 @@ task ditasite() {
         ByteArrayOutputStream stdOut = new ByteArrayOutputStream()
         ByteArrayOutputStream stdError = new ByteArrayOutputStream()
         exec {
-            commandLine 'dita', '-v', '--input=detect.ditamap', '--format=sig-webhelp', '-o', '../ditasite'
+            commandLine findDita(), '-v', '--input=detect.ditamap', '--format=sig-webhelp', '-o', '../ditasite'
             workingDir "docs/generated"
             standardOutput = stdOut
             errorOutput = stdError
