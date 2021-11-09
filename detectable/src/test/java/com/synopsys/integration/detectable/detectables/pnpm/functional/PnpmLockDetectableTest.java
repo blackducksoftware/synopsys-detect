@@ -22,7 +22,12 @@ public class PnpmLockDetectableTest extends DetectableFunctionalTest {
 
     @Override
     protected void setup() throws IOException {
-        addFile("package.json");
+        addFile(Paths.get("package.json"),
+            "{",
+            "name: \"project\",",
+            "version: \"version\"",
+            "}"
+        );
 
         addFile(Paths.get("pnpm-lock.yaml"),
             "lockfileVersion: 1.0.0",
@@ -62,6 +67,9 @@ public class PnpmLockDetectableTest extends DetectableFunctionalTest {
     @Override
     public void assertExtraction(@NotNull Extraction extraction) {
         Assertions.assertEquals(1, extraction.getCodeLocations().size());
+
+        Assertions.assertEquals("project", extraction.getProjectName());
+        Assertions.assertEquals("version", extraction.getProjectVersion());
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, extraction.getCodeLocations().get(0).getDependencyGraph());
         graphAssert.hasRootSize(2);

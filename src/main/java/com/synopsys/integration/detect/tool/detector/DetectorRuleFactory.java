@@ -112,6 +112,7 @@ public class DetectorRuleFactory {
         ruleSet.yield(npmShrinkwrap).to(lernaDetectable);
         ruleSet.yield(npmCli).to(lernaDetectable);
         ruleSet.yield(yarnLock).to(lernaDetectable);
+        ruleSet.yield(pnpmLock).to(lernaDetectable);
 
         ruleSet.yield(npmShrinkwrap).to(npmPackageLock);
         ruleSet.yield(npmCli).to(npmPackageLock);
