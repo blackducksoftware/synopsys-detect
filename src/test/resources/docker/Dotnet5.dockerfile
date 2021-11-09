@@ -1,5 +1,6 @@
 FROM mcr.microsoft.com/dotnet/sdk:5.0
 
+# Do not change SRC_DIR, value is expected by tests
 ENV SRC_DIR=/opt/project/src
 
 RUN apt-get update

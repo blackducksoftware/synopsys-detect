@@ -1,5 +1,6 @@
 FROM adoptopenjdk/openjdk11:jdk-11.0.6_10-ubuntu-slim
 
+# Do not change SRC_DIR, value is expected by tests
 ENV SRC_DIR=/opt/project/src
 
 RUN apt-get update

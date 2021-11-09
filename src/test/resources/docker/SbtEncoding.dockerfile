@@ -1,6 +1,7 @@
 #This tests a customer issue from IDETECT-2714
 FROM maven:3-jdk-8-alpine
 
+# Do not change SRC_DIR, value is expected by tests
 ENV SRC_DIR=/opt/project/src
 
 # Install git: https://github.com/nodejs/docker-node/issues/586

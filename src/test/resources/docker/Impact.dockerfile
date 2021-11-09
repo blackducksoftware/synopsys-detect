@@ -1,5 +1,6 @@
 FROM adoptopenjdk/maven-openjdk11
 
+# Do not change SRC_DIR, value is expected by tests
 ENV SRC_DIR=/opt/project/src
 
 # Install git
