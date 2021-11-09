@@ -20,6 +20,7 @@ import com.synopsys.integration.blackduck.service.model.ProjectSyncModel;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.workflow.blackduck.project.options.CloneFindResult;
+import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectGroupFindResult;
 import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectSyncOptions;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
@@ -33,13 +34,14 @@ public class SyncProjectOperation {
         this.projectService = projectService;
     }
 
-    public ProjectVersionWrapper sync(NameVersion projectNameVersion, CloneFindResult cloneFindResult, ProjectSyncOptions projectSyncOptions) throws DetectUserFriendlyException, IntegrationException {
-        ProjectSyncModel projectSyncModel = createProjectSyncModel(projectNameVersion, cloneFindResult, projectSyncOptions);
+    public ProjectVersionWrapper sync(NameVersion projectNameVersion, ProjectGroupFindResult projectGroupFindResult, CloneFindResult cloneFindResult,
+        ProjectSyncOptions projectSyncOptions) throws DetectUserFriendlyException, IntegrationException {
+        ProjectSyncModel projectSyncModel = createProjectSyncModel(projectNameVersion, projectGroupFindResult, cloneFindResult, projectSyncOptions);
         boolean forceUpdate = projectSyncOptions.isForceProjectVersionUpdate();
         return projectService.syncProjectAndVersion(projectSyncModel, forceUpdate);
     }
 
-    public ProjectSyncModel createProjectSyncModel(NameVersion projectNameVersion, CloneFindResult cloneFindResult, ProjectSyncOptions projectSyncOptions) {
+    public ProjectSyncModel createProjectSyncModel(NameVersion projectNameVersion, ProjectGroupFindResult projectGroupFindResult, CloneFindResult cloneFindResult, ProjectSyncOptions projectSyncOptions) {
         ProjectSyncModel projectSyncModel = ProjectSyncModel.createWithDefaults(projectNameVersion.getName(), projectNameVersion.getVersion());
 
         // TODO: Handle a boolean property not being set in detect configuration - ie need to determine if this property actually exists in the ConfigurableEnvironment - just omit this one?
@@ -75,6 +77,11 @@ public class SyncProjectOperation {
             logger.debug("Cloning project version from release url: {}", cloneFindResult.getCloneUrl().get());
             projectSyncModel.setCloneFromReleaseUrl(cloneFindResult.getCloneUrl().get().string());
         }
+
+        projectGroupFindResult.getProjectGroup().ifPresent(projectGroupUrl -> {
+            logger.debug("Setting project group to url: {}", projectGroupUrl);
+            projectSyncModel.setProjectGroup(projectGroupUrl.string());
+        });
 
         return projectSyncModel;
     }

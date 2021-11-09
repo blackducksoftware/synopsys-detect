@@ -66,6 +66,7 @@ import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
 import com.synopsys.integration.detect.workflow.blackduck.project.customfields.CustomFieldDocument;
 import com.synopsys.integration.detect.workflow.blackduck.project.options.FindCloneOptions;
 import com.synopsys.integration.detect.workflow.blackduck.project.options.ParentProjectMapOptions;
+import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectGroupOptions;
 import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectSyncOptions;
 import com.synopsys.integration.detect.workflow.file.DirectoryOptions;
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeOptions;
@@ -493,5 +494,10 @@ public class DetectConfigurationFactory {
         boolean buildless = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_BUILDLESS.getProperty());
         boolean mavenLegacy = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_MAVEN_BUILDLESS_LEGACY_MODE.getProperty());
         return new DetectorToolOptions(projectBomTool, requiredDetectors, buildless, mavenLegacy);
+    }
+
+    public ProjectGroupOptions createProjectGroupOptions() {
+        String projectGroupName = detectConfiguration.getValueOrEmpty(DetectProperties.DETECT_PROJECT_GROUP_NAME.getProperty()).orElse(null);
+        return new ProjectGroupOptions(projectGroupName);
     }
 }

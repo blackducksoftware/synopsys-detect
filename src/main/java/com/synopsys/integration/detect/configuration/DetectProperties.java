@@ -954,6 +954,13 @@ public class DetectProperties {
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced);
 
+    public static final DetectProperty<NullableStringProperty> DETECT_PROJECT_GROUP_NAME =
+        new DetectProperty<>(new NullableStringProperty("detect.project.group.name"))
+            .setInfo("Project Group Name", DetectPropertyFromVersion.VERSION_7_8_0)
+            .setHelp("Sets the 'Project Group' to assign the project to. Must match exactly to an existing project group on Black Duck.")
+            .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
+            .setCategory(DetectCategory.Advanced);
+
     // Dynamic property
     public static final DetectProperty<NullableStringProperty> DETECT_CUSTOM_FIELDS_PROJECT =
         new DetectProperty<>(new NullableStringProperty("detect.custom.fields.project"))

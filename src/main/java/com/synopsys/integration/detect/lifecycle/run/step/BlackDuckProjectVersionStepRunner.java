@@ -21,6 +21,8 @@ import com.synopsys.integration.detect.workflow.blackduck.project.customfields.C
 import com.synopsys.integration.detect.workflow.blackduck.project.options.CloneFindResult;
 import com.synopsys.integration.detect.workflow.blackduck.project.options.FindCloneOptions;
 import com.synopsys.integration.detect.workflow.blackduck.project.options.ParentProjectMapOptions;
+import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectGroupFindResult;
+import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectGroupOptions;
 import com.synopsys.integration.util.NameVersion;
 
 public class BlackDuckProjectVersionStepRunner {
@@ -33,7 +35,8 @@ public class BlackDuckProjectVersionStepRunner {
 
     ProjectVersionWrapper runAll(NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
         CloneFindResult cloneFindResult = findClone(projectNameVersion.getName(), blackDuckRunData);
-        ProjectVersionWrapper projectVersion = operationFactory.syncProjectVersion(projectNameVersion, cloneFindResult, blackDuckRunData);
+        ProjectGroupFindResult projectGroupFindResult = findProjectGroup(blackDuckRunData);
+        ProjectVersionWrapper projectVersion = operationFactory.syncProjectVersion(projectNameVersion, projectGroupFindResult, cloneFindResult, blackDuckRunData);
 
         ParentProjectMapOptions mapOptions = operationFactory.calculateParentProjectMapOptions();
         if (StringUtils.isNotBlank(mapOptions.getParentProjectName()) || StringUtils.isNotBlank(mapOptions.getParentProjectVersionName())) {
@@ -76,6 +79,17 @@ public class BlackDuckProjectVersionStepRunner {
         }
 
         return projectVersion;
+    }
+
+    private ProjectGroupFindResult findProjectGroup(BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
+        ProjectGroupOptions projectGroupOptions = operationFactory.calculateProjectGroupOptions();
+        if (StringUtils.isNotBlank(projectGroupOptions.getProjectGroup())) {
+            logger.info("Will look for project group named: " + projectGroupOptions.getProjectGroup());
+            return ProjectGroupFindResult.of(operationFactory.findProjectGroup(blackDuckRunData, projectGroupOptions.getProjectGroup()));
+        } else {
+            logger.debug("No project group was supplied. Will not assign a project group.");
+            return ProjectGroupFindResult.skip();
+        }
     }
 
     private CloneFindResult findClone(String projectName, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
