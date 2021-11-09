@@ -57,7 +57,7 @@ To download and run the latest version of [solution_name] in a single command fr
 [Net.ServicePointManager]::SecurityProtocol = 'tls12'; $Env:DETECT_EXIT_CODE_PASSTHRU=1; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect
 ````
 
-_Note that when running the above command, the PowerShell session is not exited. See [here](../advanced/script-escaping-special-characters/) for more information on the difference between the two commands._
+_Note that when running the above command, the PowerShell session is not exited. See [here](../../scripts/script-escaping-special-characters.md) for more information on the difference between the two commands._
 
 In both cases, append any command line arguments to the end, separated by spaces. For example:
 
@@ -65,7 +65,7 @@ In both cases, append any command line arguments to the end, separated by spaces
 powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect" --blackduck.url=https://blackduck.mydomain.com --blackduck.api.token=myaccesstoken
 ````
 
-See [Quoting and escaping shell script arguments](../advanced/script-escaping-special-characters/) for details about quoting and escaping arguments.
+See [Quoting and escaping shell script arguments](../../scripts/script-escaping-special-characters.md) for details about quoting and escaping arguments.
 
 ### To run a specific version of [solution_name]:
 
