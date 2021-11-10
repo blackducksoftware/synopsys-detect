@@ -5,7 +5,7 @@
 ### New Features
 * Added support for the pnpm package manager.
 * Added property detect.project.group.name for setting the Project Group.
-
+* [solution_name] now creates a file in the persistent /../runs/tools directory which stores the location of the last installed docker inspector, project inspector, and nuget inspector.  If an installl of one the inspectors from Artifactory fails, Detect will read from this file and look in the saved location.
 
 ## Version 7.7.0
 
