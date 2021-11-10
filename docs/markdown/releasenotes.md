@@ -4,7 +4,7 @@
 
 ### New Features
 * Added support for the pnpm package manager.
-* Added support for setting the Project Group.
+* Added property detect.project.group.name for setting the Project Group.
 
 
 ## Version 7.7.0
