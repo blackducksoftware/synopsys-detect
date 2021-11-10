@@ -22,7 +22,6 @@ import org.yaml.snakeyaml.representer.Representer;
 
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.enums.DependencyType;
-import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYaml;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmProjectPackage;
 import com.synopsys.integration.exception.IntegrationException;
@@ -60,15 +59,8 @@ public class PnpmLockYamlParser {
                 PnpmProjectPackage projectPackage = projectPackageInfo.getValue();
                 codeLocations.add(pnpmTransformer.generateCodeLocation(projectPackage, reportingProjectPackagePath, dependencyTypes, new NameVersion(projectPackageName, projectPackageVersion), pnpmLockYaml.packages, linkedPackageResolver));
             }
-        }
-        try {
+        } else {
             codeLocations.add(pnpmTransformer.generateCodeLocation(pnpmLockYaml, dependencyTypes, projectNameVersion, linkedPackageResolver));
-        } catch (DetectableException e) {
-            if (!codeLocations.isEmpty()) {
-                // If lock file is structured such that all root dependencies are declared in importers section, ignore exception
-            } else {
-                throw e;
-            }
         }
         return codeLocations;
     }

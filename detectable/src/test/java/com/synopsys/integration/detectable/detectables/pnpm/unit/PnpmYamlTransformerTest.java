@@ -80,18 +80,6 @@ public class PnpmYamlTransformerTest {
     }
 
     @Test
-    public void testThrowExceptionIfNoDirectDepenciesInLockFile() {
-        PnpmLockYaml pnpmLockYaml = createPnpmLockYaml();
-        pnpmLockYaml.dependencies = null;
-        pnpmLockYaml.devDependencies = null;
-        pnpmLockYaml.optionalDependencies = null;
-
-        Assertions.assertThrows(IntegrationException.class,
-            () -> pnpmTransformer.generateCodeLocation(pnpmLockYaml, Arrays.asList(DependencyType.APP, DependencyType.DEV, DependencyType.OPTIONAL), projectNameVersion, linkedPackageResolver)
-        );
-    }
-
-    @Test
     public void testNoFailureOnNullNameVersion() throws IntegrationException {
         pnpmTransformer.generateCodeLocation(pnpmLockYaml, Arrays.asList(DependencyType.APP, DependencyType.DEV, DependencyType.OPTIONAL), null, linkedPackageResolver);
     }

@@ -46,9 +46,6 @@ public class PnpmYamlTransformer {
     public CodeLocation generateCodeLocation(PnpmProjectPackage projectPackage, @Nullable String reportingProjectPackagePath, List<DependencyType> dependencyTypes, @Nullable NameVersion projectNameVersion,
         @Nullable Map<String, PnpmPackage> packageMap, PnpmLinkedPackageResolver linkedPackageResolver) throws IntegrationException {
         List<String> rootPackageIds = extractRootPackageIds(projectPackage, reportingProjectPackagePath, dependencyTypes, linkedPackageResolver);
-        if (rootPackageIds.isEmpty()) {
-            throw new DetectableException("Could not parse any direct dependencies when parsing the pnpm-lock.yaml file.");
-        }
 
         MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
 
