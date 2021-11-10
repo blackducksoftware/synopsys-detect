@@ -91,3 +91,10 @@ task helpzip(type: Zip) {
 task docs() {
     dependsOn ditasite
 }
+
+task cleanDocs(type: Delete) {
+  delete 'docs/generated', 'docs/ditasite'
+  followSymlinks = false
+}
+
+clean.dependsOn cleanDocs
