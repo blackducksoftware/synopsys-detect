@@ -473,16 +473,6 @@ public class DetectConfigurationFactory {
         return detectConfiguration.getValue(property).map(path -> path.resolvePath(pathResolver)).orElse(null);
     }
 
-    private Path getPathOrDefault(DetectProperty<NullablePathProperty> property, Path defaultPath) {
-        Path path = getPathOrNull(property.getProperty());
-        return path != null ? path : defaultPath;
-    }
-
-    private Path getPathOrDefault(NullablePathProperty property, Path defaultPath) {
-        Path path = getPathOrNull(property);
-        return path != null ? path : defaultPath;
-    }
-
     private <P, T extends NullableProperty<P>> P getNullableValue(DetectProperty<T> detectProperty) {
         return detectConfiguration.getValue(detectProperty.getProperty()).orElse(null);
     }

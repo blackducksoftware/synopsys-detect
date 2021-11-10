@@ -35,7 +35,6 @@ public class ArtifactResolver {
     private final ConnectionFactory connectionFactory;
     private final Gson gson;
 
-    //TODO- this is the class where we'll have logic regarding cached tools
     public ArtifactResolver(ConnectionFactory connectionFactory, Gson gson) {
         this.connectionFactory = connectionFactory;
         this.gson = gson;

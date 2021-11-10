@@ -26,7 +26,7 @@ public class InstalledToolLocator {
     public InstalledToolLocator(Path pathToInstalledToolDataFile, Gson gson) {
         File installedToolDataFile = pathToInstalledToolDataFile.toFile();
         try {
-            if (!installedToolDataFile.getName().equals(InstalledToolManager.INSTALLED_TOOL_FILE_NAME)) {
+            if (installedToolDataFile.isDirectory()) {
                 // Path is to parent of cached inspector file
                 installedToolDataFile = new File(installedToolDataFile, InstalledToolManager.INSTALLED_TOOL_FILE_NAME);
             }

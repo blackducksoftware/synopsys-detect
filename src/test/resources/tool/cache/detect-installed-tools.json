@@ -1,5 +1,7 @@
 {
-  "docker-inspector": "src/test/resources/tool/cache/dummyTool.txt",
-  "nuget-inspector": "/Users/crowley/nuget",
-  "project-inspector": "/Users/crowley/project"
+  "tools": {
+    "docker-inspector": "src/test/resources/tool/cache/dummyTool.txt",
+    "nuget-inspector": "/Users/crowley/nuget",
+    "project-inspector": "/Users/crowley/project"
+  }
 }

@@ -8,7 +8,6 @@
 package com.synopsys.integration.detect.tool.detector.inspectors.nuget;
 
 import java.io.File;
-import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -61,24 +60,14 @@ public class OnlineNugetInspectorLocator implements NugetInspectorLocator {
     }
 
     private File locateInspector(ThrowingBiFunction<File, String, File, DetectableException> inspectorInstaller, String inspectorKey) throws DetectableException {
-        File inspector;
-        Optional<File> cachedInstall = installedToolLocator.locateTool(inspectorKey);
         try {
             File nugetDirectory = directoryManager.getPermanentDirectory("nuget");
-            inspector = inspectorInstaller.apply(nugetDirectory, overrideVersion);
-        } catch (Exception e) {
-            if (cachedInstall.isPresent()) {
-                return cachedInstall.get();
-            }
-            throw new DetectableException("Unable to install the nuget inspector from Artifactory.", e);
-        }
-        if (inspector == null) {
-            if (cachedInstall.isPresent()) {
-                return cachedInstall.get();
-            }
-        } else {
+            File inspector = inspectorInstaller.apply(nugetDirectory, overrideVersion);
             installedToolManager.saveInstalledToolLocation(inspectorKey, inspector.getAbsolutePath());
+            return inspector;
+        } catch (Exception e) {
+            return installedToolLocator.locateTool(inspectorKey).orElseThrow(() ->
+                new DetectableException("Unable to install the nuget inspector from Artifactory.", e));
         }
-        return inspector;
     }
 }

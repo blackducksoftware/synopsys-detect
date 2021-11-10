@@ -52,8 +52,7 @@ public class ArtifactoryProjectInspectorInstaller {
     @NotNull //Returns location of extracted zip or throws
     public File downloadZip(String property, File installDirectory) throws DetectableException {
         try {
-            File zip = artifactoryZipInstaller.installZipFromSource(installDirectory, ".zip", ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.PROJECT_INSPECTOR_REPO, property);
-            return zip;
+            return artifactoryZipInstaller.installZipFromSource(installDirectory, ".zip", ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.PROJECT_INSPECTOR_REPO, property);
         } catch (IntegrationException | IOException e) {
             throw new DetectableException("Unable to install the project inspector from Artifactory.", e);
         }

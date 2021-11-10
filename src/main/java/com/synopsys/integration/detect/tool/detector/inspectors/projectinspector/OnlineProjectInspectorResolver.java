@@ -8,7 +8,6 @@
 package com.synopsys.integration.detect.tool.detector.inspectors.projectinspector;
 
 import java.io.File;
-import java.util.Optional;
 
 import com.synopsys.integration.detect.tool.cache.InstalledToolLocator;
 import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
@@ -45,12 +44,11 @@ public class OnlineProjectInspectorResolver implements com.synopsys.integration.
 
             if (inspector == null) {
                 // remote install has failed
-                Optional<File> cachedInstall = installedToolLocator.locateTool(INSTALLED_TOOL_JSON_KEY);
-                if (cachedInstall.isPresent()) {
-                    return ExecutableTarget.forFile(cachedInstall.get());
-                } else {
-                    throw new DetectableException("Unable to install the project inspector from Artifactory.");
-                }
+                return installedToolLocator.locateTool(INSTALLED_TOOL_JSON_KEY)
+                    .map(ExecutableTarget::forFile)
+                    .orElseThrow(() ->
+                        new DetectableException("Unable to install the project inspector from Artifactory.")
+                    );
             } else {
                 installedToolManager.saveInstalledToolLocation(INSTALLED_TOOL_JSON_KEY, inspectorFile.getAbsolutePath());
             }
