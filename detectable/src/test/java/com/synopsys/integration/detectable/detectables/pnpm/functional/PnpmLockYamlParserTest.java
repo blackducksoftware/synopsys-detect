@@ -30,7 +30,7 @@ public class PnpmLockYamlParserTest {
     public void testParse() throws IOException, IntegrationException {
         List<CodeLocation> codeLocations = pnpmLockYamlParser.parse(pnpmLockYaml, Arrays.asList(DependencyType.APP, DependencyType.DEV, DependencyType.OPTIONAL), new NameVersion("project", "version"), pnpmLinkedPackageResolver);
 
-        Assertions.assertEquals(3, codeLocations.size());
+        Assertions.assertEquals(2, codeLocations.size());
 
         // Did we correctly identify root project package in "importers"?
         Assertions.assertTrue(codeLocations.stream()
