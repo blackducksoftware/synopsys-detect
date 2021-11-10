@@ -28,29 +28,30 @@ public class ArtifactoryZipInstaller {
 
     public ArtifactoryZipInstaller(ArtifactResolver artifactResolver) {
         this.artifactResolver = artifactResolver;
+
     }
 
     @NotNull
-    public File installZipFromSource(final File dest, String ext, String base, String repository, String property) throws IntegrationException, IOException {
+    public File installZipFromSource(File dest, String ext, String base, String repository, String property) throws IntegrationException, IOException {
         return installZipFromSource(dest, ext, base, repository, property, null, null);
     }
 
     @NotNull
-    public File installZipFromSource(final File dest, String ext, String base, String repository, String property, @Nullable String overrideVersion, @Nullable String overrideArtifactPattern) throws IntegrationException, IOException {
+    public File installZipFromSource(File dest, String ext, String base, String repository, String property, @Nullable String overrideVersion, @Nullable String overrideArtifactPattern) throws IntegrationException, IOException {
         String source = artifactResolver.resolveArtifactLocation(base, repository, property, overrideVersion, overrideArtifactPattern);
         return installZipFromSource(dest, ext, source);
     }
 
     @NotNull
-    public File installZipFromSource(final File dest, String ext, final String source) throws IntegrationException {
+    public File installZipFromSource(File dest, String ext, String source) throws IntegrationException {
         logger.debug("Resolved inspector url: " + source);
-        final String zipName = artifactResolver.parseFileName(source);
+        String zipName = artifactResolver.parseFileName(source);
         logger.debug("Parsed artifact name: " + zipName);
-        final String inspectorFolderName = zipName.replace(ext, "");
-        final File inspectorFolder = new File(dest, inspectorFolderName);
+        String inspectorFolderName = zipName.replace(ext, "");
+        File inspectorFolder = new File(dest, inspectorFolderName);
         if (!inspectorFolder.exists()) {
             logger.debug("Downloading inspector.");
-            final File zipFile = new File(dest, zipName);
+            File zipFile = new File(dest, zipName);
             try {
                 artifactResolver.downloadArtifact(zipFile, source);
             } catch (IOException e) {

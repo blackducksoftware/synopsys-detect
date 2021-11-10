@@ -42,6 +42,8 @@ import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootFactory
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.run.singleton.BootSingletons;
+import com.synopsys.integration.detect.tool.cache.InstalledToolLocator;
+import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableOptions;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
@@ -91,8 +93,9 @@ public class DetectBootFactory {
     }
 
     public BootSingletons createRunDependencies(ProductRunData productRunData, PropertyConfiguration detectConfiguration, DetectableOptionFactory detectableOptionFactory, DetectConfigurationFactory detectConfigurationFactory,
-        DirectoryManager directoryManager, Configuration configuration) {
-        return new BootSingletons(productRunData, detectRunId, gson, detectInfo, fileFinder, eventSystem, createDetectorProfiler(), detectConfiguration, detectableOptionFactory, detectConfigurationFactory, directoryManager, configuration);
+        DirectoryManager directoryManager, Configuration configuration, InstalledToolManager installedToolManager, InstalledToolLocator installedToolLocator) {
+        return new BootSingletons(productRunData, detectRunId, gson, detectInfo, fileFinder, eventSystem, createDetectorProfiler(), detectConfiguration, detectableOptionFactory, detectConfigurationFactory, directoryManager, configuration,
+            installedToolManager, installedToolLocator);
     }
 
     public Configuration createFreemarkerConfiguration() {

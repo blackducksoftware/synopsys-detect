@@ -23,28 +23,29 @@ public class DockerInspectorInstaller {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ArtifactResolver artifactResolver;
 
-    public DockerInspectorInstaller(final ArtifactResolver artifactResolver) {
+    public DockerInspectorInstaller(ArtifactResolver artifactResolver) {
         this.artifactResolver = artifactResolver;
     }
 
-    public File installJar(final File dockerDirectory, final Optional<String> dockerVersion) throws IntegrationException, IOException, DetectUserFriendlyException {
+    public File installJar(File dockerDirectory, Optional<String> dockerVersion) throws IntegrationException, IOException, DetectUserFriendlyException {
         logger.info("Determining the location of the Docker inspector.");
-        final String location = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.DOCKER_INSPECTOR_REPO, ArtifactoryConstants.DOCKER_INSPECTOR_PROPERTY, dockerVersion.orElse(""),
+        String location = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.DOCKER_INSPECTOR_REPO, ArtifactoryConstants.DOCKER_INSPECTOR_PROPERTY, dockerVersion.orElse(""),
             ArtifactoryConstants.DOCKER_INSPECTOR_VERSION_OVERRIDE);
         return download(location, dockerDirectory);
     }
 
-    public File installAirGap(final File dockerDirectory) throws IntegrationException, IOException, DetectUserFriendlyException {
+    public File installAirGap(File dockerDirectory) throws IntegrationException, IOException, DetectUserFriendlyException {
         logger.info("Determining the location of the Docker inspector.");
-        final String location = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.DOCKER_INSPECTOR_REPO, ArtifactoryConstants.DOCKER_INSPECTOR_AIR_GAP_PROPERTY, "", "");
+        String location = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.DOCKER_INSPECTOR_REPO, ArtifactoryConstants.DOCKER_INSPECTOR_AIR_GAP_PROPERTY, "", "");
         return download(location, dockerDirectory);
     }
 
-    private File download(final String location, final File dockerDirectory) throws IntegrationException, IOException, DetectUserFriendlyException {
+    private File download(String location, File dockerDirectory) throws IntegrationException, IOException, DetectUserFriendlyException {
         logger.info("Finding or downloading the docker inspector.");
         logger.debug(String.format("Downloading docker inspector from '%s' to '%s'.", location, dockerDirectory.getAbsolutePath()));
-        final File jarFile = artifactResolver.downloadOrFindArtifact(dockerDirectory, location);
+        File jarFile = artifactResolver.downloadOrFindArtifact(dockerDirectory, location);
         logger.info("Found online docker inspector: " + jarFile.getAbsolutePath());
+
         return jarFile;
     }
 
