@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collections;
 
 import org.apache.commons.io.FileUtils;
@@ -18,6 +19,8 @@ import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.types.path.SimplePathResolver;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
+import com.synopsys.integration.detect.tool.cache.InstalledToolLocator;
+import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 
 @Tag("integration")
@@ -41,7 +44,9 @@ public class DetectFontInstallerTestIT {
         DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(propertyConfiguration, new SimplePathResolver(), gson);
         ConnectionFactory connectionFactory = new ConnectionFactory(detectConfigurationFactory.createConnectionDetails());
         ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
-        DetectFontInstaller installer = new DetectFontInstaller(artifactResolver);
+        InstalledToolManager installedToolManager = new InstalledToolManager();
+        InstalledToolLocator installedToolLocator = new InstalledToolLocator(Paths.get(""), new Gson());
+        DetectFontInstaller installer = new DetectFontInstaller(artifactResolver, installedToolManager, installedToolLocator);
         installer.installFonts(targetDirectory);
         String[] fileList = targetDirectory.list();
         assertNotNull(fileList);

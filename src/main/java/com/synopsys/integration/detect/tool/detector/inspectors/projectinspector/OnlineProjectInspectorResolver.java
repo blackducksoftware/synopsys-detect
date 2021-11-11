@@ -9,6 +9,9 @@ package com.synopsys.integration.detect.tool.detector.inspectors.projectinspecto
 
 import java.io.File;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.synopsys.integration.detect.tool.cache.InstalledToolLocator;
 import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -17,6 +20,8 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 
 public class OnlineProjectInspectorResolver implements com.synopsys.integration.detectable.detectable.inspector.ProjectInspectorResolver {
     private static final String INSTALLED_TOOL_JSON_KEY = "project-inspector";
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final ArtifactoryProjectInspectorInstaller projectInspectorInstaller;
     private final DirectoryManager directoryManager;
@@ -44,6 +49,7 @@ public class OnlineProjectInspectorResolver implements com.synopsys.integration.
 
             if (inspector == null) {
                 // remote install has failed
+                logger.debug("Attempting to download project inspector from previous install.");
                 return installedToolLocator.locateTool(INSTALLED_TOOL_JSON_KEY)
                     .map(ExecutableTarget::forFile)
                     .orElseThrow(() ->
