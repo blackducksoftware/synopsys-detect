@@ -102,6 +102,7 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
             }
             if (inspector == null) {
                 if (cachedInstall.isPresent()) {
+                    logger.debug("Using docker inspector from previous install.");
                     return new DockerInspectorInfo(cachedInstall.get());
                 }
                 return null;
@@ -120,8 +121,8 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
         List<File> airGapInspectorImageTarfiles;
         airGapInspectorImageTarfiles = new ArrayList<>();
         String dockerInspectorAirGapPath = airGapInspectorPaths.getDockerInspectorAirGapPath()
-                                               .map(Path::toString)
-                                               .orElse(null);
+            .map(Path::toString)
+            .orElse(null);
         for (String inspectorName : inspectorNames) {
             File osImage = new File(dockerInspectorAirGapPath, IMAGE_INSPECTOR_FAMILY + "-" + inspectorName + ".tar");
             airGapInspectorImageTarfiles.add(osImage);

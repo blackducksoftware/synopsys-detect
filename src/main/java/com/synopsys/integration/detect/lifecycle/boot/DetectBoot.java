@@ -142,9 +142,10 @@ public class DetectBoot {
         if (detectArgumentState.isGenerateAirGapZip()) {
             try {
                 AirGapType airGapType = new AirGapTypeDecider().decide(detectArgumentState);
-                AirGapCreator airGapCreator = detectBootFactory.createAirGapCreator(detectConfigurationFactory.createConnectionDetails(), detectConfigurationFactory.createDetectExecutableOptions(), freemarkerConfiguration);
+                AirGapCreator airGapCreator = detectBootFactory
+                    .createAirGapCreator(detectConfigurationFactory.createConnectionDetails(), detectConfigurationFactory.createDetectExecutableOptions(), freemarkerConfiguration, installedToolManager, installedToolLocator);
                 String gradleInspectorVersion = detectConfiguration.getValueOrEmpty(DetectProperties.DETECT_GRADLE_INSPECTOR_VERSION.getProperty())
-                                                    .orElse(null);
+                    .orElse(null);
 
                 File airGapZip = airGapCreator.createAirGapZip(airGapType, directoryManager.getRunHomeDirectory(), gradleInspectorVersion);
 
@@ -187,8 +188,8 @@ public class DetectBoot {
         }
 
         BootSingletons bootSingletons = detectBootFactory
-                                            .createRunDependencies(productRunData, detectConfiguration, detectableOptionFactory, detectConfigurationFactory, directoryManager, freemarkerConfiguration, installedToolManager,
-                                                installedToolLocator);
+            .createRunDependencies(productRunData, detectConfiguration, detectableOptionFactory, detectConfigurationFactory, directoryManager, freemarkerConfiguration, installedToolManager,
+                installedToolLocator);
         return Optional.of(DetectBootResult.run(bootSingletons, detectConfiguration, productRunData, directoryManager, diagnosticSystem));
     }
 

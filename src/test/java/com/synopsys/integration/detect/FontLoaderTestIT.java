@@ -24,6 +24,7 @@ package com.synopsys.integration.detect;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collections;
 
 import org.apache.commons.io.FileUtils;
@@ -40,6 +41,8 @@ import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.types.path.SimplePathResolver;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
+import com.synopsys.integration.detect.tool.cache.InstalledToolLocator;
+import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.DetectRunId;
 import com.synopsys.integration.detect.workflow.blackduck.DetectFontLoader;
@@ -62,7 +65,9 @@ public class FontLoaderTestIT {
         DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(propertyConfiguration, new SimplePathResolver(), gson);
         ConnectionFactory connectionFactory = new ConnectionFactory(detectConfigurationFactory.createConnectionDetails());
         ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
-        DetectFontInstaller installer = new DetectFontInstaller(artifactResolver);
+        InstalledToolManager installedToolManager = new InstalledToolManager();
+        InstalledToolLocator installedToolLocator = new InstalledToolLocator(Paths.get(""), new Gson());
+        DetectFontInstaller installer = new DetectFontInstaller(artifactResolver, installedToolManager, installedToolLocator);
         DirectoryOptions directoryOptions = new DirectoryOptions(null, null, null, null, fontDirectory.toPath(), null);
         DirectoryManager directoryManager = new DirectoryManager(directoryOptions, DetectRunId.createDefault());
         detectFontLocator = new OnlineDetectFontLocator(installer, directoryManager);
