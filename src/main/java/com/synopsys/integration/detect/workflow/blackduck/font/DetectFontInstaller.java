@@ -50,16 +50,16 @@ public class DetectFontInstaller {
             if (zipDeleted) {
                 logger.debug("Successfully deleted zip file {}", zipFilePath);
             }
-        } catch (IOException | IntegrationException | ArchiveException e) {
+        } catch (IOException | IntegrationException | ArchiveException onlineInstallException) {
+            logger.error("Online install exception cause: ", onlineInstallException);
             logger.debug("Attempting to download fonts from previous install.");
             installedToolLocator.locateTool(FONTS_ZIP_KEY).ifPresent(fonts ->
             {
                 try {
                     FileUtils.copyDirectory(fonts, targetDirectory);
-                } catch (IOException ex) {
+                } catch (IOException localInstallException) {
                     logger.error(String.format("Failed to load font files into %s", targetDirectory.getAbsolutePath()));
-                    logger.error("Online install exception cause: ", e);
-                    logger.error("Local install exception: ", ex); //TODO- should we log exceptions for both online and local installs?
+                    logger.error("Local install exception: ", localInstallException);
                 }
             });
         }
