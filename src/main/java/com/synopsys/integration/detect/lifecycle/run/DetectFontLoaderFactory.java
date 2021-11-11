@@ -12,6 +12,8 @@ import java.util.Optional;
 
 import com.synopsys.integration.detect.lifecycle.run.singleton.BootSingletons;
 import com.synopsys.integration.detect.lifecycle.run.singleton.UtilitySingletons;
+import com.synopsys.integration.detect.tool.cache.InstalledToolLocator;
+import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detect.workflow.blackduck.DetectFontLoader;
@@ -25,11 +27,15 @@ public class DetectFontLoaderFactory {
     private final AirGapInspectorPaths airGapInspectorPaths;
     private final ArtifactResolver artifactResolver;
     private final DirectoryManager directoryManager;
+    private final InstalledToolManager installedToolManager;
+    private final InstalledToolLocator installedToolLocator;
 
     public DetectFontLoaderFactory(BootSingletons bootSingletons, UtilitySingletons utilitySingletons) {
         airGapInspectorPaths = utilitySingletons.getAirGapInspectorPaths();
         artifactResolver = utilitySingletons.getArtifactResolver();
         directoryManager = bootSingletons.getDirectoryManager();
+        installedToolManager = bootSingletons.getInstalledToolManager();
+        installedToolLocator = bootSingletons.getInstalledToolLocator();
     }
 
     public DetectFontLoader detectFontLoader() {
@@ -38,7 +44,7 @@ public class DetectFontLoaderFactory {
         if (fontAirGapPath.isPresent()) {
             locator = new AirGapFontLocator(airGapInspectorPaths);
         } else {
-            locator = new OnlineDetectFontLocator(new DetectFontInstaller(artifactResolver), directoryManager);
+            locator = new OnlineDetectFontLocator(new DetectFontInstaller(artifactResolver, installedToolManager, installedToolLocator), directoryManager);
         }
         return new DetectFontLoader(locator);
     }

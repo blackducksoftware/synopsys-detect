@@ -124,7 +124,8 @@ public class DetectBootFactory {
         return new DiagnosticSystem(isDiagnosticExtended, detectConfiguration, detectRunId, detectInfo, directoryManager, eventSystem, maskedRawPropertyValues, propertyKeys);
     }
 
-    public AirGapCreator createAirGapCreator(ConnectionDetails connectionDetails, DetectExecutableOptions detectExecutableOptions, Configuration freemarkerConfiguration) {
+    public AirGapCreator createAirGapCreator(ConnectionDetails connectionDetails, DetectExecutableOptions detectExecutableOptions, Configuration freemarkerConfiguration, InstalledToolManager installedToolManager,
+        InstalledToolLocator installedToolLocator) {
         ConnectionFactory connectionFactory = new ConnectionFactory(connectionDetails);
         ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
         ArtifactoryZipInstaller artifactoryZipInstaller = new ArtifactoryZipInstaller(artifactResolver);
@@ -143,7 +144,7 @@ public class DetectBootFactory {
         ProjectInspectorAirGapCreator projectInspectorAirGapCreator = new ProjectInspectorAirGapCreator(projectInspectorInstaller);
 
         DockerAirGapCreator dockerAirGapCreator = new DockerAirGapCreator(new DockerInspectorInstaller(artifactResolver));
-        DetectFontAirGapCreator detectFontAirGapCreator = new DetectFontAirGapCreator(new DetectFontInstaller(artifactResolver));
+        DetectFontAirGapCreator detectFontAirGapCreator = new DetectFontAirGapCreator(new DetectFontInstaller(artifactResolver, installedToolManager, installedToolLocator));
 
         return new AirGapCreator(new AirGapPathFinder(), eventSystem, gradleAirGapCreator, nugetAirGapCreator, dockerAirGapCreator, detectFontAirGapCreator, projectInspectorAirGapCreator);
     }

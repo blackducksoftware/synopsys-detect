@@ -10,6 +10,8 @@ package com.synopsys.integration.detect.tool.detector.inspectors.nuget;
 import java.io.File;
 
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.tool.cache.InstalledToolLocator;
 import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
@@ -22,6 +24,8 @@ public class OnlineNugetInspectorLocator implements NugetInspectorLocator {
     private static final String NUGET_INSPECTOR_5_INSTALLED_TOOL_JSON_KEY = "nuget-inspector5";
     private static final String NUGET_INSPECTOR_3_INSTALLED_TOOL_JSON_KEY = "nuget-inspector3";
     private static final String NUGET_INSPECTOR_EXE_INSTALLED_TOOL_JSON_KEY = "nuget-inspector-exe";
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final NugetInspectorInstaller nugetInspectorInstaller;
     private final DirectoryManager directoryManager;
@@ -66,6 +70,7 @@ public class OnlineNugetInspectorLocator implements NugetInspectorLocator {
             installedToolManager.saveInstalledToolLocation(inspectorKey, inspector.getAbsolutePath());
             return inspector;
         } catch (Exception e) {
+            logger.debug("Attempting to download nuget inspector from previous install.");
             return installedToolLocator.locateTool(inspectorKey).orElseThrow(() ->
                 new DetectableException("Unable to install the nuget inspector from Artifactory.", e));
         }
