@@ -194,7 +194,7 @@ public class DetectBoot {
     }
 
     private SortedMap<String, String> collectMaskedRawPropertyValues(PropertyConfiguration propertyConfiguration) throws IllegalAccessException {
-        return new TreeMap<>(propertyConfiguration.getMaskedRawValueMap(new HashSet<>(DetectProperties.allProperties().getProperties()), DetectPropertyUtil.PASSWORDS_AND_TOKENS_PREDICATE));
+        return new TreeMap<>(propertyConfiguration.getMaskedRawValueMap(new HashSet<>(DetectProperties.allProperties().getProperties()), DetectPropertyUtil.getPasswordsAndTokensPredicate()));
     }
 
     private void publishCollectedPropertyValues(Map<String, String> maskedRawPropertyValues) {

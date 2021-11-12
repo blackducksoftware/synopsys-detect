@@ -41,8 +41,8 @@ public class BlackDuckConfigFactory {
         ConnectionDetails connectionDetails = blackDuckConnectionDetails.getConnectionDetails();
 
         BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = new BlackDuckServerConfigBuilder()
-                                                                        .setExecutorService(Executors.newFixedThreadPool(blackDuckConnectionDetails.getParallelProcessors()))
-                                                                        .setLogger(logger);
+            .setExecutorService(Executors.newFixedThreadPool(blackDuckConnectionDetails.getParallelProcessors()))
+            .setLogger(logger);
 
         blackDuckServerConfigBuilder.setProperties(blackDuckConnectionDetails.getBlackduckProperties().entrySet());
         blackDuckServerConfigBuilder.setProperty(BLACK_DUCK_SERVER_CONFIG_BUILDER_TIMEOUT_KEY, blackDuckConnectionDetails.getConnectionDetails().getTimeout().toString());

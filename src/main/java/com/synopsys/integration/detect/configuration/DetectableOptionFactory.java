@@ -14,8 +14,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.base.NullableProperty;
@@ -62,8 +60,6 @@ public class DetectableOptionFactory {
     private final DiagnosticSystem diagnosticSystem;
     private final PathResolver pathResolver;
     private final ProxyInfo proxyInfo;
-
-    private final Logger logger = LoggerFactory.getLogger(DetectableOptionFactory.class);
 
     public DetectableOptionFactory(PropertyConfiguration detectConfiguration, @Nullable DiagnosticSystem diagnosticSystem, PathResolver pathResolver, ProxyInfo proxyInfo) {
         this.detectConfiguration = detectConfiguration;
@@ -236,8 +232,8 @@ public class DetectableOptionFactory {
 
     public GemspecParseDetectableOptions createGemspecParseDetectableOptions() {
         Boolean includeRuntimeDependencies = getValue(DetectProperties.DETECT_RUBY_INCLUDE_RUNTIME_DEPENDENCIES);
-        Boolean includeDevDeopendencies = getValue(DetectProperties.DETECT_RUBY_INCLUDE_DEV_DEPENDENCIES);
-        return new GemspecParseDetectableOptions(includeRuntimeDependencies, includeDevDeopendencies);
+        Boolean includeDevDependencies = getValue(DetectProperties.DETECT_RUBY_INCLUDE_DEV_DEPENDENCIES);
+        return new GemspecParseDetectableOptions(includeRuntimeDependencies, includeDevDependencies);
     }
 
     public SbtResolutionCacheOptions createSbtResolutionCacheDetectableOptions() {

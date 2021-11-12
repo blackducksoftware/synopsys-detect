@@ -13,7 +13,7 @@ public class DetectCategory extends Category {
     public static final DetectCategory Advanced = new DetectCategory("advanced");
     public static final DetectCategory Simple = new DetectCategory("simple");
 
-    protected DetectCategory(final String name) {
+    protected DetectCategory(String name) {
         super(name);
     }
 }

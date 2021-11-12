@@ -14,12 +14,12 @@ public class DetectUserFriendlyException extends Exception {
 
     private final ExitCodeType exitCodeType;
 
-    public DetectUserFriendlyException(final String message, final ExitCodeType exitCodeType) {
+    public DetectUserFriendlyException(String message, ExitCodeType exitCodeType) {
         super(message);
         this.exitCodeType = exitCodeType;
     }
 
-    public DetectUserFriendlyException(final String message, final Throwable cause, final ExitCodeType exitCodeType) {
+    public DetectUserFriendlyException(String message, Throwable cause, ExitCodeType exitCodeType) {
         super(message, cause);
         this.exitCodeType = exitCodeType;
     }

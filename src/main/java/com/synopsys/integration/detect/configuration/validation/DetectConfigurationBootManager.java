@@ -7,7 +7,6 @@
  */
 package com.synopsys.integration.detect.configuration.validation;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -26,7 +25,6 @@ import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.help.PropertyConfigurationHelpContext;
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.PropertyDeprecationInfo;
-import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
@@ -39,12 +37,10 @@ import com.synopsys.integration.detect.workflow.status.DetectIssueType;
 public class DetectConfigurationBootManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final EventSystem eventSystem;
-    private final DetectInfo detectInfo;
     private final PropertyConfigurationHelpContext detectConfigurationReporter;
 
-    public DetectConfigurationBootManager(EventSystem eventSystem, DetectInfo detectInfo, PropertyConfigurationHelpContext detectConfigurationReporter) {
+    public DetectConfigurationBootManager(EventSystem eventSystem, PropertyConfigurationHelpContext detectConfigurationReporter) {
         this.eventSystem = eventSystem;
-        this.detectInfo = detectInfo;
         this.detectConfigurationReporter = detectConfigurationReporter;
     }
 
@@ -52,10 +48,10 @@ public class DetectConfigurationBootManager {
         Map<String, String> additionalNotes = new HashMap<>();
 
         List<Property> usedDeprecatedProperties = DetectProperties.allProperties().getProperties()
-                                                      .stream()
-                                                      .filter(property -> detectConfiguration.wasKeyProvided(property.getKey()))
-                                                      .filter(property -> property.getPropertyDeprecationInfo() != null)
-                                                      .collect(Collectors.toList());
+            .stream()
+            .filter(property -> detectConfiguration.wasKeyProvided(property.getKey()))
+            .filter(property -> property.getPropertyDeprecationInfo() != null)
+            .collect(Collectors.toList());
 
         for (Property property : usedDeprecatedProperties) {
             PropertyDeprecationInfo deprecationInfo = property.getPropertyDeprecationInfo();
@@ -70,11 +66,11 @@ public class DetectConfigurationBootManager {
         return new DeprecationResult(additionalNotes);
     }
 
-    public void printConfiguration(SortedMap<String, String> maskedRawPropertyValues, Set<String> propertyKeys, Map<String, String> additionalNotes) throws IllegalAccessException {
+    public void printConfiguration(SortedMap<String, String> maskedRawPropertyValues, Set<String> propertyKeys, Map<String, String> additionalNotes) {
         detectConfigurationReporter.printKnownCurrentValues(logger::info, propertyKeys, maskedRawPropertyValues, additionalNotes);
     }
 
-    //Check for options that are just plain bad, ie giving an detector type we don't know about.
+    // Check for options that are just plain bad, ie giving a detector type we don't know about.
     public Optional<DetectUserFriendlyException> validateForPropertyParseErrors() throws IllegalAccessException {
         Map<String, List<String>> errorMap = detectConfigurationReporter.findPropertyParseErrors(DetectProperties.allProperties().getProperties());
         if (!errorMap.isEmpty()) {
@@ -84,9 +80,10 @@ public class DetectConfigurationBootManager {
         return Optional.empty();
     }
 
+    // TODO: Why is this not used? JM - 11/2021
     public void printFailingPropertiesMessages(Map<String, List<String>> deprecationMessages) throws IllegalAccessException {
-        Set<String> sortedPropertyKeys = new HashSet(DetectProperties.allProperties().getPropertyKeys());
-        detectConfigurationReporter.printKnownPropertyErrors(logger::info, sortedPropertyKeys, new TreeMap(deprecationMessages));
+        Set<String> sortedPropertyKeys = new HashSet<>(DetectProperties.allProperties().getPropertyKeys());
+        detectConfigurationReporter.printKnownPropertyErrors(logger::info, sortedPropertyKeys, new TreeMap<>(deprecationMessages));
 
         logger.warn(StringUtils.repeat("=", 60));
         logger.warn("Configuration is using deprecated properties that must be updated for this major version.");

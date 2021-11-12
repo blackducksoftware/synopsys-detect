@@ -16,7 +16,7 @@ public class HelpJsonExitCode {
         return exitCodeValue;
     }
 
-    public void setExitCodeValue(final Integer exitCodeValue) {
+    public void setExitCodeValue(Integer exitCodeValue) {
         this.exitCodeValue = exitCodeValue;
     }
 
@@ -24,7 +24,7 @@ public class HelpJsonExitCode {
         return exitCodeKey;
     }
 
-    public void setExitCodeKey(final String exitCodeKey) {
+    public void setExitCodeKey(String exitCodeKey) {
         this.exitCodeKey = exitCodeKey;
     }
 
@@ -32,7 +32,7 @@ public class HelpJsonExitCode {
         return exitCodeDescription;
     }
 
-    public void setExitCodeDescription(final String exitCodeDescription) {
+    public void setExitCodeDescription(String exitCodeDescription) {
         this.exitCodeDescription = exitCodeDescription;
     }
 }

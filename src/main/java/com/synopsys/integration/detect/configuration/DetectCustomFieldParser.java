@@ -21,21 +21,21 @@ import com.synopsys.integration.detect.workflow.blackduck.project.customfields.C
 
 public class DetectCustomFieldParser {
 
-    public CustomFieldDocument parseCustomFieldDocument(final Map<String, String> currentProperties) throws DetectUserFriendlyException {
+    public CustomFieldDocument parseCustomFieldDocument(Map<String, String> currentProperties) throws DetectUserFriendlyException {
         try {
-            final ConfigurationPropertySource source = new MapConfigurationPropertySource(currentProperties);
-            final Binder objectBinder = new Binder(source);
-            final BindResult<CustomFieldDocument> fieldDocumentBinding = objectBinder.bind("detect.custom.fields", CustomFieldDocument.class);
-            final CustomFieldDocument fieldDocument = fieldDocumentBinding.orElse(new CustomFieldDocument());
+            ConfigurationPropertySource source = new MapConfigurationPropertySource(currentProperties);
+            Binder objectBinder = new Binder(source);
+            BindResult<CustomFieldDocument> fieldDocumentBinding = objectBinder.bind("detect.custom.fields", CustomFieldDocument.class);
+            CustomFieldDocument fieldDocument = fieldDocumentBinding.orElse(new CustomFieldDocument());
             fieldDocument.getProject().forEach(this::filterEmptyQuotes);
             fieldDocument.getVersion().forEach(this::filterEmptyQuotes);
             return fieldDocument;
-        } catch (final Exception e) {
+        } catch (Exception e) {
             throw new DetectUserFriendlyException("Unable to parse custom fields.", e, ExitCodeType.FAILURE_CONFIGURATION);
         }
     }
 
-    public void filterEmptyQuotes(final CustomFieldElement element) {
+    public void filterEmptyQuotes(CustomFieldElement element) {
         element.setValue(element.getValue().stream().filter(value -> !("\"\"".equals(value) || "''".equals(value))).collect(Collectors.toList()));
     }
 }
