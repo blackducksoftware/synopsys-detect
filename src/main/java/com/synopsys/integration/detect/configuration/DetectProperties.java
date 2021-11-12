@@ -927,7 +927,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.PIP, DetectGroup.GLOBAL);
 
     public static final DetectProperty<FilterableEnumListProperty<DependencyType>> DETECT_PNPM_DEPENDENCY_TYPES =
-        new DetectProperty<>(new FilterableEnumListProperty<>("detect.pnpm.dependency.types", Arrays.asList(FilterableEnumValue.allValue()), DependencyType.class))
+        new DetectProperty<>(new FilterableEnumListProperty<>("detect.pnpm.dependency.types", FilterableEnumUtils.allList(), DependencyType.class))
             .setInfo("pnpm Dependency Types", DetectPropertyFromVersion.VERSION_7_8_0)
             .setHelp("Set this value to indicate which types of pnpm dependencies you want Detect to report.",
                 "If you want Detect to report a specific type(s) of dependencies, pass a comma-separated list of such types (ex. APP, DEV, OPTIONAL).  By default, all types will be reported.")
