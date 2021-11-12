@@ -32,7 +32,7 @@ public class OnlineProjectInspectorResolver implements com.synopsys.integration.
     private ExecutableTarget inspector = null;
 
     public OnlineProjectInspectorResolver(ArtifactoryProjectInspectorInstaller projectInspectorInstaller, DirectoryManager directoryManager, InstalledToolManager installedToolManager,
-        InstalledToolLocator installedToolLocator) {
+                                          InstalledToolLocator installedToolLocator) {
         this.projectInspectorInstaller = projectInspectorInstaller;
         this.directoryManager = directoryManager;
         this.installedToolManager = installedToolManager;
@@ -41,24 +41,28 @@ public class OnlineProjectInspectorResolver implements com.synopsys.integration.
 
     @Override
     public ExecutableTarget resolveProjectInspector() throws DetectableException {
+        File inspectorFile = null;
         if (!hasResolvedInspector) {
             hasResolvedInspector = true;
             File installDirectory = directoryManager.getPermanentDirectory("project-inspector");
-            File inspectorFile = projectInspectorInstaller.install(installDirectory);
-            inspector = ExecutableTarget.forFile(inspectorFile);
+            try {
+                inspectorFile = projectInspectorInstaller.install(installDirectory);
+            } catch (DetectableException e) {
+                logger.debug("Unable to install the project inspector from Artifactory.");
+            }
 
-            if (inspector == null) {
+            if (inspectorFile == null) {
                 // remote install has failed
-                logger.debug("Attempting to download project inspector from previous install.");
+                logger.debug("Attempting to locate previous install of project inspector.");
                 return installedToolLocator.locateTool(INSTALLED_TOOL_JSON_KEY)
                     .map(ExecutableTarget::forFile)
                     .orElseThrow(() ->
-                        new DetectableException("Unable to install the project inspector from Artifactory.")
+                        new DetectableException("Unable to locate previous install of the project inspector.")
                     );
             } else {
                 installedToolManager.saveInstalledToolLocation(INSTALLED_TOOL_JSON_KEY, inspectorFile.getAbsolutePath());
             }
         }
-        return inspector;
+        return ExecutableTarget.forFile(inspectorFile);
     }
 }
