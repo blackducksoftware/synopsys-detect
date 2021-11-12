@@ -8,7 +8,6 @@
 package com.synopsys.integration.detect.configuration;
 
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -221,17 +220,13 @@ public class DetectableOptionFactory {
     public PipInspectorDetectableOptions createPipInspectorDetectableOptions() {
         String pipProjectName = getNullableValue(DetectProperties.DETECT_PIP_PROJECT_NAME);
         List<Path> requirementsFilePath = getValue(DetectProperties.DETECT_PIP_REQUIREMENTS_PATH).stream()
-                                              .map(it -> it.resolvePath(pathResolver))
-                                              .collect(Collectors.toList());
+            .map(it -> it.resolvePath(pathResolver))
+            .collect(Collectors.toList());
         return new PipInspectorDetectableOptions(pipProjectName, requirementsFilePath);
     }
 
     public List<DependencyType> createPnpmDependencyTypes() {
-        List<DependencyType> types = getValue(DetectProperties.DETECT_PNPM_DEPENDENCY_TYPES).representedValues();
-        if (types.isEmpty()) {
-            types = Arrays.asList(DependencyType.values());
-        }
-        return types;
+        return getValue(DetectProperties.DETECT_PNPM_DEPENDENCY_TYPES).representedValues();
     }
 
     public ProjectInspectorOptions createProjectInspectorOptions() {
