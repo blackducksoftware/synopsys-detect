@@ -35,17 +35,19 @@ public class PnpmLockExtractor {
             Optional<NameVersion> nameVersion = parseNameVersionFromPackageJson(packageJsonFile);
             List<CodeLocation> codeLocations = pnpmLockYamlParser.parse(yarnLockYamlFile, dependencyTypes, nameVersion.orElse(null), linkedPackageResolver);
             return new Extraction.Builder().success(codeLocations)
-                       .nameVersionIfPresent(nameVersion)
-                       .build();
+                .nameVersionIfPresent(nameVersion)
+                .build();
         } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
     }
 
-    private Optional<NameVersion> parseNameVersionFromPackageJson(File packageJsonFile) throws IOException {
-        NullSafePackageJson nullSafePackageJson = packageJsonFiles.read(packageJsonFile);
-        if (nullSafePackageJson.getName().isPresent() && nullSafePackageJson.getVersion().isPresent()) {
-            return Optional.of(new NameVersion(nullSafePackageJson.getNameString(), nullSafePackageJson.getVersionString()));
+    private Optional<NameVersion> parseNameVersionFromPackageJson(@Nullable File packageJsonFile) throws IOException {
+        if (packageJsonFile != null) {
+            NullSafePackageJson nullSafePackageJson = packageJsonFiles.read(packageJsonFile);
+            if (nullSafePackageJson.getName().isPresent() && nullSafePackageJson.getVersion().isPresent()) {
+                return Optional.of(new NameVersion(nullSafePackageJson.getNameString(), nullSafePackageJson.getVersionString()));
+            }
         }
         return Optional.empty();
     }
