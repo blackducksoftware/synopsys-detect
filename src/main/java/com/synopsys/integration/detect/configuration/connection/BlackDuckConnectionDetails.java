@@ -21,8 +21,8 @@ public class BlackDuckConnectionDetails {
     private final Integer parallelProcessors;
     private final ConnectionDetails connectionDetails;
 
-    public BlackDuckConnectionDetails(final Boolean offline, @Nullable final String blackDuckUrl, final Map<String, String> blackduckProperties, final Integer parallelProcessors,
-        final ConnectionDetails connectionDetails) {
+    public BlackDuckConnectionDetails(Boolean offline, @Nullable String blackDuckUrl, Map<String, String> blackduckProperties, Integer parallelProcessors,
+        ConnectionDetails connectionDetails) {
         this.offline = offline;
         this.blackDuckUrl = blackDuckUrl;
         this.blackduckProperties = blackduckProperties;

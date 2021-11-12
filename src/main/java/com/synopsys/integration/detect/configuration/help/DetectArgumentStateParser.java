@@ -9,22 +9,22 @@ package com.synopsys.integration.detect.configuration.help;
 
 public class DetectArgumentStateParser {
 
-    public DetectArgumentState parseArgs(final String[] args) {
+    public DetectArgumentState parseArgs(String[] args) {
         return parseArgs(new ArgumentParser(args));
     }
 
-    public DetectArgumentState parseArgs(final ArgumentParser parser) {
-        final boolean isHelp = parser.isArgumentPresent("-h", "--help");
-        final boolean isHelpJsonDocument = parser.isArgumentPresent("-hjson", "--helpjson");
-        final boolean isInteractive = parser.isArgumentPresent("-i", "--interactive");
+    public DetectArgumentState parseArgs(ArgumentParser parser) {
+        boolean isHelp = parser.isArgumentPresent("-h", "--help");
+        boolean isHelpJsonDocument = parser.isArgumentPresent("-hjson", "--helpjson");
+        boolean isInteractive = parser.isArgumentPresent("-i", "--interactive");
 
-        final boolean isVerboseHelp = parser.isArgumentPresent("-hv", "--helpVerbose");
-        final boolean isDeprecatedHelp = parser.isArgumentPresent("-hd", "--helpDeprecated");
+        boolean isVerboseHelp = parser.isArgumentPresent("-hv", "--helpVerbose");
+        boolean isDeprecatedHelp = parser.isArgumentPresent("-hd", "--helpDeprecated");
 
-        final boolean isDiagnosticProvided = parser.isArgumentPresent("-d", "--diagnostic");
-        final boolean isDiagnosticExtendedProvided = parser.isArgumentPresent("-de", "--diagnosticExtended");
+        boolean isDiagnosticProvided = parser.isArgumentPresent("-d", "--diagnostic");
+        boolean isDiagnosticExtendedProvided = parser.isArgumentPresent("-de", "--diagnosticExtended");
 
-        final boolean isGenerateAirGapZip = parser.isArgumentPresent("-z", "--zip");
+        boolean isGenerateAirGapZip = parser.isArgumentPresent("-z", "--zip");
 
         boolean isDiagnostic = false;
         boolean isDiagnosticExtended = false;

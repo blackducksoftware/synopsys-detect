@@ -159,7 +159,7 @@ public class DetectBootFactory {
 
     public DetectConfigurationBootManager createDetectConfigurationBootManager(PropertyConfiguration detectConfiguration) {
         PropertyConfigurationHelpContext detectConfigurationReporter = new PropertyConfigurationHelpContext(detectConfiguration);
-        return new DetectConfigurationBootManager(eventSystem, detectInfo, detectConfigurationReporter);
+        return new DetectConfigurationBootManager(eventSystem, detectConfigurationReporter);
     }
 
     private DetectorProfiler createDetectorProfiler() {

@@ -140,7 +140,7 @@ public class DetectConfigurationFactory {
         String proxyPort = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.BLACKDUCK_PROXY_PORT.getProperty()).orElse(null);
         String proxyNtlmDomain = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.BLACKDUCK_PROXY_NTLM_DOMAIN.getProperty()).orElse(null);
         String proxyNtlmWorkstation = PropertyConfigUtils
-                                          .getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.BLACKDUCK_PROXY_NTLM_WORKSTATION.getProperty()).orElse(null);
+            .getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.BLACKDUCK_PROXY_NTLM_WORKSTATION.getProperty()).orElse(null);
 
         CredentialsBuilder proxyCredentialsBuilder = new CredentialsBuilder();
         proxyCredentialsBuilder.setUsername(proxyUsername);
@@ -175,10 +175,10 @@ public class DetectConfigurationFactory {
     public ConnectionDetails createConnectionDetails() throws DetectUserFriendlyException {
         Boolean alwaysTrust = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.BLACKDUCK_TRUST_CERT.getProperty());
         List<String> proxyIgnoredHosts = PropertyConfigUtils
-                                             .getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.BLACKDUCK_PROXY_IGNORED_HOSTS.getProperty());
+            .getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.BLACKDUCK_PROXY_IGNORED_HOSTS.getProperty());
         List<Pattern> proxyPatterns = proxyIgnoredHosts.stream()
-                                          .map(Pattern::compile)
-                                          .collect(Collectors.toList());
+            .map(Pattern::compile)
+            .collect(Collectors.toList());
         ProxyInfo proxyInformation = createBlackDuckProxyInfo();
         return new ConnectionDetails(gson, proxyInformation, proxyPatterns, findTimeoutInSeconds(), alwaysTrust);
     }
@@ -187,8 +187,8 @@ public class DetectConfigurationFactory {
         Boolean offline = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.BLACKDUCK_OFFLINE_MODE.getProperty());
         String blackduckUrl = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.BLACKDUCK_URL.getProperty()).orElse(null);
         Set<String> allBlackDuckKeys = new BlackDuckServerConfigBuilder().getPropertyKeys().stream()
-                                           .filter(it -> !(it.toLowerCase().contains("proxy")))
-                                           .collect(Collectors.toSet());
+            .filter(it -> !(it.toLowerCase().contains("proxy")))
+            .collect(Collectors.toSet());
         Map<String, String> blackDuckProperties = detectConfiguration.getRaw(allBlackDuckKeys);
 
         return new BlackDuckConnectionDetails(offline, blackduckUrl, blackDuckProperties, findParallelProcessors(), createConnectionDetails());
@@ -239,12 +239,12 @@ public class DetectConfigurationFactory {
     }
 
     public List<String> collectSignatureScannerDirectoryExclusions() {
-        List<String> directoryExclusionPatterns = new ArrayList(getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES));
+        List<String> directoryExclusionPatterns = new ArrayList<>(getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES));
 
-        if (!getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_DEFAULTS_DISABLED)) {
+        if (Boolean.FALSE.equals(getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_DEFAULTS_DISABLED))) {
             List<String> defaultExcludedFromSignatureScan = Arrays.stream(DefaultSignatureScannerExcludedDirectories.values())
-                                                                .map(DefaultSignatureScannerExcludedDirectories::getDirectoryName)
-                                                                .collect(Collectors.toList());
+                .map(DefaultSignatureScannerExcludedDirectories::getDirectoryName)
+                .collect(Collectors.toList());
             directoryExclusionPatterns.addAll(defaultExcludedFromSignatureScan);
         }
 
@@ -252,12 +252,12 @@ public class DetectConfigurationFactory {
     }
 
     private List<String> collectDetectorSearchDirectoryExclusions() {
-        List<String> directoryExclusionPatterns = new ArrayList(getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES));
+        List<String> directoryExclusionPatterns = new ArrayList<>(getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES));
 
-        if (!getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_DEFAULTS_DISABLED)) {
+        if (Boolean.FALSE.equals(getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_DEFAULTS_DISABLED))) {
             List<String> defaultExcludedFromDetectorSearch = Arrays.stream(DefaultDetectorSearchExcludedDirectories.values())
-                                                                 .map(DefaultDetectorSearchExcludedDirectories::getDirectoryName)
-                                                                 .collect(Collectors.toList());
+                .map(DefaultDetectorSearchExcludedDirectories::getDirectoryName)
+                .collect(Collectors.toList());
             directoryExclusionPatterns.addAll(defaultExcludedFromDetectorSearch);
         }
 
@@ -358,23 +358,23 @@ public class DetectConfigurationFactory {
         return getValue(DetectProperties.DETECT_PROJECT_USER_GROUPS);
     }
 
-    public BlackDuckSignatureScannerOptions createBlackDuckSignatureScannerOptions() throws DetectUserFriendlyException {
+    public BlackDuckSignatureScannerOptions createBlackDuckSignatureScannerOptions() {
         List<PathValue> signatureScannerPathValues = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS.getProperty()).orElse(null);
         List<Path> signatureScannerPaths;
         if (signatureScannerPathValues != null) {
             signatureScannerPaths = signatureScannerPathValues.stream()
-                                        .map(it -> it.resolvePath(pathResolver))
-                                        .map(Path::toAbsolutePath)
-                                        .collect(Collectors.toList());
+                .map(it -> it.resolvePath(pathResolver))
+                .map(Path::toAbsolutePath)
+                .collect(Collectors.toList());
         } else {
             signatureScannerPaths = emptyList();
         }
         List<String> exclusionPatterns = collectSignatureScannerDirectoryExclusions();
 
         Integer scanMemory = PropertyConfigUtils
-                                 .getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_MEMORY.getProperty());
+            .getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_MEMORY.getProperty());
         Boolean dryRun = PropertyConfigUtils
-                             .getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN.getProperty());
+            .getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN.getProperty());
         Boolean uploadSource = getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_UPLOAD_SOURCE_MODE);
         Boolean licenseSearch = getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LICENSE_SEARCH);
         Boolean copyrightSearch = getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_COPYRIGHT_SEARCH);
@@ -382,10 +382,10 @@ public class DetectConfigurationFactory {
         String codeLocationPrefix = getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX);
         String codeLocationSuffix = getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX);
         String additionalArguments = PropertyConfigUtils
-                                         .getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS.getProperty())
-                                         .orElse(null);
+            .getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS.getProperty())
+            .orElse(null);
         Path localScannerInstallPath = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH.getProperty()).map(path -> path.resolvePath(pathResolver))
-                                           .orElse(null);
+            .orElse(null);
         Integer maxDepth = getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_SEARCH_DEPTH);
 
         return new BlackDuckSignatureScannerOptions(
@@ -492,8 +492,7 @@ public class DetectConfigurationFactory {
         String projectBomTool = detectConfiguration.getValueOrEmpty(DetectProperties.DETECT_PROJECT_DETECTOR.getProperty()).orElse(null);
         List<DetectorType> requiredDetectors = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_REQUIRED_DETECTOR_TYPES.getProperty());
         boolean buildless = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_BUILDLESS.getProperty());
-        boolean mavenLegacy = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_MAVEN_BUILDLESS_LEGACY_MODE.getProperty());
-        return new DetectorToolOptions(projectBomTool, requiredDetectors, buildless, mavenLegacy);
+        return new DetectorToolOptions(projectBomTool, requiredDetectors, buildless);
     }
 
     public ProjectGroupOptions createProjectGroupOptions() {

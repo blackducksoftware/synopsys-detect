@@ -15,7 +15,7 @@ public class HelpJsonDetectorStatusCode {
         return statusCode;
     }
 
-    public void setStatusCode(final String statusCode) {
+    public void setStatusCode(String statusCode) {
         this.statusCode = statusCode;
     }
 
@@ -23,7 +23,7 @@ public class HelpJsonDetectorStatusCode {
         return statusCodeDescription;
     }
 
-    public void setStatusCodeDescription(final String statusCodeDescription) {
+    public void setStatusCodeDescription(String statusCodeDescription) {
         this.statusCodeDescription = statusCodeDescription;
     }
 }

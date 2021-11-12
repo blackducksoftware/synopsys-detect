@@ -2,19 +2,19 @@ package com.synopsys.integration.detect.interactive;
 
 import static com.synopsys.integration.detect.interactive.BlackDuckConnectionDecisionBranch.SHOULD_RETRY_CONNECTION;
 import static com.synopsys.integration.detect.interactive.BlackDuckConnectionDecisionBranch.SHOULD_TEST_CONNECTION;
+import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.DO_YOU_USE_A_NTLM_PROXY;
+import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.SHOULD_CONFIGURE_PROXY;
+import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.SHOULD_USE_API_TOKEN;
 import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.WHAT_IS_THE_API_TOKEN;
 import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.WHAT_IS_THE_BLACK_DUCK_SERVER_URL;
-import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.WHAT_IS_THE_PROXY_HOST;
 import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.WHAT_IS_THE_NTLM_PROXY_DOMAIN;
 import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.WHAT_IS_THE_NTLM_PROXY_WORKSTATION;
+import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.WHAT_IS_THE_PROXY_HOST;
 import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.WHAT_IS_THE_PROXY_PASSWORD;
 import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.WHAT_IS_THE_PROXY_PORT;
 import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.WHAT_IS_THE_PROXY_USERNAME;
-import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.SHOULD_CONFIGURE_PROXY;
-import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.DO_YOU_USE_A_NTLM_PROXY;
-import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.WOULD_YOU_LIKE_TO_SET_THE_PROXY_PASSWORD;
 import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.WOULD_YOU_LIKE_TO_AUTOMATICALLY_TRUST_CERTIFICATES;
-import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.SHOULD_USE_API_TOKEN;
+import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.WOULD_YOU_LIKE_TO_SET_THE_PROXY_PASSWORD;
 import static com.synopsys.integration.detect.interactive.InteractiveModeDecisionTree.SET_PROJECT_NAME;
 import static com.synopsys.integration.detect.interactive.InteractiveModeDecisionTree.SET_PROJECT_VERSION;
 import static com.synopsys.integration.detect.interactive.InteractiveModeDecisionTree.SHOULD_CONNECT_TO_BLACKDUCK;
@@ -258,7 +258,7 @@ public class InteractiveModeDecisionTreeEndToEndTest {
     }
 
     public void testTraverse(Map<String, String> callToResponse, Map<DetectProperty<?>, String> expectedProperties) {
-        DetectInfo detectInfo = new DetectInfo("synopsys_detect", 1, OperatingSystemType.LINUX);
+        DetectInfo detectInfo = new DetectInfo("synopsys_detect", OperatingSystemType.LINUX);
         InteractiveModeDecisionTree decisionTree = new InteractiveModeDecisionTree(detectInfo, new BlackDuckConnectivityChecker(), new ArrayList<>(), new Gson());
 
         InteractiveWriter mockWriter = mockWriter(callToResponse);

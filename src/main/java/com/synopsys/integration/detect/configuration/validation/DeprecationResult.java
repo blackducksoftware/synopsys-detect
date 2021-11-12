@@ -7,7 +7,6 @@
  */
 package com.synopsys.integration.detect.configuration.validation;
 
-import java.util.List;
 import java.util.Map;
 
 public class DeprecationResult {

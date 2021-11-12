@@ -60,7 +60,6 @@ import com.synopsys.integration.log.LogLevel;
 // java:S1192: Sonar wants constants defined for fromVersion when setting property info.
 // java:S1123: Warning about deprecations not having Java doc.
 public class DetectProperties {
-    private static final String POLARIS_CLI_DEPRECATION_MESSAGE = "This property is being removed. Detect will no longer invoke the Polaris CLI.";
     private static final String SBT_REPORT_DEPRECATION_MESSAGE = "This property is being removed. Sbt will no longer parse report files but instead will use a dependency resolution plugin. Please install the appropriate plugin in the future.";
 
     private DetectProperties() {
@@ -1410,14 +1409,15 @@ public class DetectProperties {
         for (Field field : allFields) {
             if (field.getType().equals(DetectProperty.class)) {
                 Object property = field.get(Property.class);
-                DetectProperty detectProperty = (DetectProperty) property;
-                convertDetectPropertyToProperty(detectProperty).ifPresent(p -> properties.add(p));
+                DetectProperty<?> detectProperty = (DetectProperty<?>) property;
+                convertDetectPropertyToProperty(detectProperty)
+                    .ifPresent(properties::add);
             }
         }
         return new Properties(properties);
     }
 
-    private static Optional<Property> convertDetectPropertyToProperty(DetectProperty detectProperty) {
+    private static Optional<Property> convertDetectPropertyToProperty(DetectProperty<?> detectProperty) {
         Property property = detectProperty.getProperty();
         property.setInfo(detectProperty.getName(), detectProperty.getFromVersion());
         if (detectProperty.getPropertyHelpInfo() != null) {

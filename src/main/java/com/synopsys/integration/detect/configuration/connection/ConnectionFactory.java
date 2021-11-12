@@ -10,7 +10,6 @@ package com.synopsys.integration.detect.configuration.connection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.google.gson.Gson;
 import com.synopsys.integration.common.util.ProxyUtil;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.SilentIntLogger;
@@ -20,7 +19,7 @@ import com.synopsys.integration.rest.proxy.ProxyInfo;
 public class ConnectionFactory {
     private final ConnectionDetails connectionDetails;
 
-    public ConnectionFactory(final ConnectionDetails connectionDetails) {
+    public ConnectionFactory(ConnectionDetails connectionDetails) {
         this.connectionDetails = connectionDetails;
     }
 
