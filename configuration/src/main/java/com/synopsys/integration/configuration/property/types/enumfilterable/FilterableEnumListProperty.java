@@ -30,6 +30,11 @@ public class FilterableEnumListProperty<E extends Enum<E>> extends ValuedPropert
         return true;
     }
 
+    @Override
+    public boolean isCommaSeparated() {
+        return true;
+    }
+
     @Nullable
     @Override
     public List<String> listExampleValues() {
