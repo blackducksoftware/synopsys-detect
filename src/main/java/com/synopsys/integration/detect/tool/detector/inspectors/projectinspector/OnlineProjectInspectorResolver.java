@@ -29,10 +29,9 @@ public class OnlineProjectInspectorResolver implements com.synopsys.integration.
     private final InstalledToolLocator installedToolLocator;
 
     private boolean hasResolvedInspector = false;
-    private ExecutableTarget inspector = null;
 
     public OnlineProjectInspectorResolver(ArtifactoryProjectInspectorInstaller projectInspectorInstaller, DirectoryManager directoryManager, InstalledToolManager installedToolManager,
-                                          InstalledToolLocator installedToolLocator) {
+        InstalledToolLocator installedToolLocator) {
         this.projectInspectorInstaller = projectInspectorInstaller;
         this.directoryManager = directoryManager;
         this.installedToolManager = installedToolManager;
@@ -44,7 +43,7 @@ public class OnlineProjectInspectorResolver implements com.synopsys.integration.
         File inspectorFile = null;
         if (!hasResolvedInspector) {
             hasResolvedInspector = true;
-            File installDirectory = directoryManager.getPermanentDirectory("project-inspector");
+            File installDirectory = directoryManager.getPermanentDirectory(INSTALLED_TOOL_JSON_KEY);
             try {
                 inspectorFile = projectInspectorInstaller.install(installDirectory);
             } catch (DetectableException e) {
@@ -52,7 +51,7 @@ public class OnlineProjectInspectorResolver implements com.synopsys.integration.
             }
 
             if (inspectorFile == null) {
-                // remote install has failed
+                // Remote installation has failed
                 logger.debug("Attempting to locate previous install of project inspector.");
                 return installedToolLocator.locateTool(INSTALLED_TOOL_JSON_KEY)
                     .map(ExecutableTarget::forFile)
