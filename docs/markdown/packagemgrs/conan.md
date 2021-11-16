@@ -59,7 +59,7 @@ In the zlib example:
 <name>/<version>@<user>/<channel>#<recipe_revision>
 ```
 
-This is the default mode, and produced the best results during testing on several sample projects. Because the KB evolves over time, however, it is possible that
+This is the default mode, and produced the best results during testing on sample projects. Because the KB evolves over time, however, it is possible that
 better results could be obtained by using package revision matching.
 
 ## Package revision matching
