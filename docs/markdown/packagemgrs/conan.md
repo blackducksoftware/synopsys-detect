@@ -42,7 +42,8 @@ For example, here is a conan.lock file entry for a component (zlib):
    },
 ```
 
-If you are using the Conan CLI detector, this data is found in the output of the `conan info` command.
+If you are using the Conan CLI detector instead of the Conan Lockfile detector, this data is found in the output of the `conan info` command
+instead of the conan.lock file..
 
 The format of the Conan "ref" field is: `<name>/<version>@<user>/<channel>#<recipe_revision>`
 
@@ -59,18 +60,14 @@ In the zlib example:
 <name>/<version>@<user>/<channel>#<recipe_revision>
 ```
 
-This is the default mode, and produced the best results during testing on sample projects. Because the KB evolves over time, however, it is possible that
-better results could be obtained by using package revision matching.
-
 ## Package revision matching
 
-Enhancements to the [blackduck_kb] are planned that, for Conan projects with lockfiles
-and the Conan revisions feature enabled,
-will enable more accurate matching that also considers package ID and package revision.
+For Conan projects with lockfiles and the Conan revisions feature enabled
+[solution_name] has an alternative mode, package revision matching, that includes
+the package ID and package revision in the KB external IDs that it constructs (in addition to the fields described above).
 (Package revision is provided by Conan lockfiles when the Conan revisions feature is enabled,
 but it is never provided by the *conan info* command, so this only affects the Conan Lockfile detector.)
-When this [blackduck_kb] enhancement becomes available,
-you will be able to improve match accuracy for projects with lockfiles by setting
+To enable package revision matching, set
 property *detect.conan.attempt.package.revision.match* to true.
 
 
@@ -79,7 +76,7 @@ In this scenario, [solution_name] constructs a KB external ID for namespace "con
 <name>/<version>@<user>/<channel>#<recipe_revision>:<package_id>#<package_revision>
 ```
 
-For the zlib example above the two additional fields used in the KB external ID would be::
+For the zlib example above the two additional fields used in the KB external ID would be:
 
 * package_id=d50a0d523d98c15bb147b18fa7d203887c38be8b
 * package_revision=da65bb160c07195dba18afb91259050d
