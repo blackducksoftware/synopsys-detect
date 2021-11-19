@@ -30,9 +30,9 @@ In some cases, the dot files are not generated in "./target" and while those gra
 
 ## Background execution
 
-The sbt command line utility is known to hang when run in the background (this may be limited to Linux and Mac systems):
+The sbt command line utility is known to suspend when run in the background (this may be limited to Linux and Mac systems):
 [https://github.com/sbt/sbt/issues/701](https://github.com/sbt/sbt/issues/701).
-This can cause [solution_name] to hang, if [solution_name] is run in the background,
+This can cause [solution_name] to suspend, if [solution_name] is run in the background,
 and the SBT detector runs.
 You can apply the workaround suggested in that github issue using the
 *detect.sbt.arguments* property:
