@@ -219,6 +219,12 @@ public class DetectProperties {
             .setHelp("The path to the output directory for all BDIO files.", "If not set, the BDIO files are placed in a 'BDIO' subdirectory of the output directory.")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL);
 
+    public static final DetectProperty<NullableStringProperty> DETECT_BDIO_FILE_NAME =
+        new DetectProperty<>(new NullableStringProperty("detect.bdio.file.name"))
+            .setInfo("BDIO File Name", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("The desired file name of the single bdio file Detect produces in the BDIO Output Directory.", "If not set, the file name is generated from your project, version and code location names.")
+            .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL);
+
     public static final DetectProperty<NullablePathProperty> DETECT_BINARY_SCAN_FILE =
         new DetectProperty<>(new NullablePathProperty("detect.binary.scan.file.path"))
             .setInfo("Binary Scan Target", DetectPropertyFromVersion.VERSION_4_2_0)
@@ -1334,7 +1340,9 @@ public class DetectProperties {
             .setHelp("If set, this will aggregate all the BOMs to create a single BDIO file with the filename provided.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced)
-            .setDeprecated(AGGREGATION_MODE_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT);
+            .setDeprecated(
+                "This property is being removed, use detect.bdio.file.name to control the name of the bdio file Detect generates, currently it works the same as this property. In the future, Detect will only operate in SUBPROJECT aggregation mode and the new property will not control aggregation, only the file name.",
+                DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<EnumProperty<AggregateMode>> DETECT_BOM_AGGREGATE_REMEDIATION_MODE =

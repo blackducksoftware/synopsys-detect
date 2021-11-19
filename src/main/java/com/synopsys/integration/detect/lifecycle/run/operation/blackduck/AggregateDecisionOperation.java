@@ -24,7 +24,7 @@ public class AggregateDecisionOperation {
     }
 
     public AggregateDecision execute(Boolean anythingFailedPrior) throws DetectUserFriendlyException, IntegrationException {
-        String aggregateName = aggregateOptions.getAggregateName().orElse(null);
+        String aggregateName = aggregateOptions.getAggregateName().orElse(aggregateOptions.getAggregateFileName().orElse(null));
         AggregateMode aggregateMode = aggregateOptions.getAggregateMode();
         AggregateDecision aggregateDecision;
         if (StringUtils.isNotBlank(aggregateName)) {
