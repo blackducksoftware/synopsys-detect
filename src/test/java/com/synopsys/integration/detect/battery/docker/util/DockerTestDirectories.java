@@ -65,8 +65,17 @@ public class DockerTestDirectories {
     }
 
     public void cleanup() throws IOException {
-        File rootTestDir = testDirectory.getParentFile();
-        FileUtils.deleteDirectory(rootTestDir);
+        File rootTestDir;
+        try {
+            rootTestDir = testDirectory.getParentFile();
+        } catch (Exception e) {
+            throw new IOException("Couldn't get parent: " + e.getMessage());
+        }
+        try {
+            FileUtils.deleteDirectory(rootTestDir);
+        } catch (Exception e) {
+            throw new IOException(String.format("Couldn't delete dir %s: %s", rootTestDir.getAbsolutePath(), e.getMessage()));
+        }
     }
 
     public Bind[] getBindings() {
