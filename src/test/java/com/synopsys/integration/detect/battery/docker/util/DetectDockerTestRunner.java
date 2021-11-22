@@ -19,7 +19,7 @@ public class DetectDockerTestRunner {
     private DockerTestDirectories dockerTestDirectories;
     private String workingDirectory = WORKING_DIRECTORY_DEFAULT;
 
-    public DetectDockerTestRunner(final String testId, final String imageName) throws IOException {
+    public DetectDockerTestRunner(String testId, String imageName) throws IOException {
         this.testId = testId;
         this.imageName = imageName;
         this.dockerTestDirectories = new DockerTestDirectories(testId);
@@ -62,8 +62,11 @@ public class DetectDockerTestRunner {
         return null;
     }
 
-    public DockerAssertions run(DetectCommandBuilder commandBuilder) {
+    public DockerAssertions run(DetectCommandBuilder commandBuilder) throws IOException {
         DockerDetectResult result = runContainer(commandBuilder);
+
+        dockerTestDirectories.cleanup();
+
         return new DockerAssertions(this.dockerTestDirectories, result);
     }
 

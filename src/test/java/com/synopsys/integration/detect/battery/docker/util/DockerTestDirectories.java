@@ -64,6 +64,11 @@ public class DockerTestDirectories {
         return imagePath;
     }
 
+    public void cleanup() throws IOException {
+        File rootTestDir = testDirectory.getParentFile();
+        FileUtils.deleteDirectory(rootTestDir);
+    }
+
     public Bind[] getBindings() {
         return bindings.toArray(new Bind[0]);
     }
