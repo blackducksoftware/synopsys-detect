@@ -62,11 +62,8 @@ public class DetectDockerTestRunner {
         return null;
     }
 
-    public DockerAssertions run(DetectCommandBuilder commandBuilder) throws IOException {
+    public DockerAssertions run(DetectCommandBuilder commandBuilder) {
         DockerDetectResult result = runContainer(commandBuilder);
-
-        dockerTestDirectories.cleanup();
-
         return new DockerAssertions(this.dockerTestDirectories, result);
     }
 
