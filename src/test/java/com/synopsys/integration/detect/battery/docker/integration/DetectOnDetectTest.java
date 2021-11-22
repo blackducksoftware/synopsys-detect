@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,9 +31,16 @@ import com.synopsys.integration.exception.IntegrationException;
 
 @Tag("integration")
 public class DetectOnDetectTest {
+    DetectDockerTestRunner test;
+
+    @AfterEach
+    public void cleanup() throws IOException {
+        test.cleanupDirs();
+    }
+
     @Test
     void detectOnDetect() throws IOException, InterruptedException, IntegrationException {
-        DetectDockerTestRunner test = new DetectDockerTestRunner("detect-on-detect", "detect-7.1.0:1.0.0");
+        test = new DetectDockerTestRunner("detect-on-detect", "detect-7.1.0:1.0.0");
         test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Detect-7.1.0.dockerfile"));
 
         BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
@@ -63,12 +71,12 @@ public class DetectOnDetectTest {
 
     @Test
     @ExtendWith(TempDirectory.class)
-    public void testDryRunScanWithSnippetMatching(@TempDirectory.TempDir final Path tempOutputDirectory) throws Exception {
-        DetectDockerTestRunner test = new DetectDockerTestRunner("detect-on-detect-dryrun", "detect-7.1.0:1.0.0");
+    public void testDryRunScanWithSnippetMatching(@TempDirectory.TempDir Path tempOutputDirectory) throws Exception {
+        test = new DetectDockerTestRunner("detect-on-detect-dryrun", "detect-7.1.0:1.0.0");
         test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Detect-7.1.0.dockerfile"));
 
-        final String projectName = "synopsys-detect-junit";
-        final String projectVersionName = "dryrun-scan";
+        String projectName = "synopsys-detect-junit";
+        String projectVersionName = "dryrun-scan";
         BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
         BlackDuckAssertions blackDuckAssertions = blackDuckTestConnection.projectVersionAssertions(projectName, projectVersionName);
 
@@ -87,7 +95,7 @@ public class DetectOnDetectTest {
     @Test
     //Simply verify a risk report is generated at the expected location.
     public void riskReportResultProduced() throws Exception {
-        DetectDockerTestRunner test = new DetectDockerTestRunner("detect-on-detect-riskreport-default", "detect-7.1.0:1.0.0");
+        test = new DetectDockerTestRunner("detect-on-detect-riskreport-default", "detect-7.1.0:1.0.0");
         test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Detect-7.1.0.dockerfile"));
 
         BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
@@ -108,7 +116,7 @@ public class DetectOnDetectTest {
     @Test
     //Tests that a new project has an empty report, run detect to fill it, tests the report is filled, in a custom location
     public void riskReportPopulatedAtCustomPath() throws Exception {
-        DetectDockerTestRunner test = new DetectDockerTestRunner("detect-on-detect-riskreport-custom", "detect-7.1.0:1.0.0");
+        test = new DetectDockerTestRunner("detect-on-detect-riskreport-custom", "detect-7.1.0:1.0.0");
         test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Detect-7.1.0.dockerfile"));
 
         BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
@@ -159,48 +167,48 @@ public class DetectOnDetectTest {
         File[] files = directory.listFiles();
         if (files != null) {
             return Arrays.stream(files)
-                       .filter(file -> file.getName().endsWith(".pdf"))
-                       .collect(Collectors.toList());
+                .filter(file -> file.getName().endsWith(".pdf"))
+                .collect(Collectors.toList());
         } else {
             return Collections.emptyList();
         }
     }
 
     private void assertDirectoryStructureForOfflineScan(Path tempOutputDirectory) {
-        final Path runsPath = tempOutputDirectory.resolve("runs");
+        Path runsPath = tempOutputDirectory.resolve("runs");
         assertTrue(runsPath.toFile().exists());
         assertTrue(runsPath.toFile().isDirectory());
 
-        final File[] runDirectories = runsPath.toFile().listFiles();
+        File[] runDirectories = runsPath.toFile().listFiles();
 
         assertNotNull(runDirectories);
         assertEquals(1, runDirectories.length);
 
-        final File runDirectory = runDirectories[0];
+        File runDirectory = runDirectories[0];
         assertTrue(runDirectory.exists());
         assertTrue(runDirectory.isDirectory());
 
-        final File scanDirectory = new File(runDirectory, "scan");
+        File scanDirectory = new File(runDirectory, "scan");
         assertTrue(scanDirectory.exists());
         assertTrue(scanDirectory.isDirectory());
 
-        final File blackDuckScanOutput = new File(scanDirectory, "BlackDuckScanOutput");
+        File blackDuckScanOutput = new File(scanDirectory, "BlackDuckScanOutput");
         assertTrue(blackDuckScanOutput.exists());
         assertTrue(blackDuckScanOutput.isDirectory());
 
-        final File[] outputDirectories = blackDuckScanOutput.listFiles();
+        File[] outputDirectories = blackDuckScanOutput.listFiles();
         assertNotNull(outputDirectories);
         assertEquals(1, outputDirectories.length);
 
-        final File outputDirectory = outputDirectories[0];
+        File outputDirectory = outputDirectories[0];
         assertTrue(outputDirectory.exists());
         assertTrue(outputDirectory.isDirectory());
 
-        final File dataDirectory = new File(outputDirectory, "data");
+        File dataDirectory = new File(outputDirectory, "data");
         assertTrue(dataDirectory.exists());
         assertTrue(dataDirectory.isDirectory());
 
-        final File[] dataFiles = dataDirectory.listFiles();
+        File[] dataFiles = dataDirectory.listFiles();
         assertNotNull(dataFiles);
         assertEquals(1, dataFiles.length);
         assertTrue(dataFiles[0].length() > HALF_MILLION_BYTES);

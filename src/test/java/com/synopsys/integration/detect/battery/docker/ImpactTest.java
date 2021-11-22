@@ -2,6 +2,7 @@ package com.synopsys.integration.detect.battery.docker;
 
 import java.io.IOException;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -13,9 +14,16 @@ import com.synopsys.integration.detect.configuration.DetectProperties;
 
 @Tag("integration")
 public class ImpactTest {
+    DetectDockerTestRunner test;
+
+    @AfterEach
+    public void cleanup() throws IOException {
+        test.cleanupDirs();
+    }
+
     @Test
     void offlineImpact() throws IOException, InterruptedException {
-        DetectDockerTestRunner test = new DetectDockerTestRunner("detect-impact-test", "detect-impact-test:1.0.0");
+        test = new DetectDockerTestRunner("detect-impact-test", "detect-impact-test:1.0.0");
         test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Impact.dockerfile"));
 
         DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
@@ -30,7 +38,7 @@ public class ImpactTest {
 
     @Test
     void impactOutputPath() throws IOException, InterruptedException {
-        DetectDockerTestRunner test = new DetectDockerTestRunner("detect-impact-output-path-test", "detect-impact-test:1.0.0");
+        test = new DetectDockerTestRunner("detect-impact-output-path-test", "detect-impact-test:1.0.0");
         test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Impact.dockerfile"));
 
         DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);

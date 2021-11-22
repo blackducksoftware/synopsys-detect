@@ -34,6 +34,8 @@ public class DetectOnAlertTest {
         dockerAssertions.projectVersion(blackduckAssertions.getProjectNameVersion());
 
         blackduckAssertions.codeLocationCount(16);
+
+        test.cleanupDirs();
     }
 
 }

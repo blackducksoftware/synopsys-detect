@@ -26,5 +26,7 @@ public class SbtEncodingTest {
 
         dockerAssertions.atLeastOneBdioFile();
         dockerAssertions.projectVersion("sbt-simple-project_2.12", "1.0.0-SNAPSHOT");
+
+        test.cleanupDirs();
     }
 }

@@ -70,4 +70,8 @@ public class DetectDockerTestRunner {
     public DockerTestDirectories directories() {
         return dockerTestDirectories;
     }
+
+    public void cleanupDirs() throws IOException {
+        this.dockerTestDirectories.cleanup();
+    }
 }

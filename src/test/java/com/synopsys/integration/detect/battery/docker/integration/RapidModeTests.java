@@ -45,6 +45,7 @@ public class RapidModeTests {
         dockerAssertions.logContains("* Components: 0");
         dockerAssertions.successfulOperation("Generate Rapid Json File");
 
+        test.cleanupDirs();
     }
 
 }

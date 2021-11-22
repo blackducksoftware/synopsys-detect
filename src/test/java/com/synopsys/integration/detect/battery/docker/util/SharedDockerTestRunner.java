@@ -19,7 +19,11 @@ public class SharedDockerTestRunner {
         this.command = detectCommandBuilder;
     }
 
-    public DockerAssertions run() throws IOException {
+    public DockerAssertions run() {
         return runner.run(command);
+    }
+
+    public void cleanupDirs() throws IOException {
+        runner.cleanupDirs();
     }
 }

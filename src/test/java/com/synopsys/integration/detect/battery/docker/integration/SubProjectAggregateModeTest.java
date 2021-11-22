@@ -1,14 +1,15 @@
 package com.synopsys.integration.detect.battery.docker.integration;
 
+import java.io.IOException;
+
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+
 import com.synopsys.integration.detect.battery.docker.provider.BuildDockerImageProvider;
 import com.synopsys.integration.detect.battery.docker.util.DetectCommandBuilder;
 import com.synopsys.integration.detect.battery.docker.util.DetectDockerTestRunner;
 import com.synopsys.integration.detect.battery.docker.util.DockerAssertions;
 import com.synopsys.integration.exception.IntegrationException;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
 
 @Tag("integration")
 public class SubProjectAggregateModeTest {
@@ -38,5 +39,7 @@ public class SubProjectAggregateModeTest {
         dockerAssertions.successfulOperation("SubProject Aggregate");
         dockerAssertions.bdioFiles(1);
         dockerAssertions.bdioFileCreated(bdioFilename + ".bdio");
+
+        test.cleanupDirs();
     }
 }
