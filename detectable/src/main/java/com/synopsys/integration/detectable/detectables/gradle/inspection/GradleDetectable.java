@@ -28,7 +28,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-@DetectableInfo(language = "various", forge = "Maven Central", requirementsMarkdown = "File: build.gradle or build.gradle.kts.<br/><br/>Executable: gradlew or gradle.")
+@DetectableInfo(language = "various", forge = "Maven Central", requirementsMarkdown = "File: build.gradle or build.gradle.kts. Executable: gradlew or gradle.")
 public class GradleDetectable extends Detectable {
     public static final String BUILD_GRADLE_FILENAME = "build.gradle";
     public static final String KOTLIN_BUILD_GRADLE_FILENAME = "build.gradle.kts";
