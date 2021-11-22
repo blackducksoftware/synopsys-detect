@@ -7,20 +7,20 @@
  */
 package com.synopsys.integration.detectable.detectables.cpan;
 
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanmResolver;
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Perl", forge = "CPAN", requirementsMarkdown = "File: Makefile.PL. <br /><br /> Executable: cpan.")
+@DetectableInfo(language = "Perl", forge = "CPAN", requirementsMarkdown = "File: Makefile.PL. Executable: cpan.")
 public class CpanCliDetectable extends Detectable {
     private static final String MAKEFILE = "Makefile.PL";
 

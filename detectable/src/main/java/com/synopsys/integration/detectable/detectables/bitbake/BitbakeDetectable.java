@@ -7,8 +7,6 @@
  */
 package com.synopsys.integration.detectable.detectables.bitbake;
 
-import java.io.File;
-
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
@@ -23,7 +21,9 @@ import com.synopsys.integration.detectable.detectable.result.PropertyInsufficien
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "various", forge = "YOCTO", requirementsMarkdown = "Properties: Package names <br /><br /> File: build env script.<br /><br /> Executable: bash")
+import java.io.File;
+
+@DetectableInfo(language = "various", forge = "YOCTO", requirementsMarkdown = "Properties: Package names. File: build env script. Executable: bash")
 public class BitbakeDetectable extends Detectable {
     private final BitbakeDetectableOptions bitbakeDetectableOptions;
     private final FileFinder fileFinder;
