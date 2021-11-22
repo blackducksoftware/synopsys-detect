@@ -502,7 +502,7 @@ public class DetectableFactory {
     }
 
     private CpanCliExtractor cpanCliExtractor() {
-        return new CpanCliExtractor(cpanListParser(), executableRunner);
+        return new CpanCliExtractor(cpanListParser(), executableRunner, toolVersionLogger);
     }
 
     private PackratLockFileParser packratLockFileParser() {
