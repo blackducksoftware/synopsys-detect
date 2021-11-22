@@ -7,12 +7,6 @@
  */
 package com.synopsys.integration.detectable.detectables.go.gomod;
 
-import java.io.File;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
@@ -28,6 +22,12 @@ import com.synopsys.integration.detectable.detectables.go.gomod.process.GoModGra
 import com.synopsys.integration.detectable.detectables.go.gomod.process.GoRelationshipManager;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.executable.ExecutableRunnerException;
+
+import java.io.File;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class GoModCliExtractor {
     private final GoModCommandExecutor goModCommandExecutor;
@@ -68,7 +68,6 @@ public class GoModCliExtractor {
     }
 
     private List<GoListModule> listModules(File directory, ExecutableTarget goExe) throws DetectableException, ExecutableRunnerException {
-        goModCommandExecutor.logGoVersion(directory, goExe);
         List<String> listOutput = goModCommandExecutor.generateGoListOutput(directory, goExe);
         return goListParser.parseGoListModuleJsonOutput(listOutput);
     }
