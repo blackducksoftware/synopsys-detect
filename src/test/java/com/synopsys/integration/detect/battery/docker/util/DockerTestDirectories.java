@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Assertions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.github.dockerjava.api.model.Bind;
 import com.synopsys.integration.detect.battery.docker.util.delete.TestDeleteDirException;
@@ -67,15 +69,19 @@ public class DockerTestDirectories {
     }
 
     public void cleanup() throws IOException {
+        //TODO- revert this
+        Logger logger = LoggerFactory.getLogger(this.getClass());
         File rootTestDir;
         try {
             rootTestDir = testDirectory.getParentFile();
         } catch (Exception e) {
+            logger.info("Could not get parent of " + testDirectory.getAbsolutePath());
             throw new TestParentFileException();
         }
         try {
             FileUtils.deleteDirectory(rootTestDir);
         } catch (Exception e) {
+            logger.info("Could not delete " + rootTestDir.getAbsolutePath());
             throw new TestDeleteDirException();
         }
     }
