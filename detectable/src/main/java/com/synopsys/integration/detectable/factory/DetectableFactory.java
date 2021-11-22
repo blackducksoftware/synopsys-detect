@@ -494,7 +494,7 @@ public class DetectableFactory {
     }
 
     private CondaCliExtractor condaCliExtractor() {
-        return new CondaCliExtractor(condaListParser(), executableRunner);
+        return new CondaCliExtractor(condaListParser(), executableRunner, toolVersionLogger);
     }
 
     private CpanListParser cpanListParser() {
