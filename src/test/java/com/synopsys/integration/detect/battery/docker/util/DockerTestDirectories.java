@@ -9,6 +9,8 @@ import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Assertions;
 
 import com.github.dockerjava.api.model.Bind;
+import com.synopsys.integration.detect.battery.docker.util.delete.TestDeleteDirException;
+import com.synopsys.integration.detect.battery.docker.util.delete.TestParentFileException;
 
 public class DockerTestDirectories {
     private final File testDirectory;
@@ -69,12 +71,12 @@ public class DockerTestDirectories {
         try {
             rootTestDir = testDirectory.getParentFile();
         } catch (Exception e) {
-            throw new IOException("Couldn't get parent: " + e.getMessage());
+            throw new TestParentFileException();
         }
         try {
             FileUtils.deleteDirectory(rootTestDir);
         } catch (Exception e) {
-            throw new IOException(String.format("Couldn't delete dir %s: %s", rootTestDir.getAbsolutePath(), e.getMessage()));
+            throw new TestDeleteDirException();
         }
     }
 
