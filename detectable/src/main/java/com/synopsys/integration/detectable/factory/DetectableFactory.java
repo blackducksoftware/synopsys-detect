@@ -641,7 +641,7 @@ public class DetectableFactory {
     }
 
     private NpmCliExtractor npmCliExtractor() {
-        return new NpmCliExtractor(executableRunner, npmCliDependencyFinder(), gson);
+        return new NpmCliExtractor(executableRunner, npmCliDependencyFinder(), gson, toolVersionLogger);
     }
 
     private NpmLockfileExtractor npmLockfileExtractor() {
