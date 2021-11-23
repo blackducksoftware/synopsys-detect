@@ -741,7 +741,7 @@ public class DetectableFactory {
     }
 
     private PubDepsExtractor pubDepsExtractor() {
-        return new PubDepsExtractor(executableRunner, pubDepsParser(), pubSpecYamlNameVersionParser());
+        return new PubDepsExtractor(executableRunner, pubDepsParser(), pubSpecYamlNameVersionParser(), toolVersionLogger);
     }
 
     private PubDepsParser pubDepsParser() {
