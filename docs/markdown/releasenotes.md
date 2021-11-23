@@ -1,5 +1,15 @@
 # Release notes
 
+## Version 7.9.0
+
+### New Features
+
+### Changed features
+* The version of each package manager tool executed by CLI detectors is now logged at DEBUG level.
+
+### Resolved issues
+
+
 ## Version 7.8.0
 
 ### New Features
