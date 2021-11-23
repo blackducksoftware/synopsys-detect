@@ -598,7 +598,7 @@ public class DetectableFactory {
     }
 
     private RebarExtractor rebarExtractor() {
-        return new RebarExtractor(executableRunner, rebar3TreeParser());
+        return new RebarExtractor(executableRunner, rebar3TreeParser(), toolVersionLogger);
     }
 
     private MavenCodeLocationPackager mavenCodeLocationPackager() {
