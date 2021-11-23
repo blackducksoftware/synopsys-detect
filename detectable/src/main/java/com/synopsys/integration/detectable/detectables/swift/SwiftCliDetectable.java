@@ -7,19 +7,19 @@
  */
 package com.synopsys.integration.detectable.detectables.swift;
 
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.SwiftResolver;
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Swift", forge = "Swift.org", requirementsMarkdown = "File: Package.swift.<br/><br/> Executables: swift.")
+@DetectableInfo(language = "Swift", forge = "Swift.org", requirementsMarkdown = "File: Package.swift. Executables: swift.")
 public class SwiftCliDetectable extends Detectable {
     private static final String PACKAGE_SWIFT_FILENAME = "Package.swift";
 

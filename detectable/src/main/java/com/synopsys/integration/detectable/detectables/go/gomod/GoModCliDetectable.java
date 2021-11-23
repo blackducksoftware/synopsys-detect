@@ -19,7 +19,7 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Golang", forge = "Go Modules", requirementsMarkdown = "File: go.mod.<br/><br/>Executable: go.")
+@DetectableInfo(language = "Golang", forge = "Go Modules", requirementsMarkdown = "File: go.mod. Executable: go.")
 public class GoModCliDetectable extends Detectable {
     public static final String GOMOD_FILENAME_PATTERN = "go.mod";
 
