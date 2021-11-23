@@ -23,9 +23,9 @@ public class PnpmLockExtractorTest {
     PnpmLockExtractor extractor = new PnpmLockExtractor(new PnpmLockYamlParser(new PnpmYamlTransformer(new ExternalIdFactory())), packageJsonFiles);
 
     @Test
-    public void testNoExceptionOnNullPackageJson() {
-        File pnpmLockYamlFile = FunctionalTestFiles.asFile("/pnpm/pnpm-lock.yaml");
-        Extraction extraction = extractor.extract(pnpmLockYamlFile, null, Arrays.asList(DependencyType.OPTIONAL, DependencyType.DEV), new PnpmLinkedPackageResolver(new File(""), packageJsonFiles));
+    public void testNoFailureOnNullPackageJson() {
+        File pnpmLockYaml = FunctionalTestFiles.asFile("/pnpm/pnpm-lock.yaml");
+        Extraction extraction = extractor.extract(pnpmLockYaml, null, Arrays.asList(DependencyType.OPTIONAL, DependencyType.DEV), new PnpmLinkedPackageResolver(new File(""), packageJsonFiles));
         Assertions.assertTrue(extraction.isSuccess());
     }
 }

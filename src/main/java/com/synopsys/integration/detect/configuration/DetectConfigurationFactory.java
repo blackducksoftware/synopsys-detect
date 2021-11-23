@@ -212,8 +212,9 @@ public class DetectConfigurationFactory {
     public AggregateOptions createAggregateOptions() {
         String aggregateName = getNullableValue(DetectProperties.DETECT_BOM_AGGREGATE_NAME);
         AggregateMode aggregateMode = getValue(DetectProperties.DETECT_BOM_AGGREGATE_REMEDIATION_MODE);
+        String aggregateFileName = getNullableValue(DetectProperties.DETECT_BDIO_FILE_NAME);
 
-        return new AggregateOptions(aggregateName, aggregateMode);
+        return new AggregateOptions(aggregateName, aggregateMode, aggregateFileName);
     }
 
     public BlackduckScanMode createScanMode() {

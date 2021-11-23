@@ -30,8 +30,7 @@ public class OnlineProjectInspectorResolver implements com.synopsys.integration.
 
     private boolean hasResolvedInspector = false;
 
-    public OnlineProjectInspectorResolver(ArtifactoryProjectInspectorInstaller projectInspectorInstaller, DirectoryManager directoryManager, InstalledToolManager installedToolManager,
-        InstalledToolLocator installedToolLocator) {
+    public OnlineProjectInspectorResolver(ArtifactoryProjectInspectorInstaller projectInspectorInstaller, DirectoryManager directoryManager, InstalledToolManager installedToolManager, InstalledToolLocator installedToolLocator) {
         this.projectInspectorInstaller = projectInspectorInstaller;
         this.directoryManager = directoryManager;
         this.installedToolManager = installedToolManager;
