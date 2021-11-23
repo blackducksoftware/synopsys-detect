@@ -436,7 +436,7 @@ public class DetectableFactory {
 
     private BazelExtractor bazelExtractor() {
         WorkspaceRuleChooser workspaceRuleChooser = new WorkspaceRuleChooser();
-        return new BazelExtractor(executableRunner, externalIdFactory, workspaceRuleChooser);
+        return new BazelExtractor(executableRunner, externalIdFactory, workspaceRuleChooser, toolVersionLogger);
     }
 
     private FilePathGenerator filePathGenerator() {
