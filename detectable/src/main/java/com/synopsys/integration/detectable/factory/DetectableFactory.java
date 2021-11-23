@@ -906,7 +906,7 @@ public class DetectableFactory {
     }
 
     private SwiftExtractor swiftExtractor() {
-        return new SwiftExtractor(executableRunner, swiftCliParser(), swiftPackageTransformer());
+        return new SwiftExtractor(executableRunner, swiftCliParser(), swiftPackageTransformer(), toolVersionLogger);
     }
 
     private LernaPackageDiscoverer lernaPackageDiscoverer() {
