@@ -13,7 +13,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import org.xml.sax.SAXException;
 
 import com.google.gson.Gson;
@@ -244,6 +243,9 @@ import com.synopsys.integration.detectable.detectables.swift.SwiftCliDetectable;
 import com.synopsys.integration.detectable.detectables.swift.SwiftCliParser;
 import com.synopsys.integration.detectable.detectables.swift.SwiftExtractor;
 import com.synopsys.integration.detectable.detectables.swift.SwiftPackageTransformer;
+import com.synopsys.integration.detectable.detectables.xcode.PackageResolvedTransformer;
+import com.synopsys.integration.detectable.detectables.xcode.XcodeSwiftDetectable;
+import com.synopsys.integration.detectable.detectables.xcode.XcodeSwiftExtractor;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockExtractor;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
@@ -256,6 +258,7 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.section.YarnLockDependencySpecParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.section.YarnLockEntrySectionParserSet;
+import com.synopsys.integration.detectable.util.ToolVersionLogger;
 
 /*
  Entry point for creating detectables using most
@@ -473,6 +476,18 @@ public class DetectableFactory {
 
     public LernaDetectable createLernaDetectable(DetectableEnvironment environment, LernaResolver lernaResolver, NpmLockfileOptions npmLockfileOptions, YarnLockOptions yarnLockOptions, LernaOptions lernaOptions) {
         return new LernaDetectable(environment, fileFinder, lernaResolver, lernaExtractor(npmLockfileOptions, yarnLockOptions, lernaOptions));
+    }
+
+    public XcodeSwiftDetectable createXcodeSwiftDetectable(DetectableEnvironment environment) {
+        return new XcodeSwiftDetectable(environment, fileFinder, createXcodeProjectExtractor());
+    }
+
+    public XcodeSwiftExtractor createXcodeProjectExtractor() {
+        return new XcodeSwiftExtractor(gson, createPackageResolvedTransformer());
+    }
+
+    public PackageResolvedTransformer createPackageResolvedTransformer() {
+        return new PackageResolvedTransformer(externalIdFactory);
     }
 
     //#endregion
@@ -899,7 +914,7 @@ public class DetectableFactory {
 
     private GradleInspectorExtractor gradleInspectorExtractor(GradleInspectorOptions gradleInspectorOptions) {
         return new GradleInspectorExtractor(fileFinder, gradleRunner(), gradleReportParser(), gradleReportTransformer(gradleInspectorOptions), gradleRootMetadataParser(),
-                toolVersionLogger);
+            toolVersionLogger);
     }
 
     private DockerExtractor dockerExtractor() {
