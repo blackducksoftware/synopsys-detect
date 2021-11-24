@@ -3,8 +3,12 @@ package com.synopsys.integration.detect.battery.docker.util;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Assertions;
@@ -21,7 +25,9 @@ public class DockerTestDirectories {
     private File detectOutputDirectory;
 
     public DockerTestDirectories(String testId) throws IOException {
-        File dockerTestDirectory = Files.createTempDirectory("docker").toFile();
+        Set<PosixFilePermission> allWriteablePermissions = PosixFilePermissions.fromString("rwxrwxrwx");
+        FileAttribute allWriteabeAttribute = PosixFilePermissions.asFileAttribute(allWriteablePermissions);
+        File dockerTestDirectory = Files.createTempDirectory("docker", allWriteabeAttribute).toFile();
         testDirectory = new File(dockerTestDirectory, testId);
         testResultDirectory = new File(testDirectory, "result");
         Assertions.assertTrue(testResultDirectory.mkdirs());
@@ -64,7 +70,7 @@ public class DockerTestDirectories {
         File rootTestDir = testDirectory.getParentFile();
         //TODO- remove this try-catch (for debugging)
         try {
-            FileUtils.deleteDirectory(rootTestDir);
+            //FileUtils.deleteDirectory(rootTestDir);
         } catch (Exception e) {
             throw new TestDeleteDirException();
         }
