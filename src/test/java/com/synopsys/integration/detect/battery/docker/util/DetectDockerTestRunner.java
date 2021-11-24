@@ -1,5 +1,6 @@
 package com.synopsys.integration.detect.battery.docker.util;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 
@@ -10,7 +11,7 @@ import com.github.dockerjava.api.model.HostConfig;
 import com.synopsys.integration.detect.battery.docker.provider.DockerImageProvider;
 import com.synopsys.integration.detect.battery.util.DetectJar;
 
-public class DetectDockerTestRunner {
+public class DetectDockerTestRunner implements Closeable {
     public static String WORKING_DIRECTORY_DEFAULT = "/opt/project/src";
 
     private final String testId;
@@ -71,7 +72,8 @@ public class DetectDockerTestRunner {
         return dockerTestDirectories;
     }
 
-    public void cleanupDirs() throws IOException {
+    @Override
+    public void close() throws IOException {
         this.dockerTestDirectories.cleanup();
     }
 }

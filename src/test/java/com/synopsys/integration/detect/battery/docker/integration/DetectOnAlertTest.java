@@ -17,25 +17,25 @@ public class DetectOnAlertTest {
     @Test
     @Disabled
         //currently adds a lot of time, for I expect little value. If useful, feel free to re-enable.
-    void detectOnAlert() throws IOException, InterruptedException, IntegrationException {
-        DetectDockerTestRunner test = new DetectDockerTestRunner("detect-on-alert", "alert-6.5.0:1.0.1");
-        test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Alert-6.5.0.dockerfile"));
+    void detectOnAlert() throws IOException, IntegrationException {
+        // DetectDockerTestRunner must be declared in try-with-resources block to take advantage of "close" method (cleans up resources)
+        try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-on-alert", "alert-6.5.0:1.0.1")) {
+            test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Alert-6.5.0.dockerfile"));
 
-        BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
-        BlackDuckAssertions blackduckAssertions = blackDuckTestConnection.projectVersionAssertions("blackduck-alert", "6.5.1-SNAPSHOT");
-        blackduckAssertions.emptyOnBlackDuck();
+            BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
+            BlackDuckAssertions blackduckAssertions = blackDuckTestConnection.projectVersionAssertions("blackduck-alert", "6.5.1-SNAPSHOT");
+            blackduckAssertions.emptyOnBlackDuck();
 
-        DetectCommandBuilder commandBuilder = new DetectCommandBuilder().defaults().defaultDirectories(test);
-        commandBuilder.connectToBlackDuck(blackDuckTestConnection);
-        commandBuilder.waitForResults();
+            DetectCommandBuilder commandBuilder = new DetectCommandBuilder().defaults().defaultDirectories(test);
+            commandBuilder.connectToBlackDuck(blackDuckTestConnection);
+            commandBuilder.waitForResults();
 
-        DockerAssertions dockerAssertions = test.run(commandBuilder);
+            DockerAssertions dockerAssertions = test.run(commandBuilder);
 
-        dockerAssertions.projectVersion(blackduckAssertions.getProjectNameVersion());
+            dockerAssertions.projectVersion(blackduckAssertions.getProjectNameVersion());
 
-        blackduckAssertions.codeLocationCount(16);
-
-        test.cleanupDirs();
+            blackduckAssertions.codeLocationCount(16);
+        }
     }
 
 }

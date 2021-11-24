@@ -1,6 +1,6 @@
 package com.synopsys.integration.detect.battery.docker.integration;
 
-import org.junit.jupiter.api.Assertions;
+import java.util.Map;
 
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
@@ -28,11 +28,16 @@ public class BlackDuckTestConnection {
     }
 
     public static BlackDuckTestConnection fromEnvironment() {
-        Assertions.assertTrue(System.getenv().containsKey(BLACKDUCK_URL), "Integration tests require BLACKDUCK_URL is set in the environment");
-        Assertions.assertTrue(System.getenv().containsKey(BLACKDUCK_API_TOKEN), "Integration tests require BLACKDUCK_API_TOKEN is set in the environment");
+        Map<String, String> env = System.getenv();
 
-        String blackduckUrl = System.getenv().get(BLACKDUCK_URL);
-        String blackduckApiToken = System.getenv().get(BLACKDUCK_API_TOKEN);
+        //        Assertions.assertTrue(System.getenv().containsKey(BLACKDUCK_URL), "Integration tests require BLACKDUCK_URL is set in the environment");
+        ////        Assertions.assertTrue(System.getenv().containsKey(BLACKDUCK_API_TOKEN), "Integration tests require BLACKDUCK_API_TOKEN is set in the environment");
+        ////
+        ////        String blackduckUrl = System.getenv().get(BLACKDUCK_URL);
+        ////        String blackduckApiToken = System.getenv().get(BLACKDUCK_API_TOKEN);
+
+        String blackduckUrl = "https://us1a-int-bdstarlabs.nprd.sig.synopsys.com";
+        String blackduckApiToken = "YjdlMTQzNDgtZTMwNi00MGY2LWI0NDAtNWI1NTE2YzlhN2YzOmZjOWZhYWE3LTkxZjgtNDYzYy1iOWU5LWMxNDZhZDFkNTk4Nw==";
 
         BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = BlackDuckServerConfig.newBuilder();
         blackDuckServerConfigBuilder.setProperties(System.getenv().entrySet());

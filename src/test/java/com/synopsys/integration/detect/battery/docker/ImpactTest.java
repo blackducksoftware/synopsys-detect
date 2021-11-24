@@ -2,7 +2,6 @@ package com.synopsys.integration.detect.battery.docker;
 
 import java.io.IOException;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -14,39 +13,35 @@ import com.synopsys.integration.detect.configuration.DetectProperties;
 
 @Tag("integration")
 public class ImpactTest {
-    DetectDockerTestRunner test;
+    @Test
+    void offlineImpact() throws IOException {
+        // DetectDockerTestRunner must be declared in try-with-resources block to take advantage of "close" method (cleans up resources)
+        try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-impact-test", "detect-impact-test:1.0.0")) {
+            test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Impact.dockerfile"));
 
-    @AfterEach
-    public void cleanup() throws IOException {
-        test.cleanupDirs();
+            DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
+            commandBuilder.property(DetectProperties.DETECT_TOOLS, "IMPACT_ANALYSIS");
+            commandBuilder.property(DetectProperties.DETECT_IMPACT_ANALYSIS_ENABLED, "true");
+            DockerAssertions dockerAssertions = test.run(commandBuilder);
+
+            dockerAssertions.successfulTool("IMPACT_ANALYSIS");
+            dockerAssertions.logContainsPattern("Vulnerability Impact Analysis generated report at /opt/results/output/runs/.*/impact-analysis/external-method-uses.bdmu");
+            dockerAssertions.successfulOperation("Generate Impact Analysis File");
+        }
     }
 
     @Test
-    void offlineImpact() throws IOException, InterruptedException {
-        test = new DetectDockerTestRunner("detect-impact-test", "detect-impact-test:1.0.0");
-        test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Impact.dockerfile"));
+    void impactOutputPath() throws IOException {
+        try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-impact-output-path-test", "detect-impact-test:1.0.0")) {
+            test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Impact.dockerfile"));
 
-        DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
-        commandBuilder.property(DetectProperties.DETECT_TOOLS, "IMPACT_ANALYSIS");
-        commandBuilder.property(DetectProperties.DETECT_IMPACT_ANALYSIS_ENABLED, "true");
-        DockerAssertions dockerAssertions = test.run(commandBuilder);
+            DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
+            commandBuilder.property(DetectProperties.DETECT_TOOLS, "IMPACT_ANALYSIS");
+            commandBuilder.property(DetectProperties.DETECT_IMPACT_ANALYSIS_ENABLED, "true");
+            commandBuilder.property(DetectProperties.DETECT_IMPACT_ANALYSIS_OUTPUT_PATH, "/tmp");
+            DockerAssertions dockerAssertions = test.run(commandBuilder);
 
-        dockerAssertions.successfulTool("IMPACT_ANALYSIS");
-        dockerAssertions.logContainsPattern("Vulnerability Impact Analysis generated report at /opt/results/output/runs/.*/impact-analysis/external-method-uses.bdmu");
-        dockerAssertions.successfulOperation("Generate Impact Analysis File");
-    }
-
-    @Test
-    void impactOutputPath() throws IOException, InterruptedException {
-        test = new DetectDockerTestRunner("detect-impact-output-path-test", "detect-impact-test:1.0.0");
-        test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Impact.dockerfile"));
-
-        DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
-        commandBuilder.property(DetectProperties.DETECT_TOOLS, "IMPACT_ANALYSIS");
-        commandBuilder.property(DetectProperties.DETECT_IMPACT_ANALYSIS_ENABLED, "true");
-        commandBuilder.property(DetectProperties.DETECT_IMPACT_ANALYSIS_OUTPUT_PATH, "/tmp");
-        DockerAssertions dockerAssertions = test.run(commandBuilder);
-
-        dockerAssertions.logContains("Vulnerability Impact Analysis generated report at /tmp/external-method-uses.bdmu");
+            dockerAssertions.logContains("Vulnerability Impact Analysis generated report at /tmp/external-method-uses.bdmu");
+        }
     }
 }

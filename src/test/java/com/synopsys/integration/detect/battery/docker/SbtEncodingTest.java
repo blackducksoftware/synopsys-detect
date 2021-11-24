@@ -15,18 +15,18 @@ import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 @Tag("integration")
 public class SbtEncodingTest {
     @Test
-    void sbtEncoding() throws IOException, InterruptedException {
-        DetectDockerTestRunner test = new DetectDockerTestRunner("detect-sbt-encoding", "detect-sbt-encoding:1.0.3");
-        test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("SbtEncoding.dockerfile"));
+    void sbtEncoding() throws IOException {
+        // DetectDockerTestRunner must be declared in try-with-resources block to take advantage of "close" method (cleans up resources)
+        try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-sbt-encoding", "detect-sbt-encoding:1.0.3")) {
+            test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("SbtEncoding.dockerfile"));
 
-        DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
-        commandBuilder.tools(DetectTool.DETECTOR);
-        commandBuilder.property(DetectProperties.DETECT_SBT_ARGUMENTS, "-Dsbt.log.noformat=true");
-        DockerAssertions dockerAssertions = test.run(commandBuilder);
+            DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
+            commandBuilder.tools(DetectTool.DETECTOR);
+            commandBuilder.property(DetectProperties.DETECT_SBT_ARGUMENTS, "-Dsbt.log.noformat=true");
+            DockerAssertions dockerAssertions = test.run(commandBuilder);
 
-        dockerAssertions.atLeastOneBdioFile();
-        dockerAssertions.projectVersion("sbt-simple-project_2.12", "1.0.0-SNAPSHOT");
-
-        test.cleanupDirs();
+            dockerAssertions.atLeastOneBdioFile();
+            dockerAssertions.projectVersion("sbt-simple-project_2.12", "1.0.0-SNAPSHOT");
+        }
     }
 }

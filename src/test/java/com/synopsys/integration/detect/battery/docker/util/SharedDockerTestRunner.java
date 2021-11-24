@@ -1,7 +1,5 @@
 package com.synopsys.integration.detect.battery.docker.util;
 
-import java.io.IOException;
-
 import com.synopsys.integration.detect.battery.docker.integration.BlackDuckAssertions;
 import com.synopsys.integration.detect.battery.docker.integration.BlackDuckTestConnection;
 
@@ -21,9 +19,5 @@ public class SharedDockerTestRunner {
 
     public DockerAssertions run() {
         return runner.run(command);
-    }
-
-    public void cleanupDirs() throws IOException {
-        runner.cleanupDirs();
     }
 }

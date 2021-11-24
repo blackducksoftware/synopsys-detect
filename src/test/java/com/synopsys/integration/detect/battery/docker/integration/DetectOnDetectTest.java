@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,40 +30,35 @@ import com.synopsys.integration.exception.IntegrationException;
 
 @Tag("integration")
 public class DetectOnDetectTest {
-    DetectDockerTestRunner test;
-
-    @AfterEach
-    public void cleanup() throws IOException {
-        test.cleanupDirs();
-    }
-
     @Test
-    void detectOnDetect() throws IOException, InterruptedException, IntegrationException {
-        test = new DetectDockerTestRunner("detect-on-detect", "detect-7.1.0:1.0.0");
-        test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Detect-7.1.0.dockerfile"));
+    void detectOnDetect() throws IOException, IntegrationException {
+        // DetectDockerTestRunner must be declared in try-with-resources block to take advantage of "close" method (cleans up resources)
+        try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-on-detect", "detect-7.1.0:1.0.0")) {
+            test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Detect-7.1.0.dockerfile"));
 
-        BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
-        BlackDuckAssertions blackduckAssertions = blackDuckTestConnection.projectVersionAssertions("detect-on-detect-docker", "happy-path");
-        blackduckAssertions.emptyOnBlackDuck();
+            BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
+            BlackDuckAssertions blackduckAssertions = blackDuckTestConnection.projectVersionAssertions("detect-on-detect-docker", "happy-path");
+            blackduckAssertions.emptyOnBlackDuck();
 
-        DetectCommandBuilder commandBuilder = new DetectCommandBuilder().defaults().defaultDirectories(test);
-        commandBuilder.connectToBlackDuck(blackDuckTestConnection);
-        commandBuilder.projectNameVersion(blackduckAssertions);
-        commandBuilder.waitForResults();
+            DetectCommandBuilder commandBuilder = new DetectCommandBuilder().defaults().defaultDirectories(test);
+            commandBuilder.connectToBlackDuck(blackDuckTestConnection);
+            commandBuilder.projectNameVersion(blackduckAssertions);
+            commandBuilder.waitForResults();
 
-        DockerAssertions dockerAssertions = test.run(commandBuilder);
+            DockerAssertions dockerAssertions = test.run(commandBuilder);
 
-        dockerAssertions.bdioFiles(6); //7 code locations, 6 bdio, 1 signature scanner
+            dockerAssertions.bdioFiles(6); //7 code locations, 6 bdio, 1 signature scanner
 
-        blackduckAssertions.hasCodeLocations("src/detect-on-detect-docker/happy-path scan",
-            "detect-on-detect-docker/happy-path/detectable/com.synopsys.integration/detectable/7.1.1-SNAPSHOT gradle/bom",
-            "detect-on-detect-docker/happy-path/com.synopsys.integration/synopsys-detect/7.1.1-SNAPSHOT gradle/bom",
-            "detect-on-detect-docker/happy-path/common/com.synopsys.integration/common/7.1.1-SNAPSHOT gradle/bom",
-            "detect-on-detect-docker/happy-path/common-test/com.synopsys.integration/common-test/7.1.1-SNAPSHOT gradle/bom",
-            "detect-on-detect-docker/happy-path/configuration/com.synopsys.integration/configuration/7.1.1-SNAPSHOT gradle/bom",
-            "detect-on-detect-docker/happy-path/detector/com.synopsys.integration/detector/7.1.1-SNAPSHOT gradle/bom");
+            blackduckAssertions.hasCodeLocations("src/detect-on-detect-docker/happy-path scan",
+                "detect-on-detect-docker/happy-path/detectable/com.synopsys.integration/detectable/7.1.1-SNAPSHOT gradle/bom",
+                "detect-on-detect-docker/happy-path/com.synopsys.integration/synopsys-detect/7.1.1-SNAPSHOT gradle/bom",
+                "detect-on-detect-docker/happy-path/common/com.synopsys.integration/common/7.1.1-SNAPSHOT gradle/bom",
+                "detect-on-detect-docker/happy-path/common-test/com.synopsys.integration/common-test/7.1.1-SNAPSHOT gradle/bom",
+                "detect-on-detect-docker/happy-path/configuration/com.synopsys.integration/configuration/7.1.1-SNAPSHOT gradle/bom",
+                "detect-on-detect-docker/happy-path/detector/com.synopsys.integration/detector/7.1.1-SNAPSHOT gradle/bom");
 
-        blackduckAssertions.hasComponents("jackson-core");
+            blackduckAssertions.hasComponents("jackson-core");
+        }
     }
 
     private static final long HALF_MILLION_BYTES = 500_000;
@@ -72,80 +66,83 @@ public class DetectOnDetectTest {
     @Test
     @ExtendWith(TempDirectory.class)
     public void testDryRunScanWithSnippetMatching(@TempDirectory.TempDir Path tempOutputDirectory) throws Exception {
-        test = new DetectDockerTestRunner("detect-on-detect-dryrun", "detect-7.1.0:1.0.0");
-        test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Detect-7.1.0.dockerfile"));
+        try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-on-detect-dryrun", "detect-7.1.0:1.0.0")) {
+            test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Detect-7.1.0.dockerfile"));
 
-        String projectName = "synopsys-detect-junit";
-        String projectVersionName = "dryrun-scan";
-        BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
-        BlackDuckAssertions blackDuckAssertions = blackDuckTestConnection.projectVersionAssertions(projectName, projectVersionName);
+            String projectName = "synopsys-detect-junit";
+            String projectVersionName = "dryrun-scan";
+            BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
+            BlackDuckAssertions blackDuckAssertions = blackDuckTestConnection.projectVersionAssertions(projectName, projectVersionName);
 
-        blackDuckAssertions.emptyOnBlackDuck();
+            blackDuckAssertions.emptyOnBlackDuck();
 
-        DetectCommandBuilder commandBuilder = new DetectCommandBuilder().defaults().defaultDirectories(test);
-        commandBuilder.projectNameVersion(blackDuckAssertions.getProjectNameVersion());
-        commandBuilder.connectToBlackDuck(blackDuckTestConnection);
-        commandBuilder.property(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING, "SNIPPET_MATCHING");
-        commandBuilder.property(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN, "true");
+            DetectCommandBuilder commandBuilder = new DetectCommandBuilder().defaults().defaultDirectories(test);
+            commandBuilder.projectNameVersion(blackDuckAssertions.getProjectNameVersion());
+            commandBuilder.connectToBlackDuck(blackDuckTestConnection);
+            commandBuilder.property(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING, "SNIPPET_MATCHING");
+            commandBuilder.property(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN, "true");
 
-        DockerAssertions dockerAssertions = test.run(commandBuilder);
-        assertDirectoryStructureForOfflineScan(dockerAssertions.getOutputDirectory().toPath());
+            DockerAssertions dockerAssertions = test.run(commandBuilder);
+            assertDirectoryStructureForOfflineScan(dockerAssertions.getOutputDirectory().toPath());
+        }
     }
 
     @Test
     //Simply verify a risk report is generated at the expected location.
     public void riskReportResultProduced() throws Exception {
-        test = new DetectDockerTestRunner("detect-on-detect-riskreport-default", "detect-7.1.0:1.0.0");
-        test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Detect-7.1.0.dockerfile"));
+        try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-on-detect-riskreport-default", "detect-7.1.0:1.0.0")) {
+            test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Detect-7.1.0.dockerfile"));
 
-        BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
-        BlackDuckAssertions blackDuckAssertions = blackDuckTestConnection.projectVersionAssertions("synopsys-detect-junit", "risk-report-default");
-        blackDuckAssertions.emptyOnBlackDuck();
+            BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
+            BlackDuckAssertions blackDuckAssertions = blackDuckTestConnection.projectVersionAssertions("synopsys-detect-junit", "risk-report-default");
+            blackDuckAssertions.emptyOnBlackDuck();
 
-        DetectCommandBuilder commandBuilder = new DetectCommandBuilder().defaults().defaultDirectories(test);
-        commandBuilder.connectToBlackDuck(blackDuckTestConnection);
-        commandBuilder.projectNameVersion(blackDuckAssertions.getProjectNameVersion());
-        commandBuilder.property(DetectProperties.DETECT_RISK_REPORT_PDF, "true");
-        commandBuilder.property(DetectProperties.DETECT_TIMEOUT, "1200");
-        commandBuilder.tools(DetectTool.DETECTOR);
+            DetectCommandBuilder commandBuilder = new DetectCommandBuilder().defaults().defaultDirectories(test);
+            commandBuilder.connectToBlackDuck(blackDuckTestConnection);
+            commandBuilder.projectNameVersion(blackDuckAssertions.getProjectNameVersion());
+            commandBuilder.property(DetectProperties.DETECT_RISK_REPORT_PDF, "true");
+            commandBuilder.property(DetectProperties.DETECT_TIMEOUT, "1200");
+            commandBuilder.tools(DetectTool.DETECTOR);
 
-        DockerAssertions dockerAssertions = test.run(commandBuilder);
-        dockerAssertions.resultProducedAtLocation("/opt/project/src/synopsys_detect_junit_risk_report_default_BlackDuck_RiskReport.pdf");
+            DockerAssertions dockerAssertions = test.run(commandBuilder);
+            dockerAssertions.resultProducedAtLocation("/opt/project/src/synopsys_detect_junit_risk_report_default_BlackDuck_RiskReport.pdf");
+        }
     }
 
     @Test
     //Tests that a new project has an empty report, run detect to fill it, tests the report is filled, in a custom location
     public void riskReportPopulatedAtCustomPath() throws Exception {
-        test = new DetectDockerTestRunner("detect-on-detect-riskreport-custom", "detect-7.1.0:1.0.0");
-        test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Detect-7.1.0.dockerfile"));
+        try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-on-detect-riskreport-custom", "detect-7.1.0:1.0.0")) {
+            test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Detect-7.1.0.dockerfile"));
 
-        BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
-        ReportService reportService = blackDuckTestConnection.createReportService();
+            BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
+            ReportService reportService = blackDuckTestConnection.createReportService();
 
-        BlackDuckAssertions blackDuckAssertions = blackDuckTestConnection.projectVersionAssertions("synopsys-detect-junit", "risk-report-custom");
-        ProjectVersionWrapper projectVersionWrapper = blackDuckAssertions.emptyOnBlackDuck();
+            BlackDuckAssertions blackDuckAssertions = blackDuckTestConnection.projectVersionAssertions("synopsys-detect-junit", "risk-report-custom");
+            ProjectVersionWrapper projectVersionWrapper = blackDuckAssertions.emptyOnBlackDuck();
 
-        String reportDirectoryImagePath = "/opt/report";
-        File reportDirectory = test.directories().createResultDirectory("report");
-        test.directories().withBinding(reportDirectory, reportDirectoryImagePath);
+            String reportDirectoryImagePath = "/opt/report";
+            File reportDirectory = test.directories().createResultDirectory("report");
+            test.directories().withBinding(reportDirectory, reportDirectoryImagePath);
 
-        long initialFileLength = assertEmptyRiskReport(reportDirectory, projectVersionWrapper, reportService);
+            long initialFileLength = assertEmptyRiskReport(reportDirectory, projectVersionWrapper, reportService);
 
-        DetectCommandBuilder commandBuilder = new DetectCommandBuilder().defaults().defaultDirectories(test);
-        commandBuilder.connectToBlackDuck(blackDuckTestConnection);
-        commandBuilder.projectNameVersion(blackDuckAssertions.getProjectNameVersion());
-        commandBuilder.property(DetectProperties.DETECT_RISK_REPORT_PDF, "true");
-        commandBuilder.property(DetectProperties.DETECT_TIMEOUT, "1200");
-        commandBuilder.property(DetectProperties.DETECT_RISK_REPORT_PDF_PATH, reportDirectoryImagePath);
-        commandBuilder.tools(DetectTool.DETECTOR);
+            DetectCommandBuilder commandBuilder = new DetectCommandBuilder().defaults().defaultDirectories(test);
+            commandBuilder.connectToBlackDuck(blackDuckTestConnection);
+            commandBuilder.projectNameVersion(blackDuckAssertions.getProjectNameVersion());
+            commandBuilder.property(DetectProperties.DETECT_RISK_REPORT_PDF, "true");
+            commandBuilder.property(DetectProperties.DETECT_TIMEOUT, "1200");
+            commandBuilder.property(DetectProperties.DETECT_RISK_REPORT_PDF_PATH, reportDirectoryImagePath);
+            commandBuilder.tools(DetectTool.DETECTOR);
 
-        DockerAssertions dockerAssertions = test.run(commandBuilder);
-        dockerAssertions.resultProducedAtLocation("/opt/report/synopsys_detect_junit_risk_report_custom_BlackDuck_RiskReport.pdf");
+            DockerAssertions dockerAssertions = test.run(commandBuilder);
+            dockerAssertions.resultProducedAtLocation("/opt/report/synopsys_detect_junit_risk_report_custom_BlackDuck_RiskReport.pdf");
 
-        List<File> pdfFiles = getPdfFiles(reportDirectory);
-        assertEquals(1, pdfFiles.size());
-        long postLength = pdfFiles.get(0).length();
-        assertTrue(postLength > initialFileLength);
+            List<File> pdfFiles = getPdfFiles(reportDirectory);
+            assertEquals(1, pdfFiles.size());
+            long postLength = pdfFiles.get(0).length();
+            assertTrue(postLength > initialFileLength);
+        }
     }
 
     private long assertEmptyRiskReport(File reportDirectory, ProjectVersionWrapper projectVersionWrapper, ReportService reportService) throws IntegrationException {
