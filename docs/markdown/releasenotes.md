@@ -1,5 +1,14 @@
 # Release notes
 
+## Version 7.9.0
+
+### New Features
+
+### Changed Features
+
+### Resolved issues
+* (IDETECT-2499) Fixed an issue in the Gradle Inspector that caused it to exclude all identically-named subprojects except one.
+
 ## Version 7.8.0
 
 ### New Features
