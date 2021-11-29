@@ -15,7 +15,7 @@ The archive created contains the [solution_name] .jar and the inspectors.
 
 ## Running in air gap mode
 
-Before running [solution_name] in air gap mode, unzip the air gap archive to create the air gap directory.
-
-To run [solution_name] in air gap mode, invoke the [solution_name] .jar file at the top level of
-the air gap directory. Refer to [Running the Synopsys Detect .jar](basics/runningjar.md) for more information.
+To prepare to run [solution_name] in air gap mode, unzip the air gap archive to create the air gap directory.
+Do not make any changes to files within that directory.
+Invoke the [solution_name] .jar file from its original unzipped location at the top level of the air gap directory.
+Refer to [Running the Synopsys Detect .jar](basics/runningjar.md) for more information on invoking the .jar file.
