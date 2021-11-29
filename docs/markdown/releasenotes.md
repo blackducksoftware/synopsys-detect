@@ -1,5 +1,14 @@
 # Release notes
 
+## Version 7.9.0
+
+### New Features
+
+### Changed features
+
+### Resolved issues
+* (IDETECT-2953) Fixed the project and project version links in risk report.
+
 ## Version 7.8.0
 
 ### New Features
