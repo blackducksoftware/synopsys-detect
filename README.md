@@ -39,7 +39,7 @@ The latest quickstart documentation is [here](https://community.synopsys.com/s/d
 
 The latest full documentation is [here](https://community.synopsys.com/s/document-item?bundleId=integrations-detect&topicId=introduction.html&_LANG=enus).
 
-Links to certain versions can be found [here](https://detect.synopsys.com/docs).
+Links to certain earlier versions can be found [here](https://detect.synopsys.com/docs).
 
 ## Getting help
 
