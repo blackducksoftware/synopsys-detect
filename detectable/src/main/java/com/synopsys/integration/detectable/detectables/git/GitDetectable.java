@@ -7,9 +7,6 @@
  */
 package com.synopsys.integration.detectable.detectables.git;
 
-import java.io.File;
-import java.util.Arrays;
-
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
@@ -27,7 +24,10 @@ import com.synopsys.integration.detectable.detectables.git.parsing.GitParseExtra
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "various", forge = "N/A", requirementsMarkdown = "Directory: .git. <br /><br /> Executable: git. <br /><br /> OR <br /><br /> Files: .git/config, .git/HEAD.")
+import java.io.File;
+import java.util.Arrays;
+
+@DetectableInfo(language = "various", forge = "N/A", requirementsMarkdown = "Directory: .git. (Executable: git OR Files: .git/config, .git/HEAD).")
 public class GitDetectable extends Detectable {
     private static final String GIT_DIRECTORY_NAME = ".git";
     private static final String GIT_CONFIG_FILENAME = "config";

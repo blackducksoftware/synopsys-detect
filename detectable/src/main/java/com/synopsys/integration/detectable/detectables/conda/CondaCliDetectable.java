@@ -7,19 +7,19 @@
  */
 package com.synopsys.integration.detectable.detectables.conda;
 
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CondaResolver;
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Python", forge = "Anaconda", requirementsMarkdown = "File: environment.yml. <br /><br /> Executable: conda.")
+@DetectableInfo(language = "Python", forge = "Anaconda", requirementsMarkdown = "File: environment.yml. Executable: conda.")
 public class CondaCliDetectable extends Detectable {
     public static final String ENVIRONMENT_YML = "environment.yml";
 

@@ -7,13 +7,6 @@
  */
 package com.synopsys.integration.detectable.detectables.pip.inspector;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections4.CollectionUtils;
-
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
@@ -23,15 +16,17 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 import com.synopsys.integration.detectable.detectable.executable.resolver.PipResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PythonResolver;
 import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
-import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.InspectorNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.*;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import org.apache.commons.collections4.CollectionUtils;
 
-@DetectableInfo(language = "Python", forge = "Pypi", requirementsMarkdown = "A setup.py file, or one or more requirements.txt files.<br/><br/> Executables: python and pip, or python3 and pip3.")
+import java.io.File;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@DetectableInfo(language = "Python", forge = "Pypi", requirementsMarkdown = "A setup.py file, or one or more requirements.txt files. Executables: python and pip, or python3 and pip3.")
 public class PipInspectorDetectable extends Detectable {
     private static final String SETUPTOOLS_DEFAULT_FILE_NAME = "setup.py";
     private static final String REQUIREMENTS_DEFAULT_FILE_NAME = "requirements.txt";

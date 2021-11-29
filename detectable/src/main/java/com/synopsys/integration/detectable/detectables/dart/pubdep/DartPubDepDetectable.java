@@ -7,10 +7,6 @@
  */
 package com.synopsys.integration.detectable.detectables.dart.pubdep;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.Optional;
-
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
@@ -21,16 +17,15 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.DartResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.FlutterResolver;
-import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.ExecutablesNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.PubSpecLockNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.*;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Dart", forge = "Dart", requirementsMarkdown = "Files: pubspec.yaml, pubspec.lock.<br/><br/>Executable: dart, flutter")
+import java.io.File;
+import java.util.Arrays;
+import java.util.Optional;
+
+@DetectableInfo(language = "Dart", forge = "Dart", requirementsMarkdown = "Files: pubspec.yaml, pubspec.lock. Executable: dart, flutter")
 public class DartPubDepDetectable extends Detectable {
     public static final String PUBSPEC_YAML_FILENAME = "pubspec.yaml";
     public static final String PUBSPEC_LOCK_FILENAME = "pubspec.lock";
