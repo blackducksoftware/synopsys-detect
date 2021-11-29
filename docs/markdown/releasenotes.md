@@ -4,11 +4,11 @@
 
 ### New Features
 
-### Changed features
+### Changed Features
 * The version of each package manager tool executed by CLI detectors is now logged at DEBUG level.
 
 ### Resolved issues
-
+* (IDETECT-2499) Fixed an issue in the Gradle Inspector that caused it to exclude all identically-named subprojects except one.
 
 ## Version 7.8.0
 
