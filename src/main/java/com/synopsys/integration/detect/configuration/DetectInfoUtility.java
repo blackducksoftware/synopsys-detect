@@ -36,9 +36,8 @@ public class DetectInfoUtility {
     }
 
     public List<String> findArchitectures() {
-        String primaryArchitectureProperty = System.getenv("PROCESSOR_ARCHITECTURE");
-        String secondaryArchitectureProperty = System.getenv("PROCESSOR_ARCHITEW6432");
-        return Bds.of(primaryArchitectureProperty, secondaryArchitectureProperty)
+        return Bds.of("os.arch", "PROCESSOR_ARCHITECTURE", "PROCESSOR_ARCHITEW6432")
+            .map(System::getenv)
             .filter(StringUtils::isNotBlank)
             .toList();
     }

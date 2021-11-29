@@ -7,15 +7,6 @@
  */
 package com.synopsys.integration.detectable.detectables.dart.pubdep;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
@@ -23,9 +14,18 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.dart.PubSpecYamlNameVersionParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 import com.synopsys.integration.util.NameVersion;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class PubDepsExtractor {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -33,15 +33,20 @@ public class PubDepsExtractor {
     private final DetectableExecutableRunner executableRunner;
     private final PubDepsParser pubDepsParser;
     private PubSpecYamlNameVersionParser nameVersionParser;
+    private final ToolVersionLogger toolVersionLogger;
 
-    public PubDepsExtractor(DetectableExecutableRunner executableRunner, PubDepsParser pubDepsParser, PubSpecYamlNameVersionParser nameVersionParser) {
+    public PubDepsExtractor(DetectableExecutableRunner executableRunner, PubDepsParser pubDepsParser, PubSpecYamlNameVersionParser nameVersionParser,
+                            ToolVersionLogger toolVersionLogger) {
         this.executableRunner = executableRunner;
         this.pubDepsParser = pubDepsParser;
         this.nameVersionParser = nameVersionParser;
+        this.toolVersionLogger = toolVersionLogger;
     }
 
     public Extraction extract(File directory, @Nullable ExecutableTarget dartExe, @Nullable ExecutableTarget flutterExe, DartPubDepsDetectableOptions dartPubDepsDetectableOptions, File pubSpecYamlFile) {
         try {
+            toolVersionLogger.log(directory, dartExe);
+            toolVersionLogger.log(directory, flutterExe);
             List<String> pubDepsCommand = new ArrayList<>();
             pubDepsCommand.add("pub");
             pubDepsCommand.add("deps");

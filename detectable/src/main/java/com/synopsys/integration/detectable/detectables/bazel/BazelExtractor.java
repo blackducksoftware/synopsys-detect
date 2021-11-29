@@ -7,18 +7,6 @@
  */
 package com.synopsys.integration.detectable.detectables.bazel;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
@@ -32,20 +20,31 @@ import com.synopsys.integration.detectable.detectables.bazel.pipeline.WorkspaceR
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelCommandExecutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelVariableSubstitutor;
 import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import com.synopsys.integration.exception.IntegrationException;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class BazelExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectableExecutableRunner executableRunner;
     private final ExternalIdFactory externalIdFactory;
     private final WorkspaceRuleChooser workspaceRuleChooser;
+    private final ToolVersionLogger toolVersionLogger;
 
     public BazelExtractor(DetectableExecutableRunner executableRunner,
-        ExternalIdFactory externalIdFactory,
-        WorkspaceRuleChooser workspaceRuleChooser) {
+                          ExternalIdFactory externalIdFactory,
+                          WorkspaceRuleChooser workspaceRuleChooser,
+                          ToolVersionLogger toolVersionLogger) {
         this.executableRunner = executableRunner;
         this.externalIdFactory = externalIdFactory;
         this.workspaceRuleChooser = workspaceRuleChooser;
+        this.toolVersionLogger = toolVersionLogger;
     }
 
     public Extraction extract(ExecutableTarget bazelExe, File workspaceDir, BazelWorkspace bazelWorkspace, String bazelTarget,
@@ -53,6 +52,7 @@ public class BazelExtractor {
         List<String> providedCqueryAdditionalOptions) {
         logger.debug("Bazel extraction:");
         try {
+            toolVersionLogger.log(workspaceDir, bazelExe, "version");
             BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
             BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor(bazelTarget, providedCqueryAdditionalOptions);
             Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor, externalIdFactory);
