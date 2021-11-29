@@ -14,18 +14,18 @@ public class PackageResolved {
     private final ResolvedObject resolvedObject;
 
     @SerializedName("version")
-    private final String packageResolvedVersion;
+    private final String fileFormatVersion;
 
-    public PackageResolved(ResolvedObject resolvedObject, String packageResolvedVersion) {
+    public PackageResolved(ResolvedObject resolvedObject, String fileFormatVersion) {
         this.resolvedObject = resolvedObject;
-        this.packageResolvedVersion = packageResolvedVersion;
+        this.fileFormatVersion = fileFormatVersion;
     }
 
     public ResolvedObject getResolvedObject() {
         return resolvedObject;
     }
 
-    public String getPackageResolvedVersion() {
-        return packageResolvedVersion;
+    public String getFileFormatVersion() {
+        return fileFormatVersion;
     }
 }
