@@ -1,16 +1,5 @@
 package com.synopsys.integration.detectable.detectables.go.unit;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-
-import com.synopsys.integration.detectable.util.ToolVersionLogger;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.ExecutableTarget;
@@ -26,6 +15,15 @@ import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.executable.Executable;
 import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunnerException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 public class GoModCliExtractorTest {
 
@@ -113,7 +111,7 @@ public class GoModCliExtractorTest {
         Mockito.doAnswer(executableAnswer).when(executableRunner).execute(Mockito.any(Executable.class));
 
         GoModWhyParser goModWhyParser = new GoModWhyParser();
-        GoModCommandExecutor goModCommandExecutor = new GoModCommandExecutor(executableRunner, new ToolVersionLogger(executableRunner));
+        GoModCommandExecutor goModCommandExecutor = new GoModCommandExecutor(executableRunner);
         GoModGraphGenerator goModGraphGenerator = new GoModGraphGenerator(new ExternalIdFactory());
         GoListParser goListParser = new GoListParser(new GsonBuilder().create());
         GoGraphParser goGraphParser = new GoGraphParser();

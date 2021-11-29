@@ -7,31 +7,36 @@
  */
 package com.synopsys.integration.detectable.detectables.swift;
 
-import java.io.File;
-
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.swift.model.SwiftPackage;
 import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunnerException;
+
+import java.io.File;
 
 public class SwiftExtractor {
     private final DetectableExecutableRunner executableRunner;
     private final SwiftCliParser swiftCliParser;
     private final SwiftPackageTransformer swiftPackageTransformer;
+    private final ToolVersionLogger toolVersionLogger;
 
-    public SwiftExtractor(DetectableExecutableRunner executableRunner, SwiftCliParser swiftCliParser, SwiftPackageTransformer swiftPackageTransformer) {
+    public SwiftExtractor(DetectableExecutableRunner executableRunner, SwiftCliParser swiftCliParser, SwiftPackageTransformer swiftPackageTransformer,
+                          ToolVersionLogger toolVersionLogger) {
         this.executableRunner = executableRunner;
         this.swiftCliParser = swiftCliParser;
         this.swiftPackageTransformer = swiftPackageTransformer;
+        this.toolVersionLogger = toolVersionLogger;
     }
 
     public Extraction extract(File environmentDirectory, ExecutableTarget swiftExecutable) {
         try {
+            toolVersionLogger.log(environmentDirectory, swiftExecutable);
             SwiftPackage rootSwiftPackage = getRootSwiftPackage(environmentDirectory, swiftExecutable);
             CodeLocation codeLocation = swiftPackageTransformer.transform(rootSwiftPackage);
 

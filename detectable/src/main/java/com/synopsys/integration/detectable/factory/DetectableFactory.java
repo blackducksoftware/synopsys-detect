@@ -7,15 +7,6 @@
  */
 package com.synopsys.integration.detectable.factory;
 
-import java.util.List;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
-import com.synopsys.integration.detectable.util.ToolVersionLogger;
-import org.xml.sax.SAXException;
-
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.BdioTransformer;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
@@ -24,28 +15,7 @@ import com.synopsys.integration.common.util.parse.CommandParser;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.enums.DependencyType;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.resolver.BashResolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.BazelResolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.CondaResolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.CpanResolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.CpanmResolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.DartResolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.DockerResolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.FlutterResolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.GitResolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.GoResolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.GradleResolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.JavaResolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.LernaResolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.MavenResolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.NpmResolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.PearResolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.PipResolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.PipenvResolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.PythonResolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.Rebar3Resolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.SbtResolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.SwiftResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.*;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.ProjectInspectorResolver;
@@ -68,11 +38,7 @@ import com.synopsys.integration.detectable.detectables.cargo.parse.CargoLockPars
 import com.synopsys.integration.detectable.detectables.carthage.CartfileResolvedDependencyDeclarationParser;
 import com.synopsys.integration.detectable.detectables.carthage.CarthageDetectable;
 import com.synopsys.integration.detectable.detectables.carthage.CarthageExtractor;
-import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
-import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOptions;
-import com.synopsys.integration.detectable.detectables.clang.ClangExtractor;
-import com.synopsys.integration.detectable.detectables.clang.ForgeChooser;
-import com.synopsys.integration.detectable.detectables.clang.LinuxDistroToForgeMapper;
+import com.synopsys.integration.detectable.detectables.clang.*;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandDatabaseParser;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandParser;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.ClangPackageDetailsTransformer;
@@ -157,16 +123,8 @@ import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.G
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportTransformer;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleRootMetadataParser;
 import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleProjectInspectorDetectable;
-import com.synopsys.integration.detectable.detectables.lerna.LernaDetectable;
-import com.synopsys.integration.detectable.detectables.lerna.LernaExtractor;
-import com.synopsys.integration.detectable.detectables.lerna.LernaOptions;
-import com.synopsys.integration.detectable.detectables.lerna.LernaPackageDiscoverer;
-import com.synopsys.integration.detectable.detectables.lerna.LernaPackager;
-import com.synopsys.integration.detectable.detectables.maven.cli.MavenCliExtractor;
-import com.synopsys.integration.detectable.detectables.maven.cli.MavenCliExtractorOptions;
-import com.synopsys.integration.detectable.detectables.maven.cli.MavenCodeLocationPackager;
-import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomDetectable;
-import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomWrapperDetectable;
+import com.synopsys.integration.detectable.detectables.lerna.*;
+import com.synopsys.integration.detectable.detectables.maven.cli.*;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseDetectable;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseExtractor;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseOptions;
@@ -231,24 +189,14 @@ import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecP
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecLineParser;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecParser;
 import com.synopsys.integration.detectable.detectables.sbt.SbtDetectable;
-import com.synopsys.integration.detectable.detectables.sbt.dot.SbtCommandArgumentGenerator;
-import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotExtractor;
-import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotGraphNodeParser;
-import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotOutputParser;
-import com.synopsys.integration.detectable.detectables.sbt.dot.SbtGraphParserTransformer;
-import com.synopsys.integration.detectable.detectables.sbt.dot.SbtPluginFinder;
-import com.synopsys.integration.detectable.detectables.sbt.dot.SbtRootNodeFinder;
+import com.synopsys.integration.detectable.detectables.sbt.dot.*;
 import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheExtractor;
 import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheOptions;
 import com.synopsys.integration.detectable.detectables.swift.SwiftCliDetectable;
 import com.synopsys.integration.detectable.detectables.swift.SwiftCliParser;
 import com.synopsys.integration.detectable.detectables.swift.SwiftExtractor;
 import com.synopsys.integration.detectable.detectables.swift.SwiftPackageTransformer;
-import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
-import com.synopsys.integration.detectable.detectables.yarn.YarnLockExtractor;
-import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
-import com.synopsys.integration.detectable.detectables.yarn.YarnPackager;
-import com.synopsys.integration.detectable.detectables.yarn.YarnTransformer;
+import com.synopsys.integration.detectable.detectables.yarn.*;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonFiles;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonReader;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockLineAnalyzer;
@@ -256,6 +204,13 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.section.YarnLockDependencySpecParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.section.YarnLockEntrySectionParserSet;
+import com.synopsys.integration.detectable.util.ToolVersionLogger;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import java.util.List;
 
 /*
  Entry point for creating detectables using most
@@ -481,7 +436,7 @@ public class DetectableFactory {
 
     private BazelExtractor bazelExtractor() {
         WorkspaceRuleChooser workspaceRuleChooser = new WorkspaceRuleChooser();
-        return new BazelExtractor(executableRunner, externalIdFactory, workspaceRuleChooser);
+        return new BazelExtractor(executableRunner, externalIdFactory, workspaceRuleChooser, toolVersionLogger);
     }
 
     private FilePathGenerator filePathGenerator() {
@@ -539,7 +494,7 @@ public class DetectableFactory {
     }
 
     private CondaCliExtractor condaCliExtractor() {
-        return new CondaCliExtractor(condaListParser(), executableRunner);
+        return new CondaCliExtractor(condaListParser(), executableRunner, toolVersionLogger);
     }
 
     private CpanListParser cpanListParser() {
@@ -547,7 +502,7 @@ public class DetectableFactory {
     }
 
     private CpanCliExtractor cpanCliExtractor() {
-        return new CpanCliExtractor(cpanListParser(), executableRunner);
+        return new CpanCliExtractor(cpanListParser(), executableRunner, toolVersionLogger);
     }
 
     private PackratLockFileParser packratLockFileParser() {
@@ -599,7 +554,7 @@ public class DetectableFactory {
     }
 
     private GoModCommandExecutor goModCommandExecutor() {
-        return new GoModCommandExecutor(executableRunner, toolVersionLogger);
+        return new GoModCommandExecutor(executableRunner);
     }
 
     private GoModGraphGenerator goModGraphGraphGenerator() {
@@ -643,7 +598,7 @@ public class DetectableFactory {
     }
 
     private RebarExtractor rebarExtractor() {
-        return new RebarExtractor(executableRunner, rebar3TreeParser());
+        return new RebarExtractor(executableRunner, rebar3TreeParser(), toolVersionLogger);
     }
 
     private MavenCodeLocationPackager mavenCodeLocationPackager() {
@@ -686,7 +641,7 @@ public class DetectableFactory {
     }
 
     private NpmCliExtractor npmCliExtractor() {
-        return new NpmCliExtractor(executableRunner, npmCliDependencyFinder(), gson);
+        return new NpmCliExtractor(executableRunner, npmCliDependencyFinder(), gson, toolVersionLogger);
     }
 
     private NpmLockfileExtractor npmLockfileExtractor() {
@@ -786,7 +741,7 @@ public class DetectableFactory {
     }
 
     private PubDepsExtractor pubDepsExtractor() {
-        return new PubDepsExtractor(executableRunner, pubDepsParser(), pubSpecYamlNameVersionParser());
+        return new PubDepsExtractor(executableRunner, pubDepsParser(), pubSpecYamlNameVersionParser(), toolVersionLogger);
     }
 
     private PubDepsParser pubDepsParser() {
@@ -951,7 +906,7 @@ public class DetectableFactory {
     }
 
     private SwiftExtractor swiftExtractor() {
-        return new SwiftExtractor(executableRunner, swiftCliParser(), swiftPackageTransformer());
+        return new SwiftExtractor(executableRunner, swiftCliParser(), swiftPackageTransformer(), toolVersionLogger);
     }
 
     private LernaPackageDiscoverer lernaPackageDiscoverer() {
