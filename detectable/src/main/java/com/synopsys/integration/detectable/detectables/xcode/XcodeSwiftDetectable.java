@@ -8,6 +8,7 @@
 package com.synopsys.integration.detectable.detectables.xcode;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -57,7 +58,7 @@ public class XcodeSwiftDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws FileNotFoundException {
         return xcodeProjectExtractor.extract(foundPackageResolvedFile);
     }
 

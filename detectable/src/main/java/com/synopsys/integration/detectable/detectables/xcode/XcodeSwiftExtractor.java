@@ -26,20 +26,14 @@ public class XcodeSwiftExtractor {
         this.packageResolvedTransformer = packageResolvedTransformer;
     }
 
-    public Extraction extract(File foundPackageResolvedFile) {
-        try {
-            FileReader fileReader = new FileReader(foundPackageResolvedFile);
-            PackageResolved packageResolved = gson.fromJson(fileReader, PackageResolved.class);
-            DependencyGraph dependencyGraph = packageResolvedTransformer.transform(packageResolved);
-            CodeLocation codeLocation = new CodeLocation(dependencyGraph);
+    public Extraction extract(File foundPackageResolvedFile) throws FileNotFoundException {
+        FileReader fileReader = new FileReader(foundPackageResolvedFile);
+        PackageResolved packageResolved = gson.fromJson(fileReader, PackageResolved.class);
+        DependencyGraph dependencyGraph = packageResolvedTransformer.transform(packageResolved);
+        CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 
-            return new Extraction.Builder()
-                .success(codeLocation)
-                .build();
-        } catch (FileNotFoundException exception) {
-            return new Extraction.Builder()
-                .exception(exception)
-                .build();
-        }
+        return new Extraction.Builder()
+            .success(codeLocation)
+            .build();
     }
 }
