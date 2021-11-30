@@ -4,7 +4,7 @@
 
 ### New Features
 * Added system architecture at DEBUG level logs to assist with support.
-* Added detect.bdio.file.name to soecuft the name of the output bdio file. 
+* Added detect.bdio.file.name to specify the name of the output bdio file. 
 
 ## Version 7.8.0
 
