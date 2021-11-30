@@ -7,20 +7,6 @@
  */
 package com.synopsys.integration.detectable.detectables.npm.cli;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.gson.Gson;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
@@ -30,7 +16,21 @@ import com.synopsys.integration.detectable.detectables.npm.cli.parse.NpmDependen
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmParseResult;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import com.synopsys.integration.executable.ExecutableOutput;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 public class NpmCliExtractor {
     public static final String OUTPUT_FILE = "detect_npm_proj_dependencies.json";
@@ -40,14 +40,17 @@ public class NpmCliExtractor {
     private final DetectableExecutableRunner executableRunner;
     private final NpmCliParser npmCliParser;
     private final Gson gson;
+    private final ToolVersionLogger toolVersionLogger;
 
-    public NpmCliExtractor(DetectableExecutableRunner executableRunner, NpmCliParser npmCliParser, Gson gson) {
+    public NpmCliExtractor(DetectableExecutableRunner executableRunner, NpmCliParser npmCliParser, Gson gson, ToolVersionLogger toolVersionLogger) {
         this.executableRunner = executableRunner;
         this.npmCliParser = npmCliParser;
         this.gson = gson;
+        this.toolVersionLogger = toolVersionLogger;
     }
 
     public Extraction extract(File directory, ExecutableTarget npmExe, @Nullable String npmArguments, boolean includeDevDependencies, boolean includePeerDependencies, File packageJsonFile) {
+        toolVersionLogger.log(directory, npmExe);
         PackageJson packageJson;
         try {
             packageJson = parsePackageJson(packageJsonFile);
