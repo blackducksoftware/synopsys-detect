@@ -61,7 +61,7 @@ allprojects {
         implementation "org.slf4j:slf4j-api:1.7.30"
         implementation "org.apache.commons:commons-lang3:3.10" /* this could be managed by blackduck common */
         implementation 'org.jetbrains:annotations:19.0.0'
-        implementation 'net.minidev:json-smart:2.4.2'
+        implementation 'net.minidev:json-smart:2.4.7'
         implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.3'
 
         testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
