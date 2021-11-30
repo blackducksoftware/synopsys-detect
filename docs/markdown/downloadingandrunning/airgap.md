@@ -16,9 +16,9 @@ The archive created contains the [solution_name] .jar and the inspectors.
 ## Running in air gap mode
 
 To prepare to run [solution_name] in air gap mode, unzip the air gap archive to create the air gap directory.
-Do not make any changes to files within that directory.
+Do not make changes to files in the air gap directory.
 Invoke the [solution_name] .jar file from its original unzipped location at the top level of the air gap directory.
-Refer to [Running the Synopsys Detect .jar](basics/runningjar.md) for more information on invoking the .jar file.
+For more information on invoking the .jar file, refer to [Running the Synopsys Detect .jar](basics/runningjar.md).
 
 ## Adding the [blackduck_signature_scanner_name] to your air gap zip
 
