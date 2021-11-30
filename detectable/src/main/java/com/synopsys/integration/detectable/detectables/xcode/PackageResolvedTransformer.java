@@ -10,6 +10,7 @@ package com.synopsys.integration.detectable.detectables.xcode;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
@@ -44,6 +45,7 @@ public class PackageResolvedTransformer {
 
         MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
         packageResolved.getResolvedObject().getPackages().stream()
+            .filter(Objects::nonNull)
             .map(this::convertToDependency)
             .filter(Optional::isPresent)
             .map(Optional::get)
