@@ -22,7 +22,7 @@ For more information on invoking the .jar file, refer to [Running the Synopsys D
 
 ## Adding the [blackduck_signature_scanner_name] to your air gap zip
 
-To create air gap zip that includes the [blackduck_signature_scanner_name], follow these steps:
+To create an air gap zip that includes the [blackduck_signature_scanner_name], follow these steps:
 
 1. Unzip the [solution_name] air gap zip to create the [solution_name] air gap directory.
 1. Download the appropriate [blackduck_signature_scanner_name] zip from your Black Duck instance (System > Tools > Legacy Downloads > Signature Scanner), and unzip it. This will create a directory with a name like scan.cli-x.y.z.
