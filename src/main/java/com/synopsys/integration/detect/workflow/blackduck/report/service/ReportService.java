@@ -7,38 +7,17 @@
  */
 package com.synopsys.integration.detect.workflow.blackduck.report.service;
 
-import java.awt.*;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.synopsys.integration.blackduck.api.core.response.UrlMultipleResponses;
 import com.synopsys.integration.blackduck.api.generated.deprecated.view.PolicyStatusView;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionComponentPolicyStatusType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ReportFormatType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ReportType;
-import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
-import com.synopsys.integration.blackduck.api.generated.view.ComponentPolicyRulesView;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentVersionView;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
-import com.synopsys.integration.blackduck.api.generated.view.ReportView;
+import com.synopsys.integration.blackduck.api.generated.view.*;
 import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationException;
 import com.synopsys.integration.blackduck.http.BlackDuckRequestBuilder;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
@@ -56,6 +35,19 @@ import com.synopsys.integration.rest.body.BodyContentConverter;
 import com.synopsys.integration.rest.exception.IntegrationRestException;
 import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+
+import java.awt.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.List;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class ReportService extends DataService {
     public final static long DEFAULT_TIMEOUT = 1000L * 60 * 5;
@@ -112,13 +104,11 @@ public class ReportService extends DataService {
     }
 
     public ReportData getRiskReportData(ProjectView project, ProjectVersionView version) throws IntegrationException {
-        HttpUrl originalProjectUrl = project.getHref();
-        HttpUrl originalVersionUrl = version.getHref();
         ReportData reportData = new ReportData();
         reportData.setProjectName(project.getName());
-        reportData.setProjectURL(getReportProjectUrl(originalProjectUrl));
+        reportData.setProjectURL(project.getHref().string());
         reportData.setProjectVersion(version.getVersionName());
-        reportData.setProjectVersionURL(getReportVersionUrl(originalVersionUrl, false));
+        reportData.setProjectVersionURL(getReportVersionUrl(version));
         reportData.setPhase(version.getPhase().toString());
         reportData.setDistribution(version.getDistribution().toString());
         List<BomComponent> components = new ArrayList<>();
@@ -130,11 +120,12 @@ public class ReportService extends DataService {
             throw new BlackDuckIntegrationException("BOM could not be read.  This is likely because you lack sufficient permissions.  Please check your permissions.");
         }
 
-        boolean policyFailure = false; //
+        HttpUrl originalVersionUrl = version.getHref();
+        boolean policyFailure = false;
         for (ProjectVersionComponentVersionView projectVersionComponentView : bomEntries) {
             String policyStatus = projectVersionComponentView.getApprovalStatus().toString();
             if (StringUtils.isBlank(policyStatus)) {
-                HttpUrl componentPolicyStatusURL = null;
+                HttpUrl componentPolicyStatusURL;
                 if (!StringUtils.isBlank(projectVersionComponentView.getComponentVersion())) {
                     componentPolicyStatusURL = getComponentPolicyURL(originalVersionUrl, projectVersionComponentView.getComponentVersion());
                 } else {
@@ -243,34 +234,15 @@ public class ReportService extends DataService {
         }
     }
 
-    private String getReportProjectUrl(HttpUrl projectURL) {
-        if (projectURL == null) {
-            return null;
+    private String getReportVersionUrl(ProjectVersionView version) {
+        Optional<UrlMultipleResponses<ProjectVersionComponentVersionView>> bomLink = version.metaComponentsLinkSafely();
+        if (bomLink.isPresent()) {
+            // Return link to the bom (assuming we can get it)
+            return bomLink.get().getUrl().string();
+        } else {
+            // Fallback to the link to the version
+            return version.getHref().string();
         }
-        String projectId = projectURL.string().substring(projectURL.string().lastIndexOf("/") + 1);
-        StringBuilder urlBuilder = new StringBuilder();
-        urlBuilder.append(blackDuckBaseUrl);
-        urlBuilder.append("#");
-        urlBuilder.append("projects/id:");
-        urlBuilder.append(projectId);
-
-        return urlBuilder.toString();
-    }
-
-    private String getReportVersionUrl(HttpUrl versionURL, boolean isComponent) {
-        if (versionURL == null) {
-            return null;
-        }
-        String versionId = versionURL.string().substring(versionURL.string().lastIndexOf("/") + 1);
-        StringBuilder urlBuilder = new StringBuilder();
-        urlBuilder.append(blackDuckBaseUrl);
-        urlBuilder.append("#");
-        urlBuilder.append("versions/id:");
-        urlBuilder.append(versionId);
-        if (!isComponent) {
-            urlBuilder.append("/view:bom");
-        }
-        return urlBuilder.toString();
     }
 
     /**
