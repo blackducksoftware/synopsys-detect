@@ -10,7 +10,7 @@
 ### Resolved issues
 * (IDETECT-2499) Fixed an issue in the Gradle Inspector that caused it to exclude all identically-named subprojects except one.
 * (IDETECT-2953) Fixed the project and project version links in risk report.
-* (IDETECT-2989) Fixed an issue with Go Mod projects where [solution_name] was including unused transitive dependencies filtered despite detect.go.mod.enable.verification being set to 'true'.
+* (IDETECT-2989) Fixed an issue with Go Mod projects where [solution_name] included unused transitive despite detect.go.mod.enable.verification being set to 'true'.
 
 ## Version 7.8.0
 
