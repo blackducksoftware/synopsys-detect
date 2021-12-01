@@ -79,9 +79,8 @@ public class DetectorRuleFactory {
 
         ruleSet.addDetector(DetectorType.BITBAKE, "Bitbake", BitbakeDetectable.class, detectableFactory::createBitbakeDetectable).defaults().build();
 
-        DetectorRule<?> podLockRule = ruleSet.addDetector(DetectorType.COCOAPODS, "Pod Lock", PodlockDetectable.class, detectableFactory::createPodLockDetectable).defaults().build();
-        DetectorRule<?> xcodeRule = ruleSet.addDetector(DetectorType.XCODE, "Xcode Swift", XcodeSwiftDetectable.class, detectableFactory::createXcodeSwiftDetectable).defaults().selfNestable().build();
-        ruleSet.yield(xcodeRule).to(podLockRule);
+        ruleSet.addDetector(DetectorType.COCOAPODS, "Pod Lock", PodlockDetectable.class, detectableFactory::createPodLockDetectable).defaults().build();
+        ruleSet.addDetector(DetectorType.XCODE, "Xcode Swift", XcodeSwiftDetectable.class, detectableFactory::createXcodeSwiftDetectable).defaults().selfNestable().build();
 
         DetectorRule<?> conanCliRule = ruleSet.addDetector(DetectorType.CONAN, "Conan CLI", ConanCliDetectable.class, detectableFactory::createConanCliDetectable).defaults().build();
         DetectorRule<?> conanLockfileRule = ruleSet.addDetector(DetectorType.CONAN, "Conan Lockfile", ConanLockfileDetectable.class, detectableFactory::createConanLockfileDetectable).defaults().build();
@@ -162,9 +161,8 @@ public class DetectorRuleFactory {
 
         ruleSet.addDetector(DetectorType.CARTHAGE, "Carthage", CarthageDetectable.class, detectableFactory::createCarthageDetectable).defaults().build();
 
-        DetectorRule<?> podLockRule = ruleSet.addDetector(DetectorType.COCOAPODS, "Pod Lock", PodlockDetectable.class, detectableFactory::createPodLockDetectable).defaults().build();
-        DetectorRule<?> xcodeRule = ruleSet.addDetector(DetectorType.XCODE, "Xcode Swift", XcodeSwiftDetectable.class, detectableFactory::createXcodeSwiftDetectable).defaults().selfNestable().build();
-        ruleSet.yield(xcodeRule).to(podLockRule);
+        ruleSet.addDetector(DetectorType.COCOAPODS, "Pod Lock", PodlockDetectable.class, detectableFactory::createPodLockDetectable).defaults().build();
+        ruleSet.addDetector(DetectorType.XCODE, "Xcode Swift", XcodeSwiftDetectable.class, detectableFactory::createXcodeSwiftDetectable).defaults().selfNestable().build();
 
         ruleSet.addDetector(DetectorType.PACKAGIST, "Packrat Lock", PackratLockDetectable.class, detectableFactory::createPackratLockDetectable).defaults().build();
 
