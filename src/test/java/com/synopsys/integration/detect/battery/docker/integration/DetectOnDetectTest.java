@@ -32,7 +32,6 @@ import com.synopsys.integration.exception.IntegrationException;
 public class DetectOnDetectTest {
     @Test
     void detectOnDetect() throws IOException, IntegrationException {
-        // DetectDockerTestRunner must be declared in try-with-resources block to take advantage of "close" method (cleans up resources)
         try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-on-detect", "detect-7.1.0:1.0.0")) {
             test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Detect-7.1.0.dockerfile"));
 

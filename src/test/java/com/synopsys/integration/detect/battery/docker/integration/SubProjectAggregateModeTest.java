@@ -19,7 +19,6 @@ public class SubProjectAggregateModeTest {
 
     @Test
     void subProjectAggregateModeSmokeTest() throws IOException, IntegrationException {
-        // DetectDockerTestRunner must be declared in try-with-resources block to take advantage of "close" method (cleans up resources)
         try (DetectDockerTestRunner test = new DetectDockerTestRunner("subproject-aggregate-mode", "detect-7.1.0:1.0.0")) {
             test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Detect-7.1.0.dockerfile"));
 

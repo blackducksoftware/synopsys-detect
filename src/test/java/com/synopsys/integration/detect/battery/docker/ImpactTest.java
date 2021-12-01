@@ -15,7 +15,6 @@ import com.synopsys.integration.detect.configuration.DetectProperties;
 public class ImpactTest {
     @Test
     void offlineImpact() throws IOException {
-        // DetectDockerTestRunner must be declared in try-with-resources block to take advantage of "close" method (cleans up resources)
         try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-impact-test", "detect-impact-test:1.0.0")) {
             test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Impact.dockerfile"));
 

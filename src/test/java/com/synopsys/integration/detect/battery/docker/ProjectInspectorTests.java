@@ -16,7 +16,6 @@ import com.synopsys.integration.detector.base.DetectorType;
 public class ProjectInspectorTests {
     @Test
     void dotnetProjectInspector() throws IOException {
-        // DetectDockerTestRunner must be declared in try-with-resources block to take advantage of "close" method (cleans up resources)
         try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-dotnet-project-inspector", "detect-dotnet-five:1.0.1")) {
             test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Dotnet5.dockerfile"));
 

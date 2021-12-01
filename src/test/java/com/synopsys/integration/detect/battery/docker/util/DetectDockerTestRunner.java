@@ -20,6 +20,7 @@ public class DetectDockerTestRunner implements Closeable {
     private DockerTestDirectories dockerTestDirectories;
     private String workingDirectory = WORKING_DIRECTORY_DEFAULT;
 
+    // DetectDockerTestRunner must be created/declared in try-with-resources block to take advantage of "close" method (cleans up resources)
     public DetectDockerTestRunner(String testId, String imageName) throws IOException {
         this.testId = testId;
         this.imageName = imageName;

@@ -18,7 +18,6 @@ import com.synopsys.integration.util.NameVersion;
 @Tag("integration")
 public class RapidModeTests {
     SharedDockerTestRunner anyProjectWithRapidResultsInBlackDuck(String testId, NameVersion projectNameVersion) throws IOException, IntegrationException {
-        // DetectDockerTestRunner must be declared in try-with-resources block to take advantage of "close" method (cleans up resources)
         try (DetectDockerTestRunner runner = new DetectDockerTestRunner(testId, "gradle-simple:1.0.0")) {
             runner.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("SimpleGradle.dockerfile"));
 

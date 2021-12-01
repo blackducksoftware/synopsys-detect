@@ -18,7 +18,6 @@ public class DetectOnAlertTest {
     @Disabled
         //currently adds a lot of time, for I expect little value. If useful, feel free to re-enable.
     void detectOnAlert() throws IOException, IntegrationException {
-        // DetectDockerTestRunner must be declared in try-with-resources block to take advantage of "close" method (cleans up resources)
         try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-on-alert", "alert-6.5.0:1.0.1")) {
             test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Alert-6.5.0.dockerfile"));
 

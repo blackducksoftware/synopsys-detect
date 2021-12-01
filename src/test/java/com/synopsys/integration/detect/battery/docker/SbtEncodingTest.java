@@ -16,7 +16,6 @@ import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 public class SbtEncodingTest {
     @Test
     void sbtEncoding() throws IOException {
-        // DetectDockerTestRunner must be declared in try-with-resources block to take advantage of "close" method (cleans up resources)
         try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-sbt-encoding", "detect-sbt-encoding:1.0.3")) {
             test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("SbtEncoding.dockerfile"));
 
