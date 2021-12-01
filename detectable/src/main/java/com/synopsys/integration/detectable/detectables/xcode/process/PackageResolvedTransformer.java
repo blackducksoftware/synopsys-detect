@@ -5,11 +5,10 @@
  *
  * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
  */
-package com.synopsys.integration.detectable.detectables.xcode;
+package com.synopsys.integration.detectable.detectables.xcode.process;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -29,7 +28,6 @@ import com.synopsys.integration.detectable.detectables.xcode.model.PackageState;
 import com.synopsys.integration.detectable.detectables.xcode.model.ResolvedPackage;
 
 public class PackageResolvedTransformer {
-    protected static final String[] KNOWN_FILE_FORMAT_VERSIONS = { "1" };
     private static final String[] REPO_SUFFIX_TO_STRIP = { ".git" };
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -41,8 +39,6 @@ public class PackageResolvedTransformer {
     }
 
     public DependencyGraph transform(PackageResolved packageResolved) {
-        logVersionCompatibility(packageResolved);
-
         MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
         packageResolved.getResolvedObject().getPackages().stream()
             .filter(Objects::nonNull)
@@ -52,17 +48,6 @@ public class PackageResolvedTransformer {
             .forEach(dependencyGraph::addChildToRoot);
 
         return dependencyGraph;
-    }
-
-    private void logVersionCompatibility(PackageResolved packageResolved) {
-        String fileFormatVersion = packageResolved.getFileFormatVersion();
-        boolean versionMatches = Arrays.asList(KNOWN_FILE_FORMAT_VERSIONS).contains(fileFormatVersion);
-        if (!versionMatches) {
-            logger.warn(String.format("The format version of Package.resolved (%s) is unknown to Detect, but will attempt to parse anyway. Known format versions are (%s).",
-                fileFormatVersion,
-                StringUtils.join(KNOWN_FILE_FORMAT_VERSIONS, ", ")
-            ));
-        }
     }
 
     private Optional<Dependency> convertToDependency(ResolvedPackage resolvedPackage) {

@@ -243,9 +243,10 @@ import com.synopsys.integration.detectable.detectables.swift.SwiftCliDetectable;
 import com.synopsys.integration.detectable.detectables.swift.SwiftCliParser;
 import com.synopsys.integration.detectable.detectables.swift.SwiftExtractor;
 import com.synopsys.integration.detectable.detectables.swift.SwiftPackageTransformer;
-import com.synopsys.integration.detectable.detectables.xcode.PackageResolvedTransformer;
 import com.synopsys.integration.detectable.detectables.xcode.XcodeSwiftDetectable;
 import com.synopsys.integration.detectable.detectables.xcode.XcodeSwiftExtractor;
+import com.synopsys.integration.detectable.detectables.xcode.process.PackageResolvedFormatChecker;
+import com.synopsys.integration.detectable.detectables.xcode.process.PackageResolvedTransformer;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockExtractor;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
@@ -483,11 +484,15 @@ public class DetectableFactory {
     }
 
     public XcodeSwiftExtractor createXcodeProjectExtractor() {
-        return new XcodeSwiftExtractor(gson, createPackageResolvedTransformer());
+        return new XcodeSwiftExtractor(gson, createPackageResolvedFormatChecker(), createPackageResolvedTransformer());
     }
 
     public PackageResolvedTransformer createPackageResolvedTransformer() {
         return new PackageResolvedTransformer(externalIdFactory);
+    }
+
+    public PackageResolvedFormatChecker createPackageResolvedFormatChecker() {
+        return new PackageResolvedFormatChecker();
     }
 
     //#endregion
