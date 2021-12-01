@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.xcode.model.PackageResolved;
 import com.synopsys.integration.detectable.detectables.xcode.process.PackageResolvedFormatChecker;
@@ -36,13 +37,15 @@ public class XcodeSwiftExtractor {
         this.packageResolvedTransformer = packageResolvedTransformer;
     }
 
-    public Extraction extract(File foundPackageResolvedFile) throws FileNotFoundException {
+    public Extraction extract(File foundPackageResolvedFile, File foundXcodeProjectFile) throws FileNotFoundException {
         FileReader fileReader = new FileReader(foundPackageResolvedFile);
         PackageResolved packageResolved = gson.fromJson(fileReader, PackageResolved.class);
 
         if (packageResolved == null) {
             // There are no dependencies to extract.
-            return new Extraction.Builder().success().build();
+            DependencyGraph dependencyGraph = new MutableMapDependencyGraph();
+            CodeLocation emptyCodeLocation = new CodeLocation(dependencyGraph, foundXcodeProjectFile);
+            return new Extraction.Builder().success(emptyCodeLocation).build();
         }
 
         packageResolvedFormatChecker.handleVersionCompatibility(

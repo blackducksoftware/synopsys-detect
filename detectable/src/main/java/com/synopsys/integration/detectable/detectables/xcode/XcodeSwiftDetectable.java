@@ -31,6 +31,7 @@ public class XcodeSwiftDetectable extends Detectable {
     private final FileFinder fileFinder;
     private final XcodeSwiftExtractor xcodeProjectExtractor;
 
+    private File foundXcodeProjectFile;
     private File foundPackageResolvedFile;
 
     public XcodeSwiftDetectable(DetectableEnvironment environment, FileFinder fileFinder, XcodeSwiftExtractor xcodeProjectExtractor) {
@@ -42,10 +43,10 @@ public class XcodeSwiftDetectable extends Detectable {
     @Override
     public DetectableResult applicable() {
         Requirements requirements = new Requirements(fileFinder, environment);
-        File xcodeProject = requirements.directory(XCODE_PROJECT_PATTERN);
+        foundXcodeProjectFile = requirements.directory(XCODE_PROJECT_PATTERN);
 
         if (requirements.isCurrentlyMet()) {
-            File swiftPMDirectory = xcodeProject.toPath().resolve(PACKAGE_RESOLVED_PARENT_PATH).toFile();
+            File swiftPMDirectory = foundXcodeProjectFile.toPath().resolve(PACKAGE_RESOLVED_PARENT_PATH).toFile();
             foundPackageResolvedFile = requirements.file(swiftPMDirectory, PACKAGE_RESOLVED_FILENAME);
         }
 
@@ -59,7 +60,7 @@ public class XcodeSwiftDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws FileNotFoundException {
-        return xcodeProjectExtractor.extract(foundPackageResolvedFile);
+        return xcodeProjectExtractor.extract(foundPackageResolvedFile, foundXcodeProjectFile);
     }
 
 }
