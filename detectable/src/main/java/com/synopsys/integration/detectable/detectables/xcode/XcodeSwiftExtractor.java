@@ -40,6 +40,11 @@ public class XcodeSwiftExtractor {
         FileReader fileReader = new FileReader(foundPackageResolvedFile);
         PackageResolved packageResolved = gson.fromJson(fileReader, PackageResolved.class);
 
+        if (packageResolved == null) {
+            // There are no dependencies to extract.
+            return new Extraction.Builder().success().build();
+        }
+
         packageResolvedFormatChecker.handleVersionCompatibility(
             packageResolved,
             (fileFormatVersion, knownVersions) -> logger.warn(String.format("The format version of Package.resolved (%s) is unknown to Detect, but will attempt to parse anyway. Known format versions are (%s).",
