@@ -10,7 +10,7 @@ public class SharedDockerTestRunner {
     public DetectCommandBuilder command;
 
     public SharedDockerTestRunner(DetectDockerTestRunner runner, BlackDuckTestConnection blackDuckTestConnection, BlackDuckAssertions blackDuckAssertions,
-        DetectCommandBuilder detectCommandBuilder) {
+                                  DetectCommandBuilder detectCommandBuilder) {
         this.runner = runner;
         this.blackDuckTestConnection = blackDuckTestConnection;
         this.blackDuckAssertions = blackDuckAssertions;

@@ -2,7 +2,9 @@
 
 ## Version 7.9.0
 
-### New features
+### New Features
+* Added detect.bdio.file.name to specify the name of the output bdio file. 
+* Added system architecture DEBUG level logs to assist with support.
 
 ### Changed features
 * The version of each package manager tool executed by CLI detectors is now logged at DEBUG level.

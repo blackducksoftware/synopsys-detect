@@ -47,7 +47,7 @@ public class GoModGraphGenerator {
     }
 
     private void addModuleToGraph(String moduleName, @Nullable Dependency parent, MutableDependencyGraph graph, GoRelationshipManager goRelationshipManager, GoModDependencyManager goModDependencyManager) {
-        if (parent == null && goRelationshipManager.isNotUsedByMainModule(moduleName)) {
+        if (goRelationshipManager.isNotUsedByMainModule(moduleName)) {
             logger.debug("Excluding module '{}' because it is not used by the main module.", moduleName);
             return;
         }
