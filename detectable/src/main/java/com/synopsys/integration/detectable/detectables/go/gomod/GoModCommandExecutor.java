@@ -7,23 +7,21 @@
  */
 package com.synopsys.integration.detectable.detectables.go.gomod;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import com.synopsys.integration.detectable.util.ToolVersionLogger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunnerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 // TODO: Look into using DetectableExecutableRunner::executeSuccessfully. It may be able to reduce the code here. - JM 07/2021
 // Suppresses SonarLint warnings for duplicated strings. This improves readability of the executable arguments.
@@ -37,19 +35,13 @@ public class GoModCommandExecutor {
     private static final Pattern GENERATE_GO_LIST_U_JSON_OUTPUT_PATTERN = Pattern.compile("\\d+\\.[\\d.]+");
 
     private final DetectableExecutableRunner executableRunner;
-    private final ToolVersionLogger toolVersionLogger;
 
-    public GoModCommandExecutor(DetectableExecutableRunner executableRunner, ToolVersionLogger toolVersionLogger) {
+    public GoModCommandExecutor(DetectableExecutableRunner executableRunner) {
         this.executableRunner = executableRunner;
-        this.toolVersionLogger = toolVersionLogger;
     }
 
     List<String> generateGoListOutput(File directory, ExecutableTarget goExe) throws ExecutableRunnerException, DetectableException {
         return execute(directory, goExe, FAILURE_MSG_QUERYING_GO_FOR_THE_LIST_OF_MODULES, "list", "-m", "-json");
-    }
-
-    void logGoVersion(File directory, ExecutableTarget goExe) {
-        toolVersionLogger.log(directory, goExe, "version");
     }
 
     List<String> generateGoListUJsonOutput(File directory, ExecutableTarget goExe) throws ExecutableRunnerException, DetectableException {

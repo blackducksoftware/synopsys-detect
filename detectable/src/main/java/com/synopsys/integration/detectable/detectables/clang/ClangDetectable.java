@@ -7,12 +7,7 @@
  */
 package com.synopsys.integration.detectable.detectables.clang;
 
-import java.io.File;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.Requirements;
@@ -20,7 +15,6 @@ import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.explanation.FoundExecutable;
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
@@ -28,8 +22,13 @@ import com.synopsys.integration.detectable.detectables.clang.packagemanager.Clan
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerRunner;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@DetectableInfo(language = "C or C++", forge = "Derived from the Linux distribution.", requirementsMarkdown = "File: compile_commands.json. <br /><br /> Executable: Linux package manager.")
+import java.io.File;
+import java.util.List;
+
+@DetectableInfo(language = "C or C++", forge = "Derived from the Linux distribution.", requirementsMarkdown = "File: compile_commands.json. Executable: Linux package manager.")
 public class ClangDetectable extends Detectable {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 

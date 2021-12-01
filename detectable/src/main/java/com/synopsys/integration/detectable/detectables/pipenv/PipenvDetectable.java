@@ -7,8 +7,6 @@
  */
 package com.synopsys.integration.detectable.detectables.pipenv;
 
-import java.io.File;
-
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
@@ -24,7 +22,9 @@ import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetect
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Python", forge = "PyPi", requirementsMarkdown = "Files: Pipfile or Pipfile.lock.<br/><br/>Executables: python or python3, and pipenv.")
+import java.io.File;
+
+@DetectableInfo(language = "Python", forge = "PyPi", requirementsMarkdown = "Files: Pipfile or Pipfile.lock. Executables: python or python3, and pipenv.")
 public class PipenvDetectable extends Detectable {
     public static final String SETUPTOOLS_DEFAULT_FILE_NAME = "setup.py";
     public static final String PIPFILE_FILE_NAME = "Pipfile";

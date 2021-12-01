@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import org.gradle.api.DefaultTask;
@@ -21,6 +22,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.synopsys.integration.exception.IntegrationException;
 
 // Occasionally changes to BDIO or other integral systems require mass changes to the battery. This facilitates that work.
 public class UpdateBatteryTask extends DefaultTask {
@@ -28,12 +30,16 @@ public class UpdateBatteryTask extends DefaultTask {
     Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX").setPrettyPrinting().create();
 
     @TaskAction
-    public void updateBattery() throws IOException {
+    public void updateBattery() throws IOException, IntegrationException {
         File batteryBuild = new File("build/battery/");
         File batteryResources = new File("src/test/resources/battery/");
         File batteryReports = new File("build/reports/tests/testBattery/classes/");
 
-        for (File report : batteryReports.listFiles()) {
+        if (!batteryReports.exists() || !batteryReports.isDirectory()) {
+            throw new IntegrationException("Battery reports directory doesn't exist. ("+ batteryReports.getCanonicalPath() +")");
+        }
+
+        for (File report : Objects.requireNonNull(batteryReports.listFiles())) {
             for (String line : Files.readAllLines(report.toPath())) {
                 if (line.contains("***BDIO BATTERY TEST|")) {
                     String chunk = extractChunk(line);

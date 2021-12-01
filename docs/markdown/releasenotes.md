@@ -6,16 +6,23 @@
 * Added detect.bdio.file.name to specify the name of the output bdio file. 
 * Added system architecture DEBUG level logs to assist with support.
 
+### Changed features
+* The version of each package manager tool executed by CLI detectors is now logged at DEBUG level.
+
+### Resolved issues
+* (IDETECT-2499) Fixed an issue in the Gradle Inspector that caused it to exclude all identically-named subprojects except one.
+* (IDETECT-2953) Fixed the project and project version links in risk report.
+
 ## Version 7.8.0
 
-### New Features
+### New features
 * Added support for the pnpm package manager.
 * Added property detect.project.group.name for setting the Project Group.
 * [solution_name] now falls back to using a previously-downloaded Docker Inspector, Project Inspector, and/or NuGet Inspector when https://sig-repo.synopsys.com is unreachable.
 
 ## Version 7.7.0
 
-### New Features
+### New features
 * Added support for uploading rapid scan config file when a file named '.bd-rapid-scan.yaml' is present in the source directory.
 * Added the property detect.project.inspector.arguments for providing additional arguments to the project inspector across all invocations.
 
@@ -25,7 +32,7 @@
 
 ## Version 7.6.0
 
-### New Features
+### New features
 * Added the property [detect.follow.symbolic.links](properties/configuration/general.md#follow-symbolic-links) which can be used to enable [solution_name] to follow symbolic links when searching directories for detectors, when creating exclusions for signature scan, and when creating binary scan targets.
 * Added support for Open Container Initiative (OCI) images provided to [solution_name] using the *detect.docker.tar* property.
 * Added the property [detect.gradle.include.unresolved.configurations](properties/detectors/gradle.md#gradle-include-unresolved-configurations-advanced) for toggling the inclusion of [unresolved Gradle configurations](https://docs.gradle.org/7.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs).
@@ -48,7 +55,7 @@
 
 ## Version 7.5.0
 
-### New Features
+### New features
 * Added support for the Dart package manager.
 
 ### Changed features
@@ -62,12 +69,12 @@
 
 ## Version 7.4.0
 
-### New Features
+### New features
 * Added SUBPROJECT remediation mode, invoked using property detect.bom.aggregate.remediation.mode. Use only with Black Duck 2021.8.0 or later.
 
 ## Version 7.3.0
 
-### New Features
+### New features
 * Added support for the Carthage package manager.
 
 ### Changed features
@@ -88,7 +95,7 @@
 
 ## Version 7.1.0
 
-### New Features
+### New features
 * Added ability to specify custom fonts to be used during risk report generation. See [here](results/reports.md#risk-report-generation) for more details.
 * There now exist Docker images that can be used to run [solution_name] from within a container.  See [Running Synopsys Detect from within a Docker container](downloadingandrunning/runincontainer.md#running-synopsys-detect-from-within-a-docker-container) for more details.
 * Added detect.go.mod.enable.verification for disabling the `go mod why` check that [solution_name] uses to filter out unused dependencies.
@@ -110,7 +117,7 @@
 * (IDETECT-2541) Resolved an issue that caused the CLANG detector to fail with "Unable to execute any supported package manager" when run with a non-English locale on an alpine system.
 
 ## Version 7.0.0
-### New Features
+### New features
 * Added scripts detect7.sh and detect7.ps1 for invoking [solution_name] 7.x.x. detect.sh and detect.ps1 will (by default) continue to invoke the latest [solution_name] 6 version.
 * Added support for Yarn workspaces.
 * Added support for the dependency graph SBT plugin. Resolution cache generation is no longer a requirement of the SBT detector.
@@ -148,7 +155,7 @@ use --detect.tools.exluded=BINARY_SCAN to disable the binary scan step.
 * (IDETECT-2555) Resolved an issue that could cause Detect, when run against Black Duck 2020.10.0, to fail with a message similar to: "Cannot cast... to... VersionBomCodeLocationBomComputedNotificationUserView".
 
 ## Version 6.9.0
-### New Features
+### New features
 * Added ability for detectors to explain why they applied. It will appear in the logs at info level and in the status.json.
 * Added the property detect.binary.scan.search.depth to define the directory search depth for the binary scanner.
 * The status.json file now features a list of the provided Detect property values.
@@ -244,7 +251,7 @@ https://github.com/docker/for-win/issues/394.
 * (IDETECT-2054) Resolved an issue that caused the Gradle Inspector to fail when detect.output.path is set to a relative path.
 
 ## Version 6.4.2
-### Resolved Issues
+### Resolved issues
 * (IDETECT-2164) Resolved an issue with scanning Go applications when using the go list -m command, which couldn't determine available upgrades using the vendor directory.
 
 ## Version 6.4.0
