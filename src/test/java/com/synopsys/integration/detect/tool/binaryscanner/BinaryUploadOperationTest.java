@@ -83,5 +83,7 @@ public class BinaryUploadOperationTest {
         Assertions.assertTrue(zip.isPresent());
         Assertions.assertTrue(zip.get().isFile());
         Assertions.assertTrue(zip.get().canRead());
+
+        FileUtils.deleteDirectory(rootDirectory);
     }
 }

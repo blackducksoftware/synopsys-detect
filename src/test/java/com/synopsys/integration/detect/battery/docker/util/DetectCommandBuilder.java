@@ -48,7 +48,7 @@ public class DetectCommandBuilder {
         return this;
     }
 
-    public DetectCommandBuilder connectToBlackDuck(final String blackduckUrl, final String apiToken, final boolean trustCert) {
+    public DetectCommandBuilder connectToBlackDuck(String blackduckUrl, String apiToken, boolean trustCert) {
         property(DetectProperties.BLACKDUCK_URL, blackduckUrl);
         property(DetectProperties.BLACKDUCK_API_TOKEN, apiToken);
         property(DetectProperties.BLACKDUCK_TRUST_CERT, trustCert ? "true" : "false");
@@ -95,7 +95,6 @@ public class DetectCommandBuilder {
     public DetectCommandBuilder defaultDirectories(DetectDockerTestRunner test) throws IOException {
         property(DetectProperties.DETECT_BDIO_OUTPUT_PATH, test.directories().bdioBinding());
         property(DetectProperties.DETECT_OUTPUT_PATH, test.directories().detectOutputPathBinding());
-        property(DetectProperties.DETECT_TOOLS_OUTPUT_PATH, test.directories().sharedToolsBinding());
         return this;
     }
 
