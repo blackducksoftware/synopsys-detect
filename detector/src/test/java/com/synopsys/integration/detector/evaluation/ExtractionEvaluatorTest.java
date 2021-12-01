@@ -3,6 +3,7 @@ package com.synopsys.integration.detector.evaluation;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
@@ -26,7 +27,7 @@ import com.synopsys.integration.detector.rule.DetectorRuleSet;
 //TODO: These tests should be re-written to use a concrete set of objects rather than mocks.
 public class ExtractionEvaluatorTest {
     @Test
-    public void testEvaluationSuccess() throws DetectableException, ExecutableFailedException {
+    public void testEvaluationSuccess() throws DetectableException, ExecutableFailedException, IOException {
         DetectorEvaluationOptions evaluationOptions = Mockito.mock(DetectorEvaluationOptions.class);
         ExtractionEvaluator evaluator = new ExtractionEvaluator(evaluationOptions);
         DetectorEvaluationTree detectorEvaluationTree = Mockito.mock(DetectorEvaluationTree.class);
@@ -45,7 +46,7 @@ public class ExtractionEvaluatorTest {
     }
 
     @Test
-    public void testEvaluationDiscoveryExtractionPerformed() throws DetectableException, ExecutableFailedException {
+    public void testEvaluationDiscoveryExtractionPerformed() throws DetectableException, ExecutableFailedException, IOException {
         DetectorEvaluationOptions evaluationOptions = Mockito.mock(DetectorEvaluationOptions.class);
         ExtractionEvaluator evaluator = new ExtractionEvaluator(evaluationOptions);
         DetectorEvaluationTree detectorEvaluationTree = Mockito.mock(DetectorEvaluationTree.class);
@@ -64,7 +65,7 @@ public class ExtractionEvaluatorTest {
     }
 
     @Test
-    public void testEvaluationException() throws DetectableException, ExecutableFailedException {
+    public void testEvaluationException() throws DetectableException, ExecutableFailedException, IOException {
         DetectorEvaluationOptions evaluationOptions = Mockito.mock(DetectorEvaluationOptions.class);
         ExtractionEvaluator evaluator = new ExtractionEvaluator(evaluationOptions);
         DetectorEvaluationTree detectorEvaluationTree = Mockito.mock(DetectorEvaluationTree.class);
@@ -83,7 +84,7 @@ public class ExtractionEvaluatorTest {
     }
 
     private DetectorEvaluation createEvaluationMocks(DetectorEvaluationOptions evaluationOptions, DetectorEvaluationTree detectorEvaluationTree, boolean extractionExists, boolean throwException)
-        throws DetectableException, ExecutableFailedException {
+        throws DetectableException, ExecutableFailedException, IOException {
         ExtractionEnvironment extractionEnvironment = Mockito.mock(ExtractionEnvironment.class);
         DetectorEvaluation detectorEvaluation = Mockito.mock(DetectorEvaluation.class);
 

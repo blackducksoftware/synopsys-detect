@@ -8,6 +8,7 @@
 package com.synopsys.integration.detect.tool;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,7 @@ import com.synopsys.integration.util.NameVersion;
 
 public class DetectableTool {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final DetectableCreatable detectableCreatable;
+    private final DetectableCreatable<?> detectableCreatable;
     private final ExtractionEnvironmentProvider extractionEnvironmentProvider;
     private final CodeLocationConverter codeLocationConverter;
     private final String name;
@@ -54,7 +55,7 @@ public class DetectableTool {
     private Detectable detectable;
     private File sourcePath;
 
-    public DetectableTool(DetectableCreatable detectableCreatable, ExtractionEnvironmentProvider extractionEnvironmentProvider, CodeLocationConverter codeLocationConverter,
+    public DetectableTool(DetectableCreatable<?> detectableCreatable, ExtractionEnvironmentProvider extractionEnvironmentProvider, CodeLocationConverter codeLocationConverter,
         String name, DetectTool detectTool, StatusEventPublisher statusEventPublisher, ExitCodePublisher exitCodePublisher) {
         this.codeLocationConverter = codeLocationConverter;
         this.name = name;
@@ -91,7 +92,7 @@ public class DetectableTool {
         }
 
         if (!extractable.getPassed()) {
-            logger.error("Was not extractable: " + extractable.toDescription());
+            logger.error(String.format("Was not extractable: %s", extractable.toDescription()));
             statusEventPublisher.publishStatusSummary(new Status(name, StatusType.FAILURE));
             exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_GENERAL_ERROR, extractable.toDescription());
             return DetectableToolResult.failed(extractable);
@@ -105,6 +106,8 @@ public class DetectableTool {
             extraction = detectable.extract(extractionEnvironment);
         } catch (ExecutableFailedException e) {
             extraction = Extraction.fromFailedExecutable(e);
+        } catch (IOException e) {
+            extraction = new Extraction.Builder().exception(e).build();
         }
 
         if (!extraction.isSuccess()) {

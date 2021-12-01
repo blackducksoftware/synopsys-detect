@@ -42,7 +42,8 @@ public enum DetectorType {
     SBT,
     SWIFT,
     YARN,
-    CLANG;
+    CLANG,
+    XCODE;
 
     protected static final List<String> POSSIBLE_NAMES = Arrays.stream(DetectorType.values()).map(DetectorType::name).collect(Collectors.toList());
 
