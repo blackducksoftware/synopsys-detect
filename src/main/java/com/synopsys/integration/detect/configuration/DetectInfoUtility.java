@@ -36,8 +36,7 @@ public class DetectInfoUtility {
     }
 
     public List<String> findArchitectures() {
-        return Bds.of("os.arch", "PROCESSOR_ARCHITECTURE", "PROCESSOR_ARCHITEW6432")
-            .map(System::getenv)
+        return Bds.of(System.getProperty("os.arch"), System.getenv("PROCESSOR_ARCHITECTURE"), System.getenv("PROCESSOR_ARCHITEW6432"))
             .filter(StringUtils::isNotBlank)
             .toList();
     }
