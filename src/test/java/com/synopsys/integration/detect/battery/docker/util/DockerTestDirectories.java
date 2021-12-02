@@ -14,7 +14,6 @@ import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Assertions;
 
 import com.github.dockerjava.api.model.Bind;
-import com.synopsys.integration.detect.battery.docker.util.delete.TestDeleteDirException;
 
 public class DockerTestDirectories {
     private final File testDirectory;
@@ -68,12 +67,7 @@ public class DockerTestDirectories {
 
     public void cleanup() throws IOException {
         File rootTestDir = testDirectory.getParentFile();
-        //TODO- remove this try-catch (for debugging)
-        try {
-            //FileUtils.deleteDirectory(rootTestDir);
-        } catch (Exception e) {
-            throw new TestDeleteDirException();
-        }
+        FileUtils.deleteDirectory(rootTestDir);
     }
 
     public Bind[] getBindings() {
