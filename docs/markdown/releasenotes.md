@@ -3,6 +3,7 @@
 ## Version 7.9.0
 
 ### New Features
+* Added support for the Xcode Swift Package Manager for Xcode projects using the built-in [Swift Packages](https://developer.apple.com/documentation/swift_packages) feature.
 * Added detect.bdio.file.name to specify the name of the output bdio file. 
 * Added system architecture DEBUG level logs to assist with support.
 
