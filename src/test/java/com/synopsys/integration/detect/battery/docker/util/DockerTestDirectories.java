@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.junit.jupiter.api.Assertions;
 
 import com.github.dockerjava.api.model.Bind;
@@ -25,9 +26,14 @@ public class DockerTestDirectories {
     private File detectOutputDirectory;
 
     public DockerTestDirectories(String testId) throws IOException {
-        Set<PosixFilePermission> allWriteablePermissions = PosixFilePermissions.fromString("rwxrwxrwx");
-        FileAttribute allWriteabeAttribute = PosixFilePermissions.asFileAttribute(allWriteablePermissions);
-        File dockerTestDirectory = Files.createTempDirectory("docker", allWriteabeAttribute).toFile();
+        File dockerTestDirectory;
+        if (!SystemUtils.IS_OS_WINDOWS) {
+            Set<PosixFilePermission> allWriteablePermissions = PosixFilePermissions.fromString("rwxrwxrwx");
+            FileAttribute<?> allWriteabeAttribute = PosixFilePermissions.asFileAttribute(allWriteablePermissions);
+            dockerTestDirectory = Files.createTempDirectory("docker", allWriteabeAttribute).toFile();
+        } else {
+            dockerTestDirectory = Files.createTempDirectory("docker").toFile();
+        }
         testDirectory = new File(dockerTestDirectory, testId);
         testResultDirectory = new File(testDirectory, "result");
         Assertions.assertTrue(testResultDirectory.mkdirs());
