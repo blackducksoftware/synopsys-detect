@@ -1,11 +1,6 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.swift;
+
+import java.io.File;
 
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
@@ -18,16 +13,13 @@ import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 
-import java.io.File;
-
 public class SwiftExtractor {
     private final DetectableExecutableRunner executableRunner;
     private final SwiftCliParser swiftCliParser;
     private final SwiftPackageTransformer swiftPackageTransformer;
     private final ToolVersionLogger toolVersionLogger;
 
-    public SwiftExtractor(DetectableExecutableRunner executableRunner, SwiftCliParser swiftCliParser, SwiftPackageTransformer swiftPackageTransformer,
-                          ToolVersionLogger toolVersionLogger) {
+    public SwiftExtractor(DetectableExecutableRunner executableRunner, SwiftCliParser swiftCliParser, SwiftPackageTransformer swiftPackageTransformer, ToolVersionLogger toolVersionLogger) {
         this.executableRunner = executableRunner;
         this.swiftCliParser = swiftCliParser;
         this.swiftPackageTransformer = swiftPackageTransformer;
@@ -41,10 +33,10 @@ public class SwiftExtractor {
             CodeLocation codeLocation = swiftPackageTransformer.transform(rootSwiftPackage);
 
             return new Extraction.Builder()
-                       .success(codeLocation)
-                       .projectName(rootSwiftPackage.getName())
-                       .projectVersion(rootSwiftPackage.getVersion())
-                       .build();
+                .success(codeLocation)
+                .projectName(rootSwiftPackage.getName())
+                .projectVersion(rootSwiftPackage.getVersion())
+                .build();
         } catch (IntegrationException | ExecutableRunnerException e) {
             return new Extraction.Builder().exception(e).build();
         }

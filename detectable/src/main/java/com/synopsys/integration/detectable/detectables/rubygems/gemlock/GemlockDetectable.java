@@ -1,19 +1,12 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.rubygems.gemlock;
 
 import java.io.File;
 
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
@@ -28,7 +21,7 @@ public class GemlockDetectable extends Detectable {
 
     private File gemlock;
 
-    public GemlockDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final GemlockExtractor gemlockExtractor) {
+    public GemlockDetectable(DetectableEnvironment environment, FileFinder fileFinder, GemlockExtractor gemlockExtractor) {
         super(environment);
         this.fileFinder = fileFinder;
         this.gemlockExtractor = gemlockExtractor;
@@ -47,7 +40,7 @@ public class GemlockDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         return gemlockExtractor.extract(gemlock);
     }
 

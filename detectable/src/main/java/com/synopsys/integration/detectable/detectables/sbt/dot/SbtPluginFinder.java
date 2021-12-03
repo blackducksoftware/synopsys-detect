@@ -1,14 +1,6 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.sbt.dot;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +13,6 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.executable.ExecutableOutput;
-import com.synopsys.integration.util.OperatingSystemType;
 
 public class SbtPluginFinder {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -42,7 +33,7 @@ public class SbtPluginFinder {
 
     public boolean determineInstalledPlugin(List<String> pluginOutput) {
         if (pluginOutput.stream().anyMatch(line ->
-                                               line.contains(DEPENDENCY_GRAPH_PLUGIN_NAME) || line.contains(DEPENDENCY_GRAPH_SBT_INTERNAL_PLUGIN_NAME))) {
+            line.contains(DEPENDENCY_GRAPH_PLUGIN_NAME) || line.contains(DEPENDENCY_GRAPH_SBT_INTERNAL_PLUGIN_NAME))) {
             return true;
         } else {
             return false;
