@@ -54,7 +54,7 @@ public class UpdateArtifactoryPropertiesTask extends DefaultTask {
         String artifactoryDeployerUsername = getExtensionProperty(Common.PROPERTY_ARTIFACTORY_DEPLOYER_USERNAME);
         String artifactoryDeployerPassword = getExtensionProperty(Common.PROPERTY_ARTIFACTORY_DEPLOYER_PASSWORD);
         String artifactoryDeploymentUrl = getExtensionProperty(Common.PROPERTY_DEPLOY_ARTIFACTORY_URL);
-        String artifactoryRepository = getExtensionProperty(Common.PROPERTY_ARTIFACTORY_REPO);
+        String artifactoryRepository = getExtensionProperty(Common.PROPERTY_ARTIFACTORY_SNAPSHOT_REPO);
         String artifactoryDownloadUrl = getExtensionProperty(Common.PROPERTY_DOWNLOAD_ARTIFACTORY_URL);
 
         AuthenticatingIntHttpClient httpClient = new BasicAuthHttpClient(logger, gson, 200, true, ProxyInfo.NO_PROXY_INFO, new AuthenticationSupport(), artifactoryDeployerUsername, artifactoryDeployerPassword);
@@ -81,8 +81,8 @@ public class UpdateArtifactoryPropertiesTask extends DefaultTask {
 
     private String getExtensionProperty(String propertyName) {
         return Optional.ofNullable(project.findProperty(propertyName))
-                   .map(Object::toString)
-                   .orElseThrow(() -> new IllegalArgumentException(String.format("Missing Gradle extension property '%s' which is required to set Artifactory properties.", propertyName)));
+            .map(Object::toString)
+            .orElseThrow(() -> new IllegalArgumentException(String.format("Missing Gradle extension property '%s' which is required to set Artifactory properties.", propertyName)));
     }
 
     private void setArtifactoryProperty(IntHttpClient httpClient, String artifactoryDeploymentUrl, String deploymentRepositoryKey, String propertyKey, String propertyValue)
@@ -90,10 +90,10 @@ public class UpdateArtifactoryPropertiesTask extends DefaultTask {
         HttpUrl baseUrl = new HttpUrl(String.format("%s/api/metadata/%s/com/synopsys/integration/%s", artifactoryDeploymentUrl, deploymentRepositoryKey, project.getName()));
         BodyContent bodyContent = new StringBodyContent(String.format("{\"props\":{\"%s\":\"%s\"}}", propertyKey, propertyValue), BodyContentConverter.DEFAULT);
         Request request = new Request.Builder()
-                              .url(baseUrl)
-                              .method(HttpMethod.PATCH)
-                              .bodyContent(bodyContent)
-                              .build();
+            .url(baseUrl)
+            .method(HttpMethod.PATCH)
+            .bodyContent(bodyContent)
+            .build();
 
         try (Response response = httpClient.execute(request)) {
             if (response.isStatusCodeSuccess()) {
