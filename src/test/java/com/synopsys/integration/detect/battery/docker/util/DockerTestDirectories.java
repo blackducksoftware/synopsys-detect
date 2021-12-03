@@ -72,8 +72,8 @@ public class DockerTestDirectories {
     }
 
     public void cleanup() throws IOException {
-        //File rootTestDir = testDirectory.getParentFile();
-        //FileUtils.deleteDirectory(rootTestDir); TODO: Fix this, does not work. Throws errors on Jenkins.
+        File rootTestDir = testDirectory.getParentFile();
+        FileUtils.deleteDirectory(rootTestDir);
     }
 
     public Bind[] getBindings() {
