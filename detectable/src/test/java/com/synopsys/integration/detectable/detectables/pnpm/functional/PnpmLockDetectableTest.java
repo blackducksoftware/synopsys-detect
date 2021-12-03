@@ -1,11 +1,14 @@
 package com.synopsys.integration.detectable.detectables.pnpm.functional;
 
+import static org.junit.jupiter.api.condition.OS.WINDOWS;
+
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.condition.DisabledOnOs;
 
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Detectable;
@@ -15,6 +18,7 @@ import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
+@DisabledOnOs(WINDOWS) //TODO: Can't cleanup the temp file on windows. May need to close resources?
 public class PnpmLockDetectableTest extends DetectableFunctionalTest {
     public PnpmLockDetectableTest() throws IOException {
         super("Pnpm");
