@@ -72,8 +72,8 @@ public class DockerTestDirectories {
     }
 
     public void cleanup() throws IOException {
-        File rootTestDir = testDirectory.getParentFile();
-        FileUtils.deleteDirectory(rootTestDir);
+        //File rootTestDir = testDirectory.getParentFile();
+        //FileUtils.deleteDirectory(rootTestDir);
     }
 
     public Bind[] getBindings() {
