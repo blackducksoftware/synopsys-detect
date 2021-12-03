@@ -7,10 +7,12 @@ buildscript {
         springBootVersion = '2.4.5'
         blackDuckCommonVersion = '59.0.4'
         junitPlatformCustomTestTags = 'docker, battery'
+        javaTargetCompatibility = 8
+        javaSourceCompatibility = 8
     }
 
     apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-repositories.gradle', to: buildscript
-    apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-dependencies.gradle', to: buildscript
+
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
     }
@@ -50,10 +52,6 @@ subprojects {
     group = rootProject.group
     version = rootProject.version
     apply plugin: 'com.synopsys.integration.simple'
-
-    license {
-        header rootProject.file('LICENSE')
-    }
 }
 
 allprojects {
