@@ -1,4 +1,3 @@
-import com.synopsys.integration.detect.artifactory.UpdateArtifactoryPropertiesTask
 import com.synopsys.integration.detect.battery.UpdateBatteryTask
 import com.synopsys.integration.detect.verification.VerifyBlackDuckDetectTask
 
@@ -131,9 +130,6 @@ if (project.tasks.findByName('testBattery')) {
 }
 
 task updateBattery(type: UpdateBatteryTask) {}
-task updateArtifactoryProperties(type: UpdateArtifactoryPropertiesTask) {
-    dependsOn artifactoryDeploy
-}
 
 task runDetect(type: JavaExec) {
     dependsOn build
