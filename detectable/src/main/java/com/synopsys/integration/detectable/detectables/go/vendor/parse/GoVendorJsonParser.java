@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.go.vendor.parse;
 
 import org.apache.commons.lang3.StringUtils;
@@ -26,18 +19,18 @@ public class GoVendorJsonParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExternalIdFactory externalIdFactory;
 
-    public GoVendorJsonParser(final ExternalIdFactory externalIdFactory) {
+    public GoVendorJsonParser(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph parseVendorJson(final Gson gson, final String vendorJsonContents) {
-        final MutableDependencyGraph graph = new MutableMapDependencyGraph();
-        final VendorJson vendorJsonData = gson.fromJson(vendorJsonContents, VendorJson.class);
+    public DependencyGraph parseVendorJson(Gson gson, String vendorJsonContents) {
+        MutableDependencyGraph graph = new MutableMapDependencyGraph();
+        VendorJson vendorJsonData = gson.fromJson(vendorJsonContents, VendorJson.class);
         logger.trace(String.format("vendorJsonData: %s", vendorJsonData));
-        for (final PackageData pkg : vendorJsonData.getPackages()) {
+        for (PackageData pkg : vendorJsonData.getPackages()) {
             if (StringUtils.isNotBlank(pkg.getPath()) && StringUtils.isNotBlank(pkg.getRevision())) {
-                final ExternalId dependencyExternalId = externalIdFactory.createNameVersionExternalId(Forge.GOLANG, pkg.getPath(), pkg.getRevision());
-                final Dependency dependency = new Dependency(pkg.getPath(), pkg.getRevision(), dependencyExternalId);
+                ExternalId dependencyExternalId = externalIdFactory.createNameVersionExternalId(Forge.GOLANG, pkg.getPath(), pkg.getRevision());
+                Dependency dependency = new Dependency(pkg.getPath(), pkg.getRevision(), dependencyExternalId);
                 logger.trace(String.format("dependency: %s", dependency.getExternalId().toString()));
                 graph.addChildToRoot(dependency);
             } else {

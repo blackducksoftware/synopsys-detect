@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.maven.parsing;
 
 import java.io.File;
@@ -30,7 +23,7 @@ public class MavenParseDetectable extends Detectable {
 
     private File pomXmlFile;
 
-    public MavenParseDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final MavenParseExtractor mavenParseExtractor, MavenParseOptions mavenParseOptions) {
+    public MavenParseDetectable(DetectableEnvironment environment, FileFinder fileFinder, MavenParseExtractor mavenParseExtractor, MavenParseOptions mavenParseOptions) {
         super(environment);
         this.fileFinder = fileFinder;
         this.mavenParseExtractor = mavenParseExtractor;
@@ -54,7 +47,7 @@ public class MavenParseDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         return mavenParseExtractor.extract(pomXmlFile, mavenParseOptions);
     }
 

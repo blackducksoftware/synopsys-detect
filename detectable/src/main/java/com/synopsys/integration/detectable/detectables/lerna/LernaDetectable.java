@@ -1,22 +1,15 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.lerna;
 
 import java.io.File;
 
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.LernaResolver;
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmPackageLockDetectable;
@@ -26,7 +19,7 @@ import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 @DetectableInfo(language = "Node JS", forge = "npmjs", requirementsMarkdown = "File: " + LernaDetectable.PACKAGE_JSON + ", and one of the following: " + LernaDetectable.PACKAGE_LOCK_JSON + ", " + LernaDetectable.SHRINKWRAP_JSON + ", "
-                                                                                  + LernaDetectable.YARN_LOCK + ".")
+    + LernaDetectable.YARN_LOCK + ".")
 public class LernaDetectable extends Detectable {
     public static final String LERNA_JSON = "lerna.json";
     public static final String PACKAGE_JSON = NpmPackageLockDetectable.PACKAGE_JSON;

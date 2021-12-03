@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.lerna;
 
 import java.io.File;
@@ -36,10 +29,10 @@ public class LernaExtractor {
             }
 
             return new Extraction.Builder()
-                       .projectName(lernaResult.getProjectName())
-                       .projectVersion(lernaResult.getProjectVersionName())
-                       .success(lernaResult.getCodeLocations())
-                       .build();
+                .projectName(lernaResult.getProjectName())
+                .projectVersion(lernaResult.getProjectVersionName())
+                .success(lernaResult.getCodeLocations())
+                .build();
         } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();
         }

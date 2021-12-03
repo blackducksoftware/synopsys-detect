@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.gradle.inspection;
 
 import java.io.File;
@@ -14,8 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.synopsys.integration.detectable.ExecutableUtils;
-import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -29,6 +20,7 @@ import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.G
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportTransformer;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleRootMetadataParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
 import com.synopsys.integration.util.NameVersion;
 

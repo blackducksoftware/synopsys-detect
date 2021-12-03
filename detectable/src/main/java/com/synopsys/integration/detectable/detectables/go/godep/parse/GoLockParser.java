@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.go.godep.parse;
 
 import java.io.InputStream;
@@ -26,18 +19,18 @@ import com.synopsys.integration.detectable.detectables.go.godep.model.Project;
 public class GoLockParser {
     private final ExternalIdFactory externalIdFactory;
 
-    public GoLockParser(final ExternalIdFactory externalIdFactory) {
+    public GoLockParser(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph parseDepLock(final InputStream depLockInputStream) {
-        final MutableDependencyGraph graph = new MutableMapDependencyGraph();
-        final GoLock goLock = new Toml().read(depLockInputStream).to(GoLock.class);
+    public DependencyGraph parseDepLock(InputStream depLockInputStream) {
+        MutableDependencyGraph graph = new MutableMapDependencyGraph();
+        GoLock goLock = new Toml().read(depLockInputStream).to(GoLock.class);
         if (goLock.projects != null) {
-            for (final Project project : goLock.projects) {
+            for (Project project : goLock.projects) {
                 if (project != null) {
-                    final String projectName = project.getName();
-                    final String projectVersion = Optional.ofNullable(StringUtils.stripToNull(project.getVersion())).orElse(project.getRevision());
+                    String projectName = project.getName();
+                    String projectVersion = Optional.ofNullable(StringUtils.stripToNull(project.getVersion())).orElse(project.getRevision());
                     project.getPackages().stream()
                         .map(packageName -> createDependencyName(projectName, packageName))
                         .map(dependencyName -> createGoDependency(dependencyName, projectVersion))
@@ -48,7 +41,7 @@ public class GoLockParser {
         return graph;
     }
 
-    private String createDependencyName(final String projectName, final String parsedPackageName) {
+    private String createDependencyName(String projectName, String parsedPackageName) {
         String dependencyName = projectName;
 
         if (!".".equals(parsedPackageName)) {
@@ -61,8 +54,8 @@ public class GoLockParser {
         return dependencyName;
     }
 
-    private Dependency createGoDependency(final String name, final String version) {
-        final ExternalId dependencyExternalId = externalIdFactory.createNameVersionExternalId(Forge.GOLANG, name, version);
+    private Dependency createGoDependency(String name, String version) {
+        ExternalId dependencyExternalId = externalIdFactory.createNameVersionExternalId(Forge.GOLANG, name, version);
         return new Dependency(name, version, dependencyExternalId);
     }
 

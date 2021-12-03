@@ -1,11 +1,10 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.go.gomod;
+
+import java.io.File;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.ExecutableTarget;
@@ -22,12 +21,6 @@ import com.synopsys.integration.detectable.detectables.go.gomod.process.GoModGra
 import com.synopsys.integration.detectable.detectables.go.gomod.process.GoRelationshipManager;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.executable.ExecutableRunnerException;
-
-import java.io.File;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class GoModCliExtractor {
     private final GoModCommandExecutor goModCommandExecutor;
@@ -57,8 +50,8 @@ public class GoModCliExtractor {
             GoRelationshipManager goRelationshipManager = new GoRelationshipManager(goGraphRelationships, moduleExclusions);
             GoModDependencyManager goModDependencyManager = new GoModDependencyManager(goListAllModules, externalIdFactory);
             List<CodeLocation> codeLocations = goListModules.stream()
-                                                   .map(goListModule -> goModGraphGenerator.generateGraph(goListModule, goRelationshipManager, goModDependencyManager))
-                                                   .collect(Collectors.toList());
+                .map(goListModule -> goModGraphGenerator.generateGraph(goListModule, goRelationshipManager, goModDependencyManager))
+                .collect(Collectors.toList());
 
             // No project info - hoping git can help with that.
             return new Extraction.Builder().success(codeLocations).build();

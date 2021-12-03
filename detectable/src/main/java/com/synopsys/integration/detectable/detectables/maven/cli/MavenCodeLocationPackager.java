@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.maven.cli;
 
 import java.io.File;
@@ -146,8 +139,8 @@ public class MavenCodeLocationPackager {
             // a direct dependency, clear the stack and add this as a potential parent for the next line
             if (scopeFilter.shouldInclude(dependency.scope)) {
                 logger.trace(String
-                                 .format("Level 1 component %s:%s:%s:%s is in scope; adding it to hierarchy root", dependency.getExternalId().getGroup(), dependency.getExternalId().getName(), dependency.getExternalId().getVersion(),
-                                     dependency.scope));
+                    .format("Level 1 component %s:%s:%s:%s is in scope; adding it to hierarchy root", dependency.getExternalId().getGroup(), dependency.getExternalId().getName(), dependency.getExternalId().getVersion(),
+                        dependency.scope));
                 currentGraph.addChildToRoot(dependency);
                 inOutOfScopeTree = false;
             } else {
@@ -292,7 +285,7 @@ public class MavenCodeLocationPackager {
 
         // Does not have content or this a line about download information
         return !StringUtils.isBlank(trimmedLine) && !trimmedLine.contains("Downloaded") && !trimmedLine.contains(
-                "Downloading");
+            "Downloading");
     }
 
     public String trimLogLevel(String line) {

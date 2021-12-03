@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.lerna;
 
 import java.io.File;
@@ -70,8 +63,8 @@ public class LernaPackager {
         LernaResult rootLernaResult = parse(sourceDirectory, rootPackageJson, rootLockFile, new ArrayList<>());
 
         List<NameVersion> externalPackages = lernaPackages.stream()
-                                                 .map(lernaPackage -> new NameVersion(lernaPackage.getName(), lernaPackage.getVersion()))
-                                                 .collect(Collectors.toList());
+            .map(lernaPackage -> new NameVersion(lernaPackage.getName(), lernaPackage.getVersion()))
+            .collect(Collectors.toList());
 
         List<CodeLocation> codeLocations = new ArrayList<>(rootLernaResult.getCodeLocations());
         for (LernaPackage lernaPackage : lernaPackages) {
@@ -163,7 +156,7 @@ public class LernaPackager {
             YarnLock yarnLock = yarnLockParser.parseYarnLock(lockFile.getYarnLockContents().get());
             NullSafePackageJson rootPackageJson = packageJsonReader.read(packageJsonContents);
             YarnResult yarnResult = yarnPackager
-                                        .generateCodeLocation(rootPackageJson, YarnWorkspaces.EMPTY, yarnLock, externalPackages, yarnLockOptions.useProductionOnly(), ExcludedIncludedWildcardFilter.EMPTY);
+                .generateCodeLocation(rootPackageJson, YarnWorkspaces.EMPTY, yarnLock, externalPackages, yarnLockOptions.useProductionOnly(), ExcludedIncludedWildcardFilter.EMPTY);
 
             if (yarnResult.getException().isPresent()) {
                 return LernaResult.failure(yarnResult.getException().get());

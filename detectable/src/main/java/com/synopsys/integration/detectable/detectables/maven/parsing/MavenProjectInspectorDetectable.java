@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.maven.parsing;
 
 import java.util.Collections;
@@ -37,7 +30,7 @@ public class MavenProjectInspectorDetectable extends Detectable {
 
     private ExecutableTarget inspector;
 
-    public MavenProjectInspectorDetectable(final DetectableEnvironment detectableEnvironment, final FileFinder fileFinder,
+    public MavenProjectInspectorDetectable(DetectableEnvironment detectableEnvironment, FileFinder fileFinder,
         ProjectInspectorResolver projectInspectorResolver, ProjectInspectorExtractor projectInspectorExtractor, MavenParseOptions mavenParseOptions, ProjectInspectorOptions projectInspectorOptions) {
         super(detectableEnvironment);
         this.fileFinder = fileFinder;
@@ -66,7 +59,7 @@ public class MavenProjectInspectorDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
         return projectInspectorExtractor.extract(projectInspectorOptions, Collections.emptyList(), environment.getDirectory(), extractionEnvironment.getOutputDirectory(), inspector);
     }
 

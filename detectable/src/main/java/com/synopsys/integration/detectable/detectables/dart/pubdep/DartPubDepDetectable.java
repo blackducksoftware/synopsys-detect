@@ -1,11 +1,8 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.dart.pubdep;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.Optional;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
@@ -17,13 +14,14 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.DartResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.FlutterResolver;
-import com.synopsys.integration.detectable.detectable.result.*;
+import com.synopsys.integration.detectable.detectable.result.DetectableResult;
+import com.synopsys.integration.detectable.detectable.result.ExecutablesNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.PubSpecLockNotFoundDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.Optional;
 
 @DetectableInfo(language = "Dart", forge = "Dart", requirementsMarkdown = "Files: pubspec.yaml, pubspec.lock. Executable: dart, flutter")
 public class DartPubDepDetectable extends Detectable {

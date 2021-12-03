@@ -1,11 +1,8 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.gradle.inspection;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
@@ -20,13 +17,13 @@ import com.synopsys.integration.detectable.detectable.explanation.FoundExecutabl
 import com.synopsys.integration.detectable.detectable.explanation.FoundFile;
 import com.synopsys.integration.detectable.detectable.explanation.FoundInspector;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
-import com.synopsys.integration.detectable.detectable.result.*;
+import com.synopsys.integration.detectable.detectable.result.DetectableResult;
+import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.InspectorNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 @DetectableInfo(language = "various", forge = "Maven Central", requirementsMarkdown = "File: build.gradle or build.gradle.kts. Executable: gradlew or gradle.")
 public class GradleDetectable extends Detectable {

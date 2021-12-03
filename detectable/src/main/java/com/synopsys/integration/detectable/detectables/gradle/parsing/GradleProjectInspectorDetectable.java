@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.gradle.parsing;
 
 import java.util.Collections;
@@ -35,7 +28,7 @@ public class GradleProjectInspectorDetectable extends Detectable {
 
     private ExecutableTarget inspector;
 
-    public GradleProjectInspectorDetectable(final DetectableEnvironment environment, FileFinder fileFinder, ProjectInspectorResolver projectInspectorResolver,
+    public GradleProjectInspectorDetectable(DetectableEnvironment environment, FileFinder fileFinder, ProjectInspectorResolver projectInspectorResolver,
         ProjectInspectorExtractor projectInspectorExtractor, ProjectInspectorOptions projectInspectorOptions) {
         super(environment);
         this.fileFinder = fileFinder;
@@ -59,7 +52,7 @@ public class GradleProjectInspectorDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
         return projectInspectorExtractor.extract(projectInspectorOptions, Collections.emptyList(), environment.getDirectory(), extractionEnvironment.getOutputDirectory(), inspector);
     }
 

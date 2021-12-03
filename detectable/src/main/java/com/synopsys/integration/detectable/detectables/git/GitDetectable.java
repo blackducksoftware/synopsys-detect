@@ -1,11 +1,7 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.git;
+
+import java.io.File;
+import java.util.Arrays;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
@@ -23,9 +19,6 @@ import com.synopsys.integration.detectable.detectables.git.cli.GitCliExtractor;
 import com.synopsys.integration.detectable.detectables.git.parsing.GitParseExtractor;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
-
-import java.io.File;
-import java.util.Arrays;
 
 @DetectableInfo(language = "various", forge = "N/A", requirementsMarkdown = "Directory: .git. (Executable: git OR Files: .git/config, .git/HEAD).")
 public class GitDetectable extends Detectable {

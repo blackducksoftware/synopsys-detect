@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.git.parsing.parse;
 
 import java.net.MalformedURLException;
@@ -25,36 +18,36 @@ public class GitConfigNameVersionTransformer {
 
     private final GitUrlParser gitUrlParser;
 
-    public GitConfigNameVersionTransformer(final GitUrlParser gitUrlParser) {
+    public GitConfigNameVersionTransformer(GitUrlParser gitUrlParser) {
         this.gitUrlParser = gitUrlParser;
     }
 
-    public NameVersion transformToProjectInfo(final GitConfig gitConfig, final String gitHead) throws IntegrationException, MalformedURLException {
-        final Optional<GitConfigBranch> currentBranch = gitConfig.getGitConfigBranches().stream()
-                                                            .filter(it -> it.getMerge().equalsIgnoreCase(gitHead))
-                                                            .findFirst();
+    public NameVersion transformToProjectInfo(GitConfig gitConfig, String gitHead) throws IntegrationException, MalformedURLException {
+        Optional<GitConfigBranch> currentBranch = gitConfig.getGitConfigBranches().stream()
+            .filter(it -> it.getMerge().equalsIgnoreCase(gitHead))
+            .findFirst();
 
-        final String projectName;
-        final String projectVersionName;
+        String projectName;
+        String projectVersionName;
         if (currentBranch.isPresent()) {
             logger.debug(String.format("Parsing a git repository on branch '%s'.", currentBranch.get().getName()));
 
-            final String remoteName = currentBranch.get().getRemoteName();
-            final String remoteUrl = gitConfig.getGitConfigRemotes().stream()
-                                         .filter(it -> it.getName().equals(remoteName))
-                                         .map(GitConfigRemote::getUrl)
-                                         .findFirst()
-                                         .orElseThrow(() -> new IntegrationException(String.format("Failed to find a url for remote '%s'.", remoteName)));
+            String remoteName = currentBranch.get().getRemoteName();
+            String remoteUrl = gitConfig.getGitConfigRemotes().stream()
+                .filter(it -> it.getName().equals(remoteName))
+                .map(GitConfigRemote::getUrl)
+                .findFirst()
+                .orElseThrow(() -> new IntegrationException(String.format("Failed to find a url for remote '%s'.", remoteName)));
 
             projectName = gitUrlParser.getRepoName(remoteUrl);
             projectVersionName = currentBranch.get().getName();
         } else {
             logger.debug(String.format("Parsing a git repository with detached head '%s'.", gitHead));
 
-            final String remoteUrl = gitConfig.getGitConfigRemotes().stream()
-                                         .findFirst()
-                                         .map(GitConfigRemote::getUrl)
-                                         .orElseThrow(() -> new IntegrationException("No remote urls were found in config."));
+            String remoteUrl = gitConfig.getGitConfigRemotes().stream()
+                .findFirst()
+                .map(GitConfigRemote::getUrl)
+                .orElseThrow(() -> new IntegrationException("No remote urls were found in config."));
 
             projectName = gitUrlParser.getRepoName(remoteUrl);
             projectVersionName = gitHead;
