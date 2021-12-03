@@ -8,11 +8,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentVersionView;
 import org.junit.jupiter.api.Assertions;
 
 import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentView;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentVersionView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
@@ -106,8 +105,8 @@ public class BlackDuckAssertions {
         List<ProjectVersionComponentVersionView> bomComponents = projectBomService.getComponentsForProjectVersion(retrieveProjectVersionWrapper().getProjectVersionView());
         componentNames.forEach(componentName -> {
             Optional<ProjectVersionComponentVersionView> blackDuckCommonComponent = bomComponents.stream()
-                                                                                 .filter(ProjectVersionComponentView -> componentName.equals(ProjectVersionComponentView.getComponentName()))
-                                                                                 .findFirst();
+                .filter(ProjectVersionComponentView -> componentName.equals(ProjectVersionComponentView.getComponentName()))
+                .findFirst();
             assertTrue(blackDuckCommonComponent.isPresent());
         });
     }
