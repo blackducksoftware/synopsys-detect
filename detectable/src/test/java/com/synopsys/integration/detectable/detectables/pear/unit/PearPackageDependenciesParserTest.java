@@ -1,25 +1,3 @@
-/**
- * detectable
- *
- * Copyright (c) 2020 Synopsys, Inc.
- *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
 package com.synopsys.integration.detectable.detectables.pear.unit;
 
 import java.util.Arrays;
@@ -45,7 +23,7 @@ class PearPackageDependenciesParserTest {
 
     @Test
     void parseValid() throws IntegrationException {
-        final List<String> validLines = Arrays.asList(
+        List<String> validLines = Arrays.asList(
             "=====================",
             "Required? Type           Name                    Versioning                   Group",
             "Yes       Php                                     (version >= 5.4.0)",
@@ -54,7 +32,7 @@ class PearPackageDependenciesParserTest {
             "No       Package        pear/Structures_Graph    (recommended version 1.1.1)"
         );
 
-        final List<PackageDependency> packageDependencies = pearPackageDependenciesParser.parse(validLines);
+        List<PackageDependency> packageDependencies = pearPackageDependenciesParser.parse(validLines);
         Assertions.assertEquals(2, packageDependencies.size());
         Assertions.assertEquals("Archive_Tar", packageDependencies.get(0).getName());
         Assertions.assertTrue(packageDependencies.get(0).isRequired());
@@ -64,7 +42,7 @@ class PearPackageDependenciesParserTest {
 
     @Test
     void parseNoStart() throws IntegrationException {
-        final List<String> noStartLines = Arrays.asList(
+        List<String> noStartLines = Arrays.asList(
             "Required? Type           Name                    Versioning                   Group",
             "Yes       Php                                     (version >= 5.4.0)",
             "Yes       Pear Installer                          (version >= 1.9.0)",
@@ -72,13 +50,13 @@ class PearPackageDependenciesParserTest {
             "No       Package        pear/Structures_Graph    (recommended version 1.1.1)"
         );
 
-        final List<PackageDependency> packageDependencies = pearPackageDependenciesParser.parse(noStartLines);
+        List<PackageDependency> packageDependencies = pearPackageDependenciesParser.parse(noStartLines);
         Assertions.assertEquals(0, packageDependencies.size());
     }
 
     @Test
     void parseMissingInfo() {
-        final List<String> missingInfoLines = Arrays.asList(
+        List<String> missingInfoLines = Arrays.asList(
             "=====================",
             "Required? Type           Name                    Versioning                   Group",
             "Yes       Php                                     (version >= 5.4.0)",

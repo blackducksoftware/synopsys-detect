@@ -1,25 +1,3 @@
-/**
- * detectable
- *
- * Copyright (c) 2020 Synopsys, Inc.
- *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
 package com.synopsys.integration.detectable.detectables.gradle.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -74,7 +52,7 @@ compile
     }
 
     private void assertParsedGavDoesNotContain(String line, String contains) {
-        final GradleReportLineParser gradleReportLineParser = new GradleReportLineParser();
+        GradleReportLineParser gradleReportLineParser = new GradleReportLineParser();
         GradleTreeNode node = gradleReportLineParser.parseLine(line);
         assertTrue(node.getGav().isPresent());
 
@@ -84,7 +62,7 @@ compile
 
     @Test
     public void getLineLevelTest() {
-        final GradleReportLineParser gradleReportLineParser = new GradleReportLineParser();
+        GradleReportLineParser gradleReportLineParser = new GradleReportLineParser();
         assertEquals(5, gradleReportLineParser.parseLine(("|    |         |    |    \\--- org.springframework:spring-core:4.3.5.RELEASE")).getLevel());
         assertEquals(3, gradleReportLineParser.parseLine(("|    |         \\--- com.squareup.okhttp3:okhttp:3.4.2 (*)")).getLevel());
         assertEquals(4, gradleReportLineParser.parseLine(("     |    |         \\--- org.ow2.asm:asm:5.0.3")).getLevel());

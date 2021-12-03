@@ -34,9 +34,9 @@ public class PnpmLockYamlParserTest {
 
         // Did we correctly identify root project package in "importers"?
         Assertions.assertTrue(codeLocations.stream()
-                                  .anyMatch(
-                                      codeLocation -> codeLocation.getExternalId().get().getName().equals("project") && codeLocation.getExternalId().get().getName().equals("project")
-                                  )
+            .anyMatch(
+                codeLocation -> codeLocation.getExternalId().get().getName().equals("project") && codeLocation.getExternalId().get().getName().equals("project")
+            )
         );
     }
 

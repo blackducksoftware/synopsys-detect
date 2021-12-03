@@ -88,7 +88,7 @@ public class LernaExternalDetectableTest extends DetectableFunctionalTest {
         packageJson.name = packageName;
         packageJson.version = packageVersion;
         packageJson.dependencies = Arrays.stream(dependencies)
-                                       .collect(Collectors.toMap(NameVersion::getName, NameVersion::getVersion));
+            .collect(Collectors.toMap(NameVersion::getName, NameVersion::getVersion));
 
         addFile(directory.resolve(LernaDetectable.PACKAGE_JSON), gson.toJson(packageJson));
     }

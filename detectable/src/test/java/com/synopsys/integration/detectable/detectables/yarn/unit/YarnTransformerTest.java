@@ -157,8 +157,8 @@ class YarnTransformerTest {
         DependencyGraph rootProjectDependencyGraph = rootProjectCodeLocation.getDependencyGraph();
         assertEquals(2, rootProjectDependencyGraph.getRootDependencies().size());
         List<String> dependencyNames = rootProjectDependencyGraph.getRootDependencies().stream()
-                                           .map(Dependency::getName)
-                                           .collect(Collectors.toList());
+            .map(Dependency::getName)
+            .collect(Collectors.toList());
         assertTrue(dependencyNames.contains("foo"));
         assertTrue(dependencyNames.contains("bar"));
 
@@ -170,8 +170,8 @@ class YarnTransformerTest {
             assertEquals("npmjs", workspaceCodeLocation.getExternalId().get().getForge().getName());
 
             List<String> workspaceDependencyNames = workspaceCodeLocation.getDependencyGraph().getRootDependencies().stream()
-                                                        .map(Dependency::getName)
-                                                        .collect(Collectors.toList());
+                .map(Dependency::getName)
+                .collect(Collectors.toList());
             String workspaceName = StringUtils.substringAfter(workspaceCodeLocation.getExternalId().get().getName(), "packages/");
             assertTrue(workspaceDependencyNames.contains(workspaceName + "-dep"));
             assertTrue(workspaceDependencyNames.contains(workspaceName + "-dev-dep"));

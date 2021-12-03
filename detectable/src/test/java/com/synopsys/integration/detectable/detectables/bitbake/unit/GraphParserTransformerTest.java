@@ -1,30 +1,7 @@
-/**
- * detectable
- *
- * Copyright (c) 2020 Synopsys, Inc.
- *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
 package com.synopsys.integration.detectable.detectables.bitbake.unit;
 
 import java.util.HashMap;
 
-import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -40,11 +17,11 @@ import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParser
 public class GraphParserTransformerTest {
     @Test
     public void parsedVersionFromLabel() {
-        final HashMap<String, GraphEdge> edges = new HashMap<>();
-        final HashMap<String, GraphNode> nodes = new HashMap<>();
+        HashMap<String, GraphEdge> edges = new HashMap<>();
+        HashMap<String, GraphNode> nodes = new HashMap<>();
 
         addNode("name", "name\\n:version\\n/some/path/to.bb", nodes, edges);
-        final BitbakeGraph bitbakeGraph = buildGraph(nodes, edges);
+        BitbakeGraph bitbakeGraph = buildGraph(nodes, edges);
 
         Assertions.assertEquals(1, bitbakeGraph.getNodes().size());
         Assertions.assertEquals("version", bitbakeGraph.getNodes().get(0).getVersion().get());
@@ -52,13 +29,13 @@ public class GraphParserTransformerTest {
 
     @Test
     public void parsedRelationship() {
-        final HashMap<String, GraphEdge> edges = new HashMap<>();
-        final HashMap<String, GraphNode> nodes = new HashMap<>();
+        HashMap<String, GraphEdge> edges = new HashMap<>();
+        HashMap<String, GraphNode> nodes = new HashMap<>();
 
         addNode("parent", "name\\n:parent.version\\n/some/path/to.bb", nodes, edges);
         addNode("child", "name\\n:child.version\\n/some/path/to.bb", nodes, edges);
         addEdge("edge1", "parent", "child", nodes, edges);
-        final BitbakeGraph bitbakeGraph = buildGraph(nodes, edges);
+        BitbakeGraph bitbakeGraph = buildGraph(nodes, edges);
 
         Assertions.assertEquals(2, bitbakeGraph.getNodes().size());
         Assertions.assertEquals(1, bitbakeGraph.getNodes().get(0).getChildren().size());
@@ -67,39 +44,39 @@ public class GraphParserTransformerTest {
 
     @Test
     public void removedQuotesFromName() {
-        final HashMap<String, GraphEdge> edges = new HashMap<>();
-        final HashMap<String, GraphNode> nodes = new HashMap<>();
+        HashMap<String, GraphEdge> edges = new HashMap<>();
+        HashMap<String, GraphNode> nodes = new HashMap<>();
 
         addNode("quotes\"removed", "example\\n:example\\n/example", nodes, edges);
-        final BitbakeGraph bitbakeGraph = buildGraph(nodes, edges);
+        BitbakeGraph bitbakeGraph = buildGraph(nodes, edges);
 
         Assertions.assertEquals(1, bitbakeGraph.getNodes().size());
         Assertions.assertEquals("quotesremoved", bitbakeGraph.getNodes().get(0).getName());
     }
 
-    private BitbakeGraph buildGraph(final HashMap<String, GraphNode> nodes, final HashMap<String, GraphEdge> edges) {
-        final GraphParserTransformer graphParserTransformer = new GraphParserTransformer();
-        final BitbakeGraph bitbakeGraph = graphParserTransformer.transform(mockParser(nodes, edges));
+    private BitbakeGraph buildGraph(HashMap<String, GraphNode> nodes, HashMap<String, GraphEdge> edges) {
+        GraphParserTransformer graphParserTransformer = new GraphParserTransformer();
+        BitbakeGraph bitbakeGraph = graphParserTransformer.transform(mockParser(nodes, edges));
         return bitbakeGraph;
     }
 
-    private GraphParser mockParser(final HashMap<String, GraphNode> nodeMap, final HashMap<String, GraphEdge> edgeMap) {
-        final GraphParser parser = Mockito.mock(GraphParser.class);
+    private GraphParser mockParser(HashMap<String, GraphNode> nodeMap, HashMap<String, GraphEdge> edgeMap) {
+        GraphParser parser = Mockito.mock(GraphParser.class);
         Mockito.when(parser.getNodes()).thenReturn(nodeMap);
         Mockito.when(parser.getEdges()).thenReturn(edgeMap);
         return parser;
     }
 
-    private void addNode(final String id, final String labelValue, final HashMap<String, GraphNode> nodeMap, final HashMap<String, GraphEdge> edgeMap) {
-        final GraphNode graphNode = new GraphNode(id);
+    private void addNode(String id, String labelValue, HashMap<String, GraphNode> nodeMap, HashMap<String, GraphEdge> edgeMap) {
+        GraphNode graphNode = new GraphNode(id);
         graphNode.setAttribute("label", labelValue);
         nodeMap.put(id, graphNode);
     }
 
-    private void addEdge(final String edgeId, final String nodeName1, final String nodeName2, final HashMap<String, GraphNode> nodeMap, final HashMap<String, GraphEdge> edgeMap) {
-        final GraphNode node1 = nodeMap.values().stream().filter(it -> it.getId().equals(nodeName1)).findFirst().get();
-        final GraphNode node2 = nodeMap.values().stream().filter(it -> it.getId().equals(nodeName2)).findFirst().get();
-        final GraphEdge edge = new GraphEdge(edgeId, node1, node2);
+    private void addEdge(String edgeId, String nodeName1, String nodeName2, HashMap<String, GraphNode> nodeMap, HashMap<String, GraphEdge> edgeMap) {
+        GraphNode node1 = nodeMap.values().stream().filter(it -> it.getId().equals(nodeName1)).findFirst().get();
+        GraphNode node2 = nodeMap.values().stream().filter(it -> it.getId().equals(nodeName2)).findFirst().get();
+        GraphEdge edge = new GraphEdge(edgeId, node1, node2);
         edgeMap.put(edgeId, edge);
     }
 

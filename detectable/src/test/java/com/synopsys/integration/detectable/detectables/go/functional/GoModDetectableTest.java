@@ -103,7 +103,7 @@ public class GoModDetectableTest extends DetectableFunctionalTest {
         graphAssert.hasNoDependency("golang.org/x/text", "v0.3.0");
 
         graphAssert.hasNoDependency("golang.org/x/tools", "90fa682c2a6e");
-        
+
         // sigs.k8s.io/yaml and it's transitives are unused as per `go mod why`
         graphAssert.hasNoDependency("sigs.k8s.io/yaml", "v1.2.0");
         graphAssert.hasNoDependency("github.com/davecgh/go-spew", "v1.1.1");

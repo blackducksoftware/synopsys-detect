@@ -123,11 +123,11 @@ public class LernaDetectableTest extends DetectableFunctionalTest {
         packageJson.name = packageName;
         packageJson.version = packageVersion;
         packageJson.dependencies = dependencies.stream()
-                                       .collect(Collectors.toMap(NameVersion::getName, NameVersion::getVersion));
+            .collect(Collectors.toMap(NameVersion::getName, NameVersion::getVersion));
         packageJson.devDependencies = devDependencies.stream()
-                                          .collect(Collectors.toMap(NameVersion::getName, NameVersion::getVersion));
+            .collect(Collectors.toMap(NameVersion::getName, NameVersion::getVersion));
         packageJson.peerDependencies = peerDependencies.stream()
-                                           .collect(Collectors.toMap(NameVersion::getName, NameVersion::getVersion));
+            .collect(Collectors.toMap(NameVersion::getName, NameVersion::getVersion));
 
         addFile(directory.resolve(LernaDetectable.PACKAGE_JSON), gson.toJson(packageJson));
     }
