@@ -1,10 +1,3 @@
-/*
- * detector
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detector.evaluation;
 
 import java.util.HashSet;
@@ -42,8 +35,8 @@ public class DetectorAggregateEvaluationResult {
 
     public Integer getExtractionCount() {
         return Math.toIntExact(getDetectorEvaluations().stream()
-                                   .filter(DetectorEvaluation::isExtractable)
-                                   .count());
+            .filter(DetectorEvaluation::isExtractable)
+            .count());
     }
 
     private Set<DetectorType> getApplicableDetectorTypesRecursively(DetectorEvaluationTree givenEvaluationTree) {
@@ -61,9 +54,9 @@ public class DetectorAggregateEvaluationResult {
 
     private Set<DetectorType> getApplicableDetectorTypes(DetectorEvaluationTree givenEvaluationTree) {
         return getDetectorEvaluations(givenEvaluationTree).stream()
-                .filter(DetectorEvaluation::isApplicable)
-                .map(DetectorEvaluation::getDetectorRule)
-                .map(DetectorRule::getDetectorType)
-                .collect(Collectors.toSet());
+            .filter(DetectorEvaluation::isApplicable)
+            .map(DetectorEvaluation::getDetectorRule)
+            .map(DetectorRule::getDetectorType)
+            .collect(Collectors.toSet());
     }
 }

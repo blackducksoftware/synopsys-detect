@@ -1,10 +1,3 @@
-/*
- * detector
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detector.rule;
 
 import java.util.ArrayList;
@@ -48,9 +41,9 @@ public class DetectorRuleSetBuilder {
 
         while (orderedRules.size() < rules.size() && atLeastOneRuleAdded) {
             List<DetectorRule> satisfiedRules = rules.stream()
-                                                    .filter(rule -> !orderedRules.contains(rule))
-                                                    .filter(rule -> yieldSatisfied(rule, orderedRules, yieldsToRules))
-                                                    .collect(Collectors.toList());
+                .filter(rule -> !orderedRules.contains(rule))
+                .filter(rule -> yieldSatisfied(rule, orderedRules, yieldsToRules))
+                .collect(Collectors.toList());
 
             atLeastOneRuleAdded = satisfiedRules.size() > 0;
             orderedRules.addAll(satisfiedRules);

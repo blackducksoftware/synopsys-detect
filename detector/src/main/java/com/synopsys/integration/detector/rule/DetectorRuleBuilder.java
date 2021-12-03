@@ -1,10 +1,3 @@
-/*
- * detector
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detector.rule;
 
 import com.synopsys.integration.detectable.Detectable;
@@ -24,7 +17,7 @@ public class DetectorRuleBuilder<T extends Detectable> {
 
     private DetectorRuleSetBuilder detectorRuleSetBuilder;
 
-    public DetectorRuleBuilder(final String name, final DetectorType detectorType, final Class<T> detectableClass, final DetectableCreatable<T> detectableCreatable) {
+    public DetectorRuleBuilder(String name, DetectorType detectorType, Class<T> detectableClass, DetectableCreatable<T> detectableCreatable) {
         this.name = name;
         this.detectorType = detectorType;
         this.detectableCreatable = detectableCreatable;
@@ -43,22 +36,22 @@ public class DetectorRuleBuilder<T extends Detectable> {
         return maxDepth(Integer.MAX_VALUE);
     }
 
-    public DetectorRuleBuilder maxDepth(final int maxDepth) {
+    public DetectorRuleBuilder maxDepth(int maxDepth) {
         this.maxDepth = maxDepth;
         return this;
     }
 
-    public DetectorRuleBuilder isNestable(final boolean nestable) {
+    public DetectorRuleBuilder isNestable(boolean nestable) {
         this.nestable = nestable;
         return this;
     }
 
-    public DetectorRuleBuilder isSelfNestable(final boolean selfNestable) {
+    public DetectorRuleBuilder isSelfNestable(boolean selfNestable) {
         this.selfNestable = selfNestable;
         return this;
     }
 
-    public DetectorRuleBuilder isNestInvisible(final boolean nestable) {
+    public DetectorRuleBuilder isNestInvisible(boolean nestable) {
         this.nestInvisible = nestable;
         return this;
     }
@@ -88,14 +81,14 @@ public class DetectorRuleBuilder<T extends Detectable> {
     }
 
     public DetectorRule build() {
-        final DetectorRule rule = new DetectorRule(detectableCreatable, detectableClass, maxDepth, nestable, selfNestable, detectorType, name, nestInvisible);
+        DetectorRule rule = new DetectorRule(detectableCreatable, detectableClass, maxDepth, nestable, selfNestable, detectorType, name, nestInvisible);
         if (detectorRuleSetBuilder != null) {
             detectorRuleSetBuilder.add(rule);
         }
         return rule;
     }
 
-    public void setDetectorRuleSetBuilder(final DetectorRuleSetBuilder detectorRuleSetBuilder) {
+    public void setDetectorRuleSetBuilder(DetectorRuleSetBuilder detectorRuleSetBuilder) {
         this.detectorRuleSetBuilder = detectorRuleSetBuilder;
     }
 
