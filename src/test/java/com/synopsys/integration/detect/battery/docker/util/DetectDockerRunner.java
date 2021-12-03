@@ -6,8 +6,10 @@ import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
+import org.junit.platform.commons.util.StringUtils;
 
 import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.github.dockerjava.api.command.WaitContainerResultCallback;
 import com.github.dockerjava.api.exception.NotModifiedException;
 import com.github.dockerjava.api.model.HostConfig;
@@ -22,12 +24,20 @@ import com.synopsys.integration.util.OperatingSystemType;
 public class DetectDockerRunner {
     public DockerDetectResult runContainer(String image, String cmd, String workdir, HostConfig hostConfig, DockerClient dockerClient) {
         String detectContainerName = String.format("detect-test%s", java.util.UUID.randomUUID()); // this will identify any containers left behind on build server by Detect Docker tests
-        String containerId = dockerClient.createContainerCmd(image)
+
+        CreateContainerCmd command = dockerClient.createContainerCmd(image)
             .withHostConfig(hostConfig)
             .withCmd(cmd.split(" "))
             .withWorkingDir(workdir)
-            .withName(detectContainerName)
-            .exec().getId();
+            .withName(detectContainerName);
+
+        String username = System.getProperty("DETECT_DOCKER_USERNAME");
+        if (StringUtils.isNotBlank(username)) {
+            System.out.println("Using username for docker: " + username);
+            command.withUser(username);
+        }
+
+        String containerId = command.exec().getId();
 
         try {
             return runContainer(dockerClient, containerId);
