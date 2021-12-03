@@ -1,10 +1,3 @@
-/*
- * configuration
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.configuration.source;
 
 import java.util.Map;
@@ -24,7 +17,7 @@ public class JavaPropertiesPropertySource implements PropertySource {
     public JavaPropertiesPropertySource(String givenName, Properties properties) {
         this.givenName = givenName;
         this.normalizedPropertyMap = Bds.of(properties.stringPropertyNames())
-                                         .toMap(KeyUtils::normalizeKey, properties::getProperty);
+            .toMap(KeyUtils::normalizeKey, properties::getProperty);
     }
 
     @Override

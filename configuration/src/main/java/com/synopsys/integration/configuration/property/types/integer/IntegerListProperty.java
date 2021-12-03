@@ -1,10 +1,3 @@
-/*
- * configuration
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.configuration.property.types.integer;
 
 import java.util.List;
@@ -17,7 +10,7 @@ import com.synopsys.integration.configuration.property.base.ValuedListProperty;
 import com.synopsys.integration.configuration.util.PropertyUtils;
 
 public class IntegerListProperty extends ValuedListProperty<Integer> {
-    public IntegerListProperty(@NotNull final String key, @NotNull List<Integer> defaultValue) {
+    public IntegerListProperty(@NotNull String key, @NotNull List<Integer> defaultValue) {
         super(key, new ListValueParser<>(new IntegerValueParser()), defaultValue);
     }
 

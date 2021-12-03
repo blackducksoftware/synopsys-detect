@@ -1,10 +1,3 @@
-/*
- * configuration
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.configuration.property.types.enumfilterable;
 
 import java.util.List;
@@ -19,8 +12,8 @@ public class FilterableEnumProperty<E extends Enum<E>> extends ValuedProperty<Fi
     @NotNull
     private final Class<E> enumClass;
 
-    public FilterableEnumProperty(@NotNull final String key, @NotNull final FilterableEnumValue<E> defaultValue, @NotNull Class<E> enumClass) {
-        super(key, new FilterableEnumValueParser<E>(enumClass), defaultValue);
+    public FilterableEnumProperty(@NotNull String key, @NotNull FilterableEnumValue<E> defaultValue, @NotNull Class<E> enumClass) {
+        super(key, new FilterableEnumValueParser<>(enumClass), defaultValue);
         this.enumClass = enumClass;
     }
 

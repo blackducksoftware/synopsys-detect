@@ -1,10 +1,3 @@
-/*
- * configuration
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.configuration.help;
 
 import java.util.ArrayList;
@@ -48,7 +41,7 @@ public class PropertyConfigurationHelpContext {
 
     private final PropertyConfiguration propertyConfiguration;
 
-    public PropertyConfigurationHelpContext(final PropertyConfiguration propertyConfiguration) {
+    public PropertyConfigurationHelpContext(PropertyConfiguration propertyConfiguration) {
         this.propertyConfiguration = propertyConfiguration;
     }
 
@@ -65,13 +58,13 @@ public class PropertyConfigurationHelpContext {
         maskedRawPropertyValues.entrySet().stream()
             .filter(rawPropertyValue -> knownPropertyKeys.contains(rawPropertyValue.getKey()))
             .forEach(rawPropertyValue -> {
-            String rawMaskedValue = maskedRawPropertyValues.get(rawPropertyValue.getKey());
-            String sourceName = propertyConfiguration.getPropertySource(rawPropertyValue.getKey()).orElse("unknown");
-            String sourceDisplayName = knownSourceDisplayNames.getOrDefault(sourceName, sourceName);
+                String rawMaskedValue = maskedRawPropertyValues.get(rawPropertyValue.getKey());
+                String sourceName = propertyConfiguration.getPropertySource(rawPropertyValue.getKey()).orElse("unknown");
+                String sourceDisplayName = knownSourceDisplayNames.getOrDefault(sourceName, sourceName);
 
-            String notes = additionalNotes.getOrDefault(rawPropertyValue.getKey(), "");
+                String notes = additionalNotes.getOrDefault(rawPropertyValue.getKey(), "");
 
-            logger.accept(rawPropertyValue.getKey() + " = " + rawMaskedValue + " [" + sourceDisplayName + "] " + notes);
+                logger.accept(rawPropertyValue.getKey() + " = " + rawMaskedValue + " [" + sourceDisplayName + "] " + notes);
             });
 
         logger.accept(StringUtils.repeat("-", 60));

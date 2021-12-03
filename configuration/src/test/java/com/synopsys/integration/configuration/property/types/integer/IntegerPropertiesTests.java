@@ -1,25 +1,3 @@
-/**
- * configuration
- *
- * Copyright (c) 2020 Synopsys, Inc.
- *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
 package com.synopsys.integration.configuration.property.types.integer;
 
 import static com.synopsys.integration.configuration.util.ConfigTestUtils.configOf;
@@ -43,8 +21,8 @@ import com.synopsys.integration.configuration.property.base.ValuedProperty;
 public class IntegerPropertiesTests {
     @Test
     public void testNullable() throws InvalidPropertyException {
-        final NullableProperty<Integer> property = new NullableIntegerProperty("integer.nullable");
-        final PropertyConfiguration config = configOf(Pair.of("integer.nullable", "2"));
+        NullableProperty<Integer> property = new NullableIntegerProperty("integer.nullable");
+        PropertyConfiguration config = configOf(Pair.of("integer.nullable", "2"));
         Assertions.assertEquals(Optional.of(2), config.getValue(property));
 
         PropertyTestHelpUtil.assertAllHelpValid(property);
@@ -52,8 +30,8 @@ public class IntegerPropertiesTests {
 
     @Test
     public void testValued() throws InvalidPropertyException {
-        final ValuedProperty<Integer> property = new IntegerProperty("integer.valued", 2);
-        final PropertyConfiguration config = configOf(Pair.of("integer.valued", "5"));
+        ValuedProperty<Integer> property = new IntegerProperty("integer.valued", 2);
+        PropertyConfiguration config = configOf(Pair.of("integer.valued", "5"));
         Assertions.assertEquals(new Integer(5), config.getValue(property));
 
         PropertyTestHelpUtil.assertAllHelpValid(property);
@@ -61,8 +39,8 @@ public class IntegerPropertiesTests {
 
     @Test
     public void testList() throws InvalidPropertyException {
-        final ValuedListProperty<Integer> property = new IntegerListProperty("integer.list", Collections.emptyList());
-        final PropertyConfiguration config = configOf(Pair.of("integer.list", "2,3"));
+        ValuedListProperty<Integer> property = new IntegerListProperty("integer.list", Collections.emptyList());
+        PropertyConfiguration config = configOf(Pair.of("integer.list", "2,3"));
         Assertions.assertEquals(Bds.listOf(2, 3), config.getValue(property));
 
         PropertyTestHelpUtil.assertAllListHelpValid(property);

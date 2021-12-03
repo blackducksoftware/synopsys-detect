@@ -1,10 +1,3 @@
-/*
- * configuration
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.configuration.property.types.bool;
 
 import java.util.List;
@@ -17,8 +10,8 @@ import com.synopsys.integration.configuration.property.base.ValuedListProperty;
 import com.synopsys.integration.configuration.util.PropertyUtils;
 
 public class BooleanListProperty extends ValuedListProperty<Boolean> {
-    public BooleanListProperty(@NotNull final String key, @NotNull final List<Boolean> defaultValue) {
-        super(key, new ListValueParser<Boolean>(new BooleanValueParser()), defaultValue);
+    public BooleanListProperty(@NotNull String key, @NotNull List<Boolean> defaultValue) {
+        super(key, new ListValueParser<>(new BooleanValueParser()), defaultValue);
     }
 
     @Nullable

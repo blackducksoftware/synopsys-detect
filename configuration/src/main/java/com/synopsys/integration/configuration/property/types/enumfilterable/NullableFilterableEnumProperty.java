@@ -1,10 +1,3 @@
-/*
- * configuration
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.configuration.property.types.enumfilterable;
 
 import java.util.List;
@@ -19,8 +12,8 @@ public class NullableFilterableEnumProperty<E extends Enum<E>> extends NullableP
     @NotNull
     private final Class<E> enumClass;
 
-    public NullableFilterableEnumProperty(@NotNull final String key, @NotNull Class<E> enumClass) {
-        super(key, new FilterableEnumValueParser<E>(enumClass));
+    public NullableFilterableEnumProperty(@NotNull String key, @NotNull Class<E> enumClass) {
+        super(key, new FilterableEnumValueParser<>(enumClass));
         this.enumClass = enumClass;
     }
 

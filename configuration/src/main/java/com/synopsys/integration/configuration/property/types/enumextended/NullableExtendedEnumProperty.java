@@ -1,10 +1,3 @@
-/*
- * configuration
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.configuration.property.types.enumextended;
 
 import java.util.ArrayList;
@@ -20,10 +13,10 @@ public class NullableExtendedEnumProperty<E extends Enum<E>, B extends Enum<B>> 
     private List<String> allOptions;
     private Class<B> bClass;
 
-    public NullableExtendedEnumProperty(@NotNull final String key,
-        @NotNull final Class<E> eClass,
-        @NotNull final Class<B> bClass) {
-        super(key, new ExtendedEnumValueParser<E, B>(eClass, bClass));
+    public NullableExtendedEnumProperty(@NotNull String key,
+        @NotNull Class<E> eClass,
+        @NotNull Class<B> bClass) {
+        super(key, new ExtendedEnumValueParser<>(eClass, bClass));
         allOptions = new ArrayList<>();
         allOptions.addAll(EnumPropertyUtils.getEnumNames(eClass));
         allOptions.addAll(EnumPropertyUtils.getEnumNames(bClass));

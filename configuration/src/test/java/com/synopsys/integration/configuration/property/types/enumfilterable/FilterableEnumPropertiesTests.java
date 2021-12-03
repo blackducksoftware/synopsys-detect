@@ -1,25 +1,3 @@
-/**
- * configuration
- *
- * Copyright (c) 2020 Synopsys, Inc.
- *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
 package com.synopsys.integration.configuration.property.types.enumfilterable;
 
 import static com.synopsys.integration.configuration.util.ConfigTestUtils.configOf;
@@ -46,10 +24,10 @@ class FilterableEnumPropertiesTests {
 
     @Test
     public void testNullable() throws InvalidPropertyException {
-        final NullableFilterableEnumProperty<Example> property = new NullableFilterableEnumProperty<>("enum.nullable", Example.class);
-        final PropertyConfiguration config = configOf(Pair.of("enum.nullable", "NONE"));
+        NullableFilterableEnumProperty<Example> property = new NullableFilterableEnumProperty<>("enum.nullable", Example.class);
+        PropertyConfiguration config = configOf(Pair.of("enum.nullable", "NONE"));
 
-        final FilterableEnumValue<Example> value = config.getValue(property).get();
+        FilterableEnumValue<Example> value = config.getValue(property).get();
 
         if (value.isAll()) {
             fail("Expected type to be None instead of All.");
@@ -62,10 +40,10 @@ class FilterableEnumPropertiesTests {
 
     @Test
     public void testValued() throws InvalidPropertyException {
-        final FilterableEnumProperty<Example> property = new FilterableEnumProperty<>("enum.valued", FilterableEnumValue.allValue(), Example.class);
-        final PropertyConfiguration config = configOf(Pair.of("enum.valued", "THIRD"));
+        FilterableEnumProperty<Example> property = new FilterableEnumProperty<>("enum.valued", FilterableEnumValue.allValue(), Example.class);
+        PropertyConfiguration config = configOf(Pair.of("enum.valued", "THIRD"));
 
-        final FilterableEnumValue<Example> value = config.getValue(property);
+        FilterableEnumValue<Example> value = config.getValue(property);
 
         if (value.isNone()) {
             fail("Expected type to be Value instead of None.");
@@ -80,10 +58,10 @@ class FilterableEnumPropertiesTests {
 
     @Test
     public void testList() throws InvalidPropertyException {
-        final FilterableEnumListProperty<Example> property = new FilterableEnumListProperty<>("enum.list", Arrays.asList(FilterableEnumValue.value(Example.ANOTHER), FilterableEnumValue.value(Example.THING)), Example.class);
-        final PropertyConfiguration config = configOf(Pair.of("enum.valued", "ANOTHER,THING"));
+        FilterableEnumListProperty<Example> property = new FilterableEnumListProperty<>("enum.list", Arrays.asList(FilterableEnumValue.value(Example.ANOTHER), FilterableEnumValue.value(Example.THING)), Example.class);
+        PropertyConfiguration config = configOf(Pair.of("enum.valued", "ANOTHER,THING"));
 
-        final List<FilterableEnumValue<Example>> value = config.getValue(property).toFilterableValues();
+        List<FilterableEnumValue<Example>> value = config.getValue(property).toFilterableValues();
 
         if (FilterableEnumUtils.containsNone(value)) {
             fail("Expected type to be Value instead of None.");
