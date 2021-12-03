@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.npm.packagejson;
 
 import java.io.InputStream;
@@ -60,16 +53,16 @@ public class PackageJsonExtractor {
         String projectVersion = StringUtils.stripToNull(packageJson.version);
 
         return new Extraction.Builder()
-                   .success(codeLocation)
-                   .projectName(projectName)
-                   .projectVersion(projectVersion)
-                   .build();
+            .success(codeLocation)
+            .projectName(projectName)
+            .projectVersion(projectVersion)
+            .build();
     }
 
     private List<Dependency> transformDependencies(Map<String, String> dependencies) {
         return dependencies.entrySet().stream()
-                   .map(this::entryToDependency)
-                   .collect(Collectors.toList());
+            .map(this::entryToDependency)
+            .collect(Collectors.toList());
     }
 
     private Dependency entryToDependency(Map.Entry<String, String> dependencyEntry) {

@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.pear;
 
 import java.io.File;
@@ -70,10 +63,10 @@ public class PearCliExtractor {
                 CodeLocation detectCodeLocation = new CodeLocation(dependencyGraph, externalId);
 
                 return new Extraction.Builder()
-                           .success(detectCodeLocation)
-                           .projectName(projectNameVersion.getName())
-                           .projectVersion(projectNameVersion.getVersion())
-                           .build();
+                    .success(detectCodeLocation)
+                    .projectName(projectNameVersion.getName())
+                    .projectVersion(projectNameVersion.getVersion())
+                    .build();
             }
         } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();

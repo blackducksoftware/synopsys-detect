@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.npm.lockfile.parse;
 
 import java.util.ArrayList;
@@ -50,7 +43,7 @@ public class NpmLockfilePackager {
         MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
 
         Optional<PackageJson> packageJson = Optional.ofNullable(packageJsonText)
-                                                .map(content -> gson.fromJson(content, PackageJson.class));
+            .map(content -> gson.fromJson(content, PackageJson.class));
 
         PackageLock packageLock = gson.fromJson(lockFileText, PackageLock.class);
 
@@ -68,8 +61,8 @@ public class NpmLockfilePackager {
 
             //Then we will add relationships between the project (root) and the graph
             boolean atLeastOneRequired = !project.getDeclaredDependencies().isEmpty()
-                                             || !project.getDeclaredDevDependencies().isEmpty()
-                                             || !project.getDeclaredPeerDependencies().isEmpty();
+                || !project.getDeclaredDevDependencies().isEmpty()
+                || !project.getDeclaredPeerDependencies().isEmpty();
             if (atLeastOneRequired) {
                 addRootDependencies(project.getResolvedDependencies(), project.getDeclaredDependencies(), dependencyGraph, externalDependencies);
                 if (includeDevDependencies) {
@@ -91,8 +84,8 @@ public class NpmLockfilePackager {
         }
         logger.debug("Finished processing.");
         ExternalId projectId = packageJson
-                                   .map(it -> externalIdFactory.createNameVersionExternalId(Forge.NPMJS, it.name, it.version))
-                                   .orElse(externalIdFactory.createNameVersionExternalId(Forge.NPMJS, packageLock.name, packageLock.version));
+            .map(it -> externalIdFactory.createNameVersionExternalId(Forge.NPMJS, it.name, it.version))
+            .orElse(externalIdFactory.createNameVersionExternalId(Forge.NPMJS, packageLock.name, packageLock.version));
         CodeLocation codeLocation = new CodeLocation(dependencyGraph, projectId);
         return new NpmParseResult(projectId.getName(), projectId.getVersion(), codeLocation);
     }

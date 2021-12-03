@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.nuget;
 
 import java.util.Arrays;
@@ -38,7 +31,7 @@ public class NugetProjectInspectorDetectable extends Detectable {
 
     private ExecutableTarget inspector;
 
-    public NugetProjectInspectorDetectable(final DetectableEnvironment detectableEnvironment, final FileFinder fileFinder, final NugetInspectorOptions nugetInspectorOptions,
+    public NugetProjectInspectorDetectable(DetectableEnvironment detectableEnvironment, FileFinder fileFinder, NugetInspectorOptions nugetInspectorOptions,
         ProjectInspectorResolver projectInspectorResolver, ProjectInspectorExtractor projectInspectorExtractor, ProjectInspectorOptions projectInspectorOptions) {
         super(detectableEnvironment);
         this.fileFinder = fileFinder;
@@ -62,7 +55,7 @@ public class NugetProjectInspectorDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
         return projectInspectorExtractor.extract(projectInspectorOptions, Collections.emptyList(), environment.getDirectory(), extractionEnvironment.getOutputDirectory(), inspector);
     }
 

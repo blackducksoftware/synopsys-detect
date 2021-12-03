@@ -1,19 +1,12 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.packagist;
 
 import java.io.File;
 
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
@@ -31,7 +24,7 @@ public class ComposerLockDetectable extends Detectable {
     private File composerLock;
     private File composerJson;
 
-    public ComposerLockDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final ComposerLockExtractor composerLockExtractor, ComposerLockDetectableOptions composerLockDetectableOptions) {
+    public ComposerLockDetectable(DetectableEnvironment environment, FileFinder fileFinder, ComposerLockExtractor composerLockExtractor, ComposerLockDetectableOptions composerLockDetectableOptions) {
         super(environment);
         this.fileFinder = fileFinder;
         this.composerLockExtractor = composerLockExtractor;
@@ -52,7 +45,7 @@ public class ComposerLockDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         return composerLockExtractor.extract(composerJson, composerLock, composerLockDetectableOptions.shouldIncludeDevDependencies());
     }
 

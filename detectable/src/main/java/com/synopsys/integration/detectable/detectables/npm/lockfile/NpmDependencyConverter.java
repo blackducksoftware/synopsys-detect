@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.npm.lockfile;
 
 import java.util.ArrayList;
@@ -97,8 +90,8 @@ public class NpmDependencyConverter {
             return Collections.emptyList();
         }
         return requires.entrySet().stream()
-                   .map(entry -> new NpmRequires(entry.getKey(), entry.getValue()))
-                   .collect(Collectors.toList());
+            .map(entry -> new NpmRequires(entry.getKey(), entry.getValue()))
+            .collect(Collectors.toList());
     }
 
 }

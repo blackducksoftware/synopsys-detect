@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.pear.transform;
 
 import java.util.List;
@@ -23,27 +16,27 @@ import com.synopsys.integration.detectable.detectables.pear.model.PackageDepende
 public class PearDependencyGraphTransformer {
     private final ExternalIdFactory externalIdFactory;
 
-    public PearDependencyGraphTransformer(final ExternalIdFactory externalIdFactory) {
+    public PearDependencyGraphTransformer(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph buildDependencyGraph(final Map<String, String> dependencyNameVersionMap, final List<PackageDependency> packageDependencies, final boolean onlyGatherRequired) {
-        final List<Dependency> dependencies = packageDependencies.stream()
-                                                  .filter(packageDependency -> filterRequired(packageDependency, onlyGatherRequired))
-                                                  .map(PackageDependency::getName)
-                                                  .map(dependencyName -> {
-                                                      final String dependencyVersion = dependencyNameVersionMap.get(dependencyName);
-                                                      final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.PEAR, dependencyName, dependencyVersion);
-                                                      return new Dependency(dependencyName, dependencyVersion, externalId);
-                                                  }).collect(Collectors.toList());
+    public DependencyGraph buildDependencyGraph(Map<String, String> dependencyNameVersionMap, List<PackageDependency> packageDependencies, boolean onlyGatherRequired) {
+        List<Dependency> dependencies = packageDependencies.stream()
+            .filter(packageDependency -> filterRequired(packageDependency, onlyGatherRequired))
+            .map(PackageDependency::getName)
+            .map(dependencyName -> {
+                String dependencyVersion = dependencyNameVersionMap.get(dependencyName);
+                ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.PEAR, dependencyName, dependencyVersion);
+                return new Dependency(dependencyName, dependencyVersion, externalId);
+            }).collect(Collectors.toList());
 
-        final MutableDependencyGraph mutableDependencyGraph = new MutableMapDependencyGraph();
+        MutableDependencyGraph mutableDependencyGraph = new MutableMapDependencyGraph();
         mutableDependencyGraph.addChildrenToRoot(dependencies);
 
         return mutableDependencyGraph;
     }
 
-    private boolean filterRequired(final PackageDependency packageDependency, final boolean onlyGatherRequired) {
+    private boolean filterRequired(PackageDependency packageDependency, boolean onlyGatherRequired) {
         if (onlyGatherRequired) {
             return packageDependency.isRequired();
         } else {

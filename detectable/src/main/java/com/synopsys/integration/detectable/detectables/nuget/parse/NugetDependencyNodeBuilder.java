@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.nuget.parse;
 
 import java.util.ArrayList;
@@ -25,20 +18,20 @@ public class NugetDependencyNodeBuilder {
 
     private final ExternalIdFactory externalIdFactory;
 
-    public NugetDependencyNodeBuilder(final ExternalIdFactory externalIdFactory) {
+    public NugetDependencyNodeBuilder(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public void addPackageSets(final List<NugetPackageSet> sets) {
+    public void addPackageSets(List<NugetPackageSet> sets) {
         packageSets.addAll(sets);
     }
 
-    public DependencyGraph createDependencyGraph(final List<NugetPackageId> packageDependencies) {
-        final MutableDependencyGraph graph = new MutableMapDependencyGraph();
+    public DependencyGraph createDependencyGraph(List<NugetPackageId> packageDependencies) {
+        MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
-        for (final NugetPackageSet packageSet : packageSets) {
+        for (NugetPackageSet packageSet : packageSets) {
             if (packageSet.dependencies != null) {
-                for (final NugetPackageId id : packageSet.dependencies) {
+                for (NugetPackageId id : packageSet.dependencies) {
                     if (packageSet.packageId != null) {
                         graph.addParentWithChild(convertPackageId(packageSet.packageId), convertPackageId(id));
                     }
@@ -51,9 +44,9 @@ public class NugetDependencyNodeBuilder {
         return graph;
     }
 
-    private Dependency convertPackageId(final NugetPackageId id) {
-        final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NUGET, id.name, id.version);
-        final Dependency node = new Dependency(id.name, id.version, externalId);
+    private Dependency convertPackageId(NugetPackageId id) {
+        ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NUGET, id.name, id.version);
+        Dependency node = new Dependency(id.name, id.version, externalId);
         return node;
     }
 }

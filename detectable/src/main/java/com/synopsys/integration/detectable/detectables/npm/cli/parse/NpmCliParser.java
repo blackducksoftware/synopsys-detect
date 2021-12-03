@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.npm.cli.parse;
 
 import java.util.Map.Entry;
@@ -94,9 +87,9 @@ public class NpmCliParser {
         JsonObject element = elementEntry.getValue().getAsJsonObject();
         String name = elementEntry.getKey();
         String version = Optional.ofNullable(element.getAsJsonPrimitive(JSON_VERSION))
-                             .filter(JsonPrimitive::isString)
-                             .map(JsonPrimitive::getAsString)
-                             .orElse(null);
+            .filter(JsonPrimitive::isString)
+            .map(JsonPrimitive::getAsString)
+            .orElse(null);
 
         JsonObject children = element.getAsJsonObject(JSON_DEPENDENCIES);
 
