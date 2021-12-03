@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.signaturescanner.operation;
 
 import java.io.File;
@@ -33,7 +26,7 @@ public class CreateScanBatchRunnerWithBlackDuck {
     private final OperatingSystemType operatingSystemType;
     private final ExecutorService executorService;
 
-    public CreateScanBatchRunnerWithBlackDuck(final IntEnvironmentVariables intEnvironmentVariables, final OperatingSystemType operatingSystemType, ExecutorService executorService) {
+    public CreateScanBatchRunnerWithBlackDuck(IntEnvironmentVariables intEnvironmentVariables, OperatingSystemType operatingSystemType, ExecutorService executorService) {
         this.intEnvironmentVariables = intEnvironmentVariables;
         this.operatingSystemType = operatingSystemType;
         this.executorService = executorService;

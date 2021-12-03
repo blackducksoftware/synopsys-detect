@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.detector;
 
 import java.io.File;
@@ -161,7 +154,7 @@ public class DetectorTool {
                 applicable.forEach(evaluation -> {
                     logger.info("\t\t" + evaluation.getDetectorRule().getDescriptiveName());
                     evaluation.getAllExplanations().forEach(explanation ->
-                                                                logger.info("\t\t\t" + explanation.describeSelf()));
+                        logger.info("\t\t\t" + explanation.describeSelf()));
                 });
             }
         }
@@ -209,16 +202,16 @@ public class DetectorTool {
 
     private Map<CodeLocation, DetectCodeLocation> createCodeLocationMap(List<DetectorEvaluation> detectorEvaluations, File directory) {
         return detectorEvaluations.stream()
-                   .filter(DetectorEvaluation::wasExtractionSuccessful)
-                   .map(it -> codeLocationConverter.toDetectCodeLocation(directory, it))
-                   .map(Map::entrySet)
-                   .flatMap(Collection::stream)
-                   .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            .filter(DetectorEvaluation::wasExtractionSuccessful)
+            .map(it -> codeLocationConverter.toDetectCodeLocation(directory, it))
+            .map(Map::entrySet)
+            .flatMap(Collection::stream)
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     private void publishStatusEvents(Map<DetectorType, StatusType> statusMap) {
         statusMap.forEach((detectorType, statusType) ->
-                              statusEventPublisher.publishStatusSummary(new DetectorStatus(detectorType, statusType)));
+            statusEventPublisher.publishStatusSummary(new DetectorStatus(detectorType, statusType)));
         if (statusMap.containsValue(StatusType.FAILURE)) {
             exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_DETECTOR, "One or more detectors were not successful.");
         }
@@ -246,8 +239,8 @@ public class DetectorTool {
 
     private void publishMissingDetectorEvents(List<DetectorType> requiredDetectors, Set<DetectorType> applicable) {
         Set<DetectorType> missingDetectors = requiredDetectors.stream()
-                                                 .filter(it -> !applicable.contains(it))
-                                                 .collect(Collectors.toSet());
+            .filter(it -> !applicable.contains(it))
+            .collect(Collectors.toSet());
         if (!missingDetectors.isEmpty()) {
             String missingDetectorDisplay = missingDetectors.stream().map(Enum::toString).collect(Collectors.joining(","));
             logger.error("One or more required detector types were not found: {}", missingDetectorDisplay);

@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.bdio;
 
 import com.synopsys.integration.bdio.SimpleBdioFactory;
@@ -16,13 +9,12 @@ public class CreateAggregateBdio1FileOperation {
     private final SimpleBdioFactory simpleBdioFactory;
     private final DetectBdioWriter detectBdioWriter;
 
-    public CreateAggregateBdio1FileOperation(final SimpleBdioFactory simpleBdioFactory, final DetectBdioWriter detectBdioWriter) {
+    public CreateAggregateBdio1FileOperation(SimpleBdioFactory simpleBdioFactory, DetectBdioWriter detectBdioWriter) {
         this.simpleBdioFactory = simpleBdioFactory;
         this.detectBdioWriter = detectBdioWriter;
     }
 
-    public void writeAggregateBdio1File(AggregateCodeLocation aggregateCodeLocation)
-        throws DetectUserFriendlyException {
+    public void writeAggregateBdio1File(AggregateCodeLocation aggregateCodeLocation) throws DetectUserFriendlyException {
         SimpleBdioDocument aggregateBdioDocument = simpleBdioFactory.createSimpleBdioDocument(aggregateCodeLocation.getCodeLocationName(), aggregateCodeLocation.getProjectNameVersion().getName(),
             aggregateCodeLocation.getProjectNameVersion().getVersion(), aggregateCodeLocation.getProjectExternalId(), aggregateCodeLocation.getAggregateDependencyGraph());
         detectBdioWriter.writeBdioFile(aggregateCodeLocation.getAggregateFile(), aggregateBdioDocument);

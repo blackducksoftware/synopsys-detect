@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.bdio.aggregation;
 
 import java.io.File;
@@ -35,11 +28,11 @@ public class FullAggregateGraphCreator {
         this.simpleBdioFactory = simpleBdioFactory;
     }
 
-    public DependencyGraph aggregateCodeLocations(ProjectNodeCreator projectDependencyCreator, final File sourcePath, final List<DetectCodeLocation> codeLocations) throws DetectUserFriendlyException {
-        final MutableDependencyGraph aggregateDependencyGraph = simpleBdioFactory.createMutableDependencyGraph();
+    public DependencyGraph aggregateCodeLocations(ProjectNodeCreator projectDependencyCreator, File sourcePath, List<DetectCodeLocation> codeLocations) throws DetectUserFriendlyException {
+        MutableDependencyGraph aggregateDependencyGraph = simpleBdioFactory.createMutableDependencyGraph();
 
-        for (final DetectCodeLocation detectCodeLocation : codeLocations) {
-            final Dependency codeLocationDependency = createAggregateNode(projectDependencyCreator, sourcePath, detectCodeLocation);
+        for (DetectCodeLocation detectCodeLocation : codeLocations) {
+            Dependency codeLocationDependency = createAggregateNode(projectDependencyCreator, sourcePath, detectCodeLocation);
             aggregateDependencyGraph.addChildrenToRoot(codeLocationDependency);
             aggregateDependencyGraph.addGraphAsChildrenToParent(codeLocationDependency, detectCodeLocation.getDependencyGraph());
         }
@@ -47,33 +40,33 @@ public class FullAggregateGraphCreator {
         return aggregateDependencyGraph;
     }
 
-    private Dependency createAggregateNode(ProjectNodeCreator projectDependencyCreator, final File sourcePath, final DetectCodeLocation codeLocation) {
+    private Dependency createAggregateNode(ProjectNodeCreator projectDependencyCreator, File sourcePath, DetectCodeLocation codeLocation) {
         String name = null;
         String version = null;
         try {
             name = codeLocation.getExternalId().getName();
             version = codeLocation.getExternalId().getVersion();
-        } catch (final Exception e) {
+        } catch (Exception e) {
             logger.warn("Failed to get name or version to use in the wrapper for a code location.", e);
         }
-        final ExternalId original = codeLocation.getExternalId();
-        final String codeLocationSourcePath = codeLocation.getSourcePath().toString(); //TODO: what happens when docker is present or no source path or no external id!
-        final File codeLocationSourceDir = new File(codeLocationSourcePath);
-        final String relativePath = FileNameUtils.relativize(sourcePath.getAbsolutePath(), codeLocationSourceDir.getAbsolutePath());
+        ExternalId original = codeLocation.getExternalId();
+        String codeLocationSourcePath = codeLocation.getSourcePath().toString(); //TODO: what happens when docker is present or no source path or no external id!
+        File codeLocationSourceDir = new File(codeLocationSourcePath);
+        String relativePath = FileNameUtils.relativize(sourcePath.getAbsolutePath(), codeLocationSourceDir.getAbsolutePath());
 
-        final String bomToolType;
+        String bomToolType;
         if (codeLocation.getDockerImageName().isPresent()) {
             bomToolType = "docker"; // TODO: Should docker image name be considered here?
         } else {
             bomToolType = codeLocation.getCreatorName().orElse("unknown").toLowerCase();
         }
 
-        final List<String> externalIdPieces = new ArrayList<>(Arrays.asList(original.getExternalIdPieces()));
+        List<String> externalIdPieces = new ArrayList<>(Arrays.asList(original.getExternalIdPieces()));
         if (StringUtils.isNotBlank(relativePath)) {
             externalIdPieces.add(relativePath);
         }
         externalIdPieces.add(bomToolType);
-        final String[] pieces = externalIdPieces.toArray(ArrayUtils.EMPTY_STRING_ARRAY);
+        String[] pieces = externalIdPieces.toArray(ArrayUtils.EMPTY_STRING_ARRAY);
         return projectDependencyCreator.create(name, version, new ExternalIdFactory().createModuleNamesExternalId(original.getForge(), pieces));
     }
 

@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.detector.executable;
 
 import java.io.File;
@@ -26,12 +19,12 @@ public class SystemPathExecutableFinder {
         this.executableFinder = executableFinder;
     }
 
-    public File findExecutable(final String executable) {
-        final String systemPath = System.getenv("PATH");
+    public File findExecutable(String executable) {
+        String systemPath = System.getenv("PATH");
         String[] pathStrings = Optional.ofNullable(systemPath).map(path -> path.split(File.pathSeparator)).orElse(new String[] {});
         List<File> systemPathLocations = Arrays.stream(pathStrings)
-                                             .map(File::new)
-                                             .collect(Collectors.toList());
+            .map(File::new)
+            .collect(Collectors.toList());
 
         File found = executableFinder.findExecutable(executable, systemPathLocations);
         if (found == null) {

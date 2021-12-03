@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.detector;
 
 import java.util.List;
@@ -20,7 +13,7 @@ public class RequiredDetectorChecker {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public static class RequiredDetectorResult {
-        public RequiredDetectorResult(final Set<DetectorType> missingDetectors) {
+        public RequiredDetectorResult(Set<DetectorType> missingDetectors) {
             this.missingDetectors = missingDetectors;
         }
 
@@ -35,10 +28,10 @@ public class RequiredDetectorChecker {
         private final Set<DetectorType> missingDetectors;
     }
 
-    public RequiredDetectorResult checkForMissingDetectors(final List<DetectorType> requiredDetectorsString, final Set<DetectorType> applicableDetectors) {
-        final Set<DetectorType> missingDetectors = requiredDetectorsString.stream()
-                                                       .filter(it -> !applicableDetectors.contains(it))
-                                                       .collect(Collectors.toSet());
+    public RequiredDetectorResult checkForMissingDetectors(List<DetectorType> requiredDetectorsString, Set<DetectorType> applicableDetectors) {
+        Set<DetectorType> missingDetectors = requiredDetectorsString.stream()
+            .filter(it -> !applicableDetectors.contains(it))
+            .collect(Collectors.toSet());
 
         return new RequiredDetectorResult(missingDetectors);
     }

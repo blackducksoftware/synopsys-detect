@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.bdio;
 
 import java.io.File;
@@ -20,8 +13,7 @@ public class AggregateCodeLocation {
     private final ExternalId projectExternalId;
     private final DependencyGraph aggregateDependencyGraph;
 
-    public AggregateCodeLocation(final File aggregateFile, final String codeLocationName, final NameVersion projectNameVersion, final ExternalId projectExternalId,
-        final DependencyGraph aggregateDependencyGraph) {
+    public AggregateCodeLocation(File aggregateFile, String codeLocationName, NameVersion projectNameVersion, ExternalId projectExternalId, DependencyGraph aggregateDependencyGraph) {
         this.aggregateFile = aggregateFile;
         this.codeLocationName = codeLocationName;
         this.projectNameVersion = projectNameVersion;

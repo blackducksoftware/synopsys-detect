@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.interactive;
 
 import java.io.File;
@@ -87,7 +80,7 @@ public class InteractivePropertySourceBuilder {
 
     public MapPropertySource build() {
         Map<String, String> interactivePropertyMap = propertyToOptionMap.values().stream()
-                                                         .collect(Collectors.toMap(option -> option.getDetectProperty().getKey(), InteractiveOption::getInteractiveValue));
+            .collect(Collectors.toMap(option -> option.getDetectProperty().getKey(), InteractiveOption::getInteractiveValue));
         return new MapPropertySource(PROPERTY_SOURCE_NAME, interactivePropertyMap);
     }
 

@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool;
 
 import java.util.ArrayList;
@@ -36,7 +29,7 @@ public class UniversalToolsResultBuilder {
         anyFailed = detectorToolResult.anyDetectorsFailed() || anyFailed;
     }
 
-    public void addDockerTargetData(final DockerTargetData dockerTargetData) {
+    public void addDockerTargetData(DockerTargetData dockerTargetData) {
         this.dockerTargetData = dockerTargetData;
     }
 
@@ -44,8 +37,8 @@ public class UniversalToolsResultBuilder {
         return new UniversalToolsResult(anyFailed, dockerTargetData, detectToolProjectInfo, detectCodeLocations);
     }
 
-    public void addToolNameVersion(final DetectTool detectTool, final NameVersion toolNameVersion) {
-        final DetectToolProjectInfo dockerProjectInfo = new DetectToolProjectInfo(detectTool, new NameVersion(toolNameVersion.getName(), toolNameVersion.getVersion()));
+    public void addToolNameVersion(DetectTool detectTool, NameVersion toolNameVersion) {
+        DetectToolProjectInfo dockerProjectInfo = new DetectToolProjectInfo(detectTool, new NameVersion(toolNameVersion.getName(), toolNameVersion.getVersion()));
         detectToolProjectInfo.add(dockerProjectInfo);
     }
 

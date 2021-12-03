@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.codelocation;
 
 import java.io.File;
@@ -29,35 +22,35 @@ public class CreateBdioCodeLocationsFromDetectCodeLocationsOperation {
     private final CodeLocationNameManager codeLocationNameManager;
     private final DirectoryManager directoryManager;
 
-    public CreateBdioCodeLocationsFromDetectCodeLocationsOperation(final CodeLocationNameManager codeLocationNameManager, final DirectoryManager directoryManager) {
+    public CreateBdioCodeLocationsFromDetectCodeLocationsOperation(CodeLocationNameManager codeLocationNameManager, DirectoryManager directoryManager) {
         this.codeLocationNameManager = codeLocationNameManager;
         this.directoryManager = directoryManager;
     }
 
-    public BdioCodeLocationResult transformDetectCodeLocations(final List<DetectCodeLocation> detectCodeLocations, String prefix, String suffix, final NameVersion projectNameVersion) throws DetectUserFriendlyException {
-        final List<DetectCodeLocation> validDetectCodeLocations = findValidCodeLocations(detectCodeLocations);
-        final Map<DetectCodeLocation, String> codeLocationsAndNames = createCodeLocationNameMap(validDetectCodeLocations, directoryManager.getSourceDirectory(), projectNameVersion, prefix, suffix);
+    public BdioCodeLocationResult transformDetectCodeLocations(List<DetectCodeLocation> detectCodeLocations, String prefix, String suffix, NameVersion projectNameVersion) throws DetectUserFriendlyException {
+        List<DetectCodeLocation> validDetectCodeLocations = findValidCodeLocations(detectCodeLocations);
+        Map<DetectCodeLocation, String> codeLocationsAndNames = createCodeLocationNameMap(validDetectCodeLocations, directoryManager.getSourceDirectory(), projectNameVersion, prefix, suffix);
 
-        final Map<String, List<DetectCodeLocation>> codeLocationsByName = separateCodeLocationsByName(codeLocationsAndNames);
+        Map<String, List<DetectCodeLocation>> codeLocationsByName = separateCodeLocationsByName(codeLocationsAndNames);
 
-        final List<BdioCodeLocation> bdioCodeLocations = createBdioCodeLocations(codeLocationsByName);
+        List<BdioCodeLocation> bdioCodeLocations = createBdioCodeLocations(codeLocationsByName);
 
         return new BdioCodeLocationResult(bdioCodeLocations, codeLocationsAndNames);
     }
 
-    private Map<DetectCodeLocation, String> createCodeLocationNameMap(final List<DetectCodeLocation> codeLocations, final File detectSourcePath, final NameVersion projectNameVersion, final String prefix,
-        final String suffix) {
-        final Map<DetectCodeLocation, String> nameMap = new HashMap<>();
-        for (final DetectCodeLocation detectCodeLocation : codeLocations) {
-            final String codeLocationName = codeLocationNameManager.createCodeLocationName(detectCodeLocation, detectSourcePath, projectNameVersion.getName(), projectNameVersion.getVersion(), prefix, suffix);
+    private Map<DetectCodeLocation, String> createCodeLocationNameMap(List<DetectCodeLocation> codeLocations, File detectSourcePath, NameVersion projectNameVersion, String prefix,
+        String suffix) {
+        Map<DetectCodeLocation, String> nameMap = new HashMap<>();
+        for (DetectCodeLocation detectCodeLocation : codeLocations) {
+            String codeLocationName = codeLocationNameManager.createCodeLocationName(detectCodeLocation, detectSourcePath, projectNameVersion.getName(), projectNameVersion.getVersion(), prefix, suffix);
             nameMap.put(detectCodeLocation, codeLocationName);
         }
         return nameMap;
     }
 
-    private List<DetectCodeLocation> findValidCodeLocations(final List<DetectCodeLocation> detectCodeLocations) {
-        final List<DetectCodeLocation> validCodeLocations = new ArrayList<>();
-        for (final DetectCodeLocation detectCodeLocation : detectCodeLocations) {
+    private List<DetectCodeLocation> findValidCodeLocations(List<DetectCodeLocation> detectCodeLocations) {
+        List<DetectCodeLocation> validCodeLocations = new ArrayList<>();
+        for (DetectCodeLocation detectCodeLocation : detectCodeLocations) {
             if (detectCodeLocation.getDependencyGraph() == null) {
                 logger.warn(String.format("Dependency graph is null for code location %s", detectCodeLocation.getSourcePath()));
                 continue;
@@ -70,10 +63,10 @@ public class CreateBdioCodeLocationsFromDetectCodeLocationsOperation {
         return validCodeLocations;
     }
 
-    private Map<String, List<DetectCodeLocation>> separateCodeLocationsByName(final Map<DetectCodeLocation, String> detectCodeLocationNameMap) {
-        final Map<String, List<DetectCodeLocation>> codeLocationNameMap = new HashMap<>();
-        for (final Map.Entry<DetectCodeLocation, String> detectCodeLocationEntry : detectCodeLocationNameMap.entrySet()) {
-            final String codeLocationName = detectCodeLocationEntry.getValue();
+    private Map<String, List<DetectCodeLocation>> separateCodeLocationsByName(Map<DetectCodeLocation, String> detectCodeLocationNameMap) {
+        Map<String, List<DetectCodeLocation>> codeLocationNameMap = new HashMap<>();
+        for (Map.Entry<DetectCodeLocation, String> detectCodeLocationEntry : detectCodeLocationNameMap.entrySet()) {
+            String codeLocationName = detectCodeLocationEntry.getValue();
             if (!codeLocationNameMap.containsKey(codeLocationName)) {
                 codeLocationNameMap.put(codeLocationName, new ArrayList<>());
             }
@@ -82,34 +75,34 @@ public class CreateBdioCodeLocationsFromDetectCodeLocationsOperation {
         return codeLocationNameMap;
     }
 
-    private List<BdioCodeLocation> createBdioCodeLocations(final Map<String, List<DetectCodeLocation>> codeLocationsByName) {
-        final List<BdioCodeLocation> bdioCodeLocations = new ArrayList<>();
-        for (final Map.Entry<String, List<DetectCodeLocation>> codeLocationEntry : codeLocationsByName.entrySet()) {
-            final String codeLocationName = codeLocationEntry.getKey();
-            final List<DetectCodeLocation> codeLocations = codeLocationEntry.getValue();
-            final List<BdioCodeLocation> transformedBdioCodeLocations = transformDetectCodeLocationsIntoBdioCodeLocations(codeLocations, codeLocationName);
+    private List<BdioCodeLocation> createBdioCodeLocations(Map<String, List<DetectCodeLocation>> codeLocationsByName) {
+        List<BdioCodeLocation> bdioCodeLocations = new ArrayList<>();
+        for (Map.Entry<String, List<DetectCodeLocation>> codeLocationEntry : codeLocationsByName.entrySet()) {
+            String codeLocationName = codeLocationEntry.getKey();
+            List<DetectCodeLocation> codeLocations = codeLocationEntry.getValue();
+            List<BdioCodeLocation> transformedBdioCodeLocations = transformDetectCodeLocationsIntoBdioCodeLocations(codeLocations, codeLocationName);
             bdioCodeLocations.addAll(transformedBdioCodeLocations);
         }
 
         return bdioCodeLocations;
     }
 
-    private List<BdioCodeLocation> transformDetectCodeLocationsIntoBdioCodeLocations(final List<DetectCodeLocation> codeLocations, final String codeLocationName) {
-        final List<BdioCodeLocation> bdioCodeLocations;
-        final IntegrationEscapeUtil integrationEscapeUtil = new IntegrationEscapeUtil();
+    private List<BdioCodeLocation> transformDetectCodeLocationsIntoBdioCodeLocations(List<DetectCodeLocation> codeLocations, String codeLocationName) {
+        List<BdioCodeLocation> bdioCodeLocations;
+        IntegrationEscapeUtil integrationEscapeUtil = new IntegrationEscapeUtil();
 
         if (codeLocations.size() > 1) {
             bdioCodeLocations = new ArrayList<>();
             for (int i = 0; i < codeLocations.size(); i++) {
-                final DetectCodeLocation codeLocation = codeLocations.get(i);
-                final String newCodeLocationName = String.format("%s %d", codeLocationName, i);
-                final BdioCodeLocation bdioCodeLocation = new BdioCodeLocation(codeLocation, newCodeLocationName, createBdioName(newCodeLocationName, integrationEscapeUtil));
+                DetectCodeLocation codeLocation = codeLocations.get(i);
+                String newCodeLocationName = String.format("%s %d", codeLocationName, i);
+                BdioCodeLocation bdioCodeLocation = new BdioCodeLocation(codeLocation, newCodeLocationName, createBdioName(newCodeLocationName, integrationEscapeUtil));
                 bdioCodeLocations.add(bdioCodeLocation);
 
             }
         } else if (codeLocations.size() == 1) {
-            final DetectCodeLocation codeLocation = codeLocations.get(0);
-            final BdioCodeLocation bdioCodeLocation = new BdioCodeLocation(codeLocation, codeLocationName, createBdioName(codeLocationName, integrationEscapeUtil));
+            DetectCodeLocation codeLocation = codeLocations.get(0);
+            BdioCodeLocation bdioCodeLocation = new BdioCodeLocation(codeLocation, codeLocationName, createBdioName(codeLocationName, integrationEscapeUtil));
             bdioCodeLocations = Collections.singletonList(bdioCodeLocation);
         } else {
             logger.error("Created a code location name but no code locations.");
@@ -119,8 +112,8 @@ public class CreateBdioCodeLocationsFromDetectCodeLocationsOperation {
         return bdioCodeLocations;
     }
 
-    private String createBdioName(final String codeLocationName, final IntegrationEscapeUtil integrationEscapeUtil) {
-        final String filenameRaw = StringUtils.replaceEach(codeLocationName, new String[] { "/", "\\", " " }, new String[] { "_", "_", "_" });
+    private String createBdioName(String codeLocationName, IntegrationEscapeUtil integrationEscapeUtil) {
+        String filenameRaw = StringUtils.replaceEach(codeLocationName, new String[] { "/", "\\", " " }, new String[] { "_", "_", "_" });
         return integrationEscapeUtil.replaceWithUnderscore(filenameRaw);
     }
 }

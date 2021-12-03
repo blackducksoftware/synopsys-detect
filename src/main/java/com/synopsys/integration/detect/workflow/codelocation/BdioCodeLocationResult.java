@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.codelocation;
 
 import java.util.List;
@@ -14,7 +7,7 @@ public class BdioCodeLocationResult {
     private final List<BdioCodeLocation> bdioCodeLocations;
     private final Map<DetectCodeLocation, String> codeLocationNames;
 
-    public BdioCodeLocationResult(final List<BdioCodeLocation> bdioCodeLocations, final Map<DetectCodeLocation, String> codeLocationNames) {
+    public BdioCodeLocationResult(List<BdioCodeLocation> bdioCodeLocations, Map<DetectCodeLocation, String> codeLocationNames) {
         this.bdioCodeLocations = bdioCodeLocations;
         this.codeLocationNames = codeLocationNames;
     }

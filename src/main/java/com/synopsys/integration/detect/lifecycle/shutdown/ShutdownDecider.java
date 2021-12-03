@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.lifecycle.shutdown;
 
 import java.io.File;
@@ -22,13 +15,13 @@ import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
 public class ShutdownDecider {
     public ShutdownDecision decideShutdown(DetectBootResult detectBootResult) {
         DiagnosticSystem diagnosticSystem = detectBootResult.getDiagnosticSystem()
-                                                .orElse(null);
+            .orElse(null);
 
         PhoneHomeManager phoneHomeManager = detectBootResult.getProductRunData()
-                                                .filter(ProductRunData::shouldUseBlackDuckProduct)
-                                                .map(ProductRunData::getBlackDuckRunData)
-                                                .flatMap(BlackDuckRunData::getPhoneHomeManager)
-                                                .orElse(null);
+            .filter(ProductRunData::shouldUseBlackDuckProduct)
+            .map(ProductRunData::getBlackDuckRunData)
+            .flatMap(BlackDuckRunData::getPhoneHomeManager)
+            .orElse(null);
 
         CleanupDecision cleanupDecision = decideCleanup(detectBootResult.getDetectConfiguration().orElse(null), detectBootResult.getProductRunData().orElse(null), detectBootResult.getAirGapZip().orElse(null));
         return new ShutdownDecision(phoneHomeManager, diagnosticSystem, cleanupDecision);

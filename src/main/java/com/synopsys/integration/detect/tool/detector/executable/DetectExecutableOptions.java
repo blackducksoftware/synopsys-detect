@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.detector.executable;
 
 import java.nio.file.Path;
@@ -35,9 +28,32 @@ public class DetectExecutableOptions {
     private final Path sbtUserPath;
     private final Path lernaUserPath;
 
-    public DetectExecutableOptions(Path bashUserPath, Path bazelUserPath, Path conanUserPath, Path condaUserPath, Path cpanUserPath, Path cpanmUserPath, Path dartPath, Path flutterPath, Path gradleUserPath, Path mavenUserPath,
-        Path npmUserPath, Path pearUserPath, Path pipUserPath, Path pipenvUserPath, Path pythonUserPath, Path rebarUserPath, Path javaUserPath, Path dockerUserPath,
-        Path dotnetUserPath, Path gitUserPath, Path goUserPath, Path swiftUserPath, Path sbtUserPath, Path lernaUserPath) {
+    public DetectExecutableOptions(
+        Path bashUserPath,
+        Path bazelUserPath,
+        Path conanUserPath,
+        Path condaUserPath,
+        Path cpanUserPath,
+        Path cpanmUserPath,
+        Path dartPath,
+        Path flutterPath,
+        Path gradleUserPath,
+        Path mavenUserPath,
+        Path npmUserPath,
+        Path pearUserPath,
+        Path pipUserPath,
+        Path pipenvUserPath,
+        Path pythonUserPath,
+        Path rebarUserPath,
+        Path javaUserPath,
+        Path dockerUserPath,
+        Path dotnetUserPath,
+        Path gitUserPath,
+        Path goUserPath,
+        Path swiftUserPath,
+        Path sbtUserPath,
+        Path lernaUserPath
+    ) {
         this.bashUserPath = bashUserPath;
         this.bazelUserPath = bazelUserPath;
         this.conanUserPath = conanUserPath;

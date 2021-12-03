@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.report;
 
 import java.util.ArrayList;
@@ -36,9 +29,9 @@ public class PreparationSummaryReporter {
                 lines.add(detectorEvaluationTree.getDirectory().toString());
                 if (CollectionUtils.isNotEmpty(ready)) {
                     lines.add("\t    READY: " + ready.stream()
-                                                    .map(it -> it.getDetectorRule().getDescriptiveName())
-                                                    .sorted()
-                                                    .collect(Collectors.joining(", ")));
+                        .map(it -> it.getDetectorRule().getDescriptiveName())
+                        .sorted()
+                        .collect(Collectors.joining(", ")));
                 }
             }
         }

@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.signaturescanner.operation;
 
 import java.util.List;
@@ -16,7 +9,7 @@ public class SignatureScanOuputResult {
     private final List<ScanCommandOutput> scanCommandOutputs;
     private final ScanBatchOutput scanBatchOutput;
 
-    public SignatureScanOuputResult(final List<ScanCommandOutput> scanCommandOutputs, final ScanBatchOutput scanBatchOutput) {
+    public SignatureScanOuputResult(List<ScanCommandOutput> scanCommandOutputs, ScanBatchOutput scanBatchOutput) {
         this.scanCommandOutputs = scanCommandOutputs;
         this.scanBatchOutput = scanBatchOutput;
     }

@@ -1,11 +1,22 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.blackduck.report.service;
+
+import java.awt.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -17,7 +28,12 @@ import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionComponentPolicyStatusType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ReportFormatType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ReportType;
-import com.synopsys.integration.blackduck.api.generated.view.*;
+import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
+import com.synopsys.integration.blackduck.api.generated.view.ComponentPolicyRulesView;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentVersionView;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
+import com.synopsys.integration.blackduck.api.generated.view.ReportView;
 import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationException;
 import com.synopsys.integration.blackduck.http.BlackDuckRequestBuilder;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
@@ -35,19 +51,6 @@ import com.synopsys.integration.rest.body.BodyContentConverter;
 import com.synopsys.integration.rest.exception.IntegrationRestException;
 import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
-
-import java.awt.*;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.List;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 public class ReportService extends DataService {
     public final static long DEFAULT_TIMEOUT = 1000L * 60 * 5;
