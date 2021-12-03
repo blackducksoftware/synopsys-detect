@@ -1,10 +1,3 @@
-/*
- * common
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.common.util;
 
 import java.util.Optional;
@@ -19,15 +12,15 @@ import org.jetbrains.annotations.Nullable;
 public class Bdo<T> {
     private final T value;
 
-    private Bdo(final T value) {
+    private Bdo(T value) {
         this.value = value;
     }
 
-    public static <T> Bdo<T> of(final T value) {
+    public static <T> Bdo<T> of(T value) {
         return new Bdo<>(value);
     }
 
-    public static <T> Bdo<T> of(final Optional<T> value) {
+    public static <T> Bdo<T> of(Optional<T> value) {
         return Bdo.of(value.orElse(null));
     }
 
@@ -39,11 +32,11 @@ public class Bdo<T> {
         return Optional.ofNullable(value);
     }
 
-    public <U> Bdo<U> map(final Function<? super T, U> mapper) {
+    public <U> Bdo<U> map(Function<? super T, U> mapper) {
         return Bdo.of(mapper.apply(value));
     }
 
-    public Bdo<T> peek(final Consumer<T> consumer) {
+    public Bdo<T> peek(Consumer<T> consumer) {
         consumer.accept(value);
         return this;
     }
@@ -60,11 +53,11 @@ public class Bdo<T> {
         return toOptional().get();
     }
 
-    public Bdo<T> or(final Optional<T> value) {
+    public Bdo<T> or(Optional<T> value) {
         return or(Bdo.of(value));
     }
 
-    public Bdo<T> or(@NotNull final Bdo<T> value) {
+    public Bdo<T> or(@NotNull Bdo<T> value) {
         if (isPresent()) {
             return this;
         } else {
@@ -72,7 +65,7 @@ public class Bdo<T> {
         }
     }
 
-    public Bdo<T> or(@Nullable final T value) {
+    public Bdo<T> or(@Nullable T value) {
         if (isPresent()) {
             return this;
         } else {
@@ -80,11 +73,11 @@ public class Bdo<T> {
         }
     }
 
-    public <X extends Throwable> T orElseThrow(final Supplier<? extends X> exceptionSupplier) throws X {
+    public <X extends Throwable> T orElseThrow(Supplier<? extends X> exceptionSupplier) throws X {
         return toOptional().orElseThrow(exceptionSupplier);
     }
 
-    public <U> Bdo<U> flatMap(final Function<T, Optional<U>> operator) {
+    public <U> Bdo<U> flatMap(Function<T, Optional<U>> operator) {
         if (isPresent()) {
             return Bdo.of(operator.apply(get()));
         } else {
