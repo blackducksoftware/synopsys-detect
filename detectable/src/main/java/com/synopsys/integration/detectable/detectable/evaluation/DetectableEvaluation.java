@@ -1,19 +1,12 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectable.evaluation;
 
 import java.util.Optional;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
-import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 
 public class DetectableEvaluation {
     public static final String NO_MESSAGE = "Unknown";
@@ -28,12 +21,12 @@ public class DetectableEvaluation {
     private ExtractionEnvironment extractionEnvironment;
     private Extraction extraction;
 
-    public DetectableEvaluation(final Detectable detectable, final DetectableEnvironment environment) {
+    public DetectableEvaluation(Detectable detectable, DetectableEnvironment environment) {
         this.detectable = detectable;
         this.environment = environment;
     }
 
-    public void setExtraction(final Extraction extraction) {
+    public void setExtraction(Extraction extraction) {
         this.extraction = extraction;
     }
 
@@ -41,7 +34,7 @@ public class DetectableEvaluation {
         return extraction;
     }
 
-    public void setExtractionEnvironment(final ExtractionEnvironment extractionEnvironment) {
+    public void setExtractionEnvironment(ExtractionEnvironment extractionEnvironment) {
         this.extractionEnvironment = extractionEnvironment;
     }
 
@@ -61,7 +54,7 @@ public class DetectableEvaluation {
         return environment;
     }
 
-    public void setSearchable(final DetectableResult searchable) {
+    public void setSearchable(DetectableResult searchable) {
         this.searchable = searchable;
     }
 
@@ -73,7 +66,7 @@ public class DetectableEvaluation {
         return getBomToolResultDescription(searchable).orElse(NO_MESSAGE);
     }
 
-    public void setApplicable(final DetectableResult applicable) {
+    public void setApplicable(DetectableResult applicable) {
         this.applicable = applicable;
     }
 
@@ -85,7 +78,7 @@ public class DetectableEvaluation {
         return getBomToolResultDescription(applicable).orElse(NO_MESSAGE);
     }
 
-    public void setExtractable(final DetectableResult extractable) {
+    public void setExtractable(DetectableResult extractable) {
         this.extractable = extractable;
     }
 
@@ -97,7 +90,7 @@ public class DetectableEvaluation {
         return getBomToolResultDescription(extractable).orElse(NO_MESSAGE);
     }
 
-    private Optional<String> getBomToolResultDescription(final DetectableResult detectableResult) {
+    private Optional<String> getBomToolResultDescription(DetectableResult detectableResult) {
         String description = null;
 
         if (detectableResult != null) {

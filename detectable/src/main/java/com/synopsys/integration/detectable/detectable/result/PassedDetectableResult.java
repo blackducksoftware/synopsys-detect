@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectable.result;
 
 import java.io.File;
@@ -17,12 +10,12 @@ public class PassedDetectableResult implements DetectableResult {
     private final List<Explanation> explanations;
     private final List<File> relevantFiles;
 
-    public PassedDetectableResult(final List<Explanation> explanations, List<File> relevantFiles) {
+    public PassedDetectableResult(List<Explanation> explanations, List<File> relevantFiles) {
         this.explanations = explanations;
         this.relevantFiles = relevantFiles;
     }
 
-    public PassedDetectableResult(final List<Explanation> explanations) {
+    public PassedDetectableResult(List<Explanation> explanations) {
         this.explanations = explanations;
         this.relevantFiles = Collections.emptyList();
     }
