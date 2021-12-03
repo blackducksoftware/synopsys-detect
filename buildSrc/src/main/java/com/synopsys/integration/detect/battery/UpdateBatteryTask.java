@@ -1,10 +1,3 @@
-/*
- * buildSrc
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.battery;
 
 import java.io.File;
@@ -36,7 +29,7 @@ public class UpdateBatteryTask extends DefaultTask {
         File batteryReports = new File("build/reports/tests/testBattery/classes/");
 
         if (!batteryReports.exists() || !batteryReports.isDirectory()) {
-            throw new IntegrationException("Battery reports directory doesn't exist. ("+ batteryReports.getCanonicalPath() +")");
+            throw new IntegrationException("Battery reports directory doesn't exist. (" + batteryReports.getCanonicalPath() + ")");
         }
 
         for (File report : Objects.requireNonNull(batteryReports.listFiles())) {

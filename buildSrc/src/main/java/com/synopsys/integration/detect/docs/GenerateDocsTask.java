@@ -1,10 +1,3 @@
-/*
- * buildSrc
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.docs;
 
 import java.io.File;
@@ -102,14 +95,14 @@ public class GenerateDocsTask extends DefaultTask {
     private void handleDetectors(TemplateProvider templateProvider, File baseOutputDir, HelpJsonData helpJson) throws IOException, TemplateException {
         File outputDir = new File(baseOutputDir, "components");
         List<Detector> build = helpJson.getBuildDetectors().stream()
-                                         .map(Detector::new)
-                                         .sorted(Comparator.comparing(Detector::getDetectorType).thenComparing(Detector::getDetectorName))
-                                         .collect(Collectors.toList());
+            .map(Detector::new)
+            .sorted(Comparator.comparing(Detector::getDetectorType).thenComparing(Detector::getDetectorName))
+            .collect(Collectors.toList());
 
         List<Detector> buildless = helpJson.getBuildlessDetectors().stream()
-                                             .map(Detector::new)
-                                             .sorted(Comparator.comparing(Detector::getDetectorType).thenComparing(Detector::getDetectorName))
-                                             .collect(Collectors.toList());
+            .map(Detector::new)
+            .sorted(Comparator.comparing(Detector::getDetectorType).thenComparing(Detector::getDetectorName))
+            .collect(Collectors.toList());
 
         createMarkdownFromFreemarker(templateProvider, outputDir, "detectors", new DetectorsPage(buildless, build));
     }
@@ -148,7 +141,7 @@ public class GenerateDocsTask extends DefaultTask {
 
         // example: superGroup/key
         Map<String, String> groupLocations = superGroups.entrySet().stream()
-                                                       .collect(Collectors.toMap(Map.Entry::getKey, it -> String.format("%s/%s", it.getValue(), it.getKey()).toLowerCase()));
+            .collect(Collectors.toMap(Map.Entry::getKey, it -> String.format("%s/%s", it.getValue(), it.getKey()).toLowerCase()));
 
         // Updating the location on all the json options so that a new object with only 1 new property did not have to be created (and then populated) from the existing.
         for (HelpJsonOption helpJsonOption : helpJson.getOptions()) {
@@ -158,21 +151,21 @@ public class GenerateDocsTask extends DefaultTask {
         }
 
         Map<String, List<HelpJsonOption>> groupedOptions = helpJson.getOptions().stream()
-                                                                     .collect(Collectors.groupingBy(o -> makeLinkSafe(o.getGroup())));
+            .collect(Collectors.groupingBy(o -> makeLinkSafe(o.getGroup())));
 
         List<SplitGroup> splitGroupOptions = new ArrayList<>();
         for (Map.Entry<String, List<HelpJsonOption>> group : groupedOptions.entrySet()) {
             List<HelpJsonOption> deprecated = group.getValue().stream()
-                                                        .filter(HelpJsonOption::getDeprecated)
-                                                        .collect(Collectors.toList());
+                .filter(HelpJsonOption::getDeprecated)
+                .collect(Collectors.toList());
 
             List<HelpJsonOption> simple = group.getValue().stream()
-                                                    .filter(helpJsonObject -> !deprecated.contains(helpJsonObject) && (StringUtils.isBlank(helpJsonObject.getCategory()) || "simple".equals(helpJsonObject.getCategory())))
-                                                    .collect(Collectors.toList());
+                .filter(helpJsonObject -> !deprecated.contains(helpJsonObject) && (StringUtils.isBlank(helpJsonObject.getCategory()) || "simple".equals(helpJsonObject.getCategory())))
+                .collect(Collectors.toList());
 
             List<HelpJsonOption> advanced = group.getValue().stream()
-                                                      .filter(it -> !simple.contains(it) && !deprecated.contains(it))
-                                                      .collect(Collectors.toList());
+                .filter(it -> !simple.contains(it) && !deprecated.contains(it))
+                .collect(Collectors.toList());
 
             String superGroupName = getOrThrow(superGroups, group.getKey(), String.format("Missing super group: %s", group.getKey()));
             String groupLocation = getGroupLocation(groupLocations, group.getKey());
@@ -225,7 +218,7 @@ public class GenerateDocsTask extends DefaultTask {
 
     private <K, V> V getOrThrow(Map<K, V> map, K key, String missingMessage) throws IntegrationException {
         return Optional.ofNullable(map.get(key))
-                   .orElseThrow(() -> new IntegrationException(missingMessage));
+            .orElseThrow(() -> new IntegrationException(missingMessage));
     }
 
     // Technically each key has exactly 1 super key (but this is not enforced in the json) so here we check that assumption and return the mapping.
@@ -247,7 +240,7 @@ public class GenerateDocsTask extends DefaultTask {
 
             if (lookup.containsKey(optionGroup) && !superGroup.equals(lookup.get(optionGroup))) {
                 throw new RuntimeException(String.format("The created detect help JSON had a key '%s' whose super key '%s' did not match a different options super key in the same key '%s'.",
-                        optionGroup,
+                    optionGroup,
                     superGroup,
                     lookup.get(optionGroup)
                 ));

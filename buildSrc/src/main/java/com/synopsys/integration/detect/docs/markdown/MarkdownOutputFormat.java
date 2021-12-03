@@ -1,10 +1,3 @@
-/*
- * buildSrc
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.docs.markdown;
 
 import java.io.IOException;
@@ -21,23 +14,23 @@ public class MarkdownOutputFormat extends CommonMarkupOutputFormat<MarkdownOutpu
     public static final MarkdownOutputFormat INSTANCE = new MarkdownOutputFormat();
 
     @Override
-    public void output(@NotNull final String textToEsc, @NotNull final Writer out) throws IOException {
-        final String escapedText = MarkdownEscapeUtils.escape(textToEsc);
+    public void output(@NotNull String textToEsc, @NotNull Writer out) throws IOException {
+        String escapedText = MarkdownEscapeUtils.escape(textToEsc);
         out.write(escapedText);
     }
 
     @Override
-    public String escapePlainText(@Nullable final String plainTextContent) {
+    public String escapePlainText(@Nullable String plainTextContent) {
         return MarkdownEscapeUtils.escape(Optional.ofNullable(plainTextContent).orElse(""));
     }
 
     @Override
-    public boolean isLegacyBuiltInBypassed(@Nullable final String builtInName) {
+    public boolean isLegacyBuiltInBypassed(@Nullable String builtInName) {
         return "markdown".equals(builtInName);
     }
 
     @Override
-    protected MarkdownOutputModel newTemplateMarkupOutputModel(final String plainTextContent, final String markupContent) {
+    protected MarkdownOutputModel newTemplateMarkupOutputModel(String plainTextContent, String markupContent) {
         return new MarkdownOutputModel(plainTextContent, markupContent);
     }
 

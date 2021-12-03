@@ -1,17 +1,9 @@
-/*
- * buildSrc
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.docs.content;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class Terms {
-
     private final Map<String, String> termMap = new HashMap<>();
 
     public Terms() {
