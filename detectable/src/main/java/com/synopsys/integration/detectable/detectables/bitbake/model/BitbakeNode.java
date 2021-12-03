@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.bitbake.model;
 
 import java.util.HashSet;
@@ -16,13 +9,13 @@ public class BitbakeNode {
     private String version = null;
     private final Set<String> children = new HashSet<>();
 
-    public BitbakeNode(final String name) {this.name = name;}
+    public BitbakeNode(String name) {this.name = name;}
 
-    public void addChild(final String child) {
+    public void addChild(String child) {
         this.children.add(child);
     }
 
-    public void setVersion(final String version) {
+    public void setVersion(String version) {
         this.version = version;
     }
 

@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.conan.cli.parser.element;
 
 import java.util.ArrayList;
@@ -32,9 +25,9 @@ public class NodeElementParser {
     public int parseElement(ConanNodeBuilder<String> nodeBuilder, List<String> conanInfoOutputLines, int bodyElementLineIndex) {
         String line = conanInfoOutputLines.get(bodyElementLineIndex);
         return elementParsers.stream()
-                   .filter(ep -> ep.applies(line))
-                   .findFirst()
-                   .map(ep -> ep.parseElement(nodeBuilder, conanInfoOutputLines, bodyElementLineIndex))
-                   .orElse(bodyElementLineIndex);
+            .filter(ep -> ep.applies(line))
+            .findFirst()
+            .map(ep -> ep.parseElement(nodeBuilder, conanInfoOutputLines, bodyElementLineIndex))
+            .orElse(bodyElementLineIndex);
     }
 }

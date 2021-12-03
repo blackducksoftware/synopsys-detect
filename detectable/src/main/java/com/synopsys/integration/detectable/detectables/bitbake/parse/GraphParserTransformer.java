@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.bitbake.parse;
 
 import java.util.Optional;
@@ -23,7 +16,7 @@ public class GraphParserTransformer {
         for (GraphNode graphNode : graphParser.getNodes().values()) {
             String name = getNameFromNode(graphNode);
             getVersionFromNode(graphNode).ifPresent(
-                    version -> bitbakeGraph.addNode(name, version)
+                version -> bitbakeGraph.addNode(name, version)
             );
         }
 

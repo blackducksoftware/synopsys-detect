@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.bazel;
 
 import java.io.File;
@@ -40,14 +33,14 @@ public class BazelWorkspace {
         }
 
         return workspaceFileLines.stream()
-                   .flatMap(this::parseDependencyRulesFromWorkspaceFileLine)
-                   .collect(Collectors.toSet());
+            .flatMap(this::parseDependencyRulesFromWorkspaceFileLine)
+            .collect(Collectors.toSet());
     }
 
-    @SuppressWarnings("java:S3864") // Sonar deems peek useful for debugging.
+    // Sonar deems peek useful for debugging.
     public Stream<WorkspaceRule> parseDependencyRulesFromWorkspaceFileLine(String workspaceFileLine) {
         return Arrays.stream(WorkspaceRule.values())
-                   .filter(workspaceRule -> workspaceFileLine.matches(String.format("^\\s*%s\\s*\\(", workspaceRule.getName())))
-                   .peek(workspaceRule -> logger.debug(String.format("Found workspace dependency rule: %s", workspaceRule.getName())));
+            .filter(workspaceRule -> workspaceFileLine.matches(String.format("^\\s*%s\\s*\\(", workspaceRule.getName())))
+            .peek(workspaceRule -> logger.debug(String.format("Found workspace dependency rule: %s", workspaceRule.getName())));
     }
 }

@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.cargo.model;
 
 import java.util.List;
@@ -21,7 +14,7 @@ public class Package {
         return Optional.ofNullable(name);
     }
 
-    public void setName(final String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -29,7 +22,7 @@ public class Package {
         return Optional.ofNullable(version);
     }
 
-    public void setVersion(final String version) {
+    public void setVersion(String version) {
         this.version = version;
     }
 
@@ -37,7 +30,7 @@ public class Package {
         return Optional.ofNullable(source);
     }
 
-    public void setSource(final String source) {
+    public void setSource(String source) {
         this.source = source;
     }
 
@@ -45,7 +38,7 @@ public class Package {
         return Optional.ofNullable(checksum);
     }
 
-    public void setChecksum(final String checksum) {
+    public void setChecksum(String checksum) {
         this.checksum = checksum;
     }
 
@@ -53,7 +46,7 @@ public class Package {
         return Optional.ofNullable(dependencies);
     }
 
-    public void setDependencies(final List<String> dependencies) {
+    public void setDependencies(List<String> dependencies) {
         this.dependencies = dependencies;
     }
 }

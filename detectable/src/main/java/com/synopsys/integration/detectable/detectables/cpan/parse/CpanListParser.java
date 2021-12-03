@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.cpan.parse;
 
 import java.util.ArrayList;
@@ -29,21 +22,21 @@ public class CpanListParser {
 
     private final ExternalIdFactory externalIdFactory;
 
-    public CpanListParser(final ExternalIdFactory externalIdFactory) {
+    public CpanListParser(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph parse(final List<String> cpanListText, final List<String> directDependenciesText) {
-        final Map<String, String> nameVersionMap = createNameVersionMap(cpanListText);
-        final List<String> directModuleNames = getDirectModuleNames(directDependenciesText);
+    public DependencyGraph parse(List<String> cpanListText, List<String> directDependenciesText) {
+        Map<String, String> nameVersionMap = createNameVersionMap(cpanListText);
+        List<String> directModuleNames = getDirectModuleNames(directDependenciesText);
 
-        final MutableDependencyGraph graph = new MutableMapDependencyGraph();
-        for (final String moduleName : directModuleNames) {
-            final String version = nameVersionMap.get(moduleName);
+        MutableDependencyGraph graph = new MutableMapDependencyGraph();
+        for (String moduleName : directModuleNames) {
+            String version = nameVersionMap.get(moduleName);
             if (null != version) {
-                final String name = moduleName.replace("::", "-");
-                final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.CPAN, name, version);
-                final Dependency dependency = new Dependency(name, version, externalId);
+                String name = moduleName.replace("::", "-");
+                ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.CPAN, name, version);
+                Dependency dependency = new Dependency(name, version, externalId);
                 graph.addChildToRoot(dependency);
             } else {
                 logger.warn(String.format("Could node find resolved version for module: %s", moduleName));
@@ -53,10 +46,10 @@ public class CpanListParser {
         return graph;
     }
 
-    public Map<String, String> createNameVersionMap(final List<String> listText) {
-        final Map<String, String> nameVersionMap = new HashMap<>();
+    public Map<String, String> createNameVersionMap(List<String> listText) {
+        Map<String, String> nameVersionMap = new HashMap<>();
 
-        for (final String line : listText) {
+        for (String line : listText) {
             if (StringUtils.isBlank(line)) {
                 continue;
             }
@@ -66,11 +59,11 @@ public class CpanListParser {
             }
 
             try {
-                final String[] module = line.trim().split("\t");
-                final String name = module[0].trim();
-                final String version = module[1].trim();
+                String[] module = line.trim().split("\t");
+                String name = module[0].trim();
+                String version = module[1].trim();
                 nameVersionMap.put(name, version);
-            } catch (final IndexOutOfBoundsException indexOutOfBoundsException) {
+            } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
                 logger.debug(String.format("Failed to handle the following line:%s", line));
             }
         }
@@ -78,9 +71,9 @@ public class CpanListParser {
         return nameVersionMap;
     }
 
-    public List<String> getDirectModuleNames(final List<String> directDependenciesText) {
-        final List<String> modules = new ArrayList<>();
-        for (final String line : directDependenciesText) {
+    public List<String> getDirectModuleNames(List<String> directDependenciesText) {
+        List<String> modules = new ArrayList<>();
+        for (String line : directDependenciesText) {
             if (StringUtils.isBlank(line)) {
                 continue;
             }

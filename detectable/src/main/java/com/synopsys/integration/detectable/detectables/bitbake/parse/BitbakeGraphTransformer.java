@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.bitbake.parse;
 
 import java.util.HashMap;
@@ -31,20 +24,20 @@ public class BitbakeGraphTransformer {
 
     private final ExternalIdFactory externalIdFactory;
 
-    public BitbakeGraphTransformer(final ExternalIdFactory externalIdFactory) {
+    public BitbakeGraphTransformer(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph transform(final BitbakeGraph bitbakeGraph, final Map<String, String> recipeLayerMap) {
-        final MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
-        final Map<String, Dependency> namesToExternalIds = new HashMap<>();
+    public DependencyGraph transform(BitbakeGraph bitbakeGraph, Map<String, String> recipeLayerMap) {
+        MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
+        Map<String, Dependency> namesToExternalIds = new HashMap<>();
 
-        for (final BitbakeNode bitbakeNode : bitbakeGraph.getNodes()) {
-            final String name = bitbakeNode.getName();
+        for (BitbakeNode bitbakeNode : bitbakeGraph.getNodes()) {
+            String name = bitbakeNode.getName();
 
             if (bitbakeNode.getVersion().isPresent()) {
-                final String version = bitbakeNode.getVersion().get();
-                final Optional<Dependency> dependency = generateExternalId(name, version, recipeLayerMap).map(Dependency::new);
+                String version = bitbakeNode.getVersion().get();
+                Optional<Dependency> dependency = generateExternalId(name, version, recipeLayerMap).map(Dependency::new);
 
                 dependency.ifPresent(value -> namesToExternalIds.put(bitbakeNode.getName(), value));
             } else if (name.startsWith("virtual/")) {
@@ -54,16 +47,16 @@ public class BitbakeGraphTransformer {
             }
         }
 
-        for (final BitbakeNode bitbakeNode : bitbakeGraph.getNodes()) {
-            final String name = bitbakeNode.getName();
+        for (BitbakeNode bitbakeNode : bitbakeGraph.getNodes()) {
+            String name = bitbakeNode.getName();
 
             if (namesToExternalIds.containsKey(name)) {
-                final Dependency dependency = namesToExternalIds.get(bitbakeNode.getName());
+                Dependency dependency = namesToExternalIds.get(bitbakeNode.getName());
                 dependencyGraph.addChildToRoot(dependency);
 
-                for (final String child : bitbakeNode.getChildren()) {
+                for (String child : bitbakeNode.getChildren()) {
                     if (namesToExternalIds.containsKey(child)) {
-                        final Dependency childDependency = namesToExternalIds.get(child);
+                        Dependency childDependency = namesToExternalIds.get(child);
                         dependencyGraph.addParentWithChild(dependency, childDependency);
                     }
                 }
@@ -73,8 +66,8 @@ public class BitbakeGraphTransformer {
         return dependencyGraph;
     }
 
-    private Optional<ExternalId> generateExternalId(final String dependencyName, final String dependencyVersion, final Map<String, String> recipeLayerMap) {
-        final String priorityLayerName = recipeLayerMap.get(dependencyName);
+    private Optional<ExternalId> generateExternalId(String dependencyName, String dependencyVersion, Map<String, String> recipeLayerMap) {
+        String priorityLayerName = recipeLayerMap.get(dependencyName);
         ExternalId externalId = null;
 
         if (priorityLayerName != null) {
@@ -83,7 +76,7 @@ public class BitbakeGraphTransformer {
             logger.debug(String.format("Failed to find component '%s' in component layer map.", dependencyName));
 
             if (dependencyName.endsWith(NATIVE_SUFFIX)) {
-                final String alternativeName = dependencyName.replace(NATIVE_SUFFIX, "");
+                String alternativeName = dependencyName.replace(NATIVE_SUFFIX, "");
                 logger.debug(String.format("Generating alternative component name '%s' for '%s==%s'", alternativeName, dependencyName, dependencyVersion));
                 externalId = generateExternalId(alternativeName, dependencyVersion, recipeLayerMap).orElse(null);
             } else {

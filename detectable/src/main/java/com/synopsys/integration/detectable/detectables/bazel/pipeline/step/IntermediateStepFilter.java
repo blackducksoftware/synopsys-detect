@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.bazel.pipeline.step;
 
 import java.util.ArrayList;
@@ -17,15 +10,15 @@ public class IntermediateStepFilter implements IntermediateStep {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final String regex;
 
-    public IntermediateStepFilter(final String regex) {
+    public IntermediateStepFilter(String regex) {
         this.regex = regex;
     }
 
     @Override
-    public List<String> process(final List<String> input) {
-        final List<String> output = new ArrayList<>();
+    public List<String> process(List<String> input) {
+        List<String> output = new ArrayList<>();
         logger.trace(String.format("Filtering with regex %s", regex));
-        for (final String inputItem : input) {
+        for (String inputItem : input) {
             if (inputItem.matches(regex)) {
                 logger.trace(String.format("Filter keeping: %s", inputItem));
                 output.add(inputItem);

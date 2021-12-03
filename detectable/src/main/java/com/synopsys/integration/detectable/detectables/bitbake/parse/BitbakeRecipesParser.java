@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.bitbake.parse;
 
 import java.util.ArrayList;
@@ -24,12 +17,12 @@ public class BitbakeRecipesParser {
      * @param showRecipeLines is the executable output.
      * @return Recipe names mapped to a recipe's the layer names.
      */
-    public List<BitbakeRecipe> parseShowRecipes(final List<String> showRecipeLines) {
-        final List<BitbakeRecipe> bitbakeRecipes = new ArrayList<>();
+    public List<BitbakeRecipe> parseShowRecipes(List<String> showRecipeLines) {
+        List<BitbakeRecipe> bitbakeRecipes = new ArrayList<>();
 
         boolean started = false;
         BitbakeRecipe currentRecipe = null;
-        for (final String line : showRecipeLines) {
+        for (String line : showRecipeLines) {
             if (StringUtils.isBlank(line)) {
                 continue;
             }
@@ -48,23 +41,23 @@ public class BitbakeRecipesParser {
         return bitbakeRecipes;
     }
 
-    private BitbakeRecipe parseLine(final String line, final BitbakeRecipe currentRecipe, final List<BitbakeRecipe> bitbakeRecipes) {
+    private BitbakeRecipe parseLine(String line, BitbakeRecipe currentRecipe, List<BitbakeRecipe> bitbakeRecipes) {
         if (line.contains(":") && !line.startsWith("  ")) {
             // Parse beginning of new component
             if (currentRecipe != null) {
                 bitbakeRecipes.add(currentRecipe);
             }
 
-            final String recipeName = line.replace(":", "").trim();
+            String recipeName = line.replace(":", "").trim();
             return new BitbakeRecipe(recipeName, new ArrayList<>());
         } else if (currentRecipe != null && line.startsWith("  ")) {
             // Parse the layer and version for the current component
-            final String trimmedLine = line.trim();
-            final int indexOfFirstSpace = trimmedLine.indexOf(' ');
-            final int indexOfLastSpace = trimmedLine.lastIndexOf(' ');
+            String trimmedLine = line.trim();
+            int indexOfFirstSpace = trimmedLine.indexOf(' ');
+            int indexOfLastSpace = trimmedLine.lastIndexOf(' ');
 
             if (indexOfFirstSpace != -1 && indexOfLastSpace != -1 && indexOfLastSpace + 1 < trimmedLine.length()) {
-                final String layer = trimmedLine.substring(0, indexOfFirstSpace);
+                String layer = trimmedLine.substring(0, indexOfFirstSpace);
                 currentRecipe.addLayerName(layer);
             } else {
                 logger.debug(String.format("Failed to parse layer for component '%s' from line '%s'.", currentRecipe.getName(), line));

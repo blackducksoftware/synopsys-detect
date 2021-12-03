@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.bitbake;
 
 import java.io.File;
@@ -15,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
@@ -33,6 +25,7 @@ import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGrap
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParserTransformer;
 import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 
@@ -84,13 +77,13 @@ public class BitbakeExtractor {
 
         if (codeLocations.isEmpty()) {
             extraction = new Extraction.Builder()
-                             .failure("No Code Locations were generated during extraction")
-                             .build();
+                .failure("No Code Locations were generated during extraction")
+                .build();
 
         } else {
             extraction = new Extraction.Builder()
-                             .success(codeLocations)
-                             .build();
+                .success(codeLocations)
+                .build();
         }
 
         return extraction;
@@ -98,7 +91,7 @@ public class BitbakeExtractor {
 
     private BitbakeGraph generateBitbakeGraph(BitbakeSession bitbakeSession, File sourceDirectory, String packageName, boolean followSymLinks, Integer searchDepth) throws ExecutableRunnerException, IOException, IntegrationException {
         File taskDependsFile = bitbakeSession.executeBitbakeForDependencies(sourceDirectory, packageName, followSymLinks, searchDepth)
-                                   .orElseThrow(() -> new IntegrationException("Failed to find file \"task-depends.dot\"."));
+            .orElseThrow(() -> new IntegrationException("Failed to find file \"task-depends.dot\"."));
 
         logger.trace(FileUtils.readFileToString(taskDependsFile, Charset.defaultCharset()));
 

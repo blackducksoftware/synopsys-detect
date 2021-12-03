@@ -1,11 +1,16 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.bazel;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
@@ -22,13 +27,6 @@ import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.Bazel
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import com.synopsys.integration.exception.IntegrationException;
-import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.util.*;
-import java.util.stream.Collectors;
 
 public class BazelExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -38,9 +36,9 @@ public class BazelExtractor {
     private final ToolVersionLogger toolVersionLogger;
 
     public BazelExtractor(DetectableExecutableRunner executableRunner,
-                          ExternalIdFactory externalIdFactory,
-                          WorkspaceRuleChooser workspaceRuleChooser,
-                          ToolVersionLogger toolVersionLogger) {
+        ExternalIdFactory externalIdFactory,
+        WorkspaceRuleChooser workspaceRuleChooser,
+        ToolVersionLogger toolVersionLogger) {
         this.executableRunner = executableRunner;
         this.externalIdFactory = externalIdFactory;
         this.workspaceRuleChooser = workspaceRuleChooser;
@@ -71,8 +69,8 @@ public class BazelExtractor {
         CodeLocation codeLocation = new CodeLocation(dependencyGraph);
         List<CodeLocation> codeLocations = Collections.singletonList(codeLocation);
         Extraction.Builder builder = new Extraction.Builder()
-                                         .success(codeLocations)
-                                         .projectName(projectName);
+            .success(codeLocations)
+            .projectName(projectName);
         return builder.build();
     }
 
@@ -81,8 +79,8 @@ public class BazelExtractor {
         List<Dependency> aggregatedDependencies = new ArrayList<>();
         // Make sure the order of processing deterministic
         List<WorkspaceRule> sortedWorkspaceRules = workspaceRules.stream()
-                                                       .sorted(Comparator.naturalOrder())
-                                                       .collect(Collectors.toList());
+            .sorted(Comparator.naturalOrder())
+            .collect(Collectors.toList());
 
         for (WorkspaceRule workspaceRule : sortedWorkspaceRules) {
             logger.info(String.format("Running processing pipeline for rule %s", workspaceRule));

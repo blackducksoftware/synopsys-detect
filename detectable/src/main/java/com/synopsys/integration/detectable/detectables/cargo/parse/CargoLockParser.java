@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.cargo.parse;
 
 import java.util.HashMap;
@@ -90,8 +83,8 @@ public class CargoLockParser {
 
     private List<String> extractDependencyNames(List<String> rawDependencies) {
         return rawDependencies.stream()
-                   .map(dependency -> dependency.split(" ")[0])
-                   .collect(Collectors.toList());
+            .map(dependency -> dependency.split(" ")[0])
+            .collect(Collectors.toList());
     }
 
     private Dependency createCargoDependency(String name, String version) {

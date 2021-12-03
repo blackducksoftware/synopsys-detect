@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.bazel.pipeline;
 
 import java.util.ArrayList;
@@ -17,12 +10,12 @@ public class PipelineBuilder {
     private final List<IntermediateStep> intermediateSteps = new ArrayList<>();
     private FinalStep finalStep;
 
-    public PipelineBuilder addIntermediateStep(final IntermediateStep intermediateStep) {
+    public PipelineBuilder addIntermediateStep(IntermediateStep intermediateStep) {
         intermediateSteps.add(intermediateStep);
         return this;
     }
 
-    public PipelineBuilder setFinalStep(final FinalStep finalStep) {
+    public PipelineBuilder setFinalStep(FinalStep finalStep) {
         this.finalStep = finalStep;
         return this;
     }

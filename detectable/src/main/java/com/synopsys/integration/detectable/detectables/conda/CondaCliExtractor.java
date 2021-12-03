@@ -1,11 +1,10 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.conda;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.detectable.ExecutableTarget;
@@ -16,11 +15,6 @@ import com.synopsys.integration.detectable.detectables.conda.parser.CondaListPar
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import com.synopsys.integration.executable.ExecutableOutput;
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class CondaCliExtractor {
     private final CondaListParser condaListParser;

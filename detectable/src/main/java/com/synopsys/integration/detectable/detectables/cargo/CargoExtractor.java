@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.cargo;
 
 import java.io.File;
@@ -16,16 +9,15 @@ import java.util.List;
 import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
-import org.tomlj.Toml;
 import org.tomlj.TomlParseResult;
 import org.tomlj.TomlTable;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.detectable.detectable.util.TomlFileUtils;
-import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.detectable.detectable.util.TomlFileUtils;
 import com.synopsys.integration.detectable.detectables.cargo.parse.CargoLockParser;
+import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.util.NameVersion;
 
 public class CargoExtractor {
@@ -49,10 +41,10 @@ public class CargoExtractor {
             Optional<NameVersion> cargoNameVersion = extractNameVersionFromCargoToml(cargoToml);
             if (cargoNameVersion.isPresent()) {
                 return new Extraction.Builder()
-                           .success(codeLocation)
-                           .projectName(cargoNameVersion.get().getName())
-                           .projectVersion(cargoNameVersion.get().getVersion())
-                           .build();
+                    .success(codeLocation)
+                    .projectName(cargoNameVersion.get().getName())
+                    .projectVersion(cargoNameVersion.get().getVersion())
+                    .build();
             }
             return new Extraction.Builder().success(codeLocation).build();
         } catch (IOException | DetectableException e) {

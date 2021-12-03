@@ -1,11 +1,6 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.bitbake;
+
+import java.io.File;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
@@ -20,8 +15,6 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PropertyInsufficientDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
-
-import java.io.File;
 
 @DetectableInfo(language = "various", forge = "YOCTO", requirementsMarkdown = "Properties: Package names. File: build env script. Executable: bash")
 public class BitbakeDetectable extends Detectable {
