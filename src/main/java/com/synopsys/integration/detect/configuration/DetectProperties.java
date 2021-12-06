@@ -1289,13 +1289,24 @@ public class DetectProperties {
         new DetectProperty<>(new EnumProperty<>("logging.level.com.synopsys.integration", LogLevel.INFO, LogLevel.class))
             .setInfo("Logging Level", DetectPropertyFromVersion.VERSION_5_3_0)
             .setHelp("The logging level of Detect.",
-                "Detect logging is performed using Spring Boot's default logging setup (Logback). Detect sets the default log message format to \"%d{yyyy-MM-dd HH:mm:ss z} ${LOG_LEVEL_PATTERN:%-6p}[%thread] %clr(---){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}\". You can change your log message format by setting the Spring Boot <i>logging.pattern.console</i> property to a different pattern. Refer to the Spring Boot logging documentation for more details.")
+                "INFO level logging is recommended for normal use to keep the size of the log reasonable. Troubleshooting requires DEBUG or TRACE. " +
+                    "Detect logging is performed using Spring Boot's default logging setup: Logback. " +
+                    "The general format of this property name is <i>logging.level.{package}[.{class}]</i>. " +
+                    "<i>com.synopsys.integration</i> is the name of Detect's top-level package, so changing its logging level affects all Detect code. " +
+                    "You can set the logging level for any package or class, including those from libraries that Detect uses. " +
+                    "For example, <i>logging.level.org.apache.http=TRACE</i> sets the logging level to TRACE for the Apache HTTP client library. " +
+                    "<p/>" +
+                    "For log message format, Detect uses a default value of <i>%d{yyyy-MM-dd HH:mm:ss z} ${LOG_LEVEL_PATTERN:%-6p}[%thread] %clr(---){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}</i>. " +
+                    "You can change your log message format by setting the Spring Boot <i>logging.pattern.console</i> property to a different pattern. " +
+                    "<p/>" +
+                    "Refer to the Spring Boot logging and Logback Project documentation for more details.")
             .setGroups(DetectGroup.LOGGING, DetectGroup.GLOBAL);
 
     public static final DetectProperty<EnumProperty<LogLevel>> LOGGING_LEVEL_DETECT =
         new DetectProperty<>(new EnumProperty<>("logging.level.detect", LogLevel.INFO, LogLevel.class))
             .setInfo("Logging Level Shorthand", DetectPropertyFromVersion.VERSION_5_5_0)
-            .setHelp("Shorthand for the logging level of detect. Equivalent to setting logging.level.com.synopsys.integration.")
+            .setHelp("Shorthand for the logging level of detect. Equivalent to setting <i>logging.level.com.synopsys.integration</i>.",
+                "Refer to the description of property <i>logging.level.com.synopsys.integration</i> for additional details.")
             .setGroups(DetectGroup.LOGGING, DetectGroup.GLOBAL);
 
     public static final DetectProperty<BooleanProperty> DETECT_WAIT_FOR_RESULTS =
