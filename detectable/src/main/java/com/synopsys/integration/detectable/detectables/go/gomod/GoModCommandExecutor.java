@@ -26,6 +26,7 @@ public class GoModCommandExecutor {
     private static final String FAILURE_MSG_QUERYING_FOR_THE_VERSION = "Querying for the version failed: ";
     private static final String FAILURE_MSG_QUERYING_FOR_GO_MOD_WHY = "Querying for the go modules compiled into the binary failed:";
     private static final Pattern GENERATE_GO_LIST_U_JSON_OUTPUT_PATTERN = Pattern.compile("\\d+\\.[\\d.]+");
+    private static final String JSON_OUTPUT_FLAG = "-json";
 
     private final DetectableExecutableRunner executableRunner;
 
@@ -34,7 +35,7 @@ public class GoModCommandExecutor {
     }
 
     List<String> generateGoListOutput(File directory, ExecutableTarget goExe) throws ExecutableRunnerException, DetectableException {
-        return execute(directory, goExe, FAILURE_MSG_QUERYING_GO_FOR_THE_LIST_OF_MODULES, "list", "-m", "-json");
+        return execute(directory, goExe, FAILURE_MSG_QUERYING_GO_FOR_THE_LIST_OF_MODULES, "list", "-m", JSON_OUTPUT_FLAG);
     }
 
     List<String> generateGoListUJsonOutput(File directory, ExecutableTarget goExe) throws ExecutableRunnerException, DetectableException {
@@ -46,9 +47,9 @@ public class GoModCommandExecutor {
             if (Integer.parseInt(parts[0]) > 1 || Integer.parseInt(parts[1]) >= 14) {
                 // TODO: Why are we passing -u into these commands? We don't do anything with the "update" block. I think this slows down the run and risks introducing more errors. JM 10/2021
                 // https://pkg.go.dev/cmd/go/internal/list it appears -u only checks for package updates.
-                return execute(directory, goExe, FAILURE_MSG_QUERYING_FOR_THE_GO_MOD_GRAPH, "list", "-mod=readonly", "-m", "-u", "-json", "all");
+                return execute(directory, goExe, FAILURE_MSG_QUERYING_FOR_THE_GO_MOD_GRAPH, "list", "-mod=readonly", "-m", "-u", JSON_OUTPUT_FLAG, "all");
             } else {
-                return execute(directory, goExe, FAILURE_MSG_QUERYING_FOR_THE_GO_MOD_GRAPH, "list", "-m", "-u", "-json", "all");
+                return execute(directory, goExe, FAILURE_MSG_QUERYING_FOR_THE_GO_MOD_GRAPH, "list", "-m", "-u", JSON_OUTPUT_FLAG, "all");
             }
         }
         return new ArrayList<>();
