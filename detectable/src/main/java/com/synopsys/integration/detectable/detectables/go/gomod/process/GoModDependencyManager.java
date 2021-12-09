@@ -4,7 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.bdio.model.Forge;
@@ -15,10 +18,12 @@ import com.synopsys.integration.detectable.detectables.go.gomod.model.ReplaceDat
 
 public class GoModDependencyManager {
     private static final String INCOMPATIBLE_SUFFIX = "+incompatible";
+    private static final String SHA1_REGEX = "[a-fA-F0-9]{40}";
+    private static final Pattern GIT_VERSION_PATTERN = Pattern.compile(String.format(".*(%s).*", SHA1_REGEX));
 
     private final ExternalIdFactory externalIdFactory;
 
-    private Map<String, Dependency> modulesAsDependencies;
+    private final Map<String, Dependency> modulesAsDependencies;
 
     public GoModDependencyManager(List<GoListAllData> allModules, ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
@@ -53,10 +58,11 @@ public class GoModDependencyManager {
         return modulesAsDependencies.getOrDefault(moduleName, convertToDependency(moduleName, null));
     }
 
+    // When a version contains a commit hash, the KB only accepts the git hash, so we must strip out the rest.
     private String handleGitHash(String version) {
-        if (version.contains("-")) { //The KB only supports the git hash, unfortunately we must strip out the rest. This gets just the commit has from a go.mod psuedo version.
-            String[] versionPieces = version.split("-");
-            return versionPieces[versionPieces.length - 1];
+        Matcher matcher = GIT_VERSION_PATTERN.matcher(version);
+        if (matcher.matches()) {
+            return StringUtils.trim(matcher.group(1));
         }
         return version;
     }
