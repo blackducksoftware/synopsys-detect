@@ -1294,7 +1294,7 @@ public class DetectProperties {
                     "The format of this property name is <i>logging.level.{package}[.{class}]</i>. " +
                     "The property name shown above specifies package <i>com.synopsys.integration</i> because that is the name of Detect's top-level package. " +
                     "Changing the logging level for that package changes the logging level for all Detect code, as well as Synopsys integration libraries that Detect uses. " +
-                    "Changing the logging level for package <i>com.synopsys.integration</i> does not change the logging level for non-Synopsys libraries that Detect uses because their base package names are different. " +
+                    "Non-Synopsys libraries that Detect uses are not affected. " +
                     "However, you can use this property to set the logging level for some of the non-Synopsys libraries that Detect uses by using the appropriate package name. " +
                     "For example, <i>logging.level.org.apache.http=TRACE</i> sets the logging level to TRACE for the Apache HTTP client library. " +
                     "<p/>" +
