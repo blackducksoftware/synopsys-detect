@@ -1289,9 +1289,9 @@ public class DetectProperties {
         new DetectProperty<>(new EnumProperty<>("logging.level.com.synopsys.integration", LogLevel.INFO, LogLevel.class))
             .setInfo("Logging Level", DetectPropertyFromVersion.VERSION_5_3_0)
             .setHelp("The logging level of Detect.",
-                "INFO level logging is recommended for normal use to keep the size of the log reasonable. Troubleshooting requires DEBUG or TRACE.<p/>" +
-                    "Detect logging is performed using Spring Boot's default logging setup: Logback. " +
-                    "The general format of this property name is <i>logging.level.{package}[.{class}]</i>. " +
+                "To keep the log file size manageable, use INFO level logging for normal use. Use DEBUG or TRACE for troubleshooting.<p/>" +
+                    "Detect logging uses Spring Boot logging, which uses Logback (https://logback.qos.ch). " +
+                    "The format of this property name is <i>logging.level.{package}[.{class}]</i>. " +
                     "The property name shown above specifies package <i>com.synopsys.integration</i> because that is the name of Detect's top-level package. " +
                     "Changing the logging level for that package changes the logging level for all Detect code, as well as Synopsys integration libraries that Detect uses. " +
                     "Changing the logging level for package <i>com.synopsys.integration</i> does not change the logging level for non-Synopsys libraries that Detect uses because their base package names are different. " +
