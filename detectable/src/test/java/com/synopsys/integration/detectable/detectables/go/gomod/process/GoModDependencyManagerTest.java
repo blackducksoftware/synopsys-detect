@@ -25,6 +25,16 @@ class GoModDependencyManagerTest {
         assertEquals(moduleName, dependency.getName());
         assertEquals(moduleVersion, dependency.getVersion());
     }
+    
+    @Test
+    void versionTruncatedHashTest() {
+        String moduleName = "example.io/module/a";
+        String moduleVersion = "v0.0.0-20180917221912-90fa682c2a6e";
+        GoModDependencyManager dependencyManager = createManagerWithModuleLoadedWith(moduleName, moduleVersion);
+        Dependency dependency = dependencyManager.getDependencyForModule(moduleName);
+        assertEquals(moduleName, dependency.getName());
+        assertEquals("90fa682c2a6e", dependency.getVersion());
+    }
 
     @Test
     void versionWithIncompatible() {

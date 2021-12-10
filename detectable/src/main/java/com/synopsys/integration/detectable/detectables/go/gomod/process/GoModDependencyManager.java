@@ -19,7 +19,10 @@ import com.synopsys.integration.detectable.detectables.go.gomod.model.ReplaceDat
 public class GoModDependencyManager {
     private static final String INCOMPATIBLE_SUFFIX = "+incompatible";
     private static final String SHA1_REGEX = "[a-fA-F0-9]{40}";
-    private static final Pattern GIT_VERSION_PATTERN = Pattern.compile(String.format(".*(%s).*", SHA1_REGEX));
+    private static final String SHORT_SHA1_REGEX = "[a-fA-F0-9]{12}";
+    private static final String GIT_VERSION_FORMAT = ".*(%s).*";
+    private static final Pattern SHA1_VERSION_PATTERN = Pattern.compile(String.format(GIT_VERSION_FORMAT, SHA1_REGEX));
+    private static final Pattern SHORT_SHA1_VERSION_PATTERN = Pattern.compile(String.format(GIT_VERSION_FORMAT, SHORT_SHA1_REGEX));
 
     private final ExternalIdFactory externalIdFactory;
 
@@ -60,11 +63,19 @@ public class GoModDependencyManager {
 
     // When a version contains a commit hash, the KB only accepts the git hash, so we must strip out the rest.
     private String handleGitHash(String version) {
-        Matcher matcher = GIT_VERSION_PATTERN.matcher(version);
+        return getVersionFromPattern(version, SHA1_VERSION_PATTERN)
+            .orElseGet(() ->
+                getVersionFromPattern(version, SHORT_SHA1_VERSION_PATTERN)
+                    .orElse(version)
+            );
+    }
+
+    private Optional<String> getVersionFromPattern(String version, Pattern versionPattern) {
+        Matcher matcher = versionPattern.matcher(version);
         if (matcher.matches()) {
-            return StringUtils.trim(matcher.group(1));
+            return Optional.ofNullable(StringUtils.trim(matcher.group(1)));
         }
-        return version;
+        return Optional.empty();
     }
 
     // https://golang.org/ref/mod#incompatible-versions
