@@ -75,7 +75,7 @@ public class GoModCliExtractor {
         return goGraphParser.parseRelationshipsFromGoModGraph(modGraphOutput);
     }
 
-    private Set<String> moduleExclusions(File directory, ExecutableTarget goExe, boolean dependencyVerificationEnabled) {
+    private Set<String> moduleExclusions(File directory, ExecutableTarget goExe, boolean dependencyVerificationEnabled) throws DetectableException, ExecutableRunnerException {
         Set<String> moduleExclusions = Collections.emptySet();
         if (dependencyVerificationEnabled) {
             List<String> modWhyOutput = goModCommandExecutor.generateGoModWhyOutput(directory, goExe);

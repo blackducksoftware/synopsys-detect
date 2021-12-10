@@ -70,7 +70,7 @@ public class DiagnosticSystem {
 
         diagnosticReportHandler.configurationsReport(detectInfo, propertyConfiguration, maskedRawPropertyValues, propertyKeys);
 
-        logger.info("Diagnostics is ready.");
+        logger.info("Diagnostics system is ready (extended mode: {}).", isExtendedMode);
     }
 
     public Map<String, String> getAdditionalDockerProperties() {
