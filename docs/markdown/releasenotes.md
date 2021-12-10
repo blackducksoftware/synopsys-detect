@@ -1,5 +1,11 @@
 # Release notes
 
+## Version 7.10.0
+
+### Resolved issues
+* (IDETECT-2949) Fixed an issue where [solution_name] failed to properly parse Go module version names containing '-' characters.
+* (IDETECT-2959) Fixed an issue where [solution_name] would not fail when running `go mod why` fails.
+
 ## Version 7.9.0
 
 ### New Features
