@@ -1289,11 +1289,13 @@ public class DetectProperties {
         new DetectProperty<>(new EnumProperty<>("logging.level.com.synopsys.integration", LogLevel.INFO, LogLevel.class))
             .setInfo("Logging Level", DetectPropertyFromVersion.VERSION_5_3_0)
             .setHelp("The logging level of Detect.",
-                "INFO level logging is recommended for normal use to keep the size of the log reasonable. Troubleshooting requires DEBUG or TRACE. " +
+                "INFO level logging is recommended for normal use to keep the size of the log reasonable. Troubleshooting requires DEBUG or TRACE.<p/>" +
                     "Detect logging is performed using Spring Boot's default logging setup: Logback. " +
                     "The general format of this property name is <i>logging.level.{package}[.{class}]</i>. " +
-                    "<i>com.synopsys.integration</i> is the name of Detect's top-level package, so changing its logging level affects all Detect code. " +
-                    "You can set the logging level for any package or class, including those from libraries that Detect uses. " +
+                    "The property name shown above specifies package <i>com.synopsys.integration</i> because that is the name of Detect's top-level package. " +
+                    "Changing the logging level for that package changes the logging level for all Detect code, as well as Synopsys integration libraries that Detect uses. " +
+                    "Changing the logging level for package <i>com.synopsys.integration</i> does not change the logging level for non-Synopsys libraries that Detect uses because their base package names are different. " +
+                    "However, you can use this property to set the logging level for some of the non-Synopsys libraries that Detect uses by using the appropriate package name. " +
                     "For example, <i>logging.level.org.apache.http=TRACE</i> sets the logging level to TRACE for the Apache HTTP client library. " +
                     "<p/>" +
                     "For log message format, Detect uses a default value of <i>%d{yyyy-MM-dd HH:mm:ss z} ${LOG_LEVEL_PATTERN:%-6p}[%thread] %clr(---){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}</i>. " +
