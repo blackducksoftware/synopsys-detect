@@ -24,8 +24,6 @@ public class IvyParseExtractor {
 
     public Extraction extract(File ivyXmlFile) {
         try (InputStream ivyXmlInputStream = new FileInputStream(ivyXmlFile)) {
-            //we have to create a new handler or the state of all handlers would be shared.
-            //we could create a handler factory or some other indirection so it could be injected but for now we make a new one.
             IvyDependenciesHandler ivyDependenciesHandler = new IvyDependenciesHandler(externalIdFactory);
             saxParser.parse(ivyXmlInputStream, ivyDependenciesHandler);
             List<Dependency> dependencies = ivyDependenciesHandler.getDependencies();

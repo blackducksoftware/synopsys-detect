@@ -22,6 +22,7 @@ public enum DetectorType {
     GO_GRADLE,
     GRADLE,
     HEX,
+    IVY,
     LERNA,
     MAVEN,
     NPM,

@@ -149,6 +149,8 @@ import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.G
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportTransformer;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleRootMetadataParser;
 import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleProjectInspectorDetectable;
+import com.synopsys.integration.detectable.detectables.ivy.IvyParseDetectable;
+import com.synopsys.integration.detectable.detectables.ivy.IvyParseExtractor;
 import com.synopsys.integration.detectable.detectables.lerna.LernaDetectable;
 import com.synopsys.integration.detectable.detectables.lerna.LernaExtractor;
 import com.synopsys.integration.detectable.detectables.lerna.LernaOptions;
@@ -280,7 +282,7 @@ public class DetectableFactory {
     //Should only be accessed through the DetectableFactory.
 
     public DockerDetectable createDockerDetectable(DetectableEnvironment environment, DockerDetectableOptions dockerDetectableOptions, DockerInspectorResolver dockerInspectorResolver, JavaResolver javaResolver,
-        DockerResolver dockerResolver) {
+                                                   DockerResolver dockerResolver) {
         return new DockerDetectable(environment, dockerInspectorResolver, javaResolver, dockerResolver, dockerExtractor(), dockerDetectableOptions);
     }
 
@@ -368,6 +370,10 @@ public class DetectableFactory {
         return new GemspecParseDetectable(environment, fileFinder, gemspecExtractor(), gemspecParseDetectableOptions);
     }
 
+    public IvyParseDetectable createIvyParseDetectable(DetectableEnvironment environment) {
+        return new IvyParseDetectable(environment, fileFinder, ivyParseExtractor());
+    }
+
     public MavenPomDetectable createMavenPomDetectable(DetectableEnvironment environment, MavenResolver mavenResolver, MavenCliExtractorOptions mavenCliExtractorOptions) {
         return new MavenPomDetectable(environment, fileFinder, mavenResolver, mavenCliExtractor(), mavenCliExtractorOptions);
     }
@@ -381,7 +387,7 @@ public class DetectableFactory {
     }
 
     public MavenProjectInspectorDetectable createMavenProjectInspectorDetectable(DetectableEnvironment detectableEnvironment, ProjectInspectorResolver projectInspectorResolver, MavenParseOptions mavenParseOptions,
-        ProjectInspectorOptions projectInspectorOptions) {
+                                                                                 ProjectInspectorOptions projectInspectorOptions) {
         return new MavenProjectInspectorDetectable(detectableEnvironment, fileFinder, projectInspectorResolver, projectInspectorExtractor(), mavenParseOptions, projectInspectorOptions);
     }
 
@@ -418,7 +424,7 @@ public class DetectableFactory {
     }
 
     public NugetProjectInspectorDetectable createNugetParseDetectable(DetectableEnvironment environment, NugetInspectorOptions nugetInspectorOptions, ProjectInspectorResolver projectInspectorResolver,
-        ProjectInspectorOptions projectInspectorOptions) {
+                                                                      ProjectInspectorOptions projectInspectorOptions) {
         return new NugetProjectInspectorDetectable(environment, fileFinder, nugetInspectorOptions, projectInspectorResolver, projectInspectorExtractor(), projectInspectorOptions);
     }
 
@@ -435,8 +441,8 @@ public class DetectableFactory {
     }
 
     public PipInspectorDetectable createPipInspectorDetectable(DetectableEnvironment environment, PipInspectorDetectableOptions pipInspectorDetectableOptions, PipInspectorResolver pipInspectorResolver,
-        PythonResolver pythonResolver,
-        PipResolver pipResolver) {
+                                                               PythonResolver pythonResolver,
+                                                               PipResolver pipResolver) {
         return new PipInspectorDetectable(environment, fileFinder, pythonResolver, pipResolver, pipInspectorResolver, pipInspectorExtractor(), pipInspectorDetectableOptions);
     }
 
@@ -649,6 +655,10 @@ public class DetectableFactory {
 
     private GradleRootMetadataParser gradleRootMetadataParser() {
         return new GradleRootMetadataParser();
+    }
+
+    private IvyParseExtractor ivyParseExtractor() {
+        return new IvyParseExtractor(externalIdFactory, saxParser());
     }
 
     private Rebar3TreeParser rebar3TreeParser() {
