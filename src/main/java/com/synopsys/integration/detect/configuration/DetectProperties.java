@@ -142,6 +142,13 @@ public class DetectProperties {
             .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced);
 
+    public static final DetectProperty<NullablePathProperty> DETECT_ANT_PATH =
+        new DetectProperty<>(new NullablePathProperty("detect.ant.path"))
+            .setInfo("Ant Executable", DetectPropertyFromVersion.VERSION_7_9_0)
+            .setHelp("Path to the Ant executable.", "If set, Detect will use the given Ant executable instead of searching for one.")
+            .setExample("/usr/Downloads/apache-ant-1.10.12/bin/ant")
+            .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL);
+
     public static final DetectProperty<NullablePathProperty> DETECT_BASH_PATH =
         new DetectProperty<>(new NullablePathProperty("detect.bash.path"))
             .setInfo("Bash Executable", DetectPropertyFromVersion.VERSION_3_0_0)

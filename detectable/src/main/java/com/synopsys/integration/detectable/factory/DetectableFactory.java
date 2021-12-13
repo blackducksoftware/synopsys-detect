@@ -149,8 +149,8 @@ import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.G
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportTransformer;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleRootMetadataParser;
 import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleProjectInspectorDetectable;
-import com.synopsys.integration.detectable.detectables.ivy.IvyParseDetectable;
-import com.synopsys.integration.detectable.detectables.ivy.IvyParseExtractor;
+import com.synopsys.integration.detectable.detectables.ivy.parse.IvyParseDetectable;
+import com.synopsys.integration.detectable.detectables.ivy.parse.IvyParseExtractor;
 import com.synopsys.integration.detectable.detectables.lerna.LernaDetectable;
 import com.synopsys.integration.detectable.detectables.lerna.LernaExtractor;
 import com.synopsys.integration.detectable.detectables.lerna.LernaOptions;
@@ -658,7 +658,7 @@ public class DetectableFactory {
     }
 
     private IvyParseExtractor ivyParseExtractor() {
-        return new IvyParseExtractor(externalIdFactory, saxParser());
+        return new IvyParseExtractor(externalIdFactory, saxParser(), projectNameParser);
     }
 
     private Rebar3TreeParser rebar3TreeParser() {

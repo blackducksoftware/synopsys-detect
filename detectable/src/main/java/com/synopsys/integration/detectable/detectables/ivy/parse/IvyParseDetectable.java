@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.ivy;
+package com.synopsys.integration.detectable.detectables.ivy.parse;
 
 import java.io.File;
 
@@ -12,14 +12,16 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "various", forge = "Maven Central", requirementsMarkdown = "File: ivy.xml.")
+@DetectableInfo(language = "various", forge = "Maven Central", requirementsMarkdown = "File: ivy.xml, build.xml.")
 public class IvyParseDetectable extends Detectable {
     private static final String IVY_XML_FILENAME = "ivy.xml";
+    private static final String BUILD_XML_FILENAME = "build.xml";
 
     private final FileFinder fileFinder;
     private final IvyParseExtractor ivyParseExtractor;
 
     private File ivyXmlFile;
+    private File buildXml;
 
     public IvyParseDetectable(DetectableEnvironment environment, FileFinder fileFinder, IvyParseExtractor ivyParseExtractor) {
         super(environment);
@@ -31,6 +33,7 @@ public class IvyParseDetectable extends Detectable {
     public DetectableResult applicable() {
         Requirements requirements = new Requirements(fileFinder, environment);
         ivyXmlFile = requirements.file(IVY_XML_FILENAME);
+        buildXml = requirements.optionalFile(BUILD_XML_FILENAME).orElse(null); // used just for project name information
         return requirements.result();
     }
 
@@ -41,6 +44,6 @@ public class IvyParseDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
-        return ivyParseExtractor.extract(ivyXmlFile);
+        return ivyParseExtractor.extract(ivyXmlFile, buildXml);
     }
 }

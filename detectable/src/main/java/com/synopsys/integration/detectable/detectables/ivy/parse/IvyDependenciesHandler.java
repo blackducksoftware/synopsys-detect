@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.ivy;
+package com.synopsys.integration.detectable.detectables.ivy.parse;
 
 import java.util.ArrayList;
 import java.util.List;

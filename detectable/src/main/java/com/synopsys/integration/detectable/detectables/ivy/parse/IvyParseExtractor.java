@@ -1,9 +1,10 @@
-package com.synopsys.integration.detectable.detectables.ivy;
+package com.synopsys.integration.detectable.detectables.ivy.parse;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Optional;
 
 import javax.xml.parsers.SAXParser;
 
@@ -11,18 +12,22 @@ import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectables.ivy.IvyProjectNameParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.util.NameVersion;
 
 public class IvyParseExtractor {
     private final ExternalIdFactory externalIdFactory;
     private final SAXParser saxParser;
+    private final IvyProjectNameParser projectNameParser;
 
-    public IvyParseExtractor(ExternalIdFactory externalIdFactory, SAXParser saxParser) {
+    public IvyParseExtractor(ExternalIdFactory externalIdFactory, SAXParser saxParser, IvyProjectNameParser projectNameParser) {
         this.externalIdFactory = externalIdFactory;
         this.saxParser = saxParser;
+        this.projectNameParser = projectNameParser;
     }
 
-    public Extraction extract(File ivyXmlFile) {
+    public Extraction extract(File ivyXmlFile, File buildXmlFile) {
         try (InputStream ivyXmlInputStream = new FileInputStream(ivyXmlFile)) {
             IvyDependenciesHandler ivyDependenciesHandler = new IvyDependenciesHandler(externalIdFactory);
             saxParser.parse(ivyXmlInputStream, ivyDependenciesHandler);
@@ -32,7 +37,13 @@ public class IvyParseExtractor {
             dependencyGraph.addChildrenToRoot(dependencies);
 
             CodeLocation codeLocation = new CodeLocation(dependencyGraph);
-            return new Extraction.Builder().success(codeLocation).build();
+
+            Optional<NameVersion> projectName = projectNameParser.parseProjectName(buildXmlFile);
+
+            return new Extraction.Builder()
+                .success(codeLocation)
+                .nameVersionIfPresent(projectName)
+                .build();
         } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
