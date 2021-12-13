@@ -56,7 +56,7 @@ public class CreateBdioCodeLocationsFromDetectCodeLocationsOperation {
                 continue;
             }
             if (detectCodeLocation.getDependencyGraph().getRootDependencies().isEmpty()) {
-                logger.warn(String.format("Could not find any dependencies for code location %s", detectCodeLocation.getSourcePath()));
+                logger.debug(String.format("Could not find any dependencies for code location %s", detectCodeLocation.getSourcePath()));
             }
             validCodeLocations.add(detectCodeLocation);
         }
