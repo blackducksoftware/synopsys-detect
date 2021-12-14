@@ -29,6 +29,7 @@ import com.synopsys.integration.detectable.detectables.docker.DockerDetectableOp
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorOptions;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptOptions;
+import com.synopsys.integration.detectable.detectables.ivy.task.IvyTaskDetectableOptions;
 import com.synopsys.integration.detectable.detectables.lerna.LernaOptions;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenCliExtractorOptions;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseOptions;
@@ -142,6 +143,11 @@ public class DetectableOptionFactory {
         GradleInspectorScriptOptions scriptOptions = new GradleInspectorScriptOptions(excludedProjectNames, includedProjectNames, excludedConfigurationNames, includedConfigurationNames, customRepository, onlineInspectorVersion);
         String gradleBuildCommand = getNullableValue(DetectProperties.DETECT_GRADLE_BUILD_COMMAND);
         return new GradleInspectorOptions(gradleBuildCommand, scriptOptions, proxyInfo, includeUnresolvedConfigurations);
+    }
+
+    public IvyTaskDetectableOptions createIvyTaskDetectableOptions() {
+        String ivyDependencytreeTarget = getNullableValue(DetectProperties.DETECT_IVY_DEPENDENCYTREE_TARGET);
+        return new IvyTaskDetectableOptions(ivyDependencytreeTarget);
     }
 
     public LernaOptions createLernaOptions() {

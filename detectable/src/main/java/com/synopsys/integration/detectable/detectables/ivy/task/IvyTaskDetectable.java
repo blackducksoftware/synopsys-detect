@@ -1,5 +1,6 @@
 package com.synopsys.integration.detectable.detectables.ivy.task;
 
+import java.io.File;
 import java.io.IOException;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
@@ -21,21 +22,25 @@ public class IvyTaskDetectable extends Detectable {
 
     private final FileFinder fileFinder;
     private final AntResolver antResolver;
-    private final IvyTaskExtractor antTaskExtractor;
+    private final IvyTaskExtractor ivyTaskExtractor;
+    private final IvyTaskDetectableOptions ivyTaskDetectableOptions;
 
     private ExecutableTarget antExe;
+    private File buildXml;
 
-    public IvyTaskDetectable(DetectableEnvironment environment, FileFinder fileFinder, AntResolver antResolver, IvyTaskExtractor antTaskExtractor) {
+    public IvyTaskDetectable(DetectableEnvironment environment, FileFinder fileFinder, AntResolver antResolver, IvyTaskExtractor ivyTaskExtractor,
+                             IvyTaskDetectableOptions ivyTaskDetectableOptions) {
         super(environment);
         this.fileFinder = fileFinder;
         this.antResolver = antResolver;
-        this.antTaskExtractor = antTaskExtractor;
+        this.ivyTaskExtractor = ivyTaskExtractor;
+        this.ivyTaskDetectableOptions = ivyTaskDetectableOptions;
     }
 
     @Override
     public DetectableResult applicable() {
         Requirements requirements = new Requirements(fileFinder, environment);
-        requirements.file(BUILD_XML_FILENAME);
+        buildXml = requirements.file(BUILD_XML_FILENAME);
         return requirements.result();
     }
 
@@ -48,6 +53,6 @@ public class IvyTaskDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException, IOException {
-        return antTaskExtractor.extract(environment.getDirectory(), antExe);
+        return ivyTaskExtractor.extract(environment.getDirectory(), antExe, buildXml, ivyTaskDetectableOptions);
     }
 }
