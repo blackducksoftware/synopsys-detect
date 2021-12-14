@@ -6,6 +6,12 @@
 * (IDETECT-2949) Fixed an issue where [solution_name] failed to properly parse Go module version names containing '-' characters.
 * (IDETECT-2959) Fixed an issue where [solution_name] would not fail when running `go mod why` fails.
 
+### Changed features
+* [solution_name] has moved the warning message when generating empty code locations from WARN to the DEBUG logging level.
+
+### Resolved issues
+* (IDETECT-2971) Fixed an issue where [solution_name] would not produce unique code locations paths for Pnpm projects.
+
 ## Version 7.9.0
 
 ### New Features
