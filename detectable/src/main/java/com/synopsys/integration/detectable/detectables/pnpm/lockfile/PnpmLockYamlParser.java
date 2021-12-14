@@ -50,10 +50,18 @@ public class PnpmLockYamlParser {
                     reportingProjectPackagePath = projectPackageName;
                 }
                 PnpmProjectPackage projectPackage = projectPackageInfo.getValue();
-                codeLocations.add(pnpmTransformer.generateCodeLocation(projectPackage, reportingProjectPackagePath, dependencyTypes, new NameVersion(projectPackageName, projectPackageVersion), pnpmLockYaml.packages, linkedPackageResolver));
+                codeLocations.add(pnpmTransformer.generateCodeLocation(
+                    projectPackage,
+                    pnpmLockYamlFile,
+                    reportingProjectPackagePath,
+                    dependencyTypes,
+                    new NameVersion(projectPackageName, projectPackageVersion),
+                    pnpmLockYaml.packages,
+                    linkedPackageResolver
+                ));
             }
         } else {
-            codeLocations.add(pnpmTransformer.generateCodeLocation(pnpmLockYaml, dependencyTypes, projectNameVersion, linkedPackageResolver));
+            codeLocations.add(pnpmTransformer.generateCodeLocation(pnpmLockYamlFile, pnpmLockYaml, dependencyTypes, projectNameVersion, linkedPackageResolver));
         }
         return codeLocations;
     }

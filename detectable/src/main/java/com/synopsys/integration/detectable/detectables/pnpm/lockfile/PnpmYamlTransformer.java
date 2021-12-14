@@ -1,5 +1,6 @@
 package com.synopsys.integration.detectable.detectables.pnpm.lockfile;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,24 +33,47 @@ public class PnpmYamlTransformer {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public CodeLocation generateCodeLocation(PnpmLockYaml pnpmLockYaml, List<DependencyType> dependencyTypes, @Nullable NameVersion projectNameVersion, PnpmLinkedPackageResolver linkedPackageResolver) throws IntegrationException {
-        return generateCodeLocation(convertPnpmLockYamlToPnpmProjectPackage(pnpmLockYaml), null, dependencyTypes, projectNameVersion, pnpmLockYaml.packages, linkedPackageResolver);
+    public CodeLocation generateCodeLocation(
+        File pnpmLockYamlFile,
+        PnpmLockYaml pnpmLockYaml,
+        List<DependencyType> dependencyTypes,
+        @Nullable NameVersion projectNameVersion,
+        PnpmLinkedPackageResolver linkedPackageResolver
+    ) throws IntegrationException {
+        return generateCodeLocation(convertPnpmLockYamlToPnpmProjectPackage(pnpmLockYaml), pnpmLockYamlFile, null, dependencyTypes, projectNameVersion, pnpmLockYaml.packages, linkedPackageResolver);
     }
 
-    public CodeLocation generateCodeLocation(PnpmProjectPackage projectPackage, @Nullable String reportingProjectPackagePath, List<DependencyType> dependencyTypes, @Nullable NameVersion projectNameVersion,
-        @Nullable Map<String, PnpmPackage> packageMap, PnpmLinkedPackageResolver linkedPackageResolver) throws IntegrationException {
+    public CodeLocation generateCodeLocation(
+        PnpmProjectPackage projectPackage,
+        File pnpmLockYamlFile,
+        @Nullable String reportingProjectPackagePath,
+        List<DependencyType> dependencyTypes,
+        @Nullable NameVersion projectNameVersion,
+        @Nullable Map<String, PnpmPackage> packageMap,
+        PnpmLinkedPackageResolver linkedPackageResolver
+    ) throws IntegrationException {
         List<String> rootPackageIds = extractRootPackageIds(projectPackage, reportingProjectPackagePath, dependencyTypes, linkedPackageResolver);
 
         MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
 
         buildGraph(dependencyGraph, rootPackageIds, packageMap, dependencyTypes, linkedPackageResolver, reportingProjectPackagePath);
 
-        return createCodeLocation(dependencyGraph, projectNameVersion);
+        File sourcePath = null;
+        if (StringUtils.isNotEmpty(reportingProjectPackagePath)) {
+            sourcePath = new File(pnpmLockYamlFile.getParentFile(), reportingProjectPackagePath);
+        }
+
+        return createCodeLocation(dependencyGraph, sourcePath, projectNameVersion);
     }
 
-    private void buildGraph(MutableDependencyGraph graphBuilder, List<String> rootPackageIds, @Nullable Map<String, PnpmPackage> packageMap, List<DependencyType> dependencyTypes, PnpmLinkedPackageResolver linkedPackageResolver,
-        @Nullable String reportingProjectPackagePath)
-        throws IntegrationException {
+    private void buildGraph(
+        MutableDependencyGraph graphBuilder,
+        List<String> rootPackageIds,
+        @Nullable Map<String, PnpmPackage> packageMap,
+        List<DependencyType> dependencyTypes,
+        PnpmLinkedPackageResolver linkedPackageResolver,
+        @Nullable String reportingProjectPackagePath
+    ) throws IntegrationException {
         if (packageMap == null) {
             throw new DetectableException("Could not parse 'packages' section of the pnpm-lock.yaml file.");
         }
@@ -121,10 +145,10 @@ public class PnpmYamlTransformer {
         return new Dependency(externalIdFactory.createNameVersionExternalId(Forge.NPMJS, nameVersion.getName(), nameVersion.getVersion()));
     }
 
-    private CodeLocation createCodeLocation(DependencyGraph graph, @Nullable NameVersion nameVersion) {
+    private CodeLocation createCodeLocation(DependencyGraph graph, @Nullable File reportingProject, @Nullable NameVersion nameVersion) {
         if (nameVersion != null) {
-            return new CodeLocation(graph, externalIdFactory.createNameVersionExternalId(Forge.NPMJS, nameVersion.getName(), nameVersion.getVersion()));
+            return new CodeLocation(graph, externalIdFactory.createNameVersionExternalId(Forge.NPMJS, nameVersion.getName(), nameVersion.getVersion()), reportingProject);
         }
-        return new CodeLocation(graph);
+        return new CodeLocation(graph, reportingProject);
     }
 }

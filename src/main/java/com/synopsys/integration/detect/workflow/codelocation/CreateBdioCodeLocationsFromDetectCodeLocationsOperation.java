@@ -11,7 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
@@ -27,7 +26,7 @@ public class CreateBdioCodeLocationsFromDetectCodeLocationsOperation {
         this.directoryManager = directoryManager;
     }
 
-    public BdioCodeLocationResult transformDetectCodeLocations(List<DetectCodeLocation> detectCodeLocations, String prefix, String suffix, NameVersion projectNameVersion) throws DetectUserFriendlyException {
+    public BdioCodeLocationResult transformDetectCodeLocations(List<DetectCodeLocation> detectCodeLocations, String prefix, String suffix, NameVersion projectNameVersion) {
         List<DetectCodeLocation> validDetectCodeLocations = findValidCodeLocations(detectCodeLocations);
         Map<DetectCodeLocation, String> codeLocationsAndNames = createCodeLocationNameMap(validDetectCodeLocations, directoryManager.getSourceDirectory(), projectNameVersion, prefix, suffix);
 
@@ -56,7 +55,7 @@ public class CreateBdioCodeLocationsFromDetectCodeLocationsOperation {
                 continue;
             }
             if (detectCodeLocation.getDependencyGraph().getRootDependencies().isEmpty()) {
-                logger.warn(String.format("Could not find any dependencies for code location %s", detectCodeLocation.getSourcePath()));
+                logger.debug(String.format("Could not find any dependencies for code location %s", detectCodeLocation.getSourcePath()));
             }
             validCodeLocations.add(detectCodeLocation);
         }
@@ -67,9 +66,7 @@ public class CreateBdioCodeLocationsFromDetectCodeLocationsOperation {
         Map<String, List<DetectCodeLocation>> codeLocationNameMap = new HashMap<>();
         for (Map.Entry<DetectCodeLocation, String> detectCodeLocationEntry : detectCodeLocationNameMap.entrySet()) {
             String codeLocationName = detectCodeLocationEntry.getValue();
-            if (!codeLocationNameMap.containsKey(codeLocationName)) {
-                codeLocationNameMap.put(codeLocationName, new ArrayList<>());
-            }
+            codeLocationNameMap.computeIfAbsent(codeLocationName, key -> new ArrayList<>());
             codeLocationNameMap.get(codeLocationName).add(detectCodeLocationEntry.getKey());
         }
         return codeLocationNameMap;
