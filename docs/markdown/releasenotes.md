@@ -7,10 +7,10 @@
 * (IDETECT-2959) Fixed an issue where [solution_name] would not fail when running `go mod why` fails.
 
 ### Changed features
-* [solution_name] has moved the warning message when generating empty code locations from WARN to the DEBUG logging level.
+* [solution_name] now classifies empty code location warning messages as the DEBUG logging level instead of the previous classification as the WARN logging level.
 
 ### Resolved issues
-* (IDETECT-2971) Fixed an issue where [solution_name] would not produce unique code locations paths for Pnpm projects.
+* (IDETECT-2971) Fixed an issue where [solution_name] would not produce unique code location paths for Pnpm projects.
 
 ## Version 7.9.0
 
