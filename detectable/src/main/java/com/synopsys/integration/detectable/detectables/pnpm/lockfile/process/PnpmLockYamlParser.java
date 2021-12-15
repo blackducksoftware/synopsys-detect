@@ -32,14 +32,19 @@ public class PnpmLockYamlParser {
 
     public List<CodeLocation> parse(File pnpmLockYamlFile, @Nullable NameVersion projectNameVersion, PnpmLinkedPackageResolver linkedPackageResolver) throws IOException, IntegrationException {
         PnpmLockYaml pnpmLockYaml = parseYamlFile(pnpmLockYamlFile);
-        List<CodeLocation> codeLocationsFromImports = createCodeLocationsFromImports(pnpmLockYamlFile, pnpmLockYaml, linkedPackageResolver, projectNameVersion);
+        List<CodeLocation> codeLocationsFromImports = createCodeLocationsFromImports(pnpmLockYamlFile.getParentFile(), pnpmLockYaml, linkedPackageResolver, projectNameVersion);
         if (codeLocationsFromImports.isEmpty()) {
-            return Collections.singletonList(pnpmTransformer.generateCodeLocation(pnpmLockYamlFile, pnpmLockYaml, projectNameVersion, linkedPackageResolver));
+            return createCodeLocationsFromRoot(pnpmLockYamlFile.getParentFile(), pnpmLockYaml, projectNameVersion, linkedPackageResolver);
         }
         return codeLocationsFromImports;
     }
 
-    private List<CodeLocation> createCodeLocationsFromImports(File pnpmLockYamlFile, PnpmLockYaml pnpmLockYaml, PnpmLinkedPackageResolver linkedPackageResolver, @Nullable NameVersion projectNameVersion) throws IntegrationException {
+    private List<CodeLocation> createCodeLocationsFromRoot(File sourcePath,  PnpmLockYaml pnpmLockYaml, @Nullable NameVersion projectNameVersion, PnpmLinkedPackageResolver linkedPackageResolver) throws IntegrationException {
+        CodeLocation codeLocation = pnpmTransformer.generateCodeLocation(sourcePath, pnpmLockYaml, projectNameVersion, linkedPackageResolver);
+        return Collections.singletonList(codeLocation);
+    }
+
+    private List<CodeLocation> createCodeLocationsFromImports(File sourcePath, PnpmLockYaml pnpmLockYaml, PnpmLinkedPackageResolver linkedPackageResolver, @Nullable NameVersion projectNameVersion) throws IntegrationException {
         if (MapUtils.isEmpty(pnpmLockYaml.importers)) {
             return Collections.emptyList();
         }
@@ -53,8 +58,8 @@ public class PnpmLockYamlParser {
             if (extractedNameVersion.equals(projectNameVersion)) {
                 reportingProjectPackagePath = projectPackageInfo.getKey();
             }
-            File sourcePath = generateCodeLocationSourcePath(pnpmLockYamlFile, reportingProjectPackagePath).orElse(null);
-            codeLocations.add(pnpmTransformer.generateCodeLocation(sourcePath, projectPackage, reportingProjectPackagePath, extractedNameVersion, pnpmLockYaml.packages, linkedPackageResolver));
+            File generatedSourcePath = generateCodeLocationSourcePath(sourcePath, reportingProjectPackagePath);
+            codeLocations.add(pnpmTransformer.generateCodeLocation(generatedSourcePath, projectPackage, reportingProjectPackagePath, extractedNameVersion, pnpmLockYaml.packages, linkedPackageResolver));
         }
 
         return codeLocations;
@@ -78,13 +83,13 @@ public class PnpmLockYamlParser {
         return yaml.load(new FileReader(pnpmLockYamlFile));
     }
 
-    private Optional<File> generateCodeLocationSourcePath(File pnpmLockYamlFile, @Nullable String reportingProjectPackagePath) {
+    private File generateCodeLocationSourcePath(File sourcePath, @Nullable String reportingProjectPackagePath) {
         if (StringUtils.isNotEmpty(reportingProjectPackagePath)) {
-            File reportingProjectFile = new File(pnpmLockYamlFile.getParent(), reportingProjectPackagePath);
+            File reportingProjectFile = new File(sourcePath, reportingProjectPackagePath);
             if (reportingProjectFile.exists()) {
-                return Optional.of(reportingProjectFile);
+                return reportingProjectFile;
             }
         }
-        return Optional.empty();
+        return sourcePath;
     }
 }

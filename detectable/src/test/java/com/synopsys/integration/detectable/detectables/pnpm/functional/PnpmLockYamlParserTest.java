@@ -4,12 +4,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.enums.DependencyType;
@@ -44,6 +47,25 @@ public class PnpmLockYamlParserTest {
                 externalId -> externalId.getName().equals("project") && externalId.getVersion().equals("version")
             )
         );
-    }
 
+        // Do all code locations have a source path?
+        Assertions.assertAll(codeLocations.stream()
+                .map(codeLocation -> () -> Assertions.assertTrue(codeLocation.getSourcePath().isPresent(), String.format(
+                    "Expected source path to be present for all code locations. But code location with id %s does not have one set.",
+                    codeLocation.getExternalId().map(ExternalId::createExternalId).orElse("N/A")
+                ))));
+
+        // Did we generate a unique source path for each code location?
+        Map<String, List<File>> collect = codeLocations.stream()
+            .map(CodeLocation::getSourcePath)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .collect(Collectors.groupingBy(File::getAbsolutePath));
+
+        Assertions.assertAll(collect.entrySet().stream()
+            .map(codeLocationGrouping -> () -> {
+                int numberOfCodeLocations = codeLocationGrouping.getValue().size();
+                Assertions.assertEquals(1, numberOfCodeLocations, String.format("Expected unique code locations paths. But found %d with that same path of %s", numberOfCodeLocations, codeLocationGrouping.getKey()));
+            }));
+    }
 }

@@ -35,12 +35,12 @@ public class PnpmYamlTransformer {
         this.dependencyTypeFilter = dependencyTypeFilter;
     }
 
-    public CodeLocation generateCodeLocation(@Nullable File sourcePath, PnpmLockYaml pnpmLockYaml, @Nullable NameVersion projectNameVersion, PnpmLinkedPackageResolver linkedPackageResolver) throws IntegrationException {
+    public CodeLocation generateCodeLocation(File sourcePath, PnpmLockYaml pnpmLockYaml, @Nullable NameVersion projectNameVersion, PnpmLinkedPackageResolver linkedPackageResolver) throws IntegrationException {
         return generateCodeLocation(sourcePath, convertPnpmLockYamlToPnpmProjectPackage(pnpmLockYaml), null, projectNameVersion, pnpmLockYaml.packages, linkedPackageResolver);
     }
 
     public CodeLocation generateCodeLocation(
-        @Nullable File sourcePath,
+        File sourcePath,
         PnpmProjectPackage projectPackage,
         @Nullable String reportingProjectPackagePath,
         @Nullable NameVersion projectNameVersion,
