@@ -62,7 +62,7 @@ public class PnpmLockYamlParser {
                 reportingProjectPackagePath = projectKey;
             }
             File generatedSourcePath = generateCodeLocationSourcePath(sourcePath, reportingProjectPackagePath);
-            
+
             codeLocations.add(pnpmTransformer.generateCodeLocation(generatedSourcePath, projectPackage, reportingProjectPackagePath, extractedNameVersion, pnpmLockYaml.packages, linkedPackageResolver));
         }
 
@@ -89,10 +89,7 @@ public class PnpmLockYamlParser {
 
     private File generateCodeLocationSourcePath(File sourcePath, @Nullable String reportingProjectPackagePath) {
         if (StringUtils.isNotEmpty(reportingProjectPackagePath)) {
-            File reportingProjectFile = new File(sourcePath, reportingProjectPackagePath);
-            if (reportingProjectFile.exists()) {
-                return reportingProjectFile;
-            }
+            return new File(sourcePath, reportingProjectPackagePath);
         }
         return sourcePath;
     }
