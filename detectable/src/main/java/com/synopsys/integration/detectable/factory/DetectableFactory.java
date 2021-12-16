@@ -1,7 +1,5 @@
 package com.synopsys.integration.detectable.factory;
 
-import java.util.List;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -14,7 +12,6 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.common.util.parse.CommandParser;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.detectable.enums.DependencyType;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BashResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BazelResolver;
@@ -203,8 +200,9 @@ import com.synopsys.integration.detectable.detectables.pipenv.parser.PipenvFreez
 import com.synopsys.integration.detectable.detectables.pipenv.parser.PipenvTransformer;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockDetectable;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockExtractor;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockYamlParser;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmYamlTransformer;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockOptions;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmLockYamlParser;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmYamlTransformer;
 import com.synopsys.integration.detectable.detectables.poetry.PoetryDetectable;
 import com.synopsys.integration.detectable.detectables.poetry.PoetryExtractor;
 import com.synopsys.integration.detectable.detectables.poetry.parser.PoetryLockParser;
@@ -252,6 +250,7 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.section.YarnLockDependencySpecParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.section.YarnLockEntrySectionParserSet;
+import com.synopsys.integration.detectable.util.DependencyTypeFilter;
 import com.synopsys.integration.detectable.util.ToolVersionLogger;
 
 /*
@@ -440,8 +439,8 @@ public class DetectableFactory {
         return new PipInspectorDetectable(environment, fileFinder, pythonResolver, pipResolver, pipInspectorResolver, pipInspectorExtractor(), pipInspectorDetectableOptions);
     }
 
-    public PnpmLockDetectable createPnpmLockDetectable(DetectableEnvironment environment, List<DependencyType> dependencyTypes) {
-        return new PnpmLockDetectable(environment, fileFinder, pnpmLockExtractor(), dependencyTypes, packageJsonFiles());
+    public PnpmLockDetectable createPnpmLockDetectable(DetectableEnvironment environment, PnpmLockOptions pnpmLockOptions) {
+        return new PnpmLockDetectable(environment, fileFinder, pnpmLockExtractor(pnpmLockOptions), packageJsonFiles());
     }
 
     public PodlockDetectable createPodLockDetectable(DetectableEnvironment environment) {
@@ -774,16 +773,16 @@ public class DetectableFactory {
         return new PipInspectorExtractor(executableRunner, pipInspectorTreeParser(), toolVersionLogger);
     }
 
-    private PnpmLockExtractor pnpmLockExtractor() {
-        return new PnpmLockExtractor(pnpmLockYamlParser(), packageJsonFiles());
+    private PnpmLockExtractor pnpmLockExtractor(PnpmLockOptions pnpmLockOptions) {
+        return new PnpmLockExtractor(pnpmLockYamlParser(pnpmLockOptions), packageJsonFiles());
     }
 
-    private PnpmLockYamlParser pnpmLockYamlParser() {
-        return new PnpmLockYamlParser(pnpmTransformer());
+    private PnpmLockYamlParser pnpmLockYamlParser(PnpmLockOptions pnpmLockOptions) {
+        return new PnpmLockYamlParser(pnpmTransformer(pnpmLockOptions));
     }
 
-    private PnpmYamlTransformer pnpmTransformer() {
-        return new PnpmYamlTransformer(externalIdFactory);
+    private PnpmYamlTransformer pnpmTransformer(PnpmLockOptions pnpmLockOptions) {
+        return new PnpmYamlTransformer(externalIdFactory, new DependencyTypeFilter(pnpmLockOptions.getAllowedDependencyTypes()));
     }
 
     private PoetryExtractor poetryExtractor() {

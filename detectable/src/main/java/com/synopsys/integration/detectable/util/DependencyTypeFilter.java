@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.pnpm.lockfile;
+package com.synopsys.integration.detectable.util;
 
 import java.util.List;
 import java.util.function.Consumer;
