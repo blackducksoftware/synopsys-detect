@@ -8,9 +8,9 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.collections4.Predicate;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.yaml.snakeyaml.Yaml;
@@ -24,6 +24,8 @@ import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
 public class PnpmLockYamlParser {
+    private static final Predicate<String> isNodeRoot = "."::equals;
+
     private final PnpmYamlTransformer pnpmTransformer;
 
     public PnpmLockYamlParser(PnpmYamlTransformer pnpmTransformer) {
@@ -39,7 +41,7 @@ public class PnpmLockYamlParser {
         return codeLocationsFromImports;
     }
 
-    private List<CodeLocation> createCodeLocationsFromRoot(File sourcePath,  PnpmLockYaml pnpmLockYaml, @Nullable NameVersion projectNameVersion, PnpmLinkedPackageResolver linkedPackageResolver) throws IntegrationException {
+    private List<CodeLocation> createCodeLocationsFromRoot(File sourcePath, PnpmLockYaml pnpmLockYaml, @Nullable NameVersion projectNameVersion, PnpmLinkedPackageResolver linkedPackageResolver) throws IntegrationException {
         CodeLocation codeLocation = pnpmTransformer.generateCodeLocation(sourcePath, pnpmLockYaml, projectNameVersion, linkedPackageResolver);
         return Collections.singletonList(codeLocation);
     }
@@ -51,14 +53,16 @@ public class PnpmLockYamlParser {
 
         List<CodeLocation> codeLocations = new LinkedList<>();
         for (Map.Entry<String, PnpmProjectPackage> projectPackageInfo : pnpmLockYaml.importers.entrySet()) {
+            String projectKey = projectPackageInfo.getKey();
             PnpmProjectPackage projectPackage = projectPackageInfo.getValue();
             NameVersion extractedNameVersion = extractProjectInfo(projectPackageInfo, linkedPackageResolver, projectNameVersion);
 
             String reportingProjectPackagePath = null;
-            if (extractedNameVersion.equals(projectNameVersion)) {
-                reportingProjectPackagePath = projectPackageInfo.getKey();
+            if (!isNodeRoot.evaluate(projectKey)) {
+                reportingProjectPackagePath = projectKey;
             }
             File generatedSourcePath = generateCodeLocationSourcePath(sourcePath, reportingProjectPackagePath);
+            
             codeLocations.add(pnpmTransformer.generateCodeLocation(generatedSourcePath, projectPackage, reportingProjectPackagePath, extractedNameVersion, pnpmLockYaml.packages, linkedPackageResolver));
         }
 
@@ -66,7 +70,7 @@ public class PnpmLockYamlParser {
     }
 
     private NameVersion extractProjectInfo(Map.Entry<String, PnpmProjectPackage> projectPackageInfo, PnpmLinkedPackageResolver linkedPackageResolver, @Nullable NameVersion projectNameVersion) {
-        if (projectPackageInfo.getKey().equals(".") && projectNameVersion != null && projectNameVersion.getName() != null) {
+        if (isNodeRoot.evaluate(projectPackageInfo.getKey()) && projectNameVersion != null && projectNameVersion.getName() != null) {
             // resolve "." package to project root
             return projectNameVersion;
         }
