@@ -1,5 +1,6 @@
-package com.synopsys.integration.detectable.detectables.pnpm.lockfile;
+package com.synopsys.integration.detectable.detectables.pnpm.lockfile.process;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +9,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
@@ -20,6 +20,7 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYaml;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmPackage;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmProjectPackage;
+import com.synopsys.integration.detectable.util.DependencyTypeFilter;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
@@ -27,29 +28,42 @@ public class PnpmYamlTransformer {
     private static final String LINKED_PACKAGE_PREFIX = "link:";
 
     private final ExternalIdFactory externalIdFactory;
+    private final DependencyTypeFilter dependencyTypeFilter;
 
-    public PnpmYamlTransformer(ExternalIdFactory externalIdFactory) {
+    public PnpmYamlTransformer(ExternalIdFactory externalIdFactory, DependencyTypeFilter dependencyTypeFilter) {
         this.externalIdFactory = externalIdFactory;
+        this.dependencyTypeFilter = dependencyTypeFilter;
     }
 
-    public CodeLocation generateCodeLocation(PnpmLockYaml pnpmLockYaml, List<DependencyType> dependencyTypes, @Nullable NameVersion projectNameVersion, PnpmLinkedPackageResolver linkedPackageResolver) throws IntegrationException {
-        return generateCodeLocation(convertPnpmLockYamlToPnpmProjectPackage(pnpmLockYaml), null, dependencyTypes, projectNameVersion, pnpmLockYaml.packages, linkedPackageResolver);
+    public CodeLocation generateCodeLocation(File sourcePath, PnpmLockYaml pnpmLockYaml, @Nullable NameVersion projectNameVersion, PnpmLinkedPackageResolver linkedPackageResolver) throws IntegrationException {
+        return generateCodeLocation(sourcePath, convertPnpmLockYamlToPnpmProjectPackage(pnpmLockYaml), null, projectNameVersion, pnpmLockYaml.packages, linkedPackageResolver);
     }
 
-    public CodeLocation generateCodeLocation(PnpmProjectPackage projectPackage, @Nullable String reportingProjectPackagePath, List<DependencyType> dependencyTypes, @Nullable NameVersion projectNameVersion,
-        @Nullable Map<String, PnpmPackage> packageMap, PnpmLinkedPackageResolver linkedPackageResolver) throws IntegrationException {
-        List<String> rootPackageIds = extractRootPackageIds(projectPackage, reportingProjectPackagePath, dependencyTypes, linkedPackageResolver);
-
+    public CodeLocation generateCodeLocation(
+        File sourcePath,
+        PnpmProjectPackage projectPackage,
+        @Nullable String reportingProjectPackagePath,
+        @Nullable NameVersion projectNameVersion,
+        @Nullable Map<String, PnpmPackage> packageMap,
+        PnpmLinkedPackageResolver linkedPackageResolver
+    ) throws IntegrationException {
         MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
+        List<String> rootPackageIds = extractRootPackageIds(projectPackage, reportingProjectPackagePath, linkedPackageResolver);
+        buildGraph(dependencyGraph, rootPackageIds, packageMap, linkedPackageResolver, reportingProjectPackagePath);
 
-        buildGraph(dependencyGraph, rootPackageIds, packageMap, dependencyTypes, linkedPackageResolver, reportingProjectPackagePath);
-
-        return createCodeLocation(dependencyGraph, projectNameVersion);
+        if (projectNameVersion != null) {
+            return new CodeLocation(dependencyGraph, externalIdFactory.createNameVersionExternalId(Forge.NPMJS, projectNameVersion.getName(), projectNameVersion.getVersion()), sourcePath);
+        }
+        return new CodeLocation(dependencyGraph, sourcePath);
     }
 
-    private void buildGraph(MutableDependencyGraph graphBuilder, List<String> rootPackageIds, @Nullable Map<String, PnpmPackage> packageMap, List<DependencyType> dependencyTypes, PnpmLinkedPackageResolver linkedPackageResolver,
-        @Nullable String reportingProjectPackagePath)
-        throws IntegrationException {
+    private void buildGraph(
+        MutableDependencyGraph graphBuilder,
+        List<String> rootPackageIds,
+        @Nullable Map<String, PnpmPackage> packageMap,
+        PnpmLinkedPackageResolver linkedPackageResolver,
+        @Nullable String reportingProjectPackagePath
+    ) throws IntegrationException {
         if (packageMap == null) {
             throw new DetectableException("Could not parse 'packages' section of the pnpm-lock.yaml file.");
         }
@@ -59,8 +73,7 @@ public class PnpmYamlTransformer {
                 graphBuilder.addChildToRoot(buildDependencyFromPackageId(packageId));
             }
             PnpmPackage pnpmPackage = packageEntry.getValue();
-
-            if (dependencyTypes.contains(pnpmPackage.getDependencyType())) {
+            if (dependencyTypeFilter.shouldReportDependencyType(pnpmPackage.getDependencyType())) {
                 for (Map.Entry<String, String> dependency : pnpmPackage.getDependencies().entrySet()) {
                     String dependencyPackageId = convertRawEntryToPackageId(dependency, linkedPackageResolver, reportingProjectPackagePath);
                     Dependency child = buildDependencyFromPackageId(dependencyPackageId);
@@ -80,17 +93,11 @@ public class PnpmYamlTransformer {
         return pnpmProjectPackage;
     }
 
-    private List<String> extractRootPackageIds(PnpmProjectPackage pnpmProjectPackage, @Nullable String reportingProjectPackagePath, List<DependencyType> dependencyTypes, PnpmLinkedPackageResolver linkedPackageResolver) {
+    private List<String> extractRootPackageIds(PnpmProjectPackage pnpmProjectPackage, @Nullable String reportingProjectPackagePath, PnpmLinkedPackageResolver linkedPackageResolver) {
         Map<String, String> rawPackageInfo = new HashMap<>();
-        if (dependencyTypes.contains(DependencyType.APP) && pnpmProjectPackage.dependencies != null) {
-            rawPackageInfo.putAll(pnpmProjectPackage.dependencies);
-        }
-        if (dependencyTypes.contains(DependencyType.DEV) && pnpmProjectPackage.devDependencies != null) {
-            rawPackageInfo.putAll(pnpmProjectPackage.devDependencies);
-        }
-        if (dependencyTypes.contains(DependencyType.OPTIONAL) && pnpmProjectPackage.optionalDependencies != null) {
-            rawPackageInfo.putAll(pnpmProjectPackage.optionalDependencies);
-        }
+        dependencyTypeFilter.ifReportingType(DependencyType.APP, pnpmProjectPackage.dependencies, rawPackageInfo::putAll);
+        dependencyTypeFilter.ifReportingType(DependencyType.DEV, pnpmProjectPackage.devDependencies, rawPackageInfo::putAll);
+        dependencyTypeFilter.ifReportingType(DependencyType.OPTIONAL, pnpmProjectPackage.optionalDependencies, rawPackageInfo::putAll);
 
         return rawPackageInfo.entrySet().stream()
             .map(entry -> convertRawEntryToPackageId(entry, linkedPackageResolver, reportingProjectPackagePath))
@@ -121,10 +128,4 @@ public class PnpmYamlTransformer {
         return new Dependency(externalIdFactory.createNameVersionExternalId(Forge.NPMJS, nameVersion.getName(), nameVersion.getVersion()));
     }
 
-    private CodeLocation createCodeLocation(DependencyGraph graph, @Nullable NameVersion nameVersion) {
-        if (nameVersion != null) {
-            return new CodeLocation(graph, externalIdFactory.createNameVersionExternalId(Forge.NPMJS, nameVersion.getName(), nameVersion.getVersion()));
-        }
-        return new CodeLocation(graph);
-    }
 }

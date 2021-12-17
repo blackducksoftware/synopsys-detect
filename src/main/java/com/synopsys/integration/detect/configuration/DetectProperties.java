@@ -1010,7 +1010,7 @@ public class DetectProperties {
     public static final DetectProperty<NullableStringProperty> DETECT_PROJECT_DESCRIPTION =
         new DetectProperty<>(new NullableStringProperty("detect.project.description"))
             .setInfo("Project Description", DetectPropertyFromVersion.VERSION_4_0_0)
-            .setHelp("If project description is specified, your project version will be created with this description.")
+            .setHelp("If project description is specified, your project will be created with this description.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING);
 
     public static final DetectProperty<StringListProperty> DETECT_PROJECT_USER_GROUPS =

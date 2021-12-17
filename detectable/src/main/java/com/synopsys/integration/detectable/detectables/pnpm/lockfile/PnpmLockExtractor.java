@@ -8,7 +8,8 @@ import java.util.Optional;
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.enums.DependencyType;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmLinkedPackageResolver;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmLockYamlParser;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.NullSafePackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonFiles;
 import com.synopsys.integration.detectable.extraction.Extraction;
@@ -23,10 +24,10 @@ public class PnpmLockExtractor {
         this.packageJsonFiles = packageJsonFiles;
     }
 
-    public Extraction extract(File yarnLockYamlFile, @Nullable File packageJsonFile, List<DependencyType> dependencyTypes, PnpmLinkedPackageResolver linkedPackageResolver) {
+    public Extraction extract(File yarnLockYamlFile, @Nullable File packageJsonFile, PnpmLinkedPackageResolver linkedPackageResolver) {
         try {
             Optional<NameVersion> nameVersion = parseNameVersionFromPackageJson(packageJsonFile);
-            List<CodeLocation> codeLocations = pnpmLockYamlParser.parse(yarnLockYamlFile, dependencyTypes, nameVersion.orElse(null), linkedPackageResolver);
+            List<CodeLocation> codeLocations = pnpmLockYamlParser.parse(yarnLockYamlFile, nameVersion.orElse(null), linkedPackageResolver);
             return new Extraction.Builder().success(codeLocations)
                 .nameVersionIfPresent(nameVersion)
                 .build();

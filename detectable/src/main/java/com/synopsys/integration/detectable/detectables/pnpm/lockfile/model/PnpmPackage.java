@@ -16,11 +16,11 @@ public class PnpmPackage {
     public Map<String, String> dependencies;
 
     private boolean isDev() {
-        return dev != null ? dev : false;
+        return dev != null && dev;
     }
 
     private boolean isOptional() {
-        return optional != null ? optional : false;
+        return optional != null && optional;
     }
 
     public Map<String, String> getDependencies() {
