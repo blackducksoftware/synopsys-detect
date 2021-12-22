@@ -48,6 +48,7 @@ public class BazelExtractor {
     public Extraction extract(ExecutableTarget bazelExe, File workspaceDir, BazelWorkspace bazelWorkspace, String bazelTarget,
         BazelProjectNameGenerator bazelProjectNameGenerator, Set<WorkspaceRule> providedDependencyRuleTypes,
         List<String> providedCqueryAdditionalOptions) {
+        //TODO: For consistency, only read files in the extractor: workspaceFileLines = FileUtils.readLines(workspaceFile, StandardCharsets.UTF_8);
         logger.debug("Bazel extraction:");
         try {
             toolVersionLogger.log(workspaceDir, bazelExe, "version");

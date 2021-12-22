@@ -203,7 +203,7 @@ public class PipelinesTest {
         List<Dependency> dependencies = doTest(WorkspaceRule.MAVEN_INSTALL, MAVEN_INSTALL_STANDARD_BAZEL_COMMAND_ARGS, userProvidedCqueryAdditionalOptions, MAVEN_INSTALL_OUTPUT_MIXED_TAGS);
         assertEquals(2, dependencies.size());
         int foundCount = 0;
-        for (Dependency dependency : dependencies) {
+        for (Dependency dependency : dependencies) { //TODO: Factor out into a assertDependency();
             if ("com.company.thing".equals(dependency.getExternalId().getGroup()) &&
                 "thing-common-client".equals(dependency.getExternalId().getName()) &&
                 "2.100.0".equals(dependency.getExternalId().getVersion())) {

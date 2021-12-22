@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.FinalStep;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStep;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepReplaceInEach;
 
 public class PipelineBuilder {
     private final List<IntermediateStep> intermediateSteps = new ArrayList<>();
@@ -25,5 +26,10 @@ public class PipelineBuilder {
             throw new UnsupportedOperationException("A final step is required");
         }
         return new Pipeline(intermediateSteps, finalStep);
+    }
+
+    //TODO: Add helper step methods.
+    public PipelineBuilder replaceInEachStep(String s, String s1) {
+        return addIntermediateStep(new IntermediateStepReplaceInEach(s, s1));
     }
 }

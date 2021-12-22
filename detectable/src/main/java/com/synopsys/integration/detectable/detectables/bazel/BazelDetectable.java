@@ -26,6 +26,7 @@ public class BazelDetectable extends Detectable {
     private final BazelDetectableOptions bazelDetectableOptions;
     private ExecutableTarget bazelExe;
     private BazelWorkspace bazelWorkspace;
+    private String targetName;
 
     public BazelDetectable(DetectableEnvironment environment, FileFinder fileFinder, BazelExtractor bazelExtractor,
         BazelResolver bazelResolver, BazelDetectableOptions bazelDetectableOptions) {
@@ -39,6 +40,7 @@ public class BazelDetectable extends Detectable {
     @Override
     public DetectableResult applicable() {
         if (bazelDetectableOptions.getTargetName().isPresent()) {
+            targetName = bazelDetectableOptions.getTargetName().get();
             return new PassedDetectableResult(new PropertyProvided("Bazel Target"));
         } else {
             return new PropertyInsufficientDetectableResult();
@@ -60,10 +62,9 @@ public class BazelDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
-        BazelProjectNameGenerator projectNameGenerator = new BazelProjectNameGenerator();
-        // Checked in applicable.
+        BazelProjectNameGenerator projectNameGenerator = new BazelProjectNameGenerator(); //TODO: Doesn't need to be constructed.
         return bazelExtractor
-            .extract(bazelExe, environment.getDirectory(), bazelWorkspace, bazelDetectableOptions.getTargetName().get(), projectNameGenerator, bazelDetectableOptions.getBazelDependencyRules(),
+            .extract(bazelExe, environment.getDirectory(), bazelWorkspace, targetName, projectNameGenerator, bazelDetectableOptions.getBazelDependencyRules(),
                 bazelDetectableOptions.getBazelCqueryAdditionalOptions());
     }
 }

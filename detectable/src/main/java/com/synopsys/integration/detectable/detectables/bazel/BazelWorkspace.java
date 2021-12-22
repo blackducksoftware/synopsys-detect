@@ -18,11 +18,11 @@ public class BazelWorkspace {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final File workspaceFile;
 
-    public BazelWorkspace(File workspaceFile) {
+    public BazelWorkspace(File workspaceFile) { //TODO: Could rename to Parser, and remove state. Take in the file as parameter.
         this.workspaceFile = workspaceFile;
     }
 
-    public Set<WorkspaceRule> getDependencyRuleTypes() {
+    public Set<WorkspaceRule> getDependencyRuleTypes() { //TODO: Rename from 'get'
         List<String> workspaceFileLines;
         try {
             // Assumes ascii or UTF-8, like other detectors
