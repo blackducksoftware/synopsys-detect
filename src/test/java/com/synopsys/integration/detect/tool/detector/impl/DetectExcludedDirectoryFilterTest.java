@@ -3,6 +3,7 @@ package com.synopsys.integration.detect.tool.detector.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.condition.OS.WINDOWS;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import java.io.File;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -99,5 +101,16 @@ class DetectExcludedDirectoryFilterTest {
         assertFalse(detectExcludedDirectoryFilter.isExcluded(subDir2));
         assertFalse(detectExcludedDirectoryFilter.isExcluded(deepSubDir2));
         assertTrue(detectExcludedDirectoryFilter.isExcluded(namePatternsDir));
+    }
+
+    @EnabledOnOs(WINDOWS)
+    @Test
+    void testCatchErrorWhenSourcePathDoesNotShareRootWithInspectedFile() {
+        Path sourcePath = new File("D:\\").toPath();
+        File testFile = new File("C:\\");
+
+        DetectExcludedDirectoryFilter detectExcludedDirectoryFilter = new DetectExcludedDirectoryFilter(sourcePath, Arrays.asList("test"));
+
+        assertFalse(detectExcludedDirectoryFilter.isExcluded(testFile));
     }
 }

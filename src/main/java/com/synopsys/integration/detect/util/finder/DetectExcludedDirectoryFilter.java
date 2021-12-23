@@ -57,7 +57,14 @@ public class DetectExcludedDirectoryFilter implements Predicate<File> {
                 logger.debug(String.format("%s could not be resolved to a path.", excludedDirectory));
                 continue;
             }
-            Path relativeDirectoryPath = sourcePath.relativize(file.toPath());
+
+            Path relativeDirectoryPath;
+            try {
+                relativeDirectoryPath = sourcePath.relativize(file.toPath());
+            } catch (IllegalArgumentException e) {
+                logger.debug(String.format("Cannot exclude file %s.  Unable to relativize file's against path %s.", file.getAbsolutePath(), sourcePath.toFile().getAbsolutePath()));
+                return false;
+            }
 
             if (relativeDirectoryPath.endsWith(excludedDirectoryPath)) {
                 return true;
