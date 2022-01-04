@@ -1010,7 +1010,7 @@ public class DetectProperties {
     public static final DetectProperty<NullableStringProperty> DETECT_PROJECT_DESCRIPTION =
         new DetectProperty<>(new NullableStringProperty("detect.project.description"))
             .setInfo("Project Description", DetectPropertyFromVersion.VERSION_4_0_0)
-            .setHelp("If project description is specified, your project version will be created with this description.")
+            .setHelp("If project description is specified, your project will be created with this description.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING);
 
     public static final DetectProperty<StringListProperty> DETECT_PROJECT_USER_GROUPS =
@@ -1289,13 +1289,26 @@ public class DetectProperties {
         new DetectProperty<>(new EnumProperty<>("logging.level.com.synopsys.integration", LogLevel.INFO, LogLevel.class))
             .setInfo("Logging Level", DetectPropertyFromVersion.VERSION_5_3_0)
             .setHelp("The logging level of Detect.",
-                "Detect logging is performed using Spring Boot's default logging setup (Logback). Detect sets the default log message format to \"%d{yyyy-MM-dd HH:mm:ss z} ${LOG_LEVEL_PATTERN:%-6p}[%thread] %clr(---){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}\". You can change your log message format by setting the Spring Boot <i>logging.pattern.console</i> property to a different pattern. Refer to the Spring Boot logging documentation for more details.")
+                "To keep the log file size manageable, use INFO level logging for normal use. Use DEBUG or TRACE for troubleshooting.<p/>" +
+                    "Detect logging uses Spring Boot logging, which uses Logback (https://logback.qos.ch). " +
+                    "The format of this property name is <i>logging.level.{package}[.{class}]</i>. " +
+                    "The property name shown above specifies package <i>com.synopsys.integration</i> because that is the name of Detect's top-level package. " +
+                    "Changing the logging level for that package changes the logging level for all Detect code, as well as Synopsys integration libraries that Detect uses. " +
+                    "Non-Synopsys libraries that Detect uses are not affected. " +
+                    "However, you can use this property to set the logging level for some of the non-Synopsys libraries that Detect uses by using the appropriate package name. " +
+                    "For example, <i>logging.level.org.apache.http=TRACE</i> sets the logging level to TRACE for the Apache HTTP client library. " +
+                    "<p/>" +
+                    "For log message format, Detect uses a default value of <i>%d{yyyy-MM-dd HH:mm:ss z} ${LOG_LEVEL_PATTERN:%-6p}[%thread] %clr(---){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}</i>. " +
+                    "You can change your log message format by setting the Spring Boot <i>logging.pattern.console</i> property to a different pattern. " +
+                    "<p/>" +
+                    "Refer to the Spring Boot logging and Logback Project documentation for more details.")
             .setGroups(DetectGroup.LOGGING, DetectGroup.GLOBAL);
 
     public static final DetectProperty<EnumProperty<LogLevel>> LOGGING_LEVEL_DETECT =
         new DetectProperty<>(new EnumProperty<>("logging.level.detect", LogLevel.INFO, LogLevel.class))
             .setInfo("Logging Level Shorthand", DetectPropertyFromVersion.VERSION_5_5_0)
-            .setHelp("Shorthand for the logging level of detect. Equivalent to setting logging.level.com.synopsys.integration.")
+            .setHelp("Shorthand for the logging level of detect. Equivalent to setting <i>logging.level.com.synopsys.integration</i>.",
+                "Refer to the description of property <i>logging.level.com.synopsys.integration</i> for additional details.")
             .setGroups(DetectGroup.LOGGING, DetectGroup.GLOBAL);
 
     public static final DetectProperty<BooleanProperty> DETECT_WAIT_FOR_RESULTS =

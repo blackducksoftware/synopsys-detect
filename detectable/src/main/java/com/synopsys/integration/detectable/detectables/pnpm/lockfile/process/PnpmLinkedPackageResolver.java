@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.pnpm.lockfile;
+package com.synopsys.integration.detectable.detectables.pnpm.lockfile.process;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,10 +11,10 @@ import com.synopsys.integration.detectable.detectables.yarn.packagejson.NullSafe
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonFiles;
 
 public class PnpmLinkedPackageResolver {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final File projectRoot;
-    private PackageJsonFiles packageJsonFiles;
+    private final PackageJsonFiles packageJsonFiles;
 
     public PnpmLinkedPackageResolver(File projectRoot, PackageJsonFiles packageJsonFiles) {
         this.projectRoot = projectRoot;

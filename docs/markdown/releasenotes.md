@@ -1,5 +1,17 @@
 # Release notes
 
+## Version 7.10.0
+
+### Resolved issues
+* (IDETECT-2949) Fixed an issue where [solution_name] failed to properly parse Go module version names containing '-' characters.
+* (IDETECT-2959) Fixed an issue where [solution_name] would not fail when running `go mod why` fails.
+
+### Changed features
+* [solution_name] now classifies empty code location warning messages as the DEBUG logging level instead of the previous classification as the WARN logging level.
+
+### Resolved issues
+* (IDETECT-2971) Fixed an issue where [solution_name] would not produce unique code location paths for Pnpm projects.
+
 ## Version 7.9.0
 
 ### New Features
@@ -14,6 +26,7 @@
 * (IDETECT-2499) Fixed an issue in the Gradle Inspector that caused it to exclude all identically-named subprojects except one.
 * (IDETECT-2953) Fixed the project and project version links in risk report.
 * (IDETECT-2989) Fixed an issue with Go Mod projects where [solution_name] included unused transitive dependencies, despite detect.go.mod.enable.verification being set to 'true'.
+* (IDETECT-2935) Verified that [solution_name] is compatible with Gradle version 7.X.
 
 ## Version 7.8.0
 

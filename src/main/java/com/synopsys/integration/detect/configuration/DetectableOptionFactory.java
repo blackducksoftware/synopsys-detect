@@ -39,6 +39,7 @@ import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDet
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pip.inspector.PipInspectorDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pipenv.PipenvDetectableOptions;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockOptions;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorOptions;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectableOptions;
 import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheOptions;
@@ -214,8 +215,9 @@ public class DetectableOptionFactory {
         return new PipInspectorDetectableOptions(pipProjectName, requirementsFilePath);
     }
 
-    public List<DependencyType> createPnpmDependencyTypes() {
-        return getValue(DetectProperties.DETECT_PNPM_DEPENDENCY_TYPES).representedValues();
+    public PnpmLockOptions createPnpmLockOptions() {
+        List<DependencyType> dependencyTypes = getValue(DetectProperties.DETECT_PNPM_DEPENDENCY_TYPES).representedValues();
+        return new PnpmLockOptions(dependencyTypes);
     }
 
     public ProjectInspectorOptions createProjectInspectorOptions() {
