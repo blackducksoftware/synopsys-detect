@@ -10,7 +10,7 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.npm.cli.parse.NpmCliParser;
 import com.synopsys.integration.detectable.detectables.npm.cli.parse.NpmDependencyTypeFilter;
-import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmParseResult;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.result.NpmPackagerResult;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
 public class NpmOutputParserTest {
@@ -54,7 +54,7 @@ public class NpmOutputParserTest {
             "   }",
             "}"));
         NpmDependencyTypeFilter npmDependencyTypeFilter = new NpmDependencyTypeFilter(Collections.emptySet(), Collections.emptySet(), true, true);
-        NpmParseResult result = parser.convertNpmJsonFileToCodeLocation(testIn, npmDependencyTypeFilter);
+        NpmPackagerResult result = parser.convertNpmJsonFileToCodeLocation(testIn, npmDependencyTypeFilter);
 
         Assertions.assertEquals("node-js", result.getProjectName());
         Assertions.assertEquals("0.2.0", result.getProjectVersion());
