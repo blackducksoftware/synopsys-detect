@@ -2,6 +2,9 @@
 
 ## Version 7.10.0
 
+### New features
+* Added support for the Apache Ivy package manager.
+
 ### Resolved issues
 * (IDETECT-2949) Fixed an issue where [solution_name] failed to properly parse Go module version names containing '-' characters.
 * (IDETECT-2959) Fixed an issue where [solution_name] would not fail when running `go mod why` fails.
