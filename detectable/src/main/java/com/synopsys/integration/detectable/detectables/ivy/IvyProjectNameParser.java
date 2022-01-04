@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import javax.xml.parsers.SAXParser;
 
-import com.synopsys.integration.detectable.detectables.ivy.task.IvyProjectNameHandler;
 import com.synopsys.integration.util.NameVersion;
 
 public class IvyProjectNameParser {

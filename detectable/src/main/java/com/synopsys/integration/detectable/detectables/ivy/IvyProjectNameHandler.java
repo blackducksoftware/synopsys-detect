@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.ivy.task;
+package com.synopsys.integration.detectable.detectables.ivy;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

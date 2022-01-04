@@ -32,7 +32,6 @@ import com.synopsys.integration.detectable.detectables.go.vendr.GoVndrDetectable
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleDetectable;
 import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleProjectInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.ivy.parse.IvyParseDetectable;
-import com.synopsys.integration.detectable.detectables.ivy.task.IvyTaskDetectable;
 import com.synopsys.integration.detectable.detectables.lerna.LernaDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomWrapperDetectable;
@@ -170,10 +169,6 @@ public class DetectDetectableFactory {
 
     public IvyParseDetectable createIvyParseDetectable(DetectableEnvironment environment) {
         return detectableFactory.createIvyParseDetectable(environment);
-    }
-
-    public IvyTaskDetectable createIvyTaskDetectable(DetectableEnvironment environment) {
-        return detectableFactory.createIvyTaskDetectable(environment, detectExecutableResolver, detectableOptionFactory.createIvyTaskDetectableOptions());
     }
 
     public MavenPomDetectable createMavenPomDetectable(DetectableEnvironment environment) {

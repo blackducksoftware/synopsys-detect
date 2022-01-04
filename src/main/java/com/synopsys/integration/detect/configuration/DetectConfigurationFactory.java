@@ -430,7 +430,6 @@ public class DetectConfigurationFactory {
 
     public DetectExecutableOptions createDetectExecutableOptions() {
         return new DetectExecutableOptions(
-            getPathOrNull(DetectProperties.DETECT_ANT_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_BASH_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_BAZEL_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_CONAN_PATH.getProperty()),

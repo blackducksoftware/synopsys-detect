@@ -16,7 +16,6 @@ import com.synopsys.integration.common.util.parse.CommandParser;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.enums.DependencyType;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.resolver.AntResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BashResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BazelResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CondaResolver;
@@ -153,10 +152,6 @@ import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleProj
 import com.synopsys.integration.detectable.detectables.ivy.IvyProjectNameParser;
 import com.synopsys.integration.detectable.detectables.ivy.parse.IvyParseDetectable;
 import com.synopsys.integration.detectable.detectables.ivy.parse.IvyParseExtractor;
-import com.synopsys.integration.detectable.detectables.ivy.task.IvyDependencyTreeParser;
-import com.synopsys.integration.detectable.detectables.ivy.task.IvyTaskDetectable;
-import com.synopsys.integration.detectable.detectables.ivy.task.IvyTaskDetectableOptions;
-import com.synopsys.integration.detectable.detectables.ivy.task.IvyTaskExtractor;
 import com.synopsys.integration.detectable.detectables.lerna.LernaDetectable;
 import com.synopsys.integration.detectable.detectables.lerna.LernaExtractor;
 import com.synopsys.integration.detectable.detectables.lerna.LernaOptions;
@@ -378,10 +373,6 @@ public class DetectableFactory {
 
     public IvyParseDetectable createIvyParseDetectable(DetectableEnvironment environment) {
         return new IvyParseDetectable(environment, fileFinder, ivyParseExtractor());
-    }
-
-    public IvyTaskDetectable createIvyTaskDetectable(DetectableEnvironment environment, AntResolver antResolver, IvyTaskDetectableOptions ivyTaskDetectableOptions) {
-        return new IvyTaskDetectable(environment, fileFinder, antResolver, ivyTaskExtractor(), ivyTaskDetectableOptions);
     }
 
     public MavenPomDetectable createMavenPomDetectable(DetectableEnvironment environment, MavenResolver mavenResolver, MavenCliExtractorOptions mavenCliExtractorOptions) {
@@ -673,14 +664,6 @@ public class DetectableFactory {
 
     private IvyProjectNameParser ivyProjectNameParser() {
         return new IvyProjectNameParser(saxParser());
-    }
-
-    private IvyTaskExtractor ivyTaskExtractor() {
-        return new IvyTaskExtractor(executableRunner, ivyDependencyTreeParser(), ivyProjectNameParser());
-    }
-
-    private IvyDependencyTreeParser ivyDependencyTreeParser() {
-        return new IvyDependencyTreeParser(externalIdFactory);
     }
 
     private Rebar3TreeParser rebar3TreeParser() {

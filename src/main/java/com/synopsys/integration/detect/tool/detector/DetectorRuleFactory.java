@@ -23,7 +23,6 @@ import com.synopsys.integration.detectable.detectables.go.vendr.GoVndrDetectable
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleDetectable;
 import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleProjectInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.ivy.parse.IvyParseDetectable;
-import com.synopsys.integration.detectable.detectables.ivy.task.IvyTaskDetectable;
 import com.synopsys.integration.detectable.detectables.lerna.LernaDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomWrapperDetectable;
@@ -95,9 +94,7 @@ public class DetectorRuleFactory {
 
         ruleSet.addDetector(DetectorType.GRADLE, "Gradle Inspector", GradleDetectable.class, detectableFactory::createGradleDetectable).defaults().build();
 
-        DetectorRule<?> ivyTask = ruleSet.addDetector(DetectorType.IVY, "Ivy Task", IvyTaskDetectable.class, detectableFactory::createIvyTaskDetectable).defaults().build();
-        DetectorRule<?> ivyParse = ruleSet.addDetector(DetectorType.IVY, "Ivy Parse", IvyParseDetectable.class, detectableFactory::createIvyParseDetectable).defaults().build();
-        ruleSet.yield(ivyParse).to(ivyTask);
+        ruleSet.addDetector(DetectorType.IVY, "Ivy Parse", IvyParseDetectable.class, detectableFactory::createIvyParseDetectable).defaults().build();
 
         ruleSet.addDetector(DetectorType.HEX, "Rebar", RebarDetectable.class, detectableFactory::createRebarDetectable).defaults().build();
 

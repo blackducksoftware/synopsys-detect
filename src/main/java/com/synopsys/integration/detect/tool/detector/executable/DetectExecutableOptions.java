@@ -3,7 +3,6 @@ package com.synopsys.integration.detect.tool.detector.executable;
 import java.nio.file.Path;
 
 public class DetectExecutableOptions {
-    private final Path antUserPath;
     private final Path bashUserPath;
     private final Path bazelUserPath;
     private final Path conanUserPath;
@@ -30,7 +29,6 @@ public class DetectExecutableOptions {
     private final Path lernaUserPath;
 
     public DetectExecutableOptions(
-        Path antUserPath,
         Path bashUserPath,
         Path bazelUserPath,
         Path conanUserPath,
@@ -56,7 +54,6 @@ public class DetectExecutableOptions {
         Path sbtUserPath,
         Path lernaUserPath
     ) {
-        this.antUserPath = antUserPath;
         this.bashUserPath = bashUserPath;
         this.bazelUserPath = bazelUserPath;
         this.conanUserPath = conanUserPath;
@@ -81,10 +78,6 @@ public class DetectExecutableOptions {
         this.swiftUserPath = swiftUserPath;
         this.sbtUserPath = sbtUserPath;
         this.lernaUserPath = lernaUserPath;
-    }
-
-    public Path getAntUserPath() {
-        return antUserPath;
     }
 
     public Path getBashUserPath() {
