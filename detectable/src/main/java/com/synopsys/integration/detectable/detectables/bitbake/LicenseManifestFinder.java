@@ -43,14 +43,6 @@ public class LicenseManifestFinder {
         } catch (Exception e) {
 
         }
-
-        // TODO almost sure this does not make sense; it's what the battery test currently relies on though
-        logger.info("*** sourceDir: {}", sourceDir.getAbsolutePath());
-        File sourceDirLicenseFile = new File(sourceDir, "license.manifest");
-        if (sourceDirLicenseFile.canRead()) {
-            logger.debug("Found license.manifest file: {}", sourceDirLicenseFile.getAbsolutePath());
-            return Optional.of(sourceDirLicenseFile);
-        }
         logger.error("Unable to find license.manifest file for target image {}", targetImageName);
         return Optional.empty();
     }
