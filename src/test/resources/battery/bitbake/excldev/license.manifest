@@ -1,0 +1,3820 @@
+PACKAGE NAME: adwaita-icon-theme
+PACKAGE VERSION: 3.34.3
+RECIPE NAME: adwaita-icon-theme
+LICENSE: LGPL-3.0 | CC-BY-SA-3.0
+
+PACKAGE NAME: adwaita-icon-theme-symbolic
+PACKAGE VERSION: 3.34.3
+RECIPE NAME: adwaita-icon-theme
+LICENSE: LGPL-3.0 | CC-BY-SA-3.0
+
+PACKAGE NAME: alsa-conf
+PACKAGE VERSION: 1.2.5.1
+RECIPE NAME: alsa-lib
+LICENSE: LGPLv2.1 & GPLv2+
+
+PACKAGE NAME: alsa-lib
+PACKAGE VERSION: 1.2.5.1
+RECIPE NAME: alsa-lib
+LICENSE: LGPLv2.1 & GPLv2+
+
+PACKAGE NAME: alsa-plugins-pulseaudio-conf
+PACKAGE VERSION: 1.2.5
+RECIPE NAME: alsa-plugins
+LICENSE: LGPLv2.1 & GPLv2+
+
+PACKAGE NAME: alsa-state
+PACKAGE VERSION: 0.2.0
+RECIPE NAME: alsa-state
+LICENSE: MIT
+
+PACKAGE NAME: alsa-states
+PACKAGE VERSION: 0.2.0
+RECIPE NAME: alsa-state
+LICENSE: MIT
+
+PACKAGE NAME: alsa-ucm-conf
+PACKAGE VERSION: 1.2.5.1
+RECIPE NAME: alsa-ucm-conf
+LICENSE: BSD-3-Clause
+
+PACKAGE NAME: alsa-utils-alsactl
+PACKAGE VERSION: 1.2.5.1
+RECIPE NAME: alsa-utils
+LICENSE: GPLv2
+
+PACKAGE NAME: alsa-utils-amixer
+PACKAGE VERSION: 1.2.5.1
+RECIPE NAME: alsa-utils
+LICENSE: GPLv2
+
+PACKAGE NAME: at-spi2-atk
+PACKAGE VERSION: 2.38.0
+RECIPE NAME: at-spi2-atk
+LICENSE: LGPL-2.1+
+
+PACKAGE NAME: at-spi2-core
+PACKAGE VERSION: 2.40.3
+RECIPE NAME: at-spi2-core
+LICENSE: LGPL-2.1+
+
+PACKAGE NAME: at-spi2-core-locale-en-gb
+PACKAGE VERSION: 2.40.3
+RECIPE NAME: at-spi2-core
+LICENSE: LGPL-2.1+
+
+PACKAGE NAME: atk
+PACKAGE VERSION: 2.36.0
+RECIPE NAME: atk
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: atk-locale-en-gb
+PACKAGE VERSION: 2.36.0
+RECIPE NAME: atk
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: avahi-daemon
+PACKAGE VERSION: 0.8
+RECIPE NAME: avahi
+LICENSE: LGPLv2.1+
+
+PACKAGE NAME: avahi-locale-en-gb
+PACKAGE VERSION: 0.8
+RECIPE NAME: avahi
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: base-files
+PACKAGE VERSION: 3.0.14
+RECIPE NAME: base-files
+LICENSE: GPLv2
+
+PACKAGE NAME: base-passwd
+PACKAGE VERSION: 3.5.29
+RECIPE NAME: base-passwd
+LICENSE: GPLv2
+
+PACKAGE NAME: bash
+PACKAGE VERSION: 5.1.8
+RECIPE NAME: bash
+LICENSE: GPLv3+
+
+PACKAGE NAME: bluez5
+PACKAGE VERSION: 5.61
+RECIPE NAME: bluez5
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: busybox
+PACKAGE VERSION: 1.34.0
+RECIPE NAME: busybox
+LICENSE: GPLv2 & bzip2-1.0.4
+
+PACKAGE NAME: busybox-hwclock
+PACKAGE VERSION: 1.34.0
+RECIPE NAME: busybox
+LICENSE: GPLv2 & bzip2-1.0.4
+
+PACKAGE NAME: busybox-syslog
+PACKAGE VERSION: 1.34.0
+RECIPE NAME: busybox
+LICENSE: GPLv2 & bzip2-1.0.4
+
+PACKAGE NAME: busybox-udhcpc
+PACKAGE VERSION: 1.34.0
+RECIPE NAME: busybox
+LICENSE: GPLv2 & bzip2-1.0.4
+
+PACKAGE NAME: ca-certificates
+PACKAGE VERSION: 20210119
+RECIPE NAME: ca-certificates
+LICENSE: GPL-2.0+ & MPL-2.0
+
+PACKAGE NAME: cairo
+PACKAGE VERSION: 1.16.0
+RECIPE NAME: cairo
+LICENSE: MPL-1.1 | LGPLv2.1
+
+PACKAGE NAME: cairo-gobject
+PACKAGE VERSION: 1.16.0
+RECIPE NAME: cairo
+LICENSE: MPL-1.1 | LGPLv2.1
+
+PACKAGE NAME: connman
+PACKAGE VERSION: 1.40
+RECIPE NAME: connman
+LICENSE: GPLv2
+
+PACKAGE NAME: connman-conf
+PACKAGE VERSION: 1.0
+RECIPE NAME: connman-conf
+LICENSE: GPLv2
+
+PACKAGE NAME: connman-gnome
+PACKAGE VERSION: 0.7
+RECIPE NAME: connman-gnome
+LICENSE: GPLv2 & LGPLv2.1
+
+PACKAGE NAME: consolekit
+PACKAGE VERSION: 0.4.6
+RECIPE NAME: consolekit
+LICENSE: GPLv2+
+
+PACKAGE NAME: db
+PACKAGE VERSION: 5.3.28
+RECIPE NAME: db
+LICENSE: Sleepycat
+
+PACKAGE NAME: dbus
+PACKAGE VERSION: 1.12.20
+RECIPE NAME: dbus
+LICENSE: AFL-2.1 | GPLv2+
+
+PACKAGE NAME: dbus-common
+PACKAGE VERSION: 1.12.20
+RECIPE NAME: dbus
+LICENSE: AFL-2.1 | GPLv2+
+
+PACKAGE NAME: dbus-glib
+PACKAGE VERSION: 0.112
+RECIPE NAME: dbus-glib
+LICENSE: AFL-2.1 | GPLv2+
+
+PACKAGE NAME: dbus-lib
+PACKAGE VERSION: 1.12.20
+RECIPE NAME: dbus
+LICENSE: AFL-2.1 | GPLv2+
+
+PACKAGE NAME: dbus-tools
+PACKAGE VERSION: 1.12.20
+RECIPE NAME: dbus
+LICENSE: AFL-2.1 | GPLv2+
+
+PACKAGE NAME: dbus-wait
+PACKAGE VERSION: 0.1+gitAUTOINC+6cc6077a36
+RECIPE NAME: dbus-wait
+LICENSE: GPLv2
+
+PACKAGE NAME: desktop-file-utils
+PACKAGE VERSION: 0.26
+RECIPE NAME: desktop-file-utils
+LICENSE: GPLv2+
+
+PACKAGE NAME: dnf
+PACKAGE VERSION: 4.8.0
+RECIPE NAME: dnf
+LICENSE: GPLv2
+
+PACKAGE NAME: dnf-locale-en-gb
+PACKAGE VERSION: 4.8.0
+RECIPE NAME: dnf
+LICENSE: GPLv2
+
+PACKAGE NAME: dosfstools
+PACKAGE VERSION: 4.2
+RECIPE NAME: dosfstools
+LICENSE: GPLv3
+
+PACKAGE NAME: dropbear
+PACKAGE VERSION: 2020.81
+RECIPE NAME: dropbear
+LICENSE: MIT & BSD-3-Clause & BSD-2-Clause & PD
+
+PACKAGE NAME: ell
+PACKAGE VERSION: 0.43
+RECIPE NAME: ell
+LICENSE: LGPLv2.1
+
+PACKAGE NAME: eudev
+PACKAGE VERSION: 3.2.10
+RECIPE NAME: eudev
+LICENSE: GPLv2.0+ & LGPL-2.1+
+
+PACKAGE NAME: expat
+PACKAGE VERSION: 2.4.1
+RECIPE NAME: expat
+LICENSE: MIT
+
+PACKAGE NAME: file
+PACKAGE VERSION: 5.40
+RECIPE NAME: file
+LICENSE: BSD-2-Clause
+
+PACKAGE NAME: fontconfig
+PACKAGE VERSION: 2.13.1
+RECIPE NAME: fontconfig
+LICENSE: MIT-style & MIT & PD
+
+PACKAGE NAME: fontconfig-utils
+PACKAGE VERSION: 2.13.1
+RECIPE NAME: fontconfig
+LICENSE: MIT-style & MIT & PD
+
+PACKAGE NAME: formfactor
+PACKAGE VERSION: 0.0
+RECIPE NAME: formfactor
+LICENSE: MIT
+
+PACKAGE NAME: freetype
+PACKAGE VERSION: 2.11.0
+RECIPE NAME: freetype
+LICENSE: FreeType | GPLv2+
+
+PACKAGE NAME: fribidi
+PACKAGE VERSION: 1.0.10
+RECIPE NAME: fribidi
+LICENSE: LGPLv2.1+
+
+PACKAGE NAME: gconf
+PACKAGE VERSION: 3.2.6
+RECIPE NAME: gconf
+LICENSE: LGPLv2+
+
+PACKAGE NAME: gconf-locale-en-gb
+PACKAGE VERSION: 3.2.6
+RECIPE NAME: gconf
+LICENSE: LGPLv2+
+
+PACKAGE NAME: gdk-pixbuf
+PACKAGE VERSION: 2.42.6
+RECIPE NAME: gdk-pixbuf
+LICENSE: LGPLv2.1+
+
+PACKAGE NAME: gdk-pixbuf-loader-gif
+PACKAGE VERSION: 2.42.6
+RECIPE NAME: gdk-pixbuf
+LICENSE: LGPLv2.1+
+
+PACKAGE NAME: gdk-pixbuf-loader-xpm
+PACKAGE VERSION: 2.42.6
+RECIPE NAME: gdk-pixbuf
+LICENSE: LGPLv2.1+
+
+PACKAGE NAME: gdk-pixbuf-locale-en-gb
+PACKAGE VERSION: 2.42.6
+RECIPE NAME: gdk-pixbuf
+LICENSE: LGPLv2.1+
+
+PACKAGE NAME: glib-2.0
+PACKAGE VERSION: 2.68.4
+RECIPE NAME: glib-2.0
+LICENSE: LGPLv2.1+ & BSD-3-Clause & PD
+
+PACKAGE NAME: glib-2.0-locale-en-gb
+PACKAGE VERSION: 2.68.4
+RECIPE NAME: glib-2.0
+LICENSE: LGPLv2.1+ & BSD-3-Clause & PD
+
+PACKAGE NAME: glib-2.0-utils
+PACKAGE VERSION: 2.68.4
+RECIPE NAME: glib-2.0
+LICENSE: LGPLv2.1+ & BSD-3-Clause & PD
+
+PACKAGE NAME: glib-networking
+PACKAGE VERSION: 2.68.2
+RECIPE NAME: glib-networking
+LICENSE: LGPLv2.1
+
+PACKAGE NAME: glib-networking-locale-en-gb
+PACKAGE VERSION: 2.68.2
+RECIPE NAME: glib-networking
+LICENSE: LGPLv2.1
+
+PACKAGE NAME: glibc
+PACKAGE VERSION: 2.34
+RECIPE NAME: glibc
+LICENSE: GPLv2 & LGPLv2.1
+
+PACKAGE NAME: glibc-gconv
+PACKAGE VERSION: 2.34
+RECIPE NAME: glibc-locale
+LICENSE: GPLv2 & LGPLv2.1
+
+PACKAGE NAME: glibc-gconv-iso8859-1
+PACKAGE VERSION: 2.34
+RECIPE NAME: glibc-locale
+LICENSE: GPLv2 & LGPLv2.1
+
+PACKAGE NAME: glibc-locale-en-gb
+PACKAGE VERSION: 2.34
+RECIPE NAME: glibc-locale
+LICENSE: GPLv2 & LGPLv2.1
+
+PACKAGE NAME: gmp
+PACKAGE VERSION: 6.2.1
+RECIPE NAME: gmp
+LICENSE: GPLv2+ | LGPLv3+
+
+PACKAGE NAME: gnupg
+PACKAGE VERSION: 2.3.1
+RECIPE NAME: gnupg
+LICENSE: GPLv3 & LGPLv3
+
+PACKAGE NAME: gnupg-gpg
+PACKAGE VERSION: 2.3.1
+RECIPE NAME: gnupg
+LICENSE: GPLv3 & LGPLv3
+
+PACKAGE NAME: gnutls
+PACKAGE VERSION: 3.7.2
+RECIPE NAME: gnutls
+LICENSE: LGPLv2.1+
+
+PACKAGE NAME: gpgme
+PACKAGE VERSION: 1.16.0
+RECIPE NAME: gpgme
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gst-examples
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gst-examples
+LICENSE: LGPL-2.0+
+
+PACKAGE NAME: gstreamer1.0
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0
+LICENSE: LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-locale-en-gb
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0
+LICENSE: LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-accurip
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-adpcmdec
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-adpcmenc
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-aiff
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-apps
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-asfmux
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-audiobuffersplit
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-audiofxbad
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-audiolatency
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-audiomixmatrix
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-audiovisualizers
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-autoconvert
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-bayer
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-bluez
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-bz2
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-camerabin
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-closedcaption
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-coloreffects
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-curl
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-dash
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-debugutilsbad
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-decklink
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-dtls
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-dvb
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-dvbsubenc
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-dvbsuboverlay
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-dvdspu
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-faceoverlay
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-fbdevsink
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-festival
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-fieldanalysis
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-freeverb
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-frei0r
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-gaudieffects
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-gdp
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-geometrictransform
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-hls
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-id3tag
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-inter
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-interlace
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-ipcpipeline
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-ivfparse
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-ivtc
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-jp2kdecimator
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-jpegformat
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-legacyrawparse
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-locale-en-gb
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-meta
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-midi
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-mpegpsdemux
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-mpegpsmux
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-mpegtsdemux
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-mpegtsmux
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-mxf
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-netsim
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-pcapparse
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-pnm
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-proxy
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-removesilence
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-rfbsrc
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-rist
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-rsvg
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-rtmp2
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-rtpmanagerbad
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-rtponvif
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-sbc
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-sdpelem
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-segmentclip
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-shm
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-siren
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-smooth
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-smoothstreaming
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-sndfile
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-speed
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-subenc
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-switchbin
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-timecode
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-transcode
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-ttmlsubs
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-uvch264
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-videofiltersbad
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-videoframe-audiolevel
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-videoparsersbad
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-videosignal
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-vmnc
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-vulkan
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-waylandsink
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-webp
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-bad-y4mdec
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-adder
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-alsa
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-app
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-apps
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-audioconvert
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-audiomixer
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-audiorate
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-audioresample
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-audiotestsrc
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-compositor
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-encoding
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-gio
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-locale-en-gb
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-meta
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-ogg
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-opengl
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-overlaycomposition
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-pango
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-pbtypes
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-playback
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-rawparse
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-subparse
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-tcp
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-theora
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-typefindfunctions
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-videoconvert
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-videorate
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-videoscale
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-videotestsrc
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-volume
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-vorbis
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-ximagesink
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-base-xvimagesink
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-alaw
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-alpha
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-alphacolor
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-apetag
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-audiofx
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-audioparsers
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-auparse
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-autodetect
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-avi
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-cairo
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-cutter
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-debug
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-deinterlace
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-dtmf
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-effectv
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-equalizer
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-flac
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-flv
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-flxdec
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-gdkpixbuf
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-goom
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-goom2k1
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-icydemux
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-id3demux
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-imagefreeze
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-interleave
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-isomp4
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-jpeg
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-lame
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-level
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-locale-en-gb
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-matroska
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-meta
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-monoscope
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-mpg123
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-mulaw
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-multifile
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-multipart
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-navigationtest
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-ossaudio
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-png
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-pulseaudio
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-replaygain
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-rtp
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-rtpmanager
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-rtsp
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-shapewipe
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-smpte
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-soup
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-spectrum
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-speex
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-taglib
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-udp
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-video4linux2
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-videobox
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-videocrop
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-videofilter
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-videomixer
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-wavenc
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-wavparse
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-ximagesrc
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gstreamer1.0-plugins-good-y4menc
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-good
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gtk+3
+PACKAGE VERSION: 3.24.30
+RECIPE NAME: gtk+3
+LICENSE: LGPLv2 & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gtk+3-locale-en
+PACKAGE VERSION: 3.24.30
+RECIPE NAME: gtk+3
+LICENSE: LGPLv2 & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: gtk+3-locale-en-gb
+PACKAGE VERSION: 3.24.30
+RECIPE NAME: gtk+3
+LICENSE: LGPLv2 & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: harfbuzz
+PACKAGE VERSION: 2.9.0
+RECIPE NAME: harfbuzz
+LICENSE: MIT
+
+PACKAGE NAME: hicolor-icon-theme
+PACKAGE VERSION: 0.17
+RECIPE NAME: hicolor-icon-theme
+LICENSE: GPLv2
+
+PACKAGE NAME: init-ifupdown
+PACKAGE VERSION: 1.0
+RECIPE NAME: init-ifupdown
+LICENSE: GPLv2
+
+PACKAGE NAME: init-system-helpers-service
+PACKAGE VERSION: 1.60
+RECIPE NAME: init-system-helpers
+LICENSE: BSD-3-Clause & GPLv2
+
+PACKAGE NAME: initscripts
+PACKAGE VERSION: 1.0
+RECIPE NAME: initscripts
+LICENSE: GPLv2
+
+PACKAGE NAME: initscripts-functions
+PACKAGE VERSION: 1.0
+RECIPE NAME: initscripts
+LICENSE: GPLv2
+
+PACKAGE NAME: iptables
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ip6t-ah
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ip6t-dnat
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ip6t-dnpt
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ip6t-dst
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ip6t-eui64
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ip6t-frag
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ip6t-hbh
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ip6t-hl
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ip6t-icmp6
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ip6t-ipv6header
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ip6t-log
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ip6t-masquerade
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ip6t-mh
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ip6t-netmap
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ip6t-redirect
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ip6t-reject
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ip6t-rt
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ip6t-snat
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ip6t-snpt
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ip6t-srh
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ipt-ah
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ipt-clusterip
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ipt-dnat
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ipt-ecn
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ipt-icmp
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ipt-log
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ipt-masquerade
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ipt-netmap
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ipt-realm
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ipt-redirect
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ipt-reject
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ipt-snat
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ipt-ttl
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-ipt-ulog
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-addrtype
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-audit
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-bpf
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-cgroup
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-checksum
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-classify
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-cluster
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-comment
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-connbytes
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-connlimit
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-connmark
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-connsecmark
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-conntrack
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-cpu
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-ct
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-dccp
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-devgroup
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-dscp
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-ecn
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-esp
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-hashlimit
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-helper
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-hmark
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-idletimer
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-ipcomp
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-iprange
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-ipvs
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-led
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-length
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-limit
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-mac
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-mark
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-multiport
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-nfacct
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-nflog
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-nfqueue
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-osf
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-owner
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-physdev
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-pkttype
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-policy
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-quota
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-rateest
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-recent
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-rpfilter
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-sctp
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-secmark
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-set
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-socket
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-standard
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-statistic
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-string
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-synproxy
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-tcp
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-tcpmss
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-tcpoptstrip
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-tee
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-time
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-tos
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-tproxy
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-trace
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-u32
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-module-xt-udp
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iptables-modules
+PACKAGE VERSION: 1.8.7
+RECIPE NAME: iptables
+LICENSE: GPLv2+
+
+PACKAGE NAME: iw
+PACKAGE VERSION: 5.9
+RECIPE NAME: iw
+LICENSE: BSD-2-Clause
+
+PACKAGE NAME: json-c
+PACKAGE VERSION: 0.15
+RECIPE NAME: json-c
+LICENSE: MIT
+
+PACKAGE NAME: kernel-base
+PACKAGE VERSION: 5.14.9+gitAUTOINC+884dfea956_c4def465fc
+RECIPE NAME: linux-yocto
+LICENSE: GPLv2
+
+PACKAGE NAME: kernel-module-bnep-5.14.9-yocto-standard
+PACKAGE VERSION: 5.14.9+gitAUTOINC+884dfea956_c4def465fc
+RECIPE NAME: linux-yocto
+LICENSE: GPLv2
+
+PACKAGE NAME: kernel-module-hidp-5.14.9-yocto-standard
+PACKAGE VERSION: 5.14.9+gitAUTOINC+884dfea956_c4def465fc
+RECIPE NAME: linux-yocto
+LICENSE: GPLv2
+
+PACKAGE NAME: kernel-module-ip-tables-5.14.9-yocto-standard
+PACKAGE VERSION: 5.14.9+gitAUTOINC+884dfea956_c4def465fc
+RECIPE NAME: linux-yocto
+LICENSE: GPLv2
+
+PACKAGE NAME: kernel-module-ip6-tables-5.14.9-yocto-standard
+PACKAGE VERSION: 5.14.9+gitAUTOINC+884dfea956_c4def465fc
+RECIPE NAME: linux-yocto
+LICENSE: GPLv2
+
+PACKAGE NAME: kernel-module-ip6table-filter-5.14.9-yocto-standard
+PACKAGE VERSION: 5.14.9+gitAUTOINC+884dfea956_c4def465fc
+RECIPE NAME: linux-yocto
+LICENSE: GPLv2
+
+PACKAGE NAME: kernel-module-iptable-filter-5.14.9-yocto-standard
+PACKAGE VERSION: 5.14.9+gitAUTOINC+884dfea956_c4def465fc
+RECIPE NAME: linux-yocto
+LICENSE: GPLv2
+
+PACKAGE NAME: kernel-module-iptable-nat-5.14.9-yocto-standard
+PACKAGE VERSION: 5.14.9+gitAUTOINC+884dfea956_c4def465fc
+RECIPE NAME: linux-yocto
+LICENSE: GPLv2
+
+PACKAGE NAME: kernel-module-michael-mic-5.14.9-yocto-standard
+PACKAGE VERSION: 5.14.9+gitAUTOINC+884dfea956_c4def465fc
+RECIPE NAME: linux-yocto
+LICENSE: GPLv2
+
+PACKAGE NAME: kernel-module-nf-conntrack-5.14.9-yocto-standard
+PACKAGE VERSION: 5.14.9+gitAUTOINC+884dfea956_c4def465fc
+RECIPE NAME: linux-yocto
+LICENSE: GPLv2
+
+PACKAGE NAME: kernel-module-nf-defrag-ipv4-5.14.9-yocto-standard
+PACKAGE VERSION: 5.14.9+gitAUTOINC+884dfea956_c4def465fc
+RECIPE NAME: linux-yocto
+LICENSE: GPLv2
+
+PACKAGE NAME: kernel-module-nf-defrag-ipv6-5.14.9-yocto-standard
+PACKAGE VERSION: 5.14.9+gitAUTOINC+884dfea956_c4def465fc
+RECIPE NAME: linux-yocto
+LICENSE: GPLv2
+
+PACKAGE NAME: kernel-module-nf-nat-5.14.9-yocto-standard
+PACKAGE VERSION: 5.14.9+gitAUTOINC+884dfea956_c4def465fc
+RECIPE NAME: linux-yocto
+LICENSE: GPLv2
+
+PACKAGE NAME: kernel-module-nls-utf8-5.14.9-yocto-standard
+PACKAGE VERSION: 5.14.9+gitAUTOINC+884dfea956_c4def465fc
+RECIPE NAME: linux-yocto
+LICENSE: GPLv2
+
+PACKAGE NAME: kernel-module-rfcomm-5.14.9-yocto-standard
+PACKAGE VERSION: 5.14.9+gitAUTOINC+884dfea956_c4def465fc
+RECIPE NAME: linux-yocto
+LICENSE: GPLv2
+
+PACKAGE NAME: kernel-module-snd-5.14.9-yocto-standard
+PACKAGE VERSION: 5.14.9+gitAUTOINC+884dfea956_c4def465fc
+RECIPE NAME: linux-yocto
+LICENSE: GPLv2
+
+PACKAGE NAME: kernel-module-snd-ens1370-5.14.9-yocto-standard
+PACKAGE VERSION: 5.14.9+gitAUTOINC+884dfea956_c4def465fc
+RECIPE NAME: linux-yocto
+LICENSE: GPLv2
+
+PACKAGE NAME: kernel-module-snd-pcm-5.14.9-yocto-standard
+PACKAGE VERSION: 5.14.9+gitAUTOINC+884dfea956_c4def465fc
+RECIPE NAME: linux-yocto
+LICENSE: GPLv2
+
+PACKAGE NAME: kernel-module-snd-rawmidi-5.14.9-yocto-standard
+PACKAGE VERSION: 5.14.9+gitAUTOINC+884dfea956_c4def465fc
+RECIPE NAME: linux-yocto
+LICENSE: GPLv2
+
+PACKAGE NAME: kernel-module-snd-seq-device-5.14.9-yocto-standard
+PACKAGE VERSION: 5.14.9+gitAUTOINC+884dfea956_c4def465fc
+RECIPE NAME: linux-yocto
+LICENSE: GPLv2
+
+PACKAGE NAME: kernel-module-snd-timer-5.14.9-yocto-standard
+PACKAGE VERSION: 5.14.9+gitAUTOINC+884dfea956_c4def465fc
+RECIPE NAME: linux-yocto
+LICENSE: GPLv2
+
+PACKAGE NAME: kernel-module-soundcore-5.14.9-yocto-standard
+PACKAGE VERSION: 5.14.9+gitAUTOINC+884dfea956_c4def465fc
+RECIPE NAME: linux-yocto
+LICENSE: GPLv2
+
+PACKAGE NAME: kernel-module-tun-5.14.9-yocto-standard
+PACKAGE VERSION: 5.14.9+gitAUTOINC+884dfea956_c4def465fc
+RECIPE NAME: linux-yocto
+LICENSE: GPLv2
+
+PACKAGE NAME: kernel-module-uvesafb-5.14.9-yocto-standard
+PACKAGE VERSION: 5.14.9+gitAUTOINC+884dfea956_c4def465fc
+RECIPE NAME: linux-yocto
+LICENSE: GPLv2
+
+PACKAGE NAME: kernel-module-x-tables-5.14.9-yocto-standard
+PACKAGE VERSION: 5.14.9+gitAUTOINC+884dfea956_c4def465fc
+RECIPE NAME: linux-yocto
+LICENSE: GPLv2
+
+PACKAGE NAME: kmod
+PACKAGE VERSION: 29
+RECIPE NAME: kmod
+LICENSE: GPL-2.0+ & LGPL-2.1+
+
+PACKAGE NAME: l3afpad
+PACKAGE VERSION: 0.8.18.1.11+gitAUTOINC+3cdccdc950
+RECIPE NAME: l3afpad
+LICENSE: GPLv2+
+
+PACKAGE NAME: ldconfig
+PACKAGE VERSION: 2.34
+RECIPE NAME: glibc
+LICENSE: GPLv2 & LGPLv2.1
+
+PACKAGE NAME: libasound-module-conf-pulse
+PACKAGE VERSION: 1.2.5
+RECIPE NAME: alsa-plugins
+LICENSE: LGPLv2.1 & GPLv2+
+
+PACKAGE NAME: libasound-module-ctl-pulse
+PACKAGE VERSION: 1.2.5
+RECIPE NAME: alsa-plugins
+LICENSE: LGPLv2.1 & GPLv2+
+
+PACKAGE NAME: libasound-module-pcm-pulse
+PACKAGE VERSION: 1.2.5
+RECIPE NAME: alsa-plugins
+LICENSE: LGPLv2.1 & GPLv2+
+
+PACKAGE NAME: libassuan
+PACKAGE VERSION: 2.5.5
+RECIPE NAME: libassuan
+LICENSE: LGPLv2.1+
+
+PACKAGE NAME: libattr
+PACKAGE VERSION: 2.5.1
+RECIPE NAME: attr
+LICENSE: LGPLv2.1+
+
+PACKAGE NAME: libavahi-common
+PACKAGE VERSION: 0.8
+RECIPE NAME: avahi
+LICENSE: LGPLv2.1+
+
+PACKAGE NAME: libavahi-core
+PACKAGE VERSION: 0.8
+RECIPE NAME: avahi
+LICENSE: LGPLv2.1+
+
+PACKAGE NAME: libbz2
+PACKAGE VERSION: 1.0.8
+RECIPE NAME: bzip2
+LICENSE: bzip2-1.0.6
+
+PACKAGE NAME: libcap
+PACKAGE VERSION: 2.51
+RECIPE NAME: libcap
+LICENSE: BSD-3-Clause | GPLv2
+
+PACKAGE NAME: libcomps
+PACKAGE VERSION: 0.1.17
+RECIPE NAME: libcomps
+LICENSE: GPLv2
+
+PACKAGE NAME: libcroco
+PACKAGE VERSION: 0.6.13
+RECIPE NAME: libcroco
+LICENSE: LGPLv2 & LGPLv2.1
+
+PACKAGE NAME: libcrypto
+PACKAGE VERSION: 1.1.1l
+RECIPE NAME: openssl
+LICENSE: openssl
+
+PACKAGE NAME: libcurl
+PACKAGE VERSION: 7.78.0
+RECIPE NAME: curl
+LICENSE: MIT
+
+PACKAGE NAME: libdaemon
+PACKAGE VERSION: 0.14
+RECIPE NAME: libdaemon
+LICENSE: LGPLv2.1+
+
+PACKAGE NAME: libdmx
+PACKAGE VERSION: 1.1.4
+RECIPE NAME: libdmx
+LICENSE: MIT
+
+PACKAGE NAME: libdnf
+PACKAGE VERSION: 0.63.1
+RECIPE NAME: libdnf
+LICENSE: LGPLv2.1+
+
+PACKAGE NAME: libdrm
+PACKAGE VERSION: 2.4.107
+RECIPE NAME: libdrm
+LICENSE: MIT
+
+PACKAGE NAME: libdrm-intel
+PACKAGE VERSION: 2.4.107
+RECIPE NAME: libdrm
+LICENSE: MIT
+
+PACKAGE NAME: libdrm-nouveau
+PACKAGE VERSION: 2.4.107
+RECIPE NAME: libdrm
+LICENSE: MIT
+
+PACKAGE NAME: libdrm-radeon
+PACKAGE VERSION: 2.4.107
+RECIPE NAME: libdrm
+LICENSE: MIT
+
+PACKAGE NAME: libdw
+PACKAGE VERSION: 0.185
+RECIPE NAME: elfutils
+LICENSE: GPLv2 | LGPLv3+
+
+PACKAGE NAME: libegl-mesa
+PACKAGE VERSION: 21.2.1
+RECIPE NAME: mesa
+LICENSE: MIT
+
+PACKAGE NAME: libelf
+PACKAGE VERSION: 0.185
+RECIPE NAME: elfutils
+LICENSE: GPLv2 | LGPLv3+
+
+PACKAGE NAME: libepoxy
+PACKAGE VERSION: 1.5.9
+RECIPE NAME: libepoxy
+LICENSE: MIT
+
+PACKAGE NAME: liberation-fonts
+PACKAGE VERSION: 2.1.4
+RECIPE NAME: liberation-fonts
+LICENSE: OFL-1.1
+
+PACKAGE NAME: libevdev
+PACKAGE VERSION: 1.11.0
+RECIPE NAME: libevdev
+LICENSE: MIT
+
+PACKAGE NAME: libexif
+PACKAGE VERSION: 0.6.22
+RECIPE NAME: libexif
+LICENSE: LGPLv2.1
+
+PACKAGE NAME: libexif-locale-en-gb
+PACKAGE VERSION: 0.6.22
+RECIPE NAME: libexif
+LICENSE: LGPLv2.1
+
+PACKAGE NAME: libfakekey
+PACKAGE VERSION: 0.3+gitAUTOINC+7ad885912e
+RECIPE NAME: libfakekey
+LICENSE: LGPLv2+
+
+PACKAGE NAME: libffi
+PACKAGE VERSION: 3.4.2
+RECIPE NAME: libffi
+LICENSE: MIT
+
+PACKAGE NAME: libflac
+PACKAGE VERSION: 1.3.3
+RECIPE NAME: flac
+LICENSE: GFDL-1.2 & GPLv2+ & LGPLv2.1+ & BSD-3-Clause
+
+PACKAGE NAME: libfm
+PACKAGE VERSION: 1.3.2
+RECIPE NAME: libfm
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: libfm-extra
+PACKAGE VERSION: 1.3.2
+RECIPE NAME: libfm-extra
+LICENSE: LGPLv2+
+
+PACKAGE NAME: libfm-gtk
+PACKAGE VERSION: 1.3.2
+RECIPE NAME: libfm
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: libfm-locale-en-gb
+PACKAGE VERSION: 1.3.2
+RECIPE NAME: libfm
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: libfontenc
+PACKAGE VERSION: 1.1.4
+RECIPE NAME: libfontenc
+LICENSE: MIT
+
+PACKAGE NAME: libgbm
+PACKAGE VERSION: 21.2.1
+RECIPE NAME: mesa
+LICENSE: MIT
+
+PACKAGE NAME: libgcc
+PACKAGE VERSION: 11.2.0
+RECIPE NAME: libgcc
+LICENSE: GPL-3.0-with-GCC-exception
+
+PACKAGE NAME: libgcrypt
+PACKAGE VERSION: 1.9.4
+RECIPE NAME: libgcrypt
+LICENSE: LGPLv2.1+
+
+PACKAGE NAME: libgl-mesa
+PACKAGE VERSION: 21.2.1
+RECIPE NAME: mesa
+LICENSE: MIT
+
+PACKAGE NAME: libglapi
+PACKAGE VERSION: 21.2.1
+RECIPE NAME: mesa
+LICENSE: MIT
+
+PACKAGE NAME: libgomp
+PACKAGE VERSION: 11.2.0
+RECIPE NAME: gcc-runtime
+LICENSE: GPL-3.0-with-GCC-exception
+
+PACKAGE NAME: libgpg-error
+PACKAGE VERSION: 1.42
+RECIPE NAME: libgpg-error
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: libgstadaptivedemux-1.0
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: libgstallocators-1.0
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: libgstapp-1.0
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: libgstaudio-1.0
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: libgstbadaudio-1.0
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: libgstbasecamerabinsrc-1.0
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: libgstcodecparsers-1.0
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: libgstcodecs-1.0
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: libgstfft-1.0
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: libgstgl-1.0
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: libgstinsertbin-1.0
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: libgstisoff-1.0
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: libgstmpegts-1.0
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: libgstpbutils-1.0
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: libgstphotography-1.0
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: libgstplayer-1.0
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: libgstriff-1.0
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: libgstrtp-1.0
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: libgstrtsp-1.0
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: libgstsctp-1.0
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: libgstsdp-1.0
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: libgsttag-1.0
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: libgsttranscoder-1.0
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: libgsturidownloader-1.0
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: libgstvideo-1.0
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-base
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: libgstvulkan-1.0
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: libgstwayland-1.0
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: libgstwebrtc-1.0
+PACKAGE VERSION: 1.18.4
+RECIPE NAME: gstreamer1.0-plugins-bad
+LICENSE: GPLv2+ & LGPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: libgudev
+PACKAGE VERSION: 237
+RECIPE NAME: libgudev
+LICENSE: LGPLv2.1
+
+PACKAGE NAME: libice
+PACKAGE VERSION: 1.0.10
+RECIPE NAME: libice
+LICENSE: MIT-style
+
+PACKAGE NAME: libicudata
+PACKAGE VERSION: 69.1
+RECIPE NAME: icu
+LICENSE: ICU
+
+PACKAGE NAME: libicuuc
+PACKAGE VERSION: 69.1
+RECIPE NAME: icu
+LICENSE: ICU
+
+PACKAGE NAME: libidn2
+PACKAGE VERSION: 2.3.2
+RECIPE NAME: libidn2
+LICENSE: (GPLv2+ | LGPLv3)
+
+PACKAGE NAME: libinput
+PACKAGE VERSION: 1.18.1
+RECIPE NAME: libinput
+LICENSE: MIT
+
+PACKAGE NAME: libjpeg-turbo
+PACKAGE VERSION: 2.1.1
+RECIPE NAME: libjpeg-turbo
+LICENSE: BSD-3-Clause
+
+PACKAGE NAME: libkmod
+PACKAGE VERSION: 29
+RECIPE NAME: kmod
+LICENSE: LGPL-2.1+
+
+PACKAGE NAME: libksba
+PACKAGE VERSION: 1.6.0
+RECIPE NAME: libksba
+LICENSE: GPLv2+ | LGPLv3+
+
+PACKAGE NAME: libltdl
+PACKAGE VERSION: 2.4.6
+RECIPE NAME: libtool
+LICENSE: GPLv2 & LGPLv2.1
+
+PACKAGE NAME: liblzma
+PACKAGE VERSION: 5.2.5
+RECIPE NAME: xz
+LICENSE: PD
+
+PACKAGE NAME: libmatchbox
+PACKAGE VERSION: 1.12
+RECIPE NAME: libmatchbox
+LICENSE: LGPLv2+ & MIT
+
+PACKAGE NAME: libmodulemd
+PACKAGE VERSION: 2.13.0
+RECIPE NAME: libmodulemd
+LICENSE: MIT
+
+PACKAGE NAME: libmp3lame
+PACKAGE VERSION: 3.100
+RECIPE NAME: lame
+LICENSE: LGPLv2+
+
+PACKAGE NAME: libnl
+PACKAGE VERSION: 3.5.0
+RECIPE NAME: libnl
+LICENSE: LGPLv2.1
+
+PACKAGE NAME: libnl-genl
+PACKAGE VERSION: 3.5.0
+RECIPE NAME: libnl
+LICENSE: LGPLv2.1
+
+PACKAGE NAME: libnsl2
+PACKAGE VERSION: 2.0.0
+RECIPE NAME: libnsl2
+LICENSE: LGPL-2.1
+
+PACKAGE NAME: libnss-mdns
+PACKAGE VERSION: 0.15.1
+RECIPE NAME: libnss-mdns
+LICENSE: LGPLv2.1+
+
+PACKAGE NAME: libogg
+PACKAGE VERSION: 1.3.5
+RECIPE NAME: libogg
+LICENSE: BSD-3-Clause
+
+PACKAGE NAME: liborc-0.4
+PACKAGE VERSION: 0.4.32
+RECIPE NAME: orc
+LICENSE: BSD-2-Clause & BSD-3-Clause
+
+PACKAGE NAME: libpci
+PACKAGE VERSION: 3.7.0
+RECIPE NAME: pciutils
+LICENSE: GPLv2+
+
+PACKAGE NAME: libpciaccess
+PACKAGE VERSION: 0.16
+RECIPE NAME: libpciaccess
+LICENSE: MIT & MIT-style
+
+PACKAGE NAME: libpcre
+PACKAGE VERSION: 8.45
+RECIPE NAME: libpcre
+LICENSE: BSD-3-Clause
+
+PACKAGE NAME: libpcre2
+PACKAGE VERSION: 10.37
+RECIPE NAME: libpcre2
+LICENSE: BSD-3-Clause
+
+PACKAGE NAME: libpng
+PACKAGE VERSION: 1.6.37
+RECIPE NAME: libpng
+LICENSE: Libpng
+
+PACKAGE NAME: libpsl
+PACKAGE VERSION: 0.21.1
+RECIPE NAME: libpsl
+LICENSE: MIT
+
+PACKAGE NAME: libpulse
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: libpulse-simple
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: libpulsecommon
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: libpulsecore
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: libpython3
+PACKAGE VERSION: 3.9.6
+RECIPE NAME: python3
+LICENSE: PSFv2
+
+PACKAGE NAME: librepo
+PACKAGE VERSION: 1.14.1
+RECIPE NAME: librepo
+LICENSE: LGPLv2.1
+
+PACKAGE NAME: librsvg
+PACKAGE VERSION: 2.40.21
+RECIPE NAME: librsvg
+LICENSE: LGPLv2+
+
+PACKAGE NAME: libsm
+PACKAGE VERSION: 1.2.3
+RECIPE NAME: libsm
+LICENSE: MIT-style
+
+PACKAGE NAME: libsndfile1
+PACKAGE VERSION: 1.0.28
+RECIPE NAME: libsndfile1
+LICENSE: LGPLv2.1
+
+PACKAGE NAME: libsolv
+PACKAGE VERSION: 0.7.19
+RECIPE NAME: libsolv
+LICENSE: BSD-3-Clause
+
+PACKAGE NAME: libsolvext
+PACKAGE VERSION: 0.7.19
+RECIPE NAME: libsolv
+LICENSE: BSD-3-Clause
+
+PACKAGE NAME: libsoup-2.4
+PACKAGE VERSION: 2.72.0
+RECIPE NAME: libsoup-2.4
+LICENSE: LGPLv2
+
+PACKAGE NAME: libsoup-2.4-locale-en-gb
+PACKAGE VERSION: 2.72.0
+RECIPE NAME: libsoup-2.4
+LICENSE: LGPLv2
+
+PACKAGE NAME: libsqlite3
+PACKAGE VERSION: 3.36.0
+RECIPE NAME: sqlite3
+LICENSE: PD
+
+PACKAGE NAME: libssl
+PACKAGE VERSION: 1.1.1l
+RECIPE NAME: openssl
+LICENSE: openssl
+
+PACKAGE NAME: libstdc++
+PACKAGE VERSION: 11.2.0
+RECIPE NAME: gcc-runtime
+LICENSE: GPL-3.0-with-GCC-exception
+
+PACKAGE NAME: libtheora
+PACKAGE VERSION: 1.1.1
+RECIPE NAME: libtheora
+LICENSE: BSD-3-Clause
+
+PACKAGE NAME: libtirpc
+PACKAGE VERSION: 1.3.2
+RECIPE NAME: libtirpc
+LICENSE: BSD-3-Clause
+
+PACKAGE NAME: libudev
+PACKAGE VERSION: 3.2.10
+RECIPE NAME: eudev
+LICENSE: LGPL-2.1+
+
+PACKAGE NAME: libunistring
+PACKAGE VERSION: 0.9.10
+RECIPE NAME: libunistring
+LICENSE: LGPLv3+ | GPLv2
+
+PACKAGE NAME: libusb1
+PACKAGE VERSION: 1.0.24
+RECIPE NAME: libusb1
+LICENSE: LGPLv2.1+
+
+PACKAGE NAME: libvorbis
+PACKAGE VERSION: 1.3.7
+RECIPE NAME: libvorbis
+LICENSE: BSD-3-Clause
+
+PACKAGE NAME: libvte
+PACKAGE VERSION: 0.64.2
+RECIPE NAME: vte
+LICENSE: LGPLv3+
+
+PACKAGE NAME: libwebp
+PACKAGE VERSION: 1.2.1
+RECIPE NAME: libwebp
+LICENSE: BSD-3-Clause
+
+PACKAGE NAME: libx11
+PACKAGE VERSION: 1.7.2
+RECIPE NAME: libx11
+LICENSE: MIT & MIT-style & BSD-4-Clause & BSD-2-Clause
+
+PACKAGE NAME: libx11-locale
+PACKAGE VERSION: 1.7.2
+RECIPE NAME: libx11
+LICENSE: MIT & MIT-style & BSD-4-Clause & BSD-2-Clause
+
+PACKAGE NAME: libx11-xcb
+PACKAGE VERSION: 1.7.2
+RECIPE NAME: libx11
+LICENSE: MIT & MIT-style & BSD-4-Clause & BSD-2-Clause
+
+PACKAGE NAME: libxau
+PACKAGE VERSION: 1.0.9
+RECIPE NAME: libxau
+LICENSE: MIT-style
+
+PACKAGE NAME: libxcb
+PACKAGE VERSION: 1.14
+RECIPE NAME: libxcb
+LICENSE: MIT
+
+PACKAGE NAME: libxcb-dri2
+PACKAGE VERSION: 1.14
+RECIPE NAME: libxcb
+LICENSE: MIT
+
+PACKAGE NAME: libxcb-dri3
+PACKAGE VERSION: 1.14
+RECIPE NAME: libxcb
+LICENSE: MIT
+
+PACKAGE NAME: libxcb-glx
+PACKAGE VERSION: 1.14
+RECIPE NAME: libxcb
+LICENSE: MIT
+
+PACKAGE NAME: libxcb-present
+PACKAGE VERSION: 1.14
+RECIPE NAME: libxcb
+LICENSE: MIT
+
+PACKAGE NAME: libxcb-randr
+PACKAGE VERSION: 1.14
+RECIPE NAME: libxcb
+LICENSE: MIT
+
+PACKAGE NAME: libxcb-render
+PACKAGE VERSION: 1.14
+RECIPE NAME: libxcb
+LICENSE: MIT
+
+PACKAGE NAME: libxcb-shm
+PACKAGE VERSION: 1.14
+RECIPE NAME: libxcb
+LICENSE: MIT
+
+PACKAGE NAME: libxcb-sync
+PACKAGE VERSION: 1.14
+RECIPE NAME: libxcb
+LICENSE: MIT
+
+PACKAGE NAME: libxcb-xfixes
+PACKAGE VERSION: 1.14
+RECIPE NAME: libxcb
+LICENSE: MIT
+
+PACKAGE NAME: libxcb-xkb
+PACKAGE VERSION: 1.14
+RECIPE NAME: libxcb
+LICENSE: MIT
+
+PACKAGE NAME: libxcomposite
+PACKAGE VERSION: 0.4.5
+RECIPE NAME: libxcomposite
+LICENSE: MIT-style
+
+PACKAGE NAME: libxcrypt
+PACKAGE VERSION: 4.4.25
+RECIPE NAME: libxcrypt
+LICENSE: LGPLv2.1
+
+PACKAGE NAME: libxcursor
+PACKAGE VERSION: 1.2.0
+RECIPE NAME: libxcursor
+LICENSE: MIT-style
+
+PACKAGE NAME: libxdamage
+PACKAGE VERSION: 1.1.5
+RECIPE NAME: libxdamage
+LICENSE: MIT
+
+PACKAGE NAME: libxdmcp
+PACKAGE VERSION: 1.1.3
+RECIPE NAME: libxdmcp
+LICENSE: MIT-style
+
+PACKAGE NAME: libxext
+PACKAGE VERSION: 1.3.4
+RECIPE NAME: libxext
+LICENSE: MIT-style
+
+PACKAGE NAME: libxfixes
+PACKAGE VERSION: 6.0.0
+RECIPE NAME: libxfixes
+LICENSE: MIT-style
+
+PACKAGE NAME: libxfont2
+PACKAGE VERSION: 2.0.5
+RECIPE NAME: libxfont2
+LICENSE: MIT & MIT-style & BSD-4-Clause & BSD-2-Clause
+
+PACKAGE NAME: libxft
+PACKAGE VERSION: 2.3.4
+RECIPE NAME: libxft
+LICENSE: MIT
+
+PACKAGE NAME: libxi
+PACKAGE VERSION: 1.7.99.2
+RECIPE NAME: libxi
+LICENSE: MIT & MIT-style
+
+PACKAGE NAME: libxinerama
+PACKAGE VERSION: 1.1.4
+RECIPE NAME: libxinerama
+LICENSE: MIT
+
+PACKAGE NAME: libxkbcommon
+PACKAGE VERSION: 1.3.0
+RECIPE NAME: libxkbcommon
+LICENSE: MIT & MIT-style
+
+PACKAGE NAME: libxkbfile
+PACKAGE VERSION: 1.1.0
+RECIPE NAME: libxkbfile
+LICENSE: MIT-style
+
+PACKAGE NAME: libxml2
+PACKAGE VERSION: 2.9.12
+RECIPE NAME: libxml2
+LICENSE: MIT
+
+PACKAGE NAME: libxmu
+PACKAGE VERSION: 1.1.3
+RECIPE NAME: libxmu
+LICENSE: MIT & MIT-style
+
+PACKAGE NAME: libxmuu
+PACKAGE VERSION: 1.1.3
+RECIPE NAME: libxmu
+LICENSE: MIT & MIT-style
+
+PACKAGE NAME: libxrandr
+PACKAGE VERSION: 1.5.2
+RECIPE NAME: libxrandr
+LICENSE: MIT-style
+
+PACKAGE NAME: libxrender
+PACKAGE VERSION: 0.9.10
+RECIPE NAME: libxrender
+LICENSE: MIT-style
+
+PACKAGE NAME: libxshmfence
+PACKAGE VERSION: 1.3
+RECIPE NAME: libxshmfence
+LICENSE: MIT-style
+
+PACKAGE NAME: libxt
+PACKAGE VERSION: 1.2.1
+RECIPE NAME: libxt
+LICENSE: MIT & MIT-style
+
+PACKAGE NAME: libxtst
+PACKAGE VERSION: 1.2.3
+RECIPE NAME: libxtst
+LICENSE: MIT-style
+
+PACKAGE NAME: libxv
+PACKAGE VERSION: 1.0.11
+RECIPE NAME: libxv
+LICENSE: MIT-style
+
+PACKAGE NAME: libxxf86vm
+PACKAGE VERSION: 1.1.4
+RECIPE NAME: libxxf86vm
+LICENSE: MIT
+
+PACKAGE NAME: libyaml
+PACKAGE VERSION: 0.2.5
+RECIPE NAME: libyaml
+LICENSE: MIT
+
+PACKAGE NAME: locale-base-en-gb
+PACKAGE VERSION: 2.34
+RECIPE NAME: glibc-locale
+LICENSE: GPLv2 & LGPLv2.1
+
+PACKAGE NAME: locale-base-en-us
+PACKAGE VERSION: 2.34
+RECIPE NAME: glibc-locale
+LICENSE: GPLv2 & LGPLv2.1
+
+PACKAGE NAME: matchbox-config-gtk
+PACKAGE VERSION: 0.2
+RECIPE NAME: matchbox-config-gtk
+LICENSE: GPLv2+
+
+PACKAGE NAME: matchbox-desktop
+PACKAGE VERSION: 2.2
+RECIPE NAME: matchbox-desktop
+LICENSE: GPLv2+ & LGPLv2+
+
+PACKAGE NAME: matchbox-keyboard
+PACKAGE VERSION: 0.1.1
+RECIPE NAME: matchbox-keyboard
+LICENSE: LGPLv2.1
+
+PACKAGE NAME: matchbox-keyboard-applet
+PACKAGE VERSION: 0.1.1
+RECIPE NAME: matchbox-keyboard
+LICENSE: LGPLv2.1
+
+PACKAGE NAME: matchbox-keyboard-im
+PACKAGE VERSION: 0.1.1
+RECIPE NAME: matchbox-keyboard
+LICENSE: LGPLv2.1
+
+PACKAGE NAME: matchbox-panel-2
+PACKAGE VERSION: 2.11
+RECIPE NAME: matchbox-panel-2
+LICENSE: GPLv2+
+
+PACKAGE NAME: matchbox-session
+PACKAGE VERSION: 0.1
+RECIPE NAME: matchbox-session
+LICENSE: GPLv2
+
+PACKAGE NAME: matchbox-session-sato
+PACKAGE VERSION: 0.1
+RECIPE NAME: matchbox-session-sato
+LICENSE: GPLv2.0+
+
+PACKAGE NAME: matchbox-terminal
+PACKAGE VERSION: 0.2
+RECIPE NAME: matchbox-terminal
+LICENSE: GPLv2+
+
+PACKAGE NAME: matchbox-theme-sato
+PACKAGE VERSION: 0.2
+RECIPE NAME: matchbox-theme-sato
+LICENSE: CC-BY-SA-3.0
+
+PACKAGE NAME: matchbox-wm
+PACKAGE VERSION: 1.2.2
+RECIPE NAME: matchbox-wm
+LICENSE: GPLv2+
+
+PACKAGE NAME: menu-cache
+PACKAGE VERSION: 1.1.0
+RECIPE NAME: menu-cache
+LICENSE: LGPLv2.1+
+
+PACKAGE NAME: mesa-megadriver
+PACKAGE VERSION: 21.2.1
+RECIPE NAME: mesa
+LICENSE: MIT
+
+PACKAGE NAME: mesa-vulkan-drivers
+PACKAGE VERSION: 21.2.1
+RECIPE NAME: mesa
+LICENSE: MIT
+
+PACKAGE NAME: mini-x-session
+PACKAGE VERSION: 0.1
+RECIPE NAME: mini-x-session
+LICENSE: GPLv2
+
+PACKAGE NAME: mobile-broadband-provider-info
+PACKAGE VERSION: 20210805
+RECIPE NAME: mobile-broadband-provider-info
+LICENSE: PD
+
+PACKAGE NAME: modutils-initscripts
+PACKAGE VERSION: 1.0
+RECIPE NAME: modutils-initscripts
+LICENSE: PD
+
+PACKAGE NAME: mpg123
+PACKAGE VERSION: 1.28.2
+RECIPE NAME: mpg123
+LICENSE: LGPLv2.1
+
+PACKAGE NAME: mtdev
+PACKAGE VERSION: 1.1.6
+RECIPE NAME: mtdev
+LICENSE: MIT
+
+PACKAGE NAME: ncurses-libncursesw
+PACKAGE VERSION: 6.2
+RECIPE NAME: ncurses
+LICENSE: MIT
+
+PACKAGE NAME: ncurses-libpanelw
+PACKAGE VERSION: 6.2
+RECIPE NAME: ncurses
+LICENSE: MIT
+
+PACKAGE NAME: ncurses-libtinfo
+PACKAGE VERSION: 6.2
+RECIPE NAME: ncurses
+LICENSE: MIT
+
+PACKAGE NAME: ncurses-terminfo-base
+PACKAGE VERSION: 6.2
+RECIPE NAME: ncurses
+LICENSE: MIT
+
+PACKAGE NAME: netbase
+PACKAGE VERSION: 6.3
+RECIPE NAME: netbase
+LICENSE: GPLv2
+
+PACKAGE NAME: nettle
+PACKAGE VERSION: 3.7.3
+RECIPE NAME: nettle
+LICENSE: LGPLv3+ | GPLv2+
+
+PACKAGE NAME: npth
+PACKAGE VERSION: 1.6
+RECIPE NAME: npth
+LICENSE: LGPLv2+
+
+PACKAGE NAME: ofono
+PACKAGE VERSION: 1.32
+RECIPE NAME: ofono
+LICENSE: GPLv2
+
+PACKAGE NAME: openssl
+PACKAGE VERSION: 1.1.1l
+RECIPE NAME: openssl
+LICENSE: openssl
+
+PACKAGE NAME: openssl-bin
+PACKAGE VERSION: 1.1.1l
+RECIPE NAME: openssl
+LICENSE: openssl
+
+PACKAGE NAME: openssl-conf
+PACKAGE VERSION: 1.1.1l
+RECIPE NAME: openssl
+LICENSE: openssl
+
+PACKAGE NAME: packagegroup-base
+PACKAGE VERSION: 1.0
+RECIPE NAME: packagegroup-base
+LICENSE: MIT
+
+PACKAGE NAME: packagegroup-base-3g
+PACKAGE VERSION: 1.0
+RECIPE NAME: packagegroup-base
+LICENSE: MIT
+
+PACKAGE NAME: packagegroup-base-alsa
+PACKAGE VERSION: 1.0
+RECIPE NAME: packagegroup-base
+LICENSE: MIT
+
+PACKAGE NAME: packagegroup-base-bluetooth
+PACKAGE VERSION: 1.0
+RECIPE NAME: packagegroup-base
+LICENSE: MIT
+
+PACKAGE NAME: packagegroup-base-extended
+PACKAGE VERSION: 1.0
+RECIPE NAME: packagegroup-base
+LICENSE: MIT
+
+PACKAGE NAME: packagegroup-base-ipv6
+PACKAGE VERSION: 1.0
+RECIPE NAME: packagegroup-base
+LICENSE: MIT
+
+PACKAGE NAME: packagegroup-base-nfs
+PACKAGE VERSION: 1.0
+RECIPE NAME: packagegroup-base
+LICENSE: MIT
+
+PACKAGE NAME: packagegroup-base-pci
+PACKAGE VERSION: 1.0
+RECIPE NAME: packagegroup-base
+LICENSE: MIT
+
+PACKAGE NAME: packagegroup-base-usbgadget
+PACKAGE VERSION: 1.0
+RECIPE NAME: packagegroup-base
+LICENSE: MIT
+
+PACKAGE NAME: packagegroup-base-vfat
+PACKAGE VERSION: 1.0
+RECIPE NAME: packagegroup-base
+LICENSE: MIT
+
+PACKAGE NAME: packagegroup-base-wifi
+PACKAGE VERSION: 1.0
+RECIPE NAME: packagegroup-base
+LICENSE: MIT
+
+PACKAGE NAME: packagegroup-base-zeroconf
+PACKAGE VERSION: 1.0
+RECIPE NAME: packagegroup-base
+LICENSE: MIT
+
+PACKAGE NAME: packagegroup-core-boot
+PACKAGE VERSION: 1.0
+RECIPE NAME: packagegroup-core-boot
+LICENSE: MIT
+
+PACKAGE NAME: packagegroup-core-ssh-dropbear
+PACKAGE VERSION: 1.0
+RECIPE NAME: packagegroup-core-ssh-dropbear
+LICENSE: MIT
+
+PACKAGE NAME: packagegroup-core-x11-base
+PACKAGE VERSION: 1.0
+RECIPE NAME: packagegroup-core-x11-base
+LICENSE: MIT
+
+PACKAGE NAME: packagegroup-core-x11-sato
+PACKAGE VERSION: 1.0
+RECIPE NAME: packagegroup-core-x11-sato
+LICENSE: MIT
+
+PACKAGE NAME: packagegroup-core-x11-sato-apps
+PACKAGE VERSION: 1.0
+RECIPE NAME: packagegroup-core-x11-sato
+LICENSE: MIT
+
+PACKAGE NAME: packagegroup-core-x11-sato-base
+PACKAGE VERSION: 1.0
+RECIPE NAME: packagegroup-core-x11-sato
+LICENSE: MIT
+
+PACKAGE NAME: packagegroup-core-x11-sato-games
+PACKAGE VERSION: 1.0
+RECIPE NAME: packagegroup-core-x11-sato
+LICENSE: MIT
+
+PACKAGE NAME: packagegroup-core-x11-utils
+PACKAGE VERSION: 1.0
+RECIPE NAME: packagegroup-core-x11
+LICENSE: MIT
+
+PACKAGE NAME: packagegroup-core-x11-xserver
+PACKAGE VERSION: 1.0
+RECIPE NAME: packagegroup-core-x11-xserver
+LICENSE: MIT
+
+PACKAGE NAME: packagegroup-distro-base
+PACKAGE VERSION: 1.0
+RECIPE NAME: packagegroup-base
+LICENSE: MIT
+
+PACKAGE NAME: packagegroup-machine-base
+PACKAGE VERSION: 1.0
+RECIPE NAME: packagegroup-base
+LICENSE: MIT
+
+PACKAGE NAME: pango
+PACKAGE VERSION: 1.48.9
+RECIPE NAME: pango
+LICENSE: LGPLv2.0+
+
+PACKAGE NAME: pciutils
+PACKAGE VERSION: 3.7.0
+RECIPE NAME: pciutils
+LICENSE: GPLv2+
+
+PACKAGE NAME: pciutils-ids
+PACKAGE VERSION: 3.7.0
+RECIPE NAME: pciutils
+LICENSE: GPLv2+
+
+PACKAGE NAME: pcmanfm
+PACKAGE VERSION: 1.3.2
+RECIPE NAME: pcmanfm
+LICENSE: GPLv2 & GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: pcmanfm-locale-en-gb
+PACKAGE VERSION: 1.3.2
+RECIPE NAME: pcmanfm
+LICENSE: GPLv2 & GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: perl
+PACKAGE VERSION: 5.34.0
+RECIPE NAME: perl
+LICENSE: Artistic-1.0 | GPL-1.0+
+
+PACKAGE NAME: perl-module-config-heavy
+PACKAGE VERSION: 5.34.0
+RECIPE NAME: perl
+LICENSE: Artistic-1.0 | GPL-1.0+
+
+PACKAGE NAME: pinentry
+PACKAGE VERSION: 1.1.1
+RECIPE NAME: pinentry
+LICENSE: GPLv2
+
+PACKAGE NAME: pixman
+PACKAGE VERSION: 0.40.0
+RECIPE NAME: pixman
+LICENSE: MIT & MIT-style & PD
+
+PACKAGE NAME: pointercal-xinput
+PACKAGE VERSION: 0.0
+RECIPE NAME: pointercal-xinput
+LICENSE: MIT
+
+PACKAGE NAME: popt
+PACKAGE VERSION: 1.18
+RECIPE NAME: popt
+LICENSE: MIT
+
+PACKAGE NAME: psplash
+PACKAGE VERSION: 0.1+gitAUTOINC+0a902f7cd8
+RECIPE NAME: psplash
+LICENSE: GPLv2+
+
+PACKAGE NAME: psplash-default
+PACKAGE VERSION: 0.1+gitAUTOINC+0a902f7cd8
+RECIPE NAME: psplash
+LICENSE: GPLv2+
+
+PACKAGE NAME: pulseaudio-client-conf-sato
+PACKAGE VERSION: 1
+RECIPE NAME: pulseaudio-client-conf-sato
+LICENSE: MIT
+
+PACKAGE NAME: pulseaudio-lib-alsa-util
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: pulseaudio-lib-cli
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: pulseaudio-lib-protocol-cli
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: pulseaudio-lib-protocol-native
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: pulseaudio-misc
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: pulseaudio-module-alsa-card
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: pulseaudio-module-alsa-sink
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: pulseaudio-module-alsa-source
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: pulseaudio-module-always-sink
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: pulseaudio-module-augment-properties
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: pulseaudio-module-card-restore
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: pulseaudio-module-cli-protocol-unix
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: pulseaudio-module-console-kit
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: pulseaudio-module-default-device-restore
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: pulseaudio-module-detect
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: pulseaudio-module-device-manager
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: pulseaudio-module-device-restore
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: pulseaudio-module-filter-apply
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: pulseaudio-module-filter-heuristics
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: pulseaudio-module-intended-roles
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: pulseaudio-module-native-protocol-unix
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: pulseaudio-module-null-sink
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: pulseaudio-module-position-event-sounds
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: pulseaudio-module-rescue-streams
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: pulseaudio-module-role-cork
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: pulseaudio-module-stream-restore
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: pulseaudio-module-suspend-on-idle
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: pulseaudio-module-switch-on-port-available
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: pulseaudio-module-udev-detect
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: pulseaudio-module-x11-cork-request
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: pulseaudio-module-x11-publish
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: pulseaudio-module-x11-xsmp
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: pulseaudio-server
+PACKAGE VERSION: 15.0
+RECIPE NAME: pulseaudio
+LICENSE: LGPLv2.1+ & MIT & BSD-3-Clause
+
+PACKAGE NAME: puzzles
+PACKAGE VERSION: 0.0+gitAUTOINC+8f3413c31f
+RECIPE NAME: puzzles
+LICENSE: MIT
+
+PACKAGE NAME: python3-audio
+PACKAGE VERSION: 3.9.6
+RECIPE NAME: python3
+LICENSE: PSFv2
+
+PACKAGE NAME: python3-codecs
+PACKAGE VERSION: 3.9.6
+RECIPE NAME: python3
+LICENSE: PSFv2
+
+PACKAGE NAME: python3-compression
+PACKAGE VERSION: 3.9.6
+RECIPE NAME: python3
+LICENSE: PSFv2
+
+PACKAGE NAME: python3-core
+PACKAGE VERSION: 3.9.6
+RECIPE NAME: python3
+LICENSE: PSFv2
+
+PACKAGE NAME: python3-crypt
+PACKAGE VERSION: 3.9.6
+RECIPE NAME: python3
+LICENSE: PSFv2
+
+PACKAGE NAME: python3-curses
+PACKAGE VERSION: 3.9.6
+RECIPE NAME: python3
+LICENSE: PSFv2
+
+PACKAGE NAME: python3-datetime
+PACKAGE VERSION: 3.9.6
+RECIPE NAME: python3
+LICENSE: PSFv2
+
+PACKAGE NAME: python3-distutils
+PACKAGE VERSION: 3.9.6
+RECIPE NAME: python3
+LICENSE: PSFv2
+
+PACKAGE NAME: python3-email
+PACKAGE VERSION: 3.9.6
+RECIPE NAME: python3
+LICENSE: PSFv2
+
+PACKAGE NAME: python3-fcntl
+PACKAGE VERSION: 3.9.6
+RECIPE NAME: python3
+LICENSE: PSFv2
+
+PACKAGE NAME: python3-gpg
+PACKAGE VERSION: 1.16.0
+RECIPE NAME: gpgme
+LICENSE: GPLv2+ & LGPLv2.1+
+
+PACKAGE NAME: python3-html
+PACKAGE VERSION: 3.9.6
+RECIPE NAME: python3
+LICENSE: PSFv2
+
+PACKAGE NAME: python3-iniparse
+PACKAGE VERSION: 0.5
+RECIPE NAME: python3-iniparse
+LICENSE: MIT & PSF
+
+PACKAGE NAME: python3-io
+PACKAGE VERSION: 3.9.6
+RECIPE NAME: python3
+LICENSE: PSFv2
+
+PACKAGE NAME: python3-json
+PACKAGE VERSION: 3.9.6
+RECIPE NAME: python3
+LICENSE: PSFv2
+
+PACKAGE NAME: python3-logging
+PACKAGE VERSION: 3.9.6
+RECIPE NAME: python3
+LICENSE: PSFv2
+
+PACKAGE NAME: python3-math
+PACKAGE VERSION: 3.9.6
+RECIPE NAME: python3
+LICENSE: PSFv2
+
+PACKAGE NAME: python3-mime
+PACKAGE VERSION: 3.9.6
+RECIPE NAME: python3
+LICENSE: PSFv2
+
+PACKAGE NAME: python3-misc
+PACKAGE VERSION: 3.9.6
+RECIPE NAME: python3
+LICENSE: PSFv2
+
+PACKAGE NAME: python3-netclient
+PACKAGE VERSION: 3.9.6
+RECIPE NAME: python3
+LICENSE: PSFv2
+
+PACKAGE NAME: python3-netserver
+PACKAGE VERSION: 3.9.6
+RECIPE NAME: python3
+LICENSE: PSFv2
+
+PACKAGE NAME: python3-numbers
+PACKAGE VERSION: 3.9.6
+RECIPE NAME: python3
+LICENSE: PSFv2
+
+PACKAGE NAME: python3-pickle
+PACKAGE VERSION: 3.9.6
+RECIPE NAME: python3
+LICENSE: PSFv2
+
+PACKAGE NAME: python3-pydoc
+PACKAGE VERSION: 3.9.6
+RECIPE NAME: python3
+LICENSE: PSFv2
+
+PACKAGE NAME: python3-rpm
+PACKAGE VERSION: 4.16.1.3
+RECIPE NAME: rpm
+LICENSE: GPL-2.0
+
+PACKAGE NAME: python3-shell
+PACKAGE VERSION: 3.9.6
+RECIPE NAME: python3
+LICENSE: PSFv2
+
+PACKAGE NAME: python3-six
+PACKAGE VERSION: 1.16.0
+RECIPE NAME: python3-six
+LICENSE: MIT
+
+PACKAGE NAME: python3-sqlite3
+PACKAGE VERSION: 3.9.6
+RECIPE NAME: python3
+LICENSE: PSFv2
+
+PACKAGE NAME: python3-stringold
+PACKAGE VERSION: 3.9.6
+RECIPE NAME: python3
+LICENSE: PSFv2
+
+PACKAGE NAME: python3-threading
+PACKAGE VERSION: 3.9.6
+RECIPE NAME: python3
+LICENSE: PSFv2
+
+PACKAGE NAME: python3-unixadmin
+PACKAGE VERSION: 3.9.6
+RECIPE NAME: python3
+LICENSE: PSFv2
+
+PACKAGE NAME: python3-xml
+PACKAGE VERSION: 3.9.6
+RECIPE NAME: python3
+LICENSE: PSFv2
+
+PACKAGE NAME: readline
+PACKAGE VERSION: 8.1
+RECIPE NAME: readline
+LICENSE: GPLv3+
+
+PACKAGE NAME: rgb
+PACKAGE VERSION: 1.0.6
+RECIPE NAME: rgb
+LICENSE: MIT-X
+
+PACKAGE NAME: rpcbind
+PACKAGE VERSION: 1.2.6
+RECIPE NAME: rpcbind
+LICENSE: BSD-3-Clause
+
+PACKAGE NAME: rpm
+PACKAGE VERSION: 4.16.1.3
+RECIPE NAME: rpm
+LICENSE: GPL-2.0
+
+PACKAGE NAME: rpm-build
+PACKAGE VERSION: 4.16.1.3
+RECIPE NAME: rpm
+LICENSE: GPL-2.0
+
+PACKAGE NAME: rpm-sign
+PACKAGE VERSION: 4.16.1.3
+RECIPE NAME: rpm
+LICENSE: GPL-2.0
+
+PACKAGE NAME: run-postinsts
+PACKAGE VERSION: 1.0
+RECIPE NAME: run-postinsts
+LICENSE: MIT
+
+PACKAGE NAME: rxvt-unicode
+PACKAGE VERSION: 9.26
+RECIPE NAME: rxvt-unicode
+LICENSE: GPLv3
+
+PACKAGE NAME: sato-screenshot
+PACKAGE VERSION: 0.3
+RECIPE NAME: sato-screenshot
+LICENSE: GPLv2 & GPLv2+
+
+PACKAGE NAME: sbc
+PACKAGE VERSION: 1.5
+RECIPE NAME: sbc
+LICENSE: LGPLv2.1+
+
+PACKAGE NAME: settings-daemon
+PACKAGE VERSION: 0.0.2
+RECIPE NAME: settings-daemon
+LICENSE: MIT-style
+
+PACKAGE NAME: shadow
+PACKAGE VERSION: 4.9
+RECIPE NAME: shadow
+LICENSE: BSD-3-Clause | Artistic-1.0
+
+PACKAGE NAME: shadow-base
+PACKAGE VERSION: 4.9
+RECIPE NAME: shadow
+LICENSE: BSD-3-Clause | Artistic-1.0
+
+PACKAGE NAME: shadow-securetty
+PACKAGE VERSION: 4.6
+RECIPE NAME: shadow-securetty
+LICENSE: MIT
+
+PACKAGE NAME: shared-mime-info
+PACKAGE VERSION: 2.1
+RECIPE NAME: shared-mime-info
+LICENSE: GPLv2
+
+PACKAGE NAME: shared-mime-info-locale-en-gb
+PACKAGE VERSION: 2.1
+RECIPE NAME: shared-mime-info
+LICENSE: GPLv2
+
+PACKAGE NAME: shutdown-desktop
+PACKAGE VERSION: 1.0
+RECIPE NAME: shutdown-desktop
+LICENSE: MIT
+
+PACKAGE NAME: speex
+PACKAGE VERSION: 1.2.0
+RECIPE NAME: speex
+LICENSE: BSD-3-Clause
+
+PACKAGE NAME: speexdsp
+PACKAGE VERSION: 1.2.0
+RECIPE NAME: speexdsp
+LICENSE: BSD-3-Clause
+
+PACKAGE NAME: startup-notification
+PACKAGE VERSION: 0.12
+RECIPE NAME: startup-notification
+LICENSE: LGPLv2+
+
+PACKAGE NAME: sudo
+PACKAGE VERSION: 1.9.7p2
+RECIPE NAME: sudo
+LICENSE: ISC & BSD-3-Clause & BSD-2-Clause & Zlib
+
+PACKAGE NAME: sudo-lib
+PACKAGE VERSION: 1.9.7p2
+RECIPE NAME: sudo
+LICENSE: ISC & BSD-3-Clause & BSD-2-Clause & Zlib
+
+PACKAGE NAME: sudo-sudo
+PACKAGE VERSION: 1.9.7p2
+RECIPE NAME: sudo
+LICENSE: ISC & BSD-3-Clause & BSD-2-Clause & Zlib
+
+PACKAGE NAME: sysvinit
+PACKAGE VERSION: 2.99
+RECIPE NAME: sysvinit
+LICENSE: GPLv2+
+
+PACKAGE NAME: sysvinit-inittab
+PACKAGE VERSION: 2.88dsf
+RECIPE NAME: sysvinit-inittab
+LICENSE: GPLv2
+
+PACKAGE NAME: sysvinit-pidof
+PACKAGE VERSION: 2.99
+RECIPE NAME: sysvinit
+LICENSE: GPLv2+
+
+PACKAGE NAME: taglib
+PACKAGE VERSION: 1.12
+RECIPE NAME: taglib
+LICENSE: LGPLv2.1 | MPL-1.1
+
+PACKAGE NAME: udev-extraconf
+PACKAGE VERSION: 1.1
+RECIPE NAME: udev-extraconf
+LICENSE: MIT
+
+PACKAGE NAME: update-alternatives-opkg
+PACKAGE VERSION: 0.4.5
+RECIPE NAME: opkg-utils
+LICENSE: GPLv2+
+
+PACKAGE NAME: update-rc.d
+PACKAGE VERSION: 0.8
+RECIPE NAME: update-rc.d
+LICENSE: GPLv2+
+
+PACKAGE NAME: util-linux-libblkid
+PACKAGE VERSION: 2.37.2
+RECIPE NAME: util-linux
+LICENSE: LGPLv2.1+
+
+PACKAGE NAME: util-linux-libmount
+PACKAGE VERSION: 2.37.2
+RECIPE NAME: util-linux
+LICENSE: LGPLv2.1+
+
+PACKAGE NAME: util-linux-libsmartcols
+PACKAGE VERSION: 2.37.2
+RECIPE NAME: util-linux
+LICENSE: LGPLv2.1+
+
+PACKAGE NAME: util-linux-libuuid
+PACKAGE VERSION: 2.37.2
+RECIPE NAME: util-linux-libuuid
+LICENSE: BSD-3-Clause
+
+PACKAGE NAME: util-linux-mcookie
+PACKAGE VERSION: 2.37.2
+RECIPE NAME: util-linux
+LICENSE: GPLv2+ & LGPLv2.1+ & BSD-3-Clause & BSD-4-Clause
+
+PACKAGE NAME: util-linux-sulogin
+PACKAGE VERSION: 2.37.2
+RECIPE NAME: util-linux
+LICENSE: GPLv2+ & LGPLv2.1+ & BSD-3-Clause & BSD-4-Clause
+
+PACKAGE NAME: v86d
+PACKAGE VERSION: 0.1.10
+RECIPE NAME: v86d
+LICENSE: GPLv2
+
+PACKAGE NAME: vte-locale-en-gb
+PACKAGE VERSION: 0.64.2
+RECIPE NAME: vte
+LICENSE: GPLv3 & LGPLv3+ & MIT-X
+
+PACKAGE NAME: vulkan-loader
+PACKAGE VERSION: 1.2.182.0
+RECIPE NAME: vulkan-loader
+LICENSE: Apache-2.0
+
+PACKAGE NAME: wayland
+PACKAGE VERSION: 1.19.0
+RECIPE NAME: wayland
+LICENSE: MIT
+
+PACKAGE NAME: wireless-regdb-static
+PACKAGE VERSION: 2021.07.14
+RECIPE NAME: wireless-regdb
+LICENSE: ISC
+
+PACKAGE NAME: wpa-supplicant
+PACKAGE VERSION: 2.9
+RECIPE NAME: wpa-supplicant
+LICENSE: BSD-3-Clause
+
+PACKAGE NAME: wpa-supplicant-cli
+PACKAGE VERSION: 2.9
+RECIPE NAME: wpa-supplicant
+LICENSE: BSD-3-Clause
+
+PACKAGE NAME: wpa-supplicant-passphrase
+PACKAGE VERSION: 2.9
+RECIPE NAME: wpa-supplicant
+LICENSE: BSD-3-Clause
+
+PACKAGE NAME: xauth
+PACKAGE VERSION: 1.1
+RECIPE NAME: xauth
+LICENSE: MIT-X
+
+PACKAGE NAME: xcb-util
+PACKAGE VERSION: 0.4.0
+RECIPE NAME: xcb-util
+LICENSE: MIT
+
+PACKAGE NAME: xcursor-transparent-theme
+PACKAGE VERSION: 0.1.1+gitAUTOINC+23c8af5ba4
+RECIPE NAME: xcursor-transparent-theme
+LICENSE: GPLv2
+
+PACKAGE NAME: xdpyinfo
+PACKAGE VERSION: 1.3.2
+RECIPE NAME: xdpyinfo
+LICENSE: MIT-X
+
+PACKAGE NAME: xf86-input-libinput
+PACKAGE VERSION: 1.1.0
+RECIPE NAME: xf86-input-libinput
+LICENSE: MIT
+
+PACKAGE NAME: xf86-video-cirrus
+PACKAGE VERSION: 1.5.3
+RECIPE NAME: xf86-video-cirrus
+LICENSE: MIT-X
+
+PACKAGE NAME: xf86-video-fbdev
+PACKAGE VERSION: 0.5.0
+RECIPE NAME: xf86-video-fbdev
+LICENSE: MIT-X
+
+PACKAGE NAME: xf86-video-modesetting
+PACKAGE VERSION: 1.20.13
+RECIPE NAME: xserver-xorg
+LICENSE: MIT-X
+
+PACKAGE NAME: xf86-video-vesa
+PACKAGE VERSION: 2.5.0
+RECIPE NAME: xf86-video-vesa
+LICENSE: MIT-X
+
+PACKAGE NAME: xf86-video-vmware
+PACKAGE VERSION: 13.3.0
+RECIPE NAME: xf86-video-vmware
+LICENSE: MIT-X
+
+PACKAGE NAME: xhost
+PACKAGE VERSION: 1.0.8
+RECIPE NAME: xhost
+LICENSE: MIT-X
+
+PACKAGE NAME: xinit
+PACKAGE VERSION: 1.4.1
+RECIPE NAME: xinit
+LICENSE: MIT-X
+
+PACKAGE NAME: xinput
+PACKAGE VERSION: 1.6.3
+RECIPE NAME: xinput
+LICENSE: MIT-X
+
+PACKAGE NAME: xinput-calibrator
+PACKAGE VERSION: 0.7.5+gitAUTOINC+18ec53f1ca
+RECIPE NAME: xinput-calibrator
+LICENSE: MIT-X
+
+PACKAGE NAME: xkbcomp
+PACKAGE VERSION: 1.4.5
+RECIPE NAME: xkbcomp
+LICENSE: MIT-X
+
+PACKAGE NAME: xkeyboard-config
+PACKAGE VERSION: 2.33
+RECIPE NAME: xkeyboard-config
+LICENSE: MIT & MIT-style
+
+PACKAGE NAME: xkeyboard-config-locale-en-gb
+PACKAGE VERSION: 2.33
+RECIPE NAME: xkeyboard-config
+LICENSE: MIT & MIT-style
+
+PACKAGE NAME: xmodmap
+PACKAGE VERSION: 1.0.10
+RECIPE NAME: xmodmap
+LICENSE: MIT
+
+PACKAGE NAME: xrandr
+PACKAGE VERSION: 1.5.1
+RECIPE NAME: xrandr
+LICENSE: MIT
+
+PACKAGE NAME: xserver-nodm-init
+PACKAGE VERSION: 3.0
+RECIPE NAME: xserver-nodm-init
+LICENSE: GPLv2
+
+PACKAGE NAME: xserver-xf86-config
+PACKAGE VERSION: 0.1
+RECIPE NAME: xserver-xf86-config
+LICENSE: MIT-X
+
+PACKAGE NAME: xserver-xorg
+PACKAGE VERSION: 1.20.13
+RECIPE NAME: xserver-xorg
+LICENSE: MIT-X
+
+PACKAGE NAME: xserver-xorg-extension-glx
+PACKAGE VERSION: 1.20.13
+RECIPE NAME: xserver-xorg
+LICENSE: MIT-X
+
+PACKAGE NAME: xserver-xorg-module-libint10
+PACKAGE VERSION: 1.20.13
+RECIPE NAME: xserver-xorg
+LICENSE: MIT-X
+
+PACKAGE NAME: xset
+PACKAGE VERSION: 1.2.4
+RECIPE NAME: xset
+LICENSE: MIT
+
+PACKAGE NAME: zlib
+PACKAGE VERSION: 1.2.11
+RECIPE NAME: zlib
+LICENSE: Zlib
+
+PACKAGE NAME: zstd
+PACKAGE VERSION: 1.5.0
+RECIPE NAME: zstd
+LICENSE: BSD-3-Clause & GPLv2
+

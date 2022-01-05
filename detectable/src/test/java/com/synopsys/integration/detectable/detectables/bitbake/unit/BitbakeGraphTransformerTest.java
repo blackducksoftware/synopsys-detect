@@ -30,7 +30,7 @@ public class BitbakeGraphTransformerTest {
         recipeToLayerMap.put("foobar", "meta");
 
         BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
-        DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeToLayerMap);
+        DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeToLayerMap, null, true);
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.YOCTO, dependencyGraph);
 
@@ -52,7 +52,7 @@ public class BitbakeGraphTransformerTest {
         recipeToLayerMap.put("foobar", "meta");
 
         BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
-        DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeToLayerMap);
+        DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeToLayerMap, null, true);
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.YOCTO, dependencyGraph);
         graphAssert.hasRootSize(1);
@@ -70,7 +70,7 @@ public class BitbakeGraphTransformerTest {
         recipeToLayerMap.put("example", "meta");
 
         BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
-        DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeToLayerMap);
+        DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeToLayerMap, null, true);
 
         GraphAssert graphAssert = new GraphAssert(Forge.YOCTO, dependencyGraph);
         graphAssert.hasNoDependency(externalIdFactory.createYoctoExternalId("meta", "example", null));
