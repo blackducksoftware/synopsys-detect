@@ -148,11 +148,9 @@ public class PnpmYamlTransformer {
     }
 
     private Optional<Dependency> buildDependencyFromPackageId(String packageId) {
-        Optional<NameVersion> nameVersion = parseNameVersionFromId(packageId);
-        if (nameVersion.isPresent()) {
-            return Optional.of(new Dependency(externalIdFactory.createNameVersionExternalId(Forge.NPMJS, nameVersion.get().getName(), nameVersion.get().getVersion())));
-        }
-        return Optional.empty();
+        return parseNameVersionFromId(packageId)
+            .map(nameVersion -> externalIdFactory.createNameVersionExternalId(Forge.NPMJS, nameVersion.getName(), nameVersion.getVersion())
+            .map(Dependency::new);
     }
 
     private boolean isRootPackage(String id, List<String> rootIds) {
