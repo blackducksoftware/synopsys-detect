@@ -149,7 +149,7 @@ public class PnpmYamlTransformer {
 
     private Optional<Dependency> buildDependencyFromPackageId(String packageId) {
         return parseNameVersionFromId(packageId)
-            .map(nameVersion -> externalIdFactory.createNameVersionExternalId(Forge.NPMJS, nameVersion.getName(), nameVersion.getVersion())
+            .map(nameVersion -> externalIdFactory.createNameVersionExternalId(Forge.NPMJS, nameVersion.getName(), nameVersion.getVersion()))
             .map(Dependency::new);
     }
 
