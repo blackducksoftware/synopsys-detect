@@ -158,7 +158,9 @@ public class PnpmYamlTransformer {
             rootIds.stream()
                 .map(this::parseNameVersionFromId)
                 .filter(Optional::isPresent)
-                .anyMatch(nameVersion -> nameVersion.get().getVersion().equals(id)); // for file dependencies, they are declared as <name> : <fileIdAsReportedInPackagesSection>
+                .map(Optional::get)
+                .map(NameVersion::getVersion)
+                .anyMatch(id::equals); // for file dependencies, they are declared as <name> : <fileIdAsReportedInPackagesSection>
     }
 
 }
