@@ -141,7 +141,7 @@ public class PnpmYamlTransformer {
 
     private Optional<Dependency> buildDependencyFromPackageEntry(Map.Entry<String, PnpmPackageInfo> packageEntry) {
         PnpmPackageInfo packageInfo = packageEntry.getValue();
-        if (packageInfo.name != null && packageInfo.version != null) {
+        if (packageInfo.name != null) {
             return Optional.of(new Dependency(externalIdFactory.createNameVersionExternalId(Forge.NPMJS, packageInfo.name, packageInfo.version)));
         }
         return buildDependencyFromPackageId(packageEntry.getKey());
