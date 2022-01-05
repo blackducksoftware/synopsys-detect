@@ -19,6 +19,7 @@ import com.synopsys.integration.log.Slf4jIntLogger;
 
 public class BitbakeGraphTransformer {
     private static final String NATIVE_SUFFIX = "-native";
+    public static final String VERSION_WITH_EPOCH_PREFIX_REGEX = "^[0-9]+:.*";
 
     private final IntLogger logger = new Slf4jIntLogger(LoggerFactory.getLogger(this.getClass()));
 
@@ -37,7 +38,7 @@ public class BitbakeGraphTransformer {
 
             if (bitbakeNode.getVersion().isPresent()) {
                 String version = bitbakeNode.getVersion().get();
-                if (qualifies(includeDevDependencies, imageRecipes, name, version)) {
+                if (shouldInclude(includeDevDependencies, imageRecipes, name, version)) {
                     Optional<Dependency> dependency = generateExternalId(name, version, recipeLayerMap, includeDevDependencies).map(Dependency::new);
                     dependency.ifPresent(value -> namesToExternalIds.put(bitbakeNode.getName(), value));
             }
@@ -63,11 +64,10 @@ public class BitbakeGraphTransformer {
                 }
             }
         }
-
         return dependencyGraph;
     }
 
-    private boolean qualifies(boolean includeDevDependencies, Map<String, String> imageRecipes, String recipeName, String recipeVersion) {
+    private boolean shouldInclude(boolean includeDevDependencies, Map<String, String> imageRecipes, String recipeName, String recipeVersion) {
         if (includeDevDependencies) {
             return true;
         }
@@ -93,11 +93,10 @@ public class BitbakeGraphTransformer {
 
     private String removeEpochPrefix(final String recipeVersion) {
         String epochlessRecipeVersion = recipeVersion;
-        if (recipeVersion.matches("^[0-9]+:.*")) {
-            logger.info(String.format("%s has an epoch", recipeVersion));
+        if (recipeVersion.matches(VERSION_WITH_EPOCH_PREFIX_REGEX)) {
             int colonPos = recipeVersion.indexOf(':');
             epochlessRecipeVersion = recipeVersion.substring(colonPos+1);
-            logger.info(String.format("epochlessVersion: %s", epochlessRecipeVersion));
+            logger.trace(String.format("epochlessVersion for %s: %s", recipeVersion, epochlessRecipeVersion));
         }
         return epochlessRecipeVersion;
     }
@@ -110,14 +109,13 @@ public class BitbakeGraphTransformer {
             externalId = externalIdFactory.createYoctoExternalId(priorityLayerName, dependencyName, dependencyVersion);
         } else {
             logger.debug(String.format("Failed to find component '%s' in component layer map.", dependencyName));
-
             if (dependencyName.endsWith(NATIVE_SUFFIX)) {
                 if (includeDevDependencies) {
                     String alternativeName = dependencyName.replace(NATIVE_SUFFIX, "");
                     logger.debug(String.format("Generating alternative component name '%s' for '%s==%s'", alternativeName, dependencyName, dependencyVersion));
                     externalId = generateExternalId(alternativeName, dependencyVersion, recipeLayerMap, includeDevDependencies).orElse(null);
                 } else {
-                    logger.debug(String.format("Recipe %s excluded because dev dependencies are being excluded"));
+                    logger.debug(String.format("Recipe %s excluded by dev dependency exclusion"));
                 }
             } else {
                 logger.debug(String.format("'%s==%s' is not an actual component. Excluding from graph.", dependencyName, dependencyVersion));
