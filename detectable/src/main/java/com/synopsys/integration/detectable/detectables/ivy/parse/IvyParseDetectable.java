@@ -1,6 +1,7 @@
 package com.synopsys.integration.detectable.detectables.ivy.parse;
 
 import java.io.File;
+import java.io.IOException;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
@@ -43,7 +44,7 @@ public class IvyParseDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws IOException {
         return ivyParseExtractor.extract(ivyXmlFile, buildXml);
     }
 }

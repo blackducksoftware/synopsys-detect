@@ -282,7 +282,7 @@ public class DetectableFactory {
     //Should only be accessed through the DetectableFactory.
 
     public DockerDetectable createDockerDetectable(DetectableEnvironment environment, DockerDetectableOptions dockerDetectableOptions, DockerInspectorResolver dockerInspectorResolver, JavaResolver javaResolver,
-                                                   DockerResolver dockerResolver) {
+        DockerResolver dockerResolver) {
         return new DockerDetectable(environment, dockerInspectorResolver, javaResolver, dockerResolver, dockerExtractor(), dockerDetectableOptions);
     }
 
@@ -387,7 +387,7 @@ public class DetectableFactory {
     }
 
     public MavenProjectInspectorDetectable createMavenProjectInspectorDetectable(DetectableEnvironment detectableEnvironment, ProjectInspectorResolver projectInspectorResolver, MavenParseOptions mavenParseOptions,
-                                                                                 ProjectInspectorOptions projectInspectorOptions) {
+        ProjectInspectorOptions projectInspectorOptions) {
         return new MavenProjectInspectorDetectable(detectableEnvironment, fileFinder, projectInspectorResolver, projectInspectorExtractor(), mavenParseOptions, projectInspectorOptions);
     }
 
@@ -424,7 +424,7 @@ public class DetectableFactory {
     }
 
     public NugetProjectInspectorDetectable createNugetParseDetectable(DetectableEnvironment environment, NugetInspectorOptions nugetInspectorOptions, ProjectInspectorResolver projectInspectorResolver,
-                                                                      ProjectInspectorOptions projectInspectorOptions) {
+        ProjectInspectorOptions projectInspectorOptions) {
         return new NugetProjectInspectorDetectable(environment, fileFinder, nugetInspectorOptions, projectInspectorResolver, projectInspectorExtractor(), projectInspectorOptions);
     }
 
@@ -441,8 +441,8 @@ public class DetectableFactory {
     }
 
     public PipInspectorDetectable createPipInspectorDetectable(DetectableEnvironment environment, PipInspectorDetectableOptions pipInspectorDetectableOptions, PipInspectorResolver pipInspectorResolver,
-                                                               PythonResolver pythonResolver,
-                                                               PipResolver pipResolver) {
+        PythonResolver pythonResolver,
+        PipResolver pipResolver) {
         return new PipInspectorDetectable(environment, fileFinder, pythonResolver, pipResolver, pipInspectorResolver, pipInspectorExtractor(), pipInspectorDetectableOptions);
     }
 

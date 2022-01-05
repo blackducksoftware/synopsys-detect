@@ -2,11 +2,14 @@ package com.synopsys.integration.detectable.detectables.ivy.parse;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 
 import javax.xml.parsers.SAXParser;
+
+import org.xml.sax.SAXException;
 
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
@@ -27,7 +30,7 @@ public class IvyParseExtractor {
         this.projectNameParser = projectNameParser;
     }
 
-    public Extraction extract(File ivyXmlFile, File buildXmlFile) {
+    public Extraction extract(File ivyXmlFile, File buildXmlFile) throws IOException {
         try (InputStream ivyXmlInputStream = new FileInputStream(ivyXmlFile)) {
             IvyDependenciesHandler ivyDependenciesHandler = new IvyDependenciesHandler(externalIdFactory);
             saxParser.parse(ivyXmlInputStream, ivyDependenciesHandler);
@@ -44,7 +47,7 @@ public class IvyParseExtractor {
                 .success(codeLocation)
                 .nameVersionIfPresent(projectName)
                 .build();
-        } catch (Exception e) {
+        } catch (SAXException e) {
             return new Extraction.Builder().exception(e).build();
         }
     }

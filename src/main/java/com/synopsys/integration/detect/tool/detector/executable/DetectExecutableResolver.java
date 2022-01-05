@@ -36,8 +36,7 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.SwiftR
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanResolver;
 
 public class DetectExecutableResolver implements
-    JavaResolver, GradleResolver, BashResolver, ConanResolver, CondaResolver, CpanmResolver, CpanResolver, DartResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver,
-    BazelResolver,
+    JavaResolver, GradleResolver, BashResolver, ConanResolver, CondaResolver, CpanmResolver, CpanResolver, DartResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver, BazelResolver,
     DockerResolver, DotNetResolver, GitResolver, SwiftResolver, GoResolver, LernaResolver, SbtResolver, FlutterResolver {
 
     private final DirectoryExecutableFinder directoryExecutableFinder;

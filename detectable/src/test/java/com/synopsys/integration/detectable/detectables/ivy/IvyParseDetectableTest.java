@@ -33,6 +33,11 @@ public class IvyParseDetectableTest extends DetectableFunctionalTest {
             "    </dependencies>",
             "</ivy-module>"
         );
+
+        addFile(Paths.get("build.xml"),
+            "<project xmlns:ivy=\"antlib:org.apache.ivy.ant\" name=\"pmdungeon\" basedir=\".\" default=\"clean-build\">",
+            "</project>"
+        );
     }
 
     @NotNull
@@ -44,6 +49,8 @@ public class IvyParseDetectableTest extends DetectableFunctionalTest {
     @Override
     public void assertExtraction(@NotNull Extraction extraction) {
         Assertions.assertEquals(1, extraction.getCodeLocations().size(), "A code location should have been generated.");
+
+        Assertions.assertEquals("pmdungeon", extraction.getProjectName());
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.MAVEN, extraction.getCodeLocations().get(0).getDependencyGraph());
         graphAssert.hasRootSize(3);
