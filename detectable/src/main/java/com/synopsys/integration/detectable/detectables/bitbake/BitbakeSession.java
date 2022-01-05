@@ -33,6 +33,7 @@ public class BitbakeSession {
     private final ExecutableTarget bashExecutable;
     private final ToolVersionLogger toolVersionLogger;
 
+    //TODO: Maybe split into a BitbakeRunner and something more like BitbakeCommands. Little overloaded.
     public BitbakeSession(FileFinder fileFinder, DetectableExecutableRunner executableRunner, BitbakeRecipesParser bitbakeRecipesParser,
         File workingDirectory, File buildEnvScript, List<String> sourceArguments,
         ExecutableTarget bashExecutable, ToolVersionLogger toolVersionLogger) {
@@ -53,7 +54,7 @@ public class BitbakeSession {
         ExecutableOutput executableOutput = runBitbake(bitbakeCommand);
         int returnCode = executableOutput.getReturnCode();
 
-        if (returnCode != 0) {
+        if (returnCode != 0) { //TODO: Could use executeSuccessfully
             logger.error(String.format("Executing command '%s' returned a non-zero exit code %s", bitbakeCommand, returnCode));
             return Optional.empty();
         }
@@ -79,10 +80,10 @@ public class BitbakeSession {
     public List<BitbakeRecipe> executeBitbakeForRecipeLayerCatalog() throws ExecutableRunnerException, IOException, IntegrationException {
         final String bitbakeCommand = "bitbake-layers show-recipes";
         ExecutableOutput executableOutput = runBitbake(bitbakeCommand);
-        if (executableOutput.getReturnCode() == 0) {
+        if (executableOutput.getReturnCode() == 0) { //TODO: Could use executeSuccessfully
             return bitbakeRecipesParser.parseShowRecipes(executableOutput.getStandardOutputAsList());
         } else {
-            throw new IntegrationException("Running command '%s' returned a non-zero exit code. Failed to extract bitbake recipe mapping.");
+            throw new IntegrationException("Running command '%s' returned a non-zero exit code. Failed to extract bitbake recipe mapping."); //TODO: Actually replace the variable.
         }
     }
 
@@ -92,6 +93,6 @@ public class BitbakeSession {
             sourceCommand.append(" ");
             sourceCommand.append(sourceArgument);
         }
-        return executableRunner.execute(ExecutableUtils.createFromTarget(workingDirectory, bashExecutable, "-c", sourceCommand.toString() + "; " + bitbakeCommand));
+        return executableRunner.execute(ExecutableUtils.createFromTarget(workingDirectory, bashExecutable, "-c", sourceCommand + "; " + bitbakeCommand));
     }
 }

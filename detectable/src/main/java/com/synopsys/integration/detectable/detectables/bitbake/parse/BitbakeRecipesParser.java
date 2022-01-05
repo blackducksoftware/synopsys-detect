@@ -10,7 +10,7 @@ import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeReci
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
 
-public class BitbakeRecipesParser {
+public class BitbakeRecipesParser { //TODO: Unit test to show how a recipe map is converted.
     private final IntLogger logger = new Slf4jIntLogger(LoggerFactory.getLogger(this.getClass()));
 
     /**

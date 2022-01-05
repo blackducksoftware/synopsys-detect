@@ -6,7 +6,7 @@ import java.util.Map;
 
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeRecipe;
 
-public class BitbakeRecipesToLayerMapConverter {
+public class BitbakeRecipesToLayerMapConverter { //TODO: Rename transformer
     public Map<String, String> convert(List<BitbakeRecipe> bitbakeRecipes) {
         Map<String, String> recipeNameToLayersMap = new HashMap<>();
 
