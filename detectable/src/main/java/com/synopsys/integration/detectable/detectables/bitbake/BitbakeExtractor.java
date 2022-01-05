@@ -64,19 +64,12 @@ public class BitbakeExtractor {
 
         BitbakeSession bitbakeSession = new BitbakeSession(fileFinder, executableRunner, bitbakeRecipesParser, sourceDirectory, buildEnvScript, sourceArguments, bash, toolVersionLogger);
         bitbakeSession.logBitbakeVersion();
-        Map<String, String> imageRecipes = null;
         for (String packageName : packageNames) {
+            Map<String, String> imageRecipes = null;
             try {
-                // TODO refactor
                 if (!includeDevDependencies) {
-                    Optional<File> licenseManifestFile = licenseManifestFinder.find(sourceDirectory, packageName);
-                    if (!licenseManifestFile.isPresent()) {
-                        throw new IntegrationException(String.format("Unable to find license.manifest file for target image %s", packageName));
-                    }
-                    List<String> licenseManifestLines = FileUtils.readLines(licenseManifestFile.get(), StandardCharsets.UTF_8);
-                    imageRecipes = licenseManifestParser.collectImageRecipes(licenseManifestLines);
+                    imageRecipes = extractImageRecipes(sourceDirectory, packageName);
                 }
-                ///////
                 BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, sourceDirectory, packageName, followSymLinks, searchDepth);
                 List<BitbakeRecipe> bitbakeRecipes = bitbakeSession.executeBitbakeForRecipeLayerCatalog();
                 Map<String, String> recipeNameToLayersMap = bitbakeRecipesToLayerMap.convert(bitbakeRecipes);
@@ -106,6 +99,12 @@ public class BitbakeExtractor {
         }
 
         return extraction;
+    }
+
+    private Map<String, String> extractImageRecipes(File sourceDirectory, String targetImageName) throws IntegrationException, IOException {
+        File licenseManifestFile = licenseManifestFinder.find(sourceDirectory, targetImageName).orElseThrow(() -> new IntegrationException(String.format("Unable to find license.manifest file for target image %s", targetImageName)));
+        List<String> licenseManifestLines = FileUtils.readLines(licenseManifestFile, StandardCharsets.UTF_8);
+        return licenseManifestParser.collectImageRecipes(licenseManifestLines);
     }
 
     private BitbakeGraph generateBitbakeGraph(BitbakeSession bitbakeSession, File sourceDirectory, String packageName, boolean followSymLinks, Integer searchDepth) throws ExecutableRunnerException, IOException, IntegrationException {
