@@ -53,6 +53,7 @@ public class NpmLockfileGraphTransformer {
             } else {
                 project.getResolvedDependencies()
                     .stream()
+                    .filter(dep -> shouldIncludeDependency(dep, includeDevDependencies, includePeerDependencies))
                     .forEach(dependencyGraph::addChildToRoot);
             }
 
