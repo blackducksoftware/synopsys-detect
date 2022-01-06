@@ -71,7 +71,7 @@ public class BitbakeExtractor {
             Map<String, String> imageRecipes = null;
             try {
                 if (!includeDevDependencies) {
-                    imageRecipes = extractImageRecipes(sourceDirectory, packageName, pathToLicenseManifestFile.orElse(null));
+                    imageRecipes = readImageRecipes(sourceDirectory, packageName, pathToLicenseManifestFile.orElse(null));
                 }
                 BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, sourceDirectory, packageName, followSymLinks, searchDepth);
                 List<BitbakeRecipe> bitbakeRecipes = bitbakeSession.executeBitbakeForRecipeLayerCatalog();
@@ -124,7 +124,7 @@ public class BitbakeExtractor {
         return Optional.ofNullable(pathToLicenseManifestFile);
     }
 
-    private Map<String, String> extractImageRecipes(File sourceDirectory, String targetImageName, @Nullable String pathToLicenseManifestFile) throws IntegrationException, IOException {
+    private Map<String, String> readImageRecipes(File sourceDirectory, String targetImageName, @Nullable String pathToLicenseManifestFile) throws IntegrationException, IOException {
         File licenseManifestFile = licenseManifestFinder.find(sourceDirectory, targetImageName, pathToLicenseManifestFile);
         List<String> licenseManifestLines = FileUtils.readLines(licenseManifestFile, StandardCharsets.UTF_8);
         return licenseManifestParser.collectImageRecipes(licenseManifestLines);
