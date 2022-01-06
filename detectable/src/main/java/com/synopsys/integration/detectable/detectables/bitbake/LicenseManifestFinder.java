@@ -16,12 +16,11 @@ public class LicenseManifestFinder {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     // TODO compare to MB's search, and refactor
-    public File find(File sourceDir, String targetImageName, @Nullable String givenLicenseManifestFilePath) throws IntegrationException {
+    public File find(File sourceDir, File buildDir, String targetImageName, @Nullable String givenLicenseManifestFilePath) throws IntegrationException {
         if (StringUtils.isNotBlank(givenLicenseManifestFilePath)) {
             return findFile(sourceDir, givenLicenseManifestFilePath);
         }
         try {
-            File buildDir = new File(sourceDir, "build");
             File tmpDir = new File(buildDir, "tmp");
             File deployDir = new File(tmpDir, "deploy");
             File licensesDir = new File(deployDir, "licenses");
@@ -47,6 +46,7 @@ public class LicenseManifestFinder {
         if (givenFile.canRead()) {
             return givenFile;
         }
+        // TODO this enables the battery test to work, but really shouldn't be here
         File sourceDirFile = new File(sourceDir, givenPath);
         if (sourceDirFile.canRead()) {
             return sourceDirFile;

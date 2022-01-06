@@ -65,13 +65,14 @@ public class BitbakeExtractor {
 
         BitbakeSession bitbakeSession = new BitbakeSession(fileFinder, executableRunner, bitbakeRecipesParser, sourceDirectory, buildEnvScript, sourceArguments, bash, toolVersionLogger);
         bitbakeSession.logBitbakeVersion();
+        File buildDir = bitbakeSession.determineBuildDir(sourceDirectory);
         for (String packageAndOptionalLicenseFilePath : packageNames) {
             String packageName = extractPackageName(packageAndOptionalLicenseFilePath);
             Optional<String> pathToLicenseManifestFile = extractPathToLicenseManifestFile(packageAndOptionalLicenseFilePath);
             Map<String, String> imageRecipes = null;
             try {
                 if (!includeDevDependencies) {
-                    imageRecipes = readImageRecipes(sourceDirectory, packageName, pathToLicenseManifestFile.orElse(null));
+                    imageRecipes = readImageRecipes(sourceDirectory, buildDir, packageName, pathToLicenseManifestFile.orElse(null));
                 }
                 BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, sourceDirectory, packageName, followSymLinks, searchDepth);
                 List<BitbakeRecipe> bitbakeRecipes = bitbakeSession.executeBitbakeForRecipeLayerCatalog();
@@ -83,7 +84,7 @@ public class BitbakeExtractor {
                 codeLocations.add(codeLocation);
 
             } catch (IOException | IntegrationException | ExecutableRunnerException | NotImplementedException e) {
-                logger.error(String.format("Failed to extract a Code Location while running Bitbake against package '%s'", packageName));
+                logger.error(String.format("Failed to extract a Code Location while running Bitbake against package '%s': %s", packageName, e.getMessage()));
                 logger.debug(e.getMessage(), e);
             }
         }
@@ -124,8 +125,8 @@ public class BitbakeExtractor {
         return Optional.ofNullable(pathToLicenseManifestFile);
     }
 
-    private Map<String, String> readImageRecipes(File sourceDirectory, String targetImageName, @Nullable String pathToLicenseManifestFile) throws IntegrationException, IOException {
-        File licenseManifestFile = licenseManifestFinder.find(sourceDirectory, targetImageName, pathToLicenseManifestFile);
+    private Map<String, String> readImageRecipes(File sourceDir, File buildDir, String targetImageName, @Nullable String pathToLicenseManifestFile) throws IntegrationException, IOException {
+        File licenseManifestFile = licenseManifestFinder.find(sourceDir, buildDir, targetImageName, pathToLicenseManifestFile);
         List<String> licenseManifestLines = FileUtils.readLines(licenseManifestFile, StandardCharsets.UTF_8);
         return licenseManifestParser.collectImageRecipes(licenseManifestLines);
     }

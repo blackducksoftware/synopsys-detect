@@ -66,6 +66,27 @@ public class BitbakeSession {
         toolVersionLogger.log(() -> runBitbake("bitbake --version"));
     }
 
+    public File determineBuildDir(File sourceDir) {
+        // TODO refactor; detect failure once
+        File derivedBuildDir;
+        try {
+            ExecutableOutput output = runBitbake("pwd");
+            String pwdOutput = output.getStandardOutput();
+            derivedBuildDir = new File(pwdOutput.trim());
+        } catch (Exception e) {
+            derivedBuildDir = new File(sourceDir, "build");
+            logger.warn(String.format("Unable to determine build directory location (%s); assuming %s.", e.getMessage(), derivedBuildDir.getAbsolutePath()));
+        }
+        if (derivedBuildDir.isDirectory()) {
+            logger.debug("Derived build dir: {}", derivedBuildDir.getAbsolutePath());
+        } else {
+            File fallbackBuildDir = new File(sourceDir, "build");
+            logger.warn("Derived build dir {} is not a directory; using {} for build dir", derivedBuildDir.getAbsolutePath(), fallbackBuildDir);
+            derivedBuildDir = fallbackBuildDir;
+        }
+        return derivedBuildDir;
+    }
+
     private Optional<File> findTaskDependsFile(File sourceDirectory, File outputDirectory, boolean followSymLinks, Integer searchDepth) {
         File file = fileFinder.findFile(outputDirectory, TASK_DEPENDS_FILE_NAME, followSymLinks, searchDepth);
         if (file == null) {
