@@ -15,7 +15,6 @@ import com.synopsys.integration.exception.IntegrationException;
 public class LicenseManifestFinder {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    // TODO compare to MB's search, and refactor
     public File find(File sourceDir, File buildDir, String targetImageName, @Nullable String givenLicenseManifestFilePath) throws IntegrationException {
         if (StringUtils.isNotBlank(givenLicenseManifestFilePath)) {
             return findFile(sourceDir, givenLicenseManifestFilePath);
@@ -36,7 +35,7 @@ public class LicenseManifestFinder {
         } catch (Exception e) {
             logger.debug(String.format("Error finding license.manifest file for target image %s", targetImageName), e);
         }
-        throw new IntegrationException(String.format("Unable to find license.manifest file for target image %s", targetImageName));
+        throw new IntegrationException(String.format("Unable to find license.manifest file for target image %s. You can provide the path using the detect.bitbake.package.names property", targetImageName));
     }
 
     private File findFile(File sourceDir, String givenPath) throws IntegrationException {
