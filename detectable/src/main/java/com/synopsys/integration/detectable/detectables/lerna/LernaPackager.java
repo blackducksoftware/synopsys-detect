@@ -20,8 +20,9 @@ import com.synopsys.integration.detectable.detectables.lerna.lockfile.LernaLockF
 import com.synopsys.integration.detectable.detectables.lerna.model.LernaPackage;
 import com.synopsys.integration.detectable.detectables.lerna.model.LernaResult;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmLockfileOptions;
-import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmParseResult;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.parse.NpmLockfileGraphTransformer;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.parse.NpmLockfilePackager;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.result.NpmPackagerResult;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
 import com.synopsys.integration.detectable.detectables.yarn.YarnPackager;
 import com.synopsys.integration.detectable.detectables.yarn.YarnResult;
@@ -40,19 +41,19 @@ public class LernaPackager {
     private final PackageJsonReader packageJsonReader;
     private final YarnLockParser yarnLockParser;
     private final YarnLockOptions yarnLockOptions;
-    private final NpmLockfilePackager npmLockfileParser;
+    private final NpmLockfilePackager npmLockfilePackager;
     private final NpmLockfileOptions npmLockfileOptions;
     private final YarnPackager yarnPackager;
     private final LernaOptions lernaOptions;
 
-    public LernaPackager(FileFinder fileFinder, PackageJsonReader packageJsonReader, YarnLockParser yarnLockParser, YarnLockOptions yarnLockOptions, NpmLockfilePackager npmLockfileParser, NpmLockfileOptions npmLockfileOptions,
+    public LernaPackager(FileFinder fileFinder, PackageJsonReader packageJsonReader, YarnLockParser yarnLockParser, YarnLockOptions yarnLockOptions, NpmLockfilePackager npmLockfilePackager, NpmLockfileOptions npmLockfileOptions,
         YarnPackager yarnPackager,
         LernaOptions lernaOptions) {
         this.fileFinder = fileFinder;
         this.packageJsonReader = packageJsonReader;
         this.yarnLockParser = yarnLockParser;
         this.yarnLockOptions = yarnLockOptions;
-        this.npmLockfileParser = npmLockfileParser;
+        this.npmLockfilePackager = npmLockfilePackager;
         this.npmLockfileOptions = npmLockfileOptions;
         this.yarnPackager = yarnPackager;
         this.lernaOptions = lernaOptions;
@@ -141,14 +142,14 @@ public class LernaPackager {
 
         if (lockFile.getNpmLockContents().isPresent()) {
             try {
-                NpmParseResult npmParseResult = npmLockfileParser.parse(
+                NpmPackagerResult npmPackagerResult = npmLockfilePackager.parseAndTransform(
                     packageJsonContents,
                     lockFile.getNpmLockContents().get(),
                     npmLockfileOptions.shouldIncludeDeveloperDependencies(),
                     npmLockfileOptions.shouldIncludePeerDependencies(),
                     externalPackages
                 );
-                return LernaResult.success(npmParseResult.getProjectName(), npmParseResult.getProjectVersion(), Collections.singletonList(npmParseResult.getCodeLocation()));
+                return LernaResult.success(npmPackagerResult.getProjectName(), npmPackagerResult.getProjectVersion(), Collections.singletonList(npmPackagerResult.getCodeLocation()));
             } catch (Exception exception) {
                 return LernaResult.failure(exception);
             }

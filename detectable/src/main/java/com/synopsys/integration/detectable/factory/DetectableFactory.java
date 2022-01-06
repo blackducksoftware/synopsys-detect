@@ -168,6 +168,8 @@ import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmLockfileE
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmLockfileOptions;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmPackageLockDetectable;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmShrinkwrapDetectable;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.parse.NpmLockFileProjectIdTransformer;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.parse.NpmLockfileGraphTransformer;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.parse.NpmLockfilePackager;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.NpmPackageJsonParseDetectable;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.NpmPackageJsonParseDetectableOptions;
@@ -694,7 +696,15 @@ public class DetectableFactory {
     }
 
     private NpmLockfilePackager npmLockfilePackager() {
-        return new NpmLockfilePackager(gson, externalIdFactory);
+        return new NpmLockfilePackager(gson, externalIdFactory, npmLockFileProjectIdTransformer(), npmLockfileGraphTransformer());
+    }
+
+    private NpmLockfileGraphTransformer npmLockfileGraphTransformer() {
+        return new NpmLockfileGraphTransformer(gson, externalIdFactory);
+    }
+
+    private NpmLockFileProjectIdTransformer npmLockFileProjectIdTransformer() {
+        return new NpmLockFileProjectIdTransformer(gson, externalIdFactory);
     }
 
     private NpmCliExtractor npmCliExtractor() {

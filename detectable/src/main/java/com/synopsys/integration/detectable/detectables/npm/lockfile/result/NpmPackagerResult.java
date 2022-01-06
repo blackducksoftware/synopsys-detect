@@ -1,13 +1,13 @@
-package com.synopsys.integration.detectable.detectables.npm.lockfile.model;
+package com.synopsys.integration.detectable.detectables.npm.lockfile.result;
 
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 
-public class NpmParseResult {
+public class NpmPackagerResult {
     private String projectName;
     private String projectVersion;
     private CodeLocation codeLocation;
 
-    public NpmParseResult(String projectName, String projectVersion, CodeLocation codeLocation) {
+    public NpmPackagerResult(String projectName, String projectVersion, CodeLocation codeLocation) {
         this.projectName = projectName;
         this.projectVersion = projectVersion;
         this.codeLocation = codeLocation;

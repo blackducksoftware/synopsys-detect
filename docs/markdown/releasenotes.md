@@ -6,6 +6,7 @@
 * (IDETECT-2949) Fixed an issue where [solution_name] failed to properly parse Go module version names containing '-' characters.
 * (IDETECT-2959) Fixed an issue where [solution_name] would not fail when running `go mod why` fails.
 * (IDETECT-2971) Fixed an issue where [solution_name] would not produce unique code location paths for Pnpm projects. Users should supply the following property once against each pnpm project to avoid duplicate components. `detect.project.codelocation.unmap=true`.
+* (IDETECT-3038) Fixed an issue where [solution_name] would fail to parse file dependency declarations for pnpm projects in their pnpm-lock.yaml files.
 
 ### Changed features
 * [solution_name] now classifies empty code location warning messages as the DEBUG logging level instead of the previous classification as the WARN logging level.
