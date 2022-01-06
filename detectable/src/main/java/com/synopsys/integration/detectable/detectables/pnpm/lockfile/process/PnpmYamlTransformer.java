@@ -15,12 +15,12 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.enums.DependencyType;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.detectable.detectable.util.DependencyTypeFilter;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYaml;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmPackage;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmProjectPackage;
-import com.synopsys.integration.detectable.util.DependencyTypeFilter;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
@@ -28,9 +28,9 @@ public class PnpmYamlTransformer {
     private static final String LINKED_PACKAGE_PREFIX = "link:";
 
     private final ExternalIdFactory externalIdFactory;
-    private final DependencyTypeFilter dependencyTypeFilter;
+    private final DependencyTypeFilter<PnpmDependencyType> dependencyTypeFilter;
 
-    public PnpmYamlTransformer(ExternalIdFactory externalIdFactory, DependencyTypeFilter dependencyTypeFilter) {
+    public PnpmYamlTransformer(ExternalIdFactory externalIdFactory, DependencyTypeFilter<PnpmDependencyType> dependencyTypeFilter) {
         this.externalIdFactory = externalIdFactory;
         this.dependencyTypeFilter = dependencyTypeFilter;
     }
@@ -95,9 +95,9 @@ public class PnpmYamlTransformer {
 
     private List<String> extractRootPackageIds(PnpmProjectPackage pnpmProjectPackage, @Nullable String reportingProjectPackagePath, PnpmLinkedPackageResolver linkedPackageResolver) {
         Map<String, String> rawPackageInfo = new HashMap<>();
-        dependencyTypeFilter.ifReportingType(DependencyType.APP, pnpmProjectPackage.dependencies, rawPackageInfo::putAll);
-        dependencyTypeFilter.ifReportingType(DependencyType.DEV, pnpmProjectPackage.devDependencies, rawPackageInfo::putAll);
-        dependencyTypeFilter.ifReportingType(DependencyType.OPTIONAL, pnpmProjectPackage.optionalDependencies, rawPackageInfo::putAll);
+        dependencyTypeFilter.ifReportingType(PnpmDependencyType.APP, pnpmProjectPackage.dependencies, rawPackageInfo::putAll);
+        dependencyTypeFilter.ifReportingType(PnpmDependencyType.DEV, pnpmProjectPackage.devDependencies, rawPackageInfo::putAll);
+        dependencyTypeFilter.ifReportingType(PnpmDependencyType.OPTIONAL, pnpmProjectPackage.optionalDependencies, rawPackageInfo::putAll);
 
         return rawPackageInfo.entrySet().stream()
             .map(entry -> convertRawEntryToPackageId(entry, linkedPackageResolver, reportingProjectPackagePath))

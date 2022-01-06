@@ -16,14 +16,14 @@ import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.enums.DependencyType;
+import com.synopsys.integration.detectable.detectable.util.DependencyTypeFilter;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYaml;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmPackage;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmLinkedPackageResolver;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmYamlTransformer;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonFiles;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonReader;
-import com.synopsys.integration.detectable.util.DependencyTypeFilter;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
@@ -33,15 +33,15 @@ public class PnpmYamlTransformerTest {
     PnpmLinkedPackageResolver linkedPackageResolver = new PnpmLinkedPackageResolver(new File(""), new PackageJsonFiles(new PackageJsonReader(new Gson())));
     File pnpmLockYamlFile = new File("something");
 
-    private PnpmYamlTransformer createTransformer(DependencyType... allowedDependencyTypes) {
-        DependencyTypeFilter dependencyTypeFilter = new DependencyTypeFilter(Arrays.asList(allowedDependencyTypes));
+    private PnpmYamlTransformer createTransformer(PnpmDependencyType... allowedPnpmDependencyTypes) {
+        DependencyTypeFilter<PnpmDependencyType> dependencyTypeFilter = new DependencyTypeFilter<>(Arrays.asList(allowedPnpmDependencyTypes));
         return new PnpmYamlTransformer(new ExternalIdFactory(), dependencyTypeFilter);
     }
 
     @Test
     public void testGenerateCodeLocation() throws IntegrationException {
         PnpmLockYaml pnpmLockYaml = createPnpmLockYaml();
-        PnpmYamlTransformer transformer = createTransformer(DependencyType.APP, DependencyType.DEV, DependencyType.OPTIONAL);
+        PnpmYamlTransformer transformer = createTransformer(PnpmDependencyType.APP, PnpmDependencyType.DEV, PnpmDependencyType.OPTIONAL);
         CodeLocation codeLocation = transformer.generateCodeLocation(pnpmLockYamlFile, pnpmLockYaml, projectNameVersion, linkedPackageResolver);
 
         assertTrue(codeLocation.getExternalId().isPresent(), "Expected the codelocation to produce an ExternalId.");
@@ -60,7 +60,7 @@ public class PnpmYamlTransformerTest {
     @Test
     public void testExcludeDependencies() throws IntegrationException {
         PnpmLockYaml pnpmLockYaml = createPnpmLockYaml();
-        PnpmYamlTransformer transformer = createTransformer(DependencyType.DEV, DependencyType.OPTIONAL);
+        PnpmYamlTransformer transformer = createTransformer(PnpmDependencyType.DEV, PnpmDependencyType.OPTIONAL);
         DependencyGraph dependencyGraph = transformer.generateCodeLocation(pnpmLockYamlFile, pnpmLockYaml, projectNameVersion, linkedPackageResolver).getDependencyGraph();
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, dependencyGraph);
         graphAssert.hasRootSize(2);
@@ -68,7 +68,7 @@ public class PnpmYamlTransformerTest {
 
     @Test
     public void testExcludeDevDependencies() throws IntegrationException {
-        PnpmYamlTransformer transformer = createTransformer(DependencyType.APP, DependencyType.OPTIONAL);
+        PnpmYamlTransformer transformer = createTransformer(PnpmDependencyType.APP, PnpmDependencyType.OPTIONAL);
         PnpmLockYaml pnpmLockYaml = createPnpmLockYaml();
         DependencyGraph dependencyGraph = transformer.generateCodeLocation(pnpmLockYamlFile, pnpmLockYaml, projectNameVersion, linkedPackageResolver).getDependencyGraph();
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, dependencyGraph);
@@ -79,7 +79,7 @@ public class PnpmYamlTransformerTest {
     @Test
     public void testExcludeOptionalDependencies() throws IntegrationException {
         PnpmLockYaml pnpmLockYaml = createPnpmLockYaml();
-        PnpmYamlTransformer transformer = createTransformer(DependencyType.APP, DependencyType.DEV);
+        PnpmYamlTransformer transformer = createTransformer(PnpmDependencyType.APP, PnpmDependencyType.DEV);
         DependencyGraph dependencyGraph = transformer.generateCodeLocation(pnpmLockYamlFile, pnpmLockYaml, projectNameVersion, linkedPackageResolver).getDependencyGraph();
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, dependencyGraph);
         graphAssert.hasRootSize(2);
@@ -89,7 +89,7 @@ public class PnpmYamlTransformerTest {
     @Test
     public void testThrowExceptionOnNullPackagesSection() {
         PnpmLockYaml pnpmLockYaml = createPnpmLockYaml();
-        PnpmYamlTransformer transformer = createTransformer(DependencyType.APP, DependencyType.DEV, DependencyType.OPTIONAL);
+        PnpmYamlTransformer transformer = createTransformer(PnpmDependencyType.APP, PnpmDependencyType.DEV, PnpmDependencyType.OPTIONAL);
         pnpmLockYaml.packages = null;
         assertThrows(IntegrationException.class,
             () -> transformer.generateCodeLocation(pnpmLockYamlFile, pnpmLockYaml, projectNameVersion, linkedPackageResolver)
@@ -99,7 +99,7 @@ public class PnpmYamlTransformerTest {
     @Test
     public void testNoFailureOnNullNameVersion() throws IntegrationException {
         PnpmLockYaml pnpmLockYaml = createPnpmLockYaml();
-        PnpmYamlTransformer transformer = createTransformer(DependencyType.APP, DependencyType.DEV, DependencyType.OPTIONAL);
+        PnpmYamlTransformer transformer = createTransformer(PnpmDependencyType.APP, PnpmDependencyType.DEV, PnpmDependencyType.OPTIONAL);
         transformer.generateCodeLocation(pnpmLockYamlFile, pnpmLockYaml, null, linkedPackageResolver);
     }
 
