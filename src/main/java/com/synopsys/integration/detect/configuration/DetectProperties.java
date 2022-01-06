@@ -6,6 +6,7 @@ import static java.util.Collections.singletonList;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,8 +46,9 @@ import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndividualFileMatchingMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
-import com.synopsys.integration.detectable.detectable.enums.DependencyType;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
+import com.synopsys.integration.detectable.detectables.conan.cli.config.ConanDependencyType;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.log.LogLevel;
 
@@ -179,11 +181,19 @@ public class DetectProperties {
             .setHelp("The path to the conan executable.")
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
 
+    public static final DetectProperty<FilterableEnumListProperty<ConanDependencyType>> DETECT_CONAN_DEPENDENCY_TYPES =
+        new DetectProperty<>(new FilterableEnumListProperty<>("detect.conan.dependency.types", Collections.singletonList(FilterableEnumValue.allValue()), ConanDependencyType.class))
+            .setInfo("Include Conan Build Dependencies", DetectPropertyFromVersion.VERSION_7_10_0)
+            .setHelp("Set this value to false if you would like to exclude your project's build dependencies.")
+            .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
+
+    @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_CONAN_INCLUDE_BUILD_DEPENDENCIES =
         new DetectProperty<>(new BooleanProperty("detect.conan.include.build.dependencies", true))
             .setInfo("Include Conan Build Dependencies", DetectPropertyFromVersion.VERSION_6_8_0)
             .setHelp("Set this value to false if you would like to exclude your project's build dependencies.")
-            .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
+            .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
+            .setDeprecated("This (true/false) property will be removed in favor of a list of dependency types.", DetectMajorVersion.EIGHT);
 
     public static final DetectProperty<NullableStringProperty> DETECT_CONAN_ARGUMENTS =
         new DetectProperty<>(new NullableStringProperty("detect.conan.arguments"))
@@ -924,8 +934,8 @@ public class DetectProperties {
             .setHelp("The path to the Pipenv executable.")
             .setGroups(DetectGroup.PIP, DetectGroup.GLOBAL);
 
-    public static final DetectProperty<FilterableEnumListProperty<DependencyType>> DETECT_PNPM_DEPENDENCY_TYPES =
-        new DetectProperty<>(new FilterableEnumListProperty<>("detect.pnpm.dependency.types", FilterableEnumUtils.allList(), DependencyType.class))
+    public static final DetectProperty<FilterableEnumListProperty<PnpmDependencyType>> DETECT_PNPM_DEPENDENCY_TYPES =
+        new DetectProperty<>(new FilterableEnumListProperty<>("detect.pnpm.dependency.types", FilterableEnumUtils.allList(), PnpmDependencyType.class))
             .setInfo("pnpm Dependency Types", DetectPropertyFromVersion.VERSION_7_8_0)
             .setHelp("Set this value to indicate which types of pnpm dependencies you want Detect to report.",
                 "If you want Detect to report a specific type(s) of dependencies, pass a comma-separated list of such types (ex. APP, DEV, OPTIONAL).  By default, all types will be reported.")
