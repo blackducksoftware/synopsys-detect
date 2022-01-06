@@ -67,22 +67,21 @@ public class BitbakeSession {
     }
 
     public File determineBuildDir(File sourceDir) {
-        // TODO refactor; detect failure once
-        File derivedBuildDir;
+        File fallbackBuildDir = new File(sourceDir, "build");
+        File derivedBuildDir = null;
         try {
             ExecutableOutput output = runBitbake("pwd");
-            String pwdOutput = output.getStandardOutput();
-            derivedBuildDir = new File(pwdOutput.trim());
+            List<String> pwdOutputLines = output.getStandardOutputAsList();
+            derivedBuildDir = new File(pwdOutputLines.get(pwdOutputLines.size()-1).trim());
         } catch (Exception e) {
-            derivedBuildDir = new File(sourceDir, "build");
-            logger.warn(String.format("Unable to determine build directory location (%s); assuming %s.", e.getMessage(), derivedBuildDir.getAbsolutePath()));
+            logger.warn("Unable to determine build directory location due to error: {}; ; using {} for build dir", e.getMessage(), fallbackBuildDir.getAbsolutePath());
+            return fallbackBuildDir;
         }
         if (derivedBuildDir.isDirectory()) {
             logger.debug("Derived build dir: {}", derivedBuildDir.getAbsolutePath());
         } else {
-            File fallbackBuildDir = new File(sourceDir, "build");
-            logger.warn("Derived build dir {} is not a directory; using {} for build dir", derivedBuildDir.getAbsolutePath(), fallbackBuildDir);
-            derivedBuildDir = fallbackBuildDir;
+            logger.warn("Derived build dir {} is not a directory; using {} for build dir", derivedBuildDir.getAbsolutePath(), fallbackBuildDir.getAbsolutePath());
+            return fallbackBuildDir;
         }
         return derivedBuildDir;
     }

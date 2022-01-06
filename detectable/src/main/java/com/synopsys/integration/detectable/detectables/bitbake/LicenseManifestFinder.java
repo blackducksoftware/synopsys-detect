@@ -21,9 +21,7 @@ public class LicenseManifestFinder {
             return findFile(sourceDir, givenLicenseManifestFilePath);
         }
         try {
-            File tmpDir = new File(buildDir, "tmp");
-            File deployDir = new File(tmpDir, "deploy");
-            File licensesDir = new File(deployDir, "licenses");
+            File licensesDir = new File(buildDir, "tmp/deploy/licenses");
             logger.debug("Checking licenses dir {} for license.manifest for {}", licensesDir.getAbsolutePath(), targetImageName);
             List<File> licensesDirContents = Arrays.asList(licensesDir.listFiles());
             Optional<File> targetImageLicenseDir = licensesDirContents.stream().filter(f -> f.getName().startsWith(targetImageName)).findFirst();
