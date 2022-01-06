@@ -22,17 +22,14 @@ public class ConanCliDetectable extends Detectable {
     private final FileFinder fileFinder;
     private final ConanResolver conanResolver;
     private final ConanCliExtractor conanCliExtractor;
-    private final ConanCliExtractorOptions conanCliExtractorOptions;
 
     private ExecutableTarget conanExe;
 
-    public ConanCliDetectable(DetectableEnvironment environment, FileFinder fileFinder, ConanResolver conanResolver, ConanCliExtractor conanCliExtractor,
-        ConanCliExtractorOptions conanCliExtractorOptions) {
+    public ConanCliDetectable(DetectableEnvironment environment, FileFinder fileFinder, ConanResolver conanResolver, ConanCliExtractor conanCliExtractor) {
         super(environment);
         this.fileFinder = fileFinder;
         this.conanResolver = conanResolver;
         this.conanCliExtractor = conanCliExtractor;
-        this.conanCliExtractorOptions = conanCliExtractorOptions;
     }
 
     @Override
@@ -61,6 +58,6 @@ public class ConanCliDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
-        return conanCliExtractor.extract(environment.getDirectory(), conanExe, conanCliExtractorOptions);
+        return conanCliExtractor.extract(environment.getDirectory(), conanExe);
     }
 }
