@@ -18,7 +18,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.enums.DependencyType;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYaml;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmPackage;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmPackageInfo;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmLinkedPackageResolver;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmYamlTransformer;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonFiles;
@@ -50,7 +50,7 @@ public class PnpmYamlTransformerTest {
 
         DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, dependencyGraph);
-        graphAssert.hasRootSize(3);
+        graphAssert.hasRootSize(4);
         graphAssert.hasRootDependency("dep", "1.0.0");
         graphAssert.hasRootDependency("devDep", "2.0.0");
         graphAssert.hasRootDependency("optDep", "3.0.0");
@@ -72,7 +72,7 @@ public class PnpmYamlTransformerTest {
         PnpmLockYaml pnpmLockYaml = createPnpmLockYaml();
         DependencyGraph dependencyGraph = transformer.generateCodeLocation(pnpmLockYamlFile, pnpmLockYaml, projectNameVersion, linkedPackageResolver).getDependencyGraph();
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, dependencyGraph);
-        graphAssert.hasRootSize(2);
+        graphAssert.hasRootSize(3);
         graphAssert.hasNoDependency("devDep", "2.0.0");
     }
 
@@ -82,7 +82,7 @@ public class PnpmYamlTransformerTest {
         PnpmYamlTransformer transformer = createTransformer(DependencyType.APP, DependencyType.DEV);
         DependencyGraph dependencyGraph = transformer.generateCodeLocation(pnpmLockYamlFile, pnpmLockYaml, projectNameVersion, linkedPackageResolver).getDependencyGraph();
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, dependencyGraph);
-        graphAssert.hasRootSize(2);
+        graphAssert.hasRootSize(3);
         graphAssert.hasNoDependency("optDep", "3.0.0");
     }
 
@@ -103,11 +103,22 @@ public class PnpmYamlTransformerTest {
         transformer.generateCodeLocation(pnpmLockYamlFile, pnpmLockYaml, null, linkedPackageResolver);
     }
 
+    @Test
+    public void testParseFileDependencies() throws IntegrationException {
+        PnpmLockYaml pnpmLockYaml = createPnpmLockYaml();
+        PnpmYamlTransformer transformer = createTransformer(DependencyType.APP);
+        DependencyGraph dependencyGraph = transformer.generateCodeLocation(pnpmLockYamlFile, pnpmLockYaml, projectNameVersion, linkedPackageResolver).getDependencyGraph();
+        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, dependencyGraph);
+        graphAssert.hasRootSize(2);
+        graphAssert.hasDependency("fileDep", "1.0.0");
+    }
+
     private PnpmLockYaml createPnpmLockYaml() {
         PnpmLockYaml pnpmLockYaml = new PnpmLockYaml();
 
         Map<String, String> dependencies = new HashMap<>();
         dependencies.put("dep", "1.0.0");
+        dependencies.put("fileDep", "file:fileDep-1.0.0.tgz");
         pnpmLockYaml.dependencies = dependencies;
 
         Map<String, String> devDependencies = new HashMap<>();
@@ -118,24 +129,29 @@ public class PnpmYamlTransformerTest {
         optionalDependencies.put("optDep", "3.0.0");
         pnpmLockYaml.optionalDependencies = optionalDependencies;
 
-        Map<String, PnpmPackage> packages = new HashMap<>();
+        Map<String, PnpmPackageInfo> packages = new HashMap<>();
 
-        PnpmPackage dep = new PnpmPackage();
+        PnpmPackageInfo dep = new PnpmPackageInfo();
         Map<String, String> depDependencies = new HashMap<>();
         depDependencies.put("transitive", "1.1.0");
         dep.dependencies = depDependencies;
         packages.put("/dep/1.0.0", dep);
 
-        PnpmPackage devDep = new PnpmPackage();
+        PnpmPackageInfo devDep = new PnpmPackageInfo();
         devDep.dev = true;
         packages.put("/devDep/2.0.0", devDep);
 
-        PnpmPackage optDep = new PnpmPackage();
+        PnpmPackageInfo optDep = new PnpmPackageInfo();
         optDep.optional = true;
         packages.put("/optDep/3.0.0", optDep);
 
-        PnpmPackage transitive = new PnpmPackage();
+        PnpmPackageInfo transitive = new PnpmPackageInfo();
         packages.put("/transitive/1.1.0", transitive);
+
+        PnpmPackageInfo fileDep = new PnpmPackageInfo();
+        fileDep.name = "fileDep";
+        fileDep.version = "1.0.0";
+        packages.put("file:fileDep-1.0.0.tgz", fileDep);
 
         pnpmLockYaml.packages = packages;
 
