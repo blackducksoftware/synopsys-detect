@@ -3,13 +3,16 @@ package com.synopsys.integration.detectable.detectables.npm.lockfile.functional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
-import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmParseResult;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.parse.NpmLockFileProjectIdTransformer;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.parse.NpmLockfilePackager;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.result.NpmPackagerResult;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.parse.NpmLockfileGraphTransformer;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 import com.synopsys.integration.detectable.util.graph.GraphAssert;
 
@@ -17,7 +20,7 @@ import com.synopsys.integration.detectable.util.graph.GraphAssert;
 public class NpmPeerExclusionTest {
     ExternalId childPeer;
     ExternalId parentPeer;
-    NpmLockfilePackager npmLockfileParser;
+    NpmLockfilePackager npmLockfilePackager;
     String packageJsonText;
     String packageLockText;
 
@@ -25,7 +28,10 @@ public class NpmPeerExclusionTest {
     void setup() {
         ExternalIdFactory externalIdFactory = new ExternalIdFactory();
 
-        npmLockfileParser = new NpmLockfilePackager(new GsonBuilder().setPrettyPrinting().create(), externalIdFactory);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        NpmLockfileGraphTransformer graphTransformer = new NpmLockfileGraphTransformer(gson, externalIdFactory);
+        NpmLockFileProjectIdTransformer projectIdTransformer = new NpmLockFileProjectIdTransformer(gson, externalIdFactory);
+        npmLockfilePackager = new NpmLockfilePackager(gson, externalIdFactory, projectIdTransformer, graphTransformer);
 
         packageJsonText = FunctionalTestFiles.asString("/npm/peer-exclusion-test/package.json");
         packageLockText = FunctionalTestFiles.asString("/npm/peer-exclusion-test/package-lock.json");
@@ -36,7 +42,7 @@ public class NpmPeerExclusionTest {
 
     @Test
     public void testPeerDependencyNotExists() {
-        NpmParseResult result = npmLockfileParser.parse(packageJsonText, packageLockText, false, false);
+        NpmPackagerResult result = npmLockfilePackager.parseAndTransform(packageJsonText, packageLockText, false, false);
         GraphAssert graphAssert = new GraphAssert(Forge.NPMJS, result.getCodeLocation().getDependencyGraph());
         graphAssert.hasNoDependency(childPeer);
         graphAssert.hasNoDependency(parentPeer);
@@ -45,7 +51,7 @@ public class NpmPeerExclusionTest {
 
     @Test
     public void testPeerDependencyExists() {
-        NpmParseResult result = npmLockfileParser.parse(packageJsonText, packageLockText, false, true);
+        NpmPackagerResult result = npmLockfilePackager.parseAndTransform(packageJsonText, packageLockText, false, true);
         GraphAssert graphAssert = new GraphAssert(Forge.NPMJS, result.getCodeLocation().getDependencyGraph());
         graphAssert.hasDependency(childPeer);
         graphAssert.hasDependency(parentPeer);

@@ -5,21 +5,26 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.util.ExternalIdCreator;
 
-public class NpmDependency {
-    private final String name;
-    private final String version;
+public class NpmDependency extends Dependency {
     private final boolean devDependency;
     private final boolean peerDependency;
-    private final Dependency dependency;
 
-    public NpmDependency(String name, String version, boolean devDependency, boolean peerDependency, Dependency dependency) {
-        this.name = name;
-        this.version = version;
+    public NpmDependency(String name, String version, ExternalId externalId, boolean devDependency, boolean peerDependency) {
+        super(name, version, externalId);
         this.devDependency = devDependency;
         this.peerDependency = peerDependency;
-        this.dependency = dependency;
+    }
+
+    public NpmDependency(String name, String version, boolean devDependency, boolean peerDependency) {
+        super(name, version, ExternalIdCreator.nameVersion(Forge.NPMJS, name, version));
+        this.devDependency = devDependency;
+        this.peerDependency = peerDependency;
     }
 
     private NpmDependency parent;
@@ -50,23 +55,11 @@ public class NpmDependency {
         return dependencies;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
     public boolean isDevDependency() {
         return devDependency;
     }
 
     public boolean isPeerDependency() {
         return peerDependency;
-    }
-
-    public Dependency getGraphDependency() {
-        return dependency;
     }
 }

@@ -5,13 +5,19 @@ import java.util.Map;
 import org.apache.commons.collections4.MapUtils;
 import org.jetbrains.annotations.Nullable;
 
-public class PnpmPackage {
+import com.synopsys.integration.detectable.detectable.enums.DependencyType;
+
+public class PnpmPackageInfo {
     @Nullable
     public Boolean dev;
     @Nullable
     public Boolean optional;
     @Nullable
     public Map<String, String> dependencies;
+    @Nullable
+    public String name;
+    @Nullable
+    public String version;
 
     private boolean isDev() {
         return dev != null && dev;

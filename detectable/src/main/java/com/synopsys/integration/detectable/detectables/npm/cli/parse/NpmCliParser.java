@@ -20,7 +20,7 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmParseResult;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.result.NpmPackagerResult;
 
 public class NpmCliParser {
     private final Logger logger = LoggerFactory.getLogger(NpmCliParser.class);
@@ -35,7 +35,7 @@ public class NpmCliParser {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public NpmParseResult generateCodeLocation(String npmLsOutput, NpmDependencyTypeFilter npmDependencyTypeFilter) {
+    public NpmPackagerResult generateCodeLocation(String npmLsOutput, NpmDependencyTypeFilter npmDependencyTypeFilter) {
         if (StringUtils.isBlank(npmLsOutput)) {
             logger.error("Ran into an issue creating and writing to file");
             return null;
@@ -45,7 +45,7 @@ public class NpmCliParser {
         return convertNpmJsonFileToCodeLocation(npmLsOutput, npmDependencyTypeFilter);
     }
 
-    public NpmParseResult convertNpmJsonFileToCodeLocation(String npmLsOutput, NpmDependencyTypeFilter npmDependencyTypeFilter) {
+    public NpmPackagerResult convertNpmJsonFileToCodeLocation(String npmLsOutput, NpmDependencyTypeFilter npmDependencyTypeFilter) {
         JsonObject npmJson = JsonParser.parseString(npmLsOutput).getAsJsonObject();
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
@@ -66,7 +66,7 @@ public class NpmCliParser {
 
         CodeLocation codeLocation = new CodeLocation(graph, externalId);
 
-        return new NpmParseResult(projectName, projectVersion, codeLocation);
+        return new NpmPackagerResult(projectName, projectVersion, codeLocation);
 
     }
 
