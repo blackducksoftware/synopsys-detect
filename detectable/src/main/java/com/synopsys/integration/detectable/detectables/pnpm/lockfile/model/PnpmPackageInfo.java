@@ -5,8 +5,6 @@ import java.util.Map;
 import org.apache.commons.collections4.MapUtils;
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.detectable.detectable.enums.DependencyType;
-
 public class PnpmPackageInfo {
     @Nullable
     public Boolean dev;

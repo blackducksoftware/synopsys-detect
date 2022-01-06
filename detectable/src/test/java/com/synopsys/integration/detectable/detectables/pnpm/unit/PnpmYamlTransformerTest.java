@@ -106,7 +106,7 @@ public class PnpmYamlTransformerTest {
     @Test
     public void testParseFileDependencies() throws IntegrationException {
         PnpmLockYaml pnpmLockYaml = createPnpmLockYaml();
-        PnpmYamlTransformer transformer = createTransformer(DependencyType.APP);
+        PnpmYamlTransformer transformer = createTransformer(PnpmDependencyType.APP);
         DependencyGraph dependencyGraph = transformer.generateCodeLocation(pnpmLockYamlFile, pnpmLockYaml, projectNameVersion, linkedPackageResolver).getDependencyGraph();
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, dependencyGraph);
         graphAssert.hasRootSize(2);
