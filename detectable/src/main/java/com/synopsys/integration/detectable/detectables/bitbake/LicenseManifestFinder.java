@@ -6,24 +6,20 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.synopsys.integration.exception.IntegrationException;
 
 public class LicenseManifestFinder {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    // TODO this needs refactoring; also, compare to MB's search
-    public Optional<File> find(File sourceDir, String targetImageName) {
-//        if (StringUtils.isNotBlank(givenLicenseManifestFilePath)) {
-//            File licenseManifestFile = new File (givenLicenseManifestFilePath);
-//            if (licenseManifestFile.canRead()) {
-//                logger.debug("Found license.manifest file at given path: {}", givenLicenseManifestFilePath);
-//                return Optional.of(licenseManifestFile);
-//            }
-//        }
-        // TODO might need to be more flexible?
-        // TODO might need to determine which architecture to look for?
-        Optional<File> licenseFile;
+    // TODO compare to MB's search, and refactor
+    public File find(File sourceDir, String targetImageName, @Nullable String givenLicenseManifestFilePath) throws IntegrationException {
+        if (StringUtils.isNotBlank(givenLicenseManifestFilePath)) {
+            return findFile(sourceDir, givenLicenseManifestFilePath);
+        }
         try {
             File buildDir = new File(sourceDir, "build");
             File tmpDir = new File(buildDir, "tmp");
@@ -37,13 +33,24 @@ public class LicenseManifestFinder {
                 File licenseFileCandidate = new File(targetImageLicenseDir.get(), "license.manifest");
                 if (licenseFileCandidate.canRead()) {
                     logger.debug("Found license.manifest file: {}", licenseFileCandidate.getAbsolutePath());
-                    return Optional.of(licenseFileCandidate);
+                    return licenseFileCandidate;
                 }
             }
         } catch (Exception e) {
-
+            logger.debug(String.format("Error finding license.manifest file for target image %s", targetImageName), e);
         }
-        logger.error("Unable to find license.manifest file for target image {}", targetImageName);
-        return Optional.empty();
+        throw new IntegrationException(String.format("Unable to find license.manifest file for target image %s", targetImageName));
+    }
+
+    private File findFile(File sourceDir, String givenPath) throws IntegrationException {
+        File givenFile = new File(givenPath);
+        if (givenFile.canRead()) {
+            return givenFile;
+        }
+        File sourceDirFile = new File(sourceDir, givenPath);
+        if (sourceDirFile.canRead()) {
+            return sourceDirFile;
+        }
+        throw new IntegrationException(String.format("Unable to find license.manifest file at given path %s", givenPath));
     }
 }

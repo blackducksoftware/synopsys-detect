@@ -12,6 +12,7 @@ import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.NotImplementedException;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,11 +65,13 @@ public class BitbakeExtractor {
 
         BitbakeSession bitbakeSession = new BitbakeSession(fileFinder, executableRunner, bitbakeRecipesParser, sourceDirectory, buildEnvScript, sourceArguments, bash, toolVersionLogger);
         bitbakeSession.logBitbakeVersion();
-        for (String packageName : packageNames) {
+        for (String packageAndOptionalLicenseFilePath : packageNames) {
+            String packageName = extractPackageName(packageAndOptionalLicenseFilePath);
+            Optional<String> pathToLicenseManifestFile = extractPathToLicenseManifestFile(packageAndOptionalLicenseFilePath);
             Map<String, String> imageRecipes = null;
             try {
                 if (!includeDevDependencies) {
-                    imageRecipes = extractImageRecipes(sourceDirectory, packageName);
+                    imageRecipes = extractImageRecipes(sourceDirectory, packageName, pathToLicenseManifestFile.orElse(null));
                 }
                 BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, sourceDirectory, packageName, followSymLinks, searchDepth);
                 List<BitbakeRecipe> bitbakeRecipes = bitbakeSession.executeBitbakeForRecipeLayerCatalog();
@@ -101,8 +104,28 @@ public class BitbakeExtractor {
         return extraction;
     }
 
-    private Map<String, String> extractImageRecipes(File sourceDirectory, String targetImageName) throws IntegrationException, IOException {
-        File licenseManifestFile = licenseManifestFinder.find(sourceDirectory, targetImageName).orElseThrow(() -> new IntegrationException(String.format("Unable to find license.manifest file for target image %s", targetImageName)));
+    private String extractPackageName(String givenPackageName) {
+        String packageName;
+        if (givenPackageName.contains(":")) {
+            int colonIndex = givenPackageName.indexOf(':');
+            packageName = givenPackageName.substring(0, colonIndex);
+        } else {
+            packageName = givenPackageName;
+        }
+        return packageName;
+    }
+
+    private Optional<String> extractPathToLicenseManifestFile(String givenPackageName) {
+        String pathToLicenseManifestFile = null;
+        if (givenPackageName.contains(":")) {
+            int colonIndex = givenPackageName.indexOf(':');
+            pathToLicenseManifestFile = givenPackageName.substring(colonIndex+1);
+        }
+        return Optional.ofNullable(pathToLicenseManifestFile);
+    }
+
+    private Map<String, String> extractImageRecipes(File sourceDirectory, String targetImageName, @Nullable String pathToLicenseManifestFile) throws IntegrationException, IOException {
+        File licenseManifestFile = licenseManifestFinder.find(sourceDirectory, targetImageName, pathToLicenseManifestFile);
         List<String> licenseManifestLines = FileUtils.readLines(licenseManifestFile, StandardCharsets.UTF_8);
         return licenseManifestParser.collectImageRecipes(licenseManifestLines);
     }
