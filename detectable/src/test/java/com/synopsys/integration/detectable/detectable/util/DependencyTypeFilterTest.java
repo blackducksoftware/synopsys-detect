@@ -38,14 +38,18 @@ class DependencyTypeFilterTest {
     void nullDependencies() {
         DependencyTypeFilter<MockType> filter = new DependencyTypeFilter<>(MockType.APP, MockType.OPTIONAL);
         filter.ifReportingType(MockType.APP, null, deps -> fail("If dependencies are null, they should not be reported."));
+    }
+
+    @Test
+    void fReportingType() {
         List<String> appDependencies = Collections.singletonList("app-dep");
-        
         class TestReporter {
             void report(List<String> dependencies) {}
         }
         TestReporter testReporter = Mockito.mock(TestReporter.class);
-        filter.ifReportingType(MockType.APP, appDependencies, testReporter::report);
+        DependencyTypeFilter<MockType> filter = new DependencyTypeFilter<>(MockType.APP);
 
+        filter.ifReportingType(MockType.APP, appDependencies, testReporter::report);
         Mockito.verify(testReporter, times(1)).report(any());
     }
 
