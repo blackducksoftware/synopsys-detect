@@ -187,14 +187,6 @@ public class DetectProperties {
             .setHelp("Set this value to false if you would like to exclude your project's build dependencies.")
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
 
-    @Deprecated
-    public static final DetectProperty<BooleanProperty> DETECT_CONAN_INCLUDE_BUILD_DEPENDENCIES =
-        new DetectProperty<>(new BooleanProperty("detect.conan.include.build.dependencies", true))
-            .setInfo("Include Conan Build Dependencies", DetectPropertyFromVersion.VERSION_6_8_0)
-            .setHelp("Set this value to false if you would like to exclude your project's build dependencies.")
-            .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
-            .setDeprecated("This (true/false) property will be removed in favor of a list of dependency types.", DetectMajorVersion.EIGHT);
-
     public static final DetectProperty<NullableStringProperty> DETECT_CONAN_ARGUMENTS =
         new DetectProperty<>(new NullableStringProperty("detect.conan.arguments"))
             .setInfo("Additional Conan Arguments", DetectPropertyFromVersion.VERSION_6_8_0)
@@ -1425,6 +1417,14 @@ public class DetectProperties {
             .setGroups(DetectGroup.MAVEN, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced)
             .setDeprecated("This property is being removed. The legacy maven buildless parser is being replaced by the project inspector.", DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<BooleanProperty> DETECT_CONAN_INCLUDE_BUILD_DEPENDENCIES =
+        new DetectProperty<>(new BooleanProperty("detect.conan.include.build.dependencies", true))
+            .setInfo("Include Conan Build Dependencies", DetectPropertyFromVersion.VERSION_6_8_0)
+            .setHelp("Set this value to false if you would like to exclude your project's build dependencies.")
+            .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
+            .setDeprecated("This property is being removed in favor of detect.conan.dependency.types. If the replacement property is set, this property is ignored.", DetectMajorVersion.EIGHT);
 
     // Accessor to get all properties
     public static Properties allProperties() throws IllegalAccessException {
