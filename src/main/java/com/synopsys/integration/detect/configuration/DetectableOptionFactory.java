@@ -172,6 +172,7 @@ public class DetectableOptionFactory {
         return new ConanCliExtractorOptions(lockfilePath, additionalArguments, dependencyTypeFilter, preferLongFormExternalIds);
     }
 
+    // TODO: Remove in 8.0.0. This will be one line, no method necessary - JM 01/2022
     private DependencyTypeFilter<ConanDependencyType> createConanDependencyTypeFilter() {
         Boolean includeBuildDependencies = getValue(DetectProperties.DETECT_CONAN_INCLUDE_BUILD_DEPENDENCIES);
         if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_CONAN_DEPENDENCY_TYPES.getProperty())) {
