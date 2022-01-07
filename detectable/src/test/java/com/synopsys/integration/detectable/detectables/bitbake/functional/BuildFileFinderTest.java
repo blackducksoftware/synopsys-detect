@@ -8,38 +8,38 @@ import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.common.util.finder.SimpleFileFinder;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
-import com.synopsys.integration.detectable.detectables.bitbake.LicenseManifestFinder;
+import com.synopsys.integration.detectable.detectables.bitbake.BuildFileFinder;
 import com.synopsys.integration.exception.IntegrationException;
 
 @FunctionalTest
-public class LicenseManifestFinderTest {
+public class BuildFileFinderTest {
 
     @Test
     void testDefault() throws IntegrationException {
-        LicenseManifestFinder finder = new LicenseManifestFinder(new SimpleFileFinder());
+        BuildFileFinder finder = new BuildFileFinder(new SimpleFileFinder());
         File buildDir = new File("src/test/resources/detectables/functional/bitbake/builddir_default");
 
-        File licensesManifestFile = finder.find(buildDir, "targetimage", true, 10);
+        File licensesManifestFile = finder.findLicenseManifestFile(buildDir, "targetimage", true, 10);
 
         assertTrue(licensesManifestFile.isFile());
     }
 
     @Test
     void testCustomLicensesDirLocation() throws IntegrationException {
-        LicenseManifestFinder finder = new LicenseManifestFinder(new SimpleFileFinder());
+        BuildFileFinder finder = new BuildFileFinder(new SimpleFileFinder());
         File buildDir = new File("src/test/resources/detectables/functional/bitbake/builddir_custom");
 
-        File licensesManifestFile = finder.find(buildDir, "targetimage", true, 10);
+        File licensesManifestFile = finder.findLicenseManifestFile(buildDir, "targetimage", true, 10);
 
         assertTrue(licensesManifestFile.isFile());
     }
 
     @Test
     void testNoDeployLicensesDir() throws IntegrationException {
-        LicenseManifestFinder finder = new LicenseManifestFinder(new SimpleFileFinder());
+        BuildFileFinder finder = new BuildFileFinder(new SimpleFileFinder());
         File buildDir = new File("src/test/resources/detectables/functional/bitbake/builddir_nodeploy");
 
-        File licensesManifestFile = finder.find(buildDir, "targetimage", true, 10);
+        File licensesManifestFile = finder.findLicenseManifestFile(buildDir, "targetimage", true, 10);
 
         assertTrue(licensesManifestFile.isFile());
     }

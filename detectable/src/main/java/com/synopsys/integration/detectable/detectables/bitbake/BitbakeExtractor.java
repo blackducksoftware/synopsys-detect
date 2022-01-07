@@ -8,17 +8,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.NotImplementedException;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.paypal.digraph.parser.GraphParser;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
@@ -37,33 +34,31 @@ public class BitbakeExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final DetectableExecutableRunner executableRunner;
-    private final FileFinder fileFinder;
     private final GraphParserTransformer graphParserTransformer;
     private final BitbakeGraphTransformer bitbakeGraphTransformer;
     private final BitbakeRecipesParser bitbakeRecipesParser;
     private final BitbakeRecipesToLayerMapConverter bitbakeRecipesToLayerMap;
     private final ToolVersionLogger toolVersionLogger;
-    private final LicenseManifestFinder licenseManifestFinder;
+    private final BuildFileFinder buildFileFinder;
     private final LicenseManifestParser licenseManifestParser;
 
-    public BitbakeExtractor(DetectableExecutableRunner executableRunner, FileFinder fileFinder, GraphParserTransformer graphParserTransformer, BitbakeGraphTransformer bitbakeGraphTransformer,
-        BitbakeRecipesParser bitbakeRecipesParser, BitbakeRecipesToLayerMapConverter bitbakeRecipesToLayerMap, ToolVersionLogger toolVersionLogger, LicenseManifestFinder licenseManifestFinder,
+    public BitbakeExtractor(DetectableExecutableRunner executableRunner, GraphParserTransformer graphParserTransformer, BitbakeGraphTransformer bitbakeGraphTransformer,
+        BitbakeRecipesParser bitbakeRecipesParser, BitbakeRecipesToLayerMapConverter bitbakeRecipesToLayerMap, ToolVersionLogger toolVersionLogger, BuildFileFinder buildFileFinder,
         LicenseManifestParser licenseManifestParser) {
         this.executableRunner = executableRunner;
-        this.fileFinder = fileFinder;
         this.graphParserTransformer = graphParserTransformer;
         this.bitbakeGraphTransformer = bitbakeGraphTransformer;
         this.bitbakeRecipesParser = bitbakeRecipesParser;
         this.bitbakeRecipesToLayerMap = bitbakeRecipesToLayerMap;
         this.toolVersionLogger = toolVersionLogger;
-        this.licenseManifestFinder = licenseManifestFinder;
+        this.buildFileFinder = buildFileFinder;
         this.licenseManifestParser = licenseManifestParser;
     }
 
     public Extraction extract(File sourceDirectory, File buildEnvScript, List<String> sourceArguments, List<String> packageNames, boolean followSymLinks, Integer searchDepth, boolean includeDevDependencies, ExecutableTarget bash) {
         List<CodeLocation> codeLocations = new ArrayList<>();
 
-        BitbakeSession bitbakeSession = new BitbakeSession(fileFinder, executableRunner, bitbakeRecipesParser, sourceDirectory, buildEnvScript, sourceArguments, bash, toolVersionLogger);
+        BitbakeSession bitbakeSession = new BitbakeSession(executableRunner, bitbakeRecipesParser, sourceDirectory, buildEnvScript, sourceArguments, bash, toolVersionLogger, buildFileFinder);
         bitbakeSession.logBitbakeVersion();
         File buildDir = bitbakeSession.determineBuildDir();
         for (String packageName : packageNames) {
@@ -104,7 +99,7 @@ public class BitbakeExtractor {
     }
 
     private Map<String, String> readImageRecipes(File buildDir, String targetImageName, boolean followSymLinks, int searchDepth) throws IntegrationException, IOException {
-        File licenseManifestFile = licenseManifestFinder.find(buildDir, targetImageName, followSymLinks, searchDepth);
+        File licenseManifestFile = buildFileFinder.findLicenseManifestFile(buildDir, targetImageName, followSymLinks, searchDepth);
         List<String> licenseManifestLines = FileUtils.readLines(licenseManifestFile, StandardCharsets.UTF_8);
         return licenseManifestParser.collectImageRecipes(licenseManifestLines);
     }

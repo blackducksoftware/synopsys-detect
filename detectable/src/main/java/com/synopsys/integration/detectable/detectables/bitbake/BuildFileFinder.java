@@ -16,15 +16,26 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class LicenseManifestFinder {
+public class BuildFileFinder {
+    private static final String TASK_DEPENDS_FILE_NAME = "task-depends.dot";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final FileFinder fileFinder;
 
-    public LicenseManifestFinder(final FileFinder fileFinder) {
+    public BuildFileFinder(final FileFinder fileFinder) {
         this.fileFinder = fileFinder;
     }
 
-    public File find(File buildDir, String targetImageName, boolean followSymLinks, int searchDepth) throws IntegrationException {
+    // TODO throw exception instead of optional?
+    public Optional<File> findTaskDependsFile(File sourceDir, File buildDir, boolean followSymLinks, Integer searchDepth) {
+        File file = fileFinder.findFile(buildDir, TASK_DEPENDS_FILE_NAME, followSymLinks, searchDepth);
+        if (file == null) {
+            logger.warn("Did not find {} in build dir {}; trying source dir", TASK_DEPENDS_FILE_NAME, buildDir.getAbsolutePath());
+            file = fileFinder.findFile(sourceDir, TASK_DEPENDS_FILE_NAME, followSymLinks, searchDepth);
+        }
+        return Optional.ofNullable(file);
+    }
+
+    public File findLicenseManifestFile(File buildDir, String targetImageName, boolean followSymLinks, int searchDepth) throws IntegrationException {
         try {
             File licensesDir = findLicensesDir(buildDir, followSymLinks, searchDepth);
             logger.debug("Checking licenses dir {} for license.manifest for {}", licensesDir.getAbsolutePath(), targetImageName);
