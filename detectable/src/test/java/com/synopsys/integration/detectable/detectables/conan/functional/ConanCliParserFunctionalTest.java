@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
+import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
@@ -29,8 +29,8 @@ public class ConanCliParserFunctionalTest {
     @Test
     public void test() throws IOException, IntegrationException {
         File conanInfoOutputFile = FunctionalTestFiles.asFile("/conan/cli/conan_info.txt");
-        DependencyTypeFilter<ConanDependencyType> dependencyTypeFilter = new DependencyTypeFilter<>(Collections.singletonList(ConanDependencyType.APP));
-        ConanCodeLocationGenerator conanCodeLocationGenerator = new ConanCodeLocationGenerator(dependencyTypeFilter, true);
+        DependencyTypeFilter<ConanDependencyType> dependencyTypeFilter = new DependencyTypeFilter<>(Arrays.asList(ConanDependencyType.APP, ConanDependencyType.BUILD));
+        ConanCodeLocationGenerator conanCodeLocationGenerator = new ConanCodeLocationGenerator(dependencyTypeFilter, false);
         ConanInfoLineAnalyzer conanInfoLineAnalyzer = new ConanInfoLineAnalyzer();
         NodeElementParser nodeElementParser = new NodeElementParser(conanInfoLineAnalyzer);
         ConanInfoNodeParser conanInfoNodeParser = new ConanInfoNodeParser(conanInfoLineAnalyzer, nodeElementParser);
