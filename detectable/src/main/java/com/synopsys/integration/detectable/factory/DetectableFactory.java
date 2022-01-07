@@ -84,7 +84,7 @@ import com.synopsys.integration.detectable.detectables.conan.cli.parser.ConanInf
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.ConanInfoNodeParser;
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.ConanInfoParser;
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.element.NodeElementParser;
-import com.synopsys.integration.detectable.detectables.conan.cli.process.ConanArgumentGenerator;
+import com.synopsys.integration.detectable.detectables.conan.cli.process.ConanCommandRunner;
 import com.synopsys.integration.detectable.detectables.conan.lockfile.ConanLockfileDetectable;
 import com.synopsys.integration.detectable.detectables.conan.lockfile.ConanLockfileExtractor;
 import com.synopsys.integration.detectable.detectables.conan.lockfile.ConanLockfileExtractorOptions;
@@ -683,13 +683,13 @@ public class DetectableFactory {
     }
 
     private ConanCliExtractor conanCliExtractor(ConanCliExtractorOptions options) {
-        ConanArgumentGenerator conanArgumentGenerator = new ConanArgumentGenerator(options.getLockfilePath().orElse(null), options.getAdditionalArguments().orElse(null));
+        ConanCommandRunner conanCommandRunner = new ConanCommandRunner(executableRunner, options.getLockfilePath().orElse(null), options.getAdditionalArguments().orElse(null));
         ConanInfoLineAnalyzer conanInfoLineAnalyzer = new ConanInfoLineAnalyzer();
         ConanCodeLocationGenerator conanCodeLocationGenerator = new ConanCodeLocationGenerator(options.getDependencyTypeFilter(), options.preferLongFormExternalIds());
         NodeElementParser nodeElementParser = new NodeElementParser(conanInfoLineAnalyzer);
         ConanInfoNodeParser conanInfoNodeParser = new ConanInfoNodeParser(conanInfoLineAnalyzer, nodeElementParser);
         ConanInfoParser conanInfoParser = new ConanInfoParser(conanInfoNodeParser, conanCodeLocationGenerator, externalIdFactory);
-        return new ConanCliExtractor(executableRunner, conanArgumentGenerator, conanInfoParser, toolVersionLogger);
+        return new ConanCliExtractor(conanCommandRunner, conanInfoParser, toolVersionLogger);
     }
 
     private NpmCliParser npmCliDependencyFinder() {
