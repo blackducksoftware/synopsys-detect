@@ -651,7 +651,7 @@ public class OperationFactory { //TODO: OperationRunner
 
     public ProjectVersionWrapper syncProjectVersion(NameVersion projectNameVersion, ProjectGroupFindResult projectGroupFindResult, CloneFindResult cloneFindResult, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
         return auditLog.namedInternal("Sync Project", () -> {
-            return new SyncProjectOperation(blackDuckRunData.getBlackDuckServicesFactory().createProjectService())
+            return new SyncProjectOperation(blackDuckRunData.getBlackDuckServicesFactory().createProjectService(), blackDuckRunData.getBlackDuckServicesFactory().createLicenseService())
                 .sync(projectNameVersion, projectGroupFindResult, cloneFindResult, detectConfigurationFactory.createDetectProjectServiceOptions());
         });
     }

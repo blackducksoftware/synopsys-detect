@@ -310,6 +310,7 @@ public class DetectConfigurationFactory {
         Boolean projectLevelAdjustments = getValue(DetectProperties.DETECT_PROJECT_LEVEL_ADJUSTMENTS);
         Boolean forceProjectVersionUpdate = getValue(DetectProperties.DETECT_PROJECT_VERSION_UPDATE);
         String projectVersionNickname = getNullableValue(DetectProperties.DETECT_PROJECT_VERSION_NICKNAME);
+        String projectVersionLicense = getNullableValue(DetectProperties.DETECT_PROJECT_VERSION_LICENSE);
 
         return new ProjectSyncOptions(
             projectVersionPhase,
@@ -320,7 +321,8 @@ public class DetectConfigurationFactory {
             cloneCategories,
             forceProjectVersionUpdate,
             projectVersionNickname,
-            projectLevelAdjustments
+            projectLevelAdjustments,
+            projectVersionLicense
         );
     }
 

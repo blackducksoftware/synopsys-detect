@@ -1127,6 +1127,12 @@ public class DetectProperties {
             )
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING);
 
+    public static final DetectProperty<NullableStringProperty> DETECT_PROJECT_VERSION_LICENSE =
+        new DetectProperty<>(new NullableStringProperty("detect.project.version.license"))
+            .setInfo("Project Version License", DetectPropertyFromVersion.VERSION_7_10_0)
+            .setHelp("An override for the Project Version phase.")
+            .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING);
+
     public static final DetectProperty<NullablePathProperty> DETECT_PYTHON_PATH =
         new DetectProperty<>(new NullablePathProperty("detect.python.path"))
             .setInfo("Python Executable", DetectPropertyFromVersion.VERSION_3_0_0)
