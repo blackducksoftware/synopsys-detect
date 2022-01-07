@@ -27,19 +27,19 @@ public class BitbakeSession {
     private final FileFinder fileFinder;
     private final DetectableExecutableRunner executableRunner;
     private final BitbakeRecipesParser bitbakeRecipesParser;
-    private final File actualSourceDir;
+    private final File sourceDir;
     private final File buildEnvScript;
     private final List<String> sourceArguments;
     private final ExecutableTarget bashExecutable;
     private final ToolVersionLogger toolVersionLogger;
 
     public BitbakeSession(FileFinder fileFinder, DetectableExecutableRunner executableRunner, BitbakeRecipesParser bitbakeRecipesParser,
-        File actualSourceDir, File buildEnvScript, List<String> sourceArguments,
+        File sourceDir, File buildEnvScript, List<String> sourceArguments,
         ExecutableTarget bashExecutable, ToolVersionLogger toolVersionLogger) {
         this.fileFinder = fileFinder;
         this.executableRunner = executableRunner;
         this.bitbakeRecipesParser = bitbakeRecipesParser;
-        this.actualSourceDir = actualSourceDir;
+        this.sourceDir = sourceDir;
         this.buildEnvScript = buildEnvScript;
         this.sourceArguments = sourceArguments;
         this.bashExecutable = bashExecutable;
@@ -67,7 +67,7 @@ public class BitbakeSession {
     }
 
     public File determineBuildDir() {
-        File fallbackBuildDir = new File(actualSourceDir, "build");
+        File fallbackBuildDir = new File(sourceDir, "build");
         File derivedBuildDir = null;
         try {
             ExecutableOutput output = runBitbake("pwd");
@@ -89,8 +89,8 @@ public class BitbakeSession {
     private Optional<File> findTaskDependsFile(File buildDir, boolean followSymLinks, Integer searchDepth) {
         File file = fileFinder.findFile(buildDir, TASK_DEPENDS_FILE_NAME, followSymLinks, searchDepth);
         if (file == null) {
-            logger.warn("Did not find {} in build dir {}", TASK_DEPENDS_FILE_NAME, buildDir.getAbsolutePath());
-            file = fileFinder.findFile(actualSourceDir, TASK_DEPENDS_FILE_NAME, followSymLinks, searchDepth);
+            logger.warn("Did not find {} in build dir {}; trying source dir", TASK_DEPENDS_FILE_NAME, buildDir.getAbsolutePath());
+            file = fileFinder.findFile(sourceDir, TASK_DEPENDS_FILE_NAME, followSymLinks, searchDepth);
         }
 
         return Optional.ofNullable(file);
@@ -113,6 +113,6 @@ public class BitbakeSession {
             sourceCommand.append(" ");
             sourceCommand.append(sourceArgument);
         }
-        return executableRunner.execute(ExecutableUtils.createFromTarget(actualSourceDir, bashExecutable, "-c", sourceCommand.toString() + "; " + bitbakeCommand));
+        return executableRunner.execute(ExecutableUtils.createFromTarget(sourceDir, bashExecutable, "-c", sourceCommand.toString() + "; " + bitbakeCommand));
     }
 }

@@ -37,7 +37,6 @@ public class LicenseManifestFinder {
     }
 
     private Optional<File> findMostRecentLicenseManifestFileForTarget(final String targetImageName, final List<File> licensesDirContents) {
-        // TODO use a stream?
         File latestLicenseManifestFile = null;
         long latestLicenseManifestFileTime = 0;
         for (File licensesDirSubDir : licensesDirContents) {
