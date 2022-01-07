@@ -66,13 +66,11 @@ public class BitbakeExtractor {
         BitbakeSession bitbakeSession = new BitbakeSession(fileFinder, executableRunner, bitbakeRecipesParser, sourceDirectory, buildEnvScript, sourceArguments, bash, toolVersionLogger);
         bitbakeSession.logBitbakeVersion();
         File buildDir = bitbakeSession.determineBuildDir(sourceDirectory);
-        for (String packageAndOptionalLicenseFilePath : packageNames) {
-            String packageName = extractPackageName(packageAndOptionalLicenseFilePath);
-            Optional<String> pathToLicenseManifestFile = extractPathToLicenseManifestFile(packageAndOptionalLicenseFilePath);
+        for (String packageName : packageNames) {
             Map<String, String> imageRecipes = null;
             try {
                 if (!includeDevDependencies) {
-                    imageRecipes = readImageRecipes(sourceDirectory, buildDir, packageName, pathToLicenseManifestFile.orElse(null));
+                    imageRecipes = readImageRecipes(buildDir, packageName);
                 }
                 BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, sourceDirectory, packageName, followSymLinks, searchDepth);
                 List<BitbakeRecipe> bitbakeRecipes = bitbakeSession.executeBitbakeForRecipeLayerCatalog();
@@ -105,28 +103,8 @@ public class BitbakeExtractor {
         return extraction;
     }
 
-    private String extractPackageName(String givenPackageName) {
-        String packageName;
-        if (givenPackageName.contains(":")) {
-            int colonIndex = givenPackageName.indexOf(':');
-            packageName = givenPackageName.substring(0, colonIndex);
-        } else {
-            packageName = givenPackageName;
-        }
-        return packageName;
-    }
-
-    private Optional<String> extractPathToLicenseManifestFile(String givenPackageName) {
-        String pathToLicenseManifestFile = null;
-        if (givenPackageName.contains(":")) {
-            int colonIndex = givenPackageName.indexOf(':');
-            pathToLicenseManifestFile = givenPackageName.substring(colonIndex+1);
-        }
-        return Optional.ofNullable(pathToLicenseManifestFile);
-    }
-
-    private Map<String, String> readImageRecipes(File sourceDir, File buildDir, String targetImageName, @Nullable String pathToLicenseManifestFile) throws IntegrationException, IOException {
-        File licenseManifestFile = licenseManifestFinder.find(sourceDir, buildDir, targetImageName, pathToLicenseManifestFile);
+    private Map<String, String> readImageRecipes(File buildDir, String targetImageName) throws IntegrationException, IOException {
+        File licenseManifestFile = licenseManifestFinder.find(buildDir, targetImageName);
         List<String> licenseManifestLines = FileUtils.readLines(licenseManifestFile, StandardCharsets.UTF_8);
         return licenseManifestParser.collectImageRecipes(licenseManifestLines);
     }

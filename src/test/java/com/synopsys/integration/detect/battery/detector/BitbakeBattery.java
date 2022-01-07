@@ -32,17 +32,4 @@ public class BitbakeBattery {
         test.expectBdioResources();
         test.run();
     }
-
-    @Test
-    void testGivenManifest() {
-        DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("bitbake-givenmanifest", "bitbake/givenmanifest");
-        test.sourceFileFromResource("oe-init-build-env");
-        test.sourceFileFromResource("task-depends.dot");
-        test.sourceFileFromResource("build/customlocation/license.manifest");
-        test.executableFromResourceFiles(DetectProperties.DETECT_BASH_PATH.getProperty(), "pwd.xout", "bitbake-g.xout", "bitbake-layers-show-recipes.xout");
-        test.property("detect.bitbake.package.names", "core-image-sato:build/customlocation/license.manifest");
-        test.property("detect.bitbake.include.dev.dependencies", "false");
-        test.expectBdioResources();
-        test.run();
-    }
 }
