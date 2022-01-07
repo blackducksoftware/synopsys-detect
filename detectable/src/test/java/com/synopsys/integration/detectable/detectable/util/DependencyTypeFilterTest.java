@@ -41,7 +41,7 @@ class DependencyTypeFilterTest {
     }
 
     @Test
-    void fReportingType() {
+    void ifReportingType() {
         List<String> appDependencies = Collections.singletonList("app-dep");
         class TestReporter {
             void report(List<String> dependencies) {}
