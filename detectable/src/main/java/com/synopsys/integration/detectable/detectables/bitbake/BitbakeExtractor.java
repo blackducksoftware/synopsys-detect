@@ -65,14 +65,14 @@ public class BitbakeExtractor {
 
         BitbakeSession bitbakeSession = new BitbakeSession(fileFinder, executableRunner, bitbakeRecipesParser, sourceDirectory, buildEnvScript, sourceArguments, bash, toolVersionLogger);
         bitbakeSession.logBitbakeVersion();
-        File buildDir = bitbakeSession.determineBuildDir(sourceDirectory);
+        File buildDir = bitbakeSession.determineBuildDir();
         for (String packageName : packageNames) {
             Map<String, String> imageRecipes = null;
             try {
                 if (!includeDevDependencies) {
                     imageRecipes = readImageRecipes(buildDir, packageName);
                 }
-                BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, sourceDirectory, packageName, followSymLinks, searchDepth);
+                BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, buildDir, packageName, followSymLinks, searchDepth);
                 List<BitbakeRecipe> bitbakeRecipes = bitbakeSession.executeBitbakeForRecipeLayerCatalog();
                 Map<String, String> recipeNameToLayersMap = bitbakeRecipesToLayerMap.convert(bitbakeRecipes);
 
@@ -109,8 +109,8 @@ public class BitbakeExtractor {
         return licenseManifestParser.collectImageRecipes(licenseManifestLines);
     }
 
-    private BitbakeGraph generateBitbakeGraph(BitbakeSession bitbakeSession, File sourceDirectory, String packageName, boolean followSymLinks, Integer searchDepth) throws ExecutableRunnerException, IOException, IntegrationException {
-        File taskDependsFile = bitbakeSession.executeBitbakeForDependencies(sourceDirectory, packageName, followSymLinks, searchDepth)
+    private BitbakeGraph generateBitbakeGraph(BitbakeSession bitbakeSession, File buildDir, String packageName, boolean followSymLinks, Integer searchDepth) throws ExecutableRunnerException, IOException, IntegrationException {
+        File taskDependsFile = bitbakeSession.executeBitbakeForDependencies(buildDir, packageName, followSymLinks, searchDepth)
             .orElseThrow(() -> new IntegrationException("Failed to find file \"task-depends.dot\"."));
 
         logger.trace(FileUtils.readFileToString(taskDependsFile, Charset.defaultCharset()));

@@ -27,26 +27,26 @@ public class BitbakeSession {
     private final FileFinder fileFinder;
     private final DetectableExecutableRunner executableRunner;
     private final BitbakeRecipesParser bitbakeRecipesParser;
-    private final File workingDirectory;
+    private final File actualSourceDir;
     private final File buildEnvScript;
     private final List<String> sourceArguments;
     private final ExecutableTarget bashExecutable;
     private final ToolVersionLogger toolVersionLogger;
 
     public BitbakeSession(FileFinder fileFinder, DetectableExecutableRunner executableRunner, BitbakeRecipesParser bitbakeRecipesParser,
-        File workingDirectory, File buildEnvScript, List<String> sourceArguments,
+        File actualSourceDir, File buildEnvScript, List<String> sourceArguments,
         ExecutableTarget bashExecutable, ToolVersionLogger toolVersionLogger) {
         this.fileFinder = fileFinder;
         this.executableRunner = executableRunner;
         this.bitbakeRecipesParser = bitbakeRecipesParser;
-        this.workingDirectory = workingDirectory;
+        this.actualSourceDir = actualSourceDir;
         this.buildEnvScript = buildEnvScript;
         this.sourceArguments = sourceArguments;
         this.bashExecutable = bashExecutable;
         this.toolVersionLogger = toolVersionLogger;
     }
 
-    public Optional<File> executeBitbakeForDependencies(File sourceDirectory, String packageName, boolean followSymLinks, Integer searchDepth)
+    public Optional<File> executeBitbakeForDependencies(File buildDir, String packageName, boolean followSymLinks, Integer searchDepth)
         throws ExecutableRunnerException, IOException {
 
         String bitbakeCommand = "bitbake -g " + packageName;
@@ -58,7 +58,7 @@ public class BitbakeSession {
             return Optional.empty();
         }
 
-        return findTaskDependsFile(sourceDirectory, workingDirectory, followSymLinks, searchDepth);
+        return findTaskDependsFile(buildDir, followSymLinks, searchDepth);
 
     }
 
@@ -66,8 +66,8 @@ public class BitbakeSession {
         toolVersionLogger.log(() -> runBitbake("bitbake --version"));
     }
 
-    public File determineBuildDir(File sourceDir) {
-        File fallbackBuildDir = new File(sourceDir, "build");
+    public File determineBuildDir() {
+        File fallbackBuildDir = new File(actualSourceDir, "build");
         File derivedBuildDir = null;
         try {
             ExecutableOutput output = runBitbake("pwd");
@@ -86,10 +86,11 @@ public class BitbakeSession {
         return derivedBuildDir;
     }
 
-    private Optional<File> findTaskDependsFile(File sourceDirectory, File outputDirectory, boolean followSymLinks, Integer searchDepth) {
-        File file = fileFinder.findFile(outputDirectory, TASK_DEPENDS_FILE_NAME, followSymLinks, searchDepth);
+    private Optional<File> findTaskDependsFile(File buildDir, boolean followSymLinks, Integer searchDepth) {
+        File file = fileFinder.findFile(buildDir, TASK_DEPENDS_FILE_NAME, followSymLinks, searchDepth);
         if (file == null) {
-            file = fileFinder.findFile(sourceDirectory, TASK_DEPENDS_FILE_NAME, followSymLinks, searchDepth);
+            logger.warn("Did not find {} in build dir {}", TASK_DEPENDS_FILE_NAME, buildDir.getAbsolutePath());
+            file = fileFinder.findFile(actualSourceDir, TASK_DEPENDS_FILE_NAME, followSymLinks, searchDepth);
         }
 
         return Optional.ofNullable(file);
@@ -112,6 +113,6 @@ public class BitbakeSession {
             sourceCommand.append(" ");
             sourceCommand.append(sourceArgument);
         }
-        return executableRunner.execute(ExecutableUtils.createFromTarget(workingDirectory, bashExecutable, "-c", sourceCommand.toString() + "; " + bitbakeCommand));
+        return executableRunner.execute(ExecutableUtils.createFromTarget(actualSourceDir, bashExecutable, "-c", sourceCommand.toString() + "; " + bitbakeCommand));
     }
 }
