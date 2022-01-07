@@ -107,14 +107,10 @@ public class BitbakeExtractor {
     }
 
     private BitbakeGraph generateBitbakeGraph(BitbakeSession bitbakeSession, File buildDir, String packageName, boolean followSymLinks, Integer searchDepth) throws ExecutableRunnerException, IOException, IntegrationException {
-        File taskDependsFile = bitbakeSession.executeBitbakeForDependencies(buildDir, packageName, followSymLinks, searchDepth)
-            .orElseThrow(() -> new IntegrationException("Failed to find file \"task-depends.dot\"."));
-
+        File taskDependsFile = bitbakeSession.executeBitbakeForDependencies(buildDir, packageName, followSymLinks, searchDepth);
         logger.trace(FileUtils.readFileToString(taskDependsFile, Charset.defaultCharset()));
-
         InputStream dependsFileInputStream = FileUtils.openInputStream(taskDependsFile);
         GraphParser graphParser = new GraphParser(dependsFileInputStream);
-
         return graphParserTransformer.transform(graphParser);
     }
 }

@@ -23,8 +23,6 @@ import com.synopsys.integration.log.Slf4jIntLogger;
 public class BitbakeGraphTransformer {
     private static final String NATIVE_SUFFIX = "-native";
     public static final String VERSION_WITH_EPOCH_PREFIX_REGEX = "^[0-9]+:.*";
-
-    // TODO: private final IntLogger logger = new Slf4jIntLogger(LoggerFactory.getLogger(this.getClass()));
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final ExternalIdFactory externalIdFactory;

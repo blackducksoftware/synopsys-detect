@@ -25,14 +25,17 @@ public class BuildFileFinder {
         this.fileFinder = fileFinder;
     }
 
-    // TODO throw exception instead of optional?
-    public Optional<File> findTaskDependsFile(File sourceDir, File buildDir, boolean followSymLinks, Integer searchDepth) {
-        File file = fileFinder.findFile(buildDir, TASK_DEPENDS_FILE_NAME, followSymLinks, searchDepth);
-        if (file == null) {
+    public File findTaskDependsFile(File sourceDir, File buildDir, boolean followSymLinks, Integer searchDepth) throws IntegrationException {
+        File taskDependsDotFile = fileFinder.findFile(buildDir, TASK_DEPENDS_FILE_NAME, followSymLinks, searchDepth);
+        if (taskDependsDotFile == null) {
             logger.warn("Did not find {} in build dir {}; trying source dir", TASK_DEPENDS_FILE_NAME, buildDir.getAbsolutePath());
-            file = fileFinder.findFile(sourceDir, TASK_DEPENDS_FILE_NAME, followSymLinks, searchDepth);
+            taskDependsDotFile = fileFinder.findFile(sourceDir, TASK_DEPENDS_FILE_NAME, followSymLinks, searchDepth);
         }
-        return Optional.ofNullable(file);
+        if (taskDependsDotFile == null) {
+            throw new IntegrationException(String.format("Failed to find %s in either %s or %s",
+                TASK_DEPENDS_FILE_NAME, buildDir.getAbsolutePath(), sourceDir.getAbsolutePath()));
+        }
+        return taskDependsDotFile;
     }
 
     public File findLicenseManifestFile(File buildDir, String targetImageName, boolean followSymLinks, int searchDepth) throws IntegrationException {

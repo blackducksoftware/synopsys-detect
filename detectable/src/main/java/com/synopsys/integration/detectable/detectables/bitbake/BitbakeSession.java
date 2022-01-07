@@ -44,20 +44,18 @@ public class BitbakeSession {
         this.buildFileFinder = buildFileFinder;
     }
 
-    public Optional<File> executeBitbakeForDependencies(File buildDir, String packageName, boolean followSymLinks, Integer searchDepth)
-        throws ExecutableRunnerException, IOException {
+    public File executeBitbakeForDependencies(File buildDir, String packageName, boolean followSymLinks, Integer searchDepth)
+        throws ExecutableRunnerException, IOException, IntegrationException {
 
         String bitbakeCommand = "bitbake -g " + packageName;
         ExecutableOutput executableOutput = runBitbake(bitbakeCommand);
         int returnCode = executableOutput.getReturnCode();
 
         if (returnCode != 0) {
-            logger.error(String.format("Executing command '%s' returned a non-zero exit code %s", bitbakeCommand, returnCode));
-            return Optional.empty();
+            throw new IntegrationException(String.format("Executing command '%s' returned a non-zero exit code %s", bitbakeCommand, returnCode));
         }
 
         return buildFileFinder.findTaskDependsFile(sourceDir, buildDir, followSymLinks, searchDepth);
-
     }
 
     public void logBitbakeVersion() {
