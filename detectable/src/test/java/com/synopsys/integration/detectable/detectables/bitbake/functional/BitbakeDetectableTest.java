@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
@@ -71,7 +72,7 @@ public class BitbakeDetectableTest extends DetectableFunctionalTest {
     public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
         return detectableFactory.createBitbakeDetectable(
             detectableEnvironment,
-            new BitbakeDetectableOptions("oe-init-build-env", new ArrayList<>(), Collections.singletonList("core-image-minimal"), 0, false, true),
+            new BitbakeDetectableOptions("oe-init-build-env", new ArrayList<>(), Collections.singletonList("core-image-minimal"), 0, false, new HashSet<>(0)),
             () -> ExecutableTarget.forCommand("bash")
         );
     }

@@ -1,6 +1,7 @@
 package com.synopsys.integration.detect.configuration;
 
 import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -11,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.base.NullableProperty;
 import com.synopsys.integration.configuration.property.base.ValuedProperty;
+import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumList;
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetLocatorOptions;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
@@ -19,6 +21,7 @@ import com.synopsys.integration.detectable.detectable.enums.DependencyType;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
+import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDependencyType;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectableOptions;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOptions;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliExtractorOptions;
@@ -74,8 +77,8 @@ public class DetectableOptionFactory {
         List<String> sourceArguments = getValue(DetectProperties.DETECT_BITBAKE_SOURCE_ARGUMENTS);
         List<String> packageNames = getValue(DetectProperties.DETECT_BITBAKE_PACKAGE_NAMES);
         Integer searchDepth = getValue(DetectProperties.DETECT_BITBAKE_SEARCH_DEPTH);
-        Boolean includeDevDependencies = getValue(DetectProperties.DETECT_BITBAKE_INCLUDE_DEV_DEPENDENCIES);
-        return new BitbakeDetectableOptions(buildEnvName, sourceArguments, packageNames, searchDepth, getFollowSymLinks(), includeDevDependencies);
+        Set<BitbakeDependencyType> excludedDependencyTypes = getValue(DetectProperties.DETECT_BITBAKE_DEPENDENCY_TYPES_EXCLUDED).representedValueSet();
+        return new BitbakeDetectableOptions(buildEnvName, sourceArguments, packageNames, searchDepth, getFollowSymLinks(), excludedDependencyTypes);
     }
 
     public ClangDetectableOptions createClangDetectableOptions() {

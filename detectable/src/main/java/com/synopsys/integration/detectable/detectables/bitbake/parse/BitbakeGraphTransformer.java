@@ -3,7 +3,9 @@ package com.synopsys.integration.detectable.detectables.bitbake.parse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
@@ -12,6 +14,7 @@ import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDependencyType;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeNode;
 import com.synopsys.integration.log.IntLogger;
@@ -21,7 +24,8 @@ public class BitbakeGraphTransformer {
     private static final String NATIVE_SUFFIX = "-native";
     public static final String VERSION_WITH_EPOCH_PREFIX_REGEX = "^[0-9]+:.*";
 
-    private final IntLogger logger = new Slf4jIntLogger(LoggerFactory.getLogger(this.getClass()));
+    // TODO: private final IntLogger logger = new Slf4jIntLogger(LoggerFactory.getLogger(this.getClass()));
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final ExternalIdFactory externalIdFactory;
 
@@ -29,7 +33,7 @@ public class BitbakeGraphTransformer {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph transform(BitbakeGraph bitbakeGraph, Map<String, String> recipeLayerMap, Map<String, String> imageRecipes, boolean includeDevDependencies) {
+    public DependencyGraph transform(BitbakeGraph bitbakeGraph, Map<String, String> recipeLayerMap, Map<String, String> imageRecipes, Set<BitbakeDependencyType> excludedDependencyTypes) {
         MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
         Map<String, Dependency> namesToExternalIds = new HashMap<>();
 
@@ -38,8 +42,8 @@ public class BitbakeGraphTransformer {
 
             if (bitbakeNode.getVersion().isPresent()) {
                 String version = bitbakeNode.getVersion().get();
-                if (shouldInclude(includeDevDependencies, imageRecipes, name, version)) {
-                    Optional<Dependency> dependency = generateExternalId(name, version, recipeLayerMap, includeDevDependencies).map(Dependency::new);
+                if (shouldInclude(excludedDependencyTypes, imageRecipes, name, version)) {
+                    Optional<Dependency> dependency = generateExternalId(name, version, recipeLayerMap).map(Dependency::new);
                     dependency.ifPresent(value -> namesToExternalIds.put(bitbakeNode.getName(), value));
             }
             } else if (name.startsWith("virtual/")) {
@@ -67,15 +71,22 @@ public class BitbakeGraphTransformer {
         return dependencyGraph;
     }
 
-    private boolean shouldInclude(boolean includeDevDependencies, Map<String, String> imageRecipes, String recipeName, String recipeVersion) {
-        if (includeDevDependencies) {
-            return true;
-        }
+    private boolean shouldInclude(Set<BitbakeDependencyType> excludedDependencyTypes, Map<String, String> imageRecipes, String recipeName, String recipeVersion) {
+        return excludedDependencyTypes.isEmpty() || !isBuildDependency(imageRecipes, recipeName, recipeVersion) && excludedDependencyTypes.contains(BitbakeDependencyType.BUILD);
+    }
+
+    private boolean isBuildDependency(Map<String, String> imageRecipes, String recipeName, String recipeVersion) {
         if (foundInImageRecipes(imageRecipes, recipeName, recipeVersion)) {
+            if (recipeName.endsWith(NATIVE_SUFFIX)) {
+                logger.trace("{} classified as a build dependency due to it's '{}' suffix", recipeName, NATIVE_SUFFIX);
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            logger.trace("{} classified as a build dependency since it was not found in the license manifest", recipeName);
             return true;
         }
-        logger.debug(String.format("Excluding dev dependency %s/%s", recipeName, recipeName));
-        return false;
     }
 
     private boolean foundInImageRecipes(Map<String, String> imageRecipes, String recipeName, String recipeVersion) {
@@ -101,7 +112,7 @@ public class BitbakeGraphTransformer {
         return epochlessRecipeVersion;
     }
 
-    private Optional<ExternalId> generateExternalId(String dependencyName, String dependencyVersion, Map<String, String> recipeLayerMap, boolean includeDevDependencies) {
+    private Optional<ExternalId> generateExternalId(String dependencyName, String dependencyVersion, Map<String, String> recipeLayerMap) {
         String priorityLayerName = recipeLayerMap.get(dependencyName);
         ExternalId externalId = null;
 
@@ -110,13 +121,9 @@ public class BitbakeGraphTransformer {
         } else {
             logger.debug(String.format("Failed to find component '%s' in component layer map.", dependencyName));
             if (dependencyName.endsWith(NATIVE_SUFFIX)) {
-                if (includeDevDependencies) {
-                    String alternativeName = dependencyName.replace(NATIVE_SUFFIX, "");
-                    logger.debug(String.format("Generating alternative component name '%s' for '%s==%s'", alternativeName, dependencyName, dependencyVersion));
-                    externalId = generateExternalId(alternativeName, dependencyVersion, recipeLayerMap, includeDevDependencies).orElse(null);
-                } else {
-                    logger.debug(String.format("Recipe %s excluded by dev dependency exclusion"));
-                }
+                String alternativeName = dependencyName.replace(NATIVE_SUFFIX, "");
+                logger.debug(String.format("Generating alternative component name '%s' for '%s==%s'", alternativeName, dependencyName, dependencyVersion));
+                externalId = generateExternalId(alternativeName, dependencyVersion, recipeLayerMap).orElse(null);
             } else {
                 logger.debug(String.format("'%s==%s' is not an actual component. Excluding from graph.", dependencyName, dependencyVersion));
             }

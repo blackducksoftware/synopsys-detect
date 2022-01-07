@@ -1,6 +1,7 @@
 package com.synopsys.integration.detectable.detectables.bitbake;
 
 import java.util.List;
+import java.util.Set;
 
 public class BitbakeDetectableOptions {
     private final String buildEnvName;
@@ -8,15 +9,15 @@ public class BitbakeDetectableOptions {
     private final List<String> packageNames;
     private final Integer searchDepth;
     private final boolean followSymLinks;
-    private final boolean includeDevDependencies;
+    private final Set<BitbakeDependencyType> excludedDependencyTypes;
 
-    public BitbakeDetectableOptions(String buildEnvName, List<String> sourceArguments, List<String> packageNames, Integer searchDepth, boolean followSymLinks, boolean includeDevDependencies) {
+    public BitbakeDetectableOptions(String buildEnvName, List<String> sourceArguments, List<String> packageNames, Integer searchDepth, boolean followSymLinks, Set<BitbakeDependencyType> excludedDependencyTypes) {
         this.buildEnvName = buildEnvName;
         this.sourceArguments = sourceArguments;
         this.packageNames = packageNames;
         this.searchDepth = searchDepth;
         this.followSymLinks = followSymLinks;
-        this.includeDevDependencies = includeDevDependencies;
+        this.excludedDependencyTypes = excludedDependencyTypes;
     }
 
     public String getBuildEnvName() {
@@ -39,7 +40,7 @@ public class BitbakeDetectableOptions {
         return followSymLinks;
     }
 
-    public boolean isIncludeDevDependencies() {
-        return includeDevDependencies;
+    public Set<BitbakeDependencyType> getExcludedDependencyTypes() {
+        return excludedDependencyTypes;
     }
 }

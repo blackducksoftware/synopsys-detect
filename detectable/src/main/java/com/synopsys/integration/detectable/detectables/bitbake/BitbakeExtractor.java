@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.NotImplementedException;
@@ -55,7 +56,7 @@ public class BitbakeExtractor {
         this.licenseManifestParser = licenseManifestParser;
     }
 
-    public Extraction extract(File sourceDirectory, File buildEnvScript, List<String> sourceArguments, List<String> packageNames, boolean followSymLinks, Integer searchDepth, boolean includeDevDependencies, ExecutableTarget bash) {
+    public Extraction extract(File sourceDirectory, File buildEnvScript, List<String> sourceArguments, List<String> packageNames, boolean followSymLinks, Integer searchDepth, Set<BitbakeDependencyType> excludedDependencyTypes, ExecutableTarget bash) {
         List<CodeLocation> codeLocations = new ArrayList<>();
 
         BitbakeSession bitbakeSession = new BitbakeSession(executableRunner, bitbakeRecipesParser, sourceDirectory, buildEnvScript, sourceArguments, bash, toolVersionLogger, buildFileFinder);
@@ -64,14 +65,15 @@ public class BitbakeExtractor {
         for (String packageName : packageNames) {
             Map<String, String> imageRecipes = null;
             try {
-                if (!includeDevDependencies) {
+                if (!excludedDependencyTypes.isEmpty()) {
+                    // Only need imageRecipes if we're going to exclude build dependencies
                     imageRecipes = readImageRecipes(buildDir, packageName, followSymLinks, searchDepth);
                 }
                 BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, buildDir, packageName, followSymLinks, searchDepth);
                 List<BitbakeRecipe> bitbakeRecipes = bitbakeSession.executeBitbakeForRecipeLayerCatalog();
                 Map<String, String> recipeNameToLayersMap = bitbakeRecipesToLayerMap.convert(bitbakeRecipes);
 
-                DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeNameToLayersMap, imageRecipes, includeDevDependencies);
+                DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeNameToLayersMap, imageRecipes, excludedDependencyTypes);
                 CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 
                 codeLocations.add(codeLocation);

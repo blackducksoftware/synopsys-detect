@@ -24,11 +24,11 @@ public class BitbakeBattery {
     void testExclDev() {
         DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("bitbake-excldev", "bitbake/excldev");
         test.sourceFileFromResource("oe-init-build-env");
-        test.sourceFileFromResource("task-depends.dot");
+        test.sourceFileFromResource("build/task-depends.dot");
         test.sourceFileFromResource("build/tmp/deploy/licenses/core-image-sato-qemux86-64/license.manifest");
         test.executableFromResourceFiles(DetectProperties.DETECT_BASH_PATH.getProperty(), "pwd.xout", "bitbake-g.xout", "bitbake-layers-show-recipes.xout");
         test.property("detect.bitbake.package.names", "core-image-sato");
-        test.property("detect.bitbake.include.dev.dependencies", "false");
+        test.property("detect.bitbake.excluded.dependency.types", "BUILD");
         test.expectBdioResources();
         test.run();
     }
