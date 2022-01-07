@@ -5,5 +5,3 @@ public enum PnpmDependencyType {
     DEV,
     OPTIONAL
 }
-
-//public static valuesAsString()
