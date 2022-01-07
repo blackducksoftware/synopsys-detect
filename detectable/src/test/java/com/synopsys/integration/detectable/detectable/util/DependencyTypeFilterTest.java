@@ -3,7 +3,6 @@ package com.synopsys.integration.detectable.detectable.util;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 
 import java.util.Collections;
@@ -50,7 +49,7 @@ class DependencyTypeFilterTest {
         DependencyTypeFilter<MockType> filter = new DependencyTypeFilter<>(MockType.APP);
 
         filter.ifReportingType(MockType.APP, appDependencies, testReporter::report);
-        Mockito.verify(testReporter, times(1)).report(any());
+        Mockito.verify(testReporter, times(1)).report(appDependencies);
     }
 
     private enum MockType {
