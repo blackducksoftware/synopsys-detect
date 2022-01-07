@@ -895,7 +895,7 @@ public class DetectableFactory {
 
     private BitbakeExtractor bitbakeExtractor() {
         return new BitbakeExtractor(executableRunner, fileFinder, graphParserTransformer(), bitbakeGraphTransformer(), bitbakeRecipesParser(), bitbakeRecipesToLayerMap(),
-            toolVersionLogger, new LicenseManifestFinder(), new LicenseManifestParser());
+            toolVersionLogger, new LicenseManifestFinder(fileFinder), new LicenseManifestParser());
     }
 
     private GraphParserTransformer graphParserTransformer() {
