@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +33,7 @@ public class PnpmYamlTransformerTest {
     File pnpmLockYamlFile = new File("something");
 
     private PnpmYamlTransformer createTransformer(PnpmDependencyType... allowedPnpmDependencyTypes) {
-        DependencyTypeFilter<PnpmDependencyType> dependencyTypeFilter = new DependencyTypeFilter<>(Arrays.asList(allowedPnpmDependencyTypes));
+        DependencyTypeFilter<PnpmDependencyType> dependencyTypeFilter = new DependencyTypeFilter<>(allowedPnpmDependencyTypes);
         return new PnpmYamlTransformer(new ExternalIdFactory(), dependencyTypeFilter);
     }
 
