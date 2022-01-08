@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
+import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeEnvironment;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeEnvironmentParser;
 
 public class BitbakeEnvironmentParserTest {
@@ -18,13 +19,15 @@ public class BitbakeEnvironmentParserTest {
         List<String> lines = Arrays.asList(
             "otherstuff",
             "MACHINE_ARCH=\"testarch\"",
-            "morestuff");
+            "morestuff",
+            "LICENSE_DIRECTORY=\"/workdir/poky/build/tmp/deploy/licenses\"",
+            "yetmorestuff");
 
         BitbakeEnvironmentParser parser = new BitbakeEnvironmentParser();
 
-        Optional<String> arch = parser.parseArchitecture(lines);
+        BitbakeEnvironment environment = parser.parseArchitecture(lines);
 
-        assertTrue(arch.isPresent());
-        assertEquals("testarch", arch.get());
+        assertTrue(environment.getMachineArch().isPresent());
+        assertEquals("testarch", environment.getMachineArch().get());
     }
 }

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import com.synopsys.integration.common.util.finder.SimpleFileFinder;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
 import com.synopsys.integration.detectable.detectables.bitbake.BuildFileFinder;
+import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeEnvironment;
 import com.synopsys.integration.exception.IntegrationException;
 
 @FunctionalTest
@@ -18,8 +19,9 @@ public class BuildFileFinderTest {
     void testDefault() throws IntegrationException {
         BuildFileFinder finder = new BuildFileFinder(new SimpleFileFinder());
         File buildDir = new File("src/test/resources/detectables/functional/bitbake/builddir_default");
+        BitbakeEnvironment bitbakeEnvironment = new BitbakeEnvironment(null, null);
 
-        File licensesManifestFile = finder.findLicenseManifestFile(buildDir, "targetimage", null, true, 10);
+        File licensesManifestFile = finder.findLicenseManifestFile(buildDir, "targetimage", bitbakeEnvironment, true, 10);
 
         assertTrue(licensesManifestFile.isFile());
     }
@@ -28,18 +30,9 @@ public class BuildFileFinderTest {
     void testCustomLicensesDirLocation() throws IntegrationException {
         BuildFileFinder finder = new BuildFileFinder(new SimpleFileFinder());
         File buildDir = new File("src/test/resources/detectables/functional/bitbake/builddir_custom");
+        BitbakeEnvironment bitbakeEnvironment = new BitbakeEnvironment(null, null);
 
-        File licensesManifestFile = finder.findLicenseManifestFile(buildDir, "targetimage", null, true, 10);
-
-        assertTrue(licensesManifestFile.isFile());
-    }
-
-    @Test
-    void testNoDeployLicensesDir() throws IntegrationException {
-        BuildFileFinder finder = new BuildFileFinder(new SimpleFileFinder());
-        File buildDir = new File("src/test/resources/detectables/functional/bitbake/builddir_nodeploy");
-
-        File licensesManifestFile = finder.findLicenseManifestFile(buildDir, "targetimage", null, true, 10);
+        File licensesManifestFile = finder.findLicenseManifestFile(buildDir, "targetimage", bitbakeEnvironment, true, 10);
 
         assertTrue(licensesManifestFile.isFile());
     }
@@ -48,8 +41,9 @@ public class BuildFileFinderTest {
     void testArchSpecificLicensesDir() throws IntegrationException {
         BuildFileFinder finder = new BuildFileFinder(new SimpleFileFinder());
         File buildDir = new File("src/test/resources/detectables/functional/bitbake/builddir_arch");
+        BitbakeEnvironment bitbakeEnvironment = new BitbakeEnvironment("testarch", null);
 
-        File licensesManifestFile = finder.findLicenseManifestFile(buildDir, "targetimage", "testarch", true, 10);
+        File licensesManifestFile = finder.findLicenseManifestFile(buildDir, "targetimage", bitbakeEnvironment, true, 10);
 
         assertTrue(licensesManifestFile.isFile());
     }

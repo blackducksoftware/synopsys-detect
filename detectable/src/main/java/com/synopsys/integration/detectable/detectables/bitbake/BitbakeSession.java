@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
+import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeEnvironment;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeRecipe;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeEnvironmentParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
@@ -90,15 +91,15 @@ public class BitbakeSession {
         return derivedBuildDir;
     }
 
-    public Optional<String> executeBitbakeForArch() {
+    public BitbakeEnvironment executeBitbakeForEnvironment() {
         String getEnvironmentBitbakeCommand = BITBAKE_ENVIRONMENT_COMMAND;
         try {
             ExecutableOutput output = runBitbake(getEnvironmentBitbakeCommand);
             List<String> envOutputLines = output.getStandardOutputAsList();
             return bitbakeEnvironmentParser.parseArchitecture(envOutputLines);
         } catch (Exception e) {
-            logger.warn("Unable to determine architecture due to error executing {}: {}", getEnvironmentBitbakeCommand, e.getMessage());
-            return Optional.empty();
+            logger.warn("Unable to get bitbake environment due to error executing {}: {}", getEnvironmentBitbakeCommand, e.getMessage());
+            return new BitbakeEnvironment(null, null);
         }
     }
 

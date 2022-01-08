@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
+import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeEnvironment;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class BuildFileFinder {
@@ -41,16 +42,17 @@ public class BuildFileFinder {
         return taskDependsDotFile;
     }
 
-    public File findLicenseManifestFile(File buildDir, String targetImageName, @Nullable String architecture, boolean followSymLinks, int searchDepth) throws IntegrationException {
+    public File findLicenseManifestFile(File buildDir, String targetImageName, BitbakeEnvironment bitbakeEnvironment, boolean followSymLinks, int searchDepth) throws IntegrationException {
         try {
-            File licensesDir = findLicensesDir(buildDir, followSymLinks, searchDepth);
+            File licensesDir = findLicensesDir(buildDir, bitbakeEnvironment.getLicensesDirPath().orElse(null), followSymLinks, searchDepth);
             logger.debug("Checking licenses dir {} for license.manifest for {}", licensesDir.getAbsolutePath(), targetImageName);
             List<File> licensesDirContents = Arrays.asList(licensesDir.listFiles());
-            Optional<File> architectureSpecificManifestFile = findManifestFileForTargetArchitecture(targetImageName, architecture, licensesDirContents, followSymLinks);
+            Optional<File> architectureSpecificManifestFile = findManifestFileForTargetArchitecture(targetImageName,
+                bitbakeEnvironment.getMachineArch().orElse(null), licensesDirContents, followSymLinks);
             if (architectureSpecificManifestFile.isPresent()) {
                 return architectureSpecificManifestFile.get();
             }
-            logger.debug("Did not find a license.manifest for architecture {}; Will look for the most recent license.manifest file.", architecture);
+            logger.debug("Did not find a license.manifest for architecture {}; Will look for the most recent license.manifest file.", bitbakeEnvironment.getMachineArch().orElse(null));
             Optional<File> latestLicenseManifestFile = findMostRecentLicenseManifestFileForTarget(targetImageName, licensesDirContents, followSymLinks);
             if (latestLicenseManifestFile.isPresent()) {
                 logger.debug("Found most recent license.manifest file: {}", latestLicenseManifestFile.get().getAbsolutePath());
@@ -62,7 +64,13 @@ public class BuildFileFinder {
         throw new IntegrationException(String.format("Unable to find license.manifest file for target image %s", targetImageName));
     }
 
-    private File findLicensesDir(File buildDir, boolean followSymLinks, int searchDepth) throws IntegrationException {
+    private File findLicensesDir(File buildDir, @Nullable String licensesDirPath, boolean followSymLinks, int searchDepth) throws IntegrationException {
+        if (licensesDirPath != null) {
+            File envSpecifiedLicensesDir = new File(licensesDirPath);
+            if (envSpecifiedLicensesDir.isDirectory()) {
+                return envSpecifiedLicensesDir;
+            }
+        }
         File defaultLicensesDir = new File(buildDir, LICENSES_DIR_DEFAULT_PATH_REL_TO_BUILD_DIR);
         if (defaultLicensesDir.isDirectory()) {
             return defaultLicensesDir;
@@ -73,16 +81,8 @@ public class BuildFileFinder {
         if (licensesDirs.size() == 0) {
             throw new IntegrationException(String.format("Unable to find 'licenses' directory in %s", buildDir.getAbsolutePath()));
         }
-        List<File> deployLicensesDirs = licensesDirs.stream()
-            .filter(f -> f.getParentFile().getName().equals(LICENSES_DIR_DEFAULT_PATH_REL_TO_BUILD_DIR))
-            .collect(Collectors.toList());
-        logger.debug("Found {} '{}' subdirectories", deployLicensesDirs.size(), LICENSES_DIR_DEFAULT_PATH_REL_TO_BUILD_DIR);
-        if (deployLicensesDirs.size() == 0) {
-            logger.debug("No {} dir found; falling back to licenses directory {}", LICENSES_DIR_DEFAULT_PATH_REL_TO_BUILD_DIR, licensesDirs.get(0));
-            return licensesDirs.get(0);
-        }
-        logger.debug("Using licenses directory {}", deployLicensesDirs.get(0));
-        return deployLicensesDirs.get(0);
+        logger.debug("Using licenses directory {}", licensesDirs.get(0));
+        return licensesDirs.get(0);
     }
 
     private Optional<File> findManifestFileForTargetArchitecture(String targetImageName, @Nullable String architecture, List<File> licensesDirContents, boolean followSymLinks) {
