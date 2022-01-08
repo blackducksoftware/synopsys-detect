@@ -66,11 +66,13 @@ public class BuildFileFinder {
         if (licensesDirPath != null) {
             File envSpecifiedLicensesDir = new File(licensesDirPath);
             if (envSpecifiedLicensesDir.isDirectory()) {
+                logger.debug("Found licenses directory discovered using the bitbake environment: {}", envSpecifiedLicensesDir.getAbsolutePath());
                 return envSpecifiedLicensesDir;
             }
         }
         File defaultLicensesDir = new File(buildDir, LICENSES_DIR_DEFAULT_PATH_REL_TO_BUILD_DIR);
         if (defaultLicensesDir.isDirectory()) {
+            logger.debug("Found licenses directory in the default location: {}", defaultLicensesDir.getAbsolutePath());
             return defaultLicensesDir;
         }
         logger.trace("Licenses dir {} not found; searching build directory", defaultLicensesDir.getAbsolutePath());

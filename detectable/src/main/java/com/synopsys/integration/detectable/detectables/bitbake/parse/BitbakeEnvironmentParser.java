@@ -4,11 +4,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeEnvironment;
 
 public class BitbakeEnvironmentParser {
     private static final String ARCHITECTURE_VARIABLE_NAME = "MACHINE_ARCH";
     private static final String LICENSESDIR_VARIABLE_NAME = "LICENSE_DIRECTORY";
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Predicate<String> isArchitectureLine =  l -> l.startsWith(ARCHITECTURE_VARIABLE_NAME+"=");
     private final Predicate<String> isLicensesDirLine =  l -> l.startsWith(LICENSESDIR_VARIABLE_NAME+"=");
 
@@ -25,7 +29,9 @@ public class BitbakeEnvironmentParser {
             .map(this::unquote)
             .findFirst();
 
-        return new BitbakeEnvironment(architecture.orElse(null), licensesDirPath.orElse(null));
+        BitbakeEnvironment bitbakeEnvironment = new BitbakeEnvironment(architecture.orElse(null), licensesDirPath.orElse(null));
+        logger.debug("Bitbake environment: {}", bitbakeEnvironment);
+        return bitbakeEnvironment;
     }
 
     private String isolateVariableValue(String line, String variableName) {
