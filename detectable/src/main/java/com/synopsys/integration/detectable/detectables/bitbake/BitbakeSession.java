@@ -8,7 +8,6 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
@@ -21,8 +20,12 @@ import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class BitbakeSession {
-    public static final String BITBAKE_ENVIRONMENT_COMMAND = "bitbake --environment";
-    public static final String BITBAKE_LAYERS_SHOW_RECIPES_COMMAND = "bitbake-layers show-recipes";
+    private static final String BITBAKE_ENVIRONMENT_COMMAND = "bitbake --environment";
+    private static final String BITBAKE_LAYERS_SHOW_RECIPES_COMMAND = "bitbake-layers show-recipes";
+    public static final String BITBAKE_DEPENDENCIES_COMMAND_BASE = "bitbake -g ";
+    public static final String BITBAKE_VERSION_COMMAND = "bitbake --version";
+    public static final String DEFAULT_BUILD_DIR_NAME = "build";
+    public static final String GET_WORKING_DIR_COMMAND = "pwd";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectableExecutableRunner executableRunner;
     private final BitbakeRecipesParser bitbakeRecipesParser;
@@ -52,7 +55,7 @@ public class BitbakeSession {
     public File executeBitbakeForDependencies(File buildDir, String packageName, boolean followSymLinks, Integer searchDepth)
         throws ExecutableRunnerException, IOException, IntegrationException {
 
-        String bitbakeCommand = "bitbake -g " + packageName;
+        String bitbakeCommand = BITBAKE_DEPENDENCIES_COMMAND_BASE + packageName;
         ExecutableOutput executableOutput = runBitbake(bitbakeCommand);
         int returnCode = executableOutput.getReturnCode();
 
@@ -64,14 +67,14 @@ public class BitbakeSession {
     }
 
     public void logBitbakeVersion() {
-        toolVersionLogger.log(() -> runBitbake("bitbake --version"));
+        toolVersionLogger.log(() -> runBitbake(BITBAKE_VERSION_COMMAND));
     }
 
     public File determineBuildDir() {
-        File fallbackBuildDir = new File(sourceDir, "build");
+        File fallbackBuildDir = new File(sourceDir, DEFAULT_BUILD_DIR_NAME);
         File derivedBuildDir = null;
         try {
-            ExecutableOutput output = runBitbake("pwd");
+            ExecutableOutput output = runBitbake(GET_WORKING_DIR_COMMAND);
             List<String> pwdOutputLines = output.getStandardOutputAsList();
             derivedBuildDir = new File(pwdOutputLines.get(pwdOutputLines.size()-1).trim());
         } catch (Exception e) {
