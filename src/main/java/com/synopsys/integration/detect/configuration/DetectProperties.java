@@ -216,7 +216,7 @@ public class DetectProperties {
 
     public static final DetectProperty<NullableStringProperty> DETECT_BDIO_FILE_NAME =
         new DetectProperty<>(new NullableStringProperty("detect.bdio.file.name"))
-            .setInfo("BDIO File Name", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setInfo("BDIO File Name", DetectPropertyFromVersion.VERSION_7_9_0)
             .setHelp("The desired file name of the single bdio file Detect produces in the BDIO Output Directory.", "If not set, the file name is generated from your project, version and code location names.")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL);
 
