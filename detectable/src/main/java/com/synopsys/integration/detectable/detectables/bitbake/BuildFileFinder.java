@@ -18,10 +18,8 @@ import com.synopsys.integration.exception.IntegrationException;
 public class BuildFileFinder {
     private static final String TASK_DEPENDS_FILE_NAME = "task-depends.dot";
     private static final String LICENSE_MANIFEST_FILENAME = "license.manifest";
-    private static final String TMP_DIR_NAME = "tmp";
-    private static final String DEPLOY_DIR_NAME = "deploy";
     private static final String LICENSES_DIR_NAME = "licenses";
-    private static final String LICENSES_DIR_DEFAULT_PATH_REL_TO_BUILD_DIR = TMP_DIR_NAME + "/" + DEPLOY_DIR_NAME + "/" + LICENSES_DIR_NAME;
+    private static final String LICENSES_DIR_DEFAULT_PATH_REL_TO_BUILD_DIR = "tmp/deploy/" + LICENSES_DIR_NAME;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final FileFinder fileFinder;
 

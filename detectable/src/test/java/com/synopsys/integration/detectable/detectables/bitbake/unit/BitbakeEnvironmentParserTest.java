@@ -13,21 +13,25 @@ import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeEnvi
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeEnvironmentParser;
 
 public class BitbakeEnvironmentParserTest {
+    private static final String ARCH = "";
+    private static final String LICENSES_DIR = "";
+    private static final List<String> lines = Arrays.asList(
+        "otherstuff",
+        "MACHINE_ARCH=\"" + ARCH + "\"",
+        "morestuff",
+        "LICENSE_DIRECTORY=\"" + LICENSES_DIR + "\"",
+        "yetmorestuff");
 
     @Test
-    void testParse() {
-        List<String> lines = Arrays.asList(
-            "otherstuff",
-            "MACHINE_ARCH=\"testarch\"",
-            "morestuff",
-            "LICENSE_DIRECTORY=\"/workdir/poky/build/tmp/deploy/licenses\"",
-            "yetmorestuff");
-
+    void testParseEnvironment() {
         BitbakeEnvironmentParser parser = new BitbakeEnvironmentParser();
 
         BitbakeEnvironment environment = parser.parseArchitecture(lines);
 
         assertTrue(environment.getMachineArch().isPresent());
-        assertEquals("testarch", environment.getMachineArch().get());
+        assertEquals(ARCH, environment.getMachineArch().get());
+
+        assertTrue(environment.getLicensesDirPath().isPresent());
+        assertEquals(LICENSES_DIR, environment.getLicensesDirPath().get());
     }
 }

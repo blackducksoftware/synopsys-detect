@@ -8,20 +8,28 @@ import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeEnvi
 
 public class BitbakeEnvironmentParser {
     private static final String ARCHITECTURE_VARIABLE_NAME = "MACHINE_ARCH";
+    private static final String LICENSESDIR_VARIABLE_NAME = "LICENSE_DIRECTORY";
     private final Predicate<String> isArchitectureLine =  l -> l.startsWith(ARCHITECTURE_VARIABLE_NAME+"=");
+    private final Predicate<String> isLicensesDirLine =  l -> l.startsWith(LICENSESDIR_VARIABLE_NAME+"=");
 
     public BitbakeEnvironment parseArchitecture(List<String> bitbakeEnvironmentCmdOutput) {
         Optional<String> architecture = bitbakeEnvironmentCmdOutput.stream()
             .filter(isArchitectureLine)
-            .map(this::isolateArchitectureValue)
+            .map((line) -> isolateVariableValue(line, ARCHITECTURE_VARIABLE_NAME))
             .map(this::unquote)
             .findFirst();
 
-        return new BitbakeEnvironment(architecture.orElse(null), null);
+        Optional<String> licensesDirPath = bitbakeEnvironmentCmdOutput.stream()
+            .filter(isLicensesDirLine)
+            .map((line) -> isolateVariableValue(line, LICENSESDIR_VARIABLE_NAME))
+            .map(this::unquote)
+            .findFirst();
+
+        return new BitbakeEnvironment(architecture.orElse(null), licensesDirPath.orElse(null));
     }
 
-    private String isolateArchitectureValue(String s) {
-        return s.substring(ARCHITECTURE_VARIABLE_NAME.length()+1);
+    private String isolateVariableValue(String line, String variableName) {
+        return line.substring(variableName.length()+1);
     }
 
     private String unquote(String s) {
