@@ -84,6 +84,7 @@ public class PropertyTestHelpUtil {
         if (expectedExampleValues != null) {
             Assertions.assertNotNull(property.listExampleValues(), String.format("A %s property has a limited number of values that should be described.", property.describeType()));
             Assertions.assertTrue(CollectionUtils.containsAll(expectedExampleValues, property.listExampleValues()), String.format("The %s provided unexpected example values.", property.getClass().getSimpleName()));
+            Assertions.assertTrue(CollectionUtils.containsAll(property.listExampleValues(), expectedExampleValues), String.format("The %s provided unexpected example values.", property.getClass().getSimpleName()));
         }
     }
 

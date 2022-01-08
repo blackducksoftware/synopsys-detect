@@ -12,6 +12,7 @@ import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.base.NullableProperty;
 import com.synopsys.integration.configuration.property.base.ValuedProperty;
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
+import com.synopsys.integration.detect.PropertyConfigUtils;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetLocatorOptions;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
@@ -65,7 +66,7 @@ public class DetectableOptionFactory {
     public BazelDetectableOptions createBazelDetectableOptions() {
         String targetName = getNullableValue(DetectProperties.DETECT_BAZEL_TARGET);
         List<String> bazelCqueryAdditionalOptions = getValue(DetectProperties.DETECT_BAZEL_CQUERY_OPTIONS);
-        Set<WorkspaceRule> bazelDependencyRules = getValue(DetectProperties.DETECT_BAZEL_DEPENDENCY_RULE).representedValueSet();
+        Set<WorkspaceRule> bazelDependencyRules = PropertyConfigUtils.getAllNoneList(detectConfiguration, DetectProperties.DETECT_BAZEL_DEPENDENCY_RULE.getProperty()).representedValueSet();
         return new BazelDetectableOptions(targetName, bazelDependencyRules, bazelCqueryAdditionalOptions);
     }
 
@@ -216,7 +217,7 @@ public class DetectableOptionFactory {
     }
 
     public PnpmLockOptions createPnpmLockOptions() {
-        List<DependencyType> dependencyTypes = getValue(DetectProperties.DETECT_PNPM_DEPENDENCY_TYPES).representedValues();
+        List<DependencyType> dependencyTypes = PropertyConfigUtils.getAllNoneList(detectConfiguration, DetectProperties.DETECT_PNPM_DEPENDENCY_TYPES.getProperty()).representedValues();
         return new PnpmLockOptions(dependencyTypes);
     }
 

@@ -18,8 +18,9 @@ import org.mockito.Mockito;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.common.util.finder.SimpleFileFinder;
-import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumList;
-import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumValue;
+import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumValue;
+import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumCollection;
+import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumList;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.ExcludeIncludeEnumFilter;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
@@ -228,8 +229,8 @@ public class DetectorToolTest {
     }
 
     private DetectorEvaluationOptions createEvaluationOptions() {
-        FilterableEnumList<DetectorType> excluded = new FilterableEnumList<>(Collections.emptyList(), DetectorType.class);
-        FilterableEnumList<DetectorType> included = new FilterableEnumList<>(Collections.singletonList(FilterableEnumValue.value(DetectorType.GO_MOD)), DetectorType.class);
+        AllNoneEnumCollection<DetectorType> excluded = new AllNoneEnumList<>(Collections.emptyList(), DetectorType.class);
+        AllNoneEnumCollection<DetectorType> included = new AllNoneEnumList<>(Collections.singletonList(ExtendedEnumValue.ofBaseValue(DetectorType.GO_MOD)), DetectorType.class);
         ExcludeIncludeEnumFilter<DetectorType> detectorFilter = new ExcludeIncludeEnumFilter<>(excluded, included);
 
         return new DetectorEvaluationOptions(false, false, (rule -> detectorFilter.shouldInclude(rule.getDetectorType())));
