@@ -13,6 +13,7 @@ import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeRecipe;
+import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeEnvironmentParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
 import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import com.synopsys.integration.exception.IntegrationException;
@@ -20,7 +21,8 @@ import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class BitbakeSession {
-
+    public static final String BITBAKE_ENVIRONMENT_COMMAND = "bitbake --environment";
+    public static final String BITBAKE_LAYERS_SHOW_RECIPES_COMMAND = "bitbake-layers show-recipes";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectableExecutableRunner executableRunner;
     private final BitbakeRecipesParser bitbakeRecipesParser;
@@ -30,10 +32,12 @@ public class BitbakeSession {
     private final ExecutableTarget bashExecutable;
     private final ToolVersionLogger toolVersionLogger;
     private final BuildFileFinder buildFileFinder;
+    private final BitbakeEnvironmentParser bitbakeEnvironmentParser;
 
     public BitbakeSession(DetectableExecutableRunner executableRunner, BitbakeRecipesParser bitbakeRecipesParser,
         File sourceDir, File buildEnvScript, List<String> sourceArguments,
-        ExecutableTarget bashExecutable, ToolVersionLogger toolVersionLogger, BuildFileFinder buildFileFinder) {
+        ExecutableTarget bashExecutable, ToolVersionLogger toolVersionLogger, BuildFileFinder buildFileFinder,
+        BitbakeEnvironmentParser bitbakeEnvironmentParser) {
         this.executableRunner = executableRunner;
         this.bitbakeRecipesParser = bitbakeRecipesParser;
         this.sourceDir = sourceDir;
@@ -42,6 +46,7 @@ public class BitbakeSession {
         this.bashExecutable = bashExecutable;
         this.toolVersionLogger = toolVersionLogger;
         this.buildFileFinder = buildFileFinder;
+        this.bitbakeEnvironmentParser = bitbakeEnvironmentParser;
     }
 
     public File executeBitbakeForDependencies(File buildDir, String packageName, boolean followSymLinks, Integer searchDepth)
@@ -82,8 +87,20 @@ public class BitbakeSession {
         return derivedBuildDir;
     }
 
+    public Optional<String> executeBitbakeForArch() {
+        String getEnvironmentBitbakeCommand = BITBAKE_ENVIRONMENT_COMMAND;
+        try {
+            ExecutableOutput output = runBitbake(getEnvironmentBitbakeCommand);
+            List<String> envOutputLines = output.getStandardOutputAsList();
+            return bitbakeEnvironmentParser.parseArchitecture(envOutputLines);
+        } catch (Exception e) {
+            logger.warn("Unable to determine architecture due to error executing {}: {}", getEnvironmentBitbakeCommand, e.getMessage());
+            return Optional.empty();
+        }
+    }
+
     public List<BitbakeRecipe> executeBitbakeForRecipeLayerCatalog() throws ExecutableRunnerException, IOException, IntegrationException {
-        final String bitbakeCommand = "bitbake-layers show-recipes";
+        final String bitbakeCommand = BITBAKE_LAYERS_SHOW_RECIPES_COMMAND;
         ExecutableOutput executableOutput = runBitbake(bitbakeCommand);
         if (executableOutput.getReturnCode() == 0) {
             return bitbakeRecipesParser.parseShowRecipes(executableOutput.getStandardOutputAsList());

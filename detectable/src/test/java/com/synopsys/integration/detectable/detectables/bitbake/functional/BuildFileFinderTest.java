@@ -19,7 +19,7 @@ public class BuildFileFinderTest {
         BuildFileFinder finder = new BuildFileFinder(new SimpleFileFinder());
         File buildDir = new File("src/test/resources/detectables/functional/bitbake/builddir_default");
 
-        File licensesManifestFile = finder.findLicenseManifestFile(buildDir, "targetimage", true, 10);
+        File licensesManifestFile = finder.findLicenseManifestFile(buildDir, "targetimage", null, true, 10);
 
         assertTrue(licensesManifestFile.isFile());
     }
@@ -29,7 +29,7 @@ public class BuildFileFinderTest {
         BuildFileFinder finder = new BuildFileFinder(new SimpleFileFinder());
         File buildDir = new File("src/test/resources/detectables/functional/bitbake/builddir_custom");
 
-        File licensesManifestFile = finder.findLicenseManifestFile(buildDir, "targetimage", true, 10);
+        File licensesManifestFile = finder.findLicenseManifestFile(buildDir, "targetimage", null, true, 10);
 
         assertTrue(licensesManifestFile.isFile());
     }
@@ -39,7 +39,17 @@ public class BuildFileFinderTest {
         BuildFileFinder finder = new BuildFileFinder(new SimpleFileFinder());
         File buildDir = new File("src/test/resources/detectables/functional/bitbake/builddir_nodeploy");
 
-        File licensesManifestFile = finder.findLicenseManifestFile(buildDir, "targetimage", true, 10);
+        File licensesManifestFile = finder.findLicenseManifestFile(buildDir, "targetimage", null, true, 10);
+
+        assertTrue(licensesManifestFile.isFile());
+    }
+
+    @Test
+    void testArchSpecificLicensesDir() throws IntegrationException {
+        BuildFileFinder finder = new BuildFileFinder(new SimpleFileFinder());
+        File buildDir = new File("src/test/resources/detectables/functional/bitbake/builddir_arch");
+
+        File licensesManifestFile = finder.findLicenseManifestFile(buildDir, "targetimage", "testarch", true, 10);
 
         assertTrue(licensesManifestFile.isFile());
     }

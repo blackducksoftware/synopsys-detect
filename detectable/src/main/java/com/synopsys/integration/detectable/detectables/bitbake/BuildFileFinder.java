@@ -18,6 +18,7 @@ import com.synopsys.integration.exception.IntegrationException;
 
 public class BuildFileFinder {
     private static final String TASK_DEPENDS_FILE_NAME = "task-depends.dot";
+    public static final String LICENSE_MANIFEST_FILENAME = "license.manifest";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final FileFinder fileFinder;
 
@@ -38,14 +39,20 @@ public class BuildFileFinder {
         return taskDependsDotFile;
     }
 
-    public File findLicenseManifestFile(File buildDir, String targetImageName, boolean followSymLinks, int searchDepth) throws IntegrationException {
+    public File findLicenseManifestFile(File buildDir, String targetImageName, @Nullable String architecture, boolean followSymLinks, int searchDepth) throws IntegrationException {
         try {
             File licensesDir = findLicensesDir(buildDir, followSymLinks, searchDepth);
             logger.debug("Checking licenses dir {} for license.manifest for {}", licensesDir.getAbsolutePath(), targetImageName);
             List<File> licensesDirContents = Arrays.asList(licensesDir.listFiles());
+            Optional<File> architectureSpecificManifestFile = findManifestFileForTargetArchitecture(targetImageName, architecture, licensesDirContents, followSymLinks);
+            if (architectureSpecificManifestFile.isPresent()) {
+                logger.debug("Found architecture-specific license.manifest file: {}", architectureSpecificManifestFile.get().getAbsolutePath());
+                return architectureSpecificManifestFile.get();
+            }
+            logger.debug("Did not find a license.manifest for architecture {}; Will look for the most recent license.manifest file.", architecture);
             Optional<File> latestLicenseManifestFile = findMostRecentLicenseManifestFileForTarget(targetImageName, licensesDirContents, followSymLinks);
-            if (latestLicenseManifestFile.isPresent() && latestLicenseManifestFile.get().canRead()) {
-                logger.debug("Found readable license.manifest file: {}", latestLicenseManifestFile.get().getAbsolutePath());
+            if (latestLicenseManifestFile.isPresent()) {
+                logger.debug("Found most recent license.manifest file: {}", latestLicenseManifestFile.get().getAbsolutePath());
                 return latestLicenseManifestFile.get();
             }
         } catch (Exception e) {
@@ -77,12 +84,28 @@ public class BuildFileFinder {
         return deployLicensesDirs.get(0);
     }
 
+    private Optional<File> findManifestFileForTargetArchitecture(String targetImageName, @Nullable String architecture, List<File> licensesDirContents, boolean followSymLinks) {
+        if (architecture == null) {
+            return Optional.empty();
+        }
+        String targetDirPrefix = targetImageName + "-" + architecture;
+        for (File licensesDirSubDir : licensesDirContents) {
+            if (licensesDirSubDir.getName().startsWith(targetDirPrefix) && (followSymLinks || !FileUtils.isSymlink(licensesDirSubDir))) {
+                File thisLicenseManifestFile = new File(licensesDirSubDir, LICENSE_MANIFEST_FILENAME);
+                if (thisLicenseManifestFile.exists()) {
+                    logger.debug("Found license.manifest for current architecture ({}): {}", architecture, thisLicenseManifestFile.getAbsolutePath());
+                    return Optional.of(thisLicenseManifestFile);
+                }
+            }
+        }
+        return Optional.empty();
+    }
     private Optional<File> findMostRecentLicenseManifestFileForTarget(final String targetImageName, final List<File> licensesDirContents, boolean followSymLinks) {
         File latestLicenseManifestFile = null;
         long latestLicenseManifestFileTime = 0;
         for (File licensesDirSubDir : licensesDirContents) {
             if (licensesDirSubDir.getName().startsWith(targetImageName) && (followSymLinks || !FileUtils.isSymlink(licensesDirSubDir))) {
-                File thisLicenseManifestFile = new File(licensesDirSubDir, "license.manifest");
+                File thisLicenseManifestFile = new File(licensesDirSubDir, LICENSE_MANIFEST_FILENAME);
                 if (thisLicenseManifestFile.exists()) {
                     if ((latestLicenseManifestFileTime == 0) || (thisLicenseManifestFile.lastModified() > latestLicenseManifestFileTime)) {
                         latestLicenseManifestFileTime = thisLicenseManifestFile.lastModified();

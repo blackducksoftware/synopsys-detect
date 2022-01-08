@@ -8,10 +8,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.NotImplementedException;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +24,7 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeRecipe;
+import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeEnvironmentParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParserTransformer;
@@ -42,10 +45,11 @@ public class BitbakeExtractor {
     private final ToolVersionLogger toolVersionLogger;
     private final BuildFileFinder buildFileFinder;
     private final LicenseManifestParser licenseManifestParser;
+    private final BitbakeEnvironmentParser bitbakeEnvironmentParser;
 
     public BitbakeExtractor(DetectableExecutableRunner executableRunner, GraphParserTransformer graphParserTransformer, BitbakeGraphTransformer bitbakeGraphTransformer,
         BitbakeRecipesParser bitbakeRecipesParser, BitbakeRecipesToLayerMapConverter bitbakeRecipesToLayerMap, ToolVersionLogger toolVersionLogger, BuildFileFinder buildFileFinder,
-        LicenseManifestParser licenseManifestParser) {
+        LicenseManifestParser licenseManifestParser, BitbakeEnvironmentParser bitbakeEnvironmentParser) {
         this.executableRunner = executableRunner;
         this.graphParserTransformer = graphParserTransformer;
         this.bitbakeGraphTransformer = bitbakeGraphTransformer;
@@ -54,20 +58,22 @@ public class BitbakeExtractor {
         this.toolVersionLogger = toolVersionLogger;
         this.buildFileFinder = buildFileFinder;
         this.licenseManifestParser = licenseManifestParser;
+        this.bitbakeEnvironmentParser = bitbakeEnvironmentParser;
     }
 
     public Extraction extract(File sourceDirectory, File buildEnvScript, List<String> sourceArguments, List<String> packageNames, boolean followSymLinks, Integer searchDepth, Set<BitbakeDependencyType> excludedDependencyTypes, ExecutableTarget bash) {
         List<CodeLocation> codeLocations = new ArrayList<>();
 
-        BitbakeSession bitbakeSession = new BitbakeSession(executableRunner, bitbakeRecipesParser, sourceDirectory, buildEnvScript, sourceArguments, bash, toolVersionLogger, buildFileFinder);
+        BitbakeSession bitbakeSession = new BitbakeSession(executableRunner, bitbakeRecipesParser, sourceDirectory, buildEnvScript, sourceArguments, bash, toolVersionLogger, buildFileFinder, bitbakeEnvironmentParser);
         bitbakeSession.logBitbakeVersion();
         File buildDir = bitbakeSession.determineBuildDir();
+        Optional<String> architecture = bitbakeSession.executeBitbakeForArch();
         for (String packageName : packageNames) {
             Map<String, String> imageRecipes = null;
             try {
                 if (!excludedDependencyTypes.isEmpty()) {
                     // Only need imageRecipes if we're going to exclude build dependencies
-                    imageRecipes = readImageRecipes(buildDir, packageName, followSymLinks, searchDepth);
+                    imageRecipes = readImageRecipes(buildDir, packageName, architecture.orElse(null), followSymLinks, searchDepth);
                 }
                 BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, buildDir, packageName, followSymLinks, searchDepth);
                 List<BitbakeRecipe> bitbakeRecipes = bitbakeSession.executeBitbakeForRecipeLayerCatalog();
@@ -100,8 +106,8 @@ public class BitbakeExtractor {
         return extraction;
     }
 
-    private Map<String, String> readImageRecipes(File buildDir, String targetImageName, boolean followSymLinks, int searchDepth) throws IntegrationException, IOException {
-        File licenseManifestFile = buildFileFinder.findLicenseManifestFile(buildDir, targetImageName, followSymLinks, searchDepth);
+    private Map<String, String> readImageRecipes(File buildDir, String targetImageName, @Nullable String architecture, boolean followSymLinks, int searchDepth) throws IntegrationException, IOException {
+        File licenseManifestFile = buildFileFinder.findLicenseManifestFile(buildDir, targetImageName, architecture, followSymLinks, searchDepth);
         List<String> licenseManifestLines = FileUtils.readLines(licenseManifestFile, StandardCharsets.UTF_8);
         return licenseManifestParser.collectImageRecipes(licenseManifestLines);
     }
