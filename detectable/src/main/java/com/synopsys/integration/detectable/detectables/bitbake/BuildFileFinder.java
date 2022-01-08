@@ -46,7 +46,6 @@ public class BuildFileFinder {
             List<File> licensesDirContents = Arrays.asList(licensesDir.listFiles());
             Optional<File> architectureSpecificManifestFile = findManifestFileForTargetArchitecture(targetImageName, architecture, licensesDirContents, followSymLinks);
             if (architectureSpecificManifestFile.isPresent()) {
-                logger.debug("Found architecture-specific license.manifest file: {}", architectureSpecificManifestFile.get().getAbsolutePath());
                 return architectureSpecificManifestFile.get();
             }
             logger.debug("Did not find a license.manifest for architecture {}; Will look for the most recent license.manifest file.", architecture);
@@ -110,9 +109,6 @@ public class BuildFileFinder {
                     if ((latestLicenseManifestFileTime == 0) || (thisLicenseManifestFile.lastModified() > latestLicenseManifestFileTime)) {
                         latestLicenseManifestFileTime = thisLicenseManifestFile.lastModified();
                         latestLicenseManifestFile = thisLicenseManifestFile;
-                        logger.trace("Latest so far: {}", latestLicenseManifestFile.getAbsolutePath());
-                    } else {
-                        logger.trace("Not the latest: {}", thisLicenseManifestFile.getAbsolutePath());
                     }
                 }
             }
