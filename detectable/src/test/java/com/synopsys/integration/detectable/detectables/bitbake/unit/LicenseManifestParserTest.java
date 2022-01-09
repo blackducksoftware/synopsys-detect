@@ -1,5 +1,6 @@
 package com.synopsys.integration.detectable.detectables.bitbake.unit;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
@@ -34,8 +35,8 @@ public class LicenseManifestParserTest {
 
         Map<String, String> imageRecipes = parser.collectImageRecipes(lines);
 
+        assertEquals(2, imageRecipes.size());
         assertTrue(imageRecipes.get("adwaita-icon-theme").equals("3.34.3"));
-        assertTrue(imageRecipes.get("adwaita-icon-theme-symbolic").equals("3.34.3"));
-        assertTrue(imageRecipes.get("alsa-conf").equals("1.2.5.1"));
+        assertTrue(imageRecipes.get("alsa-lib").equals("1.2.5.1"));
     }
 }
