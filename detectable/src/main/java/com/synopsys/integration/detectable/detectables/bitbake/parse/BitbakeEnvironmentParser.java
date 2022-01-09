@@ -11,21 +11,21 @@ import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeEnvi
 
 public class BitbakeEnvironmentParser {
     private static final String ARCHITECTURE_VARIABLE_NAME = "MACHINE_ARCH";
-    private static final String LICENSESDIR_VARIABLE_NAME = "LICENSE_DIRECTORY";
+    private static final String LICENSES_DIR_VARIABLE_NAME = "LICENSE_DIRECTORY";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Predicate<String> isArchitectureLine =  l -> l.startsWith(ARCHITECTURE_VARIABLE_NAME+"=");
-    private final Predicate<String> isLicensesDirLine =  l -> l.startsWith(LICENSESDIR_VARIABLE_NAME+"=");
+    private final Predicate<String> isLicensesDirLine =  l -> l.startsWith(LICENSES_DIR_VARIABLE_NAME +"=");
 
     public BitbakeEnvironment parseArchitecture(List<String> bitbakeEnvironmentCmdOutput) {
         Optional<String> architecture = bitbakeEnvironmentCmdOutput.stream()
             .filter(isArchitectureLine)
-            .map((line) -> isolateVariableValue(line, ARCHITECTURE_VARIABLE_NAME))
+            .map(line -> isolateVariableValue(line, ARCHITECTURE_VARIABLE_NAME))
             .map(this::unquote)
             .findFirst();
 
         Optional<String> licensesDirPath = bitbakeEnvironmentCmdOutput.stream()
             .filter(isLicensesDirLine)
-            .map((line) -> isolateVariableValue(line, LICENSESDIR_VARIABLE_NAME))
+            .map(line -> isolateVariableValue(line, LICENSES_DIR_VARIABLE_NAME))
             .map(this::unquote)
             .findFirst();
 
