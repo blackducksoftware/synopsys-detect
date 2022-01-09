@@ -8,12 +8,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.NotImplementedException;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,7 +113,9 @@ public class BitbakeExtractor {
 
     private BitbakeGraph generateBitbakeGraph(BitbakeSession bitbakeSession, File buildDir, String packageName, boolean followSymLinks, Integer searchDepth) throws ExecutableRunnerException, IOException, IntegrationException {
         File taskDependsFile = bitbakeSession.executeBitbakeForDependencies(buildDir, packageName, followSymLinks, searchDepth);
-        logger.trace(FileUtils.readFileToString(taskDependsFile, Charset.defaultCharset()));
+        if (logger.isTraceEnabled()) {
+            logger.trace(FileUtils.readFileToString(taskDependsFile, Charset.defaultCharset()));
+        }
         InputStream dependsFileInputStream = FileUtils.openInputStream(taskDependsFile);
         GraphParser graphParser = new GraphParser(dependsFileInputStream);
         return graphParserTransformer.transform(graphParser);

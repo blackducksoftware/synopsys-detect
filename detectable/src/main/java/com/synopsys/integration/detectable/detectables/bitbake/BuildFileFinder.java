@@ -1,12 +1,13 @@
 package com.synopsys.integration.detectable.detectables.bitbake;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,15 +43,16 @@ public class BuildFileFinder {
 
     public File findLicenseManifestFile(File buildDir, String targetImageName, BitbakeEnvironment bitbakeEnvironment, boolean followSymLinks, int searchDepth) throws IntegrationException {
         try {
+            String machineArch = bitbakeEnvironment.getMachineArch().orElse(null);
             File licensesDir = findLicensesDir(buildDir, bitbakeEnvironment.getLicensesDirPath().orElse(null), followSymLinks, searchDepth);
             logger.debug("Checking licenses dir {} for license.manifest for {}", licensesDir.getAbsolutePath(), targetImageName);
-            List<File> licensesDirContents = Arrays.asList(licensesDir.listFiles());
+            List<File> licensesDirContents = generateListOfFiles(licensesDir);
             Optional<File> architectureSpecificManifestFile = findManifestFileForTargetArchitecture(targetImageName,
-                bitbakeEnvironment.getMachineArch().orElse(null), licensesDirContents, followSymLinks);
+                machineArch, licensesDirContents, followSymLinks);
             if (architectureSpecificManifestFile.isPresent()) {
                 return architectureSpecificManifestFile.get();
             }
-            logger.debug("Did not find a license.manifest for architecture {}; Will look for the most recent license.manifest file.", bitbakeEnvironment.getMachineArch().orElse(null));
+            logger.debug("Did not find a license.manifest for architecture {}; Will look for the most recent license.manifest file.", machineArch);
             Optional<File> latestLicenseManifestFile = findMostRecentLicenseManifestFileForTarget(targetImageName, licensesDirContents, followSymLinks);
             if (latestLicenseManifestFile.isPresent()) {
                 logger.debug("Found most recent license.manifest file: {}", latestLicenseManifestFile.get().getAbsolutePath());
@@ -60,6 +62,16 @@ public class BuildFileFinder {
             logger.debug(String.format("Error finding license.manifest file for target image %s", targetImageName), e);
         }
         throw new IntegrationException(String.format("Unable to find license.manifest file for target image %s", targetImageName));
+    }
+
+    @NotNull
+    private List<File> generateListOfFiles(final File licensesDir) {
+        // TODO surely there's a single-line way to do this (via nio or apache FileUtils)
+        File[] licensesDirContentsArray = licensesDir.listFiles();
+        if (licensesDirContentsArray == null) {
+            return new ArrayList<>(0);
+        }
+        return Arrays.asList(licensesDirContentsArray);
     }
 
     private File findLicensesDir(File buildDir, @Nullable String licensesDirPath, boolean followSymLinks, int searchDepth) throws IntegrationException {
@@ -91,6 +103,9 @@ public class BuildFileFinder {
         }
         String targetDirPrefix = targetImageName + "-" + architecture;
         for (File licensesDirSubDir : licensesDirContents) {
+            if (!licensesDirSubDir.isDirectory()) {
+                continue;
+            }
             if (licensesDirSubDir.getName().startsWith(targetDirPrefix) && (followSymLinks || !FileUtils.isSymlink(licensesDirSubDir))) {
                 File thisLicenseManifestFile = new File(licensesDirSubDir, LICENSE_MANIFEST_FILENAME);
                 if (thisLicenseManifestFile.exists()) {

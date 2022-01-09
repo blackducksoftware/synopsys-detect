@@ -3,7 +3,6 @@ package com.synopsys.integration.detectable.detectables.bitbake;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +72,7 @@ public class BitbakeSession {
 
     public File determineBuildDir() {
         File fallbackBuildDir = new File(sourceDir, DEFAULT_BUILD_DIR_NAME);
-        File derivedBuildDir = null;
+        File derivedBuildDir;
         try {
             ExecutableOutput output = runBitbake(GET_WORKING_DIR_COMMAND);
             List<String> pwdOutputLines = output.getStandardOutputAsList();
@@ -104,8 +103,7 @@ public class BitbakeSession {
     }
 
     public List<BitbakeRecipe> executeBitbakeForRecipeLayerCatalog() throws ExecutableRunnerException, IOException, IntegrationException {
-        final String bitbakeCommand = BITBAKE_LAYERS_SHOW_RECIPES_COMMAND;
-        ExecutableOutput executableOutput = runBitbake(bitbakeCommand);
+        ExecutableOutput executableOutput = runBitbake(BITBAKE_LAYERS_SHOW_RECIPES_COMMAND);
         if (executableOutput.getReturnCode() == 0) {
             return bitbakeRecipesParser.parseShowRecipes(executableOutput.getStandardOutputAsList());
         } else {
@@ -119,6 +117,6 @@ public class BitbakeSession {
             sourceCommand.append(" ");
             sourceCommand.append(sourceArgument);
         }
-        return executableRunner.execute(ExecutableUtils.createFromTarget(sourceDir, bashExecutable, "-c", sourceCommand.toString() + "; " + bitbakeCommand));
+        return executableRunner.execute(ExecutableUtils.createFromTarget(sourceDir, bashExecutable, "-c", sourceCommand + "; " + bitbakeCommand));
     }
 }
