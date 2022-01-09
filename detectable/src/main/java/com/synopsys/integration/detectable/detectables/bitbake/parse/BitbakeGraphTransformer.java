@@ -79,7 +79,8 @@ public class BitbakeGraphTransformer {
     }
 
     private boolean shouldInclude(Set<BitbakeDependencyType> excludedDependencyTypes, Map<String, String> imageRecipes, String recipeName, String recipeVersion) {
-        return excludedDependencyTypes.isEmpty() || !isBuildDependency(imageRecipes, recipeName, recipeVersion) && excludedDependencyTypes.contains(BitbakeDependencyType.BUILD);
+        // This relies on the fact that the only excludable type is BUILD; must change if others are added
+        return excludedDependencyTypes.isEmpty() || !isBuildDependency(imageRecipes, recipeName, recipeVersion);
     }
 
     private boolean isBuildDependency(Map<String, String> imageRecipes, String recipeName, String recipeVersion) {
