@@ -147,6 +147,9 @@ import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.G
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportTransformer;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleRootMetadataParser;
 import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleProjectInspectorDetectable;
+import com.synopsys.integration.detectable.detectables.ivy.IvyProjectNameParser;
+import com.synopsys.integration.detectable.detectables.ivy.parse.IvyParseDetectable;
+import com.synopsys.integration.detectable.detectables.ivy.parse.IvyParseExtractor;
 import com.synopsys.integration.detectable.detectables.lerna.LernaDetectable;
 import com.synopsys.integration.detectable.detectables.lerna.LernaExtractor;
 import com.synopsys.integration.detectable.detectables.lerna.LernaOptions;
@@ -367,6 +370,10 @@ public class DetectableFactory {
 
     public GemspecParseDetectable createGemspecParseDetectable(DetectableEnvironment environment, GemspecParseDetectableOptions gemspecParseDetectableOptions) {
         return new GemspecParseDetectable(environment, fileFinder, gemspecExtractor(), gemspecParseDetectableOptions);
+    }
+
+    public IvyParseDetectable createIvyParseDetectable(DetectableEnvironment environment) {
+        return new IvyParseDetectable(environment, fileFinder, ivyParseExtractor());
     }
 
     public MavenPomDetectable createMavenPomDetectable(DetectableEnvironment environment, MavenResolver mavenResolver, MavenCliExtractorOptions mavenCliExtractorOptions) {
@@ -650,6 +657,14 @@ public class DetectableFactory {
 
     private GradleRootMetadataParser gradleRootMetadataParser() {
         return new GradleRootMetadataParser();
+    }
+
+    private IvyParseExtractor ivyParseExtractor() {
+        return new IvyParseExtractor(externalIdFactory, saxParser(), ivyProjectNameParser());
+    }
+
+    private IvyProjectNameParser ivyProjectNameParser() {
+        return new IvyProjectNameParser(saxParser());
     }
 
     private Rebar3TreeParser rebar3TreeParser() {
