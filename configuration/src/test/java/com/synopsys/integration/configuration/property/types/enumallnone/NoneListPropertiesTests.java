@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.configuration.config.InvalidPropertyException;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
+import com.synopsys.integration.configuration.parse.ValueParseException;
 import com.synopsys.integration.configuration.property.PropertyTestHelpUtil;
 import com.synopsys.integration.configuration.property.types.enumallnone.list.NoneEnumList;
 import com.synopsys.integration.configuration.property.types.enumallnone.property.NoneEnumListProperty;
@@ -79,11 +80,6 @@ public class NoneListPropertiesTests {
     public void testAllThrows() throws InvalidPropertyException {
         NoneEnumListProperty<Example> property = new NoneEnumListProperty<Example>("enum.valued", new ArrayList<>(), Example.class);
         PropertyConfiguration config = configOf(Pair.of("enum.valued", "aLL"));
-        try {
-            NoneEnumList<Example> list = property.toList(config.getValue(property));
-            Assertions.fail("Should have thrown an exception");
-        } catch (Exception ignored) {
-
-        }
+        Assertions.assertThrows(InvalidPropertyException.class, () -> property.toList(config.getValue(property)));
     }
 }

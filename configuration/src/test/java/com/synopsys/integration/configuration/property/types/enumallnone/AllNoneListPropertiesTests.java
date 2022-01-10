@@ -12,9 +12,11 @@ import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.configuration.config.InvalidPropertyException;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
+import com.synopsys.integration.configuration.parse.ValueParseException;
 import com.synopsys.integration.configuration.property.PropertyTestHelpUtil;
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumList;
 import com.synopsys.integration.configuration.property.types.enumallnone.property.AllNoneEnumListProperty;
+import com.synopsys.integration.configuration.property.types.path.PathValueParser;
 
 public class AllNoneListPropertiesTests {
     private enum Example {
@@ -94,11 +96,6 @@ public class AllNoneListPropertiesTests {
     public void testUnknownThrows() throws InvalidPropertyException {
         AllNoneEnumListProperty<Example> property = new AllNoneEnumListProperty<Example>("enum.valued", new ArrayList<>(), Example.class);
         PropertyConfiguration config = configOf(Pair.of("enum.valued", "stoopid"));
-        try {
-            AllNoneEnumList<Example> list = property.toList(config.getValue(property));
-            Assertions.fail("Should have thrown an exception");
-        } catch (Exception ignored) {
-
-        }
+        Assertions.assertThrows(InvalidPropertyException.class, () -> property.toList(config.getValue(property)));
     }
 }
