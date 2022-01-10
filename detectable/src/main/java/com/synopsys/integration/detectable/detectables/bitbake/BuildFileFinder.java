@@ -90,7 +90,7 @@ public class BuildFileFinder {
         logger.trace("Licenses dir {} not found; searching build directory", defaultLicensesDir.getAbsolutePath());
         List<File> licensesDirs = fileFinder.findFiles(buildDir, f -> f.getName().equals(LICENSES_DIR_NAME) && f.isDirectory(), followSymLinks, searchDepth);
         logger.trace("Found {} licenses directories in {}", licensesDirs.size(), buildDir.getAbsolutePath());
-        if (licensesDirs.size() == 0) {
+        if (licensesDirs.isEmpty()) {
             throw new IntegrationException(String.format("Unable to find 'licenses' directory in %s", buildDir.getAbsolutePath()));
         }
         logger.debug("Using licenses directory {}", licensesDirs.get(0));
@@ -122,11 +122,10 @@ public class BuildFileFinder {
         for (File licensesDirSubDir : licensesDirContents) {
             if (licensesDirSubDir.getName().startsWith(targetImageName) && (followSymLinks || !FileUtils.isSymlink(licensesDirSubDir))) {
                 File thisLicenseManifestFile = new File(licensesDirSubDir, LICENSE_MANIFEST_FILENAME);
-                if (thisLicenseManifestFile.exists()) {
-                    if ((latestLicenseManifestFileTime == 0) || (thisLicenseManifestFile.lastModified() > latestLicenseManifestFileTime)) {
-                        latestLicenseManifestFileTime = thisLicenseManifestFile.lastModified();
-                        latestLicenseManifestFile = thisLicenseManifestFile;
-                    }
+                if ((thisLicenseManifestFile.exists()) && ((latestLicenseManifestFileTime == 0) || (thisLicenseManifestFile.lastModified() > latestLicenseManifestFileTime))) {
+                    // Newest found so far
+                    latestLicenseManifestFileTime = thisLicenseManifestFile.lastModified();
+                    latestLicenseManifestFile = thisLicenseManifestFile;
                 }
             }
         }
