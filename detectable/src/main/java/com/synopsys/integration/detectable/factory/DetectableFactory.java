@@ -79,7 +79,7 @@ import com.synopsys.integration.detectable.detectables.conan.ConanCodeLocationGe
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliDetectable;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliExtractor;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanResolver;
-import com.synopsys.integration.detectable.detectables.conan.cli.config.ConanCliExtractorOptions;
+import com.synopsys.integration.detectable.detectables.conan.cli.config.ConanCliOptions;
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.ConanInfoLineAnalyzer;
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.ConanInfoNodeParser;
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.ConanInfoParser;
@@ -390,8 +390,8 @@ public class DetectableFactory {
         return new ConanLockfileDetectable(environment, fileFinder, conanLockfileExtractor(conanLockfileExtractorOptions), conanLockfileExtractorOptions);
     }
 
-    public ConanCliDetectable createConanCliDetectable(DetectableEnvironment environment, ConanResolver conanResolver, ConanCliExtractorOptions conanCliExtractorOptions) {
-        return new ConanCliDetectable(environment, fileFinder, conanResolver, conanCliExtractor(conanCliExtractorOptions));
+    public ConanCliDetectable createConanCliDetectable(DetectableEnvironment environment, ConanResolver conanResolver, ConanCliOptions conanCliOptions) {
+        return new ConanCliDetectable(environment, fileFinder, conanResolver, conanCliExtractor(conanCliOptions));
     }
 
     public NpmCliDetectable createNpmCliDetectable(DetectableEnvironment environment, NpmResolver npmResolver, NpmCliExtractorOptions npmCliExtractorOptions) {
@@ -682,7 +682,7 @@ public class DetectableFactory {
         return new ConanLockfileExtractor(conanLockfileParser);
     }
 
-    private ConanCliExtractor conanCliExtractor(ConanCliExtractorOptions options) {
+    private ConanCliExtractor conanCliExtractor(ConanCliOptions options) {
         ConanCommandRunner conanCommandRunner = new ConanCommandRunner(executableRunner, options.getLockfilePath().orElse(null), options.getAdditionalArguments().orElse(null));
         ConanInfoLineAnalyzer conanInfoLineAnalyzer = new ConanInfoLineAnalyzer();
         ConanCodeLocationGenerator conanCodeLocationGenerator = new ConanCodeLocationGenerator(options.getDependencyTypeFilter(), options.preferLongFormExternalIds());

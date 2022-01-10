@@ -5,13 +5,13 @@ import java.util.Optional;
 
 import com.synopsys.integration.detectable.detectable.util.DependencyTypeFilter;
 
-public class ConanCliExtractorOptions {
+public class ConanCliOptions {
     private final Path lockfilePath;
     private final String additionalArguments;
     private final DependencyTypeFilter<ConanDependencyType> dependencyTypeFilter;
     private final boolean preferLongFormExternalIds;
 
-    public ConanCliExtractorOptions(Path lockfilePath, String additionalArguments, DependencyTypeFilter<ConanDependencyType> dependencyTypeFilter, boolean preferLongFormExternalIds) {
+    public ConanCliOptions(Path lockfilePath, String additionalArguments, DependencyTypeFilter<ConanDependencyType> dependencyTypeFilter, boolean preferLongFormExternalIds) {
         this.lockfilePath = lockfilePath;
         this.additionalArguments = additionalArguments;
         this.dependencyTypeFilter = dependencyTypeFilter;

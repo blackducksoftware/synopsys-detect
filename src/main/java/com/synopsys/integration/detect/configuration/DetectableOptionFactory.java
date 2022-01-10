@@ -22,7 +22,7 @@ import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOpti
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectableOptions;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOptions;
-import com.synopsys.integration.detectable.detectables.conan.cli.config.ConanCliExtractorOptions;
+import com.synopsys.integration.detectable.detectables.conan.cli.config.ConanCliOptions;
 import com.synopsys.integration.detectable.detectables.conan.cli.config.ConanDependencyType;
 import com.synopsys.integration.detectable.detectables.conan.lockfile.ConanLockfileExtractorOptions;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectableOptions;
@@ -164,12 +164,12 @@ public class DetectableOptionFactory {
         return new MavenCliExtractorOptions(mavenBuildCommand, mavenExcludedScopes, mavenIncludedScopes, mavenExcludedModules, mavenIncludedModules);
     }
 
-    public ConanCliExtractorOptions createConanCliOptions() {
+    public ConanCliOptions createConanCliOptions() {
         Path lockfilePath = detectConfiguration.getValue(DetectProperties.DETECT_CONAN_LOCKFILE_PATH.getProperty()).map(path -> path.resolvePath(pathResolver)).orElse(null);
         String additionalArguments = getNullableValue(DetectProperties.DETECT_CONAN_ARGUMENTS);
         Boolean preferLongFormExternalIds = getValue(DetectProperties.DETECT_CONAN_REQUIRE_PREV_MATCH);
         DependencyTypeFilter<ConanDependencyType> dependencyTypeFilter = createConanDependencyTypeFilter();
-        return new ConanCliExtractorOptions(lockfilePath, additionalArguments, dependencyTypeFilter, preferLongFormExternalIds);
+        return new ConanCliOptions(lockfilePath, additionalArguments, dependencyTypeFilter, preferLongFormExternalIds);
     }
 
     // TODO: Remove in 8.0.0. This will be one line, no method necessary - JM 01/2022
