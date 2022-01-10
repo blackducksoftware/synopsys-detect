@@ -187,7 +187,8 @@ public class DetectProperties {
     public static final DetectProperty<NoneEnumListProperty<ConanDependencyType>> DETECT_CONAN_DEPENDENCY_TYPES_EXCLUDED =
         new DetectProperty<>(new NoneEnumListProperty<>("detect.conan.dependency.types.excluded", NoneEnum.NONE, ConanDependencyType.class))
             .setInfo("Include Conan Build Dependencies", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp("Set this value to false if you would like to exclude your project's build dependencies.")
+            .setHelp("Set this value to indicate which types of Conan dependencies you want Detect to exclude. By default, all dependency types will be reported.")
+            .setExample("If you want Detect to exclude a specific type(s) of dependencies from it's report, pass a comma-separated list of such types (ex. BUILD).")
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<NullableStringProperty> DETECT_CONAN_ARGUMENTS =
@@ -414,7 +415,9 @@ public class DetectProperties {
     public static final DetectProperty<NoneEnumListProperty<DartPubDependencyType>> DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED =
         new DetectProperty<>(new NoneEnumListProperty<>("detect.pub.dependency.types.excluded", NoneEnum.NONE, DartPubDependencyType.class))
             .setInfo("Detect Dart Pub Deps Exclude Dev Dependencies", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp("If true, the Dart Detector will pass the option --no-dev when running the command 'pub deps'.")
+            .setHelp("Set this value to indicate which types of Dart Pub dependencies you want Detect to report. By default, all dependency types will be reported.",
+                "If DEV is excluded, the Dart Detector will pass the option --no-dev when running the command 'pub deps'.")
+            .setExample("If you want Detect to exclude a specific type(s) of dependencies from it's report, pass a comma-separated list of such types (ex. detect.pub.dependency.types.excluded).")
             .setGroups(DetectGroup.DART, DetectGroup.DETECTOR, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced);
 
@@ -1439,6 +1442,7 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
 
+    // TODO: Remove in 8.0.0
     private static String createDetectorBooleanDeprecationMessage(@NotNull DetectProperty<?> replacementProperty) {
         return String.format("This property is being removed in favor of %s. If the replacement property is set, this property is ignored.", replacementProperty.getProperty().getKey());
     }
