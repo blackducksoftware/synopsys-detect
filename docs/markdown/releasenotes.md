@@ -5,7 +5,7 @@
 ### Resolved issues
 * (IDETECT-2949) Fixed an issue where [solution_name] failed to properly parse Go module version names containing '-' characters.
 * (IDETECT-2959) Fixed an issue where [solution_name] would not fail when running `go mod why` fails.
-* (IDETECT-2971) Fixed an issue where [solution_name] would not produce unique code location paths for Pnpm projects.
+* (IDETECT-2971) Fixed an issue where [solution_name] would not produce unique code location paths for Pnpm projects.  To avoid duplicate components, supply this property against each pnpm project: `detect.project.codelocation.unmap=true`. Do this the first time you run [solution_name] v7.10.0. Subsequent runs no longer require this to be set to true.
 * (IDETECT-3000) Fixed an issue where [solution_name] would error out when a user's source directory and output directory did not share a common root.
 
 ### Changed features
