@@ -13,7 +13,8 @@ import com.synopsys.integration.configuration.util.PropertyUtils;
 
 public class ExtendedEnumListProperty<E extends Enum<E>, B extends Enum<B>> extends ValuedListProperty<ExtendedEnumValue<E, B>> {
     private final List<String> allOptions;
-    private final Class<B> bClass;
+    protected final Class<B> bClass;
+    protected final Class<E> eClass;
 
     public ExtendedEnumListProperty(@NotNull String key, @NotNull List<ExtendedEnumValue<E, B>> defaultValue, @NotNull Class<E> eClass, @NotNull Class<B> bClass) {
         super(key, new ListValueParser<>(new ExtendedEnumValueParser<>(eClass, bClass)), defaultValue);
@@ -22,6 +23,7 @@ public class ExtendedEnumListProperty<E extends Enum<E>, B extends Enum<B>> exte
         allOptions.addAll(EnumPropertyUtils.getEnumNames(eClass));
         allOptions.addAll(EnumPropertyUtils.getEnumNames(bClass));
         this.bClass = bClass;
+        this.eClass = eClass;
     }
 
     @Nullable

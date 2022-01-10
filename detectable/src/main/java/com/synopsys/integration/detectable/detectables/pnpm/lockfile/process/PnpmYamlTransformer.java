@@ -4,10 +4,13 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
@@ -15,22 +18,24 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.enums.DependencyType;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.detectable.detectable.util.DependencyTypeFilter;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYaml;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmPackage;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmPackageInfo;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmProjectPackage;
-import com.synopsys.integration.detectable.util.DependencyTypeFilter;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
 public class PnpmYamlTransformer {
     private static final String LINKED_PACKAGE_PREFIX = "link:";
 
-    private final ExternalIdFactory externalIdFactory;
-    private final DependencyTypeFilter dependencyTypeFilter;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public PnpmYamlTransformer(ExternalIdFactory externalIdFactory, DependencyTypeFilter dependencyTypeFilter) {
+    private final ExternalIdFactory externalIdFactory;
+    private final DependencyTypeFilter<PnpmDependencyType> dependencyTypeFilter;
+
+    public PnpmYamlTransformer(ExternalIdFactory externalIdFactory, DependencyTypeFilter<PnpmDependencyType> dependencyTypeFilter) {
         this.externalIdFactory = externalIdFactory;
         this.dependencyTypeFilter = dependencyTypeFilter;
     }
@@ -44,7 +49,7 @@ public class PnpmYamlTransformer {
         PnpmProjectPackage projectPackage,
         @Nullable String reportingProjectPackagePath,
         @Nullable NameVersion projectNameVersion,
-        @Nullable Map<String, PnpmPackage> packageMap,
+        @Nullable Map<String, PnpmPackageInfo> packageMap,
         PnpmLinkedPackageResolver linkedPackageResolver
     ) throws IntegrationException {
         MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
@@ -60,24 +65,31 @@ public class PnpmYamlTransformer {
     private void buildGraph(
         MutableDependencyGraph graphBuilder,
         List<String> rootPackageIds,
-        @Nullable Map<String, PnpmPackage> packageMap,
+        @Nullable Map<String, PnpmPackageInfo> packageMap,
         PnpmLinkedPackageResolver linkedPackageResolver,
         @Nullable String reportingProjectPackagePath
     ) throws IntegrationException {
         if (packageMap == null) {
             throw new DetectableException("Could not parse 'packages' section of the pnpm-lock.yaml file.");
         }
-        for (Map.Entry<String, PnpmPackage> packageEntry : packageMap.entrySet()) {
+        for (Map.Entry<String, PnpmPackageInfo> packageEntry : packageMap.entrySet()) {
             String packageId = packageEntry.getKey();
-            if (rootPackageIds.contains(packageId)) {
-                graphBuilder.addChildToRoot(buildDependencyFromPackageId(packageId));
+            Optional<Dependency> pnpmPackage = buildDependencyFromPackageEntry(packageEntry);
+            if (!pnpmPackage.isPresent()) {
+                logger.debug(String.format("Could not add package %s to the graph.", packageId));
+                continue;
             }
-            PnpmPackage pnpmPackage = packageEntry.getValue();
-            if (dependencyTypeFilter.shouldReportDependencyType(pnpmPackage.getDependencyType())) {
-                for (Map.Entry<String, String> dependency : pnpmPackage.getDependencies().entrySet()) {
-                    String dependencyPackageId = convertRawEntryToPackageId(dependency, linkedPackageResolver, reportingProjectPackagePath);
-                    Dependency child = buildDependencyFromPackageId(dependencyPackageId);
-                    graphBuilder.addChildWithParent(child, buildDependencyFromPackageId(packageId));
+
+            if (isRootPackage(packageId, rootPackageIds)) {
+                graphBuilder.addChildToRoot(pnpmPackage.get());
+            }
+
+            PnpmPackageInfo packageInfo = packageEntry.getValue();
+            if (dependencyTypeFilter.shouldReportDependencyType(packageInfo.getDependencyType())) {
+                for (Map.Entry<String, String> packageDependency : packageInfo.getDependencies().entrySet()) {
+                    String dependencyPackageId = convertRawEntryToPackageId(packageDependency, linkedPackageResolver, reportingProjectPackagePath);
+                    Optional<Dependency> child = buildDependencyFromPackageId(dependencyPackageId);
+                    child.ifPresent(c -> graphBuilder.addChildWithParent(child.get(), pnpmPackage.get()));
                 }
             }
         }
@@ -95,9 +107,9 @@ public class PnpmYamlTransformer {
 
     private List<String> extractRootPackageIds(PnpmProjectPackage pnpmProjectPackage, @Nullable String reportingProjectPackagePath, PnpmLinkedPackageResolver linkedPackageResolver) {
         Map<String, String> rawPackageInfo = new HashMap<>();
-        dependencyTypeFilter.ifReportingType(DependencyType.APP, pnpmProjectPackage.dependencies, rawPackageInfo::putAll);
-        dependencyTypeFilter.ifReportingType(DependencyType.DEV, pnpmProjectPackage.devDependencies, rawPackageInfo::putAll);
-        dependencyTypeFilter.ifReportingType(DependencyType.OPTIONAL, pnpmProjectPackage.optionalDependencies, rawPackageInfo::putAll);
+        dependencyTypeFilter.ifReportingType(PnpmDependencyType.APP, pnpmProjectPackage.dependencies, rawPackageInfo::putAll);
+        dependencyTypeFilter.ifReportingType(PnpmDependencyType.DEV, pnpmProjectPackage.devDependencies, rawPackageInfo::putAll);
+        dependencyTypeFilter.ifReportingType(PnpmDependencyType.OPTIONAL, pnpmProjectPackage.optionalDependencies, rawPackageInfo::putAll);
 
         return rawPackageInfo.entrySet().stream()
             .map(entry -> convertRawEntryToPackageId(entry, linkedPackageResolver, reportingProjectPackagePath))
@@ -114,18 +126,41 @@ public class PnpmYamlTransformer {
         return String.format("/%s/%s", name, version);
     }
 
-    private NameVersion parseNameVersionFromId(String id) {
+    private Optional<NameVersion> parseNameVersionFromId(String id) {
         // ids follow format: /name/version, where name often contains slashes
-        int indexOfLastSlash = id.lastIndexOf("/");
-        String name = id.substring(1, indexOfLastSlash);
-        String version = id.substring(indexOfLastSlash + 1);
-
-        return new NameVersion(name, version);
+        try {
+            int indexOfLastSlash = id.lastIndexOf("/");
+            String name = id.substring(1, indexOfLastSlash);
+            String version = id.substring(indexOfLastSlash + 1);
+            return Optional.of(new NameVersion(name, version));
+        } catch (Exception e) {
+            logger.debug(String.format("There was an issue parsing package id: %s.  This is likely an unsupported format.", id));
+            return Optional.empty();
+        }
     }
 
-    private Dependency buildDependencyFromPackageId(String packageId) {
-        NameVersion nameVersion = parseNameVersionFromId(packageId);
-        return new Dependency(externalIdFactory.createNameVersionExternalId(Forge.NPMJS, nameVersion.getName(), nameVersion.getVersion()));
+    private Optional<Dependency> buildDependencyFromPackageEntry(Map.Entry<String, PnpmPackageInfo> packageEntry) {
+        PnpmPackageInfo packageInfo = packageEntry.getValue();
+        if (packageInfo.name != null) {
+            return Optional.of(new Dependency(externalIdFactory.createNameVersionExternalId(Forge.NPMJS, packageInfo.name, packageInfo.version)));
+        }
+        return buildDependencyFromPackageId(packageEntry.getKey());
+    }
+
+    private Optional<Dependency> buildDependencyFromPackageId(String packageId) {
+        return parseNameVersionFromId(packageId)
+            .map(nameVersion -> externalIdFactory.createNameVersionExternalId(Forge.NPMJS, nameVersion.getName(), nameVersion.getVersion()))
+            .map(Dependency::new);
+    }
+
+    private boolean isRootPackage(String id, List<String> rootIds) {
+        return rootIds.contains(id) ||
+            rootIds.stream()
+                .map(this::parseNameVersionFromId)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(NameVersion::getVersion)
+                .anyMatch(id::equals); // for file dependencies, they are declared as <name> : <fileIdAsReportedInPackagesSection>
     }
 
 }

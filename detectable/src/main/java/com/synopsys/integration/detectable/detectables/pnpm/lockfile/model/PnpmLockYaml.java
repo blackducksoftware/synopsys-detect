@@ -18,6 +18,6 @@ public class PnpmLockYaml {
     public Map<String, String> optionalDependencies;
 
     @Nullable
-    public Map<String, PnpmPackage> packages;
+    public Map<String, PnpmPackageInfo> packages;
 
 }
