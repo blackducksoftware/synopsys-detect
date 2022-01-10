@@ -33,6 +33,7 @@ import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDepend
 import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDepsDetectableOptions;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectableOptions;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectableOptions;
+import com.synopsys.integration.detectable.detectables.go.gomod.GoModDependencyType;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorOptions;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptOptions;
 import com.synopsys.integration.detectable.detectables.lerna.LernaOptions;
@@ -142,7 +143,15 @@ public class DetectableOptionFactory {
     }
 
     public GoModCliDetectableOptions createGoModCliDetectableOptions() {
-        Boolean dependencyVerificationEnabled = getValue(DetectProperties.DETECT_GO_ENABLE_VERIFICATION);
+        boolean dependencyVerificationEnabled;
+        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
+            List<GoModDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValues();
+            ExcludedDependencyTypeFilter<GoModDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>(excludedDependencyTypes);
+            dependencyVerificationEnabled = dependencyTypeFilter.shouldExcludeDependencyType(GoModDependencyType.UNUSED);
+        } else {
+            dependencyVerificationEnabled = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_GO_ENABLE_VERIFICATION));
+        }
+
         return new GoModCliDetectableOptions(dependencyVerificationEnabled);
     }
 

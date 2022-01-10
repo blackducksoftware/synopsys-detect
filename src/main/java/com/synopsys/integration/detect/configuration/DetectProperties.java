@@ -51,6 +51,7 @@ import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.conan.cli.config.ConanDependencyType;
 import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDependencyType;
+import com.synopsys.integration.detectable.detectables.go.gomod.GoModDependencyType;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.log.LogLevel;
@@ -415,7 +416,7 @@ public class DetectProperties {
     public static final DetectProperty<NoneEnumListProperty<DartPubDependencyType>> DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED =
         new DetectProperty<>(new NoneEnumListProperty<>("detect.pub.dependency.types.excluded", NoneEnum.NONE, DartPubDependencyType.class))
             .setInfo("Detect Dart Pub Deps Exclude Dev Dependencies", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp("Set this value to indicate which types of Dart Pub dependencies you want Detect to report. By default, all dependency types will be reported.",
+            .setHelp("Set this value to indicate which types of Dart Pub dependencies you want Detect to exclude. By default, all dependency types will be reported.",
                 "If DEV is excluded, the Dart Detector will pass the option --no-dev when running the command 'pub deps'.")
             .setExample("If you want Detect to exclude a specific type(s) of dependencies from it's report, pass a comma-separated list of such types (ex. detect.pub.dependency.types.excluded).")
             .setGroups(DetectGroup.DART, DetectGroup.DETECTOR, DetectGroup.GLOBAL)
@@ -580,10 +581,13 @@ public class DetectProperties {
             .setHelp("Path to the Go executable.")
             .setGroups(DetectGroup.GO, DetectGroup.GLOBAL);
 
-    public static final DetectProperty<BooleanProperty> DETECT_GO_ENABLE_VERIFICATION =
-        new DetectProperty<>(new BooleanProperty("detect.go.mod.enable.verification", true))
-            .setInfo("Go Mod Dependency Verification", DetectPropertyFromVersion.VERSION_7_1_0)
-            .setHelp("When enabled, Detect will use the results of 'go mod why' to filter out unused dependencies. Set to false if you have an empty BOM.")
+    public static final DetectProperty<NoneEnumListProperty<GoModDependencyType>> DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED =
+        new DetectProperty<>(new NoneEnumListProperty<>("detect.go.mod.dependency.types.excluded", NoneEnum.NONE, GoModDependencyType.class))
+            .setInfo("Go Mod Dependency Verification", DetectPropertyFromVersion.VERSION_7_10_0)
+            .setHelp("When enabled, Detect will use the results of 'go mod why' to filter out unused dependencies.")
+            .setHelp("Set this value to indicate which types of Go Mod dependencies you want Detect to exclude. By default, all dependency types will be reported.",
+                "If UNVERIFIED is excluded, Detect will use the results of 'go mod why' to filter out unused dependencies.")
+            .setExample("If you want Detect to exclude a specific type(s) of dependencies from it's report, pass a comma-separated list of such types (ex. detect.go.mod.dependency.types.excluded=UNUSED.")
             .setGroups(DetectGroup.GO, DetectGroup.GLOBAL);
 
     public static final DetectProperty<NullableStringProperty> DETECT_GRADLE_BUILD_COMMAND =
@@ -1441,6 +1445,14 @@ public class DetectProperties {
             .setGroups(DetectGroup.DART, DetectGroup.DETECTOR, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced)
             .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<BooleanProperty> DETECT_GO_ENABLE_VERIFICATION =
+        new DetectProperty<>(new BooleanProperty("detect.go.mod.enable.verification", true))
+            .setInfo("Go Mod Dependency Verification", DetectPropertyFromVersion.VERSION_7_1_0)
+            .setHelp("When enabled, Detect will use the results of 'go mod why' to filter out unused dependencies. Set to false if you have an empty BOM.")
+            .setGroups(DetectGroup.GO, DetectGroup.GLOBAL)
+            .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
 
     // TODO: Remove in 8.0.0
     private static String createDetectorBooleanDeprecationMessage(@NotNull DetectProperty<?> replacementProperty) {
