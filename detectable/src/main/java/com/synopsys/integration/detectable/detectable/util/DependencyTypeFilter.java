@@ -6,6 +6,10 @@ import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * @deprecated Please use the ExcludedDependencyTypeFilter instead.
+ */
+@Deprecated
 public class DependencyTypeFilter<T extends Enum<T>> {
     private final List<T> allowedDependencyTypes;
 
