@@ -176,8 +176,8 @@ public class DetectableOptionFactory {
     // TODO: Remove in 8.0.0. This will be one line, no method necessary - JM 01/2022
     private DependencyTypeFilter<ConanDependencyType> createConanDependencyTypeFilter() {
         Boolean includeBuildDependencies = getValue(DetectProperties.DETECT_CONAN_INCLUDE_BUILD_DEPENDENCIES);
-        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_CONAN_DEPENDENCY_TYPES.getProperty())) {
-            List<ConanDependencyType> dependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_CONAN_DEPENDENCY_TYPES.getProperty()).representedValues();
+        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_CONAN_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
+            List<ConanDependencyType> dependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_CONAN_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValues();
             return new DependencyTypeFilter<>(dependencyTypes);
         } else {
             List<ConanDependencyType> dependencyTypes = new LinkedList<>();

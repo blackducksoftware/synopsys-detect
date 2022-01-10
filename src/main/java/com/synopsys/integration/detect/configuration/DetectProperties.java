@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
@@ -48,6 +50,7 @@ import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnipp
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.conan.cli.config.ConanDependencyType;
+import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDependencyType;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.log.LogLevel;
@@ -181,7 +184,7 @@ public class DetectProperties {
             .setHelp("The path to the conan executable.")
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
 
-    public static final DetectProperty<NoneEnumListProperty<ConanDependencyType>> DETECT_CONAN_DEPENDENCY_TYPES =
+    public static final DetectProperty<NoneEnumListProperty<ConanDependencyType>> DETECT_CONAN_DEPENDENCY_TYPES_EXCLUDED =
         new DetectProperty<>(new NoneEnumListProperty<>("detect.conan.dependency.types.excluded", NoneEnum.NONE, ConanDependencyType.class))
             .setInfo("Include Conan Build Dependencies", DetectPropertyFromVersion.VERSION_7_10_0)
             .setHelp("Set this value to false if you would like to exclude your project's build dependencies.")
@@ -408,12 +411,10 @@ public class DetectProperties {
             .setHelp("The path to the flutter executable.")
             .setGroups(DetectGroup.DART, DetectGroup.GLOBAL);
 
-    public static final DetectProperty<BooleanProperty> DETECT_PUD_DEPS_EXCLUDE_DEV =
-        new DetectProperty<>(new BooleanProperty("detect.pub.deps.exclude.dev", false))
-            .setInfo("Detect Dart Pub Deps Exclude Dev Dependencies", DetectPropertyFromVersion.VERSION_7_5_0)
-            .setHelp(
-                "If true, the Dart Detector will pass the option --no-dev when running the command 'pub deps'."
-            )
+    public static final DetectProperty<NoneEnumListProperty<DartPubDependencyType>> DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED =
+        new DetectProperty<>(new NoneEnumListProperty<>("detect.pub.dependency.types.excluded", NoneEnum.NONE, DartPubDependencyType.class))
+            .setInfo("Detect Dart Pub Deps Exclude Dev Dependencies", DetectPropertyFromVersion.VERSION_7_10_0)
+            .setHelp("If true, the Dart Detector will pass the option --no-dev when running the command 'pub deps'.")
             .setGroups(DetectGroup.DART, DetectGroup.DETECTOR, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced);
 
@@ -1425,7 +1426,22 @@ public class DetectProperties {
             .setInfo("Include Conan Build Dependencies", DetectPropertyFromVersion.VERSION_6_8_0)
             .setHelp("Set this value to false if you would like to exclude your project's build dependencies.")
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
-            .setDeprecated("This property is being removed in favor of detect.conan.dependency.types.excluded. If the replacement property is set, this property is ignored.", DetectMajorVersion.EIGHT);
+            .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_CONAN_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<BooleanProperty> DETECT_PUD_DEPS_EXCLUDE_DEV =
+        new DetectProperty<>(new BooleanProperty("detect.pub.deps.exclude.dev", false))
+            .setInfo("Detect Dart Pub Deps Exclude Dev Dependencies", DetectPropertyFromVersion.VERSION_7_5_0)
+            .setHelp(
+                "If true, the Dart Detector will pass the option --no-dev when running the command 'pub deps'."
+            )
+            .setGroups(DetectGroup.DART, DetectGroup.DETECTOR, DetectGroup.GLOBAL)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
+
+    private static String createDetectorBooleanDeprecationMessage(@NotNull DetectProperty<?> replacementProperty) {
+        return String.format("This property is being removed in favor of %s. If the replacement property is set, this property is ignored.", replacementProperty.getProperty().getKey());
+    }
 
     // Accessor to get all properties
     public static Properties allProperties() throws IllegalAccessException {
