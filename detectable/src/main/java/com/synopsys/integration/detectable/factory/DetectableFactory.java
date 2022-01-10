@@ -78,12 +78,13 @@ import com.synopsys.integration.detectable.detectables.cocoapods.parser.PodlockP
 import com.synopsys.integration.detectable.detectables.conan.ConanCodeLocationGenerator;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliDetectable;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliExtractor;
-import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliExtractorOptions;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanResolver;
+import com.synopsys.integration.detectable.detectables.conan.cli.config.ConanCliOptions;
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.ConanInfoLineAnalyzer;
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.ConanInfoNodeParser;
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.ConanInfoParser;
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.element.NodeElementParser;
+import com.synopsys.integration.detectable.detectables.conan.cli.process.ConanCommandRunner;
 import com.synopsys.integration.detectable.detectables.conan.lockfile.ConanLockfileDetectable;
 import com.synopsys.integration.detectable.detectables.conan.lockfile.ConanLockfileExtractor;
 import com.synopsys.integration.detectable.detectables.conan.lockfile.ConanLockfileExtractorOptions;
@@ -168,6 +169,8 @@ import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmLockfileE
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmLockfileOptions;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmPackageLockDetectable;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmShrinkwrapDetectable;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.parse.NpmLockFileProjectIdTransformer;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.parse.NpmLockfileGraphTransformer;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.parse.NpmLockfilePackager;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.NpmPackageJsonParseDetectable;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.NpmPackageJsonParseDetectableOptions;
@@ -250,7 +253,6 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.section.YarnLockDependencySpecParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.section.YarnLockEntrySectionParserSet;
-import com.synopsys.integration.detectable.util.DependencyTypeFilter;
 import com.synopsys.integration.detectable.util.ToolVersionLogger;
 
 /*
@@ -385,11 +387,11 @@ public class DetectableFactory {
     }
 
     public ConanLockfileDetectable createConanLockfileDetectable(DetectableEnvironment environment, ConanLockfileExtractorOptions conanLockfileExtractorOptions) {
-        return new ConanLockfileDetectable(environment, fileFinder, conanLockfileExtractor(), conanLockfileExtractorOptions);
+        return new ConanLockfileDetectable(environment, fileFinder, conanLockfileExtractor(conanLockfileExtractorOptions), conanLockfileExtractorOptions);
     }
 
-    public ConanCliDetectable createConanCliDetectable(DetectableEnvironment environment, ConanResolver conanResolver, ConanCliExtractorOptions conanCliExtractorOptions) {
-        return new ConanCliDetectable(environment, fileFinder, conanResolver, conanCliExtractor(), conanCliExtractorOptions);
+    public ConanCliDetectable createConanCliDetectable(DetectableEnvironment environment, ConanResolver conanResolver, ConanCliOptions conanCliOptions) {
+        return new ConanCliDetectable(environment, fileFinder, conanResolver, conanCliExtractor(conanCliOptions));
     }
 
     public NpmCliDetectable createNpmCliDetectable(DetectableEnvironment environment, NpmResolver npmResolver, NpmCliExtractorOptions npmCliExtractorOptions) {
@@ -674,19 +676,20 @@ public class DetectableFactory {
         return new CompileCommandParser(commandParser());
     }
 
-    private ConanLockfileExtractor conanLockfileExtractor() {
-        ConanCodeLocationGenerator conanCodeLocationGenerator = new ConanCodeLocationGenerator();
+    private ConanLockfileExtractor conanLockfileExtractor(ConanLockfileExtractorOptions options) {
+        ConanCodeLocationGenerator conanCodeLocationGenerator = new ConanCodeLocationGenerator(options.getDependencyTypeFilter(), options.preferLongFormExternalIds());
         ConanLockfileParser conanLockfileParser = new ConanLockfileParser(gson, conanCodeLocationGenerator, externalIdFactory);
         return new ConanLockfileExtractor(conanLockfileParser);
     }
 
-    private ConanCliExtractor conanCliExtractor() {
+    private ConanCliExtractor conanCliExtractor(ConanCliOptions options) {
+        ConanCommandRunner conanCommandRunner = new ConanCommandRunner(executableRunner, options.getLockfilePath().orElse(null), options.getAdditionalArguments().orElse(null));
         ConanInfoLineAnalyzer conanInfoLineAnalyzer = new ConanInfoLineAnalyzer();
-        ConanCodeLocationGenerator conanCodeLocationGenerator = new ConanCodeLocationGenerator();
+        ConanCodeLocationGenerator conanCodeLocationGenerator = new ConanCodeLocationGenerator(options.getDependencyTypeFilter(), options.preferLongFormExternalIds());
         NodeElementParser nodeElementParser = new NodeElementParser(conanInfoLineAnalyzer);
         ConanInfoNodeParser conanInfoNodeParser = new ConanInfoNodeParser(conanInfoLineAnalyzer, nodeElementParser);
         ConanInfoParser conanInfoParser = new ConanInfoParser(conanInfoNodeParser, conanCodeLocationGenerator, externalIdFactory);
-        return new ConanCliExtractor(executableRunner, conanInfoParser, toolVersionLogger);
+        return new ConanCliExtractor(conanCommandRunner, conanInfoParser, toolVersionLogger);
     }
 
     private NpmCliParser npmCliDependencyFinder() {
@@ -694,7 +697,15 @@ public class DetectableFactory {
     }
 
     private NpmLockfilePackager npmLockfilePackager() {
-        return new NpmLockfilePackager(gson, externalIdFactory);
+        return new NpmLockfilePackager(gson, externalIdFactory, npmLockFileProjectIdTransformer(), npmLockfileGraphTransformer());
+    }
+
+    private NpmLockfileGraphTransformer npmLockfileGraphTransformer() {
+        return new NpmLockfileGraphTransformer(gson, externalIdFactory);
+    }
+
+    private NpmLockFileProjectIdTransformer npmLockFileProjectIdTransformer() {
+        return new NpmLockFileProjectIdTransformer(gson, externalIdFactory);
     }
 
     private NpmCliExtractor npmCliExtractor() {
@@ -782,7 +793,7 @@ public class DetectableFactory {
     }
 
     private PnpmYamlTransformer pnpmTransformer(PnpmLockOptions pnpmLockOptions) {
-        return new PnpmYamlTransformer(externalIdFactory, new DependencyTypeFilter(pnpmLockOptions.getAllowedDependencyTypes()));
+        return new PnpmYamlTransformer(externalIdFactory, pnpmLockOptions.getDependencyTypeFilter());
     }
 
     private PoetryExtractor poetryExtractor() {

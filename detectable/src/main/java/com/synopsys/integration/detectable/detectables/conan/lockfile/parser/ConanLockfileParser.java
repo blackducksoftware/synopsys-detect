@@ -34,13 +34,12 @@ public class ConanLockfileParser {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public ConanDetectableResult generateCodeLocationFromConanLockfileContents(String conanLockfileContents,
-        boolean includeBuildDependencies, boolean preferLongFormExternalIds) throws DetectableException {
+    public ConanDetectableResult generateCodeLocationFromConanLockfileContents(String conanLockfileContents) throws DetectableException {
         logger.trace("Parsing conan lockfile contents:\n{}", conanLockfileContents);
         Map<Integer, ConanNode<Integer>> indexedNodeMap = generateIndexedNodeMap(conanLockfileContents);
         // The lockfile references nodes by (integer) index; generator needs nodes referenced by names (component references)
         Map<String, ConanNode<String>> namedNodeMap = convertToNamedNodeMap(indexedNodeMap);
-        return conanCodeLocationGenerator.generateCodeLocationFromNodeMap(externalIdFactory, includeBuildDependencies, preferLongFormExternalIds, namedNodeMap);
+        return conanCodeLocationGenerator.generateCodeLocationFromNodeMap(externalIdFactory, namedNodeMap);
     }
 
     private Map<Integer, ConanNode<Integer>> generateIndexedNodeMap(String conanLockfileContents) {
