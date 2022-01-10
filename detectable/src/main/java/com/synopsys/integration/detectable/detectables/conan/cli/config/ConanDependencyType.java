@@ -1,6 +1,5 @@
 package com.synopsys.integration.detectable.detectables.conan.cli.config;
 
 public enum ConanDependencyType {
-    APP,
     BUILD
 }

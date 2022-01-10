@@ -5,14 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.detectable.util.DependencyTypeFilter;
+import com.synopsys.integration.detectable.detectable.util.ExcludedDependencyTypeFilter;
 import com.synopsys.integration.detectable.detectables.conan.ConanCodeLocationGenerator;
 import com.synopsys.integration.detectable.detectables.conan.ConanDetectableResult;
 import com.synopsys.integration.detectable.detectables.conan.cli.config.ConanDependencyType;
@@ -29,7 +28,7 @@ public class ConanCliParserFunctionalTest {
     @Test
     public void test() throws IOException, IntegrationException {
         File conanInfoOutputFile = FunctionalTestFiles.asFile("/conan/cli/conan_info.txt");
-        DependencyTypeFilter<ConanDependencyType> dependencyTypeFilter = new DependencyTypeFilter<>(Arrays.asList(ConanDependencyType.APP, ConanDependencyType.BUILD));
+        ExcludedDependencyTypeFilter<ConanDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>();
         ConanCodeLocationGenerator conanCodeLocationGenerator = new ConanCodeLocationGenerator(dependencyTypeFilter, false);
         ConanInfoLineAnalyzer conanInfoLineAnalyzer = new ConanInfoLineAnalyzer();
         NodeElementParser nodeElementParser = new NodeElementParser(conanInfoLineAnalyzer);
