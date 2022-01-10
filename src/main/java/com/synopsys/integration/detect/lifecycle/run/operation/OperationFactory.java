@@ -125,6 +125,7 @@ import com.synopsys.integration.detect.workflow.blackduck.project.AddTagsToProje
 import com.synopsys.integration.detect.workflow.blackduck.project.AddUserGroupsToProjectOperation;
 import com.synopsys.integration.detect.workflow.blackduck.project.FindCloneByLatestOperation;
 import com.synopsys.integration.detect.workflow.blackduck.project.FindCloneByNameOperation;
+import com.synopsys.integration.detect.workflow.blackduck.project.FindLicenseUrlsOperation;
 import com.synopsys.integration.detect.workflow.blackduck.project.FindProjectGroupOperation;
 import com.synopsys.integration.detect.workflow.blackduck.project.MapToParentOperation;
 import com.synopsys.integration.detect.workflow.blackduck.project.SetApplicationIdOperation;
@@ -137,6 +138,8 @@ import com.synopsys.integration.detect.workflow.blackduck.project.options.FindCl
 import com.synopsys.integration.detect.workflow.blackduck.project.options.ParentProjectMapOptions;
 import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectGroupFindResult;
 import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectGroupOptions;
+import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectVersionLicenseOptions;
+import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectVersionLicensesFindResult;
 import com.synopsys.integration.detect.workflow.blackduck.report.service.ReportService;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationResult;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationEventPublisher;
@@ -649,10 +652,11 @@ public class OperationFactory { //TODO: OperationRunner
         });
     }
 
-    public ProjectVersionWrapper syncProjectVersion(NameVersion projectNameVersion, ProjectGroupFindResult projectGroupFindResult, CloneFindResult cloneFindResult, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
+    public ProjectVersionWrapper syncProjectVersion(NameVersion projectNameVersion, ProjectGroupFindResult projectGroupFindResult, CloneFindResult cloneFindResult, ProjectVersionLicensesFindResult projectVersionLicensesFindResult,
+        BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
         return auditLog.namedInternal("Sync Project", () -> {
-            return new SyncProjectOperation(blackDuckRunData.getBlackDuckServicesFactory().createProjectService(), blackDuckRunData.getBlackDuckServicesFactory().createLicenseService())
-                .sync(projectNameVersion, projectGroupFindResult, cloneFindResult, detectConfigurationFactory.createDetectProjectServiceOptions());
+            return new SyncProjectOperation(blackDuckRunData.getBlackDuckServicesFactory().createProjectService())
+                .sync(projectNameVersion, projectGroupFindResult, cloneFindResult, projectVersionLicensesFindResult, detectConfigurationFactory.createDetectProjectServiceOptions());
         });
     }
 
@@ -729,6 +733,10 @@ public class OperationFactory { //TODO: OperationRunner
         return detectConfigurationFactory.createProjectGroupOptions();
     }
 
+    public ProjectVersionLicenseOptions calculateProjectVersionLicenses() {
+        return detectConfigurationFactory.createProjectVersionLicenseOptions();
+    }
+
     public CloneFindResult findLatestProjectVersionCloneUrl(BlackDuckRunData blackDuckRunData, String projectName) throws DetectUserFriendlyException {
         return auditLog.namedInternal("Find Clone Url By Latest", () -> {
             return new FindCloneByLatestOperation(blackDuckRunData.getBlackDuckServicesFactory().createProjectService(), blackDuckRunData.getBlackDuckServicesFactory().getBlackDuckApiClient())
@@ -747,6 +755,13 @@ public class OperationFactory { //TODO: OperationRunner
         return auditLog.namedInternal("Find Project Group By Exact Name", () -> {
             return new FindProjectGroupOperation(blackDuckRunData.getBlackDuckServicesFactory().getBlackDuckApiClient(), blackDuckRunData.getBlackDuckServicesFactory().getApiDiscovery())
                 .findProjectGroup(projectGroupName);
+        });
+    }
+
+    public List<String> findLicenseUrls(BlackDuckRunData blackDuckRunData, List<String> licenseNames) throws DetectUserFriendlyException {
+        return auditLog.namedInternal("Find License Urls By Name", () -> {
+            return new FindLicenseUrlsOperation(blackDuckRunData.getBlackDuckServicesFactory().createLicenseService())
+                .findLicenseUrls(licenseNames);
         });
     }
 

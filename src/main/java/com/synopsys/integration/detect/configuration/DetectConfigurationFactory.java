@@ -61,6 +61,7 @@ import com.synopsys.integration.detect.workflow.blackduck.project.options.FindCl
 import com.synopsys.integration.detect.workflow.blackduck.project.options.ParentProjectMapOptions;
 import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectGroupOptions;
 import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectSyncOptions;
+import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectVersionLicenseOptions;
 import com.synopsys.integration.detect.workflow.file.DirectoryOptions;
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeOptions;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
@@ -310,7 +311,6 @@ public class DetectConfigurationFactory {
         Boolean projectLevelAdjustments = getValue(DetectProperties.DETECT_PROJECT_LEVEL_ADJUSTMENTS);
         Boolean forceProjectVersionUpdate = getValue(DetectProperties.DETECT_PROJECT_VERSION_UPDATE);
         String projectVersionNickname = getNullableValue(DetectProperties.DETECT_PROJECT_VERSION_NICKNAME);
-        String projectVersionLicense = getNullableValue(DetectProperties.DETECT_PROJECT_VERSION_LICENSE);
 
         return new ProjectSyncOptions(
             projectVersionPhase,
@@ -321,9 +321,13 @@ public class DetectConfigurationFactory {
             cloneCategories,
             forceProjectVersionUpdate,
             projectVersionNickname,
-            projectLevelAdjustments,
-            projectVersionLicense
+            projectLevelAdjustments
         );
+    }
+
+    public ProjectVersionLicenseOptions createProjectVersionLicenseOptions() {
+        List<String> licenseNames = getValue(DetectProperties.DETECT_PROJECT_VERSION_LICENSES);
+        return new ProjectVersionLicenseOptions(licenseNames);
     }
 
     public ParentProjectMapOptions createParentProjectMapOptions() {

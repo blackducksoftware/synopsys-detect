@@ -16,7 +16,6 @@ public class ProjectSyncOptions {
     private final Boolean forceProjectVersionUpdate;
     private final String projectVersionNickname;
     private final Boolean projectLevelAdjustments;
-    private final String projectVersionLicense;
 
     public ProjectSyncOptions(
         ProjectVersionPhaseType projectVersionPhase,
@@ -27,8 +26,7 @@ public class ProjectSyncOptions {
         List<ProjectCloneCategoriesType> cloneCategories,
         Boolean forceProjectVersionUpdate,
         String projectVersionNickname,
-        Boolean projectLevelAdjustments,
-        String projectVersionLicense
+        Boolean projectLevelAdjustments
     ) {
         this.projectVersionPhase = projectVersionPhase;
         this.projectVersionDistribution = projectVersionDistribution;
@@ -39,7 +37,6 @@ public class ProjectSyncOptions {
         this.forceProjectVersionUpdate = forceProjectVersionUpdate;
         this.projectVersionNickname = projectVersionNickname;
         this.projectLevelAdjustments = projectLevelAdjustments;
-        this.projectVersionLicense = projectVersionLicense;
     }
 
     public ProjectVersionPhaseType getProjectVersionPhase() {
@@ -76,9 +73,5 @@ public class ProjectSyncOptions {
 
     public Boolean getProjectLevelAdjustments() {
         return projectLevelAdjustments;
-    }
-
-    public String getProjectVersionLicense() {
-        return projectVersionLicense;
     }
 }
