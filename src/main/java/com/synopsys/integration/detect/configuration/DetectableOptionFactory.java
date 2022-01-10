@@ -1,6 +1,7 @@
 package com.synopsys.integration.detect.configuration;
 
 import java.nio.file.Path;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -16,13 +17,14 @@ import com.synopsys.integration.detect.PropertyConfigUtils;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetLocatorOptions;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
-import com.synopsys.integration.detectable.detectable.enums.DependencyType;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
+import com.synopsys.integration.detectable.detectable.util.DependencyTypeFilter;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectableOptions;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOptions;
-import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliExtractorOptions;
+import com.synopsys.integration.detectable.detectables.conan.cli.config.ConanCliOptions;
+import com.synopsys.integration.detectable.detectables.conan.cli.config.ConanDependencyType;
 import com.synopsys.integration.detectable.detectables.conan.lockfile.ConanLockfileExtractorOptions;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDepsDetectableOptions;
@@ -41,6 +43,7 @@ import com.synopsys.integration.detectable.detectables.pear.PearCliDetectableOpt
 import com.synopsys.integration.detectable.detectables.pip.inspector.PipInspectorDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pipenv.PipenvDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockOptions;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorOptions;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectableOptions;
 import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheOptions;
@@ -162,19 +165,35 @@ public class DetectableOptionFactory {
         return new MavenCliExtractorOptions(mavenBuildCommand, mavenExcludedScopes, mavenIncludedScopes, mavenExcludedModules, mavenIncludedModules);
     }
 
-    public ConanCliExtractorOptions createConanCliOptions() {
+    public ConanCliOptions createConanCliOptions() {
         Path lockfilePath = detectConfiguration.getValue(DetectProperties.DETECT_CONAN_LOCKFILE_PATH.getProperty()).map(path -> path.resolvePath(pathResolver)).orElse(null);
         String additionalArguments = getNullableValue(DetectProperties.DETECT_CONAN_ARGUMENTS);
-        Boolean includeBuildDependencies = getValue(DetectProperties.DETECT_CONAN_INCLUDE_BUILD_DEPENDENCIES);
         Boolean preferLongFormExternalIds = getValue(DetectProperties.DETECT_CONAN_REQUIRE_PREV_MATCH);
-        return new ConanCliExtractorOptions(lockfilePath, additionalArguments, includeBuildDependencies, preferLongFormExternalIds);
+        DependencyTypeFilter<ConanDependencyType> dependencyTypeFilter = createConanDependencyTypeFilter();
+        return new ConanCliOptions(lockfilePath, additionalArguments, dependencyTypeFilter, preferLongFormExternalIds);
+    }
+
+    // TODO: Remove in 8.0.0. This will be one line, no method necessary - JM 01/2022
+    private DependencyTypeFilter<ConanDependencyType> createConanDependencyTypeFilter() {
+        Boolean includeBuildDependencies = getValue(DetectProperties.DETECT_CONAN_INCLUDE_BUILD_DEPENDENCIES);
+        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_CONAN_DEPENDENCY_TYPES.getProperty())) {
+            List<ConanDependencyType> dependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_CONAN_DEPENDENCY_TYPES.getProperty()).representedValues();
+            return new DependencyTypeFilter<>(dependencyTypes);
+        } else {
+            List<ConanDependencyType> dependencyTypes = new LinkedList<>();
+            dependencyTypes.add(ConanDependencyType.APP);
+            if (Boolean.TRUE.equals(includeBuildDependencies)) {
+                dependencyTypes.add(ConanDependencyType.BUILD);
+            }
+            return new DependencyTypeFilter<>(dependencyTypes);
+        }
     }
 
     public ConanLockfileExtractorOptions createConanLockfileOptions() {
         Path lockfilePath = detectConfiguration.getValue(DetectProperties.DETECT_CONAN_LOCKFILE_PATH.getProperty()).map(path -> path.resolvePath(pathResolver)).orElse(null);
-        Boolean includeBuildDependencies = getValue(DetectProperties.DETECT_CONAN_INCLUDE_BUILD_DEPENDENCIES);
         Boolean preferLongFormExternalIds = getValue(DetectProperties.DETECT_CONAN_REQUIRE_PREV_MATCH);
-        return new ConanLockfileExtractorOptions(lockfilePath, includeBuildDependencies, preferLongFormExternalIds);
+        DependencyTypeFilter<ConanDependencyType> dependencyTypeFilter = createConanDependencyTypeFilter();
+        return new ConanLockfileExtractorOptions(lockfilePath, dependencyTypeFilter, preferLongFormExternalIds);
     }
 
     public NpmCliExtractorOptions createNpmCliExtractorOptions() {
@@ -217,8 +236,9 @@ public class DetectableOptionFactory {
     }
 
     public PnpmLockOptions createPnpmLockOptions() {
-        List<DependencyType> dependencyTypes = PropertyConfigUtils.getAllNoneList(detectConfiguration, DetectProperties.DETECT_PNPM_DEPENDENCY_TYPES.getProperty()).representedValues();
-        return new PnpmLockOptions(dependencyTypes);
+        List<PnpmDependencyType> pnpmDependencyTypes = PropertyConfigUtils.getAllNoneList(detectConfiguration, DetectProperties.DETECT_PNPM_DEPENDENCY_TYPES.getProperty()).representedValues();
+        DependencyTypeFilter<PnpmDependencyType> dependencyTypeFilter = new DependencyTypeFilter<>(pnpmDependencyTypes);
+        return new PnpmLockOptions(dependencyTypeFilter);
     }
 
     public ProjectInspectorOptions createProjectInspectorOptions() {

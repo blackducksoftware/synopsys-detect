@@ -275,7 +275,11 @@ public class DetectConfigurationFactory {
         AllNoneEnumList<DetectorType> included = PropertyConfigUtils.getAllNoneList(detectConfiguration, DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES.getProperty());
         ExcludeIncludeEnumFilter<DetectorType> detectorFilter = new ExcludeIncludeEnumFilter<>(excluded, included);
 
-        return new DetectorEvaluationOptions(forceNestedSearch, getFollowSymLinks(), (rule -> detectorFilter.shouldInclude(rule.getDetectorType())));
+        Set<DetectorType> includedTypes = Arrays.stream(DetectorType.values())
+            .filter(detectorFilter::shouldInclude)
+            .collect(Collectors.toSet());
+
+        return new DetectorEvaluationOptions(forceNestedSearch, getFollowSymLinks(), (rule -> includedTypes.contains(rule.getDetectorType())));
     }
 
     public BdioOptions createBdioOptions() {
@@ -462,6 +466,7 @@ public class DetectConfigurationFactory {
         return getPathOrNull(property.getProperty());
     }
 
+    // TODO: Make these path methods more accessible to DetectableOptionFactory. Maybe on DetectConfiguration
     private Path getPathOrNull(NullablePathProperty property) {
         return detectConfiguration.getValue(property).map(path -> path.resolvePath(pathResolver)).orElse(null);
     }

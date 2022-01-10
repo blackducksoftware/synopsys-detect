@@ -1,17 +1,16 @@
 package com.synopsys.integration.detectable.detectables.pnpm.lockfile;
 
-import java.util.List;
-
-import com.synopsys.integration.detectable.detectable.enums.DependencyType;
+import com.synopsys.integration.detectable.detectable.util.DependencyTypeFilter;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
 
 public class PnpmLockOptions {
-    private final List<DependencyType> allowedDependencyTypes;
+    private final DependencyTypeFilter<PnpmDependencyType> dependencyTypeFilter;
 
-    public PnpmLockOptions(List<DependencyType> allowedDependencyTypes) {
-        this.allowedDependencyTypes = allowedDependencyTypes;
+    public PnpmLockOptions(DependencyTypeFilter<PnpmDependencyType> dependencyTypeFilter) {
+        this.dependencyTypeFilter = dependencyTypeFilter;
     }
 
-    public List<DependencyType> getAllowedDependencyTypes() {
-        return allowedDependencyTypes;
+    public DependencyTypeFilter<PnpmDependencyType> getDependencyTypeFilter() {
+        return dependencyTypeFilter;
     }
 }

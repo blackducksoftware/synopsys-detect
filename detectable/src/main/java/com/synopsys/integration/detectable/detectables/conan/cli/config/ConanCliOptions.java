@@ -1,19 +1,20 @@
-package com.synopsys.integration.detectable.detectables.conan.cli;
+package com.synopsys.integration.detectable.detectables.conan.cli.config;
 
 import java.nio.file.Path;
 import java.util.Optional;
 
-public class ConanCliExtractorOptions {
+import com.synopsys.integration.detectable.detectable.util.DependencyTypeFilter;
+
+public class ConanCliOptions {
     private final Path lockfilePath;
     private final String additionalArguments;
-    private final boolean includeDevDependencies;
+    private final DependencyTypeFilter<ConanDependencyType> dependencyTypeFilter;
     private final boolean preferLongFormExternalIds;
 
-    public ConanCliExtractorOptions(Path lockfilePath, String additionalArguments, boolean includeDevDependencies,
-        boolean preferLongFormExternalIds) {
+    public ConanCliOptions(Path lockfilePath, String additionalArguments, DependencyTypeFilter<ConanDependencyType> dependencyTypeFilter, boolean preferLongFormExternalIds) {
         this.lockfilePath = lockfilePath;
         this.additionalArguments = additionalArguments;
-        this.includeDevDependencies = includeDevDependencies;
+        this.dependencyTypeFilter = dependencyTypeFilter;
         this.preferLongFormExternalIds = preferLongFormExternalIds;
     }
 
@@ -25,8 +26,8 @@ public class ConanCliExtractorOptions {
         return Optional.ofNullable(additionalArguments);
     }
 
-    public boolean shouldIncludeDevDependencies() {
-        return includeDevDependencies;
+    public DependencyTypeFilter<ConanDependencyType> getDependencyTypeFilter() {
+        return dependencyTypeFilter;
     }
 
     public boolean preferLongFormExternalIds() {
