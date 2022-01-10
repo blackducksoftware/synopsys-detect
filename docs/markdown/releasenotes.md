@@ -2,14 +2,19 @@
 
 ## Version 7.10.0
 
+### New Features
+* Build dependencies can now be excluded from BitBake results.
+
+### Changed features
+* [solution_name] now classifies empty code location warning messages as the DEBUG logging level instead of the previous classification as the WARN logging level.
+* BitBake detector: Added support for BitBake 1.52 (Yocto 3.4).
+* BitBake detector: Added support for BitBake projects with build directories that reside outside the project directory.
+
 ### Resolved issues
 * (IDETECT-2949) Fixed an issue where [solution_name] failed to properly parse Go module version names containing '-' characters.
 * (IDETECT-2959) Fixed an issue where [solution_name] would not fail when running `go mod why` fails.
 * (IDETECT-2971) Fixed an issue where [solution_name] would not produce unique code location paths for Pnpm projects. To avoid duplicate components, supply this property against each pnpm project: `detect.project.codelocation.unmap=true`. Do this the first time you run [solution_name] v7.10.0. Subsequent runs no longer require this to be set to true.
 * (IDETECT-3038) Fixed an issue where [solution_name] would fail to parse file dependency declarations for pnpm projects in their pnpm-lock.yaml files.
-
-### Changed features
-* [solution_name] now classifies empty code location warning messages as the DEBUG logging level instead of the previous classification as the WARN logging level.
 
 ## Version 7.9.0
 
