@@ -20,17 +20,15 @@ public class ConanInfoParser {
     private final ConanCodeLocationGenerator conanCodeLocationGenerator;
     private final ExternalIdFactory externalIdFactory;
 
-    public ConanInfoParser(ConanInfoNodeParser conanInfoNodeParser, ConanCodeLocationGenerator conanCodeLocationGenerator,
-        ExternalIdFactory externalIdFactory) {
+    public ConanInfoParser(ConanInfoNodeParser conanInfoNodeParser, ConanCodeLocationGenerator conanCodeLocationGenerator, ExternalIdFactory externalIdFactory) {
         this.conanInfoNodeParser = conanInfoNodeParser;
         this.conanCodeLocationGenerator = conanCodeLocationGenerator;
         this.externalIdFactory = externalIdFactory;
     }
 
-    public ConanDetectableResult generateCodeLocationFromConanInfoOutput(String conanInfoOutput, boolean includeBuildDependencies, boolean preferLongFormExternalIds) throws DetectableException {
+    public ConanDetectableResult generateCodeLocationFromConanInfoOutput(String conanInfoOutput) throws DetectableException {
         Map<String, ConanNode<String>> nodeMap = generateNodeMap(conanInfoOutput);
-        return conanCodeLocationGenerator.generateCodeLocationFromNodeMap(externalIdFactory,
-            includeBuildDependencies, preferLongFormExternalIds, nodeMap);
+        return conanCodeLocationGenerator.generateCodeLocationFromNodeMap(externalIdFactory, nodeMap);
     }
 
     /*

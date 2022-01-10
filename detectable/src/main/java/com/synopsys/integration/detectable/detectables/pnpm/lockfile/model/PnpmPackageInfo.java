@@ -5,8 +5,6 @@ import java.util.Map;
 import org.apache.commons.collections4.MapUtils;
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.detectable.detectable.enums.DependencyType;
-
 public class PnpmPackageInfo {
     @Nullable
     public Boolean dev;
@@ -31,14 +29,14 @@ public class PnpmPackageInfo {
         return MapUtils.emptyIfNull(dependencies);
     }
 
-    public DependencyType getDependencyType() {
+    public PnpmDependencyType getDependencyType() {
         if (isDev()) {
-            return DependencyType.DEV;
+            return PnpmDependencyType.DEV;
         }
         if (isOptional()) {
-            return DependencyType.OPTIONAL;
+            return PnpmDependencyType.OPTIONAL;
         }
-        return DependencyType.APP;
+        return PnpmDependencyType.APP;
     }
 
 }

@@ -65,6 +65,6 @@ public class ConanLockfileDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
-        return conanLockfileExtractor.extract(lockfile, conanLockfileExtractorOptions);
+        return conanLockfileExtractor.extract(lockfile);
     }
 }
