@@ -48,7 +48,7 @@ public class IvyParseExtractor {
                 .nameVersionIfPresent(projectName)
                 .build();
         } catch (SAXException e) {
-            return new Extraction.Builder().exception(e).build();
+            return new Extraction.Builder().failure(String.format("There was an error parsing file %s: %s", ivyXmlFile.getAbsolutePath(), e.getMessage())).build();
         }
     }
 }
