@@ -21,9 +21,8 @@ import com.synopsys.integration.configuration.property.base.PassthroughProperty;
 import com.synopsys.integration.configuration.property.types.bool.BooleanProperty;
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumProperty;
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumValue;
-import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumListProperty;
-import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumUtils;
-import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumValue;
+import com.synopsys.integration.configuration.property.types.enumallnone.enumeration.AllNoneEnum;
+import com.synopsys.integration.configuration.property.types.enumallnone.property.AllNoneEnumListProperty;
 import com.synopsys.integration.configuration.property.types.enums.EnumListProperty;
 import com.synopsys.integration.configuration.property.types.enums.EnumProperty;
 import com.synopsys.integration.configuration.property.types.integer.IntegerProperty;
@@ -167,8 +166,8 @@ public class DetectProperties {
             .setHelp("A comma-separated list of additional options to pass to the bazel cquery command.")
             .setGroups(DetectGroup.BAZEL, DetectGroup.SOURCE_SCAN);
 
-    public static final DetectProperty<FilterableEnumListProperty<WorkspaceRule>> DETECT_BAZEL_DEPENDENCY_RULE =
-        new DetectProperty<>(new FilterableEnumListProperty<>("detect.bazel.dependency.type", emptyList(), WorkspaceRule.class))
+    public static final DetectProperty<AllNoneEnumListProperty<WorkspaceRule>> DETECT_BAZEL_DEPENDENCY_RULE =
+        new DetectProperty<>(new AllNoneEnumListProperty<>("detect.bazel.dependency.type", emptyList(), WorkspaceRule.class))
             .setInfo("Bazel workspace external dependency rule", DetectPropertyFromVersion.VERSION_6_0_0)
             .setHelp("The Bazel workspace rule(s) used to pull in external dependencies. If not set, Detect will attempt to determine the rule(s) from the contents of the WORKSPACE file.")
             .setGroups(DetectGroup.BAZEL, DetectGroup.SOURCE_SCAN);
@@ -544,8 +543,8 @@ public class DetectProperties {
             .setHelp("The path to the dotnet executable.")
             .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL);
 
-    public static final DetectProperty<FilterableEnumListProperty<DetectorType>> DETECT_EXCLUDED_DETECTOR_TYPES =
-        new DetectProperty<>(new FilterableEnumListProperty<>("detect.excluded.detector.types", emptyList(), DetectorType.class))
+    public static final DetectProperty<AllNoneEnumListProperty<DetectorType>> DETECT_EXCLUDED_DETECTOR_TYPES =
+        new DetectProperty<>(new AllNoneEnumListProperty<DetectorType>("detect.excluded.detector.types", emptyList(), DetectorType.class))
             .setInfo("Detector Types Excluded", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "By default, all detectors will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all detectors, specify \"ALL\". Exclusion rules always win.",
@@ -680,8 +679,8 @@ public class DetectProperties {
                 "If not set, the Impact Analysis reports are placed in a 'impact-analysis' subdirectory of the output directory.")
             .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
 
-    public static final DetectProperty<FilterableEnumListProperty<DetectorType>> DETECT_INCLUDED_DETECTOR_TYPES =
-        new DetectProperty<>(new FilterableEnumListProperty<>("detect.included.detector.types", emptyList(), DetectorType.class))
+    public static final DetectProperty<AllNoneEnumListProperty<DetectorType>> DETECT_INCLUDED_DETECTOR_TYPES =
+        new DetectProperty<>(new AllNoneEnumListProperty<>("detect.included.detector.types", emptyList(), DetectorType.class))
             .setInfo("Detector Types Included", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.",
@@ -924,8 +923,8 @@ public class DetectProperties {
             .setHelp("The path to the Pipenv executable.")
             .setGroups(DetectGroup.PIP, DetectGroup.GLOBAL);
 
-    public static final DetectProperty<FilterableEnumListProperty<DependencyType>> DETECT_PNPM_DEPENDENCY_TYPES =
-        new DetectProperty<>(new FilterableEnumListProperty<>("detect.pnpm.dependency.types", FilterableEnumUtils.allList(), DependencyType.class))
+    public static final DetectProperty<AllNoneEnumListProperty<DependencyType>> DETECT_PNPM_DEPENDENCY_TYPES =
+        new DetectProperty<>(new AllNoneEnumListProperty<>("detect.pnpm.dependency.types", AllNoneEnum.ALL, DependencyType.class))
             .setInfo("pnpm Dependency Types", DetectPropertyFromVersion.VERSION_7_8_0)
             .setHelp("Set this value to indicate which types of pnpm dependencies you want Detect to report.",
                 "If you want Detect to report a specific type(s) of dependencies, pass a comma-separated list of such types (ex. APP, DEV, OPTIONAL).  By default, all types will be reported.")
@@ -937,9 +936,9 @@ public class DetectProperties {
             .setHelp("Path of the swift executable.")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL);
 
-    public static final DetectProperty<FilterableEnumListProperty<PolicyRuleSeverityType>> DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES =
+    public static final DetectProperty<AllNoneEnumListProperty<PolicyRuleSeverityType>> DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES =
         new DetectProperty<>(
-            new FilterableEnumListProperty<>("detect.policy.check.fail.on.severities", FilterableEnumUtils.noneList(), PolicyRuleSeverityType.class))
+            new AllNoneEnumListProperty<>("detect.policy.check.fail.on.severities", AllNoneEnum.NONE, PolicyRuleSeverityType.class))
             .setInfo("Fail on Policy Violation Severities", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "A comma-separated list of policy violation severities that will fail Detect. If this is set to NONE, Detect will not fail due to policy violations. A value of ALL is equivalent to all of the other possible values except NONE.")
@@ -977,9 +976,9 @@ public class DetectProperties {
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced);
 
-    public static final DetectProperty<FilterableEnumListProperty<ProjectCloneCategoriesType>> DETECT_PROJECT_CLONE_CATEGORIES =
+    public static final DetectProperty<AllNoneEnumListProperty<ProjectCloneCategoriesType>> DETECT_PROJECT_CLONE_CATEGORIES =
         new DetectProperty<>(
-            new FilterableEnumListProperty<>("detect.project.clone.categories", singletonList(FilterableEnumValue.allValue()), ProjectCloneCategoriesType.class))
+            new AllNoneEnumListProperty<>("detect.project.clone.categories", AllNoneEnum.ALL, ProjectCloneCategoriesType.class))
             .setInfo("Clone Project Categories", DetectPropertyFromVersion.VERSION_4_2_0)
             .setHelp(
                 "The value of this property is used to set the 'Cloning' settings on created Black Duck projects. If property detect.project.version.update is set to true, the value of this property is used to set the 'Cloning' settings on updated Black Duck projects.")
@@ -1243,8 +1242,8 @@ public class DetectProperties {
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced);
 
-    public static final DetectProperty<FilterableEnumListProperty<DetectTool>> DETECT_TOOLS =
-        new DetectProperty<>(new FilterableEnumListProperty<>("detect.tools", emptyList(), DetectTool.class))
+    public static final DetectProperty<AllNoneEnumListProperty<DetectTool>> DETECT_TOOLS =
+        new DetectProperty<>(new AllNoneEnumListProperty<>("detect.tools", emptyList(), DetectTool.class))
             .setInfo("Detect Tools Included", DetectPropertyFromVersion.VERSION_5_0_0)
             .setHelp(
                 "The tools Detect should allow in a comma-separated list. Tools in this list (as long as they are not also in the excluded list) will be allowed to run if all criteria of the tool are met. Exclusion rules always win.",
@@ -1252,8 +1251,8 @@ public class DetectProperties {
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL);
 
-    public static final DetectProperty<FilterableEnumListProperty<DetectTool>> DETECT_TOOLS_EXCLUDED =
-        new DetectProperty<>(new FilterableEnumListProperty<>("detect.tools.excluded", emptyList(), DetectTool.class))
+    public static final DetectProperty<AllNoneEnumListProperty<DetectTool>> DETECT_TOOLS_EXCLUDED =
+        new DetectProperty<>(new AllNoneEnumListProperty<>("detect.tools.excluded", emptyList(), DetectTool.class))
             .setInfo("Detect Tools Excluded", DetectPropertyFromVersion.VERSION_5_0_0)
             .setHelp(
                 "The tools Detect should not allow, in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always win.",
