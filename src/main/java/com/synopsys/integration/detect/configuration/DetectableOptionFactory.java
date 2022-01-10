@@ -34,6 +34,7 @@ import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDepsDe
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectableOptions;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModDependencyType;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleConfigurationType;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorOptions;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptOptions;
 import com.synopsys.integration.detectable.detectables.lerna.LernaOptions;
@@ -101,13 +102,11 @@ public class DetectableOptionFactory {
     }
 
     public DartPubDepsDetectableOptions createDartPubDepsDetectableOptions() {
-        boolean excludeDevDependencies;
+        boolean excludeDevDependencies = getValue(DetectProperties.DETECT_PUD_DEPS_EXCLUDE_DEV);
         if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
             NoneEnumList<DartPubDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED.getProperty());
             ExcludedDependencyTypeFilter<DartPubDependencyType> typeFilter = new ExcludedDependencyTypeFilter<>(excludedDependencyTypes.representedValues());
             excludeDevDependencies = typeFilter.shouldExcludeDependencyType(DartPubDependencyType.DEV);
-        } else {
-            excludeDevDependencies = getValue(DetectProperties.DETECT_PUD_DEPS_EXCLUDE_DEV);
         }
 
         return new DartPubDepsDetectableOptions(excludeDevDependencies);
@@ -143,13 +142,11 @@ public class DetectableOptionFactory {
     }
 
     public GoModCliDetectableOptions createGoModCliDetectableOptions() {
-        boolean dependencyVerificationEnabled;
+        boolean dependencyVerificationEnabled = getValue(DetectProperties.DETECT_GO_ENABLE_VERIFICATION);
         if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
             List<GoModDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValues();
             ExcludedDependencyTypeFilter<GoModDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>(excludedDependencyTypes);
             dependencyVerificationEnabled = dependencyTypeFilter.shouldExcludeDependencyType(GoModDependencyType.UNUSED);
-        } else {
-            dependencyVerificationEnabled = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_GO_ENABLE_VERIFICATION));
         }
 
         return new GoModCliDetectableOptions(dependencyVerificationEnabled);
@@ -162,6 +159,11 @@ public class DetectableOptionFactory {
         List<String> includedConfigurationNames = getValue(DetectProperties.DETECT_GRADLE_INCLUDED_CONFIGURATIONS);
         String customRepository = ArtifactoryConstants.GRADLE_INSPECTOR_MAVEN_REPO;
         boolean includeUnresolvedConfigurations = getValue(DetectProperties.DETECT_GRADLE_INCLUDE_UNRESOLVED_CONFIGURATIONS);
+        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_GRADLE_CONFIGURATION_TYPES_EXCLUDED.getProperty())) {
+            List<GradleConfigurationType> excludedConfigurationTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_GRADLE_CONFIGURATION_TYPES_EXCLUDED.getProperty()).representedValues();
+            ExcludedDependencyTypeFilter<GradleConfigurationType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>(excludedConfigurationTypes);
+            includeUnresolvedConfigurations = dependencyTypeFilter.shouldReportDependencyType(GradleConfigurationType.UNRESOLVED);
+        }
 
         String onlineInspectorVersion = getNullableValue(DetectProperties.DETECT_GRADLE_INSPECTOR_VERSION);
         GradleInspectorScriptOptions scriptOptions = new GradleInspectorScriptOptions(excludedProjectNames, includedProjectNames, excludedConfigurationNames, includedConfigurationNames, customRepository, onlineInspectorVersion);

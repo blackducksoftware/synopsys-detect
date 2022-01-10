@@ -52,6 +52,7 @@ import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.conan.cli.config.ConanDependencyType;
 import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDependencyType;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModDependencyType;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleConfigurationType;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.log.LogLevel;
@@ -189,7 +190,7 @@ public class DetectProperties {
         new DetectProperty<>(new NoneEnumListProperty<>("detect.conan.dependency.types.excluded", NoneEnum.NONE, ConanDependencyType.class))
             .setInfo("Include Conan Build Dependencies", DetectPropertyFromVersion.VERSION_7_10_0)
             .setHelp("Set this value to indicate which types of Conan dependencies you want Detect to exclude. By default, all dependency types will be reported.")
-            .setExample("If you want Detect to exclude a specific type(s) of dependencies from it's report, pass a comma-separated list of such types (ex. BUILD).")
+            .setExample(ConanDependencyType.BUILD.name())
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<NullableStringProperty> DETECT_CONAN_ARGUMENTS =
@@ -418,7 +419,7 @@ public class DetectProperties {
             .setInfo("Detect Dart Pub Deps Exclude Dev Dependencies", DetectPropertyFromVersion.VERSION_7_10_0)
             .setHelp("Set this value to indicate which types of Dart Pub dependencies you want Detect to exclude. By default, all dependency types will be reported.",
                 "If DEV is excluded, the Dart Detector will pass the option --no-dev when running the command 'pub deps'.")
-            .setExample("If you want Detect to exclude a specific type(s) of dependencies from it's report, pass a comma-separated list of such types (ex. detect.pub.dependency.types.excluded).")
+            .setExample(DartPubDependencyType.DEV.name())
             .setGroups(DetectGroup.DART, DetectGroup.DETECTOR, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced);
 
@@ -584,10 +585,9 @@ public class DetectProperties {
     public static final DetectProperty<NoneEnumListProperty<GoModDependencyType>> DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED =
         new DetectProperty<>(new NoneEnumListProperty<>("detect.go.mod.dependency.types.excluded", NoneEnum.NONE, GoModDependencyType.class))
             .setInfo("Go Mod Dependency Verification", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp("When enabled, Detect will use the results of 'go mod why' to filter out unused dependencies.")
             .setHelp("Set this value to indicate which types of Go Mod dependencies you want Detect to exclude. By default, all dependency types will be reported.",
                 "If UNVERIFIED is excluded, Detect will use the results of 'go mod why' to filter out unused dependencies.")
-            .setExample("If you want Detect to exclude a specific type(s) of dependencies from it's report, pass a comma-separated list of such types (ex. detect.go.mod.dependency.types.excluded=UNUSED.")
+            .setExample(GoModDependencyType.UNUSED.name())
             .setGroups(DetectGroup.GO, DetectGroup.GLOBAL);
 
     public static final DetectProperty<NullableStringProperty> DETECT_GRADLE_BUILD_COMMAND =
@@ -623,11 +623,12 @@ public class DetectProperties {
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
-    public static final DetectProperty<BooleanProperty> DETECT_GRADLE_INCLUDE_UNRESOLVED_CONFIGURATIONS =
-        new DetectProperty<>(new BooleanProperty("detect.gradle.include.unresolved.configurations", false))
-            .setInfo("Gradle Include Unresolved Configurations", DetectPropertyFromVersion.VERSION_7_6_0)
-            .setHelp("When set to true, dependencies discovered from unresolved Gradle configurations will be included. It is set to false by default for a more accurate BOM.",
+    public static final DetectProperty<NoneEnumListProperty<GradleConfigurationType>> DETECT_GRADLE_CONFIGURATION_TYPES_EXCLUDED =
+        new DetectProperty<>(new NoneEnumListProperty<>("detect.gradle.configuration.types.excluded", NoneEnum.NONE, GradleConfigurationType.class))
+            .setInfo("Gradle Configuration Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
+            .setHelp("Set this value to indicate which types of Gradle configuration type you want Detect to exclude. By default, all configuration types will be reported.",
                 "Including dependencies from unresolved Gradle configurations could lead to false positives. Dependency versions from an unresolved configuration may differ from a resolved one. See https://docs.gradle.org/7.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs")
+            .setExample(GradleConfigurationType.UNRESOLVED.name())
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
@@ -1453,6 +1454,16 @@ public class DetectProperties {
             .setHelp("When enabled, Detect will use the results of 'go mod why' to filter out unused dependencies. Set to false if you have an empty BOM.")
             .setGroups(DetectGroup.GO, DetectGroup.GLOBAL)
             .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<BooleanProperty> DETECT_GRADLE_INCLUDE_UNRESOLVED_CONFIGURATIONS =
+        new DetectProperty<>(new BooleanProperty("detect.gradle.include.unresolved.configurations", false))
+            .setInfo("Gradle Include Unresolved Configurations", DetectPropertyFromVersion.VERSION_7_6_0)
+            .setHelp("When set to true, dependencies discovered from unresolved Gradle configurations will be included. It is set to false by default for a more accurate BOM.",
+                "Including dependencies from unresolved Gradle configurations could lead to false positives. Dependency versions from an unresolved configuration may differ from a resolved one. See https://docs.gradle.org/7.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs")
+            .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_GRADLE_CONFIGURATION_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
 
     // TODO: Remove in 8.0.0
     private static String createDetectorBooleanDeprecationMessage(@NotNull DetectProperty<?> replacementProperty) {
