@@ -177,7 +177,7 @@ public class DetectableOptionFactory {
     private DependencyTypeFilter<ConanDependencyType> createConanDependencyTypeFilter() {
         Boolean includeBuildDependencies = getValue(DetectProperties.DETECT_CONAN_INCLUDE_BUILD_DEPENDENCIES);
         if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_CONAN_DEPENDENCY_TYPES.getProperty())) {
-            List<ConanDependencyType> dependencyTypes = getValue(DetectProperties.DETECT_CONAN_DEPENDENCY_TYPES).representedValues();
+            List<ConanDependencyType> dependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_CONAN_DEPENDENCY_TYPES.getProperty()).representedValues();
             return new DependencyTypeFilter<>(dependencyTypes);
         } else {
             List<ConanDependencyType> dependencyTypes = new LinkedList<>();

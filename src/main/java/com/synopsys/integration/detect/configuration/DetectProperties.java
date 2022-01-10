@@ -6,7 +6,6 @@ import static java.util.Collections.singletonList;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,10 +19,12 @@ import com.synopsys.integration.configuration.property.Properties;
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.base.PassthroughProperty;
 import com.synopsys.integration.configuration.property.types.bool.BooleanProperty;
+import com.synopsys.integration.configuration.property.types.enumallnone.enumeration.AllNoneEnum;
+import com.synopsys.integration.configuration.property.types.enumallnone.enumeration.NoneEnum;
+import com.synopsys.integration.configuration.property.types.enumallnone.property.AllNoneEnumListProperty;
+import com.synopsys.integration.configuration.property.types.enumallnone.property.NoneEnumListProperty;
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumProperty;
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumValue;
-import com.synopsys.integration.configuration.property.types.enumallnone.enumeration.AllNoneEnum;
-import com.synopsys.integration.configuration.property.types.enumallnone.property.AllNoneEnumListProperty;
 import com.synopsys.integration.configuration.property.types.enums.EnumListProperty;
 import com.synopsys.integration.configuration.property.types.enums.EnumProperty;
 import com.synopsys.integration.configuration.property.types.integer.IntegerProperty;
@@ -180,8 +181,8 @@ public class DetectProperties {
             .setHelp("The path to the conan executable.")
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
 
-    public static final DetectProperty<FilterableEnumListProperty<ConanDependencyType>> DETECT_CONAN_DEPENDENCY_TYPES =
-        new DetectProperty<>(new FilterableEnumListProperty<>("detect.conan.dependency.types", Collections.singletonList(FilterableEnumValue.allValue()), ConanDependencyType.class))
+    public static final DetectProperty<NoneEnumListProperty<ConanDependencyType>> DETECT_CONAN_DEPENDENCY_TYPES =
+        new DetectProperty<>(new NoneEnumListProperty<>("detect.conan.dependency.types.excluded", NoneEnum.NONE, ConanDependencyType.class))
             .setInfo("Include Conan Build Dependencies", DetectPropertyFromVersion.VERSION_7_10_0)
             .setHelp("Set this value to false if you would like to exclude your project's build dependencies.")
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
@@ -546,7 +547,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL);
 
     public static final DetectProperty<AllNoneEnumListProperty<DetectorType>> DETECT_EXCLUDED_DETECTOR_TYPES =
-        new DetectProperty<>(new AllNoneEnumListProperty<DetectorType>("detect.excluded.detector.types", emptyList(), DetectorType.class))
+        new DetectProperty<>(new AllNoneEnumListProperty<>("detect.excluded.detector.types", emptyList(), DetectorType.class))
             .setInfo("Detector Types Excluded", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "By default, all detectors will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all detectors, specify \"ALL\". Exclusion rules always win.",
@@ -925,6 +926,7 @@ public class DetectProperties {
             .setHelp("The path to the Pipenv executable.")
             .setGroups(DetectGroup.PIP, DetectGroup.GLOBAL);
 
+    // TODO: In 8.0.0 this should be changed to a NoneEnumListProperty and PnpmDependencyType.APP should be removed as an option.
     public static final DetectProperty<AllNoneEnumListProperty<PnpmDependencyType>> DETECT_PNPM_DEPENDENCY_TYPES =
         new DetectProperty<>(new AllNoneEnumListProperty<>("detect.pnpm.dependency.types", AllNoneEnum.ALL, PnpmDependencyType.class))
             .setInfo("pnpm Dependency Types", DetectPropertyFromVersion.VERSION_7_8_0)
@@ -1423,7 +1425,7 @@ public class DetectProperties {
             .setInfo("Include Conan Build Dependencies", DetectPropertyFromVersion.VERSION_6_8_0)
             .setHelp("Set this value to false if you would like to exclude your project's build dependencies.")
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
-            .setDeprecated("This property is being removed in favor of detect.conan.dependency.types. If the replacement property is set, this property is ignored.", DetectMajorVersion.EIGHT);
+            .setDeprecated("This property is being removed in favor of detect.conan.dependency.types.excluded. If the replacement property is set, this property is ignored.", DetectMajorVersion.EIGHT);
 
     // Accessor to get all properties
     public static Properties allProperties() throws IllegalAccessException {
