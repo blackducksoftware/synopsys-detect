@@ -9,7 +9,7 @@
 * (IDETECT-2949) Fixed an issue where [solution_name] failed to properly parse Go module version names containing '-' characters.
 * (IDETECT-2959) Fixed an issue where [solution_name] would not fail when running `go mod why` fails.
 * (IDETECT-2971) Fixed an issue where [solution_name] would not produce unique code location paths for Pnpm projects.
-* (IDETECT-2939) Fixed an issue where [solution_name] would not exclude NPM peer or dev dependencies if a project had no declared dependencies.
+* (IDETECT-2939) Fixed an issue where NPM projects that had no declared dependencies would not exclude peer or dev dependencies.
 * (IDETECT-3038) Fixed an issue where [solution_name] would fail to parse file dependency declarations for pnpm projects in their pnpm-lock.yaml files.
 
 ### Changed features
