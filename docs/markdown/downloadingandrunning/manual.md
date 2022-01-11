@@ -1,33 +1,22 @@
-# Manual Installation
+# Installation Best Practices
 
-Although [solution_name] can be invoked with easily with the one-liner, it has several drawbacks; such as automatically downloading updates that may not be compatible with your environment. 
+Manually installing [solution_name] enables you to assure that the running version is compatible with your environment. Invoking [solution_name] with the one-liner is easy but automatically downloaded updates may not be compatible with your environment.  
 
-A more permanent and resilient approach is to manually install [solution_name] so that it will remain constant.
+The best practice for resilience is to add [solution_name] on the path, allowing for an easier invocation than even the one-liner. It still allows easy updating without modifying commands just as the one-liner does. This is the recommended best practice approach when resiliency is required.  
 
-The more advanced approaches add [solution_name] on the path, allowing an easier invocation than even the one-liner. It also still allows easy updating without modifying commands just as the one-liner does. It is the recommended approach when resiliency is required. 
-
-## Mac/Linux (Simple)
+## Basic Manual Installation Steps
 
 1. Download Java and make sure it is on your PATH
 2. Download the version of [solution_name] you want to use from https://sig-repo.synopsys.com/bds-integrations-release/com/synopsys/integration/synopsys-detect/
     * You should download the air-gap zip if you do not want [solution_name] to download Inspectors at runtime
 3. Put the [solution_name] jar/zip somewhere you can manage it
-    * Example: $HOME/synopsys-detect/download/synopsys-detect-X.X.X.jar
+    * Examples: 
+    *    Mac/Linux: 	$HOME/synopsys-detect/download/synopsys-detect-X.X.X.jar
+    *    Windows:	   C:\Program Files\synopsys-detect\download\synopsys-detect-X.X.X.jar
 4. You can now run [solution_name]
     * Example: java -jar $HOME/synopsys-detect/download/synopsys-detect-X.X.X.jar --help
 
-## Windows (Simple)
-
-1. Download Java and make sure it is on your PATH
-2. Download the version of [solution_name] you want to use from https://sig-repo.synopsys.com/bds-integrations-release/com/synopsys/integration/synopsys-detect/
-   * You should download the air-gap zip if you do not want [solution_name] to download Inspectors at runtime
-3. Put the [solution_name] jar/zip somewhere you can manage it
-   * Example: C:\Program Files\synopsys-detect\download\synopsys-detect-X.X.X.jar
-4. You can now run [solution_name]
-   * Example: java -jar "C:\Program Files\synopsys-detect\download\synopsys-detect-X.X.X.jar" --help
-
-
-## Mac/Linux (Advanced)
+## Mac/Linux Best Practice Installation Steps for Resilience  
 
 1. Download Java and make sure it is on your PATH
 2. Download the version of [solution_name] you want to use from https://sig-repo.synopsys.com/bds-integrations-release/com/synopsys/integration/synopsys-detect/
@@ -44,15 +33,14 @@ The more advanced approaches add [solution_name] on the path, allowing an easier
 7. You can now run [solution_name]
    * Example: detect --help
 
-## Windows (Advanced)
+## Windows Best Practice Installation Steps for Resilience 
 
 1. Download Java and make sure it is on your PATH
 2. Download the version of [solution_name] you want to use from https://sig-repo.synopsys.com/bds-integrations-release/com/synopsys/integration/synopsys-detect/
    * You should download the air-gap zip if you do not want [solution_name] to download Inspectors at runtime
 3. Create a symbolic link for the [solution_name] jar, called latest-detect.jar
    * Start a command prompt in the folder you downloaded detect.
-   * Run the following:
-      *     mklink latest-detect.jar synopsys-detect-X.X.X.jar
+   * Run the following: mklink latest-detect.jar synopsys-detect-X.X.X.jar
 4. Create a bat script named "detect.cmd" in the same folder with the following content
    *     @java -jar "C:\Program Files\synopsys-detect\download\latest-detect.jar" %*
 5. Add the script to your PATH variable
