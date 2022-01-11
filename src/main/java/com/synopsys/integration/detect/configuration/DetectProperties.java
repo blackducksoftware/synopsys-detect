@@ -270,7 +270,7 @@ public class DetectProperties {
         new DetectProperty<>(new NoneEnumListProperty<>("detect.bitbake.dependency.types.excluded", NoneEnum.NONE, BitbakeDependencyType.class))
             .setInfo("Bitbake Excluded Dependency Types", DetectPropertyFromVersion.VERSION_7_10_0)
             .setHelp("The dependency types to exclude from the results.",
-                "BUILD dependencies include recipes that are not declared in the license.manifest file, and native recipes.")
+                "BUILD dependencies include recipes that are not declared in the license.manifest file, and native recipes. When excluding BUILD dependencies, Detect requires the license.manifest file (found under the {builddir}/tmp directory).")
             .setExample("BUILD")
             .setGroups(DetectGroup.BITBAKE, DetectGroup.SOURCE_SCAN);
 
