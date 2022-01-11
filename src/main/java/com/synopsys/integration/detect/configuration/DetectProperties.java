@@ -55,6 +55,7 @@ import com.synopsys.integration.detectable.detectables.go.gomod.GoModDependencyT
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleConfigurationType;
 import com.synopsys.integration.detectable.detectables.lerna.LernaDependencyType;
 import com.synopsys.integration.detectable.detectables.npm.NpmDependencyType;
+import com.synopsys.integration.detectable.detectables.packagist.PackagistDependencyType;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.log.LogLevel;
@@ -191,7 +192,7 @@ public class DetectProperties {
     public static final DetectProperty<NoneEnumListProperty<ConanDependencyType>> DETECT_CONAN_DEPENDENCY_TYPES_EXCLUDED =
         new DetectProperty<>(new NoneEnumListProperty<>("detect.conan.dependency.types.excluded", NoneEnum.NONE, ConanDependencyType.class))
             .setInfo("Conan Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp("Set this value to indicate which types of Conan dependencies types for Detect to exclude. By default, all dependency types will be reported.")
+            .setHelp("Set this value to indicate which Conan dependency types for Detect to exclude. By default, all dependency types will be reported.")
             .setExample(ConanDependencyType.BUILD.name())
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
 
@@ -419,7 +420,7 @@ public class DetectProperties {
     public static final DetectProperty<NoneEnumListProperty<DartPubDependencyType>> DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED =
         new DetectProperty<>(new NoneEnumListProperty<>("detect.pub.dependency.types.excluded", NoneEnum.NONE, DartPubDependencyType.class))
             .setInfo("Dart Pub Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp("Set this value to indicate which types of Dart Pub dependencies types for Detect to exclude. By default, all dependency types will be reported.",
+            .setHelp("Set this value to indicate which Dart Pub dependency types for Detect to exclude. By default, all dependency types will be reported.",
                 "If DEV is excluded, the Dart Detector will pass the option --no-dev when running the command 'pub deps'.")
             .setExample(DartPubDependencyType.DEV.name())
             .setGroups(DetectGroup.DART, DetectGroup.DETECTOR, DetectGroup.GLOBAL)
@@ -587,7 +588,7 @@ public class DetectProperties {
     public static final DetectProperty<NoneEnumListProperty<GoModDependencyType>> DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED =
         new DetectProperty<>(new NoneEnumListProperty<>("detect.go.mod.dependency.types.excluded", NoneEnum.NONE, GoModDependencyType.class))
             .setInfo("Go Mod Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp("Set this value to indicate which types of Go Mod dependencies types for Detect to exclude. By default, all dependency types will be reported.",
+            .setHelp("Set this value to indicate which Go Mod dependency types for Detect to exclude. By default, all dependency types will be reported.",
                 "If UNVERIFIED is excluded, Detect will use the results of 'go mod why' to filter out unused dependencies.")
             .setExample(GoModDependencyType.UNUSED.name())
             .setGroups(DetectGroup.GO, DetectGroup.GLOBAL);
@@ -628,7 +629,7 @@ public class DetectProperties {
     public static final DetectProperty<NoneEnumListProperty<GradleConfigurationType>> DETECT_GRADLE_CONFIGURATION_TYPES_EXCLUDED =
         new DetectProperty<>(new NoneEnumListProperty<>("detect.gradle.configuration.types.excluded", NoneEnum.NONE, GradleConfigurationType.class))
             .setInfo("Gradle Configuration Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp("Set this value to indicate which types of Gradle configuration type you want Detect to exclude. By default, all configuration types will be reported.",
+            .setHelp("Set this value to indicate which Gradle configuration type you want Detect to exclude. By default, all configuration types will be reported.",
                 "Including dependencies from unresolved Gradle configurations could lead to false positives. Dependency versions from an unresolved configuration may differ from a resolved one. See https://docs.gradle.org/7.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs")
             .setExample(GradleConfigurationType.UNRESOLVED.name())
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
@@ -804,7 +805,7 @@ public class DetectProperties {
     public static final DetectProperty<NoneEnumListProperty<NpmDependencyType>> DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED =
         new DetectProperty<>(new NoneEnumListProperty<>("detect.npm.dependency.types.excluded", NoneEnum.NONE, NpmDependencyType.class))
             .setInfo("Npm Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp("Set this value to indicate which types of Npm dependencies types for Detect to exclude. By default, all dependency types will be reported.")
+            .setHelp("Set this value to indicate which Npm dependency types for Detect to exclude. By default, all dependency types will be reported.")
             .setExample(String.format("%s,%s", NpmDependencyType.DEV.name(), NpmDependencyType.PEER.name()))
             .setGroups(DetectGroup.NPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
 
@@ -878,10 +879,10 @@ public class DetectProperties {
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced);
 
-    public static final DetectProperty<BooleanProperty> DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES =
-        new DetectProperty<>(new BooleanProperty("detect.packagist.include.dev.dependencies", true))
-            .setInfo("Include Packagist Development Dependencies", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("Set this value to false if you would like to exclude your dev requires dependencies when ran.")
+    public static final DetectProperty<NoneEnumListProperty<PackagistDependencyType>> DETECT_PACKAGIST_DEPENDENCY_TYPES_EXCLUDED =
+        new DetectProperty<>(new NoneEnumListProperty<>("detect.packagist.dependency.types.excluded", NoneEnum.NONE, PackagistDependencyType.class))
+            .setInfo("Packagist Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
+            .setHelp("Set this value to indicate which Packagist dependency types for Detect to exclude. By default, all dependency types will be reported.")
             .setGroups(DetectGroup.PACKAGIST, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<BooleanProperty> DETECT_PEAR_ONLY_REQUIRED_DEPS =
@@ -937,7 +938,7 @@ public class DetectProperties {
     public static final DetectProperty<AllNoneEnumListProperty<PnpmDependencyType>> DETECT_PNPM_DEPENDENCY_TYPES =
         new DetectProperty<>(new AllNoneEnumListProperty<>("detect.pnpm.dependency.types", AllNoneEnum.ALL, PnpmDependencyType.class))
             .setInfo("pnpm Dependency Types", DetectPropertyFromVersion.VERSION_7_8_0)
-            .setHelp("Set this value to indicate which types of pnpm dependencies types for Detect to report.",
+            .setHelp("Set this value to indicate which pnpm dependency types for Detect to report.",
                 "If you want Detect to report a specific type(s) of dependencies, pass a comma-separated list of such types (ex. APP, DEV, OPTIONAL).  By default, all types will be reported.")
             .setGroups(DetectGroup.PNPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
 
@@ -1486,6 +1487,14 @@ public class DetectProperties {
             .setHelp("Set this value to false if you would like to exclude your peer dependencies when ran.")
             .setGroups(DetectGroup.NPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<BooleanProperty> DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES =
+        new DetectProperty<>(new BooleanProperty("detect.packagist.include.dev.dependencies", true))
+            .setInfo("Include Packagist Development Dependencies", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("Set this value to false if you would like to exclude your dev requires dependencies when ran.")
+            .setGroups(DetectGroup.PACKAGIST, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+            .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_PACKAGIST_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
 
     // TODO: Remove in 8.0.0
     private static String createDetectorBooleanDeprecationMessage(@NotNull DetectProperty<?> replacementProperty) {

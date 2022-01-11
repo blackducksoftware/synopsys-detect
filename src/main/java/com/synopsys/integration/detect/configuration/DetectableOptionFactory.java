@@ -46,6 +46,7 @@ import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliExtractorOp
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmLockfileOptions;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.NpmPackageJsonParseDetectableOptions;
 import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDetectableOptions;
+import com.synopsys.integration.detectable.detectables.packagist.PackagistDependencyType;
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pip.inspector.PipInspectorDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pipenv.PipenvDetectableOptions;
@@ -94,7 +95,13 @@ public class DetectableOptionFactory {
     }
 
     public ComposerLockDetectableOptions createComposerLockDetectableOptions() {
-        Boolean includedDevDependencies = getValue(DetectProperties.DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES);
+        boolean includedDevDependencies = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES));
+        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_PACKAGIST_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
+            List<PackagistDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_PACKAGIST_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValues();
+            ExcludedDependencyTypeFilter<PackagistDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>(excludedDependencyTypes);
+            includedDevDependencies = dependencyTypeFilter.shouldReportDependencyType(PackagistDependencyType.DEV);
+        }
+
         return new ComposerLockDetectableOptions(includedDevDependencies);
     }
 
