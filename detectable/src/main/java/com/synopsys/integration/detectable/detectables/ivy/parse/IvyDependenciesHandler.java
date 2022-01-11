@@ -13,9 +13,9 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
 public class IvyDependenciesHandler extends DefaultHandler {
     private static final String DEPENDENCY = "dependency";
-    private static final String ORG = "org";
-    private static final String NAME = "name";
-    private static final String REV = "rev";
+    private static final String ORG_KEY = "org";
+    private static final String NAME_KEY = "name";
+    private static final String REV_KEY = "rev";
 
     private final ExternalIdFactory externalIdFactory;
 
@@ -33,9 +33,9 @@ public class IvyDependenciesHandler extends DefaultHandler {
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         super.startElement(uri, localName, qName, attributes);
         if (qName.equals(DEPENDENCY)) {
-            org = parseAttribute(attributes, ORG);
-            name = parseAttribute(attributes, NAME);
-            rev = parseAttribute(attributes, REV);
+            org = parseAttribute(attributes, ORG_KEY);
+            name = parseAttribute(attributes, NAME_KEY);
+            rev = parseAttribute(attributes, REV_KEY);
         }
 
     }
