@@ -1,8 +1,8 @@
 # Installation Best Practices
 
-Manually installing [solution_name] enables you to assure that the running version is compatible with your environment. Invoking [solution_name] with the one-liner is easy but automatically downloaded updates may not be compatible with your environment.  
+Manually installing [solution_name] enables you to assure that the running version is compatible with your environment. Invoking [solution_name] with the bash and powershell commands is easy but automatically downloaded updates may not be compatible with your environment.  
 
-The best practice for resilience is to add [solution_name] on the path, allowing for an easier invocation than even the one-liner. It still allows easy updating without modifying commands just as the one-liner does. This is the recommended best practice approach when resiliency is required.  
+The best practice for resilience is to add [solution_name] on the path, allowing for an easier invocation than even the bash and powershell commands. It still allows easy updating without modifying commands just as the bash and powershell commands do. This is the recommended best practice approach when resiliency is required.  
 
 ## Basic Manual Installation Steps
 
