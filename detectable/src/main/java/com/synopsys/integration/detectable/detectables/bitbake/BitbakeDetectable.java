@@ -59,6 +59,6 @@ public class BitbakeDetectable extends Detectable {
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         return bitbakeExtractor.extract(environment.getDirectory(), foundBuildEnvScript, bitbakeDetectableOptions.getSourceArguments(), bitbakeDetectableOptions.getPackageNames(),
-            bitbakeDetectableOptions.isFollowSymLinks(), bitbakeDetectableOptions.getSearchDepth(), bitbakeDetectableOptions.getExcludedDependencyTypes(), bashExe);
+            bitbakeDetectableOptions.isFollowSymLinks(), bitbakeDetectableOptions.getSearchDepth(), bitbakeDetectableOptions.getExcludedDependencyTypeFilter(), bashExe);
     }
 }

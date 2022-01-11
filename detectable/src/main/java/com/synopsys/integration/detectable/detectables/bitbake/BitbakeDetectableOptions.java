@@ -1,7 +1,8 @@
 package com.synopsys.integration.detectable.detectables.bitbake;
 
 import java.util.List;
-import java.util.Set;
+
+import com.synopsys.integration.detectable.detectable.util.ExcludedDependencyTypeFilter;
 
 public class BitbakeDetectableOptions {
     private final String buildEnvName;
@@ -9,15 +10,15 @@ public class BitbakeDetectableOptions {
     private final List<String> packageNames;
     private final Integer searchDepth;
     private final boolean followSymLinks;
-    private final Set<BitbakeDependencyType> excludedDependencyTypes;
+    private final ExcludedDependencyTypeFilter<BitbakeDependencyType> excludedDependencyTypeFilter;
 
-    public BitbakeDetectableOptions(String buildEnvName, List<String> sourceArguments, List<String> packageNames, Integer searchDepth, boolean followSymLinks, Set<BitbakeDependencyType> excludedDependencyTypes) {
+    public BitbakeDetectableOptions(String buildEnvName, List<String> sourceArguments, List<String> packageNames, Integer searchDepth, boolean followSymLinks, ExcludedDependencyTypeFilter<BitbakeDependencyType> excludedDependencyTypeFilter) {
         this.buildEnvName = buildEnvName;
         this.sourceArguments = sourceArguments;
         this.packageNames = packageNames;
         this.searchDepth = searchDepth;
         this.followSymLinks = followSymLinks;
-        this.excludedDependencyTypes = excludedDependencyTypes;
+        this.excludedDependencyTypeFilter = excludedDependencyTypeFilter;
     }
 
     public String getBuildEnvName() {
@@ -40,7 +41,7 @@ public class BitbakeDetectableOptions {
         return followSymLinks;
     }
 
-    public Set<BitbakeDependencyType> getExcludedDependencyTypes() {
-        return excludedDependencyTypes;
+    public ExcludedDependencyTypeFilter<BitbakeDependencyType> getExcludedDependencyTypeFilter() {
+        return excludedDependencyTypeFilter;
     }
 }
