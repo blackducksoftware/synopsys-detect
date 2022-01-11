@@ -37,6 +37,7 @@ import com.synopsys.integration.detectable.detectables.go.gomod.GoModDependencyT
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleConfigurationType;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorOptions;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptOptions;
+import com.synopsys.integration.detectable.detectables.lerna.LernaDependencyType;
 import com.synopsys.integration.detectable.detectables.lerna.LernaOptions;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenCliExtractorOptions;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseOptions;
@@ -172,7 +173,13 @@ public class DetectableOptionFactory {
     }
 
     public LernaOptions createLernaOptions() {
-        Boolean includePrivate = getValue(DetectProperties.DETECT_LERNA_INCLUDE_PRIVATE);
+        boolean includePrivate = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_LERNA_INCLUDE_PRIVATE));
+        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_LERNA_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
+            List<LernaDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_LERNA_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValues();
+            ExcludedDependencyTypeFilter<LernaDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>(excludedDependencyTypes);
+            includePrivate = dependencyTypeFilter.shouldReportDependencyType(LernaDependencyType.PRIVATE);
+        }
+
         List<String> excludedPackages = getValue(DetectProperties.DETECT_LERNA_EXCLUDED_PACKAGES);
         List<String> includedPackages = getValue(DetectProperties.DETECT_LERNA_INCLUDED_PACKAGES);
         return new LernaOptions(includePrivate, excludedPackages, includedPackages);

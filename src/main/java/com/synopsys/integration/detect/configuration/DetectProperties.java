@@ -53,6 +53,7 @@ import com.synopsys.integration.detectable.detectables.conan.cli.config.ConanDep
 import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDependencyType;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModDependencyType;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleConfigurationType;
+import com.synopsys.integration.detectable.detectables.lerna.LernaDependencyType;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.log.LogLevel;
@@ -188,7 +189,7 @@ public class DetectProperties {
 
     public static final DetectProperty<NoneEnumListProperty<ConanDependencyType>> DETECT_CONAN_DEPENDENCY_TYPES_EXCLUDED =
         new DetectProperty<>(new NoneEnumListProperty<>("detect.conan.dependency.types.excluded", NoneEnum.NONE, ConanDependencyType.class))
-            .setInfo("Include Conan Build Dependencies", DetectPropertyFromVersion.VERSION_7_10_0)
+            .setInfo("Conan Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
             .setHelp("Set this value to indicate which types of Conan dependencies you want Detect to exclude. By default, all dependency types will be reported.")
             .setExample(ConanDependencyType.BUILD.name())
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
@@ -416,7 +417,7 @@ public class DetectProperties {
 
     public static final DetectProperty<NoneEnumListProperty<DartPubDependencyType>> DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED =
         new DetectProperty<>(new NoneEnumListProperty<>("detect.pub.dependency.types.excluded", NoneEnum.NONE, DartPubDependencyType.class))
-            .setInfo("Detect Dart Pub Deps Exclude Dev Dependencies", DetectPropertyFromVersion.VERSION_7_10_0)
+            .setInfo("Dart Pub Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
             .setHelp("Set this value to indicate which types of Dart Pub dependencies you want Detect to exclude. By default, all dependency types will be reported.",
                 "If DEV is excluded, the Dart Detector will pass the option --no-dev when running the command 'pub deps'.")
             .setExample(DartPubDependencyType.DEV.name())
@@ -584,7 +585,7 @@ public class DetectProperties {
 
     public static final DetectProperty<NoneEnumListProperty<GoModDependencyType>> DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED =
         new DetectProperty<>(new NoneEnumListProperty<>("detect.go.mod.dependency.types.excluded", NoneEnum.NONE, GoModDependencyType.class))
-            .setInfo("Go Mod Dependency Verification", DetectPropertyFromVersion.VERSION_7_10_0)
+            .setInfo("Go Mod Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
             .setHelp("Set this value to indicate which types of Go Mod dependencies you want Detect to exclude. By default, all dependency types will be reported.",
                 "If UNVERIFIED is excluded, Detect will use the results of 'go mod why' to filter out unused dependencies.")
             .setExample(GoModDependencyType.UNUSED.name())
@@ -730,11 +731,20 @@ public class DetectProperties {
             .setHelp("Path of the lerna executable.")
             .setGroups(DetectGroup.LERNA, DetectGroup.PATHS, DetectGroup.GLOBAL);
 
+    public static final DetectProperty<NoneEnumListProperty<LernaDependencyType>> DETECT_LERNA_DEPENDENCY_TYPES_EXCLUDED =
+        new DetectProperty<>(new NoneEnumListProperty<>("detect.lerna.dependency.types.excluded", NoneEnum.NONE, LernaDependencyType.class))
+            .setInfo("Lerna Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
+            .setHelp(String.format("Lerna allows for private packages that do not get published. Set this to %s to exclude all packages including private packages.", LernaDependencyType.PRIVATE))
+            .setExample(LernaDependencyType.PRIVATE.name())
+            .setGroups(DetectGroup.LERNA, DetectGroup.GLOBAL);
+
+    @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_LERNA_INCLUDE_PRIVATE =
         new DetectProperty<>(new BooleanProperty("detect.lerna.include.private", false))
             .setInfo("Include Lerna Packages defined as private.", DetectPropertyFromVersion.VERSION_6_0_0)
             .setHelp("Lerna allows for private packages that do not get published. Set this to true to include all packages including private packages.")
-            .setGroups(DetectGroup.LERNA, DetectGroup.GLOBAL);
+            .setGroups(DetectGroup.LERNA, DetectGroup.GLOBAL)
+            .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_LERNA_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
 
     public static final DetectProperty<NullableStringProperty> DETECT_MAVEN_BUILD_COMMAND =
         new DetectProperty<>(new NullableStringProperty("detect.maven.build.command"))
