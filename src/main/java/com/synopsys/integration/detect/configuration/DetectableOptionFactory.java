@@ -48,6 +48,7 @@ import com.synopsys.integration.detectable.detectables.npm.packagejson.NpmPackag
 import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDetectableOptions;
 import com.synopsys.integration.detectable.detectables.packagist.PackagistDependencyType;
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectableOptions;
+import com.synopsys.integration.detectable.detectables.pear.PearDependencyType;
 import com.synopsys.integration.detectable.detectables.pip.inspector.PipInspectorDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pipenv.PipenvDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockOptions;
@@ -260,7 +261,7 @@ public class DetectableOptionFactory {
         return new NpmDependencyTypeOptions(includeDevDependencies, includePeerDependencies);
     }
 
-    private class NpmDependencyTypeOptions {
+    private static class NpmDependencyTypeOptions {
         public final boolean includeDevDependencies;
         public final boolean includePeerDependencies;
 
@@ -271,7 +272,12 @@ public class DetectableOptionFactory {
     }
 
     public PearCliDetectableOptions createPearCliDetectableOptions() {
-        Boolean onlyGatherRequired = getValue(DetectProperties.DETECT_PEAR_ONLY_REQUIRED_DEPS);
+        boolean onlyGatherRequired = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_PEAR_ONLY_REQUIRED_DEPS));
+        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_PEAR_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
+            List<PearDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_PEAR_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValues();
+            ExcludedDependencyTypeFilter<PearDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>(excludedDependencyTypes);
+            onlyGatherRequired = dependencyTypeFilter.shouldExcludeDependencyType(PearDependencyType.OPTIONAL);
+        }
         return new PearCliDetectableOptions(onlyGatherRequired);
     }
 

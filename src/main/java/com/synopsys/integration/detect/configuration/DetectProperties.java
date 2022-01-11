@@ -56,6 +56,7 @@ import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleC
 import com.synopsys.integration.detectable.detectables.lerna.LernaDependencyType;
 import com.synopsys.integration.detectable.detectables.npm.NpmDependencyType;
 import com.synopsys.integration.detectable.detectables.packagist.PackagistDependencyType;
+import com.synopsys.integration.detectable.detectables.pear.PearDependencyType;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.log.LogLevel;
@@ -192,7 +193,7 @@ public class DetectProperties {
     public static final DetectProperty<NoneEnumListProperty<ConanDependencyType>> DETECT_CONAN_DEPENDENCY_TYPES_EXCLUDED =
         new DetectProperty<>(new NoneEnumListProperty<>("detect.conan.dependency.types.excluded", NoneEnum.NONE, ConanDependencyType.class))
             .setInfo("Conan Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp("Set this value to indicate which Conan dependency types for Detect to exclude. By default, all dependency types will be reported.")
+            .setHelp("Set this value to indicate which Conan dependency types Detect should exclude from the BOM. By default, all dependency types will be reported.")
             .setExample(ConanDependencyType.BUILD.name())
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
 
@@ -420,7 +421,7 @@ public class DetectProperties {
     public static final DetectProperty<NoneEnumListProperty<DartPubDependencyType>> DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED =
         new DetectProperty<>(new NoneEnumListProperty<>("detect.pub.dependency.types.excluded", NoneEnum.NONE, DartPubDependencyType.class))
             .setInfo("Dart Pub Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp("Set this value to indicate which Dart Pub dependency types for Detect to exclude. By default, all dependency types will be reported.",
+            .setHelp("Set this value to indicate which Dart Pub dependency types Detect should exclude from the BOM. By default, all dependency types will be reported.",
                 "If DEV is excluded, the Dart Detector will pass the option --no-dev when running the command 'pub deps'.")
             .setExample(DartPubDependencyType.DEV.name())
             .setGroups(DetectGroup.DART, DetectGroup.DETECTOR, DetectGroup.GLOBAL)
@@ -588,7 +589,7 @@ public class DetectProperties {
     public static final DetectProperty<NoneEnumListProperty<GoModDependencyType>> DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED =
         new DetectProperty<>(new NoneEnumListProperty<>("detect.go.mod.dependency.types.excluded", NoneEnum.NONE, GoModDependencyType.class))
             .setInfo("Go Mod Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp("Set this value to indicate which Go Mod dependency types for Detect to exclude. By default, all dependency types will be reported.",
+            .setHelp("Set this value to indicate which Go Mod dependency types Detect should exclude from the BOM. By default, all dependency types will be reported.",
                 "If UNVERIFIED is excluded, Detect will use the results of 'go mod why' to filter out unused dependencies.")
             .setExample(GoModDependencyType.UNUSED.name())
             .setGroups(DetectGroup.GO, DetectGroup.GLOBAL);
@@ -805,7 +806,7 @@ public class DetectProperties {
     public static final DetectProperty<NoneEnumListProperty<NpmDependencyType>> DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED =
         new DetectProperty<>(new NoneEnumListProperty<>("detect.npm.dependency.types.excluded", NoneEnum.NONE, NpmDependencyType.class))
             .setInfo("Npm Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp("Set this value to indicate which Npm dependency types for Detect to exclude. By default, all dependency types will be reported.")
+            .setHelp("Set this value to indicate which Npm dependency types Detect should exclude from the BOM. By default, all dependency types will be reported.")
             .setExample(String.format("%s,%s", NpmDependencyType.DEV.name(), NpmDependencyType.PEER.name()))
             .setGroups(DetectGroup.NPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
 
@@ -882,13 +883,14 @@ public class DetectProperties {
     public static final DetectProperty<NoneEnumListProperty<PackagistDependencyType>> DETECT_PACKAGIST_DEPENDENCY_TYPES_EXCLUDED =
         new DetectProperty<>(new NoneEnumListProperty<>("detect.packagist.dependency.types.excluded", NoneEnum.NONE, PackagistDependencyType.class))
             .setInfo("Packagist Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp("Set this value to indicate which Packagist dependency types for Detect to exclude. By default, all dependency types will be reported.")
+            .setHelp("Set this value to indicate which Packagist dependency types Detect should exclude from the BOM. By default, all dependency types will be reported.")
             .setGroups(DetectGroup.PACKAGIST, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
 
-    public static final DetectProperty<BooleanProperty> DETECT_PEAR_ONLY_REQUIRED_DEPS =
-        new DetectProperty<>(new BooleanProperty("detect.pear.only.required.deps", false))
-            .setInfo("Include Only Required Pear Dependencies", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("Set to true if you would like to include only required packages.")
+    public static final DetectProperty<NoneEnumListProperty<PearDependencyType>> DETECT_PEAR_DEPENDENCY_TYPES_EXCLUDED =
+        new DetectProperty<>(new NoneEnumListProperty<>("detect.pear.dependency.types.excluded", NoneEnum.NONE, PearDependencyType.class))
+            .setInfo("Pear Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
+            .setHelp("Set this value to indicate which Pear dependency types Detect should exclude from the BOM. By default, all dependency types will be reported.")
+            .setExample(PearDependencyType.OPTIONAL.name())
             .setGroups(DetectGroup.PEAR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<NullablePathProperty> DETECT_PEAR_PATH =
@@ -1495,6 +1497,14 @@ public class DetectProperties {
             .setHelp("Set this value to false if you would like to exclude your dev requires dependencies when ran.")
             .setGroups(DetectGroup.PACKAGIST, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_PACKAGIST_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<BooleanProperty> DETECT_PEAR_ONLY_REQUIRED_DEPS =
+        new DetectProperty<>(new BooleanProperty("detect.pear.only.required.deps", false))
+            .setInfo("Include Only Required Pear Dependencies", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("Set to true if you would like to include only required packages.")
+            .setGroups(DetectGroup.PEAR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+            .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_PEAR_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
 
     // TODO: Remove in 8.0.0
     private static String createDetectorBooleanDeprecationMessage(@NotNull DetectProperty<?> replacementProperty) {
