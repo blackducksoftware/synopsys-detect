@@ -41,6 +41,7 @@ import com.synopsys.integration.detectable.detectables.lerna.LernaDependencyType
 import com.synopsys.integration.detectable.detectables.lerna.LernaOptions;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenCliExtractorOptions;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseOptions;
+import com.synopsys.integration.detectable.detectables.npm.NpmDependencyType;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliExtractorOptions;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmLockfileOptions;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.NpmPackageJsonParseDetectableOptions;
@@ -225,22 +226,41 @@ public class DetectableOptionFactory {
     }
 
     public NpmCliExtractorOptions createNpmCliExtractorOptions() {
-        Boolean includeDevDependencies = getValue(DetectProperties.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES);
-        Boolean includePeerDependencies = getValue(DetectProperties.DETECT_NPM_INCLUDE_PEER_DEPENDENCIES);
+        NpmDependencyTypeOptions npmDependencyTypeOptions = createNpmDependencyTypeOptions();
         String npmArguments = getNullableValue(DetectProperties.DETECT_NPM_ARGUMENTS);
-        return new NpmCliExtractorOptions(includeDevDependencies, includePeerDependencies, npmArguments);
+        return new NpmCliExtractorOptions(npmDependencyTypeOptions.includeDevDependencies, npmDependencyTypeOptions.includePeerDependencies, npmArguments);
     }
 
     public NpmLockfileOptions createNpmLockfileOptions() {
-        Boolean includeDevDependencies = getValue(DetectProperties.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES);
-        Boolean includePeerDependencies = getValue(DetectProperties.DETECT_NPM_INCLUDE_PEER_DEPENDENCIES);
-        return new NpmLockfileOptions(includeDevDependencies, includePeerDependencies);
+        NpmDependencyTypeOptions npmDependencyTypeOptions = createNpmDependencyTypeOptions();
+        return new NpmLockfileOptions(npmDependencyTypeOptions.includeDevDependencies, npmDependencyTypeOptions.includePeerDependencies);
     }
 
     public NpmPackageJsonParseDetectableOptions createNpmPackageJsonParseDetectableOptions() {
-        Boolean includeDevDependencies = getValue(DetectProperties.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES);
-        Boolean includePeerDependencies = getValue(DetectProperties.DETECT_NPM_INCLUDE_PEER_DEPENDENCIES);
-        return new NpmPackageJsonParseDetectableOptions(includeDevDependencies, includePeerDependencies);
+        NpmDependencyTypeOptions npmDependencyTypeOptions = createNpmDependencyTypeOptions();
+        return new NpmPackageJsonParseDetectableOptions(npmDependencyTypeOptions.includeDevDependencies, npmDependencyTypeOptions.includePeerDependencies);
+    }
+
+    private NpmDependencyTypeOptions createNpmDependencyTypeOptions() {
+        boolean includeDevDependencies = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES));
+        boolean includePeerDependencies = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_NPM_INCLUDE_PEER_DEPENDENCIES));
+        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
+            List<NpmDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValues();
+            ExcludedDependencyTypeFilter<NpmDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>(excludedDependencyTypes);
+            includeDevDependencies = dependencyTypeFilter.shouldReportDependencyType(NpmDependencyType.DEV);
+            includePeerDependencies = dependencyTypeFilter.shouldReportDependencyType(NpmDependencyType.PEER);
+        }
+        return new NpmDependencyTypeOptions(includeDevDependencies, includePeerDependencies);
+    }
+
+    private class NpmDependencyTypeOptions {
+        public final boolean includeDevDependencies;
+        public final boolean includePeerDependencies;
+
+        private NpmDependencyTypeOptions(boolean includeDevDependencies, boolean includePeerDependencies) {
+            this.includeDevDependencies = includeDevDependencies;
+            this.includePeerDependencies = includePeerDependencies;
+        }
     }
 
     public PearCliDetectableOptions createPearCliDetectableOptions() {
