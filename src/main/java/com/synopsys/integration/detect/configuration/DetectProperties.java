@@ -59,6 +59,7 @@ import com.synopsys.integration.detectable.detectables.packagist.PackagistDepend
 import com.synopsys.integration.detectable.detectables.pear.PearDependencyType;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
 import com.synopsys.integration.detectable.detectables.rubygems.GemspecDependencyType;
+import com.synopsys.integration.detectable.detectables.yarn.YarnDependencyType;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.log.LogLevel;
 
@@ -1270,11 +1271,20 @@ public class DetectProperties {
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL);
 
+    public static final DetectProperty<NoneEnumListProperty<YarnDependencyType>> DETECT_YARN_DEPENDENCY_TYPES_EXCLUDED =
+        new DetectProperty<>(new NoneEnumListProperty<>("detect.yarn.dependency.types.excluded", NoneEnum.NONE, YarnDependencyType.class))
+            .setInfo("Yarn Dependency Types Excluded", DetectPropertyFromVersion.VERSION_4_0_0)
+            .setHelp("Set this value to indicate which Yarn dependency types Detect should exclude from the BOM. By default, all dependency types will be reported.")
+            .setExample(YarnDependencyType.NON_PRODUCTION.name())
+            .setGroups(DetectGroup.YARN, DetectGroup.SOURCE_SCAN);
+
+    @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_YARN_PROD_ONLY =
         new DetectProperty<>(new BooleanProperty("detect.yarn.prod.only", false))
             .setInfo("Include Yarn Production Dependencies Only", DetectPropertyFromVersion.VERSION_4_0_0)
             .setHelp("Set this to true to only scan production dependencies.")
-            .setGroups(DetectGroup.YARN, DetectGroup.SOURCE_SCAN);
+            .setGroups(DetectGroup.YARN, DetectGroup.SOURCE_SCAN)
+            .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_YARN_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
 
     public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_YARN_EXCLUDED_WORKSPACES =
         new DetectProperty<>(new CaseSensitiveStringListProperty("detect.yarn.excluded.workspaces"))

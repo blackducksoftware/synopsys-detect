@@ -57,6 +57,7 @@ import com.synopsys.integration.detectable.detectables.projectinspector.ProjectI
 import com.synopsys.integration.detectable.detectables.rubygems.GemspecDependencyType;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectableOptions;
 import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheOptions;
+import com.synopsys.integration.detectable.detectables.yarn.YarnDependencyType;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
 import com.synopsys.integration.log.LogLevel;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
@@ -329,7 +330,12 @@ public class DetectableOptionFactory {
     }
 
     public YarnLockOptions createYarnLockOptions() {
-        Boolean useProductionOnly = getValue(DetectProperties.DETECT_YARN_PROD_ONLY);
+        boolean useProductionOnly = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_YARN_PROD_ONLY));
+        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_YARN_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
+            List<YarnDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_YARN_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValues();
+            ExcludedDependencyTypeFilter<YarnDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>(excludedDependencyTypes);
+            useProductionOnly = dependencyTypeFilter.shouldExcludeDependencyType(YarnDependencyType.NON_PRODUCTION);
+        }
         List<String> excludedWorkspaces = getValue(DetectProperties.DETECT_YARN_EXCLUDED_WORKSPACES);
         List<String> includedWorkspaces = getValue(DetectProperties.DETECT_YARN_INCLUDED_WORKSPACES);
         return new YarnLockOptions(useProductionOnly, excludedWorkspaces, includedWorkspaces);
