@@ -14,13 +14,11 @@ import org.slf4j.LoggerFactory;
 
 public class DetectExcludedDirectoryFilter implements Predicate<File> {
     private static final String PATH_MATCHER_SYNTAX = "glob:%s";
-    private final Path sourcePath;
     private final List<String> directoryExclusionPatterns;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public DetectExcludedDirectoryFilter(Path sourcePath, List<String> directoryExclusionPatterns) {
-        this.sourcePath = sourcePath;
+    public DetectExcludedDirectoryFilter(List<String> directoryExclusionPatterns) {
         this.directoryExclusionPatterns = directoryExclusionPatterns;
     }
 
@@ -58,15 +56,7 @@ public class DetectExcludedDirectoryFilter implements Predicate<File> {
                 continue;
             }
 
-            Path relativeDirectoryPath;
-            try {
-                relativeDirectoryPath = sourcePath.relativize(file.toPath());
-            } catch (IllegalArgumentException e) {
-                logger.debug(String.format("Cannot exclude file %s.  Unable to relativize file's against path %s.", file.getAbsolutePath(), sourcePath.toFile().getAbsolutePath()));
-                return false;
-            }
-
-            if (relativeDirectoryPath.endsWith(excludedDirectoryPath)) {
+            if (file.toPath().endsWith(excludedDirectoryPath)) {
                 return true;
             }
         }
