@@ -6,7 +6,7 @@ The BitBake detector will run if it finds a BitBake build environment setup scri
 using property *detect.bitbake.build.env.name*)
 and at least one package (target image) name is provided using property *detect.bitbake.package.names*.
 
-If you are excluding build dependencies using the *detect.bitbake.excluded.dependency.types* property, the {builddir}/tmp directory be left intact since a file (license.manifest)
+If you are excluding build dependencies using the *detect.bitbake.dependency.types.excluded* property, the {builddir}/tmp directory be left intact since a file (license.manifest)
 that [solution_name] uses in that scenario resides in that tmp directory.
 
 ## Processing
@@ -34,6 +34,6 @@ passing any arguments the user has provided via the *detect.bitbake.source.argum
 
 1. You can configure the build environment setup script name using the *detect.bitbake.build.env.name property*.
 1. You can add arguments (such as the path to your build directory) to the 'source {build env setup script}' command that [solution_name] executes using the *detect.bitbake.source.arguments* property.
-1. You can exclude build dependencies from results using the *detect.bitbake.excluded.dependency.types* property.
+1. You can exclude build dependencies from results using the *detect.bitbake.dependency.types.excluded* property.
 
 See the BitBake properties page for a complete list of BitBake detector-related properties and details on how to use them.
