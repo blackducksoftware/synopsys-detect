@@ -54,6 +54,7 @@ import com.synopsys.integration.detectable.detectables.pipenv.PipenvDetectableOp
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockOptions;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorOptions;
+import com.synopsys.integration.detectable.detectables.rubygems.GemspecDependencyType;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectableOptions;
 import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheOptions;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
@@ -308,8 +309,14 @@ public class DetectableOptionFactory {
     }
 
     public GemspecParseDetectableOptions createGemspecParseDetectableOptions() {
-        Boolean includeRuntimeDependencies = getValue(DetectProperties.DETECT_RUBY_INCLUDE_RUNTIME_DEPENDENCIES);
-        Boolean includeDevDependencies = getValue(DetectProperties.DETECT_RUBY_INCLUDE_DEV_DEPENDENCIES);
+        boolean includeRuntimeDependencies = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_RUBY_INCLUDE_RUNTIME_DEPENDENCIES));
+        boolean includeDevDependencies = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_RUBY_INCLUDE_DEV_DEPENDENCIES));
+        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
+            List<GemspecDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValues();
+            ExcludedDependencyTypeFilter<GemspecDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>(excludedDependencyTypes);
+            includeRuntimeDependencies = dependencyTypeFilter.shouldExcludeDependencyType(GemspecDependencyType.RUNTIME);
+            includeDevDependencies = dependencyTypeFilter.shouldReportDependencyType(GemspecDependencyType.DEV);
+        }
         return new GemspecParseDetectableOptions(includeRuntimeDependencies, includeDevDependencies);
     }
 

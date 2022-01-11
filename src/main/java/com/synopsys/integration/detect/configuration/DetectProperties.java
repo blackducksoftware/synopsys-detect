@@ -58,6 +58,7 @@ import com.synopsys.integration.detectable.detectables.npm.NpmDependencyType;
 import com.synopsys.integration.detectable.detectables.packagist.PackagistDependencyType;
 import com.synopsys.integration.detectable.detectables.pear.PearDependencyType;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
+import com.synopsys.integration.detectable.detectables.rubygems.GemspecDependencyType;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.log.LogLevel;
 
@@ -1168,16 +1169,11 @@ public class DetectProperties {
             .setHelp("The output directory for risk report in PDF. Default is the source directory.")
             .setGroups(DetectGroup.REPORT, DetectGroup.GLOBAL);
 
-    public static final DetectProperty<BooleanProperty> DETECT_RUBY_INCLUDE_RUNTIME_DEPENDENCIES =
-        new DetectProperty<>(new BooleanProperty("detect.ruby.include.runtime.dependencies", true))
-            .setInfo("Ruby Runtime Dependencies", DetectPropertyFromVersion.VERSION_5_4_0)
-            .setHelp("If set to false, runtime dependencies will not be included when parsing *.gemspec files.")
-            .setGroups(DetectGroup.RUBY, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
-
-    public static final DetectProperty<BooleanProperty> DETECT_RUBY_INCLUDE_DEV_DEPENDENCIES =
-        new DetectProperty<>(new BooleanProperty("detect.ruby.include.dev.dependencies", false))
-            .setInfo("Ruby Development Dependencies", DetectPropertyFromVersion.VERSION_5_4_0)
-            .setHelp("If set to true, development dependencies will be included when parsing *.gemspec files.")
+    public static final DetectProperty<NoneEnumListProperty<GemspecDependencyType>> DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED =
+        new DetectProperty<>(new NoneEnumListProperty<>("detect.ruby.dependency.types.excluded", NoneEnum.NONE, GemspecDependencyType.class))
+            .setInfo("Ruby Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
+            .setHelp("Set this value to indicate which Ruby(Gemspec) dependency types Detect should exclude from the BOM. By default, all dependency types will be reported.")
+            .setExample(String.format("%s,%s", GemspecDependencyType.DEV.name(), GemspecDependencyType.RUNTIME))
             .setGroups(DetectGroup.RUBY, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<NullablePathProperty> DETECT_SBT_PATH =
@@ -1505,6 +1501,22 @@ public class DetectProperties {
             .setHelp("Set to true if you would like to include only required packages.")
             .setGroups(DetectGroup.PEAR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_PEAR_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<BooleanProperty> DETECT_RUBY_INCLUDE_RUNTIME_DEPENDENCIES =
+        new DetectProperty<>(new BooleanProperty("detect.ruby.include.runtime.dependencies", true))
+            .setInfo("Ruby Runtime Dependencies", DetectPropertyFromVersion.VERSION_5_4_0)
+            .setHelp("If set to false, runtime dependencies will not be included when parsing *.gemspec files.")
+            .setGroups(DetectGroup.RUBY, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+            .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<BooleanProperty> DETECT_RUBY_INCLUDE_DEV_DEPENDENCIES =
+        new DetectProperty<>(new BooleanProperty("detect.ruby.include.dev.dependencies", false))
+            .setInfo("Ruby Development Dependencies", DetectPropertyFromVersion.VERSION_5_4_0)
+            .setHelp("If set to true, development dependencies will be included when parsing *.gemspec files.")
+            .setGroups(DetectGroup.RUBY, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+            .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
 
     // TODO: Remove in 8.0.0
     private static String createDetectorBooleanDeprecationMessage(@NotNull DetectProperty<?> replacementProperty) {
