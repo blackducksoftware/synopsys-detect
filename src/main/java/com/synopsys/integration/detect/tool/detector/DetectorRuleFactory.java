@@ -94,7 +94,7 @@ public class DetectorRuleFactory {
 
         ruleSet.addDetector(DetectorType.GRADLE, "Gradle Inspector", GradleDetectable.class, detectableFactory::createGradleDetectable).defaults().build();
 
-        ruleSet.addDetector(DetectorType.IVY, "Ivy Parse", IvyParseDetectable.class, detectableFactory::createIvyParseDetectable).defaults().build();
+        ruleSet.addDetector(DetectorType.IVY, "Ivy Parse", IvyParseDetectable.class, detectableFactory::createIvyParseDetectable).defaultLock().build();
 
         ruleSet.addDetector(DetectorType.HEX, "Rebar", RebarDetectable.class, detectableFactory::createRebarDetectable).defaults().build();
 
@@ -172,7 +172,7 @@ public class DetectorRuleFactory {
         ruleSet.addDetector(DetectorType.GRADLE, "Gradle Project Inspector", GradleProjectInspectorDetectable.class, detectableFactory::createGradleProjectInspectorDetectable).defaults().build();
         ruleSet.addDetector(DetectorType.GO_GRADLE, "Go Gradle", GoGradleDetectable.class, detectableFactory::createGoGradleDetectable).defaults().build();
 
-        ruleSet.addDetector(DetectorType.IVY, "Ivy Parse", IvyParseDetectable.class, detectableFactory::createIvyParseDetectable).defaults().build();
+        ruleSet.addDetector(DetectorType.IVY, "Ivy Parse", IvyParseDetectable.class, detectableFactory::createIvyParseDetectable).defaultLock().build();
 
         ruleSet.addDetector(DetectorType.MAVEN, "Maven Pom Parse", MavenParseDetectable.class, detectableFactory::createMavenParseDetectable).defaults().build();
         ruleSet.addDetector(DetectorType.MAVEN, "Maven Project Inspector", MavenProjectInspectorDetectable.class, detectableFactory::createMavenProjectInspectorDetectable).defaults().build();
