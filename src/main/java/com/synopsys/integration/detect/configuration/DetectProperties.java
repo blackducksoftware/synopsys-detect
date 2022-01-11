@@ -715,7 +715,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL);
 
     public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_LERNA_EXCLUDED_PACKAGES =
-        new DetectProperty<>(new CaseSensitiveStringListProperty("detect.lerna.excluded.packages"))
+        new DetectProperty<>(new CaseSensitiveStringListProperty("detect.`lerna`.excluded.packages"))
             .setInfo("Lerna Packages Excluded", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp("A comma-separated list of Lerna packages to exclude.",
                 "As Detect parses the output of lerna ls --all --json, Detect will exclude any Lerna packages specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
@@ -739,7 +739,7 @@ public class DetectProperties {
     public static final DetectProperty<NoneEnumListProperty<LernaDependencyType>> DETECT_LERNA_DEPENDENCY_TYPES_EXCLUDED =
         new DetectProperty<>(new NoneEnumListProperty<>("detect.lerna.dependency.types.excluded", NoneEnum.NONE, LernaDependencyType.class))
             .setInfo("Lerna Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp(String.format("Lerna allows for private packages that do not get published. Set this to %s to exclude all packages including private packages.", LernaDependencyType.PRIVATE))
+            .setHelp("Set this value to indicate which Lerna dependency types Detect should exclude from the BOM. By default, all dependency types will be reported.")
             .setExample(LernaDependencyType.PRIVATE.name())
             .setGroups(DetectGroup.LERNA, DetectGroup.GLOBAL);
 
@@ -942,7 +942,7 @@ public class DetectProperties {
     public static final DetectProperty<AllNoneEnumListProperty<PnpmDependencyType>> DETECT_PNPM_DEPENDENCY_TYPES =
         new DetectProperty<>(new AllNoneEnumListProperty<>("detect.pnpm.dependency.types", AllNoneEnum.ALL, PnpmDependencyType.class))
             .setInfo("pnpm Dependency Types", DetectPropertyFromVersion.VERSION_7_8_0)
-            .setHelp("Set this value to indicate which pnpm dependency types for Detect to report.",
+            .setHelp("Set this value to indicate which pnpm dependency types for should include in the BOM.",
                 "If you want Detect to report a specific type(s) of dependencies, pass a comma-separated list of such types (ex. APP, DEV, OPTIONAL).  By default, all types will be reported.")
             .setGroups(DetectGroup.PNPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
 
@@ -1278,14 +1278,6 @@ public class DetectProperties {
             .setExample(YarnDependencyType.NON_PRODUCTION.name())
             .setGroups(DetectGroup.YARN, DetectGroup.SOURCE_SCAN);
 
-    @Deprecated
-    public static final DetectProperty<BooleanProperty> DETECT_YARN_PROD_ONLY =
-        new DetectProperty<>(new BooleanProperty("detect.yarn.prod.only", false))
-            .setInfo("Include Yarn Production Dependencies Only", DetectPropertyFromVersion.VERSION_4_0_0)
-            .setHelp("Set this to true to only scan production dependencies.")
-            .setGroups(DetectGroup.YARN, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_YARN_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
-
     public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_YARN_EXCLUDED_WORKSPACES =
         new DetectProperty<>(new CaseSensitiveStringListProperty("detect.yarn.excluded.workspaces"))
             .setInfo("Yarn Exclude Workspaces", DetectPropertyFromVersion.VERSION_7_0_0)
@@ -1527,6 +1519,14 @@ public class DetectProperties {
             .setHelp("If set to true, development dependencies will be included when parsing *.gemspec files.")
             .setGroups(DetectGroup.RUBY, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<BooleanProperty> DETECT_YARN_PROD_ONLY =
+        new DetectProperty<>(new BooleanProperty("detect.yarn.prod.only", false))
+            .setInfo("Include Yarn Production Dependencies Only", DetectPropertyFromVersion.VERSION_4_0_0)
+            .setHelp("Set this to true to only scan production dependencies.")
+            .setGroups(DetectGroup.YARN, DetectGroup.SOURCE_SCAN)
+            .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_YARN_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
 
     // TODO: Remove in 8.0.0
     private static String createDetectorBooleanDeprecationMessage(@NotNull DetectProperty<?> replacementProperty) {
