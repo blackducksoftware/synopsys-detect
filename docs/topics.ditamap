@@ -128,7 +128,6 @@
       <topicref href="properties/detectors/go.md" format="markdown"/>
       <topicref href="properties/detectors/gradle.md" format="markdown"/>
       <topicref href="properties/detectors/hex.md" format="markdown"/>
-      <topicref href="properties/detectors/ivy.md" format="markdown"/>
       <topicref href="properties/detectors/lerna.md" format="markdown"/>
       <topicref href="properties/detectors/maven.md" format="markdown"/>
       <topicref href="properties/detectors/npm.md" format="markdown"/>
@@ -180,6 +179,7 @@
     <topicref href="packagemgrs/golang.md" format="markdown"/>
     <topicref href="packagemgrs/gradle.md" format="markdown"/>
     <topicref href="packagemgrs/hex.md" format="markdown"/>
+    <topicref href="packagemgrs/ivy.md" format="markdown"/>
     <topicref href="packagemgrs/lerna.md" format="markdown"/>
     <topicref href="packagemgrs/maven.md" format="markdown"/>
     <topicref href="packagemgrs/npm.md" format="markdown"/>
