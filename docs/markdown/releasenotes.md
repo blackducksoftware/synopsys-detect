@@ -4,6 +4,12 @@
 
 ### New features
 * Added support for the Apache Ivy package manager.
+* Build dependencies can now be excluded from BitBake results.
+
+### Changed features
+* [solution_name] now classifies empty code location warning messages as the DEBUG logging level instead of the previous classification as the WARN logging level.
+* BitBake detector: Added support for BitBake 1.52 (Yocto 3.4).
+* BitBake detector: Added support for BitBake projects with build directories that reside outside the project directory.
 
 ### Resolved issues
 * (IDETECT-2949) Fixed an issue where [solution_name] failed to properly parse Go module version names containing '-' characters.
@@ -13,12 +19,9 @@
 * (IDETECT-3038) Fixed an issue where [solution_name] would fail to parse file dependency declarations for pnpm projects in their pnpm-lock.yaml files.
 * (IDETECT-3000) Fixed an issue where [solution_name] would error out when a user's source directory and output directory did not share a common root.
 
-### Changed features
-* [solution_name] now classifies empty code location warning messages as the DEBUG logging level instead of the previous classification as the WARN logging level.
-
 ## Version 7.9.0
 
-### New Features
+### New features
 * Added support for the Xcode Swift Package Manager for Xcode projects using the built-in [Swift Packages](https://developer.apple.com/documentation/swift_packages) feature.
 * Added detect.bdio.file.name to specify the name of the output bdio file. 
 * Added system architecture DEBUG level logs to assist with support.

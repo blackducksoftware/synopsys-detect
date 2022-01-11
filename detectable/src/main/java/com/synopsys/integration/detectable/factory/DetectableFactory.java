@@ -48,9 +48,12 @@ import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeExtractor;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeRecipesToLayerMapConverter;
+import com.synopsys.integration.detectable.detectables.bitbake.BuildFileFinder;
+import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeEnvironmentParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParserTransformer;
+import com.synopsys.integration.detectable.detectables.bitbake.parse.LicenseManifestParser;
 import com.synopsys.integration.detectable.detectables.cargo.CargoDetectable;
 import com.synopsys.integration.detectable.detectables.cargo.CargoExtractor;
 import com.synopsys.integration.detectable.detectables.cargo.parse.CargoLockParser;
@@ -908,7 +911,8 @@ public class DetectableFactory {
     }
 
     private BitbakeExtractor bitbakeExtractor() {
-        return new BitbakeExtractor(executableRunner, fileFinder, graphParserTransformer(), bitbakeGraphTransformer(), bitbakeRecipesParser(), bitbakeRecipesToLayerMap(), toolVersionLogger);
+        return new BitbakeExtractor(executableRunner, graphParserTransformer(), bitbakeGraphTransformer(), bitbakeRecipesParser(), bitbakeRecipesToLayerMap(),
+            toolVersionLogger, new BuildFileFinder(fileFinder), new LicenseManifestParser(), new BitbakeEnvironmentParser());
     }
 
     private GraphParserTransformer graphParserTransformer() {

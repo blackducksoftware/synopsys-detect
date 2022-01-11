@@ -1,10 +1,39 @@
 # BitBake support
 
-The BitBake detector generates one codelocation for each given package name by performing the following steps:
+## Requirements
 
-1. Runs "bitbake -g" to validate the given package name
-1. Runs "bitbake-layers show-recipes" to get details on recipes
-1. Generates the graph for the codelocation from the graph read from task-depends.dot plus the recipe details
+The BitBake detector will run if it finds a BitBake build environment setup script (which defaults to *oe-init-build-env*, but can be configured
+using property *detect.bitbake.build.env.name*)
+and at least one package (target image) name is provided using property *detect.bitbake.package.names*.
 
-Before running each bitbake command, [solution_name] sources the build environment init script,
+If you are excluding build dependencies using the *detect.bitbake.dependency.types.excluded* property, the {builddir}/tmp directory be left intact since a file (license.manifest)
+that [solution_name] uses in that scenario resides in that tmp directory.
+
+## Processing
+
+The BitBake detector builds a dependency graph (codelocation) for each given package (target image). It sources your project's build environment setup
+script (by default: oe-init-build-env), and executes BitBake commands to collect project and dependency details.
+
+The BitBake detector generates one codelocation for each given package (target image) name by performing the following steps:
+1. Determines the build directory path by sourcing the given build environment setup script and determining the resulting working directory.
+1. Runs 'bitbake --environment' to determine the currently-configured target machine architecture and licenses directory path.
+1. For each given package (target image) name:
+  * If the user requested that build dependencies be excluded, [solution_name] locates and reads the license.manifest file for the given package (target image) and the currently-configured target machine architecture. This provides a list of recipes that are included in the target image (the non-build dependencies).
+  * Runs 'bitbake -g {package}' to generate task-depends.dot, and reads recipes and dependency relationships from it.
+  * Runs 'bitbake-layers show-recipes' to derive each recipe's layer. The first layer listed for each recipe is used as the layer field of the KB externalID [solution_name] generates for the recipe.
+  * If the user requested that build dependencies be excluded: [solution_name] excludes recipes not declared in license.manifest, as well as native recipes. [solution_name] always excludes virtual recipes (recipes with names prefixed with "virtual/").
+  * [solution_name] adds at the root level of the graph for the package (target image) each recipe found in task-depends.dot that is not excluded as described above.
+  * Child (transitive) relationships are created from those root dependencies to their children (as specified in task-depends.dot).
+
+Before running each BitBake command, [solution_name] sources the build environment init script,
 passing any arguments the user has provided via the *detect.bitbake.source.arguments* property.
+
+## Configuration
+
+[solution_name] properties provide a number of different ways to customize the BitBake detector's behavior for your project. A few of the most important are:
+
+1. You can configure the build environment setup script name using the *detect.bitbake.build.env.name property*.
+1. You can add arguments (such as the path to your build directory) to the 'source {build env setup script}' command that [solution_name] executes using the *detect.bitbake.source.arguments* property.
+1. You can exclude build dependencies from results using the *detect.bitbake.dependency.types.excluded* property.
+
+See the BitBake properties page for a complete list of BitBake detector-related properties and details on how to use them.
