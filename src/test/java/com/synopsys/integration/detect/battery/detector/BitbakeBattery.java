@@ -28,7 +28,7 @@ public class BitbakeBattery {
         test.sourceFileFromResource("build/tmp/deploy/licenses/core-image-sato-qemux86-64/license.manifest");
         test.executableFromResourceFiles(DetectProperties.DETECT_BASH_PATH.getProperty(), "pwd.xout", "environment.xout", "bitbake-g.xout", "bitbake-layers-show-recipes.xout");
         test.property("detect.bitbake.package.names", "core-image-sato");
-        test.property("detect.bitbake.excluded.dependency.types", "BUILD");
+        test.property("detect.bitbake.dependency.types.excluded", "BUILD");
         test.expectBdioResources();
         test.run();
     }

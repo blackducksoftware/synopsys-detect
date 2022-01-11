@@ -2,6 +2,7 @@ package com.synopsys.integration.detectable.detectables.bitbake.unit;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,8 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.UnitTest;
+import com.synopsys.integration.detectable.detectable.util.ExcludedDependencyTypeFilter;
+import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDependencyType;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
 import com.synopsys.integration.detectable.util.graph.GraphAssert;
@@ -31,7 +34,7 @@ public class BitbakeGraphTransformerTest {
         recipeToLayerMap.put("foobar", "meta");
 
         BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
-        DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeToLayerMap, null, new HashSet<>(0));
+        DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeToLayerMap, null, new ExcludedDependencyTypeFilter<>());
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.YOCTO, dependencyGraph);
 
@@ -53,7 +56,7 @@ public class BitbakeGraphTransformerTest {
         recipeToLayerMap.put("foobar", "meta");
 
         BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
-        DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeToLayerMap, null, new HashSet<>(0));
+        DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeToLayerMap, null, new ExcludedDependencyTypeFilter<>());
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.YOCTO, dependencyGraph);
         graphAssert.hasRootSize(1);
@@ -71,7 +74,7 @@ public class BitbakeGraphTransformerTest {
         recipeToLayerMap.put("example", "meta");
 
         BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
-        DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeToLayerMap, null, new HashSet<>(0));
+        DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeToLayerMap, null, new ExcludedDependencyTypeFilter<>());
 
         GraphAssert graphAssert = new GraphAssert(Forge.YOCTO, dependencyGraph);
         graphAssert.hasNoDependency(externalIdFactory.createYoctoExternalId("meta", "example", null));

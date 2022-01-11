@@ -267,7 +267,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.BITBAKE, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<NoneEnumListProperty<BitbakeDependencyType>> DETECT_BITBAKE_DEPENDENCY_TYPES_EXCLUDED =
-        new DetectProperty<>(new NoneEnumListProperty<>("detect.bitbake.excluded.dependency.types", NoneEnum.NONE, BitbakeDependencyType.class))
+        new DetectProperty<>(new NoneEnumListProperty<>("detect.bitbake.dependency.types.excluded", NoneEnum.NONE, BitbakeDependencyType.class))
             .setInfo("Bitbake Excluded Dependency Types", DetectPropertyFromVersion.VERSION_7_10_0)
             .setHelp("The dependency types to exclude from the results.",
                 "BUILD dependencies include recipes that are not declared in the license.manifest file, and native recipes.")

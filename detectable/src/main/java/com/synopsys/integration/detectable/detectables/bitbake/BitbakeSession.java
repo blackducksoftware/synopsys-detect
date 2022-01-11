@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeEnvironment;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeRecipe;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeEnvironmentParser;
@@ -17,7 +18,6 @@ import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeReci
 import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.executable.ExecutableOutput;
-import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class BitbakeSession {
     private static final String BITBAKE_ENVIRONMENT_COMMAND = "bitbake --environment";
@@ -53,16 +53,10 @@ public class BitbakeSession {
     }
 
     public File executeBitbakeForDependencies(File buildDir, String packageName, boolean followSymLinks, Integer searchDepth)
-        throws ExecutableRunnerException, IOException, IntegrationException {
+        throws IOException, IntegrationException, ExecutableFailedException {
 
         String bitbakeCommand = BITBAKE_DEPENDENCIES_COMMAND_BASE + packageName;
-        ExecutableOutput executableOutput = runBitbake(bitbakeCommand);
-        int returnCode = executableOutput.getReturnCode();
-
-        if (returnCode != 0) {
-            throw new IntegrationException(String.format("Executing command '%s' returned a non-zero exit code %s", bitbakeCommand, returnCode));
-        }
-
+        runBitbake(bitbakeCommand);
         return buildFileFinder.findTaskDependsFile(sourceDir, buildDir, followSymLinks, searchDepth);
     }
 
@@ -102,21 +96,17 @@ public class BitbakeSession {
         }
     }
 
-    public List<BitbakeRecipe> executeBitbakeForRecipeLayerCatalog() throws ExecutableRunnerException, IOException, IntegrationException {
+    public List<BitbakeRecipe> executeBitbakeForRecipeLayerCatalog() throws IOException, ExecutableFailedException {
         ExecutableOutput executableOutput = runBitbake(BITBAKE_LAYERS_SHOW_RECIPES_COMMAND);
-        if (executableOutput.getReturnCode() == 0) {
-            return bitbakeRecipesParser.parseShowRecipes(executableOutput.getStandardOutputAsList());
-        } else {
-            throw new IntegrationException("Running command '%s' returned a non-zero exit code. Failed to extract bitbake recipe mapping.");
-        }
+        return bitbakeRecipesParser.parseShowRecipes(executableOutput.getStandardOutputAsList());
     }
 
-    private ExecutableOutput runBitbake(String bitbakeCommand) throws ExecutableRunnerException, IOException {
+    private ExecutableOutput runBitbake(String bitbakeCommand) throws IOException, ExecutableFailedException {
         StringBuilder sourceCommand = new StringBuilder("source " + buildEnvScript.getCanonicalPath());
         for (String sourceArgument : sourceArguments) {
             sourceCommand.append(" ");
             sourceCommand.append(sourceArgument);
         }
-        return executableRunner.execute(ExecutableUtils.createFromTarget(sourceDir, bashExecutable, "-c", sourceCommand + "; " + bitbakeCommand));
+        return executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(sourceDir, bashExecutable, "-c", sourceCommand + "; " + bitbakeCommand));
     }
 }

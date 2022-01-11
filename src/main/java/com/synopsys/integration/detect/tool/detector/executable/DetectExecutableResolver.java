@@ -46,7 +46,7 @@ public class DetectExecutableResolver implements
     private final Map<String, File> cachedExecutables = new HashMap<>();
 
     public DetectExecutableResolver(DirectoryExecutableFinder directoryExecutableFinder, SystemPathExecutableFinder systemPathExecutableFinder,
-        DetectExecutableOptions detectExecutableOptions) {
+                                    DetectExecutableOptions detectExecutableOptions) {
         this.directoryExecutableFinder = directoryExecutableFinder;
         this.systemPathExecutableFinder = systemPathExecutableFinder;
         this.detectExecutableOptions = detectExecutableOptions;
@@ -226,6 +226,5 @@ public class DetectExecutableResolver implements
     public @Nullable ExecutableTarget resolveFlutter() throws DetectableException {
         return ExecutableTarget.forFile(resolveCachedSystemExecutable("flutter", detectExecutableOptions.getFlutterUserPath()));
     }
-
 }
 

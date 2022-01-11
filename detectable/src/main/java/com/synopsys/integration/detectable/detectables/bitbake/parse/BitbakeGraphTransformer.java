@@ -3,7 +3,6 @@ package com.synopsys.integration.detectable.detectables.bitbake.parse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -15,6 +14,7 @@ import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.detectable.util.ExcludedDependencyTypeFilter;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDependencyType;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeNode;
@@ -31,20 +31,20 @@ public class BitbakeGraphTransformer {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph transform(BitbakeGraph bitbakeGraph, Map<String, String> recipeLayerMap, Map<String, String> imageRecipes, Set<BitbakeDependencyType> excludedDependencyTypes) {
-        Map<String, Dependency> namesToExternalIds = generateExternalIds(bitbakeGraph, recipeLayerMap, imageRecipes, excludedDependencyTypes);
+    public DependencyGraph transform(BitbakeGraph bitbakeGraph, Map<String, String> recipeLayerMap, Map<String, String> imageRecipes, ExcludedDependencyTypeFilter<BitbakeDependencyType> excludedDependencyTypeFilter) {
+        Map<String, Dependency> namesToExternalIds = generateExternalIds(bitbakeGraph, recipeLayerMap, imageRecipes, excludedDependencyTypeFilter);
         return buildGraph(bitbakeGraph, namesToExternalIds);
     }
 
     @NotNull
-    private Map<String, Dependency> generateExternalIds(final BitbakeGraph bitbakeGraph, final Map<String, String> recipeLayerMap, final Map<String, String> imageRecipes, final Set<BitbakeDependencyType> excludedDependencyTypes) {
+    private Map<String, Dependency> generateExternalIds(final BitbakeGraph bitbakeGraph, final Map<String, String> recipeLayerMap, final Map<String, String> imageRecipes, ExcludedDependencyTypeFilter<BitbakeDependencyType> excludedDependencyTypeFilter) {
         Map<String, Dependency> namesToExternalIds = new HashMap<>();
         for (BitbakeNode bitbakeNode : bitbakeGraph.getNodes()) {
             String name = bitbakeNode.getName();
 
             if (bitbakeNode.getVersion().isPresent()) {
                 String version = bitbakeNode.getVersion().get();
-                if (shouldInclude(excludedDependencyTypes, imageRecipes, name, version)) {
+                if (excludedDependencyTypeFilter.shouldReportDependencyType(BitbakeDependencyType.BUILD) || !isBuildDependency(imageRecipes, name, version)) {
                     Optional<Dependency> dependency = generateExternalId(name, version, recipeLayerMap).map(Dependency::new);
                     dependency.ifPresent(value -> namesToExternalIds.put(bitbakeNode.getName(), value));
                 }
@@ -76,11 +76,6 @@ public class BitbakeGraphTransformer {
             }
         }
         return dependencyGraph;
-    }
-
-    private boolean shouldInclude(Set<BitbakeDependencyType> excludedDependencyTypes, Map<String, String> imageRecipes, String recipeName, String recipeVersion) {
-        // This relies on the fact that the only excludable type is BUILD; must change if others are added
-        return excludedDependencyTypes.isEmpty() || !isBuildDependency(imageRecipes, recipeName, recipeVersion);
     }
 
     private boolean isBuildDependency(Map<String, String> imageRecipes, String recipeName, String recipeVersion) {

@@ -1,5 +1,6 @@
 package com.synopsys.integration.detectable.detectables.bitbake.parse;
 
+import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +11,8 @@ import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
 public class LicenseManifestParser {
-
+    private static final String RECIPE_NAME_KEY = "RECIPE NAME";
+    private static final String PACKAGE_VERSION_KEY = "PACKAGE VERSION";
 
     public Map<String, String> collectImageRecipes(List<String> licenseManifestLines) throws IntegrationException {
         Map<String, String> imageRecipes = new HashMap<>(1 + (licenseManifestLines.size()/5));
@@ -18,13 +20,17 @@ public class LicenseManifestParser {
         int lineNumber = 0;
         for (String line : licenseManifestLines) {
             lineNumber++;
-            String trimmedLine = line.trim();
-            if (StringUtils.isBlank(trimmedLine)) {
+            if (aboutToStartNewRecipe(line)) {
                 recipeNameVersion = new NameVersion();
                 continue;
             }
-            parseValueFromLine(recipeNameVersion, trimmedLine);
-            if ((recipeNameVersion.getName() != null) && (recipeNameVersion.getVersion() != null)) {
+            Map.Entry<String, String> currentLineKeyValuePair = getKeyValuePair(line);
+            if (RECIPE_NAME_KEY.equals(currentLineKeyValuePair.getKey())) {
+                recipeNameVersion.setName(currentLineKeyValuePair.getValue());
+            } else if (PACKAGE_VERSION_KEY.equals(currentLineKeyValuePair.getKey())) {
+                recipeNameVersion.setVersion(currentLineKeyValuePair.getValue());
+            }
+            if (recipeIsComplete(recipeNameVersion)) {
                 if ((imageRecipes.containsKey(recipeNameVersion.getName())) && (!imageRecipes.get(recipeNameVersion.getName()).equals(recipeNameVersion.getVersion()))) {
                     throw new IntegrationException(String.format("Error parsing license.manifest file: Recipe %s: Found version %s near line %d, but previously found version: %s", recipeNameVersion.getName(), recipeNameVersion.getVersion(), lineNumber, imageRecipes.get(recipeNameVersion.getName())));
                 }
@@ -35,7 +41,16 @@ public class LicenseManifestParser {
         return imageRecipes;
     }
 
-    private void parseValueFromLine(NameVersion recipeNameVersion, String trimmedLine) throws IntegrationException {
+    private boolean recipeIsComplete(NameVersion recipeNameVersion) {
+        return (recipeNameVersion.getName() != null) && (recipeNameVersion.getVersion() != null);
+    }
+
+    private boolean aboutToStartNewRecipe(String line) {
+        return StringUtils.isBlank(line.trim());
+    }
+
+    private Map.Entry<String, String> getKeyValuePair(String line) throws IntegrationException {
+        String trimmedLine = line.trim();
         if (!trimmedLine.contains(":")) {
             throw new IntegrationException(String.format("Unexpected line format in license.manifest file: %s", trimmedLine));
         }
@@ -43,13 +58,6 @@ public class LicenseManifestParser {
         if (lineParts.length != 2) {
             throw new IntegrationException(String.format("Unexpected line format in license.manifest file: %s", trimmedLine));
         }
-        String key = lineParts[0].trim();
-        String value = lineParts[1].trim();
-        if ("RECIPE NAME".equals(key)) {
-            recipeNameVersion.setName(value);
-        } else if ("PACKAGE VERSION".equals(key)) {
-            recipeNameVersion.setVersion(value);
-        }
+        return new AbstractMap.SimpleEntry<>(lineParts[0], lineParts[1]);
     }
-
 }
