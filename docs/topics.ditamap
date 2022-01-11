@@ -47,6 +47,7 @@
       <topicref href="downloadingandrunning/basics/positioning.md" format="markdown"/>
       <topicref href="downloadingandrunning/basics/choosingworkingdir.md" format="markdown"/>
       <topicref href="downloadingandrunning/basics/choosingrunmethod.md" format="markdown"/>
+      <topicref href="downloadingandrunning/basics/manual.md" format="markdown"/>
       <topicref href="downloadingandrunning/basics/runningscript.md" format="markdown"/>
       <topicref href="downloadingandrunning/basics/runningjar.md" format="markdown"/>
       <topicref href="downloadingandrunning/basics/choosingtargettype.md" format="markdown"/>

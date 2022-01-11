@@ -38,7 +38,7 @@ public class ExclusionPatternCreatorTest {
         File sub2Sub1 = new File(sub2, "sub2Sub1");
         sub2Sub1.mkdir();
 
-        DetectExcludedDirectoryFilter filter = new DetectExcludedDirectoryFilter(root.toPath(), providedPatterns);
+        DetectExcludedDirectoryFilter filter = new DetectExcludedDirectoryFilter(providedPatterns);
         ExclusionPatternCreator exclusionPatternCreator = new ExclusionPatternCreator(new SimpleFileFinder(), file -> filter.isExcluded(file), root);
         assertEqualCollections(resultingExclusions, exclusionPatternCreator.determineExclusionPatterns(false, 3, providedPatterns));
 
@@ -82,7 +82,7 @@ public class ExclusionPatternCreatorTest {
 
         List<String> toExclude = Arrays.asList("foo", "bar");
 
-        DetectExcludedDirectoryFilter filter = new DetectExcludedDirectoryFilter(root.toPath(), toExclude);
+        DetectExcludedDirectoryFilter filter = new DetectExcludedDirectoryFilter(toExclude);
         ExclusionPatternCreator exclusionPatternCreator = new ExclusionPatternCreator(new SimpleFileFinder(), file -> filter.isExcluded(file), root);
         Set<String> exlusionPatterns = exclusionPatternCreator.determineExclusionPatterns(false, 2, toExclude);
 

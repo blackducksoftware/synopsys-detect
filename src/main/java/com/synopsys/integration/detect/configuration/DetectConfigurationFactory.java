@@ -27,9 +27,9 @@ import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBui
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.base.NullableProperty;
 import com.synopsys.integration.configuration.property.base.ValuedProperty;
-import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumValue;
-import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumList;
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumCollection;
+import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumList;
+import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumValue;
 import com.synopsys.integration.configuration.property.types.path.NullablePathProperty;
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.configuration.property.types.path.PathValue;
@@ -259,10 +259,10 @@ public class DetectConfigurationFactory {
         return directoryExclusionPatterns;
     }
 
-    public DetectorFinderOptions createDetectorFinderOptions(Path sourcePath) {
+    public DetectorFinderOptions createDetectorFinderOptions() {
         //Normal settings
         Integer maxDepth = getValue(DetectProperties.DETECT_DETECTOR_SEARCH_DEPTH);
-        DetectExcludedDirectoryFilter fileFilter = new DetectExcludedDirectoryFilter(sourcePath, collectDetectorSearchDirectoryExclusions());
+        DetectExcludedDirectoryFilter fileFilter = new DetectExcludedDirectoryFilter(collectDetectorSearchDirectoryExclusions());
 
         return new DetectorFinderOptions(fileFilter, maxDepth, getFollowSymLinks());
     }

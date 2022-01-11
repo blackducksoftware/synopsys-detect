@@ -14,13 +14,11 @@ import org.slf4j.LoggerFactory;
 
 public class DetectExcludedDirectoryFilter implements Predicate<File> {
     private static final String PATH_MATCHER_SYNTAX = "glob:%s";
-    private final Path sourcePath;
     private final List<String> directoryExclusionPatterns;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public DetectExcludedDirectoryFilter(Path sourcePath, List<String> directoryExclusionPatterns) {
-        this.sourcePath = sourcePath;
+    public DetectExcludedDirectoryFilter(List<String> directoryExclusionPatterns) {
         this.directoryExclusionPatterns = directoryExclusionPatterns;
     }
 
@@ -57,9 +55,8 @@ public class DetectExcludedDirectoryFilter implements Predicate<File> {
                 logger.debug(String.format("%s could not be resolved to a path.", excludedDirectory));
                 continue;
             }
-            Path relativeDirectoryPath = sourcePath.relativize(file.toPath());
 
-            if (relativeDirectoryPath.endsWith(excludedDirectoryPath)) {
+            if (file.toPath().endsWith(excludedDirectoryPath)) {
                 return true;
             }
         }
