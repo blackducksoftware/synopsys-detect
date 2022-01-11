@@ -2,7 +2,7 @@
 
 ## Version 7.10.0
 
-### New Features
+### New features
 * Added support for the Apache Ivy package manager.
 * Build dependencies can now be excluded from BitBake results.
 
@@ -20,7 +20,7 @@
 
 ## Version 7.9.0
 
-### New Features
+### New features
 * Added support for the Xcode Swift Package Manager for Xcode projects using the built-in [Swift Packages](https://developer.apple.com/documentation/swift_packages) feature.
 * Added detect.bdio.file.name to specify the name of the output bdio file. 
 * Added system architecture DEBUG level logs to assist with support.
