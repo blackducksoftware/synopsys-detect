@@ -10,6 +10,31 @@
 * [solution_name] now classifies empty code location warning messages as the DEBUG logging level instead of the previous classification as the WARN logging level.
 * BitBake detector: Added support for BitBake 1.52 (Yocto 3.4).
 * BitBake detector: Added support for BitBake projects with build directories that reside outside the project directory.
+* Deprecated many properties relating to filtering dependency types from the BOM. These property replacements will reduce the number of properties, apply consistency to detector properties, add filtering abilities, and overall simplify Detect configuration.
+  * Deprecated the following properties:
+    * detect.conan.include.build.dependencies
+    * detect.pub.deps.exclude.dev
+    * detect.go.mod.enable.verification
+    * detect.gradle.include.unresolved.configurations
+    * detect.lerna.include.private
+    * detect.npm.include.dev.dependencies
+    * detect.npm.include.peer.dependencies
+    * detect.packagist.include.dev.dependencies
+    * detect.pear.only.required.deps
+    * detect.ruby.include.runtime.dependencies
+    * detect.ruby.include.dev.dependencies
+    * detect.yarn.prod.only
+  * Added the following replacement properties:
+    * detect.conan.dependency.types.excluded
+    * detect.pub.dependency.types.excluded
+    * detect.go.mod.dependency.types.excluded
+    * detect.gradle.configuration.types.excluded
+    * detect.lerna.dependency.types.excluded
+    * detect.npm.dependency.types.excluded
+    * detect.packagist.dependency.types.excluded
+    * detect.pear.dependency.types.excluded
+    * detect.ruby.dependency.types.excluded
+    * detect.yarn.dependency.types.excluded
 
 ### Resolved issues
 * (IDETECT-2949) Fixed an issue where [solution_name] failed to properly parse Go module version names containing '-' characters.
