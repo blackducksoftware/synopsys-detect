@@ -724,7 +724,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL);
 
     public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_LERNA_EXCLUDED_PACKAGES =
-        new DetectProperty<>(new CaseSensitiveStringListProperty("detect.`lerna`.excluded.packages"))
+        new DetectProperty<>(new CaseSensitiveStringListProperty("detect.lerna.excluded.packages"))
             .setInfo("Lerna Packages Excluded", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp("A comma-separated list of Lerna packages to exclude.",
                 "As Detect parses the output of lerna ls --all --json, Detect will exclude any Lerna packages specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
