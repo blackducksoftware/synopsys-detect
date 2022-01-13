@@ -37,3 +37,13 @@ passing any arguments the user has provided via the *detect.bitbake.source.argum
 1. You can exclude build dependencies from results using the *detect.bitbake.dependency.types.excluded* property.
 
 See the BitBake properties page for a complete list of BitBake detector-related properties and details on how to use them.
+
+
+## Troubleshooting Tips
+
+### Missing components for projects using the Yocto Package Revision Service
+
+Symptom: Components are missing from the [blackduck_product_name] BOM.
+
+Problem: The Yocto Package Revision Service can increment a package revision to a value not present in the [blackduck_product_name] Knowledge Base, causing
+a package to fail to match.
