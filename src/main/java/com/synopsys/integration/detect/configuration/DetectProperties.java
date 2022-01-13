@@ -601,7 +601,7 @@ public class DetectProperties {
         new DetectProperty<>(new NoneEnumListProperty<>("detect.go.mod.dependency.types.excluded", NoneEnum.NONE, GoModDependencyType.class))
             .setInfo("Go Mod Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
             .setHelp("Set this value to indicate which Go Mod dependency types Detect should exclude from the BOM. By default, all dependency types will be reported.",
-                "If UNVERIFIED is excluded, Detect will use the results of 'go mod why' to filter out unused dependencies.")
+                String.format("If %s is excluded, Detect will use the results of 'go mod why' to filter out unused dependencies.", GoModDependencyType.UNUSED.name()))
             .setExample(GoModDependencyType.UNUSED.name())
             .setGroups(DetectGroup.GO, DetectGroup.GLOBAL);
 
