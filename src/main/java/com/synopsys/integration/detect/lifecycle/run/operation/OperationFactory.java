@@ -759,7 +759,7 @@ public class OperationFactory { //TODO: OperationRunner
     }
 
     public List<String> findLicenseUrls(BlackDuckRunData blackDuckRunData, List<String> licenseNames) throws DetectUserFriendlyException {
-        return auditLog.namedInternal("Find License Urls By Name", () -> {
+        return auditLog.namedInternal("Find License Urls By Name", "LicenseUrlLookup", () -> {
             return new FindLicenseUrlsOperation(blackDuckRunData.getBlackDuckServicesFactory().createLicenseService())
                 .findLicenseUrls(licenseNames);
         });
