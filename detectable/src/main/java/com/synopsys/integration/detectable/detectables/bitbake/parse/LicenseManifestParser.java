@@ -7,6 +7,8 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
@@ -14,12 +16,15 @@ import com.synopsys.integration.util.NameVersion;
 public class LicenseManifestParser {
     private static final String RECIPE_NAME_KEY = "RECIPE NAME";
     private static final String PACKAGE_VERSION_KEY = "PACKAGE VERSION";
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public Map<String, String> collectImageRecipes(List<String> licenseManifestLines) throws IntegrationException {
+        logger.debug("Parsing license.manifest");
         Map<String, String> imageRecipes = new HashMap<>(1 + (licenseManifestLines.size()/5));
         NameVersion recipeNameVersion = new NameVersion();
         int lineNumber = 0;
         for (String line : licenseManifestLines) {
+            logger.trace(line);
             lineNumber++;
             if (aboutToStartNewRecipe(line)) {
                 recipeNameVersion = new NameVersion();

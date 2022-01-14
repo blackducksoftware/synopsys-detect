@@ -107,6 +107,7 @@ public class BitbakeExtractor {
 
     private Map<String, String> readImageRecipes(File buildDir, String targetImageName, BitbakeEnvironment bitbakeEnvironment, boolean followSymLinks, int searchDepth) throws IntegrationException, IOException {
         File licenseManifestFile = buildFileFinder.findLicenseManifestFile(buildDir, targetImageName, bitbakeEnvironment, followSymLinks, searchDepth);
+        logger.debug("Reading license.manifest file: {}", licenseManifestFile.getAbsolutePath());
         List<String> licenseManifestLines = FileUtils.readLines(licenseManifestFile, StandardCharsets.UTF_8);
         return licenseManifestParser.collectImageRecipes(licenseManifestLines);
     }
