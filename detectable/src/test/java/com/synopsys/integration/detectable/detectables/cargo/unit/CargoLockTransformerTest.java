@@ -1,32 +1,40 @@
 package com.synopsys.integration.detectable.detectables.cargo.unit;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import com.moandjiezana.toml.Toml;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectables.cargo.parse.CargoLockParser;
+import com.synopsys.integration.detectable.detectables.cargo.model.CargoLock;
+import com.synopsys.integration.detectable.detectables.cargo.parse.CargoLockTransformer;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
-public class CargoLockParserTest {
+public class CargoLockTransformerTest {
+
+    public CargoLock cargoLock(String... lines) {
+        return new Toml().read(String.join(System.lineSeparator(), Arrays.asList(lines))).to(CargoLock.class);
+    }
 
     @Test
     public void testParsesNamesAndVersionsSimple() throws DetectableException {
-        String input = String.join(System.lineSeparator(), Arrays.asList(
+        CargoLock input = cargoLock(
             "[[package]]",
             "name = \"test1\"", "version = \"1.0.0\"",
             "",
             "[[package]]",
             "name = \"test2\"",
             "version = \"2.0.0\""
-        ));
-        CargoLockParser cargoLockParser = new CargoLockParser();
-        DependencyGraph graph = cargoLockParser.parseLockFile(input);
+        );
+        CargoLockTransformer cargoLockTransformer = new CargoLockTransformer();
+        Optional<DependencyGraph> graph = cargoLockTransformer.toDependencyGraph(input);
 
-        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.CRATES, graph);
+        Assertions.assertTrue(graph.isPresent());
+        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.CRATES, graph.get());
         graphAssert.hasRootSize(2);
         graphAssert.hasRootDependency("test1", "1.0.0");
         graphAssert.hasRootDependency("test2", "2.0.0");
@@ -34,7 +42,7 @@ public class CargoLockParserTest {
 
     @Test
     public void testParsesNoisyDependencyLines() throws DetectableException {
-        String input = String.join(System.lineSeparator(), Arrays.asList(
+        CargoLock input = cargoLock(
             "[[package]]",
             "name = \"test1\"",
             "version = \"1.0.0\"",
@@ -50,11 +58,12 @@ public class CargoLockParserTest {
             "[[package]]",
             "name = \"dep2\"",
             "version = \"2.0.0\""
-        ));
-        CargoLockParser cargoLockParser = new CargoLockParser();
-        DependencyGraph graph = cargoLockParser.parseLockFile(input);
+        );
+        CargoLockTransformer cargoLockTransformer = new CargoLockTransformer();
+        Optional<DependencyGraph> graph = cargoLockTransformer.toDependencyGraph(input);
 
-        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.CRATES, graph);
+        Assertions.assertTrue(graph.isPresent());
+        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.CRATES, graph.get());
         graphAssert.hasRootSize(1);
         graphAssert.hasRootDependency("test1", "1.0.0");
         graphAssert.hasParentChildRelationship("test1", "1.0.0", "dep1", "0.5.0");
@@ -63,7 +72,7 @@ public class CargoLockParserTest {
 
     @Test
     public void testCorrectNumberOfRootDependencies() throws DetectableException {
-        String input = String.join(System.lineSeparator(), Arrays.asList(
+        CargoLock input = cargoLock(
             "[[package]]",
             "name = \"test1\"",
             "version = \"1.0.0\"",
@@ -82,23 +91,24 @@ public class CargoLockParserTest {
             "[[package]]",
             "name = \"dep2\"",
             "version = \"0.6.0\""
-        ));
-        CargoLockParser cargoLockParser = new CargoLockParser();
-        DependencyGraph graph = cargoLockParser.parseLockFile(input);
+        );
+        CargoLockTransformer cargoLockTransformer = new CargoLockTransformer();
+        Optional<DependencyGraph> graph = cargoLockTransformer.toDependencyGraph(input);
 
-        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.CRATES, graph);
+        Assertions.assertTrue(graph.isPresent());
+        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.CRATES, graph.get());
         graphAssert.hasRootSize(1);
     }
 
     @Test
     public void testCatchInvalidSyntaxInLockFile() {
-        String input = String.join(System.lineSeparator(), Arrays.asList(
+        CargoLock input = cargoLock(
             "[[package]]",
             "name \"test1\"",
             "version \"test2\""
-        ));
-        CargoLockParser cargoLockParser = new CargoLockParser();
-        Assertions.assertThrows(DetectableException.class, () -> cargoLockParser.parseLockFile(input));
+        );
+        CargoLockTransformer cargoLockTransformer = new CargoLockTransformer();
+        Assertions.assertThrows(DetectableException.class, () -> cargoLockTransformer.toDependencyGraph(input));
 
     }
 }

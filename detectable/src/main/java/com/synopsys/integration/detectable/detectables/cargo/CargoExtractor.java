@@ -2,21 +2,19 @@ package com.synopsys.integration.detectable.detectables.cargo;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.List;
 import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 import org.tomlj.TomlParseResult;
 import org.tomlj.TomlTable;
 
+import com.moandjiezana.toml.Toml;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.util.TomlFileUtils;
-import com.synopsys.integration.detectable.detectables.cargo.parse.CargoLockParser;
+import com.synopsys.integration.detectable.detectables.cargo.model.CargoLock;
+import com.synopsys.integration.detectable.detectables.cargo.parse.CargoLockTransformer;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.util.NameVersion;
 
@@ -26,37 +24,32 @@ public class CargoExtractor {
     private static final String VERSION_KEY = "version";
     private static final String PACKAGE_KEY = "package";
 
-    private final CargoLockParser cargoLockParser;
+    private final CargoLockTransformer cargoLockTransformer;
 
-    public CargoExtractor(CargoLockParser cargoLockParser) {
-        this.cargoLockParser = cargoLockParser;
+    public CargoExtractor(CargoLockTransformer cargoLockTransformer) {
+        this.cargoLockTransformer = cargoLockTransformer;
     }
 
-    public Extraction extract(File cargoLock, @Nullable File cargoToml) {
+    public Extraction extract(File cargoLockFile, @Nullable File cargoToml) {
         try {
-            String cargoLockAsString = getFileAsString(cargoLock, StandardCharsets.UTF_8);
-            DependencyGraph graph = cargoLockParser.parseLockFile(cargoLockAsString);
-            CodeLocation codeLocation = new CodeLocation(graph);
+            CargoLock cargoLock = new Toml().read(cargoLockFile).to(CargoLock.class);
+            DependencyGraph graph = cargoLockTransformer.toDependencyGraph(cargoLock)
+                .orElse(new MutableMapDependencyGraph());
 
             Optional<NameVersion> cargoNameVersion = extractNameVersionFromCargoToml(cargoToml);
-            if (cargoNameVersion.isPresent()) {
-                return new Extraction.Builder()
-                    .success(codeLocation)
-                    .projectName(cargoNameVersion.get().getName())
-                    .projectVersion(cargoNameVersion.get().getVersion())
-                    .build();
-            }
-            return new Extraction.Builder().success(codeLocation).build();
-        } catch (IOException | DetectableException e) {
+            CodeLocation codeLocation = new CodeLocation(graph); //TODO: Consider for 8.0.0 providing an external ID.
+
+            return new Extraction.Builder()
+                .success(codeLocation)
+                .nameVersionIfPresent(cargoNameVersion)
+                .build();
+        } catch (IOException e) {
             return new Extraction.Builder().exception(e).build();
         }
     }
 
-    private String getFileAsString(File cargoLock, Charset encoding) throws IOException {
-        List<String> goLockAsList = Files.readAllLines(cargoLock.toPath(), encoding);
-        return String.join(System.lineSeparator(), goLockAsList);
-    }
-
+    //TODO: This could go in a parser and be tested. (Or just in a parser).
+    //TODO: Consider making a model object.
     private Optional<NameVersion> extractNameVersionFromCargoToml(@Nullable File cargoToml) throws IOException {
         if (cargoToml != null) {
             TomlParseResult cargoTomlObject = TomlFileUtils.parseFile(cargoToml);

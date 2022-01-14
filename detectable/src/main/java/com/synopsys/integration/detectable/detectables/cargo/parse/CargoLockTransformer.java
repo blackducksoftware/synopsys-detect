@@ -4,49 +4,40 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.moandjiezana.toml.Toml;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
+import com.synopsys.integration.bdio.model.dependency.DependencyFactory;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectables.cargo.model.CargoLock;
 import com.synopsys.integration.detectable.detectables.cargo.model.Package;
 
-public class CargoLockParser {
+public class CargoLockTransformer {
 
-    private final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
+    private final DependencyFactory dependencyFactory = new DependencyFactory(new ExternalIdFactory());
 
-    private final Map<String, Dependency> packageMap = new HashMap<>();
+    private final Map<String, Dependency> packageMap = new HashMap<>(); //TODO: Remove state.
 
-    public DependencyGraph parseLockFile(String lockFile) throws DetectableException {
-        try {
-            CargoLock cargoLock = new Toml().read(lockFile).to(CargoLock.class);
-            if (cargoLock.getPackages().isPresent()) {
-                return parseDependencies(cargoLock.getPackages().get());
-            }
-        } catch (IllegalStateException e) {
-            throw new DetectableException("Illegal syntax was detected in Cargo.lock file", e);
-        }
-        return new MutableMapDependencyGraph();
+    public Optional<DependencyGraph> toDependencyGraph(CargoLock cargoLock) {
+        return cargoLock.getPackages().map(this::parseDependencies);
     }
 
     private DependencyGraph parseDependencies(List<Package> lockPackages) {
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
-        Set<String> rootPackages = determineRootPackages(lockPackages);
+        determineRootPackages(lockPackages).stream()
+            .map(packageMap::get)
+            .forEach(graph::addChildToRoot);
 
-        for (String rootPackage : rootPackages) {
-            graph.addChildToRoot(packageMap.get(rootPackage));
-        }
-
-        for (Package lockPackage : lockPackages) {
+        for (Package lockPackage : lockPackages) { //TODO: Do this with a stream and another method.
             if (!lockPackage.getDependencies().isPresent()) {
                 continue;
             }
@@ -70,25 +61,22 @@ public class CargoLockParser {
             String projectName = lockPackage.getName().orElse("");
             String projectVersion = lockPackage.getVersion().orElse("");
 
-            packageMap.put(projectName, createCargoDependency(projectName, projectVersion));
+            //TODO: Shouldn't there be a check here for duplicates/conflicts? new DetectableException("We found a package with no name, please contact Support.")); Throw when the situation actually makes no sense.
+            packageMap.put(projectName, dependencyFactory.createNameVersionDependency(Forge.CRATES, projectName, projectVersion));
             rootPackages.add(projectName);
             lockPackage.getDependencies()
                 .map(this::extractDependencyNames)
                 .ifPresent(dependencyPackages::addAll);
         }
-        rootPackages.removeAll(dependencyPackages);
+        rootPackages.removeAll(dependencyPackages); //TODO: Use the TBD RootPruningGraphUtil.
 
         return rootPackages;
     }
 
+    //TODO: This could be done in a Parser, could do the project name validation.
     private List<String> extractDependencyNames(List<String> rawDependencies) {
         return rawDependencies.stream()
             .map(dependency -> dependency.split(" ")[0])
             .collect(Collectors.toList());
-    }
-
-    private Dependency createCargoDependency(String name, String version) {
-        ExternalId dependencyExternalId = externalIdFactory.createNameVersionExternalId(Forge.CRATES, name, version);
-        return new Dependency(name, version, dependencyExternalId);
     }
 }

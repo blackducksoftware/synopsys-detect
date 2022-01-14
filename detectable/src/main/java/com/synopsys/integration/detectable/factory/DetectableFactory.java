@@ -56,7 +56,7 @@ import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParser
 import com.synopsys.integration.detectable.detectables.bitbake.parse.LicenseManifestParser;
 import com.synopsys.integration.detectable.detectables.cargo.CargoDetectable;
 import com.synopsys.integration.detectable.detectables.cargo.CargoExtractor;
-import com.synopsys.integration.detectable.detectables.cargo.parse.CargoLockParser;
+import com.synopsys.integration.detectable.detectables.cargo.parse.CargoLockTransformer;
 import com.synopsys.integration.detectable.detectables.carthage.CartfileResolvedDependencyDeclarationParser;
 import com.synopsys.integration.detectable.detectables.carthage.CarthageDetectable;
 import com.synopsys.integration.detectable.detectables.carthage.CarthageExtractor;
@@ -521,7 +521,7 @@ public class DetectableFactory {
     }
 
     private CargoExtractor cargoExtractor() {
-        return new CargoExtractor(new CargoLockParser());
+        return new CargoExtractor(new CargoLockTransformer());
     }
 
     private CarthageExtractor carthageExtractor() {
