@@ -188,8 +188,8 @@ public class DetectableOptionFactory {
 
     public LernaOptions createLernaOptions() {
         boolean includePrivate = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_LERNA_INCLUDE_PRIVATE));
-        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_LERNA_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
-            List<LernaDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_LERNA_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValues();
+        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_LERNA_PACKAGE_TYPES_EXCLUDED.getProperty())) {
+            List<LernaDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_LERNA_PACKAGE_TYPES_EXCLUDED.getProperty()).representedValues();
             ExcludedDependencyTypeFilter<LernaDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>(excludedDependencyTypes);
             includePrivate = dependencyTypeFilter.shouldReportDependencyType(LernaDependencyType.PRIVATE);
         }
@@ -318,7 +318,7 @@ public class DetectableOptionFactory {
         if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
             List<GemspecDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValues();
             ExcludedDependencyTypeFilter<GemspecDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>(excludedDependencyTypes);
-            includeRuntimeDependencies = dependencyTypeFilter.shouldExcludeDependencyType(GemspecDependencyType.RUNTIME);
+            includeRuntimeDependencies = dependencyTypeFilter.shouldReportDependencyType(GemspecDependencyType.RUNTIME);
             includeDevDependencies = dependencyTypeFilter.shouldReportDependencyType(GemspecDependencyType.DEV);
         }
         return new GemspecParseDetectableOptions(includeRuntimeDependencies, includeDevDependencies);
