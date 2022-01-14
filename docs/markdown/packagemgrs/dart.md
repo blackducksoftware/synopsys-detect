@@ -20,4 +20,4 @@ The Dart Pub Dep detector runs the command 'pub deps' (which requires a pubspec.
 
 You may specify the location of dart and flutter executables using the [detect.dart.path](../properties/detectors/dart.md#dart-executable) and [detect.flutter.path](../properties/detectors/dart.md#flutter-executable) properties, respectively.
 
-If you wish to exclude dev dependencies, you may do so using the [detect.pub.deps.exclude.dev](../properties/detectors/dart.md#detect-dart-pub-deps-exclude-dev-dependencies-advanced) property, which will cause the detector to pass the --no-dev option when running 'pub deps'.
+If you wish to exclude dev dependencies, you may do so using the [detect.pub.dependency.types.excluded](../properties/detectors/dart.md#dart-pub-dependency-types-excluded) property, which will cause the detector to pass the --no-dev option when running 'pub deps'.

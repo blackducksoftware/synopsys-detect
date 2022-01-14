@@ -435,8 +435,7 @@ public class DetectProperties {
             .setHelp("Set this value to indicate which Dart Pub dependency types Detect should exclude from the BOM. By default, all dependency types will be reported.",
                 "If DEV is excluded, the Dart Detector will pass the option --no-dev when running the command 'pub deps'.")
             .setExample(DartPubDependencyType.DEV.name())
-            .setGroups(DetectGroup.DART, DetectGroup.DETECTOR, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced);
+            .setGroups(DetectGroup.DART, DetectGroup.DETECTOR, DetectGroup.GLOBAL);
 
     public static final DetectProperty<IntegerProperty> DETECT_DETECTOR_SEARCH_DEPTH =
         new DetectProperty<>(new IntegerProperty("detect.detector.search.depth", 0))
@@ -644,8 +643,7 @@ public class DetectProperties {
             .setHelp("Set this value to indicate which Gradle configuration type you want Detect to exclude. By default, all configuration types will be reported.",
                 "Including dependencies from unresolved Gradle configurations could lead to false positives. Dependency versions from an unresolved configuration may differ from a resolved one. See https://docs.gradle.org/7.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs")
             .setExample(GradleConfigurationType.UNRESOLVED.name())
-            .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
-            .setCategory(DetectCategory.Advanced);
+            .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_GRADLE_INCLUDED_PROJECTS =
         new DetectProperty<>(new CaseSensitiveStringListProperty("detect.gradle.included.projects"))
