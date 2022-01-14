@@ -63,11 +63,14 @@ public class CargoDetectableTest extends DetectableFunctionalTest {
     public void assertExtraction(@NotNull Extraction extraction) {
         Assertions.assertEquals(1, extraction.getCodeLocations().size());
 
+        Assertions.assertEquals(extraction.getProjectName(), "cargo-audit");
+        Assertions.assertEquals(extraction.getProjectVersion(), "0.12.0");
+
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.CRATES, extraction.getCodeLocations().get(0).getDependencyGraph());
-        graphAssert.hasRootSize(1);
         graphAssert.hasRootDependency("abscissa_core", "0.5.2");
         graphAssert.hasParentChildRelationship("abscissa_core", "0.5.2", "abscissa_derive", "0.5.0");
         graphAssert.hasParentChildRelationship("abscissa_core", "0.5.2", "backtrace", "0.3.46");
         graphAssert.hasParentChildRelationship("abscissa_derive", "0.5.0", "darling", "0.10.2");
+        graphAssert.hasRootSize(1);
     }
 }

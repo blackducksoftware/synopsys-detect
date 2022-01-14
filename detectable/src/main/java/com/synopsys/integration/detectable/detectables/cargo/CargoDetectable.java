@@ -9,7 +9,6 @@ import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.result.CargoLockfileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
@@ -33,18 +32,8 @@ public class CargoDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        Requirements requirements = new Requirements(fileFinder, environment);
-        cargoLock = fileFinder.findFile(environment.getDirectory(), CARGO_LOCK_FILENAME);
-        cargoToml = fileFinder.findFile(environment.getDirectory(), CARGO_TOML_FILENAME);
-        if (cargoLock == null && cargoToml == null) {
-            return new FilesNotFoundDetectableResult(CARGO_LOCK_FILENAME, CARGO_TOML_FILENAME);
-        }
-        if (cargoLock != null) {
-            requirements.explainFile(cargoLock);
-        }
-        if (cargoToml != null) {
-            requirements.explainFile(cargoToml);
-        }
+        Requirements requirements = new Requirements(fileFinder, environment); //I don't like it. But I offer no solutions.
+        requirements.eitherFile(CARGO_LOCK_FILENAME, CARGO_TOML_FILENAME, foundLock -> cargoLock = foundLock, foundToml -> cargoToml = foundToml);
         return requirements.result();
     }
 
