@@ -318,7 +318,7 @@ public class DetectableOptionFactory {
         if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
             List<GemspecDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValues();
             ExcludedDependencyTypeFilter<GemspecDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>(excludedDependencyTypes);
-            includeRuntimeDependencies = dependencyTypeFilter.shouldExcludeDependencyType(GemspecDependencyType.RUNTIME);
+            includeRuntimeDependencies = dependencyTypeFilter.shouldReportDependencyType(GemspecDependencyType.RUNTIME);
             includeDevDependencies = dependencyTypeFilter.shouldReportDependencyType(GemspecDependencyType.DEV);
         }
         return new GemspecParseDetectableOptions(includeRuntimeDependencies, includeDevDependencies);
