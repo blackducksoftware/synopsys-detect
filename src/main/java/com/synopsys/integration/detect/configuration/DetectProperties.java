@@ -745,10 +745,10 @@ public class DetectProperties {
             .setHelp("Path of the lerna executable.")
             .setGroups(DetectGroup.LERNA, DetectGroup.PATHS, DetectGroup.GLOBAL);
 
-    public static final DetectProperty<NoneEnumListProperty<LernaDependencyType>> DETECT_LERNA_DEPENDENCY_TYPES_EXCLUDED =
-        new DetectProperty<>(new NoneEnumListProperty<>("detect.lerna.dependency.types.excluded", NoneEnum.NONE, LernaDependencyType.class))
-            .setInfo("Lerna Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp("Set this value to indicate which Lerna dependency types Detect should exclude from the BOM. By default, all dependency types will be reported.")
+    public static final DetectProperty<NoneEnumListProperty<LernaDependencyType>> DETECT_LERNA_PACKAGE_TYPES_EXCLUDED =
+        new DetectProperty<>(new NoneEnumListProperty<>("detect.lerna.package.types.excluded", NoneEnum.NONE, LernaDependencyType.class))
+            .setInfo("Lerna Package Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
+            .setHelp("Set this value to indicate which Lerna package types Detect should exclude from the BOM. By default, all package types will be reported.")
             .setExample(LernaDependencyType.PRIVATE.name())
             .setGroups(DetectGroup.LERNA, DetectGroup.GLOBAL);
 
@@ -1481,7 +1481,7 @@ public class DetectProperties {
             .setInfo("Include Lerna Packages defined as private.", DetectPropertyFromVersion.VERSION_6_0_0)
             .setHelp("Lerna allows for private packages that do not get published. Set this to true to include all packages including private packages.")
             .setGroups(DetectGroup.LERNA, DetectGroup.GLOBAL)
-            .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_LERNA_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
+            .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_LERNA_PACKAGE_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_NPM_INCLUDE_DEV_DEPENDENCIES =

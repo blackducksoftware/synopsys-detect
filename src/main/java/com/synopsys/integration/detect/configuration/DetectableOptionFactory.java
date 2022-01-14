@@ -188,8 +188,8 @@ public class DetectableOptionFactory {
 
     public LernaOptions createLernaOptions() {
         boolean includePrivate = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_LERNA_INCLUDE_PRIVATE));
-        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_LERNA_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
-            List<LernaDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_LERNA_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValues();
+        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_LERNA_PACKAGE_TYPES_EXCLUDED.getProperty())) {
+            List<LernaDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_LERNA_PACKAGE_TYPES_EXCLUDED.getProperty()).representedValues();
             ExcludedDependencyTypeFilter<LernaDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>(excludedDependencyTypes);
             includePrivate = dependencyTypeFilter.shouldReportDependencyType(LernaDependencyType.PRIVATE);
         }
