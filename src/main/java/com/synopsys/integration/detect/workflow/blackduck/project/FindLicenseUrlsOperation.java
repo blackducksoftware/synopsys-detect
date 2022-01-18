@@ -11,7 +11,6 @@ import com.synopsys.integration.blackduck.api.generated.view.LicenseView;
 import com.synopsys.integration.blackduck.service.dataservice.LicenseService;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
-import com.synopsys.integration.detect.workflow.blackduck.project.licenseurls.SuggestedLicenses;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.HttpUrl;
 
@@ -35,7 +34,12 @@ public class FindLicenseUrlsOperation {
             } else {
                 List<LicenseView> suggestedLicenses = licenseService.searchLicensesByName(licenseName);
                 logger.error(String.format("Could not find url for license with name %s.  License names are case sensitive, please verify the name of your license in Black Duck in the License Management section. "
-                    + "Here are some suggested licenses based on the name you provided: %s", licenseName, new SuggestedLicenses(suggestedLicenses)));
+                    + "Here are some suggested licenses based on the name you provided:", licenseName));
+                suggestedLicenses.stream()
+                    .map(LicenseView::getName)
+                    .map(name -> "\t" + name)
+                    .forEach(logger::error);
+
                 throw new DetectUserFriendlyException(String.format("Detect was unable to find a url for license %s", licenseName), ExitCodeType.FAILURE_GENERAL_ERROR);
             }
         }
