@@ -16,15 +16,15 @@ import com.synopsys.integration.configuration.property.types.enumallnone.propert
 
 public class PropertyConfigUtils {
     public static <B extends Enum<B>> NoneEnumList<B> getNoneList(PropertyConfiguration propertyConfiguration, NoneEnumListProperty<B> property) {
-        return property.toList(propertyConfiguration.getValueOrDefault(property));
+        return property.toList(propertyConfiguration.getValue(property));
     }
 
     public static <B extends Enum<B>> AllNoneEnumList<B> getAllNoneList(PropertyConfiguration propertyConfiguration, AllNoneEnumListProperty<B> property) {
-        return property.toList(propertyConfiguration.getValueOrDefault(property));
+        return property.toList(propertyConfiguration.getValue(property));
     }
 
     public static <B extends Enum<B>> AllEnumList<B> getAllList(PropertyConfiguration propertyConfiguration, AllEnumListProperty<B> property) {
-        return property.toList(propertyConfiguration.getValueOrDefault(property));
+        return property.toList(propertyConfiguration.getValue(property));
     }
 
     /**
