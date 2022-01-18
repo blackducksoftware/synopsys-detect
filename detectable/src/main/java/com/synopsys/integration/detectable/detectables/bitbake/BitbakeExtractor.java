@@ -33,7 +33,6 @@ import com.synopsys.integration.detectable.detectables.bitbake.parse.LicenseMani
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class BitbakeExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -78,7 +77,7 @@ public class BitbakeExtractor {
                     DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, showRecipesResults.get().getRecipesWithLayers(), imageRecipes, excludedDependencyTypeFilter);
                     CodeLocation codeLocation = new CodeLocation(dependencyGraph);
                     codeLocations.add(codeLocation);
-                } catch (IOException | IntegrationException | ExecutableRunnerException | NotImplementedException | ExecutableFailedException e) {
+                } catch (IOException | IntegrationException | NotImplementedException | ExecutableFailedException e) {
                     logger.error(String.format("Failed to extract a Code Location while running Bitbake against package '%s': %s", packageName, e.getMessage()));
                     logger.debug(e.getMessage(), e);
                 }
@@ -120,7 +119,7 @@ public class BitbakeExtractor {
     }
 
     private BitbakeGraph generateBitbakeGraph(BitbakeSession bitbakeSession, File buildDir, String packageName, Set<String> knownLayers, boolean followSymLinks, Integer searchDepth)
-        throws ExecutableRunnerException, IOException, IntegrationException, ExecutableFailedException {
+        throws IOException, IntegrationException, ExecutableFailedException {
         File taskDependsFile = bitbakeSession.executeBitbakeForDependencies(buildDir, packageName, followSymLinks, searchDepth);
         if (logger.isTraceEnabled()) {
             logger.trace(FileUtils.readFileToString(taskDependsFile, Charset.defaultCharset()));

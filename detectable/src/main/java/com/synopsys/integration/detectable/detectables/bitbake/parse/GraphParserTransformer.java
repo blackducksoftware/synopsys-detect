@@ -1,6 +1,5 @@
 package com.synopsys.integration.detectable.detectables.bitbake.parse;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -13,6 +12,9 @@ import com.paypal.digraph.parser.GraphParser;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 
 public class GraphParserTransformer {
+
+    public static final String LABEL_PATH_SEPARATOR = "/";
+
     public BitbakeGraph transform(GraphParser graphParser, Set<String> layerNames) {
         BitbakeGraph bitbakeGraph = new BitbakeGraph();
 
@@ -73,7 +75,7 @@ public class GraphParserTransformer {
         if (components.length == 3) {
             String bbPath = components[2];
             for (String candidateLayerName : knownLayerNames) {
-                String possibleLayerPathSubstring = "/" + candidateLayerName + "/";
+                String possibleLayerPathSubstring = LABEL_PATH_SEPARATOR + candidateLayerName + LABEL_PATH_SEPARATOR;
                 if (bbPath.contains(possibleLayerPathSubstring)) {
                     return Optional.of(candidateLayerName);
                 }

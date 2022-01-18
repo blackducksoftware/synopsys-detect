@@ -66,7 +66,6 @@ public class BuildFileFinder {
 
     @NotNull
     private List<File> generateListOfFiles(final File licensesDir) {
-        // TODO surely there's a single-line way to do this (via nio or apache FileUtils)
         File[] licensesDirContentsArray = licensesDir.listFiles();
         if (licensesDirContentsArray == null) {
             return new ArrayList<>(0);
