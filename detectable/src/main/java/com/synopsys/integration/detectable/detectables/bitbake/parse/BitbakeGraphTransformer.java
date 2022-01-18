@@ -119,33 +119,19 @@ public class BitbakeGraphTransformer {
     }
 
     private Optional<ExternalId> generateExternalId(String dependencyName, String dependencyVersion, @Nullable String dependencyLayer, Map<String, List<String>> recipeLayerMap) {
-        // TODO sure feels like there is room for improvement in layer handling
         List<String> recipeLayerNames = recipeLayerMap.get(dependencyName);
         ExternalId externalId = null;
-        // TODO does this test still make sense?
         if (recipeLayerNames != null) {
-            // TODO May want to tone down some of this logging? Or at least refactor?
-            if ((dependencyLayer != null) && !recipeLayerNames.contains(dependencyLayer)) {
-                logger.warn("recipe {} dependency layer name {} is not in recipe's layer list {}", dependencyName, dependencyLayer, recipeLayerNames);
-            }
-            if ((dependencyLayer != null) && !dependencyLayer.equals(recipeLayerNames.get(0))) {
-                logger.warn("recipe {} dependency layer name {} is not FIRST in recipe's layer list {}", dependencyName, dependencyLayer, recipeLayerNames);
-            }
-            if (dependencyLayer == null) {
-                logger.warn("Did not parse a layer for dependency {} from task-depends.dot; using {} instead", dependencyName, recipeLayerNames.get(0));
-                dependencyLayer = recipeLayerNames.get(0);
-            } else {
-                logger.trace("For dependency recipe {}: using layer {} parsed from task-depends.dot", dependencyName, dependencyLayer);
-            }
+            dependencyLayer = chooseRecipeLayer(dependencyName, dependencyLayer, recipeLayerNames);
             externalId = externalIdFactory.createYoctoExternalId(dependencyLayer, dependencyName, dependencyVersion);
         } else {
-            logger.debug("Failed to find component '{}' in component layer map.", dependencyName);
+            logger.debug("Failed to find component '{}' in component layer map. [dependencyVersion: {}; dependencyLayer: {}", dependencyName, dependencyVersion, dependencyLayer);
             if (dependencyName.endsWith(NATIVE_SUFFIX)) {
                 String alternativeName = dependencyName.replace(NATIVE_SUFFIX, "");
                 logger.debug("Generating alternative component name '{}' for '{}=={}'", alternativeName, dependencyName, dependencyVersion);
                 externalId = generateExternalId(alternativeName, dependencyVersion, dependencyLayer, recipeLayerMap).orElse(null);
             } else {
-                logger.debug("'{}=={}' is not an actual component. Excluding from graph.", dependencyName, dependencyVersion);
+                logger.debug("'{}:{}' is not an actual component. Excluding from graph.", dependencyName, dependencyVersion);
             }
         }
 
@@ -154,5 +140,15 @@ public class BitbakeGraphTransformer {
         }
 
         return Optional.ofNullable(externalId);
+    }
+
+    private String chooseRecipeLayer(final String dependencyName, @Nullable String dependencyLayer, final List<String> recipeLayerNames) {
+        if (dependencyLayer == null) {
+            logger.debug("Did not parse a layer for dependency {} from task-depends.dot; falling back to layer {} (first from show-recipes output)", dependencyName, recipeLayerNames.get(0));
+            dependencyLayer = recipeLayerNames.get(0);
+        } else {
+            logger.trace("For dependency recipe {}: using layer {} parsed from task-depends.dot", dependencyName, dependencyLayer);
+        }
+        return dependencyLayer;
     }
 }
