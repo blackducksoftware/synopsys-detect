@@ -1,8 +1,11 @@
 package com.synopsys.integration.detectable.detectables.bitbake.parse;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import com.paypal.digraph.parser.GraphEdge;
 import com.paypal.digraph.parser.GraphNode;
@@ -10,14 +13,17 @@ import com.paypal.digraph.parser.GraphParser;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 
 public class GraphParserTransformer {
-    public BitbakeGraph transform(GraphParser graphParser) {
+    public BitbakeGraph transform(GraphParser graphParser, Set<String> layerNames) {
         BitbakeGraph bitbakeGraph = new BitbakeGraph();
 
         for (GraphNode graphNode : graphParser.getNodes().values()) {
             String name = getNameFromNode(graphNode);
-            getVersionFromNode(graphNode).ifPresent(
-                version -> bitbakeGraph.addNode(name, version)
-            );
+            Optional<String> layer = getLayerFromNode(graphNode, layerNames);
+            // TODO refactor
+            Optional<String> version = getVersionFromNode(graphNode);
+            if (version.isPresent()) {
+                bitbakeGraph.addNode(name, version.get(), layer.orElse(null));
+            }
         }
 
         for (GraphEdge graphEdge : graphParser.getEdges().values()) {
@@ -41,6 +47,26 @@ public class GraphParserTransformer {
         return attribute.map(this::getVersionFromLabel);
     }
 
+    private Optional<String> getLayerFromNode(GraphNode graphNode, Set<String> knownLayerNames) {
+        Optional<String> labelAttribute = getLabelAttribute(graphNode);
+        // TODO refactor
+        if (labelAttribute.isPresent()) {
+            return getLayerFromLabel(labelAttribute.get(), knownLayerNames);
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    private Optional<String> getLabelFromNode(GraphNode graphNode, Set<String> knownLayers) {
+        Optional<String> attribute = getLabelAttribute(graphNode);
+        // TODO refactor
+        if (attribute.isPresent()) {
+            return getLayerFromLabel(attribute.get(), knownLayers);
+        } else {
+            return Optional.empty();
+        }
+    }
+
     private Optional<String> getLabelAttribute(GraphNode graphNode) {
         String attribute = (String) graphNode.getAttribute("label");
         Optional<String> result = Optional.empty();
@@ -53,7 +79,26 @@ public class GraphParserTransformer {
     }
 
     private String getVersionFromLabel(String label) {
-        String[] components = label.split("\\\\n:|\\\\n");
+        String[] components = getLabelParts(label);
         return components[1];
+    }
+
+    private Optional<String> getLayerFromLabel(String label, Set<String> knownLayerNames) {
+        String[] components = getLabelParts(label);
+        if (components.length == 3) {
+            String bbPath = components[2];
+            for (String candidateLayerName : knownLayerNames) {
+                String possibleLayerPathSubstring = "/" + candidateLayerName + "/";
+                if (bbPath.contains(possibleLayerPathSubstring)) {
+                    return Optional.of(candidateLayerName);
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
+    @NotNull
+    private String[] getLabelParts(final String label) {
+        return label.split("\\\\n:|\\\\n");
     }
 }

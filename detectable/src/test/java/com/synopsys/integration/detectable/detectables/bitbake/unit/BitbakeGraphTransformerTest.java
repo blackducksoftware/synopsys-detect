@@ -26,8 +26,8 @@ public class BitbakeGraphTransformerTest {
     public void parentHasChild() {
         ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         BitbakeGraph bitbakeGraph = new BitbakeGraph();
-        bitbakeGraph.addNode("example", "1:75-r50");
-        bitbakeGraph.addNode("foobar", "12");
+        bitbakeGraph.addNode("example", "1:75-r50", "meta");
+        bitbakeGraph.addNode("foobar", "12", "meta");
         bitbakeGraph.addChild("example", "foobar");
 
         Map<String, List<String>> recipeToLayerMap = new HashMap<>();
@@ -48,8 +48,8 @@ public class BitbakeGraphTransformerTest {
     public void ignoredNoVersionRelationship() {
         ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         BitbakeGraph bitbakeGraph = new BitbakeGraph();
-        bitbakeGraph.addNode("example", "75");
-        bitbakeGraph.addNode("foobar", null);
+        bitbakeGraph.addNode("example", "75", "meta");
+        bitbakeGraph.addNode("foobar", null, "meta");
         bitbakeGraph.addChild("example", "foobar");
 
         Map<String, List<String>> recipeToLayerMap = new HashMap<>();
@@ -69,7 +69,7 @@ public class BitbakeGraphTransformerTest {
     public void ignoredNoVersion() {
         ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         BitbakeGraph bitbakeGraph = new BitbakeGraph();
-        bitbakeGraph.addNode("example", null);
+        bitbakeGraph.addNode("example", null, "meta");
 
         Map<String, List<String>> recipeToLayerMap = new HashMap<>();
         recipeToLayerMap.put("example", Arrays.asList("meta"));

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.NotImplementedException;
@@ -77,7 +78,7 @@ public class BitbakeExtractor {
                     if (excludedDependencyTypeFilter.shouldExcludeDependencyType(BitbakeDependencyType.BUILD)) {
                         imageRecipes = readImageRecipes(buildDir, packageName, bitbakeEnvironment, followSymLinks, searchDepth);
                     }
-                    BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, buildDir, packageName, followSymLinks, searchDepth);
+                    BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, buildDir, packageName, bitbakeRecipes.get().getLayerNames(), followSymLinks, searchDepth);
                     Map<String, List<String>> recipeNameToLayersMap = bitbakeRecipesToLayerMap.convert(bitbakeRecipes.get().getRecipes());
                     DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeNameToLayersMap, imageRecipes, excludedDependencyTypeFilter);
                     CodeLocation codeLocation = new CodeLocation(dependencyGraph);
@@ -124,7 +125,7 @@ public class BitbakeExtractor {
         return licenseManifestParser.collectImageRecipes(licenseManifestLines);
     }
 
-    private BitbakeGraph generateBitbakeGraph(BitbakeSession bitbakeSession, File buildDir, String packageName, boolean followSymLinks, Integer searchDepth)
+    private BitbakeGraph generateBitbakeGraph(BitbakeSession bitbakeSession, File buildDir, String packageName, Set<String> knownLayers, boolean followSymLinks, Integer searchDepth)
         throws ExecutableRunnerException, IOException, IntegrationException, ExecutableFailedException {
         File taskDependsFile = bitbakeSession.executeBitbakeForDependencies(buildDir, packageName, followSymLinks, searchDepth);
         if (logger.isTraceEnabled()) {
@@ -132,6 +133,6 @@ public class BitbakeExtractor {
         }
         InputStream dependsFileInputStream = FileUtils.openInputStream(taskDependsFile);
         GraphParser graphParser = new GraphParser(dependsFileInputStream);
-        return graphParserTransformer.transform(graphParser);
+        return graphParserTransformer.transform(graphParser, knownLayers);
     }
 }

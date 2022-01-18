@@ -1,6 +1,9 @@
 package com.synopsys.integration.detectable.detectables.bitbake.unit;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -20,8 +23,9 @@ public class GraphParserTransformerTest {
         HashMap<String, GraphEdge> edges = new HashMap<>();
         HashMap<String, GraphNode> nodes = new HashMap<>();
 
-        addNode("name", "name\\n:version\\n/some/path/to.bb", nodes, edges);
-        BitbakeGraph bitbakeGraph = buildGraph(nodes, edges);
+        addNode("name", "name\\n:version\\n/some/meta/path/to.bb", nodes, edges);
+        Set<String> knownLayers = new HashSet<>(Arrays.asList("aaa", "meta", "bbb"));
+        BitbakeGraph bitbakeGraph = buildGraph(nodes, edges, knownLayers);
 
         Assertions.assertEquals(1, bitbakeGraph.getNodes().size());
         Assertions.assertEquals("version", bitbakeGraph.getNodes().get(0).getVersion().get());
@@ -32,10 +36,11 @@ public class GraphParserTransformerTest {
         HashMap<String, GraphEdge> edges = new HashMap<>();
         HashMap<String, GraphNode> nodes = new HashMap<>();
 
-        addNode("parent", "name\\n:parent.version\\n/some/path/to.bb", nodes, edges);
-        addNode("child", "name\\n:child.version\\n/some/path/to.bb", nodes, edges);
+        addNode("parent", "name\\n:parent.version\\n/some/meta/path/to.bb", nodes, edges);
+        addNode("child", "name\\n:child.version\\n/some/meta/path/to.bb", nodes, edges);
         addEdge("edge1", "parent", "child", nodes, edges);
-        BitbakeGraph bitbakeGraph = buildGraph(nodes, edges);
+        Set<String> knownLayers = new HashSet<>(Arrays.asList("aaa", "meta", "bbb"));
+        BitbakeGraph bitbakeGraph = buildGraph(nodes, edges, knownLayers);
 
         Assertions.assertEquals(2, bitbakeGraph.getNodes().size());
         Assertions.assertEquals(1, bitbakeGraph.getNodes().get(0).getChildren().size());
@@ -48,15 +53,16 @@ public class GraphParserTransformerTest {
         HashMap<String, GraphNode> nodes = new HashMap<>();
 
         addNode("quotes\"removed", "example\\n:example\\n/example", nodes, edges);
-        BitbakeGraph bitbakeGraph = buildGraph(nodes, edges);
+        Set<String> knownLayers = new HashSet<>(Arrays.asList("aaa", "meta", "bbb"));
+        BitbakeGraph bitbakeGraph = buildGraph(nodes, edges, knownLayers);
 
         Assertions.assertEquals(1, bitbakeGraph.getNodes().size());
         Assertions.assertEquals("quotesremoved", bitbakeGraph.getNodes().get(0).getName());
     }
 
-    private BitbakeGraph buildGraph(HashMap<String, GraphNode> nodes, HashMap<String, GraphEdge> edges) {
+    private BitbakeGraph buildGraph(HashMap<String, GraphNode> nodes, HashMap<String, GraphEdge> edges, Set<String> knownLayers) {
         GraphParserTransformer graphParserTransformer = new GraphParserTransformer();
-        BitbakeGraph bitbakeGraph = graphParserTransformer.transform(mockParser(nodes, edges));
+        BitbakeGraph bitbakeGraph = graphParserTransformer.transform(mockParser(nodes, edges), knownLayers);
         return bitbakeGraph;
     }
 
