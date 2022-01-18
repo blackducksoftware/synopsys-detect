@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,8 +46,9 @@ public class BitbakeGraphTransformer {
 
             if (bitbakeNode.getVersion().isPresent()) {
                 String version = bitbakeNode.getVersion().get();
+                Optional<String> actualLayer = bitbakeNode.getLayer();
                 if (excludedDependencyTypeFilter.shouldReportDependencyType(BitbakeDependencyType.BUILD) || !isBuildDependency(imageRecipes, name, version)) {
-                    Optional<Dependency> dependency = generateExternalId(name, version, recipeLayerMap).map(Dependency::new);
+                    Optional<Dependency> dependency = generateExternalId(name, version, actualLayer.orElse(null), recipeLayerMap).map(Dependency::new);
                     dependency.ifPresent(value -> namesToExternalIds.put(bitbakeNode.getName(), value));
                 }
             } else if (name.startsWith(VIRTUAL_PREFIX)) {
@@ -116,19 +118,33 @@ public class BitbakeGraphTransformer {
         return epochlessRecipeVersion;
     }
 
-    private Optional<ExternalId> generateExternalId(String dependencyName, String dependencyVersion, Map<String, List<String>> recipeLayerMap) {
+    private Optional<ExternalId> generateExternalId(String dependencyName, String dependencyVersion, @Nullable String dependencyLayer, Map<String, List<String>> recipeLayerMap) {
+        // TODO sure feels like there is room for improvement in layer handling
         List<String> recipeLayerNames = recipeLayerMap.get(dependencyName);
         ExternalId externalId = null;
+        // TODO does this test still make sense?
         if (recipeLayerNames != null) {
+            // TODO TEMP
+            if ((dependencyLayer != null) && !recipeLayerNames.contains(dependencyLayer)) {
+                logger.warn("recipe {} dependency layer name {} is not in recipe's layer list {}", dependencyName, dependencyLayer, recipeLayerNames);
+            }
+            if ((dependencyLayer != null) && !dependencyLayer.equals(recipeLayerNames.get(0))) {
+                logger.warn("recipe {} dependency layer name {} is not FIRST in recipe's layer list {}", dependencyName, dependencyLayer, recipeLayerNames);
+            }
+            if (dependencyLayer == null) {
+                logger.warn("Did not parse a layer for dependency {} from task-depends.dot; using {} instead", dependencyName, recipeLayerNames.get(0));
+                dependencyLayer = recipeLayerNames.get(0);
+            }
+            //////////
             // TODO hoping we remove the reliance on this layer name and use task-depends.dot dependency layer name instead
-            String priorityLayerName = recipeLayerMap.get(dependencyName).get(0);
-            externalId = externalIdFactory.createYoctoExternalId(priorityLayerName, dependencyName, dependencyVersion);
+            //String priorityLayerName = recipeLayerMap.get(dependencyName).get(0);
+            externalId = externalIdFactory.createYoctoExternalId(dependencyLayer, dependencyName, dependencyVersion);
         } else {
             logger.debug("Failed to find component '{}' in component layer map.", dependencyName);
             if (dependencyName.endsWith(NATIVE_SUFFIX)) {
                 String alternativeName = dependencyName.replace(NATIVE_SUFFIX, "");
                 logger.debug("Generating alternative component name '{}' for '{}=={}'", alternativeName, dependencyName, dependencyVersion);
-                externalId = generateExternalId(alternativeName, dependencyVersion, recipeLayerMap).orElse(null);
+                externalId = generateExternalId(alternativeName, dependencyVersion, dependencyLayer, recipeLayerMap).orElse(null);
             } else {
                 logger.debug("'{}=={}' is not an actual component. Excluding from graph.", dependencyName, dependencyVersion);
             }
