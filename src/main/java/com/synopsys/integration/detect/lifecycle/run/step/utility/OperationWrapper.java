@@ -12,6 +12,7 @@ import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.exception.IntegrationRestException;
 
 public class OperationWrapper {
+    private static final String OPERATION_ERROR_MESSAGE_PREFIX = "There was a problem:";
     private final ExitCodeManager exitCodeManager;
 
     public OperationWrapper(ExitCodeManager exitCodeManager) {
@@ -40,14 +41,14 @@ public class OperationWrapper {
             successConsumer.run();
             return value;
         } catch (InterruptedException e) {
-            String errorReason = String.format("There was a problem: %s", e.getMessage());
+            String errorReason = String.format("%s %s", OPERATION_ERROR_MESSAGE_PREFIX, e.getMessage().replace(OPERATION_ERROR_MESSAGE_PREFIX, ""));
             operation.error(name, errorReason);
             // Restore interrupted state...
             Thread.currentThread().interrupt();
             errorConsumer.accept(e);
             throw new DetectUserFriendlyException(errorReason, e, ExitCodeType.FAILURE_GENERAL_ERROR);
         } catch (Exception e) {
-            String errorReason = String.format("There was a problem: %s", e.getMessage());
+            String errorReason = String.format("%s %s", OPERATION_ERROR_MESSAGE_PREFIX, e.getMessage().replace(OPERATION_ERROR_MESSAGE_PREFIX, ""));
             operation.error(name, errorReason);
             errorConsumer.accept(e);
             throw new DetectUserFriendlyException(errorReason, e, exitCodeManager.getExitCodeFromExceptionDetails(e));

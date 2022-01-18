@@ -25,31 +25,34 @@ public class NpmDependencyConverter {
     public NpmDependencyConverter(ExternalIdFactory externalIdFactory) {this.externalIdFactory = externalIdFactory;}
 
     public NpmProject convertLockFile(PackageLock packageLock, @Nullable PackageJson packageJson) {
-        NpmProject project = new NpmProject(packageLock.name, packageLock.version);
+        List<NpmRequires> declaredDevDependencies = new ArrayList<>();
+        List<NpmRequires> declaredPeerDependencies = new ArrayList<>();
+        List<NpmRequires> declaredDependencies = new ArrayList<>();
+        List<NpmDependency> resolvedDependencies = new ArrayList<>();
 
         if (packageLock.dependencies != null) {
             List<NpmDependency> children = convertPackageMapToDependencies(null, packageLock.dependencies);
-            project.addAllResolvedDependencies(children);
+            resolvedDependencies.addAll(children);
         }
 
         if (packageJson != null) {
             if (packageJson.dependencies != null) {
                 List<NpmRequires> rootRequires = convertNameVersionMapToRequires(packageJson.dependencies);
-                project.addAllDependencies(rootRequires);
+                declaredDependencies.addAll(rootRequires);
             }
 
             if (packageJson.devDependencies != null) {
                 List<NpmRequires> rootDevRequires = convertNameVersionMapToRequires(packageJson.devDependencies);
-                project.addAllDevDependencies(rootDevRequires);
+                declaredDevDependencies.addAll(rootDevRequires);
             }
 
             if (packageJson.peerDependencies != null) {
                 List<NpmRequires> rootPeerRequires = convertNameVersionMapToRequires(packageJson.peerDependencies);
-                project.addAllPeerDependencies(rootPeerRequires);
+                declaredPeerDependencies.addAll(rootPeerRequires);
             }
         }
 
-        return project;
+        return new NpmProject(packageLock.name, packageLock.version, declaredDevDependencies, declaredPeerDependencies, declaredDependencies, resolvedDependencies);
     }
 
     public List<NpmDependency> convertPackageMapToDependencies(NpmDependency parent, Map<String, PackageLockDependency> packageLockDependencyMap) {
@@ -77,12 +80,10 @@ public class NpmDependencyConverter {
     }
 
     private NpmDependency createNpmDependency(String name, String version, Boolean isDev, Boolean isPeer) {
-        ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, name, version);
-        Dependency graphDependency = new Dependency(name, version, externalId);
         boolean dev = isDev != null && isDev;
         boolean peer = isPeer != null && isPeer;
-        return new NpmDependency(name, version, dev, peer, graphDependency);
-
+        ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, name, version);
+        return new NpmDependency(name, version, externalId, dev, peer);
     }
 
     public List<NpmRequires> convertNameVersionMapToRequires(Map<String, String> requires) {

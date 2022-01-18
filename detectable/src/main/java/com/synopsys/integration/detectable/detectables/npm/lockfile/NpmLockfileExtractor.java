@@ -6,15 +6,17 @@ import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
 
-import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmParseResult;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.parse.NpmLockFileProjectIdTransformer;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.parse.NpmLockfilePackager;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.result.NpmPackagerResult;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.parse.NpmLockfileGraphTransformer;
 import com.synopsys.integration.detectable.extraction.Extraction;
 
 public class NpmLockfileExtractor {
-    private final NpmLockfilePackager npmLockfileParser;
+    private final NpmLockfilePackager npmLockfilePackager;
 
-    public NpmLockfileExtractor(NpmLockfilePackager npmLockfileParser) {
-        this.npmLockfileParser = npmLockfileParser;
+    public NpmLockfileExtractor(NpmLockfilePackager npmLockfilePackager) {
+        this.npmLockfilePackager = npmLockfilePackager;
     }
 
     /*
@@ -28,7 +30,7 @@ public class NpmLockfileExtractor {
                 packageText = FileUtils.readFileToString(packageJson, StandardCharsets.UTF_8);
             }
 
-            NpmParseResult result = npmLockfileParser.parse(packageText, lockText, includeDevDependencies, includePeerDependencies);
+            NpmPackagerResult result = npmLockfilePackager.parseAndTransform(packageText, lockText, includeDevDependencies, includePeerDependencies);
 
             return new Extraction.Builder()
                 .success(result.getCodeLocation())

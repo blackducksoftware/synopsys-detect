@@ -2,17 +2,51 @@
 
 ## Version 7.10.0
 
+### New features
+* Added support for the Apache Ivy package manager.
+* Build dependencies can now be excluded from BitBake results.
+
+### Changed features
+* [solution_name] now classifies empty code location warning messages as the DEBUG logging level instead of the previous classification as the WARN logging level.
+* BitBake detector: Added support for BitBake 1.52 (Yocto 3.4).
+* BitBake detector: Added support for BitBake projects with build directories that reside outside the project directory.
+* Deprecated many properties relating to filtering dependency types from the BOM. These property replacements will reduce the number of properties, apply consistency to detector properties, add filtering abilities, and overall simplify Detect configuration.
+  * Deprecated the following properties:
+    * detect.conan.include.build.dependencies
+    * detect.pub.deps.exclude.dev
+    * detect.go.mod.enable.verification
+    * detect.gradle.include.unresolved.configurations
+    * detect.lerna.include.private
+    * detect.npm.include.dev.dependencies
+    * detect.npm.include.peer.dependencies
+    * detect.packagist.include.dev.dependencies
+    * detect.pear.only.required.deps
+    * detect.ruby.include.runtime.dependencies
+    * detect.ruby.include.dev.dependencies
+    * detect.yarn.prod.only
+  * Added the following replacement properties:
+    * detect.conan.dependency.types.excluded
+    * detect.pub.dependency.types.excluded
+    * detect.go.mod.dependency.types.excluded
+    * detect.gradle.configuration.types.excluded
+    * detect.lerna.dependency.types.excluded
+    * detect.npm.dependency.types.excluded
+    * detect.packagist.dependency.types.excluded
+    * detect.pear.dependency.types.excluded
+    * detect.ruby.dependency.types.excluded
+    * detect.yarn.dependency.types.excluded
+
 ### Resolved issues
 * (IDETECT-2949) Fixed an issue where [solution_name] failed to properly parse Go module version names containing '-' characters.
 * (IDETECT-2959) Fixed an issue where [solution_name] would not fail when running `go mod why` fails.
 * (IDETECT-2971) Fixed an issue where [solution_name] would not produce unique code location paths for Pnpm projects.
-
-### Changed features
-* [solution_name] now classifies empty code location warning messages as the DEBUG logging level instead of the previous classification as the WARN logging level.
+* (IDETECT-2939) Fixed an issue where NPM projects that had no declared dependencies would not exclude peer or dev dependencies.
+* (IDETECT-3038) Fixed an issue where [solution_name] would fail to parse file dependency declarations for pnpm projects in their pnpm-lock.yaml files.
+* (IDETECT-3000) Fixed an issue where [solution_name] would error out when a user's source directory and output directory did not share a common root.
 
 ## Version 7.9.0
 
-### New Features
+### New features
 * Added support for the Xcode Swift Package Manager for Xcode projects using the built-in [Swift Packages](https://developer.apple.com/documentation/swift_packages) feature.
 * Added detect.bdio.file.name to specify the name of the output bdio file. 
 * Added system architecture DEBUG level logs to assist with support.

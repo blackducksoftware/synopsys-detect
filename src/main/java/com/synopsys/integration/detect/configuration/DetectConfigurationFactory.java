@@ -27,8 +27,9 @@ import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBui
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.base.NullableProperty;
 import com.synopsys.integration.configuration.property.base.ValuedProperty;
+import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumCollection;
+import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumList;
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumValue;
-import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumList;
 import com.synopsys.integration.configuration.property.types.path.NullablePathProperty;
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.configuration.property.types.path.PathValue;
@@ -197,8 +198,8 @@ public class DetectConfigurationFactory {
     public DetectToolFilter createToolFilter(RunDecision runDecision, BlackDuckDecision blackDuckDecision) {
         Optional<Boolean> impactEnabled = Optional.of(detectConfiguration.getValue(DetectProperties.DETECT_IMPACT_ANALYSIS_ENABLED.getProperty()));
 
-        FilterableEnumList<DetectTool> includedTools = getValue(DetectProperties.DETECT_TOOLS);
-        FilterableEnumList<DetectTool> excludedTools = getValue(DetectProperties.DETECT_TOOLS_EXCLUDED);
+        AllNoneEnumCollection<DetectTool> includedTools = PropertyConfigUtils.getAllNoneList(detectConfiguration, DetectProperties.DETECT_TOOLS.getProperty());
+        AllNoneEnumCollection<DetectTool> excludedTools = PropertyConfigUtils.getAllNoneList(detectConfiguration, DetectProperties.DETECT_TOOLS_EXCLUDED.getProperty());
         ExcludeIncludeEnumFilter<DetectTool> filter = new ExcludeIncludeEnumFilter<>(excludedTools, includedTools);
         return new DetectToolFilter(filter, impactEnabled.orElse(false), runDecision, blackDuckDecision);
     }
@@ -259,10 +260,10 @@ public class DetectConfigurationFactory {
         return directoryExclusionPatterns;
     }
 
-    public DetectorFinderOptions createDetectorFinderOptions(Path sourcePath) {
+    public DetectorFinderOptions createDetectorFinderOptions() {
         //Normal settings
         Integer maxDepth = getValue(DetectProperties.DETECT_DETECTOR_SEARCH_DEPTH);
-        DetectExcludedDirectoryFilter fileFilter = new DetectExcludedDirectoryFilter(sourcePath, collectDetectorSearchDirectoryExclusions());
+        DetectExcludedDirectoryFilter fileFilter = new DetectExcludedDirectoryFilter(collectDetectorSearchDirectoryExclusions());
 
         return new DetectorFinderOptions(fileFilter, maxDepth, getFollowSymLinks());
     }
@@ -271,11 +272,15 @@ public class DetectConfigurationFactory {
         Boolean forceNestedSearch = getValue(DetectProperties.DETECT_DETECTOR_SEARCH_CONTINUE);
 
         //Detector Filter
-        FilterableEnumList<DetectorType> excluded = getValue(DetectProperties.DETECT_EXCLUDED_DETECTOR_TYPES);
-        FilterableEnumList<DetectorType> included = getValue(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES);
+        AllNoneEnumList<DetectorType> excluded = PropertyConfigUtils.getAllNoneList(detectConfiguration, DetectProperties.DETECT_EXCLUDED_DETECTOR_TYPES.getProperty());
+        AllNoneEnumList<DetectorType> included = PropertyConfigUtils.getAllNoneList(detectConfiguration, DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES.getProperty());
         ExcludeIncludeEnumFilter<DetectorType> detectorFilter = new ExcludeIncludeEnumFilter<>(excluded, included);
 
-        return new DetectorEvaluationOptions(forceNestedSearch, getFollowSymLinks(), (rule -> detectorFilter.shouldInclude(rule.getDetectorType())));
+        Set<DetectorType> includedTypes = Arrays.stream(DetectorType.values())
+            .filter(detectorFilter::shouldInclude)
+            .collect(Collectors.toSet());
+
+        return new DetectorEvaluationOptions(forceNestedSearch, getFollowSymLinks(), (rule -> includedTypes.contains(rule.getDetectorType())));
     }
 
     public BdioOptions createBdioOptions() {
@@ -307,7 +312,7 @@ public class DetectConfigurationFactory {
         Integer projectTier = getNullableValue(DetectProperties.DETECT_PROJECT_TIER);
         String projectDescription = getNullableValue(DetectProperties.DETECT_PROJECT_DESCRIPTION);
         String projectVersionNotes = getNullableValue(DetectProperties.DETECT_PROJECT_VERSION_NOTES);
-        List<ProjectCloneCategoriesType> cloneCategories = getValue(DetectProperties.DETECT_PROJECT_CLONE_CATEGORIES).representedValues();
+        List<ProjectCloneCategoriesType> cloneCategories = PropertyConfigUtils.getAllNoneList(detectConfiguration, DetectProperties.DETECT_PROJECT_CLONE_CATEGORIES.getProperty()).representedValues();
         Boolean projectLevelAdjustments = getValue(DetectProperties.DETECT_PROJECT_LEVEL_ADJUSTMENTS);
         Boolean forceProjectVersionUpdate = getValue(DetectProperties.DETECT_PROJECT_VERSION_UPDATE);
         String projectVersionNickname = getNullableValue(DetectProperties.DETECT_PROJECT_VERSION_NICKNAME);
@@ -414,7 +419,7 @@ public class DetectConfigurationFactory {
         Boolean runNoticesReport = getValue(DetectProperties.DETECT_NOTICES_REPORT);
         Path riskReportPdfPath = getPathOrNull(DetectProperties.DETECT_RISK_REPORT_PDF_PATH);
         Path noticesReportPath = getPathOrNull(DetectProperties.DETECT_NOTICES_REPORT_PATH);
-        List<PolicyRuleSeverityType> severitiesToFailPolicyCheck = getValue(DetectProperties.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES).representedValues();
+        List<PolicyRuleSeverityType> severitiesToFailPolicyCheck = PropertyConfigUtils.getAllNoneList(detectConfiguration, DetectProperties.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES.getProperty()).representedValues();
 
         return new BlackDuckPostOptions(waitForResults, runRiskReport, runNoticesReport, riskReportPdfPath, noticesReportPath, severitiesToFailPolicyCheck);
     }
@@ -467,6 +472,7 @@ public class DetectConfigurationFactory {
         return getPathOrNull(property.getProperty());
     }
 
+    // TODO: Make these path methods more accessible to DetectableOptionFactory. Maybe on DetectConfiguration
     private Path getPathOrNull(NullablePathProperty property) {
         return detectConfiguration.getValue(property).map(path -> path.resolvePath(pathResolver)).orElse(null);
     }

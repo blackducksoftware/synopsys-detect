@@ -3,6 +3,7 @@ package com.synopsys.integration.detect.tool.detector.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.condition.OS.WINDOWS;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import java.io.File;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -24,7 +26,7 @@ class DetectExcludedDirectoryFilterTest {
     void testIsExcludedDirectories() {
         Path sourcePath = new File("my/file/path").toPath();
         List<String> excludedDirectories = Arrays.asList("root", "root2");
-        DetectExcludedDirectoryFilter detectExcludedDirectoryFilter = new DetectExcludedDirectoryFilter(sourcePath, excludedDirectories);
+        DetectExcludedDirectoryFilter detectExcludedDirectoryFilter = new DetectExcludedDirectoryFilter(excludedDirectories);
 
         File root = new File(sourcePath.toFile(), "root");
         File root2 = new File(sourcePath.toFile(), "root2");
@@ -39,7 +41,7 @@ class DetectExcludedDirectoryFilterTest {
     void testIsExcludedDirectoryPaths() {
         Path sourcePath = new File("my/subDir1/subDir2/file/path").toPath();
         List<String> excludedDirectories = Collections.singletonList("subDir1/subDir2");
-        DetectExcludedDirectoryFilter detectExcludedDirectoryFilter = new DetectExcludedDirectoryFilter(sourcePath, excludedDirectories);
+        DetectExcludedDirectoryFilter detectExcludedDirectoryFilter = new DetectExcludedDirectoryFilter(excludedDirectories);
 
         File root = new File("path/to/root");
         File subDir1 = new File(root, "subDir1");
@@ -57,7 +59,7 @@ class DetectExcludedDirectoryFilterTest {
     void testIsExcludedDirectoryPathPatterns(String exclusionPattern, boolean sub1Excluded, boolean sub2Excluded, boolean sub1Sub1Excluded, boolean sub1Sub2Excluded, boolean sub2Sub1Excluded) {
         Path sourcePath = new File("").toPath();
 
-        DetectExcludedDirectoryFilter filter = new DetectExcludedDirectoryFilter(sourcePath, Collections.singletonList(exclusionPattern));
+        DetectExcludedDirectoryFilter filter = new DetectExcludedDirectoryFilter(Collections.singletonList(exclusionPattern));
         File root = new File("root");
         File sub1 = new File(root, "sub1");
         File sub2 = new File(root, "sub2");
@@ -86,7 +88,7 @@ class DetectExcludedDirectoryFilterTest {
     void testIsExcludedDirectoryNamePatterns() {
         Path sourcePath = new File("my/subDir1/subDir2/file/path").toPath();
         List<String> excludedDirectories = Arrays.asList("*1", "namePatternsDir*");
-        DetectExcludedDirectoryFilter detectExcludedDirectoryFilter = new DetectExcludedDirectoryFilter(sourcePath, excludedDirectories);
+        DetectExcludedDirectoryFilter detectExcludedDirectoryFilter = new DetectExcludedDirectoryFilter(excludedDirectories);
 
         File root = new File(sourcePath.toFile(), "root");
         File subDir1 = new File(root, "subDir1");
@@ -99,5 +101,16 @@ class DetectExcludedDirectoryFilterTest {
         assertFalse(detectExcludedDirectoryFilter.isExcluded(subDir2));
         assertFalse(detectExcludedDirectoryFilter.isExcluded(deepSubDir2));
         assertTrue(detectExcludedDirectoryFilter.isExcluded(namePatternsDir));
+    }
+
+    @EnabledOnOs(WINDOWS)
+    @Test
+    void testCatchErrorWhenSourcePathDoesNotShareRootWithInspectedFile() {
+        Path sourcePath = new File("D:\\").toPath();
+        File testFile = new File("C:\\");
+
+        DetectExcludedDirectoryFilter detectExcludedDirectoryFilter = new DetectExcludedDirectoryFilter(Arrays.asList("test"));
+
+        assertFalse(detectExcludedDirectoryFilter.isExcluded(testFile));
     }
 }
