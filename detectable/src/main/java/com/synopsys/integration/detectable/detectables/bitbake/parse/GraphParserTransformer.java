@@ -19,11 +19,7 @@ public class GraphParserTransformer {
         for (GraphNode graphNode : graphParser.getNodes().values()) {
             String name = getNameFromNode(graphNode);
             Optional<String> layer = getLayerFromNode(graphNode, layerNames);
-            // TODO refactor
-            Optional<String> version = getVersionFromNode(graphNode);
-            if (version.isPresent()) {
-                bitbakeGraph.addNode(name, version.get(), layer.orElse(null));
-            }
+            getVersionFromNode(graphNode).ifPresent(ver -> bitbakeGraph.addNode(name, ver, layer.orElse(null)));
         }
 
         for (GraphEdge graphEdge : graphParser.getEdges().values()) {
@@ -49,19 +45,8 @@ public class GraphParserTransformer {
 
     private Optional<String> getLayerFromNode(GraphNode graphNode, Set<String> knownLayerNames) {
         Optional<String> labelAttribute = getLabelAttribute(graphNode);
-        // TODO refactor
         if (labelAttribute.isPresent()) {
             return getLayerFromLabel(labelAttribute.get(), knownLayerNames);
-        } else {
-            return Optional.empty();
-        }
-    }
-
-    private Optional<String> getLabelFromNode(GraphNode graphNode, Set<String> knownLayers) {
-        Optional<String> attribute = getLabelAttribute(graphNode);
-        // TODO refactor
-        if (attribute.isPresent()) {
-            return getLayerFromLabel(attribute.get(), knownLayers);
         } else {
             return Optional.empty();
         }

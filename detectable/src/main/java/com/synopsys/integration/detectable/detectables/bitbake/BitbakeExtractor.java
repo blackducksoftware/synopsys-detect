@@ -66,17 +66,16 @@ public class BitbakeExtractor {
         bitbakeSession.logBitbakeVersion();
         File buildDir = bitbakeSession.determineBuildDir();
         BitbakeEnvironment bitbakeEnvironment = bitbakeSession.executeBitbakeForEnvironment();
-        // TODO rename
-        Optional<ShowRecipesResults> bitbakeRecipes = collectBitbakeRecipes(bitbakeSession);
-        if (bitbakeRecipes.isPresent()) {
+        Optional<ShowRecipesResults> showRecipesResults = collectBitbakeRecipes(bitbakeSession);
+        if (showRecipesResults.isPresent()) {
             for (String packageName : packageNames) {
                 Map<String, String> imageRecipes = null;
                 try {
                     if (excludedDependencyTypeFilter.shouldExcludeDependencyType(BitbakeDependencyType.BUILD)) {
                         imageRecipes = readImageRecipes(buildDir, packageName, bitbakeEnvironment, followSymLinks, searchDepth);
                     }
-                    BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, buildDir, packageName, bitbakeRecipes.get().getLayerNames(), followSymLinks, searchDepth);
-                    DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, bitbakeRecipes.get().getRecipesWithLayers(), imageRecipes, excludedDependencyTypeFilter);
+                    BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, buildDir, packageName, showRecipesResults.get().getLayerNames(), followSymLinks, searchDepth);
+                    DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, showRecipesResults.get().getRecipesWithLayers(), imageRecipes, excludedDependencyTypeFilter);
                     CodeLocation codeLocation = new CodeLocation(dependencyGraph);
                     codeLocations.add(codeLocation);
                 } catch (IOException | IntegrationException | ExecutableRunnerException | NotImplementedException | ExecutableFailedException e) {
@@ -103,15 +102,14 @@ public class BitbakeExtractor {
     }
 
     private Optional<ShowRecipesResults> collectBitbakeRecipes(final BitbakeSession bitbakeSession) {
-        // TODO rename
-        ShowRecipesResults bitbakeRecipes = null;
+        ShowRecipesResults showRecipesResults = null;
         try {
-            bitbakeRecipes = bitbakeSession.executeBitbakeForRecipeLayerCatalog();
+            showRecipesResults = bitbakeSession.executeBitbakeForRecipeLayerCatalog();
         } catch (IOException | NotImplementedException | ExecutableFailedException e) {
             logger.error(String.format("Error collecting recipe layers: %s", e.getMessage()));
             logger.debug(e.getMessage(), e);
         }
-        return Optional.ofNullable(bitbakeRecipes);
+        return Optional.ofNullable(showRecipesResults);
     }
 
     private Map<String, String> readImageRecipes(File buildDir, String targetImageName, BitbakeEnvironment bitbakeEnvironment, boolean followSymLinks, int searchDepth) throws IntegrationException, IOException {
