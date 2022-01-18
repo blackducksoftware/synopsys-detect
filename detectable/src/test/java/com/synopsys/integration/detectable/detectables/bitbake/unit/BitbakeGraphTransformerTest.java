@@ -1,5 +1,6 @@
 package com.synopsys.integration.detectable.detectables.bitbake.unit;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -29,9 +30,9 @@ public class BitbakeGraphTransformerTest {
         bitbakeGraph.addNode("foobar", "12");
         bitbakeGraph.addChild("example", "foobar");
 
-        Map<String, String> recipeToLayerMap = new HashMap<>();
-        recipeToLayerMap.put("example", "meta");
-        recipeToLayerMap.put("foobar", "meta");
+        Map<String, List<String>> recipeToLayerMap = new HashMap<>();
+        recipeToLayerMap.put("example", Arrays.asList("meta"));
+        recipeToLayerMap.put("foobar", Arrays.asList("meta"));
 
         BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
         DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeToLayerMap, null, new ExcludedDependencyTypeFilter<>());
@@ -51,9 +52,9 @@ public class BitbakeGraphTransformerTest {
         bitbakeGraph.addNode("foobar", null);
         bitbakeGraph.addChild("example", "foobar");
 
-        Map<String, String> recipeToLayerMap = new HashMap<>();
-        recipeToLayerMap.put("example", "meta");
-        recipeToLayerMap.put("foobar", "meta");
+        Map<String, List<String>> recipeToLayerMap = new HashMap<>();
+        recipeToLayerMap.put("example", Arrays.asList("meta"));
+        recipeToLayerMap.put("foobar", Arrays.asList("meta"));
 
         BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
         DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeToLayerMap, null, new ExcludedDependencyTypeFilter<>());
@@ -70,8 +71,8 @@ public class BitbakeGraphTransformerTest {
         BitbakeGraph bitbakeGraph = new BitbakeGraph();
         bitbakeGraph.addNode("example", null);
 
-        Map<String, String> recipeToLayerMap = new HashMap<>();
-        recipeToLayerMap.put("example", "meta");
+        Map<String, List<String>> recipeToLayerMap = new HashMap<>();
+        recipeToLayerMap.put("example", Arrays.asList("meta"));
 
         BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
         DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeToLayerMap, null, new ExcludedDependencyTypeFilter<>());

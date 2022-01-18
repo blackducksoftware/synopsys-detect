@@ -76,7 +76,7 @@ public class BitbakeExtractor {
                 }
                 BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, buildDir, packageName, followSymLinks, searchDepth);
                 List<BitbakeRecipe> bitbakeRecipes = bitbakeSession.executeBitbakeForRecipeLayerCatalog();
-                Map<String, String> recipeNameToLayersMap = bitbakeRecipesToLayerMap.convert(bitbakeRecipes);
+                Map<String, List<String>> recipeNameToLayersMap = bitbakeRecipesToLayerMap.convert(bitbakeRecipes);
 
                 DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeNameToLayersMap, imageRecipes, excludedDependencyTypeFilter);
                 CodeLocation codeLocation = new CodeLocation(dependencyGraph);

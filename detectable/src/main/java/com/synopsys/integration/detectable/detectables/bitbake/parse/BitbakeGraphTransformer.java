@@ -1,6 +1,7 @@
 package com.synopsys.integration.detectable.detectables.bitbake.parse;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -31,13 +32,13 @@ public class BitbakeGraphTransformer {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph transform(BitbakeGraph bitbakeGraph, Map<String, String> recipeLayerMap, Map<String, String> imageRecipes, ExcludedDependencyTypeFilter<BitbakeDependencyType> excludedDependencyTypeFilter) {
+    public DependencyGraph transform(BitbakeGraph bitbakeGraph, Map<String, List<String>> recipeLayerMap, Map<String, String> imageRecipes, ExcludedDependencyTypeFilter<BitbakeDependencyType> excludedDependencyTypeFilter) {
         Map<String, Dependency> namesToExternalIds = generateExternalIds(bitbakeGraph, recipeLayerMap, imageRecipes, excludedDependencyTypeFilter);
         return buildGraph(bitbakeGraph, namesToExternalIds);
     }
 
     @NotNull
-    private Map<String, Dependency> generateExternalIds(final BitbakeGraph bitbakeGraph, final Map<String, String> recipeLayerMap, final Map<String, String> imageRecipes, ExcludedDependencyTypeFilter<BitbakeDependencyType> excludedDependencyTypeFilter) {
+    private Map<String, Dependency> generateExternalIds(final BitbakeGraph bitbakeGraph, final Map<String, List<String>> recipeLayerMap, final Map<String, String> imageRecipes, ExcludedDependencyTypeFilter<BitbakeDependencyType> excludedDependencyTypeFilter) {
         Map<String, Dependency> namesToExternalIds = new HashMap<>();
         for (BitbakeNode bitbakeNode : bitbakeGraph.getNodes()) {
             String name = bitbakeNode.getName();
@@ -115,11 +116,12 @@ public class BitbakeGraphTransformer {
         return epochlessRecipeVersion;
     }
 
-    private Optional<ExternalId> generateExternalId(String dependencyName, String dependencyVersion, Map<String, String> recipeLayerMap) {
-        String priorityLayerName = recipeLayerMap.get(dependencyName);
+    private Optional<ExternalId> generateExternalId(String dependencyName, String dependencyVersion, Map<String, List<String>> recipeLayerMap) {
+        List<String> recipeLayerNames = recipeLayerMap.get(dependencyName);
         ExternalId externalId = null;
-
-        if (priorityLayerName != null) {
+        if (recipeLayerNames != null) {
+            // TODO hoping we remove the reliance on this layer name and use task-depends.dot dependency layer name instead
+            String priorityLayerName = recipeLayerMap.get(dependencyName).get(0);
             externalId = externalIdFactory.createYoctoExternalId(priorityLayerName, dependencyName, dependencyVersion);
         } else {
             logger.debug("Failed to find component '{}' in component layer map.", dependencyName);
