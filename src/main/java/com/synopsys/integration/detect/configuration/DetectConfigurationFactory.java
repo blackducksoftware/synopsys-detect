@@ -62,6 +62,7 @@ import com.synopsys.integration.detect.workflow.blackduck.project.options.FindCl
 import com.synopsys.integration.detect.workflow.blackduck.project.options.ParentProjectMapOptions;
 import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectGroupOptions;
 import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectSyncOptions;
+import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectVersionLicenseOptions;
 import com.synopsys.integration.detect.workflow.file.DirectoryOptions;
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeOptions;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
@@ -327,6 +328,11 @@ public class DetectConfigurationFactory {
             projectVersionNickname,
             projectLevelAdjustments
         );
+    }
+
+    public ProjectVersionLicenseOptions createProjectVersionLicenseOptions() {
+        List<String> licenseNames = getValue(DetectProperties.DETECT_PROJECT_VERSION_LICENSES);
+        return new ProjectVersionLicenseOptions(licenseNames);
     }
 
     public ParentProjectMapOptions createParentProjectMapOptions() {
