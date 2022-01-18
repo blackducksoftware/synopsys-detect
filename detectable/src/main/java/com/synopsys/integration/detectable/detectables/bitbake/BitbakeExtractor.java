@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.NotImplementedException;
@@ -63,29 +64,27 @@ public class BitbakeExtractor {
 
     public Extraction extract(File sourceDirectory, File buildEnvScript, List<String> sourceArguments, List<String> packageNames, boolean followSymLinks, Integer searchDepth, ExcludedDependencyTypeFilter<BitbakeDependencyType> excludedDependencyTypeFilter, ExecutableTarget bash) {
         List<CodeLocation> codeLocations = new ArrayList<>();
-
         BitbakeSession bitbakeSession = new BitbakeSession(executableRunner, bitbakeRecipesParser, sourceDirectory, buildEnvScript, sourceArguments, bash, toolVersionLogger, buildFileFinder, bitbakeEnvironmentParser);
         bitbakeSession.logBitbakeVersion();
         File buildDir = bitbakeSession.determineBuildDir();
         BitbakeEnvironment bitbakeEnvironment = bitbakeSession.executeBitbakeForEnvironment();
-        for (String packageName : packageNames) {
-            Map<String, String> imageRecipes = null;
-            try {
-                if (excludedDependencyTypeFilter.shouldExcludeDependencyType(BitbakeDependencyType.BUILD)) {
-                    imageRecipes = readImageRecipes(buildDir, packageName, bitbakeEnvironment, followSymLinks, searchDepth);
+        Optional<List<BitbakeRecipe>> bitbakeRecipes = collectBitbakeRecipes(bitbakeSession);
+        if (bitbakeRecipes.isPresent()) {
+            for (String packageName : packageNames) {
+                Map<String, String> imageRecipes = null;
+                try {
+                    if (excludedDependencyTypeFilter.shouldExcludeDependencyType(BitbakeDependencyType.BUILD)) {
+                        imageRecipes = readImageRecipes(buildDir, packageName, bitbakeEnvironment, followSymLinks, searchDepth);
+                    }
+                    BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, buildDir, packageName, followSymLinks, searchDepth);
+                    Map<String, List<String>> recipeNameToLayersMap = bitbakeRecipesToLayerMap.convert(bitbakeRecipes.get());
+                    DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeNameToLayersMap, imageRecipes, excludedDependencyTypeFilter);
+                    CodeLocation codeLocation = new CodeLocation(dependencyGraph);
+                    codeLocations.add(codeLocation);
+                } catch (IOException | IntegrationException | ExecutableRunnerException | NotImplementedException | ExecutableFailedException e) {
+                    logger.error(String.format("Failed to extract a Code Location while running Bitbake against package '%s': %s", packageName, e.getMessage()));
+                    logger.debug(e.getMessage(), e);
                 }
-                BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, buildDir, packageName, followSymLinks, searchDepth);
-                List<BitbakeRecipe> bitbakeRecipes = bitbakeSession.executeBitbakeForRecipeLayerCatalog();
-                Map<String, List<String>> recipeNameToLayersMap = bitbakeRecipesToLayerMap.convert(bitbakeRecipes);
-
-                DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeNameToLayersMap, imageRecipes, excludedDependencyTypeFilter);
-                CodeLocation codeLocation = new CodeLocation(dependencyGraph);
-
-                codeLocations.add(codeLocation);
-
-            } catch (IOException | IntegrationException | ExecutableRunnerException | NotImplementedException | ExecutableFailedException e) {
-                logger.error(String.format("Failed to extract a Code Location while running Bitbake against package '%s': %s", packageName, e.getMessage()));
-                logger.debug(e.getMessage(), e);
             }
         }
 
@@ -103,6 +102,17 @@ public class BitbakeExtractor {
         }
 
         return extraction;
+    }
+
+    private Optional<List<BitbakeRecipe>> collectBitbakeRecipes(final BitbakeSession bitbakeSession) {
+        List<BitbakeRecipe> bitbakeRecipes = null;
+        try {
+            bitbakeRecipes = bitbakeSession.executeBitbakeForRecipeLayerCatalog();
+        } catch (IOException | NotImplementedException | ExecutableFailedException e) {
+            logger.error(String.format("Error collecting recipe layers: %s", e.getMessage()));
+            logger.debug(e.getMessage(), e);
+        }
+        return Optional.ofNullable(bitbakeRecipes);
     }
 
     private Map<String, String> readImageRecipes(File buildDir, String targetImageName, BitbakeEnvironment bitbakeEnvironment, boolean followSymLinks, int searchDepth) throws IntegrationException, IOException {
