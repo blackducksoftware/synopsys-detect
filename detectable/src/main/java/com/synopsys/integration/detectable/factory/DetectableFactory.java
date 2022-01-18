@@ -47,7 +47,6 @@ import com.synopsys.integration.detectable.detectables.bazel.pipeline.WorkspaceR
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeExtractor;
-import com.synopsys.integration.detectable.detectables.bitbake.BitbakeRecipesToLayerMapConverter;
 import com.synopsys.integration.detectable.detectables.bitbake.BuildFileFinder;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeEnvironmentParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
@@ -906,12 +905,8 @@ public class DetectableFactory {
         return new BitbakeRecipesParser();
     }
 
-    private BitbakeRecipesToLayerMapConverter bitbakeRecipesToLayerMap() {
-        return new BitbakeRecipesToLayerMapConverter();
-    }
-
     private BitbakeExtractor bitbakeExtractor() {
-        return new BitbakeExtractor(executableRunner, graphParserTransformer(), bitbakeGraphTransformer(), bitbakeRecipesParser(), bitbakeRecipesToLayerMap(),
+        return new BitbakeExtractor(executableRunner, graphParserTransformer(), bitbakeGraphTransformer(), bitbakeRecipesParser(),
             toolVersionLogger, new BuildFileFinder(fileFinder), new LicenseManifestParser(), new BitbakeEnvironmentParser());
     }
 
