@@ -124,7 +124,7 @@ public class BitbakeGraphTransformer {
         ExternalId externalId = null;
         // TODO does this test still make sense?
         if (recipeLayerNames != null) {
-            // TODO TEMP
+            // TODO May want to tone down some of this logging? Or at least refactor?
             if ((dependencyLayer != null) && !recipeLayerNames.contains(dependencyLayer)) {
                 logger.warn("recipe {} dependency layer name {} is not in recipe's layer list {}", dependencyName, dependencyLayer, recipeLayerNames);
             }
@@ -134,10 +134,9 @@ public class BitbakeGraphTransformer {
             if (dependencyLayer == null) {
                 logger.warn("Did not parse a layer for dependency {} from task-depends.dot; using {} instead", dependencyName, recipeLayerNames.get(0));
                 dependencyLayer = recipeLayerNames.get(0);
+            } else {
+                logger.trace("For dependency recipe {}: using layer {} parsed from task-depends.dot", dependencyName, dependencyLayer);
             }
-            //////////
-            // TODO hoping we remove the reliance on this layer name and use task-depends.dot dependency layer name instead
-            //String priorityLayerName = recipeLayerMap.get(dependencyName).get(0);
             externalId = externalIdFactory.createYoctoExternalId(dependencyLayer, dependencyName, dependencyVersion);
         } else {
             logger.debug("Failed to find component '{}' in component layer map.", dependencyName);
