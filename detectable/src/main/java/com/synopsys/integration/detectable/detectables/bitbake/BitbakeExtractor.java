@@ -68,7 +68,8 @@ public class BitbakeExtractor {
         bitbakeSession.logBitbakeVersion();
         File buildDir = bitbakeSession.determineBuildDir();
         BitbakeEnvironment bitbakeEnvironment = bitbakeSession.executeBitbakeForEnvironment();
-        Optional<List<BitbakeRecipe>> bitbakeRecipes = collectBitbakeRecipes(bitbakeSession);
+        // TODO rename
+        Optional<ShowRecipesResults> bitbakeRecipes = collectBitbakeRecipes(bitbakeSession);
         if (bitbakeRecipes.isPresent()) {
             for (String packageName : packageNames) {
                 Map<String, String> imageRecipes = null;
@@ -77,7 +78,7 @@ public class BitbakeExtractor {
                         imageRecipes = readImageRecipes(buildDir, packageName, bitbakeEnvironment, followSymLinks, searchDepth);
                     }
                     BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, buildDir, packageName, followSymLinks, searchDepth);
-                    Map<String, List<String>> recipeNameToLayersMap = bitbakeRecipesToLayerMap.convert(bitbakeRecipes.get());
+                    Map<String, List<String>> recipeNameToLayersMap = bitbakeRecipesToLayerMap.convert(bitbakeRecipes.get().getRecipes());
                     DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeNameToLayersMap, imageRecipes, excludedDependencyTypeFilter);
                     CodeLocation codeLocation = new CodeLocation(dependencyGraph);
                     codeLocations.add(codeLocation);
@@ -104,8 +105,9 @@ public class BitbakeExtractor {
         return extraction;
     }
 
-    private Optional<List<BitbakeRecipe>> collectBitbakeRecipes(final BitbakeSession bitbakeSession) {
-        List<BitbakeRecipe> bitbakeRecipes = null;
+    private Optional<ShowRecipesResults> collectBitbakeRecipes(final BitbakeSession bitbakeSession) {
+        // TODO rename
+        ShowRecipesResults bitbakeRecipes = null;
         try {
             bitbakeRecipes = bitbakeSession.executeBitbakeForRecipeLayerCatalog();
         } catch (IOException | NotImplementedException | ExecutableFailedException e) {

@@ -96,7 +96,7 @@ public class BitbakeSession {
         }
     }
 
-    public List<BitbakeRecipe> executeBitbakeForRecipeLayerCatalog() throws IOException, ExecutableFailedException {
+    public ShowRecipesResults executeBitbakeForRecipeLayerCatalog() throws IOException, ExecutableFailedException {
         ExecutableOutput executableOutput = runBitbake(BITBAKE_LAYERS_SHOW_RECIPES_COMMAND);
         return bitbakeRecipesParser.parseShowRecipes(executableOutput.getStandardOutputAsList());
     }
