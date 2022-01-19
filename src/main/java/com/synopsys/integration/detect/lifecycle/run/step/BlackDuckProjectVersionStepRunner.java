@@ -2,6 +2,7 @@ package com.synopsys.integration.detect.lifecycle.run.step;
 
 import java.util.List;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,8 @@ import com.synopsys.integration.detect.workflow.blackduck.project.options.FindCl
 import com.synopsys.integration.detect.workflow.blackduck.project.options.ParentProjectMapOptions;
 import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectGroupFindResult;
 import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectGroupOptions;
+import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectVersionLicenseOptions;
+import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectVersionLicensesFindResult;
 import com.synopsys.integration.util.NameVersion;
 
 public class BlackDuckProjectVersionStepRunner {
@@ -29,7 +32,8 @@ public class BlackDuckProjectVersionStepRunner {
     ProjectVersionWrapper runAll(NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
         CloneFindResult cloneFindResult = findClone(projectNameVersion.getName(), blackDuckRunData);
         ProjectGroupFindResult projectGroupFindResult = findProjectGroup(blackDuckRunData);
-        ProjectVersionWrapper projectVersion = operationFactory.syncProjectVersion(projectNameVersion, projectGroupFindResult, cloneFindResult, blackDuckRunData);
+        ProjectVersionLicensesFindResult projectVersionLicensesFindResult = findLicenses(blackDuckRunData);
+        ProjectVersionWrapper projectVersion = operationFactory.syncProjectVersion(projectNameVersion, projectGroupFindResult, cloneFindResult, projectVersionLicensesFindResult, blackDuckRunData);
 
         ParentProjectMapOptions mapOptions = operationFactory.calculateParentProjectMapOptions();
         if (StringUtils.isNotBlank(mapOptions.getParentProjectName()) || StringUtils.isNotBlank(mapOptions.getParentProjectVersionName())) {
@@ -95,6 +99,16 @@ public class BlackDuckProjectVersionStepRunner {
         } else {
             logger.debug("No clone project or version name supplied. Will not clone.");
             return CloneFindResult.empty();
+        }
+    }
+
+    private ProjectVersionLicensesFindResult findLicenses(BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
+        ProjectVersionLicenseOptions projectVersionLicenseOptions = operationFactory.calculateProjectVersionLicenses();
+        if (!CollectionUtils.isEmpty(projectVersionLicenseOptions.getLicenseNames())) {
+            return ProjectVersionLicensesFindResult.of(operationFactory.findLicenseUrls(blackDuckRunData, projectVersionLicenseOptions.getLicenseNames()));
+        } else {
+            logger.debug("No project version licenses were supplied.  Will not update licenses.");
+            return ProjectVersionLicensesFindResult.empty();
         }
     }
 }

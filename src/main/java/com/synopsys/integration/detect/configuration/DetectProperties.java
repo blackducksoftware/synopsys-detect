@@ -1151,6 +1151,13 @@ public class DetectProperties {
             )
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING);
 
+    public static final DetectProperty<StringListProperty> DETECT_PROJECT_VERSION_LICENSES =
+        new DetectProperty<>(new StringListProperty("detect.project.version.licenses", emptyList()))
+            .setInfo("Project Version Licenses", DetectPropertyFromVersion.VERSION_7_10_0)
+            .setHelp("An override for a Project Version's licenses.", "A comma-separated list of license names to override a Project Version's licenses")
+            .setExample("Apache License 2.0")
+            .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING);
+
     public static final DetectProperty<NullablePathProperty> DETECT_PYTHON_PATH =
         new DetectProperty<>(new NullablePathProperty("detect.python.path"))
             .setInfo("Python Executable", DetectPropertyFromVersion.VERSION_3_0_0)
