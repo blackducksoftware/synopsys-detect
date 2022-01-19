@@ -39,24 +39,20 @@ public class GoModCliExtractor {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public Extraction extract(File directory, ExecutableTarget goExe, boolean dependencyVerificationEnabled) {
-        try {
-            List<GoListModule> goListModules = listModules(directory, goExe);
-            List<GoListAllData> goListAllModules = goListAllModules(directory, goExe);
-            List<GoGraphRelationship> goGraphRelationships = goGraphRelationships(directory, goExe);
-            Set<String> moduleExclusions = moduleExclusions(directory, goExe, dependencyVerificationEnabled);
+    public Extraction extract(File directory, ExecutableTarget goExe, boolean dependencyVerificationEnabled) throws ExecutableFailedException, DetectableException {
+        List<GoListModule> goListModules = listModules(directory, goExe);
+        List<GoListAllData> goListAllModules = goListAllModules(directory, goExe);
+        List<GoGraphRelationship> goGraphRelationships = goGraphRelationships(directory, goExe);
+        Set<String> moduleExclusions = moduleExclusions(directory, goExe, dependencyVerificationEnabled);
 
-            GoRelationshipManager goRelationshipManager = new GoRelationshipManager(goGraphRelationships, moduleExclusions);
-            GoModDependencyManager goModDependencyManager = new GoModDependencyManager(goListAllModules, externalIdFactory);
-            List<CodeLocation> codeLocations = goListModules.stream()
-                .map(goListModule -> goModGraphGenerator.generateGraph(goListModule, goRelationshipManager, goModDependencyManager))
-                .collect(Collectors.toList());
+        GoRelationshipManager goRelationshipManager = new GoRelationshipManager(goGraphRelationships, moduleExclusions);
+        GoModDependencyManager goModDependencyManager = new GoModDependencyManager(goListAllModules, externalIdFactory);
+        List<CodeLocation> codeLocations = goListModules.stream()
+            .map(goListModule -> goModGraphGenerator.generateGraph(goListModule, goRelationshipManager, goModDependencyManager))
+            .collect(Collectors.toList());
 
-            // No project info - hoping git can help with that.
-            return new Extraction.Builder().success(codeLocations).build();
-        } catch (DetectableException | ExecutableFailedException e) {
-            return new Extraction.Builder().exception(e).build();
-        }
+        // No project info - hoping git can help with that.
+        return new Extraction.Builder().success(codeLocations).build();
     }
 
     private List<GoListModule> listModules(File directory, ExecutableTarget goExe) throws DetectableException, ExecutableFailedException {

@@ -7,6 +7,7 @@ import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GoResolver;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
@@ -46,7 +47,7 @@ public class GoModCliDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException, DetectableException {
         return goModCliExtractor.extract(environment.getDirectory(), goExe, goModCliDetectableOptions.isDependencyVerificationEnabled());
     }
 }

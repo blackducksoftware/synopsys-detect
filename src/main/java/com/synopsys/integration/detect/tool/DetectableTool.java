@@ -99,7 +99,7 @@ public class DetectableTool {
             extraction = detectable.extract(extractionEnvironment);
         } catch (ExecutableFailedException e) {
             extraction = Extraction.fromFailedExecutable(e);
-        } catch (IOException e) {
+        } catch (DetectableException | IOException e) {
             extraction = new Extraction.Builder().exception(e).build();
         }
 
