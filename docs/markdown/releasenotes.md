@@ -1,5 +1,10 @@
 # Release notes
 
+## Version 7.11.0
+
+### Changed features
+* The Go Mod Cli Detector no longer uses the "-u" flag when running **go list -m all**. This results in significantly faster scan times against Go Mod projects.
+
 ## Version 7.10.0
 
 ### New features
