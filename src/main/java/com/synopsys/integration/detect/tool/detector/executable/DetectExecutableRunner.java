@@ -8,7 +8,6 @@ import java.util.function.Consumer;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,19 +114,14 @@ public class DetectExecutableRunner implements DetectableExecutableRunner {
 
     @Override
     public @NotNull ExecutableOutput executeSuccessfully(Executable executable) throws ExecutableFailedException {
-        return executeSuccessfully(executable, null);
-    }
-
-    @Override
-    public @NotNull ExecutableOutput executeSuccessfully(Executable executable, @Nullable String failureMessage) throws ExecutableFailedException {
         try {
             ExecutableOutput executableOutput = execute(executable);
             if (executableOutput.getReturnCode() != 0) {
-                throw new ExecutableFailedException(executable, executableOutput, failureMessage);
+                throw new ExecutableFailedException(executable, executableOutput);
             }
             return executableOutput;
         } catch (ExecutableRunnerException e) {
-            throw new ExecutableFailedException(executable, e, failureMessage);
+            throw new ExecutableFailedException(executable, e);
         }
     }
 }
