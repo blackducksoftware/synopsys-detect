@@ -39,7 +39,7 @@ public class GoModDetectableMinusWhyTest extends DetectableFunctionalTest {
         addExecutableOutput(goVersionOutput, "go", "version");
 
         ExecutableOutput goListUJsonOutput = new ExecutableOutput(FunctionalTestFiles.asString("/go/go-list-all.xout"), StringUtils.EMPTY);
-        addExecutableOutput(goListUJsonOutput, "go", "list", "-mod=readonly", "-m", "-u", "-json", "all");
+        addExecutableOutput(goListUJsonOutput, "go", "list", "-mod=readonly", "-m", "-json", "all");
 
         ExecutableOutput goModGraphOutput = createStandardOutput(
             "github.com/gin-gonic/gin golang.org/x/text@v0.3.0",
