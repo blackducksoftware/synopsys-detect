@@ -16,7 +16,7 @@ public class GoModCommandExecutor {
     private static final String FAILURE_MSG_QUERYING_GO_FOR_THE_LIST_OF_MODULES = "Querying go for the list of modules failed: ";
     private static final String FAILURE_MSG_QUERYING_FOR_THE_VERSION = "Querying for the version failed: ";
     private static final String FAILURE_MSG_QUERYING_FOR_GO_MOD_WHY = "Querying for the go modules compiled into the binary failed:";
-    private static final Pattern GENERATE_GO_LIST_JSON_OUTPUT_PATTERN = Pattern.compile("\\d+\\.[\\d.]+"); // TODO: Provide example. This looks like it's used for version matching contrary to the name.
+    private static final Pattern GENERATE_GO_LIST_JSON_OUTPUT_PATTERN = Pattern.compile("\\d+\\.[\\d.]+"); // TODO: Provide example. This looks like it's used for version matching contrary to the name. JM-01/2022
     private static final String JSON_OUTPUT_FLAG = "-json";
     private static final String MODULE_OUTPUT_FLAG = "-m";
 
@@ -48,7 +48,7 @@ public class GoModCommandExecutor {
                 return executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, goExe, "list", MODULE_OUTPUT_FLAG, JSON_OUTPUT_FLAG, "all"), FAILURE_MSG_QUERYING_GO_FOR_THE_LIST_OF_MODULES)
                     .getStandardOutputAsList();
             }
-        }
+        } // TODO: If we don't have a version for go, we don't do anything. This should probably result in a failure. JM-01/2022
         return new ArrayList<>();
     }
 
