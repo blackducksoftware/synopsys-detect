@@ -34,4 +34,7 @@ public interface DetectableExecutableRunner {
 
     @NotNull
     ExecutableOutput executeSuccessfully(Executable executable) throws ExecutableFailedException; //Returns output if and only if executable return code was zero, otherwise throws.
+
+    @NotNull
+    ExecutableOutput executeSuccessfully(Executable executable, String failureMessage) throws ExecutableFailedException;
 }
