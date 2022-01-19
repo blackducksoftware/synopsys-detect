@@ -10,10 +10,10 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
-public class CartfileResolvedDependencyDeclarationParser {
-    private static String GITHUB_ORIGIN_ID = "github";
+public class CartfileResolvedDependencyDeclarationParser { //TODO: Parse and transform separately.
+    private static final String GITHUB_ORIGIN_ID = "github";
 
-    private ExternalIdFactory externalIdFactory = new ExternalIdFactory();
+    private final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
 
     public DependencyGraph parseDependencies(List<String> dependencyDeclarations) {
         // Each line in a Cartfile.resolved file is a dependency declaration: <origin> <name/resource> <version>

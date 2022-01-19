@@ -11,7 +11,7 @@ import com.synopsys.integration.detectable.detectables.carthage.CartfileResolved
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
 public class CartfileResolvedDependencyDeclarationParserTest {
-    private CartfileResolvedDependencyDeclarationParser parser = new CartfileResolvedDependencyDeclarationParser();
+    private final CartfileResolvedDependencyDeclarationParser parser = new CartfileResolvedDependencyDeclarationParser();
 
     @Test
     public void testGithubDependencies() {
