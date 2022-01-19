@@ -1,5 +1,6 @@
 package com.synopsys.integration.detectable.detectables.go.gomod;
 
+import com.google.gson.JsonSyntaxException;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
@@ -47,7 +48,7 @@ public class GoModCliDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException, DetectableException {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException, JsonSyntaxException {
         return goModCliExtractor.extract(environment.getDirectory(), goExe, goModCliDetectableOptions.isDependencyVerificationEnabled());
     }
 }

@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.google.gson.JsonSyntaxException;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectables.go.gomod.model.GoGraphRelationship;
 import com.synopsys.integration.detectable.detectables.go.gomod.model.GoListAllData;
@@ -39,7 +39,7 @@ public class GoModCliExtractor {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public Extraction extract(File directory, ExecutableTarget goExe, boolean dependencyVerificationEnabled) throws ExecutableFailedException, DetectableException {
+    public Extraction extract(File directory, ExecutableTarget goExe, boolean dependencyVerificationEnabled) throws ExecutableFailedException, JsonSyntaxException {
         List<GoListModule> goListModules = listModules(directory, goExe);
         List<GoListAllData> goListAllModules = goListAllModules(directory, goExe);
         List<GoGraphRelationship> goGraphRelationships = goGraphRelationships(directory, goExe);
@@ -55,12 +55,12 @@ public class GoModCliExtractor {
         return new Extraction.Builder().success(codeLocations).build();
     }
 
-    private List<GoListModule> listModules(File directory, ExecutableTarget goExe) throws DetectableException, ExecutableFailedException {
+    private List<GoListModule> listModules(File directory, ExecutableTarget goExe) throws ExecutableFailedException, JsonSyntaxException {
         List<String> listOutput = goModCommandExecutor.generateGoListOutput(directory, goExe);
         return goListParser.parseGoListModuleJsonOutput(listOutput);
     }
 
-    private List<GoListAllData> goListAllModules(File directory, ExecutableTarget goExe) throws DetectableException, ExecutableFailedException {
+    private List<GoListAllData> goListAllModules(File directory, ExecutableTarget goExe) throws ExecutableFailedException, JsonSyntaxException {
         List<String> listAllOutput = goModCommandExecutor.generateGoListJsonOutput(directory, goExe);
         return goListParser.parseGoListAllJsonOutput(listAllOutput);
     }

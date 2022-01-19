@@ -15,6 +15,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliExtractor;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCommandExecutor;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoGraphParser;
@@ -29,7 +30,7 @@ import com.synopsys.integration.executable.ExecutableRunnerException;
 public class GoModCliExtractorTest {
 
     @Test
-    public void handleMultipleReplacementsForOneComponentTest() throws ExecutableRunnerException {
+    public void handleMultipleReplacementsForOneComponentTest() throws ExecutableRunnerException, ExecutableFailedException {
         DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
         File directory = new File("");
         ExecutableTarget goExe = ExecutableTarget.forFile(new File(""));
@@ -68,7 +69,7 @@ public class GoModCliExtractorTest {
     }
 
     @Test
-    public void handleGoModWhyExceptionTest() throws ExecutableRunnerException {
+    public void handleGoModWhyExceptionTest() throws ExecutableRunnerException, ExecutableFailedException {
         DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
         File directory = new File("");
         ExecutableTarget goExe = ExecutableTarget.forFile(new File(""));
