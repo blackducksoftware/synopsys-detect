@@ -10,6 +10,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectables.go.gomod.model.GoGraphRelationship;
 import com.synopsys.integration.detectable.detectables.go.gomod.model.GoListAllData;
 import com.synopsys.integration.detectable.detectables.go.gomod.model.GoListModule;
@@ -20,7 +21,6 @@ import com.synopsys.integration.detectable.detectables.go.gomod.process.GoModDep
 import com.synopsys.integration.detectable.detectables.go.gomod.process.GoModGraphGenerator;
 import com.synopsys.integration.detectable.detectables.go.gomod.process.GoRelationshipManager;
 import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class GoModCliExtractor {
     private final GoModCommandExecutor goModCommandExecutor;
@@ -30,8 +30,7 @@ public class GoModCliExtractor {
     private final GoModGraphGenerator goModGraphGenerator;
     private final ExternalIdFactory externalIdFactory;
 
-    public GoModCliExtractor(GoModCommandExecutor goModCommandExecutor, GoListParser goListParser, GoGraphParser goGraphParser, GoModWhyParser goModWhyParser,
-        GoModGraphGenerator goModGraphGenerator, ExternalIdFactory externalIdFactory) {
+    public GoModCliExtractor(GoModCommandExecutor goModCommandExecutor, GoListParser goListParser, GoGraphParser goGraphParser, GoModWhyParser goModWhyParser, GoModGraphGenerator goModGraphGenerator, ExternalIdFactory externalIdFactory) {
         this.goModCommandExecutor = goModCommandExecutor;
         this.goListParser = goListParser;
         this.goGraphParser = goGraphParser;
@@ -55,27 +54,27 @@ public class GoModCliExtractor {
 
             // No project info - hoping git can help with that.
             return new Extraction.Builder().success(codeLocations).build();
-        } catch (Exception e) {
+        } catch (DetectableException | ExecutableFailedException e) {
             return new Extraction.Builder().exception(e).build();
         }
     }
 
-    private List<GoListModule> listModules(File directory, ExecutableTarget goExe) throws DetectableException, ExecutableRunnerException {
+    private List<GoListModule> listModules(File directory, ExecutableTarget goExe) throws DetectableException, ExecutableFailedException {
         List<String> listOutput = goModCommandExecutor.generateGoListOutput(directory, goExe);
         return goListParser.parseGoListModuleJsonOutput(listOutput);
     }
 
-    private List<GoListAllData> goListAllModules(File directory, ExecutableTarget goExe) throws DetectableException, ExecutableRunnerException {
-        List<String> listAllOutput = goModCommandExecutor.generateGoListUJsonOutput(directory, goExe);
+    private List<GoListAllData> goListAllModules(File directory, ExecutableTarget goExe) throws DetectableException, ExecutableFailedException {
+        List<String> listAllOutput = goModCommandExecutor.generateGoListJsonOutput(directory, goExe);
         return goListParser.parseGoListAllJsonOutput(listAllOutput);
     }
 
-    private List<GoGraphRelationship> goGraphRelationships(File directory, ExecutableTarget goExe) throws DetectableException, ExecutableRunnerException {
+    private List<GoGraphRelationship> goGraphRelationships(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
         List<String> modGraphOutput = goModCommandExecutor.generateGoModGraphOutput(directory, goExe);
         return goGraphParser.parseRelationshipsFromGoModGraph(modGraphOutput);
     }
 
-    private Set<String> moduleExclusions(File directory, ExecutableTarget goExe, boolean dependencyVerificationEnabled) throws DetectableException, ExecutableRunnerException {
+    private Set<String> moduleExclusions(File directory, ExecutableTarget goExe, boolean dependencyVerificationEnabled) throws ExecutableFailedException {
         Set<String> moduleExclusions = Collections.emptySet();
         if (dependencyVerificationEnabled) {
             List<String> modWhyOutput = goModCommandExecutor.generateGoModWhyOutput(directory, goExe);
