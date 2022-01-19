@@ -37,7 +37,7 @@ public class GoModDetectableTest extends DetectableFunctionalTest {
         addExecutableOutput(goVersionOutput, "go", "version");
 
         ExecutableOutput goListUJsonOutput = createStandardOutputFromResource("/go/go-list-all.xout");
-        addExecutableOutput(goListUJsonOutput, "go", "list", "-mod=readonly", "-m", "-u", "-json", "all");
+        addExecutableOutput(goListUJsonOutput, "go", "list", "-mod=readonly", "-m", "-json", "all");
 
         ExecutableOutput goModGraphOutput = createStandardOutput(
             "github.com/gin-gonic/gin golang.org/x/text@v0.3.0",

@@ -3,8 +3,10 @@
 ## Version 7.11.0
 
 ### New features
-
 * Added a feature that allows users to set licenses for a project version using the property [detect.project.version.licenses](properties/configuration/project.md#project-version-licenses).
+
+### Changed features
+* The Go Mod Cli Detector no longer uses the "-u" flag when running **go list -m all**. This results in significantly faster scan times against Go Mod projects.
 
 ## Version 7.10.0
 

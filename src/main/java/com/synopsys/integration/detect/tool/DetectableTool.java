@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.JsonSyntaxException;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
@@ -99,7 +100,7 @@ public class DetectableTool {
             extraction = detectable.extract(extractionEnvironment);
         } catch (ExecutableFailedException e) {
             extraction = Extraction.fromFailedExecutable(e);
-        } catch (IOException e) {
+        } catch (JsonSyntaxException | IOException e) {
             extraction = new Extraction.Builder().exception(e).build();
         }
 
