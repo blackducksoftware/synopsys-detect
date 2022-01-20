@@ -6,7 +6,7 @@ The BitBake detector will run if it finds a BitBake build environment setup scri
 using property *detect.bitbake.build.env.name*)
 and at least one package (target image) name is provided using property *detect.bitbake.package.names*.
 
-If you are excluding build dependencies using the *detect.bitbake.dependency.types.excluded* property, the {builddir}/tmp directory be left intact since a file (license.manifest)
+If you are excluding build dependencies using the *detect.bitbake.dependency.types.excluded* property, the {builddir}/tmp directory must be left intact since a file (license.manifest)
 that [solution_name] uses in that scenario resides in that tmp directory.
 
 ## Processing
