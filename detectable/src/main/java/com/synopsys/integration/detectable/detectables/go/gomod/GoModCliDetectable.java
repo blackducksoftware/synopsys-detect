@@ -49,6 +49,6 @@ public class GoModCliDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException, JsonSyntaxException {
-        return goModCliExtractor.extract(environment.getDirectory(), goExe, goModCliDetectableOptions.isDependencyVerificationEnabled());
+        return goModCliExtractor.extract(environment.getDirectory(), goExe, goModCliDetectableOptions.getDependencyTypeFilter());
     }
 }

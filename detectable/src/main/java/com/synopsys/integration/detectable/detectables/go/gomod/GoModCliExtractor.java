@@ -11,6 +11,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.go.gomod.model.GoGraphRelationship;
 import com.synopsys.integration.detectable.detectables.go.gomod.model.GoListAllData;
 import com.synopsys.integration.detectable.detectables.go.gomod.model.GoListModule;
@@ -39,11 +40,11 @@ public class GoModCliExtractor {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public Extraction extract(File directory, ExecutableTarget goExe, boolean dependencyVerificationEnabled) throws ExecutableFailedException, JsonSyntaxException {
+    public Extraction extract(File directory, ExecutableTarget goExe, EnumListFilter<GoModDependencyType> dependencyTypeFilter) throws ExecutableFailedException, JsonSyntaxException {
         List<GoListModule> goListModules = listModules(directory, goExe);
         List<GoListAllData> goListAllModules = goListAllModules(directory, goExe);
         List<GoGraphRelationship> goGraphRelationships = goGraphRelationships(directory, goExe);
-        Set<String> moduleExclusions = moduleExclusions(directory, goExe, dependencyVerificationEnabled);
+        Set<String> moduleExclusions = moduleExclusions(directory, goExe, dependencyTypeFilter);
 
         GoRelationshipManager goRelationshipManager = new GoRelationshipManager(goGraphRelationships, moduleExclusions);
         GoModDependencyManager goModDependencyManager = new GoModDependencyManager(goListAllModules, externalIdFactory);
@@ -70,9 +71,9 @@ public class GoModCliExtractor {
         return goGraphParser.parseRelationshipsFromGoModGraph(modGraphOutput);
     }
 
-    private Set<String> moduleExclusions(File directory, ExecutableTarget goExe, boolean dependencyVerificationEnabled) throws ExecutableFailedException {
+    private Set<String> moduleExclusions(File directory, ExecutableTarget goExe, EnumListFilter<GoModDependencyType> dependencyTypeFilter) throws ExecutableFailedException {
         Set<String> moduleExclusions = Collections.emptySet();
-        if (dependencyVerificationEnabled) {
+        if (dependencyTypeFilter.shouldExclude(GoModDependencyType.UNUSED)) {
             List<String> modWhyOutput = goModCommandExecutor.generateGoModWhyOutput(directory, goExe);
             moduleExclusions = goModWhyParser.createModuleExclusionList(modWhyOutput);
         }

@@ -117,16 +117,16 @@ public class DetectableOptionFactory {
     }
 
     public DartPubDepsDetectableOptions createDartPubDepsDetectableOptions() {
-        Set<DartPubDependencyType> excludedDependencyTypes = new LinkedHashSet<>();
+        EnumListFilter<DartPubDependencyType> dependencyTypeFilter = EnumListFilter.excludeNone();
         if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
-            excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValueSet();
+            Set<DartPubDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValueSet();
+            dependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
         } else {
             boolean excludeDevDependencies = getValue(DetectProperties.DETECT_PUD_DEPS_EXCLUDE_DEV);
             if (excludeDevDependencies) {
-                excludedDependencyTypes.add(DartPubDependencyType.DEV);
+                dependencyTypeFilter = EnumListFilter.fromExcluded(DartPubDependencyType.DEV);
             }
         }
-        EnumListFilter<DartPubDependencyType> dependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
         return new DartPubDepsDetectableOptions(dependencyTypeFilter);
     }
 
@@ -160,14 +160,18 @@ public class DetectableOptionFactory {
     }
 
     public GoModCliDetectableOptions createGoModCliDetectableOptions() {
-        boolean dependencyVerificationEnabled = getValue(DetectProperties.DETECT_GO_ENABLE_VERIFICATION);
+        EnumListFilter<GoModDependencyType> dependencyTypeFilter = EnumListFilter.excludeNone();
         if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
             List<GoModDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValues();
-            ExcludedDependencyTypeFilter<GoModDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>(excludedDependencyTypes);
-            dependencyVerificationEnabled = dependencyTypeFilter.shouldExcludeDependencyType(GoModDependencyType.UNUSED);
+            dependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
+        } else {
+            boolean dependencyVerificationEnabled = getValue(DetectProperties.DETECT_GO_ENABLE_VERIFICATION);
+            if (dependencyVerificationEnabled) {
+                dependencyTypeFilter = EnumListFilter.fromExcluded(GoModDependencyType.UNUSED);
+            }
         }
 
-        return new GoModCliDetectableOptions(dependencyVerificationEnabled);
+        return new GoModCliDetectableOptions(dependencyTypeFilter);
     }
 
     public GradleInspectorOptions createGradleInspectorOptions() {

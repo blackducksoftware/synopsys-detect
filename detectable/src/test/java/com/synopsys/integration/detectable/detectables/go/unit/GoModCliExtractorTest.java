@@ -17,8 +17,10 @@ import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliExtractor;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCommandExecutor;
+import com.synopsys.integration.detectable.detectables.go.gomod.GoModDependencyType;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoGraphParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoListParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoModWhyParser;
@@ -67,7 +69,7 @@ public class GoModCliExtractorTest {
         GoModCliExtractor goModCliExtractor = buildGoModCliExtractor(executableRunner, executableAnswer);
 
         boolean wasSuccessful = true;
-        Extraction extraction = goModCliExtractor.extract(directory, goExe, true);
+        Extraction extraction = goModCliExtractor.extract(directory, goExe, EnumListFilter.fromExcluded(GoModDependencyType.UNUSED));
         if (extraction.getError() instanceof ArrayIndexOutOfBoundsException) {
             wasSuccessful = false;
         }
@@ -108,7 +110,7 @@ public class GoModCliExtractorTest {
 
         GoModCliExtractor goModCliExtractor = buildGoModCliExtractor(executableRunner, executableAnswer);
         boolean wasSuccessful = true;
-        Extraction extraction = goModCliExtractor.extract(directory, goExe, true);
+        Extraction extraction = goModCliExtractor.extract(directory, goExe, EnumListFilter.fromExcluded(GoModDependencyType.UNUSED));
         if (extraction.getError() instanceof ArrayIndexOutOfBoundsException) {
             wasSuccessful = false;
         }
