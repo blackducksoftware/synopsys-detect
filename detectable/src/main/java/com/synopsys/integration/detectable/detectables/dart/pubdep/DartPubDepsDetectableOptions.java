@@ -1,13 +1,15 @@
 package com.synopsys.integration.detectable.detectables.dart.pubdep;
 
-public class DartPubDepsDetectableOptions {
-    private boolean excludeDevDependencies;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 
-    public DartPubDepsDetectableOptions(boolean excludeDevDependencies) {
-        this.excludeDevDependencies = excludeDevDependencies;
+public class DartPubDepsDetectableOptions {
+    private final EnumListFilter<DartPubDependencyType> dependencyTypeFilter;
+
+    public DartPubDepsDetectableOptions(EnumListFilter<DartPubDependencyType> dependencyTypeFilter) {
+        this.dependencyTypeFilter = dependencyTypeFilter;
     }
 
-    public boolean isExcludeDevDependencies() {
-        return excludeDevDependencies;
+    public EnumListFilter<DartPubDependencyType> getDependencyTypeFilter() {
+        return dependencyTypeFilter;
     }
 }

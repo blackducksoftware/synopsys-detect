@@ -9,6 +9,8 @@ import org.mockito.Mockito;
 
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
+import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDependencyType;
 import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDepsDetectableOptions;
 import com.synopsys.integration.detectable.detectables.dart.pubdep.PubDepsExtractor;
 import com.synopsys.integration.detectable.detectables.dart.pubdep.PubDepsParser;
@@ -33,7 +35,7 @@ public class PubDepsExtractorTest {
         DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
         Mockito.when(executableRunner.execute(Mockito.any())).thenReturn(mockExecutableOutput);
         PubDepsExtractor extractor = new PubDepsExtractor(executableRunner, new PubDepsParser(new ExternalIdFactory()), null, new ToolVersionLogger(executableRunner));
-        Extraction extraction = extractor.extract(null, null, null, new DartPubDepsDetectableOptions(false), null);
+        Extraction extraction = extractor.extract(null, null, null, new DartPubDepsDetectableOptions(new EnumListFilter<>()), null);
 
         Assertions.assertFalse(extraction.isSuccess() && null == extraction.getError());
     }

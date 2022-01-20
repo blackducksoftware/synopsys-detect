@@ -12,7 +12,6 @@ import org.jetbrains.annotations.Nullable;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.base.NullableProperty;
 import com.synopsys.integration.configuration.property.base.ValuedProperty;
-import com.synopsys.integration.configuration.property.types.enumallnone.list.NoneEnumList;
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.detect.PropertyConfigUtils;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetLocatorOptions;
@@ -118,14 +117,17 @@ public class DetectableOptionFactory {
     }
 
     public DartPubDepsDetectableOptions createDartPubDepsDetectableOptions() {
-        boolean excludeDevDependencies = getValue(DetectProperties.DETECT_PUD_DEPS_EXCLUDE_DEV);
+        Set<DartPubDependencyType> excludedDependencyTypes = new LinkedHashSet<>();
         if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
-            NoneEnumList<DartPubDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED.getProperty());
-            ExcludedDependencyTypeFilter<DartPubDependencyType> typeFilter = new ExcludedDependencyTypeFilter<>(excludedDependencyTypes.representedValues());
-            excludeDevDependencies = typeFilter.shouldExcludeDependencyType(DartPubDependencyType.DEV);
+            excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValueSet();
+        } else {
+            boolean excludeDevDependencies = getValue(DetectProperties.DETECT_PUD_DEPS_EXCLUDE_DEV);
+            if (excludeDevDependencies) {
+                excludedDependencyTypes.add(DartPubDependencyType.DEV);
+            }
         }
-
-        return new DartPubDepsDetectableOptions(excludeDevDependencies);
+        EnumListFilter<DartPubDependencyType> dependencyTypeFilter = new EnumListFilter<>(excludedDependencyTypes);
+        return new DartPubDepsDetectableOptions(dependencyTypeFilter);
     }
 
     public MavenParseOptions createMavenParseOptions() {
