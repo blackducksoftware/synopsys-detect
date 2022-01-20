@@ -73,7 +73,7 @@ class EnumListFilterTest {
         dependency = Optional.of("dependency");
         TestClass testClass = Mockito.mock(TestClass.class);
         filter.ifShouldInclude(TestValue.B, dependency, (Consumer<String>) testClass::handleObject);
-        Mockito.verify(testClass).handleObject(dependency);
+        Mockito.verify(testClass).handleObject(dependency.get());
     }
 
     @Test
@@ -86,7 +86,7 @@ class EnumListFilterTest {
         dependency = Optional.of("dependency");
         TestClass testClass = Mockito.mock(TestClass.class);
         filter.ifShouldExclude(TestValue.A, dependency, (Consumer<String>) testClass::handleObject);
-        Mockito.verify(testClass).handleObject(dependency);
+        Mockito.verify(testClass).handleObject(dependency.get());
     }
 
     @Test
