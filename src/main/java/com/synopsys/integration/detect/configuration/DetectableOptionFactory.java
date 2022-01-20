@@ -180,17 +180,24 @@ public class DetectableOptionFactory {
         List<String> excludedConfigurationNames = getValue(DetectProperties.DETECT_GRADLE_EXCLUDED_CONFIGURATIONS);
         List<String> includedConfigurationNames = getValue(DetectProperties.DETECT_GRADLE_INCLUDED_CONFIGURATIONS);
         String customRepository = ArtifactoryConstants.GRADLE_INSPECTOR_MAVEN_REPO;
-        boolean includeUnresolvedConfigurations = getValue(DetectProperties.DETECT_GRADLE_INCLUDE_UNRESOLVED_CONFIGURATIONS);
+
+        EnumListFilter<GradleConfigurationType> dependencyTypeFilter;
         if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_GRADLE_CONFIGURATION_TYPES_EXCLUDED.getProperty())) {
             List<GradleConfigurationType> excludedConfigurationTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_GRADLE_CONFIGURATION_TYPES_EXCLUDED.getProperty()).representedValues();
-            ExcludedDependencyTypeFilter<GradleConfigurationType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>(excludedConfigurationTypes);
-            includeUnresolvedConfigurations = dependencyTypeFilter.shouldReportDependencyType(GradleConfigurationType.UNRESOLVED);
+            dependencyTypeFilter = EnumListFilter.fromExcluded(excludedConfigurationTypes);
+        } else {
+            boolean includeUnresolvedConfigurations = getValue(DetectProperties.DETECT_GRADLE_INCLUDE_UNRESOLVED_CONFIGURATIONS);
+            if (includeUnresolvedConfigurations) {
+                dependencyTypeFilter = EnumListFilter.excludeNone();
+            } else {
+                dependencyTypeFilter = EnumListFilter.fromExcluded(GradleConfigurationType.UNRESOLVED);
+            }
         }
 
         String onlineInspectorVersion = getNullableValue(DetectProperties.DETECT_GRADLE_INSPECTOR_VERSION);
         GradleInspectorScriptOptions scriptOptions = new GradleInspectorScriptOptions(excludedProjectNames, includedProjectNames, excludedConfigurationNames, includedConfigurationNames, customRepository, onlineInspectorVersion);
         String gradleBuildCommand = getNullableValue(DetectProperties.DETECT_GRADLE_BUILD_COMMAND);
-        return new GradleInspectorOptions(gradleBuildCommand, scriptOptions, proxyInfo, includeUnresolvedConfigurations);
+        return new GradleInspectorOptions(gradleBuildCommand, scriptOptions, proxyInfo, dependencyTypeFilter);
     }
 
     public LernaOptions createLernaOptions() {

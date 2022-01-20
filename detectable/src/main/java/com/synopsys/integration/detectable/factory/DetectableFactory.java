@@ -655,7 +655,7 @@ public class DetectableFactory {
     }
 
     private GradleReportTransformer gradleReportTransformer(GradleInspectorOptions gradleInspectorOptions) {
-        return new GradleReportTransformer(externalIdFactory, gradleInspectorOptions.shouldIncludeUnresolvedConfigurations());
+        return new GradleReportTransformer(externalIdFactory, gradleInspectorOptions.getConfigurationTypeFilter());
     }
 
     private GradleRootMetadataParser gradleRootMetadataParser() {
