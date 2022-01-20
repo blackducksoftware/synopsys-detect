@@ -3,15 +3,15 @@ package com.synopsys.integration.detectable.detectables.conan.cli.config;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import com.synopsys.integration.detectable.detectable.util.ExcludedDependencyTypeFilter;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 
 public class ConanCliOptions {
     private final Path lockfilePath;
     private final String additionalArguments;
-    private final ExcludedDependencyTypeFilter<ConanDependencyType> dependencyTypeFilter;
+    private final EnumListFilter<ConanDependencyType> dependencyTypeFilter;
     private final boolean preferLongFormExternalIds;
 
-    public ConanCliOptions(Path lockfilePath, String additionalArguments, ExcludedDependencyTypeFilter<ConanDependencyType> dependencyTypeFilter, boolean preferLongFormExternalIds) {
+    public ConanCliOptions(Path lockfilePath, String additionalArguments, EnumListFilter<ConanDependencyType> dependencyTypeFilter, boolean preferLongFormExternalIds) {
         this.lockfilePath = lockfilePath;
         this.additionalArguments = additionalArguments;
         this.dependencyTypeFilter = dependencyTypeFilter;
@@ -26,7 +26,7 @@ public class ConanCliOptions {
         return Optional.ofNullable(additionalArguments);
     }
 
-    public ExcludedDependencyTypeFilter<ConanDependencyType> getDependencyTypeFilter() {
+    public EnumListFilter<ConanDependencyType> getDependencyTypeFilter() {
         return dependencyTypeFilter;
     }
 

@@ -1,7 +1,7 @@
 package com.synopsys.integration.detect.configuration;
 
 import java.nio.file.Path;
-import java.util.LinkedList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,6 +20,7 @@ import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 import com.synopsys.integration.detectable.detectable.util.DependencyTypeFilter;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectable.util.ExcludedDependencyTypeFilter;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
@@ -212,29 +213,29 @@ public class DetectableOptionFactory {
         Path lockfilePath = detectConfiguration.getValue(DetectProperties.DETECT_CONAN_LOCKFILE_PATH.getProperty()).map(path -> path.resolvePath(pathResolver)).orElse(null);
         String additionalArguments = getNullableValue(DetectProperties.DETECT_CONAN_ARGUMENTS);
         Boolean preferLongFormExternalIds = getValue(DetectProperties.DETECT_CONAN_REQUIRE_PREV_MATCH);
-        ExcludedDependencyTypeFilter<ConanDependencyType> dependencyTypeFilter = createConanDependencyTypeFilter();
+        EnumListFilter<ConanDependencyType> dependencyTypeFilter = createConanDependencyTypeFilter();
         return new ConanCliOptions(lockfilePath, additionalArguments, dependencyTypeFilter, preferLongFormExternalIds);
     }
 
     // TODO: Remove in 8.0.0. This will be one line, no method necessary - JM 01/2022
-    private ExcludedDependencyTypeFilter<ConanDependencyType> createConanDependencyTypeFilter() {
+    private EnumListFilter<ConanDependencyType> createConanDependencyTypeFilter() {
         Boolean includeBuildDependencies = getValue(DetectProperties.DETECT_CONAN_INCLUDE_BUILD_DEPENDENCIES);
-        List<ConanDependencyType> excludedDependencyTypes;
+        Set<ConanDependencyType> excludedDependencyTypes;
         if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_CONAN_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
-            excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_CONAN_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValues();
+            excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_CONAN_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValueSet();
         } else {
-            excludedDependencyTypes = new LinkedList<>();
+            excludedDependencyTypes = new LinkedHashSet<>();
             if (Boolean.FALSE.equals(includeBuildDependencies)) {
                 excludedDependencyTypes.add(ConanDependencyType.BUILD);
             }
         }
-        return new ExcludedDependencyTypeFilter<>(excludedDependencyTypes);
+        return new EnumListFilter<>(excludedDependencyTypes);
     }
 
     public ConanLockfileExtractorOptions createConanLockfileOptions() {
         Path lockfilePath = detectConfiguration.getValue(DetectProperties.DETECT_CONAN_LOCKFILE_PATH.getProperty()).map(path -> path.resolvePath(pathResolver)).orElse(null);
         Boolean preferLongFormExternalIds = getValue(DetectProperties.DETECT_CONAN_REQUIRE_PREV_MATCH);
-        ExcludedDependencyTypeFilter<ConanDependencyType> dependencyTypeFilter = createConanDependencyTypeFilter();
+        EnumListFilter<ConanDependencyType> dependencyTypeFilter = createConanDependencyTypeFilter();
         return new ConanLockfileExtractorOptions(lockfilePath, dependencyTypeFilter, preferLongFormExternalIds);
     }
 
