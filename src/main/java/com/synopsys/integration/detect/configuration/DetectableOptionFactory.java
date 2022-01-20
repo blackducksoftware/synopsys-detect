@@ -126,7 +126,7 @@ public class DetectableOptionFactory {
                 excludedDependencyTypes.add(DartPubDependencyType.DEV);
             }
         }
-        EnumListFilter<DartPubDependencyType> dependencyTypeFilter = new EnumListFilter<>(excludedDependencyTypes);
+        EnumListFilter<DartPubDependencyType> dependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
         return new DartPubDepsDetectableOptions(dependencyTypeFilter);
     }
 
@@ -231,7 +231,7 @@ public class DetectableOptionFactory {
                 excludedDependencyTypes.add(ConanDependencyType.BUILD);
             }
         }
-        return new EnumListFilter<>(excludedDependencyTypes);
+        return EnumListFilter.fromExcluded(excludedDependencyTypes);
     }
 
     public ConanLockfileExtractorOptions createConanLockfileOptions() {

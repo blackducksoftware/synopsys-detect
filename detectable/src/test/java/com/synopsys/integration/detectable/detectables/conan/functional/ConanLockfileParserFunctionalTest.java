@@ -28,7 +28,7 @@ public class ConanLockfileParserFunctionalTest {
     @Test
     public void testNoProjectRef() throws IOException, IntegrationException {
         File lockfile = FunctionalTestFiles.asFile("/conan/lockfile/conan.lock");
-        EnumListFilter<ConanDependencyType> dependencyTypeFilter = new EnumListFilter<>();
+        EnumListFilter<ConanDependencyType> dependencyTypeFilter = EnumListFilter.excludeNone();
         ConanLockfileParser parser = new ConanLockfileParser(new Gson(), new ConanCodeLocationGenerator(dependencyTypeFilter, false), new ExternalIdFactory());
         String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
 
@@ -42,7 +42,7 @@ public class ConanLockfileParserFunctionalTest {
     @Test
     public void testWithDevDependencies() throws IOException, IntegrationException {
         File lockfile = FunctionalTestFiles.asFile("/conan/lockfile/conan_buildrequirements.lock");
-        EnumListFilter<ConanDependencyType> dependencyTypeFilter = new EnumListFilter<>();
+        EnumListFilter<ConanDependencyType> dependencyTypeFilter = EnumListFilter.excludeNone();
         ConanLockfileParser parser = new ConanLockfileParser(new Gson(), new ConanCodeLocationGenerator(dependencyTypeFilter, false), new ExternalIdFactory());
         String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
 
@@ -56,7 +56,7 @@ public class ConanLockfileParserFunctionalTest {
     @Test
     public void testNoProjectRefLongFormExternalIds() throws IOException, IntegrationException {
         File lockfile = FunctionalTestFiles.asFile("/conan/lockfile/conan.lock");
-        EnumListFilter<ConanDependencyType> dependencyTypeFilter = new EnumListFilter<>();
+        EnumListFilter<ConanDependencyType> dependencyTypeFilter = EnumListFilter.excludeNone();
         ConanLockfileParser parser = new ConanLockfileParser(new Gson(), new ConanCodeLocationGenerator(dependencyTypeFilter, true), new ExternalIdFactory());
         String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
 
@@ -70,7 +70,7 @@ public class ConanLockfileParserFunctionalTest {
     @Test
     public void testProjectRef() throws IOException, IntegrationException {
         File lockfile = FunctionalTestFiles.asFile("/conan/lockfile/conan_projectref.lock");
-        EnumListFilter<ConanDependencyType> dependencyTypeFilter = new EnumListFilter<>();
+        EnumListFilter<ConanDependencyType> dependencyTypeFilter = EnumListFilter.excludeNone();
         ConanLockfileParser parser = new ConanLockfileParser(new Gson(), new ConanCodeLocationGenerator(dependencyTypeFilter, true), new ExternalIdFactory());
         String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
 
@@ -83,7 +83,7 @@ public class ConanLockfileParserFunctionalTest {
     @Test
     public void testRelativePath() throws IOException, IntegrationException {
         File lockfile = FunctionalTestFiles.asFile("/conan/lockfile/conan_relpath.lock");
-        EnumListFilter<ConanDependencyType> dependencyTypeFilter = new EnumListFilter<>();
+        EnumListFilter<ConanDependencyType> dependencyTypeFilter = EnumListFilter.excludeNone();
         ConanLockfileParser parser = new ConanLockfileParser(new Gson(), new ConanCodeLocationGenerator(dependencyTypeFilter, true), new ExternalIdFactory());
         String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
 

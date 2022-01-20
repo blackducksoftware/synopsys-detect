@@ -12,16 +12,24 @@ import org.jetbrains.annotations.Nullable;
 public class EnumListFilter<T extends Enum<T>> {
     private final Set<T> excludedSet;
 
+    public static <T extends Enum<T>> EnumListFilter<T> excludeNone() {
+        return fromExcluded();
+    }
+
+    public static <T extends Enum<T>> EnumListFilter<T> fromExcluded(Set<T> excludedSet) {
+        return new EnumListFilter<>(excludedSet);
+    }
+
+    public static <T extends Enum<T>> EnumListFilter<T> fromExcluded(List<T> excludedList) {
+        return new EnumListFilter<>(new LinkedHashSet<>(excludedList));
+    }
+
     @SafeVarargs
-    public EnumListFilter(T... excludedValues) {
-        this(new LinkedHashSet<>(Arrays.asList(excludedValues)));
+    public static <T extends Enum<T>> EnumListFilter<T> fromExcluded(T... excludedValues) {
+        return new EnumListFilter<>(new LinkedHashSet<>(Arrays.asList(excludedValues)));
     }
 
-    public EnumListFilter(List<T> excludedList) {
-        this(new LinkedHashSet<>(excludedList));
-    }
-
-    public EnumListFilter(Set<T> excludedSet) {
+    private EnumListFilter(Set<T> excludedSet) {
         this.excludedSet = excludedSet;
     }
 

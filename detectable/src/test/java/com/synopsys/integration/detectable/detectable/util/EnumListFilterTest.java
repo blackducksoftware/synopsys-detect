@@ -25,21 +25,21 @@ class EnumListFilterTest {
 
     @Test
     void ifShouldInclude() {
-        EnumListFilter<TestValue> filter = new EnumListFilter<>(TestValue.A);
+        EnumListFilter<TestValue> filter = EnumListFilter.fromExcluded(TestValue.A);
         assertFalse(filter.shouldInclude(TestValue.A));
         assertTrue(filter.shouldInclude(TestValue.B));
     }
 
     @Test
     void ifShouldExclude() {
-        EnumListFilter<TestValue> filter = new EnumListFilter<>(TestValue.A);
+        EnumListFilter<TestValue> filter = EnumListFilter.fromExcluded(TestValue.A);
         assertTrue(filter.shouldExclude(TestValue.A));
         assertFalse(filter.shouldExclude(TestValue.B));
     }
 
     @Test
     void ifShouldIncludeNullable() {
-        EnumListFilter<TestValue> filter = new EnumListFilter<>(TestValue.A);
+        EnumListFilter<TestValue> filter = EnumListFilter.fromExcluded(TestValue.A);
         String dependency = null;
         filter.ifShouldInclude(TestValue.B, dependency, object -> fail("Although the value should be included, it was null and should be filtered."));
 
@@ -52,7 +52,7 @@ class EnumListFilterTest {
 
     @Test
     void ifShouldExcludeNullable() {
-        EnumListFilter<TestValue> filter = new EnumListFilter<>(TestValue.A);
+        EnumListFilter<TestValue> filter = EnumListFilter.fromExcluded(TestValue.A);
         String dependency = null;
         filter.ifShouldExclude(TestValue.A, dependency, object -> fail("Although the value should be excluded, it was null and should be filtered."));
 
@@ -65,7 +65,7 @@ class EnumListFilterTest {
 
     @Test
     void ifShouldIncludeOptional() {
-        EnumListFilter<TestValue> filter = new EnumListFilter<>(TestValue.A);
+        EnumListFilter<TestValue> filter = EnumListFilter.fromExcluded(TestValue.A);
         Optional<String> dependency = Optional.empty();
         filter.ifShouldInclude(TestValue.B, dependency, (Consumer<String>) object -> fail("Although the value should be included, it was an empty Optional and should be filtered."));
 
@@ -78,7 +78,7 @@ class EnumListFilterTest {
 
     @Test
     void ifShouldExcludeOptional() {
-        EnumListFilter<TestValue> filter = new EnumListFilter<>(TestValue.A);
+        EnumListFilter<TestValue> filter = EnumListFilter.fromExcluded(TestValue.A);
         Optional<String> dependency = Optional.empty();
         filter.ifShouldExclude(TestValue.A, dependency, (Consumer<String>) object -> fail("Although the value should be excluded, it was an empty Optional and should be filtered."));
 
@@ -92,7 +92,7 @@ class EnumListFilterTest {
     @Test
     void shouldIncludeRunnable() {
         TestClass testClass = Mockito.mock(TestClass.class);
-        EnumListFilter<TestValue> filter = new EnumListFilter<>(TestValue.A);
+        EnumListFilter<TestValue> filter = EnumListFilter.fromExcluded(TestValue.A);
         filter.ifShouldInclude(TestValue.B, testClass::handleRunnable);
         Mockito.verify(testClass).handleRunnable();
 
@@ -103,7 +103,7 @@ class EnumListFilterTest {
     @Test
     void shouldExcludeRunnable() {
         TestClass testClass = Mockito.mock(TestClass.class);
-        EnumListFilter<TestValue> filter = new EnumListFilter<>(TestValue.A);
+        EnumListFilter<TestValue> filter = EnumListFilter.fromExcluded(TestValue.A);
         filter.ifShouldExclude(TestValue.A, testClass::handleRunnable);
         Mockito.verify(testClass).handleRunnable();
 

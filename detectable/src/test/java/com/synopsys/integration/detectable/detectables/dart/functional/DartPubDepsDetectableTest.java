@@ -59,7 +59,7 @@ public class DartPubDepsDetectableTest extends DetectableFunctionalTest {
             }
         }
 
-        DartPubDepsDetectableOptions dartPubDepsDetectableOptions = new DartPubDepsDetectableOptions(new EnumListFilter<>());
+        DartPubDepsDetectableOptions dartPubDepsDetectableOptions = new DartPubDepsDetectableOptions(EnumListFilter.excludeNone());
         return detectableFactory.createDartPubDepDetectable(detectableEnvironment, dartPubDepsDetectableOptions, new DartResolverTest(), new FlutterResolverTest());
     }
 

@@ -28,7 +28,7 @@ public class ConanCliParserFunctionalTest {
     @Test
     public void test() throws IOException, IntegrationException {
         File conanInfoOutputFile = FunctionalTestFiles.asFile("/conan/cli/conan_info.txt");
-        EnumListFilter<ConanDependencyType> dependencyTypeFilter = new EnumListFilter<>();
+        EnumListFilter<ConanDependencyType> dependencyTypeFilter = EnumListFilter.excludeNone();
         ConanCodeLocationGenerator conanCodeLocationGenerator = new ConanCodeLocationGenerator(dependencyTypeFilter, false);
         ConanInfoLineAnalyzer conanInfoLineAnalyzer = new ConanInfoLineAnalyzer();
         NodeElementParser nodeElementParser = new NodeElementParser(conanInfoLineAnalyzer);
