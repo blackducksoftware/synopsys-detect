@@ -41,7 +41,7 @@ public class BuildFileFinder {
         return taskDependsDotFile;
     }
 
-    public File findLicenseManifestFile(File buildDir, String targetImageName, BitbakeEnvironment bitbakeEnvironment, boolean followSymLinks, int searchDepth) throws IntegrationException {
+    public Optional<File> findLicenseManifestFile(File buildDir, String targetImageName, BitbakeEnvironment bitbakeEnvironment, boolean followSymLinks, int searchDepth) {
         try {
             String machineArch = bitbakeEnvironment.getMachineArch().orElse(null);
             File licensesDir = findLicensesDir(buildDir, bitbakeEnvironment.getLicensesDirPath().orElse(null), followSymLinks, searchDepth);
@@ -50,18 +50,19 @@ public class BuildFileFinder {
             Optional<File> architectureSpecificManifestFile = findManifestFileForTargetArchitecture(targetImageName,
                 machineArch, licensesDirContents, followSymLinks);
             if (architectureSpecificManifestFile.isPresent()) {
-                return architectureSpecificManifestFile.get();
+                return architectureSpecificManifestFile;
             }
             logger.debug("Did not find a license.manifest for architecture {}; Will look for the most recent license.manifest file.", machineArch);
             Optional<File> latestLicenseManifestFile = findMostRecentLicenseManifestFileForTarget(targetImageName, licensesDirContents, followSymLinks);
             if (latestLicenseManifestFile.isPresent()) {
                 logger.debug("Found most recent license.manifest file: {}", latestLicenseManifestFile.get().getAbsolutePath());
-                return latestLicenseManifestFile.get();
+                return latestLicenseManifestFile;
             }
         } catch (Exception e) {
             logger.debug(String.format("Error finding license.manifest file for target image %s", targetImageName), e);
         }
-        throw new IntegrationException(String.format("Unable to find license.manifest file for target image %s", targetImageName));
+        logger.debug("Unable to find license.manifest file for target image {}", targetImageName);
+        return Optional.empty();
     }
 
     @NotNull

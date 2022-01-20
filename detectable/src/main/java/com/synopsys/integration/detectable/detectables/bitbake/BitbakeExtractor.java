@@ -6,8 +6,10 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.NotImplementedException;
@@ -32,7 +34,6 @@ import com.synopsys.integration.detectable.detectables.bitbake.parse.LicenseMani
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class BitbakeExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -83,7 +84,7 @@ public class BitbakeExtractor {
 
                 codeLocations.add(codeLocation);
 
-            } catch (IOException | IntegrationException | ExecutableRunnerException | NotImplementedException | ExecutableFailedException e) {
+            } catch (IOException | IntegrationException | NotImplementedException | ExecutableFailedException e) {
                 logger.error(String.format("Failed to extract a Code Location while running Bitbake against package '%s': %s", packageName, e.getMessage()));
                 logger.debug(e.getMessage(), e);
             }
@@ -106,13 +107,18 @@ public class BitbakeExtractor {
     }
 
     private Map<String, String> readImageRecipes(File buildDir, String targetImageName, BitbakeEnvironment bitbakeEnvironment, boolean followSymLinks, int searchDepth) throws IntegrationException, IOException {
-        File licenseManifestFile = buildFileFinder.findLicenseManifestFile(buildDir, targetImageName, bitbakeEnvironment, followSymLinks, searchDepth);
-        List<String> licenseManifestLines = FileUtils.readLines(licenseManifestFile, StandardCharsets.UTF_8);
-        return licenseManifestParser.collectImageRecipes(licenseManifestLines);
+        Optional<File> licenseManifestFile = buildFileFinder.findLicenseManifestFile(buildDir, targetImageName, bitbakeEnvironment, followSymLinks, searchDepth);
+        if (licenseManifestFile.isPresent()) {
+            List<String> licenseManifestLines = FileUtils.readLines(licenseManifestFile.get(), StandardCharsets.UTF_8);
+            return licenseManifestParser.collectImageRecipes(licenseManifestLines);
+        } else {
+            logger.info("No license.manifest file found for target image {}; every dependency will be considered a BUILD dependency.", targetImageName);
+            return new HashMap<>(0);
+        }
     }
 
     private BitbakeGraph generateBitbakeGraph(BitbakeSession bitbakeSession, File buildDir, String packageName, boolean followSymLinks, Integer searchDepth)
-        throws ExecutableRunnerException, IOException, IntegrationException, ExecutableFailedException {
+        throws IOException, IntegrationException, ExecutableFailedException {
         File taskDependsFile = bitbakeSession.executeBitbakeForDependencies(buildDir, packageName, followSymLinks, searchDepth);
         if (logger.isTraceEnabled()) {
             logger.trace(FileUtils.readFileToString(taskDependsFile, Charset.defaultCharset()));
