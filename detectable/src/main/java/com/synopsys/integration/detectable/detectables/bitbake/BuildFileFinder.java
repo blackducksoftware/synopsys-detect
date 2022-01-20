@@ -29,6 +29,9 @@ public class BuildFileFinder {
     }
 
     public File findTaskDependsFile(File sourceDir, File buildDir, boolean followSymLinks, Integer searchDepth) throws IntegrationException {
+        // TODO all this flexibility (depth, sourceDir) carries the risk of finding an old/wrong task-depends.dot file
+        // made worse by the fact that Detect leaves the task-depends.dot file behind after each target image / Detect run.
+        // How 'bout we don't leave them behind? Could we generate them in a temp dir?
         File taskDependsDotFile = fileFinder.findFile(buildDir, TASK_DEPENDS_FILE_NAME, followSymLinks, searchDepth);
         if (taskDependsDotFile == null) {
             logger.warn("Did not find {} in build dir {}; trying source dir", TASK_DEPENDS_FILE_NAME, buildDir.getAbsolutePath());
