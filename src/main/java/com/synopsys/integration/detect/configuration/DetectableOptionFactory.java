@@ -101,14 +101,21 @@ public class DetectableOptionFactory {
     }
 
     public ComposerLockDetectableOptions createComposerLockDetectableOptions() {
-        boolean includedDevDependencies = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES));
+
+        EnumListFilter<PackagistDependencyType> packagistDependencyTypeFilter;
         if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_PACKAGIST_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
             List<PackagistDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_PACKAGIST_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValues();
-            ExcludedDependencyTypeFilter<PackagistDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>(excludedDependencyTypes);
-            includedDevDependencies = dependencyTypeFilter.shouldReportDependencyType(PackagistDependencyType.DEV);
+            packagistDependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
+        } else {
+            boolean includedDevDependencies = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES));
+            if (includedDevDependencies) {
+                packagistDependencyTypeFilter = EnumListFilter.excludeNone();
+            } else {
+                packagistDependencyTypeFilter = EnumListFilter.fromExcluded(PackagistDependencyType.DEV);
+            }
         }
 
-        return new ComposerLockDetectableOptions(includedDevDependencies);
+        return new ComposerLockDetectableOptions(packagistDependencyTypeFilter);
     }
 
     public CondaCliDetectableOptions createCondaOptions() {

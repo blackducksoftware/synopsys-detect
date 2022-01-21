@@ -312,7 +312,9 @@ public class DetectableFactory {
     }
 
     public ComposerLockDetectable createComposerDetectable(DetectableEnvironment environment, ComposerLockDetectableOptions composerLockDetectableOptions) {
-        return new ComposerLockDetectable(environment, fileFinder, composerLockExtractor(), composerLockDetectableOptions);
+        PackagistParser packagistParser = new PackagistParser(externalIdFactory, composerLockDetectableOptions.getDependencyTypeFilter());
+        ComposerLockExtractor composerLockExtractor = new ComposerLockExtractor(packagistParser);
+        return new ComposerLockDetectable(environment, fileFinder, composerLockExtractor);
     }
 
     public CondaCliDetectable createCondaCliDetectable(DetectableEnvironment environment, CondaResolver condaResolver, CondaCliDetectableOptions condaCliDetectableOptions) {
@@ -749,14 +751,6 @@ public class DetectableFactory {
 
     private ProjectInspectorExtractor projectInspectorExtractor() {
         return new ProjectInspectorExtractor(executableRunner, projectInspectorParser());
-    }
-
-    private PackagistParser packagistParser() {
-        return new PackagistParser(externalIdFactory);
-    }
-
-    private ComposerLockExtractor composerLockExtractor() {
-        return new ComposerLockExtractor(packagistParser());
     }
 
     private PearListParser pearListParser() {
