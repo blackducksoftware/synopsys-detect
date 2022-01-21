@@ -1,13 +1,17 @@
 package com.synopsys.integration.detectable.detectables.bazel;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,36 +36,49 @@ public class BazelExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectableExecutableRunner executableRunner;
     private final ExternalIdFactory externalIdFactory;
+    private final BazelWorkspaceFileParser bazelWorkspaceFileParser;
     private final WorkspaceRuleChooser workspaceRuleChooser;
     private final ToolVersionLogger toolVersionLogger;
 
     public BazelExtractor(DetectableExecutableRunner executableRunner,
         ExternalIdFactory externalIdFactory,
+        BazelWorkspaceFileParser bazelWorkspaceFileParser,
         WorkspaceRuleChooser workspaceRuleChooser,
         ToolVersionLogger toolVersionLogger) {
         this.executableRunner = executableRunner;
         this.externalIdFactory = externalIdFactory;
         this.workspaceRuleChooser = workspaceRuleChooser;
+        this.bazelWorkspaceFileParser = bazelWorkspaceFileParser;
         this.toolVersionLogger = toolVersionLogger;
     }
 
-    public Extraction extract(ExecutableTarget bazelExe, File workspaceDir, BazelWorkspace bazelWorkspace, String bazelTarget,
+    public Extraction extract(ExecutableTarget bazelExe, File workspaceDir, File workspaceFile, String bazelTarget,
         BazelProjectNameGenerator bazelProjectNameGenerator, Set<WorkspaceRule> providedDependencyRuleTypes,
         List<String> providedCqueryAdditionalOptions) {
-        //TODO: For consistency, only read files in the extractor: workspaceFileLines = FileUtils.readLines(workspaceFile, StandardCharsets.UTF_8);
         logger.debug("Bazel extraction:");
         try {
             toolVersionLogger.log(workspaceDir, bazelExe, "version");
             BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
             BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor(bazelTarget, providedCqueryAdditionalOptions);
             Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor, externalIdFactory);
-            Set<WorkspaceRule> workspaceRulesToQuery = workspaceRuleChooser.choose(bazelWorkspace.getDependencyRuleTypes(), providedDependencyRuleTypes);
+            Set<WorkspaceRule> workspaceRulesFromFile = parseWorkspaceRulesFromFile(workspaceFile);
+            Set<WorkspaceRule> workspaceRulesToQuery = workspaceRuleChooser.choose(workspaceRulesFromFile, providedDependencyRuleTypes);
             List<Dependency> aggregatedDependencies = collectDependencies(pipelines, workspaceRulesToQuery);
             return buildResults(aggregatedDependencies, bazelProjectNameGenerator.generateFromBazelTarget(bazelTarget));
         } catch (Exception e) {
             String msg = String.format("Bazel processing exception: %s", e.getMessage());
             logger.debug(msg, e);
             return new Extraction.Builder().failure(msg).build();
+        }
+    }
+
+    private Set<WorkspaceRule> parseWorkspaceRulesFromFile(final File workspaceFile) {
+        List<String> workspaceFileLines = null;
+        try {
+            workspaceFileLines = FileUtils.readLines(workspaceFile, StandardCharsets.UTF_8);
+            return bazelWorkspaceFileParser.parseWorkspaceRuleTypes(workspaceFileLines);
+        } catch (IOException e) {
+            return new HashSet<>(0);
         }
     }
 

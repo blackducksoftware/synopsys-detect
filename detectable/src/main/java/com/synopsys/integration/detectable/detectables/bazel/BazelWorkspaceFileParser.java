@@ -14,24 +14,10 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BazelWorkspace {
+public class BazelWorkspaceFileParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final File workspaceFile;
 
-    public BazelWorkspace(File workspaceFile) { //TODO: Could rename to Parser, and remove state. Take in the file as parameter.
-        this.workspaceFile = workspaceFile;
-    }
-
-    public Set<WorkspaceRule> getDependencyRuleTypes() { //TODO: Rename from 'get'
-        List<String> workspaceFileLines;
-        try {
-            // Assumes ascii or UTF-8, like other detectors
-            workspaceFileLines = FileUtils.readLines(workspaceFile, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            logger.debug(String.format("Unable to parse dependency rule from %s: %s", workspaceFile.getAbsolutePath(), e.getMessage()));
-            return new HashSet<>(0);
-        }
-
+    public Set<WorkspaceRule> parseWorkspaceRuleTypes(List<String> workspaceFileLines) {
         return workspaceFileLines.stream()
             .flatMap(this::parseDependencyRulesFromWorkspaceFileLine)
             .collect(Collectors.toSet());

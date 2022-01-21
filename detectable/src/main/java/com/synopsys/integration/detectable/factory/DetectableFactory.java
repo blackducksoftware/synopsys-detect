@@ -43,6 +43,8 @@ import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspe
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
+import com.synopsys.integration.detectable.detectables.bazel.BazelProjectNameGenerator;
+import com.synopsys.integration.detectable.detectables.bazel.BazelWorkspaceFileParser;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.WorkspaceRuleChooser;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectableOptions;
@@ -283,8 +285,8 @@ public class DetectableFactory {
         return new DockerDetectable(environment, dockerInspectorResolver, javaResolver, dockerResolver, dockerExtractor(), dockerDetectableOptions);
     }
 
-    public BazelDetectable createBazelDetectable(DetectableEnvironment environment, BazelDetectableOptions bazelDetectableOptions, BazelResolver bazelResolver) {
-        return new BazelDetectable(environment, fileFinder, bazelExtractor(), bazelResolver, bazelDetectableOptions);
+    public BazelDetectable createBazelDetectable(DetectableEnvironment environment, BazelDetectableOptions bazelDetectableOptions, BazelResolver bazelResolver, BazelProjectNameGenerator projectNameGenerator) {
+        return new BazelDetectable(environment, fileFinder, bazelExtractor(), bazelResolver, projectNameGenerator, bazelDetectableOptions);
     }
 
     public BitbakeDetectable createBitbakeDetectable(DetectableEnvironment environment, BitbakeDetectableOptions bitbakeDetectableOptions, BashResolver bashResolver) {
@@ -493,7 +495,8 @@ public class DetectableFactory {
 
     private BazelExtractor bazelExtractor() {
         WorkspaceRuleChooser workspaceRuleChooser = new WorkspaceRuleChooser();
-        return new BazelExtractor(executableRunner, externalIdFactory, workspaceRuleChooser, toolVersionLogger);
+        BazelWorkspaceFileParser bazelWorkspaceFileParser = new BazelWorkspaceFileParser();
+        return new BazelExtractor(executableRunner, externalIdFactory, bazelWorkspaceFileParser, workspaceRuleChooser, toolVersionLogger);
     }
 
     private FilePathGenerator filePathGenerator() {
