@@ -4,23 +4,34 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelCommandExecutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelVariableSubstitutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.FinalStep;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.FinalStepColonSeparatedGavs;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.FinalStepJsonProtoHaskellCabalLibraries;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.HaskellCabalLibraryJsonProtoParser;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStep;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepExecuteBazelOnEach;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepFilter;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepParseEachXml;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepReplaceInEach;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepSplitEach;
 
 public class PipelineBuilder {
+    private final ExternalIdFactory externalIdFactory;
     private final BazelCommandExecutor bazelCommandExecutor;
     private final BazelVariableSubstitutor bazelVariableSubstitutor;
+    private final HaskellCabalLibraryJsonProtoParser haskellCabalLibraryJsonProtoParser;
     private final List<IntermediateStep> intermediateSteps = new ArrayList<>();
     private FinalStep finalStep;
 
-    public PipelineBuilder(final BazelCommandExecutor bazelCommandExecutor, BazelVariableSubstitutor bazelVariableSubstitutor) {
+    public PipelineBuilder(ExternalIdFactory externalIdFactory, BazelCommandExecutor bazelCommandExecutor, BazelVariableSubstitutor bazelVariableSubstitutor,
+        HaskellCabalLibraryJsonProtoParser haskellCabalLibraryJsonProtoParser) {
+        this.externalIdFactory = externalIdFactory;
         this.bazelCommandExecutor = bazelCommandExecutor;
         this.bazelVariableSubstitutor = bazelVariableSubstitutor;
+        this.haskellCabalLibraryJsonProtoParser = haskellCabalLibraryJsonProtoParser;
     }
 
     public PipelineBuilder addIntermediateStep(IntermediateStep intermediateStep) {
@@ -53,5 +64,20 @@ public class PipelineBuilder {
         return addIntermediateStep(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, bazelArguments, inputIsExpected));
     }
 
+    public PipelineBuilder parseValueFromEachXmlLine(String xPathToElement, String targetAttributeName) {
+        return addIntermediateStep(new IntermediateStepParseEachXml(xPathToElement, targetAttributeName));
+    }
 
+    public PipelineBuilder filterLines(String regex) {
+        return addIntermediateStep(new IntermediateStepFilter(regex));
+    }
+
+    // These can only be the final step in the pipeline
+    public PipelineBuilder generateMavenDependenciesFromLines() {
+        return setFinalStep(new FinalStepColonSeparatedGavs(externalIdFactory));
+    }
+
+    public PipelineBuilder generateHackageDependenciesFromLines() {
+        return setFinalStep(new FinalStepJsonProtoHaskellCabalLibraries(haskellCabalLibraryJsonProtoParser, externalIdFactory));
+    }
 }

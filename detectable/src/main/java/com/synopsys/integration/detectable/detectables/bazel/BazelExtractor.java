@@ -28,6 +28,7 @@ import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipelines;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.WorkspaceRuleChooser;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelCommandExecutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelVariableSubstitutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.HaskellCabalLibraryJsonProtoParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import com.synopsys.integration.exception.IntegrationException;
@@ -39,17 +40,20 @@ public class BazelExtractor {
     private final BazelWorkspaceFileParser bazelWorkspaceFileParser;
     private final WorkspaceRuleChooser workspaceRuleChooser;
     private final ToolVersionLogger toolVersionLogger;
+    private final HaskellCabalLibraryJsonProtoParser haskellCabalLibraryJsonProtoParser;
 
     public BazelExtractor(DetectableExecutableRunner executableRunner,
         ExternalIdFactory externalIdFactory,
         BazelWorkspaceFileParser bazelWorkspaceFileParser,
         WorkspaceRuleChooser workspaceRuleChooser,
-        ToolVersionLogger toolVersionLogger) {
+        ToolVersionLogger toolVersionLogger,
+        HaskellCabalLibraryJsonProtoParser haskellCabalLibraryJsonProtoParser) {
         this.executableRunner = executableRunner;
         this.externalIdFactory = externalIdFactory;
         this.workspaceRuleChooser = workspaceRuleChooser;
         this.bazelWorkspaceFileParser = bazelWorkspaceFileParser;
         this.toolVersionLogger = toolVersionLogger;
+        this.haskellCabalLibraryJsonProtoParser = haskellCabalLibraryJsonProtoParser;
     }
 
     public Extraction extract(ExecutableTarget bazelExe, File workspaceDir, File workspaceFile, String bazelTarget,
@@ -60,7 +64,7 @@ public class BazelExtractor {
             toolVersionLogger.log(workspaceDir, bazelExe, "version");
             BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
             BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor(bazelTarget, providedCqueryAdditionalOptions);
-            Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor, externalIdFactory);
+            Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor, externalIdFactory, haskellCabalLibraryJsonProtoParser);
             Set<WorkspaceRule> workspaceRulesFromFile = parseWorkspaceRulesFromFile(workspaceFile);
             Set<WorkspaceRule> workspaceRulesToQuery = workspaceRuleChooser.choose(workspaceRulesFromFile, providedDependencyRuleTypes);
             List<Dependency> aggregatedDependencies = collectDependencies(pipelines, workspaceRulesToQuery);
@@ -73,7 +77,7 @@ public class BazelExtractor {
     }
 
     private Set<WorkspaceRule> parseWorkspaceRulesFromFile(final File workspaceFile) {
-        List<String> workspaceFileLines = null;
+        List<String> workspaceFileLines;
         try {
             workspaceFileLines = FileUtils.readLines(workspaceFile, StandardCharsets.UTF_8);
             return bazelWorkspaceFileParser.parseWorkspaceRuleTypes(workspaceFileLines);
@@ -101,7 +105,7 @@ public class BazelExtractor {
             .collect(Collectors.toList());
 
         for (WorkspaceRule workspaceRule : sortedWorkspaceRules) {
-            logger.info(String.format("Running processing pipeline for rule %s", workspaceRule));
+            logger.info("Running processing pipeline for rule {}", workspaceRule);
             Pipeline pipeline = pipelines.get(workspaceRule);
             List<Dependency> ruleDependencies = pipeline.run();
             logger.info(String.format("Number of dependencies discovered for rule %s: %d", workspaceRule, ruleDependencies.size()));
