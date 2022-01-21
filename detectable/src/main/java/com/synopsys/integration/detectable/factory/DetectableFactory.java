@@ -441,7 +441,12 @@ public class DetectableFactory {
     }
 
     public PearCliDetectable createPearCliDetectable(DetectableEnvironment environment, PearCliDetectableOptions pearCliDetectableOptions, PearResolver pearResolver) {
-        return new PearCliDetectable(environment, fileFinder, pearResolver, pearCliExtractor(), pearCliDetectableOptions);
+        PearDependencyGraphTransformer pearDependencyGraphTransformer = new PearDependencyGraphTransformer(externalIdFactory, pearCliDetectableOptions.getDependencyTypeFilter());
+        PearPackageXmlParser pearPackageXmlParser = new PearPackageXmlParser();
+        PearPackageDependenciesParser pearPackageDependenciesParser = new PearPackageDependenciesParser();
+        PearListParser pearListParser = new PearListParser();
+        PearCliExtractor pearCliExtractor = new PearCliExtractor(externalIdFactory, executableRunner, pearDependencyGraphTransformer, pearPackageXmlParser, pearPackageDependenciesParser, pearListParser);
+        return new PearCliDetectable(environment, fileFinder, pearResolver, pearCliExtractor);
     }
 
     public PipenvDetectable createPipenvDetectable(DetectableEnvironment environment, PipenvDetectableOptions pipenvDetectableOptions, PythonResolver pythonResolver, PipenvResolver pipenvResolver) {
@@ -751,26 +756,6 @@ public class DetectableFactory {
 
     private ProjectInspectorExtractor projectInspectorExtractor() {
         return new ProjectInspectorExtractor(executableRunner, projectInspectorParser());
-    }
-
-    private PearListParser pearListParser() {
-        return new PearListParser();
-    }
-
-    private PearPackageXmlParser pearPackageXmlParser() {
-        return new PearPackageXmlParser();
-    }
-
-    private PearPackageDependenciesParser pearPackageDependenciesParser() {
-        return new PearPackageDependenciesParser();
-    }
-
-    private PearDependencyGraphTransformer pearDependencyGraphTransformer() {
-        return new PearDependencyGraphTransformer(externalIdFactory);
-    }
-
-    private PearCliExtractor pearCliExtractor() {
-        return new PearCliExtractor(externalIdFactory, executableRunner, pearDependencyGraphTransformer(), pearPackageXmlParser(), pearPackageDependenciesParser(), pearListParser());
     }
 
     private PipEnvJsonGraphParser pipenvJsonGraphParser() {

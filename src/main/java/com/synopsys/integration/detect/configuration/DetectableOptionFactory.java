@@ -322,13 +322,19 @@ public class DetectableOptionFactory {
     }
 
     public PearCliDetectableOptions createPearCliDetectableOptions() {
-        boolean onlyGatherRequired = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_PEAR_ONLY_REQUIRED_DEPS));
+        EnumListFilter<PearDependencyType> pearDependencyTypeFilter;
         if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_PEAR_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
             List<PearDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_PEAR_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValues();
-            ExcludedDependencyTypeFilter<PearDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>(excludedDependencyTypes);
-            onlyGatherRequired = dependencyTypeFilter.shouldExcludeDependencyType(PearDependencyType.OPTIONAL);
+            pearDependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
+        } else {
+            boolean onlyGatherRequired = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_PEAR_ONLY_REQUIRED_DEPS));
+            if (onlyGatherRequired) {
+                pearDependencyTypeFilter = EnumListFilter.fromExcluded(PearDependencyType.OPTIONAL);
+            } else {
+                pearDependencyTypeFilter = EnumListFilter.excludeNone();
+            }
         }
-        return new PearCliDetectableOptions(onlyGatherRequired);
+        return new PearCliDetectableOptions(pearDependencyTypeFilter);
     }
 
     public PipenvDetectableOptions createPipenvDetectableOptions() {
