@@ -27,22 +27,22 @@ public class Pipelines {
 
     public Pipelines(BazelCommandExecutor bazelCommandExecutor, BazelVariableSubstitutor bazelVariableSubstitutor,
         ExternalIdFactory externalIdFactory) {
-        Pipeline mavenJarPipeline = (new PipelineBuilder())
+        Pipeline mavenJarPipeline = (new PipelineBuilder(bazelCommandExecutor, bazelVariableSubstitutor))
             .addIntermediateStep(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor,
                 Arrays.asList(CQUERY_COMMAND, CQUERY_OPTIONS_PLACEHOLDER, "filter('@.*:jar', deps(${detect.bazel.target}))"), false))
             // The trailing parens may contain a hex number, or "null"; the pattern below handles either
-            .replaceInEachStep(" \\([0-9a-z]+\\)", "")
-            .addIntermediateStep(new IntermediateStepSplitEach("\\s+"))
-            .addIntermediateStep(new IntermediateStepReplaceInEach("^@", ""))
-            .addIntermediateStep(new IntermediateStepReplaceInEach("//.*", ""))
-            .addIntermediateStep(new IntermediateStepReplaceInEach("^", "//external:"))
-            .addIntermediateStep(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("query", "kind(maven_jar, ${input.item})", OUTPUT_FLAG, "xml"), true))
+            .replaceInEachLine(" \\([0-9a-z]+\\)", "")
+            .splitEachLine("\\s+")
+            .replaceInEachLine("^@", "")
+            .replaceInEachLine("//.*", "")
+            .replaceInEachLine("^", "//external:")
+            .executeBazelOnEachLine(Arrays.asList("query", "kind(maven_jar, ${input.item})", OUTPUT_FLAG, "xml"), true)
             .addIntermediateStep(new IntermediateStepParseEachXml("/query/rule[@class='maven_jar']/string[@name='artifact']", "value"))
             .setFinalStep(new FinalStepColonSeparatedGavs(externalIdFactory))
             .build();
         availablePipelines.put(WorkspaceRule.MAVEN_JAR, mavenJarPipeline);
 
-        Pipeline mavenInstallPipeline = (new PipelineBuilder())
+        Pipeline mavenInstallPipeline = (new PipelineBuilder(bazelCommandExecutor, bazelVariableSubstitutor))
             .addIntermediateStep(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor,
                 Arrays.asList(CQUERY_COMMAND, "--noimplicit_deps", CQUERY_OPTIONS_PLACEHOLDER, "kind(j.*import, deps(${detect.bazel.target}))", OUTPUT_FLAG, "build"), false))
             .addIntermediateStep(new IntermediateStepSplitEach("\r?\n"))
@@ -54,7 +54,7 @@ public class Pipelines {
         availablePipelines.put(WorkspaceRule.MAVEN_INSTALL, mavenInstallPipeline);
 
         HaskellCabalLibraryJsonProtoParser haskellCabalLibraryJsonProtoParser = new HaskellCabalLibraryJsonProtoParser(gson);
-        Pipeline haskellCabalLibraryPipeline = (new PipelineBuilder())
+        Pipeline haskellCabalLibraryPipeline = (new PipelineBuilder(bazelCommandExecutor, bazelVariableSubstitutor))
             .addIntermediateStep(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor,
                 Arrays.asList(CQUERY_COMMAND, "--noimplicit_deps", CQUERY_OPTIONS_PLACEHOLDER, "kind(haskell_cabal_library, deps(${detect.bazel.target}))", OUTPUT_FLAG, "jsonproto"), false))
             .setFinalStep(new FinalStepJsonProtoHaskellCabalLibraries(haskellCabalLibraryJsonProtoParser, externalIdFactory))
