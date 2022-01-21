@@ -43,7 +43,7 @@ public class BazelExtractor {
     private final HaskellCabalLibraryJsonProtoParser haskellCabalLibraryJsonProtoParser;
     private final String bazelTarget;
     private final Set<WorkspaceRule> providedDependencyRuleTypes;
-    private final List<String> providedCqueryAdditionalOptions;
+    private final BazelVariableSubstitutor bazelVariableSubstitutor;
 
     public BazelExtractor(DetectableExecutableRunner executableRunner,
         ExternalIdFactory externalIdFactory,
@@ -53,7 +53,7 @@ public class BazelExtractor {
         HaskellCabalLibraryJsonProtoParser haskellCabalLibraryJsonProtoParser,
         String bazelTarget,
         Set<WorkspaceRule> providedDependencyRuleTypes,
-        List<String> providedCqueryAdditionalOptions) {
+        BazelVariableSubstitutor bazelVariableSubstitutor) {
         this.executableRunner = executableRunner;
         this.externalIdFactory = externalIdFactory;
         this.workspaceRuleChooser = workspaceRuleChooser;
@@ -62,7 +62,7 @@ public class BazelExtractor {
         this.haskellCabalLibraryJsonProtoParser = haskellCabalLibraryJsonProtoParser;
         this.bazelTarget = bazelTarget;
         this.providedDependencyRuleTypes = providedDependencyRuleTypes;
-        this.providedCqueryAdditionalOptions = providedCqueryAdditionalOptions;
+        this.bazelVariableSubstitutor = bazelVariableSubstitutor;
     }
 
     public Extraction extract(ExecutableTarget bazelExe, File workspaceDir, File workspaceFile,
@@ -71,7 +71,6 @@ public class BazelExtractor {
         try {
             toolVersionLogger.log(workspaceDir, bazelExe, "version");
             BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
-            BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor(bazelTarget, providedCqueryAdditionalOptions);
             Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor, externalIdFactory, haskellCabalLibraryJsonProtoParser);
             Set<WorkspaceRule> workspaceRulesFromFile = parseWorkspaceRulesFromFile(workspaceFile);
             Set<WorkspaceRule> workspaceRulesToQuery = workspaceRuleChooser.choose(workspaceRulesFromFile, providedDependencyRuleTypes);
