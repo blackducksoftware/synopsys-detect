@@ -420,8 +420,9 @@ public class DetectableFactory {
         return new NpmShrinkwrapDetectable(environment, fileFinder, npmLockfileExtractor(), npmLockfileOptions);
     }
 
-    public NpmPackageJsonParseDetectable createNpmPackageJsonParseDetectable(DetectableEnvironment environment, NpmPackageJsonParseDetectableOptions npmPackageJsonParseDetectableOptions) {
-        return new NpmPackageJsonParseDetectable(environment, fileFinder, packageJsonExtractor(), npmPackageJsonParseDetectableOptions);
+    public NpmPackageJsonParseDetectable createNpmPackageJsonParseDetectable(DetectableEnvironment environment, NpmPackageJsonParseDetectableOptions npmPackageJsonOptions) {
+        PackageJsonExtractor packageJsonExtractor = new PackageJsonExtractor(gson, externalIdFactory, npmPackageJsonOptions.getNpmDependencyTypeFilter());
+        return new NpmPackageJsonParseDetectable(environment, fileFinder, packageJsonExtractor);
     }
 
     public NugetSolutionDetectable createNugetSolutionDetectable(DetectableEnvironment environment, NugetInspectorOptions nugetInspectorOptions, NugetInspectorResolver nugetInspectorResolver) {
@@ -966,10 +967,6 @@ public class DetectableFactory {
 
     private GoGradleExtractor goGradleExtractor() {
         return new GoGradleExtractor(goGradleLockParser());
-    }
-
-    private PackageJsonExtractor packageJsonExtractor() {
-        return new PackageJsonExtractor(gson, externalIdFactory);
     }
 
     private SAXParser saxParser() {

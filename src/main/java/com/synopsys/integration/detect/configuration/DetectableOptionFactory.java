@@ -270,8 +270,26 @@ public class DetectableOptionFactory {
     }
 
     public NpmPackageJsonParseDetectableOptions createNpmPackageJsonParseDetectableOptions() {
-        NpmDependencyTypeOptions npmDependencyTypeOptions = createNpmDependencyTypeOptions();
-        return new NpmPackageJsonParseDetectableOptions(npmDependencyTypeOptions.includeDevDependencies, npmDependencyTypeOptions.includePeerDependencies);
+        EnumListFilter<NpmDependencyType> npmDependencyTypeFilter = createNpmDependencyTypeFilter();
+        return new NpmPackageJsonParseDetectableOptions(npmDependencyTypeFilter);
+    }
+
+    private EnumListFilter<NpmDependencyType> createNpmDependencyTypeFilter() {
+        Set<NpmDependencyType> excludedDependencyTypes;
+        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
+            excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValueSet();
+        } else {
+            boolean excludeDevDependencies = Boolean.FALSE.equals(getValue(DetectProperties.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES));
+            boolean excludePeerDependencies = Boolean.FALSE.equals(getValue(DetectProperties.DETECT_NPM_INCLUDE_PEER_DEPENDENCIES));
+            excludedDependencyTypes = new LinkedHashSet<>();
+            if (excludeDevDependencies) {
+                excludedDependencyTypes.add(NpmDependencyType.DEV);
+            }
+            if (excludePeerDependencies) {
+                excludedDependencyTypes.add(NpmDependencyType.DEV);
+            }
+        }
+        return EnumListFilter.fromExcluded(excludedDependencyTypes);
     }
 
     private NpmDependencyTypeOptions createNpmDependencyTypeOptions() {
