@@ -19,8 +19,10 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.lerna.LernaDetectable;
 import com.synopsys.integration.detectable.detectables.lerna.LernaOptions;
+import com.synopsys.integration.detectable.detectables.lerna.LernaPackageType;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmLockfileOptions;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
@@ -137,7 +139,7 @@ public class LernaDetectableTest extends DetectableFunctionalTest {
     public Detectable create(@NotNull DetectableEnvironment environment) {
         NpmLockfileOptions npmLockFileOptions = new NpmLockfileOptions(true, true);
         YarnLockOptions yarnLockOptions = new YarnLockOptions(false, new ArrayList<>(0), new ArrayList<>(0));
-        LernaOptions lernaOptions = new LernaOptions(false, new LinkedList<>(), new LinkedList<>());
+        LernaOptions lernaOptions = new LernaOptions(EnumListFilter.fromExcluded(LernaPackageType.PRIVATE), new LinkedList<>(), new LinkedList<>());
         return detectableFactory.createLernaDetectable(environment, () -> ExecutableTarget.forCommand("lerna"), npmLockFileOptions, yarnLockOptions, lernaOptions);
     }
 

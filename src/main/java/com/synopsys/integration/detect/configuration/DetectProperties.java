@@ -54,7 +54,7 @@ import com.synopsys.integration.detectable.detectables.conan.cli.config.ConanDep
 import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDependencyType;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModDependencyType;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleConfigurationType;
-import com.synopsys.integration.detectable.detectables.lerna.LernaDependencyType;
+import com.synopsys.integration.detectable.detectables.lerna.LernaPackageType;
 import com.synopsys.integration.detectable.detectables.npm.NpmDependencyType;
 import com.synopsys.integration.detectable.detectables.packagist.PackagistDependencyType;
 import com.synopsys.integration.detectable.detectables.pear.PearDependencyType;
@@ -743,11 +743,11 @@ public class DetectProperties {
             .setHelp("Path of the lerna executable.")
             .setGroups(DetectGroup.LERNA, DetectGroup.PATHS, DetectGroup.GLOBAL);
 
-    public static final DetectProperty<NoneEnumListProperty<LernaDependencyType>> DETECT_LERNA_PACKAGE_TYPES_EXCLUDED =
-        new DetectProperty<>(new NoneEnumListProperty<>("detect.lerna.package.types.excluded", NoneEnum.NONE, LernaDependencyType.class))
+    public static final DetectProperty<NoneEnumListProperty<LernaPackageType>> DETECT_LERNA_PACKAGE_TYPES_EXCLUDED =
+        new DetectProperty<>(new NoneEnumListProperty<>("detect.lerna.package.types.excluded", NoneEnum.NONE, LernaPackageType.class))
             .setInfo("Lerna Package Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
             .setHelp("Set this value to indicate which Lerna package types Detect should exclude from the BOM. By default, all package types will be reported.")
-            .setExample(LernaDependencyType.PRIVATE.name())
+            .setExample(LernaPackageType.PRIVATE.name())
             .setGroups(DetectGroup.LERNA, DetectGroup.GLOBAL);
 
     public static final DetectProperty<NullableStringProperty> DETECT_MAVEN_BUILD_COMMAND =

@@ -38,8 +38,8 @@ import com.synopsys.integration.detectable.detectables.go.gomod.GoModDependencyT
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleConfigurationType;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorOptions;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptOptions;
-import com.synopsys.integration.detectable.detectables.lerna.LernaDependencyType;
 import com.synopsys.integration.detectable.detectables.lerna.LernaOptions;
+import com.synopsys.integration.detectable.detectables.lerna.LernaPackageType;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenCliExtractorOptions;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseOptions;
 import com.synopsys.integration.detectable.detectables.npm.NpmDependencyType;
@@ -201,16 +201,22 @@ public class DetectableOptionFactory {
     }
 
     public LernaOptions createLernaOptions() {
-        boolean includePrivate = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_LERNA_INCLUDE_PRIVATE));
+        EnumListFilter<LernaPackageType> lernaPackageTypeFilter;
         if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_LERNA_PACKAGE_TYPES_EXCLUDED.getProperty())) {
-            List<LernaDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_LERNA_PACKAGE_TYPES_EXCLUDED.getProperty()).representedValues();
-            ExcludedDependencyTypeFilter<LernaDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>(excludedDependencyTypes);
-            includePrivate = dependencyTypeFilter.shouldReportDependencyType(LernaDependencyType.PRIVATE);
+            List<LernaPackageType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_LERNA_PACKAGE_TYPES_EXCLUDED.getProperty()).representedValues();
+            lernaPackageTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
+        } else {
+            boolean includePrivate = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_LERNA_INCLUDE_PRIVATE));
+            if (includePrivate) {
+                lernaPackageTypeFilter = EnumListFilter.excludeNone();
+            } else {
+                lernaPackageTypeFilter = EnumListFilter.fromExcluded(LernaPackageType.PRIVATE);
+            }
         }
 
         List<String> excludedPackages = getValue(DetectProperties.DETECT_LERNA_EXCLUDED_PACKAGES);
         List<String> includedPackages = getValue(DetectProperties.DETECT_LERNA_INCLUDED_PACKAGES);
-        return new LernaOptions(includePrivate, excludedPackages, includedPackages);
+        return new LernaOptions(lernaPackageTypeFilter, excludedPackages, includedPackages);
     }
 
     public MavenCliExtractorOptions createMavenCliOptions() {

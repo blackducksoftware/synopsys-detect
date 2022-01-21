@@ -20,7 +20,6 @@ import com.synopsys.integration.detectable.detectables.lerna.lockfile.LernaLockF
 import com.synopsys.integration.detectable.detectables.lerna.model.LernaPackage;
 import com.synopsys.integration.detectable.detectables.lerna.model.LernaResult;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmLockfileOptions;
-import com.synopsys.integration.detectable.detectables.npm.lockfile.parse.NpmLockfileGraphTransformer;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.parse.NpmLockfilePackager;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.result.NpmPackagerResult;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
@@ -89,7 +88,7 @@ public class LernaPackager {
     private @Nullable LernaResult extractPackage(LernaPackage lernaPackage, List<NameVersion> externalPackages, LernaLockFileResult rootLockFile) {
         String lernaPackageDetails = String.format("%s:%s at %s", lernaPackage.getName(), lernaPackage.getVersion(), lernaPackage.getLocation());
 
-        if (!lernaOptions.shouldIncludePrivatePackages() && lernaPackage.isPrivate()) {
+        if (lernaPackage.isPrivate() && lernaOptions.getLernaPackageTypeFilter().shouldExclude(LernaPackageType.PRIVATE)) {
             logger.debug("Skipping extraction of private lerna package {}.", lernaPackageDetails);
             return null;
         }
