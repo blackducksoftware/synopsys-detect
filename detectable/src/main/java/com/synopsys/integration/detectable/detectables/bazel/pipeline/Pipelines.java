@@ -28,7 +28,7 @@ public class Pipelines {
             .replaceInEachLine("^", "//external:")
             .executeBazelOnEachLine(Arrays.asList("query", "kind(maven_jar, ${input.item})", OUTPUT_FLAG, "xml"), true)
             .parseValueFromEachXmlLine("/query/rule[@class='maven_jar']/string[@name='artifact']", "value")
-            .generateMavenDependenciesFromLines()
+            .transformLinesToMavenDependencies()
             .build();
         availablePipelines.put(WorkspaceRule.MAVEN_JAR, mavenJarPipeline);
 
@@ -38,13 +38,13 @@ public class Pipelines {
             .filterLines(".*maven_coordinates=.*")
             .replaceInEachLine(".*\"maven_coordinates=", "")
             .replaceInEachLine("\".*", "")
-            .generateMavenDependenciesFromLines()
+            .transformLinesToMavenDependencies()
             .build();
         availablePipelines.put(WorkspaceRule.MAVEN_INSTALL, mavenInstallPipeline);
 
         Pipeline haskellCabalLibraryPipeline = (new PipelineBuilder(externalIdFactory, bazelCommandExecutor, bazelVariableSubstitutor, haskellCabalLibraryJsonProtoParser))
             .executeBazelOnEachLine(Arrays.asList(CQUERY_COMMAND, "--noimplicit_deps", CQUERY_OPTIONS_PLACEHOLDER, "kind(haskell_cabal_library, deps(${detect.bazel.target}))", OUTPUT_FLAG, "jsonproto"), false)
-            .generateHackageDependenciesFromLines()
+            .transformLinesToHackageDependencies()
             .build();
         availablePipelines.put(WorkspaceRule.HASKELL_CABAL_LIBRARY, haskellCabalLibraryPipeline);
     }

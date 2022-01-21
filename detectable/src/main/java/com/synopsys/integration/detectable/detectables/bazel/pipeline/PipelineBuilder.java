@@ -72,11 +72,11 @@ public class PipelineBuilder {
     }
 
     // These can only be the final step in the pipeline
-    public PipelineBuilder generateMavenDependenciesFromLines() {
+    public PipelineBuilder transformLinesToMavenDependencies() {
         return setFinalStep(new FinalStepColonSeparatedGavs(externalIdFactory));
     }
 
-    public PipelineBuilder generateHackageDependenciesFromLines() {
+    public PipelineBuilder transformLinesToHackageDependencies() {
         return setFinalStep(new FinalStepJsonProtoHaskellCabalLibraries(haskellCabalLibraryJsonProtoParser, externalIdFactory));
     }
 }
