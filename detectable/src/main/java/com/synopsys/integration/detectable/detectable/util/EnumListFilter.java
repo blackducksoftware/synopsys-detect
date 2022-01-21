@@ -69,6 +69,16 @@ public class EnumListFilter<T extends Enum<T>> {
         }
     }
 
+    // Null values are not include (excluded)
+    public <D> boolean shouldInclude(T enumValue, @Nullable D nullableObject) {
+        return nullableObject != null && shouldInclude(enumValue);
+    }
+
+    // Null values are excluded
+    public <D> boolean shouldExclude(T enumValue, @Nullable D nullableObject) {
+        return nullableObject == null || shouldExclude(enumValue);
+    }
+
     public boolean shouldInclude(T enumValue) {
         return !shouldExclude(enumValue);
     }

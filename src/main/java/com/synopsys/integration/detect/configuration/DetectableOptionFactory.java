@@ -266,9 +266,9 @@ public class DetectableOptionFactory {
     }
 
     public NpmCliExtractorOptions createNpmCliExtractorOptions() {
-        NpmDependencyTypeOptions npmDependencyTypeOptions = createNpmDependencyTypeOptions();
+        EnumListFilter<NpmDependencyType> npmDependencyTypeFilter = createNpmDependencyTypeFilter();
         String npmArguments = getNullableValue(DetectProperties.DETECT_NPM_ARGUMENTS);
-        return new NpmCliExtractorOptions(npmDependencyTypeOptions.includeDevDependencies, npmDependencyTypeOptions.includePeerDependencies, npmArguments);
+        return new NpmCliExtractorOptions(npmDependencyTypeFilter, npmArguments);
     }
 
     public NpmLockfileOptions createNpmLockfileOptions() {
@@ -297,28 +297,6 @@ public class DetectableOptionFactory {
             }
         }
         return EnumListFilter.fromExcluded(excludedDependencyTypes);
-    }
-
-    private NpmDependencyTypeOptions createNpmDependencyTypeOptions() {
-        boolean includeDevDependencies = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES));
-        boolean includePeerDependencies = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_NPM_INCLUDE_PEER_DEPENDENCIES));
-        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
-            List<NpmDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValues();
-            ExcludedDependencyTypeFilter<NpmDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>(excludedDependencyTypes);
-            includeDevDependencies = dependencyTypeFilter.shouldReportDependencyType(NpmDependencyType.DEV);
-            includePeerDependencies = dependencyTypeFilter.shouldReportDependencyType(NpmDependencyType.PEER);
-        }
-        return new NpmDependencyTypeOptions(includeDevDependencies, includePeerDependencies);
-    }
-
-    private static class NpmDependencyTypeOptions {
-        public final boolean includeDevDependencies;
-        public final boolean includePeerDependencies;
-
-        private NpmDependencyTypeOptions(boolean includeDevDependencies, boolean includePeerDependencies) {
-            this.includeDevDependencies = includeDevDependencies;
-            this.includePeerDependencies = includePeerDependencies;
-        }
     }
 
     public PearCliDetectableOptions createPearCliDetectableOptions() {

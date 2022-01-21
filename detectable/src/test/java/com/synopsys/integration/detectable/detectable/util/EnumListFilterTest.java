@@ -24,17 +24,35 @@ class EnumListFilterTest {
     }
 
     @Test
-    void ifShouldInclude() {
+    void shouldInclude() {
         EnumListFilter<TestValue> filter = EnumListFilter.fromExcluded(TestValue.A);
         assertFalse(filter.shouldInclude(TestValue.A));
         assertTrue(filter.shouldInclude(TestValue.B));
     }
 
     @Test
-    void ifShouldExclude() {
+    void shouldExclude() {
         EnumListFilter<TestValue> filter = EnumListFilter.fromExcluded(TestValue.A);
         assertTrue(filter.shouldExclude(TestValue.A));
         assertFalse(filter.shouldExclude(TestValue.B));
+    }
+
+    @Test
+    void shouldIncludeNullable() {
+        EnumListFilter<TestValue> filter = EnumListFilter.fromExcluded(TestValue.A);
+        assertFalse(filter.shouldInclude(TestValue.A, "some-value"), "Object is not null, but value is excluded. Should be excluded.");
+        assertFalse(filter.shouldInclude(TestValue.A, null), "Object is null and value is excluded. Should be excluded.");
+        assertTrue(filter.shouldInclude(TestValue.B, "some-value"), "Object is not null and value not excluded. Should be included.");
+        assertFalse(filter.shouldInclude(TestValue.B, null), "Object is null even though value is included. Should be excluded.");
+    }
+
+    @Test
+    void shouldExcludeNullable() {
+        EnumListFilter<TestValue> filter = EnumListFilter.fromExcluded(TestValue.A);
+        assertTrue(filter.shouldExclude(TestValue.A, "some-value"), "Object is not null, but value should be excluded. Should be excluded.");
+        assertTrue(filter.shouldExclude(TestValue.A, null), "Object is null, but value should be excluded. Should be excluded.");
+        assertFalse(filter.shouldExclude(TestValue.B, "some-value"), "Object is not null and value is not excluded. Should be included.");
+        assertTrue(filter.shouldExclude(TestValue.B, null), "Object is null even though value is not excluded. Should be excluded.");
     }
 
     @Test

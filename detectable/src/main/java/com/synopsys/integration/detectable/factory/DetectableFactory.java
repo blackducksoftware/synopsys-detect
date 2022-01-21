@@ -407,7 +407,9 @@ public class DetectableFactory {
     }
 
     public NpmCliDetectable createNpmCliDetectable(DetectableEnvironment environment, NpmResolver npmResolver, NpmCliExtractorOptions npmCliExtractorOptions) {
-        return new NpmCliDetectable(environment, fileFinder, npmResolver, npmCliExtractor(), npmCliExtractorOptions);
+        NpmCliParser npmCliParser = new NpmCliParser(externalIdFactory, npmCliExtractorOptions.getDependencyTypeFilter());
+        NpmCliExtractor npmCliExtractor = new NpmCliExtractor(executableRunner, npmCliParser, gson, toolVersionLogger);
+        return new NpmCliDetectable(environment, fileFinder, npmResolver, npmCliExtractor, npmCliExtractorOptions);
     }
 
     public NpmPackageLockDetectable createNpmPackageLockDetectable(DetectableEnvironment environment, NpmLockfileOptions npmLockfileOptions) {
@@ -721,10 +723,6 @@ public class DetectableFactory {
         return new ConanCliExtractor(conanCommandRunner, conanInfoParser, toolVersionLogger);
     }
 
-    private NpmCliParser npmCliDependencyFinder() {
-        return new NpmCliParser(externalIdFactory);
-    }
-
     private NpmLockfilePackager npmLockfilePackager(NpmLockfileOptions npmLockfileOptions) {
         NpmLockfileGraphTransformer npmLockfileGraphTransformer = new NpmLockfileGraphTransformer(externalIdFactory, npmLockfileOptions.getNpmDependencyTypeFilter());
         return new NpmLockfilePackager(gson, externalIdFactory, npmLockFileProjectIdTransformer(), npmLockfileGraphTransformer);
@@ -732,10 +730,6 @@ public class DetectableFactory {
 
     private NpmLockFileProjectIdTransformer npmLockFileProjectIdTransformer() {
         return new NpmLockFileProjectIdTransformer(gson, externalIdFactory);
-    }
-
-    private NpmCliExtractor npmCliExtractor() {
-        return new NpmCliExtractor(executableRunner, npmCliDependencyFinder(), gson, toolVersionLogger);
     }
 
     private NpmLockfileExtractor npmLockfileExtractor(NpmLockfileOptions npmLockfileOptions) {
