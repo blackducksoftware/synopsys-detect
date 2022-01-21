@@ -265,8 +265,8 @@ public class DetectableOptionFactory {
     }
 
     public NpmLockfileOptions createNpmLockfileOptions() {
-        NpmDependencyTypeOptions npmDependencyTypeOptions = createNpmDependencyTypeOptions();
-        return new NpmLockfileOptions(npmDependencyTypeOptions.includeDevDependencies, npmDependencyTypeOptions.includePeerDependencies);
+        EnumListFilter<NpmDependencyType> npmDependencyTypeFilter = createNpmDependencyTypeFilter();
+        return new NpmLockfileOptions(npmDependencyTypeFilter);
     }
 
     public NpmPackageJsonParseDetectableOptions createNpmPackageJsonParseDetectableOptions() {

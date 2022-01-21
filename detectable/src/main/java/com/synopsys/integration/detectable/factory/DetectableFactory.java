@@ -409,7 +409,7 @@ public class DetectableFactory {
     }
 
     public NpmPackageLockDetectable createNpmPackageLockDetectable(DetectableEnvironment environment, NpmLockfileOptions npmLockfileOptions) {
-        return new NpmPackageLockDetectable(environment, fileFinder, npmLockfileExtractor(), npmLockfileOptions);
+        return new NpmPackageLockDetectable(environment, fileFinder, npmLockfileExtractor(npmLockfileOptions));
     }
 
     public NugetProjectDetectable createNugetProjectDetectable(DetectableEnvironment environment, NugetInspectorOptions nugetInspectorOptions, NugetInspectorResolver nugetInspectorResolver) {
@@ -417,7 +417,7 @@ public class DetectableFactory {
     }
 
     public NpmShrinkwrapDetectable createNpmShrinkwrapDetectable(DetectableEnvironment environment, NpmLockfileOptions npmLockfileOptions) {
-        return new NpmShrinkwrapDetectable(environment, fileFinder, npmLockfileExtractor(), npmLockfileOptions);
+        return new NpmShrinkwrapDetectable(environment, fileFinder, npmLockfileExtractor(npmLockfileOptions));
     }
 
     public NpmPackageJsonParseDetectable createNpmPackageJsonParseDetectable(DetectableEnvironment environment, NpmPackageJsonParseDetectableOptions npmPackageJsonOptions) {
@@ -481,7 +481,10 @@ public class DetectableFactory {
     }
 
     public LernaDetectable createLernaDetectable(DetectableEnvironment environment, LernaResolver lernaResolver, NpmLockfileOptions npmLockfileOptions, YarnLockOptions yarnLockOptions, LernaOptions lernaOptions) {
-        return new LernaDetectable(environment, fileFinder, lernaResolver, lernaExtractor(npmLockfileOptions, yarnLockOptions, lernaOptions));
+        LernaPackageDiscoverer lernaPackageDiscoverer = new LernaPackageDiscoverer(executableRunner, gson, lernaOptions.getExcludedPackages(), lernaOptions.getIncludedPackages());
+        LernaPackager lernaPackager = new LernaPackager(fileFinder, packageJsonReader(), yarnLockParser(), yarnLockOptions, npmLockfilePackager(npmLockfileOptions), yarnPackager(), lernaOptions.getLernaPackageTypeFilter());
+        LernaExtractor lernaExtractor = new LernaExtractor(lernaPackageDiscoverer, lernaPackager);
+        return new LernaDetectable(environment, fileFinder, lernaResolver, lernaExtractor);
     }
 
     public XcodeSwiftDetectable createXcodeSwiftDetectable(DetectableEnvironment environment) {
@@ -715,12 +718,9 @@ public class DetectableFactory {
         return new NpmCliParser(externalIdFactory);
     }
 
-    private NpmLockfilePackager npmLockfilePackager() {
-        return new NpmLockfilePackager(gson, externalIdFactory, npmLockFileProjectIdTransformer(), npmLockfileGraphTransformer());
-    }
-
-    private NpmLockfileGraphTransformer npmLockfileGraphTransformer() {
-        return new NpmLockfileGraphTransformer(gson, externalIdFactory);
+    private NpmLockfilePackager npmLockfilePackager(NpmLockfileOptions npmLockfileOptions) {
+        NpmLockfileGraphTransformer npmLockfileGraphTransformer = new NpmLockfileGraphTransformer(externalIdFactory, npmLockfileOptions.getNpmDependencyTypeFilter());
+        return new NpmLockfilePackager(gson, externalIdFactory, npmLockFileProjectIdTransformer(), npmLockfileGraphTransformer);
     }
 
     private NpmLockFileProjectIdTransformer npmLockFileProjectIdTransformer() {
@@ -731,8 +731,8 @@ public class DetectableFactory {
         return new NpmCliExtractor(executableRunner, npmCliDependencyFinder(), gson, toolVersionLogger);
     }
 
-    private NpmLockfileExtractor npmLockfileExtractor() {
-        return new NpmLockfileExtractor(npmLockfilePackager());
+    private NpmLockfileExtractor npmLockfileExtractor(NpmLockfileOptions npmLockfileOptions) {
+        return new NpmLockfileExtractor(npmLockfilePackager(npmLockfileOptions));
     }
 
     private NugetInspectorParser nugetInspectorParser() {
@@ -991,18 +991,6 @@ public class DetectableFactory {
 
     private SwiftExtractor swiftExtractor() {
         return new SwiftExtractor(executableRunner, swiftCliParser(), swiftPackageTransformer(), toolVersionLogger);
-    }
-
-    private LernaPackageDiscoverer lernaPackageDiscoverer() {
-        return new LernaPackageDiscoverer(executableRunner, gson);
-    }
-
-    private LernaPackager lernaPackager(NpmLockfileOptions npmLockfileOptions, YarnLockOptions yarnLockOptions, LernaOptions lernaOptions) {
-        return new LernaPackager(fileFinder, packageJsonReader(), yarnLockParser(), yarnLockOptions, npmLockfilePackager(), npmLockfileOptions, yarnPackager(), lernaOptions);
-    }
-
-    private LernaExtractor lernaExtractor(NpmLockfileOptions npmLockfileOptions, YarnLockOptions yarnLockOptions, LernaOptions lernaOptions) {
-        return new LernaExtractor(lernaPackageDiscoverer(), lernaPackager(npmLockfileOptions, yarnLockOptions, lernaOptions), lernaOptions);
     }
 
     //#endregion Utility
