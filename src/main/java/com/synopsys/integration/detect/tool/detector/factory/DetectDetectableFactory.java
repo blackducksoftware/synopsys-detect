@@ -263,8 +263,8 @@ public class DetectDetectableFactory {
         return detectableFactory.createLernaDetectable(environment,
             detectExecutableResolver,
             detectableOptionFactory.createNpmLockfileOptions(),
-            detectableOptionFactory.createYarnLockOptions(),
-            detectableOptionFactory.createLernaOptions()
+            detectableOptionFactory.createLernaOptions(),
+            detectableOptionFactory.createYarnLockOptions()
         );
     }
 

@@ -138,9 +138,9 @@ public class LernaDetectableTest extends DetectableFunctionalTest {
     @Override
     public Detectable create(@NotNull DetectableEnvironment environment) {
         NpmLockfileOptions npmLockFileOptions = new NpmLockfileOptions(EnumListFilter.excludeNone());
-        YarnLockOptions yarnLockOptions = new YarnLockOptions(false, new ArrayList<>(0), new ArrayList<>(0));
+        YarnLockOptions yarnLockOptions = new YarnLockOptions(EnumListFilter.excludeNone(), new ArrayList<>(0), new ArrayList<>(0));
         LernaOptions lernaOptions = new LernaOptions(EnumListFilter.fromExcluded(LernaPackageType.PRIVATE), new LinkedList<>(), new LinkedList<>());
-        return detectableFactory.createLernaDetectable(environment, () -> ExecutableTarget.forCommand("lerna"), npmLockFileOptions, yarnLockOptions, lernaOptions);
+        return detectableFactory.createLernaDetectable(environment, () -> ExecutableTarget.forCommand("lerna"), npmLockFileOptions, lernaOptions, yarnLockOptions);
     }
 
     @Override

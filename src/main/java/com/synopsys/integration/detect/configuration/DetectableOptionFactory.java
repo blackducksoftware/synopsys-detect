@@ -371,15 +371,21 @@ public class DetectableOptionFactory {
     }
 
     public YarnLockOptions createYarnLockOptions() {
-        boolean useProductionOnly = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_YARN_PROD_ONLY));
+        EnumListFilter<YarnDependencyType> yarnDependencyTypeFilter;
         if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_YARN_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
-            List<YarnDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_YARN_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValues();
-            ExcludedDependencyTypeFilter<YarnDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>(excludedDependencyTypes);
-            useProductionOnly = dependencyTypeFilter.shouldExcludeDependencyType(YarnDependencyType.NON_PRODUCTION);
+            Set<YarnDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_YARN_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValueSet();
+            yarnDependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
+        } else {
+            boolean useProductionOnly = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_YARN_PROD_ONLY));
+            if (useProductionOnly) {
+                yarnDependencyTypeFilter = EnumListFilter.fromExcluded(YarnDependencyType.NON_PRODUCTION);
+            } else {
+                yarnDependencyTypeFilter = EnumListFilter.excludeNone();
+            }
         }
         List<String> excludedWorkspaces = getValue(DetectProperties.DETECT_YARN_EXCLUDED_WORKSPACES);
         List<String> includedWorkspaces = getValue(DetectProperties.DETECT_YARN_INCLUDED_WORKSPACES);
-        return new YarnLockOptions(useProductionOnly, excludedWorkspaces, includedWorkspaces);
+        return new YarnLockOptions(yarnDependencyTypeFilter, excludedWorkspaces, includedWorkspaces);
     }
 
     public NugetInspectorOptions createNugetInspectorOptions() {

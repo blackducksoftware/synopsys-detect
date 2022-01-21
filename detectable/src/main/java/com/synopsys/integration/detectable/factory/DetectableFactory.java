@@ -480,9 +480,9 @@ public class DetectableFactory {
         return new YarnLockDetectable(environment, fileFinder, yarnLockExtractor(yarnLockOptions));
     }
 
-    public LernaDetectable createLernaDetectable(DetectableEnvironment environment, LernaResolver lernaResolver, NpmLockfileOptions npmLockfileOptions, YarnLockOptions yarnLockOptions, LernaOptions lernaOptions) {
+    public LernaDetectable createLernaDetectable(DetectableEnvironment environment, LernaResolver lernaResolver, NpmLockfileOptions npmLockfileOptions, LernaOptions lernaOptions, YarnLockOptions yarnLockOptions) {
         LernaPackageDiscoverer lernaPackageDiscoverer = new LernaPackageDiscoverer(executableRunner, gson, lernaOptions.getExcludedPackages(), lernaOptions.getIncludedPackages());
-        LernaPackager lernaPackager = new LernaPackager(fileFinder, packageJsonReader(), yarnLockParser(), yarnLockOptions, npmLockfilePackager(npmLockfileOptions), yarnPackager(), lernaOptions.getLernaPackageTypeFilter());
+        LernaPackager lernaPackager = new LernaPackager(fileFinder, packageJsonReader(), yarnLockParser(), npmLockfilePackager(npmLockfileOptions), yarnPackager(yarnLockOptions), lernaOptions.getLernaPackageTypeFilter());
         LernaExtractor lernaExtractor = new LernaExtractor(lernaPackageDiscoverer, lernaPackager);
         return new LernaDetectable(environment, fileFinder, lernaResolver, lernaExtractor);
     }
@@ -883,12 +883,9 @@ public class DetectableFactory {
         return new YarnLockParser(yarnLockEntryParser);
     }
 
-    private YarnTransformer yarnTransformer() {
-        return new YarnTransformer(externalIdFactory);
-    }
-
-    private YarnPackager yarnPackager() {
-        return new YarnPackager(yarnTransformer());
+    private YarnPackager yarnPackager(YarnLockOptions yarnLockOptions) {
+        YarnTransformer yarnTransformer = new YarnTransformer(externalIdFactory, yarnLockOptions.getYarnDependencyTypeFilter());
+        return new YarnPackager(yarnTransformer);
     }
 
     private PackageJsonFiles packageJsonFiles() {
@@ -900,7 +897,7 @@ public class DetectableFactory {
     }
 
     private YarnLockExtractor yarnLockExtractor(YarnLockOptions yarnLockOptions) {
-        return new YarnLockExtractor(yarnLockParser(), yarnPackager(), packageJsonFiles(), yarnLockOptions);
+        return new YarnLockExtractor(yarnLockParser(), yarnPackager(yarnLockOptions), packageJsonFiles(), yarnLockOptions);
     }
 
     private BitbakeRecipesParser bitbakeRecipesParser() {
