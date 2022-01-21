@@ -14,9 +14,7 @@ import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.dependency.DependencyFactory;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectables.cargo.model.CargoLock;
 import com.synopsys.integration.detectable.detectables.cargo.model.Package;
 
@@ -53,7 +51,7 @@ public class CargoLockTransformer {
         return graph;
     }
 
-    private Set<String> determineRootPackages(List<Package> lockPackages) {
+    private Set<String> determineRootPackages(List<Package> lockPackages) { //TODO: root packages should be identified by name AND version (ex. comp:1.0.0 is a root dep but comp:1.1.0 is a transitive of otherComp:1.0.0)
         Set<String> rootPackages = new HashSet<>();
         Set<String> dependencyPackages = new HashSet<>();
 
@@ -74,7 +72,7 @@ public class CargoLockTransformer {
     }
 
     //TODO: This could be done in a Parser, could do the project name validation.
-    private List<String> extractDependencyNames(List<String> rawDependencies) {
+    private List<String> extractDependencyNames(List<String> rawDependencies) { //TODO: should extract name and version of dependency (in case two components dependent on different versions of same component)
         return rawDependencies.stream()
             .map(dependency -> dependency.split(" ")[0])
             .collect(Collectors.toList());
