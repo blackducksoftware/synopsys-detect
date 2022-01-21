@@ -2,6 +2,8 @@ package com.synopsys.integration.detectable.detectables.bazel;
 
 import java.io.File;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
@@ -24,25 +26,23 @@ public class BazelDetectable extends Detectable {
     private final BazelExtractor bazelExtractor;
     private final BazelResolver bazelResolver;
     private final BazelProjectNameGenerator projectNameGenerator;
-    private final BazelDetectableOptions bazelDetectableOptions;
+    private final String bazelTargetName;
     private ExecutableTarget bazelExe;
     private File workspaceFile;
-    private String targetName;
 
     public BazelDetectable(DetectableEnvironment environment, FileFinder fileFinder, BazelExtractor bazelExtractor,
-        BazelResolver bazelResolver, BazelProjectNameGenerator projectNameGenerator, BazelDetectableOptions bazelDetectableOptions) {
+        BazelResolver bazelResolver, BazelProjectNameGenerator projectNameGenerator, @Nullable String bazelTargetName) {
         super(environment);
         this.fileFinder = fileFinder;
         this.bazelExtractor = bazelExtractor;
         this.bazelResolver = bazelResolver;
         this.projectNameGenerator = projectNameGenerator;
-        this.bazelDetectableOptions = bazelDetectableOptions;
+        this.bazelTargetName = bazelTargetName;
     }
 
     @Override
     public DetectableResult applicable() {
-        if (bazelDetectableOptions.getTargetName().isPresent()) {
-            targetName = bazelDetectableOptions.getTargetName().get();
+        if (bazelTargetName != null) {
             return new PassedDetectableResult(new PropertyProvided("Bazel Target"));
         } else {
             return new PropertyInsufficientDetectableResult();
@@ -60,7 +60,6 @@ public class BazelDetectable extends Detectable {
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         return bazelExtractor
-            .extract(bazelExe, environment.getDirectory(), workspaceFile, targetName, projectNameGenerator, bazelDetectableOptions.getBazelDependencyRules(),
-                bazelDetectableOptions.getBazelCqueryAdditionalOptions());
+            .extract(bazelExe, environment.getDirectory(), workspaceFile, projectNameGenerator);
     }
 }

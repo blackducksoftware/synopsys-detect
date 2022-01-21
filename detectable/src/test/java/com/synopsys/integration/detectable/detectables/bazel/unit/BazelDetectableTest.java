@@ -26,7 +26,7 @@ public class BazelDetectableTest {
         BazelExtractor bazelExtractor = null;
         BazelResolver bazelResolver = null;
         BazelDetectableOptions bazelDetectableOptions = new BazelDetectableOptions("target", null, null);
-        BazelDetectable detectable = new BazelDetectable(environment, fileFinder, bazelExtractor, bazelResolver, new BazelProjectNameGenerator(), bazelDetectableOptions);
+        BazelDetectable detectable = new BazelDetectable(environment, fileFinder, bazelExtractor, bazelResolver, new BazelProjectNameGenerator(), bazelDetectableOptions.getTargetName().orElse(null));
 
         assertTrue(detectable.applicable().getPassed());
     }

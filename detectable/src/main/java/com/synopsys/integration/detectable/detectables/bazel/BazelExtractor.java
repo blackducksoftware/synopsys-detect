@@ -41,24 +41,32 @@ public class BazelExtractor {
     private final WorkspaceRuleChooser workspaceRuleChooser;
     private final ToolVersionLogger toolVersionLogger;
     private final HaskellCabalLibraryJsonProtoParser haskellCabalLibraryJsonProtoParser;
+    private final String bazelTarget;
+    private final Set<WorkspaceRule> providedDependencyRuleTypes;
+    private final List<String> providedCqueryAdditionalOptions;
 
     public BazelExtractor(DetectableExecutableRunner executableRunner,
         ExternalIdFactory externalIdFactory,
         BazelWorkspaceFileParser bazelWorkspaceFileParser,
         WorkspaceRuleChooser workspaceRuleChooser,
         ToolVersionLogger toolVersionLogger,
-        HaskellCabalLibraryJsonProtoParser haskellCabalLibraryJsonProtoParser) {
+        HaskellCabalLibraryJsonProtoParser haskellCabalLibraryJsonProtoParser,
+        String bazelTarget,
+        Set<WorkspaceRule> providedDependencyRuleTypes,
+        List<String> providedCqueryAdditionalOptions) {
         this.executableRunner = executableRunner;
         this.externalIdFactory = externalIdFactory;
         this.workspaceRuleChooser = workspaceRuleChooser;
         this.bazelWorkspaceFileParser = bazelWorkspaceFileParser;
         this.toolVersionLogger = toolVersionLogger;
         this.haskellCabalLibraryJsonProtoParser = haskellCabalLibraryJsonProtoParser;
+        this.bazelTarget = bazelTarget;
+        this.providedDependencyRuleTypes = providedDependencyRuleTypes;
+        this.providedCqueryAdditionalOptions = providedCqueryAdditionalOptions;
     }
 
-    public Extraction extract(ExecutableTarget bazelExe, File workspaceDir, File workspaceFile, String bazelTarget,
-        BazelProjectNameGenerator bazelProjectNameGenerator, Set<WorkspaceRule> providedDependencyRuleTypes,
-        List<String> providedCqueryAdditionalOptions) {
+    public Extraction extract(ExecutableTarget bazelExe, File workspaceDir, File workspaceFile,
+        BazelProjectNameGenerator bazelProjectNameGenerator) {
         logger.debug("Bazel extraction:");
         try {
             toolVersionLogger.log(workspaceDir, bazelExe, "version");
