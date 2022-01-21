@@ -3,7 +3,6 @@ package com.synopsys.integration.detectable.detectables.bazel.pipeline;
 import java.util.Arrays;
 import java.util.EnumMap;
 
-import com.google.gson.Gson;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelCommandExecutor;

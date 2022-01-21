@@ -1,7 +1,6 @@
 package com.synopsys.integration.detectable.detectables.bazel.pipeline;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
@@ -51,7 +50,7 @@ public class PipelineBuilder {
         return new Pipeline(intermediateSteps, finalStep);
     }
 
-    //TODO: Add helper step methods.
+    // Step creation methods
     public PipelineBuilder replaceInEachLine(String from, String to) {
         return addIntermediateStep(new IntermediateStepReplaceInEach(from, to));
     }
