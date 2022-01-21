@@ -296,7 +296,18 @@ public class DetectableFactory {
     }
 
     public BitbakeDetectable createBitbakeDetectable(DetectableEnvironment environment, BitbakeDetectableOptions bitbakeDetectableOptions, BashResolver bashResolver) {
-        return new BitbakeDetectable(environment, fileFinder, bitbakeDetectableOptions, bitbakeExtractor(), bashResolver);
+        BitbakeExtractor bitbakeExtractor = new BitbakeExtractor(
+            executableRunner,
+            new GraphParserTransformer(),
+            new BitbakeGraphTransformer(externalIdFactory, bitbakeDetectableOptions.getDependencyTypeFilter()),
+            new BitbakeRecipesParser(),
+            new BitbakeRecipesToLayerMapConverter(),
+            toolVersionLogger,
+            new BuildFileFinder(fileFinder),
+            new LicenseManifestParser(),
+            new BitbakeEnvironmentParser()
+        );
+        return new BitbakeDetectable(environment, fileFinder, bitbakeDetectableOptions, bitbakeExtractor, bashResolver);
     }
 
     public CargoDetectable createCargoDetectable(DetectableEnvironment environment) {
@@ -871,27 +882,6 @@ public class DetectableFactory {
 
     private YarnLockExtractor yarnLockExtractor(YarnLockOptions yarnLockOptions) {
         return new YarnLockExtractor(yarnLockParser(), yarnPackager(yarnLockOptions), packageJsonFiles(), yarnLockOptions);
-    }
-
-    private BitbakeRecipesParser bitbakeRecipesParser() {
-        return new BitbakeRecipesParser();
-    }
-
-    private BitbakeRecipesToLayerMapConverter bitbakeRecipesToLayerMap() {
-        return new BitbakeRecipesToLayerMapConverter();
-    }
-
-    private BitbakeExtractor bitbakeExtractor() {
-        return new BitbakeExtractor(executableRunner, graphParserTransformer(), bitbakeGraphTransformer(), bitbakeRecipesParser(), bitbakeRecipesToLayerMap(),
-            toolVersionLogger, new BuildFileFinder(fileFinder), new LicenseManifestParser(), new BitbakeEnvironmentParser());
-    }
-
-    private GraphParserTransformer graphParserTransformer() {
-        return new GraphParserTransformer();
-    }
-
-    private BitbakeGraphTransformer bitbakeGraphTransformer() {
-        return new BitbakeGraphTransformer(externalIdFactory);
     }
 
     private ClangPackageManagerInfoFactory clangPackageManagerInfoFactory() {
