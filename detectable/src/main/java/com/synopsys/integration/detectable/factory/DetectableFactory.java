@@ -473,7 +473,10 @@ public class DetectableFactory {
     }
 
     public PnpmLockDetectable createPnpmLockDetectable(DetectableEnvironment environment, PnpmLockOptions pnpmLockOptions) {
-        return new PnpmLockDetectable(environment, fileFinder, pnpmLockExtractor(pnpmLockOptions), packageJsonFiles());
+        PnpmYamlTransformer pnpmYamlTransformer = new PnpmYamlTransformer(externalIdFactory, pnpmLockOptions.getDependencyTypeFilter());
+        PnpmLockYamlParser pnpmLockYamlParser = new PnpmLockYamlParser(pnpmYamlTransformer);
+        PnpmLockExtractor pnpmLockExtractor = new PnpmLockExtractor(pnpmLockYamlParser, packageJsonFiles());
+        return new PnpmLockDetectable(environment, fileFinder, pnpmLockExtractor, packageJsonFiles());
     }
 
     public PodlockDetectable createPodLockDetectable(DetectableEnvironment environment) {
@@ -785,18 +788,6 @@ public class DetectableFactory {
 
     private PipInspectorExtractor pipInspectorExtractor() {
         return new PipInspectorExtractor(executableRunner, pipInspectorTreeParser(), toolVersionLogger);
-    }
-
-    private PnpmLockExtractor pnpmLockExtractor(PnpmLockOptions pnpmLockOptions) {
-        return new PnpmLockExtractor(pnpmLockYamlParser(pnpmLockOptions), packageJsonFiles());
-    }
-
-    private PnpmLockYamlParser pnpmLockYamlParser(PnpmLockOptions pnpmLockOptions) {
-        return new PnpmLockYamlParser(pnpmTransformer(pnpmLockOptions));
-    }
-
-    private PnpmYamlTransformer pnpmTransformer(PnpmLockOptions pnpmLockOptions) {
-        return new PnpmYamlTransformer(externalIdFactory, pnpmLockOptions.getDependencyTypeFilter());
     }
 
     private PoetryExtractor poetryExtractor() {

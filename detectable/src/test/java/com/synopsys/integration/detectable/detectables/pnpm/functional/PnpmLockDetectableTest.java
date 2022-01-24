@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.condition.OS.WINDOWS;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.Arrays;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
@@ -13,7 +12,7 @@ import org.junit.jupiter.api.condition.DisabledOnOs;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.detectable.util.DependencyTypeFilter;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockOptions;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
 import com.synopsys.integration.detectable.extraction.Extraction;
@@ -67,7 +66,7 @@ public class PnpmLockDetectableTest extends DetectableFunctionalTest {
 
     @Override
     public @NotNull Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
-        PnpmLockOptions pnpmLockOptions = new PnpmLockOptions(new DependencyTypeFilter<>(Arrays.asList(PnpmDependencyType.APP, PnpmDependencyType.DEV)));
+        PnpmLockOptions pnpmLockOptions = new PnpmLockOptions(EnumListFilter.fromExcluded(PnpmDependencyType.OPTIONAL));
         return detectableFactory.createPnpmLockDetectable(detectableEnvironment, pnpmLockOptions);
     }
 
