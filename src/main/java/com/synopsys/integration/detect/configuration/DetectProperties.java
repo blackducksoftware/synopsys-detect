@@ -59,6 +59,7 @@ import com.synopsys.integration.detectable.detectables.npm.NpmDependencyType;
 import com.synopsys.integration.detectable.detectables.packagist.PackagistDependencyType;
 import com.synopsys.integration.detectable.detectables.pear.PearDependencyType;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyTypeV2;
 import com.synopsys.integration.detectable.detectables.rubygems.GemspecDependencyType;
 import com.synopsys.integration.detectable.detectables.yarn.YarnDependencyType;
 import com.synopsys.integration.detector.base.DetectorType;
@@ -945,12 +946,10 @@ public class DetectProperties {
             .setHelp("The path to the Pipenv executable.")
             .setGroups(DetectGroup.PIP, DetectGroup.GLOBAL);
 
-    // TODO: In 8.0.0 this should be changed to a NoneEnumListProperty and PnpmDependencyType.APP should be removed as an option.
-    public static final DetectProperty<AllNoneEnumListProperty<PnpmDependencyType>> DETECT_PNPM_DEPENDENCY_TYPES =
-        new DetectProperty<>(new AllNoneEnumListProperty<>("detect.pnpm.dependency.types", AllNoneEnum.ALL, PnpmDependencyType.class))
-            .setInfo("pnpm Dependency Types", DetectPropertyFromVersion.VERSION_7_8_0)
-            .setHelp("Set this value to indicate which pnpm dependency types for should include in the BOM.",
-                "If you want Detect to report a specific type(s) of dependencies, pass a comma-separated list of such types (ex. APP, DEV, OPTIONAL).  By default, all types will be reported.")
+    public static final DetectProperty<NoneEnumListProperty<PnpmDependencyTypeV2>> DETECT_PNPM_DEPENDENCY_TYPES_EXCLUDED =
+        new DetectProperty<>(new NoneEnumListProperty<>("detect.pnpm.dependency.types.excluded", NoneEnum.NONE, PnpmDependencyTypeV2.class))
+            .setInfo("pnpm Dependency Types", DetectPropertyFromVersion.VERSION_7_11_0)
+            .setHelp("Set this value to indicate which Pnpm dependency types Detect should exclude from the BOM. By default, all dependency types will be reported.")
             .setGroups(DetectGroup.PNPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<NullablePathProperty> DETECT_SWIFT_PATH =
@@ -1449,7 +1448,7 @@ public class DetectProperties {
             .setInfo("Include Conan Build Dependencies", DetectPropertyFromVersion.VERSION_6_8_0)
             .setHelp("Set this value to false if you would like to exclude your project's build dependencies.")
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_CONAN_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
+            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_CONAN_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_PUD_DEPS_EXCLUDE_DEV =
@@ -1460,7 +1459,7 @@ public class DetectProperties {
             )
             .setGroups(DetectGroup.DART, DetectGroup.DETECTOR, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced)
-            .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
+            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_GO_ENABLE_VERIFICATION =
@@ -1468,7 +1467,7 @@ public class DetectProperties {
             .setInfo("Go Mod Dependency Verification", DetectPropertyFromVersion.VERSION_7_1_0)
             .setHelp("When enabled, Detect will use the results of 'go mod why' to filter out unused dependencies. Set to false if you have an empty BOM.")
             .setGroups(DetectGroup.GO, DetectGroup.GLOBAL)
-            .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
+            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_GRADLE_INCLUDE_UNRESOLVED_CONFIGURATIONS =
@@ -1478,7 +1477,7 @@ public class DetectProperties {
                 "Including dependencies from unresolved Gradle configurations could lead to false positives. Dependency versions from an unresolved configuration may differ from a resolved one. See https://docs.gradle.org/7.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs")
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
-            .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_GRADLE_CONFIGURATION_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
+            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_GRADLE_CONFIGURATION_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_LERNA_INCLUDE_PRIVATE =
@@ -1486,7 +1485,7 @@ public class DetectProperties {
             .setInfo("Include Lerna Packages defined as private.", DetectPropertyFromVersion.VERSION_6_0_0)
             .setHelp("Lerna allows for private packages that do not get published. Set this to true to include all packages including private packages.")
             .setGroups(DetectGroup.LERNA, DetectGroup.GLOBAL)
-            .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_LERNA_PACKAGE_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
+            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_LERNA_PACKAGE_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_NPM_INCLUDE_DEV_DEPENDENCIES =
@@ -1494,7 +1493,7 @@ public class DetectProperties {
             .setInfo("Include NPM Development Dependencies", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("Set this value to false if you would like to exclude your dev dependencies when ran.")
             .setGroups(DetectGroup.NPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
+            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_NPM_INCLUDE_PEER_DEPENDENCIES =
@@ -1502,7 +1501,7 @@ public class DetectProperties {
             .setInfo("Include NPM Peer Dependencies", DetectPropertyFromVersion.VERSION_7_1_0)
             .setHelp("Set this value to false if you would like to exclude your peer dependencies when ran.")
             .setGroups(DetectGroup.NPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
+            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES =
@@ -1510,7 +1509,7 @@ public class DetectProperties {
             .setInfo("Include Packagist Development Dependencies", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("Set this value to false if you would like to exclude your dev requires dependencies when ran.")
             .setGroups(DetectGroup.PACKAGIST, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_PACKAGIST_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
+            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_PACKAGIST_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_PEAR_ONLY_REQUIRED_DEPS =
@@ -1518,7 +1517,7 @@ public class DetectProperties {
             .setInfo("Include Only Required Pear Dependencies", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("Set to true if you would like to include only required packages.")
             .setGroups(DetectGroup.PEAR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_PEAR_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
+            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_PEAR_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_RUBY_INCLUDE_RUNTIME_DEPENDENCIES =
@@ -1526,7 +1525,7 @@ public class DetectProperties {
             .setInfo("Ruby Runtime Dependencies", DetectPropertyFromVersion.VERSION_5_4_0)
             .setHelp("If set to false, runtime dependencies will not be included when parsing *.gemspec files.")
             .setGroups(DetectGroup.RUBY, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
+            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_RUBY_INCLUDE_DEV_DEPENDENCIES =
@@ -1534,7 +1533,7 @@ public class DetectProperties {
             .setInfo("Ruby Development Dependencies", DetectPropertyFromVersion.VERSION_5_4_0)
             .setHelp("If set to true, development dependencies will be included when parsing *.gemspec files.")
             .setGroups(DetectGroup.RUBY, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
+            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_YARN_PROD_ONLY =
@@ -1542,10 +1541,19 @@ public class DetectProperties {
             .setInfo("Include Yarn Production Dependencies Only", DetectPropertyFromVersion.VERSION_4_0_0)
             .setHelp("Set this to true to only scan production dependencies.")
             .setGroups(DetectGroup.YARN, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorBooleanDeprecationMessage(DETECT_YARN_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
+            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_YARN_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<AllNoneEnumListProperty<PnpmDependencyType>> DETECT_PNPM_DEPENDENCY_TYPES =
+        new DetectProperty<>(new AllNoneEnumListProperty<>("detect.pnpm.dependency.types", AllNoneEnum.ALL, PnpmDependencyType.class))
+            .setInfo("pnpm Dependency Types", DetectPropertyFromVersion.VERSION_7_8_0)
+            .setHelp("Set this value to indicate which pnpm dependency types for should include in the BOM.",
+                "If you want Detect to report a specific type(s) of dependencies, pass a comma-separated list of such types (ex. APP, DEV, OPTIONAL).  By default, all types will be reported.")
+            .setGroups(DetectGroup.PNPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_PNPM_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT);
 
     // TODO: Remove in 8.0.0
-    private static String createDetectorBooleanDeprecationMessage(@NotNull DetectProperty<?> replacementProperty) {
+    private static String createDetectorPropertyDeprecationMessage(@NotNull DetectProperty<?> replacementProperty) {
         return String.format("This property is being removed in favor of %s. If the replacement property is set, this property is ignored.", replacementProperty.getProperty().getKey());
     }
 

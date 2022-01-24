@@ -18,9 +18,7 @@ import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetLocat
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
-import com.synopsys.integration.detectable.detectable.util.DependencyTypeFilter;
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
-import com.synopsys.integration.detectable.detectable.util.ExcludedDependencyTypeFilter;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDependencyType;
@@ -54,6 +52,7 @@ import com.synopsys.integration.detectable.detectables.pip.inspector.PipInspecto
 import com.synopsys.integration.detectable.detectables.pipenv.PipenvDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockOptions;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyTypeV2;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorOptions;
 import com.synopsys.integration.detectable.detectables.rubygems.GemspecDependencyType;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectableOptions;
@@ -331,8 +330,29 @@ public class DetectableOptionFactory {
     }
 
     public PnpmLockOptions createPnpmLockOptions() {
-        List<PnpmDependencyType> pnpmDependencyTypes = PropertyConfigUtils.getAllNoneList(detectConfiguration, DetectProperties.DETECT_PNPM_DEPENDENCY_TYPES.getProperty()).representedValues();
-        DependencyTypeFilter<PnpmDependencyType> dependencyTypeFilter = new DependencyTypeFilter<>(pnpmDependencyTypes);
+        Set<PnpmDependencyType> excludedDependencyTypes = new LinkedHashSet<>(); // Converting types so the existing property doesn't lose functionality.
+        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_PNPM_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
+            Set<PnpmDependencyTypeV2> pnpmDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_PNPM_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValueSet();
+            if (pnpmDependencyTypes.contains(PnpmDependencyTypeV2.DEV)) {
+                excludedDependencyTypes.add(PnpmDependencyType.DEV);
+            }
+            if (pnpmDependencyTypes.contains(PnpmDependencyTypeV2.OPTIONAL)) {
+                excludedDependencyTypes.add(PnpmDependencyType.OPTIONAL);
+            }
+        } else {
+            List<PnpmDependencyType> pnpmDependencyTypes = PropertyConfigUtils.getAllNoneList(detectConfiguration, DetectProperties.DETECT_PNPM_DEPENDENCY_TYPES.getProperty()).representedValues();
+            if (!pnpmDependencyTypes.contains(PnpmDependencyType.APP)) {
+                excludedDependencyTypes.add(PnpmDependencyType.APP);
+            }
+            if (!pnpmDependencyTypes.contains(PnpmDependencyType.DEV)) {
+                excludedDependencyTypes.add(PnpmDependencyType.DEV);
+            }
+            if (!pnpmDependencyTypes.contains(PnpmDependencyType.OPTIONAL)) {
+                excludedDependencyTypes.add(PnpmDependencyType.OPTIONAL);
+            }
+        }
+        EnumListFilter<PnpmDependencyType> dependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
+
         return new PnpmLockOptions(dependencyTypeFilter);
     }
 
@@ -342,15 +362,22 @@ public class DetectableOptionFactory {
     }
 
     public GemspecParseDetectableOptions createGemspecParseDetectableOptions() {
-        boolean includeRuntimeDependencies = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_RUBY_INCLUDE_RUNTIME_DEPENDENCIES));
-        boolean includeDevDependencies = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_RUBY_INCLUDE_DEV_DEPENDENCIES));
+        Set<GemspecDependencyType> excludedDependencyTypes;
         if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
-            List<GemspecDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValues();
-            ExcludedDependencyTypeFilter<GemspecDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>(excludedDependencyTypes);
-            includeRuntimeDependencies = dependencyTypeFilter.shouldReportDependencyType(GemspecDependencyType.RUNTIME);
-            includeDevDependencies = dependencyTypeFilter.shouldReportDependencyType(GemspecDependencyType.DEV);
+            excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValueSet();
+        } else {
+            boolean excludeRuntimeDependencies = Boolean.FALSE.equals(getValue(DetectProperties.DETECT_RUBY_INCLUDE_RUNTIME_DEPENDENCIES));
+            boolean excludeDevDependencies = Boolean.FALSE.equals(getValue(DetectProperties.DETECT_RUBY_INCLUDE_DEV_DEPENDENCIES));
+            excludedDependencyTypes = new LinkedHashSet<>();
+            if (excludeDevDependencies) {
+                excludedDependencyTypes.add(GemspecDependencyType.DEV);
+            }
+            if (excludeRuntimeDependencies) {
+                excludedDependencyTypes.add(GemspecDependencyType.RUNTIME);
+            }
         }
-        return new GemspecParseDetectableOptions(includeRuntimeDependencies, includeDevDependencies);
+        EnumListFilter<GemspecDependencyType> dependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
+        return new GemspecParseDetectableOptions(dependencyTypeFilter);
     }
 
     public SbtResolutionCacheOptions createSbtResolutionCacheDetectableOptions() {

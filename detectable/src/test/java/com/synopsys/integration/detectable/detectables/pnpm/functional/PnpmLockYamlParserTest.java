@@ -2,7 +2,6 @@ package com.synopsys.integration.detectable.detectables.pnpm.functional;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -15,7 +14,7 @@ import com.google.gson.Gson;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.util.DependencyTypeFilter;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmLinkedPackageResolver;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmLockYamlParser;
@@ -31,7 +30,7 @@ public class PnpmLockYamlParserTest {
     @Test
     public void testParse() throws IOException, IntegrationException {
         File pnpmLockYaml = FunctionalTestFiles.asFile("/pnpm/pnpm-lock.yaml");
-        DependencyTypeFilter<PnpmDependencyType> dependencyTypeFilter = new DependencyTypeFilter<>(Arrays.asList(PnpmDependencyType.APP, PnpmDependencyType.DEV, PnpmDependencyType.OPTIONAL));
+        EnumListFilter<PnpmDependencyType> dependencyTypeFilter = EnumListFilter.excludeNone();
         PnpmLockYamlParser pnpmLockYamlParser = new PnpmLockYamlParser(new PnpmYamlTransformer(new ExternalIdFactory(), dependencyTypeFilter));
         PnpmLinkedPackageResolver pnpmLinkedPackageResolver = new PnpmLinkedPackageResolver(FunctionalTestFiles.asFile("/pnpm"), new PackageJsonFiles(new PackageJsonReader(new Gson())));
 
