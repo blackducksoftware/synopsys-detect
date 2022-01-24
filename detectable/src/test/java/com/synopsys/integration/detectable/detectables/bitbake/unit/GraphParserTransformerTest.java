@@ -29,6 +29,7 @@ public class GraphParserTransformerTest {
 
         Assertions.assertEquals(1, bitbakeGraph.getNodes().size());
         Assertions.assertEquals("version", bitbakeGraph.getNodes().get(0).getVersion().get());
+        Assertions.assertEquals("meta", bitbakeGraph.getNodes().get(0).getLayer().get());
     }
 
     @Test
