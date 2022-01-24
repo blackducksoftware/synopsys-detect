@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
+import com.synopsys.integration.detectable.detectables.npm.NpmDependencyType;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.NpmPackageJsonParseDetectable;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.NpmPackageJsonParseDetectableOptions;
 import com.synopsys.integration.detectable.util.MockDetectableEnvironment;
@@ -19,9 +21,10 @@ public class NpmPackageJsonParseDetectableTest {
         DetectableEnvironment environment = MockDetectableEnvironment.empty();
         FileFinder fileFinder = MockFileFinder.withFileNamed(PACKAGE_JSON_FILENAME);
 
-        NpmPackageJsonParseDetectableOptions npmPackageJsonParseDetectableOptions = new NpmPackageJsonParseDetectableOptions(false, false);
+        EnumListFilter<NpmDependencyType> npmDependencyTypeFilter = EnumListFilter.fromExcluded(NpmDependencyType.DEV, NpmDependencyType.PEER);
+        NpmPackageJsonParseDetectableOptions npmPackageJsonParseDetectableOptions = new NpmPackageJsonParseDetectableOptions(npmDependencyTypeFilter);
 
-        NpmPackageJsonParseDetectable detectable = new NpmPackageJsonParseDetectable(environment, fileFinder, null, npmPackageJsonParseDetectableOptions);
+        NpmPackageJsonParseDetectable detectable = new NpmPackageJsonParseDetectable(environment, fileFinder, null);
 
         assertTrue(detectable.applicable().getPassed());
     }

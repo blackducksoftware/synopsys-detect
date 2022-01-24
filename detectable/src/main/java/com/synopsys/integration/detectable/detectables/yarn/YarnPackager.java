@@ -20,13 +20,11 @@ public class YarnPackager {
         this.yarnTransformer = yarnTransformer;
     }
 
-    public YarnResult generateCodeLocation(NullSafePackageJson rootPackageJson, YarnWorkspaces yarnWorkspaces, YarnLock yarnLock, List<NameVersion> externalDependencies,
-        boolean useProductionOnly, @Nullable ExcludedIncludedWildcardFilter workspaceFilter) {
+    public YarnResult generateCodeLocation(NullSafePackageJson rootPackageJson, YarnWorkspaces yarnWorkspaces, YarnLock yarnLock, List<NameVersion> externalDependencies, @Nullable ExcludedIncludedWildcardFilter workspaceFilter) {
         YarnLockResult yarnLockResult = new YarnLockResult(rootPackageJson, yarnWorkspaces, yarnLock);
 
         try {
-            List<CodeLocation> codeLocations = yarnTransformer.generateCodeLocations(yarnLockResult, useProductionOnly, externalDependencies,
-                workspaceFilter);
+            List<CodeLocation> codeLocations = yarnTransformer.generateCodeLocations(yarnLockResult, externalDependencies, workspaceFilter);
             return YarnResult.success(rootPackageJson.getName().orElse(null), rootPackageJson.getVersion().orElse(null), codeLocations);
         } catch (MissingExternalIdException exception) {
             return YarnResult.failure(exception);

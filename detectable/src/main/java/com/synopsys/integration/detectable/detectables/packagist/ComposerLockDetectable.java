@@ -12,6 +12,7 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
+// TODO: I'm confused by the interchangeability of 'composer' and 'packagist' in the names of classes here and tests. JM-01/2022
 @DetectableInfo(language = "PHP", forge = "Packagist.org", requirementsMarkdown = "Files: composer.lock, composer.json.")
 public class ComposerLockDetectable extends Detectable {
     private static final String COMPOSER_LOCK = "composer.lock";
@@ -19,16 +20,14 @@ public class ComposerLockDetectable extends Detectable {
 
     private final FileFinder fileFinder;
     private final ComposerLockExtractor composerLockExtractor;
-    private final ComposerLockDetectableOptions composerLockDetectableOptions;
 
     private File composerLock;
     private File composerJson;
 
-    public ComposerLockDetectable(DetectableEnvironment environment, FileFinder fileFinder, ComposerLockExtractor composerLockExtractor, ComposerLockDetectableOptions composerLockDetectableOptions) {
+    public ComposerLockDetectable(DetectableEnvironment environment, FileFinder fileFinder, ComposerLockExtractor composerLockExtractor) {
         super(environment);
         this.fileFinder = fileFinder;
         this.composerLockExtractor = composerLockExtractor;
-        this.composerLockDetectableOptions = composerLockDetectableOptions;
     }
 
     @Override
@@ -46,7 +45,7 @@ public class ComposerLockDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
-        return composerLockExtractor.extract(composerJson, composerLock, composerLockDetectableOptions.shouldIncludeDevDependencies());
+        return composerLockExtractor.extract(composerJson, composerLock);
     }
 
 }

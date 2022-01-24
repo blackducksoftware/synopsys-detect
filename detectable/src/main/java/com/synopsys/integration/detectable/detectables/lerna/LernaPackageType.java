@@ -1,5 +1,5 @@
 package com.synopsys.integration.detectable.detectables.lerna;
 
-public enum LernaDependencyType {
+public enum LernaPackageType {
     PRIVATE
 }

@@ -12,7 +12,9 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PearResolver;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectableOptions;
+import com.synopsys.integration.detectable.detectables.pear.PearDependencyType;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
@@ -72,7 +74,7 @@ public class PearCliDetectableTest extends DetectableFunctionalTest {
                 return ExecutableTarget.forCommand("pear");
             }
         }
-        return detectableFactory.createPearCliDetectable(detectableEnvironment, new PearCliDetectableOptions(true), new LocalPearResolver());
+        return detectableFactory.createPearCliDetectable(detectableEnvironment, new PearCliDetectableOptions(EnumListFilter.fromExcluded(PearDependencyType.OPTIONAL)), new LocalPearResolver());
     }
 
     @Override

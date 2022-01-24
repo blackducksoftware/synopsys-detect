@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
@@ -29,7 +28,9 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
+import com.synopsys.integration.detectable.detectables.yarn.YarnDependencyType;
 import com.synopsys.integration.detectable.detectables.yarn.YarnTransformer;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.NullSafePackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.WorkspacePackageJson;
@@ -46,14 +47,13 @@ import com.synopsys.integration.util.NameVersion;
 @UnitTest
 class YarnTransformerTest {
     public static final String WORKSPACE_DEP_SUFFIX = "-dep";
-    private static ExternalIdFactory externalIdFactory;
-    private static YarnTransformer yarnTransformer;
+    private static ExternalIdFactory externalIdFactory = new ExternalIdFactory();
     private static final List<NameVersion> noWorkspaces = new LinkedList<>();
 
-    @BeforeAll
-    static void setup() {
+    private YarnTransformer createTransformer(YarnDependencyType... excludedTypes) {
         externalIdFactory = new ExternalIdFactory();
-        yarnTransformer = new YarnTransformer(externalIdFactory);
+        EnumListFilter<YarnDependencyType> yarnDependencyTypeFilter = EnumListFilter.fromExcluded(excludedTypes);
+        return new YarnTransformer(externalIdFactory, yarnDependencyTypeFilter);
     }
 
     // Not yet covered by these tests: yarn 1 workspaces' dev dependencies specified in workspace package.json
@@ -62,7 +62,7 @@ class YarnTransformerTest {
     void testExcludeDevDependencies() throws MissingExternalIdException {
         YarnLockResult yarnLockResult = buildTestYarnLockResult(noWorkspaces, noWorkspaces, false);
 
-        List<CodeLocation> codeLocations = yarnTransformer.generateCodeLocations(yarnLockResult, true, new ArrayList<>(0), ExcludedIncludedWildcardFilter.EMPTY);
+        List<CodeLocation> codeLocations = createTransformer(YarnDependencyType.NON_PRODUCTION).generateCodeLocations(yarnLockResult, new ArrayList<>(0), ExcludedIncludedWildcardFilter.EMPTY);
 
         assertEquals(1, codeLocations.size());
         CodeLocation codeLocation = codeLocations.get(0);
@@ -83,7 +83,7 @@ class YarnTransformerTest {
     void testIncludeDevDependencies() throws MissingExternalIdException {
         YarnLockResult yarnLockResult = buildTestYarnLockResult(noWorkspaces, noWorkspaces, false);
 
-        List<CodeLocation> codeLocations = yarnTransformer.generateCodeLocations(yarnLockResult, false, new ArrayList<>(0), ExcludedIncludedWildcardFilter.EMPTY);
+        List<CodeLocation> codeLocations = createTransformer().generateCodeLocations(yarnLockResult, new ArrayList<>(0), ExcludedIncludedWildcardFilter.EMPTY);
 
         assertEquals(1, codeLocations.size());
         CodeLocation codeLocation = codeLocations.get(0);
@@ -118,7 +118,7 @@ class YarnTransformerTest {
         YarnLockResult yarnLockResult = new YarnLockResult(packageJson, YarnWorkspaces.EMPTY, yarnLock);
 
         // This should not throw an exception.
-        List<CodeLocation> codeLocations = yarnTransformer.generateCodeLocations(yarnLockResult, false, new ArrayList<>(0), ExcludedIncludedWildcardFilter.EMPTY);
+        List<CodeLocation> codeLocations = createTransformer().generateCodeLocations(yarnLockResult, new ArrayList<>(0), ExcludedIncludedWildcardFilter.EMPTY);
 
         // Sanity check.
         assertEquals(1, codeLocations.size());
@@ -148,7 +148,7 @@ class YarnTransformerTest {
         workspacesThatAreNotDependencies.add(new NameVersion("workspace-notdep", "1.0.0"));
         YarnLockResult yarnLockResult = buildTestYarnLockResult(workspacesThatAreDependencies, workspacesThatAreNotDependencies, yarn1Project);
 
-        List<CodeLocation> codeLocations = yarnTransformer.generateCodeLocations(yarnLockResult, false, new ArrayList<>(), ExcludedIncludedWildcardFilter.EMPTY);
+        List<CodeLocation> codeLocations = createTransformer().generateCodeLocations(yarnLockResult, new ArrayList<>(), ExcludedIncludedWildcardFilter.EMPTY);
 
         assertEquals(3, codeLocations.size());
         Iterator<CodeLocation> codeLocationIterator = codeLocations.iterator();

@@ -19,7 +19,7 @@ public class ComposerLockExtractor {
         this.packagistParser = packagistParser;
     }
 
-    public Extraction extract(File composerJson, File composerLock, boolean includeDevDependencies) {
+    public Extraction extract(File composerJson, File composerLock) {
         try {
             String composerJsonText = FileUtils.readFileToString(composerJson, StandardCharsets.UTF_8);
             String composerLockText = FileUtils.readFileToString(composerLock, StandardCharsets.UTF_8);
@@ -27,7 +27,7 @@ public class ComposerLockExtractor {
             logger.debug(composerJsonText);
             logger.debug(composerLockText);
 
-            PackagistParseResult result = packagistParser.getDependencyGraphFromProject(composerJsonText, composerLockText, includeDevDependencies);
+            PackagistParseResult result = packagistParser.getDependencyGraphFromProject(composerJsonText, composerLockText);
 
             return new Extraction.Builder()
                 .success(result.getCodeLocation())

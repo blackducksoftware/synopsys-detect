@@ -1,7 +1,7 @@
 package com.synopsys.integration.detect.configuration;
 
 import java.nio.file.Path;
-import java.util.LinkedList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,15 +12,13 @@ import org.jetbrains.annotations.Nullable;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.base.NullableProperty;
 import com.synopsys.integration.configuration.property.base.ValuedProperty;
-import com.synopsys.integration.configuration.property.types.enumallnone.list.NoneEnumList;
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.detect.PropertyConfigUtils;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetLocatorOptions;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
-import com.synopsys.integration.detectable.detectable.util.DependencyTypeFilter;
-import com.synopsys.integration.detectable.detectable.util.ExcludedDependencyTypeFilter;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDependencyType;
@@ -38,8 +36,8 @@ import com.synopsys.integration.detectable.detectables.go.gomod.GoModDependencyT
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleConfigurationType;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorOptions;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptOptions;
-import com.synopsys.integration.detectable.detectables.lerna.LernaDependencyType;
 import com.synopsys.integration.detectable.detectables.lerna.LernaOptions;
+import com.synopsys.integration.detectable.detectables.lerna.LernaPackageType;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenCliExtractorOptions;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseOptions;
 import com.synopsys.integration.detectable.detectables.npm.NpmDependencyType;
@@ -54,6 +52,7 @@ import com.synopsys.integration.detectable.detectables.pip.inspector.PipInspecto
 import com.synopsys.integration.detectable.detectables.pipenv.PipenvDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockOptions;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyTypeV2;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorOptions;
 import com.synopsys.integration.detectable.detectables.rubygems.GemspecDependencyType;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectableOptions;
@@ -90,8 +89,8 @@ public class DetectableOptionFactory {
         List<String> sourceArguments = getValue(DetectProperties.DETECT_BITBAKE_SOURCE_ARGUMENTS);
         List<String> packageNames = getValue(DetectProperties.DETECT_BITBAKE_PACKAGE_NAMES);
         Integer searchDepth = getValue(DetectProperties.DETECT_BITBAKE_SEARCH_DEPTH);
-        List<BitbakeDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_BITBAKE_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValues();
-        ExcludedDependencyTypeFilter<BitbakeDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>(excludedDependencyTypes);
+        Set<BitbakeDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_BITBAKE_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValueSet();
+        EnumListFilter<BitbakeDependencyType> dependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
         return new BitbakeDetectableOptions(buildEnvName, sourceArguments, packageNames, searchDepth, getFollowSymLinks(), dependencyTypeFilter);
     }
 
@@ -101,14 +100,21 @@ public class DetectableOptionFactory {
     }
 
     public ComposerLockDetectableOptions createComposerLockDetectableOptions() {
-        boolean includedDevDependencies = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES));
+
+        EnumListFilter<PackagistDependencyType> packagistDependencyTypeFilter;
         if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_PACKAGIST_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
             List<PackagistDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_PACKAGIST_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValues();
-            ExcludedDependencyTypeFilter<PackagistDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>(excludedDependencyTypes);
-            includedDevDependencies = dependencyTypeFilter.shouldReportDependencyType(PackagistDependencyType.DEV);
+            packagistDependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
+        } else {
+            boolean includedDevDependencies = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES));
+            if (includedDevDependencies) {
+                packagistDependencyTypeFilter = EnumListFilter.excludeNone();
+            } else {
+                packagistDependencyTypeFilter = EnumListFilter.fromExcluded(PackagistDependencyType.DEV);
+            }
         }
 
-        return new ComposerLockDetectableOptions(includedDevDependencies);
+        return new ComposerLockDetectableOptions(packagistDependencyTypeFilter);
     }
 
     public CondaCliDetectableOptions createCondaOptions() {
@@ -117,14 +123,17 @@ public class DetectableOptionFactory {
     }
 
     public DartPubDepsDetectableOptions createDartPubDepsDetectableOptions() {
-        boolean excludeDevDependencies = getValue(DetectProperties.DETECT_PUD_DEPS_EXCLUDE_DEV);
+        EnumListFilter<DartPubDependencyType> dependencyTypeFilter = EnumListFilter.excludeNone();
         if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
-            NoneEnumList<DartPubDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED.getProperty());
-            ExcludedDependencyTypeFilter<DartPubDependencyType> typeFilter = new ExcludedDependencyTypeFilter<>(excludedDependencyTypes.representedValues());
-            excludeDevDependencies = typeFilter.shouldExcludeDependencyType(DartPubDependencyType.DEV);
+            Set<DartPubDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValueSet();
+            dependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
+        } else {
+            boolean excludeDevDependencies = getValue(DetectProperties.DETECT_PUD_DEPS_EXCLUDE_DEV);
+            if (excludeDevDependencies) {
+                dependencyTypeFilter = EnumListFilter.fromExcluded(DartPubDependencyType.DEV);
+            }
         }
-
-        return new DartPubDepsDetectableOptions(excludeDevDependencies);
+        return new DartPubDepsDetectableOptions(dependencyTypeFilter);
     }
 
     public MavenParseOptions createMavenParseOptions() {
@@ -157,14 +166,18 @@ public class DetectableOptionFactory {
     }
 
     public GoModCliDetectableOptions createGoModCliDetectableOptions() {
-        boolean dependencyVerificationEnabled = getValue(DetectProperties.DETECT_GO_ENABLE_VERIFICATION);
+        EnumListFilter<GoModDependencyType> dependencyTypeFilter = EnumListFilter.excludeNone();
         if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
             List<GoModDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValues();
-            ExcludedDependencyTypeFilter<GoModDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>(excludedDependencyTypes);
-            dependencyVerificationEnabled = dependencyTypeFilter.shouldExcludeDependencyType(GoModDependencyType.UNUSED);
+            dependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
+        } else {
+            boolean dependencyVerificationEnabled = getValue(DetectProperties.DETECT_GO_ENABLE_VERIFICATION);
+            if (dependencyVerificationEnabled) {
+                dependencyTypeFilter = EnumListFilter.fromExcluded(GoModDependencyType.UNUSED);
+            }
         }
 
-        return new GoModCliDetectableOptions(dependencyVerificationEnabled);
+        return new GoModCliDetectableOptions(dependencyTypeFilter);
     }
 
     public GradleInspectorOptions createGradleInspectorOptions() {
@@ -173,30 +186,43 @@ public class DetectableOptionFactory {
         List<String> excludedConfigurationNames = getValue(DetectProperties.DETECT_GRADLE_EXCLUDED_CONFIGURATIONS);
         List<String> includedConfigurationNames = getValue(DetectProperties.DETECT_GRADLE_INCLUDED_CONFIGURATIONS);
         String customRepository = ArtifactoryConstants.GRADLE_INSPECTOR_MAVEN_REPO;
-        boolean includeUnresolvedConfigurations = getValue(DetectProperties.DETECT_GRADLE_INCLUDE_UNRESOLVED_CONFIGURATIONS);
+
+        EnumListFilter<GradleConfigurationType> dependencyTypeFilter;
         if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_GRADLE_CONFIGURATION_TYPES_EXCLUDED.getProperty())) {
             List<GradleConfigurationType> excludedConfigurationTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_GRADLE_CONFIGURATION_TYPES_EXCLUDED.getProperty()).representedValues();
-            ExcludedDependencyTypeFilter<GradleConfigurationType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>(excludedConfigurationTypes);
-            includeUnresolvedConfigurations = dependencyTypeFilter.shouldReportDependencyType(GradleConfigurationType.UNRESOLVED);
+            dependencyTypeFilter = EnumListFilter.fromExcluded(excludedConfigurationTypes);
+        } else {
+            boolean includeUnresolvedConfigurations = getValue(DetectProperties.DETECT_GRADLE_INCLUDE_UNRESOLVED_CONFIGURATIONS);
+            if (includeUnresolvedConfigurations) {
+                dependencyTypeFilter = EnumListFilter.excludeNone();
+            } else {
+                dependencyTypeFilter = EnumListFilter.fromExcluded(GradleConfigurationType.UNRESOLVED);
+            }
         }
 
         String onlineInspectorVersion = getNullableValue(DetectProperties.DETECT_GRADLE_INSPECTOR_VERSION);
         GradleInspectorScriptOptions scriptOptions = new GradleInspectorScriptOptions(excludedProjectNames, includedProjectNames, excludedConfigurationNames, includedConfigurationNames, customRepository, onlineInspectorVersion);
         String gradleBuildCommand = getNullableValue(DetectProperties.DETECT_GRADLE_BUILD_COMMAND);
-        return new GradleInspectorOptions(gradleBuildCommand, scriptOptions, proxyInfo, includeUnresolvedConfigurations);
+        return new GradleInspectorOptions(gradleBuildCommand, scriptOptions, proxyInfo, dependencyTypeFilter);
     }
 
     public LernaOptions createLernaOptions() {
-        boolean includePrivate = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_LERNA_INCLUDE_PRIVATE));
-        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_LERNA_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
-            List<LernaDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_LERNA_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValues();
-            ExcludedDependencyTypeFilter<LernaDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>(excludedDependencyTypes);
-            includePrivate = dependencyTypeFilter.shouldReportDependencyType(LernaDependencyType.PRIVATE);
+        EnumListFilter<LernaPackageType> lernaPackageTypeFilter;
+        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_LERNA_PACKAGE_TYPES_EXCLUDED.getProperty())) {
+            List<LernaPackageType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_LERNA_PACKAGE_TYPES_EXCLUDED.getProperty()).representedValues();
+            lernaPackageTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
+        } else {
+            boolean includePrivate = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_LERNA_INCLUDE_PRIVATE));
+            if (includePrivate) {
+                lernaPackageTypeFilter = EnumListFilter.excludeNone();
+            } else {
+                lernaPackageTypeFilter = EnumListFilter.fromExcluded(LernaPackageType.PRIVATE);
+            }
         }
 
         List<String> excludedPackages = getValue(DetectProperties.DETECT_LERNA_EXCLUDED_PACKAGES);
         List<String> includedPackages = getValue(DetectProperties.DETECT_LERNA_INCLUDED_PACKAGES);
-        return new LernaOptions(includePrivate, excludedPackages, includedPackages);
+        return new LernaOptions(lernaPackageTypeFilter, excludedPackages, includedPackages);
     }
 
     public MavenCliExtractorOptions createMavenCliOptions() {
@@ -212,78 +238,80 @@ public class DetectableOptionFactory {
         Path lockfilePath = detectConfiguration.getValue(DetectProperties.DETECT_CONAN_LOCKFILE_PATH.getProperty()).map(path -> path.resolvePath(pathResolver)).orElse(null);
         String additionalArguments = getNullableValue(DetectProperties.DETECT_CONAN_ARGUMENTS);
         Boolean preferLongFormExternalIds = getValue(DetectProperties.DETECT_CONAN_REQUIRE_PREV_MATCH);
-        ExcludedDependencyTypeFilter<ConanDependencyType> dependencyTypeFilter = createConanDependencyTypeFilter();
+        EnumListFilter<ConanDependencyType> dependencyTypeFilter = createConanDependencyTypeFilter();
         return new ConanCliOptions(lockfilePath, additionalArguments, dependencyTypeFilter, preferLongFormExternalIds);
     }
 
     // TODO: Remove in 8.0.0. This will be one line, no method necessary - JM 01/2022
-    private ExcludedDependencyTypeFilter<ConanDependencyType> createConanDependencyTypeFilter() {
+    private EnumListFilter<ConanDependencyType> createConanDependencyTypeFilter() {
         Boolean includeBuildDependencies = getValue(DetectProperties.DETECT_CONAN_INCLUDE_BUILD_DEPENDENCIES);
-        List<ConanDependencyType> excludedDependencyTypes;
+        Set<ConanDependencyType> excludedDependencyTypes;
         if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_CONAN_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
-            excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_CONAN_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValues();
+            excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_CONAN_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValueSet();
         } else {
-            excludedDependencyTypes = new LinkedList<>();
+            excludedDependencyTypes = new LinkedHashSet<>();
             if (Boolean.FALSE.equals(includeBuildDependencies)) {
                 excludedDependencyTypes.add(ConanDependencyType.BUILD);
             }
         }
-        return new ExcludedDependencyTypeFilter<>(excludedDependencyTypes);
+        return EnumListFilter.fromExcluded(excludedDependencyTypes);
     }
 
     public ConanLockfileExtractorOptions createConanLockfileOptions() {
         Path lockfilePath = detectConfiguration.getValue(DetectProperties.DETECT_CONAN_LOCKFILE_PATH.getProperty()).map(path -> path.resolvePath(pathResolver)).orElse(null);
         Boolean preferLongFormExternalIds = getValue(DetectProperties.DETECT_CONAN_REQUIRE_PREV_MATCH);
-        ExcludedDependencyTypeFilter<ConanDependencyType> dependencyTypeFilter = createConanDependencyTypeFilter();
+        EnumListFilter<ConanDependencyType> dependencyTypeFilter = createConanDependencyTypeFilter();
         return new ConanLockfileExtractorOptions(lockfilePath, dependencyTypeFilter, preferLongFormExternalIds);
     }
 
     public NpmCliExtractorOptions createNpmCliExtractorOptions() {
-        NpmDependencyTypeOptions npmDependencyTypeOptions = createNpmDependencyTypeOptions();
+        EnumListFilter<NpmDependencyType> npmDependencyTypeFilter = createNpmDependencyTypeFilter();
         String npmArguments = getNullableValue(DetectProperties.DETECT_NPM_ARGUMENTS);
-        return new NpmCliExtractorOptions(npmDependencyTypeOptions.includeDevDependencies, npmDependencyTypeOptions.includePeerDependencies, npmArguments);
+        return new NpmCliExtractorOptions(npmDependencyTypeFilter, npmArguments);
     }
 
     public NpmLockfileOptions createNpmLockfileOptions() {
-        NpmDependencyTypeOptions npmDependencyTypeOptions = createNpmDependencyTypeOptions();
-        return new NpmLockfileOptions(npmDependencyTypeOptions.includeDevDependencies, npmDependencyTypeOptions.includePeerDependencies);
+        EnumListFilter<NpmDependencyType> npmDependencyTypeFilter = createNpmDependencyTypeFilter();
+        return new NpmLockfileOptions(npmDependencyTypeFilter);
     }
 
     public NpmPackageJsonParseDetectableOptions createNpmPackageJsonParseDetectableOptions() {
-        NpmDependencyTypeOptions npmDependencyTypeOptions = createNpmDependencyTypeOptions();
-        return new NpmPackageJsonParseDetectableOptions(npmDependencyTypeOptions.includeDevDependencies, npmDependencyTypeOptions.includePeerDependencies);
+        EnumListFilter<NpmDependencyType> npmDependencyTypeFilter = createNpmDependencyTypeFilter();
+        return new NpmPackageJsonParseDetectableOptions(npmDependencyTypeFilter);
     }
 
-    private NpmDependencyTypeOptions createNpmDependencyTypeOptions() {
-        boolean includeDevDependencies = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES));
-        boolean includePeerDependencies = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_NPM_INCLUDE_PEER_DEPENDENCIES));
+    private EnumListFilter<NpmDependencyType> createNpmDependencyTypeFilter() {
+        Set<NpmDependencyType> excludedDependencyTypes;
         if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
-            List<NpmDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValues();
-            ExcludedDependencyTypeFilter<NpmDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>(excludedDependencyTypes);
-            includeDevDependencies = dependencyTypeFilter.shouldReportDependencyType(NpmDependencyType.DEV);
-            includePeerDependencies = dependencyTypeFilter.shouldReportDependencyType(NpmDependencyType.PEER);
+            excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValueSet();
+        } else {
+            boolean excludeDevDependencies = Boolean.FALSE.equals(getValue(DetectProperties.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES));
+            boolean excludePeerDependencies = Boolean.FALSE.equals(getValue(DetectProperties.DETECT_NPM_INCLUDE_PEER_DEPENDENCIES));
+            excludedDependencyTypes = new LinkedHashSet<>();
+            if (excludeDevDependencies) {
+                excludedDependencyTypes.add(NpmDependencyType.DEV);
+            }
+            if (excludePeerDependencies) {
+                excludedDependencyTypes.add(NpmDependencyType.DEV);
+            }
         }
-        return new NpmDependencyTypeOptions(includeDevDependencies, includePeerDependencies);
-    }
-
-    private static class NpmDependencyTypeOptions {
-        public final boolean includeDevDependencies;
-        public final boolean includePeerDependencies;
-
-        private NpmDependencyTypeOptions(boolean includeDevDependencies, boolean includePeerDependencies) {
-            this.includeDevDependencies = includeDevDependencies;
-            this.includePeerDependencies = includePeerDependencies;
-        }
+        return EnumListFilter.fromExcluded(excludedDependencyTypes);
     }
 
     public PearCliDetectableOptions createPearCliDetectableOptions() {
-        boolean onlyGatherRequired = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_PEAR_ONLY_REQUIRED_DEPS));
+        EnumListFilter<PearDependencyType> pearDependencyTypeFilter;
         if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_PEAR_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
             List<PearDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_PEAR_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValues();
-            ExcludedDependencyTypeFilter<PearDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>(excludedDependencyTypes);
-            onlyGatherRequired = dependencyTypeFilter.shouldExcludeDependencyType(PearDependencyType.OPTIONAL);
+            pearDependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
+        } else {
+            boolean onlyGatherRequired = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_PEAR_ONLY_REQUIRED_DEPS));
+            if (onlyGatherRequired) {
+                pearDependencyTypeFilter = EnumListFilter.fromExcluded(PearDependencyType.OPTIONAL);
+            } else {
+                pearDependencyTypeFilter = EnumListFilter.excludeNone();
+            }
         }
-        return new PearCliDetectableOptions(onlyGatherRequired);
+        return new PearCliDetectableOptions(pearDependencyTypeFilter);
     }
 
     public PipenvDetectableOptions createPipenvDetectableOptions() {
@@ -302,8 +330,29 @@ public class DetectableOptionFactory {
     }
 
     public PnpmLockOptions createPnpmLockOptions() {
-        List<PnpmDependencyType> pnpmDependencyTypes = PropertyConfigUtils.getAllNoneList(detectConfiguration, DetectProperties.DETECT_PNPM_DEPENDENCY_TYPES.getProperty()).representedValues();
-        DependencyTypeFilter<PnpmDependencyType> dependencyTypeFilter = new DependencyTypeFilter<>(pnpmDependencyTypes);
+        Set<PnpmDependencyType> excludedDependencyTypes = new LinkedHashSet<>(); // Converting types so the existing property doesn't lose functionality.
+        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_PNPM_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
+            Set<PnpmDependencyTypeV2> pnpmDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_PNPM_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValueSet();
+            if (pnpmDependencyTypes.contains(PnpmDependencyTypeV2.DEV)) {
+                excludedDependencyTypes.add(PnpmDependencyType.DEV);
+            }
+            if (pnpmDependencyTypes.contains(PnpmDependencyTypeV2.OPTIONAL)) {
+                excludedDependencyTypes.add(PnpmDependencyType.OPTIONAL);
+            }
+        } else {
+            List<PnpmDependencyType> pnpmDependencyTypes = PropertyConfigUtils.getAllNoneList(detectConfiguration, DetectProperties.DETECT_PNPM_DEPENDENCY_TYPES.getProperty()).representedValues();
+            if (!pnpmDependencyTypes.contains(PnpmDependencyType.APP)) {
+                excludedDependencyTypes.add(PnpmDependencyType.APP);
+            }
+            if (!pnpmDependencyTypes.contains(PnpmDependencyType.DEV)) {
+                excludedDependencyTypes.add(PnpmDependencyType.DEV);
+            }
+            if (!pnpmDependencyTypes.contains(PnpmDependencyType.OPTIONAL)) {
+                excludedDependencyTypes.add(PnpmDependencyType.OPTIONAL);
+            }
+        }
+        EnumListFilter<PnpmDependencyType> dependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
+
         return new PnpmLockOptions(dependencyTypeFilter);
     }
 
@@ -313,15 +362,22 @@ public class DetectableOptionFactory {
     }
 
     public GemspecParseDetectableOptions createGemspecParseDetectableOptions() {
-        boolean includeRuntimeDependencies = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_RUBY_INCLUDE_RUNTIME_DEPENDENCIES));
-        boolean includeDevDependencies = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_RUBY_INCLUDE_DEV_DEPENDENCIES));
+        Set<GemspecDependencyType> excludedDependencyTypes;
         if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
-            List<GemspecDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValues();
-            ExcludedDependencyTypeFilter<GemspecDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>(excludedDependencyTypes);
-            includeRuntimeDependencies = dependencyTypeFilter.shouldExcludeDependencyType(GemspecDependencyType.RUNTIME);
-            includeDevDependencies = dependencyTypeFilter.shouldReportDependencyType(GemspecDependencyType.DEV);
+            excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValueSet();
+        } else {
+            boolean excludeRuntimeDependencies = Boolean.FALSE.equals(getValue(DetectProperties.DETECT_RUBY_INCLUDE_RUNTIME_DEPENDENCIES));
+            boolean excludeDevDependencies = Boolean.FALSE.equals(getValue(DetectProperties.DETECT_RUBY_INCLUDE_DEV_DEPENDENCIES));
+            excludedDependencyTypes = new LinkedHashSet<>();
+            if (excludeDevDependencies) {
+                excludedDependencyTypes.add(GemspecDependencyType.DEV);
+            }
+            if (excludeRuntimeDependencies) {
+                excludedDependencyTypes.add(GemspecDependencyType.RUNTIME);
+            }
         }
-        return new GemspecParseDetectableOptions(includeRuntimeDependencies, includeDevDependencies);
+        EnumListFilter<GemspecDependencyType> dependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
+        return new GemspecParseDetectableOptions(dependencyTypeFilter);
     }
 
     public SbtResolutionCacheOptions createSbtResolutionCacheDetectableOptions() {
@@ -333,15 +389,21 @@ public class DetectableOptionFactory {
     }
 
     public YarnLockOptions createYarnLockOptions() {
-        boolean useProductionOnly = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_YARN_PROD_ONLY));
+        EnumListFilter<YarnDependencyType> yarnDependencyTypeFilter;
         if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_YARN_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
-            List<YarnDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_YARN_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValues();
-            ExcludedDependencyTypeFilter<YarnDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>(excludedDependencyTypes);
-            useProductionOnly = dependencyTypeFilter.shouldExcludeDependencyType(YarnDependencyType.NON_PRODUCTION);
+            Set<YarnDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_YARN_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValueSet();
+            yarnDependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
+        } else {
+            boolean useProductionOnly = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_YARN_PROD_ONLY));
+            if (useProductionOnly) {
+                yarnDependencyTypeFilter = EnumListFilter.fromExcluded(YarnDependencyType.NON_PRODUCTION);
+            } else {
+                yarnDependencyTypeFilter = EnumListFilter.excludeNone();
+            }
         }
         List<String> excludedWorkspaces = getValue(DetectProperties.DETECT_YARN_EXCLUDED_WORKSPACES);
         List<String> includedWorkspaces = getValue(DetectProperties.DETECT_YARN_INCLUDED_WORKSPACES);
-        return new YarnLockOptions(useProductionOnly, excludedWorkspaces, includedWorkspaces);
+        return new YarnLockOptions(yarnDependencyTypeFilter, excludedWorkspaces, includedWorkspaces);
     }
 
     public NugetInspectorOptions createNugetInspectorOptions() {

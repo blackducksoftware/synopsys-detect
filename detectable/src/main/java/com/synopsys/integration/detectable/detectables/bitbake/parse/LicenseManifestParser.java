@@ -1,11 +1,14 @@
 package com.synopsys.integration.detectable.detectables.bitbake.parse;
 
-import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
@@ -13,18 +16,21 @@ import com.synopsys.integration.util.NameVersion;
 public class LicenseManifestParser {
     private static final String RECIPE_NAME_KEY = "RECIPE NAME";
     private static final String PACKAGE_VERSION_KEY = "PACKAGE VERSION";
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public Map<String, String> collectImageRecipes(List<String> licenseManifestLines) throws IntegrationException {
+        logger.debug("Parsing license.manifest");
         Map<String, String> imageRecipes = new HashMap<>(1 + (licenseManifestLines.size()/5));
         NameVersion recipeNameVersion = new NameVersion();
         int lineNumber = 0;
         for (String line : licenseManifestLines) {
+            logger.trace(line);
             lineNumber++;
             if (aboutToStartNewRecipe(line)) {
                 recipeNameVersion = new NameVersion();
                 continue;
             }
-            Map.Entry<String, String> currentLineKeyValuePair = getKeyValuePair(line);
+            Pair<String, String> currentLineKeyValuePair = getKeyValuePair(line);
             if (RECIPE_NAME_KEY.equals(currentLineKeyValuePair.getKey())) {
                 recipeNameVersion.setName(currentLineKeyValuePair.getValue());
             } else if (PACKAGE_VERSION_KEY.equals(currentLineKeyValuePair.getKey())) {
@@ -49,7 +55,7 @@ public class LicenseManifestParser {
         return StringUtils.isBlank(line.trim());
     }
 
-    private Map.Entry<String, String> getKeyValuePair(String line) throws IntegrationException {
+    private Pair<String, String> getKeyValuePair(String line) throws IntegrationException {
         String trimmedLine = line.trim();
         if (!trimmedLine.contains(":")) {
             throw new IntegrationException(String.format("Unexpected line format in license.manifest file: %s", trimmedLine));
@@ -58,6 +64,6 @@ public class LicenseManifestParser {
         if (lineParts.length != 2) {
             throw new IntegrationException(String.format("Unexpected line format in license.manifest file: %s", trimmedLine));
         }
-        return new AbstractMap.SimpleEntry<>(lineParts[0], lineParts[1]);
+        return new ImmutablePair<>(lineParts[0], lineParts[1]);
     }
 }

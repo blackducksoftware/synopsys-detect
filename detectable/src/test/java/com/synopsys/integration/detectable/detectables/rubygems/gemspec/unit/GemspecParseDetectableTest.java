@@ -22,7 +22,7 @@ public class GemspecParseDetectableTest {
         DetectableEnvironment environment = MockDetectableEnvironment.empty();
         FileFinder fileFinder = MockFileFinder.withFileNamed("test.gemspec");
 
-        GemspecParseDetectable detectable = new GemspecParseDetectable(environment, fileFinder, gemspecParseExtractor, gemspecParseDetectableOptions);
+        GemspecParseDetectable detectable = new GemspecParseDetectable(environment, fileFinder, gemspecParseExtractor);
 
         assertTrue(detectable.applicable().getPassed());
     }

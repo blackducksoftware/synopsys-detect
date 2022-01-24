@@ -16,34 +16,34 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
+import com.synopsys.integration.detectable.detectables.npm.NpmDependencyType;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.extraction.Extraction;
 
 public class PackageJsonExtractor {
     private final Gson gson;
     private final ExternalIdFactory externalIdFactory;
+    private final EnumListFilter<NpmDependencyType> npmDependencyTypeFilter;
 
-    public PackageJsonExtractor(Gson gson, ExternalIdFactory externalIdFactory) {
+    public PackageJsonExtractor(Gson gson, ExternalIdFactory externalIdFactory, EnumListFilter<NpmDependencyType> npmDependencyTypeFilter) {
         this.gson = gson;
         this.externalIdFactory = externalIdFactory;
+        this.npmDependencyTypeFilter = npmDependencyTypeFilter;
     }
 
-    public Extraction extract(InputStream packageJsonInputStream, boolean includeDevDependencies, boolean includePeerDependencies) {
+    public Extraction extract(InputStream packageJsonInputStream) {
         Reader packageJsonReader = new InputStreamReader(packageJsonInputStream);
         PackageJson packageJson = gson.fromJson(packageJsonReader, PackageJson.class);
 
-        return extract(packageJson, includeDevDependencies, includePeerDependencies);
+        return extract(packageJson);
     }
 
-    public Extraction extract(PackageJson packageJson, boolean includeDevDependencies, boolean includePeerDependencies) {
+    public Extraction extract(PackageJson packageJson) {
         List<Dependency> dependencies = transformDependencies(packageJson.dependencies);
-        if (includeDevDependencies) {
-            dependencies.addAll(transformDependencies(packageJson.devDependencies));
-        }
-        if (includePeerDependencies) {
-            dependencies.addAll(transformDependencies(packageJson.peerDependencies));
-        }
-
+        npmDependencyTypeFilter.ifShouldInclude(NpmDependencyType.DEV, transformDependencies(packageJson.devDependencies), dependencies::addAll);
+        npmDependencyTypeFilter.ifShouldInclude(NpmDependencyType.PEER, transformDependencies(packageJson.peerDependencies), dependencies::addAll);
+        
         MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
         dependencyGraph.addChildrenToRoot(dependencies);
 

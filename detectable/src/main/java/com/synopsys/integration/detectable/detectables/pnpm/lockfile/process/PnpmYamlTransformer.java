@@ -19,7 +19,7 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectable.util.DependencyTypeFilter;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYaml;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmPackageInfo;
@@ -30,12 +30,12 @@ import com.synopsys.integration.util.NameVersion;
 public class PnpmYamlTransformer {
     private static final String LINKED_PACKAGE_PREFIX = "link:";
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final ExternalIdFactory externalIdFactory;
-    private final DependencyTypeFilter<PnpmDependencyType> dependencyTypeFilter;
+    private final EnumListFilter<PnpmDependencyType> dependencyTypeFilter;
 
-    public PnpmYamlTransformer(ExternalIdFactory externalIdFactory, DependencyTypeFilter<PnpmDependencyType> dependencyTypeFilter) {
+    public PnpmYamlTransformer(ExternalIdFactory externalIdFactory, EnumListFilter<PnpmDependencyType> dependencyTypeFilter) {
         this.externalIdFactory = externalIdFactory;
         this.dependencyTypeFilter = dependencyTypeFilter;
     }
@@ -85,7 +85,7 @@ public class PnpmYamlTransformer {
             }
 
             PnpmPackageInfo packageInfo = packageEntry.getValue();
-            if (dependencyTypeFilter.shouldReportDependencyType(packageInfo.getDependencyType())) {
+            if (dependencyTypeFilter.shouldInclude(packageInfo.getDependencyType())) {
                 for (Map.Entry<String, String> packageDependency : packageInfo.getDependencies().entrySet()) {
                     String dependencyPackageId = convertRawEntryToPackageId(packageDependency, linkedPackageResolver, reportingProjectPackagePath);
                     Optional<Dependency> child = buildDependencyFromPackageId(dependencyPackageId);
@@ -107,9 +107,9 @@ public class PnpmYamlTransformer {
 
     private List<String> extractRootPackageIds(PnpmProjectPackage pnpmProjectPackage, @Nullable String reportingProjectPackagePath, PnpmLinkedPackageResolver linkedPackageResolver) {
         Map<String, String> rawPackageInfo = new HashMap<>();
-        dependencyTypeFilter.ifReportingType(PnpmDependencyType.APP, pnpmProjectPackage.dependencies, rawPackageInfo::putAll);
-        dependencyTypeFilter.ifReportingType(PnpmDependencyType.DEV, pnpmProjectPackage.devDependencies, rawPackageInfo::putAll);
-        dependencyTypeFilter.ifReportingType(PnpmDependencyType.OPTIONAL, pnpmProjectPackage.optionalDependencies, rawPackageInfo::putAll);
+        dependencyTypeFilter.ifShouldInclude(PnpmDependencyType.APP, pnpmProjectPackage.dependencies, rawPackageInfo::putAll);
+        dependencyTypeFilter.ifShouldInclude(PnpmDependencyType.DEV, pnpmProjectPackage.devDependencies, rawPackageInfo::putAll);
+        dependencyTypeFilter.ifShouldInclude(PnpmDependencyType.OPTIONAL, pnpmProjectPackage.optionalDependencies, rawPackageInfo::putAll);
 
         return rawPackageInfo.entrySet().stream()
             .map(entry -> convertRawEntryToPackageId(entry, linkedPackageResolver, reportingProjectPackagePath))

@@ -1,19 +1,17 @@
 package com.synopsys.integration.detectable.detectables.npm.lockfile;
 
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
+import com.synopsys.integration.detectable.detectables.npm.NpmDependencyType;
+
+// TODO: Identical to NpmPackageJsonParseDetectableOptions. Similar to NpmCliExtractorOptions. Common base Options class? JM-01/2022
 public class NpmLockfileOptions {
-    final boolean includeDeveloperDependencies;
-    final boolean includePeerDependencies;
+    private final EnumListFilter<NpmDependencyType> npmDependencyTypeFilter;
 
-    public NpmLockfileOptions(boolean includeDeveloperDependencies, boolean includePeerDependencies) {
-        this.includeDeveloperDependencies = includeDeveloperDependencies;
-        this.includePeerDependencies = includePeerDependencies;
+    public NpmLockfileOptions(EnumListFilter<NpmDependencyType> npmDependencyTypeFilter) {
+        this.npmDependencyTypeFilter = npmDependencyTypeFilter;
     }
 
-    public boolean shouldIncludeDeveloperDependencies() {
-        return includeDeveloperDependencies;
-    }
-
-    public boolean shouldIncludePeerDependencies() {
-        return includePeerDependencies;
+    public EnumListFilter<NpmDependencyType> getNpmDependencyTypeFilter() {
+        return npmDependencyTypeFilter;
     }
 }

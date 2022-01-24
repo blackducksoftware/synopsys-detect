@@ -1,7 +1,7 @@
 package com.synopsys.integration.detectable.detectables.lerna.unit;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -54,9 +54,9 @@ class LernaPackageDiscovererTest {
         );
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        LernaPackageDiscoverer lernaPackageDiscoverer = new LernaPackageDiscoverer(executableRunner, gson);
+        LernaPackageDiscoverer lernaPackageDiscoverer = new LernaPackageDiscoverer(executableRunner, gson, Collections.singletonList("@lerna/packageC"), new LinkedList<>());
 
-        List<LernaPackage> lernaPackages = lernaPackageDiscoverer.discoverLernaPackages(workingDirectory, lernaExecutable, Arrays.asList("@lerna/packageC"), new LinkedList<>());
+        List<LernaPackage> lernaPackages = lernaPackageDiscoverer.discoverLernaPackages(workingDirectory, lernaExecutable);
 
         Assertions.assertEquals(2, lernaPackages.size(), "Expected to find two Lerna packages.");
 
