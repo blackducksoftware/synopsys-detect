@@ -5,7 +5,7 @@ buildscript {
     }
 
     apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-repositories.gradle', to: buildscript
-    project.ext { managedCgpVersion = '2.0.1' }
+    apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-cgp-version.gradle'
 
     dependencies {
         classpath "com.synopsys.integration:common-gradle-plugin:${managedCgpVersion}"
