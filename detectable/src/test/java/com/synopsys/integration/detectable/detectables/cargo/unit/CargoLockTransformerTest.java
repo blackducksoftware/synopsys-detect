@@ -11,7 +11,7 @@ import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectables.cargo.model.CargoLock;
-import com.synopsys.integration.detectable.detectables.cargo.parse.CargoLockTransformer;
+import com.synopsys.integration.detectable.detectables.cargo.transform.CargoLockTransformer;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
 public class CargoLockTransformerTest {

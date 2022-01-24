@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.cargo.parse;
+package com.synopsys.integration.detectable.detectables.cargo.transform;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,7 +16,7 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.dependency.DependencyFactory;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.cargo.model.CargoLock;
-import com.synopsys.integration.detectable.detectables.cargo.model.Package;
+import com.synopsys.integration.detectable.detectables.cargo.model.CargoLockPackage;
 
 public class CargoLockTransformer {
 
@@ -28,14 +28,14 @@ public class CargoLockTransformer {
         return cargoLock.getPackages().map(this::parseDependencies);
     }
 
-    private DependencyGraph parseDependencies(List<Package> lockPackages) {
+    private DependencyGraph parseDependencies(List<CargoLockPackage> lockPackages) {
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
         determineRootPackages(lockPackages).stream()
             .map(packageMap::get)
             .forEach(graph::addChildToRoot);
 
-        for (Package lockPackage : lockPackages) { //TODO: Do this with a stream and another method.
+        for (CargoLockPackage lockPackage : lockPackages) { //TODO: Do this with a stream and another method.
             if (!lockPackage.getDependencies().isPresent()) {
                 continue;
             }
@@ -51,11 +51,11 @@ public class CargoLockTransformer {
         return graph;
     }
 
-    private Set<String> determineRootPackages(List<Package> lockPackages) { //TODO: root packages should be identified by name AND version (ex. comp:1.0.0 is a root dep but comp:1.1.0 is a transitive of otherComp:1.0.0)
+    private Set<String> determineRootPackages(List<CargoLockPackage> lockPackages) { //TODO: root packages should be identified by name AND version (ex. comp:1.0.0 is a root dep but comp:1.1.0 is a transitive of otherComp:1.0.0)
         Set<String> rootPackages = new HashSet<>();
         Set<String> dependencyPackages = new HashSet<>();
 
-        for (Package lockPackage : lockPackages) {
+        for (CargoLockPackage lockPackage : lockPackages) {
             String projectName = lockPackage.getName().orElse("");
             String projectVersion = lockPackage.getVersion().orElse("");
 

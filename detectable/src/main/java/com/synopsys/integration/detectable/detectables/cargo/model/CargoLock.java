@@ -7,9 +7,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class CargoLock {
     @SerializedName("package")
-    private List<Package> packages;
+    private List<CargoLockPackage> packages;
 
-    public Optional<List<Package>> getPackages() {
+    public Optional<List<CargoLockPackage>> getPackages() {
         return Optional.ofNullable(packages);
     }
 }

@@ -3,7 +3,7 @@ package com.synopsys.integration.detectable.detectables.cargo.model;
 import java.util.List;
 import java.util.Optional;
 
-public class Package {
+public class CargoLockPackage {
     private String name;
     private String version;
     private String source;

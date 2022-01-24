@@ -10,6 +10,12 @@ import org.tomlj.Toml;
 import org.tomlj.TomlParseResult;
 
 public class TomlFileUtils {
+
+    private TomlFileUtils() {
+        // Hiding constructor
+    }
+
+    // TODO: We should have a good reason for not letting the library parse to model objects. This shouldn't be a utility. JM-01/2022
     public static TomlParseResult parseFile(File tomlFile) throws IOException {
         return Toml.parse(getFileAsString(tomlFile, Charset.defaultCharset()));
     }
