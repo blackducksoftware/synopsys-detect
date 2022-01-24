@@ -21,30 +21,30 @@ public class Pipelines {
         Pipeline mavenJarPipeline = (new PipelineBuilder(externalIdFactory, bazelCommandExecutor, bazelVariableSubstitutor, haskellCabalLibraryJsonProtoParser))
             .executeBazelOnEachLine(Arrays.asList(CQUERY_COMMAND, CQUERY_OPTIONS_PLACEHOLDER, "filter('@.*:jar', deps(${detect.bazel.target}))"), false)
             // The trailing parens may contain a hex number, or "null"; the pattern below handles either
-            .replaceInEachLine(" \\([0-9a-z]+\\)", "")
-            .splitEachLine("\\s+")
-            .replaceInEachLine("^@", "")
-            .replaceInEachLine("//.*", "")
-            .replaceInEachLine("^", "//external:")
+            .parseReplaceInEachLine(" \\([0-9a-z]+\\)", "")
+            .parseSplitEachLine("\\s+")
+            .parseReplaceInEachLine("^@", "")
+            .parseReplaceInEachLine("//.*", "")
+            .parseReplaceInEachLine("^", "//external:")
             .executeBazelOnEachLine(Arrays.asList("query", "kind(maven_jar, ${input.item})", OUTPUT_FLAG, "xml"), true)
-            .parseValueFromEachXmlLine("/query/rule[@class='maven_jar']/string[@name='artifact']", "value")
-            .transformLinesToMavenDependencies()
+            .parseValuesFromXml("/query/rule[@class='maven_jar']/string[@name='artifact']", "value")
+            .transformToMavenDependencies()
             .build();
         availablePipelines.put(WorkspaceRule.MAVEN_JAR, mavenJarPipeline);
 
         Pipeline mavenInstallPipeline = (new PipelineBuilder(externalIdFactory, bazelCommandExecutor, bazelVariableSubstitutor, haskellCabalLibraryJsonProtoParser))
             .executeBazelOnEachLine(Arrays.asList(CQUERY_COMMAND, "--noimplicit_deps", CQUERY_OPTIONS_PLACEHOLDER, "kind(j.*import, deps(${detect.bazel.target}))", OUTPUT_FLAG, "build"), false)
-            .splitEachLine("\r?\n")
-            .filterLines(".*maven_coordinates=.*")
-            .replaceInEachLine(".*\"maven_coordinates=", "")
-            .replaceInEachLine("\".*", "")
-            .transformLinesToMavenDependencies()
+            .parseSplitEachLine("\r?\n")
+            .parseFilterLines(".*maven_coordinates=.*")
+            .parseReplaceInEachLine(".*\"maven_coordinates=", "")
+            .parseReplaceInEachLine("\".*", "")
+            .transformToMavenDependencies()
             .build();
         availablePipelines.put(WorkspaceRule.MAVEN_INSTALL, mavenInstallPipeline);
 
         Pipeline haskellCabalLibraryPipeline = (new PipelineBuilder(externalIdFactory, bazelCommandExecutor, bazelVariableSubstitutor, haskellCabalLibraryJsonProtoParser))
             .executeBazelOnEachLine(Arrays.asList(CQUERY_COMMAND, "--noimplicit_deps", CQUERY_OPTIONS_PLACEHOLDER, "kind(haskell_cabal_library, deps(${detect.bazel.target}))", OUTPUT_FLAG, "jsonproto"), false)
-            .transformLinesToHackageDependencies()
+            .transformToHackageDependencies()
             .build();
         availablePipelines.put(WorkspaceRule.HASKELL_CABAL_LIBRARY, haskellCabalLibraryPipeline);
     }

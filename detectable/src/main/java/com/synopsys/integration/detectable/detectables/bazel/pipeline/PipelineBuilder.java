@@ -51,11 +51,11 @@ public class PipelineBuilder {
     }
 
     // Step creation methods
-    public PipelineBuilder replaceInEachLine(String from, String to) {
+    public PipelineBuilder parseReplaceInEachLine(String from, String to) {
         return addIntermediateStep(new IntermediateStepReplaceInEach(from, to));
     }
 
-    public PipelineBuilder splitEachLine(String splitOn) {
+    public PipelineBuilder parseSplitEachLine(String splitOn) {
         return addIntermediateStep(new IntermediateStepSplitEach(splitOn));
     }
 
@@ -63,20 +63,20 @@ public class PipelineBuilder {
         return addIntermediateStep(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, bazelArguments, inputIsExpected));
     }
 
-    public PipelineBuilder parseValueFromEachXmlLine(String xPathToElement, String targetAttributeName) {
+    public PipelineBuilder parseValuesFromXml(String xPathToElement, String targetAttributeName) {
         return addIntermediateStep(new IntermediateStepParseEachXml(xPathToElement, targetAttributeName));
     }
 
-    public PipelineBuilder filterLines(String regex) {
+    public PipelineBuilder parseFilterLines(String regex) {
         return addIntermediateStep(new IntermediateStepFilter(regex));
     }
 
     // These can only be the final step in the pipeline
-    public PipelineBuilder transformLinesToMavenDependencies() {
+    public PipelineBuilder transformToMavenDependencies() {
         return setFinalStep(new FinalStepColonSeparatedGavs(externalIdFactory));
     }
 
-    public PipelineBuilder transformLinesToHackageDependencies() {
+    public PipelineBuilder transformToHackageDependencies() {
         return setFinalStep(new FinalStepJsonProtoHaskellCabalLibraries(haskellCabalLibraryJsonProtoParser, externalIdFactory));
     }
 }
