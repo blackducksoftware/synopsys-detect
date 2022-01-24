@@ -11,23 +11,28 @@ import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
+import com.synopsys.integration.detectable.detectables.rubygems.GemspecDependencyType;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecLineParser;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecParser;
 import com.synopsys.integration.detectable.util.graph.GraphAssert;
 
 class GemspecParserTest {
     private final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-    private final GemspecLineParser gemspecLineParser = new GemspecLineParser();
-    private final GemspecParser gemspecParser = new GemspecParser(externalIdFactory, gemspecLineParser);
 
     private final ExternalId externalId1 = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, "fakegem1", "~> 0.7.1");
     private final ExternalId externalId2 = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, "fakegem2", "1.0.0");
     private final ExternalId externalId3 = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, "fakegem3", ">= 2.0.0, <3.0.0");
 
+    private GemspecParser gemspecParser(GemspecDependencyType... excludedTypes) {
+        GemspecLineParser gemspecLineParser = new GemspecLineParser();
+        return new GemspecParser(externalIdFactory, gemspecLineParser, EnumListFilter.fromExcluded(excludedTypes));
+    }
+
     @Test
     void parseWithJustNormalDependencies() throws IOException {
         InputStream gemspecInputStream = createGemspecInputStream();
-        DependencyGraph dependencyGraph = gemspecParser.parse(gemspecInputStream, false, false);
+        DependencyGraph dependencyGraph = gemspecParser(GemspecDependencyType.RUNTIME, GemspecDependencyType.DEV).parse(gemspecInputStream);
 
         GraphAssert graphAssert = new GraphAssert(Forge.RUBYGEMS, dependencyGraph);
         graphAssert.hasRootDependency(externalId1);
@@ -37,9 +42,8 @@ class GemspecParserTest {
 
     @Test
     void parseWithRuntimeDependencies() throws IOException {
-        GemspecParser gemspecParser = new GemspecParser(externalIdFactory, gemspecLineParser);
         InputStream gemspecInputStream = createGemspecInputStream();
-        DependencyGraph dependencyGraph = gemspecParser.parse(gemspecInputStream, true, false);
+        DependencyGraph dependencyGraph = gemspecParser(GemspecDependencyType.DEV).parse(gemspecInputStream);
 
         GraphAssert graphAssert = new GraphAssert(Forge.RUBYGEMS, dependencyGraph);
         graphAssert.hasRootDependency(externalId1);
@@ -49,9 +53,8 @@ class GemspecParserTest {
 
     @Test
     void parseWithDevelopmentDependencies() throws IOException {
-        GemspecParser gemspecParser = new GemspecParser(externalIdFactory, gemspecLineParser);
         InputStream gemspecInputStream = createGemspecInputStream();
-        DependencyGraph dependencyGraph = gemspecParser.parse(gemspecInputStream, false, true);
+        DependencyGraph dependencyGraph = gemspecParser(GemspecDependencyType.RUNTIME).parse(gemspecInputStream);
 
         GraphAssert graphAssert = new GraphAssert(Forge.RUBYGEMS, dependencyGraph);
         graphAssert.hasRootDependency(externalId1);
@@ -61,9 +64,8 @@ class GemspecParserTest {
 
     @Test
     void parseWithAllDependencies() throws IOException {
-        GemspecParser gemspecParser = new GemspecParser(externalIdFactory, gemspecLineParser);
         InputStream gemspecInputStream = createGemspecInputStream();
-        DependencyGraph dependencyGraph = gemspecParser.parse(gemspecInputStream, true, true);
+        DependencyGraph dependencyGraph = gemspecParser().parse(gemspecInputStream);
 
         GraphAssert graphAssert = new GraphAssert(Forge.RUBYGEMS, dependencyGraph);
         graphAssert.hasRootDependency(externalId1);

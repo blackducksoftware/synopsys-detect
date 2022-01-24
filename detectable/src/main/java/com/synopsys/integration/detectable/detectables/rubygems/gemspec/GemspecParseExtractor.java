@@ -17,9 +17,9 @@ public class GemspecParseExtractor {
         this.gemspecParser = gemspecParser;
     }
 
-    public Extraction extract(File gemspec, boolean includeRuntime, boolean includeDev) {
+    public Extraction extract(File gemspec) {
         try (InputStream inputStream = new FileInputStream(gemspec)) {
-            DependencyGraph dependencyGraph = gemspecParser.parse(inputStream, includeRuntime, includeDev);
+            DependencyGraph dependencyGraph = gemspecParser.parse(inputStream);
             CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 
             return new Extraction.Builder().success(codeLocation).build();

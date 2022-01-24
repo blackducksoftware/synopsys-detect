@@ -384,8 +384,11 @@ public class DetectableFactory {
         return new GradleProjectInspectorDetectable(detectableEnvironment, fileFinder, projectInspectorResolver, projectInspectorExtractor(), projectInspectorOptions);
     }
 
-    public GemspecParseDetectable createGemspecParseDetectable(DetectableEnvironment environment, GemspecParseDetectableOptions gemspecParseDetectableOptions) {
-        return new GemspecParseDetectable(environment, fileFinder, gemspecExtractor(), gemspecParseDetectableOptions);
+    public GemspecParseDetectable createGemspecParseDetectable(DetectableEnvironment environment, GemspecParseDetectableOptions gemspecOptions) {
+        GemspecLineParser gemspecLineParser = new GemspecLineParser();
+        GemspecParser gemspecParser = new GemspecParser(externalIdFactory, gemspecLineParser, gemspecOptions.getDependencyTypeFilter());
+        GemspecParseExtractor gemspecParseExtractor = new GemspecParseExtractor(gemspecParser);
+        return new GemspecParseDetectable(environment, fileFinder, gemspecParseExtractor);
     }
 
     public IvyParseDetectable createIvyParseDetectable(DetectableEnvironment environment) {
@@ -898,18 +901,6 @@ public class DetectableFactory {
 
     private DockerExtractor dockerExtractor() {
         return new DockerExtractor(fileFinder, executableRunner, new BdioTransformer(), new ExternalIdFactory(), gson);
-    }
-
-    private GemspecLineParser gemspecLineParser() {
-        return new GemspecLineParser();
-    }
-
-    private GemspecParser gemspecParser() {
-        return new GemspecParser(externalIdFactory, gemspecLineParser());
-    }
-
-    private GemspecParseExtractor gemspecExtractor() {
-        return new GemspecParseExtractor(gemspecParser());
     }
 
     private GoGradleLockParser goGradleLockParser() {
