@@ -125,8 +125,13 @@ public class BitbakeExtractor {
         return licenseManifestParser.collectImageRecipes(licenseManifestLines);
     }
 
-    private BitbakeGraph generateBitbakeGraph(BitbakeSession bitbakeSession, File buildDir, String packageName, Set<String> knownLayers, boolean followSymLinks, Integer searchDepth)
-        throws IOException, IntegrationException, ExecutableFailedException {
+    private BitbakeGraph generateBitbakeGraph(BitbakeSession bitbakeSession,
+        File buildDir,
+        String packageName,
+        Set<String> knownLayers,
+        boolean followSymLinks,
+        Integer searchDepth
+    ) throws IOException, IntegrationException, ExecutableFailedException {
         File taskDependsFile = bitbakeSession.executeBitbakeForDependencies(buildDir, packageName, followSymLinks, searchDepth);
         if (logger.isTraceEnabled()) {
             logger.trace(FileUtils.readFileToString(taskDependsFile, Charset.defaultCharset()));
