@@ -45,7 +45,7 @@ public class PubDepsExtractor {
             pubDepsCommand.add("pub");
             pubDepsCommand.add("deps");
 
-            if (dartPubDepsDetectableOptions.isExcludeDevDependencies()) {
+            if (dartPubDepsDetectableOptions.getDependencyTypeFilter().shouldExclude(DartPubDependencyType.DEV)) {
                 pubDepsCommand.add("--no-dev");
             }
 

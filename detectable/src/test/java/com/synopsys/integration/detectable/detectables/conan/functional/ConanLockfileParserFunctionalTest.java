@@ -13,7 +13,7 @@ import com.google.gson.Gson;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
-import com.synopsys.integration.detectable.detectable.util.ExcludedDependencyTypeFilter;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.conan.ConanCodeLocationGenerator;
 import com.synopsys.integration.detectable.detectables.conan.ConanDetectableResult;
 import com.synopsys.integration.detectable.detectables.conan.cli.config.ConanDependencyType;
@@ -28,7 +28,7 @@ public class ConanLockfileParserFunctionalTest {
     @Test
     public void testNoProjectRef() throws IOException, IntegrationException {
         File lockfile = FunctionalTestFiles.asFile("/conan/lockfile/conan.lock");
-        ExcludedDependencyTypeFilter<ConanDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>();
+        EnumListFilter<ConanDependencyType> dependencyTypeFilter = EnumListFilter.excludeNone();
         ConanLockfileParser parser = new ConanLockfileParser(new Gson(), new ConanCodeLocationGenerator(dependencyTypeFilter, false), new ExternalIdFactory());
         String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
 
@@ -42,7 +42,7 @@ public class ConanLockfileParserFunctionalTest {
     @Test
     public void testWithDevDependencies() throws IOException, IntegrationException {
         File lockfile = FunctionalTestFiles.asFile("/conan/lockfile/conan_buildrequirements.lock");
-        ExcludedDependencyTypeFilter<ConanDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>();
+        EnumListFilter<ConanDependencyType> dependencyTypeFilter = EnumListFilter.excludeNone();
         ConanLockfileParser parser = new ConanLockfileParser(new Gson(), new ConanCodeLocationGenerator(dependencyTypeFilter, false), new ExternalIdFactory());
         String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
 
@@ -56,7 +56,7 @@ public class ConanLockfileParserFunctionalTest {
     @Test
     public void testNoProjectRefLongFormExternalIds() throws IOException, IntegrationException {
         File lockfile = FunctionalTestFiles.asFile("/conan/lockfile/conan.lock");
-        ExcludedDependencyTypeFilter<ConanDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>();
+        EnumListFilter<ConanDependencyType> dependencyTypeFilter = EnumListFilter.excludeNone();
         ConanLockfileParser parser = new ConanLockfileParser(new Gson(), new ConanCodeLocationGenerator(dependencyTypeFilter, true), new ExternalIdFactory());
         String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
 
@@ -70,7 +70,7 @@ public class ConanLockfileParserFunctionalTest {
     @Test
     public void testProjectRef() throws IOException, IntegrationException {
         File lockfile = FunctionalTestFiles.asFile("/conan/lockfile/conan_projectref.lock");
-        ExcludedDependencyTypeFilter<ConanDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>();
+        EnumListFilter<ConanDependencyType> dependencyTypeFilter = EnumListFilter.excludeNone();
         ConanLockfileParser parser = new ConanLockfileParser(new Gson(), new ConanCodeLocationGenerator(dependencyTypeFilter, true), new ExternalIdFactory());
         String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
 
@@ -83,7 +83,7 @@ public class ConanLockfileParserFunctionalTest {
     @Test
     public void testRelativePath() throws IOException, IntegrationException {
         File lockfile = FunctionalTestFiles.asFile("/conan/lockfile/conan_relpath.lock");
-        ExcludedDependencyTypeFilter<ConanDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>();
+        EnumListFilter<ConanDependencyType> dependencyTypeFilter = EnumListFilter.excludeNone();
         ConanLockfileParser parser = new ConanLockfileParser(new Gson(), new ConanCodeLocationGenerator(dependencyTypeFilter, true), new ExternalIdFactory());
         String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
 

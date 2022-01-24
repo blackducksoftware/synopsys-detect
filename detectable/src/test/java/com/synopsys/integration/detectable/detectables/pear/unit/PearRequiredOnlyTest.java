@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.pear.model.PackageDependency;
 import com.synopsys.integration.detectable.detectables.pear.parse.PearListParser;
 import com.synopsys.integration.detectable.detectables.pear.parse.PearPackageDependenciesParser;
@@ -48,7 +49,7 @@ public class PearRequiredOnlyTest {
         ExternalIdFactory factory = new ExternalIdFactory();
         Map<String, String> dependencyNameVersionMap = new PearListParser().parse(pearList);
         List<PackageDependency> packageDependencies = new PearPackageDependenciesParser().parse(pearPackageDependencies);
-        DependencyGraph dependencyGraph = new PearDependencyGraphTransformer(factory).buildDependencyGraph(dependencyNameVersionMap, packageDependencies, false);
+        DependencyGraph dependencyGraph = new PearDependencyGraphTransformer(factory, EnumListFilter.excludeNone()).buildDependencyGraph(dependencyNameVersionMap, packageDependencies);
 
         Assertions.assertTrue(dependencyGraph.hasDependency(factory.createNameVersionExternalId(Forge.PEAR, "Auth_SASL", "1.1.0")), "Must have Auth_SASL even though it was not a required dependency.");
     }

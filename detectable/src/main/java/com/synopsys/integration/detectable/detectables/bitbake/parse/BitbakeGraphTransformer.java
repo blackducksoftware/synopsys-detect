@@ -16,7 +16,7 @@ import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.detectable.util.ExcludedDependencyTypeFilter;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDependencyType;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeNode;
@@ -28,18 +28,20 @@ public class BitbakeGraphTransformer {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final ExternalIdFactory externalIdFactory;
+    private final EnumListFilter<BitbakeDependencyType> dependencyTypeFilter;
 
-    public BitbakeGraphTransformer(ExternalIdFactory externalIdFactory) {
+    public BitbakeGraphTransformer(ExternalIdFactory externalIdFactory, EnumListFilter<BitbakeDependencyType> dependencyTypeFilter) {
         this.externalIdFactory = externalIdFactory;
+        this.dependencyTypeFilter = dependencyTypeFilter;
     }
 
-    public DependencyGraph transform(BitbakeGraph bitbakeGraph, Map<String, List<String>> recipeLayerMap, Map<String, String> imageRecipes, ExcludedDependencyTypeFilter<BitbakeDependencyType> excludedDependencyTypeFilter) {
-        Map<String, Dependency> namesToExternalIds = generateExternalIds(bitbakeGraph, recipeLayerMap, imageRecipes, excludedDependencyTypeFilter);
+    public DependencyGraph transform(BitbakeGraph bitbakeGraph, Map<String, List<String>> recipeLayerMap, Map<String, String> imageRecipes) {
+        Map<String, Dependency> namesToExternalIds = generateExternalIds(bitbakeGraph, recipeLayerMap, imageRecipes);
         return buildGraph(bitbakeGraph, namesToExternalIds);
     }
 
     @NotNull
-    private Map<String, Dependency> generateExternalIds(final BitbakeGraph bitbakeGraph, final Map<String, List<String>> recipeLayerMap, final Map<String, String> imageRecipes, ExcludedDependencyTypeFilter<BitbakeDependencyType> excludedDependencyTypeFilter) {
+    private Map<String, Dependency> generateExternalIds(BitbakeGraph bitbakeGraph, Map<String, List<String>> recipeLayerMap, Map<String, String> imageRecipes) {
         Map<String, Dependency> namesToExternalIds = new HashMap<>();
         for (BitbakeNode bitbakeNode : bitbakeGraph.getNodes()) {
             String name = bitbakeNode.getName();
@@ -47,7 +49,7 @@ public class BitbakeGraphTransformer {
             if (bitbakeNode.getVersion().isPresent()) {
                 String version = bitbakeNode.getVersion().get();
                 Optional<String> actualLayer = bitbakeNode.getLayer();
-                if (excludedDependencyTypeFilter.shouldReportDependencyType(BitbakeDependencyType.BUILD) || !isBuildDependency(imageRecipes, name, version)) {
+                if (dependencyTypeFilter.shouldInclude(BitbakeDependencyType.BUILD) || !isBuildDependency(imageRecipes, name, version)) {
                     Optional<Dependency> dependency = generateExternalId(name, version, actualLayer.orElse(null), recipeLayerMap).map(Dependency::new);
                     dependency.ifPresent(value -> namesToExternalIds.put(bitbakeNode.getName(), value));
                 }
@@ -61,7 +63,7 @@ public class BitbakeGraphTransformer {
     }
 
     @NotNull
-    private MutableDependencyGraph buildGraph(final BitbakeGraph bitbakeGraph, final Map<String, Dependency> namesToExternalIds) {
+    private MutableDependencyGraph buildGraph(BitbakeGraph bitbakeGraph, Map<String, Dependency> namesToExternalIds) {
         MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
         for (BitbakeNode bitbakeNode : bitbakeGraph.getNodes()) {
             String name = bitbakeNode.getName();
@@ -108,11 +110,11 @@ public class BitbakeGraphTransformer {
         return false;
     }
 
-    private String removeEpochPrefix(final String recipeVersion) {
+    private String removeEpochPrefix(String recipeVersion) {
         String epochlessRecipeVersion = recipeVersion;
         if (recipeVersion.matches(VERSION_WITH_EPOCH_PREFIX_REGEX)) {
             int colonPos = recipeVersion.indexOf(':');
-            epochlessRecipeVersion = recipeVersion.substring(colonPos+1);
+            epochlessRecipeVersion = recipeVersion.substring(colonPos + 1);
             logger.trace("epochlessVersion for {}: {}", recipeVersion, epochlessRecipeVersion);
         }
         return epochlessRecipeVersion;

@@ -20,18 +20,13 @@ public class NpmPackageJsonParseDetectable extends Detectable {
 
     private final FileFinder fileFinder;
     private final PackageJsonExtractor packageJsonExtractor;
-    private final boolean includeDevDependencies;
-    private final boolean includePeerDependencies;
 
     private File packageJsonFile;
 
-    public NpmPackageJsonParseDetectable(DetectableEnvironment environment, FileFinder fileFinder, PackageJsonExtractor packageJsonExtractor,
-        NpmPackageJsonParseDetectableOptions npmPackageJsonParseDetectableOptions) {
+    public NpmPackageJsonParseDetectable(DetectableEnvironment environment, FileFinder fileFinder, PackageJsonExtractor packageJsonExtractor) {
         super(environment);
         this.fileFinder = fileFinder;
         this.packageJsonExtractor = packageJsonExtractor;
-        this.includeDevDependencies = npmPackageJsonParseDetectableOptions.shouldIncludeDevDependencies();
-        this.includePeerDependencies = npmPackageJsonParseDetectableOptions.shouldIncludePeerDependencies();
     }
 
     @Override
@@ -49,7 +44,7 @@ public class NpmPackageJsonParseDetectable extends Detectable {
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         try (InputStream packageJsonInputStream = new FileInputStream(packageJsonFile)) {
-            return packageJsonExtractor.extract(packageJsonInputStream, includeDevDependencies, includePeerDependencies);
+            return packageJsonExtractor.extract(packageJsonInputStream);
         } catch (Exception e) {
             return new Extraction.Builder().exception(e).failure(String.format("Failed to parse %s", PACKAGE_JSON)).build();
         }

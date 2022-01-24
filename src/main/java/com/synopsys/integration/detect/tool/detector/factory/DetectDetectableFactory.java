@@ -71,8 +71,8 @@ public class DetectDetectableFactory {
     private final ProjectInspectorResolver projectInspectorResolver;
 
     public DetectDetectableFactory(DetectableFactory detectableFactory, DetectableOptionFactory detectableOptionFactory, DetectExecutableResolver detectExecutableResolver,
-                                   DockerInspectorResolver dockerInspectorResolver, GradleInspectorResolver gradleInspectorResolver, NugetInspectorResolver nugetInspectorResolver,
-                                   PipInspectorResolver pipInspectorResolver, ProjectInspectorResolver projectInspectorResolver) {
+        DockerInspectorResolver dockerInspectorResolver, GradleInspectorResolver gradleInspectorResolver, NugetInspectorResolver nugetInspectorResolver,
+        PipInspectorResolver pipInspectorResolver, ProjectInspectorResolver projectInspectorResolver) {
         this.detectableFactory = detectableFactory;
         this.detectableOptionFactory = detectableOptionFactory;
         this.detectExecutableResolver = detectExecutableResolver;
@@ -263,8 +263,8 @@ public class DetectDetectableFactory {
         return detectableFactory.createLernaDetectable(environment,
             detectExecutableResolver,
             detectableOptionFactory.createNpmLockfileOptions(),
-            detectableOptionFactory.createYarnLockOptions(),
-            detectableOptionFactory.createLernaOptions()
+            detectableOptionFactory.createLernaOptions(),
+            detectableOptionFactory.createYarnLockOptions()
         );
     }
 

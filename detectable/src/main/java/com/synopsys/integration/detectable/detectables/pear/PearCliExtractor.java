@@ -46,7 +46,7 @@ public class PearCliExtractor {
         this.pearListParser = pearListParser;
     }
 
-    public Extraction extract(ExecutableTarget pearExe, File packageXmlFile, File workingDirectory, boolean onlyGatherRequired) {
+    public Extraction extract(ExecutableTarget pearExe, File packageXmlFile, File workingDirectory) {
         try {
             ExecutableOutput pearListOutput = executableRunner.execute(ExecutableUtils.createFromTarget(workingDirectory, pearExe, "list"));
             ExecutableOutput packageDependenciesOutput = executableRunner.execute(ExecutableUtils.createFromTarget(workingDirectory, pearExe, "package-dependencies", PACKAGE_XML_FILENAME));
@@ -54,7 +54,7 @@ public class PearCliExtractor {
 
             Map<String, String> dependencyNameVersionMap = pearListParser.parse(pearListOutput.getStandardOutputAsList());
             List<PackageDependency> packageDependencies = pearPackageDependenciesParser.parse(packageDependenciesOutput.getStandardOutputAsList());
-            DependencyGraph dependencyGraph = pearDependencyGraphTransformer.buildDependencyGraph(dependencyNameVersionMap, packageDependencies, onlyGatherRequired);
+            DependencyGraph dependencyGraph = pearDependencyGraphTransformer.buildDependencyGraph(dependencyNameVersionMap, packageDependencies);
 
             try (InputStream packageXmlInputStream = new FileInputStream(packageXmlFile)) {
                 NameVersion projectNameVersion = pearPackageXmlParser.parse(packageXmlInputStream);

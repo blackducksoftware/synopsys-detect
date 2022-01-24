@@ -18,6 +18,8 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleConfigurationType;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleReport;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportParser;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportTransformer;
@@ -35,7 +37,7 @@ public class GradleReportParserFunctionalTest {
         GradleReportParser gradleReportParser = new GradleReportParser();
         Optional<GradleReport> gradleReport = gradleReportParser.parseReport(FunctionalTestFiles.asFile("/gradle/dependencyGraph.txt"));
         Assertions.assertTrue(gradleReport.isPresent());
-        GradleReportTransformer transformer = new GradleReportTransformer(new ExternalIdFactory(), true);
+        GradleReportTransformer transformer = new GradleReportTransformer(new ExternalIdFactory(), EnumListFilter.excludeNone());
         CodeLocation codeLocation = transformer.transform(gradleReport.get());
         Assertions.assertNotNull(codeLocation);
 
@@ -85,7 +87,11 @@ public class GradleReportParserFunctionalTest {
     private Optional<CodeLocation> buildCodeLocation(String resource, boolean includeUnresolvedConfigurations) {
         File file = FunctionalTestFiles.asFile(resource);
         GradleReportParser gradleReportParser = new GradleReportParser();
-        GradleReportTransformer gradleReportTransformer = new GradleReportTransformer(new ExternalIdFactory(), includeUnresolvedConfigurations);
+        EnumListFilter<GradleConfigurationType> enumListFilter = EnumListFilter.excludeNone();
+        if (!includeUnresolvedConfigurations) {
+            enumListFilter = EnumListFilter.fromExcluded(GradleConfigurationType.UNRESOLVED);
+        }
+        GradleReportTransformer gradleReportTransformer = new GradleReportTransformer(new ExternalIdFactory(), enumListFilter);
 
         return gradleReportParser.parseReport(file)
             .map(gradleReportTransformer::transform);

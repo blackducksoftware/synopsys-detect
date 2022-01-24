@@ -22,7 +22,7 @@ import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
-import com.synopsys.integration.detectable.detectable.util.ExcludedDependencyTypeFilter;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeEnvironment;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeEnvironmentParser;
@@ -59,7 +59,16 @@ public class BitbakeExtractor {
         this.bitbakeEnvironmentParser = bitbakeEnvironmentParser;
     }
 
-    public Extraction extract(File sourceDirectory, File buildEnvScript, List<String> sourceArguments, List<String> packageNames, boolean followSymLinks, Integer searchDepth, ExcludedDependencyTypeFilter<BitbakeDependencyType> excludedDependencyTypeFilter, ExecutableTarget bash) {
+    public Extraction extract(
+        File sourceDirectory,
+        File buildEnvScript,
+        List<String> sourceArguments,
+        List<String> packageNames,
+        boolean followSymLinks,
+        Integer searchDepth,
+        EnumListFilter<BitbakeDependencyType> dependencyTypeFilter,
+        ExecutableTarget bash
+    ) {
         List<CodeLocation> codeLocations = new ArrayList<>();
         BitbakeSession bitbakeSession = new BitbakeSession(executableRunner, bitbakeRecipesParser, sourceDirectory, buildEnvScript, sourceArguments, bash, toolVersionLogger, buildFileFinder, bitbakeEnvironmentParser);
         bitbakeSession.logBitbakeVersion();
@@ -70,11 +79,11 @@ public class BitbakeExtractor {
             for (String packageName : packageNames) {
                 Map<String, String> imageRecipes = null;
                 try {
-                    if (excludedDependencyTypeFilter.shouldExcludeDependencyType(BitbakeDependencyType.BUILD)) {
+                    if (dependencyTypeFilter.shouldExclude(BitbakeDependencyType.BUILD)) {
                         imageRecipes = readImageRecipes(buildDir, packageName, bitbakeEnvironment, followSymLinks, searchDepth);
                     }
                     BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, buildDir, packageName, showRecipesResults.get().getLayerNames(), followSymLinks, searchDepth);
-                    DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, showRecipesResults.get().getRecipesWithLayers(), imageRecipes, excludedDependencyTypeFilter);
+                    DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, showRecipesResults.get().getRecipesWithLayers(), imageRecipes);
                     CodeLocation codeLocation = new CodeLocation(dependencyGraph);
                     codeLocations.add(codeLocation);
                 } catch (IOException | IntegrationException | NotImplementedException | ExecutableFailedException e) {

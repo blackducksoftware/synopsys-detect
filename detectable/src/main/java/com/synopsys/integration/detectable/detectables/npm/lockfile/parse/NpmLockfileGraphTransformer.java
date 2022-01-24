@@ -6,12 +6,13 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gson.Gson;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
+import com.synopsys.integration.detectable.detectables.npm.NpmDependencyType;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmDependency;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmProject;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmRequires;
@@ -21,12 +22,14 @@ import com.synopsys.integration.util.NameVersion;
 public class NpmLockfileGraphTransformer {
     private final Logger logger = LoggerFactory.getLogger(NpmLockfileGraphTransformer.class);
     private final ExternalIdFactory externalIdFactory;
+    private final EnumListFilter<NpmDependencyType> npmDependencyTypeFilter;
 
-    public NpmLockfileGraphTransformer(Gson gson, ExternalIdFactory externalIdFactory) {
+    public NpmLockfileGraphTransformer(ExternalIdFactory externalIdFactory, EnumListFilter<NpmDependencyType> npmDependencyTypeFilter) {
         this.externalIdFactory = externalIdFactory;
+        this.npmDependencyTypeFilter = npmDependencyTypeFilter;
     }
 
-    public MutableDependencyGraph transform(PackageLock packageLock, NpmProject project, boolean includeDevDependencies, boolean includePeerDependencies, List<NameVersion> externalDependencies) {
+    public MutableDependencyGraph transform(PackageLock packageLock, NpmProject project, List<NameVersion> externalDependencies) {
         MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
 
         logger.debug("Processing project.");
@@ -35,7 +38,7 @@ public class NpmLockfileGraphTransformer {
 
             //First we will recreate the graph from the resolved npm dependencies
             for (NpmDependency resolved : project.getResolvedDependencies()) {
-                transformTreeToGraph(resolved, project, dependencyGraph, includeDevDependencies, includePeerDependencies, externalDependencies);
+                transformTreeToGraph(resolved, project, dependencyGraph, externalDependencies);
             }
 
             //Then we will add relationships between the project (root) and the graph
@@ -44,16 +47,16 @@ public class NpmLockfileGraphTransformer {
                 || !project.getDeclaredPeerDependencies().isEmpty();
             if (atLeastOneRequired) {
                 addRootDependencies(project.getResolvedDependencies(), project.getDeclaredDependencies(), dependencyGraph, externalDependencies);
-                if (includeDevDependencies) {
+                if (npmDependencyTypeFilter.shouldInclude(NpmDependencyType.DEV)) {
                     addRootDependencies(project.getResolvedDependencies(), project.getDeclaredDevDependencies(), dependencyGraph, externalDependencies);
                 }
-                if (includePeerDependencies) {
+                if (npmDependencyTypeFilter.shouldInclude(NpmDependencyType.PEER)) {
                     addRootDependencies(project.getResolvedDependencies(), project.getDeclaredPeerDependencies(), dependencyGraph, externalDependencies);
                 }
             } else {
                 project.getResolvedDependencies()
                     .stream()
-                    .filter(dep -> shouldIncludeDependency(dep, includeDevDependencies, includePeerDependencies))
+                    .filter(this::shouldIncludeDependency)
                     .forEach(dependencyGraph::addChildToRoot);
             }
 
@@ -76,8 +79,8 @@ public class NpmLockfileGraphTransformer {
         }
     }
 
-    private void transformTreeToGraph(NpmDependency npmDependency, NpmProject npmProject, MutableDependencyGraph dependencyGraph, boolean includeDevDependencies, boolean includePeerDependencies, List<NameVersion> externalDependencies) {
-        if (!shouldIncludeDependency(npmDependency, includeDevDependencies, includePeerDependencies)) {
+    private void transformTreeToGraph(NpmDependency npmDependency, NpmProject npmProject, MutableDependencyGraph dependencyGraph, List<NameVersion> externalDependencies) {
+        if (!shouldIncludeDependency(npmDependency)) {
             return;
         }
 
@@ -92,7 +95,7 @@ public class NpmLockfileGraphTransformer {
             }
         });
 
-        npmDependency.getDependencies().forEach(child -> transformTreeToGraph(child, npmProject, dependencyGraph, includeDevDependencies, includePeerDependencies, externalDependencies));
+        npmDependency.getDependencies().forEach(child -> transformTreeToGraph(child, npmProject, dependencyGraph, externalDependencies));
     }
 
     private Dependency lookupProjectOrExternal(String name, List<NpmDependency> projectResolvedDependencies, List<NameVersion> externalDependencies) {
@@ -128,12 +131,9 @@ public class NpmLockfileGraphTransformer {
         return null;
     }
 
-    private boolean shouldIncludeDependency(NpmDependency packageLockDependency, boolean includeDevDependencies, boolean includePeerDependencies) {
-        if (packageLockDependency.isDevDependency()) {
-            return includeDevDependencies;
-        } else if (packageLockDependency.isPeerDependency()) {
-            return includePeerDependencies;
-        }
-        return true;
+    private boolean shouldIncludeDependency(NpmDependency packageLockDependency) {
+        return (!packageLockDependency.isDevDependency() && !packageLockDependency.isPeerDependency()) // If the type is not dev or peer, we always want to include it.
+            || (packageLockDependency.isDevDependency() && npmDependencyTypeFilter.shouldInclude(NpmDependencyType.DEV))
+            || (packageLockDependency.isPeerDependency() && npmDependencyTypeFilter.shouldInclude(NpmDependencyType.PEER));
     }
 }

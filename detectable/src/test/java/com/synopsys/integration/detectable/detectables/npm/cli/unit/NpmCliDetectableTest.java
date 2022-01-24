@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.executable.resolver.NpmResolver;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
+import com.synopsys.integration.detectable.detectables.npm.NpmDependencyType;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliDetectable;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliExtractor;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliExtractorOptions;
@@ -23,7 +25,7 @@ public class NpmCliDetectableTest {
         DetectableEnvironment environment = MockDetectableEnvironment.empty();
         FileFinder fileFinder = MockFileFinder.withFileNamed("package.json");
 
-        NpmCliDetectable detectable = new NpmCliDetectable(environment, fileFinder, npmResolver, npmCliExtractor, new NpmCliExtractorOptions(false, false, ""));
+        NpmCliDetectable detectable = new NpmCliDetectable(environment, fileFinder, npmResolver, npmCliExtractor, new NpmCliExtractorOptions(EnumListFilter.fromExcluded(NpmDependencyType.DEV, NpmDependencyType.PEER), ""));
 
         assertTrue(detectable.applicable().getPassed());
     }
