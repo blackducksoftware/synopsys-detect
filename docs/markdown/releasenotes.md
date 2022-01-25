@@ -7,6 +7,7 @@
 
 ### Changed features
 * The Go Mod Cli Detector no longer uses the "-u" flag when running **go list -m all**. This results in significantly faster scan times against Go Mod projects.
+* Deprecated the `detect.pnpm.dependency.types property` in favor of `detect.pnpm.dependency.types.excluded` for property consistency.
 
 ## Version 7.10.0
 
@@ -37,7 +38,7 @@
     * detect.pub.dependency.types.excluded
     * detect.go.mod.dependency.types.excluded
     * detect.gradle.configuration.types.excluded
-    * detect.lerna.dependency.types.excluded
+    * detect.lerna.package.types.excluded
     * detect.npm.dependency.types.excluded
     * detect.packagist.dependency.types.excluded
     * detect.pear.dependency.types.excluded
