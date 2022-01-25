@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.configuration;
+package com.synopsys.integration.detect.configuration.properties;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -10,6 +10,7 @@ import com.synopsys.integration.configuration.property.PropertyHelpInfo;
 import com.synopsys.integration.configuration.util.Category;
 import com.synopsys.integration.configuration.util.Group;
 import com.synopsys.integration.configuration.util.ProductMajorVersion;
+import com.synopsys.integration.detect.configuration.DetectPropertyFromVersion;
 
 public class DetectProperty<T extends Property> {
     private final T property;
@@ -39,18 +40,13 @@ public class DetectProperty<T extends Property> {
         return this;
     }
 
-    public DetectProperty<T> setHelp(@NotNull String shortText) {
-        this.propertyHelpInfo = new PropertyHelpInfo(shortText, null);
+    public DetectProperty<T> setHelp(@NotNull PropertyHelpInfo propertyHelpInfo) {
+        this.propertyHelpInfo = propertyHelpInfo;
         return this;
     }
 
-    public DetectProperty<T> setHelp(@NotNull String shortText, @Nullable String longText) {
-        this.propertyHelpInfo = new PropertyHelpInfo(shortText, longText);
-        return this;
-    }
-
-    public DetectProperty<T> setGroups(Group primaryGroup, Group... additionalGroups) {
-        this.propertyGroupInfo = new PropertyGroupInfo(primaryGroup, additionalGroups);
+    public DetectProperty<T> setGroups(PropertyGroupInfo propertyGroupInfo) {
+        this.propertyGroupInfo = propertyGroupInfo;
         return this;
     }
 
@@ -59,8 +55,8 @@ public class DetectProperty<T extends Property> {
         return this;
     }
 
-    public DetectProperty<T> setDeprecated(String description, ProductMajorVersion removeInVersion) {
-        this.propertyDeprecationInfo = new PropertyDeprecationInfo(description, removeInVersion);
+    public DetectProperty<T> setDeprecated(PropertyDeprecationInfo propertyDeprecationInfo) {
+        this.propertyDeprecationInfo = propertyDeprecationInfo;
         return this;
     }
 

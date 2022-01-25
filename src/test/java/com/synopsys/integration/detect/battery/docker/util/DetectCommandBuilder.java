@@ -11,7 +11,7 @@ import org.apache.commons.lang.StringUtils;
 import com.synopsys.integration.detect.battery.docker.integration.BlackDuckAssertions;
 import com.synopsys.integration.detect.battery.docker.integration.BlackDuckTestConnection;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detect.configuration.DetectProperty;
+import com.synopsys.integration.detect.configuration.properties.DetectProperty;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.util.NameVersion;
 

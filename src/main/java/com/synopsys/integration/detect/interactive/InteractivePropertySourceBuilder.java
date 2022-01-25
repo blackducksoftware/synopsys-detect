@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.source.MapPropertySource;
-import com.synopsys.integration.detect.configuration.DetectProperty;
+import com.synopsys.integration.detect.configuration.properties.DetectProperty;
 
 public class InteractivePropertySourceBuilder {
     private final Map<Property, InteractiveOption> propertyToOptionMap = new HashMap<>();
