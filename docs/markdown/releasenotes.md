@@ -38,7 +38,7 @@
     * detect.pub.dependency.types.excluded
     * detect.go.mod.dependency.types.excluded
     * detect.gradle.configuration.types.excluded
-    * detect.lerna.dependency.types.excluded
+    * detect.lerna.package.types.excluded
     * detect.npm.dependency.types.excluded
     * detect.packagist.dependency.types.excluded
     * detect.pear.dependency.types.excluded
