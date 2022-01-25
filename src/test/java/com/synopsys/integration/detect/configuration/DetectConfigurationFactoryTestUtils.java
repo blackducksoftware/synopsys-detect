@@ -25,7 +25,7 @@ class DetectConfigurationFactoryTestUtils {
         Map<String, String> propertyMap = Bds.of(properties).toMap(pair -> pair.getLeft().getKey(), Pair::getRight);
         PropertySource inMemoryPropertySource = new MapPropertySource("test", propertyMap);
         PropertyConfiguration propertyConfiguration = new PropertyConfiguration(Collections.singletonList(inMemoryPropertySource));
-
-        return new DetectConfigurationFactory(propertyConfiguration, new SimplePathResolver(), new Gson());
+        DetectPropertyConfiguration detectPropertyConfiguration = new DetectPropertyConfiguration(propertyConfiguration, new SimplePathResolver());
+        return new DetectConfigurationFactory(detectPropertyConfiguration, new Gson());
     }
 }

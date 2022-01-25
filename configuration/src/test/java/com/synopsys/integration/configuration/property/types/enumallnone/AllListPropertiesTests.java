@@ -33,7 +33,7 @@ public class AllListPropertiesTests {
     public void testAll() throws InvalidPropertyException {
         AllEnumListProperty<Example> property = new AllEnumListProperty<Example>("enum.valued", new ArrayList<>(), Example.class);
         PropertyConfiguration config = configOf(Pair.of("enum.valued", "ALL"));
-        AllEnumList<Example> list = property.toList(config.getValue(property));
+        AllEnumList<Example> list = config.getValue(property);
 
         Assertions.assertTrue(list.containsAll());
         Assertions.assertFalse(list.containsNone());
@@ -47,7 +47,7 @@ public class AllListPropertiesTests {
     public void testSingleValue() throws InvalidPropertyException {
         AllEnumListProperty<Example> property = new AllEnumListProperty<Example>("enum.valued", new ArrayList<>(), Example.class);
         PropertyConfiguration config = configOf(Pair.of("enum.valued", "thIrd"));
-        AllEnumList<Example> list = property.toList(config.getValue(property));
+        AllEnumList<Example> list = config.getValue(property);
 
         Assertions.assertFalse(list.containsNone());
         Assertions.assertFalse(list.containsAll());
@@ -63,7 +63,7 @@ public class AllListPropertiesTests {
     public void testTwoValues() throws InvalidPropertyException {
         AllEnumListProperty<Example> property = new AllEnumListProperty<Example>("enum.valued", new ArrayList<>(), Example.class);
         PropertyConfiguration config = configOf(Pair.of("enum.valued", "thIrd,another"));
-        AllEnumList<Example> list = property.toList(config.getValue(property));
+        AllEnumList<Example> list = config.getValue(property);
 
         Assertions.assertFalse(list.containsNone());
         Assertions.assertFalse(list.containsAll());
@@ -80,6 +80,6 @@ public class AllListPropertiesTests {
     public void testNoneThrows() throws InvalidPropertyException {
         AllEnumListProperty<Example> property = new AllEnumListProperty<Example>("enum.valued", new ArrayList<>(), Example.class);
         PropertyConfiguration config = configOf(Pair.of("enum.valued", "none"));
-        Assertions.assertThrows(InvalidPropertyException.class, () -> property.toList(config.getValue(property)));
+        Assertions.assertThrows(InvalidPropertyException.class, () -> config.getValue(property));
     }
 }

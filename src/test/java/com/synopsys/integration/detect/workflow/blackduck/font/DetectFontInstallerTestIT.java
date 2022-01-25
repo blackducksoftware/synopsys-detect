@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.types.path.SimplePathResolver;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
+import com.synopsys.integration.detect.configuration.DetectPropertyConfiguration;
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
 import com.synopsys.integration.detect.tool.cache.InstalledToolLocator;
 import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
@@ -41,7 +42,7 @@ public class DetectFontInstallerTestIT {
     public void testFontInstall() throws Exception {
         Gson gson = new Gson();
         PropertyConfiguration propertyConfiguration = new PropertyConfiguration(Collections.emptyList());
-        DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(propertyConfiguration, new SimplePathResolver(), gson);
+        DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(new DetectPropertyConfiguration(propertyConfiguration, new SimplePathResolver()), gson);
         ConnectionFactory connectionFactory = new ConnectionFactory(detectConfigurationFactory.createConnectionDetails());
         ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
         InstalledToolManager installedToolManager = new InstalledToolManager();

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.env.MockEnvironment;
 
+import com.synopsys.integration.configuration.property.base.NullableAlikeProperty;
 import com.synopsys.integration.configuration.property.base.NullableProperty;
 import com.synopsys.integration.configuration.property.types.string.NullableStringProperty;
 import com.synopsys.integration.configuration.source.PropertySource;
@@ -22,7 +23,7 @@ class SpringConfigurationPropertySourceTests {
         List<PropertySource> sources = new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironment(m, true));
         PropertyConfiguration config = new PropertyConfiguration(sources);
 
-        NullableProperty<String> property = new NullableStringProperty("example.key");
+        NullableAlikeProperty<String> property = new NullableStringProperty("example.key");
         Assertions.assertEquals(Optional.of("value"), config.getValue(property));
         Assertions.assertEquals(Optional.of("mockProperties"), config.getPropertySource(property));
     }
