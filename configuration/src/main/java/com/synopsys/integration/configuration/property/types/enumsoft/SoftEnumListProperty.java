@@ -6,11 +6,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.configuration.parse.ListValueParser;
+import com.synopsys.integration.configuration.property.base.ValuedAlikeListProperty;
 import com.synopsys.integration.configuration.property.base.ValuedListProperty;
 import com.synopsys.integration.configuration.util.EnumPropertyUtils;
 import com.synopsys.integration.configuration.util.PropertyUtils;
 
-public class SoftEnumListProperty<E extends Enum<E>> extends ValuedListProperty<SoftEnumValue<E>> {
+public class SoftEnumListProperty<E extends Enum<E>> extends ValuedAlikeListProperty<SoftEnumValue<E>> {
     @NotNull
     private final Class<E> enumClass;
 

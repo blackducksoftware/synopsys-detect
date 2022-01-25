@@ -6,10 +6,11 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.synopsys.integration.configuration.property.base.NullableAlikeProperty;
 import com.synopsys.integration.configuration.property.base.NullableProperty;
 import com.synopsys.integration.configuration.util.EnumPropertyUtils;
 
-public class NullableExtendedEnumProperty<E extends Enum<E>, B extends Enum<B>> extends NullableProperty<ExtendedEnumValue<E, B>> {
+public class NullableExtendedEnumProperty<E extends Enum<E>, B extends Enum<B>> extends NullableAlikeProperty<ExtendedEnumValue<E, B>> {
     private List<String> allOptions;
     private Class<B> bClass;
 

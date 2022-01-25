@@ -12,19 +12,13 @@ import com.synopsys.integration.configuration.util.PropertyUtils;
  * This is a property with a key and with a default value, it will always have a value.
  */
 // Using @JvmSuppressWildcards to prevent the Kotlin compiler from generating wildcard types: https://kotlinlang.org/docs/reference/java-to-kotlin-interop.html#variant-generics
-public abstract class ValuedListProperty<V, R> extends ValuedProperty<List<V>, R> {
-    public ValuedListProperty(@NotNull String key, @NotNull ValueParser<List<V>> valueParser, List<V> defaultValue) {
+public abstract class ValuedAlikeListProperty<V> extends ValuedListProperty<V, List<V>> {
+    public ValuedAlikeListProperty(@NotNull String key, @NotNull ValueParser<List<V>> valueParser, List<V> defaultValue) {
         super(key, valueParser, defaultValue);
     }
 
     @Override
-    public boolean isCommaSeparated() {
-        return true;
-    }
-
-    @Nullable
-    @Override
-    public String describeDefault() {
-        return PropertyUtils.describeObjectList(getDefaultValue());
+    public @NotNull List<V> convertValue(List<V> value) {
+        return value;
     }
 }
