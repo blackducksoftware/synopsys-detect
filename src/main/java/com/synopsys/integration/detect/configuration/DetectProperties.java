@@ -112,10 +112,13 @@ public class DetectProperties {
             .build();
 
     public static final StringListDetectProperty BLACKDUCK_PROXY_IGNORED_HOSTS =
-        StringListDetectProperty.newBuilder("blackduck.proxy.ignored.hosts", emptyList()).setInfo("Bypass Proxy Hosts", DetectPropertyFromVersion.VERSION_4_2_0)
+        StringListDetectProperty.newBuilder("blackduck.proxy.ignored.hosts", emptyList()).
+            setInfo("Bypass Proxy Hosts", DetectPropertyFromVersion.VERSION_4_2_0)
             .setHelp("A comma separated list of regular expression host patterns that should not use the proxy.",
                 "This property accepts Java regular expressions. Refer to the <i>Configuring Synopsys Detect</i> > <i>Java regular expression support</i> page for more details.")
-            .setGroups(DetectGroup.PROXY, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT).setCategory(DetectCategory.Advanced).setExample("blackduck[0-9]+.mycompany.com")
+            .setGroups(DetectGroup.PROXY, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT).
+            setCategory(DetectCategory.Advanced).
+            setExample("blackduck[0-9]+.mycompany.com")
             .build();
 
     public static final NullableStringDetectProperty BLACKDUCK_PROXY_NTLM_DOMAIN =
@@ -175,18 +178,26 @@ public class DetectProperties {
             .build();
 
     public static final IntegerDetectProperty DETECT_PARALLEL_PROCESSORS =
-        IntegerDetectProperty.newBuilder("detect.parallel.processors", 1).setInfo("Detect Parallel Processors", DetectPropertyFromVersion.VERSION_6_0_0)
-            .setHelp("The number of threads to run processes in parallel, defaults to 1, but if you specify less than or equal to 0, the number of processors on the machine will be used.").setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
+        IntegerDetectProperty.newBuilder("detect.parallel.processors", 1).
+            setInfo("Detect Parallel Processors", DetectPropertyFromVersion.VERSION_6_0_0)
+            .setHelp("The number of threads to run processes in parallel, defaults to 1, but if you specify less than or equal to 0, the number of processors on the machine will be used.").
+            setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced)
             .build();
 
     public static final NullablePathDetectProperty DETECT_BASH_PATH =
-        NullablePathDetectProperty.newBuilder("detect.bash.path").setInfo("Bash Executable", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("Path to the Bash executable.", "If set, Detect will use the given Bash executable instead of searching for one.").setExample("/usr/bin/bash").setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+        NullablePathDetectProperty.newBuilder("detect.bash.path").
+            setInfo("Bash Executable", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("Path to the Bash executable.", "If set, Detect will use the given Bash executable instead of searching for one.").
+            setExample("/usr/bin/bash").
+            setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .build();
 
     public static final NullablePathDetectProperty DETECT_BAZEL_PATH =
-        NullablePathDetectProperty.newBuilder("detect.bazel.path").setInfo("Bazel Executable", DetectPropertyFromVersion.VERSION_5_2_0).setHelp("The path to the Bazel executable.").setGroups(DetectGroup.BAZEL, DetectGroup.GLOBAL)
+        NullablePathDetectProperty.newBuilder("detect.bazel.path").
+            setInfo("Bazel Executable", DetectPropertyFromVersion.VERSION_5_2_0).
+            setHelp("The path to the Bazel executable.").
+            setGroups(DetectGroup.BAZEL, DetectGroup.GLOBAL)
             .build();
 
     public static final NullableStringDetectProperty DETECT_BAZEL_TARGET =
@@ -197,8 +208,10 @@ public class DetectProperties {
             .build();
 
     public static final StringListDetectProperty DETECT_BAZEL_CQUERY_OPTIONS =
-        StringListDetectProperty.newBuilder("detect.bazel.cquery.options", emptyList()).setInfo("Bazel cquery additional options", DetectPropertyFromVersion.VERSION_6_1_0)
-            .setHelp("A comma-separated list of additional options to pass to the bazel cquery command.").setGroups(DetectGroup.BAZEL, DetectGroup.SOURCE_SCAN)
+        StringListDetectProperty.newBuilder("detect.bazel.cquery.options", emptyList()).
+            setInfo("Bazel cquery additional options", DetectPropertyFromVersion.VERSION_6_1_0)
+            .setHelp("A comma-separated list of additional options to pass to the bazel cquery command.").
+            setGroups(DetectGroup.BAZEL, DetectGroup.SOURCE_SCAN)
             .build();
 
     public static final AllNoneEnumListDetectProperty<WorkspaceRule> DETECT_BAZEL_DEPENDENCY_RULE =
@@ -209,7 +222,10 @@ public class DetectProperties {
             .build();
 
     public static final NullablePathDetectProperty DETECT_CONAN_PATH =
-        NullablePathDetectProperty.newBuilder("detect.conan.path").setInfo("Conan Executable", DetectPropertyFromVersion.VERSION_6_8_0).setHelp("The path to the conan executable.").setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
+        NullablePathDetectProperty.newBuilder("detect.conan.path").
+            setInfo("Conan Executable", DetectPropertyFromVersion.VERSION_6_8_0).
+            setHelp("The path to the conan executable.").
+            setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
             .build();
 
     public static final NoneEnumListDetectProperty<ConanDependencyType> DETECT_CONAN_DEPENDENCY_TYPES_EXCLUDED =
@@ -229,7 +245,8 @@ public class DetectProperties {
             .build();
 
     public static final NullablePathDetectProperty DETECT_CONAN_LOCKFILE_PATH =
-        NullablePathDetectProperty.newBuilder("detect.conan.lockfile.path").setInfo("Conan Lockfile", DetectPropertyFromVersion.VERSION_6_8_0)
+        NullablePathDetectProperty.newBuilder("detect.conan.lockfile.path").
+            setInfo("Conan Lockfile", DetectPropertyFromVersion.VERSION_6_8_0)
             .setHelp("The path to the conan lockfile to apply when running 'conan info' to get the dependency graph. If set, Detect will execute the command 'conan info --lockfile {lockfile} .'")
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
             .build();
@@ -244,8 +261,10 @@ public class DetectProperties {
             .build();
 
     public static final NullablePathDetectProperty DETECT_BDIO_OUTPUT_PATH =
-        NullablePathDetectProperty.newBuilder("detect.bdio.output.path").setInfo("BDIO Output Directory", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("The path to the output directory for all BDIO files.", "If not set, the BDIO files are placed in a 'BDIO' subdirectory of the output directory.").setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+        NullablePathDetectProperty.newBuilder("detect.bdio.output.path").
+            setInfo("BDIO Output Directory", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("The path to the output directory for all BDIO files.", "If not set, the BDIO files are placed in a 'BDIO' subdirectory of the output directory.").
+            setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .build();
 
     public static final NullableStringDetectProperty DETECT_BDIO_FILE_NAME =
@@ -256,19 +275,25 @@ public class DetectProperties {
             .build();
 
     public static final NullablePathDetectProperty DETECT_BINARY_SCAN_FILE =
-        NullablePathDetectProperty.newBuilder("detect.binary.scan.file.path").setInfo("Binary Scan Target", DetectPropertyFromVersion.VERSION_4_2_0).setHelp(
+        NullablePathDetectProperty.newBuilder("detect.binary.scan.file.path").
+            setInfo("Binary Scan Target", DetectPropertyFromVersion.VERSION_4_2_0).
+            setHelp(
                 "If specified, this file and this file only will be uploaded for binary scan analysis. This property takes precedence over detect.binary.scan.file.name.patterns. The BINARY_SCAN tool does not provide project and version name defaults to Detect, so you need to set project and version names via properties when only the BINARY_SCAN tool is invoked.")
             .setGroups(DetectGroup.BINARY_SCANNER, DetectGroup.SOURCE_PATH)
             .build();
 
     public static final StringListDetectProperty DETECT_BINARY_SCAN_FILE_NAME_PATTERNS =
-        StringListDetectProperty.newBuilder("detect.binary.scan.file.name.patterns", emptyList()).setInfo("Binary Scan Filename Patterns", DetectPropertyFromVersion.VERSION_6_0_0).setHelp(
+        StringListDetectProperty.newBuilder("detect.binary.scan.file.name.patterns", emptyList()).
+            setInfo("Binary Scan Filename Patterns", DetectPropertyFromVersion.VERSION_6_0_0).
+            setHelp(
                 "If specified, all files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified. Search depth is controlled by property detect.binary.scan.search.depth. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
-            .setGroups(DetectGroup.BINARY_SCANNER, DetectGroup.SOURCE_PATH).setExample("*.jar")
+            .setGroups(DetectGroup.BINARY_SCANNER, DetectGroup.SOURCE_PATH).
+            setExample("*.jar")
             .build();
 
     public static final IntegerDetectProperty DETECT_BINARY_SCAN_SEARCH_DEPTH =
-        IntegerDetectProperty.newBuilder("detect.binary.scan.search.depth", 0).setInfo("Binary Scan Search Depth", DetectPropertyFromVersion.VERSION_6_9_0)
+        IntegerDetectProperty.newBuilder("detect.binary.scan.search.depth", 0).
+            setInfo("Binary Scan Search Depth", DetectPropertyFromVersion.VERSION_6_9_0)
             .setHelp("When binary scan filename patterns are being used to search for binary files to scan, this property sets the depth at which Detect will search for files (that match those patterns) to upload for binary scan analysis.")
             .setGroups(DetectGroup.BINARY_SCANNER, DetectGroup.SOURCE_SCAN)
             .build();
@@ -281,17 +306,23 @@ public class DetectProperties {
             .build();
 
     public static final StringListDetectProperty DETECT_BITBAKE_PACKAGE_NAMES =
-        StringListDetectProperty.newBuilder("detect.bitbake.package.names", emptyList()).setInfo("BitBake Package Names", DetectPropertyFromVersion.VERSION_4_4_0)
-            .setHelp("A comma-separated list of package names from which dependencies are extracted.").setGroups(DetectGroup.BITBAKE, DetectGroup.SOURCE_SCAN)
+        StringListDetectProperty.newBuilder("detect.bitbake.package.names", emptyList()).
+            setInfo("BitBake Package Names", DetectPropertyFromVersion.VERSION_4_4_0)
+            .setHelp("A comma-separated list of package names from which dependencies are extracted.").
+            setGroups(DetectGroup.BITBAKE, DetectGroup.SOURCE_SCAN)
             .build();
 
     public static final StringListDetectProperty DETECT_BITBAKE_SOURCE_ARGUMENTS =
-        StringListDetectProperty.newBuilder("detect.bitbake.source.arguments", emptyList()).setInfo("BitBake Source Arguments", DetectPropertyFromVersion.VERSION_6_0_0)
-            .setHelp("A comma-separated list of arguments to supply when sourcing the build environment init script.").setGroups(DetectGroup.BITBAKE, DetectGroup.SOURCE_SCAN)
+        StringListDetectProperty.newBuilder("detect.bitbake.source.arguments", emptyList()).
+            setInfo("BitBake Source Arguments", DetectPropertyFromVersion.VERSION_6_0_0)
+            .setHelp("A comma-separated list of arguments to supply when sourcing the build environment init script.").
+            setGroups(DetectGroup.BITBAKE, DetectGroup.SOURCE_SCAN)
             .build();
 
     public static final IntegerDetectProperty DETECT_BITBAKE_SEARCH_DEPTH =
-        IntegerDetectProperty.newBuilder("detect.bitbake.search.depth", 1).setInfo("BitBake Search Depth", DetectPropertyFromVersion.VERSION_6_1_0).setHelp("The depth at which Detect will search for files generated by Bitbake.")
+        IntegerDetectProperty.newBuilder("detect.bitbake.search.depth", 1).
+            setInfo("BitBake Search Depth", DetectPropertyFromVersion.VERSION_6_1_0).
+            setHelp("The depth at which Detect will search for files generated by Bitbake.")
             .setGroups(DetectGroup.BITBAKE, DetectGroup.SOURCE_SCAN)
             .build();
 
@@ -350,14 +381,19 @@ public class DetectProperties {
             .build();
 
     public static final NullablePathDetectProperty DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH =
-        NullablePathDetectProperty.newBuilder("detect.blackduck.signature.scanner.local.path").setInfo("Signature Scanner Local Path", DetectPropertyFromVersion.VERSION_4_2_0).setHelp(
+        NullablePathDetectProperty.newBuilder("detect.blackduck.signature.scanner.local.path").
+            setInfo("Signature Scanner Local Path", DetectPropertyFromVersion.VERSION_4_2_0).
+            setHelp(
                 "To use a local signature scanner, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL)
             .build();
 
     public static final IntegerDetectProperty DETECT_BLACKDUCK_SIGNATURE_SCANNER_MEMORY =
-        IntegerDetectProperty.newBuilder("detect.blackduck.signature.scanner.memory", 4096).setInfo("Signature Scanner Memory", DetectPropertyFromVersion.VERSION_4_2_0).setHelp("The memory for the scanner to use.")
-            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL).setCategory(DetectCategory.Advanced)
+        IntegerDetectProperty.newBuilder("detect.blackduck.signature.scanner.memory", 4096).
+            setInfo("Signature Scanner Memory", DetectPropertyFromVersion.VERSION_4_2_0).
+            setHelp("The memory for the scanner to use.")
+            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL).
+            setCategory(DetectCategory.Advanced)
             .build();
 
     public static final PathListDetectProperty DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS =
@@ -430,23 +466,38 @@ public class DetectProperties {
             .build();
 
     public static final NullablePathDetectProperty DETECT_CONDA_PATH =
-        NullablePathDetectProperty.newBuilder("detect.conda.path").setInfo("Conda Executable", DetectPropertyFromVersion.VERSION_3_0_0).setHelp("The path to the conda executable.").setGroups(DetectGroup.CONDA, DetectGroup.GLOBAL)
+        NullablePathDetectProperty.newBuilder("detect.conda.path").
+            setInfo("Conda Executable", DetectPropertyFromVersion.VERSION_3_0_0).
+            setHelp("The path to the conda executable.").
+            setGroups(DetectGroup.CONDA, DetectGroup.GLOBAL)
             .build();
 
     public static final NullablePathDetectProperty DETECT_CPAN_PATH =
-        NullablePathDetectProperty.newBuilder("detect.cpan.path").setInfo("cpan Executable", DetectPropertyFromVersion.VERSION_3_0_0).setHelp("The path to the cpan executable.").setGroups(DetectGroup.CPAN, DetectGroup.GLOBAL)
+        NullablePathDetectProperty.newBuilder("detect.cpan.path").
+            setInfo("cpan Executable", DetectPropertyFromVersion.VERSION_3_0_0).
+            setHelp("The path to the cpan executable.").
+            setGroups(DetectGroup.CPAN, DetectGroup.GLOBAL)
             .build();
 
     public static final NullablePathDetectProperty DETECT_CPANM_PATH =
-        NullablePathDetectProperty.newBuilder("detect.cpanm.path").setInfo("cpanm Executable", DetectPropertyFromVersion.VERSION_3_0_0).setHelp("The path to the cpanm executable.").setGroups(DetectGroup.CPAN, DetectGroup.GLOBAL)
+        NullablePathDetectProperty.newBuilder("detect.cpanm.path").
+            setInfo("cpanm Executable", DetectPropertyFromVersion.VERSION_3_0_0).
+            setHelp("The path to the cpanm executable.").
+            setGroups(DetectGroup.CPAN, DetectGroup.GLOBAL)
             .build();
 
     public static final NullablePathDetectProperty DETECT_DART_PATH =
-        NullablePathDetectProperty.newBuilder("detect.dart.path").setInfo("dart Executable", DetectPropertyFromVersion.VERSION_7_5_0).setHelp("The path to the dart executable.").setGroups(DetectGroup.DART, DetectGroup.GLOBAL)
+        NullablePathDetectProperty.newBuilder("detect.dart.path").
+            setInfo("dart Executable", DetectPropertyFromVersion.VERSION_7_5_0).
+            setHelp("The path to the dart executable.").
+            setGroups(DetectGroup.DART, DetectGroup.GLOBAL)
             .build();
 
     public static final NullablePathDetectProperty DETECT_FLUTTER_PATH =
-        NullablePathDetectProperty.newBuilder("detect.flutter.path").setInfo("flutter Executable", DetectPropertyFromVersion.VERSION_7_5_0).setHelp("The path to the flutter executable.").setGroups(DetectGroup.DART, DetectGroup.GLOBAL)
+        NullablePathDetectProperty.newBuilder("detect.flutter.path").
+            setInfo("flutter Executable", DetectPropertyFromVersion.VERSION_7_5_0).
+            setHelp("The path to the flutter executable.").
+            setGroups(DetectGroup.DART, DetectGroup.GLOBAL)
             .build();
 
     public static final NoneEnumListDetectProperty<DartPubDependencyType> DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED =
@@ -459,7 +510,8 @@ public class DetectProperties {
             .build();
 
     public static final IntegerDetectProperty DETECT_DETECTOR_SEARCH_DEPTH =
-        IntegerDetectProperty.newBuilder("detect.detector.search.depth", 0).setInfo("Detector Search Depth", DetectPropertyFromVersion.VERSION_3_2_0)
+        IntegerDetectProperty.newBuilder("detect.detector.search.depth", 0).
+            setInfo("Detector Search Depth", DetectPropertyFromVersion.VERSION_3_2_0)
             .setHelp("Depth of subdirectories within the source directory to which Detect will search for files that indicate whether a detector applies.",
                 "A value of 0 (the default) tells Detect not to search any subdirectories, a value of 1 tells Detect to search first-level subdirectories, etc.")
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
@@ -540,9 +592,12 @@ public class DetectProperties {
             .build();
 
     public static final NullablePathDetectProperty DETECT_DOCKER_INSPECTOR_PATH =
-        NullablePathDetectProperty.newBuilder("detect.docker.inspector.path").setInfo("Docker Inspector .jar File Path", DetectPropertyFromVersion.VERSION_3_0_0).setHelp(
+        NullablePathDetectProperty.newBuilder("detect.docker.inspector.path").
+            setInfo("Docker Inspector .jar File Path", DetectPropertyFromVersion.VERSION_3_0_0).
+            setHelp(
                 "This is used to override using the hosted Docker Inspector .jar file by binary repository url. You can use a compatible (the same major version that Detect downloads by default) local Docker Inspector .jar file at this path.")
-            .setGroups(DetectGroup.DOCKER, DetectGroup.GLOBAL).setCategory(DetectCategory.Advanced)
+            .setGroups(DetectGroup.DOCKER, DetectGroup.GLOBAL).
+            setCategory(DetectCategory.Advanced)
             .build();
 
     public static final NullableStringDetectProperty DETECT_DOCKER_INSPECTOR_VERSION =
@@ -555,8 +610,11 @@ public class DetectProperties {
             .build();
 
     public static final NullablePathDetectProperty DETECT_DOCKER_PATH =
-        NullablePathDetectProperty.newBuilder("detect.docker.path").setInfo("Docker Executable", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("Path to the docker executable (used to load image inspector Docker images in order to run the Docker Inspector in air gap mode).").setExample("/usr/local/bin/docker").setGroups(DetectGroup.DOCKER, DetectGroup.GLOBAL)
+        NullablePathDetectProperty.newBuilder("detect.docker.path").
+            setInfo("Docker Executable", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("Path to the docker executable (used to load image inspector Docker images in order to run the Docker Inspector in air gap mode).").
+            setExample("/usr/local/bin/docker").
+            setGroups(DetectGroup.DOCKER, DetectGroup.GLOBAL)
             .build();
 
     public static final BooleanDetectProperty DETECT_DOCKER_PATH_REQUIRED =
@@ -590,7 +648,10 @@ public class DetectProperties {
             .build();
 
     public static final NullablePathDetectProperty DETECT_DOTNET_PATH =
-        NullablePathDetectProperty.newBuilder("detect.dotnet.path").setInfo("dotnet Executable", DetectPropertyFromVersion.VERSION_4_4_0).setHelp("The path to the dotnet executable.").setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL)
+        NullablePathDetectProperty.newBuilder("detect.dotnet.path").
+            setInfo("dotnet Executable", DetectPropertyFromVersion.VERSION_4_4_0).
+            setHelp("The path to the dotnet executable.").
+            setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL)
             .build();
 
     public static final AllNoneEnumListDetectProperty<DetectorType> DETECT_EXCLUDED_DETECTOR_TYPES =
@@ -599,7 +660,8 @@ public class DetectProperties {
             .setHelp(
                 "By default, all detectors will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all detectors, specify \"ALL\". Exclusion rules always win.",
                 "If Detect runs one or more detector on your project that you would like to exclude, you can use this property to prevent Detect from running them."
-            ).setGroups(DetectGroup.DETECTOR, DetectGroup.GLOBAL)
+            ).
+            setGroups(DetectGroup.DETECTOR, DetectGroup.GLOBAL)
             .setExample("NPM,LERNA")
             .setCategory(DetectCategory.Advanced)
             .build();
@@ -613,11 +675,17 @@ public class DetectProperties {
             .build();
 
     public static final NullablePathDetectProperty DETECT_GIT_PATH =
-        NullablePathDetectProperty.newBuilder("detect.git.path").setInfo("Git Executable", DetectPropertyFromVersion.VERSION_5_5_0).setHelp("Path of the git executable").setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+        NullablePathDetectProperty.newBuilder("detect.git.path")
+            .setInfo("Git Executable", DetectPropertyFromVersion.VERSION_5_5_0)
+            .setHelp("Path of the git executable")
+            .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .build();
 
     public static final NullablePathDetectProperty DETECT_GO_PATH =
-        NullablePathDetectProperty.newBuilder("detect.go.path").setInfo("Go Executable", DetectPropertyFromVersion.VERSION_3_0_0).setHelp("Path to the Go executable.").setGroups(DetectGroup.GO, DetectGroup.GLOBAL)
+        NullablePathDetectProperty.newBuilder("detect.go.path").
+            setInfo("Go Executable", DetectPropertyFromVersion.VERSION_3_0_0).
+            setHelp("Path to the Go executable.").
+            setGroups(DetectGroup.GO, DetectGroup.GLOBAL)
             .build();
 
     public static final NoneEnumListDetectProperty<GoModDependencyType> DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED =
@@ -685,19 +753,28 @@ public class DetectProperties {
             .build();
 
     public static final NullablePathDetectProperty DETECT_GRADLE_PATH =
-        NullablePathDetectProperty.newBuilder("detect.gradle.path").setInfo("Gradle Executable", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("The path to the Gradle executable (gradle or gradlew).", "If set, Detect will use the given Gradle executable instead of searching for one.").setGroups(DetectGroup.GRADLE, DetectGroup.GLOBAL)
+        NullablePathDetectProperty.newBuilder("detect.gradle.path").
+            setInfo("Gradle Executable", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("The path to the Gradle executable (gradle or gradlew).", "If set, Detect will use the given Gradle executable instead of searching for one.").
+            setGroups(DetectGroup.GRADLE, DetectGroup.GLOBAL)
             .build();
 
     public static final NullablePathDetectProperty DETECT_HEX_REBAR3_PATH =
-        NullablePathDetectProperty.newBuilder("detect.hex.rebar3.path").setInfo("Rebar3 Executable", DetectPropertyFromVersion.VERSION_3_0_0).setHelp("The path to the rebar3 executable.").setGroups(DetectGroup.HEX, DetectGroup.GLOBAL)
+        NullablePathDetectProperty.newBuilder("detect.hex.rebar3.path").
+            setInfo("Rebar3 Executable", DetectPropertyFromVersion.VERSION_3_0_0).
+            setHelp("The path to the rebar3 executable.").
+            setGroups(DetectGroup.HEX, DetectGroup.GLOBAL)
             .build();
 
     public static final StringListDetectProperty DETECT_EXCLUDED_DIRECTORIES =
-        StringListDetectProperty.newBuilder("detect.excluded.directories", emptyList()).setInfo("Detect Excluded Directories", DetectPropertyFromVersion.VERSION_7_0_0)
+        StringListDetectProperty.newBuilder("detect.excluded.directories", emptyList()).
+            setInfo("Detect Excluded Directories", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp("A comma-separated list of names, name patterns, relative paths, or path patterns of directories that Detect should exclude.",
                 "Subdirectories whose name or path is resolved from the patterns in this list will not be searched when determining which detectors to run, and will be excluded from signature scan using the Scan CLI '--exclude' flag. Refer to the <i>Downloading and Running Synopsys Detect</i> > <i>Including and Excluding Tools, Detectors, Directories, etc.</i> page for more details."
-            ).setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN).setCategory(DetectCategory.Advanced).setExample("**/*-test")
+            ).
+            setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN).
+            setCategory(DetectCategory.Advanced).
+            setExample("**/*-test")
             .build();
 
     public static final BooleanDetectProperty DETECT_EXCLUDED_DIRECTORIES_DEFAULTS_DISABLED =
@@ -711,8 +788,10 @@ public class DetectProperties {
             .build();
 
     public static final IntegerDetectProperty DETECT_EXCLUDED_DIRECTORIES_SEARCH_DEPTH =
-        IntegerDetectProperty.newBuilder("detect.excluded.directories.search.depth", 4).setInfo("Detect Excluded Directories Search Depth", DetectPropertyFromVersion.VERSION_7_0_0)
-            .setHelp("Enables you to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.").setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN)
+        IntegerDetectProperty.newBuilder("detect.excluded.directories.search.depth", 4).
+            setInfo("Detect Excluded Directories Search Depth", DetectPropertyFromVersion.VERSION_7_0_0)
+            .setHelp("Enables you to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.").
+            setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN)
             .build();
 
     public static final BooleanDetectProperty DETECT_IMPACT_ANALYSIS_ENABLED =
@@ -724,9 +803,11 @@ public class DetectProperties {
             .build();
 
     public static final NullablePathDetectProperty DETECT_IMPACT_ANALYSIS_OUTPUT_PATH =
-        NullablePathDetectProperty.newBuilder("detect.impact.analysis.output.path").setInfo("Impact Analysis Output Directory", DetectPropertyFromVersion.VERSION_6_5_0)
+        NullablePathDetectProperty.newBuilder("detect.impact.analysis.output.path").
+            setInfo("Impact Analysis Output Directory", DetectPropertyFromVersion.VERSION_6_5_0)
             .setHelp("The path to the output directory for Impact Analysis reports.",
-                "If not set, the Impact Analysis reports are placed in a 'impact-analysis' subdirectory of the output directory.").setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+                "If not set, the Impact Analysis reports are placed in a 'impact-analysis' subdirectory of the output directory.").
+            setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
 
     public static final AllNoneEnumListDetectProperty<DetectorType> DETECT_INCLUDED_DETECTOR_TYPES =
@@ -742,8 +823,10 @@ public class DetectProperties {
             .build();
 
     public static final NullablePathDetectProperty DETECT_JAVA_PATH =
-        NullablePathDetectProperty.newBuilder("detect.java.path").setInfo("Java Executable", DetectPropertyFromVersion.VERSION_5_0_0)
-            .setHelp("Path to the java executable.", "If set, Detect will use the given java executable instead of searching for one.").setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+        NullablePathDetectProperty.newBuilder("detect.java.path").
+            setInfo("Java Executable", DetectPropertyFromVersion.VERSION_5_0_0)
+            .setHelp("Path to the java executable.", "If set, Detect will use the given java executable instead of searching for one.").
+            setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .build();
 
     public static final CaseSensitiveStringListDetectProperty DETECT_LERNA_EXCLUDED_PACKAGES =
@@ -765,7 +848,9 @@ public class DetectProperties {
             .build();
 
     public static final NullablePathDetectProperty DETECT_LERNA_PATH =
-        NullablePathDetectProperty.newBuilder("detect.lerna.path").setInfo("Lerna Executable", DetectPropertyFromVersion.VERSION_6_0_0).setHelp("Path of the lerna executable.")
+        NullablePathDetectProperty.newBuilder("detect.lerna.path").
+            setInfo("Lerna Executable", DetectPropertyFromVersion.VERSION_6_0_0).
+            setHelp("Path of the lerna executable.")
             .setGroups(DetectGroup.LERNA, DetectGroup.PATHS, DetectGroup.GLOBAL)
             .build();
 
@@ -804,8 +889,10 @@ public class DetectProperties {
             .build();
 
     public static final NullablePathDetectProperty DETECT_MAVEN_PATH =
-        NullablePathDetectProperty.newBuilder("detect.maven.path").setInfo("Maven Executable", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("The path to the Maven executable (mvn or mvnw).", "If set, Detect will use the given Maven executable instead of searching for one.").setGroups(DetectGroup.MAVEN, DetectGroup.GLOBAL)
+        NullablePathDetectProperty.newBuilder("detect.maven.path").
+            setInfo("Maven Executable", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("The path to the Maven executable (mvn or mvnw).", "If set, Detect will use the given Maven executable instead of searching for one.").
+            setGroups(DetectGroup.MAVEN, DetectGroup.GLOBAL)
             .build();
 
     public static final CaseSensitiveStringListDetectProperty DETECT_MAVEN_INCLUDED_SCOPES =
@@ -832,7 +919,9 @@ public class DetectProperties {
             .build();
 
     public static final NullablePathDetectProperty DETECT_NOTICES_REPORT_PATH =
-        NullablePathDetectProperty.newBuilder("detect.notices.report.path").setInfo("Notices Report Path", DetectPropertyFromVersion.VERSION_3_0_0).setHelp("The output directory for notices report. Default is the source directory.")
+        NullablePathDetectProperty.newBuilder("detect.notices.report.path").
+            setInfo("Notices Report Path", DetectPropertyFromVersion.VERSION_3_0_0).
+            setHelp("The output directory for notices report. Default is the source directory.")
             .setGroups(DetectGroup.REPORT, DetectGroup.GLOBAL, DetectGroup.REPORT_SETTING)
             .build();
 
@@ -853,11 +942,16 @@ public class DetectProperties {
             .build();
 
     public static final NullablePathDetectProperty DETECT_NPM_PATH =
-        NullablePathDetectProperty.newBuilder("detect.npm.path").setInfo("NPM Executable", DetectPropertyFromVersion.VERSION_3_0_0).setHelp("The path to the Npm executable.").setGroups(DetectGroup.NPM, DetectGroup.GLOBAL)
+        NullablePathDetectProperty.newBuilder("detect.npm.path").
+            setInfo("NPM Executable", DetectPropertyFromVersion.VERSION_3_0_0).
+            setHelp("The path to the Npm executable.").
+            setGroups(DetectGroup.NPM, DetectGroup.GLOBAL)
             .build();
 
     public static final NullablePathDetectProperty DETECT_NUGET_CONFIG_PATH =
-        NullablePathDetectProperty.newBuilder("detect.nuget.config.path").setInfo("Nuget Config File", DetectPropertyFromVersion.VERSION_4_0_0).setHelp("The path to the Nuget.Config file to supply to the nuget exe.")
+        NullablePathDetectProperty.newBuilder("detect.nuget.config.path").
+            setInfo("Nuget Config File", DetectPropertyFromVersion.VERSION_4_0_0).
+            setHelp("The path to the Nuget.Config file to supply to the nuget exe.")
             .setGroups(DetectGroup.NUGET, DetectGroup.SOURCE_SCAN)
             .build();
 
@@ -898,22 +992,32 @@ public class DetectProperties {
             .build();
 
     public static final StringListDetectProperty DETECT_NUGET_PACKAGES_REPO_URL =
-        StringListDetectProperty.newBuilder("detect.nuget.packages.repo.url", singletonList("https://api.nuget.org/v3/index.json")).setInfo("Nuget Packages Repository URL", DetectPropertyFromVersion.VERSION_3_0_0).setHelp(
+        StringListDetectProperty.newBuilder("detect.nuget.packages.repo.url", singletonList("https://api.nuget.org/v3/index.json")).
+            setInfo("Nuget Packages Repository URL", DetectPropertyFromVersion.VERSION_3_0_0).
+            setHelp(
                 "The source for nuget packages",
                 "Set this to \"https://www.nuget.org/api/v2/\" if your are still using a nuget client expecting the v2 api."
-            ).setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL)
+            ).
+            setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL)
             .build();
 
     public static final NullablePathDetectProperty DETECT_OUTPUT_PATH =
-        NullablePathDetectProperty.newBuilder("detect.output.path").setInfo("Detect Output Path", DetectPropertyFromVersion.VERSION_3_0_0).setHelp("The path to the output directory.",
-                "If set, Detect will use the given directory to store files that it downloads and creates, instead of using the default location (~/blackduck).").setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+        NullablePathDetectProperty.newBuilder("detect.output.path").
+            setInfo("Detect Output Path", DetectPropertyFromVersion.VERSION_3_0_0).
+            setHelp("The path to the output directory.",
+                "If set, Detect will use the given directory to store files that it downloads and creates, instead of using the default location (~/blackduck).").
+            setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .build();
 
     public static final NullablePathDetectProperty DETECT_TOOLS_OUTPUT_PATH =
-        NullablePathDetectProperty.newBuilder("detect.tools.output.path").setInfo("Detect Tools Output Path", DetectPropertyFromVersion.VERSION_5_6_0).setHelp(
+        NullablePathDetectProperty.newBuilder("detect.tools.output.path").
+            setInfo("Detect Tools Output Path", DetectPropertyFromVersion.VERSION_5_6_0).
+            setHelp(
                 "The path to the tools directory where detect should download and/or access things like the Signature Scanner that it shares over multiple runs.",
                 "If set, Detect will use the given directory instead of using the default location of output path plus tools."
-            ).setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL).setCategory(DetectCategory.Advanced)
+            ).
+            setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL).
+            setCategory(DetectCategory.Advanced)
             .build();
 
     public static final NoneEnumListDetectProperty<PackagistDependencyType> DETECT_PACKAGIST_DEPENDENCY_TYPES_EXCLUDED =
@@ -932,7 +1036,10 @@ public class DetectProperties {
             .build();
 
     public static final NullablePathDetectProperty DETECT_PEAR_PATH =
-        NullablePathDetectProperty.newBuilder("detect.pear.path").setInfo("Pear Executable", DetectPropertyFromVersion.VERSION_3_0_0).setHelp("The path to the pear executable.").setGroups(DetectGroup.PEAR, DetectGroup.GLOBAL)
+        NullablePathDetectProperty.newBuilder("detect.pear.path").
+            setInfo("Pear Executable", DetectPropertyFromVersion.VERSION_3_0_0).
+            setHelp("The path to the pear executable.").
+            setGroups(DetectGroup.PEAR, DetectGroup.GLOBAL)
             .build();
 
     public static final NullableStringDetectProperty DETECT_PIP_PROJECT_NAME =
@@ -965,11 +1072,17 @@ public class DetectProperties {
             .build();
 
     public static final NullablePathDetectProperty DETECT_PIP_PATH =
-        NullablePathDetectProperty.newBuilder("detect.pip.path").setInfo("Pip Executable", DetectPropertyFromVersion.VERSION_6_8_0).setHelp("The path to the Pip executable.").setGroups(DetectGroup.PIP, DetectGroup.GLOBAL)
+        NullablePathDetectProperty.newBuilder("detect.pip.path").
+            setInfo("Pip Executable", DetectPropertyFromVersion.VERSION_6_8_0).
+            setHelp("The path to the Pip executable.").
+            setGroups(DetectGroup.PIP, DetectGroup.GLOBAL)
             .build();
 
     public static final NullablePathDetectProperty DETECT_PIPENV_PATH =
-        NullablePathDetectProperty.newBuilder("detect.pipenv.path").setInfo("Pipenv Executable", DetectPropertyFromVersion.VERSION_4_1_0).setHelp("The path to the Pipenv executable.").setGroups(DetectGroup.PIP, DetectGroup.GLOBAL)
+        NullablePathDetectProperty.newBuilder("detect.pipenv.path").
+            setInfo("Pipenv Executable", DetectPropertyFromVersion.VERSION_4_1_0).
+            setHelp("The path to the Pipenv executable.").
+            setGroups(DetectGroup.PIP, DetectGroup.GLOBAL)
             .build();
 
     public static final NoneEnumListDetectProperty<PnpmDependencyTypeV2> DETECT_PNPM_DEPENDENCY_TYPES_EXCLUDED =
@@ -980,7 +1093,10 @@ public class DetectProperties {
             .build();
 
     public static final NullablePathDetectProperty DETECT_SWIFT_PATH =
-        NullablePathDetectProperty.newBuilder("detect.swift.path").setInfo("Swift Executable", DetectPropertyFromVersion.VERSION_6_0_0).setHelp("Path of the swift executable.").setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+        NullablePathDetectProperty.newBuilder("detect.swift.path").
+            setInfo("Swift Executable", DetectPropertyFromVersion.VERSION_6_0_0).
+            setHelp("Path of the swift executable.").
+            setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .build();
 
     public static final AllNoneEnumListDetectProperty<PolicyRuleSeverityType> DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES =
@@ -1070,13 +1186,20 @@ public class DetectProperties {
             .build();
 
     public static final StringListDetectProperty DETECT_PROJECT_USER_GROUPS =
-        StringListDetectProperty.newBuilder("detect.project.user.groups", emptyList()).setInfo("Project User Groups", DetectPropertyFromVersion.VERSION_5_4_0).setHelp("A comma-separated list of names of user groups to add to the project.")
-            .setExample("ProjectManagers,TechLeads").setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING).setCategory(DetectCategory.Advanced)
+        StringListDetectProperty.newBuilder("detect.project.user.groups", emptyList()).
+            setInfo("Project User Groups", DetectPropertyFromVersion.VERSION_5_4_0).
+            setHelp("A comma-separated list of names of user groups to add to the project.")
+            .setExample("ProjectManagers,TechLeads").
+            setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING).
+            setCategory(DetectCategory.Advanced)
             .build();
 
     public static final StringListDetectProperty DETECT_PROJECT_TAGS =
-        StringListDetectProperty.newBuilder("detect.project.tags", emptyList()).setInfo("Project Tags", DetectPropertyFromVersion.VERSION_5_6_0)
-            .setHelp("A comma-separated list of tags to add to the project. This property is not supported when using Synopsys Detect in offline mode.").setExample("Critical").setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
+        StringListDetectProperty.newBuilder("detect.project.tags", emptyList()).
+            setInfo("Project Tags", DetectPropertyFromVersion.VERSION_5_6_0)
+            .setHelp("A comma-separated list of tags to add to the project. This property is not supported when using Synopsys Detect in offline mode.").
+            setExample("Critical").
+            setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced)
             .build();
 
@@ -1192,13 +1315,18 @@ public class DetectProperties {
             .build();
 
     public static final StringListDetectProperty DETECT_PROJECT_VERSION_LICENSES =
-        StringListDetectProperty.newBuilder("detect.project.version.licenses", emptyList()).setInfo("Project Version Licenses", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp("An override for a Project Version's licenses.", "A comma-separated list of license names to override a Project Version's licenses").setExample("Apache License 2.0")
+        StringListDetectProperty.newBuilder("detect.project.version.licenses", emptyList()).
+            setInfo("Project Version Licenses", DetectPropertyFromVersion.VERSION_7_10_0)
+            .setHelp("An override for a Project Version's licenses.", "A comma-separated list of license names to override a Project Version's licenses").
+            setExample("Apache License 2.0")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .build();
 
     public static final NullablePathDetectProperty DETECT_PYTHON_PATH =
-        NullablePathDetectProperty.newBuilder("detect.python.path").setInfo("Python Executable", DetectPropertyFromVersion.VERSION_3_0_0).setHelp("The path to the Python executable.").setGroups(DetectGroup.PYTHON, DetectGroup.GLOBAL)
+        NullablePathDetectProperty.newBuilder("detect.python.path").
+            setInfo("Python Executable", DetectPropertyFromVersion.VERSION_3_0_0).
+            setHelp("The path to the Python executable.").
+            setGroups(DetectGroup.PYTHON, DetectGroup.GLOBAL)
             .build();
 
     public static final EnumListDetectProperty<DetectorType> DETECT_REQUIRED_DETECTOR_TYPES =
@@ -1220,8 +1348,10 @@ public class DetectProperties {
             .build();
 
     public static final NullablePathDetectProperty DETECT_RISK_REPORT_PDF_PATH =
-        NullablePathDetectProperty.newBuilder("detect.risk.report.pdf.path").setInfo("Risk Report Output Path", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("The output directory for risk report in PDF. Default is the source directory.").setGroups(DetectGroup.REPORT, DetectGroup.GLOBAL)
+        NullablePathDetectProperty.newBuilder("detect.risk.report.pdf.path").
+            setInfo("Risk Report Output Path", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("The output directory for risk report in PDF. Default is the source directory.").
+            setGroups(DetectGroup.REPORT, DetectGroup.GLOBAL)
             .build();
 
     public static final NoneEnumListDetectProperty<GemspecDependencyType> DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED =
@@ -1233,8 +1363,11 @@ public class DetectProperties {
             .build();
 
     public static final NullablePathDetectProperty DETECT_SBT_PATH =
-        NullablePathDetectProperty.newBuilder("detect.sbt.path").setInfo("Sbt Executable", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("Path to the Sbt executable.", "If set, Detect will use the given Sbt executable instead of searching for one.").setExample("C:\\Program Files (x86)\\sbt\\bin\\sbt.bat").setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+        NullablePathDetectProperty.newBuilder("detect.sbt.path").
+            setInfo("Sbt Executable", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("Path to the Sbt executable.", "If set, Detect will use the given Sbt executable instead of searching for one.").
+            setExample("C:\\Program Files (x86)\\sbt\\bin\\sbt.bat").
+            setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .build();
 
     public static final NullableStringDetectProperty DETECT_SBT_ARGUMENTS =
@@ -1264,21 +1397,29 @@ public class DetectProperties {
             .build();
 
     public static final IntegerDetectProperty DETECT_SBT_REPORT_DEPTH =
-        IntegerDetectProperty.newBuilder("detect.sbt.report.search.depth", 3).setInfo("SBT Report Search Depth", DetectPropertyFromVersion.VERSION_4_3_0).setHelp("Depth the sbt detector will use to search for report files.")
-            .setGroups(DetectGroup.SBT, DetectGroup.SOURCE_SCAN).setDeprecated(SBT_REPORT_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT)
+        IntegerDetectProperty.newBuilder("detect.sbt.report.search.depth", 3).
+            setInfo("SBT Report Search Depth", DetectPropertyFromVersion.VERSION_4_3_0).
+            setHelp("Depth the sbt detector will use to search for report files.")
+            .setGroups(DetectGroup.SBT, DetectGroup.SOURCE_SCAN).
+            setDeprecated(SBT_REPORT_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT)
             .build();
 
     public static final NullablePathDetectProperty DETECT_SCAN_OUTPUT_PATH =
-        NullablePathDetectProperty.newBuilder("detect.scan.output.path").setInfo("Scan Output Path", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("The output directory for all signature scanner output files. If not set, the signature scanner output files will be in a 'scan' subdirectory of the output directory.").setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+        NullablePathDetectProperty.newBuilder("detect.scan.output.path").
+            setInfo("Scan Output Path", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("The output directory for all signature scanner output files. If not set, the signature scanner output files will be in a 'scan' subdirectory of the output directory.").
+            setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .build();
 
     public static final NullablePathDetectProperty DETECT_SOURCE_PATH =
-        NullablePathDetectProperty.newBuilder("detect.source.path").setInfo("Source Path", DetectPropertyFromVersion.VERSION_3_0_0).setHelp(
+        NullablePathDetectProperty.newBuilder("detect.source.path").
+            setInfo("Source Path", DetectPropertyFromVersion.VERSION_3_0_0).
+            setHelp(
                 "The source path is the path to the project directory to inspect. If no value is provided, the source path defaults to the current working directory.",
                 "Detect will search the source directory for hints that indicate which package manager(s) the project uses, and will attempt to run the corresponding detector(s). " +
                     "The source path is also the default target for signature scanning. (This can be overridden with the detect.blackduck.signature.scanner.paths property.)"
-            ).setGroups(DetectGroup.PATHS, DetectGroup.SOURCE_PATH)
+            ).
+            setGroups(DetectGroup.PATHS, DetectGroup.SOURCE_PATH)
             .build();
 
     public static final EnumDetectProperty<DetectTargetType> DETECT_TARGET_TYPE =
@@ -1298,7 +1439,8 @@ public class DetectProperties {
             .build();
 
     public static final LongDetectProperty DETECT_TIMEOUT =
-        LongDetectProperty.newBuilder("detect.timeout", 300L).setInfo("Detect Timeout", DetectPropertyFromVersion.VERSION_6_8_0)
+        LongDetectProperty.newBuilder("detect.timeout", 300L).
+            setInfo("Detect Timeout", DetectPropertyFromVersion.VERSION_6_8_0)
             .setHelp(
                 "The amount of time in seconds Detect will wait for network connection, for scans to finish, and to generate reports (i.e. risk and policy check). When changing this value, keep in mind the checking of policies might have to wait for scans to process which can take some time.")
             .setExample("600")
