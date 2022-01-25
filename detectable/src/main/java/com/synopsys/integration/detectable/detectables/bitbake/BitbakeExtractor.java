@@ -86,8 +86,7 @@ public class BitbakeExtractor {
         }
         for (String targetImage : packageNames) {
             try {
-                CodeLocation codeLocation = generateCodeLocationForTargetImage(followSymLinks, searchDepth, dependencyTypeFilter, bitbakeSession, buildDir, bitbakeEnvironment, showRecipesResults, targetImage);
-                codeLocations.add(codeLocation);
+                codeLocations.add(generateCodeLocationForTargetImage(followSymLinks, searchDepth, dependencyTypeFilter, bitbakeSession, buildDir, bitbakeEnvironment, showRecipesResults, targetImage));
             } catch (IOException | IntegrationException | NotImplementedException | ExecutableFailedException e) {
                 logger.error(String.format("Failed to extract a Code Location while running Bitbake against package '%s': %s", targetImage, e.getMessage()));
                 logger.debug(e.getMessage(), e);
