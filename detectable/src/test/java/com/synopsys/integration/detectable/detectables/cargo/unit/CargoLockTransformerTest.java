@@ -1,28 +1,41 @@
 package com.synopsys.integration.detectable.detectables.cargo.unit;
 
 import java.util.Arrays;
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.moandjiezana.toml.Toml;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectables.cargo.model.CargoLock;
+import com.synopsys.integration.detectable.detectables.cargo.data.CargoLock;
+import com.synopsys.integration.detectable.detectables.cargo.model.CargoLockPackage;
+import com.synopsys.integration.detectable.detectables.cargo.parse.CargoDependencyLineParser;
+import com.synopsys.integration.detectable.detectables.cargo.transform.CargoLockDataTransformer;
 import com.synopsys.integration.detectable.detectables.cargo.transform.CargoLockTransformer;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
+// TODO: Tests are broken
 public class CargoLockTransformerTest {
 
-    public CargoLock cargoLock(String... lines) {
-        return new Toml().read(String.join(System.lineSeparator(), Arrays.asList(lines))).to(CargoLock.class);
+    public List<CargoLockPackage> cargoLock(String... lines) {
+        CargoLock cargoLock = new Toml().read(String.join(System.lineSeparator(), Arrays.asList(lines))).to(CargoLock.class);
+        CargoDependencyLineParser cargoDependencyLineParser = new CargoDependencyLineParser();
+        CargoLockDataTransformer cargoLockDataTransformer = new CargoLockDataTransformer(cargoDependencyLineParser);
+        return cargoLock.getPackages()
+            .map(packages -> packages.stream()
+                .map(cargoLockDataTransformer::transform)
+                .collect(Collectors.toList()))
+            .orElseThrow(() -> new RuntimeException("Test data shouldn't be empty"));
     }
 
     @Test
-    public void testParsesNamesAndVersionsSimple() throws DetectableException {
-        CargoLock input = cargoLock(
+    public void testParsesNamesAndVersionsSimple() throws DetectableException, MissingExternalIdException {
+        List<CargoLockPackage> input = cargoLock(
             "[[package]]",
             "name = \"test1\"", "version = \"1.0.0\"",
             "",
@@ -31,18 +44,17 @@ public class CargoLockTransformerTest {
             "version = \"2.0.0\""
         );
         CargoLockTransformer cargoLockTransformer = new CargoLockTransformer();
-        Optional<DependencyGraph> graph = cargoLockTransformer.toDependencyGraph(input);
+        DependencyGraph graph = cargoLockTransformer.transformToGraph(input);
 
-        Assertions.assertTrue(graph.isPresent());
-        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.CRATES, graph.get());
+        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.CRATES, graph);
         graphAssert.hasRootSize(2);
         graphAssert.hasRootDependency("test1", "1.0.0");
         graphAssert.hasRootDependency("test2", "2.0.0");
     }
 
     @Test
-    public void testParsesNoisyDependencyLines() throws DetectableException {
-        CargoLock input = cargoLock(
+    public void testParsesNoisyDependencyLines() throws DetectableException, MissingExternalIdException {
+        List<CargoLockPackage> input = cargoLock(
             "[[package]]",
             "name = \"test1\"",
             "version = \"1.0.0\"",
@@ -60,10 +72,9 @@ public class CargoLockTransformerTest {
             "version = \"2.0.0\""
         );
         CargoLockTransformer cargoLockTransformer = new CargoLockTransformer();
-        Optional<DependencyGraph> graph = cargoLockTransformer.toDependencyGraph(input);
+        DependencyGraph graph = cargoLockTransformer.transformToGraph(input);
 
-        Assertions.assertTrue(graph.isPresent());
-        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.CRATES, graph.get());
+        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.CRATES, graph);
         graphAssert.hasRootSize(1);
         graphAssert.hasRootDependency("test1", "1.0.0");
         graphAssert.hasParentChildRelationship("test1", "1.0.0", "dep1", "0.5.0");
@@ -71,8 +82,8 @@ public class CargoLockTransformerTest {
     }
 
     @Test
-    public void testCorrectNumberOfRootDependencies() throws DetectableException {
-        CargoLock input = cargoLock(
+    public void testCorrectNumberOfRootDependencies() throws DetectableException, MissingExternalIdException {
+        List<CargoLockPackage> input = cargoLock(
             "[[package]]",
             "name = \"test1\"",
             "version = \"1.0.0\"",
@@ -93,22 +104,21 @@ public class CargoLockTransformerTest {
             "version = \"0.6.0\""
         );
         CargoLockTransformer cargoLockTransformer = new CargoLockTransformer();
-        Optional<DependencyGraph> graph = cargoLockTransformer.toDependencyGraph(input);
+        DependencyGraph graph = cargoLockTransformer.transformToGraph(input);
 
-        Assertions.assertTrue(graph.isPresent());
-        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.CRATES, graph.get());
+        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.CRATES, graph);
         graphAssert.hasRootSize(1);
     }
 
     @Test
     public void testCatchInvalidSyntaxInLockFile() {
-        CargoLock input = cargoLock(
+        List<CargoLockPackage> input = cargoLock(
             "[[package]]",
             "name \"test1\"",
             "version \"test2\""
         );
         CargoLockTransformer cargoLockTransformer = new CargoLockTransformer();
-        Assertions.assertThrows(DetectableException.class, () -> cargoLockTransformer.toDependencyGraph(input));
+        Assertions.assertThrows(DetectableException.class, () -> cargoLockTransformer.transformToGraph(input));
 
     }
 }

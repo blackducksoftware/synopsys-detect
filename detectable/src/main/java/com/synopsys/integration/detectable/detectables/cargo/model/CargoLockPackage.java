@@ -1,52 +1,27 @@
 package com.synopsys.integration.detectable.detectables.cargo.model;
 
 import java.util.List;
-import java.util.Optional;
+
+import com.google.gson.annotations.SerializedName;
+import com.synopsys.integration.detectable.util.NameOptionalVersion;
+import com.synopsys.integration.util.NameVersion;
 
 public class CargoLockPackage {
-    private String name;
-    private String version;
-    private String source;
-    private String checksum;
-    private List<String> dependencies;
+    private final NameVersion packageNameVersion;
 
-    public Optional<String> getName() {
-        return Optional.ofNullable(name);
-    }
+    @SerializedName("dependencies")
+    private final List<NameOptionalVersion> dependencies;
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Optional<String> getVersion() {
-        return Optional.ofNullable(version);
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    public Optional<String> getSource() {
-        return Optional.ofNullable(source);
-    }
-
-    public void setSource(String source) {
-        this.source = source;
-    }
-
-    public Optional<String> getChecksum() {
-        return Optional.ofNullable(checksum);
-    }
-
-    public void setChecksum(String checksum) {
-        this.checksum = checksum;
-    }
-
-    public Optional<List<String>> getDependencies() {
-        return Optional.ofNullable(dependencies);
-    }
-
-    public void setDependencies(List<String> dependencies) {
+    public CargoLockPackage(NameVersion packageNameVersion, List<NameOptionalVersion> dependencies) {
+        this.packageNameVersion = packageNameVersion;
         this.dependencies = dependencies;
+    }
+
+    public NameVersion getPackageNameVersion() {
+        return packageNameVersion;
+    }
+
+    public List<NameOptionalVersion> getDependencies() {
+        return dependencies;
     }
 }

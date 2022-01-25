@@ -1,80 +1,55 @@
 package com.synopsys.integration.detectable.detectables.cargo.transform;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
+import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.dependency.DependencyFactory;
+import com.synopsys.integration.bdio.model.dependencyid.NameDependencyId;
+import com.synopsys.integration.bdio.model.dependencyid.NameVersionDependencyId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.detectables.cargo.model.CargoLock;
 import com.synopsys.integration.detectable.detectables.cargo.model.CargoLockPackage;
 
 public class CargoLockTransformer {
+    private final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
+    private final DependencyFactory dependencyFactory = new DependencyFactory(externalIdFactory);
 
-    private final DependencyFactory dependencyFactory = new DependencyFactory(new ExternalIdFactory());
+    public DependencyGraph transformToGraph(List<CargoLockPackage> lockPackages) throws MissingExternalIdException {
+        LazyExternalIdDependencyGraphBuilder graph = new LazyExternalIdDependencyGraphBuilder();
+        lockPackages.forEach(lockPackage -> {
+            NameVersionDependencyId id = new NameVersionDependencyId(lockPackage.getPackageNameVersion().getName(), lockPackage.getPackageNameVersion().getVersion());
+            Dependency nameVersionDependency = dependencyFactory.createNameVersionDependency(Forge.CRATES, id.getName(), id.getVersion());
 
-    private final Map<String, Dependency> packageMap = new HashMap<>(); //TODO: Remove state.
-
-    public Optional<DependencyGraph> toDependencyGraph(CargoLock cargoLock) {
-        return cargoLock.getPackages().map(this::parseDependencies);
-    }
-
-    private DependencyGraph parseDependencies(List<CargoLockPackage> lockPackages) {
-        MutableDependencyGraph graph = new MutableMapDependencyGraph();
-
-        determineRootPackages(lockPackages).stream()
-            .map(packageMap::get)
-            .forEach(graph::addChildToRoot);
-
-        for (CargoLockPackage lockPackage : lockPackages) { //TODO: Do this with a stream and another method.
-            if (!lockPackage.getDependencies().isPresent()) {
-                continue;
-            }
-            List<String> trimmedDependencies = extractDependencyNames(lockPackage.getDependencies().get());
-            for (String dependency : trimmedDependencies) {
-                Dependency child = packageMap.get(dependency);
-                Dependency parent = packageMap.get(lockPackage.getName().orElse(""));
-                if (child != null && parent != null) {
-                    graph.addChildWithParent(child, parent);
+            graph.addChildToRoot(nameVersionDependency);
+            lockPackage.getDependencies().forEach(dependency -> {
+                if (dependency.getVersion().isPresent()) {
+                    NameVersionDependencyId dependencyId = new NameVersionDependencyId(dependency.getName(), dependency.getVersion().get());
+                    Dependency childDependency = dependencyFactory.createNameVersionDependency(Forge.CRATES, dependencyId.getName(), dependencyId.getVersion());
+                    graph.addChildWithParent(childDependency, dependencyId);
+                    graph.setDependencyInfo(dependencyId, childDependency.getName(), childDependency.getVersion(), childDependency.getExternalId());
+                } else {
+                    NameDependencyId dependencyId = new NameDependencyId(dependency.getName());
+                    Dependency childDependency = dependencyFactory.createNameVersionDependency(Forge.CRATES, dependencyId.getName());
+                    graph.addChildWithParent(childDependency, dependencyId);
+                    graph.setDependencyInfo(dependencyId, childDependency.getName(), childDependency.getVersion(), childDependency.getExternalId());
                 }
+            });
+        });
+
+        return graph.build((dependencyId, lazyDependencyInfo) -> {
+            if (dependencyId instanceof NameDependencyId) {
+                NameDependencyId id = (NameDependencyId) dependencyId;
+                return lockPackages.stream()
+                    .filter(cargoPackage -> cargoPackage.getPackageNameVersion().getName().equals(id.getName()))
+                    .map(cargoPackage -> externalIdFactory.createNameVersionExternalId(Forge.CRATES, cargoPackage.getPackageNameVersion().getName(), cargoPackage.getPackageNameVersion().getVersion()))
+                    .findFirst()
+                    .orElse(null);
+            } else {
+                return null;
             }
-        }
-        return graph;
-    }
-
-    private Set<String> determineRootPackages(List<CargoLockPackage> lockPackages) { //TODO: root packages should be identified by name AND version (ex. comp:1.0.0 is a root dep but comp:1.1.0 is a transitive of otherComp:1.0.0)
-        Set<String> rootPackages = new HashSet<>();
-        Set<String> dependencyPackages = new HashSet<>();
-
-        for (CargoLockPackage lockPackage : lockPackages) {
-            String projectName = lockPackage.getName().orElse("");
-            String projectVersion = lockPackage.getVersion().orElse("");
-
-            //TODO: Shouldn't there be a check here for duplicates/conflicts? new DetectableException("We found a package with no name, please contact Support.")); Throw when the situation actually makes no sense.
-            packageMap.put(projectName, dependencyFactory.createNameVersionDependency(Forge.CRATES, projectName, projectVersion));
-            rootPackages.add(projectName);
-            lockPackage.getDependencies()
-                .map(this::extractDependencyNames)
-                .ifPresent(dependencyPackages::addAll);
-        }
-        rootPackages.removeAll(dependencyPackages); //TODO: Use the TBD RootPruningGraphUtil.
-
-        return rootPackages;
-    }
-
-    //TODO: This could be done in a Parser, could do the project name validation.
-    private List<String> extractDependencyNames(List<String> rawDependencies) { //TODO: should extract name and version of dependency (in case two components dependent on different versions of same component)
-        return rawDependencies.stream()
-            .map(dependency -> dependency.split(" ")[0])
-            .collect(Collectors.toList());
+        });
     }
 }

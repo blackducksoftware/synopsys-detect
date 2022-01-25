@@ -9,8 +9,8 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detectable.detectables.cargo.model.CargoToml;
-import com.synopsys.integration.detectable.detectables.cargo.model.CargoTomlPackage;
+import com.synopsys.integration.detectable.detectables.cargo.data.CargoToml;
+import com.synopsys.integration.detectable.detectables.cargo.data.CargoTomlPackage;
 import com.synopsys.integration.detectable.detectables.cargo.transform.CargoTomlTransformer;
 import com.synopsys.integration.util.NameVersion;
 

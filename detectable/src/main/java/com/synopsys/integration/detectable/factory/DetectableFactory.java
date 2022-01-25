@@ -56,6 +56,8 @@ import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParser
 import com.synopsys.integration.detectable.detectables.bitbake.parse.LicenseManifestParser;
 import com.synopsys.integration.detectable.detectables.cargo.CargoDetectable;
 import com.synopsys.integration.detectable.detectables.cargo.CargoExtractor;
+import com.synopsys.integration.detectable.detectables.cargo.parse.CargoDependencyLineParser;
+import com.synopsys.integration.detectable.detectables.cargo.transform.CargoLockDataTransformer;
 import com.synopsys.integration.detectable.detectables.cargo.transform.CargoLockTransformer;
 import com.synopsys.integration.detectable.detectables.cargo.transform.CargoTomlTransformer;
 import com.synopsys.integration.detectable.detectables.carthage.CartfileResolvedDependencyDeclarationParser;
@@ -312,9 +314,11 @@ public class DetectableFactory {
     }
 
     public CargoDetectable createCargoDetectable(DetectableEnvironment environment) {
+        CargoDependencyLineParser cargoDependencyLineParser = new CargoDependencyLineParser();
+        CargoLockDataTransformer cargoLockDataTransformer = new CargoLockDataTransformer(cargoDependencyLineParser);
         CargoTomlTransformer cargoTomlTransformer = new CargoTomlTransformer();
         CargoLockTransformer cargoLockTransformer = new CargoLockTransformer();
-        CargoExtractor cargoExtractor = new CargoExtractor(cargoTomlTransformer, cargoLockTransformer);
+        CargoExtractor cargoExtractor = new CargoExtractor(cargoLockDataTransformer, cargoTomlTransformer, cargoLockTransformer);
         return new CargoDetectable(environment, fileFinder, cargoExtractor);
     }
 

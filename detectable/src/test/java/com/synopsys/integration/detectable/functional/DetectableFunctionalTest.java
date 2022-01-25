@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.common.util.finder.SimpleFileFinder;
@@ -71,7 +72,7 @@ public abstract class DetectableFunctionalTest {
     }
 
     @Test
-    public void run() throws IOException, DetectableException, ExecutableFailedException {
+    public void run() throws IOException, DetectableException, ExecutableFailedException, MissingExternalIdException {
         System.out.println(String.format("Function Test (%s) is using temp directory: %s", name, tempDirectory.toAbsolutePath().toString()));
 
         setup();

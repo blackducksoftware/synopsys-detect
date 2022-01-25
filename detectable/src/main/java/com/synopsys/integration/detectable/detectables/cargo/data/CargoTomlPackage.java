@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.cargo.model;
+package com.synopsys.integration.detectable.detectables.cargo.data;
 
 import java.util.Optional;
 

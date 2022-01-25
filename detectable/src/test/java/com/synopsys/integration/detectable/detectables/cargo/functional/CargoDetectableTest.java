@@ -48,7 +48,7 @@ public class CargoDetectableTest extends DetectableFunctionalTest {
             "version = \"0.3.46\"",
             "",
             "[[package]]",
-            "name = \"darling\"",
+            "name = \"darling\"", 
             "version = \"0.10.2\""
         );
     }
