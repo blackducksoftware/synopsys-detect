@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,6 +55,17 @@ public class CargoLockTransformerTest {
         graphAssert.hasRootSize(2);
         graphAssert.hasRootDependency("test1", "1.0.0");
         graphAssert.hasRootDependency("test2", "2.0.0");
+    }
+
+    @Test
+    public void multiplePackageDefinitionsTest() {
+        List<CargoLockPackage> input = new ArrayList<>();
+        input.add(new CargoLockPackage(new NameVersion("child1", "version1"), Collections.emptyList()));
+        input.add(new CargoLockPackage(new NameVersion("child1", "version2"), Collections.emptyList()));
+        input.add(new CargoLockPackage(new NameVersion("parent1", "anything"), Collections.singletonList(new NameOptionalVersion("child1"))));
+        CargoLockTransformer cargoLockTransformer = new CargoLockTransformer();
+
+        assertThrows(DetectableException.class, () -> cargoLockTransformer.transformToGraph(input));
     }
 
     @Test

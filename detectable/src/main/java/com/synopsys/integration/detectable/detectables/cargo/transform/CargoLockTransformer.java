@@ -26,21 +26,20 @@ public class CargoLockTransformer {
 
         LazyExternalIdDependencyGraphBuilder graph = new LazyExternalIdDependencyGraphBuilder();
         lockPackages.forEach(lockPackage -> {
-            NameVersionDependencyId id = new NameVersionDependencyId(lockPackage.getPackageNameVersion().getName(), lockPackage.getPackageNameVersion().getVersion());
-            Dependency nameVersionDependency = dependencyFactory.createNameVersionDependency(Forge.CRATES, id.getName(), id.getVersion());
+            NameVersionDependencyId parentId = new NameVersionDependencyId(lockPackage.getPackageNameVersion().getName(), lockPackage.getPackageNameVersion().getVersion());
+            Dependency parentDependency = dependencyFactory.createNameVersionDependency(Forge.CRATES, parentId.getName(), parentId.getVersion());
 
-            graph.addChildToRoot(nameVersionDependency);
-            lockPackage.getDependencies().forEach(dependency -> {
-                if (dependency.getVersion().isPresent()) {
-                    NameVersionDependencyId dependencyId = new NameVersionDependencyId(dependency.getName(), dependency.getVersion().get());
-                    Dependency childDependency = dependencyFactory.createNameVersionDependency(Forge.CRATES, dependencyId.getName(), dependencyId.getVersion());
-                    graph.addChildWithParent(childDependency, dependencyId);
-                    graph.setDependencyInfo(dependencyId, childDependency.getName(), childDependency.getVersion(), childDependency.getExternalId());
+            graph.addChildToRoot(parentId);
+            graph.setDependencyInfo(parentId, parentDependency.getName(), parentDependency.getVersion(), parentDependency.getExternalId());
+            graph.setDependencyAsAlias(parentId, new NameDependencyId(parentId.getName()));
+
+            lockPackage.getDependencies().forEach(childPackage -> {
+                if (childPackage.getVersion().isPresent()) {
+                    NameVersionDependencyId childId = new NameVersionDependencyId(childPackage.getName(), childPackage.getVersion().get());
+                    graph.addChildWithParent(childId, parentId);
                 } else {
-                    NameDependencyId dependencyId = new NameDependencyId(dependency.getName());
-                    Dependency childDependency = dependencyFactory.createNameVersionDependency(Forge.CRATES, dependencyId.getName());
-                    graph.addChildWithParent(childDependency, dependencyId);
-                    graph.setDependencyInfo(dependencyId, childDependency.getName(), childDependency.getVersion(), childDependency.getExternalId());
+                    NameDependencyId childId = new NameDependencyId(childPackage.getName());
+                    graph.addChildWithParent(childId, parentId);
                 }
             });
         });
