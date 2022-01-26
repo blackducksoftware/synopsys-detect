@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.moandjiezana.toml.Toml;
@@ -17,6 +16,7 @@ import com.synopsys.integration.detectable.detectables.cargo.model.CargoLockPack
 import com.synopsys.integration.detectable.detectables.cargo.parse.CargoDependencyLineParser;
 import com.synopsys.integration.detectable.detectables.cargo.transform.CargoLockDataTransformer;
 import com.synopsys.integration.detectable.detectables.cargo.transform.CargoLockTransformer;
+import com.synopsys.integration.detectable.util.RootPruningGraphUtil;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
 // TODO: Tests are broken
@@ -34,7 +34,7 @@ public class CargoLockTransformerTest {
     }
 
     @Test
-    public void testParsesNamesAndVersionsSimple() throws DetectableException, MissingExternalIdException {
+    public void testParsesNamesAndVersionsSimple() throws DetectableException, MissingExternalIdException, RootPruningGraphUtil.CycleDetectedException {
         List<CargoLockPackage> input = cargoLock(
             "[[package]]",
             "name = \"test1\"", "version = \"1.0.0\"",
@@ -53,7 +53,7 @@ public class CargoLockTransformerTest {
     }
 
     @Test
-    public void testParsesNoisyDependencyLines() throws DetectableException, MissingExternalIdException {
+    public void testParsesNoisyDependencyLines() throws DetectableException, MissingExternalIdException, RootPruningGraphUtil.CycleDetectedException {
         List<CargoLockPackage> input = cargoLock(
             "[[package]]",
             "name = \"test1\"",
@@ -82,7 +82,7 @@ public class CargoLockTransformerTest {
     }
 
     @Test
-    public void testCorrectNumberOfRootDependencies() throws DetectableException, MissingExternalIdException {
+    public void testCorrectNumberOfRootDependencies() throws DetectableException, MissingExternalIdException, RootPruningGraphUtil.CycleDetectedException {
         List<CargoLockPackage> input = cargoLock(
             "[[package]]",
             "name = \"test1\"",
@@ -108,17 +108,5 @@ public class CargoLockTransformerTest {
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.CRATES, graph);
         graphAssert.hasRootSize(1);
-    }
-
-    @Test
-    public void testCatchInvalidSyntaxInLockFile() {
-        List<CargoLockPackage> input = cargoLock(
-            "[[package]]",
-            "name \"test1\"",
-            "version \"test2\""
-        );
-        CargoLockTransformer cargoLockTransformer = new CargoLockTransformer();
-        Assertions.assertThrows(DetectableException.class, () -> cargoLockTransformer.transformToGraph(input));
-
     }
 }
