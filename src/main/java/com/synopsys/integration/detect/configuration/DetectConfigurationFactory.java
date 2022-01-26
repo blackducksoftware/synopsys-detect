@@ -331,8 +331,8 @@ public class DetectConfigurationFactory {
     }
 
     public ProjectVersionLicenseOptions createProjectVersionLicenseOptions() {
-        List<String> licenseNames = getValue(DetectProperties.DETECT_PROJECT_VERSION_LICENSES);
-        return new ProjectVersionLicenseOptions(licenseNames);
+        String licenseName = getNullableValue(DetectProperties.DETECT_PROJECT_VERSION_LICENSE);
+        return new ProjectVersionLicenseOptions(licenseName);
     }
 
     public ParentProjectMapOptions createParentProjectMapOptions() {

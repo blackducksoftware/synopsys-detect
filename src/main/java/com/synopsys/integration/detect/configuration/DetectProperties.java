@@ -1150,10 +1150,10 @@ public class DetectProperties {
             )
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING);
 
-    public static final DetectProperty<StringListProperty> DETECT_PROJECT_VERSION_LICENSES =
-        new DetectProperty<>(new StringListProperty("detect.project.version.licenses", emptyList()))
-            .setInfo("Project Version Licenses", DetectPropertyFromVersion.VERSION_7_11_0)
-            .setHelp("An override for a Project Version's licenses.", "A comma-separated list of license names to override a Project Version's licenses")
+    public static final DetectProperty<NullableStringProperty> DETECT_PROJECT_VERSION_LICENSE =
+        new DetectProperty<>(new NullableStringProperty("detect.project.version.license"))
+            .setInfo("Project Version License", DetectPropertyFromVersion.VERSION_7_11_0)
+            .setHelp("An override for a Project Version's license.")
             .setExample("Apache License 2.0")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING);
 
