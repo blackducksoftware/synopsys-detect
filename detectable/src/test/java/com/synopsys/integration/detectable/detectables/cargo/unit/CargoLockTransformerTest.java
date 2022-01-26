@@ -1,5 +1,8 @@
 package com.synopsys.integration.detectable.detectables.cargo.unit;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,10 +19,11 @@ import com.synopsys.integration.detectable.detectables.cargo.model.CargoLockPack
 import com.synopsys.integration.detectable.detectables.cargo.parse.CargoDependencyLineParser;
 import com.synopsys.integration.detectable.detectables.cargo.transform.CargoLockDataTransformer;
 import com.synopsys.integration.detectable.detectables.cargo.transform.CargoLockTransformer;
-import com.synopsys.integration.detectable.util.RootPruningGraphUtil;
+import com.synopsys.integration.detectable.util.CycleDetectedException;
+import com.synopsys.integration.detectable.util.NameOptionalVersion;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
+import com.synopsys.integration.util.NameVersion;
 
-// TODO: Tests are broken
 public class CargoLockTransformerTest {
 
     public List<CargoLockPackage> cargoLock(String... lines) {
@@ -34,7 +38,7 @@ public class CargoLockTransformerTest {
     }
 
     @Test
-    public void testParsesNamesAndVersionsSimple() throws DetectableException, MissingExternalIdException, RootPruningGraphUtil.CycleDetectedException {
+    public void testParsesNamesAndVersionsSimple() throws DetectableException, MissingExternalIdException, CycleDetectedException {
         List<CargoLockPackage> input = cargoLock(
             "[[package]]",
             "name = \"test1\"", "version = \"1.0.0\"",
@@ -53,7 +57,7 @@ public class CargoLockTransformerTest {
     }
 
     @Test
-    public void testParsesNoisyDependencyLines() throws DetectableException, MissingExternalIdException, RootPruningGraphUtil.CycleDetectedException {
+    public void testParsesNoisyDependencyLines() throws DetectableException, MissingExternalIdException, CycleDetectedException {
         List<CargoLockPackage> input = cargoLock(
             "[[package]]",
             "name = \"test1\"",
@@ -82,7 +86,7 @@ public class CargoLockTransformerTest {
     }
 
     @Test
-    public void testCorrectNumberOfRootDependencies() throws DetectableException, MissingExternalIdException, RootPruningGraphUtil.CycleDetectedException {
+    public void testCorrectNumberOfRootDependencies() throws DetectableException, MissingExternalIdException, CycleDetectedException {
         List<CargoLockPackage> input = cargoLock(
             "[[package]]",
             "name = \"test1\"",

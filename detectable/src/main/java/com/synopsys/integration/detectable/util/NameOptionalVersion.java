@@ -4,7 +4,9 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
-public class NameOptionalVersion {
+import com.synopsys.integration.util.Stringable;
+
+public class NameOptionalVersion extends Stringable {
     private final String name;
     @Nullable
     private final String version;

@@ -1,7 +1,6 @@
 package com.synopsys.integration.detectable.detectables.cargo.transform;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
@@ -11,16 +10,20 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.dependency.DependencyFactory;
 import com.synopsys.integration.bdio.model.dependencyid.NameDependencyId;
 import com.synopsys.integration.bdio.model.dependencyid.NameVersionDependencyId;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectables.cargo.model.CargoLockPackage;
+import com.synopsys.integration.detectable.util.CycleDetectedException;
+import com.synopsys.integration.detectable.util.NameOptionalVersion;
 import com.synopsys.integration.detectable.util.RootPruningGraphUtil;
 
 public class CargoLockTransformer {
     private final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
     private final DependencyFactory dependencyFactory = new DependencyFactory(externalIdFactory);
 
-    public DependencyGraph transformToGraph(List<CargoLockPackage> lockPackages) throws MissingExternalIdException, RootPruningGraphUtil.CycleDetectedException {
+    public DependencyGraph transformToGraph(List<CargoLockPackage> lockPackages) throws MissingExternalIdException, CycleDetectedException, DetectableException {
+        verifyNoDuplicatePackages(lockPackages);
+
         LazyExternalIdDependencyGraphBuilder graph = new LazyExternalIdDependencyGraphBuilder();
         lockPackages.forEach(lockPackage -> {
             NameVersionDependencyId id = new NameVersionDependencyId(lockPackage.getPackageNameVersion().getName(), lockPackage.getPackageNameVersion().getVersion());
@@ -42,25 +45,23 @@ public class CargoLockTransformer {
             });
         });
 
-        DependencyGraph builtGraph = graph.build((dependencyId, lazyDependencyInfo) -> {
-            if (dependencyId instanceof Dependency) {
-                Dependency id = (Dependency) dependencyId;
-                return findDependencyByName(lockPackages, id.getName()).orElse(null);
-            } else if (dependencyId instanceof NameDependencyId) {
-                NameDependencyId id = (NameDependencyId) dependencyId;
-                return findDependencyByName(lockPackages, id.getName()).orElse(null);
-            }
-            return null;
-        });
-
         RootPruningGraphUtil rootPruningGraphUtil = new RootPruningGraphUtil();
-        return rootPruningGraphUtil.prune(builtGraph);
+        return rootPruningGraphUtil.prune(graph.build());
     }
 
-    private Optional<ExternalId> findDependencyByName(List<CargoLockPackage> lockPackages, String dependencyName) {
-        return lockPackages.stream()
-            .filter(cargoPackage -> cargoPackage.getPackageNameVersion().getName().equals(dependencyName))
-            .map(cargoPackage -> externalIdFactory.createNameVersionExternalId(Forge.CRATES, cargoPackage.getPackageNameVersion().getName(), cargoPackage.getPackageNameVersion().getVersion()))
-            .findFirst();
+    private void verifyNoDuplicatePackages(List<CargoLockPackage> lockPackages) throws DetectableException {
+        for (CargoLockPackage cargoLockPackage : lockPackages) {
+            for (NameOptionalVersion dependency : cargoLockPackage.getDependencies()) {
+                if (!dependency.getVersion().isPresent()) {
+                    long matchingPackages = lockPackages.stream()
+                        .filter(filteringPackage -> dependency.getName().equals(filteringPackage.getPackageNameVersion().getName()))
+                        .count();
+                    if (matchingPackages > 1) {
+                        throw new DetectableException("Multiple packages with the same name cannot be reconciled to a single version.");
+                    }
+                }
+            }
+        }
     }
+
 }

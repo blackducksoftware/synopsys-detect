@@ -2,14 +2,11 @@ package com.synopsys.integration.detectable.detectables.cargo.model;
 
 import java.util.List;
 
-import com.google.gson.annotations.SerializedName;
 import com.synopsys.integration.detectable.util.NameOptionalVersion;
 import com.synopsys.integration.util.NameVersion;
 
 public class CargoLockPackage {
     private final NameVersion packageNameVersion;
-
-    @SerializedName("dependencies")
     private final List<NameOptionalVersion> dependencies;
 
     public CargoLockPackage(NameVersion packageNameVersion, List<NameOptionalVersion> dependencies) {

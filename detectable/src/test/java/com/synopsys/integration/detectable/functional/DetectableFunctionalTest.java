@@ -33,8 +33,8 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 import com.synopsys.integration.detectable.factory.DetectableFactory;
+import com.synopsys.integration.detectable.util.CycleDetectedException;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
-import com.synopsys.integration.detectable.util.RootPruningGraphUtil;
 import com.synopsys.integration.executable.Executable;
 import com.synopsys.integration.executable.ExecutableOutput;
 
@@ -73,7 +73,7 @@ public abstract class DetectableFunctionalTest {
     }
 
     @Test
-    public void run() throws IOException, DetectableException, ExecutableFailedException, MissingExternalIdException, RootPruningGraphUtil.CycleDetectedException {
+    public void run() throws IOException, DetectableException, ExecutableFailedException, MissingExternalIdException, CycleDetectedException {
         System.out.println(String.format("Function Test (%s) is using temp directory: %s", name, tempDirectory.toAbsolutePath().toString()));
 
         setup();

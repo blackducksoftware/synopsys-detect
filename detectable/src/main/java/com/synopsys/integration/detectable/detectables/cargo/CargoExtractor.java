@@ -21,7 +21,7 @@ import com.synopsys.integration.detectable.detectables.cargo.transform.CargoLock
 import com.synopsys.integration.detectable.detectables.cargo.transform.CargoLockTransformer;
 import com.synopsys.integration.detectable.detectables.cargo.transform.CargoTomlTransformer;
 import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.util.RootPruningGraphUtil;
+import com.synopsys.integration.detectable.util.CycleDetectedException;
 import com.synopsys.integration.util.NameVersion;
 
 public class CargoExtractor {
@@ -35,7 +35,7 @@ public class CargoExtractor {
         this.cargoLockTransformer = cargoLockTransformer;
     }
 
-    public Extraction extract(File cargoLockFile, @Nullable File cargoTomlFile) throws IOException, RootPruningGraphUtil.CycleDetectedException, DetectableException {
+    public Extraction extract(File cargoLockFile, @Nullable File cargoTomlFile) throws IOException, CycleDetectedException, DetectableException {
         CargoLock cargoLock = new Toml().read(cargoLockFile).to(CargoLock.class);
         List<CargoLockPackage> packages = cargoLock.getPackages()
             .orElse(new ArrayList<>()).stream()

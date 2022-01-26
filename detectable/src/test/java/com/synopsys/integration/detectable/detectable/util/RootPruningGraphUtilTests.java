@@ -1,18 +1,15 @@
 package com.synopsys.integration.detectable.detectable.util;
 
-import java.util.concurrent.TimeUnit;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.dependency.DependencyFactory;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.util.CycleDetectedException;
 import com.synopsys.integration.detectable.util.RootPruningGraphUtil;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
@@ -22,7 +19,7 @@ public class RootPruningGraphUtilTests {
     Forge anyForge = Forge.MAVEN;
 
     @Test
-    public void simpleTwoRootIsPruned() throws RootPruningGraphUtil.CycleDetectedException {
+    public void simpleTwoRootIsPruned() throws CycleDetectedException {
         Dependency root1 = dependencyFactory.createNameVersionDependency(anyForge, "root1", "version");
         Dependency root2 = dependencyFactory.createNameVersionDependency(anyForge, "root2", "version");
         Dependency child = dependencyFactory.createNameVersionDependency(anyForge, "child", "version");
@@ -50,7 +47,7 @@ public class RootPruningGraphUtilTests {
         graph.addParentWithChild(parent, child);
         graph.addParentWithChild(child, parent);
 
-        Assertions.assertThrows(RootPruningGraphUtil.CycleDetectedException.class, () -> {
+        Assertions.assertThrows(CycleDetectedException.class, () -> {
             MutableDependencyGraph prunedGraph = new RootPruningGraphUtil().prune(graph);
         });
 
