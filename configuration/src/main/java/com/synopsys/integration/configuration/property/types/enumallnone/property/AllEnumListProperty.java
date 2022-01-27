@@ -8,9 +8,10 @@ import org.jetbrains.annotations.NotNull;
 import com.synopsys.integration.configuration.property.types.enumallnone.enumeration.AllEnum;
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllEnumList;
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumListProperty;
+import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumListPropertyBase;
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumValue;
 
-public class AllEnumListProperty<B extends Enum<B>> extends ExtendedEnumListProperty<AllEnum, B> {
+public class AllEnumListProperty<B extends Enum<B>> extends ExtendedEnumListPropertyBase<AllEnum, B, AllEnumList<B>> {
     public AllEnumListProperty(@NotNull String key, List<ExtendedEnumValue<AllEnum, B>> defaultValue, @NotNull Class<B> eClass) {
         super(key, defaultValue, AllEnum.class, eClass);
     }
@@ -25,5 +26,10 @@ public class AllEnumListProperty<B extends Enum<B>> extends ExtendedEnumListProp
 
     public AllEnumList<B> toList(List<ExtendedEnumValue<AllEnum, B>> values) {
         return new AllEnumList<>(values, bClass);
+    }
+
+    @Override
+    public @NotNull AllEnumList<B> convertValue(List<ExtendedEnumValue<AllEnum, B>> value) {
+        return new AllEnumList<>(value, bClass);
     }
 }

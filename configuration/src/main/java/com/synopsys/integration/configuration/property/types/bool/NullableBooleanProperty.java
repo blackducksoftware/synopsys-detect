@@ -3,9 +3,10 @@ package com.synopsys.integration.configuration.property.types.bool;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.synopsys.integration.configuration.property.base.NullableAlikeProperty;
 import com.synopsys.integration.configuration.property.base.NullableProperty;
 
-public class NullableBooleanProperty extends NullableProperty<Boolean> {
+public class NullableBooleanProperty extends NullableAlikeProperty<Boolean> {
     public NullableBooleanProperty(@NotNull String key) {
         super(key, new BooleanValueParser());
     }
