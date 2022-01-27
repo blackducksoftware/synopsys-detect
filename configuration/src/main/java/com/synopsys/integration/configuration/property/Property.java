@@ -2,11 +2,15 @@ package com.synopsys.integration.configuration.property;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.synopsys.integration.configuration.property.deprecation.DeprecatedValueUsage;
+import com.synopsys.integration.configuration.property.deprecation.PropertyDeprecationInfo;
+import com.synopsys.integration.configuration.property.deprecation.PropertyRemovalDeprecationInfo;
 import com.synopsys.integration.configuration.util.Category;
 import com.synopsys.integration.configuration.util.Group;
 import com.synopsys.integration.configuration.util.ProductMajorVersion;
@@ -32,8 +36,8 @@ public abstract class Property {
     private PropertyGroupInfo propertyGroupInfo = null;
     @Nullable
     private Category category = null;
-    @Nullable
-    private PropertyDeprecationInfo propertyDeprecationInfo = null;
+    @NotNull
+    private final PropertyDeprecationInfo propertyDeprecationInfo = new PropertyDeprecationInfo();
     @Nullable
     private String example = null;
 
@@ -44,17 +48,24 @@ public abstract class Property {
     }
 
     public Property setHelp(@NotNull String shortText) {
-        this.propertyHelpInfo = new PropertyHelpInfo(shortText, null);
-        return this;
+        return setHelp(new PropertyHelpInfo(shortText, null));
     }
 
     public Property setHelp(@NotNull String shortText, @Nullable String longText) {
-        this.propertyHelpInfo = new PropertyHelpInfo(shortText, longText);
+        return setHelp(new PropertyHelpInfo(shortText, longText));
+    }
+
+    public Property setHelp(PropertyHelpInfo propertyHelpInfo) {
+        this.propertyHelpInfo = propertyHelpInfo;
         return this;
     }
 
     public Property setGroups(Group primaryGroup, Group... additionalGroups) {
-        this.propertyGroupInfo = new PropertyGroupInfo(primaryGroup, additionalGroups);
+        return setGroups(new PropertyGroupInfo(primaryGroup, additionalGroups));
+    }
+
+    public Property setGroups(PropertyGroupInfo propertyGroupInfo) {
+        this.propertyGroupInfo = propertyGroupInfo;
         return this;
     }
 
@@ -63,9 +74,20 @@ public abstract class Property {
         return this;
     }
 
-    public Property setDeprecated(String description, ProductMajorVersion removeInVersion) {
-        this.propertyDeprecationInfo = new PropertyDeprecationInfo(description, removeInVersion);
+    public Property setRemovalDeprecation(String description, ProductMajorVersion removeInVersion) {
+        propertyDeprecationInfo.setRemovalDeprecation(description, removeInVersion);
         return this;
+    }
+
+    public void addDeprecatedValueInfo(String valueDescription, String reason) {
+        propertyDeprecationInfo.addDeprecatedValueInfo(valueDescription, reason);
+    }
+
+    protected Optional<DeprecatedValueUsage> createDeprecatedValueUsageIfExists(String valueDescription) {
+        return getPropertyDeprecationInfo().getDeprecatedValues().stream()
+            .filter(info -> info.getValueDescription().equals(valueDescription))
+            .findFirst()
+            .map(info -> new DeprecatedValueUsage(valueDescription, info));
     }
 
     public Property setExample(String example) {
@@ -135,6 +157,10 @@ public abstract class Property {
 
     public String getExample() {
         return example;
+    }
+
+    public void setRemovalDeprecation(PropertyRemovalDeprecationInfo propertyRemovalDeprecationInfo) {
+        this.propertyDeprecationInfo.setRemovalDeprecation(propertyRemovalDeprecationInfo);
     }
 }
 

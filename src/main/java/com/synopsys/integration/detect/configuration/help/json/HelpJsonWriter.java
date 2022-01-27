@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.configuration.property.Property;
+import com.synopsys.integration.configuration.property.deprecation.PropertyRemovalDeprecationInfo;
 import com.synopsys.integration.configuration.util.Group;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detector.base.DetectorStatusCode;
@@ -84,10 +85,13 @@ public class HelpJsonWriter {
         helpJsonOption.setCategory(property.getCategory() == null ? "" : property.getCategory().getName());
         helpJsonOption.setDescription(property.getPropertyHelpInfo().getShortText());
         helpJsonOption.setDetailedDescription(property.getPropertyHelpInfo().getLongText() == null ? "" : property.getPropertyHelpInfo().getLongText());
-        helpJsonOption.setDeprecated(property.getPropertyDeprecationInfo() != null);
-        if (property.getPropertyDeprecationInfo() != null) {
-            helpJsonOption.setDeprecatedDescription(property.getPropertyDeprecationInfo().getDescription());
-            helpJsonOption.setDeprecatedRemoveInVersion(property.getPropertyDeprecationInfo().getRemoveInVersion().getDisplayValue());
+        if (property.getPropertyDeprecationInfo().getRemovalInfo().isPresent()) {
+            PropertyRemovalDeprecationInfo removalInfo = property.getPropertyDeprecationInfo().getRemovalInfo().get();
+            helpJsonOption.setDeprecatedDescription(removalInfo.getDescription());
+            helpJsonOption.setDeprecatedRemoveInVersion(removalInfo.getRemoveInVersion().getDisplayValue());
+            helpJsonOption.setDeprecated(true);
+        } else {
+            helpJsonOption.setDeprecated(false);
         }
         helpJsonOption.setStrictValues(property.isOnlyExampleValues());
         helpJsonOption.setCaseSensitiveValues(property.isCaseSensitive());

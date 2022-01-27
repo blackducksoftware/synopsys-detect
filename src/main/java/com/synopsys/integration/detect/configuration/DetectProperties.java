@@ -7,7 +7,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -19,25 +19,10 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
 import com.synopsys.integration.configuration.property.Properties;
 import com.synopsys.integration.configuration.property.Property;
-import com.synopsys.integration.configuration.property.base.PassthroughProperty;
+import com.synopsys.integration.configuration.property.base.TypedProperty;
 import com.synopsys.integration.configuration.property.types.enumallnone.enumeration.AllNoneEnum;
 import com.synopsys.integration.configuration.property.types.enumallnone.enumeration.NoneEnum;
-import com.synopsys.integration.configuration.property.types.enumallnone.property.AllNoneEnumListProperty;
-import com.synopsys.integration.configuration.property.types.enumallnone.property.NoneEnumListProperty;
-import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumProperty;
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumValue;
-import com.synopsys.integration.configuration.property.types.enums.EnumListProperty;
-import com.synopsys.integration.configuration.property.types.enums.EnumProperty;
-import com.synopsys.integration.configuration.property.types.integer.IntegerProperty;
-import com.synopsys.integration.configuration.property.types.integer.NullableIntegerProperty;
-import com.synopsys.integration.configuration.property.types.longs.LongProperty;
-import com.synopsys.integration.configuration.property.types.path.NullablePathProperty;
-import com.synopsys.integration.configuration.property.types.path.PathListProperty;
-import com.synopsys.integration.configuration.property.types.string.CaseSensitiveStringListProperty;
-import com.synopsys.integration.configuration.property.types.string.NullableStringProperty;
-import com.synopsys.integration.configuration.property.types.string.StringListProperty;
-import com.synopsys.integration.configuration.property.types.string.StringProperty;
-import com.synopsys.integration.configuration.util.Group;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DetectCategory;
 import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
@@ -45,9 +30,9 @@ import com.synopsys.integration.detect.configuration.enumeration.DetectMajorVers
 import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.properties.AllNoneEnumListDetectProperty;
+import com.synopsys.integration.detect.configuration.properties.BooleanDetectProperty;
 import com.synopsys.integration.detect.configuration.properties.CaseSensitiveStringListDetectProperty;
 import com.synopsys.integration.detect.configuration.properties.DetectProperty;
-import com.synopsys.integration.detect.configuration.properties.BooleanDetectProperty;
 import com.synopsys.integration.detect.configuration.properties.EnumDetectProperty;
 import com.synopsys.integration.detect.configuration.properties.EnumListDetectProperty;
 import com.synopsys.integration.detect.configuration.properties.ExtendedEnumDetectProperty;
@@ -1273,7 +1258,8 @@ public class DetectProperties {
             .setHelp("An override for the Project Version distribution")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced)
-            .build();
+            .build()
+            .deprecateValue(ProjectVersionDistributionType.EXTERNAL, "Project version distribution type is deprecated. ");
 
     public static final NullableStringDetectProperty DETECT_PROJECT_VERSION_NAME =
         NullableStringDetectProperty.newBuilder("detect.project.version.name")
@@ -1448,16 +1434,6 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
-    public static final AllNoneEnumListDetectProperty<DetectTool> DETECT_TOOLS =
-        AllNoneEnumListDetectProperty.newBuilder("detect.tools", emptyList(), DetectTool.class)
-            .setInfo("Detect Tools Included", DetectPropertyFromVersion.VERSION_5_0_0)
-            .setHelp(
-                "The tools Detect should allow in a comma-separated list. Tools in this list (as long as they are not also in the excluded list) will be allowed to run if all criteria of the tool are met. Exclusion rules always win.",
-                "This property and detect.tools.excluded provide control over which tools Detect runs."
-            )
-            .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
-            .build();
-
     public static final AllNoneEnumListDetectProperty<DetectTool> DETECT_TOOLS_EXCLUDED =
         AllNoneEnumListDetectProperty.newBuilder("detect.tools.excluded", emptyList(), DetectTool.class)
             .setInfo("Detect Tools Excluded", DetectPropertyFromVersion.VERSION_5_0_0)
@@ -1467,6 +1443,17 @@ public class DetectProperties {
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .build();
+
+    public static final AllNoneEnumListDetectProperty<DetectTool> DETECT_TOOLS =
+        AllNoneEnumListDetectProperty.newBuilder("detect.tools", emptyList(), DetectTool.class)
+            .setInfo("Detect Tools Included", DetectPropertyFromVersion.VERSION_5_0_0)
+            .setHelp(
+                "The tools Detect should allow in a comma-separated list. Tools in this list (as long as they are not also in the excluded list) will be allowed to run if all criteria of the tool are met. Exclusion rules always win.",
+                "This property and detect.tools.excluded provide control over which tools Detect runs."
+            )
+            .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .build()
+            .deprecateNone("The value NONE is deprecated. Instead, you should set " + DETECT_TOOLS_EXCLUDED.getKey() + " to ALL.");
 
     public static final NoneEnumListDetectProperty<YarnDependencyType> DETECT_YARN_DEPENDENCY_TYPES_EXCLUDED =
         NoneEnumListDetectProperty.newBuilder("detect.yarn.dependency.types.excluded", NoneEnum.NONE, YarnDependencyType.class)
@@ -1768,37 +1755,28 @@ public class DetectProperties {
     }
 
     // Accessor to get all properties
-    public static Properties allProperties() throws IllegalAccessException {
+    public static Properties allProperties() {
         List<Property> properties = new ArrayList<>();
         Field[] allFields = DetectProperties.class.getDeclaredFields();
         for (Field field : allFields) {
             if (DetectProperty.class.isAssignableFrom(field.getType())) {
-                Object property = field.get(Property.class);
-                DetectProperty<?> detectProperty = (DetectProperty<?>) property;
-                convertDetectPropertyToProperty(detectProperty)
-                    .ifPresent(properties::add);
+                try {
+                    Object property = field.get(Property.class);
+                    DetectProperty<?> detectProperty = (DetectProperty<?>) property;
+                    properties.add(detectProperty.getProperty());
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
         return new Properties(properties);
     }
 
-    private static Optional<Property> convertDetectPropertyToProperty(DetectProperty<?> detectProperty) {
-        Property property = detectProperty.getProperty();
-        property.setInfo(detectProperty.getName(), detectProperty.getFromVersion());
-        if (detectProperty.getPropertyHelpInfo() != null) {
-            property.setHelp(detectProperty.getPropertyHelpInfo().getShortText(), detectProperty.getPropertyHelpInfo().getLongText());
-        }
-        if (detectProperty.getPropertyGroupInfo() != null) {
-            property.setGroups(detectProperty.getPropertyGroupInfo().getPrimaryGroup(), detectProperty.getPropertyGroupInfo().getAdditionalGroups().toArray(new Group[0]));
-        }
-        property.setCategory(detectProperty.getCategory());
-        if (detectProperty.getPropertyDeprecationInfo() != null) {
-            property.setDeprecated(detectProperty.getPropertyDeprecationInfo().getDescription(), detectProperty.getPropertyDeprecationInfo().getRemoveInVersion());
-        }
-        if (detectProperty.getExample() != null) {
-            property.setExample(detectProperty.getExample());
-        }
-        return Optional.of(property);
+    public static List<TypedProperty<?, ?>> allTypedProperties() {
+        return allProperties().getProperties().stream()
+            .filter(property -> TypedProperty.class.isAssignableFrom(property.getClass()))
+            .map(property -> (TypedProperty<?, ?>) property)
+            .collect(Collectors.toList());
     }
 
 }

@@ -110,7 +110,7 @@ public class DetectBoot {
         logger.debug("Configuration processed completely.");
 
         DetectConfigurationBootManager detectConfigurationBootManager = detectBootFactory.createDetectConfigurationBootManager(propertyConfiguration);
-        DeprecationResult deprecationResult = detectConfigurationBootManager.checkForDeprecations(propertyConfiguration);
+        DeprecationResult deprecationResult = detectConfigurationBootManager.createDeprecationNotesAndPublishEvents(propertyConfiguration);
         detectConfigurationBootManager.printConfiguration(maskedRawPropertyValues, propertyKeys, deprecationResult.getAdditionalNotes());
 
         Optional<DetectUserFriendlyException> possiblePropertyParseError = detectConfigurationBootManager.validateForPropertyParseErrors();

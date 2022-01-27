@@ -1,16 +1,14 @@
 package com.synopsys.integration.detect.configuration.properties;
 
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import com.synopsys.integration.configuration.property.Property;
-import com.synopsys.integration.configuration.property.PropertyDeprecationInfo;
 import com.synopsys.integration.configuration.property.PropertyGroupInfo;
 import com.synopsys.integration.configuration.property.PropertyHelpInfo;
+import com.synopsys.integration.configuration.property.deprecation.PropertyRemovalDeprecationInfo;
 import com.synopsys.integration.configuration.util.Category;
 import com.synopsys.integration.configuration.util.Group;
 import com.synopsys.integration.configuration.util.ProductMajorVersion;
@@ -28,7 +26,7 @@ public class DetectPropertyBuilder<P extends Property, T extends DetectProperty<
     @Nullable
     private Category category = null;
     @Nullable
-    private PropertyDeprecationInfo propertyDeprecationInfo = null;
+    private PropertyRemovalDeprecationInfo propertyRemovalDeprecationInfo = null;
     @Nullable
     private String example = null;
 
@@ -61,7 +59,7 @@ public class DetectPropertyBuilder<P extends Property, T extends DetectProperty<
     }
 
     public DetectPropertyBuilder<P, T> setDeprecated(String description, ProductMajorVersion removeInVersion) {
-        this.propertyDeprecationInfo = new PropertyDeprecationInfo(description, removeInVersion);
+        this.propertyRemovalDeprecationInfo = new PropertyRemovalDeprecationInfo(description, removeInVersion);
         return this;
     }
 
@@ -76,14 +74,14 @@ public class DetectPropertyBuilder<P extends Property, T extends DetectProperty<
 
     public T build() {
         T detectProperty = creator.get();
-        detectProperty.setCategory(category);
-        detectProperty.setGroups(propertyGroupInfo);
-        detectProperty.setDeprecated(propertyDeprecationInfo);
+        detectProperty.getProperty().setCategory(category);
+        detectProperty.getProperty().setGroups(propertyGroupInfo);
+        detectProperty.getProperty().setRemovalDeprecation(propertyRemovalDeprecationInfo);
         detectProperty.setExample(example);
         assert propertyHelpInfo != null;
-        detectProperty.setHelp(propertyHelpInfo);
+        detectProperty.getProperty().setHelp(propertyHelpInfo);
         assert fromVersion != null;
-        detectProperty.setInfo(name, fromVersion);
+        detectProperty.getProperty().setInfo(name, fromVersion.getVersion());
         return detectProperty;
     }
 

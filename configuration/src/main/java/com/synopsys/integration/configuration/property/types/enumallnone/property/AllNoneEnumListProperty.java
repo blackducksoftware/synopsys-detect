@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.synopsys.integration.configuration.property.deprecation.DeprecatedValueUsage;
 import com.synopsys.integration.configuration.property.types.enumallnone.enumeration.AllNoneEnum;
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumList;
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumListProperty;
@@ -32,4 +33,9 @@ public class AllNoneEnumListProperty<B extends Enum<B>> extends ExtendedEnumList
     public @NotNull AllNoneEnumList<B> convertValue(List<ExtendedEnumValue<AllNoneEnum, B>> value) {
         return new AllNoneEnumList<>(value, bClass);
     }
+
+    public void deprecateNone(String reason) {
+        deprecateExtendedValue(AllNoneEnum.NONE, reason);
+    }
+
 }

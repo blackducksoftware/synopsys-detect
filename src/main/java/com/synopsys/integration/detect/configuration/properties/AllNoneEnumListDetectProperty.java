@@ -30,4 +30,9 @@ public class AllNoneEnumListDetectProperty<B extends Enum<B>> extends DetectProp
         builder.setCreator(() -> new AllNoneEnumListDetectProperty<B>(key, allValue, bClass));
         return builder;
     }
+
+    public AllNoneEnumListDetectProperty<B> deprecateNone(String reason) {
+        getProperty().deprecateNone(reason);
+        return this;
+    }
 }

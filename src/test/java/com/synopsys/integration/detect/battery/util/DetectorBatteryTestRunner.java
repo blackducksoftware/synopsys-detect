@@ -8,10 +8,11 @@ import java.util.Map;
 
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.detect.configuration.DetectProperties;
+import com.synopsys.integration.detect.configuration.properties.DetectProperty;
 
 public final class DetectorBatteryTestRunner extends BatteryTestRunner {
     private String toolsValue = "DETECTOR";
-    private List<String> additionalProperties = new ArrayList<>();
+    private final List<String> additionalProperties = new ArrayList<>();
 
     public DetectorBatteryTestRunner(String name) {
         super(name);
@@ -23,6 +24,10 @@ public final class DetectorBatteryTestRunner extends BatteryTestRunner {
 
     public void withToolsValue(String toolsValue) {
         this.toolsValue = toolsValue;
+    }
+
+    public void property(DetectProperty<?> property, String value) {
+        property(property.getKey(), value);
     }
 
     public void property(Property property, String value) {
