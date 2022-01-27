@@ -1772,7 +1772,7 @@ public class DetectProperties {
         List<Property> properties = new ArrayList<>();
         Field[] allFields = DetectProperties.class.getDeclaredFields();
         for (Field field : allFields) {
-            if (field.getType().equals(DetectProperty.class)) {
+            if (DetectProperty.class.isAssignableFrom(field.getType())) {
                 Object property = field.get(Property.class);
                 DetectProperty<?> detectProperty = (DetectProperty<?>) property;
                 convertDetectPropertyToProperty(detectProperty)
