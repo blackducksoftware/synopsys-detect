@@ -23,12 +23,12 @@ import org.xml.sax.SAXException;
 
 import com.synopsys.integration.exception.IntegrationException;
 
-public class IntermediateStepParseEachXml implements IntermediateStep {
+public class IntermediateStepParseValuesFromXml implements IntermediateStep {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final String xPathToElement;
     private final String targetAttributeName;
 
-    public IntermediateStepParseEachXml(String xPathToElement, String targetAttributeName) {
+    public IntermediateStepParseValuesFromXml(String xPathToElement, String targetAttributeName) {
         this.xPathToElement = xPathToElement;
         this.targetAttributeName = targetAttributeName;
     }

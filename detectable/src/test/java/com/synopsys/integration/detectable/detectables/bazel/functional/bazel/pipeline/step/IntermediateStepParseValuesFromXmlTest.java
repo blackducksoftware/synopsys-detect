@@ -8,10 +8,10 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStep;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepParseEachXml;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepParseValuesFromXml;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class IntermediateStepParseEachXmlTest {
+public class IntermediateStepParseValuesFromXmlTest {
 
     private static final String COMMONS_IO_XML = "<?xml version=\"1.1\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
         + "<query version=\"2\">\n"
@@ -31,7 +31,7 @@ public class IntermediateStepParseEachXmlTest {
 
     @Test
     public void test() throws IntegrationException {
-        IntermediateStep intermediateStep = new IntermediateStepParseEachXml("/query/rule[@class='maven_jar']/string[@name='artifact']", "value");
+        IntermediateStep intermediateStep = new IntermediateStepParseValuesFromXml("/query/rule[@class='maven_jar']/string[@name='artifact']", "value");
         List<String> input = Arrays.asList(COMMONS_IO_XML, GUAVA_XML);
 
         List<String> results = intermediateStep.process(input);

@@ -11,11 +11,11 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class FinalStepColonSeparatedGavs implements FinalStep {
+public class FinalStepTransformColonSeparatedGavsToMaven implements FinalStep {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExternalIdFactory externalIdFactory;
 
-    public FinalStepColonSeparatedGavs(ExternalIdFactory externalIdFactory) {
+    public FinalStepTransformColonSeparatedGavsToMaven(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 

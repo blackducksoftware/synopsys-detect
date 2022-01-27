@@ -6,12 +6,12 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class IntermediateStepReplaceInEach implements IntermediateStep {
+public class IntermediateStepParseReplaceInEachLine implements IntermediateStep {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     final String targetPattern;
     final String replacementString;
 
-    public IntermediateStepReplaceInEach(String targetPattern, String replacementString) {
+    public IntermediateStepParseReplaceInEachLine(String targetPattern, String replacementString) {
         this.targetPattern = targetPattern;
         this.replacementString = replacementString;
     }

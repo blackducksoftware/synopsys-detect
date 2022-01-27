@@ -6,11 +6,11 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class IntermediateStepFilter implements IntermediateStep {
+public class IntermediateStepParseFilterLines implements IntermediateStep {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final String regex;
 
-    public IntermediateStepFilter(String regex) {
+    public IntermediateStepParseFilterLines(String regex) {
         this.regex = regex;
     }
 

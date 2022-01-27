@@ -6,13 +6,13 @@ import java.util.Optional;
 
 import com.synopsys.integration.exception.IntegrationException;
 
-public class IntermediateStepExecuteBazelOnEach implements IntermediateStep {
+public class IntermediateStepExecuteBazelOnEachLine implements IntermediateStep {
     private final BazelCommandExecutor bazelCommandExecutor;
     private final BazelVariableSubstitutor bazelVariableSubstitutor;
     private final List<String> bazelCommandArgs;
     private final boolean inputIsExpected;
 
-    public IntermediateStepExecuteBazelOnEach(BazelCommandExecutor bazelCommandExecutor,
+    public IntermediateStepExecuteBazelOnEachLine(BazelCommandExecutor bazelCommandExecutor,
         BazelVariableSubstitutor bazelVariableSubstitutor, List<String> bazelCommandArgs, boolean inputIsExpected) {
         this.bazelCommandExecutor = bazelCommandExecutor;
         this.bazelVariableSubstitutor = bazelVariableSubstitutor;

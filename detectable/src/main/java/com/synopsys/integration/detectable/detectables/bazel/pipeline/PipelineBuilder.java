@@ -7,15 +7,15 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelCommandExecutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelVariableSubstitutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.FinalStep;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.FinalStepColonSeparatedGavs;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.FinalStepJsonProtoHaskellCabalLibraries;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.FinalStepTransformColonSeparatedGavsToMaven;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.FinalStepTransformJsonProtoHaskellCabalLibrariesToHackage;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.HaskellCabalLibraryJsonProtoParser;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStep;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepExecuteBazelOnEach;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepFilter;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepParseEachXml;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepReplaceInEach;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepSplitEach;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepExecuteBazelOnEachLine;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepParseFilterLines;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepParseValuesFromXml;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepParseReplaceInEachLine;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepParseSplitEach;
 
 public class PipelineBuilder {
     private final ExternalIdFactory externalIdFactory;
@@ -52,31 +52,31 @@ public class PipelineBuilder {
 
     // Step creation methods
     public PipelineBuilder parseReplaceInEachLine(String from, String to) {
-        return addIntermediateStep(new IntermediateStepReplaceInEach(from, to));
+        return addIntermediateStep(new IntermediateStepParseReplaceInEachLine(from, to));
     }
 
     public PipelineBuilder parseSplitEachLine(String splitOn) {
-        return addIntermediateStep(new IntermediateStepSplitEach(splitOn));
+        return addIntermediateStep(new IntermediateStepParseSplitEach(splitOn));
     }
 
     public PipelineBuilder executeBazelOnEachLine(List<String> bazelArguments, boolean inputIsExpected) {
-        return addIntermediateStep(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, bazelArguments, inputIsExpected));
+        return addIntermediateStep(new IntermediateStepExecuteBazelOnEachLine(bazelCommandExecutor, bazelVariableSubstitutor, bazelArguments, inputIsExpected));
     }
 
     public PipelineBuilder parseValuesFromXml(String xPathToElement, String targetAttributeName) {
-        return addIntermediateStep(new IntermediateStepParseEachXml(xPathToElement, targetAttributeName));
+        return addIntermediateStep(new IntermediateStepParseValuesFromXml(xPathToElement, targetAttributeName));
     }
 
     public PipelineBuilder parseFilterLines(String regex) {
-        return addIntermediateStep(new IntermediateStepFilter(regex));
+        return addIntermediateStep(new IntermediateStepParseFilterLines(regex));
     }
 
-    // These can only be the final step in the pipeline
+    // A transform step must be the final step in the pipeline
     public PipelineBuilder transformToMavenDependencies() {
-        return setFinalStep(new FinalStepColonSeparatedGavs(externalIdFactory));
+        return setFinalStep(new FinalStepTransformColonSeparatedGavsToMaven(externalIdFactory));
     }
 
     public PipelineBuilder transformToHackageDependencies() {
-        return setFinalStep(new FinalStepJsonProtoHaskellCabalLibraries(haskellCabalLibraryJsonProtoParser, externalIdFactory));
+        return setFinalStep(new FinalStepTransformJsonProtoHaskellCabalLibrariesToHackage(haskellCabalLibraryJsonProtoParser, externalIdFactory));
     }
 }

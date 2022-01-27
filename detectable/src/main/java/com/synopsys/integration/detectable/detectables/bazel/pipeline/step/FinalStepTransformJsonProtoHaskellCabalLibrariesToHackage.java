@@ -11,14 +11,14 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
-public class FinalStepJsonProtoHaskellCabalLibraries implements FinalStep {
+public class FinalStepTransformJsonProtoHaskellCabalLibrariesToHackage implements FinalStep {
     private static final String FORGE_NAME = "hackage";
     private static final String FORGE_SEPARATOR = "/";
     private final Forge hackageForge = new Forge(FORGE_SEPARATOR, FORGE_NAME);
     private final HaskellCabalLibraryJsonProtoParser parser;
     private final ExternalIdFactory externalIdFactory;
 
-    public FinalStepJsonProtoHaskellCabalLibraries(HaskellCabalLibraryJsonProtoParser parser, ExternalIdFactory externalIdFactory) {
+    public FinalStepTransformJsonProtoHaskellCabalLibrariesToHackage(HaskellCabalLibraryJsonProtoParser parser, ExternalIdFactory externalIdFactory) {
         this.parser = parser;
         this.externalIdFactory = externalIdFactory;
     }
