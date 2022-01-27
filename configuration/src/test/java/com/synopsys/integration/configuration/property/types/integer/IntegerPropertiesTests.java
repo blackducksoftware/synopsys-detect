@@ -13,7 +13,10 @@ import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.configuration.config.InvalidPropertyException;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.PropertyTestHelpUtil;
+import com.synopsys.integration.configuration.property.base.NullableAlikeProperty;
 import com.synopsys.integration.configuration.property.base.NullableProperty;
+import com.synopsys.integration.configuration.property.base.ValuedAlikeListProperty;
+import com.synopsys.integration.configuration.property.base.ValuedAlikeProperty;
 import com.synopsys.integration.configuration.property.base.ValuedListProperty;
 import com.synopsys.integration.configuration.property.base.ValuedProperty;
 
@@ -21,7 +24,7 @@ import com.synopsys.integration.configuration.property.base.ValuedProperty;
 public class IntegerPropertiesTests {
     @Test
     public void testNullable() throws InvalidPropertyException {
-        NullableProperty<Integer> property = new NullableIntegerProperty("integer.nullable");
+        NullableAlikeProperty<Integer> property = new NullableIntegerProperty("integer.nullable");
         PropertyConfiguration config = configOf(Pair.of("integer.nullable", "2"));
         Assertions.assertEquals(Optional.of(2), config.getValue(property));
 
@@ -30,7 +33,7 @@ public class IntegerPropertiesTests {
 
     @Test
     public void testValued() throws InvalidPropertyException {
-        ValuedProperty<Integer> property = new IntegerProperty("integer.valued", 2);
+        ValuedAlikeProperty<Integer> property = new IntegerProperty("integer.valued", 2);
         PropertyConfiguration config = configOf(Pair.of("integer.valued", "5"));
         Assertions.assertEquals(new Integer(5), config.getValue(property));
 
@@ -39,7 +42,7 @@ public class IntegerPropertiesTests {
 
     @Test
     public void testList() throws InvalidPropertyException {
-        ValuedListProperty<Integer> property = new IntegerListProperty("integer.list", Collections.emptyList());
+        ValuedAlikeListProperty<Integer> property = new IntegerListProperty("integer.list", Collections.emptyList());
         PropertyConfiguration config = configOf(Pair.of("integer.list", "2,3"));
         Assertions.assertEquals(Bds.listOf(2, 3), config.getValue(property));
 

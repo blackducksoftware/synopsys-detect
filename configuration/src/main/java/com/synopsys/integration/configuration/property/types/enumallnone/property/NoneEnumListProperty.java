@@ -7,10 +7,11 @@ import org.jetbrains.annotations.NotNull;
 
 import com.synopsys.integration.configuration.property.types.enumallnone.list.NoneEnumList;
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumListProperty;
+import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumListPropertyBase;
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumValue;
 import com.synopsys.integration.configuration.property.types.enumallnone.enumeration.NoneEnum;
 
-public class NoneEnumListProperty<B extends Enum<B>> extends ExtendedEnumListProperty<NoneEnum, B> {
+public class NoneEnumListProperty<B extends Enum<B>> extends ExtendedEnumListPropertyBase<NoneEnum, B, NoneEnumList<B>> {
     public NoneEnumListProperty(@NotNull String key, List<ExtendedEnumValue<NoneEnum, B>> defaultValue, @NotNull Class<B> eClass) {
         super(key, defaultValue, NoneEnum.class, eClass);
     }
@@ -25,5 +26,10 @@ public class NoneEnumListProperty<B extends Enum<B>> extends ExtendedEnumListPro
 
     public NoneEnumList<B> toList(List<ExtendedEnumValue<NoneEnum, B>> values) {
         return new NoneEnumList<B>(values, bClass);
+    }
+
+    @Override
+    public @NotNull NoneEnumList<B> convertValue(List<ExtendedEnumValue<NoneEnum, B>> value) {
+        return new NoneEnumList<>(value, bClass);
     }
 }
