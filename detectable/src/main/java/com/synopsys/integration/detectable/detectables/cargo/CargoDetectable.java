@@ -35,7 +35,7 @@ public class CargoDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        Requirements requirements = new Requirements(fileFinder, environment); //I don't like it. But I offer no solutions.
+        Requirements requirements = new Requirements(fileFinder, environment);
         requirements.eitherFile(CARGO_LOCK_FILENAME, CARGO_TOML_FILENAME, foundLock -> cargoLock = foundLock, foundToml -> cargoToml = foundToml);
         return requirements.result();
     }

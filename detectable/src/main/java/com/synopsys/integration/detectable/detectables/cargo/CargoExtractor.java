@@ -41,11 +41,11 @@ public class CargoExtractor {
             .orElse(new ArrayList<>()).stream()
             .map(cargoLockDataTransformer::transform)
             .collect(Collectors.toList());
-        DependencyGraph graph = null;
+        DependencyGraph graph;
         try {
             graph = cargoLockTransformer.transformToGraph(packages);
         } catch (MissingExternalIdException e) {
-            // TODO: Wrap then throw. The 'detector' subproject doesn't have access to MissingExternalIdException.
+            // Wrapping because MissingExternalIdException is only accessible through integration-bdio
             throw new DetectableException(e);
         }
 
