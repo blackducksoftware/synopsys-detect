@@ -21,7 +21,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 
 public class IntermediateStepParseValuesFromXml implements IntermediateStep {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -34,7 +34,7 @@ public class IntermediateStepParseValuesFromXml implements IntermediateStep {
     }
 
     @Override
-    public List<String> process(List<String> input) throws IntegrationException {
+    public List<String> process(List<String> input) throws DetectableException {
         List<String> results = new ArrayList<>();
         for (String xmlDoc : input) {
             List<String> values;
@@ -43,7 +43,7 @@ public class IntermediateStepParseValuesFromXml implements IntermediateStep {
             } catch (IOException | SAXException | ParserConfigurationException | XPathExpressionException e) {
                 String msg = String.format("Error parsing xml %s for xPath query %s, attribute name: %s", xmlDoc, xPathToElement, targetAttributeName);
                 logger.debug(msg);
-                throw new IntegrationException(msg, e);
+                throw new DetectableException(msg, e);
             }
             results.addAll(values);
         }

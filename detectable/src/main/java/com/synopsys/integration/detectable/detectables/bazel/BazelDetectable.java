@@ -58,7 +58,7 @@ public class BazelDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws DetectableException {
         return bazelExtractor
             .extract(bazelExe, environment.getDirectory(), workspaceFile, projectNameGenerator);
     }

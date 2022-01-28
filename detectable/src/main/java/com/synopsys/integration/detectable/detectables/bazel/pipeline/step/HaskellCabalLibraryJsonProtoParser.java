@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.model.AttributeItem;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.model.Proto;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.model.ResultItem;
@@ -22,7 +23,7 @@ public class HaskellCabalLibraryJsonProtoParser {
         this.gson = gson;
     }
 
-    public List<NameVersion> parse(String jsonProtoString) throws IntegrationException {
+    public List<NameVersion> parse(String jsonProtoString) throws DetectableException {
         List<NameVersion> dependencies = new ArrayList<>();
         Proto proto = gson.fromJson(jsonProtoString, Proto.class);
         if (proto == null || proto.getResults() == null || proto.getResults().isEmpty()) {
@@ -35,14 +36,14 @@ public class HaskellCabalLibraryJsonProtoParser {
         return dependencies;
     }
 
-    private void extractAddDependencies(String jsonProtoString, List<NameVersion> dependencies, ResultItem result) throws IntegrationException {
+    private void extractAddDependencies(String jsonProtoString, List<NameVersion> dependencies, ResultItem result) throws DetectableException {
         if (result == null || result.getTarget() == null) {
-            throw new IntegrationException(String.format("Unable to parse target from result inJSON proto string: %s", jsonProtoString));
+            throw new DetectableException(String.format("Unable to parse target from result inJSON proto string: %s", jsonProtoString));
         }
         Target target = result.getTarget();
         if ("RULE".equals(target.getType())) {
             if (target.getRule() == null || target.getRule().getAttribute() == null) {
-                throw new IntegrationException(String.format("Unable to parse attributes from rule inJSON proto string: %s", jsonProtoString));
+                throw new DetectableException(String.format("Unable to parse attributes from rule inJSON proto string: %s", jsonProtoString));
             }
             List<AttributeItem> attributes = target.getRule().getAttribute();
             NameVersion dependency = extractDependency(attributes);
@@ -51,7 +52,7 @@ public class HaskellCabalLibraryJsonProtoParser {
         }
     }
 
-    private NameVersion extractDependency(List<AttributeItem> attributes) throws IntegrationException {
+    private NameVersion extractDependency(List<AttributeItem> attributes) throws DetectableException {
         String dependencyName = null;
         String dependencyVersion = null;
         for (AttributeItem attributeItem : attributes) {
@@ -64,6 +65,6 @@ public class HaskellCabalLibraryJsonProtoParser {
                 return new NameVersion(dependencyName, dependencyVersion);
             }
         }
-        throw new IntegrationException(String.format("Dependency name/version not found in attribute list: %s", attributes.toString()));
+        throw new DetectableException(String.format("Dependency name/version not found in attribute list: %s", attributes.toString()));
     }
 }

@@ -22,6 +22,7 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipeline;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipelines;
@@ -31,7 +32,6 @@ import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.Bazel
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.HaskellCabalLibraryJsonProtoParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.util.ToolVersionLogger;
-import com.synopsys.integration.exception.IntegrationException;
 
 public class BazelExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -66,21 +66,15 @@ public class BazelExtractor {
     }
 
     public Extraction extract(ExecutableTarget bazelExe, File workspaceDir, File workspaceFile,
-        BazelProjectNameGenerator bazelProjectNameGenerator) {
+        BazelProjectNameGenerator bazelProjectNameGenerator) throws DetectableException {
         logger.debug("Bazel extraction:");
-        try {
-            toolVersionLogger.log(workspaceDir, bazelExe, "version");
-            BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
-            Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor, externalIdFactory, haskellCabalLibraryJsonProtoParser);
-            Set<WorkspaceRule> workspaceRulesFromFile = parseWorkspaceRulesFromFile(workspaceFile);
-            Set<WorkspaceRule> workspaceRulesToQuery = workspaceRuleChooser.choose(workspaceRulesFromFile, providedDependencyRuleTypes);
-            List<Dependency> aggregatedDependencies = collectDependencies(pipelines, workspaceRulesToQuery);
-            return buildResults(aggregatedDependencies, bazelProjectNameGenerator.generateFromBazelTarget(bazelTarget));
-        } catch (Exception e) {
-            String msg = String.format("Bazel processing exception: %s", e.getMessage());
-            logger.debug(msg, e);
-            return new Extraction.Builder().failure(msg).build();
-        }
+        toolVersionLogger.log(workspaceDir, bazelExe, "version");
+        BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
+        Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor, externalIdFactory, haskellCabalLibraryJsonProtoParser);
+        Set<WorkspaceRule> workspaceRulesFromFile = parseWorkspaceRulesFromFile(workspaceFile);
+        Set<WorkspaceRule> workspaceRulesToQuery = workspaceRuleChooser.choose(workspaceRulesFromFile, providedDependencyRuleTypes);
+        List<Dependency> aggregatedDependencies = collectDependencies(pipelines, workspaceRulesToQuery);
+        return buildResults(aggregatedDependencies, bazelProjectNameGenerator.generateFromBazelTarget(bazelTarget));
     }
 
     private Set<WorkspaceRule> parseWorkspaceRulesFromFile(final File workspaceFile) {
@@ -104,7 +98,7 @@ public class BazelExtractor {
     }
 
     @NotNull
-    private List<Dependency> collectDependencies(Pipelines pipelines, Set<WorkspaceRule> workspaceRules) throws IntegrationException {
+    private List<Dependency> collectDependencies(Pipelines pipelines, Set<WorkspaceRule> workspaceRules) throws DetectableException {
         List<Dependency> aggregatedDependencies = new ArrayList<>();
         // Make sure the order of processing deterministic
         List<WorkspaceRule> sortedWorkspaceRules = workspaceRules.stream()

@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class FinalStepTransformColonSeparatedGavsToMaven implements FinalStep {
@@ -20,7 +21,7 @@ public class FinalStepTransformColonSeparatedGavsToMaven implements FinalStep {
     }
 
     @Override
-    public List<Dependency> finish(List<String> gavStrings) throws IntegrationException {
+    public List<Dependency> finish(List<String> gavStrings) throws DetectableException {
         List<Dependency> dependencies = new ArrayList<>();
         for (String gavString : gavStrings) {
             Dependency artifactDependency = gavStringToDependency(gavString, ":");

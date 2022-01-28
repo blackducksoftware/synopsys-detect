@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.EnumMap;
 
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelCommandExecutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelVariableSubstitutor;
@@ -49,9 +50,9 @@ public class Pipelines {
         availablePipelines.put(WorkspaceRule.HASKELL_CABAL_LIBRARY, haskellCabalLibraryPipeline);
     }
 
-    public Pipeline get(WorkspaceRule bazelDependencyType) throws IntegrationException {
+    public Pipeline get(WorkspaceRule bazelDependencyType) throws DetectableException {
         if (!availablePipelines.containsKey(bazelDependencyType)) {
-            throw new IntegrationException(String.format("No pipeline found for dependency type %s", bazelDependencyType.getName()));
+            throw new DetectableException(String.format("No pipeline found for dependency type %s", bazelDependencyType.getName()));
         }
         return availablePipelines.get(bazelDependencyType);
     }

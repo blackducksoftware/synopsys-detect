@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.executable.ExecutableOutput;
@@ -28,7 +29,7 @@ public class BazelCommandExecutor {
         this.bazelExe = bazelExe;
     }
 
-    public Optional<String> executeToString(List<String> args) throws IntegrationException {
+    public Optional<String> executeToString(List<String> args) throws DetectableException {
         ExecutableOutput executableOutput = execute(args);
         String cmdStdErr = executableOutput.getErrorOutput();
         if (cmdStdErr != null && cmdStdErr.contains("ERROR")) {
@@ -43,7 +44,7 @@ public class BazelCommandExecutor {
     }
 
     @NotNull
-    private ExecutableOutput execute(List<String> args) throws IntegrationException {
+    private ExecutableOutput execute(List<String> args) throws DetectableException {
         logger.debug(String.format("Executing bazel with args: %s", args));
         ExecutableOutput targetDependenciesQueryResults;
         try {
@@ -51,7 +52,7 @@ public class BazelCommandExecutor {
         } catch (ExecutableRunnerException e) {
             String msg = String.format("Error executing %s with args: %s", bazelExe, args);
             logger.debug(msg);
-            throw new IntegrationException(msg, e);
+            throw new DetectableException(msg, e);
         }
         int targetDependenciesQueryReturnCode = targetDependenciesQueryResults.getReturnCode();
         if (targetDependenciesQueryReturnCode != 0) {
@@ -59,7 +60,7 @@ public class BazelCommandExecutor {
                 targetDependenciesQueryReturnCode,
                 targetDependenciesQueryResults.getErrorOutput());
             logger.debug(msg);
-            throw new IntegrationException(msg);
+            throw new DetectableException(msg);
         }
         logger.debug(String.format("bazel command return code: %d", targetDependenciesQueryReturnCode));
         return targetDependenciesQueryResults;
