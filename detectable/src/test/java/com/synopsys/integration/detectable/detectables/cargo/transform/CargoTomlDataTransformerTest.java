@@ -17,7 +17,7 @@ class CargoTomlDataTransformerTest {
 
     @Test
     void findProjectNameVersion() {
-        CargoTomlTransformer transformer = new CargoTomlTransformer();
+        CargoTomlDataTransformer transformer = new CargoTomlDataTransformer();
         CargoTomlData cargoTomlData = new CargoTomlData(new CargoTomlPackageData("name", "version"));
         Optional<NameVersion> projectNameVersion = transformer.findProjectNameVersion(cargoTomlData);
 
@@ -28,7 +28,7 @@ class CargoTomlDataTransformerTest {
 
     @Test
     void findProjectNameNoVersion() {
-        CargoTomlTransformer transformer = new CargoTomlTransformer();
+        CargoTomlDataTransformer transformer = new CargoTomlDataTransformer();
         CargoTomlData cargoTomlData = new CargoTomlData(new CargoTomlPackageData("name", null));
         Optional<NameVersion> projectNameVersion = transformer.findProjectNameVersion(cargoTomlData);
 
@@ -39,7 +39,7 @@ class CargoTomlDataTransformerTest {
 
     @Test
     void findProjectNoNameOrVersion() {
-        CargoTomlTransformer transformer = new CargoTomlTransformer();
+        CargoTomlDataTransformer transformer = new CargoTomlDataTransformer();
         CargoTomlData cargoTomlData = new CargoTomlData(new CargoTomlPackageData(null, null));
         Optional<NameVersion> projectNameVersion = transformer.findProjectNameVersion(cargoTomlData);
 
@@ -48,7 +48,7 @@ class CargoTomlDataTransformerTest {
 
     @Test
     void findProjectPackage() {
-        CargoTomlTransformer transformer = new CargoTomlTransformer();
+        CargoTomlDataTransformer transformer = new CargoTomlDataTransformer();
         CargoTomlData cargoTomlData = new CargoTomlData(null);
         Optional<NameVersion> projectNameVersion = transformer.findProjectNameVersion(cargoTomlData);
 

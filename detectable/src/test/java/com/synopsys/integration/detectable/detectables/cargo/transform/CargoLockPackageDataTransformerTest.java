@@ -18,15 +18,15 @@ import com.synopsys.integration.detectable.util.NameOptionalVersion;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 import com.synopsys.integration.util.NameVersion;
 
-public class CargoLockDataTransformerTest {
+public class CargoLockPackageDataTransformerTest {
 
     @Test
     public void testParsesNamesAndVersionsSimple() throws DetectableException, MissingExternalIdException, CycleDetectedException {
         List<CargoLockPackage> input = new ArrayList<>();
         input.add(createPackage("test1", "1.0.0"));
         input.add(createPackage("test2", "2.0.0"));
-        CargoLockTransformer cargoLockTransformer = new CargoLockTransformer();
-        DependencyGraph graph = cargoLockTransformer.transformToGraph(input);
+        CargoLockPackageTransformer cargoLockPackageTransformer = new CargoLockPackageTransformer();
+        DependencyGraph graph = cargoLockPackageTransformer.transformToGraph(input);
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.CRATES, graph);
         graphAssert.hasRootSize(2);
@@ -40,9 +40,9 @@ public class CargoLockDataTransformerTest {
         input.add(createPackage("child1", "version1"));
         input.add(createPackage("child1", "version2"));
         input.add(createPackage("parent1", "anything", new NameOptionalVersion("child1")));
-        CargoLockTransformer cargoLockTransformer = new CargoLockTransformer();
+        CargoLockPackageTransformer cargoLockPackageTransformer = new CargoLockPackageTransformer();
 
-        assertThrows(DetectableException.class, () -> cargoLockTransformer.transformToGraph(input));
+        assertThrows(DetectableException.class, () -> cargoLockPackageTransformer.transformToGraph(input));
     }
 
     @Test
@@ -54,8 +54,8 @@ public class CargoLockDataTransformerTest {
         ));
         input.add(createPackage("dep1", "0.5.0"));
         input.add(createPackage("dep2", "0.6.0"));
-        CargoLockTransformer cargoLockTransformer = new CargoLockTransformer();
-        DependencyGraph graph = cargoLockTransformer.transformToGraph(input);
+        CargoLockPackageTransformer cargoLockPackageTransformer = new CargoLockPackageTransformer();
+        DependencyGraph graph = cargoLockPackageTransformer.transformToGraph(input);
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.CRATES, graph);
         graphAssert.hasRootSize(1);

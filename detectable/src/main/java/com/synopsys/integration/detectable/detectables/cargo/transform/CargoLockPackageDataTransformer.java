@@ -11,10 +11,10 @@ import com.synopsys.integration.detectable.detectables.cargo.parse.CargoDependen
 import com.synopsys.integration.detectable.util.NameOptionalVersion;
 import com.synopsys.integration.util.NameVersion;
 
-public class CargoLockDataTransformer {
+public class CargoLockPackageDataTransformer {
     private final CargoDependencyLineParser cargoDependencyLineParser;
 
-    public CargoLockDataTransformer(CargoDependencyLineParser cargoDependencyLineParser) {
+    public CargoLockPackageDataTransformer(CargoDependencyLineParser cargoDependencyLineParser) {
         this.cargoDependencyLineParser = cargoDependencyLineParser;
     }
 
@@ -25,7 +25,7 @@ public class CargoLockDataTransformer {
 
         List<NameOptionalVersion> dependencies = cargoLockPackageData.getDependencies()
             .map((List<String> dependencyLines) -> dependencyLines.stream()
-                .map(cargoDependencyLineParser::formatDependencyName)
+                .map(cargoDependencyLineParser::parseDependencyName)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList()))

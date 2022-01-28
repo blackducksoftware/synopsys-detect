@@ -57,9 +57,9 @@ import com.synopsys.integration.detectable.detectables.bitbake.parse.LicenseMani
 import com.synopsys.integration.detectable.detectables.cargo.CargoDetectable;
 import com.synopsys.integration.detectable.detectables.cargo.CargoExtractor;
 import com.synopsys.integration.detectable.detectables.cargo.parse.CargoDependencyLineParser;
-import com.synopsys.integration.detectable.detectables.cargo.transform.CargoLockDataTransformer;
-import com.synopsys.integration.detectable.detectables.cargo.transform.CargoLockTransformer;
-import com.synopsys.integration.detectable.detectables.cargo.transform.CargoTomlTransformer;
+import com.synopsys.integration.detectable.detectables.cargo.transform.CargoLockPackageDataTransformer;
+import com.synopsys.integration.detectable.detectables.cargo.transform.CargoLockPackageTransformer;
+import com.synopsys.integration.detectable.detectables.cargo.transform.CargoTomlDataTransformer;
 import com.synopsys.integration.detectable.detectables.carthage.CartfileResolvedDependencyDeclarationParser;
 import com.synopsys.integration.detectable.detectables.carthage.CarthageDetectable;
 import com.synopsys.integration.detectable.detectables.carthage.CarthageExtractor;
@@ -315,10 +315,10 @@ public class DetectableFactory {
 
     public CargoDetectable createCargoDetectable(DetectableEnvironment environment) {
         CargoDependencyLineParser cargoDependencyLineParser = new CargoDependencyLineParser();
-        CargoLockDataTransformer cargoLockDataTransformer = new CargoLockDataTransformer(cargoDependencyLineParser);
-        CargoTomlTransformer cargoTomlTransformer = new CargoTomlTransformer();
-        CargoLockTransformer cargoLockTransformer = new CargoLockTransformer();
-        CargoExtractor cargoExtractor = new CargoExtractor(cargoLockDataTransformer, cargoTomlTransformer, cargoLockTransformer);
+        CargoLockPackageDataTransformer cargoLockPackageDataTransformer = new CargoLockPackageDataTransformer(cargoDependencyLineParser);
+        CargoTomlDataTransformer cargoTomlDataTransformer = new CargoTomlDataTransformer();
+        CargoLockPackageTransformer cargoLockPackageTransformer = new CargoLockPackageTransformer();
+        CargoExtractor cargoExtractor = new CargoExtractor(cargoLockPackageDataTransformer, cargoTomlDataTransformer, cargoLockPackageTransformer);
         return new CargoDetectable(environment, fileFinder, cargoExtractor);
     }
 

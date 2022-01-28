@@ -6,7 +6,7 @@ import com.synopsys.integration.detectable.detectables.cargo.data.CargoTomlData;
 import com.synopsys.integration.detectable.detectables.cargo.data.CargoTomlPackageData;
 import com.synopsys.integration.util.NameVersion;
 
-public class CargoTomlTransformer {
+public class CargoTomlDataTransformer {
     public Optional<NameVersion> findProjectNameVersion(CargoTomlData cargoTomlData) {
         return cargoTomlData.getCargoTomlPackage()
             .map(CargoTomlPackageData::getName)

@@ -21,7 +21,7 @@ class CargoLockDataDataTransformerTest {
     @Test
     void transform() {
         CargoDependencyLineParser cargoDependencyLineParser = new CargoDependencyLineParser();
-        CargoLockDataTransformer transformer = new CargoLockDataTransformer(cargoDependencyLineParser);
+        CargoLockPackageDataTransformer transformer = new CargoLockPackageDataTransformer(cargoDependencyLineParser);
 
         List<String> dependencies = Arrays.asList("dep1", "dep2 2.0.0", "dep3 3.0.0 (registry+https://some-registry-url");
         CargoLockPackageData cargoLockPackageData = new CargoLockPackageData("some-name", "some-version", null, null, dependencies);
@@ -48,7 +48,7 @@ class CargoLockDataDataTransformerTest {
     @Test
     void transformNoVersion() {
         CargoDependencyLineParser cargoDependencyLineParser = new CargoDependencyLineParser();
-        CargoLockDataTransformer transformer = new CargoLockDataTransformer(cargoDependencyLineParser);
+        CargoLockPackageDataTransformer transformer = new CargoLockPackageDataTransformer(cargoDependencyLineParser);
 
         CargoLockPackageData cargoLockPackageData = new CargoLockPackageData("some-name", null, null, null, Collections.emptyList());
         CargoLockPackage cargoLockPackage = transformer.transform(cargoLockPackageData);

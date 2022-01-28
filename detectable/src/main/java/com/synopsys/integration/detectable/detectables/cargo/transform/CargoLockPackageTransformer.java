@@ -17,7 +17,7 @@ import com.synopsys.integration.detectable.util.CycleDetectedException;
 import com.synopsys.integration.detectable.util.NameOptionalVersion;
 import com.synopsys.integration.detectable.util.RootPruningGraphUtil;
 
-public class CargoLockTransformer {
+public class CargoLockPackageTransformer {
     private final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
     private final DependencyFactory dependencyFactory = new DependencyFactory(externalIdFactory);
 
