@@ -70,20 +70,13 @@ public class BitbakeExtractor {
         Integer searchDepth,
         EnumListFilter<BitbakeDependencyType> dependencyTypeFilter,
         ExecutableTarget bash
-    ) {
+    ) throws ExecutableFailedException, IOException {
         List<CodeLocation> codeLocations = new ArrayList<>();
         BitbakeSession bitbakeSession = new BitbakeSession(executableRunner, bitbakeRecipesParser, sourceDirectory, buildEnvScript, sourceArguments, bash, toolVersionLogger, buildFileFinder, bitbakeEnvironmentParser);
         bitbakeSession.logBitbakeVersion();
         File buildDir = bitbakeSession.determineBuildDir();
         BitbakeEnvironment bitbakeEnvironment = bitbakeSession.executeBitbakeForEnvironment();
-        ShowRecipesResults showRecipesResults;
-        try {
-            showRecipesResults = bitbakeSession.executeBitbakeForRecipeLayerCatalog();
-        } catch (IOException | ExecutableFailedException e) {
-            String msg = String.format("Error collecting recipe layer information from show-recipes command: %s", e.getMessage());
-            logger.error(msg);
-            return new Extraction.Builder().failure(msg).build();
-        }
+        ShowRecipesResults showRecipesResults = bitbakeSession.executeBitbakeForRecipeLayerCatalog();
         for (String targetImage : packageNames) {
             try {
                 codeLocations.add(generateCodeLocationForTargetImage(followSymLinks, searchDepth, dependencyTypeFilter, bitbakeSession, buildDir, bitbakeEnvironment, showRecipesResults, targetImage));

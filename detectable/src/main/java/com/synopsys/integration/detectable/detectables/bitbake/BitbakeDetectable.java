@@ -1,6 +1,7 @@
 package com.synopsys.integration.detectable.detectables.bitbake;
 
 import java.io.File;
+import java.io.IOException;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
@@ -9,6 +10,7 @@ import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BashResolver;
 import com.synopsys.integration.detectable.detectable.explanation.PropertyProvided;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
@@ -56,7 +58,7 @@ public class BitbakeDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException, IOException {
         return bitbakeExtractor.extract(
             environment.getDirectory(),
             foundBuildEnvScript,
