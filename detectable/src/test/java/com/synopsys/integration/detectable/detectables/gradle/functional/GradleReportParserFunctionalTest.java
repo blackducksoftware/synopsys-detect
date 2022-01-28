@@ -31,7 +31,7 @@ import com.synopsys.integration.detectable.util.graph.MavenGraphAssert;
 public class GradleReportParserFunctionalTest {
 
     @Test
-    void extractCodeLocationTest() {
+    void extractCodeLocationTest() throws JSONException {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS); //Does not work on windows due to path issues.
 
         GradleReportParser gradleReportParser = new GradleReportParser();
@@ -46,11 +46,7 @@ public class GradleReportParserFunctionalTest {
 
         String actual = new Gson().toJson(codeLocation);
 
-        try {
-            JSONAssert.assertEquals(FunctionalTestFiles.asString("/gradle/dependencyGraph-expected.json"), actual, false);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
+        JSONAssert.assertEquals(FunctionalTestFiles.asString("/gradle/dependencyGraph-expected.json"), actual, false);
     }
 
     @Test
