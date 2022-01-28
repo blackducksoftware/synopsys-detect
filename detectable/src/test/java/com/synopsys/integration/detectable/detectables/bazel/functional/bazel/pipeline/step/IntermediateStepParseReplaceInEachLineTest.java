@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStep;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepParseReplaceInEachLine;
 import com.synopsys.integration.exception.IntegrationException;
@@ -14,7 +15,7 @@ import com.synopsys.integration.exception.IntegrationException;
 public class IntermediateStepParseReplaceInEachLineTest {
 
     @Test
-    public void testRemoveLeadingAtSign() throws IntegrationException {
+    public void testRemoveLeadingAtSign() throws IntegrationException, ExecutableFailedException {
         List<String> input = Arrays.asList("@org_apache_commons_commons_io//jar:jar", "@com_google_guava_guava//jar:jar");
         IntermediateStep intermediateStep = new IntermediateStepParseReplaceInEachLine("^@", "");
         List<String> output = intermediateStep.process(input);
@@ -24,7 +25,7 @@ public class IntermediateStepParseReplaceInEachLineTest {
     }
 
     @Test
-    public void testRemoveTrailingJunk() throws IntegrationException {
+    public void testRemoveTrailingJunk() throws IntegrationException, ExecutableFailedException {
         List<String> input = Arrays.asList("org_apache_commons_commons_io//jar:jar", "com_google_guava_guava//jar:jar");
         IntermediateStep intermediateStep = new IntermediateStepParseReplaceInEachLine("//.*", "");
         List<String> output = intermediateStep.process(input);
@@ -34,7 +35,7 @@ public class IntermediateStepParseReplaceInEachLineTest {
     }
 
     @Test
-    public void testInsertPrefix() throws IntegrationException {
+    public void testInsertPrefix() throws IntegrationException, ExecutableFailedException {
         List<String> input = Arrays.asList("org_apache_commons_commons_io", "com_google_guava_guava");
         IntermediateStep intermediateStep = new IntermediateStepParseReplaceInEachLine("^", "//external:");
         List<String> output = intermediateStep.process(input);
@@ -44,7 +45,7 @@ public class IntermediateStepParseReplaceInEachLineTest {
     }
 
     @Test
-    public void testMavenInstallBuildOutputExtractMavenCoordinates() throws IntegrationException {
+    public void testMavenInstallBuildOutputExtractMavenCoordinates() throws IntegrationException, ExecutableFailedException {
         List<String> input = Arrays.asList("  tags = [\"maven_coordinates=com.google.guava:guava:27.0-jre\"],");
         IntermediateStep intermediateStepOne = new IntermediateStepParseReplaceInEachLine("^\\s*tags\\s*\\s*=\\s*\\[\\s*\"maven_coordinates=", "");
         List<String> stepOneOutput = intermediateStepOne.process(input);
@@ -57,7 +58,7 @@ public class IntermediateStepParseReplaceInEachLineTest {
     }
 
     @Test
-    public void testRemoveLeadingAtSignMixedTags() throws IntegrationException {
+    public void testRemoveLeadingAtSignMixedTags() throws IntegrationException, ExecutableFailedException {
         List<String> input = Arrays.asList("  tags = [\"__SOME_OTHER_TAG__\", \"maven_coordinates=com.company.thing:thing-common-client:2.100.0\"],", "  tags = [\"maven_coordinates=com.google.code.findbugs:jsr305:3.0.2\"],");
         IntermediateStep intermediateStep1 = new IntermediateStepParseReplaceInEachLine(".*\"maven_coordinates=", "");
         IntermediateStep intermediateStep2 = new IntermediateStepParseReplaceInEachLine("\".*", "");

@@ -11,6 +11,7 @@ import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BazelResolver;
 import com.synopsys.integration.detectable.detectable.explanation.PropertyProvided;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
@@ -58,7 +59,7 @@ public class BazelDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws DetectableException {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws DetectableException, ExecutableFailedException {
         return bazelExtractor
             .extract(bazelExe, environment.getDirectory(), workspaceFile, projectNameGenerator);
     }

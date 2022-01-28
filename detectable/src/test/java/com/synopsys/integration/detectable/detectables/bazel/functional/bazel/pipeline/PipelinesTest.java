@@ -14,6 +14,7 @@ import org.mockito.Mockito;
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipeline;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipelines;
@@ -173,7 +174,7 @@ class PipelinesTest {
         "}");
 
     @Test
-    void testMavenInstall() throws IntegrationException {
+    void testMavenInstall() throws IntegrationException, ExecutableFailedException {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
         List<Dependency> dependencies = doTest(WorkspaceRule.MAVEN_INSTALL, MAVEN_INSTALL_STANDARD_BAZEL_COMMAND_ARGS, null, MAVEN_INSTALL_CQUERY_OUTPUT_SIMPLE);
@@ -195,7 +196,7 @@ class PipelinesTest {
     }
 
     @Test
-    void testMavenInstallMixedTags() throws IntegrationException {
+    void testMavenInstallMixedTags() throws IntegrationException, ExecutableFailedException {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
         List<Dependency> dependencies = doTest(WorkspaceRule.MAVEN_INSTALL, MAVEN_INSTALL_STANDARD_BAZEL_COMMAND_ARGS, null, MAVEN_INSTALL_OUTPUT_MIXED_TAGS);
@@ -217,7 +218,7 @@ class PipelinesTest {
     }
 
     @Test
-    void testMavenInstallMixedTagsReversedOrder() throws IntegrationException {
+    void testMavenInstallMixedTagsReversedOrder() throws IntegrationException, ExecutableFailedException {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
         List<Dependency> dependencies = doTest(WorkspaceRule.MAVEN_INSTALL, MAVEN_INSTALL_STANDARD_BAZEL_COMMAND_ARGS, null, MAVEN_INSTALL_OUTPUT_MIXED_TAGS_REVERSED_ORDER);
@@ -234,7 +235,7 @@ class PipelinesTest {
     }
 
     @Test
-    void testMavenInstallCqueryAdditionalOptions() throws IntegrationException {
+    void testMavenInstallCqueryAdditionalOptions() throws IntegrationException, ExecutableFailedException {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
         List<String> userProvidedCqueryAdditionalOptions = Arrays.asList("--option1=a", "--option2=b");
@@ -259,7 +260,7 @@ class PipelinesTest {
     }
 
     @Test
-    void haskellCabalLibraryTest() throws IntegrationException {
+    void haskellCabalLibraryTest() throws IntegrationException, ExecutableFailedException {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
         List<Dependency> dependencies = doTest(WorkspaceRule.HASKELL_CABAL_LIBRARY,
@@ -275,7 +276,7 @@ class PipelinesTest {
         assertEquals(1, foundCount);
     }
 
-    private List<Dependency> doTest(WorkspaceRule workspaceRule, List<String> expectedBazelCommandArgs, List<String> userProvidedCqueryAdditionalOptions, String input) throws IntegrationException {
+    private List<Dependency> doTest(WorkspaceRule workspaceRule, List<String> expectedBazelCommandArgs, List<String> userProvidedCqueryAdditionalOptions, String input) throws IntegrationException, ExecutableFailedException {
         BazelCommandExecutor bazelCommandExecutor = Mockito.mock(BazelCommandExecutor.class);
         Mockito.when(bazelCommandExecutor.executeToString(expectedBazelCommandArgs)).thenReturn(Optional.of(input));
         BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor("/:testTarget", userProvidedCqueryAdditionalOptions);

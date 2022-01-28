@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class IntermediateStepExecuteBazelOnEachLine implements IntermediateStep {
@@ -22,7 +23,7 @@ public class IntermediateStepExecuteBazelOnEachLine implements IntermediateStep 
     }
 
     @Override
-    public List<String> process(List<String> input) throws DetectableException {
+    public List<String> process(List<String> input) throws DetectableException, ExecutableFailedException {
         List<String> results = new ArrayList<>();
         if (inputIsExpected && input.isEmpty()) {
             return results;

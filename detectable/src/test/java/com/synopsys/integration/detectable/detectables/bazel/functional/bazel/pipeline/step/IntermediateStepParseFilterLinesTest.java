@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStep;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepParseFilterLines;
 import com.synopsys.integration.exception.IntegrationException;
@@ -19,7 +20,7 @@ public class IntermediateStepParseFilterLinesTest {
     private static final String TAGS_LINE_MIXED = "  tags = [\"__SOME_OTHER_TAG__\", \"maven_coordinates=com.company.thing:thing-common-client:2.100.0\"],";
 
     @Test
-    public void testMavenCoordinateOnly() throws IntegrationException {
+    public void testMavenCoordinateOnly() throws IntegrationException, ExecutableFailedException {
         IntermediateStep intermediateStep = new IntermediateStepParseFilterLines(".*maven_coordinates=.*");
 
         List<String> input = Arrays.asList(NAME_LINE, TAGS_LINE_MAVEN_COORDINATES);
@@ -29,7 +30,7 @@ public class IntermediateStepParseFilterLinesTest {
     }
 
     @Test
-    public void testOtherTagType() throws IntegrationException {
+    public void testOtherTagType() throws IntegrationException, ExecutableFailedException {
         IntermediateStep intermediateStep = new IntermediateStepParseFilterLines(".*maven_coordinates=.*");
 
         List<String> input = Arrays.asList(NAME_LINE, TAGS_LINE_OTHER);
@@ -38,7 +39,7 @@ public class IntermediateStepParseFilterLinesTest {
     }
 
     @Test
-    public void testMixed() throws IntegrationException {
+    public void testMixed() throws IntegrationException, ExecutableFailedException {
         IntermediateStep intermediateStep = new IntermediateStepParseFilterLines(".*maven_coordinates=.*");
 
         List<String> input = Arrays.asList(NAME_LINE, TAGS_LINE_MIXED);

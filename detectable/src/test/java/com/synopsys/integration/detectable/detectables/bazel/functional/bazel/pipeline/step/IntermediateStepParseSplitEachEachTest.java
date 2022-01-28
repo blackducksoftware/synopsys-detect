@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStep;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepParseSplitEach;
 import com.synopsys.integration.exception.IntegrationException;
@@ -14,7 +15,7 @@ import com.synopsys.integration.exception.IntegrationException;
 public class IntermediateStepParseSplitEachEachTest {
 
     @Test
-    public void test() throws IntegrationException {
+    public void test() throws IntegrationException, ExecutableFailedException {
         IntermediateStep intermediateStepSplitEach = new IntermediateStepParseSplitEach("\\s+");
         List<String> input = Arrays.asList("@org_apache_commons_commons_io//jar:jar\n@com_google_guava_guava//jar:jar");
         List<String> output = intermediateStepSplitEach.process(input);

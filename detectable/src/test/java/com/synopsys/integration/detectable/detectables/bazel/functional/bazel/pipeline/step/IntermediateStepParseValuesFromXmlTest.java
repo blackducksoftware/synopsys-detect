@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStep;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepParseValuesFromXml;
 import com.synopsys.integration.exception.IntegrationException;
@@ -30,7 +31,7 @@ public class IntermediateStepParseValuesFromXmlTest {
         + "</query>";
 
     @Test
-    public void test() throws IntegrationException {
+    public void test() throws IntegrationException, ExecutableFailedException {
         IntermediateStep intermediateStep = new IntermediateStepParseValuesFromXml("/query/rule[@class='maven_jar']/string[@name='artifact']", "value");
         List<String> input = Arrays.asList(COMMONS_IO_XML, GUAVA_XML);
 

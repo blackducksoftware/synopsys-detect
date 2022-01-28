@@ -24,6 +24,7 @@ import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipeline;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipelines;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.WorkspaceRuleChooser;
@@ -66,7 +67,7 @@ public class BazelExtractor {
     }
 
     public Extraction extract(ExecutableTarget bazelExe, File workspaceDir, File workspaceFile,
-        BazelProjectNameGenerator bazelProjectNameGenerator) throws DetectableException {
+        BazelProjectNameGenerator bazelProjectNameGenerator) throws DetectableException, ExecutableFailedException {
         logger.debug("Bazel extraction:");
         toolVersionLogger.log(workspaceDir, bazelExe, "version");
         BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
@@ -98,7 +99,7 @@ public class BazelExtractor {
     }
 
     @NotNull
-    private List<Dependency> collectDependencies(Pipelines pipelines, Set<WorkspaceRule> workspaceRules) throws DetectableException {
+    private List<Dependency> collectDependencies(Pipelines pipelines, Set<WorkspaceRule> workspaceRules) throws DetectableException, ExecutableFailedException {
         List<Dependency> aggregatedDependencies = new ArrayList<>();
         // Make sure the order of processing deterministic
         List<WorkspaceRule> sortedWorkspaceRules = workspaceRules.stream()

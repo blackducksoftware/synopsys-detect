@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.FinalStep;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStep;
 import com.synopsys.integration.exception.IntegrationException;
@@ -18,7 +19,7 @@ public class Pipeline {
         this.finalStep = finalStep;
     }
 
-    public List<Dependency> run() throws DetectableException {
+    public List<Dependency> run() throws DetectableException, ExecutableFailedException {
         // Execute pipeline steps (like linux cmd piping with '|'); each step processes the output of the previous step
         List<String> pipelineData = new ArrayList<>();
         for (IntermediateStep pipelineStep : intermediateSteps) {
