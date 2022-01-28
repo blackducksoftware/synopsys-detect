@@ -11,7 +11,7 @@ import com.synopsys.integration.detectable.util.NameOptionalVersion;
 public class CargoDependencyLineParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public Optional<NameOptionalVersion> formatDependencyName(String dependencyLine) {
+    public Optional<NameOptionalVersion> parseDependencyName(String dependencyLine) {
         String[] dependencyLinePieces = dependencyLine.split(" ");
         if (dependencyLinePieces.length == 0 || StringUtils.isEmpty(dependencyLine)) {
             logger.warn("Failed to parse dependency line. It will be ignored: {}", dependencyLine);

@@ -15,7 +15,7 @@ class CargoDependencyLineParserTest {
     @Test
     void formatDependencyName() {
         CargoDependencyLineParser lineParser = new CargoDependencyLineParser();
-        Optional<NameOptionalVersion> nameOptionalVersion = lineParser.formatDependencyName("abscissa_derive 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)");
+        Optional<NameOptionalVersion> nameOptionalVersion = lineParser.parseDependencyName("abscissa_derive 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)");
 
         assertTrue(nameOptionalVersion.isPresent());
         assertEquals("abscissa_derive", nameOptionalVersion.get().getName());
@@ -26,7 +26,7 @@ class CargoDependencyLineParserTest {
     @Test
     void formatDependencyNameNoVersion() {
         CargoDependencyLineParser lineParser = new CargoDependencyLineParser();
-        Optional<NameOptionalVersion> nameOptionalVersion = lineParser.formatDependencyName("abscissa_derive");
+        Optional<NameOptionalVersion> nameOptionalVersion = lineParser.parseDependencyName("abscissa_derive");
 
         assertTrue(nameOptionalVersion.isPresent());
         assertEquals("abscissa_derive", nameOptionalVersion.get().getName());
@@ -36,7 +36,7 @@ class CargoDependencyLineParserTest {
     @Test
     void formatDependencyNoData() {
         CargoDependencyLineParser lineParser = new CargoDependencyLineParser();
-        Optional<NameOptionalVersion> nameOptionalVersion = lineParser.formatDependencyName("");
+        Optional<NameOptionalVersion> nameOptionalVersion = lineParser.parseDependencyName("");
 
         assertFalse(nameOptionalVersion.isPresent());
     }
