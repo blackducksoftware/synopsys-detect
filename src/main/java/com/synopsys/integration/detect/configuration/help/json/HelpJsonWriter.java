@@ -93,6 +93,10 @@ public class HelpJsonWriter {
         } else {
             helpJsonOption.setDeprecated(false);
         }
+        helpJsonOption.setDeprecatedValues(property.getPropertyDeprecationInfo().getDeprecatedValues().stream()
+            .map(value -> new HelpJsonOptionDeprecatedValue(value.getValueDescription(), value.getReason()))
+            .collect(Collectors.toList()));
+        
         helpJsonOption.setStrictValues(property.isOnlyExampleValues());
         helpJsonOption.setCaseSensitiveValues(property.isCaseSensitive());
         helpJsonOption.setAcceptableValues(property.listExampleValues().stream().map(Objects::toString).collect(Collectors.toList()));

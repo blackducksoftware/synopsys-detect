@@ -4,27 +4,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 // Copied from detect-configuration
+import org.jetbrains.annotations.Nullable;
+
 public class HelpJsonOption {
     private String propertyName = "";
     private String propertyKey = "";
     private String propertyType = "";
+    @Nullable
     private String defaultValue = "";
     private String addedInVersion = "";
     private String category = "";
     private String group = "";
+    @Nullable
     private String superGroup = "";
     private List<String> additionalGroups = new ArrayList<>();
     private String description = "";
     private String detailedDescription = "";
     private Boolean deprecated = false;
     private String deprecatedDescription = "";
-    private String deprecatedFailInVersion = "";
     private String deprecatedRemoveInVersion = "";
     private Boolean strictValues = false;
     private Boolean caseSensitiveValues = false;
     private Boolean hasAcceptableValues = false;
     private Boolean isCommaSeparatedList = false;
     private List<String> acceptableValues = new ArrayList<>();
+    private List<HelpJsonOptionDeprecatedValue> deprecatedValues = new ArrayList<>();
     private String example = "";
 
     //This is added for use in the markdown, it does not actually exist on the object.
@@ -134,14 +138,6 @@ public class HelpJsonOption {
         this.deprecatedDescription = deprecatedDescription;
     }
 
-    public String getDeprecatedFailInVersion() {
-        return deprecatedFailInVersion;
-    }
-
-    public void setDeprecatedFailInVersion(String deprecatedFailInVersion) {
-        this.deprecatedFailInVersion = deprecatedFailInVersion;
-    }
-
     public String getDeprecatedRemoveInVersion() {
         return deprecatedRemoveInVersion;
     }
@@ -204,5 +200,13 @@ public class HelpJsonOption {
 
     public void setExample(String example) {
         this.example = example;
+    }
+
+    public List<HelpJsonOptionDeprecatedValue> getDeprecatedValues() {
+        return deprecatedValues;
+    }
+
+    public void setDeprecatedValues(List<HelpJsonOptionDeprecatedValue> deprecatedValues) {
+        this.deprecatedValues = deprecatedValues;
     }
 }
