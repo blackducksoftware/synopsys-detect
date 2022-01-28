@@ -71,10 +71,7 @@ public class EnumPropertiesTests {
 
         PropertyConfiguration config = emptyConfig();
         Optional<Example> value = config.getProvidedParsedValue(property);
-        Assertions.assertTrue(value.isPresent());
-
-        List<DeprecatedValueUsage> deprecatedUsages = property.checkForDeprecatedValues(value.get());
-        Assertions.assertEquals(deprecatedUsages.size(), 0);
+        Assertions.assertFalse(value.isPresent());
     }
 
     @Test
