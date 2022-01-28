@@ -1,38 +1,24 @@
 package com.synopsys.integration.detectable.detectables.npm.lockfile.model;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-public class NpmProject {
+public class NpmProject { //TODO: I hate that this is a 'model' and it is mutable. - jp
     private final String name;
     private final String version;
 
-    private final List<NpmRequires> declaredDevDependencies = new ArrayList<>();
-    private final List<NpmRequires> declaredPeerDependencies = new ArrayList<>();
-    private final List<NpmRequires> declaredDependencies = new ArrayList<>();
+    private final List<NpmRequires> declaredDevDependencies;
+    private final List<NpmRequires> declaredPeerDependencies;
+    private final List<NpmRequires> declaredDependencies;
+    private final List<NpmDependency> resolvedDependencies;
 
-    private final List<NpmDependency> resolvedDependencies = new ArrayList<>();
-
-    public NpmProject(String name, String version) {
+    public NpmProject(String name, String version, List<NpmRequires> declaredDevDependencies, List<NpmRequires> declaredPeerDependencies,
+        List<NpmRequires> declaredDependencies, List<NpmDependency> resolvedDependencies) {
         this.name = name;
         this.version = version;
-    }
-
-    public void addAllDevDependencies(Collection<NpmRequires> requires) {
-        this.declaredDevDependencies.addAll(requires);
-    }
-
-    public void addAllPeerDependencies(Collection<NpmRequires> requires) {
-        this.declaredPeerDependencies.addAll(requires);
-    }
-
-    public void addAllDependencies(Collection<NpmRequires> requires) {
-        this.declaredDependencies.addAll(requires);
-    }
-
-    public void addAllResolvedDependencies(Collection<NpmDependency> resolvedDependencies) {
-        this.resolvedDependencies.addAll(resolvedDependencies);
+        this.declaredDevDependencies = declaredDevDependencies;
+        this.declaredPeerDependencies = declaredPeerDependencies;
+        this.declaredDependencies = declaredDependencies;
+        this.resolvedDependencies = resolvedDependencies;
     }
 
     public String getName() {

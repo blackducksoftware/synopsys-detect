@@ -40,7 +40,7 @@ public class PropertyConfiguration {
 
     //region
     @NotNull
-    public <T> Optional<T> getValueOrEmpty(@NotNull NullableProperty<T> property) {
+    public <V, R> Optional<R> getValueOrEmpty(@NotNull NullableProperty<V, R> property) {
         assertPropertyNotNull(property);
         try {
             return getValue(property);
@@ -50,25 +50,27 @@ public class PropertyConfiguration {
     }
 
     @NotNull
-    public <T> T getValueOrDefault(@NotNull ValuedProperty<T> property) {
+    public <V, R> R getValueOrDefault(@NotNull ValuedProperty<V, R> property) {
         assertPropertyNotNull(property);
         try {
             return getValue(property);
         } catch (InvalidPropertyException e) {
-            return property.getDefaultValue();
+            V defaultValue = property.getDefaultValue();
+            return property.convertValue(defaultValue);
         }
     }
 
     @NotNull
-    public <T> Optional<T> getValue(@NotNull NullableProperty<T> property) throws InvalidPropertyException {
+    public <V, R> Optional<R> getValue(@NotNull NullableProperty<V, R> property) throws InvalidPropertyException {
         assertPropertyNotNull(property);
 
-        PropertyValue<T> value = valueFromCache(property);
+        PropertyValue<V> value = valueFromCache(property);
         Optional<ValueParseException> parseException = value.getException();
         Optional<PropertyResolutionInfo> propertyResolutionInfo = value.getResolutionInfo();
 
         if (value.getValue().isPresent()) {
-            return value.getValue();
+            return value.getValue()
+                .map(property::convertValue);
         } else if (parseException.isPresent() && propertyResolutionInfo.isPresent()) {
             throw new InvalidPropertyException(property.getKey(), propertyResolutionInfo.get().getSource(), parseException.get());
         } else {
@@ -77,20 +79,21 @@ public class PropertyConfiguration {
     }
 
     @NotNull
-    public <T> T getValue(@NotNull ValuedProperty<T> property) throws InvalidPropertyException {
+    public <V, R> R getValue(@NotNull ValuedProperty<V, R> property) throws InvalidPropertyException {
         assertPropertyNotNull(property);
-        PropertyValue<T> propertyValue = valueFromCache(property);
+        PropertyValue<V> propertyValue = valueFromCache(property);
 
-        Optional<T> value = propertyValue.getValue();
+        Optional<V> value = propertyValue.getValue();
         Optional<ValueParseException> parseException = propertyValue.getException();
         Optional<PropertyResolutionInfo> propertyResolutionInfo = propertyValue.getResolutionInfo();
 
         if (value.isPresent()) {
-            return value.get();
+            return value.map(property::convertValue).get();
         } else if (parseException.isPresent() && propertyResolutionInfo.isPresent()) {
             throw new InvalidPropertyException(property.getKey(), propertyResolutionInfo.get().getSource(), parseException.get());
         } else {
-            return property.getDefaultValue();
+            V defaultValue = property.getDefaultValue();
+            return property.convertValue(defaultValue);
         }
     }
 
@@ -99,7 +102,7 @@ public class PropertyConfiguration {
         return resolveFromCache(key).getResolutionInfo().isPresent();
     }
 
-    public <T> boolean wasPropertyProvided(@NotNull TypedProperty<T> property) {
+    public <V, R> boolean wasPropertyProvided(@NotNull TypedProperty<V, R> property) {
         assertPropertyNotNull(property);
         return wasKeyProvided(property.getKey());
     }
@@ -127,7 +130,7 @@ public class PropertyConfiguration {
             .collect(Collectors.toSet());
     }
 
-    public <T> Optional<ValueParseException> getPropertyException(@NotNull TypedProperty<T> property) {
+    public <V, R> Optional<ValueParseException> getPropertyException(@NotNull TypedProperty<V, R> property) {
         assertPropertyNotNull(property);
         return valueFromCache(property).getException();
     }
@@ -256,18 +259,18 @@ public class PropertyConfiguration {
     }
 
     @NotNull
-    private <T> PropertyValue<T> valueFromCache(@NotNull TypedProperty<T> property) {
+    private <V, R> PropertyValue<V> valueFromCache(@NotNull TypedProperty<V, R> property) {
         if (!valueCache.containsKey(property.getKey())) {
             valueCache.put(property.getKey(), valueFromResolution(property));
         }
 
-        PropertyValue<T> value = (PropertyValue<T>) valueCache.get(property.getKey());
+        PropertyValue<V> value = (PropertyValue<V>) valueCache.get(property.getKey());
         Assert.notNull(value, "Could not source a value, something has gone wrong with properties!");
         return value;
     }
 
     @NotNull
-    private <T> PropertyValue<T> valueFromResolution(@NotNull TypedProperty<T> property) {
+    private <V, R> PropertyValue<V> valueFromResolution(@NotNull TypedProperty<V, R> property) {
         Assert.notNull(property, "Cannot resolve a null property.");
         Optional<PropertyResolutionInfo> propertyResolution = resolveFromCache(property.getKey()).getResolutionInfo();
         return propertyResolution
@@ -276,11 +279,11 @@ public class PropertyConfiguration {
     }
 
     @NotNull
-    private <T> PropertyValue<T> coerceValue(@NotNull TypedProperty<T> property, @NotNull PropertyResolutionInfo propertyResolutionInfo) {
+    private <V, R> PropertyValue<V> coerceValue(@NotNull TypedProperty<V, R> property, @NotNull PropertyResolutionInfo propertyResolutionInfo) {
         Assert.notNull(property, "Cannot resolve a null property.");
         Assert.notNull(propertyResolutionInfo, "Cannot coerce a null property resolution.");
         try {
-            T value = property.getValueParser().parse(propertyResolutionInfo.getRaw());
+            V value = property.getValueParser().parse(propertyResolutionInfo.getRaw());
             return new ValuedPropertyValue<>(value, propertyResolutionInfo);
         } catch (ValueParseException e) {
             return new ExceptionPropertyValue<>(e, propertyResolutionInfo);

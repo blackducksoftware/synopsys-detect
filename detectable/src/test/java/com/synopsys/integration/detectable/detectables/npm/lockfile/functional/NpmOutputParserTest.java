@@ -8,15 +8,17 @@ import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.npm.cli.parse.NpmCliParser;
 import com.synopsys.integration.detectable.detectables.npm.cli.parse.NpmDependencyTypeFilter;
-import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmParseResult;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.result.NpmPackagerResult;
+import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
 public class NpmOutputParserTest {
     @Test
     public void npmCliDependencyFinder() {
-        NpmCliParser parser = new NpmCliParser(new ExternalIdFactory());
+        NpmCliParser parser = new NpmCliParser(new ExternalIdFactory(), EnumListFilter.excludeNone());
         String testIn = String.join(System.lineSeparator(), Arrays.asList(
             "{",
             "   \"name\": \"node-js\",",
@@ -54,7 +56,8 @@ public class NpmOutputParserTest {
             "   }",
             "}"));
         NpmDependencyTypeFilter npmDependencyTypeFilter = new NpmDependencyTypeFilter(Collections.emptySet(), Collections.emptySet(), true, true);
-        NpmParseResult result = parser.convertNpmJsonFileToCodeLocation(testIn, npmDependencyTypeFilter);
+        PackageJson packageJson = new PackageJson();
+        NpmPackagerResult result = parser.convertNpmJsonFileToCodeLocation(testIn, packageJson);
 
         Assertions.assertEquals("node-js", result.getProjectName());
         Assertions.assertEquals("0.2.0", result.getProjectVersion());

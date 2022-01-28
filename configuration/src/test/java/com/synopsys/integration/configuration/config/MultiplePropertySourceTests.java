@@ -10,14 +10,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.common.util.Bds;
-import com.synopsys.integration.configuration.property.base.NullableProperty;
+import com.synopsys.integration.configuration.property.base.NullableAlikeProperty;
 import com.synopsys.integration.configuration.property.types.string.NullableStringProperty;
 import com.synopsys.integration.configuration.source.PropertySource;
 
 class MultiplePropertySourceTests {
     @Test
     public void primaryValueUsedOverSecondary() throws InvalidPropertyException {
-        NullableProperty<String> sharedProperty = new NullableStringProperty("shared.key");
+        NullableAlikeProperty<String> sharedProperty = new NullableStringProperty("shared.key");
         PropertySource secondarySource = propertySourceOf("secondaryName", Pair.of(sharedProperty.getKey(), "secondaryValue"));
         PropertySource primarySource = propertySourceOf("primaryName", Pair.of(sharedProperty.getKey(), "primaryValue"));
 
@@ -28,7 +28,7 @@ class MultiplePropertySourceTests {
 
     @Test
     public void valueFromSecondaryWhenNotInPrimary() throws InvalidPropertyException {
-        NullableProperty<String> property = new NullableStringProperty("any.key");
+        NullableAlikeProperty<String> property = new NullableStringProperty("any.key");
         PropertySource secondarySource = propertySourceOf("secondaryName", Pair.of(property.getKey(), "secondaryValue"));
         PropertySource primarySource = propertySourceOf("primaryName");
 
@@ -39,10 +39,10 @@ class MultiplePropertySourceTests {
 
     @Test
     public void containsKeysFromBothSources() {
-        NullableProperty<String> primaryProperty = new NullableStringProperty("primary.key");
+        NullableAlikeProperty<String> primaryProperty = new NullableStringProperty("primary.key");
         PropertySource primarySource = propertySourceOf("primaryName", Pair.of(primaryProperty.getKey(), "primaryValue"));
 
-        NullableProperty<String> secondaryProperty = new NullableStringProperty("secondary.key");
+        NullableAlikeProperty<String> secondaryProperty = new NullableStringProperty("secondary.key");
         PropertySource secondarySource = propertySourceOf("secondaryName", Pair.of(secondaryProperty.getKey(), "secondaryValue"));
 
         PropertyConfiguration config = configOf(primarySource, secondarySource);
@@ -51,10 +51,10 @@ class MultiplePropertySourceTests {
 
     @Test
     public void rawValueMapContainsValuesFromBothSources() {
-        NullableProperty<String> primaryProperty = new NullableStringProperty("primary.key");
+        NullableAlikeProperty<String> primaryProperty = new NullableStringProperty("primary.key");
         PropertySource primarySource = propertySourceOf("primaryName", Pair.of(primaryProperty.getKey(), "primaryValue"));
 
-        NullableProperty<String> secondaryProperty = new NullableStringProperty("secondary.key");
+        NullableAlikeProperty<String> secondaryProperty = new NullableStringProperty("secondary.key");
         PropertySource secondarySource = propertySourceOf("secondaryName", Pair.of(secondaryProperty.getKey(), "secondaryValue"));
 
         PropertyConfiguration config = configOf(primarySource, secondarySource);

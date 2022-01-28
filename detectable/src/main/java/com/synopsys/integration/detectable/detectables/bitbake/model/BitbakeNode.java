@@ -7,6 +7,7 @@ import java.util.Set;
 public class BitbakeNode {
     private final String name;
     private String version = null;
+    private String layer = null;
     private final Set<String> children = new HashSet<>();
 
     public BitbakeNode(String name) {this.name = name;}
@@ -19,12 +20,20 @@ public class BitbakeNode {
         this.version = version;
     }
 
+    public void setLayer(String layer) {
+        this.layer = layer;
+    }
+
     public String getName() {
         return name;
     }
 
     public Optional<String> getVersion() {
         return Optional.ofNullable(version);
+    }
+
+    public Optional<String> getLayer() {
+        return Optional.ofNullable(layer);
     }
 
     public Set<String> getChildren() {

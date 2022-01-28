@@ -16,13 +16,10 @@ public class ConanLockfileExtractor {
         this.conanLockfileParser = conanLockfileParser;
     }
 
-    public Extraction extract(File lockfile, ConanLockfileExtractorOptions conanLockfileExtractorOptions) {
+    public Extraction extract(File lockfile) {
         try {
             String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
-            ConanDetectableResult result = conanLockfileParser.generateCodeLocationFromConanLockfileContents(
-                conanLockfileContents,
-                conanLockfileExtractorOptions.shouldIncludeDevDependencies(),
-                conanLockfileExtractorOptions.preferLongFormExternalIds());
+            ConanDetectableResult result = conanLockfileParser.generateCodeLocationFromConanLockfileContents(conanLockfileContents);
             return new Extraction.Builder()
                 .success(result.getCodeLocation())
                 .projectName(result.getProjectName())

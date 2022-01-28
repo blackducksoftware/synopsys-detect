@@ -14,6 +14,7 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GoResolver;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectableOptions;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
@@ -39,7 +40,7 @@ public class GoModDetectableMinusWhyTest extends DetectableFunctionalTest {
         addExecutableOutput(goVersionOutput, "go", "version");
 
         ExecutableOutput goListUJsonOutput = new ExecutableOutput(FunctionalTestFiles.asString("/go/go-list-all.xout"), StringUtils.EMPTY);
-        addExecutableOutput(goListUJsonOutput, "go", "list", "-mod=readonly", "-m", "-u", "-json", "all");
+        addExecutableOutput(goListUJsonOutput, "go", "list", "-mod=readonly", "-m", "-json", "all");
 
         ExecutableOutput goModGraphOutput = createStandardOutput(
             "github.com/gin-gonic/gin golang.org/x/text@v0.3.0",
@@ -61,7 +62,7 @@ public class GoModDetectableMinusWhyTest extends DetectableFunctionalTest {
                 return ExecutableTarget.forCommand("go");
             }
         }
-        GoModCliDetectableOptions goModCliDetectableOptions = new GoModCliDetectableOptions(false);
+        GoModCliDetectableOptions goModCliDetectableOptions = new GoModCliDetectableOptions(EnumListFilter.excludeNone());
         return detectableFactory.createGoModCliDetectable(detectableEnvironment, new GoResolverTest(), goModCliDetectableOptions);
     }
 

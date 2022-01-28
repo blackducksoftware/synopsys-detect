@@ -63,8 +63,6 @@ public class NpmCliDetectable extends Detectable {
             environment.getDirectory(),
             npmExe,
             npmCliExtractorOptions.getNpmArguments().orElse(null),
-            npmCliExtractorOptions.shouldIncludeDevDependencies(),
-            npmCliExtractorOptions.shouldIncludePeerDependencies(),
             packageJson
         );
     }
