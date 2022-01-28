@@ -15,8 +15,8 @@ import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
 public class RootPruningGraphUtilTests {
 
-    DependencyFactory dependencyFactory = new DependencyFactory(new ExternalIdFactory());
-    Forge anyForge = Forge.MAVEN;
+    private final DependencyFactory dependencyFactory = new DependencyFactory(new ExternalIdFactory());
+    private final Forge anyForge = Forge.MAVEN;
 
     @Test
     public void simpleTwoRootIsPruned() throws CycleDetectedException {
@@ -29,7 +29,7 @@ public class RootPruningGraphUtilTests {
         graph.addParentWithChild(root1, child);
         graph.addParentWithChild(child, root2);
 
-        MutableDependencyGraph prunedGraph = new RootPruningGraphUtil().prune(graph);
+        MutableDependencyGraph prunedGraph = RootPruningGraphUtil.prune(graph);
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(anyForge, prunedGraph);
         graphAssert.hasRootSize(1);
         graphAssert.hasRootDependency("root1", "version");
@@ -47,17 +47,7 @@ public class RootPruningGraphUtilTests {
         graph.addParentWithChild(parent, child);
         graph.addParentWithChild(child, parent);
 
-        Assertions.assertThrows(CycleDetectedException.class, () -> {
-            MutableDependencyGraph prunedGraph = new RootPruningGraphUtil().prune(graph);
-        });
-
-        /*
-        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(anyForge, prunedGraph);
-        graphAssert.hasRootSize(1);
-        graphAssert.hasRootDependency("parent", "version");
-        graphAssert.hasParentChildRelationship("parent", "version", "child", "version");
-        graphAssert.hasParentChildRelationship("child", "version", "parent", "version");
-        */
+        Assertions.assertThrows(CycleDetectedException.class, () -> RootPruningGraphUtil.prune(graph));
     }
 
 }

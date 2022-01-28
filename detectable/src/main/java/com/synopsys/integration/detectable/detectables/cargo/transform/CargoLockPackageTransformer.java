@@ -43,9 +43,8 @@ public class CargoLockPackageTransformer {
                 }
             });
         });
-
-        RootPruningGraphUtil rootPruningGraphUtil = new RootPruningGraphUtil();
-        return rootPruningGraphUtil.prune(graph.build());
+        
+        return RootPruningGraphUtil.prune(graph.build());
     }
 
     private void verifyNoDuplicatePackages(List<CargoLockPackage> lockPackages) throws DetectableException {
