@@ -14,44 +14,44 @@ import com.synopsys.integration.detectable.detectables.cargo.data.CargoTomlPacka
 import com.synopsys.integration.util.NameVersion;
 
 class CargoTomlDataTransformerTest {
-
     @Test
-    void findProjectNameVersion() {
-        CargoTomlDataTransformer transformer = new CargoTomlDataTransformer();
-        CargoTomlData cargoTomlData = new CargoTomlData(new CargoTomlPackageData("name", "version"));
-        Optional<NameVersion> projectNameVersion = transformer.findProjectNameVersion(cargoTomlData);
+    void extractNameVersion() {
+        CargoTomlDataTransformer cargoTomlDataTransformer = new CargoTomlDataTransformer();
+        CargoTomlData cargoTomlData = new CargoTomlData(new CargoTomlPackageData("my-name", "my-version"));
+        Optional<NameVersion> nameVersion = cargoTomlDataTransformer.findProjectNameVersion(cargoTomlData);
 
-        assertTrue(projectNameVersion.isPresent());
-        assertEquals("name", projectNameVersion.get().getName());
-        assertEquals("version", projectNameVersion.get().getVersion());
+        assertTrue(nameVersion.isPresent());
+        assertEquals("my-name", nameVersion.get().getName());
+        assertEquals("my-version", nameVersion.get().getVersion());
     }
 
     @Test
-    void findProjectNameNoVersion() {
-        CargoTomlDataTransformer transformer = new CargoTomlDataTransformer();
-        CargoTomlData cargoTomlData = new CargoTomlData(new CargoTomlPackageData("name", null));
-        Optional<NameVersion> projectNameVersion = transformer.findProjectNameVersion(cargoTomlData);
+    void extractNameNoVersion() {
+        CargoTomlDataTransformer cargoTomlDataTransformer = new CargoTomlDataTransformer();
+        CargoTomlData cargoTomlData = new CargoTomlData(new CargoTomlPackageData("my-name", null));
+        Optional<NameVersion> nameVersion = cargoTomlDataTransformer.findProjectNameVersion(cargoTomlData);
 
-        assertTrue(projectNameVersion.isPresent());
-        assertEquals("name", projectNameVersion.get().getName());
-        assertNull(null, projectNameVersion.get().getVersion());
+        assertTrue(nameVersion.isPresent());
+        assertEquals("my-name", nameVersion.get().getName());
+        assertNull(nameVersion.get().getVersion());
     }
 
     @Test
-    void findProjectNoNameOrVersion() {
-        CargoTomlDataTransformer transformer = new CargoTomlDataTransformer();
+    void extractNoName() {
+        CargoTomlDataTransformer cargoTomlDataTransformer = new CargoTomlDataTransformer();
         CargoTomlData cargoTomlData = new CargoTomlData(new CargoTomlPackageData(null, null));
-        Optional<NameVersion> projectNameVersion = transformer.findProjectNameVersion(cargoTomlData);
 
-        assertFalse(projectNameVersion.isPresent());
+        Optional<NameVersion> nameVersion = cargoTomlDataTransformer.findProjectNameVersion(cargoTomlData);
+        assertFalse(nameVersion.isPresent());
     }
 
     @Test
-    void findProjectPackage() {
-        CargoTomlDataTransformer transformer = new CargoTomlDataTransformer();
+    void extractNoPackage() {
+        CargoTomlDataTransformer cargoTomlDataTransformer = new CargoTomlDataTransformer();
         CargoTomlData cargoTomlData = new CargoTomlData(null);
-        Optional<NameVersion> projectNameVersion = transformer.findProjectNameVersion(cargoTomlData);
 
-        assertFalse(projectNameVersion.isPresent());
+        Optional<NameVersion> nameVersion = cargoTomlDataTransformer.findProjectNameVersion(cargoTomlData);
+        assertFalse(nameVersion.isPresent());
     }
+
 }
