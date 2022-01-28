@@ -14,12 +14,14 @@ import com.paypal.digraph.parser.GraphNode;
 import com.paypal.digraph.parser.GraphParser;
 import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
+import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphNodeLabelParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParserTransformer;
+import com.synopsys.integration.exception.IntegrationException;
 
 @UnitTest
 public class GraphParserTransformerTest {
     @Test
-    public void parsedVersionFromLabel() {
+    public void parsedVersionFromLabel() throws IntegrationException {
         HashMap<String, GraphEdge> edges = new HashMap<>();
         HashMap<String, GraphNode> nodes = new HashMap<>();
 
@@ -33,7 +35,7 @@ public class GraphParserTransformerTest {
     }
 
     @Test
-    public void parsedRelationship() {
+    public void parsedRelationship() throws IntegrationException {
         HashMap<String, GraphEdge> edges = new HashMap<>();
         HashMap<String, GraphNode> nodes = new HashMap<>();
 
@@ -49,11 +51,11 @@ public class GraphParserTransformerTest {
     }
 
     @Test
-    public void removedQuotesFromName() {
+    public void removedQuotesFromName() throws IntegrationException {
         HashMap<String, GraphEdge> edges = new HashMap<>();
         HashMap<String, GraphNode> nodes = new HashMap<>();
 
-        addNode("quotes\"removed", "example\\n:example\\n/example", nodes, edges);
+        addNode("quotes\"removed", "example\\n:example\\n/example/meta/some.bb", nodes, edges);
         Set<String> knownLayers = new HashSet<>(Arrays.asList("aaa", "meta", "bbb"));
         BitbakeGraph bitbakeGraph = buildGraph(nodes, edges, knownLayers);
 
@@ -61,8 +63,8 @@ public class GraphParserTransformerTest {
         Assertions.assertEquals("quotesremoved", bitbakeGraph.getNodes().get(0).getName());
     }
 
-    private BitbakeGraph buildGraph(HashMap<String, GraphNode> nodes, HashMap<String, GraphEdge> edges, Set<String> knownLayers) {
-        GraphParserTransformer graphParserTransformer = new GraphParserTransformer();
+    private BitbakeGraph buildGraph(HashMap<String, GraphNode> nodes, HashMap<String, GraphEdge> edges, Set<String> knownLayers) throws IntegrationException {
+        GraphParserTransformer graphParserTransformer = new GraphParserTransformer(new GraphNodeLabelParser());
         BitbakeGraph bitbakeGraph = graphParserTransformer.transform(mockParser(nodes, edges), knownLayers);
         return bitbakeGraph;
     }

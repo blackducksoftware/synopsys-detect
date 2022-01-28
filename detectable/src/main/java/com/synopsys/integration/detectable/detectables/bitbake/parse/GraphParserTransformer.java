@@ -4,29 +4,32 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 
 import com.paypal.digraph.parser.GraphEdge;
 import com.paypal.digraph.parser.GraphNode;
 import com.paypal.digraph.parser.GraphParser;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
+import com.synopsys.integration.exception.IntegrationException;
 
 public class GraphParserTransformer {
+    private final GraphNodeLabelParser graphNodeLabelParser;
 
-    public static final String LABEL_PATH_SEPARATOR = "/";
+    public GraphParserTransformer(GraphNodeLabelParser graphNodeLabelParser) {
+        this.graphNodeLabelParser = graphNodeLabelParser;
+    }
 
-    public BitbakeGraph transform(GraphParser graphParser, Set<String> layerNames) {
+    public BitbakeGraph transform(GraphParser graphParser, Set<String> layerNames) throws IntegrationException {
         BitbakeGraph bitbakeGraph = new BitbakeGraph();
 
         for (GraphNode graphNode : graphParser.getNodes().values()) {
-            String name = getNameFromNode(graphNode);
-            Optional<String> layer = getLayerFromNode(graphNode, layerNames);
-            getVersionFromNode(graphNode).ifPresent(ver -> bitbakeGraph.addNode(name, ver, layer.orElse(null)));
+            String name = parseNameFromNode(graphNode);
+            Optional<String> layer = parseLayerFromNode(graphNode, layerNames);
+            parseVersionFromNode(graphNode).ifPresent(ver -> bitbakeGraph.addNode(name, ver, layer.orElse(null)));
         }
 
         for (GraphEdge graphEdge : graphParser.getEdges().values()) {
-            String parent = getNameFromNode(graphEdge.getNode1());
-            String child = getNameFromNode(graphEdge.getNode2());
+            String parent = parseNameFromNode(graphEdge.getNode1());
+            String child = parseNameFromNode(graphEdge.getNode2());
             if (!parent.equals(child)) {
                 bitbakeGraph.addChild(parent, child);
             }
@@ -35,57 +38,36 @@ public class GraphParserTransformer {
         return bitbakeGraph;
     }
 
-    private String getNameFromNode(GraphNode graphNode) {
+    private String parseNameFromNode(GraphNode graphNode) {
         String[] nodeIdPieces = graphNode.getId().split(".do_");
         return nodeIdPieces[0].replace("\"", "");
     }
 
-    private Optional<String> getVersionFromNode(GraphNode graphNode) {
-        Optional<String> attribute = getLabelAttribute(graphNode);
-        return attribute.map(this::getVersionFromLabel);
+    private Optional<String> parseVersionFromNode(GraphNode graphNode) throws IntegrationException {
+        Optional<String> labelValue = getLabelAttribute(graphNode);
+        if (labelValue.isPresent()) {
+            return Optional.of(graphNodeLabelParser.parseVersionFromLabel(labelValue.get()));
+        } else {
+            return Optional.empty();
+        }
     }
 
-    private Optional<String> getLayerFromNode(GraphNode graphNode, Set<String> knownLayerNames) {
+    private Optional<String> parseLayerFromNode(GraphNode graphNode, Set<String> knownLayerNames) throws IntegrationException {
         Optional<String> labelAttribute = getLabelAttribute(graphNode);
         if (labelAttribute.isPresent()) {
-            return getLayerFromLabel(labelAttribute.get(), knownLayerNames);
+            return Optional.of(graphNodeLabelParser.parseLayerFromLabel(labelAttribute.get(), knownLayerNames));
         } else {
             return Optional.empty();
         }
     }
 
     private Optional<String> getLabelAttribute(GraphNode graphNode) {
-        String attribute = (String) graphNode.getAttribute("label");
+        String labelValue = (String) graphNode.getAttribute("label");
         Optional<String> result = Optional.empty();
 
-        if (StringUtils.isNotBlank(attribute)) {
-            result = Optional.of(attribute);
+        if (StringUtils.isNotBlank(labelValue)) {
+            result = Optional.of(labelValue);
         }
-
         return result;
-    }
-
-    private String getVersionFromLabel(String label) {
-        String[] components = getLabelParts(label);
-        return components[1];
-    }
-
-    private Optional<String> getLayerFromLabel(String label, Set<String> knownLayerNames) {
-        String[] components = getLabelParts(label);
-        if (components.length == 3) {
-            String bbPath = components[2];
-            for (String candidateLayerName : knownLayerNames) {
-                String possibleLayerPathSubstring = LABEL_PATH_SEPARATOR + candidateLayerName + LABEL_PATH_SEPARATOR;
-                if (bbPath.contains(possibleLayerPathSubstring)) {
-                    return Optional.of(candidateLayerName);
-                }
-            }
-        }
-        return Optional.empty();
-    }
-
-    @NotNull
-    private String[] getLabelParts(final String label) {
-        return label.split("\\\\n:|\\\\n");
     }
 }

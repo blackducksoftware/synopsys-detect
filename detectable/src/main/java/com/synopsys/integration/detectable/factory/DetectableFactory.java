@@ -51,6 +51,7 @@ import com.synopsys.integration.detectable.detectables.bitbake.BuildFileFinder;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeEnvironmentParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
+import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphNodeLabelParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParserTransformer;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.LicenseManifestParser;
 import com.synopsys.integration.detectable.detectables.cargo.CargoDetectable;
@@ -297,7 +298,7 @@ public class DetectableFactory {
     public BitbakeDetectable createBitbakeDetectable(DetectableEnvironment environment, BitbakeDetectableOptions bitbakeDetectableOptions, BashResolver bashResolver) {
         BitbakeExtractor bitbakeExtractor = new BitbakeExtractor(
             executableRunner,
-            new GraphParserTransformer(),
+            new GraphParserTransformer(new GraphNodeLabelParser()),
             new BitbakeGraphTransformer(externalIdFactory, bitbakeDetectableOptions.getDependencyTypeFilter()),
             new BitbakeRecipesParser(),
             toolVersionLogger,
