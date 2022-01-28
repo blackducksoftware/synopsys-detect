@@ -17,10 +17,10 @@ script (by default: oe-init-build-env), and executes BitBake commands to collect
 The BitBake detector generates one codelocation for each given package (target image) name by performing the following steps:
 1. Determines the build directory path by sourcing the given build environment setup script and determining the resulting working directory.
 1. Runs 'bitbake --environment' to determine the currently-configured target machine architecture and licenses directory path.
+1. Runs 'bitbake-layers show-recipes' to derive the list of layers and collect recipe layer information.
 1. For each given package (target image) name:
   * If the user requested that build dependencies be excluded, [solution_name] locates and reads the license.manifest file for the given package (target image) and the currently-configured target machine architecture. This provides a list of recipes that are included in the target image (the non-build dependencies).
   * Runs 'bitbake -g {package}' to generate task-depends.dot, and reads recipes and dependency relationships from it.
-  * Runs 'bitbake-layers show-recipes' to derive each recipe's layer. The first layer listed for each recipe is used as the layer field of the KB externalID [solution_name] generates for the recipe.
   * If the user requested that build dependencies be excluded: [solution_name] excludes recipes not declared in license.manifest, as well as native recipes. [solution_name] always excludes virtual recipes (recipes with names prefixed with "virtual/").
   * [solution_name] adds at the root level of the graph for the package (target image) each recipe found in task-depends.dot that is not excluded as described above.
   * Child (transitive) relationships are created from those root dependencies to their children (as specified in task-depends.dot).

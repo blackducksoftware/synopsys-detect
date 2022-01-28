@@ -1,10 +1,12 @@
 package com.synopsys.integration.detectable.detectables.bitbake.parse;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,21 +35,22 @@ public class BitbakeGraphTransformer {
         this.dependencyTypeFilter = dependencyTypeFilter;
     }
 
-    public DependencyGraph transform(BitbakeGraph bitbakeGraph, Map<String, String> recipeLayerMap, Map<String, String> imageRecipes) {
+    public DependencyGraph transform(BitbakeGraph bitbakeGraph, Map<String, List<String>> recipeLayerMap, Map<String, String> imageRecipes) {
         Map<String, Dependency> namesToExternalIds = generateExternalIds(bitbakeGraph, recipeLayerMap, imageRecipes);
         return buildGraph(bitbakeGraph, namesToExternalIds);
     }
 
     @NotNull
-    private Map<String, Dependency> generateExternalIds(BitbakeGraph bitbakeGraph, Map<String, String> recipeLayerMap, Map<String, String> imageRecipes) {
+    private Map<String, Dependency> generateExternalIds(BitbakeGraph bitbakeGraph, Map<String, List<String>> recipeLayerMap, Map<String, String> imageRecipes) {
         Map<String, Dependency> namesToExternalIds = new HashMap<>();
         for (BitbakeNode bitbakeNode : bitbakeGraph.getNodes()) {
             String name = bitbakeNode.getName();
 
             if (bitbakeNode.getVersion().isPresent()) {
                 String version = bitbakeNode.getVersion().get();
+                Optional<String> actualLayer = bitbakeNode.getLayer();
                 if (dependencyTypeFilter.shouldInclude(BitbakeDependencyType.BUILD) || !isBuildDependency(imageRecipes, name, version)) {
-                    Optional<Dependency> dependency = generateExternalId(name, version, recipeLayerMap).map(Dependency::new);
+                    Optional<Dependency> dependency = generateExternalId(name, version, actualLayer.orElse(null), recipeLayerMap).map(Dependency::new);
                     dependency.ifPresent(value -> namesToExternalIds.put(bitbakeNode.getName(), value));
                 }
             } else if (name.startsWith(VIRTUAL_PREFIX)) {
@@ -117,20 +120,20 @@ public class BitbakeGraphTransformer {
         return epochlessRecipeVersion;
     }
 
-    private Optional<ExternalId> generateExternalId(String dependencyName, String dependencyVersion, Map<String, String> recipeLayerMap) {
-        String priorityLayerName = recipeLayerMap.get(dependencyName);
+    private Optional<ExternalId> generateExternalId(String dependencyName, String dependencyVersion, @Nullable String dependencyLayer, Map<String, List<String>> recipeLayerMap) {
+        List<String> recipeLayerNames = recipeLayerMap.get(dependencyName);
         ExternalId externalId = null;
-
-        if (priorityLayerName != null) {
-            externalId = externalIdFactory.createYoctoExternalId(priorityLayerName, dependencyName, dependencyVersion);
+        if (recipeLayerNames != null) {
+            dependencyLayer = chooseRecipeLayer(dependencyName, dependencyLayer, recipeLayerNames);
+            externalId = externalIdFactory.createYoctoExternalId(dependencyLayer, dependencyName, dependencyVersion);
         } else {
-            logger.debug("Failed to find component '{}' in component layer map.", dependencyName);
+            logger.debug("Failed to find component '{}' in component layer map. [dependencyVersion: {}; dependencyLayer: {}", dependencyName, dependencyVersion, dependencyLayer);
             if (dependencyName.endsWith(NATIVE_SUFFIX)) {
                 String alternativeName = dependencyName.replace(NATIVE_SUFFIX, "");
                 logger.debug("Generating alternative component name '{}' for '{}=={}'", alternativeName, dependencyName, dependencyVersion);
-                externalId = generateExternalId(alternativeName, dependencyVersion, recipeLayerMap).orElse(null);
+                externalId = generateExternalId(alternativeName, dependencyVersion, dependencyLayer, recipeLayerMap).orElse(null);
             } else {
-                logger.debug("'{}=={}' is not an actual component. Excluding from graph.", dependencyName, dependencyVersion);
+                logger.debug("'{}:{}' is not an actual component. Excluding from graph.", dependencyName, dependencyVersion);
             }
         }
 
@@ -139,5 +142,15 @@ public class BitbakeGraphTransformer {
         }
 
         return Optional.ofNullable(externalId);
+    }
+
+    private String chooseRecipeLayer(final String dependencyName, @Nullable String dependencyLayer, final List<String> recipeLayerNames) {
+        if (dependencyLayer == null) {
+            logger.warn("Did not parse a layer for dependency {} from task-depends.dot; falling back to layer {} (first from show-recipes output)", dependencyName, recipeLayerNames.get(0));
+            dependencyLayer = recipeLayerNames.get(0);
+        } else {
+            logger.trace("For dependency recipe {}: using layer {} parsed from task-depends.dot", dependencyName, dependencyLayer);
+        }
+        return dependencyLayer;
     }
 }
