@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
-import com.synopsys.integration.exception.IntegrationException;
 
 public class IntermediateStepExecuteBazelOnEachLine implements IntermediateStep {
     private final BazelCommandExecutor bazelCommandExecutor;

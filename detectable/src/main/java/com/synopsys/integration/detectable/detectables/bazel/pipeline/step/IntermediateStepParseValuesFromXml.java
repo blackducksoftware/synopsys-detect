@@ -52,7 +52,7 @@ public class IntermediateStepParseValuesFromXml implements IntermediateStep {
 
     private List<String> parseAttributeValuesWithGivenXPathQuery(String xmlString, String xPathExpression, String targetAttributeName)
         throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
-        logger.trace(String.format("xPathExpression: %s, targetAttributeName: %s", xPathExpression, targetAttributeName));
+        logger.trace("xPathExpression: {}, targetAttributeName: {}", xPathExpression, targetAttributeName);
         List<String> parsedValues = new ArrayList<>();
         InputStream xmlInputStream = new ByteArrayInputStream(xmlString.getBytes());
 
@@ -63,7 +63,7 @@ public class IntermediateStepParseValuesFromXml implements IntermediateStep {
         NodeList nodeList = (NodeList) xPath.compile(xPathExpression).evaluate(xmlDocument, XPathConstants.NODESET);
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
-            logger.trace(String.format("parsed value: %s", node.getAttributes().getNamedItem(targetAttributeName).getTextContent()));
+            logger.trace("parsed value: {}", node.getAttributes().getNamedItem(targetAttributeName).getTextContent());
             parsedValues.add(node.getAttributes().getNamedItem(targetAttributeName).getTextContent());
         }
         return parsedValues;

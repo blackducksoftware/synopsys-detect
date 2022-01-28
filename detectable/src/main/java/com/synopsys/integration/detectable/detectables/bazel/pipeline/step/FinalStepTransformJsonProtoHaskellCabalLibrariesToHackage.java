@@ -9,7 +9,6 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
 public class FinalStepTransformJsonProtoHaskellCabalLibrariesToHackage implements FinalStep {

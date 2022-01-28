@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
-import com.synopsys.integration.exception.IntegrationException;
 
 public class WorkspaceRuleChooser {
 

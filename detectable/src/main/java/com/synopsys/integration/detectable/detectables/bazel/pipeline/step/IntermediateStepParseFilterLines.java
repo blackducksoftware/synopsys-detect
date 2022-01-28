@@ -17,10 +17,10 @@ public class IntermediateStepParseFilterLines implements IntermediateStep {
     @Override
     public List<String> process(List<String> input) {
         List<String> output = new ArrayList<>();
-        logger.trace(String.format("Filtering with regex %s", regex));
+        logger.trace("Filtering with regex {}", regex);
         for (String inputItem : input) {
             if (inputItem.matches(regex)) {
-                logger.trace(String.format("Filter keeping: %s", inputItem));
+                logger.trace("Filter keeping: {}", inputItem);
                 output.add(inputItem);
             }
         }

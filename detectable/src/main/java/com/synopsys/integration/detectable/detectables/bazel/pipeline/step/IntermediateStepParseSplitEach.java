@@ -22,7 +22,7 @@ public class IntermediateStepParseSplitEach implements IntermediateStep {
             String[] splitLines = inputItem.split(regex);
             results.addAll(Arrays.asList(splitLines));
         }
-        logger.trace(String.format("SplitEach returning %d lines", results.size()));
+        logger.trace("SplitEach returning {} lines", results.size());
         return results;
     }
 }

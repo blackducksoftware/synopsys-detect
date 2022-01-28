@@ -12,7 +12,6 @@ import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.model
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.model.Proto;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.model.ResultItem;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.model.Target;
-import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
 public class HaskellCabalLibraryJsonProtoParser {
@@ -27,7 +26,7 @@ public class HaskellCabalLibraryJsonProtoParser {
         List<NameVersion> dependencies = new ArrayList<>();
         Proto proto = gson.fromJson(jsonProtoString, Proto.class);
         if (proto == null || proto.getResults() == null || proto.getResults().isEmpty()) {
-            logger.debug(String.format("Unable to parse results from JSON proto string: %s", jsonProtoString));
+            logger.debug("Unable to parse results from JSON proto string: {}", jsonProtoString);
             return dependencies;
         }
         for (ResultItem result : proto.getResults()) {
@@ -47,7 +46,7 @@ public class HaskellCabalLibraryJsonProtoParser {
             }
             List<AttributeItem> attributes = target.getRule().getAttribute();
             NameVersion dependency = extractDependency(attributes);
-            logger.debug(String.format("Adding dependency %s/%s", dependency.getName(), dependency.getVersion()));
+            logger.debug("Adding dependency {}/{}}", dependency.getName(), dependency.getVersion());
             dependencies.add(dependency);
         }
     }
@@ -65,6 +64,6 @@ public class HaskellCabalLibraryJsonProtoParser {
                 return new NameVersion(dependencyName, dependencyVersion);
             }
         }
-        throw new DetectableException(String.format("Dependency name/version not found in attribute list: %s", attributes.toString()));
+        throw new DetectableException(String.format("Dependency name/version not found in attribute list: %s", attributes));
     }
 }

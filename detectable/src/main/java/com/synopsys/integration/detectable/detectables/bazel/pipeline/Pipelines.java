@@ -9,7 +9,6 @@ import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelCommandExecutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelVariableSubstitutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.HaskellCabalLibraryJsonProtoParser;
-import com.synopsys.integration.exception.IntegrationException;
 
 public class Pipelines {
     private static final String CQUERY_OPTIONS_PLACEHOLDER = "${detect.bazel.cquery.options}";

@@ -30,7 +30,7 @@ public class BazelCommandExecutor {
         ExecutableOutput targetDependenciesQueryResults = executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(workspaceDir, bazelExe, args));
         String cmdStdErr = targetDependenciesQueryResults.getErrorOutput();
         if (cmdStdErr != null && cmdStdErr.contains("ERROR")) {
-            logger.warn(String.format("Bazel error: %s", cmdStdErr.trim()));
+            logger.warn("Bazel error: {}", cmdStdErr.trim());
         }
         String cmdStdOut = targetDependenciesQueryResults.getStandardOutput();
         if ((StringUtils.isBlank(cmdStdOut))) {

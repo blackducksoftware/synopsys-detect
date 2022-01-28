@@ -8,7 +8,6 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.FinalStep;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStep;
-import com.synopsys.integration.exception.IntegrationException;
 
 public class Pipeline {
     private final List<IntermediateStep> intermediateSteps;
