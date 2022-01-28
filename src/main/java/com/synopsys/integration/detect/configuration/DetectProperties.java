@@ -1258,8 +1258,7 @@ public class DetectProperties {
             .setHelp("An override for the Project Version distribution")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced)
-            .build()
-            .deprecateValue(ProjectVersionDistributionType.EXTERNAL, "Project version distribution type is deprecated. ");
+            .build();
 
     public static final NullableStringDetectProperty DETECT_PROJECT_VERSION_NAME =
         NullableStringDetectProperty.newBuilder("detect.project.version.name")
