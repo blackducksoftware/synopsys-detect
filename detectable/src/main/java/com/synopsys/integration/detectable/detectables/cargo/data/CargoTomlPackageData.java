@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class CargoTomlPackage {
+public class CargoTomlPackageData {
     @Nullable
     @SerializedName("name")
     private final String name;
@@ -15,7 +15,7 @@ public class CargoTomlPackage {
     @SerializedName("version")
     private final String version;
 
-    public CargoTomlPackage(@Nullable String name, @Nullable String version) {
+    public CargoTomlPackageData(@Nullable String name, @Nullable String version) {
         this.name = name;
         this.version = version;
     }

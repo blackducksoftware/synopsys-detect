@@ -14,8 +14,8 @@ import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectables.cargo.data.CargoLock;
-import com.synopsys.integration.detectable.detectables.cargo.data.CargoToml;
+import com.synopsys.integration.detectable.detectables.cargo.data.CargoLockData;
+import com.synopsys.integration.detectable.detectables.cargo.data.CargoTomlData;
 import com.synopsys.integration.detectable.detectables.cargo.model.CargoLockPackage;
 import com.synopsys.integration.detectable.detectables.cargo.transform.CargoLockDataTransformer;
 import com.synopsys.integration.detectable.detectables.cargo.transform.CargoLockTransformer;
@@ -36,8 +36,8 @@ public class CargoExtractor {
     }
 
     public Extraction extract(File cargoLockFile, @Nullable File cargoTomlFile) throws IOException, CycleDetectedException, DetectableException {
-        CargoLock cargoLock = new Toml().read(cargoLockFile).to(CargoLock.class);
-        List<CargoLockPackage> packages = cargoLock.getPackages()
+        CargoLockData cargoLockData = new Toml().read(cargoLockFile).to(CargoLockData.class);
+        List<CargoLockPackage> packages = cargoLockData.getPackages()
             .orElse(new ArrayList<>()).stream()
             .map(cargoLockDataTransformer::transform)
             .collect(Collectors.toList());
@@ -51,8 +51,8 @@ public class CargoExtractor {
 
         Optional<NameVersion> projectNameVersion = Optional.empty();
         if (cargoTomlFile != null) {
-            CargoToml cargoToml = new Toml().read(cargoTomlFile).to(CargoToml.class);
-            projectNameVersion = cargoTomlTransformer.findProjectNameVersion(cargoToml);
+            CargoTomlData cargoTomlData = new Toml().read(cargoTomlFile).to(CargoTomlData.class);
+            projectNameVersion = cargoTomlTransformer.findProjectNameVersion(cargoTomlData);
         }
 
         CodeLocation codeLocation = new CodeLocation(graph); //TODO: Consider for 8.0.0 providing an external ID.

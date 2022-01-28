@@ -9,17 +9,17 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detectable.detectables.cargo.data.CargoToml;
-import com.synopsys.integration.detectable.detectables.cargo.data.CargoTomlPackage;
+import com.synopsys.integration.detectable.detectables.cargo.data.CargoTomlData;
+import com.synopsys.integration.detectable.detectables.cargo.data.CargoTomlPackageData;
 import com.synopsys.integration.util.NameVersion;
 
-class CargoTomlTransformerTest {
+class CargoTomlDataTransformerTest {
 
     @Test
     void findProjectNameVersion() {
         CargoTomlTransformer transformer = new CargoTomlTransformer();
-        CargoToml cargoToml = new CargoToml(new CargoTomlPackage("name", "version"));
-        Optional<NameVersion> projectNameVersion = transformer.findProjectNameVersion(cargoToml);
+        CargoTomlData cargoTomlData = new CargoTomlData(new CargoTomlPackageData("name", "version"));
+        Optional<NameVersion> projectNameVersion = transformer.findProjectNameVersion(cargoTomlData);
 
         assertTrue(projectNameVersion.isPresent());
         assertEquals("name", projectNameVersion.get().getName());
@@ -29,8 +29,8 @@ class CargoTomlTransformerTest {
     @Test
     void findProjectNameNoVersion() {
         CargoTomlTransformer transformer = new CargoTomlTransformer();
-        CargoToml cargoToml = new CargoToml(new CargoTomlPackage("name", null));
-        Optional<NameVersion> projectNameVersion = transformer.findProjectNameVersion(cargoToml);
+        CargoTomlData cargoTomlData = new CargoTomlData(new CargoTomlPackageData("name", null));
+        Optional<NameVersion> projectNameVersion = transformer.findProjectNameVersion(cargoTomlData);
 
         assertTrue(projectNameVersion.isPresent());
         assertEquals("name", projectNameVersion.get().getName());
@@ -40,8 +40,8 @@ class CargoTomlTransformerTest {
     @Test
     void findProjectNoNameOrVersion() {
         CargoTomlTransformer transformer = new CargoTomlTransformer();
-        CargoToml cargoToml = new CargoToml(new CargoTomlPackage(null, null));
-        Optional<NameVersion> projectNameVersion = transformer.findProjectNameVersion(cargoToml);
+        CargoTomlData cargoTomlData = new CargoTomlData(new CargoTomlPackageData(null, null));
+        Optional<NameVersion> projectNameVersion = transformer.findProjectNameVersion(cargoTomlData);
 
         assertFalse(projectNameVersion.isPresent());
     }
@@ -49,8 +49,8 @@ class CargoTomlTransformerTest {
     @Test
     void findProjectPackage() {
         CargoTomlTransformer transformer = new CargoTomlTransformer();
-        CargoToml cargoToml = new CargoToml(null);
-        Optional<NameVersion> projectNameVersion = transformer.findProjectNameVersion(cargoToml);
+        CargoTomlData cargoTomlData = new CargoTomlData(null);
+        Optional<NameVersion> projectNameVersion = transformer.findProjectNameVersion(cargoTomlData);
 
         assertFalse(projectNameVersion.isPresent());
     }

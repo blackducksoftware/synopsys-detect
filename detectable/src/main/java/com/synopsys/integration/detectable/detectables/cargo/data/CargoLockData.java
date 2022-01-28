@@ -7,12 +7,12 @@ import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class CargoLock {
+public class CargoLockData {
     @Nullable
     @SerializedName("package")
     private final List<CargoLockPackageData> packages;
 
-    public CargoLock(@Nullable List<CargoLockPackageData> packages) {this.packages = packages;}
+    public CargoLockData(@Nullable List<CargoLockPackageData> packages) {this.packages = packages;}
 
     public Optional<List<CargoLockPackageData>> getPackages() {
         return Optional.ofNullable(packages);

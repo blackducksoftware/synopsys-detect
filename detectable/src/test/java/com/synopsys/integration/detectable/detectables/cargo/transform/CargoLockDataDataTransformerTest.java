@@ -16,7 +16,7 @@ import com.synopsys.integration.detectable.detectables.cargo.parse.CargoDependen
 import com.synopsys.integration.detectable.util.NameOptionalVersion;
 import com.synopsys.integration.util.NameVersion;
 
-class CargoLockDataTransformerTest {
+class CargoLockDataDataTransformerTest {
 
     @Test
     void transform() {
