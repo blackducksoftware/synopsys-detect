@@ -48,7 +48,7 @@ public class CargoDetectableTest extends DetectableFunctionalTest {
             "version = \"0.3.46\"",
             "",
             "[[package]]",
-            "name = \"darling\"", 
+            "name = \"darling\"",
             "version = \"0.10.2\""
         );
     }
@@ -63,8 +63,8 @@ public class CargoDetectableTest extends DetectableFunctionalTest {
     public void assertExtraction(@NotNull Extraction extraction) {
         Assertions.assertEquals(1, extraction.getCodeLocations().size());
 
-        Assertions.assertEquals(extraction.getProjectName(), "cargo-audit");
-        Assertions.assertEquals(extraction.getProjectVersion(), "0.12.0");
+        Assertions.assertEquals("cargo-audit", extraction.getProjectName());
+        Assertions.assertEquals("0.12.0", extraction.getProjectVersion());
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.CRATES, extraction.getCodeLocations().get(0).getDependencyGraph());
         graphAssert.hasRootDependency("abscissa_core", "0.5.2");
