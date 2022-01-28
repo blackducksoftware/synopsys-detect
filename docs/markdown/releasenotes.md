@@ -11,6 +11,10 @@
 * The Go Mod Cli Detector no longer uses the "-u" flag when running **go list -m all**. This results in significantly faster scan times against Go Mod projects.
 * Deprecated the `detect.pnpm.dependency.types` property in favor of `detect.pnpm.dependency.types.excluded` for property consistency.
 
+### Resolved issues
+
+* (IDETECT-3080) Fixed an issue where [solution_name] would not include multiple versions of the same package in Cargo projects.
+
 ## Version 7.10.0
 
 ### New features
