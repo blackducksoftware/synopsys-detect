@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.dart.pubdep;
 
 import java.io.File;
@@ -23,6 +16,7 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.dart.PubSpecYamlNameVersionParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 import com.synopsys.integration.util.NameVersion;
@@ -33,20 +27,25 @@ public class PubDepsExtractor {
     private final DetectableExecutableRunner executableRunner;
     private final PubDepsParser pubDepsParser;
     private PubSpecYamlNameVersionParser nameVersionParser;
+    private final ToolVersionLogger toolVersionLogger;
 
-    public PubDepsExtractor(DetectableExecutableRunner executableRunner, PubDepsParser pubDepsParser, PubSpecYamlNameVersionParser nameVersionParser) {
+    public PubDepsExtractor(DetectableExecutableRunner executableRunner, PubDepsParser pubDepsParser, PubSpecYamlNameVersionParser nameVersionParser,
+        ToolVersionLogger toolVersionLogger) {
         this.executableRunner = executableRunner;
         this.pubDepsParser = pubDepsParser;
         this.nameVersionParser = nameVersionParser;
+        this.toolVersionLogger = toolVersionLogger;
     }
 
     public Extraction extract(File directory, @Nullable ExecutableTarget dartExe, @Nullable ExecutableTarget flutterExe, DartPubDepsDetectableOptions dartPubDepsDetectableOptions, File pubSpecYamlFile) {
         try {
+            toolVersionLogger.log(directory, dartExe);
+            toolVersionLogger.log(directory, flutterExe);
             List<String> pubDepsCommand = new ArrayList<>();
             pubDepsCommand.add("pub");
             pubDepsCommand.add("deps");
 
-            if (dartPubDepsDetectableOptions.isExcludeDevDependencies()) {
+            if (dartPubDepsDetectableOptions.getDependencyTypeFilter().shouldExclude(DartPubDependencyType.DEV)) {
                 pubDepsCommand.add("--no-dev");
             }
 

@@ -1,10 +1,3 @@
-/*
- * configuration
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.configuration.property.types.enumsoft;
 
 import java.util.List;
@@ -12,14 +5,15 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.synopsys.integration.configuration.property.base.NullableAlikeProperty;
 import com.synopsys.integration.configuration.property.base.NullableProperty;
 import com.synopsys.integration.configuration.util.EnumPropertyUtils;
 
-public class NullableSoftEnumProperty<E extends Enum<E>> extends NullableProperty<SoftEnumValue<E>> {
+public class NullableSoftEnumProperty<E extends Enum<E>> extends NullableAlikeProperty<SoftEnumValue<E>> {
     @NotNull
     private final Class<E> enumClass;
 
-    public NullableSoftEnumProperty(@NotNull final String key, @NotNull Class<E> enumClass) {
+    public NullableSoftEnumProperty(@NotNull String key, @NotNull Class<E> enumClass) {
         super(key, new SoftEnumValueParser<>(enumClass));
         this.enumClass = enumClass;
     }

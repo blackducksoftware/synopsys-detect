@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.yarn.parse.entry.section;
 
 import java.util.ArrayList;
@@ -30,9 +23,9 @@ public class YarnLockEntrySectionParserSet {
             return lineIndexOfStartOfSection;
         }
         return yarnLockEntrySectionParsers.stream()
-                   .filter(ep -> ep.applies(line))
-                   .findFirst()
-                   .map(ep -> ep.parseSection(entryBuilder, yarnLockLines, lineIndexOfStartOfSection))
-                   .orElse(lineIndexOfStartOfSection);
+            .filter(ep -> ep.applies(line))
+            .findFirst()
+            .map(ep -> ep.parseSection(entryBuilder, yarnLockLines, lineIndexOfStartOfSection))
+            .orElse(lineIndexOfStartOfSection);
     }
 }

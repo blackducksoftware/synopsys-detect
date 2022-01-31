@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.report;
 
 import java.util.ArrayList;
@@ -17,13 +10,13 @@ import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
 public class DetailedSearchSummaryReporter {
-    public void print(final ReportWriter writer, final DetectorEvaluationTree rootEvaluation) {
+    public void print(ReportWriter writer, DetectorEvaluationTree rootEvaluation) {
         printDirectoriesDebug(writer, rootEvaluation.asFlatList());
     }
 
-    private void printDirectoriesDebug(final ReportWriter writer, final List<DetectorEvaluationTree> trees) {
-        for (final DetectorEvaluationTree tree : trees) {
-            final List<String> toPrint = new ArrayList<>();
+    private void printDirectoriesDebug(ReportWriter writer, List<DetectorEvaluationTree> trees) {
+        for (DetectorEvaluationTree tree : trees) {
+            List<String> toPrint = new ArrayList<>();
             toPrint.addAll(printDetails("      APPLIED: ", DetectorEvaluationUtils.applicableChildren(tree), DetectorEvaluation::getApplicabilityMessage));
             toPrint.addAll(printDetails("DID NOT APPLY: ", DetectorEvaluationUtils.notSearchableChildren(tree), DetectorEvaluation::getSearchabilityMessage));
             toPrint.addAll(printDetails("DID NOT APPLY: ", DetectorEvaluationUtils.searchableButNotApplicableChildren(tree), DetectorEvaluation::getApplicabilityMessage));
@@ -39,9 +32,9 @@ public class DetailedSearchSummaryReporter {
         }
     }
 
-    private List<String> printDetails(final String prefix, final List<DetectorEvaluation> details, final Function<DetectorEvaluation, String> reason) {
-        final List<String> toPrint = new ArrayList<>();
-        for (final DetectorEvaluation detail : details) {
+    private List<String> printDetails(String prefix, List<DetectorEvaluation> details, Function<DetectorEvaluation, String> reason) {
+        List<String> toPrint = new ArrayList<>();
+        for (DetectorEvaluation detail : details) {
             toPrint.add(prefix + detail.getDetectorRule().getDescriptiveName() + ": " + reason.apply(detail));
         }
         return toPrint;

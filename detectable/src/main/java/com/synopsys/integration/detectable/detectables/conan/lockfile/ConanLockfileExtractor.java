@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.conan.lockfile;
 
 import java.io.File;
@@ -23,18 +16,15 @@ public class ConanLockfileExtractor {
         this.conanLockfileParser = conanLockfileParser;
     }
 
-    public Extraction extract(File lockfile, ConanLockfileExtractorOptions conanLockfileExtractorOptions) {
+    public Extraction extract(File lockfile) {
         try {
             String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
-            ConanDetectableResult result = conanLockfileParser.generateCodeLocationFromConanLockfileContents(
-                conanLockfileContents,
-                conanLockfileExtractorOptions.shouldIncludeDevDependencies(),
-                conanLockfileExtractorOptions.preferLongFormExternalIds());
+            ConanDetectableResult result = conanLockfileParser.generateCodeLocationFromConanLockfileContents(conanLockfileContents);
             return new Extraction.Builder()
-                       .success(result.getCodeLocation())
-                       .projectName(result.getProjectName())
-                       .projectVersion(result.getProjectVersion())
-                       .build();
+                .success(result.getCodeLocation())
+                .projectName(result.getProjectName())
+                .projectVersion(result.getProjectVersion())
+                .build();
         } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();
         }

@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.blackduck.developer.blackduck;
 
 import com.synopsys.integration.blackduck.api.core.response.UrlMultipleResponses;
@@ -19,8 +12,8 @@ public class DetectRapidScanRequestBuilder {
 
     public DetectRapidScanRequestBuilder() {
         this.blackDuckRequestBuilder = new BlackDuckRequestBuilder()
-                                           .commonGet()
-                                           .acceptMimeType(DeveloperScanComponentResultView.CURRENT_MEDIA_TYPE);
+            .commonGet()
+            .acceptMimeType(DeveloperScanComponentResultView.CURRENT_MEDIA_TYPE);
     }
 
     public BlackDuckResponseRequest createResponseRequest(HttpUrl httpUrl) {

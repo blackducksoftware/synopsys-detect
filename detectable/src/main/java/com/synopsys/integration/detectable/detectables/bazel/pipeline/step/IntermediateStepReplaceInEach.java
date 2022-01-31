@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.bazel.pipeline.step;
 
 import java.util.ArrayList;
@@ -18,17 +11,17 @@ public class IntermediateStepReplaceInEach implements IntermediateStep {
     final String targetPattern;
     final String replacementString;
 
-    public IntermediateStepReplaceInEach(final String targetPattern, final String replacementString) {
+    public IntermediateStepReplaceInEach(String targetPattern, String replacementString) {
         this.targetPattern = targetPattern;
         this.replacementString = replacementString;
     }
 
     @Override
-    public List<String> process(final List<String> input) {
-        final List<String> results = new ArrayList<>();
+    public List<String> process(List<String> input) {
+        List<String> results = new ArrayList<>();
         logger.trace(String.format("Replace target pattern: %s; replacement string: %s", targetPattern, replacementString));
-        for (final String inputItem : input) {
-            final String modifiedInputItem = inputItem.replaceAll(targetPattern, replacementString);
+        for (String inputItem : input) {
+            String modifiedInputItem = inputItem.replaceAll(targetPattern, replacementString);
             logger.trace(String.format("Edit changed %s to %s", inputItem, modifiedInputItem));
             results.add(modifiedInputItem);
         }

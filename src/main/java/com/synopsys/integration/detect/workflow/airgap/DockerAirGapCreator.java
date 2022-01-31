@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.airgap;
 
 import java.io.File;
@@ -21,16 +14,16 @@ import com.synopsys.integration.exception.IntegrationException;
 public class DockerAirGapCreator {
     private final DockerInspectorInstaller dockerInspectorInstaller;
 
-    public DockerAirGapCreator(final DockerInspectorInstaller dockerInspectorInstaller) {
+    public DockerAirGapCreator(DockerInspectorInstaller dockerInspectorInstaller) {
         this.dockerInspectorInstaller = dockerInspectorInstaller;
     }
 
-    public void installDockerDependencies(final File dockerFolder) throws DetectUserFriendlyException {
+    public void installDockerDependencies(File dockerFolder) throws DetectUserFriendlyException {
         try {
-            final File dockerZip = dockerInspectorInstaller.installAirGap(dockerFolder);
+            File dockerZip = dockerInspectorInstaller.installAirGap(dockerFolder);
             ZipUtil.unpack(dockerZip, dockerFolder);
             FileUtils.deleteQuietly(dockerZip);
-        } catch (final IntegrationException | IOException e) {
+        } catch (IntegrationException | IOException e) {
             throw new DetectUserFriendlyException("An error occurred installing docker inspector.", e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }
     }

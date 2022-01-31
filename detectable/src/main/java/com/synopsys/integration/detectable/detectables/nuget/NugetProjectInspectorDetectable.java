@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.nuget;
 
 import java.util.Arrays;
@@ -23,6 +16,7 @@ import com.synopsys.integration.detectable.detectable.inspector.ProjectInspector
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorExtractor;
+import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorOptions;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
@@ -31,19 +25,19 @@ public class NugetProjectInspectorDetectable extends Detectable {
     static final List<String> SUPPORTED_PROJECT_PATTERNS = Arrays.asList("*.csproj", "*.sln");
 
     private final FileFinder fileFinder;
-    private final NugetInspectorOptions nugetInspectorOptions;
     private final ProjectInspectorResolver projectInspectorResolver;
     private final ProjectInspectorExtractor projectInspectorExtractor;
+    private final ProjectInspectorOptions projectInspectorOptions;
 
     private ExecutableTarget inspector;
 
-    public NugetProjectInspectorDetectable(final DetectableEnvironment detectableEnvironment, final FileFinder fileFinder, final NugetInspectorOptions nugetInspectorOptions,
-        ProjectInspectorResolver projectInspectorResolver, ProjectInspectorExtractor projectInspectorExtractor) {
+    public NugetProjectInspectorDetectable(DetectableEnvironment detectableEnvironment, FileFinder fileFinder, NugetInspectorOptions nugetInspectorOptions,
+        ProjectInspectorResolver projectInspectorResolver, ProjectInspectorExtractor projectInspectorExtractor, ProjectInspectorOptions projectInspectorOptions) {
         super(detectableEnvironment);
         this.fileFinder = fileFinder;
-        this.nugetInspectorOptions = nugetInspectorOptions;
         this.projectInspectorResolver = projectInspectorResolver;
         this.projectInspectorExtractor = projectInspectorExtractor;
+        this.projectInspectorOptions = projectInspectorOptions;
     }
 
     @Override
@@ -61,9 +55,8 @@ public class NugetProjectInspectorDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
-        List<String> arguments = Collections.emptyList();
-        return projectInspectorExtractor.extract(arguments, environment.getDirectory(), extractionEnvironment.getOutputDirectory(), inspector);
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
+        return projectInspectorExtractor.extract(projectInspectorOptions, Collections.emptyList(), environment.getDirectory(), extractionEnvironment.getOutputDirectory(), inspector);
     }
 
 }

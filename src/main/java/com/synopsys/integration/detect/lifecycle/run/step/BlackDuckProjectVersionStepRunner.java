@@ -1,14 +1,8 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.lifecycle.run.step;
 
 import java.util.List;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +15,10 @@ import com.synopsys.integration.detect.workflow.blackduck.project.customfields.C
 import com.synopsys.integration.detect.workflow.blackduck.project.options.CloneFindResult;
 import com.synopsys.integration.detect.workflow.blackduck.project.options.FindCloneOptions;
 import com.synopsys.integration.detect.workflow.blackduck.project.options.ParentProjectMapOptions;
+import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectGroupFindResult;
+import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectGroupOptions;
+import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectVersionLicenseOptions;
+import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectVersionLicensesFindResult;
 import com.synopsys.integration.util.NameVersion;
 
 public class BlackDuckProjectVersionStepRunner {
@@ -33,7 +31,9 @@ public class BlackDuckProjectVersionStepRunner {
 
     ProjectVersionWrapper runAll(NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
         CloneFindResult cloneFindResult = findClone(projectNameVersion.getName(), blackDuckRunData);
-        ProjectVersionWrapper projectVersion = operationFactory.syncProjectVersion(projectNameVersion, cloneFindResult, blackDuckRunData);
+        ProjectGroupFindResult projectGroupFindResult = findProjectGroup(blackDuckRunData);
+        ProjectVersionLicensesFindResult projectVersionLicensesFindResult = findLicenses(blackDuckRunData);
+        ProjectVersionWrapper projectVersion = operationFactory.syncProjectVersion(projectNameVersion, projectGroupFindResult, cloneFindResult, projectVersionLicensesFindResult, blackDuckRunData);
 
         ParentProjectMapOptions mapOptions = operationFactory.calculateParentProjectMapOptions();
         if (StringUtils.isNotBlank(mapOptions.getParentProjectName()) || StringUtils.isNotBlank(mapOptions.getParentProjectVersionName())) {
@@ -78,6 +78,17 @@ public class BlackDuckProjectVersionStepRunner {
         return projectVersion;
     }
 
+    private ProjectGroupFindResult findProjectGroup(BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
+        ProjectGroupOptions projectGroupOptions = operationFactory.calculateProjectGroupOptions();
+        if (StringUtils.isNotBlank(projectGroupOptions.getProjectGroup())) {
+            logger.info("Will look for project group named: " + projectGroupOptions.getProjectGroup());
+            return ProjectGroupFindResult.of(operationFactory.findProjectGroup(blackDuckRunData, projectGroupOptions.getProjectGroup()));
+        } else {
+            logger.debug("No project group was supplied. Will not assign a project group.");
+            return ProjectGroupFindResult.skip();
+        }
+    }
+
     private CloneFindResult findClone(String projectName, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
         FindCloneOptions cloneOptions = operationFactory.calculateCloneOptions();
         if (cloneOptions.getCloneLatestProjectVersion()) {
@@ -88,6 +99,16 @@ public class BlackDuckProjectVersionStepRunner {
         } else {
             logger.debug("No clone project or version name supplied. Will not clone.");
             return CloneFindResult.empty();
+        }
+    }
+
+    private ProjectVersionLicensesFindResult findLicenses(BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
+        ProjectVersionLicenseOptions projectVersionLicenseOptions = operationFactory.calculateProjectVersionLicenses();
+        if (!CollectionUtils.isEmpty(projectVersionLicenseOptions.getLicenseNames())) {
+            return ProjectVersionLicensesFindResult.of(operationFactory.findLicenseUrls(blackDuckRunData, projectVersionLicenseOptions.getLicenseNames()));
+        } else {
+            logger.debug("No project version licenses were supplied.  Will not update licenses.");
+            return ProjectVersionLicensesFindResult.empty();
         }
     }
 }

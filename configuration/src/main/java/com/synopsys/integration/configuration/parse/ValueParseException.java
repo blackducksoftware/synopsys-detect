@@ -1,10 +1,3 @@
-/*
- * configuration
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.configuration.parse;
 
 import java.util.Optional;
@@ -23,15 +16,15 @@ public class ValueParseException extends Exception {
     @Nullable
     private final Exception innerException;
 
-    public ValueParseException(@NotNull final String rawValue, @NotNull final String typeName, @NotNull final String additionalMessage) {
+    public ValueParseException(@NotNull String rawValue, @NotNull String typeName, @NotNull String additionalMessage) {
         this(rawValue, typeName, additionalMessage, null);
     }
 
-    public ValueParseException(@NotNull final String rawValue, @NotNull final String typeName, @Nullable final Exception innerException) {
+    public ValueParseException(@NotNull String rawValue, @NotNull String typeName, @Nullable Exception innerException) {
         this(rawValue, typeName, "", innerException);
     }
 
-    public ValueParseException(@NotNull final String rawValue, @NotNull final String typeName, @NotNull final String additionalMessage, @Nullable final Exception innerException) {
+    public ValueParseException(@NotNull String rawValue, @NotNull String typeName, @NotNull String additionalMessage, @Nullable Exception innerException) {
         super(String.format("Unable to parse raw value '%s' and coerce it into type '%s'. %s", rawValue, typeName, additionalMessage), innerException);
         this.rawValue = rawValue;
         this.typeName = typeName;
@@ -53,7 +46,7 @@ public class ValueParseException extends Exception {
     public String getAdditionalMessage() {
         return additionalMessage;
     }
-    
+
     public Optional<Exception> getInnerException() {
         return Optional.ofNullable(innerException);
     }

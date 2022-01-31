@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.carthage;
 
 import java.io.File;
@@ -43,19 +36,7 @@ public class CarthageDetectable extends Detectable {
     @Override
     public DetectableResult applicable() {
         Requirements requirements = new Requirements(fileFinder, environment);
-
-        cartfile = fileFinder.findFile(environment.getDirectory(), CARTFILE_FILENAME);
-        cartfileResolved = fileFinder.findFile(environment.getDirectory(), CARTFILE_RESOLVED_FILENAME);
-
-        if (cartfile == null && cartfileResolved == null) {
-            return new FilesNotFoundDetectableResult(CARTFILE_FILENAME, CARTFILE_RESOLVED_FILENAME);
-        }
-        if (cartfile != null) {
-            requirements.explainFile(cartfile);
-        }
-        if (cartfileResolved != null) {
-            requirements.explainFile(cartfileResolved);
-        }
+        requirements.eitherFile(CARTFILE_FILENAME, CARTFILE_RESOLVED_FILENAME, foundCartfile -> cartfile = foundCartfile, foundCartfileResolved -> cartfileResolved = foundCartfileResolved);
         return requirements.result();
     }
 

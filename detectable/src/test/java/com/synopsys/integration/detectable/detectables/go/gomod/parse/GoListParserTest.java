@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectables.go.gomod.model.GoListAllData;
 import com.synopsys.integration.detectable.detectables.go.gomod.model.GoListModule;
@@ -91,8 +92,8 @@ class GoListParserTest {
             "This could be malformed json.",
             "}"
         );
-        assertThrows(DetectableException.class, () -> goListParser.parseGoListModuleJsonOutput(goListOutput));
-        assertThrows(DetectableException.class, () -> goListParser.parseGoListAllJsonOutput(goListOutput));
+        assertThrows(JsonSyntaxException.class, () -> goListParser.parseGoListModuleJsonOutput(goListOutput));
+        assertThrows(JsonSyntaxException.class, () -> goListParser.parseGoListAllJsonOutput(goListOutput));
     }
 
 }

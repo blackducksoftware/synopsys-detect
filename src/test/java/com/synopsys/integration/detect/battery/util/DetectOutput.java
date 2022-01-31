@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Assertions;
 public class DetectOutput {
     private final List<String> standardOutput;
 
-    public DetectOutput(final List<String> standardOutput) {
+    public DetectOutput(List<String> standardOutput) {
         this.standardOutput = standardOutput;
     }
 

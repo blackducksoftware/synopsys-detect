@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.detector.executable;
 
 import java.io.File;
@@ -42,11 +35,9 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.SbtRes
 import com.synopsys.integration.detectable.detectable.executable.resolver.SwiftResolver;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanResolver;
 
-public class DetectExecutableResolver
-    implements JavaResolver, GradleResolver, BashResolver, ConanResolver, CondaResolver, CpanmResolver, CpanResolver, DartResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver,
-                   BazelResolver,
-                   DockerResolver,
-                   DotNetResolver, GitResolver, SwiftResolver, GoResolver, LernaResolver, SbtResolver, FlutterResolver {
+public class DetectExecutableResolver implements
+    JavaResolver, GradleResolver, BashResolver, ConanResolver, CondaResolver, CpanmResolver, CpanResolver, DartResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver, BazelResolver,
+    DockerResolver, DotNetResolver, GitResolver, SwiftResolver, GoResolver, LernaResolver, SbtResolver, FlutterResolver {
 
     private final DirectoryExecutableFinder directoryExecutableFinder;
     private final SystemPathExecutableFinder systemPathExecutableFinder;
@@ -55,7 +46,7 @@ public class DetectExecutableResolver
     private final Map<String, File> cachedExecutables = new HashMap<>();
 
     public DetectExecutableResolver(DirectoryExecutableFinder directoryExecutableFinder, SystemPathExecutableFinder systemPathExecutableFinder,
-        DetectExecutableOptions detectExecutableOptions) {
+                                    DetectExecutableOptions detectExecutableOptions) {
         this.directoryExecutableFinder = directoryExecutableFinder;
         this.systemPathExecutableFinder = systemPathExecutableFinder;
         this.detectExecutableOptions = detectExecutableOptions;

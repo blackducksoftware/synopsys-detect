@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.detector.inspectors.nuget.runtime;
 
 import java.util.List;
@@ -15,15 +8,15 @@ public class DotNetRuntimeParser {
     private static final String[] RUNTIME_PREFIX_END_TOKENS = { "All", "App" };
     private static final String RUNTIME_SUFFIX_START_TOKEN = "[";
 
-    public boolean doRuntimesContainVersionStartingWith(final List<String> runtimes, final String versionSearchString) {
+    public boolean doRuntimesContainVersionStartingWith(List<String> runtimes, String versionSearchString) {
         return runtimes
-                   .stream()
-                   .map(this::extractVersionSubstringFromRuntime)
-                   .anyMatch(extractedVersionToken -> extractedVersionToken.startsWith(versionSearchString));
+            .stream()
+            .map(this::extractVersionSubstringFromRuntime)
+            .anyMatch(extractedVersionToken -> extractedVersionToken.startsWith(versionSearchString));
     }
 
     private String extractVersionSubstringFromRuntime(String runtime) {
-        for (final String lastTokenBeforeVersion : RUNTIME_PREFIX_END_TOKENS) {
+        for (String lastTokenBeforeVersion : RUNTIME_PREFIX_END_TOKENS) {
             if (runtime.contains(lastTokenBeforeVersion)) {
                 runtime = StringUtils.substringAfter(runtime, lastTokenBeforeVersion);
                 break;

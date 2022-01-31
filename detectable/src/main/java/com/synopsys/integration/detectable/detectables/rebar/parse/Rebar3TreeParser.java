@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.rebar.parse;
 
 import java.util.Arrays;
@@ -37,25 +30,25 @@ public class Rebar3TreeParser {
 
     private final ExternalIdFactory externalIdFactory;
 
-    public Rebar3TreeParser(final ExternalIdFactory externalIdFactory) {
+    public Rebar3TreeParser(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public RebarParseResult parseRebarTreeOutput(final List<String> dependencyTreeOutput) {
-        final MutableDependencyGraph graph = new MutableMapDependencyGraph();
-        final DependencyHistory history = new DependencyHistory();
+    public RebarParseResult parseRebarTreeOutput(List<String> dependencyTreeOutput) {
+        MutableDependencyGraph graph = new MutableMapDependencyGraph();
+        DependencyHistory history = new DependencyHistory();
         Dependency project = null;
 
-        for (final String line : dependencyTreeOutput) {
+        for (String line : dependencyTreeOutput) {
             if (!line.contains(HORIZONTAL_SEPARATOR_CHARACTER)) {
                 continue;
             }
 
-            final Dependency currentDependency = createDependencyFromLine(line);
-            final int lineLevel = getDependencyLevelFromLine(line);
+            Dependency currentDependency = createDependencyFromLine(line);
+            int lineLevel = getDependencyLevelFromLine(line);
             try {
                 history.clearDependenciesDeeperThan(lineLevel);
-            } catch (final IllegalStateException e) {
+            } catch (IllegalStateException e) {
                 logger.warn(String.format("Problem parsing line '%s': %s", line, e.getMessage()));
             }
 
@@ -73,26 +66,26 @@ public class Rebar3TreeParser {
         }
 
         if (project == null) {
-            final CodeLocation codeLocation = new CodeLocation(graph);
+            CodeLocation codeLocation = new CodeLocation(graph);
             return new RebarParseResult(codeLocation);
         } else {
-            final CodeLocation codeLocation = new CodeLocation(graph, project.getExternalId());
+            CodeLocation codeLocation = new CodeLocation(graph, project.getExternalId());
             return new RebarParseResult(new NameVersion(project.getName(), project.getVersion()), codeLocation);
         }
     }
 
-    public Dependency createDependencyFromLine(final String line) {
-        final String nameVersionLine = reduceLineToNameVersion(line);
-        final String name = nameVersionLine.substring(0, nameVersionLine.lastIndexOf(HORIZONTAL_SEPARATOR_CHARACTER));
-        final String version = nameVersionLine.substring(nameVersionLine.lastIndexOf(HORIZONTAL_SEPARATOR_CHARACTER) + 1);
-        final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.HEX, name, version);
+    public Dependency createDependencyFromLine(String line) {
+        String nameVersionLine = reduceLineToNameVersion(line);
+        String name = nameVersionLine.substring(0, nameVersionLine.lastIndexOf(HORIZONTAL_SEPARATOR_CHARACTER));
+        String version = nameVersionLine.substring(nameVersionLine.lastIndexOf(HORIZONTAL_SEPARATOR_CHARACTER) + 1);
+        ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.HEX, name, version);
 
         return new Dependency(name, version, externalId);
     }
 
     public String reduceLineToNameVersion(String line) {
-        final List<String> ignoredSpecialCharacters = Arrays.asList(LAST_DEPENDENCY_CHARACTER, NTH_DEPENDENCY_CHARACTER, INNER_LEVEL_CHARACTER);
-        for (final String specialCharacter : ignoredSpecialCharacters) {
+        List<String> ignoredSpecialCharacters = Arrays.asList(LAST_DEPENDENCY_CHARACTER, NTH_DEPENDENCY_CHARACTER, INNER_LEVEL_CHARACTER);
+        for (String specialCharacter : ignoredSpecialCharacters) {
             line = line.replaceAll(specialCharacter, "");
         }
 
@@ -115,7 +108,7 @@ public class Rebar3TreeParser {
         return level;
     }
 
-    public boolean isProject(final String line) {
+    public boolean isProject(String line) {
         String forgeString = "";
         if (line.endsWith(")")) {
             forgeString = line.substring(line.lastIndexOf('('));

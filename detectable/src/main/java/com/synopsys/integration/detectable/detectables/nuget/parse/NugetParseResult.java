@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.nuget.parse;
 
 import java.util.ArrayList;
@@ -17,13 +10,13 @@ public class NugetParseResult {
     private String projectVersion;
     private List<CodeLocation> codeLocations;
 
-    public NugetParseResult(final String projectName, final String projectVersion, final List<CodeLocation> codeLocations) {
+    public NugetParseResult(String projectName, String projectVersion, List<CodeLocation> codeLocations) {
         this.projectName = projectName;
         this.projectVersion = projectVersion;
         this.codeLocations = codeLocations;
     }
 
-    public NugetParseResult(final String projectName, final String projectVersion, final CodeLocation codeLocation) {
+    public NugetParseResult(String projectName, String projectVersion, CodeLocation codeLocation) {
         this.projectName = projectName;
         this.projectVersion = projectVersion;
         this.codeLocations = new ArrayList<>();
@@ -34,7 +27,7 @@ public class NugetParseResult {
         return projectName;
     }
 
-    public void setProjectName(final String projectName) {
+    public void setProjectName(String projectName) {
         this.projectName = projectName;
     }
 
@@ -42,7 +35,7 @@ public class NugetParseResult {
         return projectVersion;
     }
 
-    public void setProjectVersion(final String projectVersion) {
+    public void setProjectVersion(String projectVersion) {
         this.projectVersion = projectVersion;
     }
 
@@ -50,7 +43,7 @@ public class NugetParseResult {
         return codeLocations;
     }
 
-    public void setCodeLocations(final List<CodeLocation> codeLocations) {
+    public void setCodeLocations(List<CodeLocation> codeLocations) {
         this.codeLocations = codeLocations;
     }
 }

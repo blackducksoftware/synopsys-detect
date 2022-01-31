@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.clang.linux;
 
 import java.io.File;
@@ -41,8 +34,8 @@ public class LinuxDistro {
 
     private boolean isLinuxDistroFile(File candidate) {
         return "lsb-release".equals(candidate.getName()) ||
-                   "os-release".equals(candidate.getName()) ||
-                   "redhat-release".equals(candidate.getName());
+            "os-release".equals(candidate.getName()) ||
+            "redhat-release".equals(candidate.getName());
     }
 
     private Optional<String> getLinxDistroName(File etcDirFile) {

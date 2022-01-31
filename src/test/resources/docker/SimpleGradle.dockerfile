@@ -1,20 +1,19 @@
 FROM gradle:5.2.0-jdk8-slim
 
+# Do not change SRC_DIR, value is expected by tests
+ENV SRC_DIR=/opt/project/src
+ENV JAVA_TOOL_OPTIONS="-Dhttps.protocols=TLSv1.2"
+
 USER root
 
 # Install git
-RUN apt update
-RUN apt install -y git
+RUN apt-get update
+RUN apt-get install -y git
 
 # Set up the test project
-RUN mkdir -p /opt/project
+RUN mkdir -p ${SRC_DIR}
 
-RUN cd /opt/project \
-   && git clone https://github.com/jabedhasan21/java-hello-world-with-gradle
+RUN git clone --depth 1 https://github.com/jabedhasan21/java-hello-world-with-gradle ${SRC_DIR}
 
-RUN mv /opt/project/java-hello-world-with-gradle /opt/project/src
-
-ENV JAVA_TOOL_OPTIONS="-Dhttps.protocols=TLSv1.2"
-
-RUN cd /opt/project/src \
+RUN cd ${SRC_DIR} \
    && ./gradlew build

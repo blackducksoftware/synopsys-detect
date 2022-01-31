@@ -1,10 +1,3 @@
-/*
- * configuration
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.configuration.property.types.bool;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -17,7 +10,7 @@ import com.synopsys.integration.configuration.parse.ValueParser;
 class BooleanValueParser extends ValueParser<Boolean> {
     @NotNull
     @Override
-    public Boolean parse(@NotNull final String value) throws ValueParseException {
+    public Boolean parse(@NotNull String value) throws ValueParseException {
         String trimmed = value.toLowerCase().trim();
         if (StringUtils.isBlank(trimmed)) {
             return true;

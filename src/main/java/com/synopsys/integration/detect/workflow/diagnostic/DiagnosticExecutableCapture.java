@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.diagnostic;
 
 import java.io.File;
@@ -28,20 +21,20 @@ public class DiagnosticExecutableCapture {
     private final File executableDirectory;
     private final Map<Integer, String> indexToCommand = new HashMap<>();
 
-    public DiagnosticExecutableCapture(final File executableDirectory, final EventSystem eventSystem) {
+    public DiagnosticExecutableCapture(File executableDirectory, EventSystem eventSystem) {
         this.executableDirectory = executableDirectory;
         eventSystem.registerListener(Event.Executable, this::executableFinished);
     }
 
-    private void executableFinished(final ExecutedExecutable executed) {
-        final File errorOut = new File(executableDirectory, "EXE-" + executables + "-ERR.xout");
-        final File standardOut = new File(executableDirectory, "EXE-" + executables + "-STD.xout");
+    private void executableFinished(ExecutedExecutable executed) {
+        File errorOut = new File(executableDirectory, "EXE-" + executables + "-ERR.xout");
+        File standardOut = new File(executableDirectory, "EXE-" + executables + "-STD.xout");
         indexToCommand.put(executables, executed.getExecutable().getExecutableDescription());
 
         try {
             FileUtils.writeStringToFile(errorOut, executed.getOutput().getErrorOutput(), Charset.defaultCharset());
             FileUtils.writeStringToFile(standardOut, executed.getOutput().getStandardOutput(), Charset.defaultCharset());
-        } catch (final IOException e) {
+        } catch (IOException e) {
             logger.error("Failed to capture executable output.", e);
         }
         executables++;
@@ -52,13 +45,13 @@ public class DiagnosticExecutableCapture {
             return;
         }
 
-        final AtomicReference<String> executableMap = new AtomicReference<>("");
+        AtomicReference<String> executableMap = new AtomicReference<>("");
         indexToCommand.forEach((key, value) -> executableMap.set(executableMap.get() + key + ": " + value + System.lineSeparator()));
 
-        final File mapFile = new File(executableDirectory, "EXE-MAP.txt");
+        File mapFile = new File(executableDirectory, "EXE-MAP.txt");
         try {
             FileUtils.writeStringToFile(mapFile, executableMap.get(), Charset.defaultCharset());
-        } catch (final IOException e) {
+        } catch (IOException e) {
             logger.error("Failed to write executable map.", e);
         }
     }

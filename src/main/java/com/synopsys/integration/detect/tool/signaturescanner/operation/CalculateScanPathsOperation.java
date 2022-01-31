@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.signaturescanner.operation;
 
 import java.io.File;
@@ -83,8 +76,8 @@ public class CalculateScanPathsOperation {
 
         // First add explicit exclusions that are correctly formatted
         scanExclusionPatterns.addAll(exclusionPatterns.stream()
-                                         .filter(this::isCorrectlyFormattedExclusion)
-                                         .collect(Collectors.toSet()));
+            .filter(this::isCorrectlyFormattedExclusion)
+            .collect(Collectors.toSet()));
 
         scanExclusionPatterns.addAll(exclusionPatternCreator.determineExclusionPatterns(followSymLinks, maxDepth, exclusionPatterns));
 

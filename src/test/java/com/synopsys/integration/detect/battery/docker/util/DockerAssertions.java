@@ -23,7 +23,7 @@ public class DockerAssertions {
     private final File bdioDirectory;
     private FormattedOutput statusJson = null;
 
-    public DockerAssertions(final DockerTestDirectories testDirectories, final DockerDetectResult dockerDetectResult) {
+    public DockerAssertions(DockerTestDirectories testDirectories, DockerDetectResult dockerDetectResult) {
         this.dockerDetectResult = dockerDetectResult;
         this.outputDirectory = testDirectories.getResultOutputDirectory();
         this.bdioDirectory = testDirectories.getResultBdioDirectory();
@@ -46,7 +46,7 @@ public class DockerAssertions {
     public void successfulDetectorTypeStatusJson(String detectorType) {
         FormattedOutput statusJson = locateStatusJson();
         Optional<FormattedDetectorOutput> detector = statusJson.detectors.stream().filter(it -> it.detectorType.equals(detectorType))
-                                                         .findFirst();
+            .findFirst();
 
         Assertions.assertTrue(detector.isPresent(), "Could not find required detector in status json detector list.");
 
@@ -56,7 +56,7 @@ public class DockerAssertions {
     public void successfulOperationStatusJson(String operationKey) {
         FormattedOutput statusJson = locateStatusJson();
         Optional<FormattedOperationOutput> detector = statusJson.operations.stream().filter(it -> it.descriptionKey.equals(operationKey))
-                                                          .findFirst();
+            .findFirst();
 
         Assertions.assertTrue(detector.isPresent(), "Could not find required operation '" + operationKey + "' in status json detector list.");
 
@@ -66,7 +66,7 @@ public class DockerAssertions {
     public void successfulToolStatusJson(String detectorType) {
         FormattedOutput statusJson = locateStatusJson();
         Optional<FormattedStatusOutput> tool = statusJson.status.stream().filter(it -> it.key.equals(detectorType))
-                                                   .findFirst();
+            .findFirst();
 
         Assertions.assertTrue(tool.isPresent(), "Could not find required detector in status json detector list.");
 
@@ -141,9 +141,9 @@ public class DockerAssertions {
     public void bdioFileCreated(String requiredBdioFilename) {
         checkBdioDirectory();
         Assertions.assertTrue(Arrays.asList(bdioDirectory.listFiles()).stream()
-                                  .map(File::getName)
-                                  .filter(requiredBdioFilename::equals)
-                                  .findAny().isPresent(),
+                .map(File::getName)
+                .filter(requiredBdioFilename::equals)
+                .findAny().isPresent(),
             String.format("Expected BDIO file %s, but it was not created", requiredBdioFilename));
     }
 

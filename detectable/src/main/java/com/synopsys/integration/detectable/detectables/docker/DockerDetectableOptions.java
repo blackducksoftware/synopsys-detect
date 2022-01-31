@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.docker;
 
 import java.nio.file.Path;
@@ -25,8 +18,8 @@ public class DockerDetectableOptions {
     private final Path dockerInspectorPath;
     private final String dockerPlatformTopLayerId;
 
-    public DockerDetectableOptions(final boolean dockerPathRequired, final String suppliedDockerImage, final String suppliedDockerImageId, final String suppliedDockerTar, final LogLevel dockerInspectorLoggingLevel,
-        final String dockerInspectorVersion, final Map<String, String> additionalDockerProperties, final Path dockerInspectorPath, final String dockerPlatformTopLayerId) {
+    public DockerDetectableOptions(boolean dockerPathRequired, String suppliedDockerImage, String suppliedDockerImageId, String suppliedDockerTar, LogLevel dockerInspectorLoggingLevel,
+        String dockerInspectorVersion, Map<String, String> additionalDockerProperties, Path dockerInspectorPath, String dockerPlatformTopLayerId) {
         this.dockerPathRequired = dockerPathRequired;
         this.suppliedDockerImage = suppliedDockerImage;
         this.suppliedDockerImageId = suppliedDockerImageId;

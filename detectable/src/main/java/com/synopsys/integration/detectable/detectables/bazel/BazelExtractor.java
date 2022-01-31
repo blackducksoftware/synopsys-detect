@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.bazel;
 
 import java.io.File;
@@ -32,6 +25,7 @@ import com.synopsys.integration.detectable.detectables.bazel.pipeline.WorkspaceR
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelCommandExecutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelVariableSubstitutor;
 import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class BazelExtractor {
@@ -39,13 +33,16 @@ public class BazelExtractor {
     private final DetectableExecutableRunner executableRunner;
     private final ExternalIdFactory externalIdFactory;
     private final WorkspaceRuleChooser workspaceRuleChooser;
+    private final ToolVersionLogger toolVersionLogger;
 
     public BazelExtractor(DetectableExecutableRunner executableRunner,
         ExternalIdFactory externalIdFactory,
-        WorkspaceRuleChooser workspaceRuleChooser) {
+        WorkspaceRuleChooser workspaceRuleChooser,
+        ToolVersionLogger toolVersionLogger) {
         this.executableRunner = executableRunner;
         this.externalIdFactory = externalIdFactory;
         this.workspaceRuleChooser = workspaceRuleChooser;
+        this.toolVersionLogger = toolVersionLogger;
     }
 
     public Extraction extract(ExecutableTarget bazelExe, File workspaceDir, BazelWorkspace bazelWorkspace, String bazelTarget,
@@ -53,6 +50,7 @@ public class BazelExtractor {
         List<String> providedCqueryAdditionalOptions) {
         logger.debug("Bazel extraction:");
         try {
+            toolVersionLogger.log(workspaceDir, bazelExe, "version");
             BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
             BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor(bazelTarget, providedCqueryAdditionalOptions);
             Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor, externalIdFactory);
@@ -71,8 +69,8 @@ public class BazelExtractor {
         CodeLocation codeLocation = new CodeLocation(dependencyGraph);
         List<CodeLocation> codeLocations = Collections.singletonList(codeLocation);
         Extraction.Builder builder = new Extraction.Builder()
-                                         .success(codeLocations)
-                                         .projectName(projectName);
+            .success(codeLocations)
+            .projectName(projectName);
         return builder.build();
     }
 
@@ -81,8 +79,8 @@ public class BazelExtractor {
         List<Dependency> aggregatedDependencies = new ArrayList<>();
         // Make sure the order of processing deterministic
         List<WorkspaceRule> sortedWorkspaceRules = workspaceRules.stream()
-                                                       .sorted(Comparator.naturalOrder())
-                                                       .collect(Collectors.toList());
+            .sorted(Comparator.naturalOrder())
+            .collect(Collectors.toList());
 
         for (WorkspaceRule workspaceRule : sortedWorkspaceRules) {
             logger.info(String.format("Running processing pipeline for rule %s", workspaceRule));

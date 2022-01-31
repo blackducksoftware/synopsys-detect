@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.codelocation;
 
 import java.io.File;
@@ -19,18 +12,18 @@ import org.slf4j.LoggerFactory;
 public class FileNameUtils {
     private static final Logger logger = LoggerFactory.getLogger(FileNameUtils.class);
 
-    public static String relativize(final String from, final String to) {
+    public static String relativize(String from, String to) {
         String relative = to;
         try {
-            final Path toPath = new File(to).toPath();
-            final Path fromPath = new File(from).toPath();
-            final Path relativePath = fromPath.relativize(toPath);
-            final List<String> relativePieces = new ArrayList<>();
+            Path toPath = new File(to).toPath();
+            Path fromPath = new File(from).toPath();
+            Path relativePath = fromPath.relativize(toPath);
+            List<String> relativePieces = new ArrayList<>();
             for (int i = 0; i < relativePath.getNameCount(); i++) {
                 relativePieces.add(relativePath.getName(i).toFile().getName());
             }
             relative = StringUtils.join(relativePieces, "/");
-        } catch (final Exception e) {
+        } catch (Exception e) {
             logger.info(String.format("Unable to relativize path, full source path will be used: %s", to));
             logger.debug("The reason relativize failed: ", e);
         }
@@ -38,18 +31,18 @@ public class FileNameUtils {
         return relative;
     }
 
-    public static String relativizeParent(final String from, final String to) {
+    public static String relativizeParent(String from, String to) {
         String relative = to;
         try {
-            final Path toPath = new File(to).toPath();
-            final Path fromPath = new File(from).toPath();
-            final Path relativePath = fromPath.getParent().relativize(toPath);
-            final List<String> relativePieces = new ArrayList<>();
+            Path toPath = new File(to).toPath();
+            Path fromPath = new File(from).toPath();
+            Path relativePath = fromPath.getParent().relativize(toPath);
+            List<String> relativePieces = new ArrayList<>();
             for (int i = 0; i < relativePath.getNameCount(); i++) {
                 relativePieces.add(relativePath.getName(i).toFile().getName());
             }
             relative = StringUtils.join(relativePieces, "/");
-        } catch (final Exception e) {
+        } catch (Exception e) {
             logger.info(String.format("Unable to relativize path, full source path will be used: %s", to));
             logger.debug("The reason relativize failed: ", e);
         }

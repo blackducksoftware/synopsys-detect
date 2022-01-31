@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect;
 
 import java.io.File;
@@ -49,6 +42,8 @@ import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeUtility;
 import com.synopsys.integration.detect.lifecycle.shutdown.ShutdownDecider;
 import com.synopsys.integration.detect.lifecycle.shutdown.ShutdownDecision;
 import com.synopsys.integration.detect.lifecycle.shutdown.ShutdownManager;
+import com.synopsys.integration.detect.tool.cache.InstalledToolData;
+import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
 import com.synopsys.integration.detect.workflow.DetectRunId;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -100,6 +95,7 @@ public class Application implements ApplicationRunner {
 
         ReportListener.createDefault(eventSystem);
         FormattedOutputManager formattedOutputManager = new FormattedOutputManager(eventSystem);
+        InstalledToolManager installedToolManager = new InstalledToolManager();
 
         //Before boot even begins, we create a new Spring context for Detect to work within.
         logger.debug("Initializing detect.");
@@ -111,14 +107,14 @@ public class Application implements ApplicationRunner {
 
         boolean shouldForceSuccess = false;
 
-        Optional<DetectBootResult> detectBootResultOptional = bootApplication(detectRunId, applicationArguments.getSourceArgs(), eventSystem, exitCodeManager, gson, detectInfo, fileFinder);
+        Optional<DetectBootResult> detectBootResultOptional = bootApplication(detectRunId, applicationArguments.getSourceArgs(), eventSystem, exitCodeManager, gson, detectInfo, fileFinder, installedToolManager);
 
         if (detectBootResultOptional.isPresent()) {
             DetectBootResult detectBootResult = detectBootResultOptional.get();
             shouldForceSuccess = detectBootResult.shouldForceSuccess();
 
             runApplication(eventSystem, exitCodeManager, detectBootResult);
-            
+
             detectBootResult.getProductRunData()
                 .filter(ProductRunData::shouldUseBlackDuckProduct)
                 .map(ProductRunData::getBlackDuckRunData)
@@ -129,6 +125,9 @@ public class Application implements ApplicationRunner {
             logger.info("");
             detectBootResult.getDirectoryManager()
                 .ifPresent(directoryManager -> createStatusOutputFile(formattedOutputManager, detectInfo, directoryManager));
+
+            //Create installed tool data file.
+            detectBootResult.getDirectoryManager().ifPresent(directoryManager -> createOrUpdateInstalledToolsFile(installedToolManager, directoryManager.getPermanentDirectory()));
 
             shutdownApplication(detectBootResult, exitCodeManager);
         } else {
@@ -141,7 +140,7 @@ public class Application implements ApplicationRunner {
     }
 
     private Optional<DetectBootResult> bootApplication(DetectRunId detectRunId, String[] sourceArgs, EventSystem eventSystem, ExitCodeManager exitCodeManager, Gson gson, DetectInfo detectInfo,
-        FileFinder fileFinder) {
+        FileFinder fileFinder, InstalledToolManager installedToolManager) {
         Optional<DetectBootResult> bootResult = Optional.empty();
         try {
             logger.debug("Detect boot begin.");
@@ -150,14 +149,16 @@ public class Application implements ApplicationRunner {
             List<PropertySource> propertySources = new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironmentSafely(environment, logger::error));
 
             DetectBootFactory detectBootFactory = new DetectBootFactory(detectRunId, detectInfo, gson, eventSystem, fileFinder);
-            DetectBoot detectBoot = new DetectBoot(eventSystem, gson, detectBootFactory, detectArgumentState, propertySources);
+            DetectBoot detectBoot = new DetectBoot(eventSystem, gson, detectBootFactory, detectArgumentState, propertySources, installedToolManager);
 
             bootResult = detectBoot.boot(detectInfo.getDetectVersion());
 
             logger.debug("Detect boot completed.");
         } catch (Exception e) {
             logger.error("Detect boot failed.");
+            logger.error("");
             exitCodeManager.requestExitCode(e);
+            logger.error("");
         }
         return bootResult;
     }
@@ -189,6 +190,24 @@ public class Application implements ApplicationRunner {
         } catch (Exception e) {
             logger.warn("There was a problem writing the status output file. The detect run was not affected.");
             logger.debug("The problem creating the status file was: ", e);
+        }
+    }
+
+    private void createOrUpdateInstalledToolsFile(InstalledToolManager installedToolManager, File installedToolsDataFileDir) {
+        logger.info("");
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        try {
+            File installedToolsDataFile = new File(installedToolsDataFileDir, InstalledToolManager.INSTALLED_TOOL_FILE_NAME);
+            if (installedToolsDataFile.exists()) {
+                // Read existing file data, pass to InstalledToolManager
+                InstalledToolData existingInstalledToolsData = gson.fromJson(FileUtils.readFileToString(installedToolsDataFile, Charset.defaultCharset()), InstalledToolData.class);
+                installedToolManager.addPreExistingInstallData(existingInstalledToolsData);
+            }
+            String json = gson.toJson(installedToolManager.getInstalledToolData());
+            FileUtils.writeStringToFile(installedToolsDataFile, json, Charset.defaultCharset());
+        } catch (Exception e) {
+            logger.warn("There was a problem writing the installed tools data file. The detect run was not affected.");
+            logger.debug("The problem creating the installed tools data file was: ", e);
         }
     }
 

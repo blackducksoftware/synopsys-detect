@@ -1,5 +1,15 @@
 package com.synopsys.integration.detect.workflow.blackduck.developer;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
 import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponentResultView;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
@@ -7,15 +17,6 @@ import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanAggregateResult;
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultAggregator;
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultSummary;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RapidModeLogReportOperationTest {
 
@@ -44,6 +45,6 @@ public class RapidModeLogReportOperationTest {
 
         assertEquals(summary, returnedSummary);
         Mockito.verify(exitCodePublisher, Mockito.times(1))
-                .publishExitCode(Mockito.eq(ExitCodeType.FAILURE_POLICY_VIOLATION), org.mockito.AdditionalMatchers.find(".* 2.*violation.*"));
+            .publishExitCode(Mockito.eq(ExitCodeType.FAILURE_POLICY_VIOLATION), org.mockito.AdditionalMatchers.find(".* 2.*violation.*"));
     }
 }

@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.configuration.help.json;
 
 import java.util.Arrays;
@@ -42,9 +35,9 @@ public class HelpJsonManager {
         DetectDetectableFactory mockFactory = new DetectDetectableFactory(null, null, null, null, null, null, null, null);
         DetectorRuleSet ruleSet = ruleFactory.createRules(mockFactory, buildless);
         return ruleSet.getOrderedDetectorRules()
-                   .stream()
-                   .map(detectorRule -> convertDetectorRule(detectorRule, ruleSet))
-                   .collect(Collectors.toList());
+            .stream()
+            .map(detectorRule -> convertDetectorRule(detectorRule, ruleSet))
+            .collect(Collectors.toList());
     }
 
     private HelpJsonDetector convertDetectorRule(DetectorRule rule, DetectorRuleSet ruleSet) {
@@ -61,9 +54,9 @@ public class HelpJsonManager {
         //Not currently possible. Need a full DetectableConfiguration to be able to make Detectables.
         Class<Detectable> detectableClass = rule.getDetectableClass();
         Optional<DetectableInfo> infoSearch = Arrays.stream(detectableClass.getAnnotations())
-                                                  .filter(annotation -> annotation instanceof DetectableInfo)
-                                                  .map(annotation -> (DetectableInfo) annotation)
-                                                  .findFirst();
+            .filter(annotation -> annotation instanceof DetectableInfo)
+            .map(annotation -> (DetectableInfo) annotation)
+            .findFirst();
 
         if (infoSearch.isPresent()) {
             DetectableInfo info = infoSearch.get();

@@ -1,12 +1,6 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.go.gomod;
 
+import com.google.gson.JsonSyntaxException;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
@@ -14,12 +8,13 @@ import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GoResolver;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Golang", forge = "Go Modules", requirementsMarkdown = "File: go.mod.<br/><br/>Executable: go.")
+@DetectableInfo(language = "Golang", forge = "Go Modules", requirementsMarkdown = "File: go.mod. Executable: go.")
 public class GoModCliDetectable extends Detectable {
     public static final String GOMOD_FILENAME_PATTERN = "go.mod";
 
@@ -53,7 +48,7 @@ public class GoModCliDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
-        return goModCliExtractor.extract(environment.getDirectory(), goExe, goModCliDetectableOptions.isDependencyVerificationEnabled());
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException, JsonSyntaxException {
+        return goModCliExtractor.extract(environment.getDirectory(), goExe, goModCliDetectableOptions.getDependencyTypeFilter());
     }
 }

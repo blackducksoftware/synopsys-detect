@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.status;
 
 import java.util.Arrays;
@@ -21,11 +14,11 @@ import com.synopsys.integration.log.IntLogger;
 public class DetectStatusLogger {
 
     private static final List<ExitCodeType> doNotRequireAdvice = Arrays.asList(
-            ExitCodeType.SUCCESS, ExitCodeType.FAILURE_POLICY_VIOLATION,
-            ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY, ExitCodeType.FAILURE_PROXY_CONNECTIVITY,
-            ExitCodeType.FAILURE_DETECTOR_REQUIRED, ExitCodeType.FAILURE_BLACKDUCK_VERSION_NOT_SUPPORTED,
-            ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, ExitCodeType.FAILURE_POLARIS_CONNECTIVITY,
-            ExitCodeType.FAILURE_TIMEOUT, ExitCodeType.FAILURE_CONFIGURATION);
+        ExitCodeType.SUCCESS, ExitCodeType.FAILURE_POLICY_VIOLATION,
+        ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY, ExitCodeType.FAILURE_PROXY_CONNECTIVITY,
+        ExitCodeType.FAILURE_DETECTOR_REQUIRED, ExitCodeType.FAILURE_BLACKDUCK_VERSION_NOT_SUPPORTED,
+        ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, ExitCodeType.FAILURE_POLARIS_CONNECTIVITY,
+        ExitCodeType.FAILURE_TIMEOUT, ExitCodeType.FAILURE_CONFIGURATION);
 
     public void logDetectStatus(IntLogger logger, List<Status> statusSummaries, List<DetectResult> detectResults, List<DetectIssue> detectIssues, List<Operation> detectOperations, ExitCodeType exitCodeType) {
         logger.info("");
@@ -116,10 +109,10 @@ public class DetectStatusLogger {
 
     private void logDetectOperations(IntLogger logger, List<Operation> operations) {
         List<Operation> sortedOperations = operations.stream()
-                                               .filter(operation -> operation.getOperationType() == OperationType.PUBLIC || operation.getStatusType() != StatusType.SUCCESS) //EITHER a public operation or a failed internal operation
-                                               .sorted(Comparator.comparing(Operation::getEndTimeOrStartTime)
-                                                           .thenComparing(Operation::getName))
-                                               .collect(Collectors.toList());
+            .filter(operation -> operation.getOperationType() == OperationType.PUBLIC || operation.getStatusType() != StatusType.SUCCESS) //EITHER a public operation or a failed internal operation
+            .sorted(Comparator.comparing(Operation::getEndTimeOrStartTime)
+                .thenComparing(Operation::getName))
+            .collect(Collectors.toList());
         logger.debug("====== Detect Operations ======");
         logger.debug("");
         for (Operation operation : sortedOperations) {
@@ -132,7 +125,8 @@ public class DetectStatusLogger {
 
     private Optional<String> getAdvice(ExitCodeType exitCode) {
         if (!doNotRequireAdvice.contains(exitCode)) {
-            return Optional.of("If you need help troubleshooting this problem, generate a diagnostic zip file by adding '-d' to the command line, and provide it to Synopsys Technical Support. See 'Diagnostic Mode' in the Detect documentation for more information.");
+            return Optional.of(
+                "If you need help troubleshooting this problem, generate a diagnostic zip file by adding '-d' to the command line, and provide it to Synopsys Technical Support. See 'Diagnostic Mode' in the Detect documentation for more information.");
         }
         return Optional.empty();
     }

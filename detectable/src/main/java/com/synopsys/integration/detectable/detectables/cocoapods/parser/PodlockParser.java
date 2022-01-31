@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.cocoapods.parser;
 
 import java.io.IOException;
@@ -40,31 +33,31 @@ public class PodlockParser {
 
     private final ExternalIdFactory externalIdFactory;
 
-    public PodlockParser(final ExternalIdFactory externalIdFactory) {
+    public PodlockParser(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph extractDependencyGraph(final String podLockText) throws IOException, MissingExternalIdException {
-        final LazyExternalIdDependencyGraphBuilder lazyBuilder = new LazyExternalIdDependencyGraphBuilder();
-        final YAMLMapper mapper = new YAMLMapper();
-        final PodfileLock podfileLock = mapper.readValue(podLockText, PodfileLock.class);
+    public DependencyGraph extractDependencyGraph(String podLockText) throws IOException, MissingExternalIdException {
+        LazyExternalIdDependencyGraphBuilder lazyBuilder = new LazyExternalIdDependencyGraphBuilder();
+        YAMLMapper mapper = new YAMLMapper();
+        PodfileLock podfileLock = mapper.readValue(podLockText, PodfileLock.class);
 
-        final Map<DependencyId, Forge> forgeOverrides = createForgeOverrideMap(podfileLock);
+        Map<DependencyId, Forge> forgeOverrides = createForgeOverrideMap(podfileLock);
 
         List<String> knownPods = determineAllPodNames(podfileLock);
-        for (final Pod pod : podfileLock.getPods()) {
+        for (Pod pod : podfileLock.getPods()) {
             logger.trace(String.format("Processing pod %s", pod.getName()));
             processPod(pod, forgeOverrides, lazyBuilder, knownPods);
         }
 
-        for (final Pod dependency : podfileLock.getDependencies()) {
+        for (Pod dependency : podfileLock.getDependencies()) {
             logger.trace(String.format("Processing pod dependency from pod lock file %s", dependency.getName()));
-            final String podText = dependency.getName();
-            final Optional<DependencyId> dependencyId = parseDependencyId(podText);
+            String podText = dependency.getName();
+            Optional<DependencyId> dependencyId = parseDependencyId(podText);
             dependencyId.ifPresent(lazyBuilder::addChildToRoot);
         }
         logger.trace("Attempting to build the dependency graph.");
-        final DependencyGraph dependencyGraph = lazyBuilder.build();
+        DependencyGraph dependencyGraph = lazyBuilder.build();
         logger.trace("Completed the dependency graph.");
         return dependencyGraph;
     }
@@ -72,12 +65,12 @@ public class PodlockParser {
     /*
      * Create an override map because GitHub has better KB support so we should override COCOAPODS forge when we know where it is from.
      */
-    private Map<DependencyId, Forge> createForgeOverrideMap(final PodfileLock podfileLock) {
-        final Map<DependencyId, Forge> forgeOverrideMap = new HashMap<>();
+    private Map<DependencyId, Forge> createForgeOverrideMap(PodfileLock podfileLock) {
+        Map<DependencyId, Forge> forgeOverrideMap = new HashMap<>();
         if (null != podfileLock.getExternalSources()) {
-            final List<PodSource> podSources = podfileLock.getExternalSources().getSources();
-            for (final PodSource podSource : podSources) {
-                final Optional<DependencyId> dependencyId = parseDependencyId(podSource.getName());
+            List<PodSource> podSources = podfileLock.getExternalSources().getSources();
+            for (PodSource podSource : podSources) {
+                Optional<DependencyId> dependencyId = parseDependencyId(podSource.getName());
                 if (dependencyId.isPresent()) {
                     if (null != podSource.getGit() && podSource.getGit().contains("github")) {
                         forgeOverrideMap.put(dependencyId.get(), Forge.COCOAPODS);
@@ -91,7 +84,7 @@ public class PodlockParser {
         return forgeOverrideMap;
     }
 
-    private Forge getForge(final DependencyId dependencyId, final Map<DependencyId, Forge> forgeOverrides) {
+    private Forge getForge(DependencyId dependencyId, Map<DependencyId, Forge> forgeOverrides) {
         if (forgeOverrides.containsKey(dependencyId)) {
             return forgeOverrides.get(dependencyId);
         }
@@ -101,30 +94,30 @@ public class PodlockParser {
 
     private List<String> determineAllPodNames(PodfileLock podfileLock) {
         return podfileLock.getPods().stream()
-                   .map(Pod::getName)
-                   .map(this::parseRawPodName)
-                   .filter(Optional::isPresent)
-                   .map(Optional::get)
-                   .collect(Collectors.toList());
+            .map(Pod::getName)
+            .map(this::parseRawPodName)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .collect(Collectors.toList());
     }
 
-    private void processPod(final Pod pod, final Map<DependencyId, Forge> forgeOverrides, final LazyExternalIdDependencyGraphBuilder lazyBuilder, List<String> knownPods) {
-        final String podText = pod.getName();
-        final Optional<DependencyId> dependencyIdMaybe = parseDependencyId(podText);
-        final String name = parseCorrectPodName(podText).orElse(null);
-        final String version = parseVersion(podText).orElse(null);
+    private void processPod(Pod pod, Map<DependencyId, Forge> forgeOverrides, LazyExternalIdDependencyGraphBuilder lazyBuilder, List<String> knownPods) {
+        String podText = pod.getName();
+        Optional<DependencyId> dependencyIdMaybe = parseDependencyId(podText);
+        String name = parseCorrectPodName(podText).orElse(null);
+        String version = parseVersion(podText).orElse(null);
         if (dependencyIdMaybe.isPresent()) {
-            final DependencyId dependencyId = dependencyIdMaybe.get();
+            DependencyId dependencyId = dependencyIdMaybe.get();
 
-            final Forge forge = getForge(dependencyId, forgeOverrides);
-            final ExternalId externalId = externalIdFactory.createNameVersionExternalId(forge, name, version);
+            Forge forge = getForge(dependencyId, forgeOverrides);
+            ExternalId externalId = externalIdFactory.createNameVersionExternalId(forge, name, version);
 
             lazyBuilder.setDependencyInfo(dependencyId, name, version, externalId);
 
-            for (final String child : pod.getDependencies()) {
+            for (String child : pod.getDependencies()) {
                 logger.trace(String.format("Processing pod dependency %s", child));
-                final Optional<DependencyId> childId = parseDependencyId(child);
-                final Optional<String> childName = parseRawPodName(child);
+                Optional<DependencyId> childId = parseDependencyId(child);
+                Optional<String> childName = parseRawPodName(child);
                 if (childId.isPresent() && childName.isPresent() && !dependencyId.equals(childId.get())) {
                     //Some transitives may appear but are not actually present in the pod list.
                     //This supposedly happens because platform specific transitives are present but not actually used.
@@ -139,11 +132,11 @@ public class PodlockParser {
         }
     }
 
-    private Optional<String> parseCorrectPodName(final String podText) {
+    private Optional<String> parseCorrectPodName(String podText) {
         // due to the way the KB deals with subspecs we should use the super name if it exists as this pod's name.
-        final Optional<String> podName = parseRawPodName(podText);
+        Optional<String> podName = parseRawPodName(podText);
         if (podName.isPresent()) {
-            final Optional<String> superPodName = parseSuperPodName(podName.get());
+            Optional<String> superPodName = parseSuperPodName(podName.get());
             if (superPodName.isPresent()) {
                 return superPodName;
             } else {
@@ -154,7 +147,7 @@ public class PodlockParser {
         return Optional.empty();
     }
 
-    private Optional<String> parseSuperPodName(final String podName) {
+    private Optional<String> parseSuperPodName(String podName) {
         if (podName.contains("/")) {
             return Optional.of(podName.split("/")[0].trim());
         }
@@ -162,14 +155,14 @@ public class PodlockParser {
         return Optional.empty();
     }
 
-    private Optional<DependencyId> parseDependencyId(final String podText) {
-        final Optional<String> name = parseCorrectPodName(podText);
+    private Optional<DependencyId> parseDependencyId(String podText) {
+        Optional<String> name = parseCorrectPodName(podText);
 
         return name.map(NameDependencyId::new);
     }
 
-    private Optional<String> parseVersion(final String podText) {
-        final String[] segments = podText.split(" ");
+    private Optional<String> parseVersion(String podText) {
+        String[] segments = podText.split(" ");
         if (segments.length > 1) {
             String version = segments[1];
             version = version.replace("(", "").replace(")", "").trim();
@@ -181,8 +174,8 @@ public class PodlockParser {
         return Optional.empty();
     }
 
-    private boolean isVersionFuzzy(final String versionName) {
-        for (final String identifier : fuzzyVersionIdentifiers) {
+    private boolean isVersionFuzzy(String versionName) {
+        for (String identifier : fuzzyVersionIdentifiers) {
             if (versionName.contains(identifier)) {
                 return true;
             }
@@ -191,7 +184,7 @@ public class PodlockParser {
         return false;
     }
 
-    private Optional<String> parseRawPodName(final String podText) {
+    private Optional<String> parseRawPodName(String podText) {
         if (StringUtils.isNotBlank(podText)) {
             return Optional.of(podText.split(" ")[0].trim());
         }

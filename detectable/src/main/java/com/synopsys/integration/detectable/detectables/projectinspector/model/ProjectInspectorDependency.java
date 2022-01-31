@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.projectinspector.model;
 
 import java.util.List;
@@ -32,4 +25,7 @@ public class ProjectInspectorDependency {
 
     @SerializedName("Artifacts")
     public List<String> artifacts;
+
+    @SerializedName("MavenCoordinates")
+    public ProjectInspectorMavenCoordinate mavenCoordinate;
 }

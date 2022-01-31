@@ -5,8 +5,8 @@ import com.github.dockerjava.api.command.PullImageResultCallback;
 
 public class PullDockerImageProvider implements DockerImageProvider {
     @Override
-    public void installImage(final String imageName, final DockerClient dockerClient) throws InterruptedException {
-        final PullImageResultCallback callback = new PullImageResultCallback();
+    public void installImage(String imageName, DockerClient dockerClient) throws InterruptedException {
+        PullImageResultCallback callback = new PullImageResultCallback();
         dockerClient.pullImageCmd(imageName).exec(callback); //I am not sure this is right, it says 'repository' in the args.
         callback.awaitCompletion();
     }

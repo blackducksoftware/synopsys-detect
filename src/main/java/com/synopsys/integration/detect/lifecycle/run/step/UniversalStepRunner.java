@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.lifecycle.run.step;
 
 import java.util.ArrayList;
@@ -45,7 +38,7 @@ public class UniversalStepRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final StepHelper stepHelper;
 
-    public UniversalStepRunner(final OperationFactory operationFactory, StepHelper stepHelper) {
+    public UniversalStepRunner(OperationFactory operationFactory, StepHelper stepHelper) {
         this.operationFactory = operationFactory;
         this.stepHelper = stepHelper;
     }

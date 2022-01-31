@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.bdio;
 
 import java.io.File;
@@ -47,8 +40,7 @@ public class CreateBdio2FilesOperation {
         this.detectInfo = detectInfo;
     }
 
-    public List<UploadTarget> createBdioFiles(BdioCodeLocationResult bdioCodeLocationResult, File outputDirectory, NameVersion projectNameVersion)
-        throws DetectUserFriendlyException {
+    public List<UploadTarget> createBdioFiles(BdioCodeLocationResult bdioCodeLocationResult, File outputDirectory, NameVersion projectNameVersion) throws DetectUserFriendlyException {
         List<UploadTarget> uploadTargets = new ArrayList<>();
         for (BdioCodeLocation bdioCodeLocation : bdioCodeLocationResult.getBdioCodeLocations()) {
             String codeLocationName = bdioCodeLocation.getCodeLocationName();

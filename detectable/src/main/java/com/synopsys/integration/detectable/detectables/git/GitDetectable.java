@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.git;
 
 import java.io.File;
@@ -27,7 +20,7 @@ import com.synopsys.integration.detectable.detectables.git.parsing.GitParseExtra
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "various", forge = "N/A", requirementsMarkdown = "Directory: .git. <br /><br /> Executable: git. <br /><br /> OR <br /><br /> Files: .git/config, .git/HEAD.")
+@DetectableInfo(language = "various", forge = "N/A", requirementsMarkdown = "Directory: .git. (Executable: git OR Files: .git/config, .git/HEAD).")
 public class GitDetectable extends Detectable {
     private static final String GIT_DIRECTORY_NAME = ".git";
     private static final String GIT_CONFIG_FILENAME = "config";

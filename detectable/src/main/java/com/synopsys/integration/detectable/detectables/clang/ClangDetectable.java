@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.clang;
 
 import java.io.File;
@@ -13,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.Requirements;
@@ -20,7 +14,6 @@ import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.explanation.FoundExecutable;
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
@@ -29,7 +22,7 @@ import com.synopsys.integration.detectable.detectables.clang.packagemanager.Clan
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "C or C++", forge = "Derived from the Linux distribution.", requirementsMarkdown = "File: compile_commands.json. <br /><br /> Executable: Linux package manager.")
+@DetectableInfo(language = "C or C++", forge = "Derived from the Linux distribution.", requirementsMarkdown = "File: compile_commands.json. Executable: Linux package manager.")
 public class ClangDetectable extends Detectable {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -44,9 +37,9 @@ public class ClangDetectable extends Detectable {
 
     private ClangPackageManager selectedPackageManager;
 
-    public ClangDetectable(final DetectableEnvironment environment, final DetectableExecutableRunner executableRunner, final FileFinder fileFinder, final List<ClangPackageManager> availablePackageManagers,
-        final ClangExtractor clangExtractor,
-        final ClangDetectableOptions options, final ClangPackageManagerRunner packageManagerRunner) {
+    public ClangDetectable(DetectableEnvironment environment, DetectableExecutableRunner executableRunner, FileFinder fileFinder, List<ClangPackageManager> availablePackageManagers,
+        ClangExtractor clangExtractor,
+        ClangDetectableOptions options, ClangPackageManagerRunner packageManagerRunner) {
         super(environment);
         this.fileFinder = fileFinder;
         this.availablePackageManagers = availablePackageManagers;
@@ -74,12 +67,12 @@ public class ClangDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         return clangExtractor.extract(selectedPackageManager, packageManagerRunner, environment.getDirectory(), extractionEnvironment.getOutputDirectory(), jsonCompilationDatabaseFile, options.isCleanup());
     }
 
-    private ClangPackageManager findPkgMgr(final File workingDirectory) {
-        for (final ClangPackageManager pkgMgrCandidate : availablePackageManagers) {
+    private ClangPackageManager findPkgMgr(File workingDirectory) {
+        for (ClangPackageManager pkgMgrCandidate : availablePackageManagers) {
             if (packageManagerRunner.applies(pkgMgrCandidate, workingDirectory, executableRunner)) {
                 return pkgMgrCandidate;
             }

@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.lifecycle.run.step;
 
 import java.io.File;
@@ -135,9 +128,9 @@ public class IntelligentModeStepRunner {
     private void publishPostResults(BdioResult bdioResult, ProjectVersionWrapper projectVersionWrapper, DetectToolFilter detectToolFilter) {
         if ((!bdioResult.getUploadTargets().isEmpty() || detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN))) {
             Optional<String> componentsLink = Optional.ofNullable(projectVersionWrapper)
-                                                  .map(ProjectVersionWrapper::getProjectVersionView)
-                                                  .flatMap(projectVersionView -> projectVersionView.getFirstLinkSafely(ProjectVersionView.COMPONENTS_LINK))
-                                                  .map(HttpUrl::string);
+                .map(ProjectVersionWrapper::getProjectVersionView)
+                .flatMap(projectVersionView -> projectVersionView.getFirstLinkSafely(ProjectVersionView.COMPONENTS_LINK))
+                .map(HttpUrl::string);
 
             if (componentsLink.isPresent()) {
                 DetectResult detectResult = new BlackDuckBomDetectResult(componentsLink.get());

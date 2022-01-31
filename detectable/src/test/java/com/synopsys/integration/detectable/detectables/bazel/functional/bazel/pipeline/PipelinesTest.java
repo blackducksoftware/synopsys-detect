@@ -1,25 +1,3 @@
-/**
- * detectable
- *
- * Copyright (c) 2020 Synopsys, Inc.
- *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
 package com.synopsys.integration.detectable.detectables.bazel.functional.bazel.pipeline;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -203,13 +181,13 @@ public class PipelinesTest {
         int foundCount = 0;
         for (Dependency dependency : dependencies) {
             if ("com.google.guava".equals(dependency.getExternalId().getGroup()) &&
-                    "guava".equals(dependency.getExternalId().getName()) &&
-                    "27.0-jre".equals(dependency.getExternalId().getVersion())) {
+                "guava".equals(dependency.getExternalId().getName()) &&
+                "27.0-jre".equals(dependency.getExternalId().getVersion())) {
                 foundCount++;
             }
             if ("com.google.code.findbugs".equals(dependency.getExternalId().getGroup()) &&
-                    "jsr305".equals(dependency.getExternalId().getName()) &&
-                    "3.0.2".equals(dependency.getExternalId().getVersion())) {
+                "jsr305".equals(dependency.getExternalId().getName()) &&
+                "3.0.2".equals(dependency.getExternalId().getVersion())) {
                 foundCount++;
             }
         }
@@ -227,13 +205,13 @@ public class PipelinesTest {
         int foundCount = 0;
         for (Dependency dependency : dependencies) {
             if ("com.company.thing".equals(dependency.getExternalId().getGroup()) &&
-                    "thing-common-client".equals(dependency.getExternalId().getName()) &&
-                    "2.100.0".equals(dependency.getExternalId().getVersion())) {
+                "thing-common-client".equals(dependency.getExternalId().getName()) &&
+                "2.100.0".equals(dependency.getExternalId().getVersion())) {
                 foundCount++;
             }
             if ("javax.servlet".equals(dependency.getExternalId().getGroup()) &&
-                    "javax.servlet-api".equals(dependency.getExternalId().getName()) &&
-                    "3.0.1".equals(dependency.getExternalId().getVersion())) {
+                "javax.servlet-api".equals(dependency.getExternalId().getName()) &&
+                "3.0.1".equals(dependency.getExternalId().getVersion())) {
                 foundCount++;
             }
         }
@@ -251,8 +229,8 @@ public class PipelinesTest {
         int foundCount = 0;
         for (Dependency dependency : dependencies) {
             if ("com.company.thing".equals(dependency.getExternalId().getGroup()) &&
-                    "thing-common-client".equals(dependency.getExternalId().getName()) &&
-                    "2.100.0".equals(dependency.getExternalId().getVersion())) {
+                "thing-common-client".equals(dependency.getExternalId().getName()) &&
+                "2.100.0".equals(dependency.getExternalId().getVersion())) {
                 foundCount++;
             }
         }
@@ -271,13 +249,13 @@ public class PipelinesTest {
         int foundCount = 0;
         for (Dependency dependency : dependencies) {
             if ("com.google.guava".equals(dependency.getExternalId().getGroup()) &&
-                    "guava".equals(dependency.getExternalId().getName()) &&
-                    "27.0-jre".equals(dependency.getExternalId().getVersion())) {
+                "guava".equals(dependency.getExternalId().getName()) &&
+                "27.0-jre".equals(dependency.getExternalId().getVersion())) {
                 foundCount++;
             }
             if ("com.google.code.findbugs".equals(dependency.getExternalId().getGroup()) &&
-                    "jsr305".equals(dependency.getExternalId().getName()) &&
-                    "3.0.2".equals(dependency.getExternalId().getVersion())) {
+                "jsr305".equals(dependency.getExternalId().getName()) &&
+                "3.0.2".equals(dependency.getExternalId().getVersion())) {
                 foundCount++;
             }
         }
@@ -296,7 +274,7 @@ public class PipelinesTest {
         int foundCount = 0;
         for (Dependency dependency : dependencies) {
             if ("optparse-applicative".equals(dependency.getExternalId().getName()) &&
-                    "0.14.3.0".equals(dependency.getExternalId().getVersion())) {
+                "0.14.3.0".equals(dependency.getExternalId().getVersion())) {
                 foundCount++;
             }
         }

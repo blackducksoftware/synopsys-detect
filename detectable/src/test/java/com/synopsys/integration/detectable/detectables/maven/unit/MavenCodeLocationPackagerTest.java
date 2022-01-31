@@ -1,25 +1,3 @@
-/**
- * detectable
- *
- * Copyright (c) 2020 Synopsys, Inc.
- *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
 package com.synopsys.integration.detectable.detectables.maven.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,7 +18,7 @@ import com.synopsys.integration.detectable.detectables.maven.cli.ScopedDependenc
 public class MavenCodeLocationPackagerTest {
     @Test
     public void testParseProject() {
-        final MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory());
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory());
 
         Dependency dependency = mavenCodeLocationPackager.textToProject("stuff:things:jar:0.0.1");
         assertNotNull(dependency);
@@ -57,7 +35,7 @@ public class MavenCodeLocationPackagerTest {
 
     @Test
     public void testParseDependency() {
-        final MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory());
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory());
 
         ScopedDependency dependency = mavenCodeLocationPackager.textToDependency("stuff:things:jar:0.0.1:compile");
         assertNotNull(dependency);
@@ -74,7 +52,7 @@ public class MavenCodeLocationPackagerTest {
 
     @Test
     public void testIsLineRelevant() {
-        final MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(null);
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(null);
 
         assertTrue(mavenCodeLocationPackager.isLineRelevant("weird garbage 3525356 [thingsINFO 346534623465] stuff"));
 
@@ -105,7 +83,7 @@ public class MavenCodeLocationPackagerTest {
 
     @Test
     public void testTrimLogLevel() {
-        final MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(null);
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(null);
 
         String actualLine = "";
         final String expectedValue = "thing";
@@ -125,7 +103,7 @@ public class MavenCodeLocationPackagerTest {
 
     @Test
     public void testIsProjectSection() {
-        final MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(null);
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(null);
 
         assertFalse(mavenCodeLocationPackager.isProjectSection(" "));
 
@@ -150,7 +128,7 @@ public class MavenCodeLocationPackagerTest {
 
     @Test
     public void testIsDependencyTreeUpdates() {
-        final MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(null);
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(null);
 
         assertTrue(mavenCodeLocationPackager.isDependencyTreeUpdates("artifact com.google.guava:guava:jar:15.0:compile checking for updates from"));
 
@@ -169,7 +147,7 @@ public class MavenCodeLocationPackagerTest {
 
     @Test
     public void testIsGav() {
-        final MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(null);
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(null);
 
         assertFalse(mavenCodeLocationPackager.isGav(" "));
 
@@ -200,7 +178,7 @@ public class MavenCodeLocationPackagerTest {
 
     @Test
     public void testIndexOfEndOfSegments() {
-        final MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(null);
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(null);
 
         assertEquals(-1, mavenCodeLocationPackager.indexOfEndOfSegments(""));
 
@@ -223,7 +201,7 @@ public class MavenCodeLocationPackagerTest {
 
     @Test
     public void testDoesLineContainSegmentsInOrder() {
-        final MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(null);
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(null);
 
         assertFalse(mavenCodeLocationPackager.doesLineContainSegmentsInOrder(""));
 
@@ -246,34 +224,34 @@ public class MavenCodeLocationPackagerTest {
 
     @Test
     public void testLineWithExtraTextAfterScope() {
-        final MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory());
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory());
 
         String line = "[INFO] |  |  |  \\- org.eclipse.scout.sdk.deps:org.eclipse.core.jobs:jar:3.8.0.v20160509-0411:compile (version selected from constraint [3.8.0,3.8.1))";
         line = mavenCodeLocationPackager.trimLogLevel(line);
-        final String cleanedLine = mavenCodeLocationPackager.calculateCurrentLevelAndCleanLine(line);
-        final Dependency dependency = mavenCodeLocationPackager.textToDependency(cleanedLine);
+        String cleanedLine = mavenCodeLocationPackager.calculateCurrentLevelAndCleanLine(line);
+        Dependency dependency = mavenCodeLocationPackager.textToDependency(cleanedLine);
         assertEquals("org.eclipse.scout.sdk.deps:org.eclipse.core.jobs:3.8.0.v20160509-0411", dependency.getExternalId().createExternalId());
     }
 
     @Test
     public void testLineWithUnknownScope() {
-        final MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory());
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory());
 
         String line = "[INFO] |  |  |  \\- org.eclipse.scout.sdk.deps:org.eclipse.core.jobs:jar:3.8.0.v20160509-0411:pants (version selected from constraint [3.8.0,3.8.1))";
         line = mavenCodeLocationPackager.trimLogLevel(line);
-        final String cleanedLine = mavenCodeLocationPackager.calculateCurrentLevelAndCleanLine(line);
-        final ScopedDependency scopedDependency = mavenCodeLocationPackager.textToDependency(cleanedLine);
+        String cleanedLine = mavenCodeLocationPackager.calculateCurrentLevelAndCleanLine(line);
+        ScopedDependency scopedDependency = mavenCodeLocationPackager.textToDependency(cleanedLine);
         assertEquals("org.eclipse.scout.sdk.deps:org.eclipse.core.jobs:3.8.0.v20160509-0411", scopedDependency.getExternalId().createExternalId());
     }
 
     @Test
     public void testLineWithBadColonPlacement() {
-        final MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory());
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory());
 
         String line = "[INFO] |  |  |  \\- org.eclipse.scout.sdk.deps:org.eclipse.core.jobs:jar:3.8.0.v20160509-0411:pants (version selected from: [3.8.0,3.8.1))";
         line = mavenCodeLocationPackager.trimLogLevel(line);
-        final String cleanedLine = mavenCodeLocationPackager.calculateCurrentLevelAndCleanLine(line);
-        final Dependency dependency = mavenCodeLocationPackager.textToDependency(cleanedLine);
+        String cleanedLine = mavenCodeLocationPackager.calculateCurrentLevelAndCleanLine(line);
+        Dependency dependency = mavenCodeLocationPackager.textToDependency(cleanedLine);
         assertEquals("org.eclipse.scout.sdk.deps:org.eclipse.core.jobs:pants (version selected from", dependency.getExternalId().createExternalId());
     }
 }

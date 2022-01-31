@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.blackduck.project.options;
 
 import java.util.List;
@@ -24,9 +17,17 @@ public class ProjectSyncOptions {
     private final String projectVersionNickname;
     private final Boolean projectLevelAdjustments;
 
-    public ProjectSyncOptions(final ProjectVersionPhaseType projectVersionPhase, final ProjectVersionDistributionType projectVersionDistribution, final Integer projectTier,
-        final String projectDescription, final String projectVersionNotes,
-        final List<ProjectCloneCategoriesType> cloneCategories, final Boolean forceProjectVersionUpdate, final String projectVersionNickname, Boolean projectLevelAdjustments) {
+    public ProjectSyncOptions(
+        ProjectVersionPhaseType projectVersionPhase,
+        ProjectVersionDistributionType projectVersionDistribution,
+        Integer projectTier,
+        String projectDescription,
+        String projectVersionNotes,
+        List<ProjectCloneCategoriesType> cloneCategories,
+        Boolean forceProjectVersionUpdate,
+        String projectVersionNickname,
+        Boolean projectLevelAdjustments
+    ) {
         this.projectVersionPhase = projectVersionPhase;
         this.projectVersionDistribution = projectVersionDistribution;
         this.projectTier = projectTier;

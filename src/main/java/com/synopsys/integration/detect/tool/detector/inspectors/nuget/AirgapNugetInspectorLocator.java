@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.detector.inspectors.nuget;
 
 import java.io.File;
@@ -20,7 +13,7 @@ public class AirgapNugetInspectorLocator implements NugetInspectorLocator {
 
     private final AirGapInspectorPaths airGapInspectorPaths;
 
-    public AirgapNugetInspectorLocator(final AirGapInspectorPaths airGapInspectorPaths) {
+    public AirgapNugetInspectorLocator(AirGapInspectorPaths airGapInspectorPaths) {
         this.airGapInspectorPaths = airGapInspectorPaths;
     }
 
@@ -44,9 +37,9 @@ public class AirgapNugetInspectorLocator implements NugetInspectorLocator {
         return locateInspector(INSPECTOR_DIR_CLASSIC);
     }
 
-    private File locateInspector(final String childName) throws DetectableException {
+    private File locateInspector(String childName) throws DetectableException {
         return airGapInspectorPaths.getNugetInspectorAirGapFile()
-                   .map(nugetAirGapPath -> new File(nugetAirGapPath, childName))
-                   .orElseThrow(() -> new DetectableException("Could not get the nuget air gap path"));
+            .map(nugetAirGapPath -> new File(nugetAirGapPath, childName))
+            .orElseThrow(() -> new DetectableException("Could not get the nuget air gap path"));
     }
 }

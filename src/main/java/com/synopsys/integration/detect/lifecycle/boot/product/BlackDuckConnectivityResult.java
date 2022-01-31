@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.lifecycle.boot.product;
 
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
@@ -20,15 +13,15 @@ public class BlackDuckConnectivityResult {
     private BlackDuckServicesFactory blackDuckServicesFactory;
     private BlackDuckServerConfig blackDuckServerConfig;
 
-    private BlackDuckConnectivityResult(final boolean successfullyConnected, final String failureReason,
-        final BlackDuckServicesFactory blackDuckServicesFactory, final BlackDuckServerConfig blackDuckServerConfig) {
+    private BlackDuckConnectivityResult(boolean successfullyConnected, String failureReason,
+        BlackDuckServicesFactory blackDuckServicesFactory, BlackDuckServerConfig blackDuckServerConfig) {
         this.successfullyConnected = successfullyConnected;
         this.failureReason = failureReason;
         this.blackDuckServicesFactory = blackDuckServicesFactory;
         this.blackDuckServerConfig = blackDuckServerConfig;
     }
 
-    public static BlackDuckConnectivityResult success(final BlackDuckServicesFactory blackDuckServicesFactory, final BlackDuckServerConfig blackDuckServerConfig) {
+    public static BlackDuckConnectivityResult success(BlackDuckServicesFactory blackDuckServicesFactory, BlackDuckServerConfig blackDuckServerConfig) {
         return new BlackDuckConnectivityResult(true, null, blackDuckServicesFactory, blackDuckServerConfig);
     }
 

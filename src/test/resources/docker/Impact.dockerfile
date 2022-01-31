@@ -1,16 +1,16 @@
 FROM adoptopenjdk/maven-openjdk11
 
+# Do not change SRC_DIR, value is expected by tests
+ENV SRC_DIR=/opt/project/src
+
 # Install git
-RUN apt update
-RUN apt install -y git
+RUN apt-get update
+RUN apt-get install -y git
 
 # Set up the test project
-RUN mkdir -p /opt/project
+RUN mkdir -p ${SRC_DIR}
 
-RUN cd /opt/project \
-   && git clone https://github.com/oktadev/example-maven-plugin
+RUN git clone --depth 1 https://github.com/oktadev/example-maven-plugin ${SRC_DIR}
 
-RUN mv /opt/project/example-maven-plugin /opt/project/src
-
-RUN cd /opt/project/src \
+RUN cd ${SRC_DIR} \
    && mvn clean install

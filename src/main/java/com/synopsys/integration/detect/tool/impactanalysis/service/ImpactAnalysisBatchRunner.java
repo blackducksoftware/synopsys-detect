@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.impactanalysis.service;
 
 import java.util.ArrayList;
@@ -68,8 +61,8 @@ public class ImpactAnalysisBatchRunner {
 
     private List<ImpactAnalysisCallable> createCallables(ImpactAnalysisBatch impactAnalysisBatch) {
         return impactAnalysisBatch.getImpactAnalyses().stream()
-                   .map(impactAnalysis -> new ImpactAnalysisCallable(gson, blackDuckApiClient, apiDiscovery, impactAnalysis))
-                   .collect(Collectors.toList());
+            .map(impactAnalysis -> new ImpactAnalysisCallable(gson, blackDuckApiClient, apiDiscovery, impactAnalysis))
+            .collect(Collectors.toList());
     }
 
 }

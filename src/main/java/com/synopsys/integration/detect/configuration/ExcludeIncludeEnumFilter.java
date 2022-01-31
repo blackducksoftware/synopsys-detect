@@ -1,45 +1,35 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.configuration;
 
-import java.util.List;
-
-import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumUtils;
-import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumValue;
+import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumCollection;
 
 public class ExcludeIncludeEnumFilter<T extends Enum<T>> {
-    private final List<FilterableEnumValue<T>> excluded;
-    private final List<FilterableEnumValue<T>> included;
+    private final AllNoneEnumCollection<T> excluded;
+    private final AllNoneEnumCollection<T> included;
 
-    public ExcludeIncludeEnumFilter(List<FilterableEnumValue<T>> excluded, List<FilterableEnumValue<T>> included) {
+    public ExcludeIncludeEnumFilter(AllNoneEnumCollection<T> excluded, AllNoneEnumCollection<T> included) {
         this.excluded = excluded;
         this.included = included;
     }
 
     private boolean willExclude(T value) {
-        if (FilterableEnumUtils.containsAll(excluded)) {
+        if (excluded.containsAll()) {
             return true;
-        } else if (FilterableEnumUtils.containsNone(excluded)) {
+        } else if (excluded.containsNone()) {
             return false;
         } else {
-            return FilterableEnumUtils.containsValue(excluded, value);
+            return excluded.containsValue(value);
         }
     }
 
     private boolean willInclude(T value) {
         if (included.isEmpty()) {
             return true;
-        } else if (FilterableEnumUtils.containsAll(included)) {
+        } else if (included.containsAll()) {
             return true;
-        } else if (FilterableEnumUtils.containsNone(included)) {
+        } else if (included.containsNone()) {
             return false;
         } else {
-            return FilterableEnumUtils.containsValue(included, value);
+            return included.containsValue(value);
         }
     }
 

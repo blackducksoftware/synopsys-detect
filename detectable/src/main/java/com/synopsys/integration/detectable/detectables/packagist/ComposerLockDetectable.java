@@ -1,24 +1,18 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.packagist;
 
 import java.io.File;
 
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
+// TODO: I'm confused by the interchangeability of 'composer' and 'packagist' in the names of classes here and tests. JM-01/2022
 @DetectableInfo(language = "PHP", forge = "Packagist.org", requirementsMarkdown = "Files: composer.lock, composer.json.")
 public class ComposerLockDetectable extends Detectable {
     private static final String COMPOSER_LOCK = "composer.lock";
@@ -26,16 +20,14 @@ public class ComposerLockDetectable extends Detectable {
 
     private final FileFinder fileFinder;
     private final ComposerLockExtractor composerLockExtractor;
-    private final ComposerLockDetectableOptions composerLockDetectableOptions;
 
     private File composerLock;
     private File composerJson;
 
-    public ComposerLockDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final ComposerLockExtractor composerLockExtractor, ComposerLockDetectableOptions composerLockDetectableOptions) {
+    public ComposerLockDetectable(DetectableEnvironment environment, FileFinder fileFinder, ComposerLockExtractor composerLockExtractor) {
         super(environment);
         this.fileFinder = fileFinder;
         this.composerLockExtractor = composerLockExtractor;
-        this.composerLockDetectableOptions = composerLockDetectableOptions;
     }
 
     @Override
@@ -52,8 +44,8 @@ public class ComposerLockDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        return composerLockExtractor.extract(composerJson, composerLock, composerLockDetectableOptions.shouldIncludeDevDependencies());
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
+        return composerLockExtractor.extract(composerJson, composerLock);
     }
 
 }

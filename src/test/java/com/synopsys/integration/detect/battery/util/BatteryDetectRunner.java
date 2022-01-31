@@ -29,7 +29,7 @@ public class BatteryDetectRunner {
     private final File scriptDirectory;
     private final String detectVersion;
 
-    public BatteryDetectRunner(final File outputDirectory, final File scriptDirectory, final String detectVersion) {
+    public BatteryDetectRunner(File outputDirectory, File scriptDirectory, String detectVersion) {
         this.outputDirectory = outputDirectory;
         this.scriptDirectory = scriptDirectory;
         this.detectVersion = detectVersion;

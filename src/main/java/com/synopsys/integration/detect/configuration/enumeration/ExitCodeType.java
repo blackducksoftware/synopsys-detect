@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.configuration.enumeration;
 
 public enum ExitCodeType {
@@ -23,10 +16,10 @@ public enum ExitCodeType {
     FAILURE_GENERAL_ERROR(99, "Detect encountered a known error, details of the error are provided."),
     FAILURE_UNKNOWN_ERROR(100, "Detect encountered an unknown error.");
 
-    private int exitCode;
-    private String description;
+    private final int exitCode;
+    private final String description;
 
-    private ExitCodeType(final int exitCode, String description) {
+    ExitCodeType(int exitCode, String description) {
         this.exitCode = exitCode;
         this.description = description;
     }
@@ -34,7 +27,7 @@ public enum ExitCodeType {
     /**
      * A failure always beats a success and a failure with a lower exit code beats a failure with a higher exit code.
      */
-    public static ExitCodeType getWinningExitCodeType(final ExitCodeType first, final ExitCodeType second) {
+    public static ExitCodeType getWinningExitCodeType(ExitCodeType first, ExitCodeType second) {
         if (first.isSuccess()) {
             return second;
         } else if (second.isSuccess()) {

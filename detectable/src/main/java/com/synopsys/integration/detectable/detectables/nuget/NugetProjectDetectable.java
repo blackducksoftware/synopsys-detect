@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.nuget;
 
 import java.io.File;
@@ -12,13 +5,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.PassedResultBuilder;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.explanation.FoundInspector;
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspector;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
@@ -31,8 +24,8 @@ import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 @DetectableInfo(language = "C#", forge = "NuGet.org",
     requirementsMarkdown = "File: a project file with one of the following extensions: .csproj, .fsproj, .vbproj, .asaproj, .dcproj, .shproj, .ccproj, " +
-                               ".sfproj, .njsproj, .vcxproj, .vcproj, .xproj, .pyproj, .hiveproj, .pigproj, .jsproj, .usqlproj, .deployproj, " +
-                               ".msbuildproj, .sqlproj, .dbproj, .rproj")
+        ".sfproj, .njsproj, .vcxproj, .vcproj, .xproj, .pyproj, .hiveproj, .pigproj, .jsproj, .usqlproj, .deployproj, " +
+        ".msbuildproj, .sqlproj, .dbproj, .rproj")
 public class NugetProjectDetectable extends Detectable {
     static final List<String> SUPPORTED_PROJECT_PATTERNS = Arrays.asList(
         // C#
@@ -89,8 +82,8 @@ public class NugetProjectDetectable extends Detectable {
     private NugetInspector inspector;
     private List<File> projectFiles = new ArrayList<>();
 
-    public NugetProjectDetectable(final DetectableEnvironment detectableEnvironment, final FileFinder fileFinder, final NugetInspectorOptions nugetInspectorOptions, final NugetInspectorResolver nugetInspectorResolver,
-        final NugetInspectorExtractor nugetInspectorExtractor) {
+    public NugetProjectDetectable(DetectableEnvironment detectableEnvironment, FileFinder fileFinder, NugetInspectorOptions nugetInspectorOptions, NugetInspectorResolver nugetInspectorResolver,
+        NugetInspectorExtractor nugetInspectorExtractor) {
         super(detectableEnvironment);
         this.fileFinder = fileFinder;
         this.nugetInspectorOptions = nugetInspectorOptions;
@@ -123,7 +116,7 @@ public class NugetProjectDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         return nugetInspectorExtractor.extract(projectFiles, extractionEnvironment.getOutputDirectory(), inspector, nugetInspectorOptions);
     }
 

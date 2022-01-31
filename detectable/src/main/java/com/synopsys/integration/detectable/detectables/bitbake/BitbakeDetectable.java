@@ -1,13 +1,7 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.bitbake;
 
 import java.io.File;
+import java.io.IOException;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
@@ -16,6 +10,7 @@ import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BashResolver;
 import com.synopsys.integration.detectable.detectable.explanation.PropertyProvided;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
@@ -23,7 +18,7 @@ import com.synopsys.integration.detectable.detectable.result.PropertyInsufficien
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "various", forge = "YOCTO", requirementsMarkdown = "Properties: Package names <br /><br /> File: build env script.<br /><br /> Executable: bash")
+@DetectableInfo(language = "various", forge = "YOCTO", requirementsMarkdown = "Properties: Package names. File: build env script. Executable: bash")
 public class BitbakeDetectable extends Detectable {
     private final BitbakeDetectableOptions bitbakeDetectableOptions;
     private final FileFinder fileFinder;
@@ -33,8 +28,7 @@ public class BitbakeDetectable extends Detectable {
     private File foundBuildEnvScript;
     private ExecutableTarget bashExe;
 
-    public BitbakeDetectable(DetectableEnvironment detectableEnvironment, FileFinder fileFinder, BitbakeDetectableOptions bitbakeDetectableOptions, BitbakeExtractor bitbakeExtractor,
-        BashResolver bashResolver) {
+    public BitbakeDetectable(DetectableEnvironment detectableEnvironment, FileFinder fileFinder, BitbakeDetectableOptions bitbakeDetectableOptions, BitbakeExtractor bitbakeExtractor, BashResolver bashResolver) {
         super(detectableEnvironment);
         this.fileFinder = fileFinder;
         this.bitbakeDetectableOptions = bitbakeDetectableOptions;
@@ -64,8 +58,16 @@ public class BitbakeDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
-        return bitbakeExtractor.extract(environment.getDirectory(), foundBuildEnvScript, bitbakeDetectableOptions.getSourceArguments(), bitbakeDetectableOptions.getPackageNames(),
-            bitbakeDetectableOptions.isFollowSymLinks(), bitbakeDetectableOptions.getSearchDepth(), bashExe);
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException, IOException {
+        return bitbakeExtractor.extract(
+            environment.getDirectory(),
+            foundBuildEnvScript,
+            bitbakeDetectableOptions.getSourceArguments(),
+            bitbakeDetectableOptions.getPackageNames(),
+            bitbakeDetectableOptions.isFollowSymLinks(),
+            bitbakeDetectableOptions.getSearchDepth(),
+            bitbakeDetectableOptions.getDependencyTypeFilter(),
+            bashExe
+        );
     }
 }

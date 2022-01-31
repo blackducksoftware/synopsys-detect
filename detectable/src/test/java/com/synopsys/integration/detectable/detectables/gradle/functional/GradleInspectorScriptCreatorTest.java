@@ -1,12 +1,6 @@
 package com.synopsys.integration.detectable.detectables.gradle.functional;
 
-import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptCreator;
-import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptOptions;
-import freemarker.template.Configuration;
-import org.apache.commons.io.FileUtils;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,7 +8,15 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptCreator;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptOptions;
+
+import freemarker.template.Configuration;
 
 public class GradleInspectorScriptCreatorTest {
 
@@ -30,7 +32,7 @@ public class GradleInspectorScriptCreatorTest {
         String gradleInspectorRepositoryUrl = null;
         String providedOnlineInspectorVersion = null;
         GradleInspectorScriptOptions scriptOptions = new GradleInspectorScriptOptions(excludedProjectNames, includedProjectNames,
-                excludedConfigurationNames, includedConfigurationNames, gradleInspectorRepositoryUrl, providedOnlineInspectorVersion);
+            excludedConfigurationNames, includedConfigurationNames, gradleInspectorRepositoryUrl, providedOnlineInspectorVersion);
 
         Configuration configuration = createFreemarkerConfiguration();
         GradleInspectorScriptCreator gradleInspectorScriptCreator = new GradleInspectorScriptCreator(configuration);

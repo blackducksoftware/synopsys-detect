@@ -63,7 +63,7 @@ public class YarnLockHeaderSectionParserTest {
         Assertions.assertEquals("color-convert", ids.get(1).getName());
         Assertions.assertEquals("^1.9.1", ids.get(1).getVersion());
     }
-    
+
     @Test
     void testParserHandlesMissingSymbol() {
         String line = "example, example@1";

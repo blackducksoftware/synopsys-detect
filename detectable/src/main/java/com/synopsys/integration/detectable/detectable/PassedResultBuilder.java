@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectable;
 
 import java.io.File;
@@ -40,15 +33,15 @@ public class PassedResultBuilder {
         return new PassedDetectableResult(explanations, relevantFiles);
     }
 
-    public void foundExecutable(final File exe) {
+    public void foundExecutable(File exe) {
         explanations.add(new FoundExecutable(exe));
     }
 
-    public void foundExecutable(final ExecutableTarget exe) {
+    public void foundExecutable(ExecutableTarget exe) {
         explanations.add(new FoundExecutable(exe));
     }
 
-    public void foundInspector(final File inspector) {
+    public void foundInspector(File inspector) {
         explanations.add(new FoundInspector(inspector));
     }
 }

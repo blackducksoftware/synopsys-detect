@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.codelocation;
 
 import java.io.File;
@@ -22,8 +15,8 @@ public class DetectCodeLocation {
     private final String creatorName;
     private final String dockerImageName;
 
-    private DetectCodeLocation(final DependencyGraph dependencyGraph, final File sourcePath, final ExternalId externalId, final String creatorName,
-        final String dockerImageName) {
+    private DetectCodeLocation(DependencyGraph dependencyGraph, File sourcePath, ExternalId externalId, String creatorName,
+        String dockerImageName) {
         this.dependencyGraph = dependencyGraph;
         this.sourcePath = sourcePath;
         this.externalId = externalId;
@@ -35,15 +28,15 @@ public class DetectCodeLocation {
         }
     }
 
-    public static DetectCodeLocation forDocker(final DependencyGraph dependencyGraph, final File sourcePath, final ExternalId externalId, final String dockerImageName) {
+    public static DetectCodeLocation forDocker(DependencyGraph dependencyGraph, File sourcePath, ExternalId externalId, String dockerImageName) {
         return new DetectCodeLocation(dependencyGraph, sourcePath, externalId, null, dockerImageName);
     }
 
-    public static DetectCodeLocation forCreator(final DependencyGraph dependencyGraph, final File sourcePath, final ExternalId externalId, final String creatorName) {
+    public static DetectCodeLocation forCreator(DependencyGraph dependencyGraph, File sourcePath, ExternalId externalId, String creatorName) {
         return new DetectCodeLocation(dependencyGraph, sourcePath, externalId, creatorName, null);
     }
 
-    public DetectCodeLocation copy(final DependencyGraph dependencyGraph) {
+    public DetectCodeLocation copy(DependencyGraph dependencyGraph) {
         return new DetectCodeLocation(dependencyGraph, sourcePath, externalId, creatorName, dockerImageName);
     }
 

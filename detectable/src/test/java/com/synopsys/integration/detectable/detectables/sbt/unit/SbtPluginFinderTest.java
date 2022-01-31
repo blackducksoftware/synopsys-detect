@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtCommandArgumentGenerator;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtPluginFinder;

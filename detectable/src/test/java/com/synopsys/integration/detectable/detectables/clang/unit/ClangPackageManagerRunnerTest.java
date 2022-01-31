@@ -37,9 +37,9 @@ public class ClangPackageManagerRunnerTest {
         ClangPackageManagerResolver packageResolver = new DpkgPackageManagerResolver(versionResolver);
         String pkgOwnerPattern = "libxt-dev:amd64: %s\n";
         String pkgDetailsPattern = "Package: %s\n"
-                                       + "Architecture: amd64\n"
-                                       + "Version: 1:1.1.5-1\n"
-                                       + "Status: install ok installed\n";
+            + "Architecture: amd64\n"
+            + "Version: 1:1.1.5-1\n"
+            + "Status: install ok installed\n";
         testSuccessCase(packageManagerInfo, packageResolver, "libxt-dev", "amd64", false, "1:1.1.5-1", pkgOwnerPattern, pkgDetailsPattern);
     }
 
@@ -51,9 +51,9 @@ public class ClangPackageManagerRunnerTest {
         ClangPackageManagerResolver packageResolver = new DpkgPackageManagerResolver(versionResolver);
         String pkgOwnerPattern = "libxt-dev:amd64: %s\n";
         String pkgDetailsPattern = "Package: %s\n"
-                                       + "Architecture: amd64\n"
-                                       + "Version: 1:1.1.5-1\n"
-                                       + "Status: pending\n";
+            + "Architecture: amd64\n"
+            + "Version: 1:1.1.5-1\n"
+            + "Status: pending\n";
         testNoResultsCase(packageManagerInfo, packageResolver, "libxt-dev", "amd64", pkgOwnerPattern, pkgDetailsPattern);
     }
 
@@ -65,9 +65,9 @@ public class ClangPackageManagerRunnerTest {
         ClangPackageManagerResolver packageResolver = new DpkgPackageManagerResolver(versionResolver);
         String pkgOwnerPattern = "libxt-dev: %s\n";
         String pkgDetailsPattern = "Package: %s\n"
-                                       + "Architecture: amd64\n"
-                                       + "Version: 1:1.1.5-1\n"
-                                       + "Status: install ok installed\n";
+            + "Architecture: amd64\n"
+            + "Version: 1:1.1.5-1\n"
+            + "Status: install ok installed\n";
         testSuccessCase(packageManagerInfo, packageResolver, "libxt-dev", "amd64", true, "1:1.1.5-1", pkgOwnerPattern, pkgDetailsPattern);
     }
 

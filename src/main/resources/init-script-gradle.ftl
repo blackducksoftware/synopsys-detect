@@ -127,7 +127,7 @@ def generateRootProjectMetaData(Project project, String outputDirectoryPath) {
 
 def findProjectOutputFile(Project project, String outputDirectoryPath) {
     File outputDirectory = createTaskOutputDirectory(outputDirectoryPath)
-    String name = project.name.toString()
+    String name = project.toString()
 
     String nameForFile = new IntegrationEscapeUtil().replaceWithUnderscore(name)
     File outputFile = new File(outputDirectory, "${nameForFile}_dependencyGraph.txt")

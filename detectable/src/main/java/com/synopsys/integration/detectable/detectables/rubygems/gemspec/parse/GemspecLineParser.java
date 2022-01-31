@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse;
 
 import java.util.Arrays;
@@ -24,35 +17,35 @@ public class GemspecLineParser {
     private static final String COMMENT_START_TOKEN = "#";
     private static final String QUOTE_TOKEN = "'";
 
-    public boolean shouldParseLine(final String line) {
+    public boolean shouldParseLine(String line) {
         return Arrays.stream(GemspecDependencyType.values())
-                   .map(gemspecDependencyType -> line.contains(gemspecDependencyType.getToken()))
-                   .anyMatch(shouldParse -> shouldParse.equals(true));
+            .map(gemspecDependencyType -> line.contains(gemspecDependencyType.getToken()))
+            .anyMatch(shouldParse -> shouldParse.equals(true));
     }
 
-    public Optional<GemspecDependency> parseLine(final String line) {
+    public Optional<GemspecDependency> parseLine(String line) {
         try {
-            final Optional<LineStart> lineStart = findLineStart(line);
+            Optional<LineStart> lineStart = findLineStart(line);
             if (!lineStart.isPresent()) {
                 // Not a line containing dependency info
                 return Optional.empty();
             }
 
-            final Optional<String> lineRemainder = lineStart.map(LineStart::getStartingIndex)
-                                                       .map(line::substring)
-                                                       .map(this::normalizeQuotes)
-                                                       .map(this::stripParentheses)
-                                                       .map(this::stripTrailingComment)
-                                                       .map(StringUtils::stripToNull);
+            Optional<String> lineRemainder = lineStart.map(LineStart::getStartingIndex)
+                .map(line::substring)
+                .map(this::normalizeQuotes)
+                .map(this::stripParentheses)
+                .map(this::stripTrailingComment)
+                .map(StringUtils::stripToNull);
 
-            final Optional<String> name = lineRemainder
-                                              .map(this::normalizeWeirdCharacters)
-                                              .map(this::extractName)
-                                              .map(this::stripFileExtension);
+            Optional<String> name = lineRemainder
+                .map(this::normalizeWeirdCharacters)
+                .map(this::extractName)
+                .map(this::stripFileExtension);
 
-            final Optional<String> version = lineRemainder.map(this::extractVersion);
+            Optional<String> version = lineRemainder.map(this::extractVersion);
 
-            final GemspecDependencyType gemspecDependencyType = lineStart.get().getGemspecDependencyType();
+            GemspecDependencyType gemspecDependencyType = lineStart.get().getGemspecDependencyType();
             if (name.isPresent() && version.isPresent()) {
                 return Optional.of(new GemspecDependency(name.get(), version.get(), gemspecDependencyType));
             } else if (name.isPresent()) {
@@ -60,7 +53,7 @@ public class GemspecLineParser {
             } else {
                 throw new IntegrationException("Component name not found");
             }
-        } catch (final Exception e) {
+        } catch (Exception e) {
             logger.debug(String.format("Failed to extract name and version from line: %s", line));
             logger.debug(e.getMessage(), e);
         }
@@ -68,14 +61,14 @@ public class GemspecLineParser {
         return Optional.empty();
     }
 
-    private Optional<LineStart> findLineStart(final String line) {
+    private Optional<LineStart> findLineStart(String line) {
         LineStart lineStart = null;
 
-        for (final GemspecDependencyType dependencyType : GemspecDependencyType.values()) {
-            final int index = line.indexOf(dependencyType.getToken());
+        for (GemspecDependencyType dependencyType : GemspecDependencyType.values()) {
+            int index = line.indexOf(dependencyType.getToken());
 
             if (index >= 0) {
-                final int startingIndex = index + dependencyType.getToken().length();
+                int startingIndex = index + dependencyType.getToken().length();
                 lineStart = new LineStart(startingIndex, dependencyType);
                 break;
             }
@@ -85,16 +78,16 @@ public class GemspecLineParser {
     }
 
     // Example: gem.add_dependency('fakegem', '>= 1.0.0')
-    private String stripParentheses(final String line) {
+    private String stripParentheses(String line) {
         return line.replace("(", " ").replace(")", " ");
     }
 
-    private String normalizeQuotes(final String line) {
+    private String normalizeQuotes(String line) {
         return line.replace("\"", QUOTE_TOKEN);
     }
 
     // %q<fakegem>, '>= 1.0.0'
-    private String normalizeWeirdCharacters(final String line) {
+    private String normalizeWeirdCharacters(String line) {
         String normalized = line.replace("%q<", QUOTE_TOKEN);
         if (!line.equals(normalized)) {
             normalized = normalized.replaceFirst(">", QUOTE_TOKEN);
@@ -104,8 +97,8 @@ public class GemspecLineParser {
     }
 
     // Example: gem.add_dependency 'fakegem', '>= 1.0.0' # I am an inline comment
-    private String stripTrailingComment(final String line) {
-        final int commentIndex = line.indexOf(COMMENT_START_TOKEN);
+    private String stripTrailingComment(String line) {
+        int commentIndex = line.indexOf(COMMENT_START_TOKEN);
         if (commentIndex < 0) {
             return line;
         }
@@ -113,48 +106,48 @@ public class GemspecLineParser {
     }
 
     // Example: fakegem.rb -> fakegem
-    private String stripFileExtension(final String name) {
-        final int extensionIndex = name.lastIndexOf('.');
+    private String stripFileExtension(String name) {
+        int extensionIndex = name.lastIndexOf('.');
         if (extensionIndex < 0) {
             return name;
         }
         return name.substring(0, extensionIndex);
     }
 
-    private String extractName(final String line) {
-        final int openQuoteIndex = line.indexOf(QUOTE_TOKEN);
+    private String extractName(String line) {
+        int openQuoteIndex = line.indexOf(QUOTE_TOKEN);
         if (openQuoteIndex < 0) {
             return "";
         }
-        final int closeQuoteIndex = line.indexOf(QUOTE_TOKEN, openQuoteIndex + 1);
+        int closeQuoteIndex = line.indexOf(QUOTE_TOKEN, openQuoteIndex + 1);
         if (closeQuoteIndex < 0) {
             return "";
         }
-        final String name = line.substring(openQuoteIndex + 1, closeQuoteIndex);
+        String name = line.substring(openQuoteIndex + 1, closeQuoteIndex);
 
         return StringUtils.stripToNull(name);
     }
 
-    private String extractVersion(final String line) {
+    private String extractVersion(String line) {
         if (!line.contains(",")) {
             return null;
         }
 
-        final String versionText = line.substring(line.indexOf(','));
-        final String[] versionSegments = versionText.replace("[", "").replace("]", "").split(",");
+        String versionText = line.substring(line.indexOf(','));
+        String[] versionSegments = versionText.replace("[", "").replace("]", "").split(",");
 
         return Arrays.stream(versionSegments)
-                   .map(segment -> segment.replace(QUOTE_TOKEN, ""))
-                   .map(StringUtils::stripToNull)
-                   .filter(StringUtils::isNotBlank)
-                   .collect(Collectors.joining(", "));
+            .map(segment -> segment.replace(QUOTE_TOKEN, ""))
+            .map(StringUtils::stripToNull)
+            .filter(StringUtils::isNotBlank)
+            .collect(Collectors.joining(", "));
     }
 
     private static class LineStart {
         private final int startingIndex;
         private final GemspecDependencyType gemspecDependencyType;
 
-        private LineStart(final int startingIndex, final GemspecDependencyType gemspecDependencyType) {
+        private LineStart(int startingIndex, GemspecDependencyType gemspecDependencyType) {
             this.startingIndex = startingIndex;
             this.gemspecDependencyType = gemspecDependencyType;
         }

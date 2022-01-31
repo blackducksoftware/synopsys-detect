@@ -1,14 +1,6 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.gradle.parsing;
 
 import java.util.Collections;
-import java.util.List;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
@@ -21,25 +13,28 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableFaile
 import com.synopsys.integration.detectable.detectable.inspector.ProjectInspectorResolver;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorExtractor;
+import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorOptions;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "C#", forge = "NuGet.org", requirementsMarkdown = "File: a project file with one of the following extensions: .csproj, .sln")
+@DetectableInfo(language = "various", forge = "Maven Central", requirementsMarkdown = "File: build.gradle")
 public class GradleProjectInspectorDetectable extends Detectable {
     public static final String BUILD_GRADLE_FILENAME = "build.gradle";
 
     private final FileFinder fileFinder;
     private final ProjectInspectorResolver projectInspectorResolver;
     private final ProjectInspectorExtractor projectInspectorExtractor;
+    private final ProjectInspectorOptions projectInspectorOptions;
 
     private ExecutableTarget inspector;
 
-    public GradleProjectInspectorDetectable(final DetectableEnvironment environment, FileFinder fileFinder, ProjectInspectorResolver projectInspectorResolver,
-        ProjectInspectorExtractor projectInspectorExtractor) {
+    public GradleProjectInspectorDetectable(DetectableEnvironment environment, FileFinder fileFinder, ProjectInspectorResolver projectInspectorResolver,
+        ProjectInspectorExtractor projectInspectorExtractor, ProjectInspectorOptions projectInspectorOptions) {
         super(environment);
         this.fileFinder = fileFinder;
         this.projectInspectorResolver = projectInspectorResolver;
         this.projectInspectorExtractor = projectInspectorExtractor;
+        this.projectInspectorOptions = projectInspectorOptions;
     }
 
     @Override
@@ -57,9 +52,8 @@ public class GradleProjectInspectorDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
-        List<String> arguments = Collections.emptyList();
-        return projectInspectorExtractor.extract(arguments, environment.getDirectory(), extractionEnvironment.getOutputDirectory(), inspector);
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
+        return projectInspectorExtractor.extract(projectInspectorOptions, Collections.emptyList(), environment.getDirectory(), extractionEnvironment.getOutputDirectory(), inspector);
     }
 
 }

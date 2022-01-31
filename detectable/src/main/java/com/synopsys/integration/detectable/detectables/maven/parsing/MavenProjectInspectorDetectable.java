@@ -1,14 +1,6 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.maven.parsing;
 
 import java.util.Collections;
-import java.util.List;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
@@ -22,10 +14,11 @@ import com.synopsys.integration.detectable.detectable.inspector.ProjectInspector
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PropertyInsufficientDetectableResult;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorExtractor;
+import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorOptions;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "C#", forge = "NuGet.org", requirementsMarkdown = "File: a project file with one of the following extensions: .csproj, .sln")
+@DetectableInfo(language = "various", forge = "Maven Central", requirementsMarkdown = "File: pom.xml.")
 public class MavenProjectInspectorDetectable extends Detectable {
     private static final String POM_XML_FILENAME = "pom.xml";
 
@@ -33,16 +26,18 @@ public class MavenProjectInspectorDetectable extends Detectable {
     private final ProjectInspectorResolver projectInspectorResolver;
     private final ProjectInspectorExtractor projectInspectorExtractor;
     private final MavenParseOptions mavenParseOptions;
+    private final ProjectInspectorOptions projectInspectorOptions;
 
     private ExecutableTarget inspector;
 
-    public MavenProjectInspectorDetectable(final DetectableEnvironment detectableEnvironment, final FileFinder fileFinder,
-        ProjectInspectorResolver projectInspectorResolver, ProjectInspectorExtractor projectInspectorExtractor, MavenParseOptions mavenParseOptions) {
+    public MavenProjectInspectorDetectable(DetectableEnvironment detectableEnvironment, FileFinder fileFinder,
+        ProjectInspectorResolver projectInspectorResolver, ProjectInspectorExtractor projectInspectorExtractor, MavenParseOptions mavenParseOptions, ProjectInspectorOptions projectInspectorOptions) {
         super(detectableEnvironment);
         this.fileFinder = fileFinder;
         this.projectInspectorResolver = projectInspectorResolver;
         this.projectInspectorExtractor = projectInspectorExtractor;
         this.mavenParseOptions = mavenParseOptions;
+        this.projectInspectorOptions = projectInspectorOptions;
     }
 
     @Override
@@ -64,9 +59,8 @@ public class MavenProjectInspectorDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
-        List<String> arguments = Collections.emptyList();
-        return projectInspectorExtractor.extract(arguments, environment.getDirectory(), extractionEnvironment.getOutputDirectory(), inspector);
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
+        return projectInspectorExtractor.extract(projectInspectorOptions, Collections.emptyList(), environment.getDirectory(), extractionEnvironment.getOutputDirectory(), inspector);
     }
 
 }

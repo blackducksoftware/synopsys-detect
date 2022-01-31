@@ -10,7 +10,7 @@ public class DetectJar {
     private final String java;
     private final String jar;
 
-    public DetectJar(final String java, final String jar) {
+    public DetectJar(String java, String jar) {
         this.java = java;
         this.jar = jar;
     }

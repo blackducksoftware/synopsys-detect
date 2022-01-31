@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.npm.cli;
 
 import java.io.File;
@@ -26,10 +19,10 @@ import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.npm.cli.parse.NpmCliParser;
-import com.synopsys.integration.detectable.detectables.npm.cli.parse.NpmDependencyTypeFilter;
-import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmParseResult;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.result.NpmPackagerResult;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import com.synopsys.integration.executable.ExecutableOutput;
 
 public class NpmCliExtractor {
@@ -40,14 +33,17 @@ public class NpmCliExtractor {
     private final DetectableExecutableRunner executableRunner;
     private final NpmCliParser npmCliParser;
     private final Gson gson;
+    private final ToolVersionLogger toolVersionLogger;
 
-    public NpmCliExtractor(DetectableExecutableRunner executableRunner, NpmCliParser npmCliParser, Gson gson) {
+    public NpmCliExtractor(DetectableExecutableRunner executableRunner, NpmCliParser npmCliParser, Gson gson, ToolVersionLogger toolVersionLogger) {
         this.executableRunner = executableRunner;
         this.npmCliParser = npmCliParser;
         this.gson = gson;
+        this.toolVersionLogger = toolVersionLogger;
     }
 
-    public Extraction extract(File directory, ExecutableTarget npmExe, @Nullable String npmArguments, boolean includeDevDependencies, boolean includePeerDependencies, File packageJsonFile) {
+    public Extraction extract(File directory, ExecutableTarget npmExe, @Nullable String npmArguments, File packageJsonFile) {
+        toolVersionLogger.log(directory, npmExe);
         PackageJson packageJson;
         try {
             packageJson = parsePackageJson(packageJsonFile);
@@ -78,8 +74,7 @@ public class NpmCliExtractor {
         } else if (StringUtils.isNotBlank(standardOutput)) {
             logger.debug("Parsing npm ls file.");
             logger.debug(standardOutput);
-            NpmDependencyTypeFilter npmDependencyTypeFilter = new NpmDependencyTypeFilter(packageJson.devDependencies.keySet(), packageJson.peerDependencies.keySet(), includeDevDependencies, includePeerDependencies);
-            NpmParseResult result = npmCliParser.generateCodeLocation(standardOutput, npmDependencyTypeFilter);
+            NpmPackagerResult result = npmCliParser.generateCodeLocation(standardOutput, packageJson);
             String projectName = result.getProjectName() != null ? result.getProjectName() : packageJson.name;
             String projectVersion = result.getProjectVersion() != null ? result.getProjectVersion() : packageJson.version;
             return new Extraction.Builder().success(result.getCodeLocation()).projectName(projectName).projectVersion(projectVersion).build();

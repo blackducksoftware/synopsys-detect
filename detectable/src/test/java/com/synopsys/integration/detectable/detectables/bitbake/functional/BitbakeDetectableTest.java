@@ -17,6 +17,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectableOptions;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
@@ -71,7 +72,7 @@ public class BitbakeDetectableTest extends DetectableFunctionalTest {
     public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
         return detectableFactory.createBitbakeDetectable(
             detectableEnvironment,
-            new BitbakeDetectableOptions("oe-init-build-env", new ArrayList<>(), Collections.singletonList("core-image-minimal"), 0, false),
+            new BitbakeDetectableOptions("oe-init-build-env", new ArrayList<>(), Collections.singletonList("core-image-minimal"), 0, false, EnumListFilter.excludeNone()),
             () -> ExecutableTarget.forCommand("bash")
         );
     }

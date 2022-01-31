@@ -1,5 +1,9 @@
 package com.synopsys.integration.detect.workflow.bdio.aggregation;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -9,8 +13,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import com.synopsys.integration.blackduck.bdio.model.dependency.ProjectDependency;
-import com.synopsys.integration.detect.workflow.bdio.aggregation.*;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -24,10 +26,9 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.SimpleBdioDocument;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.blackduck.bdio.model.dependency.ProjectDependency;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class BdioAggregationTest {
     private static Gson gson;

@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.cocoapods.model;
 
 import java.util.ArrayList;
@@ -20,12 +13,12 @@ public class Pod {
     public Pod() {
     }
 
-    public Pod(final String name) {
+    public Pod(String name) {
         this.name = name;
     }
 
     @JsonAnySetter
-    public void setDynamicProperty(final String name, final List<String> dependencies) {
+    public void setDynamicProperty(String name, List<String> dependencies) {
         this.name = name;
         this.dependencies = dependencies;
     }

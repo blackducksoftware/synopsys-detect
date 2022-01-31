@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.nameversion;
 
 import static java.util.Collections.emptyList;
@@ -43,8 +36,8 @@ public class DetectorNameVersionDecider {
     private NameVersionDecision decideProjectNameVersionFromDetector(List<DetectorProjectInfo> projectNamePossibilities, DetectorType preferredDetectorType) {
         if (preferredDetectorType != null) {
             List<DetectorProjectInfo> preferredPossibilities = projectNamePossibilities.stream()
-                                                                   .filter(info -> info.getDetectorType() == preferredDetectorType)
-                                                                   .collect(Collectors.toList());
+                .filter(info -> info.getDetectorType() == preferredDetectorType)
+                .collect(Collectors.toList());
             List<DetectorProjectInfo> lowestDepthPossibilities = projectNamesAtLowestDepth(preferredPossibilities);
             List<DetectorProjectInfo> uniqueDetectorsAtLowestDepth = filterUniqueDetectorsOnly(lowestDepthPossibilities);
 
@@ -71,8 +64,8 @@ public class DetectorNameVersionDecider {
 
     private NameVersionDecision decideProjectNameVersionArbitrarily(List<DetectorProjectInfo> allPossibilities) {
         List<DetectorProjectInfo> notGitPossibilities = allPossibilities.stream()
-                                                            .filter(info -> info.getDetectorType() != DetectorType.GIT)
-                                                            .collect(Collectors.toList());
+            .filter(info -> info.getDetectorType() != DetectorType.GIT)
+            .collect(Collectors.toList());
 
         List<DetectorProjectInfo> chosenPossibilities;
         if (notGitPossibilities.isEmpty()) {
@@ -84,13 +77,13 @@ public class DetectorNameVersionDecider {
         // Kotlin code grabbed the info with the lexicographically-first name
         Function<DetectorProjectInfo, String> getName = detectorProjectInfo -> detectorProjectInfo.getNameVersion().getName();
         DetectorProjectInfo chosen = chosenPossibilities.stream()
-                                         .sorted(Comparator.comparing(getName))
-                                         .collect(Collectors.toList()).get(0);
+            .sorted(Comparator.comparing(getName))
+            .collect(Collectors.toList()).get(0);
 
         if (chosen != null) {
             List<DetectorProjectInfo> otherOptions = chosenPossibilities.stream()
-                                                         .filter(info -> info.getDetectorType() != chosen.getDetectorType())
-                                                         .collect(Collectors.toList());
+                .filter(info -> info.getDetectorType() != chosen.getDetectorType())
+                .collect(Collectors.toList());
             return new ArbitraryNameVersionDecision(chosen.getNameVersion(), chosen, otherOptions);
         }
 
@@ -116,14 +109,14 @@ public class DetectorNameVersionDecider {
 
     private List<DetectorProjectInfo> projectNamesAtLowestDepth(List<DetectorProjectInfo> projectNamePossibilities) {
         List<DetectorProjectInfo> lowestDepthList = projectNamePossibilities.stream()
-                                                        .sorted(Comparator.comparing(DetectorProjectInfo::getDepth))
-                                                        .collect(Collectors.toList());
+            .sorted(Comparator.comparing(DetectorProjectInfo::getDepth))
+            .collect(Collectors.toList());
 
         if (!lowestDepthList.isEmpty()) {
             DetectorProjectInfo lowestDepth = lowestDepthList.get(0);
             List<DetectorProjectInfo> allLowest = projectNamePossibilities.stream()
-                                                      .filter(info -> info.getDepth() == lowestDepth.getDepth())
-                                                      .collect(Collectors.toList());
+                .filter(info -> info.getDepth() == lowestDepth.getDepth())
+                .collect(Collectors.toList());
             return allLowest;
         } else {
             return emptyList();

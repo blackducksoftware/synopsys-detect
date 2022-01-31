@@ -21,7 +21,7 @@ public class BatteryBdioAssert {
     private final String resourcePrefix;
     private final String testName;
 
-    public BatteryBdioAssert(final String testName, final String resourcePrefix) {
+    public BatteryBdioAssert(String testName, String resourcePrefix) {
         this.testName = testName;
         this.resourcePrefix = resourcePrefix;
     }

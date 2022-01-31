@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.swift.model;
 
 import java.util.ArrayList;
@@ -19,7 +12,7 @@ public class SwiftPackage {
         return name;
     }
 
-    public void setName(final String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -27,7 +20,7 @@ public class SwiftPackage {
         return version;
     }
 
-    public void setVersion(final String version) {
+    public void setVersion(String version) {
         this.version = version;
     }
 
@@ -35,7 +28,7 @@ public class SwiftPackage {
         return dependencies;
     }
 
-    public void setDependencies(final List<SwiftPackage> dependencies) {
+    public void setDependencies(List<SwiftPackage> dependencies) {
         this.dependencies = dependencies;
     }
 }

@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.lifecycle.boot;
 
 import java.io.IOException;
@@ -42,6 +35,8 @@ import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootFactory
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.run.singleton.BootSingletons;
+import com.synopsys.integration.detect.tool.cache.InstalledToolLocator;
+import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableOptions;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
@@ -91,8 +86,9 @@ public class DetectBootFactory {
     }
 
     public BootSingletons createRunDependencies(ProductRunData productRunData, PropertyConfiguration detectConfiguration, DetectableOptionFactory detectableOptionFactory, DetectConfigurationFactory detectConfigurationFactory,
-        DirectoryManager directoryManager, Configuration configuration) {
-        return new BootSingletons(productRunData, detectRunId, gson, detectInfo, fileFinder, eventSystem, createDetectorProfiler(), detectConfiguration, detectableOptionFactory, detectConfigurationFactory, directoryManager, configuration);
+        DirectoryManager directoryManager, Configuration configuration, InstalledToolManager installedToolManager, InstalledToolLocator installedToolLocator) {
+        return new BootSingletons(productRunData, detectRunId, gson, detectInfo, fileFinder, eventSystem, createDetectorProfiler(), detectConfiguration, detectableOptionFactory, detectConfigurationFactory, directoryManager, configuration,
+            installedToolManager, installedToolLocator);
     }
 
     public Configuration createFreemarkerConfiguration() {
@@ -121,7 +117,8 @@ public class DetectBootFactory {
         return new DiagnosticSystem(isDiagnosticExtended, detectConfiguration, detectRunId, detectInfo, directoryManager, eventSystem, maskedRawPropertyValues, propertyKeys);
     }
 
-    public AirGapCreator createAirGapCreator(ConnectionDetails connectionDetails, DetectExecutableOptions detectExecutableOptions, Configuration freemarkerConfiguration) {
+    public AirGapCreator createAirGapCreator(ConnectionDetails connectionDetails, DetectExecutableOptions detectExecutableOptions, Configuration freemarkerConfiguration, InstalledToolManager installedToolManager,
+        InstalledToolLocator installedToolLocator) {
         ConnectionFactory connectionFactory = new ConnectionFactory(connectionDetails);
         ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
         ArtifactoryZipInstaller artifactoryZipInstaller = new ArtifactoryZipInstaller(artifactResolver);
@@ -140,7 +137,7 @@ public class DetectBootFactory {
         ProjectInspectorAirGapCreator projectInspectorAirGapCreator = new ProjectInspectorAirGapCreator(projectInspectorInstaller);
 
         DockerAirGapCreator dockerAirGapCreator = new DockerAirGapCreator(new DockerInspectorInstaller(artifactResolver));
-        DetectFontAirGapCreator detectFontAirGapCreator = new DetectFontAirGapCreator(new DetectFontInstaller(artifactResolver));
+        DetectFontAirGapCreator detectFontAirGapCreator = new DetectFontAirGapCreator(new DetectFontInstaller(artifactResolver, installedToolManager, installedToolLocator));
 
         return new AirGapCreator(new AirGapPathFinder(), eventSystem, gradleAirGapCreator, nugetAirGapCreator, dockerAirGapCreator, detectFontAirGapCreator, projectInspectorAirGapCreator);
     }
@@ -155,7 +152,7 @@ public class DetectBootFactory {
 
     public DetectConfigurationBootManager createDetectConfigurationBootManager(PropertyConfiguration detectConfiguration) {
         PropertyConfigurationHelpContext detectConfigurationReporter = new PropertyConfigurationHelpContext(detectConfiguration);
-        return new DetectConfigurationBootManager(eventSystem, detectInfo, detectConfigurationReporter);
+        return new DetectConfigurationBootManager(eventSystem, detectConfigurationReporter);
     }
 
     private DetectorProfiler createDetectorProfiler() {

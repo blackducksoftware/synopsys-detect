@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.lifecycle.run.singleton;
 
 import com.google.gson.Gson;
@@ -14,6 +7,8 @@ import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
+import com.synopsys.integration.detect.tool.cache.InstalledToolLocator;
+import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
 import com.synopsys.integration.detect.workflow.DetectRunId;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -40,11 +35,14 @@ public class BootSingletons {
     private final DirectoryManager directoryManager;
     private final Configuration configuration;
 
-    public BootSingletons(final ProductRunData productRunData, final DetectRunId detectRunId, final Gson gson, final DetectInfo detectInfo, final FileFinder fileFinder, final EventSystem eventSystem,
-        final DetectorProfiler detectorProfiler,
-        final PropertyConfiguration detectConfiguration, final DetectableOptionFactory detectableOptionFactory, final DetectConfigurationFactory detectConfigurationFactory,
-        final DirectoryManager directoryManager,
-        final Configuration configuration) {
+    private final InstalledToolManager installedToolManager;
+    private final InstalledToolLocator installedToolLocator;
+
+    public BootSingletons(ProductRunData productRunData, DetectRunId detectRunId, Gson gson, DetectInfo detectInfo, FileFinder fileFinder, EventSystem eventSystem,
+        DetectorProfiler detectorProfiler,
+        PropertyConfiguration detectConfiguration, DetectableOptionFactory detectableOptionFactory, DetectConfigurationFactory detectConfigurationFactory,
+        DirectoryManager directoryManager,
+        Configuration configuration, InstalledToolManager installedToolManager, InstalledToolLocator installedToolLocator) {
         this.productRunData = productRunData;
         this.detectRunId = detectRunId;
         this.gson = gson;
@@ -57,6 +55,8 @@ public class BootSingletons {
         this.detectableOptionFactory = detectableOptionFactory;
         this.directoryManager = directoryManager;
         this.configuration = configuration;
+        this.installedToolManager = installedToolManager;
+        this.installedToolLocator = installedToolLocator;
     }
 
     public ProductRunData getProductRunData() {
@@ -105,5 +105,13 @@ public class BootSingletons {
 
     public DetectableOptionFactory getDetectableOptionFactory() {
         return detectableOptionFactory;
+    }
+
+    public InstalledToolManager getInstalledToolManager() {
+        return installedToolManager;
+    }
+
+    public InstalledToolLocator getInstalledToolLocator() {
+        return installedToolLocator;
     }
 }
