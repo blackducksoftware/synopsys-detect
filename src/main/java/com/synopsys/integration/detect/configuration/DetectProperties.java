@@ -1759,8 +1759,8 @@ public class DetectProperties {
         return String.format(
             "Set this value to indicate which %s Detect should exclude from the BOM. Currently if this property is not set, the default value is driven by the default values of these properties: %s. In version 8.0.0, all %s will be reported by default.",
             exclusionTypePlural,
-            exclusionTypePlural,
-            defaults
+            defaults,
+            exclusionTypePlural
         );
     }
 
