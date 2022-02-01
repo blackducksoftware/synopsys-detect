@@ -12,7 +12,6 @@ import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeEnvironment;
-import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeRecipe;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeEnvironmentParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
 import com.synopsys.integration.detectable.util.ToolVersionLogger;
@@ -96,7 +95,7 @@ public class BitbakeSession {
         }
     }
 
-    public List<BitbakeRecipe> executeBitbakeForRecipeLayerCatalog() throws IOException, ExecutableFailedException {
+    public ShowRecipesResults executeBitbakeForRecipeLayerCatalog() throws IOException, ExecutableFailedException {
         ExecutableOutput executableOutput = runBitbake(BITBAKE_LAYERS_SHOW_RECIPES_COMMAND);
         return bitbakeRecipesParser.parseShowRecipes(executableOutput.getStandardOutputAsList());
     }
