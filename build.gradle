@@ -3,7 +3,7 @@ import com.synopsys.integration.detect.verification.VerifyBlackDuckDetectTask
 
 buildscript {
     ext {
-        springBootVersion = '2.5.5'
+        springBootVersion = '2.6.3'
         blackDuckCommonVersion = '60.0.0'
         junitPlatformCustomTestTags = 'docker, battery'
         javaTargetCompatibility = 8
@@ -12,6 +12,9 @@ buildscript {
 
     apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-repositories.gradle', to: buildscript
 
+    repositories {
+        maven { url 'https://repo.spring.io/release' }
+    }
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
     }
@@ -21,7 +24,9 @@ buildscript {
 
 plugins {
     id 'application'
-    id 'org.springframework.experimental.aot' version '0.10.4'
+    id 'org.springframework.boot' version '2.6.3'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'org.springframework.experimental.aot' version '0.11.2'
     id 'org.graalvm.buildtools.native' version "0.9.5"
 }
 
@@ -125,6 +130,7 @@ dependencies {
 
     implementation 'org.apache.maven.shared:maven-invoker:3.0.0'
     implementation "org.springframework.boot:spring-boot"
+    implementation "org.springframework.boot:spring-boot-starter-web"
     implementation 'org.yaml:snakeyaml:1.27'
     implementation 'org.zeroturnaround:zt-zip:1.13'
     implementation 'org.freemarker:freemarker:2.3.26-incubating'
