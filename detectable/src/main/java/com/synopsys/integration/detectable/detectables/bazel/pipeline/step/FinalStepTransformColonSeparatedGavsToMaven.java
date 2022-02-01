@@ -9,18 +9,18 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 
-public class FinalStepColonSeparatedGavs implements FinalStep {
+public class FinalStepTransformColonSeparatedGavsToMaven implements FinalStep {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExternalIdFactory externalIdFactory;
 
-    public FinalStepColonSeparatedGavs(ExternalIdFactory externalIdFactory) {
+    public FinalStepTransformColonSeparatedGavsToMaven(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 
     @Override
-    public List<Dependency> finish(List<String> gavStrings) throws IntegrationException {
+    public List<Dependency> finish(List<String> gavStrings) throws DetectableException {
         List<Dependency> dependencies = new ArrayList<>();
         for (String gavString : gavStrings) {
             Dependency artifactDependency = gavStringToDependency(gavString, ":");
@@ -39,7 +39,7 @@ public class FinalStepColonSeparatedGavs implements FinalStep {
         String artifact = gavParts[1];
         String version = gavParts[2];
 
-        logger.debug(String.format("Adding dependency from external id: %s:%s:%s", group, artifact, version));
+        logger.debug("Adding dependency from external id: {}:{}:{}", group, artifact, version);
         ExternalId externalId = externalIdFactory.createMavenExternalId(group, artifact, version);
         return new Dependency(artifact, version, externalId);
     }

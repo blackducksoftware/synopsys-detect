@@ -43,7 +43,12 @@ import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspe
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
+import com.synopsys.integration.detectable.detectables.bazel.BazelProjectNameGenerator;
+import com.synopsys.integration.detectable.detectables.bazel.BazelWorkspaceFileParser;
+import com.synopsys.integration.detectable.detectables.bazel.DependencyTransformer;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.WorkspaceRuleChooser;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelVariableSubstitutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.HaskellCabalLibraryJsonProtoParser;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeExtractor;
@@ -295,7 +300,7 @@ public class DetectableFactory {
     }
 
     public BazelDetectable createBazelDetectable(DetectableEnvironment environment, BazelDetectableOptions bazelDetectableOptions, BazelResolver bazelResolver) {
-        return new BazelDetectable(environment, fileFinder, bazelExtractor(), bazelResolver, bazelDetectableOptions);
+        return new BazelDetectable(environment, fileFinder, bazelExtractor(bazelDetectableOptions), bazelResolver, bazelDetectableOptions.getTargetName().orElse(null));
     }
 
     public BitbakeDetectable createBitbakeDetectable(DetectableEnvironment environment, BitbakeDetectableOptions bitbakeDetectableOptions, BashResolver bashResolver) {
@@ -540,9 +545,16 @@ public class DetectableFactory {
 
     //#region Utility
 
-    private BazelExtractor bazelExtractor() {
+    private BazelExtractor bazelExtractor(BazelDetectableOptions bazelDetectableOptions) {
         WorkspaceRuleChooser workspaceRuleChooser = new WorkspaceRuleChooser();
-        return new BazelExtractor(executableRunner, externalIdFactory, workspaceRuleChooser, toolVersionLogger);
+        BazelWorkspaceFileParser bazelWorkspaceFileParser = new BazelWorkspaceFileParser();
+        HaskellCabalLibraryJsonProtoParser haskellCabalLibraryJsonProtoParser = new HaskellCabalLibraryJsonProtoParser(gson);
+        BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor(bazelDetectableOptions.getTargetName().orElse(null), bazelDetectableOptions.getBazelCqueryAdditionalOptions());
+        DependencyTransformer dependencyTransformer = new DependencyTransformer();
+        BazelProjectNameGenerator bazelProjectNameGenerator = new BazelProjectNameGenerator();
+        return new BazelExtractor(executableRunner, externalIdFactory, bazelWorkspaceFileParser, workspaceRuleChooser, toolVersionLogger, haskellCabalLibraryJsonProtoParser,
+            bazelDetectableOptions.getTargetName().orElse(null), bazelDetectableOptions.getBazelDependencyRules(), bazelVariableSubstitutor, dependencyTransformer,
+            bazelProjectNameGenerator);
     }
 
     private FilePathGenerator filePathGenerator() {

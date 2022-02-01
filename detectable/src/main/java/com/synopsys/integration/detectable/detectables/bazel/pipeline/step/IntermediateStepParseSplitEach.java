@@ -7,11 +7,11 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class IntermediateStepSplitEach implements IntermediateStep {
+public class IntermediateStepParseSplitEach implements IntermediateStep {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final String regex;
 
-    public IntermediateStepSplitEach(String regex) {
+    public IntermediateStepParseSplitEach(String regex) {
         this.regex = regex;
     }
 
@@ -22,7 +22,7 @@ public class IntermediateStepSplitEach implements IntermediateStep {
             String[] splitLines = inputItem.split(regex);
             results.addAll(Arrays.asList(splitLines));
         }
-        logger.trace(String.format("SplitEach returning %d lines", results.size()));
+        logger.trace("SplitEach returning {} lines", results.size());
         return results;
     }
 }
