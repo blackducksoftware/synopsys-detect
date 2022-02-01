@@ -1,5 +1,7 @@
 package com.synopsys.integration.detectable.detectables.pear.unit;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -59,11 +61,6 @@ class PearListParserTest {
             "Console_Getopt       "
         );
 
-        try {
-            pearListParser.parse(missingInfoLines);
-            Assertions.fail("Should have thrown an exception");
-        } catch (IntegrationException ignore) {
-
-        }
+        assertThrows(IntegrationException.class, () -> pearListParser.parse(missingInfoLines));
     }
 }

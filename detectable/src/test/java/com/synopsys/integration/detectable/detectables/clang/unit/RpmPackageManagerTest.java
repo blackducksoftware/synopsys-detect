@@ -2,8 +2,8 @@ package com.synopsys.integration.detectable.detectables.clang.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.util.List;
@@ -61,12 +61,9 @@ public class RpmPackageManagerTest {
         String pkgMgrOwnedByOutput = sb.toString();
 
         RpmPackageManagerResolver pkgMgr = new RpmPackageManagerResolver(new Gson());
-        try {
-            pkgMgr.resolvePackages(new ClangPackageManagerInfoFactory().rpm(), null, null, pkgMgrOwnedByOutput);
-            fail("Expected NotOwnedByAnyPkgException");
-        } catch (NotOwnedByAnyPkgException e) {
-            // expected
-        }
+        assertThrows(NotOwnedByAnyPkgException.class, () ->
+            pkgMgr.resolvePackages(new ClangPackageManagerInfoFactory().rpm(), null, null, pkgMgrOwnedByOutput)
+        );
     }
 
     @Test

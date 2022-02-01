@@ -36,19 +36,7 @@ public class CarthageDetectable extends Detectable {
     @Override
     public DetectableResult applicable() {
         Requirements requirements = new Requirements(fileFinder, environment);
-
-        cartfile = fileFinder.findFile(environment.getDirectory(), CARTFILE_FILENAME);
-        cartfileResolved = fileFinder.findFile(environment.getDirectory(), CARTFILE_RESOLVED_FILENAME);
-
-        if (cartfile == null && cartfileResolved == null) {
-            return new FilesNotFoundDetectableResult(CARTFILE_FILENAME, CARTFILE_RESOLVED_FILENAME);
-        }
-        if (cartfile != null) {
-            requirements.explainFile(cartfile);
-        }
-        if (cartfileResolved != null) {
-            requirements.explainFile(cartfileResolved);
-        }
+        requirements.eitherFile(CARTFILE_FILENAME, CARTFILE_RESOLVED_FILENAME, foundCartfile -> cartfile = foundCartfile, foundCartfileResolved -> cartfileResolved = foundCartfileResolved);
         return requirements.result();
     }
 

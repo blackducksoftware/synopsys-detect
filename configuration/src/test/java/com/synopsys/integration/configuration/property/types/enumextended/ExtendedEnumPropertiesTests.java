@@ -13,9 +13,8 @@ import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.configuration.config.InvalidPropertyException;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.PropertyTestHelpUtil;
-import com.synopsys.integration.configuration.property.base.NullableProperty;
-import com.synopsys.integration.configuration.property.base.ValuedListProperty;
-import com.synopsys.integration.configuration.property.base.ValuedProperty;
+import com.synopsys.integration.configuration.property.base.NullableAlikeProperty;
+import com.synopsys.integration.configuration.property.base.ValuedAlikeProperty;
 
 // Simple glue sanity tests. Theoretically if Config is well tested and Parser is well tested, these will pass so they are not exhaustive.
 public class ExtendedEnumPropertiesTests {
@@ -31,7 +30,7 @@ public class ExtendedEnumPropertiesTests {
 
     @Test
     public void testNullable() throws InvalidPropertyException {
-        NullableProperty<ExtendedEnumValue<ExampleExtension, Example>> property = new NullableExtendedEnumProperty<>("enum.nullable", ExampleExtension.class, Example.class);
+        NullableAlikeProperty<ExtendedEnumValue<ExampleExtension, Example>> property = new NullableExtendedEnumProperty<>("enum.nullable", ExampleExtension.class, Example.class);
         PropertyConfiguration config = configOf(Pair.of("enum.nullable", "NONE"));
         Optional<ExtendedEnumValue<ExampleExtension, Example>> value = config.getValue(property);
         Assertions.assertEquals(Optional.of(ExtendedEnumValue.ofExtendedValue(ExampleExtension.NONE)), value);
@@ -41,7 +40,7 @@ public class ExtendedEnumPropertiesTests {
 
     @Test
     public void testValued() throws InvalidPropertyException {
-        ValuedProperty<ExtendedEnumValue<ExampleExtension, Example>> property = new ExtendedEnumProperty<>("enum.nullable", ExtendedEnumValue.ofExtendedValue(ExampleExtension.NONE), ExampleExtension.class, Example.class);
+        ValuedAlikeProperty<ExtendedEnumValue<ExampleExtension, Example>> property = new ExtendedEnumProperty<>("enum.nullable", ExtendedEnumValue.ofExtendedValue(ExampleExtension.NONE), ExampleExtension.class, Example.class);
         PropertyConfiguration config = configOf(Pair.of("enum.nullable", "ANOTHER"));
         ExtendedEnumValue<ExampleExtension, Example> value = config.getValue(property);
         Assertions.assertEquals(ExtendedEnumValue.ofBaseValue(Example.ANOTHER), value);
@@ -52,7 +51,7 @@ public class ExtendedEnumPropertiesTests {
     @Test
     public void testList() throws InvalidPropertyException {
         List<ExtendedEnumValue<ExampleExtension, Example>> defaultValue = Bds.listOf(ExtendedEnumValue.ofBaseValue(Example.THING), ExtendedEnumValue.ofExtendedValue(ExampleExtension.NONE));
-        ValuedListProperty<ExtendedEnumValue<ExampleExtension, Example>> property = new ExtendedEnumListProperty<>("enum.nullable", defaultValue, ExampleExtension.class, Example.class);
+        ExtendedEnumListProperty<ExampleExtension, Example> property = new ExtendedEnumListProperty<>("enum.nullable", defaultValue, ExampleExtension.class, Example.class);
         PropertyConfiguration config = configOf(Pair.of("enum.nullable", "THIRD,NONE"));
         List<ExtendedEnumValue<ExampleExtension, Example>> value = config.getValue(property);
         Assertions.assertEquals(Bds.listOf(ExtendedEnumValue.ofBaseValue(Example.THIRD), ExtendedEnumValue.ofExtendedValue(ExampleExtension.NONE)), value);

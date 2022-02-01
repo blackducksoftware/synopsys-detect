@@ -47,16 +47,19 @@ import com.synopsys.integration.detectable.detectables.bazel.pipeline.WorkspaceR
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeExtractor;
-import com.synopsys.integration.detectable.detectables.bitbake.BitbakeRecipesToLayerMapConverter;
 import com.synopsys.integration.detectable.detectables.bitbake.BuildFileFinder;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeEnvironmentParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
+import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphNodeLabelParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParserTransformer;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.LicenseManifestParser;
 import com.synopsys.integration.detectable.detectables.cargo.CargoDetectable;
 import com.synopsys.integration.detectable.detectables.cargo.CargoExtractor;
-import com.synopsys.integration.detectable.detectables.cargo.parse.CargoLockParser;
+import com.synopsys.integration.detectable.detectables.cargo.parse.CargoDependencyLineParser;
+import com.synopsys.integration.detectable.detectables.cargo.transform.CargoLockPackageDataTransformer;
+import com.synopsys.integration.detectable.detectables.cargo.transform.CargoLockPackageTransformer;
+import com.synopsys.integration.detectable.detectables.cargo.transform.CargoTomlDataTransformer;
 import com.synopsys.integration.detectable.detectables.carthage.CartfileResolvedDependencyDeclarationParser;
 import com.synopsys.integration.detectable.detectables.carthage.CarthageDetectable;
 import com.synopsys.integration.detectable.detectables.carthage.CarthageExtractor;
@@ -298,10 +301,9 @@ public class DetectableFactory {
     public BitbakeDetectable createBitbakeDetectable(DetectableEnvironment environment, BitbakeDetectableOptions bitbakeDetectableOptions, BashResolver bashResolver) {
         BitbakeExtractor bitbakeExtractor = new BitbakeExtractor(
             executableRunner,
-            new GraphParserTransformer(),
+            new GraphParserTransformer(new GraphNodeLabelParser()),
             new BitbakeGraphTransformer(externalIdFactory, bitbakeDetectableOptions.getDependencyTypeFilter()),
             new BitbakeRecipesParser(),
-            new BitbakeRecipesToLayerMapConverter(),
             toolVersionLogger,
             new BuildFileFinder(fileFinder),
             new LicenseManifestParser(),
@@ -311,7 +313,12 @@ public class DetectableFactory {
     }
 
     public CargoDetectable createCargoDetectable(DetectableEnvironment environment) {
-        return new CargoDetectable(environment, fileFinder, cargoExtractor());
+        CargoDependencyLineParser cargoDependencyLineParser = new CargoDependencyLineParser();
+        CargoLockPackageDataTransformer cargoLockPackageDataTransformer = new CargoLockPackageDataTransformer(cargoDependencyLineParser);
+        CargoTomlDataTransformer cargoTomlDataTransformer = new CargoTomlDataTransformer();
+        CargoLockPackageTransformer cargoLockPackageTransformer = new CargoLockPackageTransformer();
+        CargoExtractor cargoExtractor = new CargoExtractor(cargoLockPackageDataTransformer, cargoTomlDataTransformer, cargoLockPackageTransformer);
+        return new CargoDetectable(environment, fileFinder, cargoExtractor);
     }
 
     public CarthageDetectable createCarthageDetectable(DetectableEnvironment environment) {
@@ -548,10 +555,6 @@ public class DetectableFactory {
 
     private DependencyFileDetailGenerator dependencyFileDetailGenerator() {
         return new DependencyFileDetailGenerator(filePathGenerator());
-    }
-
-    private CargoExtractor cargoExtractor() {
-        return new CargoExtractor(new CargoLockParser());
     }
 
     private CarthageExtractor carthageExtractor() {

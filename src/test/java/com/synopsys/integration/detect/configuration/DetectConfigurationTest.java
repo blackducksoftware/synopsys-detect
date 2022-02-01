@@ -39,7 +39,8 @@ public class DetectConfigurationTest {
         List<PropertySource> propertySources = new ArrayList<>();
         propertySources.add(new MapPropertySource("test", values));
         PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);
-        DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(propertyConfiguration, new SimplePathResolver(), new Gson());
+        DetectPropertyConfiguration detectPropertyConfiguration = new DetectPropertyConfiguration(propertyConfiguration, new SimplePathResolver());
+        DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectPropertyConfiguration, new Gson());
         BdioOptions bdioOptions = detectConfigurationFactory.createBdioOptions();
         Assertions.assertFalse(bdioOptions.isBdio2Enabled());
     }

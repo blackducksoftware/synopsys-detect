@@ -1,11 +1,16 @@
 package com.synopsys.integration.detectable.detectables.bitbake.parse;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.detectable.detectables.bitbake.ShowRecipesResults;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeRecipe;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
@@ -17,8 +22,9 @@ public class BitbakeRecipesParser {
      * @param showRecipeLines is the executable output.
      * @return Recipe names mapped to a recipe's the layer names.
      */
-    public List<BitbakeRecipe> parseShowRecipes(List<String> showRecipeLines) {
-        List<BitbakeRecipe> bitbakeRecipes = new ArrayList<>();
+    public ShowRecipesResults parseShowRecipes(List<String> showRecipeLines) {
+        Map<String, List<String>> bitbakeRecipes = new HashMap<>();
+        Set<String> layerNames = new HashSet<>();
 
         boolean started = false;
         BitbakeRecipe currentRecipe = null;
@@ -35,17 +41,20 @@ public class BitbakeRecipesParser {
         }
 
         if (currentRecipe != null) {
-            bitbakeRecipes.add(currentRecipe);
+            bitbakeRecipes.put(currentRecipe.getName(), currentRecipe.getLayerNames());
+            if (currentRecipe.getLayerNames() != null) {
+                layerNames.addAll(currentRecipe.getLayerNames());
+            }
         }
 
-        return bitbakeRecipes;
+        return new ShowRecipesResults(layerNames, bitbakeRecipes);
     }
 
-    private BitbakeRecipe parseLine(String line, BitbakeRecipe currentRecipe, List<BitbakeRecipe> bitbakeRecipes) {
+    private BitbakeRecipe parseLine(String line, BitbakeRecipe currentRecipe, Map<String, List<String>> bitbakeRecipes) {
         if (line.contains(":") && !line.startsWith("  ")) {
             // Parse beginning of new component
             if (currentRecipe != null) {
-                bitbakeRecipes.add(currentRecipe);
+                bitbakeRecipes.put(currentRecipe.getName(), currentRecipe.getLayerNames());
             }
 
             String recipeName = line.replace(":", "").trim();
