@@ -125,7 +125,7 @@ import com.synopsys.integration.detect.workflow.blackduck.project.AddTagsToProje
 import com.synopsys.integration.detect.workflow.blackduck.project.AddUserGroupsToProjectOperation;
 import com.synopsys.integration.detect.workflow.blackduck.project.FindCloneByLatestOperation;
 import com.synopsys.integration.detect.workflow.blackduck.project.FindCloneByNameOperation;
-import com.synopsys.integration.detect.workflow.blackduck.project.FindLicenseUrlsOperation;
+import com.synopsys.integration.detect.workflow.blackduck.project.FindLicenseUrlOperation;
 import com.synopsys.integration.detect.workflow.blackduck.project.FindProjectGroupOperation;
 import com.synopsys.integration.detect.workflow.blackduck.project.MapToParentOperation;
 import com.synopsys.integration.detect.workflow.blackduck.project.SetApplicationIdOperation;
@@ -138,8 +138,8 @@ import com.synopsys.integration.detect.workflow.blackduck.project.options.FindCl
 import com.synopsys.integration.detect.workflow.blackduck.project.options.ParentProjectMapOptions;
 import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectGroupFindResult;
 import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectGroupOptions;
+import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectVersionLicenseFindResult;
 import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectVersionLicenseOptions;
-import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectVersionLicensesFindResult;
 import com.synopsys.integration.detect.workflow.blackduck.report.service.ReportService;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationResult;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationEventPublisher;
@@ -650,7 +650,7 @@ public class OperationFactory { //TODO: OperationRunner
         });
     }
 
-    public ProjectVersionWrapper syncProjectVersion(NameVersion projectNameVersion, ProjectGroupFindResult projectGroupFindResult, CloneFindResult cloneFindResult, ProjectVersionLicensesFindResult projectVersionLicensesFindResult,
+    public ProjectVersionWrapper syncProjectVersion(NameVersion projectNameVersion, ProjectGroupFindResult projectGroupFindResult, CloneFindResult cloneFindResult, ProjectVersionLicenseFindResult projectVersionLicensesFindResult,
         BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
         return auditLog.namedInternal("Sync Project", () -> {
             return new SyncProjectOperation(blackDuckRunData.getBlackDuckServicesFactory().createProjectService())
@@ -756,10 +756,10 @@ public class OperationFactory { //TODO: OperationRunner
         });
     }
 
-    public List<String> findLicenseUrls(BlackDuckRunData blackDuckRunData, List<String> licenseNames) throws DetectUserFriendlyException {
+    public String findLicenseUrl(BlackDuckRunData blackDuckRunData, String licenseName) throws DetectUserFriendlyException {
         return auditLog.namedInternal("Find License Urls By Name", "LicenseUrlLookup", () -> {
-            return new FindLicenseUrlsOperation(blackDuckRunData.getBlackDuckServicesFactory().createLicenseService())
-                .findLicenseUrls(licenseNames);
+            return new FindLicenseUrlOperation(blackDuckRunData.getBlackDuckServicesFactory().createLicenseService())
+                .findLicenseUrl(licenseName);
         });
     }
 

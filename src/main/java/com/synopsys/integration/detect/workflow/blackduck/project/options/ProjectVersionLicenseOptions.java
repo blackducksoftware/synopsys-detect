@@ -1,15 +1,13 @@
 package com.synopsys.integration.detect.workflow.blackduck.project.options;
 
-import java.util.List;
-
 public class ProjectVersionLicenseOptions {
-    private List<String> licenseNames;
+    private final String licenseName;
 
-    public ProjectVersionLicenseOptions(final List<String> licenseNames) {
-        this.licenseNames = licenseNames;
+    public ProjectVersionLicenseOptions(String licenseName) {
+        this.licenseName = licenseName;
     }
 
-    public List<String> getLicenseNames() {
-        return licenseNames;
+    public String getLicenseName() {
+        return licenseName;
     }
 }
