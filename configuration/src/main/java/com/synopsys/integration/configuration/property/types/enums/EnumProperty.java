@@ -3,14 +3,13 @@ package com.synopsys.integration.configuration.property.types.enums;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.configuration.property.deprecation.DeprecatedValueInfo;
-import com.synopsys.integration.configuration.property.deprecation.DeprecatedValueUsage;
+import com.synopsys.integration.configuration.property.PropertyBuilder;
 import com.synopsys.integration.configuration.property.base.ValuedAlikeProperty;
+import com.synopsys.integration.configuration.property.deprecation.DeprecatedValueUsage;
 import com.synopsys.integration.configuration.util.EnumPropertyUtils;
 
 public class EnumProperty<E extends Enum<E>> extends ValuedAlikeProperty<E> {
@@ -20,6 +19,10 @@ public class EnumProperty<E extends Enum<E>> extends ValuedAlikeProperty<E> {
     public EnumProperty(@NotNull String key, @NotNull E defaultValue, @NotNull Class<E> enumClass) {
         super(key, new EnumValueParser<>(enumClass), defaultValue);
         this.enumClass = enumClass;
+    }
+
+    public static <E extends Enum<E>> PropertyBuilder<EnumProperty<E>> newBuilder(@NotNull String key, @NotNull E defaultValue, @NotNull Class<E> enumClass) {
+        return new PropertyBuilder<EnumProperty<E>>().setCreator(() -> new EnumProperty<>(key, defaultValue, enumClass));
     }
 
     @Nullable
@@ -58,6 +61,7 @@ public class EnumProperty<E extends Enum<E>> extends ValuedAlikeProperty<E> {
         addDeprecatedValueInfo(value.toString(), reason);
     }
 
+    @Override
     @NotNull
     public List<DeprecatedValueUsage> checkForDeprecatedValues(E value) {
         if (getPropertyDeprecationInfo() == null)

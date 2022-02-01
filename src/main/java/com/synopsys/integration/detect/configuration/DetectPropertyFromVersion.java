@@ -1,6 +1,8 @@
 package com.synopsys.integration.detect.configuration;
 
-public enum DetectPropertyFromVersion {
+import com.synopsys.integration.configuration.property.PropertyVersion;
+
+public enum DetectPropertyFromVersion implements PropertyVersion {
     VERSION_3_0_0("3.0.0"),
     VERSION_3_1_0("3.1.0"),
     VERSION_3_2_0("3.2.0"),
@@ -38,6 +40,7 @@ public enum DetectPropertyFromVersion {
         this.version = version;
     }
 
+    @Override
     public String getVersion() {
         return version;
     }

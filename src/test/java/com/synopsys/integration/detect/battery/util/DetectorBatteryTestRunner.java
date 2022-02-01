@@ -8,7 +8,6 @@ import java.util.Map;
 
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detect.configuration.properties.DetectProperty;
 
 public final class DetectorBatteryTestRunner extends BatteryTestRunner {
     private String toolsValue = "DETECTOR";
@@ -26,10 +25,6 @@ public final class DetectorBatteryTestRunner extends BatteryTestRunner {
         this.toolsValue = toolsValue;
     }
 
-    public void property(DetectProperty<?> property, String value) {
-        property(property.getKey(), value);
-    }
-
     public void property(Property property, String value) {
         property(property.getKey(), value);
     }
@@ -43,14 +38,14 @@ public final class DetectorBatteryTestRunner extends BatteryTestRunner {
         List<String> detectArguments = new ArrayList<>();
         Map<Property, String> properties = new HashMap<>();
 
-        properties.put(DetectProperties.DETECT_TOOLS.getProperty(), toolsValue);
-        properties.put(DetectProperties.BLACKDUCK_OFFLINE_MODE.getProperty(), "true");
-        properties.put(DetectProperties.DETECT_OUTPUT_PATH.getProperty(), batteryContext.getOutputDirectory().getCanonicalPath());
-        properties.put(DetectProperties.DETECT_BDIO_OUTPUT_PATH.getProperty(), batteryContext.getBdioDirectory().getCanonicalPath());
-        properties.put(DetectProperties.DETECT_CLEANUP.getProperty(), "false");
-        properties.put(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION.getProperty(), "INFO"); // Leave at INFO for Travis. Long logs cause build to fail.
-        properties.put(DetectProperties.DETECT_SOURCE_PATH.getProperty(), batteryContext.getSourceDirectory().getCanonicalPath());
-        properties.put(DetectProperties.DETECT_BDIO2_ENABLED.getProperty(), "false");
+        properties.put(DetectProperties.DETECT_TOOLS, toolsValue);
+        properties.put(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
+        properties.put(DetectProperties.DETECT_OUTPUT_PATH, batteryContext.getOutputDirectory().getCanonicalPath());
+        properties.put(DetectProperties.DETECT_BDIO_OUTPUT_PATH, batteryContext.getBdioDirectory().getCanonicalPath());
+        properties.put(DetectProperties.DETECT_CLEANUP, "false");
+        properties.put(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION, "INFO"); // Leave at INFO for Travis. Long logs cause build to fail.
+        properties.put(DetectProperties.DETECT_SOURCE_PATH, batteryContext.getSourceDirectory().getCanonicalPath());
+        properties.put(DetectProperties.DETECT_BDIO2_ENABLED, "false");
         for (Map.Entry<Property, String> entry : properties.entrySet()) {
             detectArguments.add("--" + entry.getKey().getKey() + "=" + entry.getValue());
         }

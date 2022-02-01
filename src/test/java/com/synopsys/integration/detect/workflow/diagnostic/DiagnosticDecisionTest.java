@@ -71,8 +71,8 @@ class DiagnosticDecisionTest {
 
     private PropertyConfiguration createPropertyConfiguration(boolean isDiagnostic, boolean isExtended) {
         HashMap<String, String> propertySourceMap = new HashMap<>();
-        propertySourceMap.put(DetectProperties.DETECT_DIAGNOSTIC.getProperty().getKey(), String.valueOf(isDiagnostic));
-        propertySourceMap.put(DetectProperties.DETECT_DIAGNOSTIC_EXTENDED.getProperty().getKey(), String.valueOf(isExtended));
+        propertySourceMap.put(DetectProperties.DETECT_DIAGNOSTIC.getKey(), String.valueOf(isDiagnostic));
+        propertySourceMap.put(DetectProperties.DETECT_DIAGNOSTIC_EXTENDED.getKey(), String.valueOf(isExtended));
         MapPropertySource mapPropertySource = new MapPropertySource(TEST_PROPERTY_SOURCE_NAME, propertySourceMap);
 
         return new PropertyConfiguration(Collections.singletonList(mapPropertySource));

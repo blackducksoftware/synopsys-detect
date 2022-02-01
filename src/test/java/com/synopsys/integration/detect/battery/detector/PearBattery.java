@@ -13,7 +13,7 @@ public class PearBattery {
         DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("pear-cli");
         test.sourceDirectoryNamed("linux-pear");
         test.sourceFileFromResource("package.xml");
-        test.executableFromResourceFiles(DetectProperties.DETECT_PEAR_PATH.getProperty(), "pear-list.xout", "pear-package.xout");
+        test.executableFromResourceFiles(DetectProperties.DETECT_PEAR_PATH, "pear-list.xout", "pear-package.xout");
         test.expectBdioResources();
         test.run();
     }

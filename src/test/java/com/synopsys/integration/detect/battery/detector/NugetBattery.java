@@ -13,7 +13,7 @@ public class NugetBattery {
         DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("nuget-dotnetcore");
         test.sourceDirectoryNamed("windows-nuget4");
         test.sourceFileNamed("example.sln");
-        test.executableThatCopiesFiles(DetectProperties.DETECT_DOTNET_PATH.getProperty(), "NUGET-0")
+        test.executableThatCopiesFiles(DetectProperties.DETECT_DOTNET_PATH, "NUGET-0")
             .onWindows(5, "")
             .onLinux(3, "--output_directory=");
         test.git("https://github.com/GaProgMan/dwCheckApi.git", "master");

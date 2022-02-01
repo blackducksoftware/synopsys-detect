@@ -83,7 +83,7 @@ public class DetectConfigurationBootManager {
         }
 
         issueMessages.forEach((key, messages) -> {
-            DetectIssue.publish(eventSystem, DetectIssueType.DEPRECATION, key, messages);
+            DetectIssue.publish(eventSystem, DetectIssueType.DEPRECATION, key, messages); //TODO: Publish new issue type specifically for deprecated values.
         });
 
         return new DeprecationResult(additionalNotes);

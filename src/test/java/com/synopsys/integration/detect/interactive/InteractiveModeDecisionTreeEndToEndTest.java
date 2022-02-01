@@ -36,10 +36,10 @@ import org.mockito.Mockito;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.common.util.Bds;
+import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.source.MapPropertySource;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detect.configuration.properties.DetectProperty;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.lifecycle.boot.product.BlackDuckConnectivityChecker;
 import com.synopsys.integration.util.OperatingSystemType;
@@ -257,7 +257,7 @@ public class InteractiveModeDecisionTreeEndToEndTest {
         );
     }
 
-    public void testTraverse(Map<String, String> callToResponse, Map<DetectProperty<?>, String> expectedProperties) {
+    public void testTraverse(Map<String, String> callToResponse, Map<Property, String> expectedProperties) {
         DetectInfo detectInfo = new DetectInfo("synopsys_detect", OperatingSystemType.LINUX);
         InteractiveModeDecisionTree decisionTree = new InteractiveModeDecisionTree(detectInfo, new BlackDuckConnectivityChecker(), new ArrayList<>(), new Gson());
 
@@ -293,8 +293,8 @@ public class InteractiveModeDecisionTreeEndToEndTest {
         return mockWriter;
     }
 
-    private void assertHasPropertyWithValue(MapPropertySource mapPropertySource, DetectProperty<?> detectProperty, String value) {
-        String detectPropertyKey = detectProperty.getProperty().getKey();
+    private void assertHasPropertyWithValue(MapPropertySource mapPropertySource, Property detectProperty, String value) {
+        String detectPropertyKey = detectProperty.getKey();
         assertTrue(mapPropertySource.hasKey(detectPropertyKey), "Actual properties were missing " + detectPropertyKey);
         assertEquals(mapPropertySource.getValue(detectPropertyKey), value);
     }
