@@ -15,7 +15,8 @@ public class TomlFileUtils {
         // Hiding constructor
     }
 
-    // TODO: We should have a good reason for not letting the library parse to model objects. This shouldn't be a utility. JM-01/2022
+    // We have a good reason https://doc.bccnsoft.com/docs/rust-1.36.0-docs-html/cargo/reference/config.html
+    // Cargo allows for keys that violate normal TOML spec. tomlj allows us to parse these files.
     public static TomlParseResult parseFile(File tomlFile) throws IOException {
         return Toml.parse(getFileAsString(tomlFile, Charset.defaultCharset()));
     }
