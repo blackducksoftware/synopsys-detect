@@ -1299,8 +1299,8 @@ public class DetectProperties {
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .build();
 
-    public static final NullableStringDetectProperty DETECT_PROJECT_VERSION_LICENSE =
-        NullableStringDetectProperty.newBuilder("detect.project.version.license")
+    public static final NullableStringProperty DETECT_PROJECT_VERSION_LICENSE =
+        NullableStringProperty.newBuilder("detect.project.version.license")
             .setInfo("Project Version License", DetectPropertyFromVersion.VERSION_7_11_0)
             .setHelp("An override for a Project Version's license.")
             .setExample("Apache License 2.0")
