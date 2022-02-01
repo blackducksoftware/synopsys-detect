@@ -30,8 +30,7 @@ ${option.detailedDescription!""}
 |Acceptable Values|Any|
 </#if>
 |Strict|${option.strictValues?then("Yes", "No")}|
-<#if option.example?has_content>|Example|<#noautoesc>`${option.example!""}`</#noautoesc>|</#if>
-<#if option.deprecatedValues?has_content>|Deprecated Values|<#list option.deprecatedValues as deprecatedValue> <p>${deprecatedValue.value}: ${deprecatedValue.reason}</p></#list>|</#if>
+<#if option.example?has_content>|Example|<#noautoesc>`${option.example!""}`</#noautoesc>|${'\n'}</#if><#if option.deprecatedValues?has_content>|Deprecated Values|<#list option.deprecatedValues as deprecatedValue> <p>${deprecatedValue.value}: ${deprecatedValue.reason}</p></#list>|</#if>
 </#list> 
 
 <#list advanced as option>
@@ -63,8 +62,7 @@ ${option.detailedDescription!""}
 |Acceptable Values|Any|
 </#if>
 |Strict|${option.strictValues?then("Yes", "No")}|
-<#if option.example?has_content>|Example|<#noautoesc>`${option.example!""}`</#noautoesc>|</#if>
-<#if option.deprecatedValues?has_content>|Deprecated Values|<#list option.deprecatedValues as deprecatedValue> <p>${deprecatedValue.value}: ${deprecatedValue.reason}</p></#list>|</#if>
+    <#if option.example?has_content>|Example|<#noautoesc>`${option.example!""}`</#noautoesc>|${'\n'}</#if><#if option.deprecatedValues?has_content>|Deprecated Values|<#list option.deprecatedValues as deprecatedValue> <p>${deprecatedValue.value}: ${deprecatedValue.reason}</p></#list>|</#if>
 </#list> 
 
 
@@ -99,6 +97,5 @@ ${option.detailedDescription!""}
 |Acceptable Values|Any|
 </#if>
 |Strict|${option.strictValues?then("Yes", "No")}|
-<#if option.example?has_content>|Example|<#noautoesc>`${option.example!""}`</#noautoesc>|</#if>
-<#if option.deprecatedValues?has_content>|Deprecated Values|<#list option.deprecatedValues as deprecatedValue> <p>${deprecatedValue.value}: ${deprecatedValue.reason}</p></#list>|</#if>
+    <#if option.example?has_content>|Example|<#noautoesc>`${option.example!""}`</#noautoesc>|${'\n'}</#if><#if option.deprecatedValues?has_content>|Deprecated Values|<#list option.deprecatedValues as deprecatedValue> <p>${deprecatedValue.value}: ${deprecatedValue.reason}</p></#list>|</#if>
 </#list> 
