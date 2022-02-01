@@ -89,7 +89,7 @@ public class DetectDetectableFactory {
     }
 
     public BazelDetectable createBazelDetectable(DetectableEnvironment environment) {
-        return detectableFactory.createBazelDetectable(environment, detectableOptionFactory.createBazelDetectableOptions(), detectExecutableResolver, new BazelProjectNameGenerator());
+        return detectableFactory.createBazelDetectable(environment, detectableOptionFactory.createBazelDetectableOptions(), detectExecutableResolver);
     }
 
     public BitbakeDetectable createBitbakeDetectable(DetectableEnvironment environment) {

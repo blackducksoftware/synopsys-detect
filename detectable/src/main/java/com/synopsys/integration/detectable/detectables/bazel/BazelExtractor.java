@@ -23,7 +23,6 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipeline;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipelines;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.WorkspaceRuleChooser;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelCommandExecutor;
@@ -44,6 +43,7 @@ public class BazelExtractor {
     private final Set<WorkspaceRule> providedDependencyRuleTypes;
     private final BazelVariableSubstitutor bazelVariableSubstitutor;
     private final DependencyTransformer dependencyTransformer;
+    private final BazelProjectNameGenerator bazelProjectNameGenerator;
 
     public BazelExtractor(DetectableExecutableRunner executableRunner,
         ExternalIdFactory externalIdFactory,
@@ -54,7 +54,8 @@ public class BazelExtractor {
         String bazelTarget,
         Set<WorkspaceRule> providedDependencyRuleTypes,
         BazelVariableSubstitutor bazelVariableSubstitutor,
-        DependencyTransformer dependencyTransformer) {
+        DependencyTransformer dependencyTransformer,
+        BazelProjectNameGenerator bazelProjectNameGenerator) {
         this.executableRunner = executableRunner;
         this.externalIdFactory = externalIdFactory;
         this.workspaceRuleChooser = workspaceRuleChooser;
@@ -65,10 +66,10 @@ public class BazelExtractor {
         this.providedDependencyRuleTypes = providedDependencyRuleTypes;
         this.bazelVariableSubstitutor = bazelVariableSubstitutor;
         this.dependencyTransformer = dependencyTransformer;
+        this.bazelProjectNameGenerator = bazelProjectNameGenerator;
     }
 
-    public Extraction extract(ExecutableTarget bazelExe, File workspaceDir, File workspaceFile,
-        BazelProjectNameGenerator bazelProjectNameGenerator) throws DetectableException, ExecutableFailedException {
+    public Extraction extract(ExecutableTarget bazelExe, File workspaceDir, File workspaceFile) throws DetectableException, ExecutableFailedException {
         toolVersionLogger.log(workspaceDir, bazelExe, "version");
         BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
         Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor, externalIdFactory, haskellCabalLibraryJsonProtoParser);

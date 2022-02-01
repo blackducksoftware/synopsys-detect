@@ -26,18 +26,16 @@ public class BazelDetectable extends Detectable {
     private final FileFinder fileFinder;
     private final BazelExtractor bazelExtractor;
     private final BazelResolver bazelResolver;
-    private final BazelProjectNameGenerator projectNameGenerator;
     private final String bazelTargetName;
     private ExecutableTarget bazelExe;
     private File workspaceFile;
 
     public BazelDetectable(DetectableEnvironment environment, FileFinder fileFinder, BazelExtractor bazelExtractor,
-        BazelResolver bazelResolver, BazelProjectNameGenerator projectNameGenerator, @Nullable String bazelTargetName) {
+        BazelResolver bazelResolver, @Nullable String bazelTargetName) {
         super(environment);
         this.fileFinder = fileFinder;
         this.bazelExtractor = bazelExtractor;
         this.bazelResolver = bazelResolver;
-        this.projectNameGenerator = projectNameGenerator;
         this.bazelTargetName = bazelTargetName;
     }
 
@@ -61,6 +59,6 @@ public class BazelDetectable extends Detectable {
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws DetectableException, ExecutableFailedException {
         return bazelExtractor
-            .extract(bazelExe, environment.getDirectory(), workspaceFile, projectNameGenerator);
+            .extract(bazelExe, environment.getDirectory(), workspaceFile);
     }
 }
