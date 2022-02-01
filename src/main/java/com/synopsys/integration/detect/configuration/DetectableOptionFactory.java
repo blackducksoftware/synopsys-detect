@@ -5,16 +5,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.configuration.config.PropertyConfiguration;
-import com.synopsys.integration.configuration.property.base.NullableProperty;
-import com.synopsys.integration.configuration.property.base.ValuedProperty;
-import com.synopsys.integration.configuration.property.types.enumallnone.property.AllEnumListProperty;
-import com.synopsys.integration.configuration.property.types.enumallnone.property.AllNoneEnumListProperty;
-import com.synopsys.integration.configuration.property.types.enumallnone.property.NoneEnumListProperty;
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetLocatorOptions;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
@@ -292,7 +285,7 @@ public class DetectableOptionFactory {
                 excludedDependencyTypes.add(NpmDependencyType.DEV);
             }
             if (excludePeerDependencies) {
-                excludedDependencyTypes.add(NpmDependencyType.DEV);
+                excludedDependencyTypes.add(NpmDependencyType.PEER);
             }
         }
         return EnumListFilter.fromExcluded(excludedDependencyTypes);
