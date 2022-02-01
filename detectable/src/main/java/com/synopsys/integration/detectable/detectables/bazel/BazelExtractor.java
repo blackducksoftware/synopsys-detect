@@ -86,6 +86,7 @@ public class BazelExtractor {
             workspaceFileLines = FileUtils.readLines(workspaceFile, StandardCharsets.UTF_8);
             return bazelWorkspaceFileParser.parseWorkspaceRuleTypes(workspaceFileLines);
         } catch (IOException e) {
+            logger.warn("Unable to read WORKSPACE file {}: {}", workspaceFile.getAbsolutePath(), e.getMessage());
             return new HashSet<>(0);
         }
     }

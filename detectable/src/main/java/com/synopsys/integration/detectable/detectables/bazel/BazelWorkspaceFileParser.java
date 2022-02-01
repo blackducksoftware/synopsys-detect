@@ -19,7 +19,7 @@ public class BazelWorkspaceFileParser {
     }
 
     // Sonar deems peek useful for debugging.
-    public Stream<WorkspaceRule> parseDependencyRulesFromWorkspaceFileLine(String workspaceFileLine) {
+    private Stream<WorkspaceRule> parseDependencyRulesFromWorkspaceFileLine(String workspaceFileLine) {
         return Arrays.stream(WorkspaceRule.values())
             .filter(workspaceRule -> workspaceFileLine.matches(String.format("^\\s*%s\\s*\\(", workspaceRule.getName())))
             .peek(workspaceRule -> logger.debug(String.format("Found workspace dependency rule: %s", workspaceRule.getName())));
