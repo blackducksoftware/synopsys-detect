@@ -15,7 +15,7 @@ public class SbtBattery {
         test.sourceFileNamed("build.sbt");
         test.sourceFolderFromExpandedResource("target");
         test.git("https://github.com/sbt/sbt-bintray.git", "master");
-        test.executable(DetectProperties.DETECT_SBT_PATH.getProperty(), ""); //empty == no plugins installed
+        test.executable(DetectProperties.DETECT_SBT_PATH, ""); //empty == no plugins installed
         test.expectBdioResources();
         test.run();
     }
@@ -26,7 +26,7 @@ public class SbtBattery {
         test.sourceDirectoryNamed("sbt-dot");
         test.sourceFileNamed("build.sbt");
         test.addDirectlyToSourceFolderFromExpandedResource("dots");
-        test.executableFromResourceFiles(DetectProperties.DETECT_SBT_PATH.getProperty(), "sbt-plugins.xout", "sbt-dependencyDot.ftl");
+        test.executableFromResourceFiles(DetectProperties.DETECT_SBT_PATH, "sbt-plugins.xout", "sbt-dependencyDot.ftl");
         test.expectBdioResources();
         test.run();
     }
@@ -37,7 +37,7 @@ public class SbtBattery {
         test.sourceDirectoryNamed("sbt-dot");
         test.sourceFileNamed("build.sbt");
         test.addDirectlyToSourceFolderFromExpandedResource("dots");
-        test.executableFromResourceFiles(DetectProperties.DETECT_SBT_PATH.getProperty(), "sbt-plugins.xout", "sbt-dependencyDot.ftl");
+        test.executableFromResourceFiles(DetectProperties.DETECT_SBT_PATH, "sbt-plugins.xout", "sbt-dependencyDot.ftl");
         test.expectBdioResources();
         test.run();
     }

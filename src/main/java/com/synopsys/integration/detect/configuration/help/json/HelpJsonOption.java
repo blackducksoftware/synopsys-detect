@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
-class HelpJsonOption {
+public class HelpJsonOption {
     private String propertyName = "";
     private String propertyKey = "";
     private String propertyType = "";
@@ -27,6 +27,7 @@ class HelpJsonOption {
     private Boolean hasAcceptableValues = false;
     private Boolean isCommaSeparatedList = false;
     private List<String> acceptableValues = new ArrayList<>();
+    private List<HelpJsonOptionDeprecatedValue> deprecatedValues = new ArrayList<>();
     private String example = "";
 
     public String getPropertyName() {
@@ -187,5 +188,13 @@ class HelpJsonOption {
 
     public void setExample(String example) {
         this.example = example;
+    }
+
+    public List<HelpJsonOptionDeprecatedValue> getDeprecatedValues() {
+        return deprecatedValues;
+    }
+
+    public void setDeprecatedValues(List<HelpJsonOptionDeprecatedValue> deprecatedValues) {
+        this.deprecatedValues = deprecatedValues;
     }
 }

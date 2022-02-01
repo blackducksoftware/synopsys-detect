@@ -30,6 +30,10 @@ public class DetectIssue {
     }
 
     public static void publish(EventSystem eventSystem, DetectIssueType type, String title, String... messages) {
-        eventSystem.publishEvent(Event.Issue, new DetectIssue(type, title, Arrays.asList(messages)));
+        publish(eventSystem, type, title, Arrays.asList(messages));
+    }
+
+    public static void publish(EventSystem eventSystem, DetectIssueType type, String title, List<String> messages) {
+        eventSystem.publishEvent(Event.Issue, new DetectIssue(type, title, messages));
     }
 }

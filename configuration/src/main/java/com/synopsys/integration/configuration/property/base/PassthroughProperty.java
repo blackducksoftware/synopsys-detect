@@ -3,6 +3,7 @@ package com.synopsys.integration.configuration.property.base;
 import org.jetbrains.annotations.NotNull;
 
 import com.synopsys.integration.configuration.property.Property;
+import com.synopsys.integration.configuration.property.PropertyBuilder;
 
 /**
  * A property whose values are all prefixed with a common key.
@@ -13,6 +14,10 @@ import com.synopsys.integration.configuration.property.Property;
 public class PassthroughProperty extends Property {
     public PassthroughProperty(@NotNull String key) {
         super(key);
+    }
+
+    public static PropertyBuilder<PassthroughProperty> newBuilder(@NotNull String key) {
+        return new PropertyBuilder<PassthroughProperty>().setCreator(() -> new PassthroughProperty(key));
     }
 
     public String trimKey(String givenKey) {

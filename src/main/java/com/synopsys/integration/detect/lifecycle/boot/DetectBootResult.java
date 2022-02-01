@@ -90,7 +90,7 @@ public class DetectBootResult {
     @NotNull
     public Boolean shouldForceSuccess() {
         return getDetectConfiguration()
-            .map(configuration -> configuration.getValueOrDefault(DetectProperties.DETECT_FORCE_SUCCESS.getProperty()))
+            .map(configuration -> configuration.getValueOrDefault(DetectProperties.DETECT_FORCE_SUCCESS))
             .orElse(Boolean.FALSE);
     }
 

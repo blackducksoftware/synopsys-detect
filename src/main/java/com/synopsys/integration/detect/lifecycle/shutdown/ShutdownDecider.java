@@ -28,10 +28,10 @@ public class ShutdownDecider {
     }
 
     public CleanupDecision decideCleanup(@Nullable PropertyConfiguration detectConfiguration, @Nullable ProductRunData productRunData, @Nullable File airGapZip) {
-        if (detectConfiguration == null || !detectConfiguration.getValue(DetectProperties.DETECT_CLEANUP.getProperty())) {
+        if (detectConfiguration == null || !detectConfiguration.getValue(DetectProperties.DETECT_CLEANUP)) {
             return CleanupDecision.skip();
         }
-        boolean dryRun = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN.getProperty());
+        boolean dryRun = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN);
 
         boolean offline = false;
         if (productRunData != null && productRunData.shouldUseBlackDuckProduct()) {

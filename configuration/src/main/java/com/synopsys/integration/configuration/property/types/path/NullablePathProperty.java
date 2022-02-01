@@ -2,12 +2,16 @@ package com.synopsys.integration.configuration.property.types.path;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.synopsys.integration.configuration.property.PropertyBuilder;
 import com.synopsys.integration.configuration.property.base.NullableAlikeProperty;
-import com.synopsys.integration.configuration.property.base.NullableProperty;
 
 public class NullablePathProperty extends NullableAlikeProperty<PathValue> {
     public NullablePathProperty(@NotNull String key) {
         super(key, new PathValueParser());
+    }
+
+    public static PropertyBuilder<NullablePathProperty> newBuilder(@NotNull String key) {
+        return new PropertyBuilder<NullablePathProperty>().setCreator(() -> new NullablePathProperty(key));
     }
 
     @Override
