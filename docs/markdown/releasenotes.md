@@ -4,17 +4,12 @@
 
 ### New features
 
-* Added a feature that allows users to set licenses for a project version using the property [detect.project.version.licenses](properties/configuration/project.md#project-version-licenses).
+* Added a feature that allows users to set a license for a project version using the property [detect.project.version.license](properties/configuration/project.md#project-version-license).
 
 ### Changed features
 
 * The Go Mod Cli Detector no longer uses the "-u" flag when running **go list -m all**. This results in significantly faster scan times against Go Mod projects.
-* Deprecated the `detect.pnpm.dependency.types` property in favor of `detect.pnpm.dependency.types.excluded` for property consistency.
-
-### Resolved issues
-
-* (IDETECT-2925) Resolved an issue that could cause the Bitbake detector to incorrectly identify the layer of a dependency recipe.
-* (IDETECT-3080) Fixed an issue where [solution_name] would not include multiple versions of the same package in Cargo projects.
+* Deprecated the `detect.pnpm.dependency.types property` in favor of `detect.pnpm.dependency.types.excluded` for property consistency.
 
 ## Version 7.10.0
 

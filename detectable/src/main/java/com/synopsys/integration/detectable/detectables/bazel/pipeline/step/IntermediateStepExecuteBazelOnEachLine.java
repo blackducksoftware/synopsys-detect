@@ -4,15 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 
-public class IntermediateStepExecuteBazelOnEach implements IntermediateStep {
+public class IntermediateStepExecuteBazelOnEachLine implements IntermediateStep {
     private final BazelCommandExecutor bazelCommandExecutor;
     private final BazelVariableSubstitutor bazelVariableSubstitutor;
     private final List<String> bazelCommandArgs;
     private final boolean inputIsExpected;
 
-    public IntermediateStepExecuteBazelOnEach(BazelCommandExecutor bazelCommandExecutor,
+    public IntermediateStepExecuteBazelOnEachLine(BazelCommandExecutor bazelCommandExecutor,
         BazelVariableSubstitutor bazelVariableSubstitutor, List<String> bazelCommandArgs, boolean inputIsExpected) {
         this.bazelCommandExecutor = bazelCommandExecutor;
         this.bazelVariableSubstitutor = bazelVariableSubstitutor;
@@ -21,7 +22,7 @@ public class IntermediateStepExecuteBazelOnEach implements IntermediateStep {
     }
 
     @Override
-    public List<String> process(List<String> input) throws IntegrationException {
+    public List<String> process(List<String> input) throws DetectableException, ExecutableFailedException {
         List<String> results = new ArrayList<>();
         if (inputIsExpected && input.isEmpty()) {
             return results;

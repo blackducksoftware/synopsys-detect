@@ -8,23 +8,23 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.util.NameVersion;
 
-public class FinalStepJsonProtoHaskellCabalLibraries implements FinalStep {
+public class FinalStepTransformJsonProtoHaskellCabalLibrariesToHackage implements FinalStep {
     private static final String FORGE_NAME = "hackage";
     private static final String FORGE_SEPARATOR = "/";
     private final Forge hackageForge = new Forge(FORGE_SEPARATOR, FORGE_NAME);
     private final HaskellCabalLibraryJsonProtoParser parser;
     private final ExternalIdFactory externalIdFactory;
 
-    public FinalStepJsonProtoHaskellCabalLibraries(HaskellCabalLibraryJsonProtoParser parser, ExternalIdFactory externalIdFactory) {
+    public FinalStepTransformJsonProtoHaskellCabalLibrariesToHackage(HaskellCabalLibraryJsonProtoParser parser, ExternalIdFactory externalIdFactory) {
         this.parser = parser;
         this.externalIdFactory = externalIdFactory;
     }
 
     @Override
-    public List<Dependency> finish(List<String> input) throws IntegrationException {
+    public List<Dependency> finish(List<String> input) throws DetectableException {
         List<Dependency> dependencies = new ArrayList<>();
         Optional<String> jsonString = extractJsonString(input);
         if (!jsonString.isPresent()) {
@@ -38,9 +38,9 @@ public class FinalStepJsonProtoHaskellCabalLibraries implements FinalStep {
         return dependencies;
     }
 
-    private Optional<String> extractJsonString(List<String> input) throws IntegrationException {
+    private Optional<String> extractJsonString(List<String> input) throws DetectableException {
         if (input.size() > 1) {
-            throw new IntegrationException(String.format("Input size is %d; expected 1", input.size()));
+            throw new DetectableException(String.format("Input size is %d; expected 1", input.size()));
         }
         if (input.isEmpty()) {
             return Optional.empty();
