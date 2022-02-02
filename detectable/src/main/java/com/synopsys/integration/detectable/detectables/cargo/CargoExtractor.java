@@ -2,11 +2,13 @@ package com.synopsys.integration.detectable.detectables.cargo;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.Nullable;
 
 import com.moandjiezana.toml.Toml;
@@ -15,23 +17,22 @@ import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectables.cargo.data.CargoLockData;
-import com.synopsys.integration.detectable.detectables.cargo.data.CargoTomlData;
 import com.synopsys.integration.detectable.detectables.cargo.model.CargoLockPackage;
+import com.synopsys.integration.detectable.detectables.cargo.parse.CargoTomlParser;
 import com.synopsys.integration.detectable.detectables.cargo.transform.CargoLockPackageDataTransformer;
 import com.synopsys.integration.detectable.detectables.cargo.transform.CargoLockPackageTransformer;
-import com.synopsys.integration.detectable.detectables.cargo.transform.CargoTomlDataTransformer;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.util.CycleDetectedException;
 import com.synopsys.integration.util.NameVersion;
 
 public class CargoExtractor {
+    private final CargoTomlParser cargoTomlParser;
     private final CargoLockPackageDataTransformer cargoLockPackageDataTransformer;
-    private final CargoTomlDataTransformer cargoTomlDataTransformer;
     private final CargoLockPackageTransformer cargoLockPackageTransformer;
 
-    public CargoExtractor(CargoLockPackageDataTransformer cargoLockPackageDataTransformer, CargoTomlDataTransformer cargoTomlDataTransformer, CargoLockPackageTransformer cargoLockPackageTransformer) {
+    public CargoExtractor(CargoTomlParser cargoTomlParser, CargoLockPackageDataTransformer cargoLockPackageDataTransformer, CargoLockPackageTransformer cargoLockPackageTransformer) {
+        this.cargoTomlParser = cargoTomlParser;
         this.cargoLockPackageDataTransformer = cargoLockPackageDataTransformer;
-        this.cargoTomlDataTransformer = cargoTomlDataTransformer;
         this.cargoLockPackageTransformer = cargoLockPackageTransformer;
     }
 
@@ -51,8 +52,8 @@ public class CargoExtractor {
 
         Optional<NameVersion> projectNameVersion = Optional.empty();
         if (cargoTomlFile != null) {
-            CargoTomlData cargoTomlData = new Toml().read(cargoTomlFile).to(CargoTomlData.class);
-            projectNameVersion = cargoTomlDataTransformer.findProjectNameVersion(cargoTomlData);
+            String cargoTomlContents = FileUtils.readFileToString(cargoTomlFile, StandardCharsets.UTF_8);
+            projectNameVersion = cargoTomlParser.parseNameVersionFromCargoToml(cargoTomlContents);
         }
 
         CodeLocation codeLocation = new CodeLocation(graph); //TODO: Consider for 8.0.0 providing an external ID.

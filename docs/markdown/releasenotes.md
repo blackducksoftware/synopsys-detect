@@ -4,7 +4,7 @@
 
 ### New features
 
-* Added a feature that allows users to set licenses for a project version using the property [detect.project.version.licenses](properties/configuration/project.md#project-version-licenses).
+* Added a feature that allows users to set a license for a project version using the property [detect.project.version.license](properties/configuration/project.md#project-version-license).
 
 ### Changed features
 

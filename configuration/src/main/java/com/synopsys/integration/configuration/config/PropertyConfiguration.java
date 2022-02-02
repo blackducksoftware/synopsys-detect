@@ -97,6 +97,23 @@ public class PropertyConfiguration {
         }
     }
 
+    @NotNull
+    public <V, R> Optional<V> getProvidedParsedValue(@NotNull TypedProperty<V, R> property) throws InvalidPropertyException {
+        assertPropertyNotNull(property);
+        
+        PropertyValue<V> value = valueFromCache(property);
+        Optional<ValueParseException> parseException = value.getException();
+        Optional<PropertyResolutionInfo> propertyResolutionInfo = value.getResolutionInfo();
+
+        if (value.getValue().isPresent()) {
+            return value.getValue();
+        } else if (parseException.isPresent() && propertyResolutionInfo.isPresent()) {
+            throw new InvalidPropertyException(property.getKey(), propertyResolutionInfo.get().getSource(), parseException.get());
+        } else {
+            return Optional.empty();
+        }
+    }
+
     public boolean wasKeyProvided(@NotNull String key) {
         Assert.notNull(key, "Must provide a property.");
         return resolveFromCache(key).getResolutionInfo().isPresent();
