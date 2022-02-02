@@ -13,15 +13,14 @@ import org.junit.jupiter.api.Test;
 import com.synopsys.integration.util.NameVersion;
 
 class CargoTomlParserTest {
+
     @Test
     void extractNameVersion() {
-        String cargoTomlContents = StringUtils.joinWith(System.lineSeparator(),
+        Optional<NameVersion> nameVersion = parseCargoTomlLines(
             "[package]",
             "name = \"my-name\"",
             "version = \"my-version\""
         );
-        CargoTomlParser parser = new CargoTomlParser();
-        Optional<NameVersion> nameVersion = parser.parseNameVersionFromCargoToml(cargoTomlContents);
 
         assertTrue(nameVersion.isPresent());
         assertEquals("my-name", nameVersion.get().getName());
@@ -30,12 +29,10 @@ class CargoTomlParserTest {
 
     @Test
     void extractNameNoVersion() {
-        String cargoTomlContents = StringUtils.joinWith(System.lineSeparator(),
+        Optional<NameVersion> nameVersion = parseCargoTomlLines(
             "[package]",
             "name = \"my-name\""
         );
-        CargoTomlParser parser = new CargoTomlParser();
-        Optional<NameVersion> nameVersion = parser.parseNameVersionFromCargoToml(cargoTomlContents);
 
         assertTrue(nameVersion.isPresent());
         assertEquals("my-name", nameVersion.get().getName());
@@ -44,27 +41,28 @@ class CargoTomlParserTest {
 
     @Test
     void extractNoName() {
-        String cargoTomlContents = StringUtils.joinWith(System.lineSeparator(),
+        Optional<NameVersion> nameVersion = parseCargoTomlLines(
             "[package]",
             "some-other-key  = \"other-value\""
         );
-        CargoTomlParser parser = new CargoTomlParser();
-        Optional<NameVersion> nameVersion = parser.parseNameVersionFromCargoToml(cargoTomlContents);
 
         assertFalse(nameVersion.isPresent());
     }
 
     @Test
     void extractNoPackage() {
-
-        String cargoTomlContents = StringUtils.joinWith(System.lineSeparator(),
+        Optional<NameVersion> nameVersion = parseCargoTomlLines(
             "[not-the-package-you-are-looking-for]",
             "some-other-key  = \"other-value\""
         );
-        CargoTomlParser parser = new CargoTomlParser();
-        Optional<NameVersion> nameVersion = parser.parseNameVersionFromCargoToml(cargoTomlContents);
 
         assertFalse(nameVersion.isPresent());
+    }
+
+    private Optional<NameVersion> parseCargoTomlLines(String firstLine, String... lines) {
+        CargoTomlParser parser = new CargoTomlParser();
+        String cargoTomlContents = StringUtils.joinWith(System.lineSeparator(), firstLine, lines);
+        return parser.parseNameVersionFromCargoToml(cargoTomlContents);
     }
 
 }
