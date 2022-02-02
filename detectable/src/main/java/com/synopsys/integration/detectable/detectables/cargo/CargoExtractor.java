@@ -36,19 +36,14 @@ public class CargoExtractor {
         this.cargoLockPackageTransformer = cargoLockPackageTransformer;
     }
 
-    public Extraction extract(File cargoLockFile, @Nullable File cargoTomlFile) throws IOException, CycleDetectedException, DetectableException {
+    public Extraction extract(File cargoLockFile, @Nullable File cargoTomlFile) throws IOException, CycleDetectedException, DetectableException, MissingExternalIdException {
         CargoLockData cargoLockData = new Toml().read(cargoLockFile).to(CargoLockData.class);
         List<CargoLockPackage> packages = cargoLockData.getPackages()
             .orElse(new ArrayList<>()).stream()
             .map(cargoLockPackageDataTransformer::transform)
             .collect(Collectors.toList());
-        DependencyGraph graph;
-        try {
-            graph = cargoLockPackageTransformer.transformToGraph(packages);
-        } catch (MissingExternalIdException e) {
-            // Wrapping because MissingExternalIdException is only accessible through integration-bdio
-            throw new DetectableException(e);
-        }
+
+        DependencyGraph graph = cargoLockPackageTransformer.transformToGraph(packages);
 
         Optional<NameVersion> projectNameVersion = Optional.empty();
         if (cargoTomlFile != null) {

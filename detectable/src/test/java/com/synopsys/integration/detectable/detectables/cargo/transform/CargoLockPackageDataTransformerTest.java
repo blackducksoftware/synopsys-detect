@@ -34,15 +34,14 @@ class CargoLockPackageDataTransformerTest {
         assertEquals("dep1", dep1Actual.getName());
         assertFalse(dep1Actual.getVersion().isPresent());
 
-        NameOptionalVersion dep2Actual = cargoLockPackage.getDependencies().get(1);
-        assertEquals("dep2", dep2Actual.getName());
-        assertTrue(dep2Actual.getVersion().isPresent());
-        assertEquals("2.0.0", dep2Actual.getVersion().get());
+        assertPackageNameVersion("dep2", "2.0.0", cargoLockPackage.getDependencies().get(1));
+        assertPackageNameVersion("dep3", "3.0.0", cargoLockPackage.getDependencies().get(2));
+    }
 
-        NameOptionalVersion dep3Actual = cargoLockPackage.getDependencies().get(2);
-        assertEquals("dep3", dep3Actual.getName());
-        assertTrue(dep3Actual.getVersion().isPresent());
-        assertEquals("3.0.0", dep3Actual.getVersion().get());
+    private void assertPackageNameVersion(String expectedName, String expectedVersion, NameOptionalVersion actual) {
+        assertEquals(expectedName, actual.getName());
+        assertTrue(actual.getVersion().isPresent());
+        assertEquals(expectedVersion, actual.getVersion().get());
     }
 
     @Test
