@@ -59,9 +59,9 @@ class CargoTomlParserTest {
         assertFalse(nameVersion.isPresent());
     }
 
-    private Optional<NameVersion> parseCargoTomlLines(String firstLine, String... lines) {
+    private Optional<NameVersion> parseCargoTomlLines(String... lines) {
         CargoTomlParser parser = new CargoTomlParser();
-        String cargoTomlContents = StringUtils.joinWith(System.lineSeparator(), firstLine, lines);
+        String cargoTomlContents = StringUtils.joinWith(System.lineSeparator(), (Object[]) lines);
         return parser.parseNameVersionFromCargoToml(cargoTomlContents);
     }
 
