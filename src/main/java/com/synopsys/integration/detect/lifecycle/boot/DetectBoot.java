@@ -110,7 +110,7 @@ public class DetectBoot {
         logger.debug("Configuration processed completely.");
 
         DetectConfigurationBootManager detectConfigurationBootManager = detectBootFactory.createDetectConfigurationBootManager(propertyConfiguration);
-        DeprecationResult deprecationResult = detectConfigurationBootManager.checkForDeprecations(propertyConfiguration);
+        DeprecationResult deprecationResult = detectConfigurationBootManager.createDeprecationNotesAndPublishEvents(propertyConfiguration);
         detectConfigurationBootManager.printConfiguration(maskedRawPropertyValues, propertyKeys, deprecationResult.getAdditionalNotes());
 
         Optional<DetectUserFriendlyException> possiblePropertyParseError = detectConfigurationBootManager.validateForPropertyParseErrors();
@@ -141,7 +141,7 @@ public class DetectBoot {
                 AirGapType airGapType = new AirGapTypeDecider().decide(detectArgumentState);
                 AirGapCreator airGapCreator = detectBootFactory
                     .createAirGapCreator(detectConfigurationFactory.createConnectionDetails(), detectConfigurationFactory.createDetectExecutableOptions(), freemarkerConfiguration, installedToolManager, installedToolLocator);
-                String gradleInspectorVersion = propertyConfiguration.getValueOrEmpty(DetectProperties.DETECT_GRADLE_INSPECTOR_VERSION.getProperty())
+                String gradleInspectorVersion = propertyConfiguration.getValueOrEmpty(DetectProperties.DETECT_GRADLE_INSPECTOR_VERSION)
                     .orElse(null);
 
                 File airGapZip = airGapCreator.createAirGapZip(airGapType, directoryManager.getRunHomeDirectory(), gradleInspectorVersion);

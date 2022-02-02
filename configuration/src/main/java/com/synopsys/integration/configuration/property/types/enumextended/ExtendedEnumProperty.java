@@ -6,8 +6,8 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.synopsys.integration.configuration.property.PropertyBuilder;
 import com.synopsys.integration.configuration.property.base.ValuedAlikeProperty;
-import com.synopsys.integration.configuration.property.base.ValuedProperty;
 import com.synopsys.integration.configuration.util.EnumPropertyUtils;
 
 public class ExtendedEnumProperty<E extends Enum<E>, B extends Enum<B>> extends ValuedAlikeProperty<ExtendedEnumValue<E, B>> {
@@ -20,6 +20,18 @@ public class ExtendedEnumProperty<E extends Enum<E>, B extends Enum<B>> extends 
         allOptions.addAll(EnumPropertyUtils.getEnumNames(eClass));
         allOptions.addAll(EnumPropertyUtils.getEnumNames(bClass));
         this.bClass = bClass;
+    }
+
+    public static <E extends Enum<E>, B extends Enum<B>> PropertyBuilder<ExtendedEnumProperty<E, B>> newBuilder(@NotNull String key, @NotNull ExtendedEnumValue<E, B> defaultValue, @NotNull Class<E> eClass, @NotNull Class<B> bClass) {
+        return new PropertyBuilder<ExtendedEnumProperty<E, B>>().setCreator(() -> new ExtendedEnumProperty<>(key, defaultValue, eClass, bClass));
+    }
+
+    public static <E extends Enum<E>, B extends Enum<B>> PropertyBuilder<ExtendedEnumProperty<E, B>> newBuilderExtendedDefault(@NotNull String key, @NotNull E defaultValue, @NotNull Class<E> eClass, @NotNull Class<B> bClass) {
+        return newBuilder(key, ExtendedEnumValue.ofExtendedValue(defaultValue), eClass, bClass);
+    }
+    
+    public static <E extends Enum<E>, B extends Enum<B>> PropertyBuilder<ExtendedEnumProperty<E, B>> newBuilderBaseDefault(@NotNull String key, @NotNull B defaultValue, @NotNull Class<E> eClass, @NotNull Class<B> bClass) {
+        return newBuilder(key, ExtendedEnumValue.ofBaseValue(defaultValue), eClass, bClass);
     }
 
     @Override

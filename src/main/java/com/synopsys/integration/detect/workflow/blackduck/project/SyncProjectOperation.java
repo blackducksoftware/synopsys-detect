@@ -15,7 +15,7 @@ import com.synopsys.integration.detect.configuration.DetectUserFriendlyException
 import com.synopsys.integration.detect.workflow.blackduck.project.options.CloneFindResult;
 import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectGroupFindResult;
 import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectSyncOptions;
-import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectVersionLicensesFindResult;
+import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectVersionLicenseFindResult;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
@@ -28,14 +28,14 @@ public class SyncProjectOperation {
         this.projectService = projectService;
     }
 
-    public ProjectVersionWrapper sync(NameVersion projectNameVersion, ProjectGroupFindResult projectGroupFindResult, CloneFindResult cloneFindResult, ProjectVersionLicensesFindResult projectVersionLicensesFindResult,
+    public ProjectVersionWrapper sync(NameVersion projectNameVersion, ProjectGroupFindResult projectGroupFindResult, CloneFindResult cloneFindResult, ProjectVersionLicenseFindResult projectVersionLicensesFindResult,
         ProjectSyncOptions projectSyncOptions) throws DetectUserFriendlyException, IntegrationException {
         ProjectSyncModel projectSyncModel = createProjectSyncModel(projectNameVersion, projectGroupFindResult, cloneFindResult, projectVersionLicensesFindResult, projectSyncOptions);
         boolean forceUpdate = projectSyncOptions.isForceProjectVersionUpdate();
         return projectService.syncProjectAndVersion(projectSyncModel, forceUpdate);
     }
 
-    public ProjectSyncModel createProjectSyncModel(NameVersion projectNameVersion, ProjectGroupFindResult projectGroupFindResult, CloneFindResult cloneFindResult, ProjectVersionLicensesFindResult projectVersionLicensesFindResult,
+    public ProjectSyncModel createProjectSyncModel(NameVersion projectNameVersion, ProjectGroupFindResult projectGroupFindResult, CloneFindResult cloneFindResult, ProjectVersionLicenseFindResult projectVersionLicensesFindResult,
         ProjectSyncOptions projectSyncOptions) {
         ProjectSyncModel projectSyncModel = ProjectSyncModel.createWithDefaults(projectNameVersion.getName(), projectNameVersion.getVersion());
 
@@ -78,9 +78,7 @@ public class SyncProjectOperation {
             projectSyncModel.setProjectGroup(projectGroupUrl.string());
         });
 
-        projectVersionLicensesFindResult.getLicenseUrls().ifPresent(licenseUrls -> {
-            projectSyncModel.setVersionLicenseUrls(licenseUrls);
-        });
+        projectVersionLicensesFindResult.getLicenseUrl().ifPresent(projectSyncModel::setVersionLicenseUrl);
 
         return projectSyncModel;
     }

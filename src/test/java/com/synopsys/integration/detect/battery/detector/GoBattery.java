@@ -31,7 +31,7 @@ public class GoBattery {
     @Test
     void mod() {
         DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("go-mod");
-        test.executableFromResourceFiles(DetectProperties.DETECT_GO_PATH.getProperty(), "go-list.xout", "go-version.xout", "go-list-u-json.xout", "go-mod-graph.xout", "go-mod-why.xout");
+        test.executableFromResourceFiles(DetectProperties.DETECT_GO_PATH, "go-list.xout", "go-version.xout", "go-list-u-json.xout", "go-mod-graph.xout", "go-mod-why.xout");
         test.sourceDirectoryNamed("source");
         test.sourceFileFromResource("go.mod");
         test.expectBdioResources();

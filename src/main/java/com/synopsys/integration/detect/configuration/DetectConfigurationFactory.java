@@ -1,7 +1,5 @@
 package com.synopsys.integration.detect.configuration;
 
-import static java.util.Collections.emptyList;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -24,15 +22,9 @@ import com.synopsys.integration.blackduck.api.manual.temporary.enumeration.Proje
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.IndividualFileMatching;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
-import com.synopsys.integration.configuration.config.PropertyConfiguration;
-import com.synopsys.integration.configuration.property.base.NullableProperty;
-import com.synopsys.integration.configuration.property.base.ValuedProperty;
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumCollection;
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumList;
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumValue;
-import com.synopsys.integration.configuration.property.types.path.NullablePathProperty;
-import com.synopsys.integration.configuration.property.types.path.PathResolver;
-import com.synopsys.integration.configuration.property.types.path.PathValue;
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;
 import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
@@ -326,8 +318,8 @@ public class DetectConfigurationFactory {
     }
 
     public ProjectVersionLicenseOptions createProjectVersionLicenseOptions() {
-        List<String> licenseNames = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_VERSION_LICENSES);
-        return new ProjectVersionLicenseOptions(licenseNames);
+        String licenseName = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_VERSION_LICENSE);
+        return new ProjectVersionLicenseOptions(licenseName);
     }
 
     public ParentProjectMapOptions createParentProjectMapOptions() {
