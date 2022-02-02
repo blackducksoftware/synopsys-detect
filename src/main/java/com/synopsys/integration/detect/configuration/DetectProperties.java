@@ -1767,7 +1767,8 @@ public class DetectProperties {
 
     // TODO: Remove in 8.0.0
     private static String createDetectorPropertyDeprecationMessage(@NotNull Property replacementProperty) {
-        return String.format("This property is being removed in favor of %s. If the replacement property is set, this property is ignored. The default value of this property will be used if both properties are not set.", replacementProperty.getKey());
+        return String.format("This property is being removed in favor of %s. If the replacement property is set, this property is ignored. The default value of this property is used if both properties are not set.",
+            replacementProperty.getKey());
     }
 
     // Accessor to get all properties
