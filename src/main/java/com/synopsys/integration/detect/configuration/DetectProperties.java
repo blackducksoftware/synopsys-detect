@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
@@ -216,7 +217,7 @@ public class DetectProperties {
     public static final NoneEnumListProperty<ConanDependencyType> DETECT_CONAN_DEPENDENCY_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.conan.dependency.types.excluded", NoneEnum.NONE, ConanDependencyType.class)
             .setInfo("Conan Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp("Set this value to indicate which Conan dependency types Detect should exclude from the BOM. By default, all dependency types will be reported.")
+            .setHelp(createDefaultDrivenPropertyHelpText("Conan dependency types", "detect.conan.include.build.dependencies"))
             .setExample(ConanDependencyType.BUILD.name())
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
             .build();
@@ -488,8 +489,10 @@ public class DetectProperties {
     public static final NoneEnumListProperty<DartPubDependencyType> DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.pub.dependency.types.excluded", NoneEnum.NONE, DartPubDependencyType.class)
             .setInfo("Dart Pub Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp("Set this value to indicate which Dart Pub dependency types Detect should exclude from the BOM. By default, all dependency types will be reported.",
-                "If DEV is excluded, the Dart Detector will pass the option --no-dev when running the command 'pub deps'.")
+            .setHelp(
+                createDefaultDrivenPropertyHelpText("Dart pub dependency types", "detect.pub.deps.exclude.dev"),
+                "If DEV is excluded, the Dart Detector will pass the option --no-dev when running the command 'pub deps'."
+            )
             .setExample(DartPubDependencyType.DEV.name())
             .setGroups(DetectGroup.DART, DetectGroup.DETECTOR, DetectGroup.GLOBAL)
             .build();
@@ -676,8 +679,10 @@ public class DetectProperties {
     public static final NoneEnumListProperty<GoModDependencyType> DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.go.mod.dependency.types.excluded", NoneEnum.NONE, GoModDependencyType.class)
             .setInfo("Go Mod Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp("Set this value to indicate which Go Mod dependency types Detect should exclude from the BOM. By default, all dependency types will be reported.",
-                String.format("If %s is excluded, Detect will use the results of 'go mod why' to filter out unused dependencies.", GoModDependencyType.UNUSED.name()))
+            .setHelp(
+                createDefaultDrivenPropertyHelpText("Go Mod dependency types", "detect.go.mod.enable.verification"),
+                String.format("If %s is excluded, Detect will use the results of 'go mod why' to filter out unused dependencies.", GoModDependencyType.UNUSED.name())
+            )
             .setExample(GoModDependencyType.UNUSED.name())
             .setGroups(DetectGroup.GO, DetectGroup.GLOBAL)
             .build();
@@ -722,7 +727,7 @@ public class DetectProperties {
     public static final NoneEnumListProperty<GradleConfigurationType> DETECT_GRADLE_CONFIGURATION_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.gradle.configuration.types.excluded", NoneEnum.NONE, GradleConfigurationType.class)
             .setInfo("Gradle Configuration Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp("Set this value to indicate which Gradle configuration type you want Detect to exclude. By default, all configuration types will be reported.",
+            .setHelp(createDefaultDrivenPropertyHelpText("Gradle configuration types", "detect.gradle.include.unresolved.configurations"),
                 "Including dependencies from unresolved Gradle configurations could lead to false positives. Dependency versions from an unresolved configuration may differ from a resolved one. See https://docs.gradle.org/7.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs")
             .setExample(GradleConfigurationType.UNRESOLVED.name())
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
@@ -842,7 +847,7 @@ public class DetectProperties {
     public static final NoneEnumListProperty<LernaPackageType> DETECT_LERNA_PACKAGE_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.lerna.package.types.excluded", NoneEnum.NONE, LernaPackageType.class)
             .setInfo("Lerna Package Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp("Set this value to indicate which Lerna package types Detect should exclude from the BOM. By default, all package types will be reported.")
+            .setHelp(createDefaultDrivenPropertyHelpText("Lerna package types", "detect.lerna.include.private"))
             .setExample(LernaPackageType.PRIVATE.name())
             .setGroups(DetectGroup.LERNA, DetectGroup.GLOBAL)
             .build();
@@ -921,7 +926,7 @@ public class DetectProperties {
     public static final NoneEnumListProperty<NpmDependencyType> DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.npm.dependency.types.excluded", NoneEnum.NONE, NpmDependencyType.class)
             .setInfo("Npm Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp("Set this value to indicate which Npm dependency types Detect should exclude from the BOM. By default, all dependency types will be reported.")
+            .setHelp(createDefaultDrivenPropertyHelpText("Npm dependency types", "detect.npm.include.dev.dependencies", "detect.npm.include.peer.dependencies"))
             .setExample(String.format("%s,%s", NpmDependencyType.DEV.name(), NpmDependencyType.PEER.name()))
             .setGroups(DetectGroup.NPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
@@ -1008,14 +1013,14 @@ public class DetectProperties {
     public static final NoneEnumListProperty<PackagistDependencyType> DETECT_PACKAGIST_DEPENDENCY_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.packagist.dependency.types.excluded", NoneEnum.NONE, PackagistDependencyType.class)
             .setInfo("Packagist Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp("Set this value to indicate which Packagist dependency types Detect should exclude from the BOM. By default, all dependency types will be reported.")
+            .setHelp(createDefaultDrivenPropertyHelpText("Packagist dependency types", "detect.packagist.include.dev.dependencies"))
             .setGroups(DetectGroup.PACKAGIST, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
 
     public static final NoneEnumListProperty<PearDependencyType> DETECT_PEAR_DEPENDENCY_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.pear.dependency.types.excluded", NoneEnum.NONE, PearDependencyType.class)
             .setInfo("Pear Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp("Set this value to indicate which Pear dependency types Detect should exclude from the BOM. By default, all dependency types will be reported.")
+            .setHelp(createDefaultDrivenPropertyHelpText("Pear dependency types", "detect.pear.only.required.deps"))
             .setExample(PearDependencyType.OPTIONAL.name())
             .setGroups(DetectGroup.PEAR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
@@ -1073,7 +1078,7 @@ public class DetectProperties {
     public static final NoneEnumListProperty<PnpmDependencyTypeV2> DETECT_PNPM_DEPENDENCY_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.pnpm.dependency.types.excluded", NoneEnum.NONE, PnpmDependencyTypeV2.class)
             .setInfo("pnpm Dependency Types", DetectPropertyFromVersion.VERSION_7_11_0)
-            .setHelp("Set this value to indicate which Pnpm dependency types Detect should exclude from the BOM. By default, all dependency types will be reported.")
+            .setHelp(createDefaultDrivenPropertyHelpText("Pnpm dependency type", "detect.pnpm.dependency.types"))
             .setGroups(DetectGroup.PNPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
 
@@ -1342,7 +1347,7 @@ public class DetectProperties {
     public static final NoneEnumListProperty<GemspecDependencyType> DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.ruby.dependency.types.excluded", NoneEnum.NONE, GemspecDependencyType.class)
             .setInfo("Ruby Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp("Set this value to indicate which Ruby(Gemspec) dependency types Detect should exclude from the BOM. By default, all dependency types will be reported.")
+            .setHelp(createDefaultDrivenPropertyHelpText("Ruby(Gempsec) dependency types", "detect.ruby.include.dev.dependencies", "detect.ruby.include.runtime.dependencies"))
             .setExample(String.format("%s,%s", GemspecDependencyType.DEV.name(), GemspecDependencyType.RUNTIME))
             .setGroups(DetectGroup.RUBY, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
@@ -1457,7 +1462,7 @@ public class DetectProperties {
     public static final NoneEnumListProperty<YarnDependencyType> DETECT_YARN_DEPENDENCY_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.yarn.dependency.types.excluded", NoneEnum.NONE, YarnDependencyType.class)
             .setInfo("Yarn Dependency Types Excluded", DetectPropertyFromVersion.VERSION_4_0_0)
-            .setHelp("Set this value to indicate which Yarn dependency types Detect should exclude from the BOM. By default, all dependency types will be reported.")
+            .setHelp(createDefaultDrivenPropertyHelpText("Yarn dependency types", "detect.yarn.prod.only"))
             .setExample(YarnDependencyType.NON_PRODUCTION.name())
             .setGroups(DetectGroup.YARN, DetectGroup.SOURCE_SCAN)
             .build();
@@ -1748,9 +1753,22 @@ public class DetectProperties {
             .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_PNPM_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
             .build();
 
+    // TODO: Revise in 8.0.0
+    // Can't take in the DetectProperty<?> due to an illegal forward reference :(
+    private static String createDefaultDrivenPropertyHelpText(String exclusionTypePlural, String... propertyKeysDrivingDefaults) {
+        String defaults = StringUtils.join(propertyKeysDrivingDefaults, ", ");
+        return String.format(
+            "Set this value to indicate which %s Detect should exclude from the BOM. Currently if this property is not set, the default value is driven by the default values of these properties: %s. In version 8.0.0, all %s will be reported by default.",
+            exclusionTypePlural,
+            defaults,
+            exclusionTypePlural
+        );
+    }
+
     // TODO: Remove in 8.0.0
     private static String createDetectorPropertyDeprecationMessage(@NotNull Property replacementProperty) {
-        return String.format("This property is being removed in favor of %s. If the replacement property is set, this property is ignored.", replacementProperty.getKey());
+        return String.format("This property is being removed in favor of %s. If the replacement property is set, this property is ignored. The default value of this property is used if both properties are not set.",
+            replacementProperty.getKey());
     }
 
     // Accessor to get all properties
