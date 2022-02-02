@@ -3,6 +3,7 @@ package com.synopsys.integration.detectable.detectables.cargo;
 import java.io.File;
 import java.io.IOException;
 
+import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
@@ -49,7 +50,7 @@ public class CargoDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws IOException, CycleDetectedException, DetectableException {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws IOException, CycleDetectedException, DetectableException, MissingExternalIdException {
         return cargoExtractor.extract(cargoLock, cargoToml);
     }
 }
