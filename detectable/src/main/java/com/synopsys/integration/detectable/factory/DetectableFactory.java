@@ -45,7 +45,6 @@ import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOpti
 import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
 import com.synopsys.integration.detectable.detectables.bazel.BazelProjectNameGenerator;
 import com.synopsys.integration.detectable.detectables.bazel.BazelWorkspaceFileParser;
-import com.synopsys.integration.detectable.detectables.bazel.DependencyTransformer;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.WorkspaceRuleChooser;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelVariableSubstitutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.HaskellCabalLibraryJsonProtoParser;
@@ -550,10 +549,9 @@ public class DetectableFactory {
         BazelWorkspaceFileParser bazelWorkspaceFileParser = new BazelWorkspaceFileParser();
         HaskellCabalLibraryJsonProtoParser haskellCabalLibraryJsonProtoParser = new HaskellCabalLibraryJsonProtoParser(gson);
         BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor(bazelDetectableOptions.getTargetName().orElse(null), bazelDetectableOptions.getBazelCqueryAdditionalOptions());
-        DependencyTransformer dependencyTransformer = new DependencyTransformer();
         BazelProjectNameGenerator bazelProjectNameGenerator = new BazelProjectNameGenerator();
         return new BazelExtractor(executableRunner, externalIdFactory, bazelWorkspaceFileParser, workspaceRuleChooser, toolVersionLogger, haskellCabalLibraryJsonProtoParser,
-            bazelDetectableOptions.getTargetName().orElse(null), bazelDetectableOptions.getBazelDependencyRules(), bazelVariableSubstitutor, dependencyTransformer,
+            bazelDetectableOptions.getTargetName().orElse(null), bazelDetectableOptions.getBazelDependencyRules(), bazelVariableSubstitutor,
             bazelProjectNameGenerator);
     }
 

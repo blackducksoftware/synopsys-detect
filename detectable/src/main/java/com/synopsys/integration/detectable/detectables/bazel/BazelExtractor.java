@@ -16,6 +16,8 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
+import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.ExecutableTarget;
@@ -42,7 +44,6 @@ public class BazelExtractor {
     private final String bazelTarget;
     private final Set<WorkspaceRule> providedDependencyRuleTypes;
     private final BazelVariableSubstitutor bazelVariableSubstitutor;
-    private final DependencyTransformer dependencyTransformer;
     private final BazelProjectNameGenerator bazelProjectNameGenerator;
 
     public BazelExtractor(DetectableExecutableRunner executableRunner,
@@ -54,7 +55,6 @@ public class BazelExtractor {
         String bazelTarget,
         Set<WorkspaceRule> providedDependencyRuleTypes,
         BazelVariableSubstitutor bazelVariableSubstitutor,
-        DependencyTransformer dependencyTransformer,
         BazelProjectNameGenerator bazelProjectNameGenerator) {
         this.executableRunner = executableRunner;
         this.externalIdFactory = externalIdFactory;
@@ -65,7 +65,6 @@ public class BazelExtractor {
         this.bazelTarget = bazelTarget;
         this.providedDependencyRuleTypes = providedDependencyRuleTypes;
         this.bazelVariableSubstitutor = bazelVariableSubstitutor;
-        this.dependencyTransformer = dependencyTransformer;
         this.bazelProjectNameGenerator = bazelProjectNameGenerator;
     }
 
@@ -75,8 +74,7 @@ public class BazelExtractor {
         Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor, externalIdFactory, haskellCabalLibraryJsonProtoParser);
         Set<WorkspaceRule> workspaceRulesFromFile = parseWorkspaceRulesFromFile(workspaceFile);
         Set<WorkspaceRule> workspaceRulesToQuery = workspaceRuleChooser.choose(workspaceRulesFromFile, providedDependencyRuleTypes);
-        List<Dependency> aggregatedDependencies = collectDependencies(pipelines, workspaceRulesToQuery);
-        CodeLocation codeLocation = dependencyTransformer.createCodeLocation(aggregatedDependencies);
+        CodeLocation codeLocation = generateCodelocation(pipelines, workspaceRulesToQuery);
         return buildResults(codeLocation, bazelProjectNameGenerator.generateFromBazelTarget(bazelTarget));
     }
 
@@ -100,7 +98,7 @@ public class BazelExtractor {
     }
 
     @NotNull
-    private List<Dependency> collectDependencies(Pipelines pipelines, Set<WorkspaceRule> workspaceRules) throws DetectableException, ExecutableFailedException {
+    private CodeLocation generateCodelocation(Pipelines pipelines, Set<WorkspaceRule> workspaceRules) throws DetectableException, ExecutableFailedException {
         List<Dependency> aggregatedDependencies = new ArrayList<>();
         // Make sure the order of processing deterministic
         List<WorkspaceRule> sortedWorkspaceRules = workspaceRules.stream()
@@ -114,6 +112,18 @@ public class BazelExtractor {
             logger.debug("Dependencies discovered for rule {}: {}}", workspaceRule, ruleDependencies);
             aggregatedDependencies.addAll(ruleDependencies);
         }
-        return aggregatedDependencies;
+        return createCodeLocation(aggregatedDependencies);
+    }
+
+    private CodeLocation createCodeLocation(List<Dependency> dependencies) {
+        MutableDependencyGraph dependencyGraph = createDependencyGraph(dependencies);
+        return new CodeLocation(dependencyGraph);
+    }
+
+    @NotNull
+    private MutableDependencyGraph createDependencyGraph(List<Dependency> dependencies) {
+        MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
+        dependencies.forEach(dependencyGraph::addChildToRoot);
+        return dependencyGraph;
     }
 }
