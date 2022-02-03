@@ -12,6 +12,8 @@ import com.synopsys.integration.detectable.detectable.executable.DetectableExecu
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 
 public class GoModCommandExecutor {
+    // java:S5852: Warning about potential DoS risk.
+    @SuppressWarnings({ "java:S5852" })
     private static final Pattern GENERATE_GO_LIST_JSON_OUTPUT_PATTERN = Pattern.compile("\\d+\\.[\\d.]+"); // TODO: Provide example. This looks like it's used for version matching contrary to the name. JM-01/2022
     private static final String JSON_OUTPUT_FLAG = "-json";
     private static final String MODULE_OUTPUT_FLAG = "-m";
