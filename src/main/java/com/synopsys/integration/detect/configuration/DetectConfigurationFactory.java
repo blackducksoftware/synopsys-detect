@@ -21,7 +21,7 @@ import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersi
 import com.synopsys.integration.blackduck.api.manual.temporary.enumeration.ProjectVersionPhaseType;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.IndividualFileMatching;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
+import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumCollection;
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumList;
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumValue;
@@ -168,7 +168,7 @@ public class DetectConfigurationFactory {
     public BlackDuckConnectionDetails createBlackDuckConnectionDetails() throws DetectUserFriendlyException {
         Boolean offline = detectConfiguration.getValue(DetectProperties.BLACKDUCK_OFFLINE_MODE);
         String blackduckUrl = detectConfiguration.getNullableValue(DetectProperties.BLACKDUCK_URL);
-        Set<String> allBlackDuckKeys = new BlackDuckServerConfigBuilder().getPropertyKeys().stream()
+        Set<String> allBlackDuckKeys = BlackDuckServerConfig.newApiTokenBuilder().getPropertyKeys().stream()
             .filter(it -> !(it.toLowerCase().contains("proxy")))
             .collect(Collectors.toSet());
         Map<String, String> blackDuckProperties = detectConfiguration.getRaw(allBlackDuckKeys);
