@@ -129,8 +129,9 @@ dependencies {
     implementation 'com.synopsys:method-analyzer-core:0.1.0'
 
     implementation 'org.apache.maven.shared:maven-invoker:3.0.0'
-    implementation "org.springframework.boot:spring-boot"
-    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation("org.springframework.boot:spring-boot-starter") {
+
+    }
     implementation 'org.yaml:snakeyaml:1.27'
     implementation 'org.zeroturnaround:zt-zip:1.13'
     implementation 'org.freemarker:freemarker:2.3.26-incubating'
