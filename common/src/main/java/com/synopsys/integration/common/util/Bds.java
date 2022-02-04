@@ -22,7 +22,7 @@ import org.apache.commons.lang3.tuple.Pair;
 //Black Duck Stream
 // TODO: Test this class.
 public class Bds<T> {
-    private Stream<T> stream;
+    Stream<T> stream;
 
     public Bds(Stream<T> stream) {
         this.stream = stream;
@@ -70,6 +70,10 @@ public class Bds<T> {
     public <R> Bds<R> flatMap(Function<? super T, ? extends Collection<? extends R>> mapper) {
         Function<? super T, ? extends Stream<? extends R>> streamMapper = value -> mapper.apply(value).stream();
         return new Bds<>(stream.flatMap(streamMapper));
+    }
+
+    public <K, V> BdsPair<K, V> flatMapToPairs(Function<? super T, ? extends Stream<? extends Pair<K, V>>> mapper) {
+        return new BdsPair<>(stream.flatMap(mapper));
     }
 
     public void forEach(Consumer<T> consumer) {
