@@ -5,6 +5,7 @@
 ### New features
 
 * Added a feature that allows users to set a license for a project version using the property [detect.project.version.license](properties/configuration/project.md#project-version-license).
+* Added support for identifying dependency relationships between linux package manager components.
 
 ### Changed features
 
