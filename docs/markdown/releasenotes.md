@@ -15,6 +15,7 @@
 
 * (IDETECT-2925) Resolved an issue that could cause the Bitbake detector to incorrectly identify the layer of a dependency recipe.
 * (IDETECT-3080) Fixed an issue where [solution_name] would not include multiple versions of the same package in Cargo projects.
+* (IDETECT-3012) Resolved an issue that caused [solution_name] to incorrectly use BLACKDUCK_USERNAME and BLACKDUCK_PASSWORD.
 
 ## Version 7.10.0
 
