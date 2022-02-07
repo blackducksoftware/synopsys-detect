@@ -24,7 +24,7 @@ import com.synopsys.integration.log.PrintStreamIntLogger;
 public class VerifyBlackDuckDetectTask extends DefaultTask {
     @TaskAction
     public void verifyBlackDuckAction() throws IntegrationException {
-        BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = BlackDuckServerConfig.newBuilder();
+        BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = BlackDuckServerConfig.newApiTokenBuilder();
         Set<String> environmentKeys = blackDuckServerConfigBuilder.getEnvironmentVariableKeys();
         environmentKeys.forEach(it -> {
             String value = System.getenv().get(it);

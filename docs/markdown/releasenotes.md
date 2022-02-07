@@ -5,6 +5,7 @@
 ### New features
 
 * Added a feature that allows users to set a license for a project version using the property [detect.project.version.license](properties/configuration/project.md#project-version-license).
+* Added support for identifying dependency relationships between linux package manager components in images.
 
 ### Changed features
 
@@ -15,6 +16,7 @@
 
 * (IDETECT-2925) Resolved an issue that could cause the Bitbake detector to incorrectly identify the layer of a dependency recipe.
 * (IDETECT-3080) Fixed an issue where [solution_name] would not include multiple versions of the same package in Cargo projects.
+* (IDETECT-3012) Resolved an issue that caused [solution_name] to incorrectly use BLACKDUCK_USERNAME and BLACKDUCK_PASSWORD.
 
 ## Version 7.10.0
 
