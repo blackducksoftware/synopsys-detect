@@ -203,8 +203,8 @@ public class DetectProperties {
 
     public static final AllNoneEnumListProperty<WorkspaceRule> DETECT_BAZEL_WORKSPACE_RULES =
         AllNoneEnumListProperty.newBuilder("detect.bazel.workspace.rules", emptyList(), WorkspaceRule.class)
-            .setInfo("Bazel workspace external dependency rule", DetectPropertyFromVersion.VERSION_7_12_0)
-            .setHelp("The Bazel workspace rule(s) used to pull in external dependencies. If not set, Detect will attempt to determine the rule(s) from the contents of the WORKSPACE file.")
+            .setInfo("Bazel workspace rules override", DetectPropertyFromVersion.VERSION_7_12_0)
+            .setHelp("By default Detect discovers Bazel dependencies using all of the supported Bazel workspace rules that it finds in the WORKSPACE file. Alternatively you can use this property to specify the list of Bazel workspace rules Detect should use.")
             .setGroups(DetectGroup.BAZEL, DetectGroup.SOURCE_SCAN)
             .build();
 
