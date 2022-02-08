@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.clang.dependencyfile;
 
 import java.io.File;
@@ -28,11 +21,11 @@ public class DependencyFileDetailGenerator {
     public Set<File> fromCompileCommands(List<CompileCommand> compileCommands, File outputDirectory, boolean cleanup) {
 
         Set<File> dependencyFiles = compileCommands.parallelStream()
-                                              .flatMap(command -> filePathGenerator.fromCompileCommand(outputDirectory, command, cleanup).stream())
-                                              .filter(StringUtils::isNotBlank)
-                                              .map(File::new)
-                                              .filter(File::exists)
-                                              .collect(Collectors.toSet());
+            .flatMap(command -> filePathGenerator.fromCompileCommand(outputDirectory, command, cleanup).stream())
+            .filter(StringUtils::isNotBlank)
+            .map(File::new)
+            .filter(File::exists)
+            .collect(Collectors.toSet());
 
         logger.trace("Found : " + dependencyFiles.size() + " files to process.");
 

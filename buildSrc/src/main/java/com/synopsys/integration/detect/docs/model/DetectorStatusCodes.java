@@ -1,10 +1,3 @@
-/*
- * buildSrc
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.docs.model;
 
 import java.util.ArrayList;
@@ -16,9 +9,9 @@ import java.util.Set;
 import com.synopsys.integration.detect.docs.copied.HelpJsonDetectorStatusCode;
 
 public class DetectorStatusCodes {
-    private Set<HelpJsonDetectorStatusCode> statusCodes;
+    private final Set<HelpJsonDetectorStatusCode> statusCodes;
 
-    public DetectorStatusCodes(final List<HelpJsonDetectorStatusCode> statusCodes) {
+    public DetectorStatusCodes(List<HelpJsonDetectorStatusCode> statusCodes) {
         this.statusCodes = new HashSet<>(statusCodes);
     }
 
@@ -30,7 +23,7 @@ public class DetectorStatusCodes {
 
     private static class HelpJsonDetectorStatusCodeComparator implements Comparator<HelpJsonDetectorStatusCode> {
         @Override
-        public int compare(final HelpJsonDetectorStatusCode o1, final HelpJsonDetectorStatusCode o2) {
+        public int compare(HelpJsonDetectorStatusCode o1, HelpJsonDetectorStatusCode o2) {
             return o1.getStatusCode().compareTo(o2.getStatusCode());
         }
     }

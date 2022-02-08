@@ -49,12 +49,12 @@ public class BatteryContext {
     private final String testName;
     private final String resourcePrefix;
 
-    public BatteryContext(final String testName) {
+    public BatteryContext(String testName) {
         this.testName = testName;
         this.resourcePrefix = testName;
     }
 
-    public BatteryContext(final String testName, final String resourcePrefix) {
+    public BatteryContext(String testName, String resourcePrefix) {
         this.testName = testName;
         this.resourcePrefix = resourcePrefix;
     }
@@ -95,8 +95,8 @@ public class BatteryContext {
 
     private List<String> prefixResources(String... resourceFiles) {
         return Arrays.stream(resourceFiles)
-                   .map(it -> "/" + this.resourcePrefix + "/" + it)
-                   .collect(Collectors.toList());
+            .map(it -> "/" + this.resourcePrefix + "/" + it)
+            .collect(Collectors.toList());
     }
 
     private void initializeDirectories() throws IOException {
@@ -223,7 +223,7 @@ public class BatteryContext {
 
     public void git(String origin, String branch) {
         sourceFileNamed(".git");
-        executable(DetectProperties.DETECT_GIT_PATH.getProperty(), origin, branch);
+        executable(DetectProperties.DETECT_GIT_PATH, origin, branch);
     }
 
     public void sourceFileNamed(String filename) {

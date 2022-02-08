@@ -1,13 +1,7 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.bitbake.parse;
 
 import java.util.Optional;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -15,21 +9,27 @@ import com.paypal.digraph.parser.GraphEdge;
 import com.paypal.digraph.parser.GraphNode;
 import com.paypal.digraph.parser.GraphParser;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
+import com.synopsys.integration.exception.IntegrationException;
 
 public class GraphParserTransformer {
-    public BitbakeGraph transform(GraphParser graphParser) {
+    private final GraphNodeLabelParser graphNodeLabelParser;
+
+    public GraphParserTransformer(GraphNodeLabelParser graphNodeLabelParser) {
+        this.graphNodeLabelParser = graphNodeLabelParser;
+    }
+
+    public BitbakeGraph transform(GraphParser graphParser, Set<String> layerNames) throws IntegrationException {
         BitbakeGraph bitbakeGraph = new BitbakeGraph();
 
         for (GraphNode graphNode : graphParser.getNodes().values()) {
-            String name = getNameFromNode(graphNode);
-            getVersionFromNode(graphNode).ifPresent(
-                    version -> bitbakeGraph.addNode(name, version)
-            );
+            String name = parseNameFromNode(graphNode);
+            Optional<String> layer = parseLayerFromNode(graphNode, layerNames);
+            parseVersionFromNode(graphNode).ifPresent(ver -> bitbakeGraph.addNode(name, ver, layer.orElse(null)));
         }
 
         for (GraphEdge graphEdge : graphParser.getEdges().values()) {
-            String parent = getNameFromNode(graphEdge.getNode1());
-            String child = getNameFromNode(graphEdge.getNode2());
+            String parent = parseNameFromNode(graphEdge.getNode1());
+            String child = parseNameFromNode(graphEdge.getNode2());
             if (!parent.equals(child)) {
                 bitbakeGraph.addChild(parent, child);
             }
@@ -38,29 +38,36 @@ public class GraphParserTransformer {
         return bitbakeGraph;
     }
 
-    private String getNameFromNode(GraphNode graphNode) {
+    private String parseNameFromNode(GraphNode graphNode) {
         String[] nodeIdPieces = graphNode.getId().split(".do_");
         return nodeIdPieces[0].replace("\"", "");
     }
 
-    private Optional<String> getVersionFromNode(GraphNode graphNode) {
-        Optional<String> attribute = getLabelAttribute(graphNode);
-        return attribute.map(this::getVersionFromLabel);
+    private Optional<String> parseVersionFromNode(GraphNode graphNode) throws IntegrationException {
+        Optional<String> labelValue = getLabelAttribute(graphNode);
+        if (labelValue.isPresent()) {
+            return Optional.of(graphNodeLabelParser.parseVersionFromLabel(labelValue.get()));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    private Optional<String> parseLayerFromNode(GraphNode graphNode, Set<String> knownLayerNames) throws IntegrationException {
+        Optional<String> labelAttribute = getLabelAttribute(graphNode);
+        if (labelAttribute.isPresent()) {
+            return Optional.of(graphNodeLabelParser.parseLayerFromLabel(labelAttribute.get(), knownLayerNames));
+        } else {
+            return Optional.empty();
+        }
     }
 
     private Optional<String> getLabelAttribute(GraphNode graphNode) {
-        String attribute = (String) graphNode.getAttribute("label");
+        String labelValue = (String) graphNode.getAttribute("label");
         Optional<String> result = Optional.empty();
 
-        if (StringUtils.isNotBlank(attribute)) {
-            result = Optional.of(attribute);
+        if (StringUtils.isNotBlank(labelValue)) {
+            result = Optional.of(labelValue);
         }
-
         return result;
-    }
-
-    private String getVersionFromLabel(String label) {
-        String[] components = label.split("\\\\n:|\\\\n");
-        return components[1];
     }
 }

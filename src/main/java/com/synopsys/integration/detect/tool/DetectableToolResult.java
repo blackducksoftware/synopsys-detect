@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool;
 
 import java.util.Collections;
@@ -35,8 +28,8 @@ public class DetectableToolResult {
     @Nullable
     private final DetectableResult failedExtractableResult;
 
-    public DetectableToolResult(final DetectableToolResultType resultType, @Nullable final DetectToolProjectInfo detectToolProjectInfo, final List<DetectCodeLocation> detectCodeLocations, @Nullable final DockerTargetData dockerTargetData,
-        @Nullable final DetectableResult failedExtractableResult) {
+    public DetectableToolResult(DetectableToolResultType resultType, @Nullable DetectToolProjectInfo detectToolProjectInfo, List<DetectCodeLocation> detectCodeLocations, @Nullable DockerTargetData dockerTargetData,
+        @Nullable DetectableResult failedExtractableResult) {
         this.resultType = resultType;
         this.detectToolProjectInfo = detectToolProjectInfo;
         this.detectCodeLocations = detectCodeLocations;
@@ -58,7 +51,7 @@ public class DetectableToolResult {
         return failed(null);
     }
 
-    public static DetectableToolResult success(final List<DetectCodeLocation> codeLocations, @Nullable final DetectToolProjectInfo projectInfo, @Nullable final DockerTargetData dockerTargetData) {
+    public static DetectableToolResult success(List<DetectCodeLocation> codeLocations, @Nullable DetectToolProjectInfo projectInfo, @Nullable DockerTargetData dockerTargetData) {
         return new DetectableToolResult(DetectableToolResultType.SUCCESS, projectInfo, codeLocations, dockerTargetData, null);
     }
 

@@ -1,10 +1,3 @@
-/*
- * buildSrc
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.docs.copied;
 
 import java.util.ArrayList;
@@ -22,7 +15,7 @@ public class HelpJsonData {
         return exitCodes;
     }
 
-    public void setExitCodes(final List<HelpJsonExitCode> exitCodes) {
+    public void setExitCodes(List<HelpJsonExitCode> exitCodes) {
         this.exitCodes = exitCodes;
     }
 
@@ -30,7 +23,7 @@ public class HelpJsonData {
         return buildDetectors;
     }
 
-    public void setBuildDetectors(final List<HelpJsonDetector> buildDetectors) {
+    public void setBuildDetectors(List<HelpJsonDetector> buildDetectors) {
         this.buildDetectors = buildDetectors;
     }
 
@@ -38,7 +31,7 @@ public class HelpJsonData {
         return buildlessDetectors;
     }
 
-    public void setBuildlessDetectors(final List<HelpJsonDetector> buildlessDetectors) {
+    public void setBuildlessDetectors(List<HelpJsonDetector> buildlessDetectors) {
         this.buildlessDetectors = buildlessDetectors;
     }
 
@@ -46,7 +39,7 @@ public class HelpJsonData {
         return options;
     }
 
-    public void setOptions(final List<HelpJsonOption> options) {
+    public void setOptions(List<HelpJsonOption> options) {
         this.options = options;
     }
 
@@ -54,7 +47,7 @@ public class HelpJsonData {
         return detectorStatusCodes;
     }
 
-    public void setDetectorStatusCodes(final List<HelpJsonDetectorStatusCode> detectorStatusCodes) {
+    public void setDetectorStatusCodes(List<HelpJsonDetectorStatusCode> detectorStatusCodes) {
         this.detectorStatusCodes = detectorStatusCodes;
     }
 }

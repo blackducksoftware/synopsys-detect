@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse;
 
 public enum GemspecDependencyType {
@@ -16,7 +9,7 @@ public enum GemspecDependencyType {
 
     private final String token;
 
-    GemspecDependencyType(final String token) {
+    GemspecDependencyType(String token) {
         this.token = token;
     }
 

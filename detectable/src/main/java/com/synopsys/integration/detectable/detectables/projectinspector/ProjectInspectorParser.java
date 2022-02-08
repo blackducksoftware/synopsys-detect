@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.projectinspector;
 
 import java.io.File;
@@ -42,8 +35,8 @@ public class ProjectInspectorParser {
         ProjectInspectorOutput projectInspectorOutput = gson.fromJson(inspectionOutput, ProjectInspectorOutput.class);
 
         return projectInspectorOutput.modules.values().stream()
-                   .map(this::codeLocationFromModule)
-                   .collect(Collectors.toList());
+            .map(this::codeLocationFromModule)
+            .collect(Collectors.toList());
     }
 
     public CodeLocation codeLocationFromModule(ProjectInspectorModule module) {
@@ -63,7 +56,7 @@ public class ProjectInspectorParser {
                     mutableDependencyGraph.addChildWithParent(dependency, lookup.get(parent));
                 } else { //Theoretically should not happen according to PI devs. -jp
                     throw new RuntimeException("An error occurred reading the project inspector output." +
-                                                   " An unknown parent dependency was encountered '" + parent + "' while including dependency '" + moduleDependency.name + "'.");
+                        " An unknown parent dependency was encountered '" + parent + "' while including dependency '" + moduleDependency.name + "'.");
                 }
             });
         });

@@ -5,8 +5,8 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.paypal.digraph.parser.GraphNode;
 import com.paypal.digraph.parser.GraphParser;
@@ -15,19 +15,18 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotGraphNodeParser;
 
-@SuppressWarnings("OptionalGetWithoutIsPresent")
 public class SbtDotGraphNodeParserTest {
 
     @Test
     public void canParseSimpleGraph() {
         String simpleGraph = "digraph \"dependency-graph\" {\n"
-                                 + "    graph[rankdir=\"LR\"]\n"
-                                 + "    edge [\n"
-                                 + "        arrowtail=\"none\"\n"
-                                 + "    ]\n"
-                                 + "    \"org.scalameta:scalafmtroot_2.13:2.7.5-SNAPSHOT\"[label=<org.scalameta<BR/><B>scalafmtroot_2.13</B><BR/>2.7.5-SNAPSHOT> style=\"\"]\n"
-                                 + "\n"
-                                 + "}";
+            + "    graph[rankdir=\"LR\"]\n"
+            + "    edge [\n"
+            + "        arrowtail=\"none\"\n"
+            + "    ]\n"
+            + "    \"org.scalameta:scalafmtroot_2.13:2.7.5-SNAPSHOT\"[label=<org.scalameta<BR/><B>scalafmtroot_2.13</B><BR/>2.7.5-SNAPSHOT> style=\"\"]\n"
+            + "\n"
+            + "}";
         InputStream stream = new ByteArrayInputStream(simpleGraph.getBytes(StandardCharsets.UTF_8));
         GraphParser graphParser = new GraphParser(stream);
 

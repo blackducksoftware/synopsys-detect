@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.nameversion.decision;
 
 import java.util.List;
@@ -20,7 +13,7 @@ public class ArbitraryNameVersionDecision extends NameVersionDecision {
     private final DetectorProjectInfo chosenDetector;
     private final List<DetectorProjectInfo> otherDetectors;
 
-    public ArbitraryNameVersionDecision(@Nullable final NameVersion nameVersion, final DetectorProjectInfo chosenDetector, final List<DetectorProjectInfo> otherDetectors) {
+    public ArbitraryNameVersionDecision(@Nullable NameVersion nameVersion, DetectorProjectInfo chosenDetector, List<DetectorProjectInfo> otherDetectors) {
         super(nameVersion);
         this.chosenDetector = chosenDetector;
         this.otherDetectors = otherDetectors;
@@ -35,13 +28,13 @@ public class ArbitraryNameVersionDecision extends NameVersionDecision {
     }
 
     @Override
-    public void printDescription(final Logger logger) {
+    public void printDescription(Logger logger) {
         logger.info("The following project names were found: ");
         logger.info(String.format("\t%s: %s, %s",
             chosenDetector.getDetectorType().name(),
             chosenDetector.getNameVersion().getName(),
             chosenDetector.getNameVersion().getVersion()));
-        for (final DetectorProjectInfo projectNamePossibility : otherDetectors) {
+        for (DetectorProjectInfo projectNamePossibility : otherDetectors) {
             logger.info(String.format("\t%s: %s, %s",
                 projectNamePossibility.getDetectorType().name(),
                 projectNamePossibility.getNameVersion().getName(),
@@ -51,7 +44,7 @@ public class ArbitraryNameVersionDecision extends NameVersionDecision {
         logger.info(String.format("Chose to use %s at depth %d for project name and version. Override with %s.",
             chosenDetector.getDetectorType().name(),
             chosenDetector.getDepth(),
-             DetectProperties.DETECT_PROJECT_DETECTOR.getProperty().getKey()
+            DetectProperties.DETECT_PROJECT_DETECTOR.getKey()
         ));
 
     }

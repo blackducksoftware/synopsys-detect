@@ -1,19 +1,12 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.cocoapods;
 
 import java.io.File;
 
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
@@ -28,7 +21,7 @@ public class PodlockDetectable extends Detectable {
 
     private File foundPodlock;
 
-    public PodlockDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final PodlockExtractor podlockExtractor) {
+    public PodlockDetectable(DetectableEnvironment environment, FileFinder fileFinder, PodlockExtractor podlockExtractor) {
         super(environment);
         this.fileFinder = fileFinder;
         this.podlockExtractor = podlockExtractor;
@@ -47,7 +40,7 @@ public class PodlockDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         return podlockExtractor.extract(foundPodlock);
     }
 

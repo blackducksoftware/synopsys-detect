@@ -1,5 +1,7 @@
 import com.synopsys.integration.detect.docs.GenerateDocsTask
 
+import java.awt.*
+
 task helpJson(type: JavaExec) {
     dependsOn build
 
@@ -13,6 +15,10 @@ task generateDocs(type: GenerateDocsTask) {
     dependsOn helpJson
 }
 
+String findDita() {
+    return System.getProperty("os.name").toLowerCase().contains("windows") ? 'dita.bat' : 'dita';
+}
+
 // Requires Synopsys-configured dita:
 // 1. git clone https://sig-gitlab.internal.synopsys.com/doc/docs-dita-tools.git
 // 2. Add docs-dita-tools/dita-ot/bin to your PATH
@@ -21,16 +27,26 @@ task ditasite() {
 
     doLast {
         ByteArrayOutputStream stdOut = new ByteArrayOutputStream()
+        ByteArrayOutputStream stdError = new ByteArrayOutputStream()
         exec {
-            commandLine 'dita', '-v', '--input=detect.ditamap', '--format=sig-webhelp', '-o', '../ditasite'
+            commandLine findDita(), '-v', '--input=detect.ditamap', '--format=sig-webhelp', '-o', '../ditasite'
             workingDir "docs/generated"
             standardOutput = stdOut
+            errorOutput = stdError
         }
+	for (String outputLine: stdError.toString().split('\n')) {
+	    if (outputLine.matches(".*File.*file:.*not found.*"))
+		throw new Exception("dita error: invalid link: " + outputLine)
+	}
 	for (String outputLine: stdOut.toString().split('\n')) {
+	    if (outputLine.matches(".*\\[DOT.*\\].*\\[ERROR\\].*"))
+		throw new Exception("dita error. To run dita by hand: cd docs/generated; dita --input detect.ditamap --format=sig-webhelp --output=../ditasite -v")
+
 	    if (outputLine.matches(".*\\[keyref\\].*\\[DOTJ047I\\].*"))
-		throw new Exception("dita found invalid key references. Square brackets around doc text must be escaped if not inside back quotes.")
+		throw new Exception("dita found invalid key references. Square brackets around doc text must be escaped if not inside back quotes. To run dita by hand: cd docs/generated; dita --input detect.ditamap --format=sig-webhelp --output=../ditasite -v")
 	}
         println "To browse the webhelp: Open docs/ditasite/index.html in a browser"
+        //Desktop.desktop.browse file("docs/ditasite/index.html").toURI()
     }
 }
 
@@ -78,3 +94,10 @@ task helpzip(type: Zip) {
 task docs() {
     dependsOn ditasite
 }
+
+task cleanDocs(type: Delete) {
+  delete 'docs/generated', 'docs/ditasite'
+  followSymlinks = false
+}
+
+clean.dependsOn cleanDocs

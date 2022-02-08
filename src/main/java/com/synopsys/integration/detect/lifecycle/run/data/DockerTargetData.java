@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.lifecycle.run.data;
 
 import java.io.File;
@@ -26,7 +19,7 @@ public class DockerTargetData {
 
     public static DockerTargetData NO_DOCKER_TARGET = new DockerTargetData(null, null, null);
 
-    public DockerTargetData(@Nullable final File squashedImage, @Nullable final File containerFilesystem, @Nullable File providedImageTar) {
+    public DockerTargetData(@Nullable File squashedImage, @Nullable File containerFilesystem, @Nullable File providedImageTar) {
         this.squashedImage = squashedImage;
         this.containerFilesystem = containerFilesystem;
         this.providedImageTar = providedImageTar;

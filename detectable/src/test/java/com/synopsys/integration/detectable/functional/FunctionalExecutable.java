@@ -22,15 +22,15 @@ public class FunctionalExecutable {
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o)
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        final FunctionalExecutable that = (FunctionalExecutable) o;
+        FunctionalExecutable that = (FunctionalExecutable) o;
         return Objects.equals(workingDirectory, that.workingDirectory) &&
-                   Objects.equals(environmentVariables, that.environmentVariables) &&
-                   Objects.equals(commandWithArguments, that.commandWithArguments);
+            Objects.equals(environmentVariables, that.environmentVariables) &&
+            Objects.equals(commandWithArguments, that.commandWithArguments);
     }
 
     @Override

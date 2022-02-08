@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.configuration.help.print;
 
 import java.io.PrintStream;
@@ -15,16 +8,17 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.configuration.property.Property;
+import com.synopsys.integration.configuration.property.deprecation.DeprecatedValueInfo;
 import com.synopsys.integration.configuration.util.Group;
 import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
 
 public class HelpPrinter {
     private static final String DIAGNOSTIC_HELP_TEXT = "\nDiagnostics mode:\n\n" +
-                                                           "In diagnostics mode, Detect will produce a diagnostics zip file that contains a collection of intermediate and output files\n" +
-                                                           "that can be very useful for troubleshooting. Extended diagnostics mode writes additional files to the diagnostics zip file.\n" +
-                                                           "Invoke diagnostics mode by adding -d (diagnostics mode) or -de (extended diagnostics mode) to the command line.\n" +
-                                                           "The path to the generated diagnostics file can be found in the log (look for: \"Diagnostics file created at: ...\").\n" +
-                                                           "The diagnostics file can be large, so you may want to generate it only when you will actually use it.\n";
+        "In diagnostics mode, Detect will produce a diagnostics zip file that contains a collection of intermediate and output files\n" +
+        "that can be very useful for troubleshooting. Extended diagnostics mode writes additional files to the diagnostics zip file.\n" +
+        "Invoke diagnostics mode by adding -d (diagnostics mode) or -de (extended diagnostics mode) to the command line.\n" +
+        "The path to the generated diagnostics file can be found in the log (look for: \"Diagnostics file created at: ...\").\n" +
+        "The diagnostics file can be large, so you may want to generate it only when you will actually use it.\n";
 
     private static final Comparator<Property> SORT_BY_GROUP_THEN_KEY = (o1, o2) -> {
         if (o1.getPropertyGroupInfo().getPrimaryGroup().getName().equals(o2.getPropertyGroupInfo().getPrimaryGroup().getName())) {
@@ -34,15 +28,15 @@ public class HelpPrinter {
         }
     };
 
-    public void printAppropriateHelpMessage(final PrintStream printStream, final List<Property> allOptions, List<Group> allGroups, Group defaultGroup, final DetectArgumentState state) {
-        final HelpTextWriter writer = new HelpTextWriter();
+    public void printAppropriateHelpMessage(PrintStream printStream, List<Property> allOptions, List<Group> allGroups, Group defaultGroup, DetectArgumentState state) {
+        HelpTextWriter writer = new HelpTextWriter();
 
-        final List<Property> currentOptions = allOptions.stream()
-                                                  .filter(it -> it.getPropertyDeprecationInfo() == null)
-                                                  .collect(Collectors.toList());
-        final List<Property> deprecatedOptions = allOptions.stream()
-                                                     .filter(it -> it.getPropertyDeprecationInfo() != null)
-                                                     .collect(Collectors.toList());
+        List<Property> currentOptions = allOptions.stream()
+            .filter(it -> it.getPropertyDeprecationInfo() == null)
+            .collect(Collectors.toList());
+        List<Property> deprecatedOptions = allOptions.stream()
+            .filter(it -> it.getPropertyDeprecationInfo() != null)
+            .collect(Collectors.toList());
 
         if (state.isVerboseHelp()) {
             printOptions(writer, currentOptions, null);
@@ -69,10 +63,10 @@ public class HelpPrinter {
         writer.write(printStream);
     }
 
-    private void printDetailedHelp(final HelpTextWriter writer, final List<Property> options, final String optionName) {
-        final Property option = options.stream()
-                                    .filter(it -> it.getKey().equals(optionName))
-                                    .findFirst().orElse(null);
+    private void printDetailedHelp(HelpTextWriter writer, List<Property> options, String optionName) {
+        Property option = options.stream()
+            .filter(it -> it.getKey().equals(optionName))
+            .findFirst().orElse(null);
 
         if (option == null) {
             writer.println("Could not find option named: " + optionName);
@@ -81,58 +75,66 @@ public class HelpPrinter {
         }
     }
 
-    private void printHelpFilteredByPrintGroup(final HelpTextWriter writer, final List<Property> options, final String filterGroup) {
-        final String notes = "Showing help only for: " + filterGroup;
+    private void printHelpFilteredByPrintGroup(HelpTextWriter writer, List<Property> options, String filterGroup) {
+        String notes = "Showing help only for: " + filterGroup;
 
-        final List<Property> filteredOptions = options.stream()
-                                                   .filter(detectOption -> optionMatchesFilterGroup(detectOption, filterGroup))
-                                                   .collect(Collectors.toList());
+        List<Property> filteredOptions = options.stream()
+            .filter(detectOption -> optionMatchesFilterGroup(detectOption, filterGroup))
+            .collect(Collectors.toList());
 
         printOptions(writer, filteredOptions, notes);
     }
 
-    private boolean optionMatchesFilterGroup(final Property property, final String filterGroup) {
+    private boolean optionMatchesFilterGroup(Property property, String filterGroup) {
 
-        final boolean primaryMatches = property.getPropertyGroupInfo().getPrimaryGroup().getName().equalsIgnoreCase(filterGroup);
-        final boolean additionalMatches = property.getPropertyGroupInfo().getAdditionalGroups().stream()
-                                              .anyMatch(printGroup -> printGroup.getName().equalsIgnoreCase(filterGroup));
+        boolean primaryMatches = property.getPropertyGroupInfo().getPrimaryGroup().getName().equalsIgnoreCase(filterGroup);
+        boolean additionalMatches = property.getPropertyGroupInfo().getAdditionalGroups().stream()
+            .anyMatch(printGroup -> printGroup.getName().equalsIgnoreCase(filterGroup));
         return primaryMatches || additionalMatches;
     }
 
-    private void printHelpFilteredBySearchTerm(final HelpTextWriter writer, final List<Property> options, final String searchTerm) {
-        final String notes = "Showing help only for fields that contain: " + searchTerm;
+    private void printHelpFilteredBySearchTerm(HelpTextWriter writer, List<Property> options, String searchTerm) {
+        String notes = "Showing help only for fields that contain: " + searchTerm;
 
-        final List<Property> filteredOptions = options.stream()
-                                                   .filter(it -> it.getKey().contains(searchTerm))
-                                                   .collect(Collectors.toList());
+        List<Property> filteredOptions = options.stream()
+            .filter(it -> it.getKey().contains(searchTerm))
+            .collect(Collectors.toList());
 
         printOptions(writer, filteredOptions, notes);
     }
 
-    private boolean isPrintGroup(final List<Group> allPrintGroups, final String filterGroup) {
+    private boolean isPrintGroup(List<Group> allPrintGroups, String filterGroup) {
         return allPrintGroups.stream().map(Group::getName).anyMatch(name -> name.equals(filterGroup));
     }
 
-    private boolean isProperty(final List<Property> allOptions, final String filterTerm) {
+    private boolean isProperty(List<Property> allOptions, String filterTerm) {
         return allOptions.stream()
-                   .map(Property::getKey)
-                   .anyMatch(it -> it.equals(filterTerm));
+            .map(Property::getKey)
+            .anyMatch(it -> it.equals(filterTerm));
     }
 
-    public void printDetailedOption(final HelpTextWriter writer, final Property property) {
+    public void printDetailedOption(HelpTextWriter writer, Property property) {
         writer.println("");
         writer.println("Detailed information for " + property.getKey());
         writer.println("");
-        if (property.getPropertyDeprecationInfo() != null) {
-            writer.println("Deprecated: " + property.getPropertyDeprecationInfo().getDeprecationText());
-            writer.println("Deprecation description: " + property.getPropertyDeprecationInfo().getDescription());
+        property.getPropertyDeprecationInfo().getRemovalInfo().ifPresent(removalInfo -> {
+            writer.println("Deprecated: " + removalInfo.getDeprecationText());
+            writer.println("Deprecation description: " + removalInfo.getDescription());
             writer.println("");
-        }
+        });
+        assert property.getPropertyHelpInfo() != null;
         writer.println("Property description: " + property.getPropertyHelpInfo().getShortText());
 
         writer.println("Property default value: " + property.describeDefault());
         if (property.listExampleValues().size() > 0) {
             writer.println("Property acceptable values: " + String.join(", ", property.listExampleValues()));
+        }
+
+        if (property.getPropertyDeprecationInfo().getDeprecatedValues().size() > 0) {
+            writer.println("Deprecated values:");
+            property.getPropertyDeprecationInfo().getDeprecatedValues().forEach(value -> {
+                writer.println("\t" + value.getValueDescription() + ": " + value.getReason());
+            });
         }
         writer.println("");
 
@@ -143,13 +145,20 @@ public class HelpPrinter {
         }
     }
 
-    public void printOption(final HelpTextWriter writer, final Property property) {
+    public void printOption(HelpTextWriter writer, Property property) {
+        assert property.getPropertyHelpInfo() != null;
         String description = property.getPropertyHelpInfo().getShortText();
-        if (property.getPropertyDeprecationInfo() != null) {
-            description = property.getPropertyDeprecationInfo().getDeprecationText() + description;
+        if (property.getPropertyDeprecationInfo().getRemovalInfo().isPresent()) {
+            description = property.getPropertyDeprecationInfo().getRemovalInfo().get().getDeprecationText() + description;
         }
         if (property.listExampleValues().size() > 0) {
             description += " (" + String.join("|", property.listExampleValues()) + ")";
+        }
+        if (property.getPropertyDeprecationInfo().getDeprecatedValues().size() > 0) {
+            String deprecatedValues = property.getPropertyDeprecationInfo().getDeprecatedValues().stream()
+                .map(DeprecatedValueInfo::getValueDescription)
+                .collect(Collectors.joining("|"));
+            description = "Deprecated Values (" + deprecatedValues + ")";
         }
         String propertyKey = property.getKey();
         String defaultValue = "";
@@ -159,13 +168,13 @@ public class HelpPrinter {
         writer.printColumns("--" + propertyKey, defaultValue, description);
     }
 
-    public void printOptions(final HelpTextWriter writer, final List<Property> options, final String notes) {
+    public void printOptions(HelpTextWriter writer, List<Property> options, String notes) {
         writer.printColumns("Property Name", "Default", "Description");
         writer.printSeparator();
 
-        final List<Property> sorted = options.stream()
-                                          .sorted(SORT_BY_GROUP_THEN_KEY)
-                                          .collect(Collectors.toList());
+        List<Property> sorted = options.stream()
+            .sorted(SORT_BY_GROUP_THEN_KEY)
+            .collect(Collectors.toList());
 
         if (notes != null) {
             writer.println(notes);
@@ -173,8 +182,8 @@ public class HelpPrinter {
         }
 
         String group = null;
-        for (final Property detectOption : sorted) {
-            final String currentGroup = detectOption.getPropertyGroupInfo().getPrimaryGroup().getName();
+        for (Property detectOption : sorted) {
+            String currentGroup = detectOption.getPropertyGroupInfo().getPrimaryGroup().getName();
             if (group == null) {
                 group = currentGroup;
                 writer.println("[" + group + "]");
@@ -187,7 +196,7 @@ public class HelpPrinter {
         }
     }
 
-    public void printStandardFooter(final HelpTextWriter writer, final String groupText) {
+    public void printStandardFooter(HelpTextWriter writer, String groupText) {
         writer.println();
         writer.println("To set a Detect property on the command line: ");
         writer.println("\t--<property name>=<value>");

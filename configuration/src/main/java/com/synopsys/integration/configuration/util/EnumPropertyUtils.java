@@ -1,10 +1,3 @@
-/*
- * configuration
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.configuration.util;
 
 import java.util.ArrayList;
@@ -25,9 +18,9 @@ public class EnumPropertyUtils {
     }
 
     public static <T extends Enum<T>> List<String> getEnumNames(Class<T> enumClass) {
-        final List<T> values = new ArrayList<>(EnumUtils.getEnumList(enumClass));
+        List<T> values = new ArrayList<>(EnumUtils.getEnumList(enumClass));
         return values.stream()
-                   .map(Objects::toString)
-                   .collect(Collectors.toList());
+            .map(Objects::toString)
+            .collect(Collectors.toList());
     }
 }

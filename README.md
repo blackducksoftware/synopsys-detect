@@ -18,10 +18,15 @@ Synopsys Detect consolidates the functionality of Black Duck™ , Black Duck Bin
 bash <(curl -s -L https://detect.synopsys.com/detect7.sh)
 ```
 
-*Available from GitHub for Windows by running:*
+*Available from GitHub for Windows by running in **command prompt**:*
 
 ```cmd
 powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect"
+```
+
+*Available from GitHub for Windows/Linux by running in **powershell**:*
+```powershell
+[Net.ServicePointManager]::SecurityProtocol = 'tls12'; $Env:DETECT_EXIT_CODE_PASSTHRU=1; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect
 ```
 
 For scripts, please see [Detect Scripts](https://github.com/synopsys-sig/synopsys-detect-scripts).
@@ -30,11 +35,11 @@ For AirGap, please use our [Artifactory](https://sig-repo.synopsys.com/webapp/#/
 
 ## Documentation
 
-The latest quickstart documentation is [here](https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/631275537/Quickstart).
+The latest quickstart documentation is [here](https://community.synopsys.com/s/document-item?bundleId=integrations-detect&topicId=gettingstarted%2Fquickstart.html&_LANG=enus).
 
-The latest full documentation is [here](https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/62423113/Synopsys+Detect).
+The latest full documentation is [here](https://community.synopsys.com/s/document-item?bundleId=integrations-detect&topicId=introduction.html&_LANG=enus).
 
-Links to other versions can be found [here](https://detect.synopsys.com/docs).
+Links to certain earlier versions can be found [here](https://detect.synopsys.com/docs).
 
 ## Getting help
 

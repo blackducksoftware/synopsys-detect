@@ -1,19 +1,12 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.configuration;
 
-import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumList;
+import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumCollection;
 
 public class ExcludeIncludeEnumFilter<T extends Enum<T>> {
-    private final FilterableEnumList<T> excluded;
-    private final FilterableEnumList<T> included;
+    private final AllNoneEnumCollection<T> excluded;
+    private final AllNoneEnumCollection<T> included;
 
-    public ExcludeIncludeEnumFilter(FilterableEnumList<T> excluded, FilterableEnumList<T> included) {
+    public ExcludeIncludeEnumFilter(AllNoneEnumCollection<T> excluded, AllNoneEnumCollection<T> included) {
         this.excluded = excluded;
         this.included = included;
     }

@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.signaturescanner.operation;
 
 import java.util.ArrayList;
@@ -25,8 +18,8 @@ public class CreateSignatureScanReports {
         List<SignatureScannerReport> signatureScannerReports = new ArrayList<>();
         for (SignatureScanPath signatureScanPath : signatureScanPaths) {
             Optional<ScanCommandOutput> scanCommandOutput = scanCommandOutputList.stream()
-                                                                .filter(output -> output.getScanTarget().equals(signatureScanPath.getTargetCanonicalPath()))
-                                                                .findFirst();
+                .filter(output -> output.getScanTarget().equals(signatureScanPath.getTargetCanonicalPath()))
+                .findFirst();
             SignatureScannerReport signatureScannerReport = SignatureScannerReport.create(signatureScanPath, scanCommandOutput.orElse(null));
             signatureScannerReports.add(signatureScannerReport);
         }

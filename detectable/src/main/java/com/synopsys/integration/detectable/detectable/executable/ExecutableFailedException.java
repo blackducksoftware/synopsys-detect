@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectable.executable;
 
 import com.synopsys.integration.executable.Executable;
@@ -23,7 +16,7 @@ public class ExecutableFailedException extends Exception {
         this.returnCode = 0;
         this.executableDescription = executable.getExecutableDescription();
     }
-    
+
     public ExecutableFailedException(Executable executable, ExecutableOutput executableOutput) {
         super("An executable returned a non-zero exit code: " + executableOutput.getReturnCode());
         this.returnCode = executableOutput.getReturnCode();

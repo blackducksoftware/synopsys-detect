@@ -1,16 +1,9 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectable.util;
 
 public class DetectableStringUtils {
-    public static String removeEvery(final String line, final String[] targets) {
+    public static String removeEvery(String line, String[] targets) {
         int indexToCut = line.length();
-        for (final String target : targets) {
+        for (String target : targets) {
             if (line.contains(target)) {
                 indexToCut = line.indexOf(target);
             }
@@ -19,7 +12,7 @@ public class DetectableStringUtils {
         return line.substring(0, indexToCut);
     }
 
-    public static int parseIndentationLevel(final String line, String indentation) {
+    public static int parseIndentationLevel(String line, String indentation) {
         String consumableLine = line;
         int level = 0;
 

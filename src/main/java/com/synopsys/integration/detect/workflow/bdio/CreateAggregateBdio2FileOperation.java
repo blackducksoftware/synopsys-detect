@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.bdio;
 
 import java.io.FileOutputStream;
@@ -33,14 +26,12 @@ public class CreateAggregateBdio2FileOperation {
     private final Bdio2Factory bdio2Factory;
     private final DetectInfo detectInfo;
 
-    public CreateAggregateBdio2FileOperation(final Bdio2Factory bdio2Factory, DetectInfo detectInfo) {
+    public CreateAggregateBdio2FileOperation(Bdio2Factory bdio2Factory, DetectInfo detectInfo) {
         this.bdio2Factory = bdio2Factory;
         this.detectInfo = detectInfo;
     }
 
-    public void writeAggregateBdio2File(AggregateCodeLocation aggregateCodeLocation)
-        throws DetectUserFriendlyException {
-
+    public void writeAggregateBdio2File(AggregateCodeLocation aggregateCodeLocation) throws DetectUserFriendlyException {
         String detectVersion = detectInfo.getDetectVersion();
         SpdxCreator detectCreator = SpdxCreator.createToolSpdxCreator("Detect", detectVersion);
 

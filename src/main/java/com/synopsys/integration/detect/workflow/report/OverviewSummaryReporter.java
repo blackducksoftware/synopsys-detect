@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.report;
 
 import java.util.HashMap;
@@ -20,14 +13,14 @@ import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
 public class OverviewSummaryReporter {
-    public void writeReport(final ReportWriter writer, final DetectorEvaluationTree rootEvaluationTree) {
+    public void writeReport(ReportWriter writer, DetectorEvaluationTree rootEvaluationTree) {
         writeSummaries(writer, rootEvaluationTree.asFlatList());
     }
 
-    private void writeSummaries(final ReportWriter writer, final List<DetectorEvaluationTree> detectorEvaluationTrees) {
+    private void writeSummaries(ReportWriter writer, List<DetectorEvaluationTree> detectorEvaluationTrees) {
         writer.writeSeparator();
-        for (final DetectorEvaluationTree detectorEvaluationTree : detectorEvaluationTrees) {
-            for (final DetectorEvaluation detectorEvaluation : detectorEvaluationTree.getOrderedEvaluations()) {
+        for (DetectorEvaluationTree detectorEvaluationTree : detectorEvaluationTrees) {
+            for (DetectorEvaluation detectorEvaluation : detectorEvaluationTree.getOrderedEvaluations()) {
                 if (detectorEvaluation.isSearchable() && detectorEvaluation.isApplicable()) {
                     writer.writeLine("DIRECTORY: " + detectorEvaluationTree.getDirectory());
                     writer.writeLine("DETECTOR: " + detectorEvaluation.getDetectorRule().getDescriptiveName());
@@ -37,7 +30,7 @@ public class OverviewSummaryReporter {
                         writer.writeLine("\tEXTRACTION: " + detectorEvaluation.getExtraction().getDescription());
 
                     }
-                    final Map<String, String> data = new HashMap<>();
+                    Map<String, String> data = new HashMap<>();
                     ObjectPrinter.populateObjectPrivate(null, detectorEvaluation.getDetectable(), data);
                     data.forEach((key, value) -> writer.writeLine("\t" + key + ": " + value));
                 }

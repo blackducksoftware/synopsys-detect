@@ -1,20 +1,15 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.pear;
 
-public class PearCliDetectableOptions {
-    private final boolean onlyGatherRequired;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 
-    public PearCliDetectableOptions(final boolean onlyGatherRequired) {
-        this.onlyGatherRequired = onlyGatherRequired;
+public class PearCliDetectableOptions {
+    private final EnumListFilter<PearDependencyType> dependencyTypeFilter;
+
+    public PearCliDetectableOptions(EnumListFilter<PearDependencyType> dependencyTypeFilter) {
+        this.dependencyTypeFilter = dependencyTypeFilter;
     }
 
-    public boolean onlyGatherRequired() {
-        return onlyGatherRequired;
+    public EnumListFilter<PearDependencyType> getDependencyTypeFilter() {
+        return dependencyTypeFilter;
     }
 }

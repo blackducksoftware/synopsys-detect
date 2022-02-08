@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.go.vendr;
 
 import java.io.File;
@@ -17,27 +10,27 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.go.vendr.parse.VndrParser;
+import com.synopsys.integration.detectable.extraction.Extraction;
 
 public class GoVndrExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExternalIdFactory externalIdFactory;
 
-    public GoVndrExtractor(final ExternalIdFactory externalIdFactory) {
+    public GoVndrExtractor(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public Extraction extract(final File vndrConfig) {
+    public Extraction extract(File vndrConfig) {
         try {
-            final VndrParser vndrParser = new VndrParser(externalIdFactory);
-            final List<String> vendorConfContents = Files.readAllLines(vndrConfig.toPath(), StandardCharsets.UTF_8);
+            VndrParser vndrParser = new VndrParser(externalIdFactory);
+            List<String> vendorConfContents = Files.readAllLines(vndrConfig.toPath(), StandardCharsets.UTF_8);
             logger.debug(String.join("\n", vendorConfContents));
-            final DependencyGraph dependencyGraph = vndrParser.parseVendorConf(vendorConfContents);
-            final CodeLocation codeLocation = new CodeLocation(dependencyGraph);
+            DependencyGraph dependencyGraph = vndrParser.parseVendorConf(vendorConfContents);
+            CodeLocation codeLocation = new CodeLocation(dependencyGraph);
             return new Extraction.Builder().success(codeLocation).build();
-        } catch (final Exception e) {
+        } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
     }

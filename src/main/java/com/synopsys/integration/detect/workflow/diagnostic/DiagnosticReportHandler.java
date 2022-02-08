@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.diagnostic;
 
 import java.io.File;
@@ -52,7 +45,7 @@ public class DiagnosticReportHandler {
         String reportTitle;
         String reportDescription;
 
-        ReportTypes(final String reportFileName, final String reportTitle, final String reportDescription) {
+        ReportTypes(String reportFileName, String reportTitle, String reportDescription) {
             this.reportFileName = reportFileName;
             this.reportTitle = reportTitle;
             this.reportDescription = reportDescription;
@@ -74,7 +67,7 @@ public class DiagnosticReportHandler {
     private final File reportDirectory;
     private final String runId;
 
-    public DiagnosticReportHandler(final File reportDirectory, final String runId, final EventSystem eventSystem) {
+    public DiagnosticReportHandler(File reportDirectory, String runId, EventSystem eventSystem) {
         this.reportDirectory = reportDirectory;
         this.runId = runId;
         createReports();
@@ -90,10 +83,10 @@ public class DiagnosticReportHandler {
 
     private DetectorToolResult detectorToolResult;
 
-    public void completedBomToolEvaluations(final DetectorToolResult detectorToolResult) {
+    public void completedBomToolEvaluations(DetectorToolResult detectorToolResult) {
         this.detectorToolResult = detectorToolResult;
 
-        final DetectorEvaluationTree rootEvaluation;
+        DetectorEvaluationTree rootEvaluation;
         if (detectorToolResult.getRootDetectorEvaluationTree().isPresent()) {
             rootEvaluation = detectorToolResult.getRootDetectorEvaluationTree().get();
         } else {
@@ -102,86 +95,86 @@ public class DiagnosticReportHandler {
         }
 
         try {
-            final SearchSummaryReporter searchReporter = new SearchSummaryReporter();
+            SearchSummaryReporter searchReporter = new SearchSummaryReporter();
             searchReporter.print(getReportWriter(ReportTypes.SEARCH), rootEvaluation);
-        } catch (final Exception e) {
+        } catch (Exception e) {
             logger.error("Failed to write search report.", e);
         }
 
         try {
-            final DetailedSearchSummaryReporter searchReporter = new DetailedSearchSummaryReporter();
+            DetailedSearchSummaryReporter searchReporter = new DetailedSearchSummaryReporter();
             searchReporter.print(getReportWriter(ReportTypes.SEARCH_DETAILED), rootEvaluation);
-        } catch (final Exception e) {
+        } catch (Exception e) {
             logger.error("Failed to write detailed search report.", e);
         }
 
         try {
-            final OverviewSummaryReporter overviewSummaryReporter = new OverviewSummaryReporter();
+            OverviewSummaryReporter overviewSummaryReporter = new OverviewSummaryReporter();
             overviewSummaryReporter.writeReport(getReportWriter(ReportTypes.DETECTOR), rootEvaluation);
-        } catch (final Exception e) {
+        } catch (Exception e) {
             logger.error("Failed to write detector report.", e);
         }
     }
 
-    public void completedCodeLocations(final Map<DetectCodeLocation, String> codeLocationNameMap) {
+    public void completedCodeLocations(Map<DetectCodeLocation, String> codeLocationNameMap) {
         if (detectorToolResult == null || !detectorToolResult.getRootDetectorEvaluationTree().isPresent()) {
             return;
         }
 
         try {
-            final ReportWriter clWriter = getReportWriter(ReportTypes.CODE_LOCATIONS);
-            final ReportWriter dcWriter = getReportWriter(ReportTypes.DEPENDENCY_COUNTS);
-            final CodeLocationReporter clReporter = new CodeLocationReporter();
+            ReportWriter clWriter = getReportWriter(ReportTypes.CODE_LOCATIONS);
+            ReportWriter dcWriter = getReportWriter(ReportTypes.DEPENDENCY_COUNTS);
+            CodeLocationReporter clReporter = new CodeLocationReporter();
             clReporter.writeCodeLocationReport(clWriter, dcWriter, detectorToolResult.getRootDetectorEvaluationTree().get(), detectorToolResult.getCodeLocationMap(), codeLocationNameMap);
-        } catch (final Exception e) {
+        } catch (Exception e) {
             logger.error("Failed to write code location report.", e);
         }
     }
 
-    private void detectorsProfiled(final DetectorTimings detectorTimings) {
+    private void detectorsProfiled(DetectorTimings detectorTimings) {
         try {
-            final ReportWriter profileWriter = getReportWriter(ReportTypes.DETECTOR_PROFILE);
-            final ProfilingReporter reporter = new ProfilingReporter();
+            ReportWriter profileWriter = getReportWriter(ReportTypes.DETECTOR_PROFILE);
+            ProfilingReporter reporter = new ProfilingReporter();
             reporter.writeReport(profileWriter, detectorTimings);
-        } catch (final Exception e) {
+        } catch (Exception e) {
             logger.error("Failed to write profiling report.", e);
         }
     }
 
-    public void configurationsReport(final DetectInfo detectInfo, final PropertyConfiguration propertyConfiguration, SortedMap<String, String> maskedRawPropertyValues, Set<String> propertyKeys) {
+    public void configurationsReport(DetectInfo detectInfo, PropertyConfiguration propertyConfiguration, SortedMap<String, String> maskedRawPropertyValues, Set<String> propertyKeys) {
         try {
-            final ReportWriter profileWriter = getReportWriter(ReportTypes.CONFIGURATION);
-            final ConfigurationReporter reporter = new ConfigurationReporter();
+            ReportWriter profileWriter = getReportWriter(ReportTypes.CONFIGURATION);
+            ConfigurationReporter reporter = new ConfigurationReporter();
             reporter.writeReport(profileWriter, detectInfo, propertyConfiguration, maskedRawPropertyValues, propertyKeys);
-        } catch (final Exception e) {
+        } catch (Exception e) {
             logger.error("Failed to write profiling report.", e);
         }
     }
 
     private void createReports() {
-        for (final ReportTypes reportType : ReportTypes.values()) {
+        for (ReportTypes reportType : ReportTypes.values()) {
             try {
                 createReportWriter(reportType);
-            } catch (final Exception e) {
+            } catch (Exception e) {
                 logger.error("Failed to create report: " + reportType.toString(), e);
             }
         }
     }
 
-    private ReportWriter createReportWriter(final ReportTypes reportType) {
+    private ReportWriter createReportWriter(ReportTypes reportType) {
         try {
-            final File reportFile = new File(reportDirectory, reportType.getReportFileName() + ".txt");
-            final FileReportWriter fileReportWriter = new FileReportWriter(reportFile, reportType.getReportTitle(), reportType.getReportDescription(), runId);
+            File reportFile = new File(reportDirectory, reportType.getReportFileName() + ".txt");
+            FileReportWriter fileReportWriter = new FileReportWriter(reportFile, reportType.getReportTitle(), reportType.getReportDescription(), runId);
             reportWriters.put(reportType, fileReportWriter);
             logger.info("Created report file: " + reportFile.getPath());
             return fileReportWriter;
-        } catch (final Exception e) {
+        } catch (Exception e) {
             logger.error("Failed to create report writer: " + reportType.toString(), e);
         }
         return new InfoLogReportWriter();
     }
 
-    public ReportWriter getReportWriter(final ReportTypes type) {
+    public ReportWriter getReportWriter(ReportTypes type) {
         if (reportWriters.containsKey(type)) {
             return reportWriters.get(type);
         } else {
@@ -190,7 +183,7 @@ public class DiagnosticReportHandler {
     }
 
     private void closeReportWriters() {
-        for (final FileReportWriter writer : reportWriters.values()) {
+        for (FileReportWriter writer : reportWriters.values()) {
             writer.finish();
         }
     }

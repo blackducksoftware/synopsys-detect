@@ -50,12 +50,12 @@ public class GemlockDetectableTest extends DetectableFunctionalTest {
     }
 
     @Override
-    public Detectable create(@NotNull final DetectableEnvironment detectableEnvironment) {
+    public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
         return detectableFactory.createGemlockDetectable(detectableEnvironment);
     }
 
     @Override
-    public void assertExtraction(@NotNull final Extraction extraction) {
+    public void assertExtraction(@NotNull Extraction extraction) {
         Assertions.assertNotEquals(0, extraction.getCodeLocations().size(), "A code location should have been generated.");
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.RUBYGEMS, extraction.getCodeLocations().get(0).getDependencyGraph());

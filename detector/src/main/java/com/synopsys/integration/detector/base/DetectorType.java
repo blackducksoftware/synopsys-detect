@@ -1,10 +1,3 @@
-/*
- * detector
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detector.base;
 
 import java.util.Arrays;
@@ -29,6 +22,7 @@ public enum DetectorType {
     GO_GRADLE,
     GRADLE,
     HEX,
+    IVY,
     LERNA,
     MAVEN,
     NPM,
@@ -36,12 +30,14 @@ public enum DetectorType {
     PACKAGIST,
     PEAR,
     PIP,
+    PNPM,
     POETRY,
     RUBYGEMS,
     SBT,
     SWIFT,
     YARN,
-    CLANG;
+    CLANG,
+    XCODE;
 
     protected static final List<String> POSSIBLE_NAMES = Arrays.stream(DetectorType.values()).map(DetectorType::name).collect(Collectors.toList());
 

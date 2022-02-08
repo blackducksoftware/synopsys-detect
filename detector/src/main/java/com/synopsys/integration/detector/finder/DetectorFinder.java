@@ -1,10 +1,3 @@
-/*
- * detector
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detector.finder;
 
 import java.io.File;
@@ -67,8 +60,8 @@ public class DetectorFinder {
         }
 
         List<DetectorEvaluation> evaluations = detectorRuleSet.getOrderedDetectorRules().stream()
-                                                   .map(DetectorEvaluation::new)
-                                                   .collect(Collectors.toList());
+            .map(DetectorEvaluation::new)
+            .collect(Collectors.toList());
 
         logger.info("Traversing directory: " + directory.getPath()); //TODO: Finding the perfect log level here is important. At INFO, we log a lot during a deep traversal but if we don't we might look stuck.
 

@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.blackduck.developer;
 
 import java.util.List;
@@ -27,7 +20,7 @@ public class RapidModeLogReportOperation {
     private final ExitCodePublisher exitCodePublisher;
     private final RapidScanResultAggregator rapidScanResultAggregator;
 
-    public RapidModeLogReportOperation(final ExitCodePublisher exitCodePublisher, final RapidScanResultAggregator rapidScanResultAggregator) {
+    public RapidModeLogReportOperation(ExitCodePublisher exitCodePublisher, RapidScanResultAggregator rapidScanResultAggregator) {
         this.exitCodePublisher = exitCodePublisher;
         this.rapidScanResultAggregator = rapidScanResultAggregator;
     }

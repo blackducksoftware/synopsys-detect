@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.go.gomod.process;
 
 import java.util.HashSet;
@@ -47,7 +40,7 @@ public class GoModGraphGenerator {
     }
 
     private void addModuleToGraph(String moduleName, @Nullable Dependency parent, MutableDependencyGraph graph, GoRelationshipManager goRelationshipManager, GoModDependencyManager goModDependencyManager) {
-        if (parent == null && goRelationshipManager.isNotUsedByMainModule(moduleName)) {
+        if (goRelationshipManager.isNotUsedByMainModule(moduleName)) {
             logger.debug("Excluding module '{}' because it is not used by the main module.", moduleName);
             return;
         }

@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.gradle.inspection.parse;
 
 import java.util.ArrayList;
@@ -33,14 +26,14 @@ public class GradleReportLineParser {
         } else if (StringUtils.containsAny(line, PROJECT_INDICATORS)) {
             return GradleTreeNode.newProject(level);
         } else {
-            final List<String> gav = parseGav(line);
+            List<String> gav = parseGav(line);
             if (gav.size() != 3) {
                 logger.trace(String.format("The line can not be reasonably split in to the necessary parts: %s", line)); //All project lines: +--- org.springframework.boot:spring-boot-starter-activemq (n)
                 return GradleTreeNode.newUnknown(level);
             } else {
-                final String name = gav.get(0);
-                final String group = gav.get(1);
-                final String version = gav.get(2);
+                String name = gav.get(0);
+                String group = gav.get(1);
+                String version = gav.get(2);
                 return GradleTreeNode.newGav(level, name, group, version);
             }
         }
@@ -66,7 +59,7 @@ public class GradleReportLineParser {
         List<String> gavPieces = new ArrayList<>(Arrays.asList(cleanedOutput.split(":")));
         if (cleanedOutput.contains(WINNING_INDICATOR)) {
             // WINNING_INDICATOR can point to an entire GAV not just a version
-            final String winningSection = cleanedOutput.substring(cleanedOutput.indexOf(WINNING_INDICATOR) + WINNING_INDICATOR.length());
+            String winningSection = cleanedOutput.substring(cleanedOutput.indexOf(WINNING_INDICATOR) + WINNING_INDICATOR.length());
             if (winningSection.contains(":")) {
                 gavPieces = Arrays.asList(winningSection.split(":"));
             } else {

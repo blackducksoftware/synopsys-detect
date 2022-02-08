@@ -18,23 +18,24 @@ import com.synopsys.integration.util.NameVersion;
 @Tag("integration")
 public class RapidModeTests {
     SharedDockerTestRunner anyProjectWithRapidResultsInBlackDuck(String testId, NameVersion projectNameVersion) throws IOException, IntegrationException {
-        DetectDockerTestRunner runner = new DetectDockerTestRunner(testId, "gradle-simple:1.0.0");
-        runner.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("SimpleGradle.dockerfile"));
+        try (DetectDockerTestRunner runner = new DetectDockerTestRunner(testId, "gradle-simple:1.0.0")) {
+            runner.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("SimpleGradle.dockerfile"));
 
-        BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
-        BlackDuckAssertions blackduckAssertions = blackDuckTestConnection.projectVersionAssertions(projectNameVersion);
-        blackduckAssertions.emptyOnBlackDuck();
+            BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
+            BlackDuckAssertions blackduckAssertions = blackDuckTestConnection.projectVersionAssertions(projectNameVersion);
+            blackduckAssertions.emptyOnBlackDuck();
 
-        DetectCommandBuilder commandBuilder = new DetectCommandBuilder().defaults().defaultDirectories(runner);
-        commandBuilder.connectToBlackDuck(blackDuckTestConnection);
-        commandBuilder.projectNameVersion(blackduckAssertions);
-        commandBuilder.tools(DetectTool.DETECTOR); //All that is needed for a BOM in black duck.
+            DetectCommandBuilder commandBuilder = new DetectCommandBuilder().defaults().defaultDirectories(runner);
+            commandBuilder.connectToBlackDuck(blackDuckTestConnection);
+            commandBuilder.projectNameVersion(blackduckAssertions);
+            commandBuilder.tools(DetectTool.DETECTOR); //All that is needed for a BOM in black duck.
 
-        return new SharedDockerTestRunner(runner, blackDuckTestConnection, blackduckAssertions, commandBuilder);
+            return new SharedDockerTestRunner(runner, blackDuckTestConnection, blackduckAssertions, commandBuilder);
+        }
     }
 
     @Test
-    void rapidModeSmokeTest() throws IOException, InterruptedException, IntegrationException {
+    void rapidModeSmokeTest() throws IOException, IntegrationException {
         SharedDockerTestRunner test = anyProjectWithRapidResultsInBlackDuck("rapid-mode-smoke-test", new NameVersion("rapid-mode", "smoke-test"));
 
         //Ensuring regardless of the source or working directory being chosen, this test still produces a risk report in the same location.
@@ -44,7 +45,6 @@ public class RapidModeTests {
         dockerAssertions.logContains("Critical and blocking policy violations for");
         dockerAssertions.logContains("* Components: 0");
         dockerAssertions.successfulOperation("Generate Rapid Json File");
-
     }
 
 }

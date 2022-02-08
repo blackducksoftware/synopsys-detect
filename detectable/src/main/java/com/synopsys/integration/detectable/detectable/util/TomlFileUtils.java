@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectable.util;
 
 import java.io.File;
@@ -16,8 +9,14 @@ import java.util.List;
 import org.tomlj.Toml;
 import org.tomlj.TomlParseResult;
 
-
 public class TomlFileUtils {
+
+    private TomlFileUtils() {
+        // Hiding constructor
+    }
+
+    // We have a good reason https://doc.bccnsoft.com/docs/rust-1.36.0-docs-html/cargo/reference/config.html
+    // Cargo allows for keys that violate normal TOML spec. tomlj allows us to parse these files.
     public static TomlParseResult parseFile(File tomlFile) throws IOException {
         return Toml.parse(getFileAsString(tomlFile, Charset.defaultCharset()));
     }

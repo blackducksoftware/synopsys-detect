@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.blackduck.bdio;
 
 import org.slf4j.Logger;
@@ -40,7 +33,7 @@ public abstract class BdioUploadOperation { //TODO: Could use Functional Interfa
         return new BdioUploadResult(response);
     }
 
-    protected abstract CodeLocationCreationData<UploadBatchOutput> executeUpload(final UploadBatch uploadBatch) throws IntegrationException;
+    protected abstract CodeLocationCreationData<UploadBatchOutput> executeUpload(UploadBatch uploadBatch) throws IntegrationException;
 
     private CodeLocationCreationData<UploadBatchOutput> legacyUpload(BdioResult bdioResult, UploadBatch uploadBatch, BdioUploadService bdioUploadService, Bdio2UploadService bdio2UploadService) throws IntegrationException {
         CodeLocationCreationData<UploadBatchOutput> response;

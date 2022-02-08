@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.lerna;
 
 import java.io.File;
@@ -18,17 +11,15 @@ import com.synopsys.integration.detectable.extraction.Extraction;
 public class LernaExtractor {
     private final LernaPackageDiscoverer lernaPackageDiscoverer;
     private final LernaPackager lernaPackager;
-    private final LernaOptions lernaOptions;
 
-    public LernaExtractor(LernaPackageDiscoverer lernaPackageDiscoverer, LernaPackager lernaPackager, LernaOptions lernaOptions) {
+    public LernaExtractor(LernaPackageDiscoverer lernaPackageDiscoverer, LernaPackager lernaPackager) {
         this.lernaPackageDiscoverer = lernaPackageDiscoverer;
         this.lernaPackager = lernaPackager;
-        this.lernaOptions = lernaOptions;
     }
 
     public Extraction extract(File sourceDirectory, File packageJson, ExecutableTarget lernaExecutable) {
         try {
-            List<LernaPackage> lernaPackages = lernaPackageDiscoverer.discoverLernaPackages(sourceDirectory, lernaExecutable, lernaOptions.getExcludedPackages(), lernaOptions.getIncludedPackages());
+            List<LernaPackage> lernaPackages = lernaPackageDiscoverer.discoverLernaPackages(sourceDirectory, lernaExecutable);
             LernaResult lernaResult = lernaPackager.generateLernaResult(sourceDirectory, packageJson, lernaPackages);
 
             if (lernaResult.getException().isPresent()) {
@@ -36,10 +27,10 @@ public class LernaExtractor {
             }
 
             return new Extraction.Builder()
-                       .projectName(lernaResult.getProjectName())
-                       .projectVersion(lernaResult.getProjectVersionName())
-                       .success(lernaResult.getCodeLocations())
-                       .build();
+                .projectName(lernaResult.getProjectName())
+                .projectVersion(lernaResult.getProjectVersionName())
+                .success(lernaResult.getCodeLocations())
+                .build();
         } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();
         }

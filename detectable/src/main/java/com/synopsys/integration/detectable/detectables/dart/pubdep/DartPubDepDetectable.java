@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.dart.pubdep;
 
 import java.io.File;
@@ -30,7 +23,7 @@ import com.synopsys.integration.detectable.detectable.result.PubSpecLockNotFound
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Dart", forge = "Dart", requirementsMarkdown = "Files: pubspec.yaml, pubspec.lock.<br/><br/>Executable: dart, flutter")
+@DetectableInfo(language = "Dart", forge = "Dart", requirementsMarkdown = "Files: pubspec.yaml, pubspec.lock. Executable: dart, flutter")
 public class DartPubDepDetectable extends Detectable {
     public static final String PUBSPEC_YAML_FILENAME = "pubspec.yaml";
     public static final String PUBSPEC_LOCK_FILENAME = "pubspec.lock";

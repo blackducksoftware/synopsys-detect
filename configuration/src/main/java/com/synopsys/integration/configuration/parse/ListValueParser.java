@@ -1,10 +1,3 @@
-/*
- * configuration
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.configuration.parse;
 
 import java.util.ArrayList;
@@ -20,22 +13,22 @@ public class ListValueParser<T> extends ValueParser<List<T>> {
     @NotNull
     private final String delimiter;
 
-    public ListValueParser(@NotNull final ValueParser<T> valueParser) {
+    public ListValueParser(@NotNull ValueParser<T> valueParser) {
         this(valueParser, ",");
     }
 
-    public ListValueParser(@NotNull final ValueParser<T> valueParser, @NotNull final String delimiter) {
+    public ListValueParser(@NotNull ValueParser<T> valueParser, @NotNull String delimiter) {
         this.valueParser = valueParser;
         this.delimiter = delimiter;
     }
 
     @NotNull
     @Override
-    public List<T> parse(@NotNull final String rawValue) throws ValueParseException {
-        final List<T> parsedValues = new ArrayList<>();
+    public List<T> parse(@NotNull String rawValue) throws ValueParseException {
+        List<T> parsedValues = new ArrayList<>();
 
-        for (final String element : StringUtils.splitPreserveAllTokens(rawValue, delimiter)) {
-            final String trimmedElement = element.trim();
+        for (String element : StringUtils.splitPreserveAllTokens(rawValue, delimiter)) {
+            String trimmedElement = element.trim();
 
             if (StringUtils.isBlank(trimmedElement)) {
                 throw new ValueParseException(rawValue, "List",

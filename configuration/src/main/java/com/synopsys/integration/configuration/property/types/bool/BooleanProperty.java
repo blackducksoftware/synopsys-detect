@@ -1,20 +1,18 @@
-/*
- * configuration
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.configuration.property.types.bool;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.configuration.property.base.ValuedProperty;
+import com.synopsys.integration.configuration.property.PropertyBuilder;
+import com.synopsys.integration.configuration.property.base.ValuedAlikeProperty;
 
-public class BooleanProperty extends ValuedProperty<Boolean> {
-    public BooleanProperty(@NotNull final String key, @NotNull final Boolean defaultValue) {
+public class BooleanProperty extends ValuedAlikeProperty<Boolean> {
+    public BooleanProperty(@NotNull String key, @NotNull Boolean defaultValue) {
         super(key, new BooleanValueParser(), defaultValue);
+    }
+
+    public static PropertyBuilder<BooleanProperty> newBuilder(@NotNull String key, @NotNull Boolean defaultValue) {
+        return new PropertyBuilder<BooleanProperty>().setCreator(() -> new BooleanProperty(key, defaultValue));
     }
 
     @Nullable

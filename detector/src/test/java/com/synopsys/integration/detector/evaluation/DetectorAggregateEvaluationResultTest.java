@@ -1,20 +1,21 @@
 package com.synopsys.integration.detector.evaluation;
 
-import com.synopsys.integration.detector.base.DetectorEvaluation;
-import com.synopsys.integration.detector.base.DetectorEvaluationTree;
-import com.synopsys.integration.detector.base.DetectorType;
-import com.synopsys.integration.detector.rule.DetectorRule;
-import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import com.synopsys.integration.detector.base.DetectorEvaluation;
+import com.synopsys.integration.detector.base.DetectorEvaluationTree;
+import com.synopsys.integration.detector.base.DetectorType;
+import com.synopsys.integration.detector.rule.DetectorRule;
 
 public class DetectorAggregateEvaluationResultTest {
 

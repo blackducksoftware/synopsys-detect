@@ -1,10 +1,3 @@
-/*
- * configuration
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.configuration.property.types.enumextended;
 
 import java.util.Optional;
@@ -21,7 +14,7 @@ public class ExtendedEnumValue<E extends Enum<E>, B extends Enum<B>> {
     @Nullable
     private final B baseValue;
 
-    private ExtendedEnumValue(@Nullable final E extendedValue, @Nullable final B baseValue) {
+    private ExtendedEnumValue(@Nullable E extendedValue, @Nullable B baseValue) {
         if (baseValue == null) {
             Assert.notNull(extendedValue, "You must provide either a base value or an extended value.");
         } else if (extendedValue == null) {
@@ -34,12 +27,12 @@ public class ExtendedEnumValue<E extends Enum<E>, B extends Enum<B>> {
     }
 
     @NotNull
-    public static <E extends Enum<E>, B extends Enum<B>> ExtendedEnumValue<E, B> ofBaseValue(@NotNull final B baseValue) {
+    public static <E extends Enum<E>, B extends Enum<B>> ExtendedEnumValue<E, B> ofBaseValue(@NotNull B baseValue) {
         return new ExtendedEnumValue<>(null, baseValue);
     }
 
     @NotNull
-    public static <E extends Enum<E>, B extends Enum<B>> ExtendedEnumValue<E, B> ofExtendedValue(@NotNull final E extendedValue) {
+    public static <E extends Enum<E>, B extends Enum<B>> ExtendedEnumValue<E, B> ofExtendedValue(@NotNull E extendedValue) {
         return new ExtendedEnumValue<>(extendedValue, null);
     }
 
@@ -54,7 +47,7 @@ public class ExtendedEnumValue<E extends Enum<E>, B extends Enum<B>> {
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -62,7 +55,7 @@ public class ExtendedEnumValue<E extends Enum<E>, B extends Enum<B>> {
             return false;
         }
 
-        final ExtendedEnumValue<?, ?> that = (ExtendedEnumValue<?, ?>) o;
+        ExtendedEnumValue<?, ?> that = (ExtendedEnumValue<?, ?>) o;
 
         if (getExtendedValue().isPresent() ? !getExtendedValue().equals(that.getExtendedValue()) : that.getExtendedValue().isPresent()) {
             return false;
@@ -80,7 +73,7 @@ public class ExtendedEnumValue<E extends Enum<E>, B extends Enum<B>> {
     @Override
     public String toString() {
         return Bdo.of(getBaseValue().map(Enum::name))
-                   .or(getExtendedValue().map(Enum::name))
-                   .orElseThrow(() -> new IllegalStateException("Extended enum values should be created with a default value."));
+            .or(getExtendedValue().map(Enum::name))
+            .orElseThrow(() -> new IllegalStateException("Extended enum values should be created with a default value."));
     }
 }

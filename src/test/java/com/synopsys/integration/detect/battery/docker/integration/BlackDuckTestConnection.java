@@ -34,7 +34,7 @@ public class BlackDuckTestConnection {
         String blackduckUrl = System.getenv().get(BLACKDUCK_URL);
         String blackduckApiToken = System.getenv().get(BLACKDUCK_API_TOKEN);
 
-        BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = BlackDuckServerConfig.newBuilder();
+        BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = BlackDuckServerConfig.newApiTokenBuilder();
         blackDuckServerConfigBuilder.setProperties(System.getenv().entrySet());
         blackDuckServerConfigBuilder.setUrl(blackduckUrl);
         blackDuckServerConfigBuilder.setApiToken(blackduckApiToken);

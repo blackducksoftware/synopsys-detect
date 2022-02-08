@@ -1,26 +1,16 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.npm.packagejson;
 
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
+import com.synopsys.integration.detectable.detectables.npm.NpmDependencyType;
+
 public class NpmPackageJsonParseDetectableOptions {
-    private final boolean includeDevDependencies;
-    private final boolean includePeerDependencies;
+    private final EnumListFilter<NpmDependencyType> npmDependencyTypeFilter;
 
-    public NpmPackageJsonParseDetectableOptions(boolean includeDevDependencies, boolean includePeerDependencies) {
-        this.includeDevDependencies = includeDevDependencies;
-        this.includePeerDependencies = includePeerDependencies;
+    public NpmPackageJsonParseDetectableOptions(EnumListFilter<NpmDependencyType> npmDependencyTypeFilter) {
+        this.npmDependencyTypeFilter = npmDependencyTypeFilter;
     }
 
-    public boolean shouldIncludeDevDependencies() {
-        return includeDevDependencies;
-    }
-
-    public boolean shouldIncludePeerDependencies() {
-        return includePeerDependencies;
+    public EnumListFilter<NpmDependencyType> getNpmDependencyTypeFilter() {
+        return npmDependencyTypeFilter;
     }
 }

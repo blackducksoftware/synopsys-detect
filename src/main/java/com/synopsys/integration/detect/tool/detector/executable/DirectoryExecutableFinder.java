@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.detector.executable;
 
 import java.io.File;
@@ -23,11 +16,11 @@ public class DirectoryExecutableFinder {
     private final List<String> extensions;
     private final FileFinder fileFinder;
 
-    public static DirectoryExecutableFinder forCurrentOperatingSystem(final FileFinder fileFinder) {
+    public static DirectoryExecutableFinder forCurrentOperatingSystem(FileFinder fileFinder) {
         return DirectoryExecutableFinder.forOperatingSystem(OperatingSystemType.determineFromSystem(), fileFinder);
     }
 
-    public static DirectoryExecutableFinder forOperatingSystem(final OperatingSystemType operatingSystemType, final FileFinder fileFinder) {
+    public static DirectoryExecutableFinder forOperatingSystem(OperatingSystemType operatingSystemType, FileFinder fileFinder) {
         if (operatingSystemType == OperatingSystemType.WINDOWS) {
             return new DirectoryExecutableFinder(Arrays.asList(".cmd", ".bat", ".exe"), fileFinder);
         } else {
@@ -35,12 +28,12 @@ public class DirectoryExecutableFinder {
         }
     }
 
-    public DirectoryExecutableFinder(final List<String> extensions, final FileFinder fileFinder) {
+    public DirectoryExecutableFinder(List<String> extensions, FileFinder fileFinder) {
         this.extensions = extensions;
         this.fileFinder = fileFinder;
     }
 
-    private List<String> executablesFromName(final String name) {
+    private List<String> executablesFromName(String name) {
         if (extensions.isEmpty()) {
             return Collections.singletonList(name);
         } else {
@@ -49,17 +42,17 @@ public class DirectoryExecutableFinder {
     }
 
     @Nullable
-    public File findExecutable(final String executable, final File location) {
+    public File findExecutable(String executable, File location) {
         return findExecutable(executable, Collections.singletonList(location));
     }
 
     @Nullable
-    public File findExecutable(final String executable, final List<File> locations) {
-        final List<String> executables = executablesFromName(executable);
+    public File findExecutable(String executable, List<File> locations) {
+        List<String> executables = executablesFromName(executable);
 
-        for (final File location : locations) {
-            for (final String possibleExecutable : executables) {
-                final File foundFile = fileFinder.findFile(location, possibleExecutable);
+        for (File location : locations) {
+            for (String possibleExecutable : executables) {
+                File foundFile = fileFinder.findFile(location, possibleExecutable);
                 if (foundFile != null && foundFile.exists() && foundFile.canExecute()) {
                     return foundFile;
                 }

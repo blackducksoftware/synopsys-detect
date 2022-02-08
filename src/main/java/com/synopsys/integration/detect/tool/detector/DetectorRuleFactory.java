@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.detector;
 
 import com.synopsys.integration.detect.tool.detector.factory.DetectDetectableFactory;
@@ -29,6 +22,7 @@ import com.synopsys.integration.detectable.detectables.go.vendor.GoVendorDetecta
 import com.synopsys.integration.detectable.detectables.go.vendr.GoVndrDetectable;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleDetectable;
 import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleProjectInspectorDetectable;
+import com.synopsys.integration.detectable.detectables.ivy.parse.IvyParseDetectable;
 import com.synopsys.integration.detectable.detectables.lerna.LernaDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomWrapperDetectable;
@@ -43,14 +37,16 @@ import com.synopsys.integration.detectable.detectables.nuget.NugetProjectInspect
 import com.synopsys.integration.detectable.detectables.nuget.NugetSolutionDetectable;
 import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDetectable;
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectable;
-import com.synopsys.integration.detectable.detectables.pip.PipInspectorDetectable;
-import com.synopsys.integration.detectable.detectables.pip.PipenvDetectable;
-import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryDetectable;
+import com.synopsys.integration.detectable.detectables.pip.inspector.PipInspectorDetectable;
+import com.synopsys.integration.detectable.detectables.pipenv.PipenvDetectable;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockDetectable;
+import com.synopsys.integration.detectable.detectables.poetry.PoetryDetectable;
 import com.synopsys.integration.detectable.detectables.rebar.RebarDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemlock.GemlockDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectable;
 import com.synopsys.integration.detectable.detectables.sbt.SbtDetectable;
 import com.synopsys.integration.detectable.detectables.swift.SwiftCliDetectable;
+import com.synopsys.integration.detectable.detectables.xcode.XcodeSwiftDetectable;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.rule.DetectorRule;
@@ -78,8 +74,10 @@ public class DetectorRuleFactory {
         ruleSet.addDetector(DetectorType.BITBAKE, "Bitbake", BitbakeDetectable.class, detectableFactory::createBitbakeDetectable).defaults().build();
 
         ruleSet.addDetector(DetectorType.COCOAPODS, "Pod Lock", PodlockDetectable.class, detectableFactory::createPodLockDetectable).defaults().build();
-        DetectorRule conanCliRule = ruleSet.addDetector(DetectorType.CONAN, "Conan CLI", ConanCliDetectable.class, detectableFactory::createConanCliDetectable).defaults().build();
-        DetectorRule conanLockfileRule = ruleSet.addDetector(DetectorType.CONAN, "Conan Lockfile", ConanLockfileDetectable.class, detectableFactory::createConanLockfileDetectable).defaults().build();
+        ruleSet.addDetector(DetectorType.XCODE, "Xcode Swift", XcodeSwiftDetectable.class, detectableFactory::createXcodeSwiftDetectable).defaults().selfNestable().build();
+
+        DetectorRule<?> conanCliRule = ruleSet.addDetector(DetectorType.CONAN, "Conan CLI", ConanCliDetectable.class, detectableFactory::createConanCliDetectable).defaults().build();
+        DetectorRule<?> conanLockfileRule = ruleSet.addDetector(DetectorType.CONAN, "Conan Lockfile", ConanLockfileDetectable.class, detectableFactory::createConanLockfileDetectable).defaults().build();
         ruleSet.yield(conanCliRule).to(conanLockfileRule);
 
         ruleSet.addDetector(DetectorType.CONDA, "Conda Cli", CondaCliDetectable.class, detectableFactory::createCondaCliDetectable).defaults().build();
@@ -95,21 +93,26 @@ public class DetectorRuleFactory {
         ruleSet.addDetector(DetectorType.GO_VENDOR, "Go Vendor", GoVendorDetectable.class, detectableFactory::createGoVendorDetectable).defaults().build();
 
         ruleSet.addDetector(DetectorType.GRADLE, "Gradle Inspector", GradleDetectable.class, detectableFactory::createGradleDetectable).defaults().build();
+
+        ruleSet.addDetector(DetectorType.IVY, "Ivy Parse", IvyParseDetectable.class, detectableFactory::createIvyParseDetectable).defaultLock().build();
+
         ruleSet.addDetector(DetectorType.HEX, "Rebar", RebarDetectable.class, detectableFactory::createRebarDetectable).defaults().build();
 
         ruleSet.addDetector(DetectorType.MAVEN, "Maven Pom", MavenPomDetectable.class, detectableFactory::createMavenPomDetectable).defaults().build();
         ruleSet.addDetector(DetectorType.MAVEN, "Maven Wrapper", MavenPomWrapperDetectable.class, detectableFactory::createMavenPomWrapperDetectable).defaults().build();
 
-        DetectorRule lernaDetectable = ruleSet.addDetector(DetectorType.LERNA, "Lerna", LernaDetectable.class, detectableFactory::createLernaDetectable).defaults().build();
-        DetectorRule yarnLock = ruleSet.addDetector(DetectorType.YARN, "Yarn Lock", YarnLockDetectable.class, detectableFactory::createYarnLockDetectable).defaultLock().build();
-        DetectorRule npmPackageLock = ruleSet.addDetector(DetectorType.NPM, "Package Lock", NpmPackageLockDetectable.class, detectableFactory::createNpmPackageLockDetectable).defaultLock().build();
-        DetectorRule npmShrinkwrap = ruleSet.addDetector(DetectorType.NPM, "Shrinkwrap", NpmShrinkwrapDetectable.class, detectableFactory::createNpmShrinkwrapDetectable).defaultLock().build();
-        DetectorRule npmCli = ruleSet.addDetector(DetectorType.NPM, "Npm Cli", NpmCliDetectable.class, detectableFactory::createNpmCliDetectable).defaults().build();
+        DetectorRule<?> lernaDetectable = ruleSet.addDetector(DetectorType.LERNA, "Lerna", LernaDetectable.class, detectableFactory::createLernaDetectable).defaults().build();
+        DetectorRule<?> yarnLock = ruleSet.addDetector(DetectorType.YARN, "Yarn Lock", YarnLockDetectable.class, detectableFactory::createYarnLockDetectable).defaultLock().build();
+        DetectorRule<?> npmPackageLock = ruleSet.addDetector(DetectorType.NPM, "Package Lock", NpmPackageLockDetectable.class, detectableFactory::createNpmPackageLockDetectable).defaultLock().build();
+        DetectorRule<?> npmShrinkwrap = ruleSet.addDetector(DetectorType.NPM, "Shrinkwrap", NpmShrinkwrapDetectable.class, detectableFactory::createNpmShrinkwrapDetectable).defaultLock().build();
+        DetectorRule<?> npmCli = ruleSet.addDetector(DetectorType.NPM, "Npm Cli", NpmCliDetectable.class, detectableFactory::createNpmCliDetectable).defaults().build();
+        DetectorRule<?> pnpmLock = ruleSet.addDetector(DetectorType.PNPM, "Pnpm Lock", PnpmLockDetectable.class, detectableFactory::createPnpmLockDetectable).defaults().build();
 
         ruleSet.yield(npmPackageLock).to(lernaDetectable);
         ruleSet.yield(npmShrinkwrap).to(lernaDetectable);
         ruleSet.yield(npmCli).to(lernaDetectable);
         ruleSet.yield(yarnLock).to(lernaDetectable);
+        ruleSet.yield(pnpmLock).to(lernaDetectable);
 
         ruleSet.yield(npmShrinkwrap).to(npmPackageLock);
         ruleSet.yield(npmCli).to(npmPackageLock);
@@ -119,17 +122,19 @@ public class DetectorRuleFactory {
         ruleSet.yield(npmPackageLock).to(yarnLock);
         ruleSet.yield(npmShrinkwrap).to(yarnLock);
 
-        DetectorRule nugetSolution = ruleSet.addDetector(DetectorType.NUGET, "Solution", NugetSolutionDetectable.class, detectableFactory::createNugetSolutionDetectable).defaults().build();
+        ruleSet.yield(npmCli).to(pnpmLock);
+
+        DetectorRule<?> nugetSolution = ruleSet.addDetector(DetectorType.NUGET, "Solution", NugetSolutionDetectable.class, detectableFactory::createNugetSolutionDetectable).defaults().build();
         //The Project detectable is "notNestable" because it will falsely apply under a solution (the solution includes all of the projects).
-        DetectorRule nugetProject = ruleSet.addDetector(DetectorType.NUGET, "Project", NugetProjectDetectable.class, detectableFactory::createNugetProjectDetectable).notNestable().noMaxDepth().build();
+        DetectorRule<?> nugetProject = ruleSet.addDetector(DetectorType.NUGET, "Project", NugetProjectDetectable.class, detectableFactory::createNugetProjectDetectable).notNestable().noMaxDepth().build();
 
         ruleSet.yield(nugetProject).to(nugetSolution);
 
         ruleSet.addDetector(DetectorType.PACKAGIST, "Composer", ComposerLockDetectable.class, detectableFactory::createComposerDetectable).defaults().build();
 
-        DetectorRule pipEnv = ruleSet.addDetector(DetectorType.PIP, "Pip Env", PipenvDetectable.class, detectableFactory::createPipenvDetectable).defaults().build();
-        DetectorRule pipInspector = ruleSet.addDetector(DetectorType.PIP, "Pip Inspector", PipInspectorDetectable.class, detectableFactory::createPipInspectorDetectable).defaults().build();
-        DetectorRule poetry = ruleSet.addDetector(DetectorType.POETRY, "Poetry", PoetryDetectable.class, detectableFactory::createPoetryDetectable).defaults().build();
+        DetectorRule<?> pipEnv = ruleSet.addDetector(DetectorType.PIP, "Pip Env", PipenvDetectable.class, detectableFactory::createPipenvDetectable).defaults().build();
+        DetectorRule<?> pipInspector = ruleSet.addDetector(DetectorType.PIP, "Pip Inspector", PipInspectorDetectable.class, detectableFactory::createPipInspectorDetectable).defaults().build();
+        DetectorRule<?> poetry = ruleSet.addDetector(DetectorType.POETRY, "Poetry", PoetryDetectable.class, detectableFactory::createPoetryDetectable).defaults().build();
         ruleSet.yield(pipInspector).to(pipEnv);
         ruleSet.yield(poetry).to(pipEnv);
 
@@ -154,6 +159,8 @@ public class DetectorRuleFactory {
         ruleSet.addDetector(DetectorType.CARTHAGE, "Carthage", CarthageDetectable.class, detectableFactory::createCarthageDetectable).defaults().build();
 
         ruleSet.addDetector(DetectorType.COCOAPODS, "Pod Lock", PodlockDetectable.class, detectableFactory::createPodLockDetectable).defaults().build();
+        ruleSet.addDetector(DetectorType.XCODE, "Xcode Swift", XcodeSwiftDetectable.class, detectableFactory::createXcodeSwiftDetectable).defaults().selfNestable().build();
+
         ruleSet.addDetector(DetectorType.PACKAGIST, "Packrat Lock", PackratLockDetectable.class, detectableFactory::createPackratLockDetectable).defaults().build();
 
         ruleSet.addDetector(DetectorType.DART, "Dart Pub Spec", DartPubSpecLockDetectable.class, detectableFactory::createDartPubSpecLockDetectable).defaults().build();
@@ -165,15 +172,18 @@ public class DetectorRuleFactory {
         ruleSet.addDetector(DetectorType.GRADLE, "Gradle Project Inspector", GradleProjectInspectorDetectable.class, detectableFactory::createGradleProjectInspectorDetectable).defaults().build();
         ruleSet.addDetector(DetectorType.GO_GRADLE, "Go Gradle", GoGradleDetectable.class, detectableFactory::createGoGradleDetectable).defaults().build();
 
+        ruleSet.addDetector(DetectorType.IVY, "Ivy Parse", IvyParseDetectable.class, detectableFactory::createIvyParseDetectable).defaultLock().build();
+
         ruleSet.addDetector(DetectorType.MAVEN, "Maven Pom Parse", MavenParseDetectable.class, detectableFactory::createMavenParseDetectable).defaults().build();
         ruleSet.addDetector(DetectorType.MAVEN, "Maven Project Inspector", MavenProjectInspectorDetectable.class, detectableFactory::createMavenProjectInspectorDetectable).defaults().build();
 
         ruleSet.addDetector(DetectorType.POETRY, "Poetry", PoetryDetectable.class, detectableFactory::createPoetryDetectable).defaults().build();
 
-        DetectorRule yarnLock = ruleSet.addDetector(DetectorType.YARN, "Yarn Lock", YarnLockDetectable.class, detectableFactory::createYarnLockDetectable).defaults().build();
-        DetectorRule npmPackageLock = ruleSet.addDetector(DetectorType.NPM, "Package Lock", NpmPackageLockDetectable.class, detectableFactory::createNpmPackageLockDetectable).defaults().build();
-        DetectorRule npmShrinkwrap = ruleSet.addDetector(DetectorType.NPM, "Shrinkwrap", NpmShrinkwrapDetectable.class, detectableFactory::createNpmShrinkwrapDetectable).defaults().build();
-        DetectorRule npmPackageJsonParse = ruleSet.addDetector(DetectorType.NPM, "Package Json Parse", NpmPackageJsonParseDetectable.class, detectableFactory::createNpmPackageJsonParseDetectable).defaults().build();
+        DetectorRule<?> yarnLock = ruleSet.addDetector(DetectorType.YARN, "Yarn Lock", YarnLockDetectable.class, detectableFactory::createYarnLockDetectable).defaults().build();
+        DetectorRule<?> npmPackageLock = ruleSet.addDetector(DetectorType.NPM, "Package Lock", NpmPackageLockDetectable.class, detectableFactory::createNpmPackageLockDetectable).defaults().build();
+        DetectorRule<?> npmShrinkwrap = ruleSet.addDetector(DetectorType.NPM, "Shrinkwrap", NpmShrinkwrapDetectable.class, detectableFactory::createNpmShrinkwrapDetectable).defaults().build();
+        DetectorRule<?> npmPackageJsonParse = ruleSet.addDetector(DetectorType.NPM, "Package Json Parse", NpmPackageJsonParseDetectable.class, detectableFactory::createNpmPackageJsonParseDetectable).defaults().build();
+        DetectorRule<?> pnpmLock = ruleSet.addDetector(DetectorType.PNPM, "Pnpm Lock", PnpmLockDetectable.class, detectableFactory::createPnpmLockDetectable).defaults().build();
 
         ruleSet.yield(npmShrinkwrap).to(npmPackageLock);
         ruleSet.yield(npmPackageJsonParse).to(npmPackageLock);
@@ -183,12 +193,14 @@ public class DetectorRuleFactory {
         ruleSet.yield(npmPackageLock).to(yarnLock);
         ruleSet.yield(npmShrinkwrap).to(yarnLock);
 
+        ruleSet.yield(npmPackageJsonParse).to(pnpmLock);
+
         ruleSet.addDetector(DetectorType.NUGET, "NuGet Project Inspector", NugetProjectInspectorDetectable.class, detectableFactory::createNugetParseDetectable).defaults().build();
 
         ruleSet.addDetector(DetectorType.PACKAGIST, "Composer", ComposerLockDetectable.class, detectableFactory::createComposerDetectable).defaults().build();
 
-        DetectorRule gemlock = ruleSet.addDetector(DetectorType.RUBYGEMS, "Gemlock", GemlockDetectable.class, detectableFactory::createGemlockDetectable).defaults().build();
-        DetectorRule gemspec = ruleSet.addDetector(DetectorType.RUBYGEMS, "Gemspec", GemspecParseDetectable.class, detectableFactory::createGemspecParseDetectable).defaults().build();
+        DetectorRule<?> gemlock = ruleSet.addDetector(DetectorType.RUBYGEMS, "Gemlock", GemlockDetectable.class, detectableFactory::createGemlockDetectable).defaults().build();
+        DetectorRule<?> gemspec = ruleSet.addDetector(DetectorType.RUBYGEMS, "Gemspec", GemspecParseDetectable.class, detectableFactory::createGemspecParseDetectable).defaults().build();
 
         ruleSet.yield(gemspec).to(gemlock);
 

@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectable.exception;
 
 import com.synopsys.integration.exception.IntegrationException;
@@ -16,19 +9,19 @@ public class DetectableException extends IntegrationException {
         super();
     }
 
-    public DetectableException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace) {
+    public DetectableException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 
-    public DetectableException(final String message, final Throwable cause) {
+    public DetectableException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public DetectableException(final String message) {
+    public DetectableException(String message) {
         super(message);
     }
 
-    public DetectableException(final Throwable cause) {
+    public DetectableException(Throwable cause) {
         super(cause);
     }
 

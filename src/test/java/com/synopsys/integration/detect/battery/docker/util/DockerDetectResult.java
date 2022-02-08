@@ -4,7 +4,7 @@ public class DockerDetectResult {
     private int exitCode;
     private String detectLogs;
 
-    public DockerDetectResult(final int exitCode, final String detectLogs) {
+    public DockerDetectResult(int exitCode, String detectLogs) {
         this.exitCode = exitCode;
         this.detectLogs = detectLogs;
     }

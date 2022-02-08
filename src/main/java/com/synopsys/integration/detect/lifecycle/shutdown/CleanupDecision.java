@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.lifecycle.shutdown;
 
 import java.io.File;
@@ -20,7 +13,7 @@ public class CleanupDecision {
     @Nullable
     private final File airGapZip;
 
-    public CleanupDecision(final boolean shouldCleanup, final boolean shouldPreserveScan, final boolean shouldPreserveBdio, final boolean shouldPreserveAirGap, final @Nullable File airGapZip) {
+    public CleanupDecision(boolean shouldCleanup, boolean shouldPreserveScan, boolean shouldPreserveBdio, boolean shouldPreserveAirGap, @Nullable File airGapZip) {
         this.shouldCleanup = shouldCleanup;
         this.shouldPreserveScan = shouldPreserveScan;
         this.shouldPreserveBdio = shouldPreserveBdio;

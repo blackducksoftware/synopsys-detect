@@ -39,13 +39,13 @@ public class FormattedOutputManagerTest {
 
         DetectorEvaluation detectorEvaluation = new DetectorEvaluation(rule);
         ExecutableNotFoundDetectableResult result = new ExecutableNotFoundDetectableResult("go");
-        final DetectorResult extractableResult = new DetectorResult(result.getPassed(), result.toDescription(), result.getClass(), Collections.emptyList(), Collections.emptyList());
+        DetectorResult extractableResult = new DetectorResult(result.getPassed(), result.toDescription(), result.getClass(), Collections.emptyList(), Collections.emptyList());
         detectorEvaluation.setExtractable(extractableResult);
         detectorEvaluation.setApplicable(new DetectorResult(true, "", Collections.emptyList(), Collections.emptyList()));
         detectorEvaluation.setSearchable(new DetectorResult(true, "", Collections.emptyList(), Collections.emptyList()));
         detectorEvaluation.setDetectableEnvironment(new DetectableEnvironment(new File("")));
 
-        final DetectorToolResult detectorToolResult = new DetectorToolResult(
+        DetectorToolResult detectorToolResult = new DetectorToolResult(
             null,
             null,
             null,
@@ -55,7 +55,7 @@ public class FormattedOutputManagerTest {
         );
         eventSystem.publishEvent(Event.DetectorsComplete, detectorToolResult);
 
-        DetectInfo detectInfo = new DetectInfo("", 0, null);
+        DetectInfo detectInfo = new DetectInfo("", null);
         FormattedOutput formattedOutput = formattedOutputManager.createFormattedOutput(detectInfo);
         FormattedDetectorOutput detectorOutput = formattedOutput.detectors.get(0);
 

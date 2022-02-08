@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.maven.cli;
 
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
@@ -14,7 +7,7 @@ public class MavenParseResult {
     private String projectVersion;
     private CodeLocation codeLocation;
 
-    public MavenParseResult(final String projectName, final String projectVersion, final CodeLocation codeLocation) {
+    public MavenParseResult(String projectName, String projectVersion, CodeLocation codeLocation) {
         this.projectName = projectName;
         this.projectVersion = projectVersion;
         this.codeLocation = codeLocation;
@@ -24,7 +17,7 @@ public class MavenParseResult {
         return projectName;
     }
 
-    public void setProjectName(final String projectName) {
+    public void setProjectName(String projectName) {
         this.projectName = projectName;
     }
 
@@ -32,7 +25,7 @@ public class MavenParseResult {
         return projectVersion;
     }
 
-    public void setProjectVersion(final String projectVersion) {
+    public void setProjectVersion(String projectVersion) {
         this.projectVersion = projectVersion;
     }
 
@@ -40,7 +33,7 @@ public class MavenParseResult {
         return codeLocation;
     }
 
-    public void setCodeLocation(final CodeLocation codeLocation) {
+    public void setCodeLocation(CodeLocation codeLocation) {
         this.codeLocation = codeLocation;
     }
 }

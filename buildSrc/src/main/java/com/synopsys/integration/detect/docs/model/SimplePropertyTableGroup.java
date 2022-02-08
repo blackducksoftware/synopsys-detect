@@ -1,10 +1,3 @@
-/*
- * buildSrc
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.docs.model;
 
 import java.util.List;
@@ -16,7 +9,7 @@ public class SimplePropertyTableGroup {
     private final String location;
     private final List<HelpJsonOption> options;
 
-    public SimplePropertyTableGroup(final String groupName, final String location, final List<HelpJsonOption> options) {
+    public SimplePropertyTableGroup(String groupName, String location, List<HelpJsonOption> options) {
         this.groupName = groupName;
         this.location = location;
         this.options = options;

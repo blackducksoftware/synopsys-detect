@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.sbt.parse.model;
 
 import java.util.List;
@@ -21,7 +14,7 @@ public class SbtProject {
         return projectName;
     }
 
-    public void setProjectName(final String projectName) {
+    public void setProjectName(String projectName) {
         this.projectName = projectName;
     }
 
@@ -29,7 +22,7 @@ public class SbtProject {
         return projectVersion;
     }
 
-    public void setProjectVersion(final String projectVersion) {
+    public void setProjectVersion(String projectVersion) {
         this.projectVersion = projectVersion;
     }
 
@@ -37,7 +30,7 @@ public class SbtProject {
         return projectExternalId;
     }
 
-    public void setProjectExternalId(final ExternalId projectExternalId) {
+    public void setProjectExternalId(ExternalId projectExternalId) {
         this.projectExternalId = projectExternalId;
     }
 
@@ -45,7 +38,7 @@ public class SbtProject {
         return modules;
     }
 
-    public void setModules(final List<SbtDependencyModule> modules) {
+    public void setModules(List<SbtDependencyModule> modules) {
         this.modules = modules;
     }
 }

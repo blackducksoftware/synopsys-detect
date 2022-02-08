@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.report;
 
 import java.util.List;
@@ -18,15 +11,15 @@ import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
 public class SearchSummaryReporter {
 
-    public void print(final ReportWriter writer, final DetectorEvaluationTree rootEvaluation) {
+    public void print(ReportWriter writer, DetectorEvaluationTree rootEvaluation) {
         printDirectoriesInfo(writer, rootEvaluation.asFlatList());
     }
 
-    private void printDirectoriesInfo(final ReportWriter writer, final List<DetectorEvaluationTree> trees) {
+    private void printDirectoriesInfo(ReportWriter writer, List<DetectorEvaluationTree> trees) {
         ReporterUtils.printHeader(writer, "Search results");
         boolean printedAtLeastOne = false;
-        for (final DetectorEvaluationTree tree : trees) {
-            final List<DetectorEvaluation> applicable = DetectorEvaluationUtils.applicableChildren(tree);
+        for (DetectorEvaluationTree tree : trees) {
+            List<DetectorEvaluation> applicable = DetectorEvaluationUtils.applicableChildren(tree);
             if (applicable.size() > 0) {
                 writer.writeLine(tree.getDirectory().toString());
                 writer.writeLine("\tAPPLIES: " + applicable.stream().map(it -> it.getDetectorRule().getDescriptiveName()).sorted().collect(Collectors.joining(", ")));

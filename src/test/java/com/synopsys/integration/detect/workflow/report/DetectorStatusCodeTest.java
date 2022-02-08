@@ -35,18 +35,18 @@ public class DetectorStatusCodeTest {
 
     Set<? extends Class<?>> getClasses(String directory, String packageName) {
         return Bds.of(new File(directory).listFiles())
-                   .filter(it -> !it.isDirectory())
-                   .map(File::getName)
-                   .map(it -> it.replace(".java", ""))
-                   .map(it -> {
-                       try {
-                           return Class.forName(packageName + "." + it);
-                       } catch (ClassNotFoundException e) {
-                           return null;
-                       }
-                   })
-                   .filter(Objects::nonNull)
-                   .toSet();
+            .filter(it -> !it.isDirectory())
+            .map(File::getName)
+            .map(it -> it.replace(".java", ""))
+            .map(it -> {
+                try {
+                    return Class.forName(packageName + "." + it);
+                } catch (ClassNotFoundException e) {
+                    return null;
+                }
+            })
+            .filter(Objects::nonNull)
+            .toSet();
     }
 
 }

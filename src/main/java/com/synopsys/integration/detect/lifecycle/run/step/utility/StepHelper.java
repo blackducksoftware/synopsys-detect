@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.lifecycle.run.step.utility;
 
 import java.util.Optional;
@@ -27,7 +20,7 @@ public class StepHelper {
     private final OperationWrapper operationWrapper;
     private final DetectToolFilter detectToolFilter;
 
-    public StepHelper(final OperationSystem operationSystem, final OperationWrapper operationWrapper, DetectToolFilter detectToolFilter) {
+    public StepHelper(OperationSystem operationSystem, OperationWrapper operationWrapper, DetectToolFilter detectToolFilter) {
         this.operationSystem = operationSystem;
         this.operationWrapper = operationWrapper;
         this.detectToolFilter = detectToolFilter;

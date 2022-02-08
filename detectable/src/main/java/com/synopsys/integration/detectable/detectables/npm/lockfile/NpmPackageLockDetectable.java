@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.npm.lockfile;
 
 import java.io.File;
@@ -30,18 +23,14 @@ public class NpmPackageLockDetectable extends Detectable {
 
     private final FileFinder fileFinder;
     private final NpmLockfileExtractor npmLockfileExtractor;
-    private final boolean includeDevDependencies;
-    private final boolean includePeerDependencies;
 
     private File lockfile;
     private File packageJson;
 
-    public NpmPackageLockDetectable(DetectableEnvironment environment, FileFinder fileFinder, NpmLockfileExtractor npmLockfileExtractor, NpmLockfileOptions npmLockfileOptions) {
+    public NpmPackageLockDetectable(DetectableEnvironment environment, FileFinder fileFinder, NpmLockfileExtractor npmLockfileExtractor) {
         super(environment);
         this.fileFinder = fileFinder;
         this.npmLockfileExtractor = npmLockfileExtractor;
-        this.includeDevDependencies = npmLockfileOptions.shouldIncludeDeveloperDependencies();
-        this.includePeerDependencies = npmLockfileOptions.shouldIncludePeerDependencies();
     }
 
     @Override
@@ -59,7 +48,7 @@ public class NpmPackageLockDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
-        return npmLockfileExtractor.extract(lockfile, packageJson, includeDevDependencies, includePeerDependencies);
+        return npmLockfileExtractor.extract(lockfile, packageJson);
     }
 
 }

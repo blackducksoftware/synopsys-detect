@@ -1,16 +1,10 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectable;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,6 +33,22 @@ public class Requirements {
     public Requirements(FileFinder fileFinder, DetectableEnvironment environment) {
         this.fileFinder = fileFinder;
         this.environment = environment;
+    }
+
+    public void eitherFile(String primaryPattern, String secondaryPattern, Consumer<File> primaryConsumer, Consumer<File> secondaryConsumer) {
+        File primary = fileFinder.findFile(environment.getDirectory(), primaryPattern);
+        File secondary = fileFinder.findFile(environment.getDirectory(), secondaryPattern);
+        if (primary == null && secondary == null) {
+            failure = new FilesNotFoundDetectableResult(primaryPattern, secondaryPattern);
+        }
+        if (primary != null) {
+            explainFile(primary);
+            primaryConsumer.accept(primary);
+        }
+        if (secondary != null) {
+            explainFile(secondary);
+            secondaryConsumer.accept(secondary);
+        }
     }
 
     public void explain(Explanation explanation) {

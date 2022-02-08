@@ -1,19 +1,4 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.blackduck.developer.blackduck;
-
-/*
- * blackduck-common
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -22,8 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.entity.ContentType;
 
 import com.synopsys.integration.blackduck.api.core.BlackDuckPath;
-import com.synopsys.integration.blackduck.api.core.BlackDuckResponse;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
+import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 import com.synopsys.integration.blackduck.bdio2.model.BdioFileContent;
 import com.synopsys.integration.blackduck.http.BlackDuckRequestBuilder;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
@@ -45,10 +30,10 @@ public class RapidScanConfigBdio2StreamUploader {
     private final BlackDuckApiClient blackDuckApiClient;
     private final ApiDiscovery apiDiscovery;
     private final IntLogger logger;
-    private final BlackDuckPath<BlackDuckResponse> scanPath;
+    private final BlackDuckPath<DeveloperScansScanView> scanPath;
     private final String contentType;
 
-    public RapidScanConfigBdio2StreamUploader(BlackDuckApiClient blackDuckApiClient, ApiDiscovery apiDiscovery, IntLogger logger, BlackDuckPath<BlackDuckResponse> scanPath, String contentType) {
+    public RapidScanConfigBdio2StreamUploader(BlackDuckApiClient blackDuckApiClient, ApiDiscovery apiDiscovery, IntLogger logger, BlackDuckPath<DeveloperScansScanView> scanPath, String contentType) {
         this.blackDuckApiClient = blackDuckApiClient;
         this.apiDiscovery = apiDiscovery;
         this.logger = logger;

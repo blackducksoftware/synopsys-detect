@@ -19,8 +19,10 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.lerna.LernaDetectable;
 import com.synopsys.integration.detectable.detectables.lerna.LernaOptions;
+import com.synopsys.integration.detectable.detectables.lerna.LernaPackageType;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmLockfileOptions;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
@@ -123,11 +125,11 @@ public class LernaDetectableTest extends DetectableFunctionalTest {
         packageJson.name = packageName;
         packageJson.version = packageVersion;
         packageJson.dependencies = dependencies.stream()
-                                       .collect(Collectors.toMap(NameVersion::getName, NameVersion::getVersion));
+            .collect(Collectors.toMap(NameVersion::getName, NameVersion::getVersion));
         packageJson.devDependencies = devDependencies.stream()
-                                          .collect(Collectors.toMap(NameVersion::getName, NameVersion::getVersion));
+            .collect(Collectors.toMap(NameVersion::getName, NameVersion::getVersion));
         packageJson.peerDependencies = peerDependencies.stream()
-                                           .collect(Collectors.toMap(NameVersion::getName, NameVersion::getVersion));
+            .collect(Collectors.toMap(NameVersion::getName, NameVersion::getVersion));
 
         addFile(directory.resolve(LernaDetectable.PACKAGE_JSON), gson.toJson(packageJson));
     }
@@ -135,10 +137,10 @@ public class LernaDetectableTest extends DetectableFunctionalTest {
     @NotNull
     @Override
     public Detectable create(@NotNull DetectableEnvironment environment) {
-        NpmLockfileOptions npmLockFileOptions = new NpmLockfileOptions(true, true);
-        YarnLockOptions yarnLockOptions = new YarnLockOptions(false, new ArrayList<>(0), new ArrayList<>(0));
-        LernaOptions lernaOptions = new LernaOptions(false, new LinkedList<>(), new LinkedList<>());
-        return detectableFactory.createLernaDetectable(environment, () -> ExecutableTarget.forCommand("lerna"), npmLockFileOptions, yarnLockOptions, lernaOptions);
+        NpmLockfileOptions npmLockFileOptions = new NpmLockfileOptions(EnumListFilter.excludeNone());
+        YarnLockOptions yarnLockOptions = new YarnLockOptions(EnumListFilter.excludeNone(), new ArrayList<>(0), new ArrayList<>(0));
+        LernaOptions lernaOptions = new LernaOptions(EnumListFilter.fromExcluded(LernaPackageType.PRIVATE), new LinkedList<>(), new LinkedList<>());
+        return detectableFactory.createLernaDetectable(environment, () -> ExecutableTarget.forCommand("lerna"), npmLockFileOptions, lernaOptions, yarnLockOptions);
     }
 
     @Override

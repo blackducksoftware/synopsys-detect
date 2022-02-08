@@ -1,10 +1,3 @@
-/*
- * configuration
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.configuration.source;
 
 import java.util.ArrayList;
@@ -31,7 +24,7 @@ public class SpringConfigurationPropertySource implements PropertySource {
     private IterableConfigurationPropertySource propertySource;
     private final ConfigurablePropertyResolver configurablePropertyResolver;
 
-    public SpringConfigurationPropertySource(final String name, final IterableConfigurationPropertySource propertySource, ConfigurablePropertyResolver configurablePropertyResolver) {
+    public SpringConfigurationPropertySource(String name, IterableConfigurationPropertySource propertySource, ConfigurablePropertyResolver configurablePropertyResolver) {
         this.name = name;
         this.propertySource = propertySource;
         this.configurablePropertyResolver = configurablePropertyResolver;
@@ -97,7 +90,7 @@ public class SpringConfigurationPropertySource implements PropertySource {
     }
 
     @Override
-    public Boolean hasKey(final String key) {
+    public Boolean hasKey(String key) {
         Optional<ConfigurationPropertyName> configurationPropertyName = toConfigurationName(key);
         return configurationPropertyName.filter(propertyName -> propertySource.getConfigurationProperty(propertyName) != null).isPresent();
     }
@@ -111,17 +104,17 @@ public class SpringConfigurationPropertySource implements PropertySource {
     //Spring resolves configuration properties using a configurable property resolver (resolves --prop=${VAR} replaces VAR from an environment variable of the same name.)
     //The value provided from the configurable property itself or the property source is not resolved, so we have to get the final value from a resolver.
     //Theoretically, this resolver should be bound to the property source, but this current method at least gets the final resolved value. - jp
-    public String getValue(final String key) {
+    public String getValue(String key) {
         return toConfigurationProperty(key)
-                   .map(ConfigurationProperty::getName)
-                   .map(ConfigurationPropertyName::toString)
-                   .map(configurablePropertyResolver::getProperty)
-                   .map(Object::toString)
-                   .orElse(null);
+            .map(ConfigurationProperty::getName)
+            .map(ConfigurationPropertyName::toString)
+            .map(configurablePropertyResolver::getProperty)
+            .map(Object::toString)
+            .orElse(null);
     }
 
     @Override
-    public String getOrigin(final String key) {
+    public String getOrigin(String key) {
         return toConfigurationProperty(key).map(ConfigurationProperty::getOrigin).map(Object::toString).orElse(null);
     }
 

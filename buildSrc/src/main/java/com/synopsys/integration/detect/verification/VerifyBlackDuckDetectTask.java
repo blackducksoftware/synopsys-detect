@@ -1,10 +1,3 @@
-/*
- * buildSrc
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.verification;
 
 import static com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView.COMPONENTS_LINK;
@@ -31,7 +24,7 @@ import com.synopsys.integration.log.PrintStreamIntLogger;
 public class VerifyBlackDuckDetectTask extends DefaultTask {
     @TaskAction
     public void verifyBlackDuckAction() throws IntegrationException {
-        BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = BlackDuckServerConfig.newBuilder();
+        BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = BlackDuckServerConfig.newApiTokenBuilder();
         Set<String> environmentKeys = blackDuckServerConfigBuilder.getEnvironmentVariableKeys();
         environmentKeys.forEach(it -> {
             String value = System.getenv().get(it);

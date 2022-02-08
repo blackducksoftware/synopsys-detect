@@ -1,13 +1,8 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.configuration;
 
-public enum DetectPropertyFromVersion {
+import com.synopsys.integration.configuration.property.PropertyVersion;
+
+public enum DetectPropertyFromVersion implements PropertyVersion {
     VERSION_3_0_0("3.0.0"),
     VERSION_3_1_0("3.1.0"),
     VERSION_3_2_0("3.2.0"),
@@ -34,7 +29,11 @@ public enum DetectPropertyFromVersion {
     VERSION_7_5_0("7.5.0"),
     VERSION_7_6_0("7.6.0"),
     VERSION_7_7_0("7.7.0"),
-    VERSION_7_8_0("7.8.0");
+    VERSION_7_8_0("7.8.0"),
+    VERSION_7_9_0("7.9.0"),
+    VERSION_7_10_0("7.10.0"),
+    VERSION_7_11_0("7.11.0"),
+    VERSION_7_12_0("7.12.0");
 
     private final String version;
 
@@ -42,6 +41,7 @@ public enum DetectPropertyFromVersion {
         this.version = version;
     }
 
+    @Override
     public String getVersion() {
         return version;
     }

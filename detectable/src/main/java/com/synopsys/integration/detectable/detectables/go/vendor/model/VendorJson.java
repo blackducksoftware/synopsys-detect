@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.go.vendor.model;
 
 import java.util.List;
@@ -19,7 +12,7 @@ public class VendorJson extends Stringable {
     private final List<PackageData> packages;
     private final String rootPath;
 
-    public VendorJson(final String comment, final String ignore, final List<PackageData> packages, final String rootPath) {
+    public VendorJson(String comment, String ignore, List<PackageData> packages, String rootPath) {
         this.comment = comment;
         this.ignore = ignore;
         this.packages = packages;

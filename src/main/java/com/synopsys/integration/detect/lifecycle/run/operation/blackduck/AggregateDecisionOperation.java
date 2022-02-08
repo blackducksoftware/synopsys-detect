@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.lifecycle.run.operation.blackduck;
 
 import org.apache.commons.lang3.StringUtils;
@@ -24,7 +17,7 @@ public class AggregateDecisionOperation {
     }
 
     public AggregateDecision execute(Boolean anythingFailedPrior) throws DetectUserFriendlyException, IntegrationException {
-        String aggregateName = aggregateOptions.getAggregateName().orElse(null);
+        String aggregateName = aggregateOptions.getAggregateName().orElse(aggregateOptions.getAggregateFileName().orElse(null));
         AggregateMode aggregateMode = aggregateOptions.getAggregateMode();
         AggregateDecision aggregateDecision;
         if (StringUtils.isNotBlank(aggregateName)) {

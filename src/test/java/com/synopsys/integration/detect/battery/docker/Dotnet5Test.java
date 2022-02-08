@@ -14,18 +14,19 @@ import com.synopsys.integration.detect.configuration.DetectProperties;
 @Tag("integration")
 public class Dotnet5Test {
     @Test
-    void detectUsesDotnet5() throws IOException, InterruptedException {
-        DetectDockerTestRunner test = new DetectDockerTestRunner("detect-dotnet-five", "detect-dotnet-five:1.0.1");
-        test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Dotnet5.dockerfile"));
+    void detectUsesDotnet5() throws IOException {
+        try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-dotnet-five", "detect-dotnet-five:1.0.1")) {
+            test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Dotnet5.dockerfile"));
 
-        DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
-        commandBuilder.property(DetectProperties.DETECT_TOOLS, "DETECTOR");
-        commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
-        DockerAssertions dockerAssertions = test.run(commandBuilder);
+            DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
+            commandBuilder.property(DetectProperties.DETECT_TOOLS, "DETECTOR");
+            commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
+            DockerAssertions dockerAssertions = test.run(commandBuilder);
 
-        dockerAssertions.successfulDetectorType("NUGET");
-        dockerAssertions.atLeastOneBdioFile();
-        dockerAssertions.logContains("https://sig-repo.synopsys.com/artifactory/bds-integrations-nuget-release/"); // Verify we are using the EXTERNAL artifactory to download the inspector.
+            dockerAssertions.successfulDetectorType("NUGET");
+            dockerAssertions.atLeastOneBdioFile();
+            dockerAssertions.logContains("https://sig-repo.synopsys.com/artifactory/bds-integrations-nuget-release/"); // Verify we are using the EXTERNAL artifactory to download the inspector.
+        }
     }
 
 }

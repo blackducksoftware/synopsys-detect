@@ -1,20 +1,15 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.go.gomod;
 
-public class GoModCliDetectableOptions {
-    private final boolean dependencyVerificationEnabled;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 
-    public GoModCliDetectableOptions(boolean dependencyVerificationEnabled) {
-        this.dependencyVerificationEnabled = dependencyVerificationEnabled;
+public class GoModCliDetectableOptions {
+    private final EnumListFilter<GoModDependencyType> dependencyTypeFilter;
+
+    public GoModCliDetectableOptions(EnumListFilter<GoModDependencyType> dependencyTypeFilter) {
+        this.dependencyTypeFilter = dependencyTypeFilter;
     }
 
-    public boolean isDependencyVerificationEnabled() {
-        return dependencyVerificationEnabled;
+    public EnumListFilter<GoModDependencyType> getDependencyTypeFilter() {
+        return dependencyTypeFilter;
     }
 }
