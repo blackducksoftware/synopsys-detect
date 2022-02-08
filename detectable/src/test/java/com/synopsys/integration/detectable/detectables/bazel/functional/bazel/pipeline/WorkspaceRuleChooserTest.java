@@ -41,14 +41,14 @@ class WorkspaceRuleChooserTest {
     }
 
     @Test
-    void testOneProvidedSameOneParsedDeprecatedProperty() throws IntegrationException {
+    void testOneProvidedViaDeprecatedPropertySameOneParsed() throws IntegrationException {
         Set<WorkspaceRule> chosenWorkspaceRules = run(WORKSPACE_RULES_JUST_MAVEN_INSTALL, null, WORKSPACE_RULES_JUST_MAVEN_INSTALL);
         assertEquals(1, chosenWorkspaceRules.size());
         assertEquals("maven_install", chosenWorkspaceRules.iterator().next().getName());
     }
 
     @Test
-    void testOneProvidedSameOneParsedBothProperties() throws IntegrationException {
+    void testPreferNewProperty() throws IntegrationException {
         Set<WorkspaceRule> chosenWorkspaceRules = run(WORKSPACE_RULES_HASKELL, WORKSPACE_RULES_JUST_MAVEN_INSTALL, WORKSPACE_RULES_JUST_MAVEN_INSTALL);
         assertEquals(1, chosenWorkspaceRules.size());
         assertEquals("maven_install", chosenWorkspaceRules.iterator().next().getName());
