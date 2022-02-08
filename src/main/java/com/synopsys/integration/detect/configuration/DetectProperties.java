@@ -203,7 +203,7 @@ public class DetectProperties {
 
     public static final AllNoneEnumListProperty<WorkspaceRule> DETECT_BAZEL_WORKSPACE_RULES =
         AllNoneEnumListProperty.newBuilder("detect.bazel.workspace.rules", emptyList(), WorkspaceRule.class)
-            .setInfo("Bazel workspace rules override", DetectPropertyFromVersion.VERSION_7_12_0)
+            .setInfo("Bazel workspace rules", DetectPropertyFromVersion.VERSION_7_12_0)
             .setHelp("By default Detect discovers Bazel dependencies using all of the supported Bazel workspace rules that it finds in the WORKSPACE file. Alternatively you can use this property to specify the list of Bazel workspace rules Detect should use.")
             .setGroups(DetectGroup.BAZEL, DetectGroup.SOURCE_SCAN)
             .build();

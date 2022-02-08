@@ -18,7 +18,7 @@ public class WorkspaceRuleChooser {
         } else if (!rulesFromWorkspaceFile.isEmpty()) {
             return rulesFromWorkspaceFile;
         } else {
-            throw new DetectableException("Unable to determine Bazel Workspace rule type; try setting it via the property");
+            throw new DetectableException("Unable to determine Bazel workspace rule type; try setting it via the property");
         }
     }
 
