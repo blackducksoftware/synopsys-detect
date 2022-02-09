@@ -1,5 +1,11 @@
 # Release notes
 
+## Version 7.12.0
+
+### Changed features
+
+* Added new property detect.bazel.workspace.rules to replace the now-deprecated detect.bazel.dependency.type property.
+
 ## Version 7.11.0
 
 ### New features
