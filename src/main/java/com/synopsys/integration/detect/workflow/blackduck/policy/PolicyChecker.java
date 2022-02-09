@@ -9,13 +9,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.api.core.response.LinkMultipleResponses;
-import com.synopsys.integration.blackduck.api.core.response.UrlMultipleResponses;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionComponentPolicyStatusType;
 import com.synopsys.integration.blackduck.api.generated.view.ComponentPolicyRulesView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentVersionView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
+import com.synopsys.integration.blackduck.api.manual.temporary.response.PolicySummaryView;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.dataservice.ProjectBomService;
 import com.synopsys.integration.blackduck.service.model.PolicyStatusDescription;
@@ -38,14 +37,14 @@ public class PolicyChecker {
     }
 
     public void checkPolicyByName(List<String> policyNamesToFailPolicyCheck, ProjectVersionView projectVersionView) throws IntegrationException {
-        Optional<List<ActivePolicyRule>> activePolicyRulesOptional = fetchActivePolicyRulesForVersion(projectVersionView);
+        Optional<List<PolicySummaryView>> activePolicyRulesOptional = projectBomService.getActivePoliciesForVersion(projectVersionView);
 
         if (activePolicyRulesOptional.isPresent()) {
-            List<ActivePolicyRule> activePolicyRules = activePolicyRulesOptional.get();
+            List<PolicySummaryView> activePolicyRules = activePolicyRulesOptional.get();
 
             List<String> violatedPolicyNames = activePolicyRules.stream()
-                .filter(rule -> ProjectVersionComponentPolicyStatusType.IN_VIOLATION.equals(rule.status))
-                .map(ActivePolicyRule::getName)
+                .filter(rule -> ProjectVersionComponentPolicyStatusType.IN_VIOLATION.equals(rule.getStatus()))
+                .map(PolicySummaryView::getName)
                 .filter(policyNamesToFailPolicyCheck::contains)
                 .collect(Collectors.toList());
 
@@ -131,18 +130,6 @@ public class PolicyChecker {
         return policySeverities.stream()
             .map(policyStatusDescription::getCountOfSeverity)
             .anyMatch(severityCount -> severityCount > 0);
-    }
-
-    // TODO: This won't work without using internal api media types. This should be replaced once the API is made public. - JM 11/2021
-    private Optional<List<ActivePolicyRule>> fetchActivePolicyRulesForVersion(ProjectVersionView version) throws IntegrationException {
-        String ACTIVE_POLICY_RULES = "active-policy-rules";
-        LinkMultipleResponses<ActivePolicyRule> rulesLink = new LinkMultipleResponses<>(ACTIVE_POLICY_RULES, ActivePolicyRule.class);
-        Optional<UrlMultipleResponses<ActivePolicyRule>> rulesUrl = version.metaMultipleResponsesSafely(rulesLink);
-        if (rulesUrl.isPresent()) {
-            return Optional.ofNullable(blackDuckApiClient.getAllResponses(rulesUrl.get()));
-        } else {
-            return Optional.empty();
-        }
     }
 
 }
