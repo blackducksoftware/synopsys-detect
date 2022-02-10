@@ -73,8 +73,9 @@ public class DetectableOptionFactory {
     public BazelDetectableOptions createBazelDetectableOptions() {
         String targetName = detectConfiguration.getNullableValue(DetectProperties.DETECT_BAZEL_TARGET);
         List<String> bazelCqueryAdditionalOptions = detectConfiguration.getValue(DetectProperties.DETECT_BAZEL_CQUERY_OPTIONS);
-        Set<WorkspaceRule> bazelDependencyRules = detectConfiguration.getValue(DetectProperties.DETECT_BAZEL_DEPENDENCY_RULE).representedValueSet();
-        return new BazelDetectableOptions(targetName, bazelDependencyRules, bazelCqueryAdditionalOptions);
+        Set<WorkspaceRule> workspaceRulesFromDeprecatedProperty = detectConfiguration.getValue(DetectProperties.DETECT_BAZEL_DEPENDENCY_RULE).representedValueSet();
+        Set<WorkspaceRule> workspaceRulesFromProperty = detectConfiguration.getValue(DetectProperties.DETECT_BAZEL_WORKSPACE_RULES).representedValueSet();
+        return new BazelDetectableOptions(targetName, workspaceRulesFromDeprecatedProperty, workspaceRulesFromProperty, bazelCqueryAdditionalOptions);
     }
 
     public BitbakeDetectableOptions createBitbakeDetectableOptions() {

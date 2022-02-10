@@ -201,10 +201,10 @@ public class DetectProperties {
             .setGroups(DetectGroup.BAZEL, DetectGroup.SOURCE_SCAN)
             .build();
 
-    public static final AllNoneEnumListProperty<WorkspaceRule> DETECT_BAZEL_DEPENDENCY_RULE =
-        AllNoneEnumListProperty.newBuilder("detect.bazel.dependency.type", emptyList(), WorkspaceRule.class)
-            .setInfo("Bazel workspace external dependency rule", DetectPropertyFromVersion.VERSION_6_0_0)
-            .setHelp("The Bazel workspace rule(s) used to pull in external dependencies. If not set, Detect will attempt to determine the rule(s) from the contents of the WORKSPACE file.")
+    public static final AllNoneEnumListProperty<WorkspaceRule> DETECT_BAZEL_WORKSPACE_RULES =
+        AllNoneEnumListProperty.newBuilder("detect.bazel.workspace.rules", emptyList(), WorkspaceRule.class)
+            .setInfo("Bazel workspace rules", DetectPropertyFromVersion.VERSION_7_12_0)
+            .setHelp("By default Detect discovers Bazel dependencies using all of the supported Bazel workspace rules that it finds in the WORKSPACE file. Alternatively you can use this property to specify the list of Bazel workspace rules Detect should use.")
             .setGroups(DetectGroup.BAZEL, DetectGroup.SOURCE_SCAN)
             .build();
 
@@ -1546,6 +1546,15 @@ public class DetectProperties {
     // username/password ==> api token
     public static final String BDIO1_DEPRECATION_MESSAGE = "This property is being removed, along with the option to generate BDIO in BDIO1 format. In the future, BDIO2 format will be the only option.";
     public static final String AGGREGATION_MODE_DEPRECATION_MESSAGE = "This property is being removed, along with the ability to set the aggregation mode. Detect will only operate in SUBPROJECT aggregation mode to more accurately report the dependency graph.";
+    public static final String BAZEL_DEPENDENCY_TYPE_DEPRECATION_MESSAGE = "This property is being removed. Please use property 'detect.bazel.workspace.rules' instead.";
+
+    public static final AllNoneEnumListProperty<WorkspaceRule> DETECT_BAZEL_DEPENDENCY_RULE =
+        AllNoneEnumListProperty.newBuilder("detect.bazel.dependency.type", emptyList(), WorkspaceRule.class)
+            .setInfo("Bazel workspace external dependency rule", DetectPropertyFromVersion.VERSION_6_0_0)
+            .setHelp("The Bazel workspace rule(s) used to pull in external dependencies. If not set, Detect will attempt to determine the rule(s) from the contents of the WORKSPACE file.")
+            .setGroups(DetectGroup.BAZEL, DetectGroup.SOURCE_SCAN)
+            .setDeprecated(BAZEL_DEPENDENCY_TYPE_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT)
+            .build();
 
     @Deprecated
     public static final NullableStringProperty DETECT_BOM_AGGREGATE_NAME =

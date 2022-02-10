@@ -10,13 +10,15 @@ import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 public class WorkspaceRuleChooser {
 
     @NotNull
-    public Set<WorkspaceRule> choose(Set<WorkspaceRule> rulesFromWorkspaceFile, Set<WorkspaceRule> rulesPropertyValues) throws DetectableException {
-        if (rulesPropertyValues != null && !rulesPropertyValues.isEmpty()) {
-            return rulesPropertyValues;
+    public Set<WorkspaceRule> choose(Set<WorkspaceRule> rulesFromWorkspaceFile, Set<WorkspaceRule> rulesFromDeprecatedProperty, Set<WorkspaceRule> rulesFromProperty) throws DetectableException {
+        if (rulesFromProperty != null && !rulesFromProperty.isEmpty()) {
+            return rulesFromProperty;
+        } else if (rulesFromDeprecatedProperty != null && !rulesFromDeprecatedProperty.isEmpty()) {
+            return rulesFromDeprecatedProperty;
         } else if (!rulesFromWorkspaceFile.isEmpty()) {
             return rulesFromWorkspaceFile;
         } else {
-            throw new DetectableException("Unable to determine BazelWorkspace dependency rule type; try setting it via the property");
+            throw new DetectableException("Unable to determine Bazel workspace rule type; try setting it via the property");
         }
     }
 

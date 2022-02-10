@@ -4,12 +4,13 @@
 
 [solution_name] supports dependencies specified in *maven_jar*, *maven_install*, and *haskell_cabal_library* workspace rules only.
 
-The Bazel tool attempts to run on your project if you provide a Bazel build target using the Bazel target property.
+The [solution_name] Bazel tool attempts to run on your project if you provide a Bazel build target using the Bazel target property.
 
 The Bazel tool also requires a bazel executable on $PATH.
 
-[solution_name] attempts to determine the workspace dependency rule (*maven_install*, *maven_jar*, or *haskell_cabal_library*) from the WORKSPACE file.
-In case it cannot, you can specify which rule you use with the Bazel dependency type property.
+By default, [solution_name] determines the set of supported workspace rules that your project uses by parsing the WORKSPACE file,
+and executes Bazel commands to discover dependencies for each supported workspace rule it finds.
+Alternatively, you can directly control the set of workspace rules [solution_name] uses by setting the Bazel workspace rule property.
 Refer to [Properties](../properties/detectors/bazel.md) for details.
 
 ## Processing for the *maven_install* workspace rule

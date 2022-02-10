@@ -551,7 +551,7 @@ public class DetectableFactory {
         BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor(bazelDetectableOptions.getTargetName().orElse(null), bazelDetectableOptions.getBazelCqueryAdditionalOptions());
         BazelProjectNameGenerator bazelProjectNameGenerator = new BazelProjectNameGenerator();
         return new BazelExtractor(executableRunner, externalIdFactory, bazelWorkspaceFileParser, workspaceRuleChooser, toolVersionLogger, haskellCabalLibraryJsonProtoParser,
-            bazelDetectableOptions.getTargetName().orElse(null), bazelDetectableOptions.getBazelDependencyRules(), bazelVariableSubstitutor,
+            bazelDetectableOptions.getTargetName().orElse(null), bazelDetectableOptions.getWorkspaceRulesFromDeprecatedProperty(), bazelDetectableOptions.getWorkspaceRulesFromProperty(), bazelVariableSubstitutor,
             bazelProjectNameGenerator);
     }
 
