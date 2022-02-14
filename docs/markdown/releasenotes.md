@@ -6,6 +6,12 @@
 
 * Added new property detect.bazel.workspace.rules to replace the now-deprecated detect.bazel.dependency.type property.
 
+## Version 7.11.1
+
+### Changed features
+
+* Updated [solution_name] to package Air Gap with the latest Nuget Inspectors: IntegrationNugetInspector:3.1.1, BlackduckNugetInspector:1.1.1, NugetDotnet3Inspector:1.1.1, NugetDotnet5Inspector:1.1.1.
+
 ## Version 7.11.0
 
 ### New features
