@@ -24,7 +24,7 @@ public class ApplicableEvaluator extends Evaluator {
 
     @Override
     protected DetectorEvaluationTree performEvaluation(DetectorEvaluationTree rootEvaluation) {
-        logger.info("Searching for detectors. This may take a while.");
+        logger.info("Evaluating detectors. This may take a while.");
         searchAndApplicableEvaluation(rootEvaluation, new HashSet<>());
         return rootEvaluation;
     }
