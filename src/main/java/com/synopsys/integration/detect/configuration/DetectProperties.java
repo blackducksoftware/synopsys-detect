@@ -204,7 +204,8 @@ public class DetectProperties {
     public static final AllNoneEnumListProperty<WorkspaceRule> DETECT_BAZEL_WORKSPACE_RULES =
         AllNoneEnumListProperty.newBuilder("detect.bazel.workspace.rules", emptyList(), WorkspaceRule.class)
             .setInfo("Bazel workspace rules", DetectPropertyFromVersion.VERSION_7_12_0)
-            .setHelp("By default Detect discovers Bazel dependencies using all of the supported Bazel workspace rules that it finds in the WORKSPACE file. Alternatively you can use this property to specify the list of Bazel workspace rules Detect should use.")
+            .setHelp(
+                "By default Detect discovers Bazel dependencies using all of the supported Bazel workspace rules that it finds in the WORKSPACE file. Alternatively you can use this property to specify the list of Bazel workspace rules Detect should use.")
             .setGroups(DetectGroup.BAZEL, DetectGroup.SOURCE_SCAN)
             .build();
 
@@ -677,16 +678,17 @@ public class DetectProperties {
             .setGroups(DetectGroup.GO, DetectGroup.GLOBAL)
             .build();
 
-    public static final NoneEnumListProperty<GoModDependencyType> DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED =
-        NoneEnumListProperty.newBuilder("detect.go.mod.dependency.types.excluded", NoneEnum.NONE, GoModDependencyType.class)
+    public static final EnumProperty<GoModDependencyType> DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED =
+        EnumProperty.newBuilder("detect.go.mod.dependency.types.excluded", GoModDependencyType.NONE, GoModDependencyType.class)
             .setInfo("Go Mod Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
             .setHelp(
                 createDefaultDrivenPropertyHelpText("Go Mod dependency types", "detect.go.mod.enable.verification"),
-                String.format("If %s is excluded, Detect will use the results of 'go mod why' to filter out unused dependencies.", GoModDependencyType.UNUSED.name())
+                String.format("If %s is excluded, Detect will use the results of 'go mod why' to filter out unused dependencies.", GoModDependencyType.VENDORED.name())
             )
-            .setExample(GoModDependencyType.UNUSED.name())
+            .setExample(GoModDependencyType.VENDORED.name())
             .setGroups(DetectGroup.GO, DetectGroup.GLOBAL)
-            .build();
+            .build()
+            .deprecateValue(GoModDependencyType.UNUSED, "UNUSED is a subset of VENDORED results.");
 
     public static final NullableStringProperty DETECT_GRADLE_BUILD_COMMAND =
         NullableStringProperty.newBuilder("detect.gradle.build.command")

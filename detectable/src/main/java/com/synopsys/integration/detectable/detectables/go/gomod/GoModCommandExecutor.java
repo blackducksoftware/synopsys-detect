@@ -2,6 +2,7 @@ package com.synopsys.integration.detectable.detectables.go.gomod;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -55,9 +56,14 @@ public class GoModCommandExecutor {
             .getStandardOutputAsList();
     }
 
-    List<String> generateGoModWhyOutput(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
+    List<String> generateGoModWhyOutput(File directory, ExecutableTarget goExe, boolean vendorResults) throws ExecutableFailedException {
         // executing this command helps produce more accurate results. Parse the output to create a module exclusion list.
-        return executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, goExe, "mod", "why", "-m", "all"))
+        List<String> commands = Arrays.asList("mod", "why", "-m");
+        if (vendorResults) {
+            commands.add("-vendor");
+        }
+        commands.add("all");
+        return executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, goExe, commands))
             .getStandardOutputAsList();
     }
 

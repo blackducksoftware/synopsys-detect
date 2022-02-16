@@ -21,16 +21,14 @@ public class GoModCliDetectable extends Detectable {
     private final FileFinder fileFinder;
     private final GoResolver goResolver;
     private final GoModCliExtractor goModCliExtractor;
-    private final GoModCliDetectableOptions goModCliDetectableOptions;
 
     private ExecutableTarget goExe;
 
-    public GoModCliDetectable(DetectableEnvironment environment, FileFinder fileFinder, GoResolver goResolver, GoModCliExtractor goModCliExtractor, GoModCliDetectableOptions goModCliDetectableOptions) {
+    public GoModCliDetectable(DetectableEnvironment environment, FileFinder fileFinder, GoResolver goResolver, GoModCliExtractor goModCliExtractor) {
         super(environment);
         this.fileFinder = fileFinder;
         this.goResolver = goResolver;
         this.goModCliExtractor = goModCliExtractor;
-        this.goModCliDetectableOptions = goModCliDetectableOptions;
     }
 
     @Override
@@ -49,6 +47,6 @@ public class GoModCliDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException, JsonSyntaxException {
-        return goModCliExtractor.extract(environment.getDirectory(), goExe, goModCliDetectableOptions.getDependencyTypeFilter());
+        return goModCliExtractor.extract(environment.getDirectory(), goExe);
     }
 }

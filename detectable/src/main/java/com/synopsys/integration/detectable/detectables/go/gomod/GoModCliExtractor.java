@@ -11,7 +11,6 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
-import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.go.gomod.model.GoGraphRelationship;
 import com.synopsys.integration.detectable.detectables.go.gomod.model.GoListAllData;
 import com.synopsys.integration.detectable.detectables.go.gomod.model.GoListModule;
@@ -30,21 +29,31 @@ public class GoModCliExtractor {
     private final GoModWhyParser goModWhyParser;
     private final GoModGraphGenerator goModGraphGenerator;
     private final ExternalIdFactory externalIdFactory;
+    private final GoModDependencyType goModDependencyType;
 
-    public GoModCliExtractor(GoModCommandExecutor goModCommandExecutor, GoListParser goListParser, GoGraphParser goGraphParser, GoModWhyParser goModWhyParser, GoModGraphGenerator goModGraphGenerator, ExternalIdFactory externalIdFactory) {
+    public GoModCliExtractor(
+        GoModCommandExecutor goModCommandExecutor,
+        GoListParser goListParser,
+        GoGraphParser goGraphParser,
+        GoModWhyParser goModWhyParser,
+        GoModGraphGenerator goModGraphGenerator,
+        ExternalIdFactory externalIdFactory,
+        GoModDependencyType goModDependencyType
+    ) {
         this.goModCommandExecutor = goModCommandExecutor;
         this.goListParser = goListParser;
         this.goGraphParser = goGraphParser;
         this.goModWhyParser = goModWhyParser;
         this.goModGraphGenerator = goModGraphGenerator;
         this.externalIdFactory = externalIdFactory;
+        this.goModDependencyType = goModDependencyType;
     }
 
-    public Extraction extract(File directory, ExecutableTarget goExe, EnumListFilter<GoModDependencyType> dependencyTypeFilter) throws ExecutableFailedException, JsonSyntaxException {
+    public Extraction extract(File directory, ExecutableTarget goExe) throws ExecutableFailedException, JsonSyntaxException {
         List<GoListModule> goListModules = listModules(directory, goExe);
         List<GoListAllData> goListAllModules = goListAllModules(directory, goExe);
         List<GoGraphRelationship> goGraphRelationships = goGraphRelationships(directory, goExe);
-        Set<String> moduleExclusions = moduleExclusions(directory, goExe, dependencyTypeFilter);
+        Set<String> moduleExclusions = moduleExclusions(directory, goExe);
 
         GoRelationshipManager goRelationshipManager = new GoRelationshipManager(goGraphRelationships, moduleExclusions);
         GoModDependencyManager goModDependencyManager = new GoModDependencyManager(goListAllModules, externalIdFactory);
@@ -71,13 +80,14 @@ public class GoModCliExtractor {
         return goGraphParser.parseRelationshipsFromGoModGraph(modGraphOutput);
     }
 
-    private Set<String> moduleExclusions(File directory, ExecutableTarget goExe, EnumListFilter<GoModDependencyType> dependencyTypeFilter) throws ExecutableFailedException {
-        Set<String> moduleExclusions = Collections.emptySet();
-        if (dependencyTypeFilter.shouldExclude(GoModDependencyType.UNUSED)) {
-            List<String> modWhyOutput = goModCommandExecutor.generateGoModWhyOutput(directory, goExe);
-            moduleExclusions = goModWhyParser.createModuleExclusionList(modWhyOutput);
+    private Set<String> moduleExclusions(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
+        List<String> modWhyOutput = Collections.emptyList();
+        if (goModDependencyType.equals(GoModDependencyType.VENDORED)) {
+            modWhyOutput = goModCommandExecutor.generateGoModWhyOutput(directory, goExe, true);
+        } else if (goModDependencyType.equals(GoModDependencyType.UNUSED)) {
+            modWhyOutput = goModCommandExecutor.generateGoModWhyOutput(directory, goExe, false);
         }
-        return moduleExclusions;
+        return goModWhyParser.createModuleExclusionList(modWhyOutput);
     }
 
 }

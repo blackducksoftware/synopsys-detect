@@ -367,8 +367,8 @@ public class DetectableFactory {
         return new GitParseDetectable(environment, fileFinder, gitParseExtractor());
     }
 
-    public GoModCliDetectable createGoModCliDetectable(DetectableEnvironment environment, GoResolver goResolver, GoModCliDetectableOptions goModCliDetectableOptions) {
-        return new GoModCliDetectable(environment, fileFinder, goResolver, goModCliExtractor(), goModCliDetectableOptions);
+    public GoModCliDetectable createGoModCliDetectable(DetectableEnvironment environment, GoResolver goResolver, GoModCliDetectableOptions options) {
+        return new GoModCliDetectable(environment, fileFinder, goResolver, goModCliExtractor(options));
     }
 
     public GoDepLockDetectable createGoLockDetectable(DetectableEnvironment environment) {
@@ -661,28 +661,13 @@ public class DetectableFactory {
         return new GoDepExtractor(goLockParser());
     }
 
-    private GoModWhyParser goModWhyParser() {
-        return new GoModWhyParser();
-    }
-
-    private GoModCommandExecutor goModCommandExecutor() {
-        return new GoModCommandExecutor(executableRunner);
-    }
-
-    private GoModGraphGenerator goModGraphGraphGenerator() {
-        return new GoModGraphGenerator(externalIdFactory);
-    }
-
-    private GoListParser goListParser() {
-        return new GoListParser(gson);
-    }
-
-    private GoGraphParser goGraphParser() {
-        return new GoGraphParser();
-    }
-
-    private GoModCliExtractor goModCliExtractor() {
-        return new GoModCliExtractor(goModCommandExecutor(), goListParser(), goGraphParser(), goModWhyParser(), goModGraphGraphGenerator(), externalIdFactory);
+    private GoModCliExtractor goModCliExtractor(GoModCliDetectableOptions options) {
+        GoModCommandExecutor goModCommandExecutor = new GoModCommandExecutor(executableRunner);
+        GoListParser goListParser = new GoListParser(gson);
+        GoGraphParser goGraphParser = new GoGraphParser();
+        GoModWhyParser goModWhyParser = new GoModWhyParser();
+        GoModGraphGenerator goModGraphGenerator = new GoModGraphGenerator(externalIdFactory);
+        return new GoModCliExtractor(goModCommandExecutor, goListParser, goGraphParser, goModWhyParser, goModGraphGenerator, externalIdFactory, options.getGoModDependencyType());
     }
 
     private GoVndrExtractor goVndrExtractor() {
