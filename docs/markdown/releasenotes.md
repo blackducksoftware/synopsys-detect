@@ -5,7 +5,7 @@
 ### Changed features
 
 * Added new property detect.bazel.workspace.rules to replace the now-deprecated detect.bazel.dependency.type property.
-* The download mechanism [solution_name] uses for the Black Duck Signature Scanner has changed. This will cause a re-download of the Signature Scanner in the next run of [solution_name].
+* Because the criteria that [solution_name] uses to download the Black Duck Signature Scanner is new, the next run will re-download the Signature Scanner.
 
 ## Resolved issues
 
