@@ -147,8 +147,8 @@ public abstract class Property {
         return propertyDeprecationInfo;
     }
 
-    public boolean isDeprecated() {
-        return !propertyDeprecationInfo.getDeprecatedValues().isEmpty() || propertyDeprecationInfo.getRemovalInfo().isPresent();
+    public boolean isDeprecatedForRemoval() {
+        return propertyDeprecationInfo.getRemovalInfo().isPresent();
     }
 
     public String getKeyAsEnvironmentVariable() {

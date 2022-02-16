@@ -258,11 +258,11 @@ public class PropertyConfigurationTest {
     public void testPropertyIsDeprecated() {
         Property property1 = new NullableStringProperty("name");
         property1.setRemovalDeprecation("desc", new ProductMajorVersion(1));
-        Assertions.assertTrue(property1.isDeprecated());
+        Assertions.assertTrue(property1.isDeprecatedForRemoval());
 
         Property property2 = new NullableStringProperty("name");
         property2.addDeprecatedValueInfo("val", "reason");
-        property2.isDeprecated();
+        property2.isDeprecatedForRemoval();
     }
 
     //endregion Advanced Usage
