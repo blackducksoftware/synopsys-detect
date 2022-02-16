@@ -5,6 +5,11 @@
 ### Changed features
 
 * Added new property detect.bazel.workspace.rules to replace the now-deprecated detect.bazel.dependency.type property.
+* The download mechanism [solution_name] uses for the Black Duck Signature Scanner has changed. This will case a re-download of the Signature Scanner in the next run of [solution_name].
+
+## Resolved issues
+
+* (IDETECT-3016) Resolved an issue where proxies may block HEAD requests made by [solution_name] when attempting to download the Signature Scanner from Black Duck.
 
 ## Version 7.11.1
 
