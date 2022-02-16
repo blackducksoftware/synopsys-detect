@@ -262,7 +262,7 @@ public class PropertyConfigurationTest {
 
         Property property2 = new NullableStringProperty("name");
         property2.addDeprecatedValueInfo("val", "reason");
-        property2.isDeprecatedForRemoval();
+        Assertions.assertFalse(property2.isDeprecatedForRemoval());
     }
 
     //endregion Advanced Usage
