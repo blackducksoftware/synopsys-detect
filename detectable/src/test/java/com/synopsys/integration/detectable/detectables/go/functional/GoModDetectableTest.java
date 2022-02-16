@@ -13,7 +13,6 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GoResolver;
-import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModDependencyType;
 import com.synopsys.integration.detectable.extraction.Extraction;
@@ -87,7 +86,7 @@ public class GoModDetectableTest extends DetectableFunctionalTest {
                 return ExecutableTarget.forCommand("go");
             }
         }
-        GoModCliDetectableOptions goModCliDetectableOptions = new GoModCliDetectableOptions(EnumListFilter.fromExcluded(GoModDependencyType.UNUSED));
+        GoModCliDetectableOptions goModCliDetectableOptions = new GoModCliDetectableOptions(GoModDependencyType.UNUSED);
         return detectableFactory.createGoModCliDetectable(detectableEnvironment, new GoResolverTest(), goModCliDetectableOptions);
     }
 

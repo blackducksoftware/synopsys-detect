@@ -17,7 +17,6 @@ import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
-import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliExtractor;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCommandExecutor;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModDependencyType;
@@ -69,7 +68,7 @@ public class GoModCliExtractorTest {
         GoModCliExtractor goModCliExtractor = buildGoModCliExtractor(executableRunner, executableAnswer);
 
         boolean wasSuccessful = true;
-        Extraction extraction = goModCliExtractor.extract(directory, goExe, EnumListFilter.fromExcluded(GoModDependencyType.UNUSED));
+        Extraction extraction = goModCliExtractor.extract(directory, goExe);
         if (extraction.getError() instanceof ArrayIndexOutOfBoundsException) {
             wasSuccessful = false;
         }
@@ -110,7 +109,7 @@ public class GoModCliExtractorTest {
 
         GoModCliExtractor goModCliExtractor = buildGoModCliExtractor(executableRunner, executableAnswer);
         boolean wasSuccessful = true;
-        Extraction extraction = goModCliExtractor.extract(directory, goExe, EnumListFilter.fromExcluded(GoModDependencyType.UNUSED));
+        Extraction extraction = goModCliExtractor.extract(directory, goExe);
         if (extraction.getError() instanceof ArrayIndexOutOfBoundsException) {
             wasSuccessful = false;
         }
@@ -127,7 +126,7 @@ public class GoModCliExtractorTest {
         GoListParser goListParser = new GoListParser(new GsonBuilder().create());
         GoGraphParser goGraphParser = new GoGraphParser();
         ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        return new GoModCliExtractor(goModCommandExecutor, goListParser, goGraphParser, goModWhyParser, goModGraphGenerator, externalIdFactory);
+        return new GoModCliExtractor(goModCommandExecutor, goListParser, goGraphParser, goModWhyParser, goModGraphGenerator, externalIdFactory, GoModDependencyType.UNUSED);
     }
 
     private ExecutableOutput goListOutput() {
