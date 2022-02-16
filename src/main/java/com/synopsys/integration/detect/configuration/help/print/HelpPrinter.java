@@ -32,10 +32,10 @@ public class HelpPrinter {
         HelpTextWriter writer = new HelpTextWriter();
 
         List<Property> currentOptions = allOptions.stream()
-            .filter(it -> it.getPropertyDeprecationInfo() == null)
+            .filter(it -> !it.isDeprecated())
             .collect(Collectors.toList());
         List<Property> deprecatedOptions = allOptions.stream()
-            .filter(it -> it.getPropertyDeprecationInfo() != null)
+            .filter(Property::isDeprecated)
             .collect(Collectors.toList());
 
         if (state.isVerboseHelp()) {
