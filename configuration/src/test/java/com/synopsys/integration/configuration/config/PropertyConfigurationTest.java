@@ -23,8 +23,9 @@ import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.base.NullableAlikeProperty;
 import com.synopsys.integration.configuration.property.base.PassthroughProperty;
 import com.synopsys.integration.configuration.property.base.ValuedAlikeProperty;
-import com.synopsys.integration.configuration.property.base.ValuedProperty;
+import com.synopsys.integration.configuration.property.types.string.NullableStringProperty;
 import com.synopsys.integration.configuration.source.PropertySource;
+import com.synopsys.integration.configuration.util.ProductMajorVersion;
 
 public class PropertyConfigurationTest {
     public static final String UNKNOWN_VALUE = "-1";
@@ -251,6 +252,17 @@ public class PropertyConfigurationTest {
 
         Map<String, String> properties = Bds.mapOf(Pair.of("shared", "primaryValue"));
         Assertions.assertEquals(properties, configuration.getRaw(passthrough));
+    }
+
+    @Test
+    public void testPropertyIsDeprecated() {
+        Property property1 = new NullableStringProperty("name");
+        property1.setRemovalDeprecation("desc", new ProductMajorVersion(1));
+        Assertions.assertTrue(property1.isDeprecated());
+
+        Property property2 = new NullableStringProperty("name");
+        property2.addDeprecatedValueInfo("val", "reason");
+        property2.isDeprecated();
     }
 
     //endregion Advanced Usage
