@@ -33,8 +33,10 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandRunner;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanPathsUtility;
 import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
+import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.blackduck.service.dataservice.BlackDuckRegistrationService;
 import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.common.util.finder.FileFinder;
@@ -479,13 +481,26 @@ public class OperationFactory { //TODO: OperationRunner
         });
     }
 
+    // TODO: Why is this unused? JM-02/2022
+    // Does WithCustomUrl mean a non-blackduck location?
     public ScanBatchRunner createScanBatchRunnerWithCustomUrl(String url, File installDirectory) throws DetectUserFriendlyException {
         return auditLog.namedInternal("Create Scan Batch Runner with Custom URL", () -> {
             IntEnvironmentVariables intEnvironmentVariables = IntEnvironmentVariables.includeSystemEnv();
             ScanPathsUtility scanPathsUtility = new ScanPathsUtility(new Slf4jIntLogger(LoggerFactory.getLogger(ScanPathsUtility.class)), intEnvironmentVariables, OperatingSystemType.determineFromSystem());
             ScanCommandRunner scanCommandRunner = new ScanCommandRunner(new Slf4jIntLogger(LoggerFactory.getLogger(ScanCommandRunner.class)), intEnvironmentVariables, scanPathsUtility, createExecutorServiceForScanner());
-            return new CreateScanBatchRunnerWithCustomUrl(intEnvironmentVariables, new SignatureScannerLogger(LoggerFactory.getLogger(ScanCommandRunner.class)), OperatingSystemType.determineFromSystem(), scanPathsUtility, scanCommandRunner)
-                .createScanBatchRunner(url, connectionDetails, detectInfo, installDirectory);
+            BlackDuckServerConfig blackDuckServerConfig = BlackDuckServerConfig.newApiTokenBuilder()
+                .setIntEnvironmentVariables(intEnvironmentVariables)
+                .build();
+            BlackDuckServicesFactory blackDuckServicesFactory = blackDuckServerConfig.createBlackDuckServicesFactory(new Slf4jIntLogger(LoggerFactory.getLogger(BlackDuckServicesFactory.class)));
+            BlackDuckRegistrationService blackDuckRegistrationService = blackDuckServicesFactory.createBlackDuckRegistrationService();
+
+            return new CreateScanBatchRunnerWithCustomUrl(
+                intEnvironmentVariables,
+                new SignatureScannerLogger(LoggerFactory.getLogger(ScanCommandRunner.class)),
+                OperatingSystemType.determineFromSystem(),
+                scanPathsUtility,
+                scanCommandRunner
+            ).createScanBatchRunner(url, connectionDetails, blackDuckRegistrationService, installDirectory);
         });
     }
 
