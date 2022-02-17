@@ -14,11 +14,14 @@ import org.junit.jupiter.api.Test;
 public class GoModWhyParserTest {
 
     @Test
-    public void testParser() throws IOException {
+    public void testParserUnused() throws IOException {
         Set<String> expectedExclusionSet = new LinkedHashSet<>();
         expectedExclusionSet.add("example.com/invalid-module-1");
         expectedExclusionSet.add("example.com/invalid-module-2");
         expectedExclusionSet.add("example.com/invalid-module-3");
+
+        // Upgrades to the GoModWhyParser means this test case no longer breaks the parser
+        expectedExclusionSet.add("example.com/invalid-missing-end-paren");
 
         GoModWhyParser goModWhyParser = new GoModWhyParser();
         File goModWhyOutputFile = new File("src/test/resources/detectables/unit/go/gomodwhy.xout");
@@ -27,4 +30,5 @@ public class GoModWhyParserTest {
 
         assertEquals(expectedExclusionSet, actualExclusionSet);
     }
+
 }

@@ -12,7 +12,7 @@ example.com/go/main-module
 example.com/go/valid-module1
 
 # example.com/invalid-module-2
-(main module does not need module example.com/invalid-module-2)
+(main module does not need to vendor module example.com/invalid-module-2)
 
 # example.com/invalid-comment-line
 # (main module does not need module example.com/invalid-comment-line)
