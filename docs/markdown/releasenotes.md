@@ -2,13 +2,18 @@
 
 ## Version 7.12.0
 
+### New features
+
+* Verified support for Java 16 and 17.
+
 ### Changed features
 
 * Added new property detect.bazel.workspace.rules to replace the now-deprecated detect.bazel.dependency.type property.
 
 ## Resolved issues
 
-* (IDETECT-3016) Resolved an issue where proxies may block HEAD requests made by [solution_name] when attempting to download the Signature Scanner from Black Duck. Because the criteria that [solution_name] uses to download the Black Duck Signature Scanner is new, the next run will re-download the Signature Scanner.
+* (IDETECT-3016) Resolved an issue where proxies may block HEAD requests made by [solution_name] when attempting to download the Signature Scanner from Black Duck. Because the criteria that [solution_name] uses to download the Black Duck
+  Signature Scanner is new, the next run will re-download the Signature Scanner.
 
 ## Version 7.11.1
 
