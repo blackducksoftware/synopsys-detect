@@ -140,7 +140,7 @@ import com.synopsys.integration.detectable.detectables.go.gogradle.GoGradleLockP
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectable;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliExtractor;
-import com.synopsys.integration.detectable.detectables.go.gomod.GoModCommandExecutor;
+import com.synopsys.integration.detectable.detectables.go.gomod.GoModCommandRunner;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoGraphParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoListParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoModWhyParser;
@@ -662,12 +662,12 @@ public class DetectableFactory {
     }
 
     private GoModCliExtractor goModCliExtractor(GoModCliDetectableOptions options) {
-        GoModCommandExecutor goModCommandExecutor = new GoModCommandExecutor(executableRunner);
+        GoModCommandRunner goModCommandRunner = new GoModCommandRunner(executableRunner);
         GoListParser goListParser = new GoListParser(gson);
         GoGraphParser goGraphParser = new GoGraphParser();
         GoModWhyParser goModWhyParser = new GoModWhyParser();
         GoModGraphGenerator goModGraphGenerator = new GoModGraphGenerator(externalIdFactory);
-        return new GoModCliExtractor(goModCommandExecutor, goListParser, goGraphParser, goModWhyParser, goModGraphGenerator, externalIdFactory, options.getGoModDependencyType());
+        return new GoModCliExtractor(goModCommandRunner, goListParser, goGraphParser, goModWhyParser, goModGraphGenerator, externalIdFactory, options.getExcludedDependencyTypes());
     }
 
     private GoVndrExtractor goVndrExtractor() {

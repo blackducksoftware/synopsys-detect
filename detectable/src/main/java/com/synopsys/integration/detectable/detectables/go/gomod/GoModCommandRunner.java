@@ -13,7 +13,7 @@ import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 
-public class GoModCommandExecutor {
+public class GoModCommandRunner {
     // java:S5852: Warning about potential DoS risk.
     @SuppressWarnings({ "java:S5852" })
     private static final Pattern GENERATE_GO_LIST_JSON_OUTPUT_PATTERN = Pattern.compile("\\d+\\.[\\d.]+"); // TODO: Provide example. This looks like it's used for version matching contrary to the name. JM-01/2022
@@ -22,18 +22,18 @@ public class GoModCommandExecutor {
 
     private final DetectableExecutableRunner executableRunner;
 
-    public GoModCommandExecutor(DetectableExecutableRunner executableRunner) {
+    public GoModCommandRunner(DetectableExecutableRunner executableRunner) {
         this.executableRunner = executableRunner;
     }
 
     // Excludes the "all" argument to return the root project modules
-    List<String> generateGoListOutput(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
+    public List<String> runGoList(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
         return executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, goExe, "list", MODULE_OUTPUT_FLAG, JSON_OUTPUT_FLAG))
             .getStandardOutputAsList();
     }
 
     // TODO: Utilize the fields "Main": true, and "Indirect": true, fields from the JSON output to avoid running go list twice. Before switching to json output we needed to run twice. JM-01/2022
-    List<String> generateGoListJsonOutput(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
+    public List<String> runGoListAll(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
         // TODO: Move the Go version checking to it's own method. JM-01/2022
         List<String> goVersionOutput = executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, goExe, "version"))
             .getStandardOutputAsList();
@@ -52,12 +52,12 @@ public class GoModCommandExecutor {
         return new ArrayList<>();
     }
 
-    List<String> generateGoModGraphOutput(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
+    public List<String> runGoModGraph(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
         return executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, goExe, "mod", "graph"))
             .getStandardOutputAsList();
     }
 
-    List<String> generateGoModWhyOutput(File directory, ExecutableTarget goExe, boolean vendorResults) throws ExecutableFailedException {
+    public List<String> runGoModWhy(File directory, ExecutableTarget goExe, boolean vendorResults) throws ExecutableFailedException {
         // executing this command helps produce more accurate results. Parse the output to create a module exclusion list.
         List<String> commands = new LinkedList<>(Arrays.asList("mod", "why", "-m"));
         if (vendorResults) {
