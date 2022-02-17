@@ -23,7 +23,7 @@ public class OperationAuditLog {
 
     public void namedPublic(String name, @Nullable String phoneHomeKey, OperationWrapper.OperationFunction supplier) throws OperationException {
         Operation operation = operationSystem.startOperation(name, OperationType.PUBLIC, phoneHomeKey);
-        operationWrapper.named(name, operation, supplier);
+        operationWrapper.wrapped(operation, supplier);
     }
 
     public <T> T namedPublic(String name, OperationWrapper.OperationSupplier<T> supplier) throws OperationException {
@@ -32,7 +32,7 @@ public class OperationAuditLog {
 
     public <T> T namedPublic(String name, @Nullable String phoneHomeKey, OperationWrapper.OperationSupplier<T> supplier) throws OperationException {
         Operation operation = operationSystem.startOperation(name, OperationType.PUBLIC, phoneHomeKey);
-        return operationWrapper.named(name, operation, supplier);
+        return operationWrapper.wrapped(operation, supplier);
     }
 
     public void namedInternal(String name, OperationWrapper.OperationFunction supplier) throws OperationException {
@@ -41,7 +41,7 @@ public class OperationAuditLog {
 
     public void namedInternal(String name, @Nullable String phoneHomeKey, OperationWrapper.OperationFunction supplier) throws OperationException {
         Operation operation = operationSystem.startOperation(name, OperationType.INTERNAL, phoneHomeKey);
-        operationWrapper.named(name, operation, supplier);
+        operationWrapper.wrapped(operation, supplier);
     }
 
     public <T> T namedInternal(String name, OperationWrapper.OperationSupplier<T> supplier) throws OperationException {
@@ -50,6 +50,6 @@ public class OperationAuditLog {
 
     public <T> T namedInternal(String name, @Nullable String phoneHomeKey, OperationWrapper.OperationSupplier<T> supplier) throws OperationException {
         Operation operation = operationSystem.startOperation(name, OperationType.INTERNAL, phoneHomeKey);
-        return operationWrapper.named(name, operation, supplier);
+        return operationWrapper.wrapped(operation, supplier);
     }
 }

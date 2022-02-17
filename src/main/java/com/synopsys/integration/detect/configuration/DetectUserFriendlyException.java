@@ -9,9 +9,6 @@ public class DetectUserFriendlyException extends Exception {
 
     public DetectUserFriendlyException(String message, ExitCodeType exitCodeType) {
         super(message);
-        if (exitCodeType == ExitCodeType.FAILURE_UNKNOWN_ERROR) {
-            
-        }
         this.exitCodeType = exitCodeType;
     }
 

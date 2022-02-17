@@ -15,15 +15,15 @@ public class Operation {
         return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS").withZone(ZoneOffset.UTC).format(executionTime.atOffset(ZoneOffset.UTC));
     }
 
-    private Instant startTime;
+    private final Instant startTime;
     @Nullable
     private Instant endTime;
-    private String name;
+    private final String name;
     private StatusType statusType;
-    private String[] errorMessages;
-    private OperationType operationType;
+    private Exception exception;
+    private final OperationType operationType;
     @Nullable
-    private String phoneHomeKey;
+    private final String phoneHomeKey;
 
     public static Operation of(String name) {
         return of(name, null);
@@ -42,21 +42,21 @@ public class Operation {
     }
 
     protected Operation(String name, OperationType type) {
-        this(Instant.now(), type, null, name, StatusType.SUCCESS, null);
+        this(Instant.now(), type, null, name, StatusType.SUCCESS, null, null);
     }
 
     protected Operation(String name, OperationType type, @Nullable String phoneHomeKey) {
-        this(Instant.now(), type, null, name, StatusType.SUCCESS, phoneHomeKey);
+        this(Instant.now(), type, null, name, StatusType.SUCCESS, phoneHomeKey, null);
     }
 
-    protected Operation(Instant startTime, OperationType operationType, @Nullable Instant endTime, String name, StatusType statusType, @Nullable String phoneHomeKey, String... errorMessages) {
+    protected Operation(Instant startTime, OperationType operationType, @Nullable Instant endTime, String name, StatusType statusType, @Nullable String phoneHomeKey, @Nullable Exception exception) {
         this.startTime = startTime;
         this.operationType = operationType;
         this.endTime = endTime;
         this.name = name;
         this.statusType = statusType;
         this.phoneHomeKey = phoneHomeKey;
-        this.errorMessages = errorMessages;
+        this.exception = exception;
     }
 
     public void finish() {
@@ -76,9 +76,9 @@ public class Operation {
         finish();
     }
 
-    public void error(String... errorMessages) {
+    public void error(Exception e) {
         this.statusType = StatusType.FAILURE;
-        this.errorMessages = errorMessages;
+        this.exception = e;
         finish();
     }
 
@@ -106,9 +106,7 @@ public class Operation {
         return Optional.ofNullable(phoneHomeKey);
     }
 
-    public String[] getErrorMessages() {
-        return errorMessages;
-    }
+    public Optional<Exception> getException() {return Optional.ofNullable(exception);}
 
     public OperationType getOperationType() {
         return operationType;

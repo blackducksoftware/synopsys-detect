@@ -51,7 +51,7 @@ public class StepHelper {
         if (detectToolFilter.shouldInclude(detectTool)) {
             logger.info("Will include the " + name + " tool.");
             Operation operation = operationSystem.startOperation(name + " Tool", OperationType.INTERNAL);
-            T value = operationWrapper.namedWithCallbacks(name, operation, supplier, successConsumer, errorConsumer);
+            T value = operationWrapper.wrappedWithCallbacks(operation, supplier, successConsumer, errorConsumer);
             logger.info(name + " actions finished.");
             return Optional.ofNullable(value);
         } else {
@@ -69,6 +69,6 @@ public class StepHelper {
 
     public <T> T runAsGroup(String name, OperationType type, OperationWrapper.OperationSupplier<T> supplier) throws OperationException {
         Operation operation = operationSystem.startOperation(name, type);
-        return operationWrapper.named(name, operation, supplier);
+        return operationWrapper.wrapped(operation, supplier);
     }
 }

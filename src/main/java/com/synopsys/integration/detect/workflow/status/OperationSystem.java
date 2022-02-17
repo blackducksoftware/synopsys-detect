@@ -20,9 +20,9 @@ public class OperationSystem {
     }
 
     private void publishOperationIssues(Operation operation) {
-        if (operation.getErrorMessages().length > 0) {
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, operation.getName(), Arrays.asList(operation.getErrorMessages())));
-        }
+        operation.getException().ifPresent(exception -> {
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, operation.getName(), Arrays.asList(exception.getMessage())));
+        });
     }
 
     public Operation startOperation(String operationName, OperationType type) {

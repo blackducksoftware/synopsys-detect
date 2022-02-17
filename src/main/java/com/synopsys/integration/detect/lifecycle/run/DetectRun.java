@@ -17,6 +17,7 @@ import com.synopsys.integration.detect.lifecycle.run.step.IntelligentModeStepRun
 import com.synopsys.integration.detect.lifecycle.run.step.RapidModeStepRunner;
 import com.synopsys.integration.detect.lifecycle.run.step.UniversalStepRunner;
 import com.synopsys.integration.detect.lifecycle.run.step.utility.StepHelper;
+import com.synopsys.integration.detect.lifecycle.shutdown.ExceptionUtility;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeManager;
 import com.synopsys.integration.detect.tool.UniversalToolsResult;
 import com.synopsys.integration.detect.tool.detector.factory.DetectorFactory;
@@ -27,9 +28,11 @@ import com.synopsys.integration.util.NameVersion;
 public class DetectRun {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExitCodeManager exitCodeManager;
+    private final ExceptionUtility exceptionUtility;
 
-    public DetectRun(ExitCodeManager exitCodeManager) {
+    public DetectRun(ExitCodeManager exitCodeManager, ExceptionUtility exceptionUtility) {
         this.exitCodeManager = exitCodeManager;
+        this.exceptionUtility = exceptionUtility;
     }
 
     private OperationFactory createOperationFactory(BootSingletons bootSingletons, UtilitySingletons utilitySingletons, EventSingletons eventSingletons) throws DetectUserFriendlyException {
@@ -43,7 +46,7 @@ public class DetectRun {
         try {
             SingletonFactory singletonFactory = new SingletonFactory(bootSingletons);
             EventSingletons eventSingletons = singletonFactory.createEventSingletons();
-            UtilitySingletons utilitySingletons = singletonFactory.createUtilitySingletons(eventSingletons, exitCodeManager);
+            UtilitySingletons utilitySingletons = singletonFactory.createUtilitySingletons(eventSingletons);
             operationSystem = Optional.of(utilitySingletons.getOperationSystem());
 
             ProductRunData productRunData = bootSingletons.getProductRunData(); //TODO: Remove run data from boot singletons
@@ -74,20 +77,13 @@ public class DetectRun {
                 }
             }
         } catch (Exception e) {
-            logger.error("Detect run failed: {}", getExceptionMessage(e));
-            logger.debug("An exception was thrown during the detect run.", e);
+            logger.error("Detect run failed.");
+            exceptionUtility.logException(e);
+            logger.debug("An exception was thrown during the detect run.", e); //TODO- necessary? we just logged the message
             exitCodeManager.requestExitCode(e);
             checkForInterruptedException(e);
         } finally {
             operationSystem.ifPresent(OperationSystem::publishOperations);
-        }
-    }
-
-    private String getExceptionMessage(Exception e) {
-        if (e.getMessage() != null) {
-            return e.getMessage();
-        } else {
-            return e.getClass().getSimpleName();
         }
     }
 
