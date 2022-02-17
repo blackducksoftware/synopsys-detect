@@ -687,8 +687,7 @@ public class DetectProperties {
             )
             .setExample(GoModDependencyType.VENDORED.name())
             .setGroups(DetectGroup.GO, DetectGroup.GLOBAL)
-            .build()
-            .deprecateValue(GoModDependencyType.UNUSED, "UNUSED is a subset of VENDORED results.");
+            .build();
 
     public static final NullableStringProperty DETECT_GRADLE_BUILD_COMMAND =
         NullableStringProperty.newBuilder("detect.gradle.build.command")
