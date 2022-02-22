@@ -50,8 +50,30 @@ public class GoModDetectableUnusedTest extends DetectableFunctionalTest {
         );
         addExecutableOutput(goModGraphOutput, "go", "mod", "graph");
 
-        ExecutableOutput goModWhyOutput = GoModTestUtil.createGoModWhyOutputWithPrefix("(main module does not need module");
-
+        ExecutableOutput goModWhyOutput = createStandardOutput(
+            "# github.com/gin-gonic/gin",
+            "github.com/gin-gonic/gin",
+            "",
+            "# github.com/davecgh/go-spew",
+            "(main module does not need module github.com/davecgh/go-spew)",
+            "",
+            "# golang.org/x/text",
+            "github.com/gin-gonic/gin",
+            "golang.org/x/text/language",
+            "",
+            "# golang.org/x/tools",
+            "(main module does not need module golang.org/x/tools)",
+            "",
+            "# gopkg.in/check.v1",
+            "(main module does not need module gopkg.in/check.v1)",
+            "",
+            "# gopkg.in/yaml.v2",
+            "(main module does not need module gopkg.in/yaml.v2)",
+            "",
+            "# sigs.k8s.io/yaml",
+            "(main module does not need module sigs.k8s.io/yaml)"
+        );
+        
         addExecutableOutput(goModWhyOutput, "go", "mod", "why", "-m", "all");
     }
 
