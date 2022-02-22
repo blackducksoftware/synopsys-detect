@@ -1,7 +1,6 @@
 package com.synopsys.integration.detectable.detectables.go.gomod;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,13 +41,7 @@ public class GoModCommandRunner {
 
     // TODO: Utilize the fields "Main": true, and "Indirect": true, fields from the JSON output to avoid running go list twice. Before switching to json output we needed to run twice. JM-01/2022
     public List<String> runGoListAll(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
-        boolean readOnlyFlagSupported;
-        try {
-            readOnlyFlagSupported = isReadOnlyFlagSupported(directory, goExe);
-        } catch (ExecutableFailedException e) {
-            // TODO: If we don't have a version for go, we don't do anything. This should probably result in a failure. JM-01/2022
-            return new ArrayList<>();
-        }
+        boolean readOnlyFlagSupported = isReadOnlyFlagSupported(directory, goExe);
 
         List<String> goListCommand = new LinkedList<>();
         goListCommand.add(LIST_COMMAND);
