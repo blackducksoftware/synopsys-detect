@@ -49,9 +49,14 @@ public class BitbakeExtractor {
     private final BitbakeEnvironmentParser bitbakeEnvironmentParser;
 
     public BitbakeExtractor(
-        DetectableExecutableRunner executableRunner, GraphParserTransformer graphParserTransformer, BitbakeGraphTransformer bitbakeGraphTransformer,
-        BitbakeRecipesParser bitbakeRecipesParser, ToolVersionLogger toolVersionLogger, BuildFileFinder buildFileFinder,
-        LicenseManifestParser licenseManifestParser, BitbakeEnvironmentParser bitbakeEnvironmentParser
+        DetectableExecutableRunner executableRunner,
+        GraphParserTransformer graphParserTransformer,
+        BitbakeGraphTransformer bitbakeGraphTransformer,
+        BitbakeRecipesParser bitbakeRecipesParser,
+        ToolVersionLogger toolVersionLogger,
+        BuildFileFinder buildFileFinder,
+        LicenseManifestParser licenseManifestParser,
+        BitbakeEnvironmentParser bitbakeEnvironmentParser
     ) {
         this.executableRunner = executableRunner;
         this.graphParserTransformer = graphParserTransformer;
