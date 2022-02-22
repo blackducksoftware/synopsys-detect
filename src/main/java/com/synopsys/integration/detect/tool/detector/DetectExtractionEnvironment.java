@@ -6,7 +6,7 @@ import com.synopsys.integration.detect.tool.detector.extraction.ExtractionId;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 public class DetectExtractionEnvironment extends ExtractionEnvironment {
-    private ExtractionId extractionId;
+    private final ExtractionId extractionId;
 
     public DetectExtractionEnvironment(File outputDirectory, ExtractionId extractionId) {
         super(outputDirectory);

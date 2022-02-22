@@ -18,7 +18,7 @@ import com.synopsys.integration.detect.workflow.report.output.FormattedStatusOut
 import com.synopsys.integration.util.NameVersion;
 
 public class DockerAssertions {
-    private DockerDetectResult dockerDetectResult;
+    private final DockerDetectResult dockerDetectResult;
     private final File outputDirectory;
     private final File bdioDirectory;
     private FormattedOutput statusJson = null;
@@ -79,7 +79,7 @@ public class DockerAssertions {
 
         File runs = new File(outputDirectory, "runs");
         File[] runDirectories = runs.listFiles();
-        Assertions.assertNotNull(runDirectories, "Could not find any run directories, looked in: " + runs.toString());
+        Assertions.assertNotNull(runDirectories, "Could not find any run directories, looked in: " + runs);
         Assertions.assertEquals(1, runDirectories.length, "There should be exactly one run directory (from this latest run).");
 
         File run = runDirectories[0];
@@ -105,7 +105,7 @@ public class DockerAssertions {
     public void logContainsPattern(String pattern) {
         Assertions.assertNotNull(pattern);
         Pattern regex = Pattern.compile("(?s).*" + pattern + ".*", Pattern.MULTILINE);
-        Assertions.assertTrue(regex.matcher(dockerDetectResult.getDetectLogs()).matches(), "Expected logs to contain '" + regex.toString() + "' but they did not.");
+        Assertions.assertTrue(regex.matcher(dockerDetectResult.getDetectLogs()).matches(), "Expected logs to contain '" + regex + "' but they did not.");
     }
 
     public void logContains(String thing) {
@@ -140,11 +140,13 @@ public class DockerAssertions {
 
     public void bdioFileCreated(String requiredBdioFilename) {
         checkBdioDirectory();
-        Assertions.assertTrue(Arrays.asList(bdioDirectory.listFiles()).stream()
+        Assertions.assertTrue(
+            Arrays.asList(bdioDirectory.listFiles()).stream()
                 .map(File::getName)
                 .filter(requiredBdioFilename::equals)
                 .findAny().isPresent(),
-            String.format("Expected BDIO file %s, but it was not created", requiredBdioFilename));
+            String.format("Expected BDIO file %s, but it was not created", requiredBdioFilename)
+        );
     }
 
     public File getOutputDirectory() {

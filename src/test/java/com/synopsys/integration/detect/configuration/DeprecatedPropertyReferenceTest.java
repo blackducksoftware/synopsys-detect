@@ -18,21 +18,21 @@ import com.synopsys.integration.configuration.property.Property;
 
 @Disabled // For now these tests are not actually helping anyone. Will be tagged with "lint" in the future.
 public class DeprecatedPropertyReferenceTest {
-    private List<String> fileTypesToCheck = Bds.listOf(
+    private final List<String> fileTypesToCheck = Bds.listOf(
         "java",
         "kt",
         "groovy",
         "kts"
     );
 
-    private List<String> excludedFileNames = Bds.of(Bds.listOf(
+    private final List<String> excludedFileNames = Bds.of(Bds.listOf(
         DetectConfigurationFactory.class,
         DetectableOptionFactory.class,
         DetectProperties.class,
         this.getClass()
     )).map(Class::getSimpleName).toList();
 
-    private List<String> deprecatedPropertyReferenceStrings = Bds.of(DetectProperties.allProperties().getProperties())
+    private final List<String> deprecatedPropertyReferenceStrings = Bds.of(DetectProperties.allProperties().getProperties())
         .filter(it -> it.getPropertyDeprecationInfo() != null)
         .map(Property::getKey)
         .map(String::toUpperCase)

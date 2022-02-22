@@ -47,8 +47,7 @@ class BazelBattery {
         test.withToolsValue("BAZEL");
         test.property("detect.bazel.target", "//:ProjectRunner");
         test.property("detect.bazel.workspace.rules", "MAVEN_JAR");
-        test.executableFromResourceFiles(DetectProperties.DETECT_BAZEL_PATH,
-            BAZEL_MAVEN_JAR_OUTPUT1_RESOURCE, BAZEL_MAVEN_JAR_OUTPUT2_RESOURCE, BAZEL_MAVEN_JAR_OUTPUT3_RESOURCE);
+        test.executableFromResourceFiles(DetectProperties.DETECT_BAZEL_PATH, BAZEL_MAVEN_JAR_OUTPUT1_RESOURCE, BAZEL_MAVEN_JAR_OUTPUT2_RESOURCE, BAZEL_MAVEN_JAR_OUTPUT3_RESOURCE);
         test.sourceDirectoryNamed("bazel-maven-jar");
         test.sourceFileNamed("WORKSPACE");
         test.expectBdioResources();
@@ -61,10 +60,7 @@ class BazelBattery {
         test.withToolsValue("BAZEL");
         test.property("detect.bazel.target", "//cat_hs/lib/args:args");
         test.property("detect.bazel.workspace.rules", "ALL");
-        test.executableFromResourceFiles(DetectProperties.DETECT_BAZEL_PATH,
-            EMPTY_OUTPUT_RESOURCE,
-            EMPTY_OUTPUT_RESOURCE,
-            BAZEL_HASKELL_CABAL_LIBRARY_OUTPUT_RESOURCE);
+        test.executableFromResourceFiles(DetectProperties.DETECT_BAZEL_PATH, EMPTY_OUTPUT_RESOURCE, EMPTY_OUTPUT_RESOURCE, BAZEL_HASKELL_CABAL_LIBRARY_OUTPUT_RESOURCE);
         test.sourceDirectoryNamed("bazel-haskell-cabal-library-all");
         test.sourceFileNamed("WORKSPACE");
         test.expectBdioResources();

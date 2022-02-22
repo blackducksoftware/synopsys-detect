@@ -14,7 +14,7 @@ import com.synopsys.integration.detect.workflow.blackduck.font.DetectFontLocator
 
 public class DetectFontLoader {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private DetectFontLocator detectFontLocator;
+    private final DetectFontLocator detectFontLocator;
 
     public DetectFontLoader(DetectFontLocator detectFontLocator) {
         this.detectFontLocator = detectFontLocator;

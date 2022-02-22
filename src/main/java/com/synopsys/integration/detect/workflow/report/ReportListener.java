@@ -30,9 +30,14 @@ public class ReportListener {
         return new ReportListener(eventSystem, new PreparationSummaryReporter(), new ExtractionSummaryReporter(), new SearchSummaryReporter(), new DetectorIssuePublisher(), new ExtractionLogger());
     }
 
-    public ReportListener(EventSystem eventSystem,
-        PreparationSummaryReporter preparationSummaryReporter, ExtractionSummaryReporter extractionSummaryReporter, SearchSummaryReporter searchSummaryReporter, DetectorIssuePublisher detectorIssuePublisher,
-        ExtractionLogger extractionLogger) {
+    public ReportListener(
+        EventSystem eventSystem,
+        PreparationSummaryReporter preparationSummaryReporter,
+        ExtractionSummaryReporter extractionSummaryReporter,
+        SearchSummaryReporter searchSummaryReporter,
+        DetectorIssuePublisher detectorIssuePublisher,
+        ExtractionLogger extractionLogger
+    ) {
         this.eventSystem = eventSystem;
         this.preparationSummaryReporter = preparationSummaryReporter;
         this.extractionSummaryReporter = extractionSummaryReporter;

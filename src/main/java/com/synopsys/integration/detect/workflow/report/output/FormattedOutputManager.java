@@ -99,7 +99,8 @@ public class FormattedOutputManager {
         return Bds.of(detectOperations)
             .filter(operation -> operation.getOperationType() == OperationType.PUBLIC || operation.getStatusType() != StatusType.SUCCESS) //EITHER a public operation or a failed internal operation
             .map(operation -> new FormattedOperationOutput(Operation.formatTimestamp(operation.getStartTime()), Operation.formatTimestamp(operation.getEndTime().orElse(null)), operation.getName(),
-                operation.getStatusType().name()))
+                operation.getStatusType().name()
+            ))
             .toList();
     }
 
