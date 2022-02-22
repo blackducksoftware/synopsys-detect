@@ -1,5 +1,5 @@
 dependencies {
-    api 'com.synopsys.integration:integration-common:24.0.0'
+    api 'com.synopsys.integration:integration-common:25.3.3'
 
     implementation project(':common')
 
