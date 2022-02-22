@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.configuration.property.base.NullableAlikeProperty;
-import com.synopsys.integration.configuration.property.base.NullableProperty;
 import com.synopsys.integration.configuration.util.EnumPropertyUtils;
 
 public class NullableSoftEnumProperty<E extends Enum<E>> extends NullableAlikeProperty<SoftEnumValue<E>> {

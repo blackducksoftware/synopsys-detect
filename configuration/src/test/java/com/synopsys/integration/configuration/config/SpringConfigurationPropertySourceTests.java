@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.mock.env.MockEnvironment;
 
 import com.synopsys.integration.configuration.property.base.NullableAlikeProperty;
-import com.synopsys.integration.configuration.property.base.NullableProperty;
 import com.synopsys.integration.configuration.property.types.string.NullableStringProperty;
 import com.synopsys.integration.configuration.source.PropertySource;
 import com.synopsys.integration.configuration.source.SpringConfigurationPropertySource;

@@ -20,8 +20,8 @@ import org.springframework.core.env.ConfigurablePropertyResolver;
 import com.synopsys.integration.common.util.Bds;
 
 public class SpringConfigurationPropertySource implements PropertySource {
-    private String name;
-    private IterableConfigurationPropertySource propertySource;
+    private final String name;
+    private final IterableConfigurationPropertySource propertySource;
     private final ConfigurablePropertyResolver configurablePropertyResolver;
 
     public SpringConfigurationPropertySource(String name, IterableConfigurationPropertySource propertySource, ConfigurablePropertyResolver configurablePropertyResolver) {

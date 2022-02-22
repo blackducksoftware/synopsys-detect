@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.configuration.property.base.NullableAlikeProperty;
-import com.synopsys.integration.configuration.property.base.NullableProperty;
 
 public class NullableLongProperty extends NullableAlikeProperty<Long> {
     public NullableLongProperty(@NotNull String key) {

@@ -82,5 +82,4 @@ public class PropertyBuilder<P extends Property> {
         return detectProperty;
     }
 
-    ;
 }
