@@ -17,8 +17,16 @@ public class GoModCommandRunner {
     // java:S5852: Warning about potential DoS risk.
     @SuppressWarnings({ "java:S5852" })
     private static final Pattern GENERATE_GO_LIST_JSON_OUTPUT_PATTERN = Pattern.compile("\\d+\\.[\\d.]+"); // Example: "go version go1.17.5 darwin/amd64" -> ""
+    private static final String VERSION_COMMAND = "version";
+    private static final String MOD_COMMAND = "mod";
+    private static final String MOD_WHY_SUBCOMMAND = "why";
+    private static final String MOD_GRAPH_SUBCOMMAND = "graph";
+    private static final String LIST_COMMAND = "list";
     private static final String JSON_OUTPUT_FLAG = "-json";
     private static final String MODULE_OUTPUT_FLAG = "-m";
+    private static final String VENDOR_OUTPUT_FLAG = "-vendor";
+    private static final String LIST_READONLY_FLAG = "-mod=readonly";
+    private static final String MODULE_NAME = "all";
 
     private final DetectableExecutableRunner executableRunner;
 
@@ -28,7 +36,7 @@ public class GoModCommandRunner {
 
     // Excludes the "all" argument to return the root project modules
     public List<String> runGoList(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
-        return executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, goExe, "list", MODULE_OUTPUT_FLAG, JSON_OUTPUT_FLAG))
+        return executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, goExe, LIST_COMMAND, MODULE_OUTPUT_FLAG, JSON_OUTPUT_FLAG))
             .getStandardOutputAsList();
     }
 
@@ -43,19 +51,19 @@ public class GoModCommandRunner {
         }
 
         List<String> goListCommand = new LinkedList<>();
-        goListCommand.add("list");
+        goListCommand.add(LIST_COMMAND);
         if (readOnlyFlagSupported) {
             // Providing a readonly flag prevents the command from modifying customer's source.
-            goListCommand.add("-mod=readonly");
+            goListCommand.add(LIST_READONLY_FLAG);
         }
-        goListCommand.addAll(Arrays.asList(MODULE_OUTPUT_FLAG, JSON_OUTPUT_FLAG, "all"));
+        goListCommand.addAll(Arrays.asList(MODULE_OUTPUT_FLAG, JSON_OUTPUT_FLAG, MODULE_NAME));
 
         return executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, goExe, goListCommand))
             .getStandardOutputAsList();
     }
 
     private boolean isReadOnlyFlagSupported(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
-        List<String> goVersionOutput = executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, goExe, "version"))
+        List<String> goVersionOutput = executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, goExe, VERSION_COMMAND))
             .getStandardOutputAsList();
         Matcher matcher = GENERATE_GO_LIST_JSON_OUTPUT_PATTERN.matcher(goVersionOutput.get(0));
         if (matcher.find()) {
@@ -69,17 +77,17 @@ public class GoModCommandRunner {
     }
 
     public List<String> runGoModGraph(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
-        return executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, goExe, "mod", "graph"))
+        return executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, goExe, MOD_COMMAND, MOD_GRAPH_SUBCOMMAND))
             .getStandardOutputAsList();
     }
 
     public List<String> runGoModWhy(File directory, ExecutableTarget goExe, boolean vendorResults) throws ExecutableFailedException {
         // executing this command helps produce more accurate results. Parse the output to create a module exclusion list.
-        List<String> commands = new LinkedList<>(Arrays.asList("mod", "why", "-m"));
+        List<String> commands = new LinkedList<>(Arrays.asList(MOD_COMMAND, MOD_WHY_SUBCOMMAND, MODULE_OUTPUT_FLAG));
         if (vendorResults) {
-            commands.add("-vendor");
+            commands.add(VENDOR_OUTPUT_FLAG);
         }
-        commands.add("all");
+        commands.add(MODULE_NAME);
         return executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, goExe, commands))
             .getStandardOutputAsList();
     }
