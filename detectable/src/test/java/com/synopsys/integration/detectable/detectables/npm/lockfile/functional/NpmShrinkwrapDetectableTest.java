@@ -23,7 +23,8 @@ public class NpmShrinkwrapDetectableTest extends DetectableFunctionalTest {
 
     @Override
     protected void setup() throws IOException {
-        addFile(Paths.get("npm-shrinkwrap.json"),
+        addFile(
+            Paths.get("npm-shrinkwrap.json"),
             "{",
             "   \"name\": \"fec-builder\",",
             "   \"version\": \"1.3.7\",",

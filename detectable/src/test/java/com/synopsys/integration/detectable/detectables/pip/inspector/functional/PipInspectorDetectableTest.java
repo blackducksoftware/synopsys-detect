@@ -48,8 +48,13 @@ public class PipInspectorDetectableTest extends DetectableFunctionalTest {
     public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
         List<Path> requirementTxtPaths = new ArrayList<>();
         PipInspectorDetectableOptions pipInspectorDetectableOptions = new PipInspectorDetectableOptions("project-name", requirementTxtPaths);
-        return detectableFactory.createPipInspectorDetectable(detectableEnvironment, pipInspectorDetectableOptions, () -> pipInspectorPath.toFile(), () -> ExecutableTarget.forCommand(PYTHON_CMD),
-            () -> ExecutableTarget.forCommand(PIP_CMD));
+        return detectableFactory.createPipInspectorDetectable(
+            detectableEnvironment,
+            pipInspectorDetectableOptions,
+            () -> pipInspectorPath.toFile(),
+            () -> ExecutableTarget.forCommand(PYTHON_CMD),
+            () -> ExecutableTarget.forCommand(PIP_CMD)
+        );
     }
 
     @Override

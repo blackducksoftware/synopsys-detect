@@ -23,13 +23,13 @@ public class GraphNodeLabelParser {
 
     public String parseLayerFromLabel(String label, Set<String> knownLayerNames) throws IntegrationException {
         GraphNodeLabelDetails labelDetails = parseLabelParts(label);
-            String recipeSpec = labelDetails.getRecipeSpec();
-            for (String candidateLayerName : knownLayerNames) {
-                String possibleLayerPathSubstring = LABEL_PATH_SEPARATOR + candidateLayerName + LABEL_PATH_SEPARATOR;
-                if (recipeSpec.contains(possibleLayerPathSubstring)) {
-                    return candidateLayerName;
-                }
+        String recipeSpec = labelDetails.getRecipeSpec();
+        for (String candidateLayerName : knownLayerNames) {
+            String possibleLayerPathSubstring = LABEL_PATH_SEPARATOR + candidateLayerName + LABEL_PATH_SEPARATOR;
+            if (recipeSpec.contains(possibleLayerPathSubstring)) {
+                return candidateLayerName;
             }
+        }
         throw new IntegrationException(String.format("Graph Node recipe '%s' does not correspond to any known layer (%s)", label, knownLayerNames));
     }
 

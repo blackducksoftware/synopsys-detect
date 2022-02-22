@@ -40,7 +40,8 @@ public class BitbakeDetectableTest extends DetectableFunctionalTest {
         );
         addExecutableOutput(bitbakeGOutput, "bash", "-c", "source " + getSourceDirectory().toFile().getCanonicalPath() + File.separator + "oe-init-build-env; " + "bitbake " + "-g " + "core-image-minimal");
 
-        addFile(Paths.get("task-depends.dot"),
+        addFile(
+            Paths.get("task-depends.dot"),
             "digraph depends {",
             "\"acl.do_build\" [label = \"acl do_build\\n:2.2.52-r0\\n/home/bit/poky/meta/recipes-support/attr/acl_2.2.52.bb\"]",
             "\"acl.do_build\" -> \"acl.do_package_qa\"",

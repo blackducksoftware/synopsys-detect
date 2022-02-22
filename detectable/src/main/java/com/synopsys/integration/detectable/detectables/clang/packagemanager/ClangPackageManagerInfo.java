@@ -16,8 +16,17 @@ public class ClangPackageManagerInfo {
     private final List<String> pkgArchitectureArgs;
     private final List<String> pkgInfoArgs;
 
-    public ClangPackageManagerInfo(String pkgMgrName, String pkgMgrCmdString, List<Forge> possibleForges, Forge defaultForge, List<String> checkPresenceCommandArgs,
-        String checkPresenceCommandOutputExpectedText, List<String> pkgMgrGetOwnerCmdArgs, List<String> pkgArchitectureArgs, List<String> pkgInfoArgs) {
+    public ClangPackageManagerInfo(
+        String pkgMgrName,
+        String pkgMgrCmdString,
+        List<Forge> possibleForges,
+        Forge defaultForge,
+        List<String> checkPresenceCommandArgs,
+        String checkPresenceCommandOutputExpectedText,
+        List<String> pkgMgrGetOwnerCmdArgs,
+        List<String> pkgArchitectureArgs,
+        List<String> pkgInfoArgs
+    ) {
         this.pkgMgrName = pkgMgrName;
         this.pkgMgrCmdString = pkgMgrCmdString;
         this.possibleForges = possibleForges;

@@ -163,7 +163,8 @@ public class LernaPackager {
         } else {
             return LernaResult.failure(
                 new FileNotFoundException(
-                    String.format("Lerna extraction from %s requires one of the following files: %s, %s, %s",
+                    String.format(
+                        "Lerna extraction from %s requires one of the following files: %s, %s, %s",
                         directory.getAbsolutePath(),
                         LernaDetectable.PACKAGE_LOCK_JSON,
                         LernaDetectable.SHRINKWRAP_JSON,

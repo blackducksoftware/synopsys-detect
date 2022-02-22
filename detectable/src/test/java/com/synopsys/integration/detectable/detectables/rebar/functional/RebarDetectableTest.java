@@ -27,11 +27,13 @@ public class RebarDetectableTest extends DetectableFunctionalTest {
     public void setup() throws IOException {
         addFile(Paths.get("rebar.config"));
 
-        ExecutableOutput executableOutput = createStandardOutput("└─ project─1.0.0 (project app)",
+        ExecutableOutput executableOutput = createStandardOutput(
+            "└─ project─1.0.0 (project app)",
             "   ├─ git_inner_parent_dependency─0.0.2 (git repo)",
             "   │  └─ hex_inner_child_dependency─0.3.0 (hex package)",
             "   └─ git_outer_parent_dependency─0.0.7 (git repo)",
-            "      └─ git_outer_child_dependency─0.8.0 (git repo)");
+            "      └─ git_outer_child_dependency─0.8.0 (git repo)"
+        );
         Map<String, String> environment = new HashMap<>();
         environment.put("REBAR_COLOR", "none");
         addExecutableOutput(executableOutput, environment, "rebar", "tree");

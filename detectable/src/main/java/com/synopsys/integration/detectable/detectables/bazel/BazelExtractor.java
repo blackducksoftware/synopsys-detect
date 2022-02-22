@@ -47,7 +47,8 @@ public class BazelExtractor {
     private final BazelVariableSubstitutor bazelVariableSubstitutor;
     private final BazelProjectNameGenerator bazelProjectNameGenerator;
 
-    public BazelExtractor(DetectableExecutableRunner executableRunner,
+    public BazelExtractor(
+        DetectableExecutableRunner executableRunner,
         ExternalIdFactory externalIdFactory,
         BazelWorkspaceFileParser bazelWorkspaceFileParser,
         WorkspaceRuleChooser workspaceRuleChooser,
@@ -57,7 +58,8 @@ public class BazelExtractor {
         Set<WorkspaceRule> workspaceRulesFromDeprecatedProperty,
         Set<WorkspaceRule> workspaceRulesFromProperty,
         BazelVariableSubstitutor bazelVariableSubstitutor,
-        BazelProjectNameGenerator bazelProjectNameGenerator) {
+        BazelProjectNameGenerator bazelProjectNameGenerator
+    ) {
         this.executableRunner = executableRunner;
         this.externalIdFactory = externalIdFactory;
         this.workspaceRuleChooser = workspaceRuleChooser;

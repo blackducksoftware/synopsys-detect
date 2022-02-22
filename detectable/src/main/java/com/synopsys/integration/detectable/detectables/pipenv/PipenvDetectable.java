@@ -33,8 +33,7 @@ public class PipenvDetectable extends Detectable {
     private ExecutableTarget pipenvExe;
     private File setupFile;
 
-    public PipenvDetectable(DetectableEnvironment environment, PipenvDetectableOptions pipenvDetectableOptions, FileFinder fileFinder, PythonResolver pythonResolver, PipenvResolver pipenvResolver,
-        PipenvExtractor pipenvExtractor) {
+    public PipenvDetectable(DetectableEnvironment environment, PipenvDetectableOptions pipenvDetectableOptions, FileFinder fileFinder, PythonResolver pythonResolver, PipenvResolver pipenvResolver, PipenvExtractor pipenvExtractor) {
         super(environment);
         this.pipenvDetectableOptions = pipenvDetectableOptions;
         this.fileFinder = fileFinder;
@@ -75,7 +74,8 @@ public class PipenvDetectable extends Detectable {
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         //TODO: Handle null better.
         return pipenvExtractor.extract(environment.getDirectory(), pythonExe, pipenvExe, setupFile, pipenvDetectableOptions.getPipProjectName().orElse(""), pipenvDetectableOptions.getPipProjectVersionName().orElse(""),
-            pipenvDetectableOptions.isPipProjectTreeOnly());
+            pipenvDetectableOptions.isPipProjectTreeOnly()
+        );
     }
 
 }
