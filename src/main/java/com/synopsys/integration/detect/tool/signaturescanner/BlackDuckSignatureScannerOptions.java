@@ -52,7 +52,8 @@ public class BlackDuckSignatureScannerOptions {
         @Nullable IndividualFileMatching individualFileMatching,
         Boolean licenseSearch,
         Boolean copyrightSearch,
-        Boolean followSymLinks) {
+        Boolean followSymLinks
+    ) {
 
         this.signatureScannerPaths = signatureScannerPaths;
         this.exclusionPatterns = exclusionPatterns;

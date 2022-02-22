@@ -43,8 +43,15 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
 
     private DockerInspectorInfo resolvedInfo;
 
-    public ArtifactoryDockerInspectorResolver(DirectoryManager directoryManager, AirGapInspectorPaths airGapInspectorPaths, FileFinder fileFinder, DockerInspectorInstaller dockerInspectorInstaller,
-        DockerDetectableOptions dockerDetectableOptions, InstalledToolManager installedToolManager, InstalledToolLocator installedToolLocator) {
+    public ArtifactoryDockerInspectorResolver(
+        DirectoryManager directoryManager,
+        AirGapInspectorPaths airGapInspectorPaths,
+        FileFinder fileFinder,
+        DockerInspectorInstaller dockerInspectorInstaller,
+        DockerDetectableOptions dockerDetectableOptions,
+        InstalledToolManager installedToolManager,
+        InstalledToolLocator installedToolLocator
+    ) {
         this.directoryManager = directoryManager;
         this.airGapInspectorPaths = airGapInspectorPaths;
         this.fileFinder = fileFinder;

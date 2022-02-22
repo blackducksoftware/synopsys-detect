@@ -12,9 +12,7 @@ public class DetectorTimings {
     private final List<Timing<DetectorEvaluation>> extractableTimings;
     private final List<Timing<DetectorEvaluation>> extractionTimings;
 
-    public DetectorTimings(Map<DetectorType, Long> aggregateTimings, List<Timing<DetectorEvaluation>> applicableTimings,
-        List<Timing<DetectorEvaluation>> extractableTimings,
-        List<Timing<DetectorEvaluation>> extractionTimings) {
+    public DetectorTimings(Map<DetectorType, Long> aggregateTimings, List<Timing<DetectorEvaluation>> applicableTimings, List<Timing<DetectorEvaluation>> extractableTimings, List<Timing<DetectorEvaluation>> extractionTimings) {
         this.aggregateTimings = aggregateTimings;
         this.applicableTimings = applicableTimings;
         this.extractableTimings = extractableTimings;

@@ -4,17 +4,16 @@ import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 
 public class BlackDuckConnectivityResult {
-    private boolean successfullyConnected;
+    private final boolean successfullyConnected;
 
     //if failure, the following is populated
-    private String failureReason;
+    private final String failureReason;
 
     //if success, the following is populated
-    private BlackDuckServicesFactory blackDuckServicesFactory;
-    private BlackDuckServerConfig blackDuckServerConfig;
+    private final BlackDuckServicesFactory blackDuckServicesFactory;
+    private final BlackDuckServerConfig blackDuckServerConfig;
 
-    private BlackDuckConnectivityResult(boolean successfullyConnected, String failureReason,
-        BlackDuckServicesFactory blackDuckServicesFactory, BlackDuckServerConfig blackDuckServerConfig) {
+    private BlackDuckConnectivityResult(boolean successfullyConnected, String failureReason, BlackDuckServicesFactory blackDuckServicesFactory, BlackDuckServerConfig blackDuckServerConfig) {
         this.successfullyConnected = successfullyConnected;
         this.failureReason = failureReason;
         this.blackDuckServicesFactory = blackDuckServicesFactory;

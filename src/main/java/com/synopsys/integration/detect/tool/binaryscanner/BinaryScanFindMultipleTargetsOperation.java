@@ -20,8 +20,8 @@ import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 
 public class BinaryScanFindMultipleTargetsOperation {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private FileFinder fileFinder;
-    private DirectoryManager directoryManager;
+    private final FileFinder fileFinder;
+    private final DirectoryManager directoryManager;
 
     public BinaryScanFindMultipleTargetsOperation(FileFinder fileFinder, DirectoryManager directoryManager) {
         this.fileFinder = fileFinder;

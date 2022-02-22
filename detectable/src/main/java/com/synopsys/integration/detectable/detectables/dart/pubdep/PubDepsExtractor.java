@@ -29,8 +29,7 @@ public class PubDepsExtractor {
     private PubSpecYamlNameVersionParser nameVersionParser;
     private final ToolVersionLogger toolVersionLogger;
 
-    public PubDepsExtractor(DetectableExecutableRunner executableRunner, PubDepsParser pubDepsParser, PubSpecYamlNameVersionParser nameVersionParser,
-        ToolVersionLogger toolVersionLogger) {
+    public PubDepsExtractor(DetectableExecutableRunner executableRunner, PubDepsParser pubDepsParser, PubSpecYamlNameVersionParser nameVersionParser, ToolVersionLogger toolVersionLogger) {
         this.executableRunner = executableRunner;
         this.pubDepsParser = pubDepsParser;
         this.nameVersionParser = nameVersionParser;

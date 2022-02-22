@@ -29,9 +29,14 @@ public class DetectorToolResult {
     private final DetectorEvaluationTree rootDetectorEvaluationTree;
     private final Map<CodeLocation, DetectCodeLocation> codeLocationMap;
 
-    public DetectorToolResult(@Nullable NameVersion bomToolProjectNameVersion, List<DetectCodeLocation> bomToolCodeLocations, Set<DetectorType> applicableDetectorTypes,
-        Set<DetectorType> failedDetectorTypes, @Nullable DetectorEvaluationTree rootDetectorEvaluationTree,
-        Map<CodeLocation, DetectCodeLocation> codeLocationMap) {
+    public DetectorToolResult(
+        @Nullable NameVersion bomToolProjectNameVersion,
+        List<DetectCodeLocation> bomToolCodeLocations,
+        Set<DetectorType> applicableDetectorTypes,
+        Set<DetectorType> failedDetectorTypes,
+        @Nullable DetectorEvaluationTree rootDetectorEvaluationTree,
+        Map<CodeLocation, DetectCodeLocation> codeLocationMap
+    ) {
         this.bomToolProjectNameVersion = bomToolProjectNameVersion;
         this.bomToolCodeLocations = bomToolCodeLocations;
         this.applicableDetectorTypes = applicableDetectorTypes;

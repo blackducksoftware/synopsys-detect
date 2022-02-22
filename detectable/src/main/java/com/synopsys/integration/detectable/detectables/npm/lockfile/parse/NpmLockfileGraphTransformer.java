@@ -104,8 +104,11 @@ public class NpmLockfileGraphTransformer {
             return projectDependency;
         } else {
             Optional<NameVersion> externalNameVersion = externalDependencies.stream().filter(it -> it.getName().equals(name)).findFirst();
-            return externalNameVersion.map(nameVersion -> new Dependency(nameVersion.getName(), nameVersion.getVersion(),
-                externalIdFactory.createNameVersionExternalId(Forge.NPMJS, nameVersion.getName(), nameVersion.getVersion()))).orElse(null);
+            return externalNameVersion.map(nameVersion -> new Dependency(
+                nameVersion.getName(),
+                nameVersion.getVersion(),
+                externalIdFactory.createNameVersionExternalId(Forge.NPMJS, nameVersion.getName(), nameVersion.getVersion())
+            )).orElse(null);
         }
     }
 

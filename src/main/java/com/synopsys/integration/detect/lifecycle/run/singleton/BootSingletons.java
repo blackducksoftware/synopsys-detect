@@ -38,11 +38,22 @@ public class BootSingletons {
     private final InstalledToolManager installedToolManager;
     private final InstalledToolLocator installedToolLocator;
 
-    public BootSingletons(ProductRunData productRunData, DetectRunId detectRunId, Gson gson, DetectInfo detectInfo, FileFinder fileFinder, EventSystem eventSystem,
+    public BootSingletons(
+        ProductRunData productRunData,
+        DetectRunId detectRunId,
+        Gson gson,
+        DetectInfo detectInfo,
+        FileFinder fileFinder,
+        EventSystem eventSystem,
         DetectorProfiler detectorProfiler,
-        PropertyConfiguration detectConfiguration, DetectableOptionFactory detectableOptionFactory, DetectConfigurationFactory detectConfigurationFactory,
+        PropertyConfiguration detectConfiguration,
+        DetectableOptionFactory detectableOptionFactory,
+        DetectConfigurationFactory detectConfigurationFactory,
         DirectoryManager directoryManager,
-        Configuration configuration, InstalledToolManager installedToolManager, InstalledToolLocator installedToolLocator) {
+        Configuration configuration,
+        InstalledToolManager installedToolManager,
+        InstalledToolLocator installedToolLocator
+    ) {
         this.productRunData = productRunData;
         this.detectRunId = detectRunId;
         this.gson = gson;

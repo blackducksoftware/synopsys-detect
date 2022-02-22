@@ -64,8 +64,20 @@ public class SingletonFactory {
         OperationSystem operationSystem = new OperationSystem(eventSingletons.getStatusEventPublisher());
         OperationWrapper operationWrapper = new OperationWrapper(exitCodeManager);
 
-        return new UtilitySingletons(externalIdFactory, connectionDetails, artifactResolver, codeLocationNameManager, createBdioCodeLocationsFromDetectCodeLocationsOperation, airGapInspectorPaths, bdioTransformer,
-            executableRunner, detectExecutableResolver, operationSystem, operationWrapper, artifactoryZipInstaller);
+        return new UtilitySingletons(
+            externalIdFactory,
+            connectionDetails,
+            artifactResolver,
+            codeLocationNameManager,
+            createBdioCodeLocationsFromDetectCodeLocationsOperation,
+            airGapInspectorPaths,
+            bdioTransformer,
+            executableRunner,
+            detectExecutableResolver,
+            operationSystem,
+            operationWrapper,
+            artifactoryZipInstaller
+        );
     }
 
     public EventSingletons createEventSingletons() {

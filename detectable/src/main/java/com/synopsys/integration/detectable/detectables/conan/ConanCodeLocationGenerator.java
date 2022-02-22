@@ -46,8 +46,11 @@ public class ConanCodeLocationGenerator {
         populateGraphUnderNode(rootGraphNode, nodes);
         MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
         CodeLocation codeLocation = generateCodeLocationFromConanGraph(externalIdFactory, dependencyGraph, rootGraphNode);
-        return new ConanDetectableResult(rootGraphNode.getConanNode().getName().orElse(null),
-            rootGraphNode.getConanNode().getVersion().orElse(null), codeLocation);
+        return new ConanDetectableResult(
+            rootGraphNode.getConanNode().getName().orElse(null),
+            rootGraphNode.getConanNode().getVersion().orElse(null),
+            codeLocation
+        );
     }
 
     private void populateGraphUnderNode(ConanGraphNode curGraphNode, Map<String, ConanNode<String>> graphNodes) throws DetectableException {
@@ -98,7 +101,8 @@ public class ConanCodeLocationGenerator {
             graphNode.getConanNode().getVersion().orElseThrow(
                 () -> new DetectableException(String.format("Missing dependency version: %s", graphNode.getConanNode()))
             ),
-            externalId);
+            externalId
+        );
     }
 
     @NotNull

@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
 
 public class ObjectPrinter {
-    private static Logger logger = LoggerFactory.getLogger(ObjectPrinter.class);
+    private static final Logger logger = LoggerFactory.getLogger(ObjectPrinter.class);
 
     public static void printObjectPrivate(ReportWriter writer, Object guy) {
         Map<String, String> fieldMap = new HashMap<>();

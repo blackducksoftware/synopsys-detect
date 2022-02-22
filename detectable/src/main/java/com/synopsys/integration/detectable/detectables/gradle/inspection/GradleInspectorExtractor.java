@@ -34,9 +34,14 @@ public class GradleInspectorExtractor {
     private final GradleRootMetadataParser gradleRootMetadataParser;
     private final ToolVersionLogger toolVersionLogger;
 
-    public GradleInspectorExtractor(FileFinder fileFinder, GradleRunner gradleRunner, GradleReportParser gradleReportParser,
+    public GradleInspectorExtractor(
+        FileFinder fileFinder,
+        GradleRunner gradleRunner,
+        GradleReportParser gradleReportParser,
         GradleReportTransformer gradleReportTransformer,
-        GradleRootMetadataParser gradleRootMetadataParser, ToolVersionLogger toolVersionLogger) {
+        GradleRootMetadataParser gradleRootMetadataParser,
+        ToolVersionLogger toolVersionLogger
+    ) {
         this.fileFinder = fileFinder;
         this.gradleRunner = gradleRunner;
         this.gradleReportParser = gradleReportParser;

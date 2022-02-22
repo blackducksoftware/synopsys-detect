@@ -30,8 +30,7 @@ public class BazelDetectable extends Detectable {
     private ExecutableTarget bazelExe;
     private File workspaceFile;
 
-    public BazelDetectable(DetectableEnvironment environment, FileFinder fileFinder, BazelExtractor bazelExtractor,
-        BazelResolver bazelResolver, @Nullable String bazelTargetName) {
+    public BazelDetectable(DetectableEnvironment environment, FileFinder fileFinder, BazelExtractor bazelExtractor, BazelResolver bazelResolver, @Nullable String bazelTargetName) {
         super(environment);
         this.fileFinder = fileFinder;
         this.bazelExtractor = bazelExtractor;

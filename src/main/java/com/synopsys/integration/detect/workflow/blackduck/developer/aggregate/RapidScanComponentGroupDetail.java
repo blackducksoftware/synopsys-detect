@@ -7,10 +7,10 @@ import java.util.function.Supplier;
 import org.apache.commons.lang3.StringUtils;
 
 public class RapidScanComponentGroupDetail {
-    private RapidScanDetailGroup group;
-    private Set<String> errorMessages = new LinkedHashSet<>();
-    private Set<String> warningMessages = new LinkedHashSet<>();
-    private Set<String> policyNames = new LinkedHashSet<>();
+    private final RapidScanDetailGroup group;
+    private final Set<String> errorMessages = new LinkedHashSet<>();
+    private final Set<String> warningMessages = new LinkedHashSet<>();
+    private final Set<String> policyNames = new LinkedHashSet<>();
 
     public RapidScanComponentGroupDetail(RapidScanDetailGroup group) {
         this.group = group;

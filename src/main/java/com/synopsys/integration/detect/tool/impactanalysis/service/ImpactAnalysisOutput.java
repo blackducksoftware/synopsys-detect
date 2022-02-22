@@ -49,8 +49,18 @@ public class ImpactAnalysisOutput extends CodeLocationOutput {
         return new ImpactAnalysisOutput(result, projectAndVersion, codeLocationName, errorMessage, contentStringException, responseString, statusMessage, statusCode, contentString, impactAnalysisUploadView);
     }
 
-    private ImpactAnalysisOutput(Result result, NameVersion projectAndVersion, String codeLocationName, String errorMessage, Exception exception, String response, String statusMessage, int statusCode, String contentString,
-        ImpactAnalysisUploadView impactAnalysisUploadView) {
+    private ImpactAnalysisOutput(
+        Result result,
+        NameVersion projectAndVersion,
+        String codeLocationName,
+        String errorMessage,
+        Exception exception,
+        String response,
+        String statusMessage,
+        int statusCode,
+        String contentString,
+        ImpactAnalysisUploadView impactAnalysisUploadView
+    ) {
         super(result, projectAndVersion, codeLocationName, 1, errorMessage, exception);
         this.response = response;
         this.statusMessage = statusMessage;

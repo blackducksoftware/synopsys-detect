@@ -5,7 +5,7 @@ public enum RapidScanDetailGroup {
     POLICY("Components"),
     SECURITY("Security");
 
-    private String displayName;
+    private final String displayName;
 
     RapidScanDetailGroup(String displayName) {
         this.displayName = displayName;

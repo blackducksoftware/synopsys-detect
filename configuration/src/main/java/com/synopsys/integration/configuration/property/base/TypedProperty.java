@@ -6,9 +6,9 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
 import com.synopsys.integration.configuration.parse.ValueParser;
+import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.deprecation.DeprecatedValueInfo;
 import com.synopsys.integration.configuration.property.deprecation.DeprecatedValueUsage;
-import com.synopsys.integration.configuration.property.Property;
 
 /**
  * A property that is associated with a single type.

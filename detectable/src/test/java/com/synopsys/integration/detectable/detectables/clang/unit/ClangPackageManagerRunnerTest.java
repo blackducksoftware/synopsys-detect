@@ -100,26 +100,32 @@ public class ClangPackageManagerRunnerTest {
         testNonPkgOwnedIncludeFile(packageManagerInfo, packageResolver, pkgOwnerPattern);
     }
 
-    private void testNonPkgOwnedIncludeFile(ClangPackageManagerInfo packageManagerInfo, ClangPackageManagerResolver packageResolver,
-        String pkgMgrOwnerQueryResultPattern) throws ExecutableRunnerException {
+    private void testNonPkgOwnedIncludeFile(
+        ClangPackageManagerInfo packageManagerInfo, ClangPackageManagerResolver packageResolver,
+        String pkgMgrOwnerQueryResultPattern
+    ) throws ExecutableRunnerException {
 
         // Test
         PackageDetailsResult result = runTest(packageManagerInfo, packageResolver, null, null, false,
-            pkgMgrOwnerQueryResultPattern, null, dependencyFile);
+            pkgMgrOwnerQueryResultPattern, null, dependencyFile
+        );
 
         // Verify
         assertEquals(1, result.getUnRecognizedDependencyFiles().size());
         assertEquals(dependencyFile, result.getUnRecognizedDependencyFiles().iterator().next());
     }
 
-    private void testSuccessCase(ClangPackageManagerInfo packageManagerInfo, ClangPackageManagerResolver packageResolver,
+    private void testSuccessCase(
+        ClangPackageManagerInfo packageManagerInfo, ClangPackageManagerResolver packageResolver,
         String pkgName, String pkgArchitecture, boolean archBuried, String pkgVersion,
-        String pkgMgrQueryResultPattern, String pkgMgrDetailsQueryResultPattern) throws ExecutableRunnerException {
+        String pkgMgrQueryResultPattern, String pkgMgrDetailsQueryResultPattern
+    ) throws ExecutableRunnerException {
 
         // Test
         PackageDetailsResult result = runTest(packageManagerInfo, packageResolver, pkgName, pkgArchitecture,
             archBuried,
-            pkgMgrQueryResultPattern, pkgMgrDetailsQueryResultPattern, dependencyFile);
+            pkgMgrQueryResultPattern, pkgMgrDetailsQueryResultPattern, dependencyFile
+        );
 
         // Verify
         assertEquals(0, result.getUnRecognizedDependencyFiles().size());
@@ -130,24 +136,29 @@ public class ClangPackageManagerRunnerTest {
         assertEquals(pkgVersion, foundPkgDetails.getPackageVersion());
     }
 
-    private void testNoResultsCase(ClangPackageManagerInfo packageManagerInfo, ClangPackageManagerResolver packageResolver,
+    private void testNoResultsCase(
+        ClangPackageManagerInfo packageManagerInfo, ClangPackageManagerResolver packageResolver,
         String pkgName, String pkgArchitecture,
-        String pkgMgrQueryResultPattern, String pkgMgrDetailsQueryResultPattern) throws ExecutableRunnerException {
+        String pkgMgrQueryResultPattern, String pkgMgrDetailsQueryResultPattern
+    ) throws ExecutableRunnerException {
 
         // Test
         PackageDetailsResult result = runTest(packageManagerInfo, packageResolver, pkgName, pkgArchitecture, false,
-            pkgMgrQueryResultPattern, pkgMgrDetailsQueryResultPattern, dependencyFile);
+            pkgMgrQueryResultPattern, pkgMgrDetailsQueryResultPattern, dependencyFile
+        );
 
         // Verify
         assertEquals(0, result.getUnRecognizedDependencyFiles().size());
         assertEquals(0, result.getFoundPackages().size());
     }
 
-    private PackageDetailsResult runTest(ClangPackageManagerInfo packageManagerInfo, ClangPackageManagerResolver packageResolver,
+    private PackageDetailsResult runTest(
+        ClangPackageManagerInfo packageManagerInfo, ClangPackageManagerResolver packageResolver,
         String pkgName,
         String pkgArch, boolean archBuried,
         String pkgMgrOwnerQueryResultPattern, String pkgMgrDetailsQueryResultPattern,
-        File dependencyFile)
+        File dependencyFile
+    )
         throws ExecutableRunnerException {
         ClangPackageManager currentPackageManager = new ClangPackageManager(packageManagerInfo, packageResolver);
 

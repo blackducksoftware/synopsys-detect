@@ -6,7 +6,7 @@ import java.util.Optional;
 import com.synopsys.integration.common.util.finder.FileFinder;
 
 public class RapidModeConfigFindOperation {
-    private static String CONFIG_FILE_NAME = ".bd-rapid-scan.yaml";
+    private static final String CONFIG_FILE_NAME = ".bd-rapid-scan.yaml";
     private final FileFinder fileFinder;
 
     public RapidModeConfigFindOperation(FileFinder fileFinder) {

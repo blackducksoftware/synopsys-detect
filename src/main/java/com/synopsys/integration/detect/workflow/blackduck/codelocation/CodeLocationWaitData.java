@@ -10,7 +10,7 @@ public class CodeLocationWaitData {
     @Nullable
     private final NotificationTaskRange notificationRange;
     private final Set<String> codeLocationNames;
-    private int expectedNotificationCount;
+    private final int expectedNotificationCount;
 
     public CodeLocationWaitData(@Nullable NotificationTaskRange notificationRange, Set<String> codeLocationNames, int expectedNotificationCount) {
         this.notificationRange = notificationRange;

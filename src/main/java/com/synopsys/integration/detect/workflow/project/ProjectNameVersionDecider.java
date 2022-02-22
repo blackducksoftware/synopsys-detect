@@ -56,7 +56,7 @@ public class ProjectNameVersionDecider {
                 .findFirst();
 
             if (chosenTool.isPresent()) {
-                logger.debug(String.format("Using the first ordered tool with project info: %s", tool.toString()));
+                logger.debug(String.format("Using the first ordered tool with project info: %s", tool));
                 break;
             }
         }

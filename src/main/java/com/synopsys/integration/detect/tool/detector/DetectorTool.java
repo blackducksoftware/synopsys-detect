@@ -52,8 +52,16 @@ public class DetectorTool {
     private final ExitCodePublisher exitCodePublisher;
     private final DetectorEventPublisher detectorEventPublisher;
 
-    public DetectorTool(DetectorFinder detectorFinder, ExtractionEnvironmentProvider extractionEnvironmentProvider, EventSystem eventSystem, CodeLocationConverter codeLocationConverter,
-        DetectorIssuePublisher detectorIssuePublisher, StatusEventPublisher statusEventPublisher, ExitCodePublisher exitCodePublisher, DetectorEventPublisher detectorEventPublisher) {
+    public DetectorTool(
+        DetectorFinder detectorFinder,
+        ExtractionEnvironmentProvider extractionEnvironmentProvider,
+        EventSystem eventSystem,
+        CodeLocationConverter codeLocationConverter,
+        DetectorIssuePublisher detectorIssuePublisher,
+        StatusEventPublisher statusEventPublisher,
+        ExitCodePublisher exitCodePublisher,
+        DetectorEventPublisher detectorEventPublisher
+    ) {
         this.detectorFinder = detectorFinder;
         this.extractionEnvironmentProvider = extractionEnvironmentProvider;
         this.eventSystem = eventSystem;
@@ -64,8 +72,15 @@ public class DetectorTool {
         this.detectorEventPublisher = detectorEventPublisher;
     }
 
-    public DetectorToolResult performDetectors(File directory, DetectorRuleSet detectorRuleSet, DetectorFinderOptions detectorFinderOptions, DetectorEvaluationOptions evaluationOptions, String projectDetector,
-        List<DetectorType> requiredDetectors, FileFinder fileFinder) {
+    public DetectorToolResult performDetectors(
+        File directory,
+        DetectorRuleSet detectorRuleSet,
+        DetectorFinderOptions detectorFinderOptions,
+        DetectorEvaluationOptions evaluationOptions,
+        String projectDetector,
+        List<DetectorType> requiredDetectors,
+        FileFinder fileFinder
+    ) {
         logger.debug("Initializing detector system.");
         Optional<DetectorEvaluationTree> possibleRootEvaluation;
 

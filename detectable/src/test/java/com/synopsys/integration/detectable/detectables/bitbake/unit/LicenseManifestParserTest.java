@@ -31,7 +31,8 @@ public class LicenseManifestParserTest {
             "PACKAGE NAME: alsa-conf",
             "PACKAGE VERSION: 1.2.5.1",
             "RECIPE NAME: alsa-lib",
-            "LICENSE: LGPLv2.1 & GPLv2+");
+            "LICENSE: LGPLv2.1 & GPLv2+"
+        );
 
         Map<String, String> imageRecipes = parser.collectImageRecipes(lines);
 

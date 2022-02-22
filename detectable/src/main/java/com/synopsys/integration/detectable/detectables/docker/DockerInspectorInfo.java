@@ -14,8 +14,7 @@ public class DockerInspectorInfo {
         this.airGapInspectorImageTarFiles = null;
     }
 
-    public DockerInspectorInfo(File dockerInspectorJar,
-        List<File> airGapInspectorImageTarFiles) {
+    public DockerInspectorInfo(File dockerInspectorJar, List<File> airGapInspectorImageTarFiles) {
         this.dockerInspectorJar = dockerInspectorJar;
         this.airGapInspectorImageTarFiles = airGapInspectorImageTarFiles;
     }
