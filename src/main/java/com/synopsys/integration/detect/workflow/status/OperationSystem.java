@@ -6,6 +6,8 @@ import java.util.LinkedList;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.synopsys.integration.detect.lifecycle.shutdown.ExceptionUtility;
+
 public class OperationSystem {
     private final Collection<Operation> operations = new LinkedList<>();
     private final StatusEventPublisher statusEventPublisher;
@@ -21,7 +23,7 @@ public class OperationSystem {
 
     private void publishOperationIssues(Operation operation) {
         operation.getException().ifPresent(exception -> {
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, operation.getName(), Arrays.asList(exception.getMessage())));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, operation.getName(), Arrays.asList(ExceptionUtility.summarizeException(exception))));
         });
     }
 

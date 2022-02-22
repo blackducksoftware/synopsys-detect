@@ -19,7 +19,8 @@ public class ExceptionUtility {
 
     public void logException(Exception e) {
         if (e instanceof OperationException) {
-            logException(((OperationException) e).getException());
+            OperationException operationException = (OperationException) e;
+            logException(operationException.getException());
         } else if (e instanceof DetectUserFriendlyException) {
             if (e.getCause() != null) {
                 logger.debug(e.getCause().getMessage(), e.getCause());
@@ -69,8 +70,8 @@ public class ExceptionUtility {
             return ExitCodeType.FAILURE_UNKNOWN_ERROR;
         }
     }
-
-    public String summarizeException(Exception e) {
+    
+    public static String summarizeException(Exception e) {
         if (e instanceof OperationException) {
             return summarizeException(((OperationException) e).getException());
         } else {

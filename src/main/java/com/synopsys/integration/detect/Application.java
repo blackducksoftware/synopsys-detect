@@ -158,7 +158,9 @@ public class Application implements ApplicationRunner {
             logger.error("Detect boot failed.");
             logger.error("");
             exceptionUtility.logException(e);
+            exitCodeManager.requestExitCode(e);
             logger.error("");
+            //TODO- should we return a DetectBootResult.exception(...) here?
         }
         return bootResult;
     }
