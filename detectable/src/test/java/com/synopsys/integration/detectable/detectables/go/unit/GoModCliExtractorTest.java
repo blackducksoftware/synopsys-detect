@@ -23,6 +23,7 @@ import com.synopsys.integration.detectable.detectables.go.gomod.GoModDependencyT
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoGraphParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoListParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoModWhyParser;
+import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoVersionParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.process.GoModGraphGenerator;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.executable.Executable;
@@ -38,7 +39,7 @@ public class GoModCliExtractorTest {
     // Leaving it here for now to review one day. JM-01/2022
 
     @Test
-    public void handleMultipleReplacementsForOneComponentTest() throws ExecutableRunnerException, ExecutableFailedException {
+    public void handleMultipleReplacementsForOneComponentTest() throws ExecutableRunnerException, ExecutableFailedException, DetectableException {
         DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
         File directory = new File("");
         ExecutableTarget goExe = ExecutableTarget.forFile(new File(""));
@@ -77,7 +78,7 @@ public class GoModCliExtractorTest {
     }
 
     @Test
-    public void handleGoModWhyExceptionTest() throws ExecutableRunnerException, ExecutableFailedException {
+    public void handleGoModWhyExceptionTest() throws ExecutableRunnerException, ExecutableFailedException, DetectableException {
         DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
         File directory = new File("");
         ExecutableTarget goExe = ExecutableTarget.forFile(new File(""));
@@ -121,12 +122,13 @@ public class GoModCliExtractorTest {
         Mockito.doAnswer(executableAnswer).when(executableRunner).execute(Mockito.any(Executable.class));
 
         GoModWhyParser goModWhyParser = new GoModWhyParser();
+        GoVersionParser goVersionParser = new GoVersionParser();
         GoModCommandRunner goModCommandRunner = new GoModCommandRunner(executableRunner);
         GoModGraphGenerator goModGraphGenerator = new GoModGraphGenerator(new ExternalIdFactory());
         GoListParser goListParser = new GoListParser(new GsonBuilder().create());
         GoGraphParser goGraphParser = new GoGraphParser();
         ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        return new GoModCliExtractor(goModCommandRunner, goListParser, goGraphParser, goModWhyParser, goModGraphGenerator, externalIdFactory, GoModDependencyType.UNUSED);
+        return new GoModCliExtractor(goModCommandRunner, goListParser, goGraphParser, goModWhyParser, goVersionParser, goModGraphGenerator, externalIdFactory, GoModDependencyType.UNUSED);
     }
 
     private ExecutableOutput goListOutput() {

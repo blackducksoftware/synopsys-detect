@@ -10,6 +10,7 @@ import com.google.gson.JsonSyntaxException;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectables.go.gomod.model.GoGraphRelationship;
 import com.synopsys.integration.detectable.detectables.go.gomod.model.GoListAllData;
@@ -17,6 +18,7 @@ import com.synopsys.integration.detectable.detectables.go.gomod.model.GoListModu
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoGraphParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoListParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoModWhyParser;
+import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoVersionParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.process.GoModDependencyManager;
 import com.synopsys.integration.detectable.detectables.go.gomod.process.GoModGraphGenerator;
 import com.synopsys.integration.detectable.detectables.go.gomod.process.GoRelationshipManager;
@@ -27,6 +29,7 @@ public class GoModCliExtractor {
     private final GoListParser goListParser;
     private final GoGraphParser goGraphParser;
     private final GoModWhyParser goModWhyParser;
+    private final GoVersionParser goVersionParser;
     private final GoModGraphGenerator goModGraphGenerator;
     private final ExternalIdFactory externalIdFactory;
     private final GoModDependencyType excludedDependencyType;
@@ -36,6 +39,7 @@ public class GoModCliExtractor {
         GoListParser goListParser,
         GoGraphParser goGraphParser,
         GoModWhyParser goModWhyParser,
+        GoVersionParser goVersionParser,
         GoModGraphGenerator goModGraphGenerator,
         ExternalIdFactory externalIdFactory,
         GoModDependencyType excludedDependencyType
@@ -44,12 +48,13 @@ public class GoModCliExtractor {
         this.goListParser = goListParser;
         this.goGraphParser = goGraphParser;
         this.goModWhyParser = goModWhyParser;
+        this.goVersionParser = goVersionParser;
         this.goModGraphGenerator = goModGraphGenerator;
         this.externalIdFactory = externalIdFactory;
         this.excludedDependencyType = excludedDependencyType;
     }
 
-    public Extraction extract(File directory, ExecutableTarget goExe) throws ExecutableFailedException, JsonSyntaxException {
+    public Extraction extract(File directory, ExecutableTarget goExe) throws ExecutableFailedException, JsonSyntaxException, DetectableException {
         List<GoListModule> goListModules = listModules(directory, goExe);
         List<GoListAllData> goListAllModules = listAllModules(directory, goExe);
         List<GoGraphRelationship> goGraphRelationships = listGraphRelationships(directory, goExe);
@@ -70,14 +75,21 @@ public class GoModCliExtractor {
         return goListParser.parseGoListModuleJsonOutput(listOutput);
     }
 
-    private List<GoListAllData> listAllModules(File directory, ExecutableTarget goExe) throws ExecutableFailedException, JsonSyntaxException {
-        List<String> listAllOutput = goModCommandRunner.runGoListAll(directory, goExe);
+    private List<GoListAllData> listAllModules(File directory, ExecutableTarget goExe) throws ExecutableFailedException, JsonSyntaxException, DetectableException {
+        GoVersion goVersion = goVersion(directory, goExe);
+        List<String> listAllOutput = goModCommandRunner.runGoListAll(directory, goExe, goVersion);
         return goListParser.parseGoListAllJsonOutput(listAllOutput);
     }
 
     private List<GoGraphRelationship> listGraphRelationships(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
         List<String> modGraphOutput = goModCommandRunner.runGoModGraph(directory, goExe);
         return goGraphParser.parseRelationshipsFromGoModGraph(modGraphOutput);
+    }
+
+    private GoVersion goVersion(File directory, ExecutableTarget goExe) throws ExecutableFailedException, DetectableException {
+        String goVersionLine = goModCommandRunner.runGoVersion(directory, goExe);
+        return goVersionParser.parseGoVersion(goVersionLine)
+            .orElseThrow(() -> new DetectableException(String.format("Failed to find go version within output: %s", goVersionLine)));
     }
 
     private Set<String> listExcludedModules(File directory, ExecutableTarget goExe) throws ExecutableFailedException {

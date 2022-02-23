@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
@@ -13,9 +11,6 @@ import com.synopsys.integration.detectable.detectable.executable.DetectableExecu
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 
 public class GoModCommandRunner {
-    // java:S5852: Warning about potential DoS risk.
-    @SuppressWarnings({ "java:S5852" })
-    private static final Pattern GENERATE_GO_LIST_JSON_OUTPUT_PATTERN = Pattern.compile("\\d+\\.[\\d.]+"); // Example: "go version go1.17.5 darwin/amd64" -> ""
     private static final String VERSION_COMMAND = "version";
     private static final String MOD_COMMAND = "mod";
     private static final String MOD_WHY_SUBCOMMAND = "why";
@@ -40,12 +35,10 @@ public class GoModCommandRunner {
     }
 
     // TODO: Utilize the fields "Main": true, and "Indirect": true, fields from the JSON output to avoid running go list twice. Before switching to json output we needed to run twice. JM-01/2022
-    public List<String> runGoListAll(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
-        boolean readOnlyFlagSupported = isReadOnlyFlagSupported(directory, goExe);
-
+    public List<String> runGoListAll(File directory, ExecutableTarget goExe, GoVersion goVersion) throws ExecutableFailedException {
         List<String> goListCommand = new LinkedList<>();
         goListCommand.add(LIST_COMMAND);
-        if (readOnlyFlagSupported) {
+        if (goVersion.getMajorVersion() > 1 || goVersion.getMinorVersion() >= 14) {
             // Providing a readonly flag prevents the command from modifying customer's source.
             goListCommand.add(LIST_READONLY_FLAG);
         }
@@ -55,18 +48,10 @@ public class GoModCommandRunner {
             .getStandardOutputAsList();
     }
 
-    private boolean isReadOnlyFlagSupported(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
+    public String runGoVersion(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
         List<String> goVersionOutput = executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, goExe, VERSION_COMMAND))
             .getStandardOutputAsList();
-        Matcher matcher = GENERATE_GO_LIST_JSON_OUTPUT_PATTERN.matcher(goVersionOutput.get(0));
-        if (matcher.find()) {
-            String version = matcher.group(); // 1.16.5
-            String[] parts = version.split("\\.");
-            boolean majorVersionBeyond1 = Integer.parseInt(parts[0]) > 1;
-            boolean minorVersion14AndUp = Integer.parseInt(parts[1]) >= 14;
-            return majorVersionBeyond1 || minorVersion14AndUp;
-        }
-        return false;
+        return goVersionOutput.get(0);
     }
 
     public List<String> runGoModGraph(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
