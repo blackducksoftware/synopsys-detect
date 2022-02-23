@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.IOException;
 import java.nio.file.Paths;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import com.synopsys.integration.bdio.model.Forge;
@@ -18,7 +17,6 @@ import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectab
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModDependencyType;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
-import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 import com.synopsys.integration.executable.ExecutableOutput;
 
@@ -31,7 +29,7 @@ public class GoModDetectableTest extends DetectableFunctionalTest {
     protected void setup() throws IOException {
         addFile(Paths.get("go.mod"));
 
-        ExecutableOutput goListOutput = new ExecutableOutput(FunctionalTestFiles.asString("/go/go-list.xout"), StringUtils.EMPTY);
+        ExecutableOutput goListOutput = createStandardOutputFromResource("/go/go-list.xout");
         addExecutableOutput(goListOutput, "go", "list", "-m", "-json");
 
         ExecutableOutput goVersionOutput = createStandardOutput(
@@ -39,7 +37,7 @@ public class GoModDetectableTest extends DetectableFunctionalTest {
         );
         addExecutableOutput(goVersionOutput, "go", "version");
 
-        ExecutableOutput goListUJsonOutput = new ExecutableOutput(FunctionalTestFiles.asString("/go/go-list-all.xout"), StringUtils.EMPTY);
+        ExecutableOutput goListUJsonOutput = createStandardOutputFromResource("/go/go-list-all.xout");
         addExecutableOutput(goListUJsonOutput, "go", "list", "-mod=readonly", "-m", "-json", "all");
 
         ExecutableOutput goModGraphOutput = createStandardOutput(
