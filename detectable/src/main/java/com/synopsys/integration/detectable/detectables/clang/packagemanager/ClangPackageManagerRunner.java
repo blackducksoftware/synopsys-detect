@@ -28,11 +28,21 @@ public class ClangPackageManagerRunner {
                 logger.debug(String.format("Found package manager %s", packageManagerInfo.getPkgMgrName()));
                 return true;
             }
-            logger.debug(String.format("Output of %s %s does not look right; concluding that the %s package manager is not present. The output: %s", packageManagerInfo.getPkgMgrName(), packageManagerInfo.getCheckPresenceCommandArgs(),
-                packageManagerInfo.getPkgMgrName(), versionOutput));
+            logger.debug(String.format(
+                "Output of %s %s does not look right; concluding that the %s package manager is not present. The output: %s",
+                packageManagerInfo.getPkgMgrName(),
+                packageManagerInfo.getCheckPresenceCommandArgs(),
+                packageManagerInfo.getPkgMgrName(),
+                versionOutput
+            ));
         } catch (ExecutableRunnerException e) {
-            logger.debug(String.format("Error executing %s %s; concluding that the %s package manager is not present. The error: %s", packageManagerInfo.getPkgMgrName(), packageManagerInfo.getCheckPresenceCommandArgs(),
-                packageManagerInfo.getPkgMgrName(), e.getMessage()));
+            logger.debug(String.format(
+                "Error executing %s %s; concluding that the %s package manager is not present. The error: %s",
+                packageManagerInfo.getPkgMgrName(),
+                packageManagerInfo.getCheckPresenceCommandArgs(),
+                packageManagerInfo.getPkgMgrName(),
+                e.getMessage()
+            ));
             return false;
         }
         return false;

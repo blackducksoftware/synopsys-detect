@@ -12,21 +12,25 @@ public class ConanExternalIdVersionGenerator {
             preferLongFormExternalIds) {
             // generate long form
             // <name>/<version>@<user>/<channel>#<recipe_revision>:<package_id>#<package_revision>
-            externalIdVersion = String.format("%s@%s/%s#%s:%s#%s",
+            externalIdVersion = String.format(
+                "%s@%s/%s#%s:%s#%s",
                 node.getVersion().orElseThrow(() -> new DetectableException(String.format("Missing dependency version: %s", node))),
                 node.getUser().orElse("_"),
                 node.getChannel().orElse("_"),
                 node.getRecipeRevision().get(),
                 node.getPackageId().orElse("0"),
-                node.getPackageRevision().get());
+                node.getPackageRevision().get()
+            );
         } else {
             // generate short form
             // <name>/<version>@<user>/<channel>#<recipe_revision>
-            externalIdVersion = String.format("%s@%s/%s#%s",
+            externalIdVersion = String.format(
+                "%s@%s/%s#%s",
                 node.getVersion().orElseThrow(() -> new DetectableException(String.format("Missing dependency version: %s", node))),
                 node.getUser().orElse("_"),
                 node.getChannel().orElse("_"),
-                node.getRecipeRevision().orElse("0"));
+                node.getRecipeRevision().orElse("0")
+            );
         }
         return externalIdVersion;
     }

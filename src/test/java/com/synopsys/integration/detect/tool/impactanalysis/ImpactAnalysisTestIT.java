@@ -34,7 +34,7 @@ public class ImpactAnalysisTestIT {
 
     @TempDir
     File outputDirAsPath;
-    private IntLogger logger = new BufferedIntLogger();
+    private final IntLogger logger = new BufferedIntLogger();
 
     @Test
     public void testImpactAnalysisForDetect() throws IOException, IntegrationException {
@@ -54,8 +54,13 @@ public class ImpactAnalysisTestIT {
         GenerateImpactAnalysisOperation generateImpactAnalysisOperation = new GenerateImpactAnalysisOperation();
         Path impactAnalysisFile = generateImpactAnalysisOperation.generateImpactAnalysis(toScan, impactAnalysisCodeLocationName, outputDirectory);
 
-        ImpactAnalysisBatchRunner impactAnalysisBatchRunner = new ImpactAnalysisBatchRunner(logger, blackDuckServicesFactory.getBlackDuckApiClient(), blackDuckServicesFactory.getApiDiscovery(), new NoThreadExecutorService(),
-            blackDuckServicesFactory.getGson());
+        ImpactAnalysisBatchRunner impactAnalysisBatchRunner = new ImpactAnalysisBatchRunner(
+            logger,
+            blackDuckServicesFactory.getBlackDuckApiClient(),
+            blackDuckServicesFactory.getApiDiscovery(),
+            new NoThreadExecutorService(),
+            blackDuckServicesFactory.getGson()
+        );
         ImpactAnalysisUploadService impactAnalysisUploadService = new ImpactAnalysisUploadService(impactAnalysisBatchRunner, blackDuckServicesFactory.createCodeLocationCreationService());
         ImpactAnalysisUploadOperation impactAnalysisUploadOperation = new ImpactAnalysisUploadOperation(impactAnalysisUploadService);
         CodeLocationCreationData<ImpactAnalysisBatchOutput> creationData = impactAnalysisUploadOperation.uploadImpactAnalysis(impactAnalysisFile, projectNameVersion, impactAnalysisCodeLocationName);

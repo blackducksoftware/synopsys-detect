@@ -43,7 +43,7 @@ public class CargoLockPackageTransformer {
                 }
             });
         });
-        
+
         return RootPruningGraphUtil.prune(graph.build());
     }
 

@@ -9,9 +9,9 @@ import org.jetbrains.annotations.Nullable;
 public class AggregateDecision {
 
     @Nullable
-    private String aggregateName;
-    private AggregateMode aggregateMode;
-    private boolean uploadEmptyAggregate;
+    private final String aggregateName;
+    private final AggregateMode aggregateMode;
+    private final boolean uploadEmptyAggregate;
 
     public AggregateDecision(@Nullable String aggregateName, AggregateMode aggregateMode, boolean uploadEmptyAggregate) {
         this.aggregateName = aggregateName;

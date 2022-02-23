@@ -8,8 +8,7 @@ public class RapidScanAggregateResult {
     private final RapidScanComponentGroupDetail securityDetails;
     private final RapidScanComponentGroupDetail licenseDetails;
 
-    public RapidScanAggregateResult(RapidScanResultSummary summary, RapidScanComponentGroupDetail componentDetails, RapidScanComponentGroupDetail securityDetails,
-        RapidScanComponentGroupDetail licenseDetails) {
+    public RapidScanAggregateResult(RapidScanResultSummary summary, RapidScanComponentGroupDetail componentDetails, RapidScanComponentGroupDetail securityDetails, RapidScanComponentGroupDetail licenseDetails) {
         this.summary = summary;
         this.componentDetails = componentDetails;
         this.securityDetails = securityDetails;

@@ -23,7 +23,8 @@ public class NpmLockDetectableTest extends DetectableFunctionalTest {
 
     @Override
     public void setup() throws IOException {
-        addFile(Paths.get("package-lock.json"),
+        addFile(
+            Paths.get("package-lock.json"),
             "{",
             "   \"name\": \"knockout-tournament\",",
             "   \"version\": \"1.0.0\",",

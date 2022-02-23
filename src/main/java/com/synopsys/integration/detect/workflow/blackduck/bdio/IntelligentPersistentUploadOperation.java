@@ -7,7 +7,7 @@ import com.synopsys.integration.blackduck.codelocation.upload.UploadBatchOutput;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class IntelligentPersistentUploadOperation extends BdioUploadOperation {
-    private IntelligentPersistenceService intelligentPersistenceService;
+    private final IntelligentPersistenceService intelligentPersistenceService;
 
     public IntelligentPersistentUploadOperation(IntelligentPersistenceService intelligentPersistenceService) {
         this.intelligentPersistenceService = intelligentPersistenceService;

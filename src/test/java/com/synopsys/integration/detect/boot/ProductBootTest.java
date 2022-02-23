@@ -71,8 +71,7 @@ public class ProductBootTest {
         return testBoot(blackDuckDecision, productBootOptions, null);
     }
 
-    private ProductRunData testBoot(BlackDuckDecision blackDuckDecision, ProductBootOptions productBootOptions,
-        BlackDuckConnectivityResult blackDuckconnectivityResult) throws DetectUserFriendlyException, IOException, IntegrationException {
+    private ProductRunData testBoot(BlackDuckDecision blackDuckDecision, ProductBootOptions productBootOptions, BlackDuckConnectivityResult blackDuckconnectivityResult) throws DetectUserFriendlyException, IOException, IntegrationException {
         ProductBootFactory productBootFactory = Mockito.mock(ProductBootFactory.class);
         Mockito.when(productBootFactory.createPhoneHomeManager(Mockito.any())).thenReturn(null);
 

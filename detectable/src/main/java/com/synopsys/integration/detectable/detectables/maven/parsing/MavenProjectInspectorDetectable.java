@@ -30,8 +30,14 @@ public class MavenProjectInspectorDetectable extends Detectable {
 
     private ExecutableTarget inspector;
 
-    public MavenProjectInspectorDetectable(DetectableEnvironment detectableEnvironment, FileFinder fileFinder,
-        ProjectInspectorResolver projectInspectorResolver, ProjectInspectorExtractor projectInspectorExtractor, MavenParseOptions mavenParseOptions, ProjectInspectorOptions projectInspectorOptions) {
+    public MavenProjectInspectorDetectable(
+        DetectableEnvironment detectableEnvironment,
+        FileFinder fileFinder,
+        ProjectInspectorResolver projectInspectorResolver,
+        ProjectInspectorExtractor projectInspectorExtractor,
+        MavenParseOptions mavenParseOptions,
+        ProjectInspectorOptions projectInspectorOptions
+    ) {
         super(detectableEnvironment);
         this.fileFinder = fileFinder;
         this.projectInspectorResolver = projectInspectorResolver;

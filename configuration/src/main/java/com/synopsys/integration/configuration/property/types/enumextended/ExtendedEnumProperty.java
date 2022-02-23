@@ -29,7 +29,7 @@ public class ExtendedEnumProperty<E extends Enum<E>, B extends Enum<B>> extends 
     public static <E extends Enum<E>, B extends Enum<B>> PropertyBuilder<ExtendedEnumProperty<E, B>> newBuilderExtendedDefault(@NotNull String key, @NotNull E defaultValue, @NotNull Class<E> eClass, @NotNull Class<B> bClass) {
         return newBuilder(key, ExtendedEnumValue.ofExtendedValue(defaultValue), eClass, bClass);
     }
-    
+
     public static <E extends Enum<E>, B extends Enum<B>> PropertyBuilder<ExtendedEnumProperty<E, B>> newBuilderBaseDefault(@NotNull String key, @NotNull B defaultValue, @NotNull Class<E> eClass, @NotNull Class<B> bClass) {
         return newBuilder(key, ExtendedEnumValue.ofBaseValue(defaultValue), eClass, bClass);
     }

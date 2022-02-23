@@ -24,7 +24,7 @@ public class BuildFileFinder {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final FileFinder fileFinder;
 
-    public BuildFileFinder(final FileFinder fileFinder) {
+    public BuildFileFinder(FileFinder fileFinder) {
         this.fileFinder = fileFinder;
     }
 
@@ -36,7 +36,8 @@ public class BuildFileFinder {
         }
         if (taskDependsDotFile == null) {
             throw new IntegrationException(String.format("Failed to find %s in either %s or %s",
-                TASK_DEPENDS_FILE_NAME, buildDir.getAbsolutePath(), sourceDir.getAbsolutePath()));
+                TASK_DEPENDS_FILE_NAME, buildDir.getAbsolutePath(), sourceDir.getAbsolutePath()
+            ));
         }
         return taskDependsDotFile;
     }
@@ -47,8 +48,7 @@ public class BuildFileFinder {
             File licensesDir = findLicensesDir(buildDir, bitbakeEnvironment.getLicensesDirPath().orElse(null), followSymLinks, searchDepth);
             logger.debug("Checking licenses dir {} for license.manifest for {}", licensesDir.getAbsolutePath(), targetImageName);
             List<File> licensesDirContents = generateListOfFiles(licensesDir);
-            Optional<File> architectureSpecificManifestFile = findManifestFileForTargetArchitecture(targetImageName,
-                machineArch, licensesDirContents, followSymLinks);
+            Optional<File> architectureSpecificManifestFile = findManifestFileForTargetArchitecture(targetImageName, machineArch, licensesDirContents, followSymLinks);
             if (architectureSpecificManifestFile.isPresent()) {
                 return architectureSpecificManifestFile;
             }
@@ -66,7 +66,7 @@ public class BuildFileFinder {
     }
 
     @NotNull
-    private List<File> generateListOfFiles(final File licensesDir) {
+    private List<File> generateListOfFiles(File licensesDir) {
         File[] licensesDirContentsArray = licensesDir.listFiles();
         if (licensesDirContentsArray == null) {
             return new ArrayList<>(0);
@@ -116,7 +116,8 @@ public class BuildFileFinder {
         }
         return Optional.empty();
     }
-    private Optional<File> findMostRecentLicenseManifestFileForTarget(final String targetImageName, final List<File> licensesDirContents, boolean followSymLinks) {
+
+    private Optional<File> findMostRecentLicenseManifestFileForTarget(String targetImageName, List<File> licensesDirContents, boolean followSymLinks) {
         File latestLicenseManifestFile = null;
         long latestLicenseManifestFileTime = 0;
         for (File licensesDirSubDir : licensesDirContents) {

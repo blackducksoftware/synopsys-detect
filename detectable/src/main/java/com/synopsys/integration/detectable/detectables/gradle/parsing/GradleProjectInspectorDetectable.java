@@ -28,8 +28,13 @@ public class GradleProjectInspectorDetectable extends Detectable {
 
     private ExecutableTarget inspector;
 
-    public GradleProjectInspectorDetectable(DetectableEnvironment environment, FileFinder fileFinder, ProjectInspectorResolver projectInspectorResolver,
-        ProjectInspectorExtractor projectInspectorExtractor, ProjectInspectorOptions projectInspectorOptions) {
+    public GradleProjectInspectorDetectable(
+        DetectableEnvironment environment,
+        FileFinder fileFinder,
+        ProjectInspectorResolver projectInspectorResolver,
+        ProjectInspectorExtractor projectInspectorExtractor,
+        ProjectInspectorOptions projectInspectorOptions
+    ) {
         super(environment);
         this.fileFinder = fileFinder;
         this.projectInspectorResolver = projectInspectorResolver;

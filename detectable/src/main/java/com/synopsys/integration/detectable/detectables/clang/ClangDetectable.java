@@ -37,9 +37,15 @@ public class ClangDetectable extends Detectable {
 
     private ClangPackageManager selectedPackageManager;
 
-    public ClangDetectable(DetectableEnvironment environment, DetectableExecutableRunner executableRunner, FileFinder fileFinder, List<ClangPackageManager> availablePackageManagers,
+    public ClangDetectable(
+        DetectableEnvironment environment,
+        DetectableExecutableRunner executableRunner,
+        FileFinder fileFinder,
+        List<ClangPackageManager> availablePackageManagers,
         ClangExtractor clangExtractor,
-        ClangDetectableOptions options, ClangPackageManagerRunner packageManagerRunner) {
+        ClangDetectableOptions options,
+        ClangPackageManagerRunner packageManagerRunner
+    ) {
         super(environment);
         this.fileFinder = fileFinder;
         this.availablePackageManagers = availablePackageManagers;

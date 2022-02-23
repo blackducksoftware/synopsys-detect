@@ -31,8 +31,16 @@ public class DiagnosticSystem {
     private final DirectoryManager directoryManager;
     private final EventSystem eventSystem;
 
-    public DiagnosticSystem(boolean isExtendedMode, PropertyConfiguration propertyConfiguration, DetectRunId detectRunId, DetectInfo detectInfo, DirectoryManager directoryManager, EventSystem eventSystem,
-        SortedMap<String, String> maskedRawPropertyValues, Set<String> propertyKeys) {
+    public DiagnosticSystem(
+        boolean isExtendedMode,
+        PropertyConfiguration propertyConfiguration,
+        DetectRunId detectRunId,
+        DetectInfo detectInfo,
+        DirectoryManager directoryManager,
+        EventSystem eventSystem,
+        SortedMap<String, String> maskedRawPropertyValues,
+        Set<String> propertyKeys
+    ) {
         this.propertyConfiguration = propertyConfiguration;
         this.detectRunId = detectRunId;
         this.detectInfo = detectInfo;

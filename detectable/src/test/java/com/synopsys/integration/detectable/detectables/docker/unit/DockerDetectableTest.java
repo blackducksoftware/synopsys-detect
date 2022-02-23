@@ -28,8 +28,7 @@ public class DockerDetectableTest {
 
         Mockito.when(dockerDetectableOptions.hasDockerImageOrTar()).thenReturn(Boolean.TRUE);
 
-        DockerDetectable detectable = new DockerDetectable(environment, dockerInspectorResolver, javaResolver, dockerResolver,
-            dockerExtractor, dockerDetectableOptions);
+        DockerDetectable detectable = new DockerDetectable(environment, dockerInspectorResolver, javaResolver, dockerResolver, dockerExtractor, dockerDetectableOptions);
 
         DetectableResult result = detectable.applicable();
 

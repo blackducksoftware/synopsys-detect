@@ -21,7 +21,8 @@ public class PodlockDetectableTest extends DetectableFunctionalTest {
     @Override
     public void setup() throws IOException {
 
-        addFile(Paths.get("Podfile.lock"),
+        addFile(
+            Paths.get("Podfile.lock"),
             "PODS:",
             "  - Allihoopa-macOS (1.1.0):",
             "    - AllihoopaCore (~> 1.1.0)",

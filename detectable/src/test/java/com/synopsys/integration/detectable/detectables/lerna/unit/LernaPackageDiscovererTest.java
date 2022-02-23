@@ -28,7 +28,8 @@ class LernaPackageDiscovererTest {
 
         DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
         Mockito.when(executableRunner.execute(Mockito.any(Executable.class))).thenReturn(
-            new ExecutableOutput(0, String.join(System.lineSeparator(),
+            new ExecutableOutput(0, String.join(
+                System.lineSeparator(),
                 "[",
                 "  {",
                 "    \"name\": \"@lerna/packageA\",",
@@ -48,7 +49,8 @@ class LernaPackageDiscovererTest {
                 "    \"private\": true,",
                 "    \"location\": \"/source/packages/packageC\"",
                 "  }",
-                "]"),
+                "]"
+            ),
                 ""
             )
         );

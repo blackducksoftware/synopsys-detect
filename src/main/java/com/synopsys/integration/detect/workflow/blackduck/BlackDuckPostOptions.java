@@ -17,8 +17,14 @@ public class BlackDuckPostOptions {
     private final @Nullable Path noticesReportPath;
     private final List<PolicyRuleSeverityType> severitiesToFailPolicyCheck;
 
-    public BlackDuckPostOptions(boolean waitForResults, boolean generateRiskReport, boolean generateNoticesReport, @Nullable Path riskReportPdfPath, @Nullable Path noticesReportPath,
-        List<PolicyRuleSeverityType> severitiesToFailPolicyCheck) {
+    public BlackDuckPostOptions(
+        boolean waitForResults,
+        boolean generateRiskReport,
+        boolean generateNoticesReport,
+        @Nullable Path riskReportPdfPath,
+        @Nullable Path noticesReportPath,
+        List<PolicyRuleSeverityType> severitiesToFailPolicyCheck
+    ) {
         this.waitForResults = waitForResults;
         this.generateRiskReport = generateRiskReport;
         this.generateNoticesReport = generateNoticesReport;

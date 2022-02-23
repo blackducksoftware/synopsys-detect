@@ -37,8 +37,7 @@ public class CreateBdioCodeLocationsFromDetectCodeLocationsOperation {
         return new BdioCodeLocationResult(bdioCodeLocations, codeLocationsAndNames);
     }
 
-    private Map<DetectCodeLocation, String> createCodeLocationNameMap(List<DetectCodeLocation> codeLocations, File detectSourcePath, NameVersion projectNameVersion, String prefix,
-        String suffix) {
+    private Map<DetectCodeLocation, String> createCodeLocationNameMap(List<DetectCodeLocation> codeLocations, File detectSourcePath, NameVersion projectNameVersion, String prefix, String suffix) {
         Map<DetectCodeLocation, String> nameMap = new HashMap<>();
         for (DetectCodeLocation detectCodeLocation : codeLocations) {
             String codeLocationName = codeLocationNameManager.createCodeLocationName(detectCodeLocation, detectSourcePath, projectNameVersion.getName(), projectNameVersion.getVersion(), prefix, suffix);

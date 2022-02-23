@@ -81,7 +81,8 @@ public class BlackDuckAssertions {
 
         SetAssertionUtil.assertSetDifferences(createdCodeLocationNames, codeLocationNames,
             expectedMissing -> Assertions.fail(String.format("Expected code location %s but could not find it!", expectedMissing)),
-            extraActual -> Assertions.fail(String.format("An additional code location %s was found but was not expected!", extraActual)));
+            extraActual -> Assertions.fail(String.format("An additional code location %s was found but was not expected!", extraActual))
+        );
     }
 
     public void hasCodeLocations(String... codeLocationNames) throws IntegrationException {
@@ -94,7 +95,8 @@ public class BlackDuckAssertions {
 
         SetAssertionUtil.assertSetDifferences(createdCodeLocationNames, codeLocationNames,
             expectedMissing -> Assertions.fail(String.format("Expected code location %s but could not find it!", expectedMissing)),
-            extraActual -> {/* no-op, extra code locations fine, only checking it HAS the given. */});
+            extraActual -> {/* no-op, extra code locations fine, only checking it HAS the given. */}
+        );
     }
 
     public void hasComponents(String... componentNames) throws IntegrationException {

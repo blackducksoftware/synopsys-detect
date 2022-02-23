@@ -13,9 +13,9 @@ import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.util.NameVersion;
 
 public class DetectorEvaluationNameVersionDecider {
-    private DetectorNameVersionDecider detectorNameVersionDecider;
+    private final DetectorNameVersionDecider detectorNameVersionDecider;
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     public DetectorEvaluationNameVersionDecider(DetectorNameVersionDecider detectorNameVersionDecider) {
         this.detectorNameVersionDecider = detectorNameVersionDecider;

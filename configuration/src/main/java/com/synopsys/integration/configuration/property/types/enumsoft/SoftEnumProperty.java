@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.configuration.property.base.ValuedAlikeProperty;
-import com.synopsys.integration.configuration.property.base.ValuedProperty;
 import com.synopsys.integration.configuration.util.EnumPropertyUtils;
 
 public class SoftEnumProperty<E extends Enum<E>> extends ValuedAlikeProperty<SoftEnumValue<E>> {

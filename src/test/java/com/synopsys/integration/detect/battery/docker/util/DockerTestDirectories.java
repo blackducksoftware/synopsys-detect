@@ -19,7 +19,7 @@ import com.github.dockerjava.api.model.Bind;
 public class DockerTestDirectories {
     private final File testDirectory;
     private final File testResultDirectory;
-    private List<Bind> bindings = new ArrayList<>();
+    private final List<Bind> bindings = new ArrayList<>();
 
     private File bdioOutputDirectory;
     private File detectOutputDirectory;

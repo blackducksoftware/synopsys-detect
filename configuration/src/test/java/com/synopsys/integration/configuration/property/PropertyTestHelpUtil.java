@@ -60,20 +60,26 @@ public class PropertyTestHelpUtil {
 
     public static <T, V> void assertValidTypeDescription(NullableProperty<T, V> property) {
         assertHasTypeDescription(property);
-        Assertions.assertTrue(property.describeType().startsWith(NULLABLE_TYPE_DESCRIPTION_PREFIX),
-            String.format("%s is a %s so its type description should start with '%s'.", property.getClass().getSimpleName(), NullableProperty.class.getSimpleName(), NULLABLE_TYPE_DESCRIPTION_PREFIX));
+        Assertions.assertTrue(
+            property.describeType().startsWith(NULLABLE_TYPE_DESCRIPTION_PREFIX),
+            String.format("%s is a %s so its type description should start with '%s'.", property.getClass().getSimpleName(), NullableProperty.class.getSimpleName(), NULLABLE_TYPE_DESCRIPTION_PREFIX)
+        );
     }
 
     public static <T, V> void assertValidTypeDescription(ValuedProperty<T, V> property) {
         assertHasTypeDescription(property);
-        Assertions.assertFalse(property.describeType().startsWith(NULLABLE_TYPE_DESCRIPTION_PREFIX),
-            String.format("%s is a %s so its type description should not start with '%s'.", property.getClass().getSimpleName(), ValuedProperty.class.getSimpleName(), NULLABLE_TYPE_DESCRIPTION_PREFIX));
+        Assertions.assertFalse(
+            property.describeType().startsWith(NULLABLE_TYPE_DESCRIPTION_PREFIX),
+            String.format("%s is a %s so its type description should not start with '%s'.", property.getClass().getSimpleName(), ValuedProperty.class.getSimpleName(), NULLABLE_TYPE_DESCRIPTION_PREFIX)
+        );
     }
 
     public static <T, V> void assertValidTypeDescription(ValuedListProperty<T, V> property) {
         assertHasTypeDescription(property);
-        Assertions.assertTrue(property.describeType().endsWith(VALUED_TYPE_DESCRIPTION_POSTFIX),
-            String.format("%s is a %s so its type description should end with '%s'.", property.getClass().getSimpleName(), ValuedListProperty.class.getSimpleName(), VALUED_TYPE_DESCRIPTION_POSTFIX));
+        Assertions.assertTrue(
+            property.describeType().endsWith(VALUED_TYPE_DESCRIPTION_POSTFIX),
+            String.format("%s is a %s so its type description should end with '%s'.", property.getClass().getSimpleName(), ValuedListProperty.class.getSimpleName(), VALUED_TYPE_DESCRIPTION_POSTFIX)
+        );
     }
 
     private static <T, V> void assertHasTypeDescription(TypedProperty<T, V> property) {

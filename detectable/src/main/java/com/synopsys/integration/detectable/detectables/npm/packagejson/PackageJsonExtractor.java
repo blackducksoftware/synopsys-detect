@@ -43,7 +43,7 @@ public class PackageJsonExtractor {
         List<Dependency> dependencies = transformDependencies(packageJson.dependencies);
         npmDependencyTypeFilter.ifShouldInclude(NpmDependencyType.DEV, transformDependencies(packageJson.devDependencies), dependencies::addAll);
         npmDependencyTypeFilter.ifShouldInclude(NpmDependencyType.PEER, transformDependencies(packageJson.peerDependencies), dependencies::addAll);
-        
+
         MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
         dependencyGraph.addChildrenToRoot(dependencies);
 

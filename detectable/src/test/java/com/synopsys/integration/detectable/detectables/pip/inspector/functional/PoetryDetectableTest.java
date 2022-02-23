@@ -21,11 +21,13 @@ public class PoetryDetectableTest extends DetectableFunctionalTest {
 
     @Override
     protected void setup() throws IOException {
-        addFile(Paths.get("pyproject.toml"),
+        addFile(
+            Paths.get("pyproject.toml"),
             "[tool.poetry]"
         );
 
-        addFile(Paths.get("poetry.lock"),
+        addFile(
+            Paths.get("poetry.lock"),
             "[[package]]",
             "category = \"dev\"",
             "name = \"appdirs\"",
