@@ -716,6 +716,15 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
+    public static final CaseSensitiveStringListProperty DETECT_GRADLE_EXCLUDED_PROJECT_PATHS =
+        CaseSensitiveStringListProperty.newBuilder("detect.gradle.excluded.project.paths")
+            .setInfo("Gradle Exclude Project Paths", DetectPropertyFromVersion.VERSION_7_12_0)
+            .setHelp("A comma-separated list of Gradle sub-project paths to exclude.",
+                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle sub-project whose path matches this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+            .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
+            .setCategory(DetectCategory.Advanced)
+            .build();
+
     public static final CaseSensitiveStringListProperty DETECT_GRADLE_INCLUDED_CONFIGURATIONS =
         CaseSensitiveStringListProperty.newBuilder("detect.gradle.included.configurations")
             .setInfo("Gradle Include Configurations", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -739,6 +748,15 @@ public class DetectProperties {
             .setInfo("Gradle Include Projects", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("A comma-separated list of Gradle sub-projects to include.",
                 "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those sub-projects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+            .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
+            .setCategory(DetectCategory.Advanced)
+            .build();
+
+    public static final CaseSensitiveStringListProperty DETECT_GRADLE_INCLUDED_PROJECT_PATHS =
+        CaseSensitiveStringListProperty.newBuilder("detect.gradle.included.project.paths")
+            .setInfo("Gradle Include Project Paths", DetectPropertyFromVersion.VERSION_7_12_0)
+            .setHelp("A comma-separated list of Gradle sub-project paths to include.",
+                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those sub-projects whose path matches this property. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
             .build();

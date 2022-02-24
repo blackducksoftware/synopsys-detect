@@ -46,6 +46,8 @@ public class GradleInspectorScriptCreator {
         gradleScriptData.put("airGapLibsPath", StringEscapeUtils.escapeJava(Optional.ofNullable(airGapLibraryPaths).orElse("")));
         gradleScriptData.put("excludedProjectNames", toCommaSeparatedString(scriptOptions.getExcludedProjectNames()));
         gradleScriptData.put("includedProjectNames", toCommaSeparatedString(scriptOptions.getIncludedProjectNames()));
+        gradleScriptData.put("excludedProjectPaths", StringEscapeUtils.escapeJava(toCommaSeparatedString(scriptOptions.getExcludedProjectPaths())));
+        gradleScriptData.put("includedProjectPaths", StringEscapeUtils.escapeJava(toCommaSeparatedString(scriptOptions.getIncludedProjectPaths())));
         gradleScriptData.put("excludedConfigurationNames", toCommaSeparatedString(scriptOptions.getExcludedConfigurationNames()));
         gradleScriptData.put("includedConfigurationNames", toCommaSeparatedString(scriptOptions.getIncludedConfigurationNames()));
         gradleScriptData.put("customRepositoryUrl", scriptOptions.getGradleInspectorRepositoryUrl());
