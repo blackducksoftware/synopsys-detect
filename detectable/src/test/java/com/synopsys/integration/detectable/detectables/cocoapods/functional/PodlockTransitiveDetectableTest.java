@@ -21,7 +21,8 @@ public class PodlockTransitiveDetectableTest extends DetectableFunctionalTest {
     @Override
     public void setup() throws IOException {
 
-        addFile(Paths.get("Podfile.lock"),
+        addFile(
+            Paths.get("Podfile.lock"),
             "PODS:",
             "  - OktaDeviceSDK (0.0.1):",
             "    - JOSESwift (= 1.8.1)",

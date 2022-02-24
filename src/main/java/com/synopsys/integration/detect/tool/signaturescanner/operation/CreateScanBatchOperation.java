@@ -23,8 +23,7 @@ public class CreateScanBatchOperation {
     private final DirectoryManager directoryManager;
     private final CodeLocationNameManager codeLocationNameManager;
 
-    public CreateScanBatchOperation(BlackDuckSignatureScannerOptions signatureScannerOptions, DirectoryManager directoryManager,
-        CodeLocationNameManager codeLocationNameManager) {
+    public CreateScanBatchOperation(BlackDuckSignatureScannerOptions signatureScannerOptions, DirectoryManager directoryManager, CodeLocationNameManager codeLocationNameManager) {
         this.signatureScannerOptions = signatureScannerOptions;
         this.directoryManager = directoryManager;
         this.codeLocationNameManager = codeLocationNameManager;

@@ -11,9 +11,14 @@ public class GradleInspectorScriptOptions {
     private final String gradleInspectorRepositoryUrl;
     private final String providedOnlineInspectorVersion;
 
-    public GradleInspectorScriptOptions(List<String> excludedProjectNames, List<String> includedProjectNames, List<String> excludedConfigurationNames, List<String> includedConfigurationNames,
+    public GradleInspectorScriptOptions(
+        List<String> excludedProjectNames,
+        List<String> includedProjectNames,
+        List<String> excludedConfigurationNames,
+        List<String> includedConfigurationNames,
         String gradleInspectorRepositoryUrl,
-        String providedOnlineInspectorVersion) {
+        String providedOnlineInspectorVersion
+    ) {
         this.excludedProjectNames = excludedProjectNames;
         this.includedProjectNames = includedProjectNames;
         this.excludedConfigurationNames = excludedConfigurationNames;

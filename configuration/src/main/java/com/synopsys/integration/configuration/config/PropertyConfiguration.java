@@ -100,7 +100,7 @@ public class PropertyConfiguration {
     @NotNull
     public <V, R> Optional<V> getProvidedParsedValue(@NotNull TypedProperty<V, R> property) throws InvalidPropertyException {
         assertPropertyNotNull(property);
-        
+
         PropertyValue<V> value = valueFromCache(property);
         Optional<ValueParseException> parseException = value.getException();
         Optional<PropertyResolutionInfo> propertyResolutionInfo = value.getResolutionInfo();

@@ -21,7 +21,8 @@ public class NugetInspectorArguments {
         List<String> options = new ArrayList<>(Arrays.asList(
             "--target_path=" + sourcePath.getCanonicalPath(),
             "--output_directory=" + outputDirectory.getCanonicalPath(),
-            "--ignore_failure=" + nugetInspectorOptions.isIgnoreFailures()));
+            "--ignore_failure=" + nugetInspectorOptions.isIgnoreFailures()
+        ));
 
         if (!nugetInspectorOptions.getExcludedModules().isEmpty()) {
             options.add("--excluded_modules=" + toCommaSeparatedString(nugetInspectorOptions.getExcludedModules()));

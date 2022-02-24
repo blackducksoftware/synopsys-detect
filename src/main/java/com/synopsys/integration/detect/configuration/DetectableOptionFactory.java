@@ -155,8 +155,17 @@ public class DetectableOptionFactory {
 
         Path dockerInspectorPath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_DOCKER_INSPECTOR_PATH);
         String dockerPlatformTopLayerId = detectConfiguration.getNullableValue(DetectProperties.DETECT_DOCKER_PLATFORM_TOP_LAYER_ID);
-        return new DockerDetectableOptions(dockerPathRequired, suppliedDockerImage, dockerImageId, suppliedDockerTar, dockerInspectorLoggingLevel, dockerInspectorVersion, additionalDockerProperties, dockerInspectorPath,
-            dockerPlatformTopLayerId);
+        return new DockerDetectableOptions(
+            dockerPathRequired,
+            suppliedDockerImage,
+            dockerImageId,
+            suppliedDockerTar,
+            dockerInspectorLoggingLevel,
+            dockerInspectorVersion,
+            additionalDockerProperties,
+            dockerInspectorPath,
+            dockerPlatformTopLayerId
+        );
     }
 
     public GoModCliDetectableOptions createGoModCliDetectableOptions() {

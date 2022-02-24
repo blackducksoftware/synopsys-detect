@@ -3,12 +3,10 @@ package com.synopsys.integration.detect.lifecycle.run.step.utility;
 import java.io.IOException;
 import java.util.function.Consumer;
 
-import com.synopsys.integration.blackduck.exception.BlackDuckTimeoutExceededException;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.workflow.status.Operation;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.rest.exception.IntegrationRestException;
 
 public class OperationWrapper {
     public void wrapped(Operation operation, OperationFunction supplier) throws OperationException {
@@ -53,13 +51,11 @@ public class OperationWrapper {
 
     @FunctionalInterface
     public interface OperationSupplier<T> {
-        public T execute()
-            throws OperationException, IntegrationException, InterruptedException, IOException, IntegrationRestException, BlackDuckTimeoutExceededException, DetectUserFriendlyException; //basically all known detect exceptions.
+        T execute() throws OperationException, DetectUserFriendlyException, IntegrationException, InterruptedException, IOException; //basically all known detect exceptions.
     }
 
     @FunctionalInterface
     public interface OperationFunction {
-        public void execute()
-            throws OperationException, IntegrationException, InterruptedException, IOException, IntegrationRestException, BlackDuckTimeoutExceededException, DetectUserFriendlyException; //basically all known detect exceptions.
+        void execute() throws OperationException, DetectUserFriendlyException, IntegrationException, InterruptedException, IOException; //basically all known detect exceptions.
     }
 }

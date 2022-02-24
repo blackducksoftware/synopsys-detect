@@ -29,8 +29,7 @@ public class ProductBoot {
     private final ProductBootFactory productBootFactory;
     private final ProductBootOptions productBootOptions;
 
-    public ProductBoot(BlackDuckConnectivityChecker blackDuckConnectivityChecker, AnalyticsConfigurationService analyticsConfigurationService, ProductBootFactory productBootFactory,
-        ProductBootOptions productBootOptions) {
+    public ProductBoot(BlackDuckConnectivityChecker blackDuckConnectivityChecker, AnalyticsConfigurationService analyticsConfigurationService, ProductBootFactory productBootFactory, ProductBootOptions productBootOptions) {
         this.blackDuckConnectivityChecker = blackDuckConnectivityChecker;
         this.analyticsConfigurationService = analyticsConfigurationService;
         this.productBootFactory = productBootFactory;
@@ -41,7 +40,8 @@ public class ProductBoot {
         if (!blackDuckDecision.shouldRun()) {
             throw new DetectUserFriendlyException(
                 "Your environment was not sufficiently configured to run Black Duck or Polaris. Please configure your environment for at least one product.  See online help at: https://detect.synopsys.com/doc/",
-                ExitCodeType.FAILURE_CONFIGURATION);
+                ExitCodeType.FAILURE_CONFIGURATION
+            );
 
         }
 
@@ -59,9 +59,13 @@ public class ProductBoot {
     }
 
     @Nullable
-    private BlackDuckRunData getBlackDuckRunData(BlackDuckDecision blackDuckDecision, ProductBootFactory productBootFactory, BlackDuckConnectivityChecker blackDuckConnectivityChecker, ProductBootOptions productBootOptions,
-        AnalyticsConfigurationService analyticsConfigurationService) throws DetectUserFriendlyException {
-
+    private BlackDuckRunData getBlackDuckRunData(
+        BlackDuckDecision blackDuckDecision,
+        ProductBootFactory productBootFactory,
+        BlackDuckConnectivityChecker blackDuckConnectivityChecker,
+        ProductBootOptions productBootOptions,
+        AnalyticsConfigurationService analyticsConfigurationService
+    ) throws DetectUserFriendlyException {
         if (!blackDuckDecision.shouldRun()) {
             return null;
         }

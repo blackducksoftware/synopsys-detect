@@ -22,7 +22,8 @@ public class GoDepCliDetectableTest extends DetectableFunctionalTest {
     protected void setup() throws IOException {
         addFile(Paths.get("Gopkg.toml"));
 
-        addFile(Paths.get("Gopkg.lock"),
+        addFile(
+            Paths.get("Gopkg.lock"),
             "[[projects]]",
             "   name = \"github.com/davecgh/go-spew\"",
             "   packages = [\"spew\"]",

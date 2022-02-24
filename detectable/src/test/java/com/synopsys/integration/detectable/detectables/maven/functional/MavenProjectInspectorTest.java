@@ -65,7 +65,8 @@ public class MavenProjectInspectorTest extends DetectableFunctionalTest {
             "         \"Strategy\": \"MAVEN\"\n",
             "      }\n",
             "   }\n",
-            "}\n");
+            "}\n"
+        );
     }
 
     @NotNull

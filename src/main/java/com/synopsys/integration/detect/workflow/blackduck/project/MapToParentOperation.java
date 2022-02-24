@@ -23,8 +23,8 @@ import com.synopsys.integration.exception.IntegrationException;
 public class MapToParentOperation {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final BlackDuckApiClient blackDuckService;
-    private ProjectService projectService;
-    private ProjectBomService projectBomService;
+    private final ProjectService projectService;
+    private final ProjectBomService projectBomService;
 
     public MapToParentOperation(BlackDuckApiClient blackDuckService, ProjectService projectService, ProjectBomService projectBomService) {
         this.blackDuckService = blackDuckService;

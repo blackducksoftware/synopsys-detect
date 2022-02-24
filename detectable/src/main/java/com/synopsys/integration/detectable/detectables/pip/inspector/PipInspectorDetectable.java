@@ -42,8 +42,15 @@ public class PipInspectorDetectable extends Detectable {
     private File setupFile;
     private List<Path> requirementsFiles;
 
-    public PipInspectorDetectable(DetectableEnvironment environment, FileFinder fileFinder, PythonResolver pythonResolver, PipResolver pipResolver,
-        PipInspectorResolver pipInspectorResolver, PipInspectorExtractor pipInspectorExtractor, PipInspectorDetectableOptions pipInspectorDetectableOptions) {
+    public PipInspectorDetectable(
+        DetectableEnvironment environment,
+        FileFinder fileFinder,
+        PythonResolver pythonResolver,
+        PipResolver pipResolver,
+        PipInspectorResolver pipInspectorResolver,
+        PipInspectorExtractor pipInspectorExtractor,
+        PipInspectorDetectableOptions pipInspectorDetectableOptions
+    ) {
         super(environment);
         this.fileFinder = fileFinder;
         this.pythonResolver = pythonResolver;

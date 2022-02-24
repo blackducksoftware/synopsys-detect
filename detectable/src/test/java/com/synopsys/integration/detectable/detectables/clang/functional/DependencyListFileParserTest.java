@@ -26,8 +26,12 @@ public class DependencyListFileParserTest {
         File sourceFile = new File(baseDir, "src/test/resources/detectables/functional/clang/src/process.c");
         File includeFile1 = new File(baseDir, "src/test/resources/detectables/functional/clang/include/stdc-predef.h");
         File includeFile2 = new File(baseDir, "src/test/resources/detectables/functional/clang/include/assert.h");
-        String fileContents = String.format("dependencies: %s \\\n %s %s\\\n",
-            sourceFile.getAbsolutePath(), includeFile1.getAbsolutePath(), includeFile2.getAbsolutePath());
+        String fileContents = String.format(
+            "dependencies: %s \\\n %s %s\\\n",
+            sourceFile.getAbsolutePath(),
+            includeFile1.getAbsolutePath(),
+            includeFile2.getAbsolutePath()
+        );
 
         DependencyListFileParser parser = new DependencyListFileParser();
         List<String> deps = parser.parseDepsMk(fileContents);
@@ -46,8 +50,12 @@ public class DependencyListFileParserTest {
         File sourceFile = new File(baseDir, "src/test/resources/detectables/functional/clang/src/process.c");
         File includeFile1 = new File(baseDir, "src/test/resources/detectables/functional/clang/include/stdc-predef.h");
         File includeFile2 = new File(baseDir, "src/test/resources/../../test/resources/detectables/functional/clang/include/assert.h");
-        String fileContents = String.format("dependencies: %s \\\n %s %s\\\n",
-            sourceFile.getAbsolutePath(), includeFile1.getAbsolutePath(), includeFile2.getAbsolutePath());
+        String fileContents = String.format(
+            "dependencies: %s \\\n %s %s\\\n",
+            sourceFile.getAbsolutePath(),
+            includeFile1.getAbsolutePath(),
+            includeFile2.getAbsolutePath()
+        );
 
         DependencyListFileParser parser = new DependencyListFileParser();
         List<String> deps = parser.parseDepsMk(fileContents);

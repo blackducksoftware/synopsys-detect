@@ -85,10 +85,32 @@ public class DetectBootFactory {
         this.fileFinder = fileFinder;
     }
 
-    public BootSingletons createRunDependencies(ProductRunData productRunData, PropertyConfiguration detectConfiguration, DetectableOptionFactory detectableOptionFactory, DetectConfigurationFactory detectConfigurationFactory,
-        DirectoryManager directoryManager, Configuration configuration, InstalledToolManager installedToolManager, InstalledToolLocator installedToolLocator) {
-        return new BootSingletons(productRunData, detectRunId, gson, detectInfo, fileFinder, eventSystem, createDetectorProfiler(), detectConfiguration, detectableOptionFactory, detectConfigurationFactory, directoryManager, configuration,
-            installedToolManager, installedToolLocator);
+    public BootSingletons createRunDependencies(
+        ProductRunData productRunData,
+        PropertyConfiguration detectConfiguration,
+        DetectableOptionFactory detectableOptionFactory,
+        DetectConfigurationFactory detectConfigurationFactory,
+        DirectoryManager directoryManager,
+        Configuration configuration,
+        InstalledToolManager installedToolManager,
+        InstalledToolLocator installedToolLocator
+    ) {
+        return new BootSingletons(
+            productRunData,
+            detectRunId,
+            gson,
+            detectInfo,
+            fileFinder,
+            eventSystem,
+            createDetectorProfiler(),
+            detectConfiguration,
+            detectableOptionFactory,
+            detectConfigurationFactory,
+            directoryManager,
+            configuration,
+            installedToolManager,
+            installedToolLocator
+        );
     }
 
     public Configuration createFreemarkerConfiguration() {
@@ -117,8 +139,10 @@ public class DetectBootFactory {
         return new DiagnosticSystem(isDiagnosticExtended, detectConfiguration, detectRunId, detectInfo, directoryManager, eventSystem, maskedRawPropertyValues, propertyKeys);
     }
 
-    public AirGapCreator createAirGapCreator(ConnectionDetails connectionDetails, DetectExecutableOptions detectExecutableOptions, Configuration freemarkerConfiguration, InstalledToolManager installedToolManager,
-        InstalledToolLocator installedToolLocator) {
+    public AirGapCreator createAirGapCreator(
+        ConnectionDetails connectionDetails, DetectExecutableOptions detectExecutableOptions, Configuration freemarkerConfiguration, InstalledToolManager installedToolManager,
+        InstalledToolLocator installedToolLocator
+    ) {
         ConnectionFactory connectionFactory = new ConnectionFactory(connectionDetails);
         ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
         ArtifactoryZipInstaller artifactoryZipInstaller = new ArtifactoryZipInstaller(artifactResolver);

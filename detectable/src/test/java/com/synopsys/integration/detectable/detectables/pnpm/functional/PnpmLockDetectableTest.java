@@ -27,14 +27,16 @@ public class PnpmLockDetectableTest extends DetectableFunctionalTest {
 
     @Override
     protected void setup() throws IOException {
-        addFile(Paths.get("package.json"),
+        addFile(
+            Paths.get("package.json"),
             "{",
             "name: \"project\",",
             "version: \"version\"",
             "}"
         );
 
-        addFile(Paths.get("pnpm-lock.yaml"),
+        addFile(
+            Paths.get("pnpm-lock.yaml"),
             "lockfileVersion: 1.0.0",
             "",
             "dependencies:",

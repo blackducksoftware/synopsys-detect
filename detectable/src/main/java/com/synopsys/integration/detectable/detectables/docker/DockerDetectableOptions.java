@@ -18,8 +18,17 @@ public class DockerDetectableOptions {
     private final Path dockerInspectorPath;
     private final String dockerPlatformTopLayerId;
 
-    public DockerDetectableOptions(boolean dockerPathRequired, String suppliedDockerImage, String suppliedDockerImageId, String suppliedDockerTar, LogLevel dockerInspectorLoggingLevel,
-        String dockerInspectorVersion, Map<String, String> additionalDockerProperties, Path dockerInspectorPath, String dockerPlatformTopLayerId) {
+    public DockerDetectableOptions(
+        boolean dockerPathRequired,
+        String suppliedDockerImage,
+        String suppliedDockerImageId,
+        String suppliedDockerTar,
+        LogLevel dockerInspectorLoggingLevel,
+        String dockerInspectorVersion,
+        Map<String, String> additionalDockerProperties,
+        Path dockerInspectorPath,
+        String dockerPlatformTopLayerId
+    ) {
         this.dockerPathRequired = dockerPathRequired;
         this.suppliedDockerImage = suppliedDockerImage;
         this.suppliedDockerImageId = suppliedDockerImageId;

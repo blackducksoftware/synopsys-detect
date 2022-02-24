@@ -22,7 +22,8 @@ public class IvyParseDetectableTest extends DetectableFunctionalTest {
 
     @Override
     protected void setup() throws IOException {
-        addFile(Paths.get("ivy.xml"),
+        addFile(
+            Paths.get("ivy.xml"),
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
             "<ivy-module xmlns:e=\"http://ant.apache.org/ivy/extra\">",
             "    <info organisation=\"pmdungeon\" module=\"pmdungeon\" />",
@@ -34,7 +35,8 @@ public class IvyParseDetectableTest extends DetectableFunctionalTest {
             "</ivy-module>"
         );
 
-        addFile(Paths.get("build.xml"),
+        addFile(
+            Paths.get("build.xml"),
             "<project xmlns:ivy=\"antlib:org.apache.ivy.ant\" name=\"pmdungeon\" basedir=\".\" default=\"clean-build\">",
             "</project>"
         );

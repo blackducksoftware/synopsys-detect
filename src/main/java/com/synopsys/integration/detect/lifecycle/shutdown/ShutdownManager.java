@@ -13,7 +13,7 @@ import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 public class ShutdownManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private CleanupUtility cleanupUtility;
+    private final CleanupUtility cleanupUtility;
 
     public ShutdownManager(CleanupUtility cleanupUtility) {
         this.cleanupUtility = cleanupUtility;

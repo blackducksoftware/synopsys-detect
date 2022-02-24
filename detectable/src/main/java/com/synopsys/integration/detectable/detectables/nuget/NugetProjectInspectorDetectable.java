@@ -31,8 +31,14 @@ public class NugetProjectInspectorDetectable extends Detectable {
 
     private ExecutableTarget inspector;
 
-    public NugetProjectInspectorDetectable(DetectableEnvironment detectableEnvironment, FileFinder fileFinder, NugetInspectorOptions nugetInspectorOptions,
-        ProjectInspectorResolver projectInspectorResolver, ProjectInspectorExtractor projectInspectorExtractor, ProjectInspectorOptions projectInspectorOptions) {
+    public NugetProjectInspectorDetectable(
+        DetectableEnvironment detectableEnvironment,
+        FileFinder fileFinder,
+        NugetInspectorOptions nugetInspectorOptions,
+        ProjectInspectorResolver projectInspectorResolver,
+        ProjectInspectorExtractor projectInspectorExtractor,
+        ProjectInspectorOptions projectInspectorOptions
+    ) {
         super(detectableEnvironment);
         this.fileFinder = fileFinder;
         this.projectInspectorResolver = projectInspectorResolver;

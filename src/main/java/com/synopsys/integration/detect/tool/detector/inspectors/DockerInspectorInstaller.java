@@ -23,7 +23,8 @@ public class DockerInspectorInstaller {
     public File installJar(File dockerDirectory, Optional<String> dockerVersion) throws IntegrationException, IOException, DetectUserFriendlyException {
         logger.info("Determining the location of the Docker inspector.");
         String location = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.DOCKER_INSPECTOR_REPO, ArtifactoryConstants.DOCKER_INSPECTOR_PROPERTY, dockerVersion.orElse(""),
-            ArtifactoryConstants.DOCKER_INSPECTOR_VERSION_OVERRIDE);
+            ArtifactoryConstants.DOCKER_INSPECTOR_VERSION_OVERRIDE
+        );
         return download(location, dockerDirectory);
     }
 

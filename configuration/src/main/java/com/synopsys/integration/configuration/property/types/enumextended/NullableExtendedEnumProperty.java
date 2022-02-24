@@ -7,16 +7,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.configuration.property.base.NullableAlikeProperty;
-import com.synopsys.integration.configuration.property.base.NullableProperty;
 import com.synopsys.integration.configuration.util.EnumPropertyUtils;
 
 public class NullableExtendedEnumProperty<E extends Enum<E>, B extends Enum<B>> extends NullableAlikeProperty<ExtendedEnumValue<E, B>> {
-    private List<String> allOptions;
-    private Class<B> bClass;
+    private final List<String> allOptions;
+    private final Class<B> bClass;
 
-    public NullableExtendedEnumProperty(@NotNull String key,
+    public NullableExtendedEnumProperty(
+        @NotNull String key,
         @NotNull Class<E> eClass,
-        @NotNull Class<B> bClass) {
+        @NotNull Class<B> bClass
+    ) {
         super(key, new ExtendedEnumValueParser<>(eClass, bClass));
         allOptions = new ArrayList<>();
         allOptions.addAll(EnumPropertyUtils.getEnumNames(eClass));

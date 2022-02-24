@@ -139,8 +139,17 @@ public class Application implements ApplicationRunner {
         exitApplication(exitManager, startTime, shouldForceSuccess);
     }
 
-    private Optional<DetectBootResult> bootApplication(DetectRunId detectRunId, String[] sourceArgs, EventSystem eventSystem, ExitCodeManager exitCodeManager, Gson gson, DetectInfo detectInfo,
-        FileFinder fileFinder, InstalledToolManager installedToolManager, ExceptionUtility exceptionUtility) {
+    private Optional<DetectBootResult> bootApplication(
+        DetectRunId detectRunId,
+        String[] sourceArgs,
+        EventSystem eventSystem,
+        ExitCodeManager exitCodeManager,
+        Gson gson,
+        DetectInfo detectInfo,
+        FileFinder fileFinder,
+        InstalledToolManager installedToolManager,
+        ExceptionUtility exceptionUtility
+    ) {
         Optional<DetectBootResult> bootResult = Optional.empty();
         try {
             logger.debug("Detect boot begin.");

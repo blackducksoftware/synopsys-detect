@@ -24,7 +24,9 @@ public class NameVersionGraphAssert extends GraphAssert {
     }
 
     public void hasParentChildRelationship(String parentName, String parentVersion, String childName, String childVersion) {
-        Assertions.assertTrue(graph.getChildrenExternalIdsForParent(externalIdFactory.createNameVersionExternalId(forge, parentName, parentVersion)).contains(externalIdFactory.createNameVersionExternalId(forge, childName, childVersion)),
-            "Expected dependency " + parentName + " " + parentVersion + " to have dependency of " + childName + " " + childVersion);
+        Assertions.assertTrue(
+            graph.getChildrenExternalIdsForParent(externalIdFactory.createNameVersionExternalId(forge, parentName, parentVersion)).contains(externalIdFactory.createNameVersionExternalId(forge, childName, childVersion)),
+            "Expected dependency " + parentName + " " + parentVersion + " to have dependency of " + childName + " " + childVersion
+        );
     }
 }
