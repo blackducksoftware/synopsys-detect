@@ -699,7 +699,11 @@ public class DetectProperties {
             .setInfo("Go Mod Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
             .setHelp(
                 createDefaultDrivenPropertyHelpText("Go Mod dependency types", "detect.go.mod.enable.verification"),
-                String.format("If %s is excluded, Detect will use the results of 'go mod why' to filter out unused dependencies.", GoModDependencyType.VENDORED.name())
+                String.format(
+                    "If %s is provided, Detect will use the results of 'go mod why' to filter out unused dependencies from Go modules declaring Go 1.16 or higher. If %s is provided, Detect will use the results of 'go mod why -vendor' to filter out all unused dependencies.",
+                    GoModDependencyType.UNUSED.name(),
+                    GoModDependencyType.VENDORED.name()
+                )
             )
             .setExample(GoModDependencyType.VENDORED.name())
             .setGroups(DetectGroup.GO, DetectGroup.GLOBAL)
