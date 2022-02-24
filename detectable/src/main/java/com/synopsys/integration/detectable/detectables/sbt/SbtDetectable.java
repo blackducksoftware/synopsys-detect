@@ -44,9 +44,15 @@ public class SbtDetectable extends Detectable {
     private ExecutableTarget sbt;
     private boolean foundPlugin;
 
-    public SbtDetectable(DetectableEnvironment environment, FileFinder fileFinder, SbtResolutionCacheExtractor sbtResolutionCacheExtractor,
-        SbtResolutionCacheOptions sbtResolutionCacheOptions, SbtResolver sbtResolver, SbtDotExtractor sbtPluginExtractor,
-        SbtPluginFinder sbtPluginFinder) {
+    public SbtDetectable(
+        DetectableEnvironment environment,
+        FileFinder fileFinder,
+        SbtResolutionCacheExtractor sbtResolutionCacheExtractor,
+        SbtResolutionCacheOptions sbtResolutionCacheOptions,
+        SbtResolver sbtResolver,
+        SbtDotExtractor sbtPluginExtractor,
+        SbtPluginFinder sbtPluginFinder
+    ) {
         super(environment);
         this.fileFinder = fileFinder;
         this.sbtResolutionCacheExtractor = sbtResolutionCacheExtractor;

@@ -28,8 +28,7 @@ public class Bds<T> {
         this.stream = stream;
     }
 
-    public <U extends Comparable<? super U>> Bds<T> sortedBy(
-        Function<? super T, ? extends U> keyExtractor) {
+    public <U extends Comparable<? super U>> Bds<T> sortedBy(Function<? super T, ? extends U> keyExtractor) {
         Objects.requireNonNull(keyExtractor);
         stream = stream.sorted(Comparator.comparing(keyExtractor));
         return this;
@@ -88,8 +87,10 @@ public class Bds<T> {
         return stream.collect(Collectors.groupingBy(classifier));
     }
 
-    public <K, U> Map<K, U> toMap(Function<? super T, ? extends K> keyMapper,
-        Function<? super T, ? extends U> valueMapper) {
+    public <K, U> Map<K, U> toMap(
+        Function<? super T, ? extends K> keyMapper,
+        Function<? super T, ? extends U> valueMapper
+    ) {
         return stream.collect(Collectors.toMap(keyMapper, valueMapper));
     }
 

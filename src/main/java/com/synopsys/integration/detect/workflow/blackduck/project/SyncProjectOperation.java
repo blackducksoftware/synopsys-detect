@@ -28,15 +28,25 @@ public class SyncProjectOperation {
         this.projectService = projectService;
     }
 
-    public ProjectVersionWrapper sync(NameVersion projectNameVersion, ProjectGroupFindResult projectGroupFindResult, CloneFindResult cloneFindResult, ProjectVersionLicenseFindResult projectVersionLicensesFindResult,
-        ProjectSyncOptions projectSyncOptions) throws DetectUserFriendlyException, IntegrationException {
+    public ProjectVersionWrapper sync(
+        NameVersion projectNameVersion,
+        ProjectGroupFindResult projectGroupFindResult,
+        CloneFindResult cloneFindResult,
+        ProjectVersionLicenseFindResult projectVersionLicensesFindResult,
+        ProjectSyncOptions projectSyncOptions
+    ) throws DetectUserFriendlyException, IntegrationException {
         ProjectSyncModel projectSyncModel = createProjectSyncModel(projectNameVersion, projectGroupFindResult, cloneFindResult, projectVersionLicensesFindResult, projectSyncOptions);
         boolean forceUpdate = projectSyncOptions.isForceProjectVersionUpdate();
         return projectService.syncProjectAndVersion(projectSyncModel, forceUpdate);
     }
 
-    public ProjectSyncModel createProjectSyncModel(NameVersion projectNameVersion, ProjectGroupFindResult projectGroupFindResult, CloneFindResult cloneFindResult, ProjectVersionLicenseFindResult projectVersionLicensesFindResult,
-        ProjectSyncOptions projectSyncOptions) {
+    public ProjectSyncModel createProjectSyncModel(
+        NameVersion projectNameVersion,
+        ProjectGroupFindResult projectGroupFindResult,
+        CloneFindResult cloneFindResult,
+        ProjectVersionLicenseFindResult projectVersionLicensesFindResult,
+        ProjectSyncOptions projectSyncOptions
+    ) {
         ProjectSyncModel projectSyncModel = ProjectSyncModel.createWithDefaults(projectNameVersion.getName(), projectNameVersion.getVersion());
 
         // TODO: Handle a boolean property not being set in detect configuration - ie need to determine if this property actually exists in the ConfigurableEnvironment - just omit this one?

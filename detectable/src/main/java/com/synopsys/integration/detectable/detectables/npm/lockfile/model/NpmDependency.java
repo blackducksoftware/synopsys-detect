@@ -8,7 +8,6 @@ import java.util.Optional;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.util.ExternalIdCreator;
 
 public class NpmDependency extends Dependency {

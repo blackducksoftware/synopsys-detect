@@ -23,7 +23,7 @@ import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.base.NullableAlikeProperty;
 import com.synopsys.integration.configuration.property.base.PassthroughProperty;
 import com.synopsys.integration.configuration.property.base.ValuedAlikeProperty;
-import com.synopsys.integration.configuration.property.types.string.NullableStringProperty;
+
 import com.synopsys.integration.configuration.source.PropertySource;
 import com.synopsys.integration.configuration.util.ProductMajorVersion;
 
@@ -65,7 +65,8 @@ public class PropertyConfigurationTest {
     public void getValueOrDefault() {
         ValuedAlikeProperty<String> propertyWithDefault = new ValuedTestProperty("example.key", "defaultValue");
         Assertions.assertEquals(propertyWithDefault.getDefaultValue(), configOf(Pair.of(propertyWithDefault.getKey(), UNKNOWN_VALUE)).getValueOrDefault(propertyWithDefault),
-            "An unknown value should fail to parse and the config should provide the default value.");
+            "An unknown value should fail to parse and the config should provide the default value."
+        );
     }
 
     @Test

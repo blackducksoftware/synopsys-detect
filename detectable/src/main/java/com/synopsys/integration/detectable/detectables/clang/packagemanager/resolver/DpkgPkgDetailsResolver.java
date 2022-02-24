@@ -53,8 +53,7 @@ public class DpkgPkgDetailsResolver {
             packageVersion = parseNeededValueFromLineIfPresent(packageName, packageInfoOutputLine, "Version", packageVersion);
         }
         if ((packageVersion == null) || (packageArchitecture == null)) {
-            logger.warn("Unable to determine all details for package {} (version: {}; architecture: {}); this package will be omitted from the output",
-                packageName, packageVersion, packageArchitecture);
+            logger.warn("Unable to determine all details for package {} (version: {}; architecture: {}); this package will be omitted from the output", packageName, packageVersion, packageArchitecture);
             return Optional.empty();
         }
         return Optional.of(new PackageDetails(packageName, packageVersion, packageArchitecture));

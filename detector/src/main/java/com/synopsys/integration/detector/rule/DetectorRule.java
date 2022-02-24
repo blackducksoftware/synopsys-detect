@@ -16,8 +16,7 @@ public class DetectorRule<T extends Detectable> {
     private final String name;
     private final boolean nestInvisible;
 
-    public DetectorRule(DetectableCreatable detectableCreatable, Class<T> detectableClass, int maxDepth, boolean nestable, boolean selfNestable, DetectorType detectorType, String name,
-        boolean nestInvisible) {
+    public DetectorRule(DetectableCreatable detectableCreatable, Class<T> detectableClass, int maxDepth, boolean nestable, boolean selfNestable, DetectorType detectorType, String name, boolean nestInvisible) {
         this.detectableCreatable = detectableCreatable;
         this.detectableClass = detectableClass;
         this.maxDepth = maxDepth;

@@ -34,8 +34,13 @@ public class RapidScanUploadService extends DataService {
     private final Bdio2ContentExtractor bdio2Extractor;
     private final RapidScanConfigBdio2StreamUploader bdio2Uploader;
 
-    public RapidScanUploadService(BlackDuckApiClient blackDuckApiClient, ApiDiscovery apiDiscovery,
-        IntLogger logger, Bdio2ContentExtractor bdio2Extractor, RapidScanConfigBdio2StreamUploader bdio2Uploader) {
+    public RapidScanUploadService(
+        BlackDuckApiClient blackDuckApiClient,
+        ApiDiscovery apiDiscovery,
+        IntLogger logger,
+        Bdio2ContentExtractor bdio2Extractor,
+        RapidScanConfigBdio2StreamUploader bdio2Uploader
+    ) {
         super(blackDuckApiClient, apiDiscovery, logger);
         this.bdio2Extractor = bdio2Extractor;
         this.bdio2Uploader = bdio2Uploader;

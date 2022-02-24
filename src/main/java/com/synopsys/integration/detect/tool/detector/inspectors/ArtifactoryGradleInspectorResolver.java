@@ -29,9 +29,12 @@ public class ArtifactoryGradleInspectorResolver implements GradleInspectorResolv
     private File generatedGradleScriptPath = null;
     private boolean hasResolvedInspector = false;
 
-    public ArtifactoryGradleInspectorResolver(Configuration configuration, GradleInspectorScriptOptions gradleInspectorScriptOptions,
+    public ArtifactoryGradleInspectorResolver(
+        Configuration configuration,
+        GradleInspectorScriptOptions gradleInspectorScriptOptions,
         AirGapInspectorPaths airGapInspectorPaths,
-        DirectoryManager directoryManager) {
+        DirectoryManager directoryManager
+    ) {
         this.configuration = configuration;
         this.gradleInspectorScriptOptions = gradleInspectorScriptOptions;
         this.airGapInspectorPaths = airGapInspectorPaths;

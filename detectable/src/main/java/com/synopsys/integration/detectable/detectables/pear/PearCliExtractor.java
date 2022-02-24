@@ -36,8 +36,14 @@ public class PearCliExtractor {
     private final PearPackageDependenciesParser pearPackageDependenciesParser;
     private final PearListParser pearListParser;
 
-    public PearCliExtractor(ExternalIdFactory externalIdFactory, DetectableExecutableRunner executableRunner, PearDependencyGraphTransformer pearDependencyGraphTransformer, PearPackageXmlParser pearPackageXmlParser,
-        PearPackageDependenciesParser pearPackageDependenciesParser, PearListParser pearListParser) {
+    public PearCliExtractor(
+        ExternalIdFactory externalIdFactory,
+        DetectableExecutableRunner executableRunner,
+        PearDependencyGraphTransformer pearDependencyGraphTransformer,
+        PearPackageXmlParser pearPackageXmlParser,
+        PearPackageDependenciesParser pearPackageDependenciesParser,
+        PearListParser pearListParser
+    ) {
         this.externalIdFactory = externalIdFactory;
         this.executableRunner = executableRunner;
         this.pearDependencyGraphTransformer = pearDependencyGraphTransformer;

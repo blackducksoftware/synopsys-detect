@@ -21,7 +21,7 @@ import com.synopsys.integration.detectable.detectables.gradle.inspection.model.G
 public class GradleReportParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public static final String PROJECT_PATH_PREFIX = "projectPath:";
+    public static final String PROJECT_DIRECTORY_PREFIX = "projectDirectory:";
     public static final String PROJECT_GROUP_PREFIX = "projectGroup:";
     public static final String PROJECT_NAME_PREFIX = "projectName:";
     public static final String PROJECT_VERSION_PREFIX = "projectVersion:";
@@ -68,8 +68,8 @@ public class GradleReportParser {
     }
 
     private void setGradleReportInfo(GradleReport gradleReport, String line) {
-        if (line.startsWith(PROJECT_PATH_PREFIX)) {
-            gradleReport.setProjectSourcePath(line.substring(PROJECT_PATH_PREFIX.length()).trim());
+        if (line.startsWith(PROJECT_DIRECTORY_PREFIX)) {
+            gradleReport.setProjectSourcePath(line.substring(PROJECT_DIRECTORY_PREFIX.length()).trim());
         } else if (line.startsWith(PROJECT_GROUP_PREFIX)) {
             gradleReport.setProjectGroup(line.substring(PROJECT_GROUP_PREFIX.length()).trim());
         } else if (line.startsWith(PROJECT_NAME_PREFIX)) {

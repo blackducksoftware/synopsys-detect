@@ -40,8 +40,14 @@ public class ApplicableEvaluator extends Evaluator {
             DetectorRule detectorRule = detectorEvaluation.getDetectorRule();
             logger.trace("Evaluating detector: {}", detectorRule.getDescriptiveName());
 
-            SearchEnvironment searchEnvironment = new SearchEnvironment(detectorEvaluationTree.getDepthFromRoot(), getEvaluationOptions().getDetectorFilter(), getEvaluationOptions().isForceNested(),
-                getEvaluationOptions().isFollowSymLinks(), appliedInParent, appliedSoFar);
+            SearchEnvironment searchEnvironment = new SearchEnvironment(
+                detectorEvaluationTree.getDepthFromRoot(),
+                getEvaluationOptions().getDetectorFilter(),
+                getEvaluationOptions().isForceNested(),
+                getEvaluationOptions().isFollowSymLinks(),
+                appliedInParent,
+                appliedSoFar
+            );
             detectorEvaluation.setSearchEnvironment(searchEnvironment);
 
             DetectorResult searchableResult = detectorRuleSetEvaluator.evaluateSearchable(detectorEvaluationTree.getDetectorRuleSet(), detectorEvaluation.getDetectorRule(), searchEnvironment);

@@ -235,7 +235,8 @@ class YarnTransformerTest {
         List<YarnLockDependency> dependencyRefsToWkspDeps = Collections.singletonList(new YarnLockDependency(workspaceDepName, workspace.getVersion(), false));
         List<YarnLockEntryId> yarnLockEntryIdsWkspEntryIds = Arrays.asList(
             new YarnLockEntryId(workspace.getName(), workspace.getVersion()),
-            new YarnLockEntryId(workspace.getName(), "workspace:packages/" + workspace.getName()));
+            new YarnLockEntryId(workspace.getName(), "workspace:packages/" + workspace.getName())
+        );
         yarnLockEntries.add(new YarnLockEntry(false, yarnLockEntryIdsWkspEntryIds, workspace.getVersion(), dependencyRefsToWkspDeps));
     }
 

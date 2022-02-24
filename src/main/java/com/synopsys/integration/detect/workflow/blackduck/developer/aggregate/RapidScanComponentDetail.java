@@ -8,8 +8,14 @@ public class RapidScanComponentDetail {
     private final RapidScanComponentGroupDetail securityDetails;
     private final RapidScanComponentGroupDetail licenseDetails;
 
-    public RapidScanComponentDetail(String component, String version, String componentIdentifier, RapidScanComponentGroupDetail componentDetails,
-        RapidScanComponentGroupDetail securityDetails, RapidScanComponentGroupDetail licenseDetails) {
+    public RapidScanComponentDetail(
+        String component,
+        String version,
+        String componentIdentifier,
+        RapidScanComponentGroupDetail componentDetails,
+        RapidScanComponentGroupDetail securityDetails,
+        RapidScanComponentGroupDetail licenseDetails
+    ) {
         this.component = component;
         this.version = version;
         this.componentIdentifier = componentIdentifier;

@@ -7,7 +7,7 @@ import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 
 public class StatusEventPublisher {
-    private EventSystem eventSystem;
+    private final EventSystem eventSystem;
 
     public StatusEventPublisher(EventSystem eventSystem) {
         this.eventSystem = eventSystem;

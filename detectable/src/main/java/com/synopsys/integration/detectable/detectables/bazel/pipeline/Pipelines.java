@@ -16,8 +16,12 @@ public class Pipelines {
     private static final String OUTPUT_FLAG = "--output";
     private final EnumMap<WorkspaceRule, Pipeline> availablePipelines = new EnumMap<>(WorkspaceRule.class);
 
-    public Pipelines(BazelCommandExecutor bazelCommandExecutor, BazelVariableSubstitutor bazelVariableSubstitutor,
-        ExternalIdFactory externalIdFactory, HaskellCabalLibraryJsonProtoParser haskellCabalLibraryJsonProtoParser) {
+    public Pipelines(
+        BazelCommandExecutor bazelCommandExecutor,
+        BazelVariableSubstitutor bazelVariableSubstitutor,
+        ExternalIdFactory externalIdFactory,
+        HaskellCabalLibraryJsonProtoParser haskellCabalLibraryJsonProtoParser
+    ) {
         Pipeline mavenJarPipeline = (new PipelineBuilder(externalIdFactory, bazelCommandExecutor, bazelVariableSubstitutor, haskellCabalLibraryJsonProtoParser))
             .executeBazelOnEachLine(Arrays.asList(CQUERY_COMMAND, CQUERY_OPTIONS_PLACEHOLDER, "filter('@.*:jar', deps(${detect.bazel.target}))"), false)
             // The trailing parens may contain a hex number, or "null"; the pattern below handles either

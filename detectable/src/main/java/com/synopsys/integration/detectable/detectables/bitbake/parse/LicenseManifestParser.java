@@ -20,7 +20,7 @@ public class LicenseManifestParser {
 
     public Map<String, String> collectImageRecipes(List<String> licenseManifestLines) throws IntegrationException {
         logger.debug("Parsing license.manifest");
-        Map<String, String> imageRecipes = new HashMap<>(1 + (licenseManifestLines.size()/5));
+        Map<String, String> imageRecipes = new HashMap<>(1 + (licenseManifestLines.size() / 5));
         NameVersion recipeNameVersion = new NameVersion();
         int lineNumber = 0;
         for (String line : licenseManifestLines) {
@@ -38,7 +38,13 @@ public class LicenseManifestParser {
             }
             if (recipeIsComplete(recipeNameVersion)) {
                 if ((imageRecipes.containsKey(recipeNameVersion.getName())) && (!imageRecipes.get(recipeNameVersion.getName()).equals(recipeNameVersion.getVersion()))) {
-                    throw new IntegrationException(String.format("Error parsing license.manifest file: Recipe %s: Found version %s near line %d, but previously found version: %s", recipeNameVersion.getName(), recipeNameVersion.getVersion(), lineNumber, imageRecipes.get(recipeNameVersion.getName())));
+                    throw new IntegrationException(String.format(
+                        "Error parsing license.manifest file: Recipe %s: Found version %s near line %d, but previously found version: %s",
+                        recipeNameVersion.getName(),
+                        recipeNameVersion.getVersion(),
+                        lineNumber,
+                        imageRecipes.get(recipeNameVersion.getName())
+                    ));
                 }
                 imageRecipes.put(recipeNameVersion.getName(), recipeNameVersion.getVersion());
                 recipeNameVersion = new NameVersion();

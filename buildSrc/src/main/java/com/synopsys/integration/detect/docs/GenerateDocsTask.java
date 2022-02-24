@@ -239,7 +239,8 @@ public class GenerateDocsTask extends DefaultTask {
             }
 
             if (lookup.containsKey(optionGroup) && !superGroup.equals(lookup.get(optionGroup))) {
-                throw new RuntimeException(String.format("The created detect help JSON had a key '%s' whose super key '%s' did not match a different options super key in the same key '%s'.",
+                throw new RuntimeException(String.format(
+                    "The created detect help JSON had a key '%s' whose super key '%s' did not match a different options super key in the same key '%s'.",
                     optionGroup,
                     superGroup,
                     lookup.get(optionGroup)

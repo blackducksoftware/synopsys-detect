@@ -24,8 +24,12 @@ public class MavenCliExtractor {
     private final CommandParser commandParser;
     private final ToolVersionLogger toolVersionLogger;
 
-    public MavenCliExtractor(DetectableExecutableRunner executableRunner, MavenCodeLocationPackager mavenCodeLocationPackager, CommandParser commandParser,
-        ToolVersionLogger toolVersionLogger) {
+    public MavenCliExtractor(
+        DetectableExecutableRunner executableRunner,
+        MavenCodeLocationPackager mavenCodeLocationPackager,
+        CommandParser commandParser,
+        ToolVersionLogger toolVersionLogger
+    ) {
         this.executableRunner = executableRunner;
         this.mavenCodeLocationPackager = mavenCodeLocationPackager;
         this.commandParser = commandParser;

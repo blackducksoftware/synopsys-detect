@@ -17,7 +17,7 @@ import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
 import com.synopsys.integration.util.NameVersion;
 
 public class BinaryScanStepRunner {
-    private OperationFactory operationFactory;
+    private final OperationFactory operationFactory;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public BinaryScanStepRunner(OperationFactory operationFactory) {

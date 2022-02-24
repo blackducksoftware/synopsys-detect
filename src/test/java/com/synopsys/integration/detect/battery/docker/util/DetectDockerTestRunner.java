@@ -17,7 +17,7 @@ public class DetectDockerTestRunner implements Closeable {
     private final String testId;
     private final String imageName;
     private DockerImageProvider dockerImageProvider;
-    private DockerTestDirectories dockerTestDirectories;
+    private final DockerTestDirectories dockerTestDirectories;
     private String workingDirectory = WORKING_DIRECTORY_DEFAULT;
 
     // DetectDockerTestRunner must be created/declared in try-with-resources block to take advantage of "close" method (cleans up resources)

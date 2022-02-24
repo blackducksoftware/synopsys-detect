@@ -2,7 +2,6 @@ package com.synopsys.integration.detectable.detectables.bazel.functional.bazel.p
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.IOException;
 import java.util.Set;
 
 import org.apache.commons.compress.utils.Sets;
@@ -16,8 +15,11 @@ class WorkspaceRuleChooserTest {
 
     private static final Set<WorkspaceRule> WORKSPACE_RULES_JUST_MAVEN_INSTALL = Sets.newHashSet(WorkspaceRule.MAVEN_INSTALL);
     private static final Set<WorkspaceRule> WORKSPACE_RULES_JUST_MAVEN_JAR = Sets.newHashSet(WorkspaceRule.MAVEN_JAR);
-    private static final Set<WorkspaceRule> WORKSPACE_RULES_THREE = Sets.newHashSet(WorkspaceRule.MAVEN_INSTALL,
-        WorkspaceRule.HASKELL_CABAL_LIBRARY, WorkspaceRule.MAVEN_JAR);
+    private static final Set<WorkspaceRule> WORKSPACE_RULES_THREE = Sets.newHashSet(
+        WorkspaceRule.MAVEN_INSTALL,
+        WorkspaceRule.HASKELL_CABAL_LIBRARY,
+        WorkspaceRule.MAVEN_JAR
+    );
     private static final Set<WorkspaceRule> WORKSPACE_RULES_HASKELL = Sets.newHashSet(WorkspaceRule.HASKELL_CABAL_LIBRARY);
 
     @Test
