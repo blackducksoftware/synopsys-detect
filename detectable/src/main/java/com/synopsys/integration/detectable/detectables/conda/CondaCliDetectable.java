@@ -17,9 +17,9 @@ public class CondaCliDetectable extends Detectable {
     public static final String ENVIRONMENT_YML = "environment.yml";
 
     private final FileFinder fileFinder;
-    private CondaResolver condaResolver;
+    private final CondaResolver condaResolver;
     private final CondaCliExtractor condaExtractor;
-    private CondaCliDetectableOptions condaCliDetectableOptions;
+    private final CondaCliDetectableOptions condaCliDetectableOptions;
 
     private ExecutableTarget condaExe;
 

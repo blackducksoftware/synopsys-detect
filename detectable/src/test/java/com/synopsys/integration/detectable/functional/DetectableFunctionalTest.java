@@ -37,6 +37,7 @@ import com.synopsys.integration.detectable.util.CycleDetectedException;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 import com.synopsys.integration.executable.Executable;
 import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public abstract class DetectableFunctionalTest {
     @NotNull
@@ -73,7 +74,7 @@ public abstract class DetectableFunctionalTest {
     }
 
     @Test
-    public void run() throws IOException, DetectableException, ExecutableFailedException, MissingExternalIdException, CycleDetectedException {
+    public void run() throws IOException, DetectableException, ExecutableFailedException, MissingExternalIdException, CycleDetectedException, ExecutableRunnerException {
         System.out.println(String.format("Function Test (%s) is using temp directory: %s", name, tempDirectory.toAbsolutePath().toString()));
 
         setup();

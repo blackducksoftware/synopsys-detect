@@ -72,9 +72,7 @@ public class SbtDotExtractor {
                 }
             }
             return extraction.success().build();
-        } catch (ExecutableFailedException e) {
-            return Extraction.fromFailedExecutable(e);
-        } catch (IOException | DetectableException e) {
+        } catch (IOException | DetectableException | ExecutableFailedException e) {
             return new Extraction.Builder().exception(e).build();
         }
     }

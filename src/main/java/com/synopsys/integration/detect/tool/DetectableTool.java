@@ -35,6 +35,7 @@ import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 import com.synopsys.integration.detectable.util.CycleDetectedException;
 import com.synopsys.integration.detector.base.DetectableCreatable;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 import com.synopsys.integration.util.NameVersion;
 
 public class DetectableTool {
@@ -107,9 +108,7 @@ public class DetectableTool {
         Extraction extraction;
         try {
             extraction = detectable.extract(extractionEnvironment);
-        } catch (ExecutableFailedException e) {
-            extraction = Extraction.fromFailedExecutable(e);
-        } catch (JsonSyntaxException | IOException | CycleDetectedException | DetectableException | MissingExternalIdException e) {
+        } catch (ExecutableFailedException | ExecutableRunnerException | JsonSyntaxException | IOException | CycleDetectedException | DetectableException | MissingExternalIdException e) {
             extraction = new Extraction.Builder().exception(e).build();
         }
 

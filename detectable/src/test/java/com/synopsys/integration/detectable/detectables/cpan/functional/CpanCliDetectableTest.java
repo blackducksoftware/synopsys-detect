@@ -20,7 +20,7 @@ public class CpanCliDetectableTest extends DetectableFunctionalTest {
     }
 
     @Override
-    protected void setup() throws IOException {
+    protected void setup() throws IOException { //TODO: The difference between LIST and SHOWDEPS is not clear from this test.
         addFile("Makefile.PL");
 
         ExecutableOutput cpanListOutput = createStandardOutput(

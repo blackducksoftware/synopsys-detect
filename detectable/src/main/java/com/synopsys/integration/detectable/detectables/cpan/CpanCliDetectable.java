@@ -12,6 +12,7 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.CpanmR
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 @DetectableInfo(language = "Perl", forge = "CPAN", requirementsMarkdown = "File: Makefile.PL. Executable: cpan.")
 public class CpanCliDetectable extends Detectable {
@@ -49,7 +50,7 @@ public class CpanCliDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableRunnerException {
         return cpanCliExtractor.extract(cpanExe, cpanmExe, extractionEnvironment.getOutputDirectory());
     }
 
