@@ -18,10 +18,14 @@ The Gradle inspector detector also requires either gradlew or gradle:
 
 The Gradle inspector detector runs `gradlew gatherDependencies` to get a list of the project's dependencies, and then parses the output.
 
-The inspector defines the custom task 'gatherDependencies' with the help of a Gradle script (`init-detect.gradle`), which it usually downloads automatically. The file init-detect.gradle has a dependencies on ExcludedIncludedFilter, ExcludedIncludedWildcardFilter, and IntegrationEscapeUtil that come from https://github.com/blackducksoftware/integration-common.
-Filtering (including/excluding projects and configurations) is performed by the Gradle/Groovy code to control the output of the `dependencies` Gradle task invoked by the 'gradlew gatherDependencies' command.
+The Gradle inspector allows you to filter projects based on both the name and the path. The path is unique for each project in the hierarchy and follows the form ":parent:child". Both filtering mechanism support wildcards.
 
-The init-detect.gradle script configures each project with the custom 'gatherDependencies' task, which will invoke the 'dependencies' Gradle task on each project. This ensures the same output as previous versions is produced. The inspector consumes the output of `gradlew gatherDependencies` task.
+The inspector defines the custom task 'gatherDependencies' with the help of a Gradle script (`init-detect.gradle`), which it usually downloads automatically. The file init-detect.gradle has a dependencies on ExcludedIncludedFilter,
+ExcludedIncludedWildcardFilter, and IntegrationEscapeUtil that come from https://github.com/blackducksoftware/integration-common. Filtering (including/excluding projects and configurations) is performed by the Gradle/Groovy code to control
+the output of the `dependencies` Gradle task invoked by the 'gradlew gatherDependencies' command.
+
+The init-detect.gradle script configures each project with the custom 'gatherDependencies' task, which will invoke the 'dependencies' Gradle task on each project. This ensures the same output as previous versions is produced. The inspector
+consumes the output of `gradlew gatherDependencies` task.
 
 ### Running the Gradle inspector with a proxy
 

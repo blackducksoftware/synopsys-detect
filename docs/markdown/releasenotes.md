@@ -5,6 +5,7 @@
 ### New features
 
 * Verified support for Java 16 and 17.
+* Added new properties detect.gradle.excluded.project.paths and detect.gradle.included.project.paths to allow filtering on paths which gradle guarantees to be unique.
 
 ### Changed features
 
