@@ -23,7 +23,7 @@ import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.base.NullableAlikeProperty;
 import com.synopsys.integration.configuration.property.base.PassthroughProperty;
 import com.synopsys.integration.configuration.property.base.ValuedAlikeProperty;
-
+import com.synopsys.integration.configuration.property.types.string.NullableStringProperty;
 import com.synopsys.integration.configuration.source.PropertySource;
 import com.synopsys.integration.configuration.util.ProductMajorVersion;
 
