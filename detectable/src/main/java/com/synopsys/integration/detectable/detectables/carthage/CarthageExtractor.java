@@ -8,6 +8,8 @@ import java.util.List;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.carthage.model.CarthageDeclaration;
+import com.synopsys.integration.detectable.detectables.carthage.parse.CartfileResolvedParser;
+import com.synopsys.integration.detectable.detectables.carthage.transform.CarthageDeclarationTransformer;
 import com.synopsys.integration.detectable.extraction.Extraction;
 
 public class CarthageExtractor {

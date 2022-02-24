@@ -64,10 +64,10 @@ import com.synopsys.integration.detectable.detectables.cargo.parse.CargoDependen
 import com.synopsys.integration.detectable.detectables.cargo.parse.CargoTomlParser;
 import com.synopsys.integration.detectable.detectables.cargo.transform.CargoLockPackageDataTransformer;
 import com.synopsys.integration.detectable.detectables.cargo.transform.CargoLockPackageTransformer;
-import com.synopsys.integration.detectable.detectables.carthage.CartfileResolvedParser;
-import com.synopsys.integration.detectable.detectables.carthage.CarthageDeclarationTransformer;
 import com.synopsys.integration.detectable.detectables.carthage.CarthageDetectable;
 import com.synopsys.integration.detectable.detectables.carthage.CarthageExtractor;
+import com.synopsys.integration.detectable.detectables.carthage.parse.CartfileResolvedParser;
+import com.synopsys.integration.detectable.detectables.carthage.transform.CarthageDeclarationTransformer;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOptions;
 import com.synopsys.integration.detectable.detectables.clang.ClangExtractor;

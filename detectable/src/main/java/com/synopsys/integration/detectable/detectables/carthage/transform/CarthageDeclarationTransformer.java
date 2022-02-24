@@ -1,8 +1,7 @@
-package com.synopsys.integration.detectable.detectables.carthage;
+package com.synopsys.integration.detectable.detectables.carthage.transform;
 
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,11 +42,7 @@ public class CarthageDeclarationTransformer {
 
     private Dependency createGitHubDependencyFromDeclaration(CarthageDeclaration declaration) {
         // Because the dependency is hosted on GitHub, we must use the github forge in order for KB to match it
-        return dependencyFactory.createNameVersionDependency(
-            Forge.GITHUB,
-            StringUtils.trim(declaration.getName()),
-            StringUtils.trim(declaration.getVersion())
-        );
+        return dependencyFactory.createNameVersionDependency(Forge.GITHUB, declaration.getName(), declaration.getVersion());
     }
 
 }

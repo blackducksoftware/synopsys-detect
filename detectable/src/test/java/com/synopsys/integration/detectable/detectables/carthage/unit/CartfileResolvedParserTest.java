@@ -8,8 +8,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detectable.detectables.carthage.CartfileResolvedParser;
 import com.synopsys.integration.detectable.detectables.carthage.model.CarthageDeclaration;
+import com.synopsys.integration.detectable.detectables.carthage.parse.CartfileResolvedParser;
 
 public class CartfileResolvedParserTest {
     private final CartfileResolvedParser parser = new CartfileResolvedParser();

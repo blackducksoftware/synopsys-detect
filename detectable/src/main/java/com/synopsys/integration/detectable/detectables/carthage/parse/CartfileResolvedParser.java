@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.carthage;
+package com.synopsys.integration.detectable.detectables.carthage.parse;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -15,9 +15,9 @@ public class CartfileResolvedParser {
         List<CarthageDeclaration> carthageDeclarations = new LinkedList<>();
         for (String dependencyDeclaration : dependencyDeclarations) {
             String[] dependencyDeclarationPieces = dependencyDeclaration.split("\\s+");
-            String origin = dependencyDeclarationPieces[0];
-            String name = StringUtils.strip(dependencyDeclarationPieces[1], "\"");
-            String version = StringUtils.strip(dependencyDeclarationPieces[2], "\"");
+            String origin = dependencyDeclarationPieces[0].trim();
+            String name = StringUtils.strip(dependencyDeclarationPieces[1], "\"").trim();
+            String version = StringUtils.strip(dependencyDeclarationPieces[2], "\"").trim();
             CarthageDeclaration carthageDeclaration = new CarthageDeclaration(origin, name, version);
             carthageDeclarations.add(carthageDeclaration);
         }

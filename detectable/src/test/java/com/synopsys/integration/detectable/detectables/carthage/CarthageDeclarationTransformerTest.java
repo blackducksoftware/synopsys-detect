@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.detectables.carthage.model.CarthageDeclaration;
+import com.synopsys.integration.detectable.detectables.carthage.transform.CarthageDeclarationTransformer;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
 class CarthageDeclarationTransformerTest {
