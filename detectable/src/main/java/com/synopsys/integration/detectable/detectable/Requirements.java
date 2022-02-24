@@ -72,7 +72,7 @@ public class Requirements {
     }
 
     public File directory(String filename) { //We don't include directory in a relevant file.
-        return file(environment.getDirectory(), filename, false, null);
+        return file(environment.getDirectory(), filename, false, () -> new FileNotFoundDetectableResult(filename));
     }
 
     public Optional<File> optionalFile(String filename) {
@@ -112,22 +112,16 @@ public class Requirements {
     }
 
     public File file(File directory, String filename) {
-        return file(directory, filename, true, null);
+        return file(directory, filename, true, () -> new FileNotFoundDetectableResult(filename));
     }
 
     public File file(File directory, String filename, FailedResultCreator createMissingResult) {
         return file(directory, filename, true, createMissingResult);
     }
 
-    public File file(File directory, String filename, boolean isRelevant, @Nullable FailedResultCreator createMissingResult) {
+    public File file(File directory, String filename, boolean isRelevant, FailedResultCreator createMissingResult) {
         // The only difference between Optional File and Required File is Required populate failure, so if optional 'is not met' we can capture that by setting failure.
-        return optionalFile(directory, filename, () -> {
-            if (createMissingResult != null) {
-                failure = createMissingResult.createFailedResult();
-            } else {
-                failure = new FileNotFoundDetectableResult(filename);
-            }
-        }, isRelevant);
+        return optionalFile(directory, filename, () -> failure = createMissingResult.createFailedResult(), isRelevant);
     }
 
     private boolean isAlreadyFailed() {

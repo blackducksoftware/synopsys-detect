@@ -12,6 +12,7 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectable.result.CartfileResolvedNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
+import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
@@ -45,9 +46,10 @@ public class CarthageDetectable extends Detectable {
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        Requirements requirements = new Requirements(fileFinder, environment);
-        requirements.file(CARTFILE_RESOLVED_FILENAME, () -> new CartfileResolvedNotFoundDetectableResult(environment.getDirectory().getAbsolutePath()));
-        return requirements.result();
+        if (cartfileResolved == null) {
+            return new CartfileResolvedNotFoundDetectableResult(environment.getDirectory().getAbsolutePath());
+        }
+        return new PassedDetectableResult();
     }
 
     @Override
