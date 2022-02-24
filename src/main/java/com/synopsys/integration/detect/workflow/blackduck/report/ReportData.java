@@ -18,9 +18,9 @@ public class ReportData {
     private int totalComponents;
     private LocalDateTime dateTimeOfLatestScan;
 
-    private BomRiskCounts securityRiskCounts = new BomRiskCounts();
-    private BomRiskCounts licenseRiskCounts = new BomRiskCounts();
-    private BomRiskCounts operationalRiskCounts = new BomRiskCounts();
+    private final BomRiskCounts securityRiskCounts = new BomRiskCounts();
+    private final BomRiskCounts licenseRiskCounts = new BomRiskCounts();
+    private final BomRiskCounts operationalRiskCounts = new BomRiskCounts();
 
     private int vulnerabilityRiskNoneCount;
     private int licenseRiskNoneCount;

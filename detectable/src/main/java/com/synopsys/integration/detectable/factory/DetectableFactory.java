@@ -293,8 +293,13 @@ public class DetectableFactory {
     //Should be scoped to Prototype so a new Detectable is created every time one is needed.
     //Should only be accessed through the DetectableFactory.
 
-    public DockerDetectable createDockerDetectable(DetectableEnvironment environment, DockerDetectableOptions dockerDetectableOptions, DockerInspectorResolver dockerInspectorResolver, JavaResolver javaResolver,
-        DockerResolver dockerResolver) {
+    public DockerDetectable createDockerDetectable(
+        DetectableEnvironment environment,
+        DockerDetectableOptions dockerDetectableOptions,
+        DockerInspectorResolver dockerInspectorResolver,
+        JavaResolver javaResolver,
+        DockerResolver dockerResolver
+    ) {
         return new DockerDetectable(environment, dockerInspectorResolver, javaResolver, dockerResolver, dockerExtractor(), dockerDetectableOptions);
     }
 
@@ -418,8 +423,10 @@ public class DetectableFactory {
         return new MavenParseDetectable(environment, fileFinder, mavenParseExtractor(), mavenParseOptions);
     }
 
-    public MavenProjectInspectorDetectable createMavenProjectInspectorDetectable(DetectableEnvironment detectableEnvironment, ProjectInspectorResolver projectInspectorResolver, MavenParseOptions mavenParseOptions,
-        ProjectInspectorOptions projectInspectorOptions) {
+    public MavenProjectInspectorDetectable createMavenProjectInspectorDetectable(
+        DetectableEnvironment detectableEnvironment, ProjectInspectorResolver projectInspectorResolver, MavenParseOptions mavenParseOptions,
+        ProjectInspectorOptions projectInspectorOptions
+    ) {
         return new MavenProjectInspectorDetectable(detectableEnvironment, fileFinder, projectInspectorResolver, projectInspectorExtractor(), mavenParseOptions, projectInspectorOptions);
     }
 
@@ -458,8 +465,10 @@ public class DetectableFactory {
         return new NugetSolutionDetectable(environment, fileFinder, nugetInspectorResolver, nugetInspectorExtractor(), nugetInspectorOptions);
     }
 
-    public NugetProjectInspectorDetectable createNugetParseDetectable(DetectableEnvironment environment, NugetInspectorOptions nugetInspectorOptions, ProjectInspectorResolver projectInspectorResolver,
-        ProjectInspectorOptions projectInspectorOptions) {
+    public NugetProjectInspectorDetectable createNugetParseDetectable(
+        DetectableEnvironment environment, NugetInspectorOptions nugetInspectorOptions, ProjectInspectorResolver projectInspectorResolver,
+        ProjectInspectorOptions projectInspectorOptions
+    ) {
         return new NugetProjectInspectorDetectable(environment, fileFinder, nugetInspectorOptions, projectInspectorResolver, projectInspectorExtractor(), projectInspectorOptions);
     }
 
@@ -480,9 +489,11 @@ public class DetectableFactory {
         return new PipenvDetectable(environment, pipenvDetectableOptions, fileFinder, pythonResolver, pipenvResolver, pipenvExtractor());
     }
 
-    public PipInspectorDetectable createPipInspectorDetectable(DetectableEnvironment environment, PipInspectorDetectableOptions pipInspectorDetectableOptions, PipInspectorResolver pipInspectorResolver,
+    public PipInspectorDetectable createPipInspectorDetectable(
+        DetectableEnvironment environment, PipInspectorDetectableOptions pipInspectorDetectableOptions, PipInspectorResolver pipInspectorResolver,
         PythonResolver pythonResolver,
-        PipResolver pipResolver) {
+        PipResolver pipResolver
+    ) {
         return new PipInspectorDetectable(environment, fileFinder, pythonResolver, pipResolver, pipInspectorResolver, pipInspectorExtractor(), pipInspectorDetectableOptions);
     }
 
@@ -551,8 +562,9 @@ public class DetectableFactory {
         BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor(bazelDetectableOptions.getTargetName().orElse(null), bazelDetectableOptions.getBazelCqueryAdditionalOptions());
         BazelProjectNameGenerator bazelProjectNameGenerator = new BazelProjectNameGenerator();
         return new BazelExtractor(executableRunner, externalIdFactory, bazelWorkspaceFileParser, workspaceRuleChooser, toolVersionLogger, haskellCabalLibraryJsonProtoParser,
-            bazelDetectableOptions.getTargetName().orElse(null), bazelDetectableOptions.getBazelDependencyRules(), bazelVariableSubstitutor,
-            bazelProjectNameGenerator);
+            bazelDetectableOptions.getTargetName().orElse(null), bazelDetectableOptions.getWorkspaceRulesFromDeprecatedProperty(), bazelDetectableOptions.getWorkspaceRulesFromProperty(), bazelVariableSubstitutor,
+            bazelProjectNameGenerator
+        );
     }
 
     private FilePathGenerator filePathGenerator() {
@@ -909,7 +921,8 @@ public class DetectableFactory {
 
     private GradleInspectorExtractor gradleInspectorExtractor(GradleInspectorOptions gradleInspectorOptions) {
         return new GradleInspectorExtractor(fileFinder, gradleRunner(), gradleReportParser(), gradleReportTransformer(gradleInspectorOptions), gradleRootMetadataParser(),
-            toolVersionLogger);
+            toolVersionLogger
+        );
     }
 
     private DockerExtractor dockerExtractor() {

@@ -22,6 +22,7 @@ public class DetectorFinder {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public Optional<DetectorEvaluationTree> findDetectors(File initialDirectory, DetectorRuleSet detectorRuleSet, DetectorFinderOptions options, FileFinder fileFinder) {
+        logger.info("Searching for detectors. This may take awhile.");
         return findDetectors(initialDirectory, detectorRuleSet, 0, options, fileFinder);
     }
 
@@ -63,7 +64,7 @@ public class DetectorFinder {
             .map(DetectorEvaluation::new)
             .collect(Collectors.toList());
 
-        logger.info("Traversing directory: " + directory.getPath()); //TODO: Finding the perfect log level here is important. At INFO, we log a lot during a deep traversal but if we don't we might look stuck.
+        logger.trace("Traversing directory: " + directory.getPath());
 
         Set<DetectorEvaluationTree> children = new HashSet<>();
 

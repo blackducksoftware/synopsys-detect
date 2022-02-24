@@ -14,6 +14,7 @@ import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.http.client.BlackDuckHttpClient;
 import com.synopsys.integration.blackduck.http.client.SignatureScannerClient;
 import com.synopsys.integration.blackduck.keystore.KeyStoreHelper;
+import com.synopsys.integration.blackduck.service.dataservice.BlackDuckRegistrationService;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerLogger;
 import com.synopsys.integration.util.CleanupZipExpander;
 import com.synopsys.integration.util.IntEnvironmentVariables;
@@ -40,10 +41,19 @@ public class CreateScanBatchRunnerWithBlackDuck {
         BlackDuckHttpClient blackDuckHttpClient = blackDuckServerConfig.createBlackDuckHttpClient(slf4jIntLogger);
         CleanupZipExpander cleanupZipExpander = new CleanupZipExpander(slf4jIntLogger);
         SignatureScannerClient signatureScannerClient = new SignatureScannerClient(blackDuckHttpClient);
+        BlackDuckRegistrationService blackDuckRegistrationService = blackDuckServerConfig.createBlackDuckServicesFactory(slf4jIntLogger).createBlackDuckRegistrationService();
         KeyStoreHelper keyStoreHelper = new KeyStoreHelper(slf4jIntLogger);
-        ScannerZipInstaller scannerZipInstaller = new ScannerZipInstaller(slf4jIntLogger, signatureScannerClient,
-            cleanupZipExpander, scanPathsUtility, keyStoreHelper,
-            blackDuckServerConfig.getBlackDuckUrl(), operatingSystemType, installDirectory);
+        ScannerZipInstaller scannerZipInstaller = new ScannerZipInstaller(
+            slf4jIntLogger,
+            signatureScannerClient,
+            blackDuckRegistrationService,
+            cleanupZipExpander,
+            scanPathsUtility,
+            keyStoreHelper,
+            blackDuckServerConfig.getBlackDuckUrl(),
+            operatingSystemType,
+            installDirectory
+        );
         return ScanBatchRunner.createComplete(intEnvironmentVariables, scanPathsUtility, scanCommandRunner, scannerZipInstaller);
     }
 

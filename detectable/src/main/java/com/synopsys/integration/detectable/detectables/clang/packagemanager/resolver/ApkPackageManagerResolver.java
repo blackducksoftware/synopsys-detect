@@ -23,8 +23,12 @@ public class ApkPackageManagerResolver implements ClangPackageManagerResolver {
     }
 
     @Override
-    public List<PackageDetails> resolvePackages(ClangPackageManagerInfo currentPackageManager, DetectableExecutableRunner executableRunner,
-        File workingDirectory, String queryPackageOutput) throws ExecutableRunnerException, NotOwnedByAnyPkgException {
+    public List<PackageDetails> resolvePackages(
+        ClangPackageManagerInfo currentPackageManager,
+        DetectableExecutableRunner executableRunner,
+        File workingDirectory,
+        String queryPackageOutput
+    ) throws ExecutableRunnerException, NotOwnedByAnyPkgException {
         isValid(queryPackageOutput);
         Optional<String> architecture = architectureResolver.resolveArchitecture(currentPackageManager, workingDirectory, executableRunner);
         List<PackageDetails> packageDetailsList = new ArrayList<>();

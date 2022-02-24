@@ -101,8 +101,10 @@ public class DetectProperties {
     public static final StringListProperty BLACKDUCK_PROXY_IGNORED_HOSTS =
         StringListProperty.newBuilder("blackduck.proxy.ignored.hosts", emptyList())
             .setInfo("Bypass Proxy Hosts", DetectPropertyFromVersion.VERSION_4_2_0)
-            .setHelp("A comma separated list of regular expression host patterns that should not use the proxy.",
-                "This property accepts Java regular expressions. Refer to the <i>Configuring Synopsys Detect</i> > <i>Java regular expression support</i> page for more details.")
+            .setHelp(
+                "A comma separated list of regular expression host patterns that should not use the proxy.",
+                "This property accepts Java regular expressions. Refer to the <i>Configuring Synopsys Detect</i> > <i>Java regular expression support</i> page for more details."
+            )
             .setGroups(DetectGroup.PROXY, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT)
             .setCategory(DetectCategory.Advanced)
             .setExample("blackduck[0-9]+.mycompany.com")
@@ -201,10 +203,12 @@ public class DetectProperties {
             .setGroups(DetectGroup.BAZEL, DetectGroup.SOURCE_SCAN)
             .build();
 
-    public static final AllNoneEnumListProperty<WorkspaceRule> DETECT_BAZEL_DEPENDENCY_RULE =
-        AllNoneEnumListProperty.newBuilder("detect.bazel.dependency.type", emptyList(), WorkspaceRule.class)
-            .setInfo("Bazel workspace external dependency rule", DetectPropertyFromVersion.VERSION_6_0_0)
-            .setHelp("The Bazel workspace rule(s) used to pull in external dependencies. If not set, Detect will attempt to determine the rule(s) from the contents of the WORKSPACE file.")
+    public static final AllNoneEnumListProperty<WorkspaceRule> DETECT_BAZEL_WORKSPACE_RULES =
+        AllNoneEnumListProperty.newBuilder("detect.bazel.workspace.rules", emptyList(), WorkspaceRule.class)
+            .setInfo("Bazel workspace rules", DetectPropertyFromVersion.VERSION_7_12_0)
+            .setHelp(
+                "By default Detect discovers Bazel dependencies using all of the supported Bazel workspace rules that it finds in the WORKSPACE file. Alternatively you can use this property to specify the list of Bazel workspace rules Detect should use."
+            )
             .setGroups(DetectGroup.BAZEL, DetectGroup.SOURCE_SCAN)
             .build();
 
@@ -240,8 +244,10 @@ public class DetectProperties {
 
     public static final BooleanProperty DETECT_CONAN_REQUIRE_PREV_MATCH =
         BooleanProperty.newBuilder("detect.conan.attempt.package.revision.match", false)
-            .setInfo("Attempt Package Revision Match",
-                DetectPropertyFromVersion.VERSION_6_8_0)
+            .setInfo(
+                "Attempt Package Revision Match",
+                DetectPropertyFromVersion.VERSION_6_8_0
+            )
             .setHelp(
                 "If package revisions are available (a Conan lock file is found or provided, and Conan's revisions feature is enabled), require that each dependency's package revision match the package revision of the component in the KB.")
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
@@ -316,8 +322,10 @@ public class DetectProperties {
     public static final NoneEnumListProperty<BitbakeDependencyType> DETECT_BITBAKE_DEPENDENCY_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.bitbake.dependency.types.excluded", NoneEnum.NONE, BitbakeDependencyType.class)
             .setInfo("Bitbake Excluded Dependency Types", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp("The dependency types to exclude from the results.",
-                "BUILD dependencies include recipes that are not declared in the license.manifest file, and native recipes. When excluding BUILD dependencies, Detect requires the license.manifest file (found under the {builddir}/tmp directory).")
+            .setHelp(
+                "The dependency types to exclude from the results.",
+                "BUILD dependencies include recipes that are not declared in the license.manifest file, and native recipes. When excluding BUILD dependencies, Detect requires the license.manifest file (found under the {builddir}/tmp directory)."
+            )
             .setExample("BUILD")
             .setGroups(DetectGroup.BITBAKE, DetectGroup.SOURCE_SCAN)
             .build();
@@ -325,8 +333,10 @@ public class DetectProperties {
     public static final NullableStringProperty DETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS =
         NullableStringProperty.newBuilder("detect.blackduck.signature.scanner.arguments")
             .setInfo("Signature Scanner Arguments", DetectPropertyFromVersion.VERSION_4_2_0)
-            .setHelp("Additional arguments to use when running the Black Duck signature scanner.",
-                "For example: Suppose you are running in bash on Linux and want to use the signature scanner's ability to read a list of directories to exclude from a file (using the signature scanner --exclude-from option). You tell the signature scanner read excluded directories from a file named excludes.txt in your home directory with: --detect.blackduck.signature.scanner.arguments='--exclude-from \\${HOME}/excludes.txt'")
+            .setHelp(
+                "Additional arguments to use when running the Black Duck signature scanner.",
+                "For example: Suppose you are running in bash on Linux and want to use the signature scanner's ability to read a list of directories to exclude from a file (using the signature scanner --exclude-from option). You tell the signature scanner read excluded directories from a file named excludes.txt in your home directory with: --detect.blackduck.signature.scanner.arguments='--exclude-from \\${HOME}/excludes.txt'"
+            )
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL)
             .build();
 
@@ -353,8 +363,7 @@ public class DetectProperties {
             .build();
 
     public static final ExtendedEnumProperty<ExtendedIndividualFileMatchingMode, IndividualFileMatching> DETECT_BLACKDUCK_SIGNATURE_SCANNER_INDIVIDUAL_FILE_MATCHING =
-        ExtendedEnumProperty.newBuilderExtendedDefault("detect.blackduck.signature.scanner.individual.file.matching", ExtendedIndividualFileMatchingMode.NONE, ExtendedIndividualFileMatchingMode.class,
-                IndividualFileMatching.class)
+        ExtendedEnumProperty.newBuilderExtendedDefault("detect.blackduck.signature.scanner.individual.file.matching", ExtendedIndividualFileMatchingMode.NONE, ExtendedIndividualFileMatchingMode.class, IndividualFileMatching.class)
             .setInfo("Individual File Matching", DetectPropertyFromVersion.VERSION_6_2_0)
             .setHelp("Users may set this property to indicate what types of files they want to match. Corresponding Signature Scanner CLI Argument: --individualFileMatching.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER)
@@ -501,8 +510,10 @@ public class DetectProperties {
     public static final IntegerProperty DETECT_DETECTOR_SEARCH_DEPTH =
         IntegerProperty.newBuilder("detect.detector.search.depth", 0)
             .setInfo("Detector Search Depth", DetectPropertyFromVersion.VERSION_3_2_0)
-            .setHelp("Depth of subdirectories within the source directory to which Detect will search for files that indicate whether a detector applies.",
-                "A value of 0 (the default) tells Detect not to search any subdirectories, a value of 1 tells Detect to search first-level subdirectories, etc.")
+            .setHelp(
+                "Depth of subdirectories within the source directory to which Detect will search for files that indicate whether a detector applies.",
+                "A value of 0 (the default) tells Detect not to search any subdirectories, a value of 1 tells Detect to search first-level subdirectories, etc."
+            )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
 
@@ -535,8 +546,10 @@ public class DetectProperties {
     public static final BooleanProperty DETECT_IGNORE_CONNECTION_FAILURES =
         BooleanProperty.newBuilder("detect.ignore.connection.failures", false)
             .setInfo("Detect Ignore Connection Failures", DetectPropertyFromVersion.VERSION_5_3_0)
-            .setHelp("If true, Detect will ignore any products that it cannot connect to.",
-                "If true, when Detect attempts to boot a product it will also check if it can communicate with it - if it cannot, it will not run the product.")
+            .setHelp(
+                "If true, Detect will ignore any products that it cannot connect to.",
+                "If true, when Detect attempts to boot a product it will also check if it can communicate with it - if it cannot, it will not run the product."
+            )
             .setGroups(DetectGroup.GENERAL, DetectGroup.BLACKDUCK_SERVER, DetectGroup.POLARIS)
             .setCategory(DetectCategory.Advanced)
             .build();
@@ -564,7 +577,8 @@ public class DetectProperties {
             .setInfo("Docker Image Name", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "The Docker image name (repo:tag) to inspect.",
-                "For Detect to run Docker Inspector, either this property, detect.docker.tar, or detect.docker.image.id must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images. detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties). When a value of this property is provided, Docker Inspector will use the Docker engine to pull the image.")
+                "For Detect to run Docker Inspector, either this property, detect.docker.tar, or detect.docker.image.id must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images. detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties). When a value of this property is provided, Docker Inspector will use the Docker engine to pull the image."
+            )
             .setExample("centos:centos8")
             .setGroups(DetectGroup.DOCKER, DetectGroup.SOURCE_PATH)
             .build();
@@ -574,7 +588,8 @@ public class DetectProperties {
             .setInfo("Docker Image ID", DetectPropertyFromVersion.VERSION_6_1_0)
             .setHelp(
                 "The ID (shown in the 'IMAGE ID' column of 'docker images' output) of the target Docker image. The target image must already be local (must appear in the output of 'docker images').",
-                "detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties).")
+                "detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties)."
+            )
             .setExample("0d120b6ccaa8")
             .setGroups(DetectGroup.DOCKER, DetectGroup.SOURCE_PATH)
             .setExample("fe1cc5b91830")
@@ -584,7 +599,8 @@ public class DetectProperties {
         NullablePathProperty.newBuilder("detect.docker.inspector.path")
             .setInfo("Docker Inspector .jar File Path", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
-                "This is used to override using the hosted Docker Inspector .jar file by binary repository url. You can use a compatible (the same major version that Detect downloads by default) local Docker Inspector .jar file at this path.")
+                "This is used to override using the hosted Docker Inspector .jar file by binary repository url. You can use a compatible (the same major version that Detect downloads by default) local Docker Inspector .jar file at this path."
+            )
             .setGroups(DetectGroup.DOCKER, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced)
             .build();
@@ -631,7 +647,8 @@ public class DetectProperties {
             .setInfo("Image Archive File", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "An image .tar file which is either a Docker image saved to a file using the 'docker save' command, or an Open Container Initiative (OCI) image .tar file. The file must be readable by all.",
-                "detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties).")
+                "detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties)."
+            )
             .setExample("./ubuntu21_04.tar")
             .setGroups(DetectGroup.DOCKER, DetectGroup.SOURCE_PATH)
             .build();
@@ -701,8 +718,10 @@ public class DetectProperties {
     public static final CaseSensitiveStringListProperty DETECT_GRADLE_EXCLUDED_CONFIGURATIONS =
         CaseSensitiveStringListProperty.newBuilder("detect.gradle.excluded.configurations", Collections.emptyList())
             .setInfo("Gradle Exclude Configurations", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("A comma-separated list of Gradle configurations to exclude.",
-                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle configurations specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+            .setHelp(
+                "A comma-separated list of Gradle configurations to exclude.",
+                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle configurations specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+            )
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
             .build();
@@ -710,8 +729,10 @@ public class DetectProperties {
     public static final CaseSensitiveStringListProperty DETECT_GRADLE_EXCLUDED_PROJECTS =
         CaseSensitiveStringListProperty.newBuilder("detect.gradle.excluded.projects")
             .setInfo("Gradle Exclude Projects", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("A comma-separated list of Gradle sub-projects to exclude.",
-                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle sub-projects specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+            .setHelp(
+                "A comma-separated list of Gradle sub-projects to exclude.",
+                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle sub-projects specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+            )
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
             .build();
@@ -728,8 +749,10 @@ public class DetectProperties {
     public static final CaseSensitiveStringListProperty DETECT_GRADLE_INCLUDED_CONFIGURATIONS =
         CaseSensitiveStringListProperty.newBuilder("detect.gradle.included.configurations")
             .setInfo("Gradle Include Configurations", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("A comma-separated list of Gradle configurations to include.",
-                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those Gradle configurations specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+            .setHelp(
+                "A comma-separated list of Gradle configurations to include.",
+                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those Gradle configurations specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+            )
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
             .build();
@@ -737,8 +760,10 @@ public class DetectProperties {
     public static final NoneEnumListProperty<GradleConfigurationType> DETECT_GRADLE_CONFIGURATION_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.gradle.configuration.types.excluded", NoneEnum.NONE, GradleConfigurationType.class)
             .setInfo("Gradle Configuration Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp(createDefaultDrivenPropertyHelpText("Gradle configuration types", "detect.gradle.include.unresolved.configurations"),
-                "Including dependencies from unresolved Gradle configurations could lead to false positives. Dependency versions from an unresolved configuration may differ from a resolved one. See https://docs.gradle.org/7.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs")
+            .setHelp(
+                createDefaultDrivenPropertyHelpText("Gradle configuration types", "detect.gradle.include.unresolved.configurations"),
+                "Including dependencies from unresolved Gradle configurations could lead to false positives. Dependency versions from an unresolved configuration may differ from a resolved one. See https://docs.gradle.org/7.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs"
+            )
             .setExample(GradleConfigurationType.UNRESOLVED.name())
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .build();
@@ -746,8 +771,10 @@ public class DetectProperties {
     public static final CaseSensitiveStringListProperty DETECT_GRADLE_INCLUDED_PROJECTS =
         CaseSensitiveStringListProperty.newBuilder("detect.gradle.included.projects")
             .setInfo("Gradle Include Projects", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("A comma-separated list of Gradle sub-projects to include.",
-                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those sub-projects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+            .setHelp(
+                "A comma-separated list of Gradle sub-projects to include.",
+                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those sub-projects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+            )
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
             .build();
@@ -778,7 +805,8 @@ public class DetectProperties {
     public static final StringListProperty DETECT_EXCLUDED_DIRECTORIES =
         StringListProperty.newBuilder("detect.excluded.directories", emptyList())
             .setInfo("Detect Excluded Directories", DetectPropertyFromVersion.VERSION_7_0_0)
-            .setHelp("A comma-separated list of names, name patterns, relative paths, or path patterns of directories that Detect should exclude.",
+            .setHelp(
+                "A comma-separated list of names, name patterns, relative paths, or path patterns of directories that Detect should exclude.",
                 "Subdirectories whose name or path is resolved from the patterns in this list will not be searched when determining which detectors to run, and will be excluded from signature scan using the Scan CLI '--exclude' flag. Refer to the <i>Downloading and Running Synopsys Detect</i> > <i>Including and Excluding Tools, Detectors, Directories, etc.</i> page for more details."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
@@ -789,7 +817,8 @@ public class DetectProperties {
     public static final BooleanProperty DETECT_EXCLUDED_DIRECTORIES_DEFAULTS_DISABLED =
         BooleanProperty.newBuilder("detect.excluded.directories.defaults.disabled", false)
             .setInfo("Detect Excluded Directories Defaults Disabled", DetectPropertyFromVersion.VERSION_7_0_0)
-            .setHelp("If false, Detect will exclude the default directory names. See the detailed help for more information.",
+            .setHelp(
+                "If false, Detect will exclude the default directory names. See the detailed help for more information.",
                 "If false, the following directories will be excluded by Detect when searching for detectors: bin, build, .git, .gradle, node_modules, out, packages, target, .synopsys, and the following directories will be excluded from signature scan using the Scan CLI '--exclude' flag: .git, .gradle, node_modules, .synopsys."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
@@ -814,8 +843,10 @@ public class DetectProperties {
     public static final NullablePathProperty DETECT_IMPACT_ANALYSIS_OUTPUT_PATH =
         NullablePathProperty.newBuilder("detect.impact.analysis.output.path")
             .setInfo("Impact Analysis Output Directory", DetectPropertyFromVersion.VERSION_6_5_0)
-            .setHelp("The path to the output directory for Impact Analysis reports.",
-                "If not set, the Impact Analysis reports are placed in a 'impact-analysis' subdirectory of the output directory.")
+            .setHelp(
+                "The path to the output directory for Impact Analysis reports.",
+                "If not set, the Impact Analysis reports are placed in a 'impact-analysis' subdirectory of the output directory."
+            )
             .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
 
@@ -841,8 +872,10 @@ public class DetectProperties {
     public static final CaseSensitiveStringListProperty DETECT_LERNA_EXCLUDED_PACKAGES =
         CaseSensitiveStringListProperty.newBuilder("detect.lerna.excluded.packages")
             .setInfo("Lerna Packages Excluded", DetectPropertyFromVersion.VERSION_7_0_0)
-            .setHelp("A comma-separated list of Lerna packages to exclude.",
-                "As Detect parses the output of lerna ls --all --json, Detect will exclude any Lerna packages specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+            .setHelp(
+                "A comma-separated list of Lerna packages to exclude.",
+                "As Detect parses the output of lerna ls --all --json, Detect will exclude any Lerna packages specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+            )
             .setGroups(DetectGroup.LERNA, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
             .build();
@@ -850,8 +883,10 @@ public class DetectProperties {
     public static final CaseSensitiveStringListProperty DETECT_LERNA_INCLUDED_PACKAGES =
         CaseSensitiveStringListProperty.newBuilder("detect.lerna.included.packages")
             .setInfo("Lerna Packages Included", DetectPropertyFromVersion.VERSION_7_0_0)
-            .setHelp("A comma-separated list of Lerna packages to include.",
-                "As Detect parses the output of lerna ls --all --json2, if this property is set, Detect will include only those Lerna packages specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+            .setHelp(
+                "A comma-separated list of Lerna packages to include.",
+                "As Detect parses the output of lerna ls --all --json2, if this property is set, Detect will include only those Lerna packages specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+            )
             .setGroups(DetectGroup.LERNA, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
             .build();
@@ -874,16 +909,20 @@ public class DetectProperties {
     public static final NullableStringProperty DETECT_MAVEN_BUILD_COMMAND =
         NullableStringProperty.newBuilder("detect.maven.build.command")
             .setInfo("Maven Build Command", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("Maven command line arguments to add to the mvn/mvnw command line.",
-                "By default, Detect runs the mvn (or mvnw) command with one argument: dependency:tree. You can use this property to insert one or more additional mvn command line arguments (goals, etc.) before the dependency:tree argument. For example: suppose you are running in bash on Linux, and want to point maven to your settings file (maven_dev_settings.xml in your home directory) and assign the value 'other' to property 'reason'. You could do this with: --detect.maven.build.command='--settings \\${HOME}/maven_dev_settings.xml --define reason=other'")
+            .setHelp(
+                "Maven command line arguments to add to the mvn/mvnw command line.",
+                "By default, Detect runs the mvn (or mvnw) command with one argument: dependency:tree. You can use this property to insert one or more additional mvn command line arguments (goals, etc.) before the dependency:tree argument. For example: suppose you are running in bash on Linux, and want to point maven to your settings file (maven_dev_settings.xml in your home directory) and assign the value 'other' to property 'reason'. You could do this with: --detect.maven.build.command='--settings \\${HOME}/maven_dev_settings.xml --define reason=other'"
+            )
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
             .build();
 
     public static final CaseSensitiveStringListProperty DETECT_MAVEN_EXCLUDED_MODULES =
         CaseSensitiveStringListProperty.newBuilder("detect.maven.excluded.modules")
             .setInfo("Maven Modules Excluded", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("A comma-separated list of Maven modules (sub-projects) to exclude.",
-                "As Detect parses the mvn dependency:tree output for dependencies, Detect will skip any Maven modules specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+            .setHelp(
+                "A comma-separated list of Maven modules (sub-projects) to exclude.",
+                "As Detect parses the mvn dependency:tree output for dependencies, Detect will skip any Maven modules specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+            )
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
             .build();
@@ -891,8 +930,10 @@ public class DetectProperties {
     public static final CaseSensitiveStringListProperty DETECT_MAVEN_INCLUDED_MODULES =
         CaseSensitiveStringListProperty.newBuilder("detect.maven.included.modules")
             .setInfo("Maven Modules Included", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("A comma-separated list of Maven modules (sub-projects) to include.",
-                "As Detect parses the mvn dependency:tree output for dependencies, if this property is set, Detect will include only those Maven modules specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+            .setHelp(
+                "A comma-separated list of Maven modules (sub-projects) to include.",
+                "As Detect parses the mvn dependency:tree output for dependencies, if this property is set, Detect will include only those Maven modules specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+            )
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
             .build();
@@ -907,16 +948,20 @@ public class DetectProperties {
     public static final CaseSensitiveStringListProperty DETECT_MAVEN_INCLUDED_SCOPES =
         CaseSensitiveStringListProperty.newBuilder("detect.maven.included.scopes")
             .setInfo("Dependency Scope Included", DetectPropertyFromVersion.VERSION_6_0_0)
-            .setHelp("A comma separated list of Maven scopes. Output will be limited to dependencies within these scopes (overridden by exclude).",
-                "If set, Detect will include only dependencies of the given Maven scope. This property accepts filename globbing-style wildcards. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+            .setHelp(
+                "A comma separated list of Maven scopes. Output will be limited to dependencies within these scopes (overridden by exclude).",
+                "If set, Detect will include only dependencies of the given Maven scope. This property accepts filename globbing-style wildcards. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+            )
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
             .build();
 
     public static final CaseSensitiveStringListProperty DETECT_MAVEN_EXCLUDED_SCOPES =
         CaseSensitiveStringListProperty.newBuilder("detect.maven.excluded.scopes")
             .setInfo("Dependency Scope Excluded", DetectPropertyFromVersion.VERSION_6_0_0)
-            .setHelp("A comma separated list of Maven scopes. Output will be limited to dependencies outside these scopes (overrides include).",
-                "If set, Detect will include only dependencies outside of the given Maven scope. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+            .setHelp(
+                "A comma separated list of Maven scopes. Output will be limited to dependencies outside these scopes (overrides include).",
+                "If set, Detect will include only dependencies outside of the given Maven scope. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+            )
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
             .build();
 
@@ -1013,8 +1058,10 @@ public class DetectProperties {
     public static final NullablePathProperty DETECT_OUTPUT_PATH =
         NullablePathProperty.newBuilder("detect.output.path")
             .setInfo("Detect Output Path", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("The path to the output directory.",
-                "If set, Detect will use the given directory to store files that it downloads and creates, instead of using the default location (~/blackduck).")
+            .setHelp(
+                "The path to the output directory.",
+                "If set, Detect will use the given directory to store files that it downloads and creates, instead of using the default location (~/blackduck)."
+            )
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .build();
 
@@ -1068,8 +1115,10 @@ public class DetectProperties {
     public static final PathListProperty DETECT_PIP_REQUIREMENTS_PATH =
         PathListProperty.newBuilder("detect.pip.requirements.path", emptyList())
             .setInfo("PIP Requirements Path", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("A comma-separated list of paths to requirements files, to be used to analyze requirements files with a filename other than requirements.txt or to specify which requirements files should be analyzed.",
-                "This property should only be set if you want the PIP Inspector Detector to run. For example: If your project uses Pipenv, do not set this property.")
+            .setHelp(
+                "A comma-separated list of paths to requirements files, to be used to analyze requirements files with a filename other than requirements.txt or to specify which requirements files should be analyzed.",
+                "This property should only be set if you want the PIP Inspector Detector to run. For example: If your project uses Pipenv, do not set this property."
+            )
             .setGroups(DetectGroup.PIP, DetectGroup.SOURCE_SCAN)
             .build();
 
@@ -1138,7 +1187,8 @@ public class DetectProperties {
             .setInfo("Custom Fields", DetectPropertyFromVersion.VERSION_5_6_0)
             .setHelp(
                 "A  list of custom fields with a label and comma-separated value starting from index 0. For each index, provide one label and one value. For example, to set a custom field with label 'example' to 'one,two': `detect.custom.fields.project[0].label='example'` and `detect.custom.fields.project[0].value='one,two'`. To set another field, use index 1. Note that these will not show up in the detect configuration log.",
-                "When assigning a value that contains a comma to a single-value field such as a text field, append '[0]' to the end of the value property name. For example, to set the value of the first field you are setting ('detect.custom.fields.version[0]') to 'text1,text2', use 'detect.custom.fields.version[0].value[0]=text1,text2'.")
+                "When assigning a value that contains a comma to a single-value field such as a text field, append '[0]' to the end of the value property name. For example, to set the value of the first field you are setting ('detect.custom.fields.version[0]') to 'text1,text2', use 'detect.custom.fields.version[0].value[0]=text1,text2'."
+            )
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced)
             .build();
@@ -1149,7 +1199,8 @@ public class DetectProperties {
             .setInfo("Custom Fields", DetectPropertyFromVersion.VERSION_5_6_0)
             .setHelp(
                 "A  list of custom fields with a label and comma-separated value starting from index 0. For each index, provide one label and one value. For example , to set a custom field with label 'example' to 'one,two': `detect.custom.fields.version[0].label='example'` and `detect.custom.fields.version[0].value='one,two'`. To set another field, use index 1. Note that these will not show up in the detect configuration log.",
-                "When assigning a value that contains a comma to a single-value field such as a text field, append '[0]' to the end of the value property name. For example, to set the value of the first field you are setting ('detect.custom.fields.version[0]') to 'text1,text2', use 'detect.custom.fields.version[0].value[0]=text1,text2'.")
+                "When assigning a value that contains a comma to a single-value field such as a text field, append '[0]' to the end of the value property name. For example, to set the value of the first field you are setting ('detect.custom.fields.version[0]') to 'text1,text2', use 'detect.custom.fields.version[0].value[0]=text1,text2'."
+            )
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced)
             .build();
@@ -1226,8 +1277,10 @@ public class DetectProperties {
     public static final BooleanProperty DETECT_PROJECT_LEVEL_ADJUSTMENTS =
         BooleanProperty.newBuilder("detect.project.level.adjustments", true)
             .setInfo("Allow Project Level Adjustments", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("Sets the component adjustments setting on the Black Duck project.",
-                "Corresponds to the 'Always maintain component adjustments to all versions of this project' checkbox under 'Component Adjustments' on the Black Duck Project settings page.")
+            .setHelp(
+                "Sets the component adjustments setting on the Black Duck project.",
+                "Corresponds to the 'Always maintain component adjustments to all versions of this project' checkbox under 'Component Adjustments' on the Black Duck Project settings page."
+            )
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced)
             .build();
@@ -1434,8 +1487,10 @@ public class DetectProperties {
     public static final EnumProperty<DetectTargetType> DETECT_TARGET_TYPE =
         EnumProperty.newBuilder("detect.target.type", DetectTargetType.SOURCE, DetectTargetType.class)
             .setInfo("Detect Target", DetectPropertyFromVersion.VERSION_7_0_0)
-            .setHelp("Informs detect of what is being scanned which allows improved user experience when scanning different types of targets.",
-                "Changes the behaviour of detect to better suite what is being scanned. For example, when IMAGE is selected, detect will not pick a source directory, will automatically disable the DETECTOR tool and run BINARY/SIGNATURE SCAN on the provided image.")
+            .setHelp(
+                "Informs detect of what is being scanned which allows improved user experience when scanning different types of targets.",
+                "Changes the behaviour of detect to better suite what is being scanned. For example, when IMAGE is selected, detect will not pick a source directory, will automatically disable the DETECTOR tool and run BINARY/SIGNATURE SCAN on the provided image."
+            )
             .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Simple)
             .build();
@@ -1489,8 +1544,10 @@ public class DetectProperties {
     public static final CaseSensitiveStringListProperty DETECT_YARN_EXCLUDED_WORKSPACES =
         CaseSensitiveStringListProperty.newBuilder("detect.yarn.excluded.workspaces")
             .setInfo("Yarn Exclude Workspaces", DetectPropertyFromVersion.VERSION_7_0_0)
-            .setHelp("A comma-separated list of Yarn workspaces (specified by the workspace directory's relative path) to exclude.",
-                "By default, Detect includes all workspaces, but will skip any Yarn workspaces specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+            .setHelp(
+                "A comma-separated list of Yarn workspaces (specified by the workspace directory's relative path) to exclude.",
+                "By default, Detect includes all workspaces, but will skip any Yarn workspaces specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+            )
             .setGroups(DetectGroup.YARN, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
             .setExample("workspaces/workspace-a,workspaces/*-test")
@@ -1499,8 +1556,10 @@ public class DetectProperties {
     public static final CaseSensitiveStringListProperty DETECT_YARN_INCLUDED_WORKSPACES =
         CaseSensitiveStringListProperty.newBuilder("detect.yarn.included.workspaces")
             .setInfo("Yarn Include Workspaces", DetectPropertyFromVersion.VERSION_7_0_0)
-            .setHelp("A comma-separated list of Yarn workspaces (specified by the workspace directory's relative path) to include.",
-                "By default, Detect includes all workspaces. If workspaces are excluded or included, Detect will include any workspace included by this property that is not excluded. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+            .setHelp(
+                "A comma-separated list of Yarn workspaces (specified by the workspace directory's relative path) to include.",
+                "By default, Detect includes all workspaces. If workspaces are excluded or included, Detect will include any workspace included by this property that is not excluded. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+            )
             .setGroups(DetectGroup.YARN, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
             .setExample("workspaces/workspace-a,workspaces/workspace-b")
@@ -1509,7 +1568,8 @@ public class DetectProperties {
     public static final EnumProperty<LogLevel> LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION =
         EnumProperty.newBuilder("logging.level.com.synopsys.integration", LogLevel.INFO, LogLevel.class)
             .setInfo("Logging Level", DetectPropertyFromVersion.VERSION_5_3_0)
-            .setHelp("The logging level of Detect.",
+            .setHelp(
+                "The logging level of Detect.",
                 "To keep the log file size manageable, use INFO level logging for normal use. Use DEBUG or TRACE for troubleshooting.<p/>" +
                     "Detect logging uses Spring Boot logging, which uses Logback (https://logback.qos.ch). " +
                     "The format of this property name is <i>logging.level.{package}[.{class}]</i>. " +
@@ -1522,15 +1582,18 @@ public class DetectProperties {
                     "For log message format, Detect uses a default value of <i>%d{yyyy-MM-dd HH:mm:ss z} ${LOG_LEVEL_PATTERN:%-6p}[%thread] %clr(---){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}</i>. " +
                     "You can change your log message format by setting the Spring Boot <i>logging.pattern.console</i> property to a different pattern. " +
                     "<p/>" +
-                    "Refer to the Spring Boot logging and Logback Project documentation for more details.")
+                    "Refer to the Spring Boot logging and Logback Project documentation for more details."
+            )
             .setGroups(DetectGroup.LOGGING, DetectGroup.GLOBAL)
             .build();
 
     public static final EnumProperty<LogLevel> LOGGING_LEVEL_DETECT =
         EnumProperty.newBuilder("logging.level.detect", LogLevel.INFO, LogLevel.class)
             .setInfo("Logging Level Shorthand", DetectPropertyFromVersion.VERSION_5_5_0)
-            .setHelp("Shorthand for the logging level of detect. Equivalent to setting <i>logging.level.com.synopsys.integration</i>.",
-                "Refer to the description of property <i>logging.level.com.synopsys.integration</i> for additional details.")
+            .setHelp(
+                "Shorthand for the logging level of detect. Equivalent to setting <i>logging.level.com.synopsys.integration</i>.",
+                "Refer to the description of property <i>logging.level.com.synopsys.integration</i> for additional details."
+            )
             .setGroups(DetectGroup.LOGGING, DetectGroup.GLOBAL)
             .build();
 
@@ -1552,8 +1615,10 @@ public class DetectProperties {
     public static final EnumProperty<BlackduckScanMode> DETECT_BLACKDUCK_SCAN_MODE =
         EnumProperty.newBuilder("detect.blackduck.scan.mode", BlackduckScanMode.INTELLIGENT, BlackduckScanMode.class)
             .setInfo("Detect Scan Mode", DetectPropertyFromVersion.VERSION_6_9_0)
-            .setHelp("Set the Black Duck scanning mode of Detect",
-                "Set the scanning mode of Detect to control how Detect will send data to Black Duck. RAPID will not persist the results and disables select Detect functionality for faster results. INTELLIGENT persists the results and permits all features of Detect.")
+            .setHelp(
+                "Set the Black Duck scanning mode of Detect",
+                "Set the scanning mode of Detect to control how Detect will send data to Black Duck. RAPID will not persist the results and disables select Detect functionality for faster results. INTELLIGENT persists the results and permits all features of Detect."
+            )
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK)
             .setCategory(DetectCategory.Advanced)
             .build();
@@ -1564,6 +1629,15 @@ public class DetectProperties {
     // username/password ==> api token
     public static final String BDIO1_DEPRECATION_MESSAGE = "This property is being removed, along with the option to generate BDIO in BDIO1 format. In the future, BDIO2 format will be the only option.";
     public static final String AGGREGATION_MODE_DEPRECATION_MESSAGE = "This property is being removed, along with the ability to set the aggregation mode. Detect will only operate in SUBPROJECT aggregation mode to more accurately report the dependency graph.";
+    public static final String BAZEL_DEPENDENCY_TYPE_DEPRECATION_MESSAGE = "This property is being removed. Please use property 'detect.bazel.workspace.rules' instead.";
+
+    public static final AllNoneEnumListProperty<WorkspaceRule> DETECT_BAZEL_DEPENDENCY_RULE =
+        AllNoneEnumListProperty.newBuilder("detect.bazel.dependency.type", emptyList(), WorkspaceRule.class)
+            .setInfo("Bazel workspace external dependency rule", DetectPropertyFromVersion.VERSION_6_0_0)
+            .setHelp("The Bazel workspace rule(s) used to pull in external dependencies. If not set, Detect will attempt to determine the rule(s) from the contents of the WORKSPACE file.")
+            .setGroups(DetectGroup.BAZEL, DetectGroup.SOURCE_SCAN)
+            .setDeprecated(BAZEL_DEPENDENCY_TYPE_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT)
+            .build();
 
     @Deprecated
     public static final NullableStringProperty DETECT_BOM_AGGREGATE_NAME =
@@ -1574,7 +1648,8 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .setDeprecated(
                 "This property is being removed, use detect.bdio.file.name to control the name of the bdio file Detect generates, currently it works the same as this property. In the future, Detect will only operate in SUBPROJECT aggregation mode and the new property will not control aggregation, only the file name.",
-                DetectMajorVersion.EIGHT)
+                DetectMajorVersion.EIGHT
+            )
             .build();
 
     @Deprecated
@@ -1626,7 +1701,8 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .setDeprecated(
                 "This property is being removed because it no longer provides functionality. The gradle inspector library is no longer used to gather Gradle dependencies. The init script generated by Detect has all the necessary functionality.",
-                DetectMajorVersion.EIGHT)
+                DetectMajorVersion.EIGHT
+            )
             .build();
 
     @Deprecated
@@ -1683,8 +1759,10 @@ public class DetectProperties {
     public static final BooleanProperty DETECT_GRADLE_INCLUDE_UNRESOLVED_CONFIGURATIONS =
         BooleanProperty.newBuilder("detect.gradle.include.unresolved.configurations", false)
             .setInfo("Gradle Include Unresolved Configurations", DetectPropertyFromVersion.VERSION_7_6_0)
-            .setHelp("When set to true, dependencies discovered from unresolved Gradle configurations will be included. It is set to false by default for a more accurate BOM.",
-                "Including dependencies from unresolved Gradle configurations could lead to false positives. Dependency versions from an unresolved configuration may differ from a resolved one. See https://docs.gradle.org/7.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs")
+            .setHelp(
+                "When set to true, dependencies discovered from unresolved Gradle configurations will be included. It is set to false by default for a more accurate BOM.",
+                "Including dependencies from unresolved Gradle configurations could lead to false positives. Dependency versions from an unresolved configuration may differ from a resolved one. See https://docs.gradle.org/7.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs"
+            )
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
             .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_GRADLE_CONFIGURATION_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
@@ -1766,8 +1844,10 @@ public class DetectProperties {
     public static final AllNoneEnumListProperty<PnpmDependencyType> DETECT_PNPM_DEPENDENCY_TYPES =
         AllNoneEnumListProperty.newBuilder("detect.pnpm.dependency.types", AllNoneEnum.ALL, PnpmDependencyType.class)
             .setInfo("pnpm Dependency Types", DetectPropertyFromVersion.VERSION_7_8_0)
-            .setHelp("Set this value to indicate which pnpm dependency types for should include in the BOM.",
-                "If you want Detect to report a specific type(s) of dependencies, pass a comma-separated list of such types (ex. APP, DEV, OPTIONAL).  By default, all types will be reported.")
+            .setHelp(
+                "Set this value to indicate which pnpm dependency types for should include in the BOM.",
+                "If you want Detect to report a specific type(s) of dependencies, pass a comma-separated list of such types (ex. APP, DEV, OPTIONAL).  By default, all types will be reported."
+            )
             .setGroups(DetectGroup.PNPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_PNPM_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
             .build();
@@ -1786,8 +1866,10 @@ public class DetectProperties {
 
     // TODO: Remove in 8.0.0
     private static String createDetectorPropertyDeprecationMessage(@NotNull Property replacementProperty) {
-        return String.format("This property is being removed in favor of %s. If the replacement property is set, this property is ignored. The default value of this property is used if both properties are not set.",
-            replacementProperty.getKey());
+        return String.format(
+            "This property is being removed in favor of %s. If the replacement property is set, this property is ignored. The default value of this property is used if both properties are not set.",
+            replacementProperty.getKey()
+        );
     }
 
     // Accessor to get all properties

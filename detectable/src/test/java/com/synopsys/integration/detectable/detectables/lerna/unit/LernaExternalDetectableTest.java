@@ -46,7 +46,8 @@ public class LernaExternalDetectableTest extends DetectableFunctionalTest {
 
         addPackageJson(Paths.get(""), "lernaTest", "package-version", new NameVersion("concat-map", "~1"));
 
-        addFile(Paths.get("package-lock.json"),
+        addFile(
+            Paths.get("package-lock.json"),
             "{",
             "   \"name\": \"lerna-project-name\",",
             "   \"version\": \"1.0.0\",",

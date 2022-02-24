@@ -49,8 +49,15 @@ public class BlackDuckTestConnection {
         HttpUrl blackDuckUrl = blackDuckServicesFactory.getBlackDuckHttpClient().getBlackDuckUrl();
         IntegrationEscapeUtil integrationEscapeUtil = blackDuckServicesFactory.createIntegrationEscapeUtil();
         long reportServiceTimeout = 120 * 1000;
-        return new ReportService(blackDuckServicesFactory.getGson(), blackDuckUrl, blackDuckServicesFactory.getBlackDuckApiClient(), blackDuckServicesFactory.getApiDiscovery(), new BufferedIntLogger(), integrationEscapeUtil,
-            reportServiceTimeout);
+        return new ReportService(
+            blackDuckServicesFactory.getGson(),
+            blackDuckUrl,
+            blackDuckServicesFactory.getBlackDuckApiClient(),
+            blackDuckServicesFactory.getApiDiscovery(),
+            new BufferedIntLogger(),
+            integrationEscapeUtil,
+            reportServiceTimeout
+        );
     }
 
     public String getBlackduckUrl() {

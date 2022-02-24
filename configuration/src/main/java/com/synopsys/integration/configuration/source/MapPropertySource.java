@@ -10,8 +10,8 @@ import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.configuration.util.KeyUtils;
 
 public class MapPropertySource implements PropertySource {
-    private String givenName;
-    private Map<String, String> normalizedPropertyMap;
+    private final String givenName;
+    private final Map<String, String> normalizedPropertyMap;
 
     public MapPropertySource(String givenName, Map<String, String> underlyingMap) {
         this.givenName = givenName;

@@ -1,8 +1,8 @@
 package com.synopsys.integration.detect.battery.docker.util;
 
 public class DockerDetectResult {
-    private int exitCode;
-    private String detectLogs;
+    private final int exitCode;
+    private final String detectLogs;
 
     public DockerDetectResult(int exitCode, String detectLogs) {
         this.exitCode = exitCode;

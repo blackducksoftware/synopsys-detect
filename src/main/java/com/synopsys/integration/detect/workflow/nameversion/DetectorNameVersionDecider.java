@@ -25,7 +25,7 @@ import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.util.NameVersion;
 
 public class DetectorNameVersionDecider {
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     public Optional<NameVersion> decideProjectNameVersion(List<DetectorProjectInfo> projectNamePossibilities, DetectorType preferredBomToolType) {
         NameVersionDecision nameVersionDecision = decideProjectNameVersionFromDetector(projectNamePossibilities, preferredBomToolType);

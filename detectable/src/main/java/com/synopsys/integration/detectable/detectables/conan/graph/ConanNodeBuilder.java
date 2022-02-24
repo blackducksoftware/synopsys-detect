@@ -131,10 +131,20 @@ public class ConanNodeBuilder<T> {
         if (forcedRootNode || (path != null)) {
             isRootNode = true;
         }
-        ConanNode<T> node = new ConanNode<>(ref, path, name, version, user, channel,
-            recipeRevision, packageId, packageRevision,
-            requiresRefs, buildRequiresRefs,
-            isRootNode);
+        ConanNode<T> node = new ConanNode<>(
+            ref,
+            path,
+            name,
+            version,
+            user,
+            channel,
+            recipeRevision,
+            packageId,
+            packageRevision,
+            requiresRefs,
+            buildRequiresRefs,
+            isRootNode
+        );
         logger.trace("node: {}", node);
         return Optional.of(node);
     }

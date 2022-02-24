@@ -26,8 +26,8 @@ public class DetectExecutableRunner implements DetectableExecutableRunner {
     private final Logger logger;
     private final EventSystem eventSystem;
     private final boolean shouldLogOutput;
-    private ProcessBuilderRunner runner;
-    private ProcessBuilderRunner secretRunner;
+    private final ProcessBuilderRunner runner;
+    private final ProcessBuilderRunner secretRunner;
 
     private DetectExecutableRunner(Logger logger, Consumer<String> outputConsumer, Consumer<String> traceConsumer, EventSystem eventSystem, boolean shouldLogOutput) {
         this.logger = logger;

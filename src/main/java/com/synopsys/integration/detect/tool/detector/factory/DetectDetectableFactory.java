@@ -8,7 +8,6 @@ import com.synopsys.integration.detectable.detectable.inspector.PipInspectorReso
 import com.synopsys.integration.detectable.detectable.inspector.ProjectInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
-import com.synopsys.integration.detectable.detectables.bazel.BazelProjectNameGenerator;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
 import com.synopsys.integration.detectable.detectables.cargo.CargoDetectable;
 import com.synopsys.integration.detectable.detectables.carthage.CarthageDetectable;
@@ -71,9 +70,16 @@ public class DetectDetectableFactory {
     private final PipInspectorResolver pipInspectorResolver;
     private final ProjectInspectorResolver projectInspectorResolver;
 
-    public DetectDetectableFactory(DetectableFactory detectableFactory, DetectableOptionFactory detectableOptionFactory, DetectExecutableResolver detectExecutableResolver,
-        DockerInspectorResolver dockerInspectorResolver, GradleInspectorResolver gradleInspectorResolver, NugetInspectorResolver nugetInspectorResolver,
-        PipInspectorResolver pipInspectorResolver, ProjectInspectorResolver projectInspectorResolver) {
+    public DetectDetectableFactory(
+        DetectableFactory detectableFactory,
+        DetectableOptionFactory detectableOptionFactory,
+        DetectExecutableResolver detectExecutableResolver,
+        DockerInspectorResolver dockerInspectorResolver,
+        GradleInspectorResolver gradleInspectorResolver,
+        NugetInspectorResolver nugetInspectorResolver,
+        PipInspectorResolver pipInspectorResolver,
+        ProjectInspectorResolver projectInspectorResolver
+    ) {
         this.detectableFactory = detectableFactory;
         this.detectableOptionFactory = detectableOptionFactory;
         this.detectExecutableResolver = detectExecutableResolver;
@@ -261,7 +267,8 @@ public class DetectDetectableFactory {
     }
 
     public LernaDetectable createLernaDetectable(DetectableEnvironment environment) {
-        return detectableFactory.createLernaDetectable(environment,
+        return detectableFactory.createLernaDetectable(
+            environment,
             detectExecutableResolver,
             detectableOptionFactory.createNpmLockfileOptions(),
             detectableOptionFactory.createLernaOptions(),

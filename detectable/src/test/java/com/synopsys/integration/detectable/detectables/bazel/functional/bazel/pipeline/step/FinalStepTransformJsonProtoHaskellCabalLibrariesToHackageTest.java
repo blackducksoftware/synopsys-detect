@@ -29,7 +29,8 @@ public class FinalStepTransformJsonProtoHaskellCabalLibrariesToHackageTest {
         String jsonProtoHaskellCabalLibrary = FileUtils.readFileToString(jsonProtoFile, StandardCharsets.UTF_8);
         FinalStepTransformJsonProtoHaskellCabalLibrariesToHackage step = new FinalStepTransformJsonProtoHaskellCabalLibrariesToHackage(
             new HaskellCabalLibraryJsonProtoParser(new Gson()),
-            new ExternalIdFactory());
+            new ExternalIdFactory()
+        );
         List<String> input = new ArrayList<>(1);
         input.add(jsonProtoHaskellCabalLibrary);
 

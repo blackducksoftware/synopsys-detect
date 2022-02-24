@@ -32,7 +32,8 @@ public class GradleInspectorDetectableTest extends DetectableFunctionalTest {
 
     @Override
     protected void setup() throws IOException {
-        addFile(Paths.get("build.gradle"),
+        addFile(
+            Paths.get("build.gradle"),
             "buildscript {",
             "    repositories {",
             "        jcenter()",
@@ -86,8 +87,18 @@ public class GradleInspectorDetectableTest extends DetectableFunctionalTest {
     public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
 
         GradleInspectorOptions gradleInspectorOptions = new GradleInspectorOptions("",
-            new GradleInspectorScriptOptions(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), "", ""),
-            ProxyInfo.NO_PROXY_INFO, EnumListFilter.excludeNone());
+            new GradleInspectorScriptOptions(
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                "",
+                ""
+            ),
+            ProxyInfo.NO_PROXY_INFO, EnumListFilter.excludeNone()
+        );
         return detectableFactory.createGradleDetectable(detectableEnvironment, gradleInspectorOptions, () -> new File("gradle-inspector"), (environment) -> ExecutableTarget.forFile(new File("gradle")));
     }
 

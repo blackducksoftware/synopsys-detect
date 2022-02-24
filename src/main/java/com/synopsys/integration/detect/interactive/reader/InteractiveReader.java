@@ -1,8 +1,8 @@
 package com.synopsys.integration.detect.interactive.reader;
 
 public interface InteractiveReader {
-    public String readLine();
+    String readLine();
 
-    public String readPassword();
+    String readPassword();
 
 }

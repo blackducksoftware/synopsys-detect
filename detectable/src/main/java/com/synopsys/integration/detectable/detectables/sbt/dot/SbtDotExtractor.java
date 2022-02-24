@@ -31,9 +31,14 @@ public class SbtDotExtractor {
     private final SbtDotGraphNodeParser graphNodeParser;
     private final SbtCommandArgumentGenerator sbtCommandArgumentGenerator;
 
-    public SbtDotExtractor(DetectableExecutableRunner executableRunner, SbtDotOutputParser sbtDotOutputParser, SbtRootNodeFinder sbtRootNodeFinder,
-        SbtGraphParserTransformer sbtGraphParserTransformer, SbtDotGraphNodeParser graphNodeParser,
-        SbtCommandArgumentGenerator sbtCommandArgumentGenerator) {
+    public SbtDotExtractor(
+        DetectableExecutableRunner executableRunner,
+        SbtDotOutputParser sbtDotOutputParser,
+        SbtRootNodeFinder sbtRootNodeFinder,
+        SbtGraphParserTransformer sbtGraphParserTransformer,
+        SbtDotGraphNodeParser graphNodeParser,
+        SbtCommandArgumentGenerator sbtCommandArgumentGenerator
+    ) {
         this.executableRunner = executableRunner;
         this.sbtDotOutputParser = sbtDotOutputParser;
         this.sbtRootNodeFinder = sbtRootNodeFinder;

@@ -104,7 +104,8 @@ public class UniversalStepRunner {
         } else {
             throw new DetectUserFriendlyException(
                 String.format("The %s property was set to an unsupported aggregation mode, will not aggregate at this time.", DetectProperties.DETECT_BOM_AGGREGATE_REMEDIATION_MODE.getKey()),
-                ExitCodeType.FAILURE_GENERAL_ERROR);
+                ExitCodeType.FAILURE_GENERAL_ERROR
+            );
         }
 
         boolean isBdio2 = operationFactory.calculateBdioOptions().isBdio2Enabled();

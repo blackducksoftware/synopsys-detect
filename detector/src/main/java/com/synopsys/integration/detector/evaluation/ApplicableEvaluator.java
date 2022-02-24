@@ -24,7 +24,7 @@ public class ApplicableEvaluator extends Evaluator {
 
     @Override
     protected DetectorEvaluationTree performEvaluation(DetectorEvaluationTree rootEvaluation) {
-        logger.info("Searching for detectors. This may take a while.");
+        logger.info("Evaluating detectors. This may take a while.");
         searchAndApplicableEvaluation(rootEvaluation, new HashSet<>());
         return rootEvaluation;
     }
@@ -40,8 +40,14 @@ public class ApplicableEvaluator extends Evaluator {
             DetectorRule detectorRule = detectorEvaluation.getDetectorRule();
             logger.trace("Evaluating detector: {}", detectorRule.getDescriptiveName());
 
-            SearchEnvironment searchEnvironment = new SearchEnvironment(detectorEvaluationTree.getDepthFromRoot(), getEvaluationOptions().getDetectorFilter(), getEvaluationOptions().isForceNested(),
-                getEvaluationOptions().isFollowSymLinks(), appliedInParent, appliedSoFar);
+            SearchEnvironment searchEnvironment = new SearchEnvironment(
+                detectorEvaluationTree.getDepthFromRoot(),
+                getEvaluationOptions().getDetectorFilter(),
+                getEvaluationOptions().isForceNested(),
+                getEvaluationOptions().isFollowSymLinks(),
+                appliedInParent,
+                appliedSoFar
+            );
             detectorEvaluation.setSearchEnvironment(searchEnvironment);
 
             DetectorResult searchableResult = detectorRuleSetEvaluator.evaluateSearchable(detectorEvaluationTree.getDetectorRuleSet(), detectorEvaluation.getDetectorRule(), searchEnvironment);

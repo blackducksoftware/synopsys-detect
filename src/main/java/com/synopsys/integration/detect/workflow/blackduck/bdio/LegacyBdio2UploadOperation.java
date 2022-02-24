@@ -7,7 +7,7 @@ import com.synopsys.integration.blackduck.codelocation.upload.UploadBatchOutput;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class LegacyBdio2UploadOperation extends BdioUploadOperation {
-    private Bdio2UploadService bdioUploadService;
+    private final Bdio2UploadService bdioUploadService;
 
     public LegacyBdio2UploadOperation(Bdio2UploadService bdioUploadService) {
         this.bdioUploadService = bdioUploadService;

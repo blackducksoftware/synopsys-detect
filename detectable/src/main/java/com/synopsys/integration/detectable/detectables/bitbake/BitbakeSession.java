@@ -36,10 +36,17 @@ public class BitbakeSession {
     private final BuildFileFinder buildFileFinder;
     private final BitbakeEnvironmentParser bitbakeEnvironmentParser;
 
-    public BitbakeSession(DetectableExecutableRunner executableRunner, BitbakeRecipesParser bitbakeRecipesParser,
-        File sourceDir, File buildEnvScript, List<String> sourceArguments,
-        ExecutableTarget bashExecutable, ToolVersionLogger toolVersionLogger, BuildFileFinder buildFileFinder,
-        BitbakeEnvironmentParser bitbakeEnvironmentParser) {
+    public BitbakeSession(
+        DetectableExecutableRunner executableRunner,
+        BitbakeRecipesParser bitbakeRecipesParser,
+        File sourceDir,
+        File buildEnvScript,
+        List<String> sourceArguments,
+        ExecutableTarget bashExecutable,
+        ToolVersionLogger toolVersionLogger,
+        BuildFileFinder buildFileFinder,
+        BitbakeEnvironmentParser bitbakeEnvironmentParser
+    ) {
         this.executableRunner = executableRunner;
         this.bitbakeRecipesParser = bitbakeRecipesParser;
         this.sourceDir = sourceDir;
@@ -69,7 +76,7 @@ public class BitbakeSession {
         try {
             ExecutableOutput output = runBitbake(GET_WORKING_DIR_COMMAND);
             List<String> pwdOutputLines = output.getStandardOutputAsList();
-            derivedBuildDir = new File(pwdOutputLines.get(pwdOutputLines.size()-1).trim());
+            derivedBuildDir = new File(pwdOutputLines.get(pwdOutputLines.size() - 1).trim());
         } catch (Exception e) {
             logger.warn("Unable to determine build directory location due to error: {}; ; using {} for build dir", e.getMessage(), fallbackBuildDir.getAbsolutePath());
             return fallbackBuildDir;

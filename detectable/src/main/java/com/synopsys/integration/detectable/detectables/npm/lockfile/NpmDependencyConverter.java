@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmDependency;

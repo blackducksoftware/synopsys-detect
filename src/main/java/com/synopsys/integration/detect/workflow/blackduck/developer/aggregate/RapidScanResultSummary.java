@@ -15,8 +15,17 @@ public class RapidScanResultSummary {
     private final Set<String> componentsViolatingPolicy;
     private final Set<String> componentsViolatingPolicyWarnings;
 
-    private RapidScanResultSummary(int policyErrorCount, int policyWarningCount, int securityErrorCount, int securityWarningCount, int licenseErrorCount, int licenseWarningCount,
-        Set<String> policyViolationNames, Set<String> componentsViolatingPolicy, Set<String> componentsViolatingPolicyWarnings) {
+    private RapidScanResultSummary(
+        int policyErrorCount,
+        int policyWarningCount,
+        int securityErrorCount,
+        int securityWarningCount,
+        int licenseErrorCount,
+        int licenseWarningCount,
+        Set<String> policyViolationNames,
+        Set<String> componentsViolatingPolicy,
+        Set<String> componentsViolatingPolicyWarnings
+    ) {
         this.policyErrorCount = policyErrorCount;
         this.policyWarningCount = policyWarningCount;
         this.securityErrorCount = securityErrorCount;
@@ -76,9 +85,9 @@ public class RapidScanResultSummary {
         private int licenseErrors;
         private int licenseWarnings;
 
-        private Set<String> violatedPolicyNames;
-        private Set<String> componentsViolatingPolicy;
-        private Set<String> componentsViolatingPolicyWarnings;
+        private final Set<String> violatedPolicyNames;
+        private final Set<String> componentsViolatingPolicy;
+        private final Set<String> componentsViolatingPolicyWarnings;
 
         public Builder() {
             this.policyErrors = 0;
@@ -150,9 +159,17 @@ public class RapidScanResultSummary {
         }
 
         public RapidScanResultSummary build() {
-            return new RapidScanResultSummary(this.policyErrors, this.policyWarnings, this.securityErrors, this.securityWarnings,
-                this.licenseErrors, this.licenseWarnings, violatedPolicyNames, componentsViolatingPolicy,
-                componentsViolatingPolicyWarnings);
+            return new RapidScanResultSummary(
+                this.policyErrors,
+                this.policyWarnings,
+                this.securityErrors,
+                this.securityWarnings,
+                this.licenseErrors,
+                this.licenseWarnings,
+                violatedPolicyNames,
+                componentsViolatingPolicy,
+                componentsViolatingPolicyWarnings
+            );
         }
     }
 }

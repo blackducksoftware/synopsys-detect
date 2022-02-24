@@ -14,7 +14,7 @@ import com.google.gson.Gson;
 public class InstalledToolLocator {
     private InstalledToolData installedToolData;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public InstalledToolLocator(Path pathToInstalledToolDataFile, Gson gson) {
         File installedToolDataFile = pathToInstalledToolDataFile.toFile();

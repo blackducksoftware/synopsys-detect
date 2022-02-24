@@ -59,11 +59,11 @@ public class OperationWrapper {
 
     @FunctionalInterface
     public interface OperationSupplier<T> {
-        public T execute() throws DetectUserFriendlyException, IntegrationException, InterruptedException, IOException, IntegrationRestException, BlackDuckTimeoutExceededException; //basically all known detect exceptions.
+        T execute() throws DetectUserFriendlyException, IntegrationException, InterruptedException, IOException; //basically all known detect exceptions.
     }
 
     @FunctionalInterface
     public interface OperationFunction {
-        public void execute() throws DetectUserFriendlyException, IntegrationException, InterruptedException, IOException, IntegrationRestException, BlackDuckTimeoutExceededException; //basically all known detect exceptions.
+        void execute() throws DetectUserFriendlyException, IntegrationException, InterruptedException, IOException; //basically all known detect exceptions.
     }
 }

@@ -68,8 +68,7 @@ public class YarnLockDependencyMetaListSectionParser implements YarnLockEntrySec
         }
         logger.trace("Marking dependency {}:{} optional", origDependency.getName(), origDependency.getVersion());
         entryBuilder.getDependencies().remove(curDependencyName);
-        YarnLockDependency replacementDependency = new YarnLockDependency(origDependency.getName(),
-            origDependency.getVersion(), true);
+        YarnLockDependency replacementDependency = new YarnLockDependency(origDependency.getName(), origDependency.getVersion(), true);
         entryBuilder.getDependencies().put(curDependencyName, replacementDependency);
     }
 

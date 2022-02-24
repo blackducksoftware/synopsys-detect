@@ -15,8 +15,7 @@ public class DetectCodeLocation {
     private final String creatorName;
     private final String dockerImageName;
 
-    private DetectCodeLocation(DependencyGraph dependencyGraph, File sourcePath, ExternalId externalId, String creatorName,
-        String dockerImageName) {
+    private DetectCodeLocation(DependencyGraph dependencyGraph, File sourcePath, ExternalId externalId, String creatorName, String dockerImageName) {
         this.dependencyGraph = dependencyGraph;
         this.sourcePath = sourcePath;
         this.externalId = externalId;

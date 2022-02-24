@@ -13,7 +13,6 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.BazelR
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
-import com.synopsys.integration.detectable.detectables.bazel.BazelProjectNameGenerator;
 import com.synopsys.integration.detectable.util.MockDetectableEnvironment;
 
 public class BazelDetectableTest {
@@ -25,7 +24,7 @@ public class BazelDetectableTest {
         Mockito.when(fileFinder.findFile(new File("."), "WORKSPACE")).thenReturn(new File("src/test/resources/functional/bazel/WORKSPACE"));
         BazelExtractor bazelExtractor = null;
         BazelResolver bazelResolver = null;
-        BazelDetectableOptions bazelDetectableOptions = new BazelDetectableOptions("target", null, null);
+        BazelDetectableOptions bazelDetectableOptions = new BazelDetectableOptions("target", null, null, null);
         BazelDetectable detectable = new BazelDetectable(environment, fileFinder, bazelExtractor, bazelResolver, bazelDetectableOptions.getTargetName().orElse(null));
 
         assertTrue(detectable.applicable().getPassed());

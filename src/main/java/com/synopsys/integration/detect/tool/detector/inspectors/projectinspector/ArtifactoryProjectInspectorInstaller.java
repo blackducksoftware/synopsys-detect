@@ -18,8 +18,10 @@ public class ArtifactoryProjectInspectorInstaller {
     private final ArtifactoryZipInstaller artifactoryZipInstaller;
     private final ProjectInspectorExecutableLocator projectInspectorExecutableLocator;
 
-    public ArtifactoryProjectInspectorInstaller(DetectInfo detectInfo,
-        ArtifactoryZipInstaller artifactoryZipInstaller, ProjectInspectorExecutableLocator projectInspectorExecutableLocator) {
+    public ArtifactoryProjectInspectorInstaller(
+        DetectInfo detectInfo,
+        ArtifactoryZipInstaller artifactoryZipInstaller, ProjectInspectorExecutableLocator projectInspectorExecutableLocator
+    ) {
         this.detectInfo = detectInfo;
         this.artifactoryZipInstaller = artifactoryZipInstaller;
         this.projectInspectorExecutableLocator = projectInspectorExecutableLocator;

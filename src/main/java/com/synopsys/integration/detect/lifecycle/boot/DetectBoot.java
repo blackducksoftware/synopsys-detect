@@ -158,8 +158,12 @@ public class DetectBoot {
         try {
 
             ProductDecider productDecider = new ProductDecider();
-            BlackDuckDecision blackDuckDecision = productDecider.decideBlackDuck(detectConfigurationFactory.createBlackDuckConnectionDetails(), detectConfigurationFactory.createBlackDuckSignatureScannerOptions(),
-                detectConfigurationFactory.createScanMode(), detectConfigurationFactory.createBdioOptions());
+            BlackDuckDecision blackDuckDecision = productDecider.decideBlackDuck(
+                detectConfigurationFactory.createBlackDuckConnectionDetails(),
+                detectConfigurationFactory.createBlackDuckSignatureScannerOptions(),
+                detectConfigurationFactory.createScanMode(),
+                detectConfigurationFactory.createBdioOptions()
+            );
             RunDecision runDecision = new RunDecision(detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE); //TODO: Move to proper decision home. -jp
             DetectToolFilter detectToolFilter = detectConfigurationFactory.createToolFilter(runDecision, blackDuckDecision);
 
@@ -186,7 +190,8 @@ public class DetectBoot {
 
         BootSingletons bootSingletons = detectBootFactory
             .createRunDependencies(productRunData, propertyConfiguration, detectableOptionFactory, detectConfigurationFactory, directoryManager, freemarkerConfiguration, installedToolManager,
-                installedToolLocator);
+                installedToolLocator
+            );
         return Optional.of(DetectBootResult.run(bootSingletons, propertyConfiguration, productRunData, directoryManager, diagnosticSystem));
     }
 
