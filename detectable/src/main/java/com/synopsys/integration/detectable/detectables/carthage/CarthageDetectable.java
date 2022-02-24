@@ -46,8 +46,7 @@ public class CarthageDetectable extends Detectable {
     @Override
     public DetectableResult extractable() throws DetectableException {
         Requirements requirements = new Requirements(fileFinder, environment);
-        requirements.optionalFile(CARTFILE_FILENAME);
-        requirements.file(CARTFILE_RESOLVED_FILENAME, new CartfileResolvedNotFoundDetectableResult(environment.getDirectory().getAbsolutePath()));
+        requirements.file(CARTFILE_RESOLVED_FILENAME, () -> new CartfileResolvedNotFoundDetectableResult(environment.getDirectory().getAbsolutePath()));
         return requirements.result();
     }
 

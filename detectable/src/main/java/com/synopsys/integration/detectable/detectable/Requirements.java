@@ -19,7 +19,6 @@ import com.synopsys.integration.detectable.detectable.explanation.FoundExecutabl
 import com.synopsys.integration.detectable.detectable.explanation.FoundFile;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FailedDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
@@ -108,23 +107,23 @@ public class Requirements {
         return file(environment.getDirectory(), filename);
     }
 
-    public File file(String filename, FailedDetectableResult missingFileResult) {
-        return file(environment.getDirectory(), filename, missingFileResult);
+    public File file(String filename, FailedResultCreator createMissingResult) {
+        return file(environment.getDirectory(), filename, createMissingResult);
     }
 
     public File file(File directory, String filename) {
         return file(directory, filename, true, null);
     }
 
-    public File file(File directory, String filename, FailedDetectableResult missingFileResult) {
-        return file(directory, filename, true, missingFileResult);
+    public File file(File directory, String filename, FailedResultCreator createMissingResult) {
+        return file(directory, filename, true, createMissingResult);
     }
 
-    public File file(File directory, String filename, boolean isRelevant, @Nullable FailedDetectableResult missingFileResult) {
+    public File file(File directory, String filename, boolean isRelevant, @Nullable FailedResultCreator createMissingResult) {
         // The only difference between Optional File and Required File is Required populate failure, so if optional 'is not met' we can capture that by setting failure.
         return optionalFile(directory, filename, () -> {
-            if (missingFileResult != null) {
-                failure = missingFileResult;
+            if (createMissingResult != null) {
+                failure = createMissingResult.createFailedResult();
             } else {
                 failure = new FileNotFoundDetectableResult(filename);
             }
