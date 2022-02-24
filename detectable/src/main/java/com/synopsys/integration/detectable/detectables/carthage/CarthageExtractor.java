@@ -7,18 +7,22 @@ import java.util.List;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectables.carthage.model.CarthageDeclaration;
 import com.synopsys.integration.detectable.extraction.Extraction;
 
 public class CarthageExtractor {
-    private final CartfileResolvedDependencyDeclarationParser dependencyDeclarationParser;
+    private final CartfileResolvedParser cartfileResolvedParser;
+    private final CarthageDeclarationTransformer declarationTransformer;
 
-    public CarthageExtractor(CartfileResolvedDependencyDeclarationParser dependencyDeclarationParser) {
-        this.dependencyDeclarationParser = dependencyDeclarationParser;
+    public CarthageExtractor(CartfileResolvedParser cartfileResolvedParser, CarthageDeclarationTransformer declarationTransformer) {
+        this.cartfileResolvedParser = cartfileResolvedParser;
+        this.declarationTransformer = declarationTransformer;
     }
 
     public Extraction extract(File cartfileResolved) throws IOException {
         List<String> dependencyDeclarations = Files.readAllLines(cartfileResolved.toPath());
-        DependencyGraph dependencyGraph = dependencyDeclarationParser.parseDependencies(dependencyDeclarations);
+        List<CarthageDeclaration> carthageDeclarations = cartfileResolvedParser.parseDependencies(dependencyDeclarations);
+        DependencyGraph dependencyGraph = declarationTransformer.transform(carthageDeclarations);
         CodeLocation codeLocation = new CodeLocation(dependencyGraph);
         // No project info - hoping git can help with that.
         return new Extraction.Builder().success(codeLocation).build();

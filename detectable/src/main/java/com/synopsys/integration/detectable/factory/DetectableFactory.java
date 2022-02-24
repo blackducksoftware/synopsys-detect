@@ -64,7 +64,8 @@ import com.synopsys.integration.detectable.detectables.cargo.parse.CargoDependen
 import com.synopsys.integration.detectable.detectables.cargo.parse.CargoTomlParser;
 import com.synopsys.integration.detectable.detectables.cargo.transform.CargoLockPackageDataTransformer;
 import com.synopsys.integration.detectable.detectables.cargo.transform.CargoLockPackageTransformer;
-import com.synopsys.integration.detectable.detectables.carthage.CartfileResolvedDependencyDeclarationParser;
+import com.synopsys.integration.detectable.detectables.carthage.CartfileResolvedParser;
+import com.synopsys.integration.detectable.detectables.carthage.CarthageDeclarationTransformer;
 import com.synopsys.integration.detectable.detectables.carthage.CarthageDetectable;
 import com.synopsys.integration.detectable.detectables.carthage.CarthageExtractor;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
@@ -331,7 +332,10 @@ public class DetectableFactory {
     }
 
     public CarthageDetectable createCarthageDetectable(DetectableEnvironment environment) {
-        return new CarthageDetectable(environment, fileFinder, carthageExtractor());
+        CartfileResolvedParser cartfileResolvedParser = new CartfileResolvedParser();
+        CarthageDeclarationTransformer carthageDeclarationTransformer = new CarthageDeclarationTransformer();
+        CarthageExtractor carthageExtractor = new CarthageExtractor(cartfileResolvedParser, carthageDeclarationTransformer);
+        return new CarthageDetectable(environment, fileFinder, carthageExtractor);
     }
 
     public ClangDetectable createClangDetectable(DetectableEnvironment environment, ClangDetectableOptions clangDetectableOptions) {
@@ -577,10 +581,6 @@ public class DetectableFactory {
 
     private DependencyFileDetailGenerator dependencyFileDetailGenerator() {
         return new DependencyFileDetailGenerator(filePathGenerator());
-    }
-
-    private CarthageExtractor carthageExtractor() {
-        return new CarthageExtractor(new CartfileResolvedDependencyDeclarationParser());
     }
 
     private ClangPackageDetailsTransformer clangPackageDetailsTransformer() {
