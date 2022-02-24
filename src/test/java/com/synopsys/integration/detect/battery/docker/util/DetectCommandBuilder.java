@@ -8,10 +8,10 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.detect.battery.docker.integration.BlackDuckAssertions;
 import com.synopsys.integration.detect.battery.docker.integration.BlackDuckTestConnection;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.util.NameVersion;
 
@@ -43,8 +43,8 @@ public class DetectCommandBuilder {
         return this;
     }
 
-    public DetectCommandBuilder property(DetectProperty<?> property, String value) {
-        property(property.getProperty().getKey(), value);
+    public DetectCommandBuilder property(Property property, String value) {
+        property(property.getKey(), value);
         return this;
     }
 

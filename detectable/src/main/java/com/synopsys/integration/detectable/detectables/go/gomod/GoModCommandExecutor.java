@@ -8,20 +8,15 @@ import java.util.regex.Pattern;
 
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
-import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
-import com.synopsys.integration.executable.ExecutableOutput;
-import com.synopsys.integration.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 
-// TODO: Look into using DetectableExecutableRunner::executeSuccessfully. It may be able to reduce the code here. - JM 07/2021
-// Suppresses SonarLint warnings for duplicated strings. This improves readability of the executable arguments.
 public class GoModCommandExecutor {
-    private static final String FAILURE_MSG_QUERYING_FOR_THE_GO_MOD_GRAPH = "Querying for the go mod graph failed:";
-    private static final String FAILURE_MSG_QUERYING_GO_FOR_THE_LIST_OF_MODULES = "Querying go for the list of modules failed: ";
-    private static final String FAILURE_MSG_QUERYING_FOR_THE_VERSION = "Querying for the version failed: ";
-    private static final String FAILURE_MSG_QUERYING_FOR_GO_MOD_WHY = "Querying for the go modules compiled into the binary failed:";
-    private static final Pattern GENERATE_GO_LIST_U_JSON_OUTPUT_PATTERN = Pattern.compile("\\d+\\.[\\d.]+");
+    // java:S5852: Warning about potential DoS risk.
+    @SuppressWarnings({ "java:S5852" })
+    private static final Pattern GENERATE_GO_LIST_JSON_OUTPUT_PATTERN = Pattern.compile("\\d+\\.[\\d.]+"); // TODO: Provide example. This looks like it's used for version matching contrary to the name. JM-01/2022
     private static final String JSON_OUTPUT_FLAG = "-json";
+    private static final String MODULE_OUTPUT_FLAG = "-m";
 
     private final DetectableExecutableRunner executableRunner;
 
@@ -29,43 +24,41 @@ public class GoModCommandExecutor {
         this.executableRunner = executableRunner;
     }
 
-    List<String> generateGoListOutput(File directory, ExecutableTarget goExe) throws ExecutableRunnerException, DetectableException {
-        return execute(directory, goExe, FAILURE_MSG_QUERYING_GO_FOR_THE_LIST_OF_MODULES, "list", "-m", JSON_OUTPUT_FLAG);
+    // Excludes the "all" argument to return the root project modules
+    List<String> generateGoListOutput(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
+        return executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, goExe, "list", MODULE_OUTPUT_FLAG, JSON_OUTPUT_FLAG))
+            .getStandardOutputAsList();
     }
 
-    List<String> generateGoListUJsonOutput(File directory, ExecutableTarget goExe) throws ExecutableRunnerException, DetectableException {
-        List<String> goVersionOutput = execute(directory, goExe, FAILURE_MSG_QUERYING_FOR_THE_VERSION, "version");
-        Matcher matcher = GENERATE_GO_LIST_U_JSON_OUTPUT_PATTERN.matcher(goVersionOutput.get(0));
+    // TODO: Utilize the fields "Main": true, and "Indirect": true, fields from the JSON output to avoid running go list twice. Before switching to json output we needed to run twice. JM-01/2022
+    List<String> generateGoListJsonOutput(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
+        // TODO: Move the Go version checking to it's own method. JM-01/2022
+        List<String> goVersionOutput = executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, goExe, "version"))
+            .getStandardOutputAsList();
+        Matcher matcher = GENERATE_GO_LIST_JSON_OUTPUT_PATTERN.matcher(goVersionOutput.get(0));
         if (matcher.find()) {
             String version = matcher.group();
             String[] parts = version.split("\\.");
             if (Integer.parseInt(parts[0]) > 1 || Integer.parseInt(parts[1]) >= 14) {
-                // TODO: Why are we passing -u into these commands? We don't do anything with the "update" block. I think this slows down the run and risks introducing more errors. JM 10/2021
-                // https://pkg.go.dev/cmd/go/internal/list it appears -u only checks for package updates.
-                return execute(directory, goExe, FAILURE_MSG_QUERYING_FOR_THE_GO_MOD_GRAPH, "list", "-mod=readonly", "-m", "-u", JSON_OUTPUT_FLAG, "all");
+                return executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, goExe, "list", "-mod=readonly", MODULE_OUTPUT_FLAG, JSON_OUTPUT_FLAG, "all"))
+                    .getStandardOutputAsList();
             } else {
-                return execute(directory, goExe, FAILURE_MSG_QUERYING_FOR_THE_GO_MOD_GRAPH, "list", "-m", "-u", JSON_OUTPUT_FLAG, "all");
+                return executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, goExe, "list", MODULE_OUTPUT_FLAG, JSON_OUTPUT_FLAG, "all"))
+                    .getStandardOutputAsList();
             }
-        }
+        } // TODO: If we don't have a version for go, we don't do anything. This should probably result in a failure. JM-01/2022
         return new ArrayList<>();
     }
 
-    List<String> generateGoModGraphOutput(File directory, ExecutableTarget goExe) throws ExecutableRunnerException, DetectableException {
-        return execute(directory, goExe, FAILURE_MSG_QUERYING_FOR_THE_GO_MOD_GRAPH, "mod", "graph");
+    List<String> generateGoModGraphOutput(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
+        return executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, goExe, "mod", "graph"))
+            .getStandardOutputAsList();
     }
 
-    List<String> generateGoModWhyOutput(File directory, ExecutableTarget goExe) throws DetectableException, ExecutableRunnerException {
+    List<String> generateGoModWhyOutput(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
         // executing this command helps produce more accurate results. Parse the output to create a module exclusion list.
-        return execute(directory, goExe, FAILURE_MSG_QUERYING_FOR_GO_MOD_WHY, "mod", "why", "-m", "all");
+        return executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, goExe, "mod", "why", "-m", "all"))
+            .getStandardOutputAsList();
     }
 
-    private List<String> execute(File directory, ExecutableTarget goExe, String failureMessage, String... arguments) throws DetectableException, ExecutableRunnerException {
-        ExecutableOutput output = executableRunner.execute(ExecutableUtils.createFromTarget(directory, goExe, arguments));
-
-        if (output.getReturnCode() == 0) {
-            return output.getStandardOutputAsList();
-        } else {
-            throw new DetectableException(failureMessage + output.getReturnCode());
-        }
-    }
 }

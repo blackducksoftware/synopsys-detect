@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.configuration.config.InvalidPropertyException;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
-import com.synopsys.integration.configuration.parse.ValueParseException;
 import com.synopsys.integration.configuration.property.PropertyTestHelpUtil;
 import com.synopsys.integration.configuration.property.types.enumallnone.list.NoneEnumList;
 import com.synopsys.integration.configuration.property.types.enumallnone.property.NoneEnumListProperty;
@@ -25,15 +24,15 @@ public class NoneListPropertiesTests {
 
     @Test
     public void testHelp() throws InvalidPropertyException {
-        NoneEnumListProperty<Example> property = new NoneEnumListProperty<Example>("enum.valued", new ArrayList<>(), Example.class);
+        NoneEnumListProperty<Example> property = new NoneEnumListProperty<>("enum.valued", new ArrayList<>(), Example.class);
         PropertyTestHelpUtil.assertAllHelpValid(property, Arrays.asList("THING", "ANOTHER", "THIRD", "NONE"));
     }
 
     @Test
     public void testNone() throws InvalidPropertyException {
-        NoneEnumListProperty<Example> property = new NoneEnumListProperty<Example>("enum.valued", new ArrayList<>(), Example.class);
+        NoneEnumListProperty<Example> property = new NoneEnumListProperty<>("enum.valued", new ArrayList<>(), Example.class);
         PropertyConfiguration config = configOf(Pair.of("enum.valued", "nOnE"));
-        NoneEnumList<Example> list = property.toList(config.getValue(property));
+        NoneEnumList<Example> list = config.getValue(property);
 
         Assertions.assertTrue(list.containsNone());
         Assertions.assertFalse(list.containsAll());
@@ -45,9 +44,9 @@ public class NoneListPropertiesTests {
 
     @Test
     public void testSingleValue() throws InvalidPropertyException {
-        NoneEnumListProperty<Example> property = new NoneEnumListProperty<Example>("enum.valued", new ArrayList<>(), Example.class);
+        NoneEnumListProperty<Example> property = new NoneEnumListProperty<>("enum.valued", new ArrayList<>(), Example.class);
         PropertyConfiguration config = configOf(Pair.of("enum.valued", "thIrd"));
-        NoneEnumList<Example> list = property.toList(config.getValue(property));
+        NoneEnumList<Example> list = config.getValue(property);
 
         Assertions.assertFalse(list.containsNone());
         Assertions.assertFalse(list.containsAll());
@@ -61,9 +60,9 @@ public class NoneListPropertiesTests {
 
     @Test
     public void testTwoValues() throws InvalidPropertyException {
-        NoneEnumListProperty<Example> property = new NoneEnumListProperty<Example>("enum.valued", new ArrayList<>(), Example.class);
+        NoneEnumListProperty<Example> property = new NoneEnumListProperty<>("enum.valued", new ArrayList<>(), Example.class);
         PropertyConfiguration config = configOf(Pair.of("enum.valued", "thIrd,another"));
-        NoneEnumList<Example> list = property.toList(config.getValue(property));
+        NoneEnumList<Example> list = config.getValue(property);
 
         Assertions.assertFalse(list.containsNone());
         Assertions.assertFalse(list.containsAll());
@@ -78,8 +77,8 @@ public class NoneListPropertiesTests {
 
     @Test()
     public void testAllThrows() throws InvalidPropertyException {
-        NoneEnumListProperty<Example> property = new NoneEnumListProperty<Example>("enum.valued", new ArrayList<>(), Example.class);
+        NoneEnumListProperty<Example> property = new NoneEnumListProperty<>("enum.valued", new ArrayList<>(), Example.class);
         PropertyConfiguration config = configOf(Pair.of("enum.valued", "aLL"));
-        Assertions.assertThrows(InvalidPropertyException.class, () -> property.toList(config.getValue(property)));
+        Assertions.assertThrows(InvalidPropertyException.class, () -> config.getValue(property));
     }
 }

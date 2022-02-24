@@ -1,14 +1,13 @@
 package com.synopsys.integration.detectable.detectables.pnpm.functional;
 
 import java.io.File;
-import java.util.Arrays;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.detectable.util.DependencyTypeFilter;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockExtractor;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmLinkedPackageResolver;
@@ -23,7 +22,7 @@ public class PnpmLockExtractorTest {
     @Test
     public void testNoFailureOnNullPackageJson() {
         PackageJsonFiles packageJsonFiles = new PackageJsonFiles(new PackageJsonReader(new Gson()));
-        DependencyTypeFilter<PnpmDependencyType> dependencyTypeFilter = new DependencyTypeFilter<>(Arrays.asList(PnpmDependencyType.OPTIONAL, PnpmDependencyType.DEV));
+        EnumListFilter<PnpmDependencyType> dependencyTypeFilter = EnumListFilter.fromExcluded(PnpmDependencyType.APP);
         PnpmLockExtractor extractor = new PnpmLockExtractor(new PnpmLockYamlParser(new PnpmYamlTransformer(new ExternalIdFactory(), dependencyTypeFilter)), packageJsonFiles);
 
         File pnpmLockYaml = FunctionalTestFiles.asFile("/pnpm/pnpm-lock.yaml");

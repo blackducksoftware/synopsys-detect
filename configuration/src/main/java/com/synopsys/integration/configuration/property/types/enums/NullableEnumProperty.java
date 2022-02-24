@@ -5,10 +5,10 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.configuration.property.base.NullableProperty;
+import com.synopsys.integration.configuration.property.base.NullableAlikeProperty;
 import com.synopsys.integration.configuration.util.EnumPropertyUtils;
 
-public class NullableEnumProperty<E extends Enum<E>> extends NullableProperty<E> {
+public class NullableEnumProperty<E extends Enum<E>> extends NullableAlikeProperty<E> {
     @NotNull
     private final Class<E> enumClass;
 

@@ -1,4 +1,6 @@
 dependencies {
     implementation project(':detectable')
     implementation project(':common')
+
+    implementation 'com.synopsys.integration:integration-bdio:22.1.8'
 }

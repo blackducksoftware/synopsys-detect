@@ -3,9 +3,9 @@ package com.synopsys.integration.detect.lifecycle.boot.decision;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 
 public class BlackDuckDecision {
-    private boolean shouldRun;
-    private boolean isOffline;
-    private BlackduckScanMode scanMode;
+    private final boolean shouldRun;
+    private final boolean isOffline;
+    private final BlackduckScanMode scanMode;
 
     public BlackDuckDecision(boolean shouldRun, boolean isOffline, BlackduckScanMode scanMode) {
         this.shouldRun = shouldRun;

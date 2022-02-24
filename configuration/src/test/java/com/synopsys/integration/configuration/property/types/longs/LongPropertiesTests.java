@@ -13,15 +13,15 @@ import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.configuration.config.InvalidPropertyException;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.PropertyTestHelpUtil;
-import com.synopsys.integration.configuration.property.base.NullableProperty;
-import com.synopsys.integration.configuration.property.base.ValuedListProperty;
-import com.synopsys.integration.configuration.property.base.ValuedProperty;
+import com.synopsys.integration.configuration.property.base.NullableAlikeProperty;
+import com.synopsys.integration.configuration.property.base.ValuedAlikeListProperty;
+import com.synopsys.integration.configuration.property.base.ValuedAlikeProperty;
 
 // Simple glue sanity tests. Theoretically if Config is well tested and Parser is well tested, these will pass so they are not exhaustive.
 public class LongPropertiesTests {
     @Test
     public void testNullable() throws InvalidPropertyException {
-        NullableProperty<Long> property = new NullableLongProperty("long.nullable");
+        NullableAlikeProperty<Long> property = new NullableLongProperty("long.nullable");
         PropertyConfiguration config = configOf(Pair.of("long.nullable", "2"));
         Assertions.assertEquals(Optional.of(2L), config.getValue(property));
 
@@ -30,7 +30,7 @@ public class LongPropertiesTests {
 
     @Test
     public void testValued() throws InvalidPropertyException {
-        ValuedProperty<Long> property = new LongProperty("long.valued", 2L);
+        ValuedAlikeProperty<Long> property = new LongProperty("long.valued", 2L);
         PropertyConfiguration config = configOf(Pair.of("long.valued", "5"));
         Assertions.assertEquals(new Long(5L), config.getValue(property));
 
@@ -39,7 +39,7 @@ public class LongPropertiesTests {
 
     @Test
     public void testList() throws InvalidPropertyException {
-        ValuedListProperty<Long> property = new LongListProperty("long.list", Collections.emptyList());
+        ValuedAlikeListProperty<Long> property = new LongListProperty("long.list", Collections.emptyList());
         PropertyConfiguration config = configOf(Pair.of("long.list", "2,3"));
         Assertions.assertEquals(Bds.listOf(2L, 3L), config.getValue(property));
 

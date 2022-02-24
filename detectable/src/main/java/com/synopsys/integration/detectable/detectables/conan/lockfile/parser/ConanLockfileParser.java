@@ -55,7 +55,8 @@ public class ConanLockfileParser {
             logger.trace("{}: {}:{}#{}", entry.getKey(),
                 entry.getValue().getRef().orElse("?"),
                 entry.getValue().getPackageId().orElse("?"),
-                entry.getValue().getPackageRevision().orElse("?"));
+                entry.getValue().getPackageRevision().orElse("?")
+            );
             ConanLockfileNode lockfileNode = entry.getValue();
             Optional<ConanNode<Integer>> conanNode = generateConanNode(entry.getKey(), lockfileNode);
             conanNode.ifPresent(node -> graphNodes.put(entry.getKey(), node));

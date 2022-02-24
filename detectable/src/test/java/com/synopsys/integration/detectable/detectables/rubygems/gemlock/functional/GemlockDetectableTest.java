@@ -21,7 +21,8 @@ public class GemlockDetectableTest extends DetectableFunctionalTest {
 
     @Override
     public void setup() throws IOException {
-        addFile(Paths.get("Gemfile.lock"),
+        addFile(
+            Paths.get("Gemfile.lock"),
             "GEM",
             "  remote:https://rubygems.org/",
             "  specs:",
@@ -46,7 +47,8 @@ public class GemlockDetectableTest extends DetectableFunctionalTest {
             "  cocoapods-keys",
             "",
             "BUNDLED WITH",
-            "  1.14.6");
+            "  1.14.6"
+        );
     }
 
     @Override

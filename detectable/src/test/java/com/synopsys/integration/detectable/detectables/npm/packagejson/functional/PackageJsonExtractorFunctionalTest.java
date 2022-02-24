@@ -17,6 +17,8 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
+import com.synopsys.integration.detectable.detectables.npm.NpmDependencyType;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.PackageJsonExtractor;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
@@ -24,7 +26,6 @@ import com.synopsys.integration.detectable.util.graph.GraphAssert;
 
 @FunctionalTest
 public class PackageJsonExtractorFunctionalTest {
-    private PackageJsonExtractor packageJsonExtractor;
     private InputStream packageJsonInputStream;
 
     private ExternalId testDep1;
@@ -36,9 +37,7 @@ public class PackageJsonExtractorFunctionalTest {
 
     @BeforeEach
     void setUp() {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
         ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-
         testDep1 = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, "name1", "version1");
         testDep2 = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, "name2", "version2");
         testDevDep1 = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, "nameDev1", "versionDev1");
@@ -46,13 +45,18 @@ public class PackageJsonExtractorFunctionalTest {
         testPeerDep1 = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, "namePeer1", "versionPeer1");
         testPeerDep2 = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, "namePeer2", "versionPeer2");
 
-        packageJsonExtractor = new PackageJsonExtractor(gson, externalIdFactory);
         packageJsonInputStream = FunctionalTestFiles.asInputStream("/npm/package.json");
+    }
+
+    private PackageJsonExtractor createExtractor(NpmDependencyType... excludedTypes) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        EnumListFilter<NpmDependencyType> npmDependencyTypeFilter = EnumListFilter.fromExcluded(excludedTypes);
+        return new PackageJsonExtractor(gson, new ExternalIdFactory(), npmDependencyTypeFilter);
     }
 
     @Test
     void extractWithNoDevDependencies() {
-        Extraction extraction = packageJsonExtractor.extract(packageJsonInputStream, false, false);
+        Extraction extraction = createExtractor(NpmDependencyType.PEER, NpmDependencyType.DEV).extract(packageJsonInputStream);
         assertEquals(1, extraction.getCodeLocations().size());
         CodeLocation codeLocation = extraction.getCodeLocations().get(0);
         DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
@@ -69,7 +73,7 @@ public class PackageJsonExtractorFunctionalTest {
 
     @Test
     void extractWithDevDependencies() {
-        Extraction extraction = packageJsonExtractor.extract(packageJsonInputStream, true, false);
+        Extraction extraction = createExtractor(NpmDependencyType.PEER).extract(packageJsonInputStream);
         assertEquals(1, extraction.getCodeLocations().size());
         CodeLocation codeLocation = extraction.getCodeLocations().get(0);
         DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
@@ -86,7 +90,7 @@ public class PackageJsonExtractorFunctionalTest {
 
     @Test
     void extractWithPeerDependencies() {
-        Extraction extraction = packageJsonExtractor.extract(packageJsonInputStream, false, true);
+        Extraction extraction = createExtractor(NpmDependencyType.DEV).extract(packageJsonInputStream);
         assertEquals(1, extraction.getCodeLocations().size());
         CodeLocation codeLocation = extraction.getCodeLocations().get(0);
         DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();

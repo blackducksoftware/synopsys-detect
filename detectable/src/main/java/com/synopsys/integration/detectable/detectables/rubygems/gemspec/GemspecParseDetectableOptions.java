@@ -1,19 +1,16 @@
 package com.synopsys.integration.detectable.detectables.rubygems.gemspec;
 
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
+import com.synopsys.integration.detectable.detectables.rubygems.GemspecDependencyType;
+
 public class GemspecParseDetectableOptions {
-    final boolean includeRuntimeDependencies;
-    final boolean includeDevelopmentDependencies;
+    private final EnumListFilter<GemspecDependencyType> dependencyTypeFilter;
 
-    public GemspecParseDetectableOptions(boolean includeRuntimeDependencies, boolean includeDevelopmentDependencies) {
-        this.includeRuntimeDependencies = includeRuntimeDependencies;
-        this.includeDevelopmentDependencies = includeDevelopmentDependencies;
+    public GemspecParseDetectableOptions(EnumListFilter<GemspecDependencyType> dependencyTypeFilter) {
+        this.dependencyTypeFilter = dependencyTypeFilter;
     }
 
-    public boolean shouldIncludeRuntimeDependencies() {
-        return includeRuntimeDependencies;
-    }
-
-    public boolean shouldIncludeDevelopmentDependencies() {
-        return includeDevelopmentDependencies;
+    public EnumListFilter<GemspecDependencyType> getDependencyTypeFilter() {
+        return dependencyTypeFilter;
     }
 }

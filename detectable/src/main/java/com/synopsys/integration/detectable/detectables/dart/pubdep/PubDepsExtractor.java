@@ -29,8 +29,7 @@ public class PubDepsExtractor {
     private PubSpecYamlNameVersionParser nameVersionParser;
     private final ToolVersionLogger toolVersionLogger;
 
-    public PubDepsExtractor(DetectableExecutableRunner executableRunner, PubDepsParser pubDepsParser, PubSpecYamlNameVersionParser nameVersionParser,
-        ToolVersionLogger toolVersionLogger) {
+    public PubDepsExtractor(DetectableExecutableRunner executableRunner, PubDepsParser pubDepsParser, PubSpecYamlNameVersionParser nameVersionParser, ToolVersionLogger toolVersionLogger) {
         this.executableRunner = executableRunner;
         this.pubDepsParser = pubDepsParser;
         this.nameVersionParser = nameVersionParser;
@@ -45,7 +44,7 @@ public class PubDepsExtractor {
             pubDepsCommand.add("pub");
             pubDepsCommand.add("deps");
 
-            if (dartPubDepsDetectableOptions.isExcludeDevDependencies()) {
+            if (dartPubDepsDetectableOptions.getDependencyTypeFilter().shouldExclude(DartPubDependencyType.DEV)) {
                 pubDepsCommand.add("--no-dev");
             }
 

@@ -21,7 +21,7 @@ public class ValuedListPropertyTest {
         }
     }
 
-    private static class TestListProperty extends ValuedListProperty<String> {
+    private static class TestListProperty extends ValuedAlikeListProperty<String> {
         public TestListProperty(@NotNull String key, List<String> defaultValue) {
             super(key, new ListValueParser<>(new TestValueParser()), defaultValue);
         }

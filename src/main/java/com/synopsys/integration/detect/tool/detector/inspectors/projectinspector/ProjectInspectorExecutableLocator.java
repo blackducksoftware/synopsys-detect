@@ -41,15 +41,15 @@ public class ProjectInspectorExecutableLocator {
         File bin = new File(extractedZip, "bin");
         File executable = new File(bin, executableName);
         if (executable.exists()) {
-            logger.debug("Found it: " + executable.toString());
+            logger.debug("Found it: " + executable);
             if (!executable.canExecute()) {
                 if (!executable.setExecutable(true)) {
-                    throw new DetectableException("Unable to set project inspector to executable: " + executable.toString());
+                    throw new DetectableException("Unable to set project inspector to executable: " + executable);
                 }
             }
             return executable;
         } else {
-            logger.debug("Could not find executable: " + executable.toString());
+            logger.debug("Could not find executable: " + executable);
             return null;
         }
     }

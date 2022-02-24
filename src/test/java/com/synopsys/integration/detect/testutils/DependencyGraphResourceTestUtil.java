@@ -62,7 +62,7 @@ public class DependencyGraphResourceTestUtil {
         Set<T> extraActual = new HashSet<>(actual);
         extraActual.removeAll(expected);
 
-        assertEquals(0, missingExpected.size(), title + ": Found missing expected " + missingExpected.toString());
-        assertEquals(0, extraActual.size(), title + ": Found extra actual " + extraActual.toString());
+        assertEquals(0, missingExpected.size(), title + ": Found missing expected " + missingExpected);
+        assertEquals(0, extraActual.size(), title + ": Found extra actual " + extraActual);
     }
 }

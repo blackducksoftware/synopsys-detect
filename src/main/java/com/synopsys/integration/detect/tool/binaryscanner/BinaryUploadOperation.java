@@ -70,9 +70,11 @@ public class BinaryUploadOperation {
                 // multi-line html with the message embedded (that mess up the log).
                 // cleanResponse() attempts to produce something reasonable to log in either case
                 String cleanedBlackDuckResponse = cleanResponse(binaryScanOutput.getResponse());
-                String uploadErrorMessage = String.format("Error when uploading binary scan: %s (Black Duck response: %s)",
+                String uploadErrorMessage = String.format(
+                    "Error when uploading binary scan: %s (Black Duck response: %s)",
                     binaryScanOutput.getErrorMessage().orElse(binaryScanOutput.getStatusMessage()),
-                    cleanedBlackDuckResponse);
+                    cleanedBlackDuckResponse
+                );
                 logger.error(uploadErrorMessage);
                 throw new BlackDuckIntegrationException(uploadErrorMessage);
             }

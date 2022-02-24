@@ -24,7 +24,7 @@ public class BuildFileFinder {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final FileFinder fileFinder;
 
-    public BuildFileFinder(final FileFinder fileFinder) {
+    public BuildFileFinder(FileFinder fileFinder) {
         this.fileFinder = fileFinder;
     }
 
@@ -36,37 +36,37 @@ public class BuildFileFinder {
         }
         if (taskDependsDotFile == null) {
             throw new IntegrationException(String.format("Failed to find %s in either %s or %s",
-                TASK_DEPENDS_FILE_NAME, buildDir.getAbsolutePath(), sourceDir.getAbsolutePath()));
+                TASK_DEPENDS_FILE_NAME, buildDir.getAbsolutePath(), sourceDir.getAbsolutePath()
+            ));
         }
         return taskDependsDotFile;
     }
 
-    public File findLicenseManifestFile(File buildDir, String targetImageName, BitbakeEnvironment bitbakeEnvironment, boolean followSymLinks, int searchDepth) throws IntegrationException {
+    public Optional<File> findLicenseManifestFile(File buildDir, String targetImageName, BitbakeEnvironment bitbakeEnvironment, boolean followSymLinks, int searchDepth) {
         try {
             String machineArch = bitbakeEnvironment.getMachineArch().orElse(null);
             File licensesDir = findLicensesDir(buildDir, bitbakeEnvironment.getLicensesDirPath().orElse(null), followSymLinks, searchDepth);
             logger.debug("Checking licenses dir {} for license.manifest for {}", licensesDir.getAbsolutePath(), targetImageName);
             List<File> licensesDirContents = generateListOfFiles(licensesDir);
-            Optional<File> architectureSpecificManifestFile = findManifestFileForTargetArchitecture(targetImageName,
-                machineArch, licensesDirContents, followSymLinks);
+            Optional<File> architectureSpecificManifestFile = findManifestFileForTargetArchitecture(targetImageName, machineArch, licensesDirContents, followSymLinks);
             if (architectureSpecificManifestFile.isPresent()) {
-                return architectureSpecificManifestFile.get();
+                return architectureSpecificManifestFile;
             }
             logger.debug("Did not find a license.manifest for architecture {}; Will look for the most recent license.manifest file.", machineArch);
             Optional<File> latestLicenseManifestFile = findMostRecentLicenseManifestFileForTarget(targetImageName, licensesDirContents, followSymLinks);
             if (latestLicenseManifestFile.isPresent()) {
                 logger.debug("Found most recent license.manifest file: {}", latestLicenseManifestFile.get().getAbsolutePath());
-                return latestLicenseManifestFile.get();
+                return latestLicenseManifestFile;
             }
         } catch (Exception e) {
             logger.debug(String.format("Error finding license.manifest file for target image %s", targetImageName), e);
         }
-        throw new IntegrationException(String.format("Unable to find license.manifest file for target image %s", targetImageName));
+        logger.debug("Unable to find license.manifest file for target image {}", targetImageName);
+        return Optional.empty();
     }
 
     @NotNull
-    private List<File> generateListOfFiles(final File licensesDir) {
-        // TODO surely there's a single-line way to do this (via nio or apache FileUtils)
+    private List<File> generateListOfFiles(File licensesDir) {
         File[] licensesDirContentsArray = licensesDir.listFiles();
         if (licensesDirContentsArray == null) {
             return new ArrayList<>(0);
@@ -116,7 +116,8 @@ public class BuildFileFinder {
         }
         return Optional.empty();
     }
-    private Optional<File> findMostRecentLicenseManifestFileForTarget(final String targetImageName, final List<File> licensesDirContents, boolean followSymLinks) {
+
+    private Optional<File> findMostRecentLicenseManifestFileForTarget(String targetImageName, List<File> licensesDirContents, boolean followSymLinks) {
         File latestLicenseManifestFile = null;
         long latestLicenseManifestFileTime = 0;
         for (File licensesDirSubDir : licensesDirContents) {

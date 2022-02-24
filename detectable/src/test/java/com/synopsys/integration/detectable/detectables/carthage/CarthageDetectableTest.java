@@ -20,7 +20,8 @@ public class CarthageDetectableTest extends DetectableFunctionalTest {
 
     @Override
     protected void setup() throws IOException {
-        addFile(Paths.get("Cartfile.resolved"),
+        addFile(
+            Paths.get("Cartfile.resolved"),
             "binary \"https://downloads.localytics.com/SDKs/iOS/Localytics.json\" \"6.2.1\"",
             "github \"GEOSwift/GEOSwift\" \"8.0.2\"",
             "github \"MobileNativeFoundation/Kronos\" \"4.2.1\"",

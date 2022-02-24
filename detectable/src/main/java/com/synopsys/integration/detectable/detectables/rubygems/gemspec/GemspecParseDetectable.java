@@ -18,16 +18,13 @@ public class GemspecParseDetectable extends Detectable {
 
     private final FileFinder fileFinder;
     private final GemspecParseExtractor gemspecParseExtractor;
-    private final GemspecParseDetectableOptions gemspecParseDetectableOptions;
 
     private File gemspec;
 
-    public GemspecParseDetectable(DetectableEnvironment environment, FileFinder fileFinder, GemspecParseExtractor gemspecParseExtractor,
-        GemspecParseDetectableOptions gemspecParseDetectableOptions) {
+    public GemspecParseDetectable(DetectableEnvironment environment, FileFinder fileFinder, GemspecParseExtractor gemspecParseExtractor) {
         super(environment);
         this.fileFinder = fileFinder;
         this.gemspecParseExtractor = gemspecParseExtractor;
-        this.gemspecParseDetectableOptions = gemspecParseDetectableOptions;
     }
 
     @Override
@@ -44,6 +41,6 @@ public class GemspecParseDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
-        return gemspecParseExtractor.extract(gemspec, gemspecParseDetectableOptions.shouldIncludeRuntimeDependencies(), gemspecParseDetectableOptions.shouldIncludeDevelopmentDependencies());
+        return gemspecParseExtractor.extract(gemspec);
     }
 }

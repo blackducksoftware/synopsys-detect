@@ -14,6 +14,7 @@ import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.DartResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.FlutterResolver;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDepsDetectableOptions;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
@@ -58,7 +59,7 @@ public class DartPubDepsDetectableTest extends DetectableFunctionalTest {
             }
         }
 
-        DartPubDepsDetectableOptions dartPubDepsDetectableOptions = new DartPubDepsDetectableOptions(false);
+        DartPubDepsDetectableOptions dartPubDepsDetectableOptions = new DartPubDepsDetectableOptions(EnumListFilter.excludeNone());
         return detectableFactory.createDartPubDepDetectable(detectableEnvironment, dartPubDepsDetectableOptions, new DartResolverTest(), new FlutterResolverTest());
     }
 

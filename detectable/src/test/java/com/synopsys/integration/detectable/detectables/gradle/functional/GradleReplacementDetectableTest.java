@@ -12,6 +12,7 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorOptions;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptOptions;
 import com.synopsys.integration.detectable.extraction.Extraction;
@@ -67,8 +68,12 @@ public class GradleReplacementDetectableTest extends DetectableFunctionalTest {
     @NotNull
     @Override
     public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
-        GradleInspectorOptions gradleInspectorOptions = new GradleInspectorOptions("", new GradleInspectorScriptOptions(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), "", ""),
-            ProxyInfo.NO_PROXY_INFO, true);
+        GradleInspectorOptions gradleInspectorOptions = new GradleInspectorOptions(
+            "",
+            new GradleInspectorScriptOptions(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), "", ""),
+            ProxyInfo.NO_PROXY_INFO,
+            EnumListFilter.excludeNone()
+        );
         return detectableFactory.createGradleDetectable(detectableEnvironment, gradleInspectorOptions, () -> new File("gradle-inspector"), (environment) -> ExecutableTarget.forFile(new File("gradle")));
     }
 

@@ -1,7 +1,9 @@
 package com.synopsys.integration.configuration.property.types.enums;
 
 import static com.synopsys.integration.configuration.util.ConfigTestUtils.configOf;
+import static com.synopsys.integration.configuration.util.ConfigTestUtils.emptyConfig;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -12,6 +14,7 @@ import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.configuration.config.InvalidPropertyException;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.PropertyTestHelpUtil;
+import com.synopsys.integration.configuration.property.deprecation.DeprecatedValueUsage;
 
 // Simple glue sanity tests. Theoretically if Config is well tested and Parser is well tested, these will pass so they are not exhaustive.
 public class EnumPropertiesTests {
@@ -43,6 +46,48 @@ public class EnumPropertiesTests {
         Assertions.assertEquals(Example.THIRD, config.getValue(property));
 
         PropertyTestHelpUtil.assertAllHelpValid(property, Bds.listOf("THING", "ANOTHER", "THIRD"));
+    }
+
+    @Test
+    public void testDeprecatedValue() throws InvalidPropertyException {
+        EnumProperty<Example> property = new EnumProperty<>("enum.valued", Example.ANOTHER, Example.class);
+        property.deprecateValue(Example.THIRD, "Third is deprecated");
+
+        PropertyConfiguration config = configOf(Pair.of("enum.valued", "THIRD"));
+        Optional<Example> value = config.getProvidedParsedValue(property);
+        Assertions.assertTrue(value.isPresent());
+
+        List<DeprecatedValueUsage> deprecatedUsages = property.checkForDeprecatedValues(value.get());
+        Assertions.assertEquals(deprecatedUsages.size(), 1);
+        Assertions.assertEquals(deprecatedUsages.get(0).getValue(), "THIRD");
+        Assertions.assertEquals(deprecatedUsages.get(0).getInfo().getValueDescription(), "THIRD");
+        Assertions.assertEquals(deprecatedUsages.get(0).getInfo().getReason(), "Third is deprecated");
+    }
+
+    @Test
+    public void testDeprecatedValueDefaultNotUsage() throws InvalidPropertyException {
+        EnumProperty<Example> property = new EnumProperty<>("enum.valued", Example.THIRD, Example.class);
+        property.deprecateValue(Example.THIRD, "Third is deprecated");
+
+        PropertyConfiguration config = emptyConfig();
+        Optional<Example> value = config.getProvidedParsedValue(property);
+        Assertions.assertFalse(value.isPresent());
+    }
+
+    @Test
+    public void testDeprecatedValueDefaultProvided() throws InvalidPropertyException {
+        EnumProperty<Example> property = new EnumProperty<>("enum.valued", Example.THIRD, Example.class);
+        property.deprecateValue(Example.THIRD, "Third is deprecated");
+
+        PropertyConfiguration config = configOf(Pair.of("enum.valued", "THIRD"));
+        Optional<Example> value = config.getProvidedParsedValue(property);
+        Assertions.assertTrue(value.isPresent());
+
+        List<DeprecatedValueUsage> deprecatedUsages = property.checkForDeprecatedValues(value.get());
+        Assertions.assertEquals(deprecatedUsages.size(), 1);
+        Assertions.assertEquals(deprecatedUsages.get(0).getValue(), "THIRD");
+        Assertions.assertEquals(deprecatedUsages.get(0).getInfo().getValueDescription(), "THIRD");
+        Assertions.assertEquals(deprecatedUsages.get(0).getInfo().getReason(), "Third is deprecated");
     }
 
     @Test

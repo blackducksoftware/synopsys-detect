@@ -12,7 +12,6 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectable.result.CartfileResolvedNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
@@ -37,19 +36,7 @@ public class CarthageDetectable extends Detectable {
     @Override
     public DetectableResult applicable() { //TODO: Use the new requirements eitherFile.
         Requirements requirements = new Requirements(fileFinder, environment);
-
-        cartfile = fileFinder.findFile(environment.getDirectory(), CARTFILE_FILENAME);
-        cartfileResolved = fileFinder.findFile(environment.getDirectory(), CARTFILE_RESOLVED_FILENAME);
-
-        if (cartfile == null && cartfileResolved == null) {
-            return new FilesNotFoundDetectableResult(CARTFILE_FILENAME, CARTFILE_RESOLVED_FILENAME);
-        }
-        if (cartfile != null) {
-            requirements.explainFile(cartfile);
-        }
-        if (cartfileResolved != null) {
-            requirements.explainFile(cartfileResolved);
-        }
+        requirements.eitherFile(CARTFILE_FILENAME, CARTFILE_RESOLVED_FILENAME, foundCartfile -> cartfile = foundCartfile, foundCartfileResolved -> cartfileResolved = foundCartfileResolved);
         return requirements.result();
     }
 

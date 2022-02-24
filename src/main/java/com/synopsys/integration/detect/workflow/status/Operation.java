@@ -15,15 +15,15 @@ public class Operation {
         return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS").withZone(ZoneOffset.UTC).format(executionTime.atOffset(ZoneOffset.UTC));
     }
 
-    private Instant startTime;
+    private final Instant startTime;
     @Nullable
     private Instant endTime;
-    private String name;
+    private final String name;
     private StatusType statusType;
     private String[] errorMessages;
-    private OperationType operationType;
+    private final OperationType operationType;
     @Nullable
-    private String phoneHomeKey;
+    private final String phoneHomeKey;
 
     public static Operation of(String name) {
         return of(name, null);

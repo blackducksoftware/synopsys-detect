@@ -5,7 +5,7 @@ import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 
 public class ExitCodePublisher {
-    private EventSystem eventSystem;
+    private final EventSystem eventSystem;
 
     public ExitCodePublisher(EventSystem eventSystem) {
         this.eventSystem = eventSystem;

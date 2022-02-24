@@ -27,8 +27,13 @@ public class OnlineNugetInspectorLocator implements NugetInspectorLocator {
     private final InstalledToolManager installedToolManager;
     private final InstalledToolLocator installedToolLocator;
 
-    public OnlineNugetInspectorLocator(NugetInspectorInstaller nugetInspectorInstaller, DirectoryManager directoryManager, @Nullable String overrideVersion,
-        InstalledToolManager installedToolManager, InstalledToolLocator installedToolLocator) {
+    public OnlineNugetInspectorLocator(
+        NugetInspectorInstaller nugetInspectorInstaller,
+        DirectoryManager directoryManager,
+        @Nullable String overrideVersion,
+        InstalledToolManager installedToolManager,
+        InstalledToolLocator installedToolLocator
+    ) {
         this.nugetInspectorInstaller = nugetInspectorInstaller;
         this.directoryManager = directoryManager;
         this.overrideVersion = overrideVersion;

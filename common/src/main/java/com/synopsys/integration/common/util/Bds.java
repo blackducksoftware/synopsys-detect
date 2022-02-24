@@ -22,14 +22,13 @@ import org.apache.commons.lang3.tuple.Pair;
 //Black Duck Stream
 // TODO: Test this class.
 public class Bds<T> {
-    private Stream<T> stream;
+    Stream<T> stream;
 
     public Bds(Stream<T> stream) {
         this.stream = stream;
     }
 
-    public <U extends Comparable<? super U>> Bds<T> sortedBy(
-        Function<? super T, ? extends U> keyExtractor) {
+    public <U extends Comparable<? super U>> Bds<T> sortedBy(Function<? super T, ? extends U> keyExtractor) {
         Objects.requireNonNull(keyExtractor);
         stream = stream.sorted(Comparator.comparing(keyExtractor));
         return this;
@@ -72,6 +71,10 @@ public class Bds<T> {
         return new Bds<>(stream.flatMap(streamMapper));
     }
 
+    public <K, V> BdsPair<K, V> flatMapToPairs(Function<? super T, ? extends Stream<? extends Pair<K, V>>> mapper) {
+        return new BdsPair<>(stream.flatMap(mapper));
+    }
+
     public void forEach(Consumer<T> consumer) {
         stream.forEach(consumer);
     }
@@ -84,8 +87,10 @@ public class Bds<T> {
         return stream.collect(Collectors.groupingBy(classifier));
     }
 
-    public <K, U> Map<K, U> toMap(Function<? super T, ? extends K> keyMapper,
-        Function<? super T, ? extends U> valueMapper) {
+    public <K, U> Map<K, U> toMap(
+        Function<? super T, ? extends K> keyMapper,
+        Function<? super T, ? extends U> valueMapper
+    ) {
         return stream.collect(Collectors.toMap(keyMapper, valueMapper));
     }
 

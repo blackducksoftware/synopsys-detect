@@ -29,6 +29,7 @@ public class PnpmPackageInfo {
         return MapUtils.emptyIfNull(dependencies);
     }
 
+    // TODO: In 8.0.0 this should return an Optional<PnpmDependencyType> which does not have an APP value;
     public PnpmDependencyType getDependencyType() {
         if (isDev()) {
             return PnpmDependencyType.DEV;
