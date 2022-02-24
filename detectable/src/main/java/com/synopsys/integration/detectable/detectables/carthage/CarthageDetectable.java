@@ -12,7 +12,6 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectable.result.CartfileResolvedNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
@@ -24,7 +23,6 @@ public class CarthageDetectable extends Detectable {
     private final FileFinder fileFinder;
     private final CarthageExtractor carthageExtractor;
 
-    private File cartfile;
     private File cartfileResolved;
 
     public CarthageDetectable(DetectableEnvironment environment, FileFinder fileFinder, CarthageExtractor carthageExtractor) {
@@ -34,18 +32,23 @@ public class CarthageDetectable extends Detectable {
     }
 
     @Override
-    public DetectableResult applicable() { //TODO: Use the new requirements eitherFile.
+    public DetectableResult applicable() {
         Requirements requirements = new Requirements(fileFinder, environment);
-        requirements.eitherFile(CARTFILE_FILENAME, CARTFILE_RESOLVED_FILENAME, foundCartfile -> cartfile = foundCartfile, foundCartfileResolved -> cartfileResolved = foundCartfileResolved);
+        requirements.eitherFile(
+            CARTFILE_FILENAME,
+            CARTFILE_RESOLVED_FILENAME,
+            foundCartfile -> {}, // Used only to identify Carthage projects
+            foundCartfileResolved -> cartfileResolved = foundCartfileResolved
+        );
         return requirements.result();
     }
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        if (cartfileResolved == null && cartfile != null) { //TODO: See if we can express this better. Can be difficult to parse the meaning, maybe a Requirements.requiresLock()
-            return new CartfileResolvedNotFoundDetectableResult(environment.getDirectory().getAbsolutePath());
-        }
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        requirements.optionalFile(CARTFILE_FILENAME);
+        requirements.file(CARTFILE_RESOLVED_FILENAME, new CartfileResolvedNotFoundDetectableResult(environment.getDirectory().getAbsolutePath()));
+        return requirements.result();
     }
 
     @Override

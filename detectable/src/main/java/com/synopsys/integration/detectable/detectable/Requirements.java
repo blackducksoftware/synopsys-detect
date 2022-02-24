@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,6 +19,7 @@ import com.synopsys.integration.detectable.detectable.explanation.FoundExecutabl
 import com.synopsys.integration.detectable.detectable.explanation.FoundFile;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.FailedDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
@@ -70,12 +72,8 @@ public class Requirements {
         explainFile(file);
     }
 
-    public File file(String filename) {
-        return file(environment.getDirectory(), filename);
-    }
-
     public File directory(String filename) { //We don't include directory in a relevant file.
-        return file(environment.getDirectory(), filename, false);
+        return file(environment.getDirectory(), filename, false, null);
     }
 
     public Optional<File> optionalFile(String filename) {
@@ -106,14 +104,30 @@ public class Requirements {
         return file;
     }
 
-    public File file(File directory, String filename) {
-        return file(directory, filename, true);
+    public File file(String filename) {
+        return file(environment.getDirectory(), filename);
     }
 
-    public File file(File directory, String filename, boolean isRelevant) {
-        //Only difference between Optional File and Required File is Required populate failure, so if optional 'is not met' we can capture that by setting failure.
+    public File file(String filename, FailedDetectableResult missingFileResult) {
+        return file(environment.getDirectory(), filename, missingFileResult);
+    }
+
+    public File file(File directory, String filename) {
+        return file(directory, filename, true, null);
+    }
+
+    public File file(File directory, String filename, FailedDetectableResult missingFileResult) {
+        return file(directory, filename, true, missingFileResult);
+    }
+
+    public File file(File directory, String filename, boolean isRelevant, @Nullable FailedDetectableResult missingFileResult) {
+        // The only difference between Optional File and Required File is Required populate failure, so if optional 'is not met' we can capture that by setting failure.
         return optionalFile(directory, filename, () -> {
-            failure = new FileNotFoundDetectableResult(filename);
+            if (missingFileResult != null) {
+                failure = missingFileResult;
+            } else {
+                failure = new FileNotFoundDetectableResult(filename);
+            }
         }, isRelevant);
     }
 
@@ -172,7 +186,7 @@ public class Requirements {
     public void anyFileMatchesPatterns(List<String> patterns) {
         List<File> anyFiles = fileFinder.findFiles(environment.getDirectory(), patterns);
 
-        if (anyFiles.size() > 0) {
+        if (CollectionUtils.isNotEmpty(anyFiles)) {
             anyFiles.forEach(foundFile -> explanations.add(new FoundFile(foundFile)));
         } else {
             failure = new FilesNotFoundDetectableResult(patterns);

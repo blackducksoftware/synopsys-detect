@@ -9,6 +9,6 @@ public class CartfileResolvedNotFoundDetectableResult extends FailedDetectableRe
 
     @Override
     public String toDescription() {
-        return String.format("A Cartfile was located in %s, but the Cartfile.resolved file was NOT located. Please run 'carthage update' in that location and try again.", directoryPath);
+        return String.format("A Cartfile.resolved file was NOT found in %s. Please run 'carthage update' in that location and try again.", directoryPath);
     }
 }
