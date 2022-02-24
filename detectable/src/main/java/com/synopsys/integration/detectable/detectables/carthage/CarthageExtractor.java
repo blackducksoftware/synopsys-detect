@@ -27,6 +27,6 @@ public class CarthageExtractor {
         DependencyGraph dependencyGraph = declarationTransformer.transform(carthageDeclarations);
         CodeLocation codeLocation = new CodeLocation(dependencyGraph);
         // No project info - hoping git can help with that.
-        return new Extraction.Builder().success(codeLocation).build();
+        return Extraction.success(codeLocation);
     }
 }

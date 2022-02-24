@@ -19,14 +19,21 @@ public class Extraction {
     private final List<File> unrecognizedPaths;
     private final ExtractionResultType result;
 
-    //if your an error you might have one of these filled.
+    // If you're an error you might have one of these filled.
     private final Exception error;
-    //end
 
     private final String description;
     private final String projectVersion;
     private final String projectName;
-    private final Map<ExtractionMetadata, Object> metaData;
+    private final Map<ExtractionMetadata<?>, Object> metaData;
+
+    public static Extraction success(CodeLocation codeLocation) {
+        return new Extraction.Builder().success(codeLocation).build();
+    }
+
+    public static Extraction success(List<CodeLocation> codeLocations) {
+        return new Extraction.Builder().success(codeLocations).build();
+    }
 
     private Extraction(Builder builder) {
         this.codeLocations = builder.codeLocations;
@@ -106,7 +113,7 @@ public class Extraction {
 
         private String projectVersion;
         private String projectName;
-        private final Map<ExtractionMetadata, Object> metaData = new HashMap<>();
+        private final Map<ExtractionMetadata<?>, Object> metaData = new HashMap<>();
 
         public Builder projectName(String projectName) {
             this.projectName = projectName;
