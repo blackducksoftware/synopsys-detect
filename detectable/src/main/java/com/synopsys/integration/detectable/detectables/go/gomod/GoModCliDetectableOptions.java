@@ -1,15 +1,13 @@
 package com.synopsys.integration.detectable.detectables.go.gomod;
 
-import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
-
 public class GoModCliDetectableOptions {
-    private final EnumListFilter<GoModDependencyType> dependencyTypeFilter;
+    private final GoModDependencyType excludedDependencyTypes;
 
-    public GoModCliDetectableOptions(EnumListFilter<GoModDependencyType> dependencyTypeFilter) {
-        this.dependencyTypeFilter = dependencyTypeFilter;
+    public GoModCliDetectableOptions(GoModDependencyType excludedDependencyTypes) {
+        this.excludedDependencyTypes = excludedDependencyTypes;
     }
 
-    public EnumListFilter<GoModDependencyType> getDependencyTypeFilter() {
-        return dependencyTypeFilter;
+    public GoModDependencyType getExcludedDependencyTypes() {
+        return excludedDependencyTypes;
     }
 }

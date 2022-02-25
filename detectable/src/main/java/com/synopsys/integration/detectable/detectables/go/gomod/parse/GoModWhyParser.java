@@ -1,26 +1,27 @@
 package com.synopsys.integration.detectable.detectables.go.gomod.parse;
 
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
 
 public class GoModWhyParser {
-    private static final String MISSING_MODULE_PREFIX = "(main module does not need module";
+    private static final String[] UNUSED_MODULE_PREFIXES = new String[] {
+        "(main module does not need module",
+        "(main module does not need to vendor module"
+    };
+    private static final String[] UNUSED_MODULE_REPLACEMENTS = new String[] { "", "" };
 
     public Set<String> createModuleExclusionList(List<String> lines) {
         // find lines that look like the following and extract the module name i.e. cloud.google.com/go:
         // (main module does not need module cloud.google.com/go)
-        Set<String> exclusionModules = new LinkedHashSet<>();
-        for (String line : lines) {
-            String trimmedLine = line.trim();
-            if (trimmedLine.startsWith(MISSING_MODULE_PREFIX)) {
-                int closingParen = trimmedLine.lastIndexOf(")");
-                if (closingParen > 0 && closingParen > MISSING_MODULE_PREFIX.length()) {
-                    String moduleName = trimmedLine.substring(MISSING_MODULE_PREFIX.length(), closingParen);
-                    exclusionModules.add(moduleName.trim());
-                }
-            }
-        }
-        return exclusionModules;
+        return lines.stream()
+            .map(String::trim)
+            .filter(line -> StringUtils.startsWithAny(line, UNUSED_MODULE_PREFIXES))
+            .map(line -> StringUtils.replaceEach(line, UNUSED_MODULE_PREFIXES, UNUSED_MODULE_REPLACEMENTS))
+            .map(line -> StringUtils.removeEnd(line, ")"))
+            .map(String::trim)
+            .collect(Collectors.toSet());
     }
 }

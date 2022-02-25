@@ -141,10 +141,11 @@ import com.synopsys.integration.detectable.detectables.go.gogradle.GoGradleLockP
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectable;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliExtractor;
-import com.synopsys.integration.detectable.detectables.go.gomod.GoModCommandExecutor;
+import com.synopsys.integration.detectable.detectables.go.gomod.GoModCommandRunner;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoGraphParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoListParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoModWhyParser;
+import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoVersionParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.process.GoModGraphGenerator;
 import com.synopsys.integration.detectable.detectables.go.vendor.GoVendorDetectable;
 import com.synopsys.integration.detectable.detectables.go.vendor.GoVendorExtractor;
@@ -376,8 +377,8 @@ public class DetectableFactory {
         return new GitParseDetectable(environment, fileFinder, gitParseExtractor());
     }
 
-    public GoModCliDetectable createGoModCliDetectable(DetectableEnvironment environment, GoResolver goResolver, GoModCliDetectableOptions goModCliDetectableOptions) {
-        return new GoModCliDetectable(environment, fileFinder, goResolver, goModCliExtractor(), goModCliDetectableOptions);
+    public GoModCliDetectable createGoModCliDetectable(DetectableEnvironment environment, GoResolver goResolver, GoModCliDetectableOptions options) {
+        return new GoModCliDetectable(environment, fileFinder, goResolver, goModCliExtractor(options));
     }
 
     public GoDepLockDetectable createGoLockDetectable(DetectableEnvironment environment) {
@@ -673,28 +674,14 @@ public class DetectableFactory {
         return new GoDepExtractor(goLockParser());
     }
 
-    private GoModWhyParser goModWhyParser() {
-        return new GoModWhyParser();
-    }
-
-    private GoModCommandExecutor goModCommandExecutor() {
-        return new GoModCommandExecutor(executableRunner);
-    }
-
-    private GoModGraphGenerator goModGraphGraphGenerator() {
-        return new GoModGraphGenerator(externalIdFactory);
-    }
-
-    private GoListParser goListParser() {
-        return new GoListParser(gson);
-    }
-
-    private GoGraphParser goGraphParser() {
-        return new GoGraphParser();
-    }
-
-    private GoModCliExtractor goModCliExtractor() {
-        return new GoModCliExtractor(goModCommandExecutor(), goListParser(), goGraphParser(), goModWhyParser(), goModGraphGraphGenerator(), externalIdFactory);
+    private GoModCliExtractor goModCliExtractor(GoModCliDetectableOptions options) {
+        GoModCommandRunner goModCommandRunner = new GoModCommandRunner(executableRunner);
+        GoListParser goListParser = new GoListParser(gson);
+        GoGraphParser goGraphParser = new GoGraphParser();
+        GoModWhyParser goModWhyParser = new GoModWhyParser();
+        GoVersionParser goVersionParser = new GoVersionParser();
+        GoModGraphGenerator goModGraphGenerator = new GoModGraphGenerator(externalIdFactory);
+        return new GoModCliExtractor(goModCommandRunner, goListParser, goGraphParser, goModWhyParser, goVersionParser, goModGraphGenerator, externalIdFactory, options.getExcludedDependencyTypes());
     }
 
     private GoVndrExtractor goVndrExtractor() {

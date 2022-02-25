@@ -694,14 +694,14 @@ public class DetectProperties {
             .setGroups(DetectGroup.GO, DetectGroup.GLOBAL)
             .build();
 
-    public static final NoneEnumListProperty<GoModDependencyType> DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED =
-        NoneEnumListProperty.newBuilder("detect.go.mod.dependency.types.excluded", NoneEnum.NONE, GoModDependencyType.class)
+    public static final EnumProperty<GoModDependencyType> DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED =
+        EnumProperty.newBuilder("detect.go.mod.dependency.types.excluded", GoModDependencyType.NONE, GoModDependencyType.class)
             .setInfo("Go Mod Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
             .setHelp(
                 createDefaultDrivenPropertyHelpText("Go Mod dependency types", "detect.go.mod.enable.verification"),
-                String.format("If %s is excluded, Detect will use the results of 'go mod why' to filter out unused dependencies.", GoModDependencyType.UNUSED.name())
+                String.format("If %s is excluded, Detect will use the results of 'go mod why' to filter out unused dependencies.", GoModDependencyType.VENDORED.name())
             )
-            .setExample(GoModDependencyType.UNUSED.name())
+            .setExample(GoModDependencyType.VENDORED.name())
             .setGroups(DetectGroup.GO, DetectGroup.GLOBAL)
             .build();
 
