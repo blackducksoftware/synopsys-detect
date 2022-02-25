@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.util.NameVersion;
 
 public class Extraction {
@@ -43,10 +42,6 @@ public class Extraction {
         if (result == null) {
             throw new IllegalArgumentException("An extraction requires a result type.");
         }
-    }
-
-    public static Extraction fromFailedExecutable(ExecutableFailedException executableRunnerException) {
-        return new Extraction.Builder().exception(executableRunnerException).build();
     }
 
     public <T> Optional<T> getMetaData(ExtractionMetadata<T> extractionMetadata) {

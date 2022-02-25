@@ -12,6 +12,7 @@ import com.synopsys.integration.detectable.detectables.cpan.parse.CpanListParser
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class CpanCliExtractor {
     private final CpanListParser cpanListParser;
@@ -24,20 +25,16 @@ public class CpanCliExtractor {
         this.toolVersionLogger = toolVersionLogger;
     }
 
-    public Extraction extract(ExecutableTarget cpanExe, ExecutableTarget cpanmExe, File workingDirectory) {
-        try {
-            toolVersionLogger.log(workingDirectory, cpanExe);
-            ExecutableOutput cpanListOutput = executableRunner.execute(ExecutableUtils.createFromTarget(workingDirectory, cpanExe, "-l"));
-            List<String> listText = cpanListOutput.getStandardOutputAsList();
+    public Extraction extract(ExecutableTarget cpanExe, ExecutableTarget cpanmExe, File workingDirectory) throws ExecutableRunnerException {
+        toolVersionLogger.log(workingDirectory, cpanExe);
+        ExecutableOutput cpanListOutput = executableRunner.execute(ExecutableUtils.createFromTarget(workingDirectory, cpanExe, "-l")); //TODO: Consider command runner to reduce cognitive load.
+        List<String> listText = cpanListOutput.getStandardOutputAsList();
 
-            ExecutableOutput showdepsOutput = executableRunner.execute(ExecutableUtils.createFromTarget(workingDirectory, cpanmExe, "--showdeps", "."));
-            List<String> showdeps = showdepsOutput.getStandardOutputAsList();
+        ExecutableOutput showdepsOutput = executableRunner.execute(ExecutableUtils.createFromTarget(workingDirectory, cpanmExe, "--showdeps", "."));
+        List<String> showdeps = showdepsOutput.getStandardOutputAsList();
 
-            DependencyGraph dependencyGraph = cpanListParser.parse(listText, showdeps);
-            CodeLocation detectCodeLocation = new CodeLocation(dependencyGraph);
-            return new Extraction.Builder().success(detectCodeLocation).build();
-        } catch (Exception e) {
-            return new Extraction.Builder().exception(e).build();
-        }
+        DependencyGraph dependencyGraph = cpanListParser.parse(listText, showdeps);
+        CodeLocation detectCodeLocation = new CodeLocation(dependencyGraph);
+        return new Extraction.Builder().success(detectCodeLocation).build();
     }
 }

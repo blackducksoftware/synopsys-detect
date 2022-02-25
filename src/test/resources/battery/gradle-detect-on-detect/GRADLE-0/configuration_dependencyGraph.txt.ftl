@@ -340,11 +340,11 @@ testRuntimeOnly - Runtime only dependencies for source set 'test'. (n)
 A web-based, searchable dependency report is available by adding the --scan option.
 
 DETECT META DATA START
-rootProjectPath:${sourcePath?replace("\\", "/")}
+rootProjectDirectory:${sourcePath?replace("\\", "/")}
 rootProjectGroup:com.synopsys.integration
 rootProjectName:synopsys-detect
 rootProjectVersion:7.5.0-SNAPSHOT
-projectPath:${sourcePath?replace("\\", "/")}/configuration
+projectDirectory:${sourcePath?replace("\\", "/")}/configuration
 projectGroup:com.synopsys.integration
 projectName:configuration
 projectVersion:7.5.0-SNAPSHOT

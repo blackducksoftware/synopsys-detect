@@ -26,9 +26,10 @@ public class CpanListParser {
         this.externalIdFactory = externalIdFactory;
     }
 
+    //TODO: In a transformer
     public DependencyGraph parse(List<String> cpanListText, List<String> directDependenciesText) {
         Map<String, String> nameVersionMap = createNameVersionMap(cpanListText);
-        List<String> directModuleNames = getDirectModuleNames(directDependenciesText);
+        List<String> directModuleNames = getDirectModuleNames(directDependenciesText); //Lazy builder.
 
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
         for (String moduleName : directModuleNames) {
@@ -46,6 +47,7 @@ public class CpanListParser {
         return graph;
     }
 
+    //TODO: New parser
     public Map<String, String> createNameVersionMap(List<String> listText) {
         Map<String, String> nameVersionMap = new HashMap<>();
 
@@ -62,7 +64,7 @@ public class CpanListParser {
                 String[] module = line.trim().split("\t");
                 String name = module[0].trim();
                 String version = module[1].trim();
-                nameVersionMap.put(name, version);
+                nameVersionMap.put(name, version); //TODO: Potential collision point here.
             } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
                 logger.debug(String.format("Failed to handle the following line:%s", line));
             }
@@ -71,6 +73,7 @@ public class CpanListParser {
         return nameVersionMap;
     }
 
+    // TODO: New parser
     public List<String> getDirectModuleNames(List<String> directDependenciesText) {
         List<String> modules = new ArrayList<>();
         for (String line : directDependenciesText) {

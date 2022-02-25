@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -34,6 +35,8 @@ public class GradleInspectorScriptCreatorTest {
         GradleInspectorScriptOptions scriptOptions = new GradleInspectorScriptOptions(
             excludedProjectNames,
             includedProjectNames,
+            Collections.emptyList(),
+            Collections.emptyList(),
             excludedConfigurationNames,
             includedConfigurationNames,
             gradleInspectorRepositoryUrl,
