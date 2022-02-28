@@ -5,10 +5,14 @@
 ### New features
 
 * Verified support for Java 16 and 17.
+* Added support for vendoring Go Mod dependencies using [detect.go.mod.dependency.types.excluded=VENDORED](properties/detectors/go#go-mod-dependency-types-excluded) to exclude *test* and *build system* dependencies from Go modules declaring
+  a version prior to `Go 1.16`.
 
 ### Changed features
 
 * Added new property detect.bazel.workspace.rules to replace the now-deprecated detect.bazel.dependency.type property.
+* For Go Mod projects, successfully executing `go version` is now required. Unsuccessful attempts now results in a run failure.
+* The property *detect.go.mod.dependency.types.excluded* now only accepts a single value rather than a list of values.
 
 ## Resolved issues
 
