@@ -23,8 +23,8 @@
 Use [detect.go.mod.dependency.types.excluded=VENDORED](../properties/detectors/go.md#go-mod-dependency-types-excluded) to exclude the most dependencies. This will instruct [solution_name] to execute `go mod why -vendor` to generate a list
 of modules to exclude.
 
-Use the VENDORED optionton Running `go mod why` without the `-vendor` flag results in *test* and *build system* dependencies being included in the BOM from Go modules declaring a version prior
-to `Go 1.16`. See the [go mod why documentation](https://go.dev/ref/mod#go-mod-why) for additional details.
+Use the VENDORED option because running `go mod why` without the `-vendor` flag results in *test* and *build system* dependencies being included in the BOM from Go modules declaring a version prior to `Go 1.16`. See
+the [go mod why documentation](https://go.dev/ref/mod#go-mod-why) for additional details.
 
 #### Note on current exclusion behavior:
 
