@@ -12,23 +12,23 @@
 
 * Discovers dependencies of go language (GoLang) projects.
 * Attempts to run on your project if a go.mod file is found in your source directory.
-* Requires that the *go* executable is on the PATH or the executable path is set with [detect.go.path](../properties/detectors/go.md#go-executable).
+* Requires the *go* executable to be on the PATH or the executable path to be set with [detect.go.path](../properties/detectors/go.md#go-executable).
 * Runs *go list -m* and *go mod graph*, and parses the output of both to discover dependencies.
 * Runs *go mod why* to remove unused Go modules such as dependencies required by the build system or tests.
 
 ### Excluding Test and Build System dependencies
 
-[solution_name] has the ability to run additional Go commands to filter out *test* and *build system* dependencies from the BOM.
+[solution_name] can run additional Go commands to filter out *test* and *build system* dependencies from the BOM.
 
 Use [detect.go.mod.dependency.types.excluded=VENDORED](../properties/detectors/go.md#go-mod-dependency-types-excluded) to exclude the most dependencies. This will instruct [solution_name] to execute `go mod why -vendor` to generate a list
 of modules to exclude.
 
-Using the VENDORED option is likely preferred over UNUSED because running `go mod why` without the `-vendor` flag will result in *test* and *build system* dependencies still be included in the BOM from Go modules declaring a version prior
+Use the VENDORED optionton Running `go mod why` without the `-vendor` flag results in *test* and *build system* dependencies being included in the BOM from Go modules declaring a version prior
 to `Go 1.16`. See the [go mod why documentation](https://go.dev/ref/mod#go-mod-why) for additional details.
 
 #### Note on current exclusion behavior:
 
-Today, [solution_name] will run *go mod why* by default to remove unused components from the BOM. This may result in a low number of detected dependencies. This behavior can be controlled with
+Now, [solution_name] runs *go mod why* by default to remove unused components from the BOM. This may result in a low number of detected dependencies. This behavior can be controlled with
 the [detect.go.mod.dependency.types.excluded](../properties/detectors/go.md#go-mod-dependency-types-excluded)
 property.
 
