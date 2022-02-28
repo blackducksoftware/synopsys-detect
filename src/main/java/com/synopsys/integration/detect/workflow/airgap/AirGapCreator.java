@@ -60,7 +60,10 @@ public class AirGapCreator {
 
             File detectJar = airGapPathFinder.findDetectJar();
             if (detectJar == null) {
-                throw new DetectUserFriendlyException("To create an air gap zip, Detect must be run from a jar and be able to find that jar. Detect was unable to find it's own jar.", ExitCodeType.FAILURE_CONFIGURATION);
+                throw new DetectUserFriendlyException(
+                    "To create an air gap zip, Detect must be run from a jar and be able to find that jar. Detect was unable to find it's own jar.",
+                    ExitCodeType.FAILURE_CONFIGURATION
+                );
             }
             logger.info("The detect jar location: " + detectJar.getCanonicalPath());
 

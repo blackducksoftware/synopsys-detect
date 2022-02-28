@@ -46,7 +46,8 @@ public class CreateScanBatchRunnerWithCustomUrl {
         this.scanCommandRunner = scanCommandRunner;
     }
 
-    public ScanBatchRunner createScanBatchRunner(String providedUrl, ConnectionDetails connectionDetails, BlackDuckRegistrationService registrationService, File installDirectory) throws DetectUserFriendlyException {
+    public ScanBatchRunner createScanBatchRunner(String providedUrl, ConnectionDetails connectionDetails, BlackDuckRegistrationService registrationService, File installDirectory)
+        throws DetectUserFriendlyException {
         logger.debug("Signature scanner will use the provided url to download/update the scanner.");
         HttpUrl baseUrl;
         try {

@@ -85,7 +85,8 @@ public class LernaPackager {
         return LernaResult.success(rootLernaResult.getProjectName(), rootLernaResult.getProjectVersionName(), codeLocations);
     }
 
-    private @Nullable LernaResult extractPackage(LernaPackage lernaPackage, List<NameVersion> externalPackages, LernaLockFileResult rootLockFile) {
+    private @Nullable
+    LernaResult extractPackage(LernaPackage lernaPackage, List<NameVersion> externalPackages, LernaLockFileResult rootLockFile) {
         String lernaPackageDetails = String.format("%s:%s at %s", lernaPackage.getName(), lernaPackage.getVersion(), lernaPackage.getLocation());
 
         if (lernaPackage.isPrivate() && lernaPackageTypeFilter.shouldExclude(LernaPackageType.PRIVATE)) {
@@ -99,7 +100,11 @@ public class LernaPackager {
         File packagesPackageJson = fileFinder.findFile(lernaPackageDirectory, LernaDetectable.PACKAGE_JSON);
 
         if (packagesPackageJson == null) {
-            return LernaResult.failure(new FileNotFoundException(String.format("A %s file was not found in %s.", LernaDetectable.PACKAGE_JSON, lernaPackageDirectory.getAbsolutePath())));
+            return LernaResult.failure(new FileNotFoundException(String.format(
+                "A %s file was not found in %s.",
+                LernaDetectable.PACKAGE_JSON,
+                lernaPackageDirectory.getAbsolutePath()
+            )));
         }
 
         if (lockFile.hasLockFile()) {
@@ -146,7 +151,11 @@ public class LernaPackager {
                     lockFile.getNpmLockContents().get(),
                     externalPackages
                 );
-                return LernaResult.success(npmPackagerResult.getProjectName(), npmPackagerResult.getProjectVersion(), Collections.singletonList(npmPackagerResult.getCodeLocation()));
+                return LernaResult.success(
+                    npmPackagerResult.getProjectName(),
+                    npmPackagerResult.getProjectVersion(),
+                    Collections.singletonList(npmPackagerResult.getCodeLocation())
+                );
             } catch (Exception exception) {
                 return LernaResult.failure(exception);
             }

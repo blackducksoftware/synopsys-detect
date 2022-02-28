@@ -43,7 +43,8 @@ public class YarnTransformer {
         this.yarnDependencyTypeFilter = yarnDependencyTypeFilter;
     }
 
-    public List<CodeLocation> generateCodeLocations(YarnLockResult yarnLockResult, List<NameVersion> externalDependencies, @Nullable ExcludedIncludedWildcardFilter workspaceFilter) throws MissingExternalIdException {
+    public List<CodeLocation> generateCodeLocations(YarnLockResult yarnLockResult, List<NameVersion> externalDependencies, @Nullable ExcludedIncludedWildcardFilter workspaceFilter)
+        throws MissingExternalIdException {
         List<CodeLocation> codeLocations = new LinkedList<>();
         logger.debug("Adding root dependencies for project: {}:{}", yarnLockResult.getRootPackageJson().getNameString(), yarnLockResult.getRootPackageJson().getVersionString());
         DependencyGraph rootProjectGraph = buildGraphForProjectOrWorkspace(yarnLockResult, yarnLockResult.getRootPackageJson(), externalDependencies);
@@ -60,7 +61,11 @@ public class YarnTransformer {
         return codeLocations;
     }
 
-    private DependencyGraph buildGraphForProjectOrWorkspace(YarnLockResult yarnLockResult, NullSafePackageJson projectOrWorkspacePackageJson, List<NameVersion> externalDependencies) throws MissingExternalIdException {
+    private DependencyGraph buildGraphForProjectOrWorkspace(
+        YarnLockResult yarnLockResult,
+        NullSafePackageJson projectOrWorkspacePackageJson,
+        List<NameVersion> externalDependencies
+    ) throws MissingExternalIdException {
         LazyExternalIdDependencyGraphBuilder graphBuilder = new LazyExternalIdDependencyGraphBuilder();
         addRootNodesToGraph(graphBuilder, projectOrWorkspacePackageJson, yarnLockResult.getWorkspaceData());
         for (YarnLockEntry entry : yarnLockResult.getYarnLock().getEntries()) {

@@ -81,12 +81,22 @@ public class NugetInspectorParserTest {
                 DependencyGraphTransformer dependencyNodeTransformer = new DependencyGraphTransformer(bdioPropertyHelper, bdioNodeFactory);
 
                 BdioExternalIdentifier projectId = bdioPropertyHelper.createExternalIdentifier(codeLocation.getExternalId().get());
-                BdioProject project = bdioNodeFactory.createProject(result.getProjectName(), result.getProjectVersion(), BdioId.createFromPieces(Forge.NUGET.toString()), projectId);
+                BdioProject project = bdioNodeFactory.createProject(
+                    result.getProjectName(),
+                    result.getProjectVersion(),
+                    BdioId.createFromPieces(Forge.NUGET.toString()),
+                    projectId
+                );
 
                 Map<ExternalId, BdioNode> components = new HashMap<>();
                 components.put(codeLocation.getExternalId().get(), project);
 
-                List<BdioComponent> bdioComponents = dependencyNodeTransformer.transformDependencyGraph(codeLocation.getDependencyGraph(), project, codeLocation.getDependencyGraph().getRootDependencies(), components);
+                List<BdioComponent> bdioComponents = dependencyNodeTransformer.transformDependencyGraph(
+                    codeLocation.getDependencyGraph(),
+                    project,
+                    codeLocation.getDependencyGraph().getRootDependencies(),
+                    components
+                );
 
                 assertEquals(bdioComponents.size(), bdioComponents.size());
             }

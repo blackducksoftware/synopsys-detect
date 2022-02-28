@@ -10,7 +10,10 @@ import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJ
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 
 public class PnpmLinkedPackageResolverTest {
-    PnpmLinkedPackageResolver pnpmLinkedPackageResolver = new PnpmLinkedPackageResolver(FunctionalTestFiles.asFile("/pnpm"), new PackageJsonFiles(new PackageJsonReader(new Gson())));
+    PnpmLinkedPackageResolver pnpmLinkedPackageResolver = new PnpmLinkedPackageResolver(
+        FunctionalTestFiles.asFile("/pnpm"),
+        new PackageJsonFiles(new PackageJsonReader(new Gson()))
+    );
 
     @Test
     public void testResolveVersionOfLinkedPackage() {

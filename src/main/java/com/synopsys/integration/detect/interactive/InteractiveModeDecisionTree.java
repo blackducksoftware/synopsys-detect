@@ -43,7 +43,12 @@ public class InteractiveModeDecisionTree implements DecisionTree {
 
         Boolean connectToHub = writer.askYesOrNo(SHOULD_CONNECT_TO_BLACKDUCK);
         if (connectToHub) {
-            BlackDuckConnectionDecisionBranch blackDuckConnectionDecisionBranch = new BlackDuckConnectionDecisionBranch(detectInfo, blackDuckConnectivityChecker, existingPropertySources, gson);
+            BlackDuckConnectionDecisionBranch blackDuckConnectionDecisionBranch = new BlackDuckConnectionDecisionBranch(
+                detectInfo,
+                blackDuckConnectivityChecker,
+                existingPropertySources,
+                gson
+            );
             blackDuckConnectionDecisionBranch.traverse(propertySourceBuilder, writer);
 
             Boolean customDetails = writer.askYesOrNo(SHOULD_SET_PROJECT_NAME_VERSION);

@@ -125,7 +125,13 @@ public class DiagnosticReportHandler {
             ReportWriter clWriter = getReportWriter(ReportTypes.CODE_LOCATIONS);
             ReportWriter dcWriter = getReportWriter(ReportTypes.DEPENDENCY_COUNTS);
             CodeLocationReporter clReporter = new CodeLocationReporter();
-            clReporter.writeCodeLocationReport(clWriter, dcWriter, detectorToolResult.getRootDetectorEvaluationTree().get(), detectorToolResult.getCodeLocationMap(), codeLocationNameMap);
+            clReporter.writeCodeLocationReport(
+                clWriter,
+                dcWriter,
+                detectorToolResult.getRootDetectorEvaluationTree().get(),
+                detectorToolResult.getCodeLocationMap(),
+                codeLocationNameMap
+            );
         } catch (Exception e) {
             logger.error("Failed to write code location report.", e);
         }
@@ -141,7 +147,12 @@ public class DiagnosticReportHandler {
         }
     }
 
-    public void configurationsReport(DetectInfo detectInfo, PropertyConfiguration propertyConfiguration, SortedMap<String, String> maskedRawPropertyValues, Set<String> propertyKeys) {
+    public void configurationsReport(
+        DetectInfo detectInfo,
+        PropertyConfiguration propertyConfiguration,
+        SortedMap<String, String> maskedRawPropertyValues,
+        Set<String> propertyKeys
+    ) {
         try {
             ReportWriter profileWriter = getReportWriter(ReportTypes.CONFIGURATION);
             ConfigurationReporter reporter = new ConfigurationReporter();

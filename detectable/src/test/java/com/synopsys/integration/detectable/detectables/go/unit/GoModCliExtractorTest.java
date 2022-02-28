@@ -128,7 +128,16 @@ public class GoModCliExtractorTest {
         GoListParser goListParser = new GoListParser(new GsonBuilder().create());
         GoGraphParser goGraphParser = new GoGraphParser();
         ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        return new GoModCliExtractor(goModCommandRunner, goListParser, goGraphParser, goModWhyParser, goVersionParser, goModGraphGenerator, externalIdFactory, GoModDependencyType.UNUSED);
+        return new GoModCliExtractor(
+            goModCommandRunner,
+            goListParser,
+            goGraphParser,
+            goModWhyParser,
+            goVersionParser,
+            goModGraphGenerator,
+            externalIdFactory,
+            GoModDependencyType.UNUSED
+        );
     }
 
     private ExecutableOutput goListOutput() {

@@ -20,7 +20,13 @@ public class YarnPackager {
         this.yarnTransformer = yarnTransformer;
     }
 
-    public YarnResult generateCodeLocation(NullSafePackageJson rootPackageJson, YarnWorkspaces yarnWorkspaces, YarnLock yarnLock, List<NameVersion> externalDependencies, @Nullable ExcludedIncludedWildcardFilter workspaceFilter) {
+    public YarnResult generateCodeLocation(
+        NullSafePackageJson rootPackageJson,
+        YarnWorkspaces yarnWorkspaces,
+        YarnLock yarnLock,
+        List<NameVersion> externalDependencies,
+        @Nullable ExcludedIncludedWildcardFilter workspaceFilter
+    ) {
         YarnLockResult yarnLockResult = new YarnLockResult(rootPackageJson, yarnWorkspaces, yarnLock);
 
         try {

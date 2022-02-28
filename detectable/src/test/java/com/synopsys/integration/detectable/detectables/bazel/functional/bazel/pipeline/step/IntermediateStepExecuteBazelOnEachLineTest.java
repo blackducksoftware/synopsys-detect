@@ -35,7 +35,12 @@ public class IntermediateStepExecuteBazelOnEachLineTest {
         Mockito.when(executableRunner.executeSuccessfully(Mockito.any(Executable.class))).thenReturn(bazelCmdExecutableOutput);
         BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
         BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor("//:ProjectRunner", null);
-        IntermediateStep executor = new IntermediateStepExecuteBazelOnEachLine(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("cquery", "filter(\\\"@.*:jar\\\", deps(${detect.bazel.target}))"), false);
+        IntermediateStep executor = new IntermediateStepExecuteBazelOnEachLine(
+            bazelCommandExecutor,
+            bazelVariableSubstitutor,
+            Arrays.asList("cquery", "filter(\\\"@.*:jar\\\", deps(${detect.bazel.target}))"),
+            false
+        );
         List<String> input = new ArrayList<>(0);
 
         List<String> output = executor.process(input);

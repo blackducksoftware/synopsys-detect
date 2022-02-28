@@ -32,7 +32,8 @@ public class DetectRun {
         this.exitCodeManager = exitCodeManager;
     }
 
-    private OperationFactory createOperationFactory(BootSingletons bootSingletons, UtilitySingletons utilitySingletons, EventSingletons eventSingletons) throws DetectUserFriendlyException {
+    private OperationFactory createOperationFactory(BootSingletons bootSingletons, UtilitySingletons utilitySingletons, EventSingletons eventSingletons)
+        throws DetectUserFriendlyException {
         DetectorFactory detectorFactory = new DetectorFactory(bootSingletons, utilitySingletons);
         DetectFontLoaderFactory detectFontLoaderFactory = new DetectFontLoaderFactory(bootSingletons, utilitySingletons);
         return new OperationFactory(detectorFactory.detectDetectableFactory(), detectFontLoaderFactory, bootSingletons, utilitySingletons, eventSingletons, exitCodeManager);

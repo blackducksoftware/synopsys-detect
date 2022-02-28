@@ -35,7 +35,13 @@ public class SyncProjectOperation {
         ProjectVersionLicenseFindResult projectVersionLicensesFindResult,
         ProjectSyncOptions projectSyncOptions
     ) throws DetectUserFriendlyException, IntegrationException {
-        ProjectSyncModel projectSyncModel = createProjectSyncModel(projectNameVersion, projectGroupFindResult, cloneFindResult, projectVersionLicensesFindResult, projectSyncOptions);
+        ProjectSyncModel projectSyncModel = createProjectSyncModel(
+            projectNameVersion,
+            projectGroupFindResult,
+            cloneFindResult,
+            projectVersionLicensesFindResult,
+            projectSyncOptions
+        );
         boolean forceUpdate = projectSyncOptions.isForceProjectVersionUpdate();
         return projectService.syncProjectAndVersion(projectSyncModel, forceUpdate);
     }

@@ -18,7 +18,13 @@ public class DetectorEvaluationTree {
     private final List<DetectorEvaluation> orderedEvaluations;
     private final Set<DetectorEvaluationTree> children;
 
-    public DetectorEvaluationTree(File directory, int depthFromRoot, DetectorRuleSet detectorRuleSet, List<DetectorEvaluation> orderedEvaluations, Set<DetectorEvaluationTree> children) {
+    public DetectorEvaluationTree(
+        File directory,
+        int depthFromRoot,
+        DetectorRuleSet detectorRuleSet,
+        List<DetectorEvaluation> orderedEvaluations,
+        Set<DetectorEvaluationTree> children
+    ) {
         this.directory = directory;
         this.depthFromRoot = depthFromRoot;
         this.orderedEvaluations = orderedEvaluations;

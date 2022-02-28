@@ -38,8 +38,18 @@ public class CartfileResolvedParserTest {
         );
         List<CarthageDeclaration> carthageDeclarations = parser.parseDependencies(dependencyDeclarations);
 
-        assertTrue(containsDependency(carthageDeclarations, "binary", "https://assets.braintreegateway.com/mobile/ios/carthage-frameworks/cardinal-mobile/CardinalMobile.json", "2.2.5"));
-        assertTrue(containsDependency(carthageDeclarations, "binary", "https://assets.braintreegateway.com/mobile/ios/carthage-frameworks/pp-risk-magnes/PPRiskMagnes.json", "5.0.1"));
+        assertTrue(containsDependency(
+            carthageDeclarations,
+            "binary",
+            "https://assets.braintreegateway.com/mobile/ios/carthage-frameworks/cardinal-mobile/CardinalMobile.json",
+            "2.2.5"
+        ));
+        assertTrue(containsDependency(
+            carthageDeclarations,
+            "binary",
+            "https://assets.braintreegateway.com/mobile/ios/carthage-frameworks/pp-risk-magnes/PPRiskMagnes.json",
+            "5.0.1"
+        ));
         assertTrue(containsDependency(carthageDeclarations, "github", "GEOSwift/GEOSwift", "8.0.2"));
         assertEquals(3, carthageDeclarations.size());
     }

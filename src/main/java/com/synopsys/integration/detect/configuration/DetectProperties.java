@@ -86,7 +86,8 @@ public class DetectProperties {
     public static final BooleanProperty BLACKDUCK_OFFLINE_MODE =
         BooleanProperty.newBuilder("blackduck.offline.mode", false)
             .setInfo("Offline Mode", DetectPropertyFromVersion.VERSION_4_2_0)
-            .setHelp("This can disable any Black Duck communication - if true, Detect will not upload BDIO files, it will not check policies, and it will not download and install the signature scanner.")
+            .setHelp(
+                "This can disable any Black Duck communication - if true, Detect will not upload BDIO files, it will not check policies, and it will not download and install the signature scanner.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.OFFLINE, DetectGroup.DEFAULT)
             .build();
 
@@ -169,7 +170,8 @@ public class DetectProperties {
     public static final IntegerProperty DETECT_PARALLEL_PROCESSORS =
         IntegerProperty.newBuilder("detect.parallel.processors", 1)
             .setInfo("Detect Parallel Processors", DetectPropertyFromVersion.VERSION_6_0_0)
-            .setHelp("The number of threads to run processes in parallel, defaults to 1, but if you specify less than or equal to 0, the number of processors on the machine will be used.")
+            .setHelp(
+                "The number of threads to run processes in parallel, defaults to 1, but if you specify less than or equal to 0, the number of processors on the machine will be used.")
             .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced)
             .build();
@@ -230,7 +232,8 @@ public class DetectProperties {
     public static final NullableStringProperty DETECT_CONAN_ARGUMENTS =
         NullableStringProperty.newBuilder("detect.conan.arguments")
             .setInfo("Additional Conan Arguments", DetectPropertyFromVersion.VERSION_6_8_0)
-            .setHelp("A space-separated list of additional arguments to add to the 'conan info' command line when running Detect against a Conan project. Detect will execute the command 'conan info {additional arguments} .'")
+            .setHelp(
+                "A space-separated list of additional arguments to add to the 'conan info' command line when running Detect against a Conan project. Detect will execute the command 'conan info {additional arguments} .'")
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
             .setExample("\"--profile clang --profile cmake_316\"")
             .build();
@@ -238,7 +241,8 @@ public class DetectProperties {
     public static final NullablePathProperty DETECT_CONAN_LOCKFILE_PATH =
         NullablePathProperty.newBuilder("detect.conan.lockfile.path")
             .setInfo("Conan Lockfile", DetectPropertyFromVersion.VERSION_6_8_0)
-            .setHelp("The path to the conan lockfile to apply when running 'conan info' to get the dependency graph. If set, Detect will execute the command 'conan info --lockfile {lockfile} .'")
+            .setHelp(
+                "The path to the conan lockfile to apply when running 'conan info' to get the dependency graph. If set, Detect will execute the command 'conan info --lockfile {lockfile} .'")
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
             .build();
 
@@ -263,7 +267,10 @@ public class DetectProperties {
     public static final NullableStringProperty DETECT_BDIO_FILE_NAME =
         NullableStringProperty.newBuilder("detect.bdio.file.name")
             .setInfo("BDIO File Name", DetectPropertyFromVersion.VERSION_7_9_0)
-            .setHelp("The desired file name of the single bdio file Detect produces in the BDIO Output Directory.", "If not set, the file name is generated from your project, version and code location names.")
+            .setHelp(
+                "The desired file name of the single bdio file Detect produces in the BDIO Output Directory.",
+                "If not set, the file name is generated from your project, version and code location names."
+            )
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .build();
 
@@ -287,7 +294,8 @@ public class DetectProperties {
     public static final IntegerProperty DETECT_BINARY_SCAN_SEARCH_DEPTH =
         IntegerProperty.newBuilder("detect.binary.scan.search.depth", 0)
             .setInfo("Binary Scan Search Depth", DetectPropertyFromVersion.VERSION_6_9_0)
-            .setHelp("When binary scan filename patterns are being used to search for binary files to scan, this property sets the depth at which Detect will search for files (that match those patterns) to upload for binary scan analysis.")
+            .setHelp(
+                "When binary scan filename patterns are being used to search for binary files to scan, this property sets the depth at which Detect will search for files (that match those patterns) to upload for binary scan analysis.")
             .setGroups(DetectGroup.BINARY_SCANNER, DetectGroup.SOURCE_SCAN)
             .build();
 
@@ -358,12 +366,18 @@ public class DetectProperties {
     public static final BooleanProperty DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN =
         BooleanProperty.newBuilder("detect.blackduck.signature.scanner.dry.run", false)
             .setInfo("Signature Scanner Dry Run", DetectPropertyFromVersion.VERSION_4_2_0)
-            .setHelp("If set to true, the signature scanner results are not uploaded to Black Duck, and the scanner results are written to disk via the Signature Scanner CLI argument: --dryRunWriteDir.")
+            .setHelp(
+                "If set to true, the signature scanner results are not uploaded to Black Duck, and the scanner results are written to disk via the Signature Scanner CLI argument: --dryRunWriteDir.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL)
             .build();
 
     public static final ExtendedEnumProperty<ExtendedIndividualFileMatchingMode, IndividualFileMatching> DETECT_BLACKDUCK_SIGNATURE_SCANNER_INDIVIDUAL_FILE_MATCHING =
-        ExtendedEnumProperty.newBuilderExtendedDefault("detect.blackduck.signature.scanner.individual.file.matching", ExtendedIndividualFileMatchingMode.NONE, ExtendedIndividualFileMatchingMode.class, IndividualFileMatching.class)
+        ExtendedEnumProperty.newBuilderExtendedDefault(
+                "detect.blackduck.signature.scanner.individual.file.matching",
+                ExtendedIndividualFileMatchingMode.NONE,
+                ExtendedIndividualFileMatchingMode.class,
+                IndividualFileMatching.class
+            )
             .setInfo("Individual File Matching", DetectPropertyFromVersion.VERSION_6_2_0)
             .setHelp("Users may set this property to indicate what types of files they want to match. Corresponding Signature Scanner CLI Argument: --individualFileMatching.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER)
@@ -401,7 +415,12 @@ public class DetectProperties {
             .build();
 
     public static final ExtendedEnumProperty<ExtendedSnippetMode, SnippetMatching> DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING =
-        ExtendedEnumProperty.newBuilder("detect.blackduck.signature.scanner.snippet.matching", ExtendedEnumValue.ofExtendedValue(ExtendedSnippetMode.NONE), ExtendedSnippetMode.class, SnippetMatching.class)
+        ExtendedEnumProperty.newBuilder(
+                "detect.blackduck.signature.scanner.snippet.matching",
+                ExtendedEnumValue.ofExtendedValue(ExtendedSnippetMode.NONE),
+                ExtendedSnippetMode.class,
+                SnippetMatching.class
+            )
             .setInfo("Snippet Matching", DetectPropertyFromVersion.VERSION_5_5_0)
             .setHelp(
                 "Use this value to enable the various snippet scanning modes. For a full explanation, please refer to the 'Running a component scan using the Signature Scanner command line' section in your Black Duck server's online help. Corresponding Signature Scanner CLI Arguments: --snippet-matching, --snippet-matching-only, --full-snippet-scan.")
@@ -411,7 +430,8 @@ public class DetectProperties {
     public static final BooleanProperty DETECT_BLACKDUCK_SIGNATURE_SCANNER_UPLOAD_SOURCE_MODE =
         BooleanProperty.newBuilder("detect.blackduck.signature.scanner.upload.source.mode", false)
             .setInfo("Upload source mode", DetectPropertyFromVersion.VERSION_5_4_0)
-            .setHelp("If set to true, the signature scanner will, if supported by your Black Duck version, upload source code to Black Duck. Corresponding Signature Scanner CLI Argument: --upload-source.")
+            .setHelp(
+                "If set to true, the signature scanner will, if supported by your Black Duck version, upload source code to Black Duck. Corresponding Signature Scanner CLI Argument: --upload-source.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
 
@@ -432,7 +452,8 @@ public class DetectProperties {
     public static final NullableStringProperty DETECT_CLONE_PROJECT_VERSION_NAME =
         NullableStringProperty.newBuilder("detect.clone.project.version.name")
             .setInfo("Clone Project Version Name", DetectPropertyFromVersion.VERSION_4_2_0)
-            .setHelp("The name of the project version to clone this project version from. Respects the given Clone Categories in detect.project.clone.categories or as set on the Black Duck server.")
+            .setHelp(
+                "The name of the project version to clone this project version from. Respects the given Clone Categories in detect.project.clone.categories or as set on the Black Duck server.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.GLOBAL, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced)
             .build();
@@ -532,7 +553,8 @@ public class DetectProperties {
     public static final BooleanProperty DETECT_DIAGNOSTIC =
         BooleanProperty.newBuilder("detect.diagnostic", false)
             .setInfo("Diagnostic Mode", DetectPropertyFromVersion.VERSION_6_5_0)
-            .setHelp("When enabled, diagnostic mode collects all files generated by Synopsys Detect and zips the files using a unique run ID. It includes logs, BDIO files, extraction files, and reports.")
+            .setHelp(
+                "When enabled, diagnostic mode collects all files generated by Synopsys Detect and zips the files using a unique run ID. It includes logs, BDIO files, extraction files, and reports.")
             .setGroups(DetectGroup.DEBUG, DetectGroup.GLOBAL)
             .build();
 
@@ -744,8 +766,10 @@ public class DetectProperties {
     public static final CaseSensitiveStringListProperty DETECT_GRADLE_EXCLUDED_PROJECT_PATHS =
         CaseSensitiveStringListProperty.newBuilder("detect.gradle.excluded.project.paths")
             .setInfo("Gradle Exclude Project Paths", DetectPropertyFromVersion.VERSION_7_12_0)
-            .setHelp("A comma-separated list of Gradle sub-project paths to exclude.",
-                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle sub-project whose path matches this property. Gradle project paths usually take the form ':parent:child' and are unique. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+            .setHelp(
+                "A comma-separated list of Gradle sub-project paths to exclude.",
+                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle sub-project whose path matches this property. Gradle project paths usually take the form ':parent:child' and are unique. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+            )
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
             .build();
@@ -786,8 +810,10 @@ public class DetectProperties {
     public static final CaseSensitiveStringListProperty DETECT_GRADLE_INCLUDED_PROJECT_PATHS =
         CaseSensitiveStringListProperty.newBuilder("detect.gradle.included.project.paths")
             .setInfo("Gradle Include Project Paths", DetectPropertyFromVersion.VERSION_7_12_0)
-            .setHelp("A comma-separated list of Gradle sub-project paths to include.",
-                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those sub-projects whose path matches this property. Gradle project paths usually take the form ':parent:child' and are unique. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+            .setHelp(
+                "A comma-separated list of Gradle sub-project paths to include.",
+                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those sub-projects whose path matches this property. Gradle project paths usually take the form ':parent:child' and are unique. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+            )
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
             .build();
@@ -986,7 +1012,8 @@ public class DetectProperties {
     public static final NullableStringProperty DETECT_NPM_ARGUMENTS =
         NullableStringProperty.newBuilder("detect.npm.arguments")
             .setInfo("Additional NPM Command Arguments", DetectPropertyFromVersion.VERSION_4_3_0)
-            .setHelp("A space-separated list of additional arguments that Detect will add at then end of the npm ls command line when Detect executes the NPM CLI Detector on an NPM project.")
+            .setHelp(
+                "A space-separated list of additional arguments that Detect will add at then end of the npm ls command line when Detect executes the NPM CLI Detector on an NPM project.")
             .setExample("--depth=0")
             .setGroups(DetectGroup.NPM, DetectGroup.SOURCE_SCAN)
             .build();
@@ -1129,7 +1156,8 @@ public class DetectProperties {
     public static final BooleanProperty DETECT_PIP_ONLY_PROJECT_TREE =
         BooleanProperty.newBuilder("detect.pip.only.project.tree", false)
             .setInfo("PIP Include Only Project Tree", DetectPropertyFromVersion.VERSION_6_1_0)
-            .setHelp("By default, pipenv includes all dependencies found in the graph. Set to true to only include dependencies found underneath the dependency that matches the provided pip project and version name.")
+            .setHelp(
+                "By default, pipenv includes all dependencies found in the graph. Set to true to only include dependencies found underneath the dependency that matches the provided pip project and version name.")
             .setGroups(DetectGroup.PIP, DetectGroup.SOURCE_SCAN)
             .build();
 
@@ -1344,7 +1372,8 @@ public class DetectProperties {
     public static final NullableStringProperty DETECT_PROJECT_VERSION_NAME =
         NullableStringProperty.newBuilder("detect.project.version.name")
             .setInfo("Version Name", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("An override for the version to use for the Black Duck project. If not supplied, Detect will attempt to use the tools to figure out a reasonable version name. If that fails, the current date will be used.")
+            .setHelp(
+                "An override for the version to use for the Black Duck project. If not supplied, Detect will attempt to use the tools to figure out a reasonable version name. If that fails, the current date will be used.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .build();
 
@@ -1439,7 +1468,8 @@ public class DetectProperties {
     public static final NullableStringProperty DETECT_SBT_ARGUMENTS =
         NullableStringProperty.newBuilder("detect.sbt.arguments")
             .setInfo("Additional sbt command Arguments", DetectPropertyFromVersion.VERSION_7_0_0)
-            .setHelp("A space-separated list of additional arguments to add to sbt command line when running Detect against an SBT project. Detect will execute the command 'sbt {additional arguments} {Detect-added arguments}'.")
+            .setHelp(
+                "A space-separated list of additional arguments to add to sbt command line when running Detect against an SBT project. Detect will execute the command 'sbt {additional arguments} {Detect-added arguments}'.")
             .setGroups(DetectGroup.SBT, DetectGroup.SOURCE_SCAN)
             .setExample("\"-Djline.terminal=jline.UnsupportedTerminal\"")
             .build();
@@ -1447,7 +1477,10 @@ public class DetectProperties {
     public static final CaseSensitiveStringListProperty DETECT_SBT_EXCLUDED_CONFIGURATIONS =
         CaseSensitiveStringListProperty.newBuilder("detect.sbt.excluded.configurations")
             .setInfo("SBT Configurations Excluded", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("The names of the sbt configurations to exclude.", "This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+            .setHelp(
+                "The names of the sbt configurations to exclude.",
+                "This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+            )
             .setGroups(DetectGroup.SBT, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
             .setDeprecated(SBT_REPORT_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT)
@@ -1456,7 +1489,10 @@ public class DetectProperties {
     public static final CaseSensitiveStringListProperty DETECT_SBT_INCLUDED_CONFIGURATIONS =
         CaseSensitiveStringListProperty.newBuilder("detect.sbt.included.configurations")
             .setInfo("SBT Configurations Included", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("The names of the sbt configurations to include.", "This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+            .setHelp(
+                "The names of the sbt configurations to include.",
+                "This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+            )
             .setGroups(DetectGroup.SBT, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
             .setDeprecated(SBT_REPORT_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT)
@@ -1473,7 +1509,8 @@ public class DetectProperties {
     public static final NullablePathProperty DETECT_SCAN_OUTPUT_PATH =
         NullablePathProperty.newBuilder("detect.scan.output.path")
             .setInfo("Scan Output Path", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("The output directory for all signature scanner output files. If not set, the signature scanner output files will be in a 'scan' subdirectory of the output directory.")
+            .setHelp(
+                "The output directory for all signature scanner output files. If not set, the signature scanner output files will be in a 'scan' subdirectory of the output directory.")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .build();
 
@@ -1482,7 +1519,8 @@ public class DetectProperties {
             .setInfo("Source Path", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "The source path is the path to the project directory to inspect. If no value is provided, the source path defaults to the current working directory.",
-                "Detect will search the source directory for hints that indicate which package manager(s) the project uses, and will attempt to run the corresponding detector(s). " +
+                "Detect will search the source directory for hints that indicate which package manager(s) the project uses, and will attempt to run the corresponding detector(s). "
+                    +
                     "The source path is also the default target for signature scanning. (This can be overridden with the detect.blackduck.signature.scanner.paths property.)"
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.SOURCE_PATH)
@@ -1583,7 +1621,8 @@ public class DetectProperties {
                     "However, you can use this property to set the logging level for some of the non-Synopsys libraries that Detect uses by using the appropriate package name. " +
                     "For example, <i>logging.level.org.apache.http=TRACE</i> sets the logging level to TRACE for the Apache HTTP client library. " +
                     "<p/>" +
-                    "For log message format, Detect uses a default value of <i>%d{yyyy-MM-dd HH:mm:ss z} ${LOG_LEVEL_PATTERN:%-6p}[%thread] %clr(---){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}</i>. " +
+                    "For log message format, Detect uses a default value of <i>%d{yyyy-MM-dd HH:mm:ss z} ${LOG_LEVEL_PATTERN:%-6p}[%thread] %clr(---){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}</i>. "
+                    +
                     "You can change your log message format by setting the Spring Boot <i>logging.pattern.console</i> property to a different pattern. " +
                     "<p/>" +
                     "Refer to the Spring Boot logging and Logback Project documentation for more details."
@@ -1638,7 +1677,8 @@ public class DetectProperties {
     public static final AllNoneEnumListProperty<WorkspaceRule> DETECT_BAZEL_DEPENDENCY_RULE =
         AllNoneEnumListProperty.newBuilder("detect.bazel.dependency.type", emptyList(), WorkspaceRule.class)
             .setInfo("Bazel workspace external dependency rule", DetectPropertyFromVersion.VERSION_6_0_0)
-            .setHelp("The Bazel workspace rule(s) used to pull in external dependencies. If not set, Detect will attempt to determine the rule(s) from the contents of the WORKSPACE file.")
+            .setHelp(
+                "The Bazel workspace rule(s) used to pull in external dependencies. If not set, Detect will attempt to determine the rule(s) from the contents of the WORKSPACE file.")
             .setGroups(DetectGroup.BAZEL, DetectGroup.SOURCE_SCAN)
             .setDeprecated(BAZEL_DEPENDENCY_TYPE_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT)
             .build();
@@ -1716,7 +1756,10 @@ public class DetectProperties {
             .setHelp("Whether or not detect will include the plugins section when parsing a pom.xml in buildless legacy mode. ")
             .setGroups(DetectGroup.MAVEN, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced)
-            .setDeprecated("This property is being removed. The project inspector will be used to parse maven projects. Please configure the project inspector to include modules.", DetectMajorVersion.EIGHT)
+            .setDeprecated(
+                "This property is being removed. The project inspector will be used to parse maven projects. Please configure the project inspector to include modules.",
+                DetectMajorVersion.EIGHT
+            )
             .build();
 
     @Deprecated

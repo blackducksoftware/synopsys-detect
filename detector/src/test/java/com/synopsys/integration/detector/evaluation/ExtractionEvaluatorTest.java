@@ -30,7 +30,8 @@ import com.synopsys.integration.executable.ExecutableRunnerException;
 //TODO: These tests should be re-written to use a concrete set of objects rather than mocks.
 public class ExtractionEvaluatorTest {
     @Test
-    public void testEvaluationSuccess() throws DetectableException, ExecutableFailedException, IOException, CycleDetectedException, MissingExternalIdException, ExecutableRunnerException {
+    public void testEvaluationSuccess()
+        throws DetectableException, ExecutableFailedException, IOException, CycleDetectedException, MissingExternalIdException, ExecutableRunnerException {
         DetectorEvaluationOptions evaluationOptions = Mockito.mock(DetectorEvaluationOptions.class);
         ExtractionEvaluator evaluator = new ExtractionEvaluator(evaluationOptions);
         DetectorEvaluationTree detectorEvaluationTree = Mockito.mock(DetectorEvaluationTree.class);
@@ -49,7 +50,8 @@ public class ExtractionEvaluatorTest {
     }
 
     @Test
-    public void testEvaluationDiscoveryExtractionPerformed() throws DetectableException, ExecutableFailedException, IOException, CycleDetectedException, MissingExternalIdException, ExecutableRunnerException {
+    public void testEvaluationDiscoveryExtractionPerformed()
+        throws DetectableException, ExecutableFailedException, IOException, CycleDetectedException, MissingExternalIdException, ExecutableRunnerException {
         DetectorEvaluationOptions evaluationOptions = Mockito.mock(DetectorEvaluationOptions.class);
         ExtractionEvaluator evaluator = new ExtractionEvaluator(evaluationOptions);
         DetectorEvaluationTree detectorEvaluationTree = Mockito.mock(DetectorEvaluationTree.class);
@@ -68,7 +70,8 @@ public class ExtractionEvaluatorTest {
     }
 
     @Test
-    public void testEvaluationException() throws DetectableException, ExecutableFailedException, IOException, CycleDetectedException, MissingExternalIdException, ExecutableRunnerException {
+    public void testEvaluationException()
+        throws DetectableException, ExecutableFailedException, IOException, CycleDetectedException, MissingExternalIdException, ExecutableRunnerException {
         DetectorEvaluationOptions evaluationOptions = Mockito.mock(DetectorEvaluationOptions.class);
         ExtractionEvaluator evaluator = new ExtractionEvaluator(evaluationOptions);
         DetectorEvaluationTree detectorEvaluationTree = Mockito.mock(DetectorEvaluationTree.class);
@@ -86,7 +89,12 @@ public class ExtractionEvaluatorTest {
         Mockito.verify(detectorEvaluatorListener).extractionEnded(detectorEvaluation);
     }
 
-    private DetectorEvaluation createEvaluationMocks(DetectorEvaluationOptions evaluationOptions, DetectorEvaluationTree detectorEvaluationTree, boolean extractionExists, boolean throwException)
+    private DetectorEvaluation createEvaluationMocks(
+        DetectorEvaluationOptions evaluationOptions,
+        DetectorEvaluationTree detectorEvaluationTree,
+        boolean extractionExists,
+        boolean throwException
+    )
         throws DetectableException, ExecutableFailedException, IOException, CycleDetectedException, MissingExternalIdException, ExecutableRunnerException {
         ExtractionEnvironment extractionEnvironment = Mockito.mock(ExtractionEnvironment.class);
         DetectorEvaluation detectorEvaluation = Mockito.mock(DetectorEvaluation.class);

@@ -55,7 +55,14 @@ public class GradleInspectorDetectableTest extends DetectableFunctionalTest {
         );
 
         ExecutableOutput gradleDependenciesOutput = createStandardOutput("");
-        addExecutableOutput(gradleDependenciesOutput, new File("gradle").getCanonicalPath(), "gatherDependencies", "--init-script=gradle-inspector", "-DGRADLEEXTRACTIONDIR=" + getOutputDirectory().toFile().getCanonicalPath(), "--info");
+        addExecutableOutput(
+            gradleDependenciesOutput,
+            new File("gradle").getCanonicalPath(),
+            "gatherDependencies",
+            "--init-script=gradle-inspector",
+            "-DGRADLEEXTRACTIONDIR=" + getOutputDirectory().toFile().getCanonicalPath(),
+            "--info"
+        );
 
         addOutputFile(Paths.get("rootProjectMetadata.txt"), Arrays.asList(
             "DETECT META DATA START",
@@ -99,7 +106,12 @@ public class GradleInspectorDetectableTest extends DetectableFunctionalTest {
             ),
             ProxyInfo.NO_PROXY_INFO, EnumListFilter.excludeNone()
         );
-        return detectableFactory.createGradleDetectable(detectableEnvironment, gradleInspectorOptions, () -> new File("gradle-inspector"), (environment) -> ExecutableTarget.forFile(new File("gradle")));
+        return detectableFactory.createGradleDetectable(
+            detectableEnvironment,
+            gradleInspectorOptions,
+            () -> new File("gradle-inspector"),
+            (environment) -> ExecutableTarget.forFile(new File("gradle"))
+        );
     }
 
     @Override

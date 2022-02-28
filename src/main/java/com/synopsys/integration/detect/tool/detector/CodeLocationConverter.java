@@ -51,7 +51,10 @@ public class CodeLocationConverter {
                 if (StringUtils.isNotBlank(relativePath)) {
                     externalId = externalIdFactory.createPathExternalId(detectForge, relativePath);
                 } else {// Relativize from the parent.
-                    externalId = externalIdFactory.createPathExternalId(detectForge, FileNameUtils.relativizeParent(detectSourcePath.getAbsolutePath(), sourcePath.getAbsolutePath()));
+                    externalId = externalIdFactory.createPathExternalId(
+                        detectForge,
+                        FileNameUtils.relativizeParent(detectSourcePath.getAbsolutePath(), sourcePath.getAbsolutePath())
+                    );
                 }
 
                 logger.debug("The external id that was created is: " + Arrays.asList(externalId.getExternalIdPieces()));

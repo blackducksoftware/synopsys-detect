@@ -64,10 +64,20 @@ public class IntelligentModeStepRunner {
 
     //TODO: Change black duck post options to a decision and stick it in Run Data somewhere.
     //TODO: Change detect tool filter to a decision and stick it in Run Data somewhere
-    public void runOnline(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, NameVersion projectNameVersion, DetectToolFilter detectToolFilter, DockerTargetData dockerTargetData)
+    public void runOnline(
+        BlackDuckRunData blackDuckRunData,
+        BdioResult bdioResult,
+        NameVersion projectNameVersion,
+        DetectToolFilter detectToolFilter,
+        DockerTargetData dockerTargetData
+    )
         throws DetectUserFriendlyException, IntegrationException, IOException, InterruptedException {
 
-        ProjectVersionWrapper projectVersion = stepHelper.runAsGroup("Create or Locate Project", OperationType.INTERNAL, () -> new BlackDuckProjectVersionStepRunner(operationFactory).runAll(projectNameVersion, blackDuckRunData));
+        ProjectVersionWrapper projectVersion = stepHelper.runAsGroup(
+            "Create or Locate Project",
+            OperationType.INTERNAL,
+            () -> new BlackDuckProjectVersionStepRunner(operationFactory).runAll(projectNameVersion, blackDuckRunData)
+        );
 
         logger.debug("Completed project and version actions.");
         logger.debug("Processing Detect Code Locations.");
@@ -109,7 +119,8 @@ public class IntelligentModeStepRunner {
         });
     }
 
-    public void uploadBdio(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, CodeLocationAccumulator codeLocationAccumulator) throws DetectUserFriendlyException, IntegrationException {
+    public void uploadBdio(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, CodeLocationAccumulator codeLocationAccumulator)
+        throws DetectUserFriendlyException, IntegrationException {
         BdioOptions bdioOptions = operationFactory.calculateBdioOptions(); //TODO: Move to a decision
         BdioUploadResult uploadResult;
         if (bdioOptions.isLegacyUploadEnabled()) {
@@ -124,7 +135,8 @@ public class IntelligentModeStepRunner {
         uploadResult.getUploadOutput().ifPresent(codeLocationAccumulator::addWaitableCodeLocation);
     }
 
-    public CodeLocationResults calculateCodeLocations(CodeLocationAccumulator codeLocationAccumulator) throws DetectUserFriendlyException, IntegrationException { //this is waiting....
+    public CodeLocationResults calculateCodeLocations(CodeLocationAccumulator codeLocationAccumulator)
+        throws DetectUserFriendlyException, IntegrationException { //this is waiting....
         logger.info(ReportConstants.RUN_SEPARATOR);
 
         Set<String> allCodeLocationNames = new HashSet<>(codeLocationAccumulator.getNonWaitableCodeLocations());
@@ -171,7 +183,12 @@ public class IntelligentModeStepRunner {
     ) throws DetectUserFriendlyException {
         String impactAnalysisName = operationFactory.generateImpactAnalysisCodeLocationName(projectNameVersion);
         Path impactFile = operationFactory.generateImpactAnalysisFile(impactAnalysisName);
-        CodeLocationCreationData<ImpactAnalysisBatchOutput> uploadData = operationFactory.uploadImpactAnalysisFile(impactFile, projectNameVersion, impactAnalysisName, blackDuckServicesFactory);
+        CodeLocationCreationData<ImpactAnalysisBatchOutput> uploadData = operationFactory.uploadImpactAnalysisFile(
+            impactFile,
+            projectNameVersion,
+            impactAnalysisName,
+            blackDuckServicesFactory
+        );
         operationFactory.mapImpactAnalysisCodeLocations(impactFile, uploadData, projectVersionWrapper, blackDuckServicesFactory);
         /* TODO: There is currently no mechanism within Black Duck for checking the completion status of an Impact Analysis code location. Waiting should happen here when such a mechanism exists. See HUB-25142. JM - 08/2020 */
         codeLocationAccumulator.addNonWaitableCodeLocation(uploadData.getOutput().getSuccessfulCodeLocationNames());

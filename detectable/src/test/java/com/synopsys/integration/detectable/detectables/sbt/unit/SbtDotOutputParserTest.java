@@ -14,7 +14,8 @@ public class SbtDotOutputParserTest {
     @Test
     public void canParseSingleDotFile() {
         SbtDotOutputParser parser = new SbtDotOutputParser();
-        List<File> results = parser.parseGeneratedGraphFiles(Collections.singletonList("[info] Wrote dependency graph to 'C:\\Users\\jordanp\\Downloads\\scalafmt-master\\scalafmt\\scalafmt-interfaces\\target\\dependencies-compile.dot'"));
+        List<File> results = parser.parseGeneratedGraphFiles(Collections.singletonList(
+            "[info] Wrote dependency graph to 'C:\\Users\\jordanp\\Downloads\\scalafmt-master\\scalafmt\\scalafmt-interfaces\\target\\dependencies-compile.dot'"));
         Assertions.assertEquals(1, results.size());
         Assertions.assertEquals("C:\\Users\\jordanp\\Downloads\\scalafmt-master\\scalafmt\\scalafmt-interfaces\\target\\dependencies-compile.dot", results.get(0).toString());
     }

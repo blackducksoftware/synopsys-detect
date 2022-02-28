@@ -40,7 +40,8 @@ public class CreateBdio2FilesOperation {
         this.detectInfo = detectInfo;
     }
 
-    public List<UploadTarget> createBdioFiles(BdioCodeLocationResult bdioCodeLocationResult, File outputDirectory, NameVersion projectNameVersion) throws DetectUserFriendlyException {
+    public List<UploadTarget> createBdioFiles(BdioCodeLocationResult bdioCodeLocationResult, File outputDirectory, NameVersion projectNameVersion)
+        throws DetectUserFriendlyException {
         List<UploadTarget> uploadTargets = new ArrayList<>();
         for (BdioCodeLocation bdioCodeLocation : bdioCodeLocationResult.getBdioCodeLocations()) {
             String codeLocationName = bdioCodeLocation.getCodeLocationName();

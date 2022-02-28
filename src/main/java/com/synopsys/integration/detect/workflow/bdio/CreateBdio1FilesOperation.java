@@ -28,7 +28,8 @@ public class CreateBdio1FilesOperation {
         this.simpleBdioFactory = simpleBdioFactory;
     }
 
-    public List<UploadTarget> createBdioFiles(BdioCodeLocationResult bdioCodeLocationResult, File outputDirectory, NameVersion projectNameVersion) throws DetectUserFriendlyException {
+    public List<UploadTarget> createBdioFiles(BdioCodeLocationResult bdioCodeLocationResult, File outputDirectory, NameVersion projectNameVersion)
+        throws DetectUserFriendlyException {
         logger.debug("Creating BDIO files from code locations.");
         List<UploadTarget> uploadTargets = new ArrayList<>();
         for (BdioCodeLocation bdioCodeLocation : bdioCodeLocationResult.getBdioCodeLocations()) {
@@ -37,7 +38,13 @@ public class CreateBdio1FilesOperation {
             DependencyGraph dependencyGraph = bdioCodeLocation.getDetectCodeLocation().getDependencyGraph();
 
             File bdioOutputFile = new File(outputDirectory, bdioCodeLocation.getBdioName() + ".jsonld");
-            SimpleBdioDocument simpleBdioDocument = simpleBdioFactory.createSimpleBdioDocument(codeLocationName, projectNameVersion.getName(), projectNameVersion.getVersion(), externalId, dependencyGraph);
+            SimpleBdioDocument simpleBdioDocument = simpleBdioFactory.createSimpleBdioDocument(
+                codeLocationName,
+                projectNameVersion.getName(),
+                projectNameVersion.getVersion(),
+                externalId,
+                dependencyGraph
+            );
 
             detectBdioWriter.writeBdioFile(bdioOutputFile, simpleBdioDocument);
             uploadTargets.add(UploadTarget.createDefault(projectNameVersion, codeLocationName, bdioOutputFile));

@@ -53,7 +53,13 @@ public class RapidScanUploadService extends DataService {
         return uploadFiles(uploadTarget, bdioFileContentList, projectNameVersion, rapidScanConfig, workingDirectory);
     }
 
-    private HttpUrl uploadFiles(UploadTarget uploadTarget, List<BdioFileContent> bdioFiles, @Nullable NameVersion nameVersion, @Nullable File rapidScanConfig, @Nullable File rapidScanWorkingDirectory)
+    private HttpUrl uploadFiles(
+        UploadTarget uploadTarget,
+        List<BdioFileContent> bdioFiles,
+        @Nullable NameVersion nameVersion,
+        @Nullable File rapidScanConfig,
+        @Nullable File rapidScanWorkingDirectory
+    )
         throws IntegrationException, IOException {
         if (bdioFiles.isEmpty()) {
             throw new IllegalArgumentException("BDIO files cannot be empty.");

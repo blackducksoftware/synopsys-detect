@@ -93,7 +93,8 @@ public class UniversalStepRunner {
         }
     }
 
-    private BdioResult generateAggregateBdio(AggregateDecision aggregateDecision, UniversalToolsResult universalToolsResult, NameVersion projectNameVersion, String aggregateName) throws DetectUserFriendlyException {
+    private BdioResult generateAggregateBdio(AggregateDecision aggregateDecision, UniversalToolsResult universalToolsResult, NameVersion projectNameVersion, String aggregateName)
+        throws DetectUserFriendlyException {
         DependencyGraph aggregateDependencyGraph;
         if (aggregateDecision.getAggregateMode() == AggregateMode.DIRECT) {
             aggregateDependencyGraph = operationFactory.aggregateDirect(universalToolsResult.getDetectCodeLocations());
@@ -103,7 +104,10 @@ public class UniversalStepRunner {
             aggregateDependencyGraph = operationFactory.aggregateSubProject(universalToolsResult.getDetectCodeLocations());
         } else {
             throw new DetectUserFriendlyException(
-                String.format("The %s property was set to an unsupported aggregation mode, will not aggregate at this time.", DetectProperties.DETECT_BOM_AGGREGATE_REMEDIATION_MODE.getKey()),
+                String.format(
+                    "The %s property was set to an unsupported aggregation mode, will not aggregate at this time.",
+                    DetectProperties.DETECT_BOM_AGGREGATE_REMEDIATION_MODE.getKey()
+                ),
                 ExitCodeType.FAILURE_GENERAL_ERROR
             );
         }
@@ -120,7 +124,10 @@ public class UniversalStepRunner {
 
         List<UploadTarget> uploadTargets = new ArrayList<>();
         Map<DetectCodeLocation, String> codeLocationNamesResult = new HashMap<>();
-        universalToolsResult.getDetectCodeLocations().forEach(cl -> codeLocationNamesResult.put(cl, aggregateCodeLocation.getCodeLocationName())); //TODO: This doesn't seem right, it should just be the aggregate CL name right?
+        universalToolsResult.getDetectCodeLocations().forEach(cl -> codeLocationNamesResult.put(
+            cl,
+            aggregateCodeLocation.getCodeLocationName()
+        )); //TODO: This doesn't seem right, it should just be the aggregate CL name right?
         if (aggregateCodeLocation.getAggregateDependencyGraph().getRootDependencies().size() > 0 || aggregateDecision.shouldUploadEmptyAggregate()) {
             uploadTargets.add(UploadTarget.createDefault(projectNameVersion, aggregateCodeLocation.getCodeLocationName(), aggregateCodeLocation.getAggregateFile()));
         } else {
@@ -131,7 +138,10 @@ public class UniversalStepRunner {
 
     private BdioResult generateStandardBdio(UniversalToolsResult universalToolsResult, NameVersion projectNameVersion) throws DetectUserFriendlyException {
         logger.debug("Creating BDIO code locations.");
-        BdioCodeLocationResult codeLocationResult = operationFactory.createBdioCodeLocationsFromDetectCodeLocations(universalToolsResult.getDetectCodeLocations(), projectNameVersion);
+        BdioCodeLocationResult codeLocationResult = operationFactory.createBdioCodeLocationsFromDetectCodeLocations(
+            universalToolsResult.getDetectCodeLocations(),
+            projectNameVersion
+        );
         DetectCodeLocationNamesResult namesResult = new DetectCodeLocationNamesResult(codeLocationResult.getCodeLocationNames());
 
         logger.debug("Creating BDIO files from code locations.");

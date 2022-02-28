@@ -37,11 +37,21 @@ public class BinaryUploadOperation {
         this.statusEventPublisher = statusEventPublisher;
     }
 
-    public CodeLocationCreationData<BinaryScanBatchOutput> uploadBinaryScanFile(File binaryScanFile, BinaryScanUploadService binaryScanUploadService, NameVersion projectNameVersion)
+    public CodeLocationCreationData<BinaryScanBatchOutput> uploadBinaryScanFile(
+        File binaryScanFile,
+        BinaryScanUploadService binaryScanUploadService,
+        NameVersion projectNameVersion
+    )
         throws DetectUserFriendlyException {
         String prefix = binaryScanOptions.getCodeLocationPrefix();
         String suffix = binaryScanOptions.getCodeLocationSuffix();
-        String codeLocationName = codeLocationNameManager.createBinaryScanCodeLocationName(binaryScanFile, projectNameVersion.getName(), projectNameVersion.getVersion(), prefix, suffix);
+        String codeLocationName = codeLocationNameManager.createBinaryScanCodeLocationName(
+            binaryScanFile,
+            projectNameVersion.getName(),
+            projectNameVersion.getVersion(),
+            prefix,
+            suffix
+        );
         try {
             logger.info("Preparing to upload binary scan file: " + binaryScanFile.getAbsolutePath());
             BinaryScan binaryScan = new BinaryScan(binaryScanFile, projectNameVersion.getName(), projectNameVersion.getVersion(), codeLocationName);

@@ -62,7 +62,11 @@ public class MavenPomDetectableTest extends DetectableFunctionalTest {
         }
 
         return detectableFactory
-            .createMavenPomDetectable(detectableEnvironment, new MavenPomResolverTest(), new MavenCliExtractorOptions("test", Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList()));
+            .createMavenPomDetectable(
+                detectableEnvironment,
+                new MavenPomResolverTest(),
+                new MavenCliExtractorOptions("test", Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList())
+            );
     }
 
     @Override

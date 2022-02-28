@@ -36,7 +36,8 @@ public class GradleReportParser {
         GradleReport gradleReport = new GradleReport();
         boolean processingMetaData = false;
         List<String> configurationLines = new ArrayList<>();
-        try (InputStream dependenciesInputStream = new FileInputStream(reportFile); BufferedReader reader = new BufferedReader(new InputStreamReader(dependenciesInputStream, StandardCharsets.UTF_8))) {
+        try (InputStream dependenciesInputStream = new FileInputStream(reportFile);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(dependenciesInputStream, StandardCharsets.UTF_8))) {
             while (reader.ready()) {
                 String line = reader.readLine();
                 /*

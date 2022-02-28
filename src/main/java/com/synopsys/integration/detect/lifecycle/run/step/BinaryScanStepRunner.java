@@ -24,7 +24,11 @@ public class BinaryScanStepRunner {
         this.operationFactory = operationFactory;
     }
 
-    public Optional<CodeLocationCreationData<BinaryScanBatchOutput>> runBinaryScan(DockerTargetData dockerTargetData, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
+    public Optional<CodeLocationCreationData<BinaryScanBatchOutput>> runBinaryScan(
+        DockerTargetData dockerTargetData,
+        NameVersion projectNameVersion,
+        BlackDuckRunData blackDuckRunData
+    )
         throws DetectUserFriendlyException {
         Optional<File> binaryScanFile = determineBinaryScanFileTarget(dockerTargetData);
         if (binaryScanFile.isPresent()) {
@@ -41,7 +45,11 @@ public class BinaryScanStepRunner {
             logger.info("Binary upload will upload single file.");
             binaryUpload = binaryScanOptions.getSingleTargetFilePath().get().toFile();
         } else if (binaryScanOptions.getMultipleTargetFileNamePatterns().stream().anyMatch(StringUtils::isNotBlank)) {
-            Optional<File> multipleUploadTarget = operationFactory.searchForBinaryTargets(binaryScanOptions.getMultipleTargetFileNamePatterns(), binaryScanOptions.getSearchDepth(), binaryScanOptions.isFollowSymLinks());
+            Optional<File> multipleUploadTarget = operationFactory.searchForBinaryTargets(
+                binaryScanOptions.getMultipleTargetFileNamePatterns(),
+                binaryScanOptions.getSearchDepth(),
+                binaryScanOptions.isFollowSymLinks()
+            );
             if (multipleUploadTarget.isPresent()) {
                 binaryUpload = multipleUploadTarget.get();
             } else {
@@ -49,7 +57,8 @@ public class BinaryScanStepRunner {
             }
         } else if (dockerTargetData != null && dockerTargetData.getContainerFilesystem().isPresent()) {
             logger.info("Binary Scanner will upload docker container file system.");
-            binaryUpload = dockerTargetData.getContainerFilesystem().get();// Very important not to binary scan the same Docker output that we sig scanned (=codelocation name collision)
+            binaryUpload = dockerTargetData.getContainerFilesystem()
+                .get();// Very important not to binary scan the same Docker output that we sig scanned (=codelocation name collision)
         }
 
         if (binaryUpload == null) {

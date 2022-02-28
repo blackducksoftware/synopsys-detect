@@ -40,7 +40,13 @@ public class CodeLocationReporter {
         for (CodeLocation codeLocation : evaluation.getExtraction().getCodeLocations()) {
             DetectExtractionEnvironment detectExtractionEnvironment = (DetectExtractionEnvironment) evaluation.getExtractionEnvironment();
             DetectCodeLocation detectCodeLocation = detectCodeLocationMap.get(codeLocation);
-            writeCodeLocationDetails(writer, detectCodeLocation, dependencyCounts.get(detectCodeLocation), codeLocationNameMap.get(detectCodeLocation), detectExtractionEnvironment.getExtractionId().toUniqueString());
+            writeCodeLocationDetails(
+                writer,
+                detectCodeLocation,
+                dependencyCounts.get(detectCodeLocation),
+                codeLocationNameMap.get(detectCodeLocation),
+                detectExtractionEnvironment.getExtractionId().toUniqueString()
+            );
         }
     }
 

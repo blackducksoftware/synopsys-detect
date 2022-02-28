@@ -24,7 +24,11 @@ public class AllNoneEnumListProperty<B extends Enum<B>> extends ExtendedEnumList
         super(key, Collections.singletonList(ExtendedEnumValue.ofBaseValue(extendedValue)), AllNoneEnum.class, eClass);
     }
 
-    public static <B extends Enum<B>> PropertyBuilder<AllNoneEnumListProperty<B>> newBuilder(@NotNull String key, List<ExtendedEnumValue<AllNoneEnum, B>> defaultValue, @NotNull Class<B> eClass) {
+    public static <B extends Enum<B>> PropertyBuilder<AllNoneEnumListProperty<B>> newBuilder(
+        @NotNull String key,
+        List<ExtendedEnumValue<AllNoneEnum, B>> defaultValue,
+        @NotNull Class<B> eClass
+    ) {
         return new PropertyBuilder<AllNoneEnumListProperty<B>>().setCreator(() -> new AllNoneEnumListProperty<>(key, defaultValue, eClass));
     }
 
@@ -41,7 +45,8 @@ public class AllNoneEnumListProperty<B extends Enum<B>> extends ExtendedEnumList
     }
 
     @Override
-    public @NotNull AllNoneEnumList<B> convertValue(List<ExtendedEnumValue<AllNoneEnum, B>> value) {
+    public @NotNull
+    AllNoneEnumList<B> convertValue(List<ExtendedEnumValue<AllNoneEnum, B>> value) {
         return new AllNoneEnumList<>(value, bClass);
     }
 

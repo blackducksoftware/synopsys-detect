@@ -15,7 +15,13 @@ public class ConnectionDetails {
     private final Long timeout;
     private final Boolean alwaysTrust;
 
-    public ConnectionDetails(@NotNull Gson gson, @NotNull ProxyInfo proxyInformation, @NotNull List<Pattern> ignoredProxyHostPatterns, @NotNull Long timeout, @NotNull Boolean alwaysTrust) {
+    public ConnectionDetails(
+        @NotNull Gson gson,
+        @NotNull ProxyInfo proxyInformation,
+        @NotNull List<Pattern> ignoredProxyHostPatterns,
+        @NotNull Long timeout,
+        @NotNull Boolean alwaysTrust
+    ) {
         this.gson = gson;
         this.proxyInformation = proxyInformation;
         this.ignoredProxyHostPatterns = ignoredProxyHostPatterns;

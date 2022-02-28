@@ -28,7 +28,8 @@ public class FullAggregateGraphCreator {
         this.simpleBdioFactory = simpleBdioFactory;
     }
 
-    public DependencyGraph aggregateCodeLocations(ProjectNodeCreator projectDependencyCreator, File sourcePath, List<DetectCodeLocation> codeLocations) throws DetectUserFriendlyException {
+    public DependencyGraph aggregateCodeLocations(ProjectNodeCreator projectDependencyCreator, File sourcePath, List<DetectCodeLocation> codeLocations)
+        throws DetectUserFriendlyException {
         MutableDependencyGraph aggregateDependencyGraph = simpleBdioFactory.createMutableDependencyGraph();
 
         for (DetectCodeLocation detectCodeLocation : codeLocations) {

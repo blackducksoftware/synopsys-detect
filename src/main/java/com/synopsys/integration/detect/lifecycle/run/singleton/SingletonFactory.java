@@ -54,13 +54,20 @@ public class SingletonFactory {
         AirGapPathFinder airGapPathFinder = new AirGapPathFinder();
         CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(detectConfigurationFactory.createCodeLocationOverride());
         CodeLocationNameManager codeLocationNameManager = new CodeLocationNameManager(codeLocationNameGenerator);
-        CreateBdioCodeLocationsFromDetectCodeLocationsOperation createBdioCodeLocationsFromDetectCodeLocationsOperation = new CreateBdioCodeLocationsFromDetectCodeLocationsOperation(codeLocationNameManager, directoryManager);
+        CreateBdioCodeLocationsFromDetectCodeLocationsOperation createBdioCodeLocationsFromDetectCodeLocationsOperation = new CreateBdioCodeLocationsFromDetectCodeLocationsOperation(
+            codeLocationNameManager,
+            directoryManager
+        );
         AirGapInspectorPaths airGapInspectorPaths = new AirGapInspectorPaths(airGapPathFinder);
         BdioTransformer bdioTransformer = new BdioTransformer();
         DetectExecutableRunner executableRunner = DetectExecutableRunner.newDebug(eventSystem);
         DirectoryExecutableFinder directoryExecutableFinder = DirectoryExecutableFinder.forCurrentOperatingSystem(fileFinder);
         SystemPathExecutableFinder systemExecutableFinder = new SystemPathExecutableFinder(directoryExecutableFinder);
-        DetectExecutableResolver detectExecutableResolver = new DetectExecutableResolver(directoryExecutableFinder, systemExecutableFinder, detectConfigurationFactory.createDetectExecutableOptions());
+        DetectExecutableResolver detectExecutableResolver = new DetectExecutableResolver(
+            directoryExecutableFinder,
+            systemExecutableFinder,
+            detectConfigurationFactory.createDetectExecutableOptions()
+        );
         OperationSystem operationSystem = new OperationSystem(eventSingletons.getStatusEventPublisher());
         OperationWrapper operationWrapper = new OperationWrapper(exitCodeManager);
 

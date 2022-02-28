@@ -49,7 +49,15 @@ public class Operation {
         this(Instant.now(), type, null, name, StatusType.SUCCESS, phoneHomeKey);
     }
 
-    protected Operation(Instant startTime, OperationType operationType, @Nullable Instant endTime, String name, StatusType statusType, @Nullable String phoneHomeKey, String... errorMessages) {
+    protected Operation(
+        Instant startTime,
+        OperationType operationType,
+        @Nullable Instant endTime,
+        String name,
+        StatusType statusType,
+        @Nullable String phoneHomeKey,
+        String... errorMessages
+    ) {
         this.startTime = startTime;
         this.operationType = operationType;
         this.endTime = endTime;

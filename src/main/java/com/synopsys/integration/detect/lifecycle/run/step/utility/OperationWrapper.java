@@ -30,11 +30,13 @@ public class OperationWrapper {
         return named(name, operation, supplier, () -> {}, (e) -> {});
     }
 
-    public <T> T namedWithCallbacks(String name, Operation operation, OperationSupplier<T> supplier, Runnable successConsumer, Consumer<Exception> errorConsumer) throws DetectUserFriendlyException {
+    public <T> T namedWithCallbacks(String name, Operation operation, OperationSupplier<T> supplier, Runnable successConsumer, Consumer<Exception> errorConsumer)
+        throws DetectUserFriendlyException {
         return named(name, operation, supplier, successConsumer, errorConsumer);
     }
 
-    public <T> T named(String name, Operation operation, OperationSupplier<T> supplier, Runnable successConsumer, Consumer<Exception> errorConsumer) throws DetectUserFriendlyException {
+    public <T> T named(String name, Operation operation, OperationSupplier<T> supplier, Runnable successConsumer, Consumer<Exception> errorConsumer)
+        throws DetectUserFriendlyException {
         try {
             T value = supplier.execute();
             operation.success();

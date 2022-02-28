@@ -32,7 +32,13 @@ public class BlackDuckProjectVersionStepRunner {
         CloneFindResult cloneFindResult = findClone(projectNameVersion.getName(), blackDuckRunData);
         ProjectGroupFindResult projectGroupFindResult = findProjectGroup(blackDuckRunData);
         ProjectVersionLicenseFindResult projectVersionLicensesFindResult = findLicense(blackDuckRunData);
-        ProjectVersionWrapper projectVersion = operationFactory.syncProjectVersion(projectNameVersion, projectGroupFindResult, cloneFindResult, projectVersionLicensesFindResult, blackDuckRunData);
+        ProjectVersionWrapper projectVersion = operationFactory.syncProjectVersion(
+            projectNameVersion,
+            projectGroupFindResult,
+            cloneFindResult,
+            projectVersionLicensesFindResult,
+            blackDuckRunData
+        );
 
         ParentProjectMapOptions mapOptions = operationFactory.calculateParentProjectMapOptions();
         if (StringUtils.isNotBlank(mapOptions.getParentProjectName()) || StringUtils.isNotBlank(mapOptions.getParentProjectVersionName())) {

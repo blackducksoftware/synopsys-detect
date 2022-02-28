@@ -75,7 +75,11 @@ public class PearCliDetectableTest extends DetectableFunctionalTest {
                 return ExecutableTarget.forCommand("pear");
             }
         }
-        return detectableFactory.createPearCliDetectable(detectableEnvironment, new PearCliDetectableOptions(EnumListFilter.fromExcluded(PearDependencyType.OPTIONAL)), new LocalPearResolver());
+        return detectableFactory.createPearCliDetectable(
+            detectableEnvironment,
+            new PearCliDetectableOptions(EnumListFilter.fromExcluded(PearDependencyType.OPTIONAL)),
+            new LocalPearResolver()
+        );
     }
 
     @Override

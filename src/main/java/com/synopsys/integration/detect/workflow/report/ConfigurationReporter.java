@@ -10,7 +10,13 @@ import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
 
 public class ConfigurationReporter {
-    public void writeReport(ReportWriter writer, DetectInfo detectInfo, PropertyConfiguration propertyConfiguration, SortedMap<String, String> maskedRawPropertyValues, Set<String> propertyKeys) throws IllegalAccessException {
+    public void writeReport(
+        ReportWriter writer,
+        DetectInfo detectInfo,
+        PropertyConfiguration propertyConfiguration,
+        SortedMap<String, String> maskedRawPropertyValues,
+        Set<String> propertyKeys
+    ) throws IllegalAccessException {
         writer.writeSeparator();
         writer.writeLine("Detect Info");
         writer.writeSeparator();
