@@ -45,8 +45,8 @@ public class NoneEnumListProperty<B extends Enum<B>> extends ExtendedEnumListPro
     }
 
     @Override
-    public @NotNull
-    NoneEnumList<B> convertValue(List<ExtendedEnumValue<NoneEnum, B>> value) {
+    @NotNull
+    public NoneEnumList<B> convertValue(List<ExtendedEnumValue<NoneEnum, B>> value) {
         return new NoneEnumList<>(value, bClass);
     }
 }

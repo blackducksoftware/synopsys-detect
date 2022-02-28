@@ -14,8 +14,8 @@ public abstract class NullableAlikeProperty<V> extends NullableProperty<V, V> {
     }
 
     @Override
-    public @NotNull
-    V convertValue(V value) {
+    @NotNull
+    public V convertValue(V value) {
         return value;
     }
 }
