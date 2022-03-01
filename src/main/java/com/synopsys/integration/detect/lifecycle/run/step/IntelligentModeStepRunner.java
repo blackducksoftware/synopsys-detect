@@ -16,6 +16,7 @@ import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
+import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
@@ -48,7 +49,7 @@ public class IntelligentModeStepRunner {
         this.stepHelper = stepHelper;
     }
 
-    public void runOffline(NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws DetectUserFriendlyException {
+    public void runOffline(NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws OperationException {
         stepHelper.runToolIfIncluded(DetectTool.SIGNATURE_SCAN, "Signature Scanner", () -> { //Internal: Sig scan publishes it's own status.
             SignatureScanStepRunner signatureScanStepRunner = new SignatureScanStepRunner(operationFactory);
             signatureScanStepRunner.runSignatureScannerOffline(projectNameVersion, dockerTargetData);
@@ -65,7 +66,7 @@ public class IntelligentModeStepRunner {
     //TODO: Change black duck post options to a decision and stick it in Run Data somewhere.
     //TODO: Change detect tool filter to a decision and stick it in Run Data somewhere
     public void runOnline(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, NameVersion projectNameVersion, DetectToolFilter detectToolFilter, DockerTargetData dockerTargetData)
-        throws DetectUserFriendlyException, IntegrationException, IOException, InterruptedException {
+        throws OperationException, IntegrationException, IOException, InterruptedException, DetectUserFriendlyException {
 
         ProjectVersionWrapper projectVersion = stepHelper.runAsGroup("Create or Locate Project", OperationType.INTERNAL, () -> new BlackDuckProjectVersionStepRunner(operationFactory).runAll(projectNameVersion, blackDuckRunData));
 
@@ -109,7 +110,7 @@ public class IntelligentModeStepRunner {
         });
     }
 
-    public void uploadBdio(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, CodeLocationAccumulator codeLocationAccumulator) throws DetectUserFriendlyException, IntegrationException {
+    public void uploadBdio(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, CodeLocationAccumulator codeLocationAccumulator) throws OperationException, IntegrationException, OperationException {
         BdioOptions bdioOptions = operationFactory.calculateBdioOptions(); //TODO: Move to a decision
         BdioUploadResult uploadResult;
         if (bdioOptions.isLegacyUploadEnabled()) {
@@ -124,7 +125,7 @@ public class IntelligentModeStepRunner {
         uploadResult.getUploadOutput().ifPresent(codeLocationAccumulator::addWaitableCodeLocation);
     }
 
-    public CodeLocationResults calculateCodeLocations(CodeLocationAccumulator codeLocationAccumulator) throws DetectUserFriendlyException, IntegrationException { //this is waiting....
+    public CodeLocationResults calculateCodeLocations(CodeLocationAccumulator codeLocationAccumulator) throws OperationException, IntegrationException, OperationException { //this is waiting....
         logger.info(ReportConstants.RUN_SEPARATOR);
 
         Set<String> allCodeLocationNames = new HashSet<>(codeLocationAccumulator.getNonWaitableCodeLocations());
@@ -148,7 +149,7 @@ public class IntelligentModeStepRunner {
         }
     }
 
-    private void checkPolicy(ProjectVersionView projectVersionView, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
+    private void checkPolicy(ProjectVersionView projectVersionView, BlackDuckRunData blackDuckRunData) throws OperationException {
         logger.info("Checking to see if Detect should check policy for violations.");
         if (operationFactory.createBlackDuckPostOptions().shouldPerformPolicyCheck()) {
             operationFactory.checkPolicy(blackDuckRunData, projectVersionView);
@@ -156,7 +157,7 @@ public class IntelligentModeStepRunner {
     }
 
     public void waitForCodeLocations(CodeLocationWaitData codeLocationWaitData, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
-        throws DetectUserFriendlyException {
+        throws OperationException {
         logger.info("Checking to see if Detect should wait for bom tool calculations to finish.");
         if (operationFactory.createBlackDuckPostOptions().shouldWaitForResults() && codeLocationWaitData.getExpectedNotificationCount() > 0) {
             operationFactory.waitForCodeLocations(blackDuckRunData, codeLocationWaitData, projectNameVersion);
@@ -168,7 +169,7 @@ public class IntelligentModeStepRunner {
         ProjectVersionWrapper projectVersionWrapper,
         CodeLocationAccumulator codeLocationAccumulator,
         BlackDuckServicesFactory blackDuckServicesFactory
-    ) throws DetectUserFriendlyException {
+    ) throws OperationException {
         String impactAnalysisName = operationFactory.generateImpactAnalysisCodeLocationName(projectNameVersion);
         Path impactFile = operationFactory.generateImpactAnalysisFile(impactAnalysisName);
         CodeLocationCreationData<ImpactAnalysisBatchOutput> uploadData = operationFactory.uploadImpactAnalysisFile(impactFile, projectNameVersion, impactAnalysisName, blackDuckServicesFactory);
@@ -177,12 +178,12 @@ public class IntelligentModeStepRunner {
         codeLocationAccumulator.addNonWaitableCodeLocation(uploadData.getOutput().getSuccessfulCodeLocationNames());
     }
 
-    private Path generateImpactAnalysis(NameVersion projectNameVersion) throws DetectUserFriendlyException {
+    private Path generateImpactAnalysis(NameVersion projectNameVersion) throws OperationException, OperationException {
         String impactAnalysisName = operationFactory.generateImpactAnalysisCodeLocationName(projectNameVersion);
         return operationFactory.generateImpactAnalysisFile(impactAnalysisName);
     }
 
-    public void riskReport(BlackDuckRunData blackDuckRunData, ProjectVersionWrapper projectVersion) throws IOException, DetectUserFriendlyException {
+    public void riskReport(BlackDuckRunData blackDuckRunData, ProjectVersionWrapper projectVersion) throws IOException, OperationException {
         Optional<File> riskReportFile = operationFactory.calculateRiskReportFileLocation();
         if (riskReportFile.isPresent()) {
             logger.info("Creating risk report pdf");
@@ -199,7 +200,7 @@ public class IntelligentModeStepRunner {
         }
     }
 
-    public void noticesReport(BlackDuckRunData blackDuckRunData, ProjectVersionWrapper projectVersion) throws DetectUserFriendlyException, IOException {
+    public void noticesReport(BlackDuckRunData blackDuckRunData, ProjectVersionWrapper projectVersion) throws OperationException, IOException {
         Optional<File> noticesReportDirectory = operationFactory.calculateNoticesDirectory();
         if (noticesReportDirectory.isPresent()) {
             logger.info("Creating notices report");

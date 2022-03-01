@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
-import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
@@ -25,7 +25,7 @@ public class BinaryScanStepRunner {
     }
 
     public Optional<CodeLocationCreationData<BinaryScanBatchOutput>> runBinaryScan(DockerTargetData dockerTargetData, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
-        throws DetectUserFriendlyException {
+        throws OperationException {
         Optional<File> binaryScanFile = determineBinaryScanFileTarget(dockerTargetData);
         if (binaryScanFile.isPresent()) {
             return Optional.of(operationFactory.uploadBinaryScanFile(binaryScanFile.get(), projectNameVersion, blackDuckRunData));
@@ -34,7 +34,7 @@ public class BinaryScanStepRunner {
         }
     }
 
-    public Optional<File> determineBinaryScanFileTarget(DockerTargetData dockerTargetData) throws DetectUserFriendlyException {
+    public Optional<File> determineBinaryScanFileTarget(DockerTargetData dockerTargetData) throws OperationException {
         BinaryScanOptions binaryScanOptions = operationFactory.calculateBinaryScanOptions();
         File binaryUpload = null;
         if (binaryScanOptions.getSingleTargetFilePath().isPresent()) {

@@ -30,7 +30,7 @@ public class FindLicenseUrlOperation {
             return licenseUrl.get();
         } else {
             List<LicenseView> suggestedLicenses = licenseService.searchLicensesByName(licenseName);
-            logger.error(String.format("Could not find url for license with name %s.  License names are case sensitive, please verify the name of your license in Black Duck in the License Management section.", licenseName));
+            logger.error(String.format("Could not find url for license with name '%s'.  License names are case sensitive, please verify the name of your license in Black Duck in the License Management section.", licenseName));
             if (!suggestedLicenses.isEmpty()) {
                 logger.error("Here are some suggested licenses based on the name you provided:");
                 suggestedLicenses.stream()
@@ -39,7 +39,7 @@ public class FindLicenseUrlOperation {
                     .forEach(logger::error);
             }
 
-            throw new DetectUserFriendlyException(String.format("Detect was unable to find a url for license %s", licenseName), ExitCodeType.FAILURE_GENERAL_ERROR);
+            throw new DetectUserFriendlyException(String.format("Detect was unable to find a url for license '%s'", licenseName), ExitCodeType.FAILURE_GENERAL_ERROR);
         }
     }
 }

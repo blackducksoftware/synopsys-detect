@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
 import com.synopsys.integration.detect.workflow.blackduck.project.customfields.CustomFieldDocument;
@@ -28,7 +29,7 @@ public class BlackDuckProjectVersionStepRunner {
         this.operationFactory = operationFactory;
     }
 
-    ProjectVersionWrapper runAll(NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
+    ProjectVersionWrapper runAll(NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException, OperationException {
         CloneFindResult cloneFindResult = findClone(projectNameVersion.getName(), blackDuckRunData);
         ProjectGroupFindResult projectGroupFindResult = findProjectGroup(blackDuckRunData);
         ProjectVersionLicenseFindResult projectVersionLicensesFindResult = findLicense(blackDuckRunData);
@@ -77,7 +78,7 @@ public class BlackDuckProjectVersionStepRunner {
         return projectVersion;
     }
 
-    private ProjectGroupFindResult findProjectGroup(BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
+    private ProjectGroupFindResult findProjectGroup(BlackDuckRunData blackDuckRunData) throws OperationException {
         ProjectGroupOptions projectGroupOptions = operationFactory.calculateProjectGroupOptions();
         if (StringUtils.isNotBlank(projectGroupOptions.getProjectGroup())) {
             logger.info("Will look for project group named: " + projectGroupOptions.getProjectGroup());
@@ -88,7 +89,7 @@ public class BlackDuckProjectVersionStepRunner {
         }
     }
 
-    private CloneFindResult findClone(String projectName, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
+    private CloneFindResult findClone(String projectName, BlackDuckRunData blackDuckRunData) throws OperationException {
         FindCloneOptions cloneOptions = operationFactory.calculateCloneOptions();
         if (cloneOptions.getCloneLatestProjectVersion()) {
             logger.debug("Cloning the most recent project version.");
@@ -101,7 +102,7 @@ public class BlackDuckProjectVersionStepRunner {
         }
     }
 
-    private ProjectVersionLicenseFindResult findLicense(BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
+    private ProjectVersionLicenseFindResult findLicense(BlackDuckRunData blackDuckRunData) throws OperationException {
         ProjectVersionLicenseOptions projectVersionLicenseOptions = operationFactory.calculateProjectVersionLicenses();
         if (StringUtils.isNotBlank(projectVersionLicenseOptions.getLicenseName())) {
             return ProjectVersionLicenseFindResult.of(operationFactory.findLicenseUrl(blackDuckRunData, projectVersionLicenseOptions.getLicenseName()));

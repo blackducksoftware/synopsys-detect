@@ -9,7 +9,6 @@ import com.synopsys.integration.detect.configuration.DetectUserFriendlyException
 import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
 import com.synopsys.integration.detect.lifecycle.run.step.utility.OperationWrapper;
-import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeManager;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.tool.detector.DetectorEventPublisher;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableResolver;
@@ -45,7 +44,7 @@ public class SingletonFactory {
         this.detectConfigurationFactory = bootSingletons.getDetectConfigurationFactory();
     }
 
-    public UtilitySingletons createUtilitySingletons(EventSingletons eventSingletons, ExitCodeManager exitCodeManager) throws DetectUserFriendlyException {
+    public UtilitySingletons createUtilitySingletons(EventSingletons eventSingletons) throws DetectUserFriendlyException {
         ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         ConnectionDetails connectionDetails = detectConfigurationFactory.createConnectionDetails();
         ConnectionFactory connectionFactory = new ConnectionFactory(connectionDetails);
@@ -62,7 +61,7 @@ public class SingletonFactory {
         SystemPathExecutableFinder systemExecutableFinder = new SystemPathExecutableFinder(directoryExecutableFinder);
         DetectExecutableResolver detectExecutableResolver = new DetectExecutableResolver(directoryExecutableFinder, systemExecutableFinder, detectConfigurationFactory.createDetectExecutableOptions());
         OperationSystem operationSystem = new OperationSystem(eventSingletons.getStatusEventPublisher());
-        OperationWrapper operationWrapper = new OperationWrapper(exitCodeManager);
+        OperationWrapper operationWrapper = new OperationWrapper();
 
         return new UtilitySingletons(
             externalIdFactory,

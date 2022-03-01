@@ -15,6 +15,7 @@ import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
 import com.synopsys.integration.detect.lifecycle.run.step.utility.StepHelper;
 import com.synopsys.integration.detect.tool.DetectableTool;
@@ -43,7 +44,7 @@ public class UniversalStepRunner {
         this.stepHelper = stepHelper;
     }
 
-    public UniversalToolsResult runUniversalTools() throws DetectUserFriendlyException, IntegrationException {
+    public UniversalToolsResult runUniversalTools() throws OperationException {
         UniversalToolsResultBuilder resultBuilder = new UniversalToolsResultBuilder();
 
         stepHelper.runToolIfIncluded(DetectTool.DOCKER, "Docker", this::runDocker)
@@ -58,7 +59,7 @@ public class UniversalStepRunner {
         return resultBuilder.build();
     }
 
-    private DetectableToolResult runDocker() throws DetectUserFriendlyException, IntegrationException {
+    private DetectableToolResult runDocker() throws OperationException {
         Optional<DetectableTool> potentialTool = operationFactory.checkForDocker();
         if (potentialTool.isPresent()) {
             return operationFactory.executeDocker(potentialTool.get());
@@ -67,7 +68,7 @@ public class UniversalStepRunner {
         }
     }
 
-    private DetectableToolResult runBazel() throws DetectUserFriendlyException, IntegrationException {
+    private DetectableToolResult runBazel() throws OperationException {
         Optional<DetectableTool> potentialTool = operationFactory.checkForBazel();
         if (potentialTool.isPresent()) {
             return operationFactory.executeBazel(potentialTool.get());
@@ -76,7 +77,7 @@ public class UniversalStepRunner {
         }
     }
 
-    private DetectorToolResult runDetectors() throws DetectUserFriendlyException, IntegrationException {
+    private DetectorToolResult runDetectors() throws OperationException {
         DetectorToolResult result = operationFactory.executeDetectors();
         if (result.anyDetectorsFailed()) {
             operationFactory.publishDetectorFailure();
@@ -84,7 +85,7 @@ public class UniversalStepRunner {
         return result;
     }
 
-    public BdioResult generateBdio(UniversalToolsResult universalToolsResult, NameVersion projectNameVersion) throws DetectUserFriendlyException, IntegrationException {
+    public BdioResult generateBdio(UniversalToolsResult universalToolsResult, NameVersion projectNameVersion) throws OperationException, IntegrationException, DetectUserFriendlyException {
         AggregateDecision aggregateDecision = operationFactory.createAggregateOptionsOperation().execute(universalToolsResult.didAnyFail());
         if (aggregateDecision.shouldAggregate() && aggregateDecision.getAggregateName().isPresent()) {
             return generateAggregateBdio(aggregateDecision, universalToolsResult, projectNameVersion, aggregateDecision.getAggregateName().get());
@@ -93,7 +94,7 @@ public class UniversalStepRunner {
         }
     }
 
-    private BdioResult generateAggregateBdio(AggregateDecision aggregateDecision, UniversalToolsResult universalToolsResult, NameVersion projectNameVersion, String aggregateName) throws DetectUserFriendlyException {
+    private BdioResult generateAggregateBdio(AggregateDecision aggregateDecision, UniversalToolsResult universalToolsResult, NameVersion projectNameVersion, String aggregateName) throws OperationException, DetectUserFriendlyException {
         DependencyGraph aggregateDependencyGraph;
         if (aggregateDecision.getAggregateMode() == AggregateMode.DIRECT) {
             aggregateDependencyGraph = operationFactory.aggregateDirect(universalToolsResult.getDetectCodeLocations());
@@ -129,7 +130,7 @@ public class UniversalStepRunner {
         return new BdioResult(uploadTargets, new DetectCodeLocationNamesResult(codeLocationNamesResult), isBdio2);
     }
 
-    private BdioResult generateStandardBdio(UniversalToolsResult universalToolsResult, NameVersion projectNameVersion) throws DetectUserFriendlyException {
+    private BdioResult generateStandardBdio(UniversalToolsResult universalToolsResult, NameVersion projectNameVersion) throws OperationException {
         logger.debug("Creating BDIO code locations.");
         BdioCodeLocationResult codeLocationResult = operationFactory.createBdioCodeLocationsFromDetectCodeLocations(universalToolsResult.getDetectCodeLocations(), projectNameVersion);
         DetectCodeLocationNamesResult namesResult = new DetectCodeLocationNamesResult(codeLocationResult.getCodeLocationNames());
@@ -142,7 +143,7 @@ public class UniversalStepRunner {
         }
     }
 
-    public NameVersion determineProjectInformation(UniversalToolsResult universalToolsResult) throws DetectUserFriendlyException, IntegrationException {
+    public NameVersion determineProjectInformation(UniversalToolsResult universalToolsResult) throws OperationException, IntegrationException {
         logger.info(ReportConstants.RUN_SEPARATOR);
         logger.debug("Completed code location tools.");
 
