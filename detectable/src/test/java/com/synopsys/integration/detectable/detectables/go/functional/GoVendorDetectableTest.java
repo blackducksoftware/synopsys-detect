@@ -23,7 +23,8 @@ public class GoVendorDetectableTest extends DetectableFunctionalTest {
     protected void setup() throws IOException {
         addDirectory(Paths.get("vendor"));
 
-        addFile(Paths.get("vendor/vendor.json"),
+        addFile(
+            Paths.get("vendor/vendor.json"),
             "{",
             "   \"comment\": \"\",",
             "   \"ignore\": \"test\",",

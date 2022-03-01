@@ -40,8 +40,14 @@ public class DartPubDepDetectable extends Detectable {
     private ExecutableTarget dartExe;
     private ExecutableTarget flutterExe;
 
-    public DartPubDepDetectable(DetectableEnvironment environment, FileFinder fileFinder, PubDepsExtractor pubDepsExtractor, DartPubDepsDetectableOptions dartPubDepsDetectableOptions, DartResolver dartResolver,
-        FlutterResolver flutterResolver) {
+    public DartPubDepDetectable(
+        DetectableEnvironment environment,
+        FileFinder fileFinder,
+        PubDepsExtractor pubDepsExtractor,
+        DartPubDepsDetectableOptions dartPubDepsDetectableOptions,
+        DartResolver dartResolver,
+        FlutterResolver flutterResolver
+    ) {
         super(environment);
         this.fileFinder = fileFinder;
         this.pubDepsExtractor = pubDepsExtractor;

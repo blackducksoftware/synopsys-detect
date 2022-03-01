@@ -32,7 +32,8 @@ public class ListValueParser<T> extends ValueParser<List<T>> {
 
             if (StringUtils.isBlank(trimmedElement)) {
                 throw new ValueParseException(rawValue, "List",
-                    String.format("Failed to parse list '%s'. The list must be comma separated and each element in the list must not be empty (at least one character that is not whitespace).", rawValue));
+                    String.format("Failed to parse list '%s'. The list must be comma separated and each element in the list must not be empty (at least one character that is not whitespace).", rawValue)
+                );
             } else {
                 parsedValues.add(valueParser.parse(trimmedElement));
             }

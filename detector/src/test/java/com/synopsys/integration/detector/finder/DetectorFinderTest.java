@@ -36,12 +36,8 @@ public class DetectorFinderTest {
     }
 
     @AfterAll
-    public static void cleanup() {
-        try {
-            FileUtils.deleteDirectory(initialDirectoryPath.toFile());
-        } catch (IOException e) {
-            // ignore
-        }
+    public static void cleanup() throws IOException {
+        FileUtils.deleteDirectory(initialDirectoryPath.toFile());
     }
 
     @Test

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Assertions;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmLockfileOptions;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
@@ -22,7 +23,8 @@ public class NpmLockDetectableTest extends DetectableFunctionalTest {
 
     @Override
     public void setup() throws IOException {
-        addFile(Paths.get("package-lock.json"),
+        addFile(
+            Paths.get("package-lock.json"),
             "{",
             "   \"name\": \"knockout-tournament\",",
             "   \"version\": \"1.0.0\",",
@@ -65,7 +67,7 @@ public class NpmLockDetectableTest extends DetectableFunctionalTest {
     @NotNull
     @Override
     public Detectable create(@NotNull DetectableEnvironment environment) {
-        return detectableFactory.createNpmPackageLockDetectable(environment, new NpmLockfileOptions(true, true));
+        return detectableFactory.createNpmPackageLockDetectable(environment, new NpmLockfileOptions(EnumListFilter.excludeNone()));
     }
 
     @Override

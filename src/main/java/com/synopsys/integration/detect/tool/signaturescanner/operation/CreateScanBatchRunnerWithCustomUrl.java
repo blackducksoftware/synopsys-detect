@@ -11,7 +11,7 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScannerZipInstaller;
 import com.synopsys.integration.blackduck.http.client.SignatureScannerClient;
 import com.synopsys.integration.blackduck.keystore.KeyStoreHelper;
-import com.synopsys.integration.detect.configuration.DetectInfo;
+import com.synopsys.integration.blackduck.service.dataservice.BlackDuckRegistrationService;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
@@ -32,8 +32,13 @@ public class CreateScanBatchRunnerWithCustomUrl {
     private final ScanPathsUtility scanPathsUtility;
     private final ScanCommandRunner scanCommandRunner;
 
-    public CreateScanBatchRunnerWithCustomUrl(IntEnvironmentVariables intEnvironmentVariables, SignatureScannerLogger slf4jIntLogger, OperatingSystemType operatingSystemType,
-        ScanPathsUtility scanPathsUtility, ScanCommandRunner scanCommandRunner) {
+    public CreateScanBatchRunnerWithCustomUrl(
+        IntEnvironmentVariables intEnvironmentVariables,
+        SignatureScannerLogger slf4jIntLogger,
+        OperatingSystemType operatingSystemType,
+        ScanPathsUtility scanPathsUtility,
+        ScanCommandRunner scanCommandRunner
+    ) {
         this.intEnvironmentVariables = intEnvironmentVariables;
         this.slf4jIntLogger = slf4jIntLogger;
         this.operatingSystemType = operatingSystemType;
@@ -41,7 +46,7 @@ public class CreateScanBatchRunnerWithCustomUrl {
         this.scanCommandRunner = scanCommandRunner;
     }
 
-    public ScanBatchRunner createScanBatchRunner(String providedUrl, ConnectionDetails connectionDetails, DetectInfo detectInfo, File installDirectory) throws DetectUserFriendlyException {
+    public ScanBatchRunner createScanBatchRunner(String providedUrl, ConnectionDetails connectionDetails, BlackDuckRegistrationService registrationService, File installDirectory) throws DetectUserFriendlyException {
         logger.debug("Signature scanner will use the provided url to download/update the scanner.");
         HttpUrl baseUrl;
         try {
@@ -51,11 +56,25 @@ public class CreateScanBatchRunnerWithCustomUrl {
         }
 
         CleanupZipExpander cleanupZipExpander = new CleanupZipExpander(slf4jIntLogger);
-        SignatureScannerClient signatureScannerClient = new SignatureScannerClient(new SilentIntLogger(), connectionDetails.getGson(), connectionDetails.getTimeout().intValue(), connectionDetails.getAlwaysTrust(),
-            connectionDetails.getProxyInformation());
+        SignatureScannerClient signatureScannerClient = new SignatureScannerClient(
+            new SilentIntLogger(),
+            connectionDetails.getGson(),
+            connectionDetails.getTimeout().intValue(),
+            connectionDetails.getAlwaysTrust(),
+            connectionDetails.getProxyInformation()
+        );
         KeyStoreHelper keyStoreHelper = new KeyStoreHelper(slf4jIntLogger);
-        ScannerZipInstaller scannerZipInstaller = new ScannerZipInstaller(slf4jIntLogger, signatureScannerClient, cleanupZipExpander, scanPathsUtility,
-            keyStoreHelper, baseUrl, operatingSystemType, installDirectory);
+        ScannerZipInstaller scannerZipInstaller = new ScannerZipInstaller(
+            slf4jIntLogger,
+            signatureScannerClient,
+            registrationService,
+            cleanupZipExpander,
+            scanPathsUtility,
+            keyStoreHelper,
+            baseUrl,
+            operatingSystemType,
+            installDirectory
+        );
 
         return ScanBatchRunner.createComplete(intEnvironmentVariables, scanPathsUtility, scanCommandRunner, scannerZipInstaller);
 

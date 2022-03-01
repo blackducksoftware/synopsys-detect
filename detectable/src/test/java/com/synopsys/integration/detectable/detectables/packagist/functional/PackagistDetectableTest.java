@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Assertions;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDetectableOptions;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
@@ -22,7 +23,8 @@ public class PackagistDetectableTest extends DetectableFunctionalTest {
 
     @Override
     protected void setup() throws IOException {
-        addFile(Paths.get("composer.lock"),
+        addFile(
+            Paths.get("composer.lock"),
             "{",
             "   \"_readme\": [\"dummy README\"],",
             "   \"hash\": \"3bedbf455f54168900e467a64bbe2b86\",",
@@ -56,7 +58,8 @@ public class PackagistDetectableTest extends DetectableFunctionalTest {
             "}"
         );
 
-        addFile(Paths.get("composer.json"),
+        addFile(
+            Paths.get("composer.json"),
             "{",
             "   \"name\": \"clue/graph-composer\",",
             "   \"version\": \"1.0.0\",",
@@ -74,7 +77,7 @@ public class PackagistDetectableTest extends DetectableFunctionalTest {
     @NotNull
     @Override
     public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
-        return detectableFactory.createComposerDetectable(detectableEnvironment, new ComposerLockDetectableOptions(true));
+        return detectableFactory.createComposerDetectable(detectableEnvironment, new ComposerLockDetectableOptions(EnumListFilter.excludeNone()));
     }
 
     @Override

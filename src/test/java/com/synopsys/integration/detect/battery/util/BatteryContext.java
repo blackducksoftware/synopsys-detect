@@ -223,7 +223,7 @@ public class BatteryContext {
 
     public void git(String origin, String branch) {
         sourceFileNamed(".git");
-        executable(DetectProperties.DETECT_GIT_PATH.getProperty(), origin, branch);
+        executable(DetectProperties.DETECT_GIT_PATH, origin, branch);
     }
 
     public void sourceFileNamed(String filename) {

@@ -14,9 +14,9 @@ public class BomComponent {
     private String componentVersion;
     private String componentVersionURL;
     private String license;
-    private BomRiskCounts securityRiskCounts = new BomRiskCounts();
-    private BomRiskCounts licenseRiskCounts = new BomRiskCounts();
-    private BomRiskCounts operationalRiskCounts = new BomRiskCounts();
+    private final BomRiskCounts securityRiskCounts = new BomRiskCounts();
+    private final BomRiskCounts licenseRiskCounts = new BomRiskCounts();
+    private final BomRiskCounts operationalRiskCounts = new BomRiskCounts();
 
     public void addSecurityRiskProfile(RiskProfileView securityRiskProfile) {
         addRiskProfile(securityRiskProfile, securityRiskCounts);

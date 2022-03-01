@@ -14,8 +14,7 @@ public class YarnLockLineAnalyzer {
         }
         int leadingSpaceCount = countLeadingSpaces(line);
         if ((leadingSpaceCount % SPACES_INDENT_PER_LEVEL) != 0) {
-            logger.warn("Leading space count for '{}' is {}; expected it to be divisible by {}",
-                line, leadingSpaceCount, SPACES_INDENT_PER_LEVEL);
+            logger.warn("Leading space count for '{}' is {}; expected it to be divisible by {}", line, leadingSpaceCount, SPACES_INDENT_PER_LEVEL);
         }
         return leadingSpaceCount / SPACES_INDENT_PER_LEVEL;
     }

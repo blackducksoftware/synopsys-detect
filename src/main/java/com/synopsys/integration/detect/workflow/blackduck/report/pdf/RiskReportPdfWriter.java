@@ -27,17 +27,17 @@ public class RiskReportPdfWriter {
     public static String BASIC_RED = "#b52b24";
     public static String SALMON_RED = "#eca4a0";
 
-    private String CRITICAL_RISK = "Critical Risk";
-    private String HIGH_RISK = "High Risk";
-    private String MED_RISK = "Medium Risk";
-    private String LOW_RISK = "Low Risk";
-    private String NO_RISK = "No Risk";
+    private final String CRITICAL_RISK = "Critical Risk";
+    private final String HIGH_RISK = "High Risk";
+    private final String MED_RISK = "Medium Risk";
+    private final String LOW_RISK = "Low Risk";
+    private final String NO_RISK = "No Risk";
 
-    private IntLogger logger;
-    private FontLoader fontLoader;
-    private FontLoader boldFontLoader;
-    private Color textColor;
-    private float fontSize;
+    private final IntLogger logger;
+    private final FontLoader fontLoader;
+    private final FontLoader boldFontLoader;
+    private final Color textColor;
+    private final float fontSize;
 
     private PDFBoxManager pdfManager;
     private PDFont font;
@@ -132,11 +132,14 @@ public class RiskReportPdfWriter {
 
         float height = startingHeight - 40;
         writeSummaryTable(center - 180, height, "Security Risk", reportData.getVulnerabilityRiskCriticalCount(), reportData.getVulnerabilityRiskHighCount(), reportData.getVulnerabilityRiskMediumCount(),
-            reportData.getVulnerabilityRiskLowCount(), reportData.getVulnerabilityRiskNoneCount(), reportData.getTotalComponents());
+            reportData.getVulnerabilityRiskLowCount(), reportData.getVulnerabilityRiskNoneCount(), reportData.getTotalComponents()
+        );
         writeSummaryTable(center, height, "License Risk", -1, reportData.getLicenseRiskHighCount(), reportData.getLicenseRiskMediumCount(), reportData.getLicenseRiskLowCount(),
-            reportData.getLicenseRiskNoneCount(), reportData.getTotalComponents());
+            reportData.getLicenseRiskNoneCount(), reportData.getTotalComponents()
+        );
         PDRectangle rectangle = writeSummaryTable(center + 180, height, "Operational Risk", -1, reportData.getOperationalRiskHighCount(), reportData.getOperationalRiskMediumCount(),
-            reportData.getOperationalRiskLowCount(), reportData.getOperationalRiskNoneCount(), reportData.getTotalComponents());
+            reportData.getOperationalRiskLowCount(), reportData.getOperationalRiskNoneCount(), reportData.getTotalComponents()
+        );
         logger.trace("Finished writing the summary tables.");
         return rectangle;
     }

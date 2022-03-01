@@ -10,7 +10,7 @@ import com.synopsys.integration.configuration.util.EnumPropertyUtils;
 
 public class EnumValueParser<T extends Enum<T>> extends ValueParser<T> {
     private final Class<T> enumClass;
-    private SafeEnumValueParser<T> parser;
+    private final SafeEnumValueParser<T> parser;
 
     public EnumValueParser(@NotNull Class<T> enumClass) {
         this.enumClass = enumClass;

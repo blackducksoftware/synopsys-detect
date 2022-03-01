@@ -6,10 +6,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.configuration.parse.ListValueParser;
-import com.synopsys.integration.configuration.property.base.ValuedListProperty;
+import com.synopsys.integration.configuration.property.base.ValuedAlikeListProperty;
 import com.synopsys.integration.configuration.util.PropertyUtils;
 
-public class BooleanListProperty extends ValuedListProperty<Boolean> {
+public class BooleanListProperty extends ValuedAlikeListProperty<Boolean> {
     public BooleanListProperty(@NotNull String key, @NotNull List<Boolean> defaultValue) {
         super(key, new ListValueParser<>(new BooleanValueParser()), defaultValue);
     }

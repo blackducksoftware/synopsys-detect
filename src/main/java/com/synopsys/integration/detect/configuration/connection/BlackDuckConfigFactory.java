@@ -33,7 +33,7 @@ public class BlackDuckConfigFactory {
         }
         ConnectionDetails connectionDetails = blackDuckConnectionDetails.getConnectionDetails();
 
-        BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = new BlackDuckServerConfigBuilder()
+        BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = BlackDuckServerConfig.newApiTokenBuilder()
             .setExecutorService(Executors.newFixedThreadPool(blackDuckConnectionDetails.getParallelProcessors()))
             .setLogger(logger);
 

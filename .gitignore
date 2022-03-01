@@ -16,6 +16,7 @@ venv/
 # build tool
 .gradle/
 build/
+target/
 
 version.txt
 swip.yml

@@ -2,7 +2,6 @@ package com.synopsys.integration.detectable.detectables.pnpm.functional;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -15,13 +14,13 @@ import com.google.gson.Gson;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.enums.DependencyType;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmLinkedPackageResolver;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmLockYamlParser;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmYamlTransformer;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonFiles;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonReader;
-import com.synopsys.integration.detectable.util.DependencyTypeFilter;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
@@ -31,7 +30,7 @@ public class PnpmLockYamlParserTest {
     @Test
     public void testParse() throws IOException, IntegrationException {
         File pnpmLockYaml = FunctionalTestFiles.asFile("/pnpm/pnpm-lock.yaml");
-        DependencyTypeFilter dependencyTypeFilter = new DependencyTypeFilter(Arrays.asList(DependencyType.APP, DependencyType.DEV, DependencyType.OPTIONAL));
+        EnumListFilter<PnpmDependencyType> dependencyTypeFilter = EnumListFilter.excludeNone();
         PnpmLockYamlParser pnpmLockYamlParser = new PnpmLockYamlParser(new PnpmYamlTransformer(new ExternalIdFactory(), dependencyTypeFilter));
         PnpmLinkedPackageResolver pnpmLinkedPackageResolver = new PnpmLinkedPackageResolver(FunctionalTestFiles.asFile("/pnpm"), new PackageJsonFiles(new PackageJsonReader(new Gson())));
 
@@ -50,10 +49,10 @@ public class PnpmLockYamlParserTest {
 
         // Do all code locations have a source path?
         Assertions.assertAll(codeLocations.stream()
-                .map(codeLocation -> () -> Assertions.assertTrue(codeLocation.getSourcePath().isPresent(), String.format(
-                    "Expected source path to be present for all code locations. But code location with id %s does not have one set.",
-                    codeLocation.getExternalId().map(ExternalId::createExternalId).orElse("N/A")
-                ))));
+            .map(codeLocation -> () -> Assertions.assertTrue(codeLocation.getSourcePath().isPresent(), String.format(
+                "Expected source path to be present for all code locations. But code location with id %s does not have one set.",
+                codeLocation.getExternalId().map(ExternalId::createExternalId).orElse("N/A")
+            ))));
 
         // Did we generate a unique source path for each code location?
         Map<String, List<File>> collect = codeLocations.stream()

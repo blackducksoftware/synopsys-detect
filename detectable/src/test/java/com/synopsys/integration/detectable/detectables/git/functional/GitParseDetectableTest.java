@@ -21,7 +21,8 @@ public class GitParseDetectableTest extends DetectableFunctionalTest {
     @Override
     public void setup() throws IOException {
         Path gitDirectory = addDirectory(Paths.get(".git"));
-        addFile(gitDirectory.resolve("config"),
+        addFile(
+            gitDirectory.resolve("config"),
             "[core]",
             "	repositoryformatversion = 0",
             "	filemode = true",

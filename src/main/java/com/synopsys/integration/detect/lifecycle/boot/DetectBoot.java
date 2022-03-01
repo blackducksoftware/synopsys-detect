@@ -18,10 +18,12 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
+import com.synopsys.integration.configuration.property.types.path.SimplePathResolver;
 import com.synopsys.integration.configuration.source.MapPropertySource;
 import com.synopsys.integration.configuration.source.PropertySource;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
+import com.synopsys.integration.detect.configuration.DetectPropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectPropertyUtil;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
@@ -98,36 +100,38 @@ public class DetectBoot {
             propertySources.add(0, interactivePropertySource);
         }
 
-        PropertyConfiguration detectConfiguration = new PropertyConfiguration(propertySources);
+        PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);
 
-        SortedMap<String, String> maskedRawPropertyValues = collectMaskedRawPropertyValues(detectConfiguration);
+        SortedMap<String, String> maskedRawPropertyValues = collectMaskedRawPropertyValues(propertyConfiguration);
         Set<String> propertyKeys = new HashSet<>(DetectProperties.allProperties().getPropertyKeys());
 
         publishCollectedPropertyValues(maskedRawPropertyValues);
 
         logger.debug("Configuration processed completely.");
 
-        DetectConfigurationBootManager detectConfigurationBootManager = detectBootFactory.createDetectConfigurationBootManager(detectConfiguration);
-        DeprecationResult deprecationResult = detectConfigurationBootManager.checkForDeprecations(detectConfiguration);
+        DetectConfigurationBootManager detectConfigurationBootManager = detectBootFactory.createDetectConfigurationBootManager(propertyConfiguration);
+        DeprecationResult deprecationResult = detectConfigurationBootManager.createDeprecationNotesAndPublishEvents(propertyConfiguration);
         detectConfigurationBootManager.printConfiguration(maskedRawPropertyValues, propertyKeys, deprecationResult.getAdditionalNotes());
 
         Optional<DetectUserFriendlyException> possiblePropertyParseError = detectConfigurationBootManager.validateForPropertyParseErrors();
         if (possiblePropertyParseError.isPresent()) {
-            return Optional.of(DetectBootResult.exception(possiblePropertyParseError.get(), detectConfiguration));
+            return Optional.of(DetectBootResult.exception(possiblePropertyParseError.get(), propertyConfiguration));
         }
 
         logger.debug("Initializing Detect.");
 
         Configuration freemarkerConfiguration = detectBootFactory.createFreemarkerConfiguration();
         PathResolver pathResolver = detectBootFactory.createPathResolver();
-        DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration, pathResolver, gson);
+        DetectPropertyConfiguration detectConfiguration = new DetectPropertyConfiguration(propertyConfiguration, new SimplePathResolver());
+
+        DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration, gson);
         DirectoryManager directoryManager = detectBootFactory.createDirectoryManager(detectConfigurationFactory);
         InstalledToolLocator installedToolLocator = new InstalledToolLocator(directoryManager.getPermanentDirectory().toPath(), gson);
 
         DiagnosticSystem diagnosticSystem = null;
-        DiagnosticDecision diagnosticDecision = DiagnosticDecision.decide(detectArgumentState, detectConfiguration);
+        DiagnosticDecision diagnosticDecision = DiagnosticDecision.decide(detectArgumentState, propertyConfiguration);
         if (diagnosticDecision.shouldCreateDiagnosticSystem()) {
-            diagnosticSystem = detectBootFactory.createDiagnosticSystem(diagnosticDecision.isExtended(), detectConfiguration, directoryManager, maskedRawPropertyValues, propertyKeys);
+            diagnosticSystem = detectBootFactory.createDiagnosticSystem(diagnosticDecision.isExtended(), propertyConfiguration, directoryManager, maskedRawPropertyValues, propertyKeys);
         }
 
         logger.debug("Main boot completed. Deciding what Detect should do.");
@@ -137,14 +141,14 @@ public class DetectBoot {
                 AirGapType airGapType = new AirGapTypeDecider().decide(detectArgumentState);
                 AirGapCreator airGapCreator = detectBootFactory
                     .createAirGapCreator(detectConfigurationFactory.createConnectionDetails(), detectConfigurationFactory.createDetectExecutableOptions(), freemarkerConfiguration, installedToolManager, installedToolLocator);
-                String gradleInspectorVersion = detectConfiguration.getValueOrEmpty(DetectProperties.DETECT_GRADLE_INSPECTOR_VERSION.getProperty())
+                String gradleInspectorVersion = propertyConfiguration.getValueOrEmpty(DetectProperties.DETECT_GRADLE_INSPECTOR_VERSION)
                     .orElse(null);
 
                 File airGapZip = airGapCreator.createAirGapZip(airGapType, directoryManager.getRunHomeDirectory(), gradleInspectorVersion);
 
-                return Optional.of(DetectBootResult.exit(detectConfiguration, airGapZip, directoryManager, diagnosticSystem));
+                return Optional.of(DetectBootResult.exit(propertyConfiguration, airGapZip, directoryManager, diagnosticSystem));
             } catch (DetectUserFriendlyException e) {
-                return Optional.of(DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem));
+                return Optional.of(DetectBootResult.exception(e, propertyConfiguration, directoryManager, diagnosticSystem));
             }
         }
 
@@ -154,8 +158,12 @@ public class DetectBoot {
         try {
 
             ProductDecider productDecider = new ProductDecider();
-            BlackDuckDecision blackDuckDecision = productDecider.decideBlackDuck(detectConfigurationFactory.createBlackDuckConnectionDetails(), detectConfigurationFactory.createBlackDuckSignatureScannerOptions(),
-                detectConfigurationFactory.createScanMode(), detectConfigurationFactory.createBdioOptions());
+            BlackDuckDecision blackDuckDecision = productDecider.decideBlackDuck(
+                detectConfigurationFactory.createBlackDuckConnectionDetails(),
+                detectConfigurationFactory.createBlackDuckSignatureScannerOptions(),
+                detectConfigurationFactory.createScanMode(),
+                detectConfigurationFactory.createBdioOptions()
+            );
             RunDecision runDecision = new RunDecision(detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE); //TODO: Move to proper decision home. -jp
             DetectToolFilter detectToolFilter = detectConfigurationFactory.createToolFilter(runDecision, blackDuckDecision);
 
@@ -164,12 +172,12 @@ public class DetectBoot {
             ProductBoot productBoot = detectBootFactory.createProductBoot(detectConfigurationFactory);
             productRunData = productBoot.boot(blackDuckDecision, detectToolFilter);
         } catch (DetectUserFriendlyException e) {
-            return Optional.of(DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem));
+            return Optional.of(DetectBootResult.exception(e, propertyConfiguration, directoryManager, diagnosticSystem));
         }
 
         if (productRunData == null) {
             logger.info("No products to run, Detect is complete.");
-            return Optional.of(DetectBootResult.exit(detectConfiguration, directoryManager, diagnosticSystem));
+            return Optional.of(DetectBootResult.exit(propertyConfiguration, directoryManager, diagnosticSystem));
         }
 
         DetectableOptionFactory detectableOptionFactory;
@@ -177,13 +185,14 @@ public class DetectBoot {
             ProxyInfo detectableProxyInfo = detectConfigurationFactory.createBlackDuckProxyInfo();
             detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem, pathResolver, detectableProxyInfo);
         } catch (DetectUserFriendlyException e) {
-            return Optional.of(DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem));
+            return Optional.of(DetectBootResult.exception(e, propertyConfiguration, directoryManager, diagnosticSystem));
         }
 
         BootSingletons bootSingletons = detectBootFactory
-            .createRunDependencies(productRunData, detectConfiguration, detectableOptionFactory, detectConfigurationFactory, directoryManager, freemarkerConfiguration, installedToolManager,
-                installedToolLocator);
-        return Optional.of(DetectBootResult.run(bootSingletons, detectConfiguration, productRunData, directoryManager, diagnosticSystem));
+            .createRunDependencies(productRunData, propertyConfiguration, detectableOptionFactory, detectConfigurationFactory, directoryManager, freemarkerConfiguration, installedToolManager,
+                installedToolLocator
+            );
+        return Optional.of(DetectBootResult.run(bootSingletons, propertyConfiguration, productRunData, directoryManager, diagnosticSystem));
     }
 
     private SortedMap<String, String> collectMaskedRawPropertyValues(PropertyConfiguration propertyConfiguration) throws IllegalAccessException {

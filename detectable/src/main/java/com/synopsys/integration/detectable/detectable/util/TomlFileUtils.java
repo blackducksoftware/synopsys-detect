@@ -10,6 +10,13 @@ import org.tomlj.Toml;
 import org.tomlj.TomlParseResult;
 
 public class TomlFileUtils {
+
+    private TomlFileUtils() {
+        // Hiding constructor
+    }
+
+    // We have a good reason https://doc.bccnsoft.com/docs/rust-1.36.0-docs-html/cargo/reference/config.html
+    // Cargo allows for keys that violate normal TOML spec. tomlj allows us to parse these files.
     public static TomlParseResult parseFile(File tomlFile) throws IOException {
         return Toml.parse(getFileAsString(tomlFile, Charset.defaultCharset()));
     }

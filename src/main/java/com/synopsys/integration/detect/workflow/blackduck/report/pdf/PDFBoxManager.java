@@ -182,8 +182,17 @@ public class PDFBoxManager implements Closeable {
         return rectangle;
     }
 
-    public PDRectangle writeWrappedVerticalCenteredLink(float x, float cellUpperY, float width, float height, List<String> linkTextLines, String linkURL, PDFont font, float fontSize,
-        Color color) throws IOException {
+    public PDRectangle writeWrappedVerticalCenteredLink(
+        float x,
+        float cellUpperY,
+        float width,
+        float height,
+        List<String> linkTextLines,
+        String linkURL,
+        PDFont font,
+        float fontSize,
+        Color color
+    ) throws IOException {
         PDRectangle rectangle = writeWrappedVerticalCenteredText(x, cellUpperY, width, height, linkTextLines, font, fontSize, color);
         addAnnotationLinkRectangle(rectangle.getLowerLeftX(), rectangle.getLowerLeftY(), rectangle.getWidth(), rectangle.getHeight(), linkURL);
         return rectangle;

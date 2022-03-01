@@ -45,8 +45,7 @@ public class DetectExecutableResolver implements
 
     private final Map<String, File> cachedExecutables = new HashMap<>();
 
-    public DetectExecutableResolver(DirectoryExecutableFinder directoryExecutableFinder, SystemPathExecutableFinder systemPathExecutableFinder,
-        DetectExecutableOptions detectExecutableOptions) {
+    public DetectExecutableResolver(DirectoryExecutableFinder directoryExecutableFinder, SystemPathExecutableFinder systemPathExecutableFinder, DetectExecutableOptions detectExecutableOptions) {
         this.directoryExecutableFinder = directoryExecutableFinder;
         this.systemPathExecutableFinder = systemPathExecutableFinder;
         this.detectExecutableOptions = detectExecutableOptions;
@@ -94,17 +93,20 @@ public class DetectExecutableResolver implements
     }
 
     private File resolveCachedSystemExecutable(String cacheKey, String executableName, Path override) throws DetectableException {
-        return resolve(cacheKey,
+        return resolve(
+            cacheKey,
             () -> resolveOverride(override),
             () -> resolveCache(cacheKey),
-            () -> systemPathExecutableFinder.findExecutable(executableName));
+            () -> systemPathExecutableFinder.findExecutable(executableName)
+        );
     }
 
     private File resolveLocalNonCachedExecutable(String localName, String systemName, DetectableEnvironment environment, Path override) throws DetectableException {
         return resolve(/* not cached */ null,
             () -> resolveOverride(override),
             () -> directoryExecutableFinder.findExecutable(localName, environment.getDirectory()),
-            () -> systemPathExecutableFinder.findExecutable(systemName));
+            () -> systemPathExecutableFinder.findExecutable(systemName)
+        );
     }
 
     @Override
@@ -226,6 +228,5 @@ public class DetectExecutableResolver implements
     public @Nullable ExecutableTarget resolveFlutter() throws DetectableException {
         return ExecutableTarget.forFile(resolveCachedSystemExecutable("flutter", detectExecutableOptions.getFlutterUserPath()));
     }
-
 }
 

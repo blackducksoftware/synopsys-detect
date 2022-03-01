@@ -185,10 +185,14 @@ public class DockerExtractorTest {
         return new DockerExtractor(fileFinder, executableRunner, bdioTransformer, externalIdFactory, gson);
     }
 
-    private Extraction extract(String image, String imageId, String tar,
+    private Extraction extract(
+        String image,
+        String imageId,
+        String tar,
         File returnedContainerFileSystemFile,
         File returnedSquashedImageFile,
-        DetectableExecutableRunner executableRunner) {
+        DetectableExecutableRunner executableRunner
+    ) {
         FileFinder fileFinder = Mockito.mock(FileFinder.class);
         DockerExtractor dockerExtractor = getMockDockerExtractor(executableRunner, fileFinder);
 

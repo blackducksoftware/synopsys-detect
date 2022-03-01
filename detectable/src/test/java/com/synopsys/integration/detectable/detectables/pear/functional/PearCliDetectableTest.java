@@ -12,7 +12,9 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PearResolver;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectableOptions;
+import com.synopsys.integration.detectable.detectables.pear.PearDependencyType;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
@@ -26,7 +28,8 @@ public class PearCliDetectableTest extends DetectableFunctionalTest {
 
     @Override
     protected void setup() throws IOException {
-        addFile(Paths.get("package.xml"),
+        addFile(
+            Paths.get("package.xml"),
             "<?xml version=\"1.0\"?>",
             "<!DOCTYPE package SYSTEM \"http://pear.php.net/dtd/package-1.0\">",
             "<package xmlns=\"http://pear.php.net/dtd/package-2.0\">",
@@ -72,7 +75,7 @@ public class PearCliDetectableTest extends DetectableFunctionalTest {
                 return ExecutableTarget.forCommand("pear");
             }
         }
-        return detectableFactory.createPearCliDetectable(detectableEnvironment, new PearCliDetectableOptions(true), new LocalPearResolver());
+        return detectableFactory.createPearCliDetectable(detectableEnvironment, new PearCliDetectableOptions(EnumListFilter.fromExcluded(PearDependencyType.OPTIONAL)), new LocalPearResolver());
     }
 
     @Override

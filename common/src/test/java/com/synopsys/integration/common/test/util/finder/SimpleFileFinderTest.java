@@ -37,7 +37,6 @@ public class SimpleFileFinderTest {
             Files.delete(initialDirectoryPath);
         } catch (DirectoryNotEmptyException e) {
             FileUtils.deleteDirectory(initialDirectoryPath.toFile());
-
         }
     }
 

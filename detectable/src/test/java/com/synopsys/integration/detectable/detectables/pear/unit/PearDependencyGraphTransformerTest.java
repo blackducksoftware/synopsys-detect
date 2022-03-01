@@ -14,6 +14,8 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.UnitTest;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
+import com.synopsys.integration.detectable.detectables.pear.PearDependencyType;
 import com.synopsys.integration.detectable.detectables.pear.model.PackageDependency;
 import com.synopsys.integration.detectable.detectables.pear.transform.PearDependencyGraphTransformer;
 import com.synopsys.integration.detectable.util.graph.GraphAssert;
@@ -22,7 +24,7 @@ import com.synopsys.integration.detectable.util.graph.GraphAssert;
 class PearDependencyGraphTransformerTest {
     @Test
     void buildDependencyGraphRequiredOnly() {
-        DependencyGraph dependencyGraph = buildDependencyGraph(true);
+        DependencyGraph dependencyGraph = buildDependencyGraph(PearDependencyType.OPTIONAL);
 
         Set<Dependency> rootDependencies = dependencyGraph.getRootDependencies();
         Assertions.assertEquals(1, rootDependencies.size());
@@ -34,7 +36,7 @@ class PearDependencyGraphTransformerTest {
 
     @Test
     void buildDependencyGraphAll() {
-        DependencyGraph dependencyGraph = buildDependencyGraph(false);
+        DependencyGraph dependencyGraph = buildDependencyGraph();
 
         Set<Dependency> rootDependencies = dependencyGraph.getRootDependencies();
         Assertions.assertEquals(2, rootDependencies.size());
@@ -45,9 +47,9 @@ class PearDependencyGraphTransformerTest {
         graphAssert.hasDependency(externalIdFactory.createNameVersionExternalId(Forge.PEAR, "Console_Getopt", "1.4.1"));
     }
 
-    private DependencyGraph buildDependencyGraph(boolean onlyGatherRequired) {
+    private DependencyGraph buildDependencyGraph(PearDependencyType... excludedTypes) {
         ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        PearDependencyGraphTransformer pearDependencyGraphTransformer = new PearDependencyGraphTransformer(externalIdFactory);
+        PearDependencyGraphTransformer pearDependencyGraphTransformer = new PearDependencyGraphTransformer(externalIdFactory, EnumListFilter.fromExcluded(excludedTypes));
 
         Map<String, String> nameVersionMap = new HashMap<>();
         nameVersionMap.put("Archive_Tar", "1.4.3");
@@ -57,6 +59,6 @@ class PearDependencyGraphTransformerTest {
         packageDependencies.add(new PackageDependency("Archive_Tar", true));
         packageDependencies.add(new PackageDependency("Console_Getopt", false));
 
-        return pearDependencyGraphTransformer.buildDependencyGraph(nameVersionMap, packageDependencies, onlyGatherRequired);
+        return pearDependencyGraphTransformer.buildDependencyGraph(nameVersionMap, packageDependencies);
     }
 }

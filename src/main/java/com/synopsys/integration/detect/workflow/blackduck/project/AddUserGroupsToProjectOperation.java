@@ -12,7 +12,7 @@ import com.synopsys.integration.exception.IntegrationException;
 
 public class AddUserGroupsToProjectOperation {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private ProjectUsersService projectUsersService;
+    private final ProjectUsersService projectUsersService;
 
     public AddUserGroupsToProjectOperation(ProjectUsersService projectUsersService) {
         this.projectUsersService = projectUsersService;

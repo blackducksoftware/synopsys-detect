@@ -47,8 +47,7 @@ public class YarnLockExtractor {
             YarnWorkspaces workspaceData = collectWorkspaceData(projectDir);
             ExcludedIncludedWildcardFilter workspacesFilter = deriveExcludedIncludedWildcardFilter();
 
-            YarnResult yarnResult = yarnPackager.generateCodeLocation(rootPackageJson, workspaceData, yarnLock, new ArrayList<>(),
-                yarnLockOptions.useProductionOnly(), workspacesFilter);
+            YarnResult yarnResult = yarnPackager.generateCodeLocation(rootPackageJson, workspaceData, yarnLock, new ArrayList<>(), workspacesFilter);
 
             Optional<Exception> yarnException = yarnResult.getException();
             if (yarnException.isPresent()) {

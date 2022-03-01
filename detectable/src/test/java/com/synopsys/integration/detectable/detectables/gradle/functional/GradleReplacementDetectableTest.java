@@ -12,6 +12,7 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorOptions;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptOptions;
 import com.synopsys.integration.detectable.extraction.Extraction;
@@ -32,13 +33,22 @@ public class GradleReplacementDetectableTest extends DetectableFunctionalTest {
         addFile(Paths.get("build.gradle"), "no content");
 
         ExecutableOutput gradleDependenciesOutput = createStandardOutput("no content");
-        addExecutableOutput(gradleDependenciesOutput, new File("gradle").getCanonicalPath(), "gatherDependencies", "--init-script=gradle-inspector", "-DGRADLEEXTRACTIONDIR=" + getOutputDirectory().toFile().getCanonicalPath(), "--info");
+
+        addExecutableOutput(
+            gradleDependenciesOutput,
+            new File("gradle").getCanonicalPath(),
+            "gatherDependencies",
+            "--init-script=gradle-inspector",
+            "-DGRADLEEXTRACTIONDIR=" + getOutputDirectory().toFile().getCanonicalPath(),
+            "--info"
+        );
 
         addOutputFile(Paths.get("rootProjectMetadata.txt"), Arrays.asList(
             "DETECT META DATA START",
             "rootProjectName:root",
             "DETECT META DATA END"
         ));
+
         addOutputFile(Paths.get("root_dependencyGraph.txt"), Arrays.asList(
             "compile - project a has replacement root does not have'.",
             "\\--- org.replacement:replaced:1.0.0 -> 3.0.0",
@@ -67,8 +77,19 @@ public class GradleReplacementDetectableTest extends DetectableFunctionalTest {
     @NotNull
     @Override
     public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
-        GradleInspectorOptions gradleInspectorOptions = new GradleInspectorOptions("", new GradleInspectorScriptOptions(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), "", ""),
-            ProxyInfo.NO_PROXY_INFO, true);
+        GradleInspectorOptions gradleInspectorOptions = new GradleInspectorOptions("",
+            new GradleInspectorScriptOptions(
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                "",
+                ""
+            ),
+            ProxyInfo.NO_PROXY_INFO, EnumListFilter.excludeNone()
+        );
         return detectableFactory.createGradleDetectable(detectableEnvironment, gradleInspectorOptions, () -> new File("gradle-inspector"), (environment) -> ExecutableTarget.forFile(new File("gradle")));
     }
 

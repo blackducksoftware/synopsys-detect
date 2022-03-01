@@ -30,21 +30,25 @@ public class ArbitraryNameVersionDecision extends NameVersionDecision {
     @Override
     public void printDescription(Logger logger) {
         logger.info("The following project names were found: ");
-        logger.info(String.format("\t%s: %s, %s",
+        logger.info(String.format(
+            "\t%s: %s, %s",
             chosenDetector.getDetectorType().name(),
             chosenDetector.getNameVersion().getName(),
-            chosenDetector.getNameVersion().getVersion()));
+            chosenDetector.getNameVersion().getVersion()
+        ));
         for (DetectorProjectInfo projectNamePossibility : otherDetectors) {
-            logger.info(String.format("\t%s: %s, %s",
+            logger.info(String.format(
+                "\t%s: %s, %s",
                 projectNamePossibility.getDetectorType().name(),
                 projectNamePossibility.getNameVersion().getName(),
                 projectNamePossibility.getNameVersion().getVersion()
             ));
         }
-        logger.info(String.format("Chose to use %s at depth %d for project name and version. Override with %s.",
+        logger.info(String.format(
+            "Chose to use %s at depth %d for project name and version. Override with %s.",
             chosenDetector.getDetectorType().name(),
             chosenDetector.getDepth(),
-            DetectProperties.DETECT_PROJECT_DETECTOR.getProperty().getKey()
+            DetectProperties.DETECT_PROJECT_DETECTOR.getKey()
         ));
 
     }

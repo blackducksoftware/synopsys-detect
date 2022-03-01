@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.configuration.property.Property;
+import com.synopsys.integration.configuration.property.deprecation.DeprecatedValueInfo;
 import com.synopsys.integration.configuration.util.Group;
 import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
 
@@ -31,10 +32,10 @@ public class HelpPrinter {
         HelpTextWriter writer = new HelpTextWriter();
 
         List<Property> currentOptions = allOptions.stream()
-            .filter(it -> it.getPropertyDeprecationInfo() == null)
+            .filter(it -> !it.isDeprecatedForRemoval())
             .collect(Collectors.toList());
         List<Property> deprecatedOptions = allOptions.stream()
-            .filter(it -> it.getPropertyDeprecationInfo() != null)
+            .filter(Property::isDeprecatedForRemoval)
             .collect(Collectors.toList());
 
         if (state.isVerboseHelp()) {
@@ -116,16 +117,24 @@ public class HelpPrinter {
         writer.println("");
         writer.println("Detailed information for " + property.getKey());
         writer.println("");
-        if (property.getPropertyDeprecationInfo() != null) {
-            writer.println("Deprecated: " + property.getPropertyDeprecationInfo().getDeprecationText());
-            writer.println("Deprecation description: " + property.getPropertyDeprecationInfo().getDescription());
+        property.getPropertyDeprecationInfo().getRemovalInfo().ifPresent(removalInfo -> {
+            writer.println("Deprecated: " + removalInfo.getDeprecationText());
+            writer.println("Deprecation description: " + removalInfo.getDescription());
             writer.println("");
-        }
+        });
+        assert property.getPropertyHelpInfo() != null;
         writer.println("Property description: " + property.getPropertyHelpInfo().getShortText());
 
         writer.println("Property default value: " + property.describeDefault());
         if (property.listExampleValues().size() > 0) {
             writer.println("Property acceptable values: " + String.join(", ", property.listExampleValues()));
+        }
+
+        if (property.getPropertyDeprecationInfo().getDeprecatedValues().size() > 0) {
+            writer.println("Deprecated values:");
+            property.getPropertyDeprecationInfo().getDeprecatedValues().forEach(value -> {
+                writer.println("\t" + value.getValueDescription() + ": " + value.getReason());
+            });
         }
         writer.println("");
 
@@ -137,12 +146,19 @@ public class HelpPrinter {
     }
 
     public void printOption(HelpTextWriter writer, Property property) {
+        assert property.getPropertyHelpInfo() != null;
         String description = property.getPropertyHelpInfo().getShortText();
-        if (property.getPropertyDeprecationInfo() != null) {
-            description = property.getPropertyDeprecationInfo().getDeprecationText() + description;
+        if (property.getPropertyDeprecationInfo().getRemovalInfo().isPresent()) {
+            description = property.getPropertyDeprecationInfo().getRemovalInfo().get().getDeprecationText() + description;
         }
         if (property.listExampleValues().size() > 0) {
             description += " (" + String.join("|", property.listExampleValues()) + ")";
+        }
+        if (property.getPropertyDeprecationInfo().getDeprecatedValues().size() > 0) {
+            String deprecatedValues = property.getPropertyDeprecationInfo().getDeprecatedValues().stream()
+                .map(DeprecatedValueInfo::getValueDescription)
+                .collect(Collectors.joining("|"));
+            description = "Deprecated Values (" + deprecatedValues + ")";
         }
         String propertyKey = property.getKey();
         String defaultValue = "";

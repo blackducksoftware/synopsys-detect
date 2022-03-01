@@ -28,8 +28,7 @@ public class ConanLockfileDetectable extends Detectable {
     private final ConanLockfileExtractorOptions conanLockfileExtractorOptions;
     private File lockfile;
 
-    public ConanLockfileDetectable(DetectableEnvironment environment, FileFinder fileFinder, ConanLockfileExtractor conanLockfileExtractor,
-        ConanLockfileExtractorOptions conanLockfileExtractorOptions) {
+    public ConanLockfileDetectable(DetectableEnvironment environment, FileFinder fileFinder, ConanLockfileExtractor conanLockfileExtractor, ConanLockfileExtractorOptions conanLockfileExtractorOptions) {
         super(environment);
         this.fileFinder = fileFinder;
         this.conanLockfileExtractor = conanLockfileExtractor;
@@ -65,6 +64,6 @@ public class ConanLockfileDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
-        return conanLockfileExtractor.extract(lockfile, conanLockfileExtractorOptions);
+        return conanLockfileExtractor.extract(lockfile);
     }
 }

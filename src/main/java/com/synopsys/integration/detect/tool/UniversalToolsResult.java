@@ -12,8 +12,7 @@ public class UniversalToolsResult {
     private final List<DetectToolProjectInfo> detectToolProjectInfo;
     private final List<DetectCodeLocation> detectCodeLocations;
 
-    public UniversalToolsResult(boolean anyFailed, DockerTargetData dockerTargetData, List<DetectToolProjectInfo> detectToolProjectInfo,
-        List<DetectCodeLocation> detectCodeLocations) {
+    public UniversalToolsResult(boolean anyFailed, DockerTargetData dockerTargetData, List<DetectToolProjectInfo> detectToolProjectInfo, List<DetectCodeLocation> detectCodeLocations) {
         this.anyFailed = anyFailed;
         this.dockerTargetData = dockerTargetData;
         this.detectToolProjectInfo = detectToolProjectInfo;

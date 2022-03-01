@@ -25,7 +25,7 @@ class GoModDependencyManagerTest {
         assertEquals(moduleName, dependency.getName());
         assertEquals(moduleVersion, dependency.getVersion());
     }
-    
+
     @Test
     void versionTruncatedHashTest() {
         String moduleName = "example.io/module/a";

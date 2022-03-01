@@ -28,7 +28,7 @@ public class RapidModeStepRunner {
     public void runOnline(BlackDuckRunData blackDuckRunData, NameVersion projectVersion, BdioResult bdioResult) throws DetectUserFriendlyException, IOException {
         operationFactory.phoneHome(blackDuckRunData);
         Optional<File> rapidScanConfig = operationFactory.findRapidScanConfig();
-        rapidScanConfig.ifPresent(config -> logger.info("Found rapid scan config file: " + config.toString()));
+        rapidScanConfig.ifPresent(config -> logger.info("Found rapid scan config file: " + config));
         List<HttpUrl> rapidScanUrls = operationFactory.performRapidUpload(blackDuckRunData, bdioResult, rapidScanConfig.orElse(null));
         List<DeveloperScanComponentResultView> rapidResults = operationFactory.waitForRapidResults(blackDuckRunData, rapidScanUrls);
         File jsonFile = operationFactory.generateRapidJsonFile(projectVersion, rapidResults);

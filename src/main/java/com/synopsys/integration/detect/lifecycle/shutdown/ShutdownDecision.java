@@ -14,8 +14,7 @@ public class ShutdownDecision {
     @NotNull
     private final CleanupDecision cleanupDecision;
 
-    public ShutdownDecision(@Nullable PhoneHomeManager phoneHomeManager, @Nullable DiagnosticSystem diagnosticSystem,
-        @NotNull CleanupDecision cleanupDecision) {
+    public ShutdownDecision(@Nullable PhoneHomeManager phoneHomeManager, @Nullable DiagnosticSystem diagnosticSystem, @NotNull CleanupDecision cleanupDecision) {
         this.phoneHomeManager = phoneHomeManager;
         this.diagnosticSystem = diagnosticSystem;
         this.cleanupDecision = cleanupDecision;

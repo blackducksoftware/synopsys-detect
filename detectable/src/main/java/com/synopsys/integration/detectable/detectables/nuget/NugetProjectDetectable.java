@@ -82,8 +82,13 @@ public class NugetProjectDetectable extends Detectable {
     private NugetInspector inspector;
     private List<File> projectFiles = new ArrayList<>();
 
-    public NugetProjectDetectable(DetectableEnvironment detectableEnvironment, FileFinder fileFinder, NugetInspectorOptions nugetInspectorOptions, NugetInspectorResolver nugetInspectorResolver,
-        NugetInspectorExtractor nugetInspectorExtractor) {
+    public NugetProjectDetectable(
+        DetectableEnvironment detectableEnvironment,
+        FileFinder fileFinder,
+        NugetInspectorOptions nugetInspectorOptions,
+        NugetInspectorResolver nugetInspectorResolver,
+        NugetInspectorExtractor nugetInspectorExtractor
+    ) {
         super(detectableEnvironment);
         this.fileFinder = fileFinder;
         this.nugetInspectorOptions = nugetInspectorOptions;

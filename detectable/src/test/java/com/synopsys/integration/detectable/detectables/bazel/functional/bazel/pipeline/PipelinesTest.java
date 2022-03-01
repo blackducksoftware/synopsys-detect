@@ -11,16 +11,19 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import com.google.gson.Gson;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipeline;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipelines;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelCommandExecutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelVariableSubstitutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.HaskellCabalLibraryJsonProtoParser;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class PipelinesTest {
+class PipelinesTest {
     private static final List<String> MAVEN_INSTALL_STANDARD_BAZEL_COMMAND_ARGS = Arrays.asList("cquery", "--noimplicit_deps", "kind(j.*import, deps(/:testTarget))", "--output", "build");
     private static final List<String> HASKELL_CABAL_LIBRARY_STANDARD_BAZEL_COMMAND_ARGS = Arrays.asList("cquery", "--noimplicit_deps", "kind(haskell_cabal_library, deps(/:testTarget))", "--output", "jsonproto");
     private static final String MAVEN_INSTALL_CQUERY_OUTPUT_SIMPLE = createStandardOutput(
@@ -85,7 +88,8 @@ public class PipelinesTest {
         "  tags = [\"maven_coordinates=com.google.code.findbugs:jsr305:3.0.2\"],",
         "  jars = [\"@exclusion_testing//:v1/https/repo1.maven.org/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar\"],",
         "  deps = [],",
-        ")");
+        ")"
+    );
 
     private static final String MAVEN_INSTALL_OUTPUT_MIXED_TAGS = createStandardOutput(
         "java_import(",
@@ -116,7 +120,8 @@ public class PipelinesTest {
         "  srcjar = \"@cls_maven_stubs//:v1/https/build-artifactory.eng.company.com/artifactory/maven/javax/servlet/javax.servlet-api/3.0.1/javax.servlet-api-3.0.1-sources.jar\",",
         "  deps = [],",
         "  neverlink = True,",
-        ")");
+        ")"
+    );
 
     private static final String MAVEN_INSTALL_OUTPUT_MIXED_TAGS_REVERSED_ORDER = createStandardOutput(
         "java_import(",
@@ -127,7 +132,8 @@ public class PipelinesTest {
         "  generator_location = \"/home/dail/test/b-cls-bazel/2e7559aa3afc160ade8ae4cb99d56da9/external/thing_cis/BUILD.bazel:20\",",
         "  jars = [\"@thing_cis//:java-toolkit/runtime/thing-common-client-2.100.0.jar\"],",
         "  srcjar = \"@thing_cis//:java-toolkit/runtime/thing-common-client-2.100.0-sources.jar\",",
-        ")");
+        ")"
+    );
 
     private static final String HASKELL_CABAL_LIBRARY_JSONPROTO = createStandardOutput(
         "{",
@@ -168,15 +174,14 @@ public class PipelinesTest {
         "      \"checksum\": \"113f3ed6a7eba369dbe1453fe1da149ce5b6faa1129ed584fd4ad044389cc463\"",
         "    }",
         "  }]",
-        "}");
+        "}"
+    );
 
     @Test
-    public void testMavenInstall() throws IntegrationException {
+    void testMavenInstall() throws IntegrationException, ExecutableFailedException {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
-        List<String> userProvidedCqueryAdditionalOptions = null;
-
-        List<Dependency> dependencies = doTest(WorkspaceRule.MAVEN_INSTALL, MAVEN_INSTALL_STANDARD_BAZEL_COMMAND_ARGS, userProvidedCqueryAdditionalOptions, MAVEN_INSTALL_CQUERY_OUTPUT_SIMPLE);
+        List<Dependency> dependencies = doTest(WorkspaceRule.MAVEN_INSTALL, MAVEN_INSTALL_STANDARD_BAZEL_COMMAND_ARGS, null, MAVEN_INSTALL_CQUERY_OUTPUT_SIMPLE);
         assertEquals(8, dependencies.size());
         int foundCount = 0;
         for (Dependency dependency : dependencies) {
@@ -195,15 +200,13 @@ public class PipelinesTest {
     }
 
     @Test
-    public void testMavenInstallMixedTags() throws IntegrationException {
+    void testMavenInstallMixedTags() throws IntegrationException, ExecutableFailedException {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
-        List<String> userProvidedCqueryAdditionalOptions = null;
-
-        List<Dependency> dependencies = doTest(WorkspaceRule.MAVEN_INSTALL, MAVEN_INSTALL_STANDARD_BAZEL_COMMAND_ARGS, userProvidedCqueryAdditionalOptions, MAVEN_INSTALL_OUTPUT_MIXED_TAGS);
+        List<Dependency> dependencies = doTest(WorkspaceRule.MAVEN_INSTALL, MAVEN_INSTALL_STANDARD_BAZEL_COMMAND_ARGS, null, MAVEN_INSTALL_OUTPUT_MIXED_TAGS);
         assertEquals(2, dependencies.size());
         int foundCount = 0;
-        for (Dependency dependency : dependencies) {
+        for (Dependency dependency : dependencies) { //TODO: Factor out into a assertDependency();
             if ("com.company.thing".equals(dependency.getExternalId().getGroup()) &&
                 "thing-common-client".equals(dependency.getExternalId().getName()) &&
                 "2.100.0".equals(dependency.getExternalId().getVersion())) {
@@ -219,12 +222,10 @@ public class PipelinesTest {
     }
 
     @Test
-    public void testMavenInstallMixedTagsReversedOrder() throws IntegrationException {
+    void testMavenInstallMixedTagsReversedOrder() throws IntegrationException, ExecutableFailedException {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
-        List<String> userProvidedCqueryAdditionalOptions = null;
-
-        List<Dependency> dependencies = doTest(WorkspaceRule.MAVEN_INSTALL, MAVEN_INSTALL_STANDARD_BAZEL_COMMAND_ARGS, userProvidedCqueryAdditionalOptions, MAVEN_INSTALL_OUTPUT_MIXED_TAGS_REVERSED_ORDER);
+        List<Dependency> dependencies = doTest(WorkspaceRule.MAVEN_INSTALL, MAVEN_INSTALL_STANDARD_BAZEL_COMMAND_ARGS, null, MAVEN_INSTALL_OUTPUT_MIXED_TAGS_REVERSED_ORDER);
         assertEquals(1, dependencies.size());
         int foundCount = 0;
         for (Dependency dependency : dependencies) {
@@ -238,7 +239,7 @@ public class PipelinesTest {
     }
 
     @Test
-    public void testMavenInstallCqueryAdditionalOptions() throws IntegrationException {
+    void testMavenInstallCqueryAdditionalOptions() throws IntegrationException, ExecutableFailedException {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
         List<String> userProvidedCqueryAdditionalOptions = Arrays.asList("--option1=a", "--option2=b");
@@ -263,13 +264,15 @@ public class PipelinesTest {
     }
 
     @Test
-    public void haskellCabalLibraryTest() throws IntegrationException {
+    void haskellCabalLibraryTest() throws IntegrationException, ExecutableFailedException {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
-        List<String> userProvidedCqueryAdditionalOptions = null;
-
-        List<Dependency> dependencies = doTest(WorkspaceRule.HASKELL_CABAL_LIBRARY,
-            HASKELL_CABAL_LIBRARY_STANDARD_BAZEL_COMMAND_ARGS, userProvidedCqueryAdditionalOptions, HASKELL_CABAL_LIBRARY_JSONPROTO);
+        List<Dependency> dependencies = doTest(
+            WorkspaceRule.HASKELL_CABAL_LIBRARY,
+            HASKELL_CABAL_LIBRARY_STANDARD_BAZEL_COMMAND_ARGS,
+            null,
+            HASKELL_CABAL_LIBRARY_JSONPROTO
+        );
         assertEquals(1, dependencies.size());
         int foundCount = 0;
         for (Dependency dependency : dependencies) {
@@ -281,16 +284,16 @@ public class PipelinesTest {
         assertEquals(1, foundCount);
     }
 
-    private List<Dependency> doTest(WorkspaceRule workspaceRule, List<String> expectedBazelCommandArgs, List<String> userProvidedCqueryAdditionalOptions, String input) throws IntegrationException {
+    private List<Dependency> doTest(WorkspaceRule workspaceRule, List<String> expectedBazelCommandArgs, List<String> userProvidedCqueryAdditionalOptions, String input) throws IntegrationException, ExecutableFailedException {
         BazelCommandExecutor bazelCommandExecutor = Mockito.mock(BazelCommandExecutor.class);
         Mockito.when(bazelCommandExecutor.executeToString(expectedBazelCommandArgs)).thenReturn(Optional.of(input));
         BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor("/:testTarget", userProvidedCqueryAdditionalOptions);
 
         ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor, externalIdFactory);
+        HaskellCabalLibraryJsonProtoParser haskellCabalLibraryJsonProtoParser = new HaskellCabalLibraryJsonProtoParser(new Gson());
+        Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor, externalIdFactory, haskellCabalLibraryJsonProtoParser);
         Pipeline pipeline = pipelines.get(workspaceRule);
-        List<Dependency> dependencies = pipeline.run();
-        return dependencies;
+        return pipeline.run();
     }
 
     private static String createStandardOutput(String... outputLines) {

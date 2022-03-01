@@ -28,8 +28,13 @@ public class DetectableToolResult {
     @Nullable
     private final DetectableResult failedExtractableResult;
 
-    public DetectableToolResult(DetectableToolResultType resultType, @Nullable DetectToolProjectInfo detectToolProjectInfo, List<DetectCodeLocation> detectCodeLocations, @Nullable DockerTargetData dockerTargetData,
-        @Nullable DetectableResult failedExtractableResult) {
+    public DetectableToolResult(
+        DetectableToolResultType resultType,
+        @Nullable DetectToolProjectInfo detectToolProjectInfo,
+        List<DetectCodeLocation> detectCodeLocations,
+        @Nullable DockerTargetData dockerTargetData,
+        @Nullable DetectableResult failedExtractableResult
+    ) {
         this.resultType = resultType;
         this.detectToolProjectInfo = detectToolProjectInfo;
         this.detectCodeLocations = detectCodeLocations;

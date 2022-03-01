@@ -13,15 +13,15 @@ import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.configuration.config.InvalidPropertyException;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.PropertyTestHelpUtil;
-import com.synopsys.integration.configuration.property.base.NullableProperty;
-import com.synopsys.integration.configuration.property.base.ValuedListProperty;
-import com.synopsys.integration.configuration.property.base.ValuedProperty;
+import com.synopsys.integration.configuration.property.base.NullableAlikeProperty;
+import com.synopsys.integration.configuration.property.base.ValuedAlikeListProperty;
+import com.synopsys.integration.configuration.property.base.ValuedAlikeProperty;
 
 // Simple glue sanity tests. Theoretically if Config is well tested and Parser is well tested, these will pass so they are not exhaustive.
 public class StringPropertiesTest {
     @Test
     public void testNullable() throws InvalidPropertyException {
-        NullableProperty<String> property = new NullableStringProperty("string.nullable");
+        NullableAlikeProperty<String> property = new NullableStringProperty("string.nullable");
         PropertyConfiguration config = configOf(Pair.of("string.nullable", "abc"));
         Assertions.assertEquals(Optional.of("abc"), config.getValue(property));
 
@@ -30,7 +30,7 @@ public class StringPropertiesTest {
 
     @Test
     public void testValued() throws InvalidPropertyException {
-        ValuedProperty<String> property = new StringProperty("string.valued", "defaultString");
+        ValuedAlikeProperty<String> property = new StringProperty("string.valued", "defaultString");
         PropertyConfiguration config = configOf(Pair.of("string.valued", "abc"));
         Assertions.assertEquals("abc", config.getValue(property));
 
@@ -39,7 +39,7 @@ public class StringPropertiesTest {
 
     @Test
     public void testList() throws InvalidPropertyException {
-        ValuedListProperty<String> property = new StringListProperty("string.list", Collections.emptyList());
+        ValuedAlikeListProperty<String> property = new StringListProperty("string.list", Collections.emptyList());
         PropertyConfiguration config = configOf(Pair.of("string.list", "1,2,3,abc"));
         Assertions.assertEquals(Bds.listOf("1", "2", "3", "abc"), config.getValue(property));
 

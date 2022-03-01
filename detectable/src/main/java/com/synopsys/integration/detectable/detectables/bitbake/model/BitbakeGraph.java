@@ -23,8 +23,10 @@ public class BitbakeGraph {
         return newNode;
     }
 
-    public void addNode(String name, @Nullable String version) {
-        getOrCreate(name).setVersion(version);
+    public void addNode(String name, @Nullable String version, @Nullable String layer) {
+        BitbakeNode node = getOrCreate(name);
+        node.setVersion(version);
+        node.setLayer(layer);
     }
 
     public void addChild(String parent, String child) {

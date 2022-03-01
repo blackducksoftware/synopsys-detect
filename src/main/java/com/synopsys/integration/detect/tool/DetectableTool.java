@@ -10,6 +10,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.JsonSyntaxException;
+import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
@@ -31,7 +33,9 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExceptionDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.synopsys.integration.detectable.util.CycleDetectedException;
 import com.synopsys.integration.detector.base.DetectableCreatable;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 import com.synopsys.integration.util.NameVersion;
 
 public class DetectableTool {
@@ -48,8 +52,15 @@ public class DetectableTool {
     private Detectable detectable;
     private File sourcePath;
 
-    public DetectableTool(DetectableCreatable<?> detectableCreatable, ExtractionEnvironmentProvider extractionEnvironmentProvider, CodeLocationConverter codeLocationConverter,
-        String name, DetectTool detectTool, StatusEventPublisher statusEventPublisher, ExitCodePublisher exitCodePublisher) {
+    public DetectableTool(
+        DetectableCreatable<?> detectableCreatable,
+        ExtractionEnvironmentProvider extractionEnvironmentProvider,
+        CodeLocationConverter codeLocationConverter,
+        String name,
+        DetectTool detectTool,
+        StatusEventPublisher statusEventPublisher,
+        ExitCodePublisher exitCodePublisher
+    ) {
         this.codeLocationConverter = codeLocationConverter;
         this.name = name;
         this.detectableCreatable = detectableCreatable;
@@ -97,9 +108,7 @@ public class DetectableTool {
         Extraction extraction;
         try {
             extraction = detectable.extract(extractionEnvironment);
-        } catch (ExecutableFailedException e) {
-            extraction = Extraction.fromFailedExecutable(e);
-        } catch (IOException e) {
+        } catch (ExecutableFailedException | ExecutableRunnerException | JsonSyntaxException | IOException | CycleDetectedException | DetectableException | MissingExternalIdException e) {
             extraction = new Extraction.Builder().exception(e).build();
         }
 

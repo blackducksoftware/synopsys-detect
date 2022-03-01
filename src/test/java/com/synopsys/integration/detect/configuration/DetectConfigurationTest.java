@@ -28,18 +28,19 @@ public class DetectConfigurationTest {
         propertySources.add(new MapPropertySource("test", values));
         PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);
 
-        Map<String, String> phoneHomePropertiesMap = propertyConfiguration.getRaw(DetectProperties.PHONEHOME_PASSTHROUGH.getProperty());
+        Map<String, String> phoneHomePropertiesMap = propertyConfiguration.getRaw(DetectProperties.PHONEHOME_PASSTHROUGH);
         Assertions.assertEquals(givenValue, phoneHomePropertiesMap.get(givenKeyPhoneHomePart));
     }
 
     @Test
     public void testDeprecated() throws DetectUserFriendlyException {
         HashMap<String, String> values = new HashMap<>();
-        values.put(DetectProperties.DETECT_BDIO2_ENABLED.getProperty().getKey(), "false");
+        values.put(DetectProperties.DETECT_BDIO2_ENABLED.getKey(), "false");
         List<PropertySource> propertySources = new ArrayList<>();
         propertySources.add(new MapPropertySource("test", values));
         PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);
-        DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(propertyConfiguration, new SimplePathResolver(), new Gson());
+        DetectPropertyConfiguration detectPropertyConfiguration = new DetectPropertyConfiguration(propertyConfiguration, new SimplePathResolver());
+        DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectPropertyConfiguration, new Gson());
         BdioOptions bdioOptions = detectConfigurationFactory.createBdioOptions();
         Assertions.assertFalse(bdioOptions.isBdio2Enabled());
     }

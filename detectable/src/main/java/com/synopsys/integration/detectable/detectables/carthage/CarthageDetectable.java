@@ -1,6 +1,7 @@
 package com.synopsys.integration.detectable.detectables.carthage;
 
 import java.io.File;
+import java.io.IOException;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
@@ -11,7 +12,6 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectable.result.CartfileResolvedNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
@@ -21,10 +21,9 @@ public class CarthageDetectable extends Detectable {
     private static final String CARTFILE_FILENAME = "Cartfile";
     private static final String CARTFILE_RESOLVED_FILENAME = "Cartfile.resolved";
 
-    private FileFinder fileFinder;
-    private CarthageExtractor carthageExtractor;
+    private final FileFinder fileFinder;
+    private final CarthageExtractor carthageExtractor;
 
-    private File cartfile;
     private File cartfileResolved;
 
     public CarthageDetectable(DetectableEnvironment environment, FileFinder fileFinder, CarthageExtractor carthageExtractor) {
@@ -36,32 +35,25 @@ public class CarthageDetectable extends Detectable {
     @Override
     public DetectableResult applicable() {
         Requirements requirements = new Requirements(fileFinder, environment);
-
-        cartfile = fileFinder.findFile(environment.getDirectory(), CARTFILE_FILENAME);
-        cartfileResolved = fileFinder.findFile(environment.getDirectory(), CARTFILE_RESOLVED_FILENAME);
-
-        if (cartfile == null && cartfileResolved == null) {
-            return new FilesNotFoundDetectableResult(CARTFILE_FILENAME, CARTFILE_RESOLVED_FILENAME);
-        }
-        if (cartfile != null) {
-            requirements.explainFile(cartfile);
-        }
-        if (cartfileResolved != null) {
-            requirements.explainFile(cartfileResolved);
-        }
+        requirements.eitherFile(
+            CARTFILE_FILENAME,
+            CARTFILE_RESOLVED_FILENAME,
+            foundCartfile -> {}, // Used only to identify Carthage projects
+            foundCartfileResolved -> cartfileResolved = foundCartfileResolved
+        );
         return requirements.result();
     }
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        if (cartfileResolved == null && cartfile != null) {
+        if (cartfileResolved == null) {
             return new CartfileResolvedNotFoundDetectableResult(environment.getDirectory().getAbsolutePath());
         }
         return new PassedDetectableResult();
     }
 
     @Override
-    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException, IOException {
         return carthageExtractor.extract(cartfileResolved);
     }
 }

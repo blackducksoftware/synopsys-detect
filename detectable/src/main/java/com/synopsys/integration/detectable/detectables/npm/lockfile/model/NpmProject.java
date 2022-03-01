@@ -11,8 +11,14 @@ public class NpmProject { //TODO: I hate that this is a 'model' and it is mutabl
     private final List<NpmRequires> declaredDependencies;
     private final List<NpmDependency> resolvedDependencies;
 
-    public NpmProject(String name, String version, List<NpmRequires> declaredDevDependencies, List<NpmRequires> declaredPeerDependencies,
-        List<NpmRequires> declaredDependencies, List<NpmDependency> resolvedDependencies) {
+    public NpmProject(
+        String name,
+        String version,
+        List<NpmRequires> declaredDevDependencies,
+        List<NpmRequires> declaredPeerDependencies,
+        List<NpmRequires> declaredDependencies,
+        List<NpmDependency> resolvedDependencies
+    ) {
         this.name = name;
         this.version = version;
         this.declaredDevDependencies = declaredDevDependencies;

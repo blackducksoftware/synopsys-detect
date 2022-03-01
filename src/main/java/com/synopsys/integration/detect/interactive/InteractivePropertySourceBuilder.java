@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.source.MapPropertySource;
-import com.synopsys.integration.detect.configuration.DetectProperty;
 
 public class InteractivePropertySourceBuilder {
     private final Map<Property, InteractiveOption> propertyToOptionMap = new HashMap<>();
@@ -22,25 +21,24 @@ public class InteractivePropertySourceBuilder {
         this.interactiveWriter = interactiveWriter;
     }
 
-    public <T extends Property> void setPropertyFromQuestion(DetectProperty<T> detectProperty, String question) {
+    public void setPropertyFromQuestion(Property detectProperty, String question) {
         String value = interactiveWriter.askQuestion(question);
         setProperty(detectProperty, value);
     }
 
-    public <T extends Property> void setPropertyFromSecretQuestion(DetectProperty<T> detectProperty, String question) {
+    public void setPropertyFromSecretQuestion(Property detectProperty, String question) {
         String value = interactiveWriter.askSecretQuestion(question);
         setProperty(detectProperty, value);
     }
 
-    public <T extends Property> void setProperty(DetectProperty<T> detectProperty, String value) {
+    public void setProperty(Property detectProperty, String value) {
         InteractiveOption option;
-        T propertyToSet = detectProperty.getProperty();
-        if (!propertyToOptionMap.containsKey(propertyToSet)) {
+        if (!propertyToOptionMap.containsKey(detectProperty)) {
             option = new InteractiveOption();
-            option.setDetectProperty(propertyToSet);
-            propertyToOptionMap.put(propertyToSet, option);
+            option.setDetectProperty(detectProperty);
+            propertyToOptionMap.put(detectProperty, option);
         } else {
-            option = propertyToOptionMap.get(propertyToSet);
+            option = propertyToOptionMap.get(detectProperty);
         }
         option.setInteractiveValue(value);
     }

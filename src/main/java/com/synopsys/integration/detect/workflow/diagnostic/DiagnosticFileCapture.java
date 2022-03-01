@@ -31,7 +31,7 @@ public class DiagnosticFileCapture {
 
         try {
             FileUtils.copyFile(foundFile, savedFile);
-            logger.info("Saved file to diagnostics zip: " + foundFile.toString());
+            logger.info("Saved file to diagnostics zip: " + foundFile);
         } catch (IOException e) {
             logger.error("Failed to copy file of interest.", e);
         }
