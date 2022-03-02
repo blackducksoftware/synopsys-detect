@@ -46,7 +46,7 @@ public class GraphParserTransformer {
     private Optional<String> parseVersionFromNode(GraphNode graphNode) throws IntegrationException {
         Optional<String> labelValue = getLabelAttribute(graphNode);
         if (labelValue.isPresent()) {
-            return Optional.of(graphNodeLabelParser.parseVersionFromLabel(labelValue.get()));
+            return graphNodeLabelParser.parseVersionFromLabel(labelValue.get());
         } else {
             return Optional.empty();
         }
@@ -55,7 +55,7 @@ public class GraphParserTransformer {
     private Optional<String> parseLayerFromNode(GraphNode graphNode, Set<String> knownLayerNames) throws IntegrationException {
         Optional<String> labelAttribute = getLabelAttribute(graphNode);
         if (labelAttribute.isPresent()) {
-            return Optional.of(graphNodeLabelParser.parseLayerFromLabel(labelAttribute.get(), knownLayerNames));
+            return graphNodeLabelParser.parseLayerFromLabel(labelAttribute.get(), knownLayerNames);
         } else {
             return Optional.empty();
         }
