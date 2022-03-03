@@ -57,7 +57,8 @@ public class SpringConfigurationPropertySource implements PropertySource {
                 } else {
                     throw new RuntimeException(
                         new UnknownSpringConfigurationException(
-                            "Unknown spring configuration type. We may be unable to find property information from it correctly. Likely a new configuration property source should be tested against. "));
+                            "Unknown spring configuration type. We may be unable to find property information from it correctly. Likely a new configuration property source should be tested against. "
+                        ));
                 }
             }
         }).filterNotNull().toList();

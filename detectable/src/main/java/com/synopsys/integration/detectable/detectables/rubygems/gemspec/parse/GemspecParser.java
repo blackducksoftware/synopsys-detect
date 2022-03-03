@@ -53,7 +53,8 @@ public class GemspecParser {
                 GemspecDependency gemspecDependency = gemspecDependencyOptional.get();
 
                 if (dependencyTypeFilter.shouldExclude(com.synopsys.integration.detectable.detectables.rubygems.GemspecDependencyType.RUNTIME)
-                    && gemspecDependency.getGemspecDependencyType() == GemspecDependencyType.RUNTIME) {
+                    && gemspecDependency.getGemspecDependencyType() == GemspecDependencyType.RUNTIME
+                ) {
                     logger.debug(String.format("Excluding component '%s' from graph because it is a runtime dependency", gemspecDependency.getName()));
                     continue;
                 } else if (dependencyTypeFilter.shouldExclude(com.synopsys.integration.detectable.detectables.rubygems.GemspecDependencyType.DEV)
