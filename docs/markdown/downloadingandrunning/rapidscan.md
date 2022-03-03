@@ -80,3 +80,11 @@ The results are also printed in the logs:
 2021-07-20 13:25:18 EDT INFO  [main] --- 			Acorn 5.5.3 (npmjs:acorn/5.5.3)
 ```
 
+## Rapid Scan Compare Mode
+
+Rapid scan can be configured to only return the difference in policy violations between previous rapid scans. This is a Black Duck feature that can be enabled by setting
+--detect.blackduck.rapid.compare.mode to one of ALL, BOM_COMPARE and BOM_COMPARE_STRICT.
+
+ALL evaluates all RAPID or FULL policies. BOM_COMPARE_STRICT will only show policy violations not present in an existing project version BOM. BOM_COMPARE depends on the type of
+policy rule modes and behaves like ALL if the policy rule is only RAPID but like BOM_COMPARE_STRICT when the policy rule is RAPID and FULL. See the Black Duck documentation for
+complete details.
