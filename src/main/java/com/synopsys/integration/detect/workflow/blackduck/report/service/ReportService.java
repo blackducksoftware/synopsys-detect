@@ -60,7 +60,15 @@ public class ReportService extends DataService {
     private final HttpUrl blackDuckBaseUrl;
     private final Gson gson;
 
-    public ReportService(Gson gson, HttpUrl blackDuckBaseUrl, BlackDuckApiClient blackDuckApiClient, ApiDiscovery apiDiscovery, IntLogger logger, IntegrationEscapeUtil escapeUtil, long timeoutInMilliseconds) {
+    public ReportService(
+        Gson gson,
+        HttpUrl blackDuckBaseUrl,
+        BlackDuckApiClient blackDuckApiClient,
+        ApiDiscovery apiDiscovery,
+        IntLogger logger,
+        IntegrationEscapeUtil escapeUtil,
+        long timeoutInMilliseconds
+    ) {
         super(blackDuckApiClient, apiDiscovery, logger);
         this.escapeUtil = escapeUtil;
 
@@ -182,7 +190,8 @@ public class ReportService extends DataService {
         return createReportPdfFile(outputDirectory, project, version, document -> PDType1Font.HELVETICA, document -> PDType1Font.HELVETICA_BOLD);
     }
 
-    public File createReportPdfFile(File outputDirectory, ProjectView project, ProjectVersionView version, FontLoader fontLoader, FontLoader boldFontLoader) throws IntegrationException {
+    public File createReportPdfFile(File outputDirectory, ProjectView project, ProjectVersionView version, FontLoader fontLoader, FontLoader boldFontLoader)
+        throws IntegrationException {
         ReportData reportData = getRiskReportData(project, version);
         return createReportPdfFile(outputDirectory, reportData, fontLoader, boldFontLoader);
     }

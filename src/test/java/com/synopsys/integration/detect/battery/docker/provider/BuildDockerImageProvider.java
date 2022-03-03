@@ -25,7 +25,10 @@ public class BuildDockerImageProvider implements DockerImageProvider {
     @Override
     public void installImage(String imageName, DockerClient dockerClient) {
         File imageDockerFile = FileUtil.asFile(DetectorBatteryTestRunner.class, dockerfileResourceName, "/docker/");
-        Assertions.assertNotNull(imageDockerFile, "Could not find the dockerfile in the resources, ensure the dockerfile exists as named. It is needed to build the image if the image is not present.");
+        Assertions.assertNotNull(
+            imageDockerFile,
+            "Could not find the dockerfile in the resources, ensure the dockerfile exists as named. It is needed to build the image if the image is not present."
+        );
 
         try (BuildImageCmd buildImageCmd = dockerClient.buildImageCmd(imageDockerFile)) {
             buildImageCmd

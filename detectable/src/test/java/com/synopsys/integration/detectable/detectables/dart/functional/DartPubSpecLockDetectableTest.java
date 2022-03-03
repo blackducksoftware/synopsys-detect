@@ -52,7 +52,8 @@ public class DartPubSpecLockDetectableTest extends DetectableFunctionalTest {
     }
 
     @Override
-    public @NotNull Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
+    @NotNull
+    public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
         return detectableFactory.createDartPubSpecLockDetectable(detectableEnvironment);
     }
 

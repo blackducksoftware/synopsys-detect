@@ -16,7 +16,8 @@ public abstract class ValuedAlikeListProperty<V> extends ValuedListProperty<V, L
     }
 
     @Override
-    public @NotNull List<V> convertValue(List<V> value) {
+    @NotNull
+    public List<V> convertValue(List<V> value) {
         return value;
     }
 }

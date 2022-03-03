@@ -37,7 +37,13 @@ public class StepHelper {
         return runToolIfIncluded(detectTool, name, supplier, () -> {}, (e) -> {});
     }
 
-    public void runToolIfIncludedWithCallbacks(DetectTool detectTool, String name, OperationWrapper.OperationFunction supplier, Runnable successConsumer, Consumer<Exception> errorConsumer)
+    public void runToolIfIncludedWithCallbacks(
+        DetectTool detectTool,
+        String name,
+        OperationWrapper.OperationFunction supplier,
+        Runnable successConsumer,
+        Consumer<Exception> errorConsumer
+    )
         throws OperationException {
         runToolIfIncluded(detectTool, name, () -> {
             supplier.execute();
@@ -45,7 +51,13 @@ public class StepHelper {
         }, successConsumer, errorConsumer);
     }
 
-    private <T> Optional<T> runToolIfIncluded(DetectTool detectTool, String name, OperationWrapper.OperationSupplier<T> supplier, Runnable successConsumer, Consumer<Exception> errorConsumer)
+    private <T> Optional<T> runToolIfIncluded(
+        DetectTool detectTool,
+        String name,
+        OperationWrapper.OperationSupplier<T> supplier,
+        Runnable successConsumer,
+        Consumer<Exception> errorConsumer
+    )
         throws OperationException {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(detectTool)) {

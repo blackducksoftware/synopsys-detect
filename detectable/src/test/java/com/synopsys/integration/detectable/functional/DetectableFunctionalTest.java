@@ -163,7 +163,12 @@ public abstract class DetectableFunctionalTest {
         addExecutableOutput(getSourceDirectory(), executableOutput, environment, command);
     }
 
-    public void addExecutableOutput(@NotNull Path workingDirectory, @NotNull ExecutableOutput executableOutput, @NotNull Map<String, String> environment, @NotNull String... command) {
+    public void addExecutableOutput(
+        @NotNull Path workingDirectory,
+        @NotNull ExecutableOutput executableOutput,
+        @NotNull Map<String, String> environment,
+        @NotNull String... command
+    ) {
         List<String> commandList = Arrays.asList(command);
         Executable executable = new Executable(workingDirectory.toFile(), environment, commandList);
         executableRunner.addExecutableOutput(executable, executableOutput);

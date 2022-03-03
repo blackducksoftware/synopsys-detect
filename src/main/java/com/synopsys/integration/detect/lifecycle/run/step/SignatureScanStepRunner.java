@@ -32,7 +32,8 @@ public class SignatureScanStepRunner {
         this.operationFactory = operationFactory;
     }
 
-    public SignatureScannerToolResult runSignatureScannerOnline(BlackDuckRunData blackDuckRunData, NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws DetectUserFriendlyException, OperationException {
+    public SignatureScannerToolResult runSignatureScannerOnline(BlackDuckRunData blackDuckRunData, NameVersion projectNameVersion, DockerTargetData dockerTargetData)
+        throws DetectUserFriendlyException, OperationException {
         ScanBatchRunner scanBatchRunner = resolveOnlineScanBatchRunner(blackDuckRunData);
 
         List<SignatureScanPath> scanPaths = operationFactory.createScanPaths(projectNameVersion, dockerTargetData);
@@ -97,7 +98,8 @@ public class SignatureScanStepRunner {
         }
     }
 
-    private ScanBatchRunnerUserResult findUserProvidedScanBatchRunner(Optional<File> localScannerPath) throws OperationException { //TODO: This should be handled by a decision somewhere.
+    private ScanBatchRunnerUserResult findUserProvidedScanBatchRunner(Optional<File> localScannerPath)
+        throws OperationException { //TODO: This should be handled by a decision somewhere.
         if (localScannerPath.isPresent()) {
             logger.debug("Signature scanner given an existing path for the scanner - we won't attempt to manage the install.");
             return ScanBatchRunnerUserResult.fromLocalInstall(operationFactory.createScanBatchRunnerFromLocalInstall(localScannerPath.get()), localScannerPath.get());

@@ -79,14 +79,33 @@ public class BitbakeExtractor {
         ExecutableTarget bash
     ) throws ExecutableFailedException, IOException {
         List<CodeLocation> codeLocations = new ArrayList<>();
-        BitbakeSession bitbakeSession = new BitbakeSession(executableRunner, bitbakeRecipesParser, sourceDirectory, buildEnvScript, sourceArguments, bash, toolVersionLogger, buildFileFinder, bitbakeEnvironmentParser);
+        BitbakeSession bitbakeSession = new BitbakeSession(
+            executableRunner,
+            bitbakeRecipesParser,
+            sourceDirectory,
+            buildEnvScript,
+            sourceArguments,
+            bash,
+            toolVersionLogger,
+            buildFileFinder,
+            bitbakeEnvironmentParser
+        );
         bitbakeSession.logBitbakeVersion();
         File buildDir = bitbakeSession.determineBuildDir();
         BitbakeEnvironment bitbakeEnvironment = bitbakeSession.executeBitbakeForEnvironment();
         ShowRecipesResults showRecipesResults = bitbakeSession.executeBitbakeForRecipeLayerCatalog();
         for (String targetImage : packageNames) {
             try {
-                codeLocations.add(generateCodeLocationForTargetImage(followSymLinks, searchDepth, dependencyTypeFilter, bitbakeSession, buildDir, bitbakeEnvironment, showRecipesResults, targetImage));
+                codeLocations.add(generateCodeLocationForTargetImage(
+                    followSymLinks,
+                    searchDepth,
+                    dependencyTypeFilter,
+                    bitbakeSession,
+                    buildDir,
+                    bitbakeEnvironment,
+                    showRecipesResults,
+                    targetImage
+                ));
             } catch (IOException | IntegrationException | NotImplementedException | ExecutableFailedException e) {
                 logger.error(String.format("Failed to extract a Code Location while running Bitbake against package '%s': %s", targetImage, e.getMessage()));
                 logger.debug(e.getMessage(), e);
@@ -126,7 +145,8 @@ public class BitbakeExtractor {
         return new CodeLocation(dependencyGraph);
     }
 
-    private Map<String, String> readImageRecipes(File buildDir, String targetImageName, BitbakeEnvironment bitbakeEnvironment, boolean followSymLinks, int searchDepth) throws IntegrationException, IOException {
+    private Map<String, String> readImageRecipes(File buildDir, String targetImageName, BitbakeEnvironment bitbakeEnvironment, boolean followSymLinks, int searchDepth)
+        throws IntegrationException, IOException {
         Optional<File> licenseManifestFile = buildFileFinder.findLicenseManifestFile(buildDir, targetImageName, bitbakeEnvironment, followSymLinks, searchDepth);
         if (licenseManifestFile.isPresent()) {
             List<String> licenseManifestLines = FileUtils.readLines(licenseManifestFile.get(), StandardCharsets.UTF_8);

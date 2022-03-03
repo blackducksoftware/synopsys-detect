@@ -58,7 +58,11 @@ public class PropertyConfigurationTest {
     @Test
     public void getValueOrNull() {
         NullableAlikeProperty<String> NullableAlikeProperty = new NullableTestProperty("example.key");
-        Assertions.assertEquals(Optional.empty(), configOf(Pair.of(NullableAlikeProperty.getKey(), UNKNOWN_VALUE)).getValueOrEmpty(NullableAlikeProperty), "An unknown value should fail to parse and the config should provide null.");
+        Assertions.assertEquals(
+            Optional.empty(),
+            configOf(Pair.of(NullableAlikeProperty.getKey(), UNKNOWN_VALUE)).getValueOrEmpty(NullableAlikeProperty),
+            "An unknown value should fail to parse and the config should provide null."
+        );
     }
 
     @Test
@@ -79,7 +83,11 @@ public class PropertyConfigurationTest {
     @Test
     public void getValueThrowsOnParseFailureNullable() {
         NullableAlikeProperty<String> NullableAlikeProperty = new NullableTestProperty("example.key");
-        Assertions.assertThrows(InvalidPropertyException.class, () -> configOf(Pair.of(NullableAlikeProperty.getKey(), UNKNOWN_VALUE)).getValue(NullableAlikeProperty), "Should throw an exception when failing to parse.");
+        Assertions.assertThrows(
+            InvalidPropertyException.class,
+            () -> configOf(Pair.of(NullableAlikeProperty.getKey(), UNKNOWN_VALUE)).getValue(NullableAlikeProperty),
+            "Should throw an exception when failing to parse."
+        );
     }
 
     @Test
@@ -98,13 +106,21 @@ public class PropertyConfigurationTest {
     @Test()
     public void getValueThrowsOnParseFailureTyped() {
         ValuedAlikeProperty<String> propertyWithDefault = new ValuedTestProperty("example.key", "defaultValue");
-        Assertions.assertThrows(InvalidPropertyException.class, () -> configOf(Pair.of(propertyWithDefault.getKey(), UNKNOWN_VALUE)).getValue(propertyWithDefault), "Should throw an exception when failing to parse.");
+        Assertions.assertThrows(
+            InvalidPropertyException.class,
+            () -> configOf(Pair.of(propertyWithDefault.getKey(), UNKNOWN_VALUE)).getValue(propertyWithDefault),
+            "Should throw an exception when failing to parse."
+        );
     }
 
     @Test
     public void getValueProvidesDefault() throws InvalidPropertyException {
         ValuedAlikeProperty<String> propertyWithDefault = new ValuedTestProperty("example.key", "defaultValue");
-        Assertions.assertEquals(propertyWithDefault.getDefaultValue(), emptyConfig().getValue(propertyWithDefault), "Config should provide default value when property is not provided.");
+        Assertions.assertEquals(
+            propertyWithDefault.getDefaultValue(),
+            emptyConfig().getValue(propertyWithDefault),
+            "Config should provide default value when property is not provided."
+        );
     }
 
     @Test()
@@ -124,29 +140,52 @@ public class PropertyConfigurationTest {
     @Test
     public void getPropertySource() {
         NullableAlikeProperty<String> NullableAlikeProperty = new NullableTestProperty("example.key");
-        Assertions.assertEquals(Optional.of("map"), configOf(Pair.of(NullableAlikeProperty.getKey(), UNKNOWN_VALUE)).getPropertySource(NullableAlikeProperty), "The source of this property should exist.");
+        Assertions.assertEquals(
+            Optional.of("map"),
+            configOf(Pair.of(NullableAlikeProperty.getKey(), UNKNOWN_VALUE)).getPropertySource(NullableAlikeProperty),
+            "The source of this property should exist."
+        );
         Assertions.assertEquals(Optional.empty(), emptyConfig().getPropertySource(NullableAlikeProperty), "The property is not provided and therefore should not have a source.");
     }
 
     @Test
     public void getPropertyOrigin() {
         NullableAlikeProperty<String> NullableAlikeProperty = new NullableTestProperty("example.key");
-        Assertions.assertEquals(Optional.of("map"), configOf(Pair.of(NullableAlikeProperty.getKey(), UNKNOWN_VALUE)).getPropertyOrigin(NullableAlikeProperty), "The property was provided and should have an origin.");
+        Assertions.assertEquals(
+            Optional.of("map"),
+            configOf(Pair.of(NullableAlikeProperty.getKey(), UNKNOWN_VALUE)).getPropertyOrigin(NullableAlikeProperty),
+            "The property was provided and should have an origin."
+        );
         Assertions.assertEquals(Optional.empty(), emptyConfig().getPropertyOrigin(NullableAlikeProperty), "The property was not provided and should not have an origin.");
     }
 
     @Test
     public void getKeys() {
-        Assertions.assertEquals(Bds.setOf("example.key", "other.key"), configOf(Pair.of("example.key", UNKNOWN_VALUE), Pair.of("other.key", UNKNOWN_VALUE)).getKeys(), "The set of keys returned is not identical to all those provided.");
+        Assertions.assertEquals(
+            Bds.setOf("example.key", "other.key"),
+            configOf(Pair.of("example.key", UNKNOWN_VALUE), Pair.of("other.key", UNKNOWN_VALUE)).getKeys(),
+            "The set of keys returned is not identical to all those provided."
+        );
         Assertions.assertEquals(Collections.emptySet(), emptyConfig().getKeys(), "The property was not provided and should not have an origin.");
     }
 
     @Test
     public void getPropertyException() {
         NullableAlikeProperty<String> NullableAlikeProperty = new NullableTestProperty("example.key");
-        Assertions.assertTrue(configOf(Pair.of(NullableAlikeProperty.getKey(), UNKNOWN_VALUE)).getPropertyException(NullableAlikeProperty).isPresent(), "The property value should not parse successfully.");
-        Assertions.assertEquals(Optional.empty(), configOf(Pair.of(NullableAlikeProperty.getKey(), "something")).getPropertyException(NullableAlikeProperty), "The property was provided and should be parsable.");
-        Assertions.assertEquals(Optional.empty(), emptyConfig().getPropertyException(NullableAlikeProperty), "The property was not provided and should not have an exception value.");
+        Assertions.assertTrue(
+            configOf(Pair.of(NullableAlikeProperty.getKey(), UNKNOWN_VALUE)).getPropertyException(NullableAlikeProperty).isPresent(),
+            "The property value should not parse successfully."
+        );
+        Assertions.assertEquals(
+            Optional.empty(),
+            configOf(Pair.of(NullableAlikeProperty.getKey(), "something")).getPropertyException(NullableAlikeProperty),
+            "The property was provided and should be parsable."
+        );
+        Assertions.assertEquals(
+            Optional.empty(),
+            emptyConfig().getPropertyException(NullableAlikeProperty),
+            "The property was not provided and should not have an exception value."
+        );
     }
 
     //#endregion Recommended Usage
@@ -156,7 +195,11 @@ public class PropertyConfigurationTest {
     @Test
     public void getRawFromProperty() {
         NullableAlikeProperty<String> NullableAlikeProperty = new NullableTestProperty("example.key");
-        Assertions.assertEquals(Optional.of(" true "), configOf(Pair.of(NullableAlikeProperty.getKey(), " true ")).getRaw(NullableAlikeProperty), "The property should be resolved.");
+        Assertions.assertEquals(
+            Optional.of(" true "),
+            configOf(Pair.of(NullableAlikeProperty.getKey(), " true ")).getRaw(NullableAlikeProperty),
+            "The property should be resolved."
+        );
         Assertions.assertEquals(Optional.empty(), emptyConfig().getRaw(NullableAlikeProperty), "The property was not provided and should not resolve a value.");
     }
 
@@ -228,7 +271,11 @@ public class PropertyConfigurationTest {
 
         Assertions.assertEquals(propertyMap, config.getRaw(it -> true), "All keys should match.");
 
-        Assertions.assertEquals(1, config.getRaw(propertyKey -> propertyKey.equals(NullableAlikeProperty.getKey())).size(), "Expected entries should not include any unrelated keys.");
+        Assertions.assertEquals(
+            1,
+            config.getRaw(propertyKey -> propertyKey.equals(NullableAlikeProperty.getKey())).size(),
+            "Expected entries should not include any unrelated keys."
+        );
 
         Assertions.assertEquals(emptyMap(), config.getRaw(it -> false), "The config should not provide any values to provide.");
     }

@@ -22,8 +22,9 @@ public class FunctionalDetectableExecutableRunner implements DetectableExecutabl
         executableExecutableOutputMap.put(new FunctionalExecutable(executable), executableOutput);
     }
 
+    @NotNull
     @Override
-    public @NotNull ExecutableOutput execute(File workingDirectory, List<String> command) throws ExecutableRunnerException {
+    public ExecutableOutput execute(File workingDirectory, List<String> command) throws ExecutableRunnerException {
         return execute(new Executable(workingDirectory, new HashMap<>(), command));
     }
 
@@ -56,8 +57,9 @@ public class FunctionalDetectableExecutableRunner implements DetectableExecutabl
         return execute(new Executable(workingDirectory, new HashMap<>(), command));
     }
 
+    @NotNull
     @Override
-    public @NotNull ExecutableOutput executeSecretly(Executable executable) throws ExecutableRunnerException {
+    public ExecutableOutput executeSecretly(Executable executable) throws ExecutableRunnerException {
         return execute(executable);//Functional tests don't care about 'secret' executions (where secret means the output might contain something secret like credentials).
     }
 
@@ -102,7 +104,8 @@ public class FunctionalDetectableExecutableRunner implements DetectableExecutabl
     }
 
     @Override
-    public @NotNull ExecutableOutput executeSuccessfully(Executable executable) throws ExecutableFailedException {
+    @NotNull
+    public ExecutableOutput executeSuccessfully(Executable executable) throws ExecutableFailedException {
         ExecutableOutput output = execute(executable);
         if (output.getReturnCode() != 0)
             throw new ExecutableFailedException(executable, output);

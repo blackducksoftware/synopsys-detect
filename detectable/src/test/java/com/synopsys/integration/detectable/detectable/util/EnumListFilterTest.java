@@ -85,7 +85,11 @@ class EnumListFilterTest {
     void ifShouldIncludeOptional() {
         EnumListFilter<TestValue> filter = EnumListFilter.fromExcluded(TestValue.A);
         Optional<String> dependency = Optional.empty();
-        filter.ifShouldInclude(TestValue.B, dependency, (Consumer<String>) object -> fail("Although the value should be included, it was an empty Optional and should be filtered."));
+        filter.ifShouldInclude(
+            TestValue.B,
+            dependency,
+            (Consumer<String>) object -> fail("Although the value should be included, it was an empty Optional and should be filtered.")
+        );
 
         // Now test with non-null value
         dependency = Optional.of("dependency");
@@ -98,7 +102,11 @@ class EnumListFilterTest {
     void ifShouldExcludeOptional() {
         EnumListFilter<TestValue> filter = EnumListFilter.fromExcluded(TestValue.A);
         Optional<String> dependency = Optional.empty();
-        filter.ifShouldExclude(TestValue.A, dependency, (Consumer<String>) object -> fail("Although the value should be excluded, it was an empty Optional and should be filtered."));
+        filter.ifShouldExclude(
+            TestValue.A,
+            dependency,
+            (Consumer<String>) object -> fail("Although the value should be excluded, it was an empty Optional and should be filtered.")
+        );
 
         // Now test with non-null value
         dependency = Optional.of("dependency");

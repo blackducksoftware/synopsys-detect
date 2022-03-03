@@ -146,7 +146,11 @@ public class BitbakeGraphTransformer {
 
     private String chooseRecipeLayer(final String dependencyName, @Nullable String dependencyLayer, final List<String> recipeLayerNames) {
         if (dependencyLayer == null) {
-            logger.warn("Did not parse a layer for dependency {} from task-depends.dot; falling back to layer {} (first from show-recipes output)", dependencyName, recipeLayerNames.get(0));
+            logger.warn(
+                "Did not parse a layer for dependency {} from task-depends.dot; falling back to layer {} (first from show-recipes output)",
+                dependencyName,
+                recipeLayerNames.get(0)
+            );
             dependencyLayer = recipeLayerNames.get(0);
         } else {
             logger.trace("For dependency recipe {}: using layer {} parsed from task-depends.dot", dependencyName, dependencyLayer);

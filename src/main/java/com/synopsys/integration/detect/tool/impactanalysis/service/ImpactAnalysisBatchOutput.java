@@ -19,8 +19,11 @@ public class ImpactAnalysisBatchOutput extends CodeLocationBatchOutput<ImpactAna
             } else if (impactAnalysisOutput.getStatusCode() < 200 || impactAnalysisOutput.getStatusCode() >= 300) {
                 logger.error(String.format("Unexpected status code: %d", impactAnalysisOutput.getStatusCode()));
                 throw new BlackDuckIntegrationException(
-                    String.format("Unexpected status code when uploading impact analysis: %d, %s [Black Duck response content: %s]", impactAnalysisOutput.getStatusCode(), impactAnalysisOutput.getStatusMessage(),
-                        impactAnalysisOutput.getContentString()));
+                    String.format("Unexpected status code when uploading impact analysis: %d, %s [Black Duck response content: %s]",
+                        impactAnalysisOutput.getStatusCode(),
+                        impactAnalysisOutput.getStatusMessage(),
+                        impactAnalysisOutput.getContentString()
+                    ));
             }
         }
     }

@@ -61,9 +61,16 @@ public class ImpactAnalysisTestIT {
             new NoThreadExecutorService(),
             blackDuckServicesFactory.getGson()
         );
-        ImpactAnalysisUploadService impactAnalysisUploadService = new ImpactAnalysisUploadService(impactAnalysisBatchRunner, blackDuckServicesFactory.createCodeLocationCreationService());
+        ImpactAnalysisUploadService impactAnalysisUploadService = new ImpactAnalysisUploadService(
+            impactAnalysisBatchRunner,
+            blackDuckServicesFactory.createCodeLocationCreationService()
+        );
         ImpactAnalysisUploadOperation impactAnalysisUploadOperation = new ImpactAnalysisUploadOperation(impactAnalysisUploadService);
-        CodeLocationCreationData<ImpactAnalysisBatchOutput> creationData = impactAnalysisUploadOperation.uploadImpactAnalysis(impactAnalysisFile, projectNameVersion, impactAnalysisCodeLocationName);
+        CodeLocationCreationData<ImpactAnalysisBatchOutput> creationData = impactAnalysisUploadOperation.uploadImpactAnalysis(
+            impactAnalysisFile,
+            projectNameVersion,
+            impactAnalysisCodeLocationName
+        );
 
         assertEquals(1, creationData.getOutput().getOutputs().size());
         assertEquals(Result.SUCCESS, creationData.getOutput().getOutputs().get(0).getResult());

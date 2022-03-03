@@ -25,7 +25,12 @@ public class PipelineBuilder {
     private final List<IntermediateStep> intermediateSteps = new ArrayList<>();
     private FinalStep finalStep;
 
-    public PipelineBuilder(ExternalIdFactory externalIdFactory, BazelCommandExecutor bazelCommandExecutor, BazelVariableSubstitutor bazelVariableSubstitutor, HaskellCabalLibraryJsonProtoParser haskellCabalLibraryJsonProtoParser) {
+    public PipelineBuilder(
+        ExternalIdFactory externalIdFactory,
+        BazelCommandExecutor bazelCommandExecutor,
+        BazelVariableSubstitutor bazelVariableSubstitutor,
+        HaskellCabalLibraryJsonProtoParser haskellCabalLibraryJsonProtoParser
+    ) {
         this.externalIdFactory = externalIdFactory;
         this.bazelCommandExecutor = bazelCommandExecutor;
         this.bazelVariableSubstitutor = bazelVariableSubstitutor;

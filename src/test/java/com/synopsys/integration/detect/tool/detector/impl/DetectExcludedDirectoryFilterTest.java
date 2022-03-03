@@ -56,7 +56,14 @@ class DetectExcludedDirectoryFilterTest {
 
     @ParameterizedTest
     @MethodSource("inputPatternsToExclusionsProvider")
-    void testIsExcludedDirectoryPathPatterns(String exclusionPattern, boolean sub1Excluded, boolean sub2Excluded, boolean sub1Sub1Excluded, boolean sub1Sub2Excluded, boolean sub2Sub1Excluded) {
+    void testIsExcludedDirectoryPathPatterns(
+        String exclusionPattern,
+        boolean sub1Excluded,
+        boolean sub2Excluded,
+        boolean sub1Sub1Excluded,
+        boolean sub1Sub2Excluded,
+        boolean sub2Sub1Excluded
+    ) {
         Path sourcePath = new File("").toPath();
 
         DetectExcludedDirectoryFilter filter = new DetectExcludedDirectoryFilter(Collections.singletonList(exclusionPattern));

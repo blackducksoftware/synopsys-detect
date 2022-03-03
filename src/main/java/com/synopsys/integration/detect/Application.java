@@ -107,7 +107,16 @@ public class Application implements ApplicationRunner {
 
         boolean shouldForceSuccess = false;
 
-        Optional<DetectBootResult> detectBootResultOptional = bootApplication(detectRunId, applicationArguments.getSourceArgs(), eventSystem, exitCodeManager, gson, detectInfo, fileFinder, installedToolManager, exceptionUtility);
+        Optional<DetectBootResult> detectBootResultOptional = bootApplication(
+            detectRunId,
+            applicationArguments.getSourceArgs(),
+            eventSystem,
+            exitCodeManager,
+            gson,
+            detectInfo,
+            fileFinder,
+            installedToolManager
+        );
 
         if (detectBootResultOptional.isPresent()) {
             DetectBootResult detectBootResult = detectBootResultOptional.get();

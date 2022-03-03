@@ -27,7 +27,8 @@ public class RapidModeWaitOperation {
         this.blackDuckApiClient = blackDuckApiClient;
     }
 
-    public List<DeveloperScanComponentResultView> waitForScans(List<HttpUrl> uploadedScans, long timeoutInSeconds, int waitIntervalInSeconds) throws IntegrationException, InterruptedException {
+    public List<DeveloperScanComponentResultView> waitForScans(List<HttpUrl> uploadedScans, long timeoutInSeconds, int waitIntervalInSeconds)
+        throws IntegrationException, InterruptedException {
         WaitJobConfig waitJobConfig = new WaitJobConfig(new Slf4jIntLogger(logger), "Waiting for Rapid Scans", timeoutInSeconds, System.currentTimeMillis(), waitIntervalInSeconds);
         DetectRapidScanWaitJobCondition waitJobCondition = new DetectRapidScanWaitJobCondition(blackDuckApiClient, uploadedScans);
         DetectRapidScanWaitJobCompleter waitJobCompleter = new DetectRapidScanWaitJobCompleter(blackDuckApiClient, uploadedScans);

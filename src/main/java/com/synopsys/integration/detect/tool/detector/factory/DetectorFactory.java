@@ -85,17 +85,37 @@ public class DetectorFactory {
     }
 
     public DetectDetectableFactory detectDetectableFactory() throws DetectUserFriendlyException {
-        return new DetectDetectableFactory(detectableFactory(), detectableOptionFactory, detectExecutableResolver, dockerInspectorResolver(), gradleInspectorResolver(), nugetInspectorResolver(detectInfo), pipInspectorResolver(),
-            projectInspectorResolver(detectInfo));
+        return new DetectDetectableFactory(detectableFactory(),
+            detectableOptionFactory,
+            detectExecutableResolver,
+            dockerInspectorResolver(),
+            gradleInspectorResolver(),
+            nugetInspectorResolver(detectInfo),
+            pipInspectorResolver(),
+            projectInspectorResolver(detectInfo)
+        );
     }
 
     private DockerInspectorResolver dockerInspectorResolver() throws DetectUserFriendlyException {
         DockerInspectorInstaller dockerInspectorInstaller = new DockerInspectorInstaller(artifactResolver);
-        return new ArtifactoryDockerInspectorResolver(directoryManager, airGapInspectorPaths, fileFinder, dockerInspectorInstaller, detectableOptionFactory.createDockerDetectableOptions(), installedToolManager, installedToolLocator);
+        return new ArtifactoryDockerInspectorResolver(
+            directoryManager,
+            airGapInspectorPaths,
+            fileFinder,
+            dockerInspectorInstaller,
+            detectableOptionFactory.createDockerDetectableOptions(),
+            installedToolManager,
+            installedToolLocator
+        );
     }
 
     private GradleInspectorResolver gradleInspectorResolver() throws DetectUserFriendlyException {
-        return new ArtifactoryGradleInspectorResolver(configuration, detectableOptionFactory.createGradleInspectorOptions().getGradleInspectorScriptOptions(), airGapInspectorPaths, directoryManager);
+        return new ArtifactoryGradleInspectorResolver(
+            configuration,
+            detectableOptionFactory.createGradleInspectorOptions().getGradleInspectorScriptOptions(),
+            airGapInspectorPaths,
+            directoryManager
+        );
     }
 
     private NugetInspectorResolver nugetInspectorResolver(DetectInfo detectInfo) throws DetectUserFriendlyException {
@@ -106,12 +126,26 @@ public class DetectorFactory {
             locator = new AirgapNugetInspectorLocator(airGapInspectorPaths);
         } else {
             NugetInspectorInstaller installer = new NugetInspectorInstaller(artifactoryZipInstaller);
-            locator = new OnlineNugetInspectorLocator(installer, directoryManager, installerOptions.getNugetInspectorVersion().orElse(null), installedToolManager, installedToolLocator);
+            locator = new OnlineNugetInspectorLocator(
+                installer,
+                directoryManager,
+                installerOptions.getNugetInspectorVersion().orElse(null),
+                installedToolManager,
+                installedToolLocator
+            );
         }
 
         DotNetRuntimeFinder runtimeFinder = new DotNetRuntimeFinder(executableRunner, detectExecutableResolver, directoryManager.getPermanentDirectory());
         DotNetRuntimeManager dotNetRuntimeManager = new DotNetRuntimeManager(runtimeFinder, new DotNetRuntimeParser());
-        return new LocatorNugetInspectorResolver(detectExecutableResolver, executableRunner, detectInfo, fileFinder, installerOptions.getPackagesRepoUrl(), locator, dotNetRuntimeManager);
+        return new LocatorNugetInspectorResolver(
+            detectExecutableResolver,
+            executableRunner,
+            detectInfo,
+            fileFinder,
+            installerOptions.getPackagesRepoUrl(),
+            locator,
+            dotNetRuntimeManager
+        );
     }
 
     private ProjectInspectorResolver projectInspectorResolver(DetectInfo detectInfo) {
@@ -121,7 +155,11 @@ public class DetectorFactory {
         if (projectInspectorAirgapPath.isPresent()) {
             return new AirgapProjectInspectorResolver(airGapInspectorPaths, projectInspectorExecutableLocator, detectInfo);
         } else {
-            ArtifactoryProjectInspectorInstaller artifactoryProjectInspectorInstaller = new ArtifactoryProjectInspectorInstaller(detectInfo, artifactoryZipInstaller, projectInspectorExecutableLocator);
+            ArtifactoryProjectInspectorInstaller artifactoryProjectInspectorInstaller = new ArtifactoryProjectInspectorInstaller(
+                detectInfo,
+                artifactoryZipInstaller,
+                projectInspectorExecutableLocator
+            );
             return new OnlineProjectInspectorResolver(artifactoryProjectInspectorInstaller, directoryManager, installedToolManager, installedToolLocator);
         }
     }

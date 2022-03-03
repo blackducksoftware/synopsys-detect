@@ -132,7 +132,11 @@ public class DetectConfigurationFactory {
         try {
             proxyCredentials = proxyCredentialsBuilder.build();
         } catch (IllegalArgumentException e) {
-            throw new DetectUserFriendlyException(String.format("Your proxy credentials configuration is not valid: %s", e.getMessage()), e, ExitCodeType.FAILURE_PROXY_CONNECTIVITY);
+            throw new DetectUserFriendlyException(
+                String.format("Your proxy credentials configuration is not valid: %s", e.getMessage()),
+                e,
+                ExitCodeType.FAILURE_PROXY_CONNECTIVITY
+            );
         }
 
         ProxyInfoBuilder proxyInfoBuilder = new ProxyInfoBuilder();

@@ -28,7 +28,13 @@ public class NpmCliDetectable extends Detectable {
     private File packageJson;
     private ExecutableTarget npmExe;
 
-    public NpmCliDetectable(DetectableEnvironment environment, FileFinder fileFinder, NpmResolver npmResolver, NpmCliExtractor npmCliExtractor, NpmCliExtractorOptions npmCliExtractorOptions) {
+    public NpmCliDetectable(
+        DetectableEnvironment environment,
+        FileFinder fileFinder,
+        NpmResolver npmResolver,
+        NpmCliExtractor npmCliExtractor,
+        NpmCliExtractorOptions npmCliExtractorOptions
+    ) {
         super(environment);
         this.fileFinder = fileFinder;
         this.npmResolver = npmResolver;

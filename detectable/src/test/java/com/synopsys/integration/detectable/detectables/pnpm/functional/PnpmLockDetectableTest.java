@@ -67,7 +67,8 @@ public class PnpmLockDetectableTest extends DetectableFunctionalTest {
     }
 
     @Override
-    public @NotNull Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
+    @NotNull
+    public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
         PnpmLockOptions pnpmLockOptions = new PnpmLockOptions(EnumListFilter.fromExcluded(PnpmDependencyType.OPTIONAL));
         return detectableFactory.createPnpmLockDetectable(detectableEnvironment, pnpmLockOptions);
     }

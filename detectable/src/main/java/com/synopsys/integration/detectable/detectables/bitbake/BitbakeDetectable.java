@@ -28,7 +28,13 @@ public class BitbakeDetectable extends Detectable {
     private File foundBuildEnvScript;
     private ExecutableTarget bashExe;
 
-    public BitbakeDetectable(DetectableEnvironment detectableEnvironment, FileFinder fileFinder, BitbakeDetectableOptions bitbakeDetectableOptions, BitbakeExtractor bitbakeExtractor, BashResolver bashResolver) {
+    public BitbakeDetectable(
+        DetectableEnvironment detectableEnvironment,
+        FileFinder fileFinder,
+        BitbakeDetectableOptions bitbakeDetectableOptions,
+        BitbakeExtractor bitbakeExtractor,
+        BashResolver bashResolver
+    ) {
         super(detectableEnvironment);
         this.fileFinder = fileFinder;
         this.bitbakeDetectableOptions = bitbakeDetectableOptions;

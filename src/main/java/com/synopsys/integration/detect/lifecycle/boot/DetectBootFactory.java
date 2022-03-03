@@ -135,7 +135,13 @@ public class DetectBootFactory {
         return pathResolver;
     }
 
-    public DiagnosticSystem createDiagnosticSystem(boolean isDiagnosticExtended, PropertyConfiguration detectConfiguration, DirectoryManager directoryManager, SortedMap<String, String> maskedRawPropertyValues, Set<String> propertyKeys) {
+    public DiagnosticSystem createDiagnosticSystem(
+        boolean isDiagnosticExtended,
+        PropertyConfiguration detectConfiguration,
+        DirectoryManager directoryManager,
+        SortedMap<String, String> maskedRawPropertyValues,
+        Set<String> propertyKeys
+    ) {
         return new DiagnosticSystem(isDiagnosticExtended, detectConfiguration, detectRunId, detectInfo, directoryManager, eventSystem, maskedRawPropertyValues, propertyKeys);
     }
 
@@ -157,13 +163,25 @@ public class DetectBootFactory {
         NugetAirGapCreator nugetAirGapCreator = new NugetAirGapCreator(new NugetInspectorInstaller(artifactoryZipInstaller));
 
         ProjectInspectorExecutableLocator projectInspectorExecutableLocator = new ProjectInspectorExecutableLocator(detectInfo);
-        ArtifactoryProjectInspectorInstaller projectInspectorInstaller = new ArtifactoryProjectInspectorInstaller(detectInfo, artifactoryZipInstaller, projectInspectorExecutableLocator);
+        ArtifactoryProjectInspectorInstaller projectInspectorInstaller = new ArtifactoryProjectInspectorInstaller(
+            detectInfo,
+            artifactoryZipInstaller,
+            projectInspectorExecutableLocator
+        );
         ProjectInspectorAirGapCreator projectInspectorAirGapCreator = new ProjectInspectorAirGapCreator(projectInspectorInstaller);
 
         DockerAirGapCreator dockerAirGapCreator = new DockerAirGapCreator(new DockerInspectorInstaller(artifactResolver));
         DetectFontAirGapCreator detectFontAirGapCreator = new DetectFontAirGapCreator(new DetectFontInstaller(artifactResolver, installedToolManager, installedToolLocator));
 
-        return new AirGapCreator(new AirGapPathFinder(), eventSystem, gradleAirGapCreator, nugetAirGapCreator, dockerAirGapCreator, detectFontAirGapCreator, projectInspectorAirGapCreator);
+        return new AirGapCreator(
+            new AirGapPathFinder(),
+            eventSystem,
+            gradleAirGapCreator,
+            nugetAirGapCreator,
+            dockerAirGapCreator,
+            detectFontAirGapCreator,
+            projectInspectorAirGapCreator
+        );
     }
 
     public HelpJsonManager createHelpJsonManager() {

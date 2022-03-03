@@ -16,7 +16,12 @@ import com.synopsys.integration.executable.ExecutableRunnerException;
 public class DpkgVersionResolver {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public Optional<String> resolvePackageVersion(ClangPackageManagerInfo currentPackageManager, DetectableExecutableRunner executableRunner, File workingDirectory, String packageName) {
+    public Optional<String> resolvePackageVersion(
+        ClangPackageManagerInfo currentPackageManager,
+        DetectableExecutableRunner executableRunner,
+        File workingDirectory,
+        String packageName
+    ) {
         try {
             List<String> args = new ArrayList<>(currentPackageManager.getPkgInfoArgs().get());
             args.add(packageName);

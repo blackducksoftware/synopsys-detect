@@ -24,8 +24,20 @@ import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.Haske
 import com.synopsys.integration.exception.IntegrationException;
 
 class PipelinesTest {
-    private static final List<String> MAVEN_INSTALL_STANDARD_BAZEL_COMMAND_ARGS = Arrays.asList("cquery", "--noimplicit_deps", "kind(j.*import, deps(/:testTarget))", "--output", "build");
-    private static final List<String> HASKELL_CABAL_LIBRARY_STANDARD_BAZEL_COMMAND_ARGS = Arrays.asList("cquery", "--noimplicit_deps", "kind(haskell_cabal_library, deps(/:testTarget))", "--output", "jsonproto");
+    private static final List<String> MAVEN_INSTALL_STANDARD_BAZEL_COMMAND_ARGS = Arrays.asList(
+        "cquery",
+        "--noimplicit_deps",
+        "kind(j.*import, deps(/:testTarget))",
+        "--output",
+        "build"
+    );
+    private static final List<String> HASKELL_CABAL_LIBRARY_STANDARD_BAZEL_COMMAND_ARGS = Arrays.asList(
+        "cquery",
+        "--noimplicit_deps",
+        "kind(haskell_cabal_library, deps(/:testTarget))",
+        "--output",
+        "jsonproto"
+    );
     private static final String MAVEN_INSTALL_CQUERY_OUTPUT_SIMPLE = createStandardOutput(
         "# /root/.cache/bazel/_bazel_root/896e039de1e50d7e2de0b14a9acf4028/external/exclusion_testing/BUILD:41:1",
         "jvm_import(",
@@ -243,7 +255,15 @@ class PipelinesTest {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
         List<String> userProvidedCqueryAdditionalOptions = Arrays.asList("--option1=a", "--option2=b");
-        List<String> expectedBazelCommandArgs = Arrays.asList("cquery", "--noimplicit_deps", "--option1=a", "--option2=b", "kind(j.*import, deps(/:testTarget))", "--output", "build");
+        List<String> expectedBazelCommandArgs = Arrays.asList(
+            "cquery",
+            "--noimplicit_deps",
+            "--option1=a",
+            "--option2=b",
+            "kind(j.*import, deps(/:testTarget))",
+            "--output",
+            "build"
+        );
 
         List<Dependency> dependencies = doTest(WorkspaceRule.MAVEN_INSTALL, expectedBazelCommandArgs, userProvidedCqueryAdditionalOptions, MAVEN_INSTALL_CQUERY_OUTPUT_SIMPLE);
         assertEquals(8, dependencies.size());
@@ -284,7 +304,8 @@ class PipelinesTest {
         assertEquals(1, foundCount);
     }
 
-    private List<Dependency> doTest(WorkspaceRule workspaceRule, List<String> expectedBazelCommandArgs, List<String> userProvidedCqueryAdditionalOptions, String input) throws IntegrationException, ExecutableFailedException {
+    private List<Dependency> doTest(WorkspaceRule workspaceRule, List<String> expectedBazelCommandArgs, List<String> userProvidedCqueryAdditionalOptions, String input)
+        throws IntegrationException, ExecutableFailedException {
         BazelCommandExecutor bazelCommandExecutor = Mockito.mock(BazelCommandExecutor.class);
         Mockito.when(bazelCommandExecutor.executeToString(expectedBazelCommandArgs)).thenReturn(Optional.of(input));
         BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor("/:testTarget", userProvidedCqueryAdditionalOptions);

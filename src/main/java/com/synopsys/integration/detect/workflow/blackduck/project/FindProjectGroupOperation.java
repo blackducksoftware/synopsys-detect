@@ -38,7 +38,10 @@ public class FindProjectGroupOperation {
         BlackDuckMultipleRequest<ProjectGroupsView> requestMultiple = blackDuckRequestBuilder.buildBlackDuckRequest(projectGroupsResponses);
         List<ProjectGroupsView> response = blackDuckApiClient.getAllResponses(requestMultiple);
         if (response.size() != 1) {
-            throw new DetectUserFriendlyException("Project Group Name must have exactly 1 match on Black Duck, instead '" + projectGroupName + "' had " + response.size() + " matches.", ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
+            throw new DetectUserFriendlyException(
+                "Project Group Name must have exactly 1 match on Black Duck, instead '" + projectGroupName + "' had " + response.size() + " matches.",
+                ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR
+            );
         }
         ProjectGroupsView result = response.get(0);
         return result.getHref();

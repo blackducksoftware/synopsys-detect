@@ -51,7 +51,8 @@ public class MockFileFinder implements FileFinder {
     }
 
     @Override
-    public @NotNull List<File> findFiles(File directoryToSearch, Predicate<File> filter, boolean followSymLinks, int depth, boolean findInsideMatchingDirectories) {
+    @NotNull
+    public List<File> findFiles(File directoryToSearch, Predicate<File> filter, boolean followSymLinks, int depth, boolean findInsideMatchingDirectories) {
         List<File> found = new ArrayList<>();
         for (int i = 0; i <= depth; i++) {
             if (files.containsKey(i)) {

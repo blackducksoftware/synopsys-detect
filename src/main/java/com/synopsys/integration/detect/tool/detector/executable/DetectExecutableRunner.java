@@ -49,7 +49,8 @@ public class DetectExecutableRunner implements DetectableExecutableRunner {
     }
 
     @Override
-    public @NotNull ExecutableOutput execute(File workingDirectory, List<String> command) throws ExecutableRunnerException {
+    @NotNull
+    public ExecutableOutput execute(File workingDirectory, List<String> command) throws ExecutableRunnerException {
         return execute(Executable.create(workingDirectory, command));
     }
 
@@ -113,7 +114,8 @@ public class DetectExecutableRunner implements DetectableExecutableRunner {
     }
 
     @Override
-    public @NotNull ExecutableOutput executeSuccessfully(Executable executable) throws ExecutableFailedException {
+    @NotNull
+    public ExecutableOutput executeSuccessfully(Executable executable) throws ExecutableFailedException {
         try {
             ExecutableOutput executableOutput = execute(executable);
             if (executableOutput.getReturnCode() != 0) {

@@ -30,7 +30,11 @@ public class CargoExtractor {
     private final CargoLockPackageDataTransformer cargoLockPackageDataTransformer;
     private final CargoLockPackageTransformer cargoLockPackageTransformer;
 
-    public CargoExtractor(CargoTomlParser cargoTomlParser, CargoLockPackageDataTransformer cargoLockPackageDataTransformer, CargoLockPackageTransformer cargoLockPackageTransformer) {
+    public CargoExtractor(
+        CargoTomlParser cargoTomlParser,
+        CargoLockPackageDataTransformer cargoLockPackageDataTransformer,
+        CargoLockPackageTransformer cargoLockPackageTransformer
+    ) {
         this.cargoTomlParser = cargoTomlParser;
         this.cargoLockPackageDataTransformer = cargoLockPackageDataTransformer;
         this.cargoLockPackageTransformer = cargoLockPackageTransformer;

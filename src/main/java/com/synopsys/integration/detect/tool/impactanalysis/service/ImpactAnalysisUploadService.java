@@ -13,7 +13,11 @@ import com.synopsys.integration.util.NameVersion;
 import com.synopsys.integration.util.NoThreadExecutorService;
 
 public class ImpactAnalysisUploadService {
-    public static final BlackDuckPath<BlackDuckResponseResponse> IMPACT_ANALYSIS_PATH = new BlackDuckPath<>("/api/scans/vulnerability-impact", BlackDuckResponseResponse.class, false);
+    public static final BlackDuckPath<BlackDuckResponseResponse> IMPACT_ANALYSIS_PATH = new BlackDuckPath<>(
+        "/api/scans/vulnerability-impact",
+        BlackDuckResponseResponse.class,
+        false
+    );
 
     private final ImpactAnalysisBatchRunner impactAnalysisBatchRunner;
     private final CodeLocationCreationService codeLocationCreationService;
@@ -53,7 +57,8 @@ public class ImpactAnalysisUploadService {
         return uploadImpactAnalysis(impactAnalysisBatch);
     }
 
-    public ImpactAnalysisBatchOutput uploadImpactAnalysisAndWait(ImpactAnalysisCodeLocationCreationRequest uploadRequest, long timeoutInSeconds) throws InterruptedException, IntegrationException {
+    public ImpactAnalysisBatchOutput uploadImpactAnalysisAndWait(ImpactAnalysisCodeLocationCreationRequest uploadRequest, long timeoutInSeconds)
+        throws InterruptedException, IntegrationException {
         return codeLocationCreationService.createCodeLocationsAndWait(uploadRequest, timeoutInSeconds);
     }
 
@@ -67,7 +72,13 @@ public class ImpactAnalysisUploadService {
         return uploadImpactAnalysisAndWait(impactAnalysisBatch, timeoutInSeconds);
     }
 
-    public void waitForImpactAnalysisUpload(NotificationTaskRange notificationTaskRange, NameVersion projectAndVersion, Set<String> codeLocationNames, int expectedNotificationCount, long timeoutInSeconds)
+    public void waitForImpactAnalysisUpload(
+        NotificationTaskRange notificationTaskRange,
+        NameVersion projectAndVersion,
+        Set<String> codeLocationNames,
+        int expectedNotificationCount,
+        long timeoutInSeconds
+    )
         throws InterruptedException, IntegrationException {
         codeLocationCreationService.waitForCodeLocations(notificationTaskRange, projectAndVersion, codeLocationNames, expectedNotificationCount, timeoutInSeconds);
     }

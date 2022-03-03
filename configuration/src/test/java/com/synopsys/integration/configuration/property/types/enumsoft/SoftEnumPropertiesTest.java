@@ -62,7 +62,10 @@ class SoftEnumPropertiesTest {
     public void testList() throws InvalidPropertyException {
         SoftEnumListProperty<Example> property = new SoftEnumListProperty<>("enum.list", Collections.singletonList(SoftEnumValue.ofEnumValue(Example.THIRD)), Example.class);
         PropertyConfiguration config = configOf(Pair.of("enum.list", "ANOTHER,THING,test"));
-        Assertions.assertEquals(Arrays.asList(SoftEnumValue.ofEnumValue(Example.ANOTHER), SoftEnumValue.ofEnumValue(Example.THING), SoftEnumValue.ofSoftValue("test")), config.getValue(property));
+        Assertions.assertEquals(
+            Arrays.asList(SoftEnumValue.ofEnumValue(Example.ANOTHER), SoftEnumValue.ofEnumValue(Example.THING), SoftEnumValue.ofSoftValue("test")),
+            config.getValue(property)
+        );
 
         PropertyTestHelpUtil.assertAllListHelpValid(property);
     }

@@ -53,7 +53,11 @@ class BdioAggregationTest {
     void testTransitiveMode() throws DetectUserFriendlyException {
         FullAggregateGraphCreator fullAggregateGraphCreator = new FullAggregateGraphCreator(new SimpleBdioFactory());
 
-        DependencyGraph aggregatedGraph = fullAggregateGraphCreator.aggregateCodeLocations((name, version, externalId) -> new Dependency(name, version, externalId), sourceDir, inputCodelocations);
+        DependencyGraph aggregatedGraph = fullAggregateGraphCreator.aggregateCodeLocations(
+            (name, version, externalId) -> new Dependency(name, version, externalId),
+            sourceDir,
+            inputCodelocations
+        );
 
         assertEquals(3, aggregatedGraph.getRootDependencies().size());
         assertTrue(aggregatedGraph.getRootDependencies().contains(genProjectDependency("com.synopsys.integration", "basic-multiproject", "0.0.0-SNAPSHOT")));
@@ -72,7 +76,11 @@ class BdioAggregationTest {
     void testSubProjectMode() throws DetectUserFriendlyException {
         FullAggregateGraphCreator fullAggregateGraphCreator = new FullAggregateGraphCreator(new SimpleBdioFactory());
 
-        DependencyGraph aggregatedGraph = fullAggregateGraphCreator.aggregateCodeLocations((name, version, externalId) -> new ProjectDependency(name, version, externalId), sourceDir, inputCodelocations);
+        DependencyGraph aggregatedGraph = fullAggregateGraphCreator.aggregateCodeLocations(
+            (name, version, externalId) -> new ProjectDependency(name, version, externalId),
+            sourceDir,
+            inputCodelocations
+        );
 
         assertEquals(3, aggregatedGraph.getRootDependencies().size());
         assertTrue(aggregatedGraph.getRootDependencies().contains(genProjectDependency("com.synopsys.integration", "basic-multiproject", "0.0.0-SNAPSHOT")));

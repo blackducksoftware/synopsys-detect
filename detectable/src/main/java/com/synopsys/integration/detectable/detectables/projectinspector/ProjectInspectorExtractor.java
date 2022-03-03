@@ -26,7 +26,8 @@ public class ProjectInspectorExtractor {
         this.projectInspectorParser = projectInspectorParser;
     }
 
-    public Extraction extract(ProjectInspectorOptions projectInspectorOptions, List<String> extra, File targetDirectory, File outputDirectory, ExecutableTarget inspector) throws ExecutableFailedException {
+    public Extraction extract(ProjectInspectorOptions projectInspectorOptions, List<String> extra, File targetDirectory, File outputDirectory, ExecutableTarget inspector)
+        throws ExecutableFailedException {
         File outputFile = new File(outputDirectory, "inspection.json");
 
         List<String> arguments = new LinkedList<>();

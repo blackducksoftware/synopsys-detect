@@ -89,14 +89,22 @@ public class NpmCliParser {
                     // Transitives can be both application and dev/peer dependency graphs, but Detect shouldn't be walking a dev or peer dependency tree unless it passed the filter already.
                     return true;
                 }
-                boolean excludingBecauseDev = (npmDependencyTypeFilter.shouldExclude(NpmDependencyType.DEV, packageJson.devDependencies) && packageJson.devDependencies.containsKey(elementEntry.getKey()));
-                boolean excludingBecausePeer = (npmDependencyTypeFilter.shouldExclude(NpmDependencyType.PEER, packageJson.peerDependencies) && packageJson.peerDependencies.containsKey(elementEntry.getKey()));
+                boolean excludingBecauseDev = (npmDependencyTypeFilter.shouldExclude(NpmDependencyType.DEV, packageJson.devDependencies) && packageJson.devDependencies.containsKey(
+                    elementEntry.getKey()));
+                boolean excludingBecausePeer = (npmDependencyTypeFilter.shouldExclude(NpmDependencyType.PEER, packageJson.peerDependencies)
+                    && packageJson.peerDependencies.containsKey(elementEntry.getKey()));
                 return !excludingBecauseDev && !excludingBecausePeer;
             })
             .forEach(elementEntry -> processChild(elementEntry, graph, parentDependency, isRootDependency, packageJson));
     }
 
-    private void processChild(Entry<String, JsonElement> elementEntry, MutableDependencyGraph graph, Dependency parentDependency, boolean isRootDependency, PackageJson packageJson) {
+    private void processChild(
+        Entry<String, JsonElement> elementEntry,
+        MutableDependencyGraph graph,
+        Dependency parentDependency,
+        boolean isRootDependency,
+        PackageJson packageJson
+    ) {
         JsonObject element = elementEntry.getValue().getAsJsonObject();
         String name = elementEntry.getKey();
         String version = Optional.ofNullable(element.getAsJsonPrimitive(JSON_VERSION))

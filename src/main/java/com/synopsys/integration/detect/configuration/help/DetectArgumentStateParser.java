@@ -36,7 +36,17 @@ public class DetectArgumentStateParser {
             parsedValue = parser.findValueForCommand("-z", "--zip");
         }
 
-        return new DetectArgumentState(isHelp, isHelpJsonDocument, isInteractive, isVerboseHelp, isDeprecatedHelp, parsedValue, isDiagnostic, isDiagnosticExtended, isGenerateAirGapZip);
+        return new DetectArgumentState(
+            isHelp,
+            isHelpJsonDocument,
+            isInteractive,
+            isVerboseHelp,
+            isDeprecatedHelp,
+            parsedValue,
+            isDiagnostic,
+            isDiagnosticExtended,
+            isGenerateAirGapZip
+        );
     }
 
 }

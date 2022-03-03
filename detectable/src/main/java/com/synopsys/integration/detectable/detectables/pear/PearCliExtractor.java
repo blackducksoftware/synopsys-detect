@@ -55,7 +55,12 @@ public class PearCliExtractor {
     public Extraction extract(ExecutableTarget pearExe, File packageXmlFile, File workingDirectory) {
         try {
             ExecutableOutput pearListOutput = executableRunner.execute(ExecutableUtils.createFromTarget(workingDirectory, pearExe, "list"));
-            ExecutableOutput packageDependenciesOutput = executableRunner.execute(ExecutableUtils.createFromTarget(workingDirectory, pearExe, "package-dependencies", PACKAGE_XML_FILENAME));
+            ExecutableOutput packageDependenciesOutput = executableRunner.execute(ExecutableUtils.createFromTarget(
+                workingDirectory,
+                pearExe,
+                "package-dependencies",
+                PACKAGE_XML_FILENAME
+            ));
             assertValidExecutableOutput(pearListOutput, packageDependenciesOutput);
 
             Map<String, String> dependencyNameVersionMap = pearListParser.parse(pearListOutput.getStandardOutputAsList());
