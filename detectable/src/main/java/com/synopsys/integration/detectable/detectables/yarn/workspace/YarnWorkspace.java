@@ -49,7 +49,11 @@ public class YarnWorkspace {
 
     public StringDependencyId generateDependencyId() {
         return new StringDependencyId(
-            getName().orElse(null) + YarnTransformer.STRING_ID_NAME_VERSION_SEPARATOR + WORKSPACE_VERSION_PREFIX + workspacePackageJson.getDirRelativePath());
+            getName().orElse(null)
+                + YarnTransformer.STRING_ID_NAME_VERSION_SEPARATOR
+                + WORKSPACE_VERSION_PREFIX
+                + workspacePackageJson.getDirRelativePath()
+        );
     }
 
     public boolean matches(YarnLockEntry yarnLockEntry) {

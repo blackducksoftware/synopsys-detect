@@ -27,11 +27,8 @@ public class CpanCliExtractor {
 
     public Extraction extract(ExecutableTarget cpanExe, ExecutableTarget cpanmExe, File workingDirectory) throws ExecutableRunnerException {
         toolVersionLogger.log(workingDirectory, cpanExe);
-        ExecutableOutput cpanListOutput = executableRunner.execute(ExecutableUtils.createFromTarget(
-            workingDirectory,
-            cpanExe,
-            "-l"
-        )); //TODO: Consider command runner to reduce cognitive load.
+        //TODO: Consider command runner to reduce cognitive load.
+        ExecutableOutput cpanListOutput = executableRunner.execute(ExecutableUtils.createFromTarget(workingDirectory, cpanExe, "-l"));
         List<String> listText = cpanListOutput.getStandardOutputAsList();
 
         ExecutableOutput showdepsOutput = executableRunner.execute(ExecutableUtils.createFromTarget(workingDirectory, cpanmExe, "--showdeps", "."));
