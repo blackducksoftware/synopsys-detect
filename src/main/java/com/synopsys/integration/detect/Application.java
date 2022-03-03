@@ -115,7 +115,8 @@ public class Application implements ApplicationRunner {
             gson,
             detectInfo,
             fileFinder,
-            installedToolManager
+            installedToolManager,
+            exceptionUtility
         );
 
         if (detectBootResultOptional.isPresent()) {
