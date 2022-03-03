@@ -33,7 +33,13 @@ public class RapidScanConfigBdio2StreamUploader {
     private final BlackDuckPath<DeveloperScansScanView> scanPath;
     private final String contentType;
 
-    public RapidScanConfigBdio2StreamUploader(BlackDuckApiClient blackDuckApiClient, ApiDiscovery apiDiscovery, IntLogger logger, BlackDuckPath<DeveloperScansScanView> scanPath, String contentType) {
+    public RapidScanConfigBdio2StreamUploader(
+        BlackDuckApiClient blackDuckApiClient,
+        ApiDiscovery apiDiscovery,
+        IntLogger logger,
+        BlackDuckPath<DeveloperScansScanView> scanPath,
+        String contentType
+    ) {
         this.blackDuckApiClient = blackDuckApiClient;
         this.apiDiscovery = apiDiscovery;
         this.logger = logger;

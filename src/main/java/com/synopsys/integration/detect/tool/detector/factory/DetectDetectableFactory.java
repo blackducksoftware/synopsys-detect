@@ -91,7 +91,13 @@ public class DetectDetectableFactory {
     }
 
     public DockerDetectable createDockerDetectable(DetectableEnvironment environment) {
-        return detectableFactory.createDockerDetectable(environment, detectableOptionFactory.createDockerDetectableOptions(), dockerInspectorResolver, detectExecutableResolver, detectExecutableResolver);
+        return detectableFactory.createDockerDetectable(
+            environment,
+            detectableOptionFactory.createDockerDetectableOptions(),
+            dockerInspectorResolver,
+            detectExecutableResolver,
+            detectExecutableResolver
+        );
     }
 
     public BazelDetectable createBazelDetectable(DetectableEnvironment environment) {
@@ -131,7 +137,12 @@ public class DetectDetectableFactory {
     }
 
     public DartPubDepDetectable createDartPubDepDetectable(DetectableEnvironment environment) {
-        return detectableFactory.createDartPubDepDetectable(environment, detectableOptionFactory.createDartPubDepsDetectableOptions(), detectExecutableResolver, detectExecutableResolver);
+        return detectableFactory.createDartPubDepDetectable(
+            environment,
+            detectableOptionFactory.createDartPubDepsDetectableOptions(),
+            detectExecutableResolver,
+            detectExecutableResolver
+        );
     }
 
     public GemlockDetectable createGemlockDetectable(DetectableEnvironment environment) {
@@ -235,7 +246,13 @@ public class DetectDetectableFactory {
     }
 
     public PipInspectorDetectable createPipInspectorDetectable(DetectableEnvironment environment) {
-        return detectableFactory.createPipInspectorDetectable(environment, detectableOptionFactory.createPipInspectorDetectableOptions(), pipInspectorResolver, detectExecutableResolver, detectExecutableResolver);
+        return detectableFactory.createPipInspectorDetectable(
+            environment,
+            detectableOptionFactory.createPipInspectorDetectableOptions(),
+            pipInspectorResolver,
+            detectExecutableResolver,
+            detectExecutableResolver
+        );
     }
 
     public PnpmLockDetectable createPnpmLockDetectable(DetectableEnvironment environment) {
@@ -277,11 +294,21 @@ public class DetectDetectableFactory {
     }
 
     public NugetProjectInspectorDetectable createNugetParseDetectable(DetectableEnvironment detectableEnvironment) {
-        return detectableFactory.createNugetParseDetectable(detectableEnvironment, detectableOptionFactory.createNugetInspectorOptions(), projectInspectorResolver, detectableOptionFactory.createProjectInspectorOptions());
+        return detectableFactory.createNugetParseDetectable(
+            detectableEnvironment,
+            detectableOptionFactory.createNugetInspectorOptions(),
+            projectInspectorResolver,
+            detectableOptionFactory.createProjectInspectorOptions()
+        );
     }
 
     public MavenProjectInspectorDetectable createMavenProjectInspectorDetectable(DetectableEnvironment detectableEnvironment) {
-        return detectableFactory.createMavenProjectInspectorDetectable(detectableEnvironment, projectInspectorResolver, detectableOptionFactory.createMavenParseOptions(), detectableOptionFactory.createProjectInspectorOptions());
+        return detectableFactory.createMavenProjectInspectorDetectable(
+            detectableEnvironment,
+            projectInspectorResolver,
+            detectableOptionFactory.createMavenParseOptions(),
+            detectableOptionFactory.createProjectInspectorOptions()
+        );
     }
 
     public GradleProjectInspectorDetectable createGradleProjectInspectorDetectable(DetectableEnvironment detectableEnvironment) {

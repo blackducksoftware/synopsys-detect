@@ -46,7 +46,14 @@ public class ClangExtractor {
         this.forgeChooser = forgeChooser;
     }
 
-    public Extraction extract(ClangPackageManager currentPackageManager, ClangPackageManagerRunner packageManagerRunner, File sourceDirectory, File outputDirectory, File jsonCompilationDatabaseFile, boolean cleanup) {
+    public Extraction extract(
+        ClangPackageManager currentPackageManager,
+        ClangPackageManagerRunner packageManagerRunner,
+        File sourceDirectory,
+        File outputDirectory,
+        File jsonCompilationDatabaseFile,
+        boolean cleanup
+    ) {
         try {
             logger.debug(String.format("Analyzing %s", jsonCompilationDatabaseFile.getAbsolutePath()));
             logger.debug(String.format("extract() called; compileCommandsJsonFilePath: %s", jsonCompilationDatabaseFile.getAbsolutePath()));
@@ -65,7 +72,10 @@ public class ClangExtractor {
             List<File> unrecognizedIncludeFiles = results.getUnRecognizedDependencyFiles().stream()
                 .filter(file -> !isFileUnderDir(sourceDirectory, file))
                 .collect(Collectors.toList());
-            logFileCollection(String.format("Unrecognized dependency files that are outside the compile_commands.json directory (%s) and will be collected", sourceDirectory), unrecognizedIncludeFiles);
+            logFileCollection(
+                String.format("Unrecognized dependency files that are outside the compile_commands.json directory (%s) and will be collected", sourceDirectory),
+                unrecognizedIncludeFiles
+            );
 
             return new Extraction.Builder()
                 .unrecognizedPaths(unrecognizedIncludeFiles)

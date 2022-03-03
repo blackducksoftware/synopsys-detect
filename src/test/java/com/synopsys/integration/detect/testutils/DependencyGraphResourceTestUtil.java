@@ -37,11 +37,13 @@ public class DependencyGraphResourceTestUtil {
         assertSet(expected.dependencySummaries.keySet(), actual.dependencySummaries.keySet(), "Dependencies in graph");
 
         Set<BdioId> expectedRelationshipIds = expected.externalDataIdRelationships.keySet();
-        Set<BdioId> expectedExistingRelationshipsIds = expectedRelationshipIds.stream().filter(key -> expected.externalDataIdRelationships.get(key) != null && expected.externalDataIdRelationships.get(key).size() > 0)
+        Set<BdioId> expectedExistingRelationshipsIds = expectedRelationshipIds.stream()
+            .filter(key -> expected.externalDataIdRelationships.get(key) != null && expected.externalDataIdRelationships.get(key).size() > 0)
             .collect(Collectors.toSet());
 
         Set<BdioId> actualRelationshipIds = actual.externalDataIdRelationships.keySet();
-        Set<BdioId> actualExistingRelationshipsIds = actualRelationshipIds.stream().filter(key -> actual.externalDataIdRelationships.get(key) != null && actual.externalDataIdRelationships.get(key).size() > 0)
+        Set<BdioId> actualExistingRelationshipsIds = actualRelationshipIds.stream()
+            .filter(key -> actual.externalDataIdRelationships.get(key) != null && actual.externalDataIdRelationships.get(key).size() > 0)
             .collect(Collectors.toSet());
 
         assertSet(expectedExistingRelationshipsIds, actualExistingRelationshipsIds, "Existing relationships");

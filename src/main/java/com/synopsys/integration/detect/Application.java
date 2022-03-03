@@ -37,8 +37,8 @@ import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.run.singleton.BootSingletons;
 import com.synopsys.integration.detect.lifecycle.shutdown.CleanupUtility;
+import com.synopsys.integration.detect.lifecycle.shutdown.ExceptionUtility;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeManager;
-import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeUtility;
 import com.synopsys.integration.detect.lifecycle.shutdown.ShutdownDecider;
 import com.synopsys.integration.detect.lifecycle.shutdown.ShutdownDecision;
 import com.synopsys.integration.detect.lifecycle.shutdown.ShutdownManager;
@@ -89,8 +89,8 @@ public class Application implements ApplicationRunner {
         EventSystem eventSystem = new EventSystem();
         DetectStatusManager statusManager = new DetectStatusManager(eventSystem);
 
-        ExitCodeUtility exitCodeUtility = new ExitCodeUtility();
-        ExitCodeManager exitCodeManager = new ExitCodeManager(eventSystem, exitCodeUtility);
+        ExceptionUtility exceptionUtility = new ExceptionUtility();
+        ExitCodeManager exitCodeManager = new ExitCodeManager(eventSystem, exceptionUtility);
         ExitManager exitManager = new ExitManager(eventSystem, exitCodeManager, statusManager);
 
         ReportListener.createDefault(eventSystem);
@@ -107,13 +107,23 @@ public class Application implements ApplicationRunner {
 
         boolean shouldForceSuccess = false;
 
-        Optional<DetectBootResult> detectBootResultOptional = bootApplication(detectRunId, applicationArguments.getSourceArgs(), eventSystem, exitCodeManager, gson, detectInfo, fileFinder, installedToolManager);
+        Optional<DetectBootResult> detectBootResultOptional = bootApplication(
+            detectRunId,
+            applicationArguments.getSourceArgs(),
+            eventSystem,
+            exitCodeManager,
+            gson,
+            detectInfo,
+            fileFinder,
+            installedToolManager,
+            exceptionUtility
+        );
 
         if (detectBootResultOptional.isPresent()) {
             DetectBootResult detectBootResult = detectBootResultOptional.get();
             shouldForceSuccess = detectBootResult.shouldForceSuccess();
 
-            runApplication(eventSystem, exitCodeManager, detectBootResult);
+            runApplication(eventSystem, exitCodeManager, detectBootResult, exceptionUtility);
 
             detectBootResult.getProductRunData()
                 .filter(ProductRunData::shouldUseBlackDuckProduct)
@@ -147,7 +157,8 @@ public class Application implements ApplicationRunner {
         Gson gson,
         DetectInfo detectInfo,
         FileFinder fileFinder,
-        InstalledToolManager installedToolManager
+        InstalledToolManager installedToolManager,
+        ExceptionUtility exceptionUtility
     ) {
         Optional<DetectBootResult> bootResult = Optional.empty();
         try {
@@ -165,18 +176,20 @@ public class Application implements ApplicationRunner {
         } catch (Exception e) {
             logger.error("Detect boot failed.");
             logger.error("");
+            exceptionUtility.logException(e);
             exitCodeManager.requestExitCode(e);
             logger.error("");
+            //TODO- should we return a DetectBootResult.exception(...) here?
         }
         return bootResult;
     }
 
-    private void runApplication(EventSystem eventSystem, ExitCodeManager exitCodeManager, DetectBootResult detectBootResult) {
+    private void runApplication(EventSystem eventSystem, ExitCodeManager exitCodeManager, DetectBootResult detectBootResult, ExceptionUtility exceptionUtility) {
         Optional<BootSingletons> optionalRunContext = detectBootResult.getBootSingletons();
         Optional<ProductRunData> optionalProductRunData = detectBootResult.getProductRunData();
         if (detectBootResult.getBootType() == DetectBootResult.BootType.RUN && optionalProductRunData.isPresent() && optionalRunContext.isPresent()) {
             logger.debug("Detect will attempt to run.");
-            DetectRun detectRun = new DetectRun(exitCodeManager);
+            DetectRun detectRun = new DetectRun(exitCodeManager, exceptionUtility);
             detectRun.run(optionalRunContext.get());
 
         } else {

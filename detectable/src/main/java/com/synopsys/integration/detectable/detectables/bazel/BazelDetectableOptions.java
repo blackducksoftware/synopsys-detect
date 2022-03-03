@@ -10,7 +10,12 @@ public class BazelDetectableOptions {
     private final Set<WorkspaceRule> workspaceRulesFromProperty;
     private final List<String> bazelCqueryAdditionalOptions;
 
-    public BazelDetectableOptions(String targetName, Set<WorkspaceRule> workspaceRulesFromDeprecatedProperty, Set<WorkspaceRule> workspaceRulesFromProperty, List<String> bazelCqueryAdditionalOptions) {
+    public BazelDetectableOptions(
+        String targetName,
+        Set<WorkspaceRule> workspaceRulesFromDeprecatedProperty,
+        Set<WorkspaceRule> workspaceRulesFromProperty,
+        List<String> bazelCqueryAdditionalOptions
+    ) {
         this.targetName = targetName;
         this.workspaceRulesFromDeprecatedProperty = workspaceRulesFromDeprecatedProperty;
         this.workspaceRulesFromProperty = workspaceRulesFromProperty;

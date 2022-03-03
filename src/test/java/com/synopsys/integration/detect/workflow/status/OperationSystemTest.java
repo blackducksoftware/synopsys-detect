@@ -89,7 +89,7 @@ public class OperationSystemTest {
         OperationSystem operationSystem = new OperationSystem(statusEventPublisher);
         String operationName = "myOperation";
         Operation operation = operationSystem.startOperation(operationName, OperationType.PUBLIC);
-        operation.error("Error");
+        operation.error(new Exception());
         operationSystem.publishOperations();
         Operation publishedOperation = detectOperations.get(0);
         assertOperationWithError(operationName, publishedOperation);
@@ -122,7 +122,7 @@ public class OperationSystemTest {
         OperationSystem operationSystem = new OperationSystem(statusEventPublisher);
         String operationName = "myOperation";
         Operation operation = operationSystem.startOperation(operationName, OperationType.PUBLIC);
-        operation.error("Unit test failure.");
+        operation.error(new Exception());
         operationSystem.publishOperations();
         Operation publishedOperation = detectOperations.get(0);
         assertOperationWithError(operationName, publishedOperation);
@@ -153,6 +153,6 @@ public class OperationSystemTest {
         assertEquals(StatusType.FAILURE, publishedOperation.getStatusType());
         assertNotNull(publishedOperation.getStartTime());
         assertTrue(publishedOperation.getEndTime().isPresent());
-        assertTrue(publishedOperation.getErrorMessages().length > 0);
+        assertNotNull(publishedOperation.getException());
     }
 }

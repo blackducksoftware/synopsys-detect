@@ -49,7 +49,14 @@ public class SignatureScannerReport {
         return new SignatureScannerReport(signatureScanPath, statusType, exitCode, exception, errorMessage, hasOutput);
     }
 
-    public SignatureScannerReport(SignatureScanPath signatureScanPath, StatusType statusType, @Nullable Integer exitCode, @Nullable Exception exception, @Nullable String errorMessage, boolean hasOutput) {
+    public SignatureScannerReport(
+        SignatureScanPath signatureScanPath,
+        StatusType statusType,
+        @Nullable Integer exitCode,
+        @Nullable Exception exception,
+        @Nullable String errorMessage,
+        boolean hasOutput
+    ) {
         this.signatureScanPath = signatureScanPath;
         this.statusType = statusType;
         this.exitCode = exitCode;

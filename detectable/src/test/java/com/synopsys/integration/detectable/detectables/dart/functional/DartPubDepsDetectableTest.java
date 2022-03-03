@@ -44,7 +44,8 @@ public class DartPubDepsDetectableTest extends DetectableFunctionalTest {
     }
 
     @Override
-    public @NotNull Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
+    @NotNull
+    public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
         class DartResolverTest implements DartResolver {
             @Override
             public ExecutableTarget resolveDart() throws DetectableException {

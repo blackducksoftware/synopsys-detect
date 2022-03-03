@@ -25,7 +25,8 @@ public class DotNetCoreNugetInspector implements NugetInspector {
     }
 
     @Override
-    public ExecutableOutput execute(File workingDirectory, File targetFile, File outputDirectory, NugetInspectorOptions nugetInspectorOptions) throws ExecutableRunnerException, IOException {
+    public ExecutableOutput execute(File workingDirectory, File targetFile, File outputDirectory, NugetInspectorOptions nugetInspectorOptions)
+        throws ExecutableRunnerException, IOException {
         List<String> dotnetArguments = new ArrayList<>();
         dotnetArguments.add(inspectorDll);
         dotnetArguments.addAll(NugetInspectorArguments.fromInspectorOptions(nugetInspectorOptions, targetFile, outputDirectory));

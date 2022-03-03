@@ -68,7 +68,12 @@ public class NpmLockfileGraphTransformer {
         return dependencyGraph;
     }
 
-    private void addRootDependencies(List<NpmDependency> resolvedDependencies, List<NpmRequires> requires, MutableDependencyGraph dependencyGraph, List<NameVersion> externalDependencies) {
+    private void addRootDependencies(
+        List<NpmDependency> resolvedDependencies,
+        List<NpmRequires> requires,
+        MutableDependencyGraph dependencyGraph,
+        List<NameVersion> externalDependencies
+    ) {
         for (NpmRequires dependency : requires) {
             Dependency resolved = lookupProjectOrExternal(dependency.getName(), resolvedDependencies, externalDependencies);
             if (resolved != null) {

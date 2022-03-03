@@ -23,7 +23,13 @@ public class CondaCliDetectable extends Detectable {
 
     private ExecutableTarget condaExe;
 
-    public CondaCliDetectable(DetectableEnvironment environment, FileFinder fileFinder, CondaResolver condaResolver, CondaCliExtractor condaExtractor, CondaCliDetectableOptions condaCliDetectableOptions) {
+    public CondaCliDetectable(
+        DetectableEnvironment environment,
+        FileFinder fileFinder,
+        CondaResolver condaResolver,
+        CondaCliExtractor condaExtractor,
+        CondaCliDetectableOptions condaCliDetectableOptions
+    ) {
         super(environment);
         this.fileFinder = fileFinder;
         this.condaResolver = condaResolver;
@@ -47,7 +53,12 @@ public class CondaCliDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
-        return condaExtractor.extract(environment.getDirectory(), condaExe, extractionEnvironment.getOutputDirectory(), condaCliDetectableOptions.getCondaEnvironmentName().orElse(""));
+        return condaExtractor.extract(
+            environment.getDirectory(),
+            condaExe,
+            extractionEnvironment.getOutputDirectory(),
+            condaCliDetectableOptions.getCondaEnvironmentName().orElse("")
+        );
     }
 
 }

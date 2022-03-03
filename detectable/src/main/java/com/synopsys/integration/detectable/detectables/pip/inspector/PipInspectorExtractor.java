@@ -30,7 +30,15 @@ public class PipInspectorExtractor {
         this.toolVersionLogger = toolVersionLogger;
     }
 
-    public Extraction extract(File directory, ExecutableTarget pythonExe, ExecutableTarget pipExe, File pipInspector, File setupFile, List<Path> requirementFilePaths, String providedProjectName) {
+    public Extraction extract(
+        File directory,
+        ExecutableTarget pythonExe,
+        ExecutableTarget pipExe,
+        File pipInspector,
+        File setupFile,
+        List<Path> requirementFilePaths,
+        String providedProjectName
+    ) {
         toolVersionLogger.log(directory, pythonExe);
         toolVersionLogger.log(directory, pipExe);
         Extraction extractionResult;
@@ -75,7 +83,8 @@ public class PipInspectorExtractor {
         return extractionResult;
     }
 
-    private List<String> runInspector(File sourceDirectory, ExecutableTarget pythonExe, File inspectorScript, String projectName, Path requirementsFilePath) throws ExecutableRunnerException {
+    private List<String> runInspector(File sourceDirectory, ExecutableTarget pythonExe, File inspectorScript, String projectName, Path requirementsFilePath)
+        throws ExecutableRunnerException {
         List<String> inspectorArguments = new ArrayList<>();
         inspectorArguments.add(inspectorScript.getAbsolutePath());
 

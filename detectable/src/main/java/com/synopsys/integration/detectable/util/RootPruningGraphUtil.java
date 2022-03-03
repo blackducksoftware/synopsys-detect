@@ -41,7 +41,11 @@ public class RootPruningGraphUtil {
         }
     }
 
-    private static boolean isDependencyInGraph(Dependency target, Set<Dependency> currentLevel, DependencyGraph graph) { //TODO: Should this method also detect cycles? The cycle test does not trigger it.
+    private static boolean isDependencyInGraph(
+        Dependency target,
+        Set<Dependency> currentLevel,
+        DependencyGraph graph
+    ) { //TODO: Should this method also detect cycles? The cycle test does not trigger it.
         for (Dependency currentLevelDependency : currentLevel) {
             Set<Dependency> children = graph.getChildrenForParent(currentLevelDependency);
             if (children.contains(target)) {

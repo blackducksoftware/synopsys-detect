@@ -18,7 +18,8 @@ import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Node JS", forge = "npmjs", requirementsMarkdown = "File: " + LernaDetectable.PACKAGE_JSON + ", and one of the following: " + LernaDetectable.PACKAGE_LOCK_JSON + ", " + LernaDetectable.SHRINKWRAP_JSON + ", "
+@DetectableInfo(language = "Node JS", forge = "npmjs", requirementsMarkdown = "File: " + LernaDetectable.PACKAGE_JSON + ", and one of the following: "
+    + LernaDetectable.PACKAGE_LOCK_JSON + ", " + LernaDetectable.SHRINKWRAP_JSON + ", "
     + LernaDetectable.YARN_LOCK + ".")
 public class LernaDetectable extends Detectable {
     public static final String LERNA_JSON = "lerna.json";

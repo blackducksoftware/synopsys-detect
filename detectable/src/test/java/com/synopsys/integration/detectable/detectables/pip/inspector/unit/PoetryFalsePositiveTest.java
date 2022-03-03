@@ -22,7 +22,12 @@ public class PoetryFalsePositiveTest {
         File currentDirectory = new File(System.getProperty("user.dir"));
         File pyprojectToml = new File(getClass().getClassLoader().getResource("detectables/unit/pip/poetry/false_positive_pyproject.toml").toURI());
         Mockito.when(fileFinder.findFile(currentDirectory, "pyproject.toml")).thenReturn(pyprojectToml);
-        PoetryDetectable poetryDetectable = new PoetryDetectable(new DetectableEnvironment(currentDirectory), fileFinder, new PoetryExtractor(new PoetryLockParser()), new ToolPoetrySectionParser());
+        PoetryDetectable poetryDetectable = new PoetryDetectable(
+            new DetectableEnvironment(currentDirectory),
+            fileFinder,
+            new PoetryExtractor(new PoetryLockParser()),
+            new ToolPoetrySectionParser()
+        );
         Assertions.assertFalse(poetryDetectable.applicable().getPassed());
     }
 }

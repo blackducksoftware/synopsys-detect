@@ -25,7 +25,8 @@ public class BlackDuckServerDecisionBranch implements DecisionTree {
     public static final String WOULD_YOU_LIKE_TO_AUTOMATICALLY_TRUST_CERTIFICATES = "Would you like to automatically trust certificates?";
     public static final String WHAT_IS_THE_BLACK_DUCK_SERVER_URL = "What is the Black Duck server url?";
     public static final String WARNING_PROXY_PASSWORD =
-        "WARNING: If you choose to save the settings, this password will be stored in plain text. You can set this password as an environment variable " + BLACKDUCK_PROXY_PASSWORD.getKeyAsEnvironmentVariable() + ".";
+        "WARNING: If you choose to save the settings, this password will be stored in plain text. You can set this password as an environment variable "
+            + BLACKDUCK_PROXY_PASSWORD.getKeyAsEnvironmentVariable() + ".";
 
     @Override
     public void traverse(InteractivePropertySourceBuilder propertySourceBuilder, InteractiveWriter writer) {

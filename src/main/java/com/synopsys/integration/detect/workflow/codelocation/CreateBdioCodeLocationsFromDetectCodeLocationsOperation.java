@@ -28,7 +28,13 @@ public class CreateBdioCodeLocationsFromDetectCodeLocationsOperation {
 
     public BdioCodeLocationResult transformDetectCodeLocations(List<DetectCodeLocation> detectCodeLocations, String prefix, String suffix, NameVersion projectNameVersion) {
         List<DetectCodeLocation> validDetectCodeLocations = findValidCodeLocations(detectCodeLocations);
-        Map<DetectCodeLocation, String> codeLocationsAndNames = createCodeLocationNameMap(validDetectCodeLocations, directoryManager.getSourceDirectory(), projectNameVersion, prefix, suffix);
+        Map<DetectCodeLocation, String> codeLocationsAndNames = createCodeLocationNameMap(
+            validDetectCodeLocations,
+            directoryManager.getSourceDirectory(),
+            projectNameVersion,
+            prefix,
+            suffix
+        );
 
         Map<String, List<DetectCodeLocation>> codeLocationsByName = separateCodeLocationsByName(codeLocationsAndNames);
 
@@ -37,10 +43,23 @@ public class CreateBdioCodeLocationsFromDetectCodeLocationsOperation {
         return new BdioCodeLocationResult(bdioCodeLocations, codeLocationsAndNames);
     }
 
-    private Map<DetectCodeLocation, String> createCodeLocationNameMap(List<DetectCodeLocation> codeLocations, File detectSourcePath, NameVersion projectNameVersion, String prefix, String suffix) {
+    private Map<DetectCodeLocation, String> createCodeLocationNameMap(
+        List<DetectCodeLocation> codeLocations,
+        File detectSourcePath,
+        NameVersion projectNameVersion,
+        String prefix,
+        String suffix
+    ) {
         Map<DetectCodeLocation, String> nameMap = new HashMap<>();
         for (DetectCodeLocation detectCodeLocation : codeLocations) {
-            String codeLocationName = codeLocationNameManager.createCodeLocationName(detectCodeLocation, detectSourcePath, projectNameVersion.getName(), projectNameVersion.getVersion(), prefix, suffix);
+            String codeLocationName = codeLocationNameManager.createCodeLocationName(
+                detectCodeLocation,
+                detectSourcePath,
+                projectNameVersion.getName(),
+                projectNameVersion.getVersion(),
+                prefix,
+                suffix
+            );
             nameMap.put(detectCodeLocation, codeLocationName);
         }
         return nameMap;

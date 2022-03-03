@@ -19,7 +19,13 @@ public class CreateAggregateCodeLocationOperation {
         this.codeLocationNameManager = codeLocationNameManager;
     }
 
-    public AggregateCodeLocation createAggregateCodeLocation(File bdioOutputDirectory, DependencyGraph aggregateDependencyGraph, NameVersion projectNameVersion, String aggregateName, String extension) {
+    public AggregateCodeLocation createAggregateCodeLocation(
+        File bdioOutputDirectory,
+        DependencyGraph aggregateDependencyGraph,
+        NameVersion projectNameVersion,
+        String aggregateName,
+        String extension
+    ) {
         ExternalId projectExternalId = externalIdFactory.createNameVersionExternalId(new Forge("/", "DETECT"), projectNameVersion.getName(), projectNameVersion.getVersion());
         String codeLocationName = codeLocationNameManager.createAggregateCodeLocationName(projectNameVersion);
 

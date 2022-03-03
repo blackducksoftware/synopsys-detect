@@ -68,7 +68,14 @@ public class DetectBoot {
     private final List<PropertySource> propertySources;
     private final InstalledToolManager installedToolManager;
 
-    public DetectBoot(EventSystem eventSystem, Gson gson, DetectBootFactory detectBootFactory, DetectArgumentState detectArgumentState, List<PropertySource> propertySources, InstalledToolManager installedToolManager) {
+    public DetectBoot(
+        EventSystem eventSystem,
+        Gson gson,
+        DetectBootFactory detectBootFactory,
+        DetectArgumentState detectArgumentState,
+        List<PropertySource> propertySources,
+        InstalledToolManager installedToolManager
+    ) {
         this.eventSystem = eventSystem;
         this.gson = gson;
         this.detectBootFactory = detectBootFactory;
@@ -80,7 +87,13 @@ public class DetectBoot {
     public Optional<DetectBootResult> boot(String detectVersion) throws IOException, IllegalAccessException {
         if (detectArgumentState.isHelp() || detectArgumentState.isDeprecatedHelp() || detectArgumentState.isVerboseHelp()) {
             HelpPrinter helpPrinter = new HelpPrinter();
-            helpPrinter.printAppropriateHelpMessage(DEFAULT_PRINT_STREAM, DetectProperties.allProperties().getProperties(), Arrays.asList(DetectGroup.values()), DetectGroup.BLACKDUCK_SERVER, detectArgumentState);
+            helpPrinter.printAppropriateHelpMessage(
+                DEFAULT_PRINT_STREAM,
+                DetectProperties.allProperties().getProperties(),
+                Arrays.asList(DetectGroup.values()),
+                DetectGroup.BLACKDUCK_SERVER,
+                detectArgumentState
+            );
             return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources)));
         }
 
@@ -131,7 +144,13 @@ public class DetectBoot {
         DiagnosticSystem diagnosticSystem = null;
         DiagnosticDecision diagnosticDecision = DiagnosticDecision.decide(detectArgumentState, propertyConfiguration);
         if (diagnosticDecision.shouldCreateDiagnosticSystem()) {
-            diagnosticSystem = detectBootFactory.createDiagnosticSystem(diagnosticDecision.isExtended(), propertyConfiguration, directoryManager, maskedRawPropertyValues, propertyKeys);
+            diagnosticSystem = detectBootFactory.createDiagnosticSystem(
+                diagnosticDecision.isExtended(),
+                propertyConfiguration,
+                directoryManager,
+                maskedRawPropertyValues,
+                propertyKeys
+            );
         }
 
         logger.debug("Main boot completed. Deciding what Detect should do.");
@@ -140,7 +159,13 @@ public class DetectBoot {
             try {
                 AirGapType airGapType = new AirGapTypeDecider().decide(detectArgumentState);
                 AirGapCreator airGapCreator = detectBootFactory
-                    .createAirGapCreator(detectConfigurationFactory.createConnectionDetails(), detectConfigurationFactory.createDetectExecutableOptions(), freemarkerConfiguration, installedToolManager, installedToolLocator);
+                    .createAirGapCreator(
+                        detectConfigurationFactory.createConnectionDetails(),
+                        detectConfigurationFactory.createDetectExecutableOptions(),
+                        freemarkerConfiguration,
+                        installedToolManager,
+                        installedToolLocator
+                    );
                 String gradleInspectorVersion = propertyConfiguration.getValueOrEmpty(DetectProperties.DETECT_GRADLE_INSPECTOR_VERSION)
                     .orElse(null);
 
@@ -189,14 +214,23 @@ public class DetectBoot {
         }
 
         BootSingletons bootSingletons = detectBootFactory
-            .createRunDependencies(productRunData, propertyConfiguration, detectableOptionFactory, detectConfigurationFactory, directoryManager, freemarkerConfiguration, installedToolManager,
+            .createRunDependencies(productRunData,
+                propertyConfiguration,
+                detectableOptionFactory,
+                detectConfigurationFactory,
+                directoryManager,
+                freemarkerConfiguration,
+                installedToolManager,
                 installedToolLocator
             );
         return Optional.of(DetectBootResult.run(bootSingletons, propertyConfiguration, productRunData, directoryManager, diagnosticSystem));
     }
 
     private SortedMap<String, String> collectMaskedRawPropertyValues(PropertyConfiguration propertyConfiguration) throws IllegalAccessException {
-        return new TreeMap<>(propertyConfiguration.getMaskedRawValueMap(new HashSet<>(DetectProperties.allProperties().getProperties()), DetectPropertyUtil.getPasswordsAndTokensPredicate()));
+        return new TreeMap<>(propertyConfiguration.getMaskedRawValueMap(
+            new HashSet<>(DetectProperties.allProperties().getProperties()),
+            DetectPropertyUtil.getPasswordsAndTokensPredicate()
+        ));
     }
 
     private void publishCollectedPropertyValues(Map<String, String> maskedRawPropertyValues) {

@@ -76,7 +76,8 @@ public class DockerDetectable extends Detectable {
             if (dockerDetectableOptions.isDockerPathRequired()) {
                 return new ExecutableNotFoundDetectableResult("docker");
             } else {
-                logger.debug("Docker executable not found, but it has been configured as not-required; proceeding with execution of Docker tool. Running in air-gap mode will not work without a Docker executable.");
+                logger.debug(
+                    "Docker executable not found, but it has been configured as not-required; proceeding with execution of Docker tool. Running in air-gap mode will not work without a Docker executable.");
             }
         } else {
             passedResultBuilder.foundExecutable(dockerExe);

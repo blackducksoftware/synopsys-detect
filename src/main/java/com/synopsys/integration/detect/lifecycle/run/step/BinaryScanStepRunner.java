@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
-import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
@@ -24,8 +24,12 @@ public class BinaryScanStepRunner {
         this.operationFactory = operationFactory;
     }
 
-    public Optional<CodeLocationCreationData<BinaryScanBatchOutput>> runBinaryScan(DockerTargetData dockerTargetData, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
-        throws DetectUserFriendlyException {
+    public Optional<CodeLocationCreationData<BinaryScanBatchOutput>> runBinaryScan(
+        DockerTargetData dockerTargetData,
+        NameVersion projectNameVersion,
+        BlackDuckRunData blackDuckRunData
+    )
+        throws OperationException {
         Optional<File> binaryScanFile = determineBinaryScanFileTarget(dockerTargetData);
         if (binaryScanFile.isPresent()) {
             return Optional.of(operationFactory.uploadBinaryScanFile(binaryScanFile.get(), projectNameVersion, blackDuckRunData));
@@ -34,14 +38,18 @@ public class BinaryScanStepRunner {
         }
     }
 
-    public Optional<File> determineBinaryScanFileTarget(DockerTargetData dockerTargetData) throws DetectUserFriendlyException {
+    public Optional<File> determineBinaryScanFileTarget(DockerTargetData dockerTargetData) throws OperationException {
         BinaryScanOptions binaryScanOptions = operationFactory.calculateBinaryScanOptions();
         File binaryUpload = null;
         if (binaryScanOptions.getSingleTargetFilePath().isPresent()) {
             logger.info("Binary upload will upload single file.");
             binaryUpload = binaryScanOptions.getSingleTargetFilePath().get().toFile();
         } else if (binaryScanOptions.getMultipleTargetFileNamePatterns().stream().anyMatch(StringUtils::isNotBlank)) {
-            Optional<File> multipleUploadTarget = operationFactory.searchForBinaryTargets(binaryScanOptions.getMultipleTargetFileNamePatterns(), binaryScanOptions.getSearchDepth(), binaryScanOptions.isFollowSymLinks());
+            Optional<File> multipleUploadTarget = operationFactory.searchForBinaryTargets(
+                binaryScanOptions.getMultipleTargetFileNamePatterns(),
+                binaryScanOptions.getSearchDepth(),
+                binaryScanOptions.isFollowSymLinks()
+            );
             if (multipleUploadTarget.isPresent()) {
                 binaryUpload = multipleUploadTarget.get();
             } else {
@@ -49,7 +57,8 @@ public class BinaryScanStepRunner {
             }
         } else if (dockerTargetData != null && dockerTargetData.getContainerFilesystem().isPresent()) {
             logger.info("Binary Scanner will upload docker container file system.");
-            binaryUpload = dockerTargetData.getContainerFilesystem().get();// Very important not to binary scan the same Docker output that we sig scanned (=codelocation name collision)
+            binaryUpload = dockerTargetData.getContainerFilesystem()
+                .get();// Very important not to binary scan the same Docker output that we sig scanned (=codelocation name collision)
         }
 
         if (binaryUpload == null) {

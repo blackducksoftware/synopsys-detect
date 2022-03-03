@@ -9,7 +9,7 @@ configurations {
 }
 
 dependencies {
-    airGap 'com.synopsys.integration:integration-common:24.2.1'
+    airGap 'com.synopsys.integration:integration-common:25.3.3'
 }
 
 task installDependencies(type: Copy) {

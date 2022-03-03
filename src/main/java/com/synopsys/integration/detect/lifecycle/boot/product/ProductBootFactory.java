@@ -30,7 +30,12 @@ public class ProductBootFactory {
     public PhoneHomeManager createPhoneHomeManager(BlackDuckServicesFactory blackDuckServicesFactory) {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         BlackDuckPhoneHomeHelper blackDuckPhoneHomeHelper = BlackDuckPhoneHomeHelper.createAsynchronousPhoneHomeHelper(blackDuckServicesFactory, executorService);
-        PhoneHomeManager phoneHomeManager = new OnlinePhoneHomeManager(detectConfigurationFactory.createPhoneHomeOptions().getPassthrough(), detectInfo, eventSystem, blackDuckPhoneHomeHelper);
+        PhoneHomeManager phoneHomeManager = new OnlinePhoneHomeManager(
+            detectConfigurationFactory.createPhoneHomeOptions().getPassthrough(),
+            detectInfo,
+            eventSystem,
+            blackDuckPhoneHomeHelper
+        );
         return phoneHomeManager;
     }
 

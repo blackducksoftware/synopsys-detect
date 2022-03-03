@@ -40,7 +40,8 @@ public class PnpmYamlTransformer {
         this.dependencyTypeFilter = dependencyTypeFilter;
     }
 
-    public CodeLocation generateCodeLocation(File sourcePath, PnpmLockYaml pnpmLockYaml, @Nullable NameVersion projectNameVersion, PnpmLinkedPackageResolver linkedPackageResolver) throws IntegrationException {
+    public CodeLocation generateCodeLocation(File sourcePath, PnpmLockYaml pnpmLockYaml, @Nullable NameVersion projectNameVersion, PnpmLinkedPackageResolver linkedPackageResolver)
+        throws IntegrationException {
         return generateCodeLocation(sourcePath, convertPnpmLockYamlToPnpmProjectPackage(pnpmLockYaml), null, projectNameVersion, pnpmLockYaml.packages, linkedPackageResolver);
     }
 
@@ -57,7 +58,11 @@ public class PnpmYamlTransformer {
         buildGraph(dependencyGraph, rootPackageIds, packageMap, linkedPackageResolver, reportingProjectPackagePath);
 
         if (projectNameVersion != null) {
-            return new CodeLocation(dependencyGraph, externalIdFactory.createNameVersionExternalId(Forge.NPMJS, projectNameVersion.getName(), projectNameVersion.getVersion()), sourcePath);
+            return new CodeLocation(
+                dependencyGraph,
+                externalIdFactory.createNameVersionExternalId(Forge.NPMJS, projectNameVersion.getName(), projectNameVersion.getVersion()),
+                sourcePath
+            );
         }
         return new CodeLocation(dependencyGraph, sourcePath);
     }
@@ -105,7 +110,11 @@ public class PnpmYamlTransformer {
         return pnpmProjectPackage;
     }
 
-    private List<String> extractRootPackageIds(PnpmProjectPackage pnpmProjectPackage, @Nullable String reportingProjectPackagePath, PnpmLinkedPackageResolver linkedPackageResolver) {
+    private List<String> extractRootPackageIds(
+        PnpmProjectPackage pnpmProjectPackage,
+        @Nullable String reportingProjectPackagePath,
+        PnpmLinkedPackageResolver linkedPackageResolver
+    ) {
         Map<String, String> rawPackageInfo = new HashMap<>();
         dependencyTypeFilter.ifShouldInclude(PnpmDependencyType.APP, pnpmProjectPackage.dependencies, rawPackageInfo::putAll);
         dependencyTypeFilter.ifShouldInclude(PnpmDependencyType.DEV, pnpmProjectPackage.devDependencies, rawPackageInfo::putAll);

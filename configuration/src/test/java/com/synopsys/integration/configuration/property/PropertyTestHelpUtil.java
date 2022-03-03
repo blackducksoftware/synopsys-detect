@@ -62,7 +62,12 @@ public class PropertyTestHelpUtil {
         assertHasTypeDescription(property);
         Assertions.assertTrue(
             property.describeType().startsWith(NULLABLE_TYPE_DESCRIPTION_PREFIX),
-            String.format("%s is a %s so its type description should start with '%s'.", property.getClass().getSimpleName(), NullableProperty.class.getSimpleName(), NULLABLE_TYPE_DESCRIPTION_PREFIX)
+            String.format(
+                "%s is a %s so its type description should start with '%s'.",
+                property.getClass().getSimpleName(),
+                NullableProperty.class.getSimpleName(),
+                NULLABLE_TYPE_DESCRIPTION_PREFIX
+            )
         );
     }
 
@@ -70,7 +75,12 @@ public class PropertyTestHelpUtil {
         assertHasTypeDescription(property);
         Assertions.assertFalse(
             property.describeType().startsWith(NULLABLE_TYPE_DESCRIPTION_PREFIX),
-            String.format("%s is a %s so its type description should not start with '%s'.", property.getClass().getSimpleName(), ValuedProperty.class.getSimpleName(), NULLABLE_TYPE_DESCRIPTION_PREFIX)
+            String.format(
+                "%s is a %s so its type description should not start with '%s'.",
+                property.getClass().getSimpleName(),
+                ValuedProperty.class.getSimpleName(),
+                NULLABLE_TYPE_DESCRIPTION_PREFIX
+            )
         );
     }
 
@@ -78,7 +88,12 @@ public class PropertyTestHelpUtil {
         assertHasTypeDescription(property);
         Assertions.assertTrue(
             property.describeType().endsWith(VALUED_TYPE_DESCRIPTION_POSTFIX),
-            String.format("%s is a %s so its type description should end with '%s'.", property.getClass().getSimpleName(), ValuedListProperty.class.getSimpleName(), VALUED_TYPE_DESCRIPTION_POSTFIX)
+            String.format(
+                "%s is a %s so its type description should end with '%s'.",
+                property.getClass().getSimpleName(),
+                ValuedListProperty.class.getSimpleName(),
+                VALUED_TYPE_DESCRIPTION_POSTFIX
+            )
         );
     }
 
@@ -88,23 +103,45 @@ public class PropertyTestHelpUtil {
 
     public static <T, V> void assertHasExampleValues(TypedProperty<T, V> property, @Nullable List<String> expectedExampleValues) {
         if (expectedExampleValues != null) {
-            Assertions.assertNotNull(property.listExampleValues(), String.format("A %s property has a limited number of values that should be described.", property.describeType()));
+            Assertions.assertNotNull(
+                property.listExampleValues(),
+                String.format("A %s property has a limited number of values that should be described.", property.describeType())
+            );
             //Ideally would use a CollectionUtils.areEqual but this gets us close enough.
-            Assertions.assertEquals(expectedExampleValues.size(), property.listExampleValues().size(), String.format("The %s provided unexpected example values.", property.getClass().getSimpleName()));
-            Assertions.assertTrue(CollectionUtils.containsAll(expectedExampleValues, property.listExampleValues()), String.format("The %s provided unexpected example values.", property.getClass().getSimpleName()));
-            Assertions.assertTrue(CollectionUtils.containsAll(property.listExampleValues(), expectedExampleValues), String.format("The %s provided unexpected example values.", property.getClass().getSimpleName()));
+            Assertions.assertEquals(
+                expectedExampleValues.size(),
+                property.listExampleValues().size(),
+                String.format("The %s provided unexpected example values.", property.getClass().getSimpleName())
+            );
+            Assertions.assertTrue(
+                CollectionUtils.containsAll(expectedExampleValues, property.listExampleValues()),
+                String.format("The %s provided unexpected example values.", property.getClass().getSimpleName())
+            );
+            Assertions.assertTrue(
+                CollectionUtils.containsAll(property.listExampleValues(), expectedExampleValues),
+                String.format("The %s provided unexpected example values.", property.getClass().getSimpleName())
+            );
         }
     }
 
     private static <T, V> void assertHasExampleValues(ValuedListProperty<T, V> property, @Nullable List<String> expectedExampleValues) {
         if (expectedExampleValues != null) {
-            Assertions.assertNotNull(property.listExampleValues(), String.format("A %s property has a limited number of values that should be described.", property.describeType()));
-            Assertions.assertTrue(CollectionUtils.containsAll(expectedExampleValues, property.listExampleValues()), String.format("The %s provided unexpected example values.", property.getClass().getSimpleName()));
+            Assertions.assertNotNull(
+                property.listExampleValues(),
+                String.format("A %s property has a limited number of values that should be described.", property.describeType())
+            );
+            Assertions.assertTrue(
+                CollectionUtils.containsAll(expectedExampleValues, property.listExampleValues()),
+                String.format("The %s provided unexpected example values.", property.getClass().getSimpleName())
+            );
         }
     }
 
     public static <T, V> void assertHasDefaultDescription(ValuedProperty<T, V> property) {
-        Assertions.assertNotNull(property.describeDefault(), String.format("%s is a non-null typed property and should describe its default value.", property.getClass().getSimpleName()));
+        Assertions.assertNotNull(
+            property.describeDefault(),
+            String.format("%s is a non-null typed property and should describe its default value.", property.getClass().getSimpleName())
+        );
     }
 
     //#endregion Advanced Usage

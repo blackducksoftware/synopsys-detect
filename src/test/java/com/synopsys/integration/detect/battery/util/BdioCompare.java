@@ -100,7 +100,8 @@ public class BdioCompare {
                     for (String difference : differenceRelated) {
                         if (expectedNode.relatedIds.contains(difference)) {
                             issues.add(new BdioIssue(
-                                "There was a missing relationship (in expected but not actual) in the component " + expectedNode.toDescription() + " to the component " + firstComponent(difference, expected, actual).toDescription() + "."));
+                                "There was a missing relationship (in expected but not actual) in the component " + expectedNode.toDescription() + " to the component "
+                                    + firstComponent(difference, expected, actual).toDescription() + "."));
                         } else if (actualNode.relatedIds.contains(difference)) {
                             issues.add(new BdioIssue(
                                 "There was an additional relationship (in actual but not in expected) in the " +

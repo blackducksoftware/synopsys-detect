@@ -33,7 +33,8 @@ public class GradleRunner {
         return arguments;
     }
 
-    public void runGradleDependencies(File directory, ExecutableTarget gradleExe, File gradleInspector, @Nullable String gradleCommand, ProxyInfo proxyInfo, File outputDirectory) throws IOException, ExecutableFailedException {
+    public void runGradleDependencies(File directory, ExecutableTarget gradleExe, File gradleInspector, @Nullable String gradleCommand, ProxyInfo proxyInfo, File outputDirectory)
+        throws IOException, ExecutableFailedException {
         List<String> arguments = splitUserArguments(gradleCommand);
         // this gradle task is defined in the init script
         arguments.add("gatherDependencies");

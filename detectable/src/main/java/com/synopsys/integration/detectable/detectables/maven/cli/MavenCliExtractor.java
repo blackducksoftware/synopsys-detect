@@ -53,7 +53,14 @@ public class MavenCliExtractor {
         List<String> includedScopes = mavenCliExtractorOptions.getMavenIncludedScopes();
         List<String> excludedModules = mavenCliExtractorOptions.getMavenExcludedModules();
         List<String> includedModules = mavenCliExtractorOptions.getMavenIncludedModules();
-        List<MavenParseResult> mavenResults = mavenCodeLocationPackager.extractCodeLocations(directory.toString(), mavenOutput, excludedScopes, includedScopes, excludedModules, includedModules);
+        List<MavenParseResult> mavenResults = mavenCodeLocationPackager.extractCodeLocations(
+            directory.toString(),
+            mavenOutput,
+            excludedScopes,
+            includedScopes,
+            excludedModules,
+            includedModules
+        );
 
         List<CodeLocation> codeLocations = Bds.of(mavenResults)
             .map(MavenParseResult::getCodeLocation)

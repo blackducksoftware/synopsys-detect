@@ -69,12 +69,19 @@ public class ConanCodeLocationGenerator {
     }
 
     @NotNull
-    private CodeLocation generateCodeLocationFromConanGraph(ExternalIdFactory externalIdFactory, MutableMapDependencyGraph dependencyGraph, ConanGraphNode rootNode) throws DetectableException {
+    private CodeLocation generateCodeLocationFromConanGraph(ExternalIdFactory externalIdFactory, MutableMapDependencyGraph dependencyGraph, ConanGraphNode rootNode)
+        throws DetectableException {
         addNodeChildrenUnderNode(externalIdFactory, dependencyGraph, 0, rootNode, null);
         return new CodeLocation(dependencyGraph);
     }
 
-    private void addNodeChildrenUnderNode(ExternalIdFactory externalIdFactory, MutableMapDependencyGraph dependencyGraph, int depth, ConanGraphNode currentNode, Dependency currentDep) throws DetectableException {
+    private void addNodeChildrenUnderNode(
+        ExternalIdFactory externalIdFactory,
+        MutableMapDependencyGraph dependencyGraph,
+        int depth,
+        ConanGraphNode currentNode,
+        Dependency currentDep
+    ) throws DetectableException {
         Consumer<Dependency> childAdder;
         if (depth == 0) {
             childAdder = dependencyGraph::addChildToRoot;

@@ -46,7 +46,13 @@ public class ClangPackageDetailsTransformer {
         for (Forge forge : forges) {
             ExternalId extId = externalIdFactory.createArchitectureExternalId(forge, name, version, arch);
             Dependency dep = new Dependency(name, version, extId);
-            logger.debug(String.format("forge: %s: adding %s version %s as child to dependency node tree; externalId: %s", forge.getName(), dep.getName(), dep.getVersion(), dep.getExternalId().createBdioId()));
+            logger.debug(String.format(
+                "forge: %s: adding %s version %s as child to dependency node tree; externalId: %s",
+                forge.getName(),
+                dep.getName(),
+                dep.getVersion(),
+                dep.getExternalId().createBdioId()
+            ));
             dependencies.add(dep);
         }
         return dependencies;

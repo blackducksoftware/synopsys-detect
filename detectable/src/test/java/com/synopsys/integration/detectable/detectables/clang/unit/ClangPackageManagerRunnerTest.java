@@ -179,7 +179,8 @@ public class ClangPackageManagerRunnerTest {
             }
             String pkgMgrGetDetailsQueryFileOutput = String.format(pkgMgrDetailsQueryResultPattern, dependencyFile);
             ExecutableOutput pkgMgrGetDetailsQueryFileResult = new ExecutableOutput(0, pkgMgrGetDetailsQueryFileOutput, "");
-            Mockito.when(executableRunner.execute(workingDirectory, packageManagerInfo.getPkgMgrCmdString(), fileSpecificGetDetailsArgs)).thenReturn(pkgMgrGetDetailsQueryFileResult);
+            Mockito.when(executableRunner.execute(workingDirectory, packageManagerInfo.getPkgMgrCmdString(), fileSpecificGetDetailsArgs))
+                .thenReturn(pkgMgrGetDetailsQueryFileResult);
         }
 
         String pkgMgrGetOwnerQueryFileOutput = String.format(pkgMgrOwnerQueryResultPattern, dependencyFile.getAbsolutePath());

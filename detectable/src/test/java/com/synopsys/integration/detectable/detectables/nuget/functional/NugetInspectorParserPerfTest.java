@@ -43,7 +43,12 @@ public class NugetInspectorParserPerfTest {
             BdioNodeFactory bdioNodeFactory = new BdioNodeFactory(bdioPropertyHelper);
             DependencyGraphTransformer dependencyGraphTransformer = new DependencyGraphTransformer(bdioPropertyHelper, bdioNodeFactory);
 
-            BdioProject bdioNode = bdioNodeFactory.createProject("test", "1.0.0", BdioId.createFromPieces("bdioId"), externalIdFactory.createMavenExternalId("group", "name", "version"));
+            BdioProject bdioNode = bdioNodeFactory.createProject(
+                "test",
+                "1.0.0",
+                BdioId.createFromPieces("bdioId"),
+                externalIdFactory.createMavenExternalId("group", "name", "version")
+            );
 
             List<BdioComponent> components = dependencyGraphTransformer
                 .transformDependencyGraph(codeLocation.getDependencyGraph(), bdioNode, codeLocation.getDependencyGraph().getRootDependencies(), new HashMap<>());
