@@ -22,7 +22,9 @@ import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationExceptio
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.DataService;
 import com.synopsys.integration.blackduck.service.request.BlackDuckRequestBuilderEditor;
+import com.synopsys.integration.detect.configuration.enumeration.RapidCompareMode;
 import com.synopsys.integration.detect.util.DetectZipUtil;
+import com.synopsys.integration.detect.workflow.blackduck.developer.RapidScanOptions;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.rest.HttpUrl;
@@ -46,16 +48,18 @@ public class RapidScanUploadService extends DataService {
         this.bdio2Uploader = bdio2Uploader;
     }
 
-    public HttpUrl uploadFile(File workingDirectory, UploadTarget uploadTarget, @Nullable File rapidScanConfig) throws IntegrationException, IOException {
+    public HttpUrl uploadFile(File workingDirectory, UploadTarget uploadTarget, RapidScanOptions rapidScanOptions, @Nullable File rapidScanConfig)
+        throws IntegrationException, IOException {
         logger.debug(String.format("Uploading BDIO file %s", uploadTarget.getUploadFile()));
         List<BdioFileContent> bdioFileContentList = bdio2Extractor.extractContent(uploadTarget.getUploadFile());
         NameVersion projectNameVersion = uploadTarget.getProjectAndVersion().orElse(null);
-        return uploadFiles(uploadTarget, bdioFileContentList, projectNameVersion, rapidScanConfig, workingDirectory);
+        return uploadFiles(uploadTarget, bdioFileContentList, rapidScanOptions, projectNameVersion, rapidScanConfig, workingDirectory);
     }
 
     private HttpUrl uploadFiles(
         UploadTarget uploadTarget,
         List<BdioFileContent> bdioFiles,
+        RapidScanOptions rapidScanOptions,
         @Nullable NameVersion nameVersion,
         @Nullable File rapidScanConfig,
         @Nullable File rapidScanWorkingDirectory
@@ -75,14 +79,14 @@ public class RapidScanUploadService extends DataService {
         int count = remainingFiles.size();
         logger.debug("BDIO upload file count = " + count);
 
-        BlackDuckRequestBuilderEditor editor = noOp -> {};
-        if (nameVersion != null) {
-            editor = builder -> {
+        BlackDuckRequestBuilderEditor editor = builder -> {
+            builder.addHeader(RapidCompareMode.HEADER_NAME, rapidScanOptions.getCompareMode().getHeaderValue());
+            if (nameVersion != null) {
                 builder
                     .addHeader(Bdio2StreamUploader.PROJECT_NAME_HEADER, nameVersion.getName())
                     .addHeader(Bdio2StreamUploader.VERSION_NAME_HEADER, nameVersion.getVersion());
-            };
-        }
+            }
+        };
 
         HttpUrl url;
         if (rapidScanConfig != null) {

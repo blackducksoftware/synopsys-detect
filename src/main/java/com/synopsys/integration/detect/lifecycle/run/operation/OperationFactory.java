@@ -120,6 +120,7 @@ import com.synopsys.integration.detect.workflow.blackduck.developer.RapidModeLog
 import com.synopsys.integration.detect.workflow.blackduck.developer.RapidModeUploadOperation;
 import com.synopsys.integration.detect.workflow.blackduck.developer.RapidModeWaitOperation;
 import com.synopsys.integration.detect.workflow.blackduck.developer.RapidScanDetectResult;
+import com.synopsys.integration.detect.workflow.blackduck.developer.RapidScanOptions;
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultAggregator;
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultSummary;
 import com.synopsys.integration.detect.workflow.blackduck.developer.blackduck.DetectRapidScanService;
@@ -285,7 +286,8 @@ public class OperationFactory { //TODO: OperationRunner
             DetectorToolOptions detectorToolOptions = detectConfigurationFactory.createDetectorToolOptions();
             DetectorRuleFactory detectorRuleFactory = new DetectorRuleFactory();
             DetectorRuleSet detectRuleSet = detectorRuleFactory.createRules(detectDetectableFactory, detectorToolOptions.isBuildless());
-            DetectorTool detectorTool = new DetectorTool(new DetectorFinder(),
+            DetectorTool detectorTool = new DetectorTool(
+                new DetectorFinder(),
                 extractionEnvironmentProvider,
                 eventSystem,
                 codeLocationConverter,
@@ -308,7 +310,13 @@ public class OperationFactory { //TODO: OperationRunner
     public final List<HttpUrl> performRapidUpload(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, @Nullable File rapidScanConfig) throws OperationException {
         return auditLog.namedInternal("Rapid Upload", () -> {
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
-            return new RapidModeUploadOperation(DetectRapidScanService.fromBlackDuckServicesFactory(directoryManager, blackDuckServicesFactory)).run(bdioResult, rapidScanConfig);
+            RapidScanOptions rapidScanOptions = detectConfigurationFactory.createRapidScanOptions();
+            RapidModeUploadOperation operation = new RapidModeUploadOperation(DetectRapidScanService.fromBlackDuckServicesFactory(directoryManager, blackDuckServicesFactory));
+            return operation.run(
+                bdioResult,
+                rapidScanOptions,
+                rapidScanConfig
+            );
         });
     }
 
@@ -448,7 +456,8 @@ public class OperationFactory { //TODO: OperationRunner
         return auditLog.namedPublic("Create Risk Report File", "RiskReport", () -> {
             DetectFontLoader detectFontLoader = detectFontLoaderFactory.detectFontLoader();
             ReportService reportService = creatReportService(blackDuckRunData);
-            File createdPdf = reportService.createReportPdfFile(reportDirectory,
+            File createdPdf = reportService.createReportPdfFile(
+                reportDirectory,
                 projectVersionWrapper.getProjectView(),
                 projectVersionWrapper.getProjectVersionView(),
                 detectFontLoader::loadFont,

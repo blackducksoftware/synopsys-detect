@@ -33,6 +33,7 @@ import com.synopsys.integration.detect.configuration.enumeration.DefaultSignatur
 import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.configuration.enumeration.RapidCompareMode;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.RunDecision;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions;
@@ -48,6 +49,7 @@ import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
+import com.synopsys.integration.detect.workflow.blackduck.developer.RapidScanOptions;
 import com.synopsys.integration.detect.workflow.blackduck.project.customfields.CustomFieldDocument;
 import com.synopsys.integration.detect.workflow.blackduck.project.options.FindCloneOptions;
 import com.synopsys.integration.detect.workflow.blackduck.project.options.ParentProjectMapOptions;
@@ -201,6 +203,11 @@ public class DetectConfigurationFactory {
         String aggregateFileName = detectConfiguration.getNullableValue(DetectProperties.DETECT_BDIO_FILE_NAME);
 
         return new AggregateOptions(aggregateName, aggregateMode, aggregateFileName);
+    }
+
+    public RapidScanOptions createRapidScanOptions() {
+        RapidCompareMode rapidCompareMode = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_RAPID_COMPARE_MODE);
+        return new RapidScanOptions(rapidCompareMode);
     }
 
     public BlackduckScanMode createScanMode() {
