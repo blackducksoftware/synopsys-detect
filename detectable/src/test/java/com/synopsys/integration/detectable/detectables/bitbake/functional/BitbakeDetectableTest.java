@@ -76,6 +76,13 @@ public class BitbakeDetectableTest extends DetectableFunctionalTest {
             "-c",
             "source " + getSourceDirectory().toFile().getCanonicalPath() + File.separator + "oe-init-build-env; " + "bitbake-layers show-recipes"
         );
+
+        addExecutableOutput(
+            createStandardOutput(getSourceDirectory().toFile().getAbsolutePath()),
+            "bash",
+            "-c",
+            "source " + getSourceDirectory().toFile().getCanonicalPath() + File.separator + "oe-init-build-env; " + "pwd"
+        );
     }
 
     @NotNull

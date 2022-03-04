@@ -23,6 +23,7 @@ public class BitbakeDetectable extends Detectable {
     private final BitbakeDetectableOptions bitbakeDetectableOptions;
     private final FileFinder fileFinder;
     private final BitbakeExtractor bitbakeExtractor;
+    private final BitbakeExtractorV2 bitbakeExtractorV2;
     private final BashResolver bashResolver;
 
     private File foundBuildEnvScript;
@@ -33,12 +34,13 @@ public class BitbakeDetectable extends Detectable {
         FileFinder fileFinder,
         BitbakeDetectableOptions bitbakeDetectableOptions,
         BitbakeExtractor bitbakeExtractor,
-        BashResolver bashResolver
+        BitbakeExtractorV2 bitbakeExtractorV2, BashResolver bashResolver
     ) {
         super(detectableEnvironment);
         this.fileFinder = fileFinder;
         this.bitbakeDetectableOptions = bitbakeDetectableOptions;
         this.bitbakeExtractor = bitbakeExtractor;
+        this.bitbakeExtractorV2 = bitbakeExtractorV2;
         this.bashResolver = bashResolver;
     }
 
@@ -65,6 +67,8 @@ public class BitbakeDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException, IOException {
+        //        return bitbakeExtractorV2.extract(environment.getDirectory(), bashExe, foundBuildEnvScript);
+
         return bitbakeExtractor.extract(
             environment.getDirectory(),
             foundBuildEnvScript,

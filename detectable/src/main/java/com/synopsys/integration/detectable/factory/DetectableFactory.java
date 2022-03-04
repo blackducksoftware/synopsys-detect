@@ -51,11 +51,14 @@ import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.Haske
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeExtractor;
+import com.synopsys.integration.detectable.detectables.bitbake.BitbakeExtractorV2;
+import com.synopsys.integration.detectable.detectables.bitbake.collect.BitbakeCommandRunner;
 import com.synopsys.integration.detectable.detectables.bitbake.collect.BuildFileFinder;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeEnvironmentParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphNodeLabelParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.LicenseManifestParser;
+import com.synopsys.integration.detectable.detectables.bitbake.parse.PwdOutputParser;
 import com.synopsys.integration.detectable.detectables.bitbake.transform.BitbakeGraphTransformer;
 import com.synopsys.integration.detectable.detectables.bitbake.transform.GraphParserTransformer;
 import com.synopsys.integration.detectable.detectables.cargo.CargoDetectable;
@@ -320,7 +323,20 @@ public class DetectableFactory {
             new LicenseManifestParser(),
             new BitbakeEnvironmentParser()
         );
-        return new BitbakeDetectable(environment, fileFinder, bitbakeDetectableOptions, bitbakeExtractor, bashResolver);
+        BitbakeExtractorV2 bitbakeExtractorV2 = new BitbakeExtractorV2(
+            toolVersionLogger,
+            new BitbakeCommandRunner(executableRunner, bitbakeDetectableOptions.getSourceArguments()),
+            new BuildFileFinder(fileFinder, bitbakeDetectableOptions.isFollowSymLinks(), bitbakeDetectableOptions.getSearchDepth()),
+            new PwdOutputParser(),
+            new BitbakeEnvironmentParser(),
+            new BitbakeRecipesParser(),
+            new LicenseManifestParser(),
+            new GraphParserTransformer(new GraphNodeLabelParser()),
+            new BitbakeGraphTransformer(externalIdFactory, bitbakeDetectableOptions.getDependencyTypeFilter()),
+            bitbakeDetectableOptions.getPackageNames(),
+            bitbakeDetectableOptions.getDependencyTypeFilter()
+        );
+        return new BitbakeDetectable(environment, fileFinder, bitbakeDetectableOptions, bitbakeExtractor, bitbakeExtractorV2, bashResolver);
     }
 
     public CargoDetectable createCargoDetectable(DetectableEnvironment environment) {
