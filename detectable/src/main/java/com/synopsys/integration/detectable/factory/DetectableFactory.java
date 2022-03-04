@@ -316,7 +316,7 @@ public class DetectableFactory {
             new BitbakeGraphTransformer(externalIdFactory, bitbakeDetectableOptions.getDependencyTypeFilter()),
             new BitbakeRecipesParser(),
             toolVersionLogger,
-            new BuildFileFinder(fileFinder),
+            new BuildFileFinder(fileFinder, bitbakeDetectableOptions.isFollowSymLinks(), bitbakeDetectableOptions.getSearchDepth()),
             new LicenseManifestParser(),
             new BitbakeEnvironmentParser()
         );

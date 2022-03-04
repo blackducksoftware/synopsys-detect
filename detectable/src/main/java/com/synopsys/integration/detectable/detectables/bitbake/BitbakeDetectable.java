@@ -70,8 +70,6 @@ public class BitbakeDetectable extends Detectable {
             foundBuildEnvScript,
             bitbakeDetectableOptions.getSourceArguments(),
             bitbakeDetectableOptions.getPackageNames(),
-            bitbakeDetectableOptions.isFollowSymLinks(),
-            bitbakeDetectableOptions.getSearchDepth(),
             bitbakeDetectableOptions.getDependencyTypeFilter(),
             bashExe
         );

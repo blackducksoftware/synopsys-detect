@@ -18,11 +18,11 @@ class BuildFileFinderTest {
 
     @Test
     void testDefault() {
-        BuildFileFinder finder = new BuildFileFinder(new SimpleFileFinder());
+        BuildFileFinder finder = new BuildFileFinder(new SimpleFileFinder(), true, 10);
         File buildDir = FunctionalTestFiles.asFile("/bitbake/builddir_default");
         BitbakeEnvironment bitbakeEnvironment = new BitbakeEnvironment(null, null);
 
-        Optional<File> licensesManifestFile = finder.findLicenseManifestFile(buildDir, "targetimage", bitbakeEnvironment, true, 10);
+        Optional<File> licensesManifestFile = finder.findLicenseManifestFile(buildDir, "targetimage", bitbakeEnvironment);
 
         assertTrue(licensesManifestFile.isPresent());
         assertTrue(licensesManifestFile.get().isFile());
@@ -30,11 +30,11 @@ class BuildFileFinderTest {
 
     @Test
     void testCustomLicensesDirLocation() {
-        BuildFileFinder finder = new BuildFileFinder(new SimpleFileFinder());
+        BuildFileFinder finder = new BuildFileFinder(new SimpleFileFinder(), true, 10);
         File buildDir = FunctionalTestFiles.asFile("/bitbake/builddir_custom");
         BitbakeEnvironment bitbakeEnvironment = new BitbakeEnvironment(null, null);
 
-        Optional<File> licensesManifestFile = finder.findLicenseManifestFile(buildDir, "targetimage", bitbakeEnvironment, true, 10);
+        Optional<File> licensesManifestFile = finder.findLicenseManifestFile(buildDir, "targetimage", bitbakeEnvironment);
 
         assertTrue(licensesManifestFile.isPresent());
         assertTrue(licensesManifestFile.get().isFile());
@@ -42,11 +42,11 @@ class BuildFileFinderTest {
 
     @Test
     void testArchSpecificLicensesDir() {
-        BuildFileFinder finder = new BuildFileFinder(new SimpleFileFinder());
+        BuildFileFinder finder = new BuildFileFinder(new SimpleFileFinder(), true, 10);
         File buildDir = FunctionalTestFiles.asFile("/bitbake/builddir_arch");
         BitbakeEnvironment bitbakeEnvironment = new BitbakeEnvironment("testarch", null);
 
-        Optional<File> licensesManifestFile = finder.findLicenseManifestFile(buildDir, "targetimage", bitbakeEnvironment, true, 10);
+        Optional<File> licensesManifestFile = finder.findLicenseManifestFile(buildDir, "targetimage", bitbakeEnvironment);
 
         assertTrue(licensesManifestFile.isPresent());
         assertTrue(licensesManifestFile.get().isFile());

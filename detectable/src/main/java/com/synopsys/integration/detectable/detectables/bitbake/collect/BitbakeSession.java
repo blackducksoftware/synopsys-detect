@@ -62,13 +62,11 @@ public class BitbakeSession {
 
     public File executeBitbakeForDependencies(
         File buildDir,
-        String packageName,
-        boolean followSymLinks,
-        Integer searchDepth
+        String packageName
     ) throws IOException, IntegrationException, ExecutableFailedException {
         String bitbakeCommand = BITBAKE_DEPENDENCIES_COMMAND_BASE + packageName;
         runBitbake(bitbakeCommand);
-        return buildFileFinder.findTaskDependsFile(sourceDir, buildDir, followSymLinks, searchDepth);
+        return buildFileFinder.findTaskDependsFile(sourceDir, buildDir);
     }
 
     public void logBitbakeVersion() {
