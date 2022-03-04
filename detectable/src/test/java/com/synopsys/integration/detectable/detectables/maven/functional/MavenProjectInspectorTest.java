@@ -72,7 +72,12 @@ public class MavenProjectInspectorTest extends DetectableFunctionalTest {
     @NotNull
     @Override
     public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
-        return detectableFactory.createMavenProjectInspectorDetectable(detectableEnvironment, () -> ExecutableTarget.forFile(new File("inspector")), new MavenParseOptions(false, false), new ProjectInspectorOptions(null));
+        return detectableFactory.createMavenProjectInspectorDetectable(
+            detectableEnvironment,
+            () -> ExecutableTarget.forFile(new File("inspector")),
+            new MavenParseOptions(false, false),
+            new ProjectInspectorOptions(null)
+        );
     }
 
     @Override

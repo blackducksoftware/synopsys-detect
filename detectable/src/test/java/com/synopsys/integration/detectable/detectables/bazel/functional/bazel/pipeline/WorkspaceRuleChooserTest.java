@@ -69,7 +69,8 @@ class WorkspaceRuleChooserTest {
         assertEquals(3, chosenWorkspaceRules.size());
     }
 
-    private Set<WorkspaceRule> run(Set<WorkspaceRule> workspaceRulesFromDeprecatedProperty, Set<WorkspaceRule> workspaceRulesFromProperty, Set<WorkspaceRule> parsedWorkspaceRules) throws IntegrationException {
+    private Set<WorkspaceRule> run(Set<WorkspaceRule> workspaceRulesFromDeprecatedProperty, Set<WorkspaceRule> workspaceRulesFromProperty, Set<WorkspaceRule> parsedWorkspaceRules)
+        throws IntegrationException {
         WorkspaceRuleChooser workspaceRuleChooser = new WorkspaceRuleChooser();
         Set<WorkspaceRule> chosenWorkspaceRules = workspaceRuleChooser.choose(parsedWorkspaceRules, workspaceRulesFromDeprecatedProperty, workspaceRulesFromProperty);
         return chosenWorkspaceRules;

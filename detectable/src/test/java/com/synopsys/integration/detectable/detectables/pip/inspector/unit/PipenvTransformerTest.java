@@ -80,7 +80,11 @@ public class PipenvTransformerTest {
         PipFreeze pipFreeze = new PipFreeze(new ArrayList<>());
 
         List<PipenvGraphEntry> pipenvGraphEntries = new ArrayList<>();
-        pipenvGraphEntries.add(new PipenvGraphEntry("projectName", "projectVersion", Collections.singletonList(new PipenvGraphDependency("child", "childVersion", Collections.emptyList()))));
+        pipenvGraphEntries.add(new PipenvGraphEntry(
+            "projectName",
+            "projectVersion",
+            Collections.singletonList(new PipenvGraphDependency("child", "childVersion", Collections.emptyList()))
+        ));
         pipenvGraphEntries.add(new PipenvGraphEntry("non-projectName", "non-projectVersion", new ArrayList<>()));
         PipenvGraph pipenvGraph = new PipenvGraph(pipenvGraphEntries);
 

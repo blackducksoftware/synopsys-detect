@@ -119,7 +119,8 @@ public class DockerExtractor {
         }
     }
 
-    private void loadDockerImage(File directory, Map<String, String> environmentVariables, ExecutableTarget dockerExe, File imageToImport) throws IOException, ExecutableRunnerException, IntegrationException {
+    private void loadDockerImage(File directory, Map<String, String> environmentVariables, ExecutableTarget dockerExe, File imageToImport)
+        throws IOException, ExecutableRunnerException, IntegrationException {
         List<String> dockerImportArguments = Arrays.asList(
             "load",
             "-i",
@@ -209,7 +210,8 @@ public class DockerExtractor {
             }
         }
 
-        return new Extraction.Builder().failure("No files found matching pattern [" + DEPENDENCIES_PATTERN + "]. Expected docker-inspector to produce file in " + directory.toString());
+        return new Extraction.Builder().failure(
+            "No files found matching pattern [" + DEPENDENCIES_PATTERN + "]. Expected docker-inspector to produce file in " + directory.toString());
     }
 
     public String getImageIdentifierFromOutputDirectoryIfImageIdPresent(File outputDirectory, String suppliedImagePiece, ImageIdentifierType imageIdentifierType) {
@@ -225,7 +227,8 @@ public class DockerExtractor {
                     return imageRepo + ":" + imageTag;
                 }
             } catch (IOException | JsonSyntaxException e) {
-                logger.debug("Failed to parse results file from run of Docker Inspector, thus could not get name of image.  The code location name for this scan will be derived from the passed image ID");
+                logger.debug(
+                    "Failed to parse results file from run of Docker Inspector, thus could not get name of image.  The code location name for this scan will be derived from the passed image ID");
             }
         }
         return suppliedImagePiece;

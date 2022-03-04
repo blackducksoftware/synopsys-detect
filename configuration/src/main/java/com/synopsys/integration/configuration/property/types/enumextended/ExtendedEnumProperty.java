@@ -22,15 +22,30 @@ public class ExtendedEnumProperty<E extends Enum<E>, B extends Enum<B>> extends 
         this.bClass = bClass;
     }
 
-    public static <E extends Enum<E>, B extends Enum<B>> PropertyBuilder<ExtendedEnumProperty<E, B>> newBuilder(@NotNull String key, @NotNull ExtendedEnumValue<E, B> defaultValue, @NotNull Class<E> eClass, @NotNull Class<B> bClass) {
+    public static <E extends Enum<E>, B extends Enum<B>> PropertyBuilder<ExtendedEnumProperty<E, B>> newBuilder(
+        @NotNull String key,
+        @NotNull ExtendedEnumValue<E, B> defaultValue,
+        @NotNull Class<E> eClass,
+        @NotNull Class<B> bClass
+    ) {
         return new PropertyBuilder<ExtendedEnumProperty<E, B>>().setCreator(() -> new ExtendedEnumProperty<>(key, defaultValue, eClass, bClass));
     }
 
-    public static <E extends Enum<E>, B extends Enum<B>> PropertyBuilder<ExtendedEnumProperty<E, B>> newBuilderExtendedDefault(@NotNull String key, @NotNull E defaultValue, @NotNull Class<E> eClass, @NotNull Class<B> bClass) {
+    public static <E extends Enum<E>, B extends Enum<B>> PropertyBuilder<ExtendedEnumProperty<E, B>> newBuilderExtendedDefault(
+        @NotNull String key,
+        @NotNull E defaultValue,
+        @NotNull Class<E> eClass,
+        @NotNull Class<B> bClass
+    ) {
         return newBuilder(key, ExtendedEnumValue.ofExtendedValue(defaultValue), eClass, bClass);
     }
 
-    public static <E extends Enum<E>, B extends Enum<B>> PropertyBuilder<ExtendedEnumProperty<E, B>> newBuilderBaseDefault(@NotNull String key, @NotNull B defaultValue, @NotNull Class<E> eClass, @NotNull Class<B> bClass) {
+    public static <E extends Enum<E>, B extends Enum<B>> PropertyBuilder<ExtendedEnumProperty<E, B>> newBuilderBaseDefault(
+        @NotNull String key,
+        @NotNull B defaultValue,
+        @NotNull Class<E> eClass,
+        @NotNull Class<B> bClass
+    ) {
         return newBuilder(key, ExtendedEnumValue.ofBaseValue(defaultValue), eClass, bClass);
     }
 

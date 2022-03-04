@@ -39,7 +39,13 @@ public class GoModGraphGenerator {
         return new CodeLocation(graph, externalIdFactory.createNameVersionExternalId(Forge.GOLANG, projectModule.getPath(), projectModule.getVersion()));
     }
 
-    private void addModuleToGraph(String moduleName, @Nullable Dependency parent, MutableDependencyGraph graph, GoRelationshipManager goRelationshipManager, GoModDependencyManager goModDependencyManager) {
+    private void addModuleToGraph(
+        String moduleName,
+        @Nullable Dependency parent,
+        MutableDependencyGraph graph,
+        GoRelationshipManager goRelationshipManager,
+        GoModDependencyManager goModDependencyManager
+    ) {
         if (goRelationshipManager.isNotUsedByMainModule(moduleName)) {
             logger.debug("Excluding module '{}' because it is not used by the main module.", moduleName);
             return;

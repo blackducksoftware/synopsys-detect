@@ -162,19 +162,32 @@ public class DockerExtractorTest {
         String testString = "test";
         String imageIdArgument = "--docker.image.id=";
         String imageName = "ubuntu:latest";
-        File outputDirectoryWithPopulatedResultsFile = new File(DockerExtractorTest.class.getClassLoader().getSystemResource("detectables/functional/docker/unit/outputDirectoryWithPopulatedResultsFile").toURI());
-        File outputDirectoryWithNonPopulatedResultsFile = new File(DockerExtractorTest.class.getClassLoader().getSystemResource("detectables/functional/docker/unit/outputDirectoryWithNonPopulatedResultsFile").toURI());
+        File outputDirectoryWithPopulatedResultsFile = new File(DockerExtractorTest.class.getClassLoader()
+            .getSystemResource("detectables/functional/docker/unit/outputDirectoryWithPopulatedResultsFile").toURI());
+        File outputDirectoryWithNonPopulatedResultsFile = new File(DockerExtractorTest.class.getClassLoader()
+            .getSystemResource("detectables/functional/docker/unit/outputDirectoryWithNonPopulatedResultsFile").toURI());
 
         DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
         FileFinder fileFinder = Mockito.mock(FileFinder.class);
-        Mockito.when(fileFinder.findFile(outputDirectoryWithPopulatedResultsFile, DockerExtractor.RESULTS_FILENAME_PATTERN)).thenReturn(new File(outputDirectoryWithPopulatedResultsFile, "results.json"));
-        Mockito.when(fileFinder.findFile(outputDirectoryWithNonPopulatedResultsFile, DockerExtractor.RESULTS_FILENAME_PATTERN)).thenReturn(new File(outputDirectoryWithNonPopulatedResultsFile, "results.json"));
+        Mockito.when(fileFinder.findFile(outputDirectoryWithPopulatedResultsFile, DockerExtractor.RESULTS_FILENAME_PATTERN))
+            .thenReturn(new File(outputDirectoryWithPopulatedResultsFile, "results.json"));
+        Mockito.when(fileFinder.findFile(outputDirectoryWithNonPopulatedResultsFile, DockerExtractor.RESULTS_FILENAME_PATTERN))
+            .thenReturn(new File(outputDirectoryWithNonPopulatedResultsFile, "results.json"));
 
         DockerExtractor dockerExtractor = getMockDockerExtractor(executableRunner, fileFinder);
 
-        assertEquals(imageName, dockerExtractor.getImageIdentifierFromOutputDirectoryIfImageIdPresent(outputDirectoryWithPopulatedResultsFile, testString, ImageIdentifierType.IMAGE_ID));
-        assertEquals(testString, dockerExtractor.getImageIdentifierFromOutputDirectoryIfImageIdPresent(outputDirectoryWithPopulatedResultsFile, testString, ImageIdentifierType.IMAGE_NAME));
-        assertEquals(testString, dockerExtractor.getImageIdentifierFromOutputDirectoryIfImageIdPresent(outputDirectoryWithNonPopulatedResultsFile, testString, ImageIdentifierType.IMAGE_ID));
+        assertEquals(
+            imageName,
+            dockerExtractor.getImageIdentifierFromOutputDirectoryIfImageIdPresent(outputDirectoryWithPopulatedResultsFile, testString, ImageIdentifierType.IMAGE_ID)
+        );
+        assertEquals(
+            testString,
+            dockerExtractor.getImageIdentifierFromOutputDirectoryIfImageIdPresent(outputDirectoryWithPopulatedResultsFile, testString, ImageIdentifierType.IMAGE_NAME)
+        );
+        assertEquals(
+            testString,
+            dockerExtractor.getImageIdentifierFromOutputDirectoryIfImageIdPresent(outputDirectoryWithNonPopulatedResultsFile, testString, ImageIdentifierType.IMAGE_ID)
+        );
     }
 
     private DockerExtractor getMockDockerExtractor(DetectableExecutableRunner executableRunner, FileFinder fileFinder) {

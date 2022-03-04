@@ -76,8 +76,14 @@ public class DetectorRuleFactory {
         ruleSet.addDetector(DetectorType.COCOAPODS, "Pod Lock", PodlockDetectable.class, detectableFactory::createPodLockDetectable).defaults().build();
         ruleSet.addDetector(DetectorType.XCODE, "Xcode Swift", XcodeSwiftDetectable.class, detectableFactory::createXcodeSwiftDetectable).defaults().selfNestable().build();
 
-        DetectorRule<?> conanCliRule = ruleSet.addDetector(DetectorType.CONAN, "Conan CLI", ConanCliDetectable.class, detectableFactory::createConanCliDetectable).defaults().build();
-        DetectorRule<?> conanLockfileRule = ruleSet.addDetector(DetectorType.CONAN, "Conan Lockfile", ConanLockfileDetectable.class, detectableFactory::createConanLockfileDetectable).defaults().build();
+        DetectorRule<?> conanCliRule = ruleSet.addDetector(DetectorType.CONAN, "Conan CLI", ConanCliDetectable.class, detectableFactory::createConanCliDetectable).defaults()
+            .build();
+        DetectorRule<?> conanLockfileRule = ruleSet.addDetector(
+            DetectorType.CONAN,
+            "Conan Lockfile",
+            ConanLockfileDetectable.class,
+            detectableFactory::createConanLockfileDetectable
+        ).defaults().build();
         ruleSet.yield(conanCliRule).to(conanLockfileRule);
 
         ruleSet.addDetector(DetectorType.CONDA, "Conda Cli", CondaCliDetectable.class, detectableFactory::createCondaCliDetectable).defaults().build();
@@ -103,8 +109,10 @@ public class DetectorRuleFactory {
 
         DetectorRule<?> lernaDetectable = ruleSet.addDetector(DetectorType.LERNA, "Lerna", LernaDetectable.class, detectableFactory::createLernaDetectable).defaults().build();
         DetectorRule<?> yarnLock = ruleSet.addDetector(DetectorType.YARN, "Yarn Lock", YarnLockDetectable.class, detectableFactory::createYarnLockDetectable).defaultLock().build();
-        DetectorRule<?> npmPackageLock = ruleSet.addDetector(DetectorType.NPM, "Package Lock", NpmPackageLockDetectable.class, detectableFactory::createNpmPackageLockDetectable).defaultLock().build();
-        DetectorRule<?> npmShrinkwrap = ruleSet.addDetector(DetectorType.NPM, "Shrinkwrap", NpmShrinkwrapDetectable.class, detectableFactory::createNpmShrinkwrapDetectable).defaultLock().build();
+        DetectorRule<?> npmPackageLock = ruleSet.addDetector(DetectorType.NPM, "Package Lock", NpmPackageLockDetectable.class, detectableFactory::createNpmPackageLockDetectable)
+            .defaultLock().build();
+        DetectorRule<?> npmShrinkwrap = ruleSet.addDetector(DetectorType.NPM, "Shrinkwrap", NpmShrinkwrapDetectable.class, detectableFactory::createNpmShrinkwrapDetectable)
+            .defaultLock().build();
         DetectorRule<?> npmCli = ruleSet.addDetector(DetectorType.NPM, "Npm Cli", NpmCliDetectable.class, detectableFactory::createNpmCliDetectable).defaults().build();
         DetectorRule<?> pnpmLock = ruleSet.addDetector(DetectorType.PNPM, "Pnpm Lock", PnpmLockDetectable.class, detectableFactory::createPnpmLockDetectable).defaults().build();
 
@@ -124,16 +132,19 @@ public class DetectorRuleFactory {
 
         ruleSet.yield(npmCli).to(pnpmLock);
 
-        DetectorRule<?> nugetSolution = ruleSet.addDetector(DetectorType.NUGET, "Solution", NugetSolutionDetectable.class, detectableFactory::createNugetSolutionDetectable).defaults().build();
+        DetectorRule<?> nugetSolution = ruleSet.addDetector(DetectorType.NUGET, "Solution", NugetSolutionDetectable.class, detectableFactory::createNugetSolutionDetectable)
+            .defaults().build();
         //The Project detectable is "notNestable" because it will falsely apply under a solution (the solution includes all of the projects).
-        DetectorRule<?> nugetProject = ruleSet.addDetector(DetectorType.NUGET, "Project", NugetProjectDetectable.class, detectableFactory::createNugetProjectDetectable).notNestable().noMaxDepth().build();
+        DetectorRule<?> nugetProject = ruleSet.addDetector(DetectorType.NUGET, "Project", NugetProjectDetectable.class, detectableFactory::createNugetProjectDetectable)
+            .notNestable().noMaxDepth().build();
 
         ruleSet.yield(nugetProject).to(nugetSolution);
 
         ruleSet.addDetector(DetectorType.PACKAGIST, "Composer", ComposerLockDetectable.class, detectableFactory::createComposerDetectable).defaults().build();
 
         DetectorRule<?> pipEnv = ruleSet.addDetector(DetectorType.PIP, "Pip Env", PipenvDetectable.class, detectableFactory::createPipenvDetectable).defaults().build();
-        DetectorRule<?> pipInspector = ruleSet.addDetector(DetectorType.PIP, "Pip Inspector", PipInspectorDetectable.class, detectableFactory::createPipInspectorDetectable).defaults().build();
+        DetectorRule<?> pipInspector = ruleSet.addDetector(DetectorType.PIP, "Pip Inspector", PipInspectorDetectable.class, detectableFactory::createPipInspectorDetectable)
+            .defaults().build();
         DetectorRule<?> poetry = ruleSet.addDetector(DetectorType.POETRY, "Poetry", PoetryDetectable.class, detectableFactory::createPoetryDetectable).defaults().build();
         ruleSet.yield(pipInspector).to(pipEnv);
         ruleSet.yield(poetry).to(pipEnv);
@@ -169,20 +180,29 @@ public class DetectorRuleFactory {
         ruleSet.addDetector(DetectorType.GO_VNDR, "Go Vndr", GoVndrDetectable.class, detectableFactory::createGoVndrDetectable).defaults().build();
         ruleSet.addDetector(DetectorType.GO_VENDOR, "Go Vendor", GoVendorDetectable.class, detectableFactory::createGoVendorDetectable).defaults().build();
 
-        ruleSet.addDetector(DetectorType.GRADLE, "Gradle Project Inspector", GradleProjectInspectorDetectable.class, detectableFactory::createGradleProjectInspectorDetectable).defaults().build();
+        ruleSet.addDetector(DetectorType.GRADLE, "Gradle Project Inspector", GradleProjectInspectorDetectable.class, detectableFactory::createGradleProjectInspectorDetectable)
+            .defaults().build();
         ruleSet.addDetector(DetectorType.GO_GRADLE, "Go Gradle", GoGradleDetectable.class, detectableFactory::createGoGradleDetectable).defaults().build();
 
         ruleSet.addDetector(DetectorType.IVY, "Ivy Parse", IvyParseDetectable.class, detectableFactory::createIvyParseDetectable).defaultLock().build();
 
         ruleSet.addDetector(DetectorType.MAVEN, "Maven Pom Parse", MavenParseDetectable.class, detectableFactory::createMavenParseDetectable).defaults().build();
-        ruleSet.addDetector(DetectorType.MAVEN, "Maven Project Inspector", MavenProjectInspectorDetectable.class, detectableFactory::createMavenProjectInspectorDetectable).defaults().build();
+        ruleSet.addDetector(DetectorType.MAVEN, "Maven Project Inspector", MavenProjectInspectorDetectable.class, detectableFactory::createMavenProjectInspectorDetectable)
+            .defaults().build();
 
         ruleSet.addDetector(DetectorType.POETRY, "Poetry", PoetryDetectable.class, detectableFactory::createPoetryDetectable).defaults().build();
 
         DetectorRule<?> yarnLock = ruleSet.addDetector(DetectorType.YARN, "Yarn Lock", YarnLockDetectable.class, detectableFactory::createYarnLockDetectable).defaults().build();
-        DetectorRule<?> npmPackageLock = ruleSet.addDetector(DetectorType.NPM, "Package Lock", NpmPackageLockDetectable.class, detectableFactory::createNpmPackageLockDetectable).defaults().build();
-        DetectorRule<?> npmShrinkwrap = ruleSet.addDetector(DetectorType.NPM, "Shrinkwrap", NpmShrinkwrapDetectable.class, detectableFactory::createNpmShrinkwrapDetectable).defaults().build();
-        DetectorRule<?> npmPackageJsonParse = ruleSet.addDetector(DetectorType.NPM, "Package Json Parse", NpmPackageJsonParseDetectable.class, detectableFactory::createNpmPackageJsonParseDetectable).defaults().build();
+        DetectorRule<?> npmPackageLock = ruleSet.addDetector(DetectorType.NPM, "Package Lock", NpmPackageLockDetectable.class, detectableFactory::createNpmPackageLockDetectable)
+            .defaults().build();
+        DetectorRule<?> npmShrinkwrap = ruleSet.addDetector(DetectorType.NPM, "Shrinkwrap", NpmShrinkwrapDetectable.class, detectableFactory::createNpmShrinkwrapDetectable)
+            .defaults().build();
+        DetectorRule<?> npmPackageJsonParse = ruleSet.addDetector(
+            DetectorType.NPM,
+            "Package Json Parse",
+            NpmPackageJsonParseDetectable.class,
+            detectableFactory::createNpmPackageJsonParseDetectable
+        ).defaults().build();
         DetectorRule<?> pnpmLock = ruleSet.addDetector(DetectorType.PNPM, "Pnpm Lock", PnpmLockDetectable.class, detectableFactory::createPnpmLockDetectable).defaults().build();
 
         ruleSet.yield(npmShrinkwrap).to(npmPackageLock);
@@ -200,7 +220,8 @@ public class DetectorRuleFactory {
         ruleSet.addDetector(DetectorType.PACKAGIST, "Composer", ComposerLockDetectable.class, detectableFactory::createComposerDetectable).defaults().build();
 
         DetectorRule<?> gemlock = ruleSet.addDetector(DetectorType.RUBYGEMS, "Gemlock", GemlockDetectable.class, detectableFactory::createGemlockDetectable).defaults().build();
-        DetectorRule<?> gemspec = ruleSet.addDetector(DetectorType.RUBYGEMS, "Gemspec", GemspecParseDetectable.class, detectableFactory::createGemspecParseDetectable).defaults().build();
+        DetectorRule<?> gemspec = ruleSet.addDetector(DetectorType.RUBYGEMS, "Gemspec", GemspecParseDetectable.class, detectableFactory::createGemspecParseDetectable).defaults()
+            .build();
 
         ruleSet.yield(gemspec).to(gemlock);
 

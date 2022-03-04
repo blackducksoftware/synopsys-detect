@@ -27,7 +27,8 @@ public class ArtifactoryConstants {
     public static final String DOCKER_INSPECTOR_REPO = "bds-integrations-release/com/synopsys/integration/blackduck-docker-inspector";
     public static final String DOCKER_INSPECTOR_PROPERTY = "DOCKER_INSPECTOR_LATEST_9";
     public static final String DOCKER_INSPECTOR_AIR_GAP_PROPERTY = "DOCKER_INSPECTOR_AIR_GAP_LATEST_9";
-    public static final String DOCKER_INSPECTOR_VERSION_OVERRIDE = "/" + ArtifactoryConstants.VERSION_PLACEHOLDER + "/blackduck-docker-inspector-" + ArtifactoryConstants.VERSION_PLACEHOLDER + ".jar";
+    public static final String DOCKER_INSPECTOR_VERSION_OVERRIDE =
+        "/" + ArtifactoryConstants.VERSION_PLACEHOLDER + "/blackduck-docker-inspector-" + ArtifactoryConstants.VERSION_PLACEHOLDER + ".jar";
 
     public static final String PROJECT_INSPECTOR_REPO = "bds-integrations-release/com/synopsys/integration/synopsys-detect";
     public static final String PROJECT_INSPECTOR_MAC_PROPERTY = "PROJECT_INSPECTOR_MAC_LATEST_1";

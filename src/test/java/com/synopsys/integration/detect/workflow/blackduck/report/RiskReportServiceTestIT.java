@@ -60,7 +60,11 @@ public class RiskReportServiceTestIT {
 
         ProjectVersionWrapper projectVersionWrapper = blackDuckTestConnection.projectVersionAssertions(PROJECT_NAME, PROJECT_VERSION_NAME).retrieveProjectVersionWrapper();
 
-        File noticeReportFile = reportService.createNoticesReportFile(folderForReport.toFile(), projectVersionWrapper.getProjectView(), projectVersionWrapper.getProjectVersionView());
+        File noticeReportFile = reportService.createNoticesReportFile(
+            folderForReport.toFile(),
+            projectVersionWrapper.getProjectView(),
+            projectVersionWrapper.getProjectVersionView()
+        );
         Assertions.assertNotNull(noticeReportFile);
         Assertions.assertTrue(noticeReportFile.exists());
     }

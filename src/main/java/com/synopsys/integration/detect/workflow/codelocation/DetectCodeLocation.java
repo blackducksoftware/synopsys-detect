@@ -23,7 +23,8 @@ public class DetectCodeLocation {
         this.dockerImageName = dockerImageName;
 
         if (StringUtils.isNotBlank(dockerImageName) && StringUtils.isNotBlank(creatorName)) {
-            throw new IllegalArgumentException("Detect code location cannot have the Docker image name and the creator name set as the docker image name will means no creator exists.");
+            throw new IllegalArgumentException(
+                "Detect code location cannot have the Docker image name and the creator name set as the docker image name will means no creator exists.");
         }
     }
 

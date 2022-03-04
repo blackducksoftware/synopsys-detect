@@ -82,7 +82,8 @@ public class PDFBoxManager implements Closeable {
         return new PDRectangle(x, startingY, StringManager.getStringWidth(font, fontSize, fixedText), fontSize);
     }
 
-    public PDRectangle writeWrappedCenteredText(float x, float cellUpperY, float width, float height, List<String> textLines, PDFont font, float fontSize, Color color) throws IOException {
+    public PDRectangle writeWrappedCenteredText(float x, float cellUpperY, float width, float height, List<String> textLines, PDFont font, float fontSize, Color color)
+        throws IOException {
         float lowestY = checkYAndSwitchPage(cellUpperY - height, fontSize);
         int numOfLines = textLines.size();
         int centerOfText = numOfLines / 2;
@@ -202,7 +203,17 @@ public class PDFBoxManager implements Closeable {
         return writeWrappedLink(x, y, width, linkTextLines, linkURL, font, fontSize, Color.decode(BLUE_GRAY));
     }
 
-    public PDRectangle writeWrappedCenteredLink(float x, float rowUpperY, float width, float height, List<String> linkTextLines, String linkURL, PDFont font, float fontSize, Color color)
+    public PDRectangle writeWrappedCenteredLink(
+        float x,
+        float rowUpperY,
+        float width,
+        float height,
+        List<String> linkTextLines,
+        String linkURL,
+        PDFont font,
+        float fontSize,
+        Color color
+    )
         throws IOException {
         PDRectangle rectangle = writeWrappedCenteredText(x, rowUpperY, width, height, linkTextLines, font, fontSize, color);
         addAnnotationLinkRectangle(rectangle.getLowerLeftX(), rectangle.getLowerLeftY(), rectangle.getWidth(), rectangle.getHeight(), linkURL);

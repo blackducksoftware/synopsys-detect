@@ -63,7 +63,11 @@ public class NugetInspectorParser {
                     projectVersionName = container.version;
                 }
 
-                CodeLocation codeLocation = new CodeLocation(children, externalIdFactory.createNameVersionExternalId(Forge.NUGET, projectName, projectVersionName), convertSourcePath(container.sourcePath));
+                CodeLocation codeLocation = new CodeLocation(
+                    children,
+                    externalIdFactory.createNameVersionExternalId(Forge.NUGET, projectName, projectVersionName),
+                    convertSourcePath(container.sourcePath)
+                );
                 codeLocations.add(codeLocation);
             }
             parseResult = new NugetParseResult(projectName, projectVersionName, codeLocations);
@@ -74,7 +78,11 @@ public class NugetInspectorParser {
             builder.addPackageSets(nugetContainer.packages);
             DependencyGraph children = builder.createDependencyGraph(nugetContainer.dependencies);
 
-            CodeLocation codeLocation = new CodeLocation(children, externalIdFactory.createNameVersionExternalId(Forge.NUGET, projectName, projectVersionName), convertSourcePath(nugetContainer.sourcePath));
+            CodeLocation codeLocation = new CodeLocation(
+                children,
+                externalIdFactory.createNameVersionExternalId(Forge.NUGET, projectName, projectVersionName),
+                convertSourcePath(nugetContainer.sourcePath)
+            );
             parseResult = new NugetParseResult(projectName, projectVersionName, codeLocation);
         } else {
             parseResult = null;

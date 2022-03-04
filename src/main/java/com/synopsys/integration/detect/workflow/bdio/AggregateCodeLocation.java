@@ -13,7 +13,13 @@ public class AggregateCodeLocation {
     private final ExternalId projectExternalId;
     private final DependencyGraph aggregateDependencyGraph;
 
-    public AggregateCodeLocation(File aggregateFile, String codeLocationName, NameVersion projectNameVersion, ExternalId projectExternalId, DependencyGraph aggregateDependencyGraph) {
+    public AggregateCodeLocation(
+        File aggregateFile,
+        String codeLocationName,
+        NameVersion projectNameVersion,
+        ExternalId projectExternalId,
+        DependencyGraph aggregateDependencyGraph
+    ) {
         this.aggregateFile = aggregateFile;
         this.codeLocationName = codeLocationName;
         this.projectNameVersion = projectNameVersion;

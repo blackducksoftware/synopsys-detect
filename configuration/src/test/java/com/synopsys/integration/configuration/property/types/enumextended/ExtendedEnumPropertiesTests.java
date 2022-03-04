@@ -40,7 +40,12 @@ public class ExtendedEnumPropertiesTests {
 
     @Test
     public void testValued() throws InvalidPropertyException {
-        ValuedAlikeProperty<ExtendedEnumValue<ExampleExtension, Example>> property = new ExtendedEnumProperty<>("enum.nullable", ExtendedEnumValue.ofExtendedValue(ExampleExtension.NONE), ExampleExtension.class, Example.class);
+        ValuedAlikeProperty<ExtendedEnumValue<ExampleExtension, Example>> property = new ExtendedEnumProperty<>(
+            "enum.nullable",
+            ExtendedEnumValue.ofExtendedValue(ExampleExtension.NONE),
+            ExampleExtension.class,
+            Example.class
+        );
         PropertyConfiguration config = configOf(Pair.of("enum.nullable", "ANOTHER"));
         ExtendedEnumValue<ExampleExtension, Example> value = config.getValue(property);
         Assertions.assertEquals(ExtendedEnumValue.ofBaseValue(Example.ANOTHER), value);
@@ -50,7 +55,10 @@ public class ExtendedEnumPropertiesTests {
 
     @Test
     public void testList() throws InvalidPropertyException {
-        List<ExtendedEnumValue<ExampleExtension, Example>> defaultValue = Bds.listOf(ExtendedEnumValue.ofBaseValue(Example.THING), ExtendedEnumValue.ofExtendedValue(ExampleExtension.NONE));
+        List<ExtendedEnumValue<ExampleExtension, Example>> defaultValue = Bds.listOf(
+            ExtendedEnumValue.ofBaseValue(Example.THING),
+            ExtendedEnumValue.ofExtendedValue(ExampleExtension.NONE)
+        );
         ExtendedEnumListProperty<ExampleExtension, Example> property = new ExtendedEnumListProperty<>("enum.nullable", defaultValue, ExampleExtension.class, Example.class);
         PropertyConfiguration config = configOf(Pair.of("enum.nullable", "THIRD,NONE"));
         List<ExtendedEnumValue<ExampleExtension, Example>> value = config.getValue(property);

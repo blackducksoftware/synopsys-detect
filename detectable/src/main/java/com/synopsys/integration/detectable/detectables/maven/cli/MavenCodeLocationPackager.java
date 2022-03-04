@@ -48,7 +48,14 @@ public class MavenCodeLocationPackager {
     }
 
     // mavenOutput should be the full output of mvn dependency:tree (no scope applied); scope filtering is now done by this method
-    public List<MavenParseResult> extractCodeLocations(String sourcePath, List<String> mavenOutput, List<String> excludedScopes, List<String> includedScopes, List<String> excludedModules, List<String> includedModules) {
+    public List<MavenParseResult> extractCodeLocations(
+        String sourcePath,
+        List<String> mavenOutput,
+        List<String> excludedScopes,
+        List<String> includedScopes,
+        List<String> excludedModules,
+        List<String> includedModules
+    ) {
         ExcludedIncludedWildcardFilter modulesFilter = ExcludedIncludedWildcardFilter.fromCollections(excludedModules, includedModules);
         ExcludedIncludedWildcardFilter scopeFilter = ExcludedIncludedWildcardFilter.fromCollections(excludedScopes, includedScopes);
         codeLocations = new ArrayList<>();
@@ -194,17 +201,30 @@ public class MavenCodeLocationPackager {
         }
     }
 
-    private void addDependencyIfInScope(MutableDependencyGraph currentGraph, List<Dependency> orphans, ExcludedIncludedWildcardFilter scopeFilter, boolean inOutOfScopeTree, Dependency parent, ScopedDependency dependency) {
+    private void addDependencyIfInScope(
+        MutableDependencyGraph currentGraph,
+        List<Dependency> orphans,
+        ExcludedIncludedWildcardFilter scopeFilter,
+        boolean inOutOfScopeTree,
+        Dependency parent,
+        ScopedDependency dependency
+    ) {
         if (scopeFilter.shouldInclude(dependency.scope)) {
             if (inOutOfScopeTree) {
                 logger.trace(
-                    String.format("component %s:%s:%s:%s is in scope but in a nonScope tree; adding it to orphans", dependency.getExternalId().getGroup(), dependency.getExternalId().getName(), dependency.getExternalId().getVersion(),
+                    String.format("component %s:%s:%s:%s is in scope but in a nonScope tree; adding it to orphans",
+                        dependency.getExternalId().getGroup(),
+                        dependency.getExternalId().getName(),
+                        dependency.getExternalId().getVersion(),
                         dependency.scope
                     ));
                 orphans.add(dependency);
             } else {
-                logger.trace(String.format("component %s:%s:%s:%s is in scope and in an in-scope tree; adding it to hierarchy", dependency.getExternalId().getGroup(), dependency.getExternalId().getName(),
-                    dependency.getExternalId().getVersion(), dependency.scope
+                logger.trace(String.format("component %s:%s:%s:%s is in scope and in an in-scope tree; adding it to hierarchy",
+                    dependency.getExternalId().getGroup(),
+                    dependency.getExternalId().getName(),
+                    dependency.getExternalId().getVersion(),
+                    dependency.scope
                 ));
                 currentGraph.addParentWithChild(parent, dependency);
             }

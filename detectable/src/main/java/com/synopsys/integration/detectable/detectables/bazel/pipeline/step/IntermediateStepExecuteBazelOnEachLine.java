@@ -13,7 +13,12 @@ public class IntermediateStepExecuteBazelOnEachLine implements IntermediateStep 
     private final List<String> bazelCommandArgs;
     private final boolean inputIsExpected;
 
-    public IntermediateStepExecuteBazelOnEachLine(BazelCommandExecutor bazelCommandExecutor, BazelVariableSubstitutor bazelVariableSubstitutor, List<String> bazelCommandArgs, boolean inputIsExpected) {
+    public IntermediateStepExecuteBazelOnEachLine(
+        BazelCommandExecutor bazelCommandExecutor,
+        BazelVariableSubstitutor bazelVariableSubstitutor,
+        List<String> bazelCommandArgs,
+        boolean inputIsExpected
+    ) {
         this.bazelCommandExecutor = bazelCommandExecutor;
         this.bazelVariableSubstitutor = bazelVariableSubstitutor;
         this.bazelCommandArgs = bazelCommandArgs;

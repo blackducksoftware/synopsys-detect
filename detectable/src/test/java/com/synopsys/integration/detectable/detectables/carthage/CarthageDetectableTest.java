@@ -31,7 +31,8 @@ public class CarthageDetectableTest extends DetectableFunctionalTest {
     }
 
     @Override
-    public @NotNull Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
+    @NotNull
+    public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
         return detectableFactory.createCarthageDetectable(detectableEnvironment);
     }
 
@@ -40,10 +41,11 @@ public class CarthageDetectableTest extends DetectableFunctionalTest {
         Assertions.assertEquals(1, extraction.getCodeLocations().size());
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.GITHUB, extraction.getCodeLocations().get(0).getDependencyGraph());
-        graphAssert.hasRootSize(4);
         graphAssert.hasRootDependency("GEOSwift/GEOSwift", "8.0.2");
         graphAssert.hasRootDependency("MobileNativeFoundation/Kronos", "4.2.1");
         graphAssert.hasRootDependency("ReactiveCocoa/ReactiveCocoa", "11.1.0");
         graphAssert.hasRootDependency("realm/realm-cocoa", "v10.7.2");
+        graphAssert.hasNoDependency("https://downloads.localytics.com/SDKs/iOS/Localytics.json", "6.2.1");
+        graphAssert.hasRootSize(4);
     }
 }

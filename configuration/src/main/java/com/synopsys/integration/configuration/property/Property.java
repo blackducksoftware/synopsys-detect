@@ -147,6 +147,10 @@ public abstract class Property {
         return propertyDeprecationInfo;
     }
 
+    public boolean isDeprecatedForRemoval() {
+        return propertyDeprecationInfo.getRemovalInfo().isPresent();
+    }
+
     public String getKeyAsEnvironmentVariable() {
         if (StringUtils.isNotBlank(key)) {
             return key.replace(".", "_").toUpperCase();

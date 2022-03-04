@@ -11,7 +11,11 @@ import com.synopsys.integration.blackduck.service.request.BlackDuckSingleRequest
 import com.synopsys.integration.exception.IntegrationException;
 
 public class AnalyticsConfigurationService {
-    private static final BlackDuckPath<AnalyticsSetting> INTEGRATION_SETTINGS_PATH = new BlackDuckPath<>("/api/internal/integration-settings/analytics", AnalyticsSetting.class, false);
+    private static final BlackDuckPath<AnalyticsSetting> INTEGRATION_SETTINGS_PATH = new BlackDuckPath<>(
+        "/api/internal/integration-settings/analytics",
+        AnalyticsSetting.class,
+        false
+    );
     private static final String MIME_TYPE = "application/vnd.blackducksoftware.integration-setting-1+json";
 
     public AnalyticsSetting fetchAnalyticsSetting(ApiDiscovery apiDiscovery, BlackDuckApiClient blackDuckApiClient) throws IntegrationException, IOException {

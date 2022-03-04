@@ -26,15 +26,33 @@ public class ExtendedEnumValueParserTests {
 
     @Test
     public void parsesLowercaseEnumValue() throws ValueParseException {
-        Assertions.assertEquals(ExtendedEnumValue.ofBaseValue(Example.THING).getBaseValue(), new ExtendedEnumValueParser<>(ExampleExtended.class, Example.class).parse("tHiNg").getBaseValue());
-        Assertions.assertEquals(ExtendedEnumValue.ofBaseValue(Example.ANOTHER).getBaseValue(), new ExtendedEnumValueParser<>(ExampleExtended.class, Example.class).parse("another").getBaseValue());
+        Assertions.assertEquals(
+            ExtendedEnumValue.ofBaseValue(Example.THING).getBaseValue(),
+            new ExtendedEnumValueParser<>(ExampleExtended.class, Example.class).parse("tHiNg").getBaseValue()
+        );
+        Assertions.assertEquals(
+            ExtendedEnumValue.ofBaseValue(Example.ANOTHER).getBaseValue(),
+            new ExtendedEnumValueParser<>(ExampleExtended.class, Example.class).parse("another").getBaseValue()
+        );
     }
 
     @Test
     public void parsesEnumValue() throws ValueParseException {
-        Assertions.assertEquals(ExtendedEnumValue.ofBaseValue(Example.THING).getBaseValue(), new ExtendedEnumValueParser<>(ExampleExtended.class, Example.class).parse("THING").getBaseValue());
-        Assertions.assertEquals(ExtendedEnumValue.ofBaseValue(Example.ANOTHER).getBaseValue(), new ExtendedEnumValueParser<>(ExampleExtended.class, Example.class).parse("ANOTHER").getBaseValue());
-        Assertions.assertEquals(ExtendedEnumValue.ofBaseValue(Example.THIRD).getBaseValue(), new ExtendedEnumValueParser<>(ExampleExtended.class, Example.class).parse("THIRD").getBaseValue());
-        Assertions.assertEquals(ExtendedEnumValue.ofExtendedValue(ExampleExtended.FOURTH).getBaseValue(), new ExtendedEnumValueParser<>(ExampleExtended.class, Example.class).parse("FOURTH").getBaseValue());
+        Assertions.assertEquals(
+            ExtendedEnumValue.ofBaseValue(Example.THING).getBaseValue(),
+            new ExtendedEnumValueParser<>(ExampleExtended.class, Example.class).parse("THING").getBaseValue()
+        );
+        Assertions.assertEquals(
+            ExtendedEnumValue.ofBaseValue(Example.ANOTHER).getBaseValue(),
+            new ExtendedEnumValueParser<>(ExampleExtended.class, Example.class).parse("ANOTHER").getBaseValue()
+        );
+        Assertions.assertEquals(
+            ExtendedEnumValue.ofBaseValue(Example.THIRD).getBaseValue(),
+            new ExtendedEnumValueParser<>(ExampleExtended.class, Example.class).parse("THIRD").getBaseValue()
+        );
+        Assertions.assertEquals(
+            ExtendedEnumValue.ofExtendedValue(ExampleExtended.FOURTH).getBaseValue(),
+            new ExtendedEnumValueParser<>(ExampleExtended.class, Example.class).parse("FOURTH").getBaseValue()
+        );
     }
 }

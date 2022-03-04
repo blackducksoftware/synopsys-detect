@@ -18,6 +18,10 @@ public class UniqueDetectorDecision extends NameVersionDecision {
 
     @Override
     public void printDescription(Logger logger) {
-        logger.debug(String.format("Exactly one unique detector was found. Using %s found at depth %d as project info.", detectorProjectInfo.getDetectorType().name(), detectorProjectInfo.getDepth()));
+        logger.debug(String.format(
+            "Exactly one unique detector was found. Using %s found at depth %d as project info.",
+            detectorProjectInfo.getDetectorType().name(),
+            detectorProjectInfo.getDepth()
+        ));
     }
 }

@@ -77,7 +77,12 @@ public class ApplicableEvaluatorTest {
         Mockito.verify(detectorEvaluatorListener).applicableEnded(detectorEvaluation);
     }
 
-    private DetectorEvaluation createEvaluationMocks(DetectorEvaluationOptions evaluationOptions, DetectorEvaluationTree detectorEvaluationTree, boolean alreadyApplicable, boolean searchable) {
+    private DetectorEvaluation createEvaluationMocks(
+        DetectorEvaluationOptions evaluationOptions,
+        DetectorEvaluationTree detectorEvaluationTree,
+        boolean alreadyApplicable,
+        boolean searchable
+    ) {
         DetectorEvaluation detectorEvaluation = Mockito.mock(DetectorEvaluation.class);
 
         List<DetectorEvaluation> detectorEvaluations = Collections.singletonList(detectorEvaluation);

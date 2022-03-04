@@ -56,9 +56,10 @@ public class EnumProperty<E extends Enum<E>> extends ValuedAlikeProperty<E> {
     private final List<E> deprecatedValues = new ArrayList<>();
 
     @NotNull
-    public void deprecateValue(E value, String reason) {
+    public EnumProperty<E> deprecateValue(E value, String reason) {
         deprecatedValues.add(value);
         addDeprecatedValueInfo(value.toString(), reason);
+        return this;
     }
 
     @Override

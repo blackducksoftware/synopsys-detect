@@ -50,7 +50,8 @@ public class GradleInspectorExtractor {
         this.toolVersionLogger = toolVersionLogger;
     }
 
-    public Extraction extract(File directory, ExecutableTarget gradleExe, @Nullable String gradleCommand, ProxyInfo proxyInfo, File gradleInspector, File outputDirectory) throws ExecutableFailedException {
+    public Extraction extract(File directory, ExecutableTarget gradleExe, @Nullable String gradleCommand, ProxyInfo proxyInfo, File gradleInspector, File outputDirectory)
+        throws ExecutableFailedException {
         try {
             toolVersionLogger.log(directory, gradleExe);
             gradleRunner.runGradleDependencies(directory, gradleExe, gradleInspector, gradleCommand, proxyInfo, outputDirectory);

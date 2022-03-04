@@ -33,7 +33,10 @@ public class PublishSignatureScanReports {
             .filter(SignatureScannerReport::isFailure)
             .findAny()
             .ifPresent(report -> {
-                logger.error(String.format("The Signature Scanner encountered an error%s. Please refer to Black Duck documentation or contact support.", report.getExitCode().map(code -> " (" + code + ")").orElse(".")));
+                logger.error(String.format(
+                    "The Signature Scanner encountered an error%s. Please refer to Black Duck documentation or contact support.",
+                    report.getExitCode().map(code -> " (" + code + ")").orElse(".")
+                ));
                 exitCodePublisher.publishExitCode(new ExitCodeRequest(ExitCodeType.FAILURE_SCAN));
             });
     }

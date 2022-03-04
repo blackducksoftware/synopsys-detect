@@ -9,6 +9,9 @@ public class NpmNodeModulesNotFoundDetectableResult extends FailedDetectableResu
 
     @Override
     public String toDescription() {
-        return String.format("A package.json was located in %s, but the node_modules folder was NOT located. Please run 'npm install' in that location and try again.", directoryPath);
+        return String.format(
+            "A package.json was located in %s, but the node_modules folder was NOT located. Please run 'npm install' in that location and try again.",
+            directoryPath
+        );
     }
 }

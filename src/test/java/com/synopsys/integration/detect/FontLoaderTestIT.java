@@ -41,7 +41,10 @@ public class FontLoaderTestIT {
         fontDirectory = Files.createTempDirectory("junit_test_font_loader").toFile();
         PropertyConfiguration propertyConfiguration = new PropertyConfiguration(Collections.emptyList());
         Gson gson = new Gson();
-        DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(new DetectPropertyConfiguration(propertyConfiguration, new SimplePathResolver()), gson);
+        DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(
+            new DetectPropertyConfiguration(propertyConfiguration, new SimplePathResolver()),
+            gson
+        );
         ConnectionFactory connectionFactory = new ConnectionFactory(detectConfigurationFactory.createConnectionDetails());
         ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
         InstalledToolManager installedToolManager = new InstalledToolManager();

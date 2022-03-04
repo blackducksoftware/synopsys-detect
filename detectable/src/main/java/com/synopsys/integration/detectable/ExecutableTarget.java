@@ -5,8 +5,10 @@ import java.io.File;
 import org.jetbrains.annotations.Nullable;
 
 public class ExecutableTarget {
-    private @Nullable File fileTarget;
-    private @Nullable String stringTarget;
+    private @Nullable
+    File fileTarget;
+    private @Nullable
+    String stringTarget;
 
     private ExecutableTarget(@Nullable File fileTarget, @Nullable String stringTarget) {
         this.fileTarget = fileTarget;

@@ -50,7 +50,10 @@ public class RiskReportTests {
 
     @Test
     void riskReportNotCreatedInWorkingDir() throws IOException, InterruptedException, IntegrationException {
-        SharedDockerTestRunner test = anyProjectWithRiskReportResultsInBlackDuck("risk-report-does-not-use-working-directory", new NameVersion("risk-reports", "default-not-working-directory"));
+        SharedDockerTestRunner test = anyProjectWithRiskReportResultsInBlackDuck(
+            "risk-report-does-not-use-working-directory",
+            new NameVersion("risk-reports", "default-not-working-directory")
+        );
 
         test.runner.withWorkingDirectory("/opt/random");
         test.command.property(DetectProperties.DETECT_SOURCE_PATH, "/opt/project/src");
@@ -62,7 +65,10 @@ public class RiskReportTests {
 
     @Test
     void riskReportCreatedInCustomDirectoryEvenIfItDoesntExist() throws IOException, InterruptedException, IntegrationException {
-        SharedDockerTestRunner test = anyProjectWithRiskReportResultsInBlackDuck("risk-report-directory-does-not-exist", new NameVersion("risk-reports", "directory-does-not-exist"));
+        SharedDockerTestRunner test = anyProjectWithRiskReportResultsInBlackDuck(
+            "risk-report-directory-does-not-exist",
+            new NameVersion("risk-reports", "directory-does-not-exist")
+        );
 
         test.command.property(DetectProperties.DETECT_RISK_REPORT_PDF, "true");
         test.command.property(DetectProperties.DETECT_RISK_REPORT_PDF_PATH, "/opt/report/"); //simply using a directory that does not exist

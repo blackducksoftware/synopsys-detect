@@ -18,7 +18,16 @@ public class ImpactAnalysisOutput extends CodeLocationOutput {
     private final String contentString;
     private final ImpactAnalysisUploadView impactAnalysisUploadView;
 
-    public static ImpactAnalysisOutput FAILURE(NameVersion projectAndVersion, String codeLocationName, String errorMessage, Exception exception, String response, String statusMessage, int statusCode, String contentString) {
+    public static ImpactAnalysisOutput FAILURE(
+        NameVersion projectAndVersion,
+        String codeLocationName,
+        String errorMessage,
+        Exception exception,
+        String response,
+        String statusMessage,
+        int statusCode,
+        String contentString
+    ) {
         return new ImpactAnalysisOutput(Result.FAILURE, projectAndVersion, codeLocationName, errorMessage, exception, response, statusMessage, statusCode, contentString, null);
     }
 
@@ -46,7 +55,18 @@ public class ImpactAnalysisOutput extends CodeLocationOutput {
 
         ImpactAnalysisUploadView impactAnalysisUploadView = gson.fromJson(contentString, ImpactAnalysisUploadView.class);
 
-        return new ImpactAnalysisOutput(result, projectAndVersion, codeLocationName, errorMessage, contentStringException, responseString, statusMessage, statusCode, contentString, impactAnalysisUploadView);
+        return new ImpactAnalysisOutput(
+            result,
+            projectAndVersion,
+            codeLocationName,
+            errorMessage,
+            contentStringException,
+            responseString,
+            statusMessage,
+            statusCode,
+            contentString,
+            impactAnalysisUploadView
+        );
     }
 
     private ImpactAnalysisOutput(

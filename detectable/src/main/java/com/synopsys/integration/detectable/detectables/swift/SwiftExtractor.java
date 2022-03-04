@@ -19,7 +19,12 @@ public class SwiftExtractor {
     private final SwiftPackageTransformer swiftPackageTransformer;
     private final ToolVersionLogger toolVersionLogger;
 
-    public SwiftExtractor(DetectableExecutableRunner executableRunner, SwiftCliParser swiftCliParser, SwiftPackageTransformer swiftPackageTransformer, ToolVersionLogger toolVersionLogger) {
+    public SwiftExtractor(
+        DetectableExecutableRunner executableRunner,
+        SwiftCliParser swiftCliParser,
+        SwiftPackageTransformer swiftPackageTransformer,
+        ToolVersionLogger toolVersionLogger
+    ) {
         this.executableRunner = executableRunner;
         this.swiftCliParser = swiftCliParser;
         this.swiftPackageTransformer = swiftPackageTransformer;
@@ -43,7 +48,14 @@ public class SwiftExtractor {
     }
 
     private SwiftPackage getRootSwiftPackage(File environmentDirectory, ExecutableTarget swiftExecutable) throws ExecutableRunnerException, IntegrationException {
-        ExecutableOutput executableOutput = executableRunner.execute(ExecutableUtils.createFromTarget(environmentDirectory, swiftExecutable, "package", "show-dependencies", "--format", "json"));
+        ExecutableOutput executableOutput = executableRunner.execute(ExecutableUtils.createFromTarget(
+            environmentDirectory,
+            swiftExecutable,
+            "package",
+            "show-dependencies",
+            "--format",
+            "json"
+        ));
         if (executableOutput.getReturnCode() == 0) {
             return swiftCliParser.parseOutput(executableOutput.getStandardOutputAsList());
         } else {

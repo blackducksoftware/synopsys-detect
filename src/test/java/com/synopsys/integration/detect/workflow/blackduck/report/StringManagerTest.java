@@ -34,7 +34,19 @@ public class StringManagerTest {
 
     static Stream<StringWrappingData> provideStringWrappingDataStream() {
         String longText = "reallyreallylonglong reallyreallylonglong reallyreallylonglonglong reallyreallylonglong reallyreallylonglong reallyreally longlonglong pants";
-        List<String> longResults = Arrays.asList("reallyreallylo", "nglong", "reallyreallylo", "nglonglong", "reallyreallylonglong", "reallyreallylonglong", "reallyreallylo", "nglong", "reallyreally", "longlonglong", "pants");
+        List<String> longResults = Arrays.asList(
+            "reallyreallylo",
+            "nglong",
+            "reallyreallylo",
+            "nglonglong",
+            "reallyreallylonglong",
+            "reallyreallylonglong",
+            "reallyreallylo",
+            "nglong",
+            "reallyreally",
+            "longlonglong",
+            "pants"
+        );
         List<String> shortResults = Arrays.asList(
             "rea",
             "llyr",

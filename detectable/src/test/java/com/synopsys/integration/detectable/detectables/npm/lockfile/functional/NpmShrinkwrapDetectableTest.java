@@ -85,7 +85,12 @@ public class NpmShrinkwrapDetectableTest extends DetectableFunctionalTest {
         graphAssert.hasRootDependency("negotiator", "https://registry.npmjs.org/negotiator/-/negotiator-0.6.1.tgz");
         graphAssert.hasRootDependency("peer-example", "1.0.0");
         graphAssert.hasParentChildRelationship("accepts", "1.3.3", "mime-types", "https://registry.npmjs.org/mime-types/-/mime-types-2.1.13.tgz");
-        graphAssert.hasParentChildRelationship("mime-types", "https://registry.npmjs.org/mime-types/-/mime-types-2.1.13.tgz", "mime-db", "https://registry.npmjs.org/mime-db/-/mime-db-1.25.0.tgz");
+        graphAssert.hasParentChildRelationship(
+            "mime-types",
+            "https://registry.npmjs.org/mime-types/-/mime-types-2.1.13.tgz",
+            "mime-db",
+            "https://registry.npmjs.org/mime-db/-/mime-db-1.25.0.tgz"
+        );
         graphAssert.hasParentChildRelationship("accepts", "1.3.3", "negotiator", "https://registry.npmjs.org/negotiator/-/negotiator-0.6.1.tgz");
 
     }

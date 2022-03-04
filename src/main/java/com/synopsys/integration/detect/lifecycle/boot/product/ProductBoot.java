@@ -29,7 +29,12 @@ public class ProductBoot {
     private final ProductBootFactory productBootFactory;
     private final ProductBootOptions productBootOptions;
 
-    public ProductBoot(BlackDuckConnectivityChecker blackDuckConnectivityChecker, AnalyticsConfigurationService analyticsConfigurationService, ProductBootFactory productBootFactory, ProductBootOptions productBootOptions) {
+    public ProductBoot(
+        BlackDuckConnectivityChecker blackDuckConnectivityChecker,
+        AnalyticsConfigurationService analyticsConfigurationService,
+        ProductBootFactory productBootFactory,
+        ProductBootOptions productBootOptions
+    ) {
         this.blackDuckConnectivityChecker = blackDuckConnectivityChecker;
         this.analyticsConfigurationService = analyticsConfigurationService;
         this.productBootFactory = productBootFactory;
@@ -47,7 +52,13 @@ public class ProductBoot {
 
         logger.debug("Detect product boot start.");
 
-        BlackDuckRunData blackDuckRunData = getBlackDuckRunData(blackDuckDecision, productBootFactory, blackDuckConnectivityChecker, productBootOptions, analyticsConfigurationService);
+        BlackDuckRunData blackDuckRunData = getBlackDuckRunData(
+            blackDuckDecision,
+            productBootFactory,
+            blackDuckConnectivityChecker,
+            productBootOptions,
+            analyticsConfigurationService
+        );
 
         if (productBootOptions.isTestConnections()) {
             logger.debug(String.format("%s is set to 'true' so Detect will not run.", DetectProperties.DETECT_TEST_CONNECTION.getName()));
@@ -91,10 +102,16 @@ public class ProductBoot {
         } else {
             if (productBootOptions.isIgnoreConnectionFailures()) {
                 logger.info(String.format("Failed to connect to Black Duck: %s", blackDuckConnectivityResult.getFailureReason()));
-                logger.info(String.format("%s is set to 'true' so Detect will simply disable the Black Duck product.", DetectProperties.DETECT_IGNORE_CONNECTION_FAILURES.getName()));
+                logger.info(String.format(
+                    "%s is set to 'true' so Detect will simply disable the Black Duck product.",
+                    DetectProperties.DETECT_IGNORE_CONNECTION_FAILURES.getName()
+                ));
                 return null;
             } else {
-                throw new DetectUserFriendlyException("Could not communicate with Black Duck: " + blackDuckConnectivityResult.getFailureReason(), ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
+                throw new DetectUserFriendlyException(
+                    "Could not communicate with Black Duck: " + blackDuckConnectivityResult.getFailureReason(),
+                    ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY
+                );
             }
         }
     }

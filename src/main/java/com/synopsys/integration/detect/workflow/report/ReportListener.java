@@ -27,7 +27,14 @@ public class ReportListener {
     private final ExtractionLogger extractionLogger;
 
     public static ReportListener createDefault(EventSystem eventSystem) {
-        return new ReportListener(eventSystem, new PreparationSummaryReporter(), new ExtractionSummaryReporter(), new SearchSummaryReporter(), new DetectorIssuePublisher(), new ExtractionLogger());
+        return new ReportListener(
+            eventSystem,
+            new PreparationSummaryReporter(),
+            new ExtractionSummaryReporter(),
+            new SearchSummaryReporter(),
+            new DetectorIssuePublisher(),
+            new ExtractionLogger()
+        );
     }
 
     public ReportListener(
@@ -87,7 +94,13 @@ public class ReportListener {
 
     public void codeLocationsCompleted(Map<DetectCodeLocation, String> codeLocationNameMap) {
         if (detectorToolResult != null && detectorToolResult.getRootDetectorEvaluationTree().isPresent()) {
-            extractionSummaryReporter.writeSummary(debugLogWriter, detectorToolResult.getRootDetectorEvaluationTree().get(), detectorToolResult.getCodeLocationMap(), codeLocationNameMap, false);
+            extractionSummaryReporter.writeSummary(
+                debugLogWriter,
+                detectorToolResult.getRootDetectorEvaluationTree().get(),
+                detectorToolResult.getCodeLocationMap(),
+                codeLocationNameMap,
+                false
+            );
         }
     }
 }

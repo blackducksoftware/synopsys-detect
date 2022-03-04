@@ -26,7 +26,14 @@ public class DetectStatusLogger {
         ExitCodeType.FAILURE_CONFIGURATION
     );
 
-    public void logDetectStatus(IntLogger logger, List<Status> statusSummaries, List<DetectResult> detectResults, List<DetectIssue> detectIssues, List<Operation> detectOperations, ExitCodeType exitCodeType) {
+    public void logDetectStatus(
+        IntLogger logger,
+        List<Status> statusSummaries,
+        List<DetectResult> detectResults,
+        List<DetectIssue> detectIssues,
+        List<Operation> detectOperations,
+        ExitCodeType exitCodeType
+    ) {
         logger.info("");
         logger.info("");
         logger.debug("=== Additional  Information ===");
@@ -115,7 +122,8 @@ public class DetectStatusLogger {
 
     private void logDetectOperations(IntLogger logger, List<Operation> operations) {
         List<Operation> sortedOperations = operations.stream()
-            .filter(operation -> operation.getOperationType() == OperationType.PUBLIC || operation.getStatusType() != StatusType.SUCCESS) //EITHER a public operation or a failed internal operation
+            .filter(operation -> operation.getOperationType() == OperationType.PUBLIC
+                || operation.getStatusType() != StatusType.SUCCESS) //EITHER a public operation or a failed internal operation
             .sorted(Comparator.comparing(Operation::getEndTimeOrStartTime)
                 .thenComparing(Operation::getName))
             .collect(Collectors.toList());

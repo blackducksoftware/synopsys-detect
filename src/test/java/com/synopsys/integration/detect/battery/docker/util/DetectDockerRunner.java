@@ -23,7 +23,10 @@ import com.synopsys.integration.util.OperatingSystemType;
 
 public class DetectDockerRunner {
     public DockerDetectResult runContainer(String image, String cmd, String workdir, HostConfig hostConfig, DockerClient dockerClient) {
-        String detectContainerName = String.format("detect-test%s", java.util.UUID.randomUUID()); // this will identify any containers left behind on build server by Detect Docker tests
+        String detectContainerName = String.format(
+            "detect-test%s",
+            java.util.UUID.randomUUID()
+        ); // this will identify any containers left behind on build server by Detect Docker tests
 
         CreateContainerCmd command = dockerClient.createContainerCmd(image)
             .withHostConfig(hostConfig)

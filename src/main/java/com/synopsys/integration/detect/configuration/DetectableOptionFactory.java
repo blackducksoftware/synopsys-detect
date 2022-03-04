@@ -169,18 +169,19 @@ public class DetectableOptionFactory {
     }
 
     public GoModCliDetectableOptions createGoModCliDetectableOptions() {
-        EnumListFilter<GoModDependencyType> dependencyTypeFilter = EnumListFilter.excludeNone();
+        GoModDependencyType excludedDependencyType;
         if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED)) {
-            Set<GoModDependencyType> excludedDependencyTypes = detectConfiguration.getValue(DetectProperties.DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED).representedValueSet();
-            dependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
+            excludedDependencyType = detectConfiguration.getValue(DetectProperties.DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED);
         } else {
             boolean dependencyVerificationEnabled = detectConfiguration.getValue(DetectProperties.DETECT_GO_ENABLE_VERIFICATION);
             if (dependencyVerificationEnabled) {
-                dependencyTypeFilter = EnumListFilter.fromExcluded(GoModDependencyType.UNUSED);
+                excludedDependencyType = GoModDependencyType.UNUSED;
+            } else {
+                excludedDependencyType = GoModDependencyType.NONE;
             }
         }
 
-        return new GoModCliDetectableOptions(dependencyTypeFilter);
+        return new GoModCliDetectableOptions(excludedDependencyType);
     }
 
     public GradleInspectorOptions createGradleInspectorOptions() {
@@ -194,7 +195,8 @@ public class DetectableOptionFactory {
 
         EnumListFilter<GradleConfigurationType> dependencyTypeFilter;
         if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_GRADLE_CONFIGURATION_TYPES_EXCLUDED)) {
-            Set<GradleConfigurationType> excludedConfigurationTypes = detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_CONFIGURATION_TYPES_EXCLUDED).representedValueSet();
+            Set<GradleConfigurationType> excludedConfigurationTypes = detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_CONFIGURATION_TYPES_EXCLUDED)
+                .representedValueSet();
             dependencyTypeFilter = EnumListFilter.fromExcluded(excludedConfigurationTypes);
         } else {
             boolean includeUnresolvedConfigurations = detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_INCLUDE_UNRESOLVED_CONFIGURATIONS);
@@ -206,8 +208,15 @@ public class DetectableOptionFactory {
         }
 
         String onlineInspectorVersion = detectConfiguration.getNullableValue(DetectProperties.DETECT_GRADLE_INSPECTOR_VERSION);
-        GradleInspectorScriptOptions scriptOptions = new GradleInspectorScriptOptions(excludedProjectNames, includedProjectNames, excludedProjectPaths, includedProjectPaths, excludedConfigurationNames, includedConfigurationNames,
-            customRepository, onlineInspectorVersion);
+        GradleInspectorScriptOptions scriptOptions = new GradleInspectorScriptOptions(excludedProjectNames,
+            includedProjectNames,
+            excludedProjectPaths,
+            includedProjectPaths,
+            excludedConfigurationNames,
+            includedConfigurationNames,
+            customRepository,
+            onlineInspectorVersion
+        );
         String gradleBuildCommand = detectConfiguration.getNullableValue(DetectProperties.DETECT_GRADLE_BUILD_COMMAND);
         return new GradleInspectorOptions(gradleBuildCommand, scriptOptions, proxyInfo, dependencyTypeFilter);
     }

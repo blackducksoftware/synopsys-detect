@@ -49,7 +49,8 @@ public class BdioCodeLocationCreatorTest {
         DetectCodeLocation detectCodeLocation = DetectCodeLocation.forCreator(dependencyGraph, sourceDir, externalId, "testCreator");
         List<DetectCodeLocation> detectCodeLocations = new ArrayList<>();
         detectCodeLocations.add(detectCodeLocation);
-        Mockito.when(codeLocationNameManager.createCodeLocationName(detectCodeLocation, sourceDir, projectNameVersion.getName(), projectNameVersion.getVersion(), "", "")).thenReturn("testCodeLocationName");
+        Mockito.when(codeLocationNameManager.createCodeLocationName(detectCodeLocation, sourceDir, projectNameVersion.getName(), projectNameVersion.getVersion(), "", ""))
+            .thenReturn("testCodeLocationName");
 
         BdioCodeLocationResult result = creator.transformDetectCodeLocations(detectCodeLocations, "", "", projectNameVersion);
 

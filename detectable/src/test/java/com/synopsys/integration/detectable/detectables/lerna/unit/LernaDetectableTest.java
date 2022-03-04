@@ -121,7 +121,14 @@ public class LernaDetectableTest extends DetectableFunctionalTest {
         addPackageJson(directory, packageName, packageVersion, Arrays.stream(dependencies).collect(Collectors.toList()), Collections.emptyList(), Collections.emptyList());
     }
 
-    private void addPackageJson(Path directory, String packageName, String packageVersion, List<NameVersion> dependencies, List<NameVersion> devDependencies, List<NameVersion> peerDependencies) throws IOException {
+    private void addPackageJson(
+        Path directory,
+        String packageName,
+        String packageVersion,
+        List<NameVersion> dependencies,
+        List<NameVersion> devDependencies,
+        List<NameVersion> peerDependencies
+    ) throws IOException {
         PackageJson packageJson = new PackageJson();
         packageJson.name = packageName;
         packageJson.version = packageVersion;

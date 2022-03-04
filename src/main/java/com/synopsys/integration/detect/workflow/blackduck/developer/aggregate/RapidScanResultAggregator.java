@@ -44,7 +44,12 @@ public class RapidScanResultAggregator {
             aggregatedLicenseDetail.addWarnings(detail.getLicenseDetails().getWarningMessages());
         }
 
-        return new RapidScanAggregateResult(summaryBuilder.build(), aggregatedDetails.get(RapidScanDetailGroup.POLICY), aggregatedDetails.get(RapidScanDetailGroup.SECURITY), aggregatedDetails.get(RapidScanDetailGroup.LICENSE));
+        return new RapidScanAggregateResult(
+            summaryBuilder.build(),
+            aggregatedDetails.get(RapidScanDetailGroup.POLICY),
+            aggregatedDetails.get(RapidScanDetailGroup.SECURITY),
+            aggregatedDetails.get(RapidScanDetailGroup.LICENSE)
+        );
     }
 
     private List<RapidScanComponentDetail> aggregateComponentData(List<DeveloperScanComponentResultView> results) {

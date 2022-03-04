@@ -32,7 +32,13 @@ public class DetectFontInstaller {
     public void installFonts(File targetDirectory) {
         try {
             logger.info("Determining the location of the fonts bundle.");
-            String location = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.FONTS_REPO, ArtifactoryConstants.FONTS_PROPERTY, "", "");
+            String location = artifactResolver.resolveArtifactLocation(
+                ArtifactoryConstants.ARTIFACTORY_URL,
+                ArtifactoryConstants.FONTS_REPO,
+                ArtifactoryConstants.FONTS_PROPERTY,
+                "",
+                ""
+            );
             File fontZipFile = downloadZipFile(location, targetDirectory);
             expandZipFile(fontZipFile, targetDirectory);
             installedToolManager.saveInstalledToolLocation(FONTS_ZIP_KEY, targetDirectory.getAbsolutePath());

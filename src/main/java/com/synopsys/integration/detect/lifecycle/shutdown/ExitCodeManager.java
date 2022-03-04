@@ -9,15 +9,15 @@ import com.synopsys.integration.detect.workflow.event.EventSystem;
 
 public class ExitCodeManager {
     private final List<ExitCodeRequest> exitCodeRequests = new ArrayList<>();
-    private final ExitCodeUtility exitCodeUtility;
+    private final ExceptionUtility exceptionUtility;
 
-    public ExitCodeManager(EventSystem eventSystem, ExitCodeUtility exitCodeUtility) {
-        this.exitCodeUtility = exitCodeUtility;
+    public ExitCodeManager(EventSystem eventSystem, ExceptionUtility exitCodeUtility) {
+        this.exceptionUtility = exitCodeUtility;
         eventSystem.registerListener(Event.ExitCode, this::addExitCodeRequest);
     }
 
     public void requestExitCode(Exception e) {
-        requestExitCode(exitCodeUtility.getExitCodeFromExceptionDetails(e));
+        requestExitCode(exceptionUtility.getExitCodeFromException(e));
     }
 
     public void requestExitCode(ExitCodeType exitCodeType) {
@@ -34,9 +34,5 @@ public class ExitCodeManager {
             winningExitCodeType = ExitCodeType.getWinningExitCodeType(winningExitCodeType, exitCodeRequest.getExitCodeType());
         }
         return winningExitCodeType;
-    }
-
-    public ExitCodeType getExitCodeFromExceptionDetails(Exception e) {
-        return exitCodeUtility.getExitCodeFromExceptionDetails(e);
     }
 }

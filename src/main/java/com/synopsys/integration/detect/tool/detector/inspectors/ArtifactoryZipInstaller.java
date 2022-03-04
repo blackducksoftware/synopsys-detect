@@ -30,7 +30,15 @@ public class ArtifactoryZipInstaller {
     }
 
     @NotNull
-    public File installZipFromSource(File dest, String ext, String base, String repository, String property, @Nullable String overrideVersion, @Nullable String overrideArtifactPattern) throws IntegrationException, IOException {
+    public File installZipFromSource(
+        File dest,
+        String ext,
+        String base,
+        String repository,
+        String property,
+        @Nullable String overrideVersion,
+        @Nullable String overrideArtifactPattern
+    ) throws IntegrationException, IOException {
         String source = artifactResolver.resolveArtifactLocation(base, repository, property, overrideVersion, overrideArtifactPattern);
         return installZipFromSource(dest, ext, source);
     }

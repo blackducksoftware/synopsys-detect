@@ -75,7 +75,10 @@ public class PolicyChecker {
             }
         } else {
             String availableLinks = StringUtils.join(projectVersionView.getAvailableLinks(), ", ");
-            logger.warn(String.format("It is not possible to check the policy status for this project/version. The policy-status link must be present. The available links are: %s", availableLinks));
+            logger.warn(String.format(
+                "It is not possible to check the policy status for this project/version. The policy-status link must be present. The available links are: %s",
+                availableLinks
+            ));
         }
     }
 

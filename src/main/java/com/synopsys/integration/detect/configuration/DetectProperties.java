@@ -47,6 +47,7 @@ import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
 import com.synopsys.integration.detect.configuration.enumeration.DetectMajorVersion;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
+import com.synopsys.integration.detect.configuration.enumeration.RapidCompareMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndividualFileMatchingMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
@@ -715,14 +716,18 @@ public class DetectProperties {
             .setGroups(DetectGroup.GO, DetectGroup.GLOBAL)
             .build();
 
-    public static final NoneEnumListProperty<GoModDependencyType> DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED =
-        NoneEnumListProperty.newBuilder("detect.go.mod.dependency.types.excluded", NoneEnum.NONE, GoModDependencyType.class)
+    public static final EnumProperty<GoModDependencyType> DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED =
+        EnumProperty.newBuilder("detect.go.mod.dependency.types.excluded", GoModDependencyType.NONE, GoModDependencyType.class)
             .setInfo("Go Mod Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
             .setHelp(
                 createDefaultDrivenPropertyHelpText("Go Mod dependency types", "detect.go.mod.enable.verification"),
-                String.format("If %s is excluded, Detect will use the results of 'go mod why' to filter out unused dependencies.", GoModDependencyType.UNUSED.name())
+                String.format(
+                    "If %s is provided, Detect will use the results of 'go mod why' to filter out unused dependencies from Go modules declaring Go 1.16 or higher. If %s is provided, Detect will use the results of 'go mod why -vendor' to filter out all unused dependencies.",
+                    GoModDependencyType.UNUSED.name(),
+                    GoModDependencyType.VENDORED.name()
+                )
             )
-            .setExample(GoModDependencyType.UNUSED.name())
+            .setExample(GoModDependencyType.VENDORED.name())
             .setGroups(DetectGroup.GO, DetectGroup.GLOBAL)
             .build();
 
@@ -1648,7 +1653,7 @@ public class DetectProperties {
     public static final BooleanProperty DETECT_WAIT_FOR_RESULTS =
         BooleanProperty.newBuilder("detect.wait.for.results", false)
             .setInfo("Wait For Results", DetectPropertyFromVersion.VERSION_5_5_0)
-            .setHelp("If set to true, Detect will wait for Synopsys products until results are available or the detect.report.timeout is exceeded.")
+            .setHelp("If set to true, Detect will wait for Synopsys products until results are available or the detect.timeout is exceeded.")
             .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
             .build();
 
@@ -1666,6 +1671,17 @@ public class DetectProperties {
             .setHelp(
                 "Set the Black Duck scanning mode of Detect",
                 "Set the scanning mode of Detect to control how Detect will send data to Black Duck. RAPID will not persist the results and disables select Detect functionality for faster results. INTELLIGENT persists the results and permits all features of Detect."
+            )
+            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK)
+            .setCategory(DetectCategory.Advanced)
+            .build();
+
+    public static final EnumProperty<RapidCompareMode> DETECT_BLACKDUCK_RAPID_COMPARE_MODE =
+        EnumProperty.newBuilder("detect.blackduck.rapid.compare.mode", RapidCompareMode.ALL, RapidCompareMode.class)
+            .setInfo("Rapid Compare Mode", DetectPropertyFromVersion.VERSION_7_12_0)
+            .setHelp(
+                "Controls how rapid scan evaluates policy rules",
+                "Set the compare mode of rapid scan. ALL evaluates all RAPID or FULL policies. BOM_COMPARE_STRICT will only show policy violations not present in an existing project version BOM. BOM_COMPARE depends on the type of policy rule modes and behaves like ALL if the policy rule is only RAPID but like BOM_COMPARE_STRICT when the policy rule is RAPID and FULL. See the Black Duck documentation for complete details."
             )
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK)
             .setCategory(DetectCategory.Advanced)

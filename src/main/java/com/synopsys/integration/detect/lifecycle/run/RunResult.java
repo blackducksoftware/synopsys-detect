@@ -26,7 +26,8 @@ public class RunResult {
     }
 
     public void addDetectableToolResult(DetectableToolResult detectableToolResult) {
-        detectableToolResult.getDetectToolProjectInfo().ifPresent(detectToolProjectInfo1 -> addToolNameVersion(detectToolProjectInfo1.getDetectTool(), detectToolProjectInfo1.getSuggestedNameVersion()));
+        detectableToolResult.getDetectToolProjectInfo()
+            .ifPresent(detectToolProjectInfo1 -> addToolNameVersion(detectToolProjectInfo1.getDetectTool(), detectToolProjectInfo1.getSuggestedNameVersion()));
         detectableToolResult.getDockerTar().ifPresent(this::addDockerTargetData);
         detectCodeLocations.addAll(detectableToolResult.getDetectCodeLocations());
     }
