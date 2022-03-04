@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectables.bitbake.ShowRecipesResults;
@@ -68,7 +69,7 @@ public class BitbakeRecipesParser {
         }
     }
 
-    private void finishCurrentRecipe(final Map<String, List<String>> bitbakeRecipes, final Set<String> layerNames, final BitbakeRecipe currentRecipe) {
+    private void finishCurrentRecipe(Map<String, List<String>> bitbakeRecipes, Set<String> layerNames, @Nullable BitbakeRecipe currentRecipe) {
         if (currentRecipe != null) {
             bitbakeRecipes.put(currentRecipe.getName(), currentRecipe.getLayerNames());
             if (currentRecipe.getLayerNames() != null) {
