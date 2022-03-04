@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 
 import com.synopsys.integration.configuration.property.types.enumallnone.enumeration.AllEnum;
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllEnumList;
-import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumListProperty;
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumListPropertyBase;
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumValue;
 

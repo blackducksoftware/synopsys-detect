@@ -11,11 +11,11 @@ import com.synopsys.integration.detectable.extraction.Extraction;
 public class DockerTargetData {
 
     @Nullable
-    private File squashedImage;
+    private final File squashedImage;
     @Nullable
-    private File containerFilesystem;
+    private final File containerFilesystem;
     @Nullable
-    private File providedImageTar;
+    private final File providedImageTar;
 
     public static DockerTargetData NO_DOCKER_TARGET = new DockerTargetData(null, null, null);
 

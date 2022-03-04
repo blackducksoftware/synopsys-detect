@@ -26,7 +26,8 @@ public class YarnLockDetectableTest extends DetectableFunctionalTest {
 
     @Override
     protected void setup() throws IOException {
-        addFile(Paths.get("yarn.lock"),
+        addFile(
+            Paths.get("yarn.lock"),
             "async@2.5.0:",
             "   version \"2.5.0\"",
             "   dependencies:",
@@ -36,7 +37,8 @@ public class YarnLockDetectableTest extends DetectableFunctionalTest {
             "   version \"4.17.4\""
         );
 
-        addFile(Paths.get("package.json"),
+        addFile(
+            Paths.get("package.json"),
             "{",
             "   \"name\": \"babel\",",
             "   \"version\": \"1.2.3\",",

@@ -11,8 +11,8 @@ import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.configuration.util.KeyUtils;
 
 public class JavaPropertiesPropertySource implements PropertySource {
-    private String givenName;
-    private Map<String, String> normalizedPropertyMap;
+    private final String givenName;
+    private final Map<String, String> normalizedPropertyMap;
 
     public JavaPropertiesPropertySource(String givenName, Properties properties) {
         this.givenName = givenName;

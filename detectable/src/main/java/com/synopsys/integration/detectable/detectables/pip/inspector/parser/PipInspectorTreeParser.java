@@ -93,7 +93,8 @@ public class PipInspectorTreeParser {
         if (unResolvedPackageCount > 0) {
             logger.error(
                 "The Pip inspector was unable to resolve {} packages. Please check to be sure all packages have been installed with 'pip install'. Refer to 'Python support' in the Detect documentation for important information regarding Python projects.",
-                unResolvedPackageCount);
+                unResolvedPackageCount
+            );
         }
     }
 

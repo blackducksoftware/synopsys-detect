@@ -97,8 +97,10 @@ public class UpdateCustomFieldsOperation {
                     if (option.isPresent()) {
                         values.add(option.get().getHref().string());
                     } else {
-                        throw new DetectUserFriendlyException(String.format("Unable to update custom field '%s', unable to find option for value '%s'", element.getLabel(), value),
-                            ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
+                        throw new DetectUserFriendlyException(
+                            String.format("Unable to update custom field '%s', unable to find option for value '%s'", element.getLabel(), value),
+                            ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR
+                        );
                     }
                 }
             }

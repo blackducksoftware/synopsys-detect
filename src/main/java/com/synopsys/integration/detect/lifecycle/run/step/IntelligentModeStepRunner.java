@@ -39,9 +39,9 @@ import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.util.NameVersion;
 
 public class IntelligentModeStepRunner {
-    private OperationFactory operationFactory;
+    private final OperationFactory operationFactory;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private StepHelper stepHelper;
+    private final StepHelper stepHelper;
 
     public IntelligentModeStepRunner(OperationFactory operationFactory, StepHelper stepHelper) {
         this.operationFactory = operationFactory;
@@ -53,8 +53,13 @@ public class IntelligentModeStepRunner {
             SignatureScanStepRunner signatureScanStepRunner = new SignatureScanStepRunner(operationFactory);
             signatureScanStepRunner.runSignatureScannerOffline(projectNameVersion, dockerTargetData);
         });
-        stepHelper.runToolIfIncludedWithCallbacks(DetectTool.IMPACT_ANALYSIS, "Vulnerability Impact Analysis",  /* because it does not publish it's own status */ () -> generateImpactAnalysis(projectNameVersion),
-            operationFactory::publishImpactSuccess, operationFactory::publishImpactFailure);
+        stepHelper.runToolIfIncludedWithCallbacks(
+            DetectTool.IMPACT_ANALYSIS,
+            "Vulnerability Impact Analysis",
+            () -> generateImpactAnalysis(projectNameVersion),
+            operationFactory::publishImpactSuccess,
+            operationFactory::publishImpactFailure
+        );
     }
 
     //TODO: Change black duck post options to a decision and stick it in Run Data somewhere.
@@ -83,9 +88,13 @@ public class IntelligentModeStepRunner {
             binaryScanStepRunner.runBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData).ifPresent(codeLocationAccumulator::addWaitableCodeLocation);
         });
 
-        stepHelper.runToolIfIncludedWithCallbacks(DetectTool.IMPACT_ANALYSIS, "Vulnerability Impact Analysis",
+        stepHelper.runToolIfIncludedWithCallbacks(
+            DetectTool.IMPACT_ANALYSIS,
+            "Vulnerability Impact Analysis",
             () -> runImpactAnalysisOnline(projectNameVersion, projectVersion, codeLocationAccumulator, blackDuckRunData.getBlackDuckServicesFactory()),
-            operationFactory::publishImpactSuccess, operationFactory::publishImpactFailure);
+            operationFactory::publishImpactSuccess,
+            operationFactory::publishImpactFailure
+        );
 
         stepHelper.runAsGroup("Wait for Results", OperationType.INTERNAL, () -> {
             CodeLocationResults codeLocationResults = calculateCodeLocations(codeLocationAccumulator);
@@ -157,8 +166,12 @@ public class IntelligentModeStepRunner {
         }
     }
 
-    public void runImpactAnalysisOnline(NameVersion projectNameVersion, ProjectVersionWrapper projectVersionWrapper, CodeLocationAccumulator codeLocationAccumulator,
-        BlackDuckServicesFactory blackDuckServicesFactory) throws DetectUserFriendlyException {
+    public void runImpactAnalysisOnline(
+        NameVersion projectNameVersion,
+        ProjectVersionWrapper projectVersionWrapper,
+        CodeLocationAccumulator codeLocationAccumulator,
+        BlackDuckServicesFactory blackDuckServicesFactory
+    ) throws DetectUserFriendlyException {
         String impactAnalysisName = operationFactory.generateImpactAnalysisCodeLocationName(projectNameVersion);
         Path impactFile = operationFactory.generateImpactAnalysisFile(impactAnalysisName);
         CodeLocationCreationData<ImpactAnalysisBatchOutput> uploadData = operationFactory.uploadImpactAnalysisFile(impactFile, projectNameVersion, impactAnalysisName, blackDuckServicesFactory);

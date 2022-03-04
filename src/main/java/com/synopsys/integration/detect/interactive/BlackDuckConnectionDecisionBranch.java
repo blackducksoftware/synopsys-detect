@@ -56,7 +56,7 @@ public class BlackDuckConnectionDecisionBranch implements DecisionTree {
 
                     blackDuckConnectivityResult = blackDuckConnectivityChecker.determineConnectivity(blackDuckServerConfig);
                 } catch (Exception e) {
-                    blackDuckConnectivityResult = BlackDuckConnectivityResult.failure("Failed to test connection. " + System.lineSeparator() + e.toString());
+                    blackDuckConnectivityResult = BlackDuckConnectivityResult.failure("Failed to test connection. " + System.lineSeparator() + e);
                 }
 
                 if (!blackDuckConnectivityResult.isSuccessfullyConnected()) {

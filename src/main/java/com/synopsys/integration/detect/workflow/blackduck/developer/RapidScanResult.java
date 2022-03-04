@@ -7,8 +7,8 @@ import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.rest.HttpUrl;
 
 public class RapidScanResult {
-    private List<HttpUrl> scanIds;
-    private List<DeveloperScanComponentResultView> componentResultViews;
+    private final List<HttpUrl> scanIds;
+    private final List<DeveloperScanComponentResultView> componentResultViews;
 
     public RapidScanResult(List<HttpUrl> scanIds, List<DeveloperScanComponentResultView> componentResultViews) {
         this.scanIds = scanIds;

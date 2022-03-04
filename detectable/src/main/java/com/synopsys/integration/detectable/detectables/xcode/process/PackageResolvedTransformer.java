@@ -53,7 +53,8 @@ public class PackageResolvedTransformer {
             return Optional.of(new Dependency(name, version, externalId));
         } catch (MalformedURLException exception) {
             logger.warn(String.format("Package '%s' has a malformed url. It cannot be added to the graph.", resolvedPackage.getPackageName()));
-            logger.debug(String.format("Package '%s', Version '%s', Branch '%s', Revision: '%s', MalformedURL '%s'",
+            logger.debug(String.format(
+                "Package '%s', Version '%s', Branch '%s', Revision: '%s', MalformedURL '%s'",
                 resolvedPackage.getPackageName(),
                 packageState.getVersion(),
                 StringUtils.defaultIfEmpty(packageState.getBranch(), "N/A"),

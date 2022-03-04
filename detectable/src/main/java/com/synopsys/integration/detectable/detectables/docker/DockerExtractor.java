@@ -69,8 +69,17 @@ public class DockerExtractor {
         this.gson = gson;
     }
 
-    public Extraction extract(File directory, File outputDirectory, ExecutableTarget dockerExe, ExecutableTarget javaExe, String image, String imageId, String tar, DockerInspectorInfo dockerInspectorInfo,
-        DockerProperties dockerProperties) {
+    public Extraction extract(
+        File directory,
+        File outputDirectory,
+        ExecutableTarget dockerExe,
+        ExecutableTarget javaExe,
+        String image,
+        String imageId,
+        String tar,
+        DockerInspectorInfo dockerInspectorInfo,
+        DockerProperties dockerProperties
+    ) {
         try {
             String imageArgument = null;
             String imagePiece = null;
@@ -114,18 +123,22 @@ public class DockerExtractor {
         List<String> dockerImportArguments = Arrays.asList(
             "load",
             "-i",
-            imageToImport.getCanonicalPath());
+            imageToImport.getCanonicalPath()
+        );
         Executable dockerImportImageExecutable = ExecutableUtils.createFromTarget(directory, environmentVariables, dockerExe, dockerImportArguments);
         ExecutableOutput exeOut = executableRunner.execute(dockerImportImageExecutable);
         if (exeOut.getReturnCode() != 0) {
             throw new IntegrationException(String.format("Command %s %s returned %d: %s",
                 dockerExe.toCommand(), dockerImportArguments,
-                exeOut.getReturnCode(), exeOut.getErrorOutput()));
+                exeOut.getReturnCode(), exeOut.getErrorOutput()
+            ));
         }
     }
 
-    private Extraction executeDocker(File outputDirectory, String imageArgument, String suppliedImagePiece, String dockerTarFilePath, File directory, ExecutableTarget javaExe, ExecutableTarget dockerExe,
-        DockerInspectorInfo dockerInspectorInfo, DockerProperties dockerProperties)
+    private Extraction executeDocker(
+        File outputDirectory, String imageArgument, String suppliedImagePiece, String dockerTarFilePath, File directory, ExecutableTarget javaExe, ExecutableTarget dockerExe,
+        DockerInspectorInfo dockerInspectorInfo, DockerProperties dockerProperties
+    )
         throws IOException, ExecutableRunnerException {
 
         File dockerPropertiesFile = new File(outputDirectory, "application.properties");

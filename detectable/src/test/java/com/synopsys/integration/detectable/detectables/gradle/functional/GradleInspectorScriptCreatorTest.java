@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -31,8 +32,16 @@ public class GradleInspectorScriptCreatorTest {
         List<String> includedConfigurationNames = Arrays.asList("excludedConfig");
         String gradleInspectorRepositoryUrl = null;
         String providedOnlineInspectorVersion = null;
-        GradleInspectorScriptOptions scriptOptions = new GradleInspectorScriptOptions(excludedProjectNames, includedProjectNames,
-            excludedConfigurationNames, includedConfigurationNames, gradleInspectorRepositoryUrl, providedOnlineInspectorVersion);
+        GradleInspectorScriptOptions scriptOptions = new GradleInspectorScriptOptions(
+            excludedProjectNames,
+            includedProjectNames,
+            Collections.emptyList(),
+            Collections.emptyList(),
+            excludedConfigurationNames,
+            includedConfigurationNames,
+            gradleInspectorRepositoryUrl,
+            providedOnlineInspectorVersion
+        );
 
         Configuration configuration = createFreemarkerConfiguration();
         GradleInspectorScriptCreator gradleInspectorScriptCreator = new GradleInspectorScriptCreator(configuration);

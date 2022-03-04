@@ -49,6 +49,7 @@ public class DetectConfigurationBootManager {
             .filter(property -> detectConfiguration.wasKeyProvided(property.getKey()))
             .filter(property -> property.getPropertyDeprecationInfo().getDeprecatedValues().size() > 0)
             .map(property -> new ValueDeprecation(property.getKey(), checkForUsedValueDeprecationsForProperty(property, detectConfiguration)))
+            .filter(valueDeprecation -> valueDeprecation.getDeprecatedValueUsages().size() > 0)
             .collect(Collectors.toList());
     }
 

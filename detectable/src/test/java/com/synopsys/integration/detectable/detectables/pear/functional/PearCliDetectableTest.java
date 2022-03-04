@@ -28,7 +28,8 @@ public class PearCliDetectableTest extends DetectableFunctionalTest {
 
     @Override
     protected void setup() throws IOException {
-        addFile(Paths.get("package.xml"),
+        addFile(
+            Paths.get("package.xml"),
             "<?xml version=\"1.0\"?>",
             "<!DOCTYPE package SYSTEM \"http://pear.php.net/dtd/package-1.0\">",
             "<package xmlns=\"http://pear.php.net/dtd/package-2.0\">",

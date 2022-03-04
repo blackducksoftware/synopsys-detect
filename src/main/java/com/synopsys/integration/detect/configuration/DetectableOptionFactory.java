@@ -73,8 +73,9 @@ public class DetectableOptionFactory {
     public BazelDetectableOptions createBazelDetectableOptions() {
         String targetName = detectConfiguration.getNullableValue(DetectProperties.DETECT_BAZEL_TARGET);
         List<String> bazelCqueryAdditionalOptions = detectConfiguration.getValue(DetectProperties.DETECT_BAZEL_CQUERY_OPTIONS);
-        Set<WorkspaceRule> bazelDependencyRules = detectConfiguration.getValue(DetectProperties.DETECT_BAZEL_DEPENDENCY_RULE).representedValueSet();
-        return new BazelDetectableOptions(targetName, bazelDependencyRules, bazelCqueryAdditionalOptions);
+        Set<WorkspaceRule> workspaceRulesFromDeprecatedProperty = detectConfiguration.getValue(DetectProperties.DETECT_BAZEL_DEPENDENCY_RULE).representedValueSet();
+        Set<WorkspaceRule> workspaceRulesFromProperty = detectConfiguration.getValue(DetectProperties.DETECT_BAZEL_WORKSPACE_RULES).representedValueSet();
+        return new BazelDetectableOptions(targetName, workspaceRulesFromDeprecatedProperty, workspaceRulesFromProperty, bazelCqueryAdditionalOptions);
     }
 
     public BitbakeDetectableOptions createBitbakeDetectableOptions() {
@@ -154,8 +155,17 @@ public class DetectableOptionFactory {
 
         Path dockerInspectorPath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_DOCKER_INSPECTOR_PATH);
         String dockerPlatformTopLayerId = detectConfiguration.getNullableValue(DetectProperties.DETECT_DOCKER_PLATFORM_TOP_LAYER_ID);
-        return new DockerDetectableOptions(dockerPathRequired, suppliedDockerImage, dockerImageId, suppliedDockerTar, dockerInspectorLoggingLevel, dockerInspectorVersion, additionalDockerProperties, dockerInspectorPath,
-            dockerPlatformTopLayerId);
+        return new DockerDetectableOptions(
+            dockerPathRequired,
+            suppliedDockerImage,
+            dockerImageId,
+            suppliedDockerTar,
+            dockerInspectorLoggingLevel,
+            dockerInspectorVersion,
+            additionalDockerProperties,
+            dockerInspectorPath,
+            dockerPlatformTopLayerId
+        );
     }
 
     public GoModCliDetectableOptions createGoModCliDetectableOptions() {
@@ -176,6 +186,8 @@ public class DetectableOptionFactory {
     public GradleInspectorOptions createGradleInspectorOptions() {
         List<String> excludedProjectNames = detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_EXCLUDED_PROJECTS);
         List<String> includedProjectNames = detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_INCLUDED_PROJECTS);
+        List<String> excludedProjectPaths = detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_EXCLUDED_PROJECT_PATHS);
+        List<String> includedProjectPaths = detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_INCLUDED_PROJECT_PATHS);
         List<String> excludedConfigurationNames = detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_EXCLUDED_CONFIGURATIONS);
         List<String> includedConfigurationNames = detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_INCLUDED_CONFIGURATIONS);
         String customRepository = ArtifactoryConstants.GRADLE_INSPECTOR_MAVEN_REPO;
@@ -194,7 +206,8 @@ public class DetectableOptionFactory {
         }
 
         String onlineInspectorVersion = detectConfiguration.getNullableValue(DetectProperties.DETECT_GRADLE_INSPECTOR_VERSION);
-        GradleInspectorScriptOptions scriptOptions = new GradleInspectorScriptOptions(excludedProjectNames, includedProjectNames, excludedConfigurationNames, includedConfigurationNames, customRepository, onlineInspectorVersion);
+        GradleInspectorScriptOptions scriptOptions = new GradleInspectorScriptOptions(excludedProjectNames, includedProjectNames, excludedProjectPaths, includedProjectPaths, excludedConfigurationNames, includedConfigurationNames,
+            customRepository, onlineInspectorVersion);
         String gradleBuildCommand = detectConfiguration.getNullableValue(DetectProperties.DETECT_GRADLE_BUILD_COMMAND);
         return new GradleInspectorOptions(gradleBuildCommand, scriptOptions, proxyInfo, dependencyTypeFilter);
     }

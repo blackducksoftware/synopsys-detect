@@ -34,8 +34,13 @@ public class NugetSolutionDetectable extends Detectable {
     private NugetInspector inspector;
     private List<File> solutionFiles = new ArrayList<>();
 
-    public NugetSolutionDetectable(DetectableEnvironment environment, FileFinder fileFinder, NugetInspectorResolver nugetInspectorManager, NugetInspectorExtractor nugetInspectorExtractor,
-        NugetInspectorOptions nugetInspectorOptions) {
+    public NugetSolutionDetectable(
+        DetectableEnvironment environment,
+        FileFinder fileFinder,
+        NugetInspectorResolver nugetInspectorManager,
+        NugetInspectorExtractor nugetInspectorExtractor,
+        NugetInspectorOptions nugetInspectorOptions
+    ) {
         super(environment);
         this.fileFinder = fileFinder;
         this.nugetInspectorExtractor = nugetInspectorExtractor;

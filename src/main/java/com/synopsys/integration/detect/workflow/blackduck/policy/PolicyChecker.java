@@ -105,7 +105,8 @@ public class PolicyChecker {
                 if (StringUtils.isNotBlank(projectVersionComponentView.getComponentVersion())) {
                     policyRuleComponentVersionSuffix = String.format(" (%s).", projectVersionComponentView.getComponentVersion());
                 }
-                logger.info(String.format("Policy rule \"%s\" was violated by component \"%s\"%s",
+                logger.info(String.format(
+                    "Policy rule \"%s\" was violated by component \"%s\"%s",
                     componentPolicyRulesView.getName(),
                     componentId,
                     policyRuleComponentVersionSuffix
@@ -116,7 +117,8 @@ public class PolicyChecker {
                     policyRuleSuffix = String.format(" with description: %s", componentPolicyRulesView.getDescription());
                 }
 
-                logger.info(String.format("Policy rule \"%s\" has a severity type of %s%s",
+                logger.info(String.format(
+                    "Policy rule \"%s\" has a severity type of %s%s",
                     componentPolicyRulesView.getName(),
                     componentPolicyRulesView.getSeverity().prettyPrint(),
                     policyRuleSuffix

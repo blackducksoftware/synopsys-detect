@@ -90,7 +90,8 @@ public class PnpmYamlTransformerTest {
         PnpmLockYaml pnpmLockYaml = createPnpmLockYaml();
         PnpmYamlTransformer transformer = createTransformer();
         pnpmLockYaml.packages = null;
-        assertThrows(IntegrationException.class,
+        assertThrows(
+            IntegrationException.class,
             () -> transformer.generateCodeLocation(pnpmLockYamlFile, pnpmLockYaml, projectNameVersion, linkedPackageResolver)
         );
     }

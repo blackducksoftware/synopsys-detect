@@ -54,7 +54,8 @@ public class NpmOutputParserTest {
             "           }",
             "       }",
             "   }",
-            "}"));
+            "}"
+        ));
         NpmDependencyTypeFilter npmDependencyTypeFilter = new NpmDependencyTypeFilter(Collections.emptySet(), Collections.emptySet(), true, true);
         PackageJson packageJson = new PackageJson();
         NpmPackagerResult result = parser.convertNpmJsonFileToCodeLocation(testIn, packageJson);

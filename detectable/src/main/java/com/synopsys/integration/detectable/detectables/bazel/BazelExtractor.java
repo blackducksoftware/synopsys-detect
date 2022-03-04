@@ -42,20 +42,24 @@ public class BazelExtractor {
     private final ToolVersionLogger toolVersionLogger;
     private final HaskellCabalLibraryJsonProtoParser haskellCabalLibraryJsonProtoParser;
     private final String bazelTarget;
-    private final Set<WorkspaceRule> providedDependencyRuleTypes;
+    private final Set<WorkspaceRule> workspaceRulesFromDeprecatedProperty;
+    private final Set<WorkspaceRule> workspaceRulesFromProperty;
     private final BazelVariableSubstitutor bazelVariableSubstitutor;
     private final BazelProjectNameGenerator bazelProjectNameGenerator;
 
-    public BazelExtractor(DetectableExecutableRunner executableRunner,
+    public BazelExtractor(
+        DetectableExecutableRunner executableRunner,
         ExternalIdFactory externalIdFactory,
         BazelWorkspaceFileParser bazelWorkspaceFileParser,
         WorkspaceRuleChooser workspaceRuleChooser,
         ToolVersionLogger toolVersionLogger,
         HaskellCabalLibraryJsonProtoParser haskellCabalLibraryJsonProtoParser,
         String bazelTarget,
-        Set<WorkspaceRule> providedDependencyRuleTypes,
+        Set<WorkspaceRule> workspaceRulesFromDeprecatedProperty,
+        Set<WorkspaceRule> workspaceRulesFromProperty,
         BazelVariableSubstitutor bazelVariableSubstitutor,
-        BazelProjectNameGenerator bazelProjectNameGenerator) {
+        BazelProjectNameGenerator bazelProjectNameGenerator
+    ) {
         this.executableRunner = executableRunner;
         this.externalIdFactory = externalIdFactory;
         this.workspaceRuleChooser = workspaceRuleChooser;
@@ -63,7 +67,8 @@ public class BazelExtractor {
         this.toolVersionLogger = toolVersionLogger;
         this.haskellCabalLibraryJsonProtoParser = haskellCabalLibraryJsonProtoParser;
         this.bazelTarget = bazelTarget;
-        this.providedDependencyRuleTypes = providedDependencyRuleTypes;
+        this.workspaceRulesFromDeprecatedProperty = workspaceRulesFromDeprecatedProperty;
+        this.workspaceRulesFromProperty = workspaceRulesFromProperty;
         this.bazelVariableSubstitutor = bazelVariableSubstitutor;
         this.bazelProjectNameGenerator = bazelProjectNameGenerator;
     }
@@ -73,7 +78,7 @@ public class BazelExtractor {
         BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
         Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor, externalIdFactory, haskellCabalLibraryJsonProtoParser);
         Set<WorkspaceRule> workspaceRulesFromFile = parseWorkspaceRulesFromFile(workspaceFile);
-        Set<WorkspaceRule> workspaceRulesToQuery = workspaceRuleChooser.choose(workspaceRulesFromFile, providedDependencyRuleTypes);
+        Set<WorkspaceRule> workspaceRulesToQuery = workspaceRuleChooser.choose(workspaceRulesFromFile, workspaceRulesFromDeprecatedProperty, workspaceRulesFromProperty);
         CodeLocation codeLocation = generateCodelocation(pipelines, workspaceRulesToQuery);
         return buildResults(codeLocation, bazelProjectNameGenerator.generateFromBazelTarget(bazelTarget));
     }

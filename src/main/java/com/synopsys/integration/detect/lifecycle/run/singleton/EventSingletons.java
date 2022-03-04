@@ -13,8 +13,13 @@ public class EventSingletons {
     private final CodeLocationEventPublisher codeLocationEventPublisher;
     private final ProjectEventPublisher projectEventPublisher;
 
-    public EventSingletons(StatusEventPublisher statusEventPublisher, ExitCodePublisher exitCodePublisher, DetectorEventPublisher detectorEventPublisher,
-        CodeLocationEventPublisher codeLocationEventPublisher, ProjectEventPublisher projectEventPublisher) {
+    public EventSingletons(
+        StatusEventPublisher statusEventPublisher,
+        ExitCodePublisher exitCodePublisher,
+        DetectorEventPublisher detectorEventPublisher,
+        CodeLocationEventPublisher codeLocationEventPublisher,
+        ProjectEventPublisher projectEventPublisher
+    ) {
         this.statusEventPublisher = statusEventPublisher;
         this.exitCodePublisher = exitCodePublisher;
         this.detectorEventPublisher = detectorEventPublisher;

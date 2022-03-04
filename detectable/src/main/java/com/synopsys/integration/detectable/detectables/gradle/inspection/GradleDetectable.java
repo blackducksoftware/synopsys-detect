@@ -39,8 +39,14 @@ public class GradleDetectable extends Detectable {
     private ExecutableTarget gradleExe;
     private File gradleInspector;
 
-    public GradleDetectable(DetectableEnvironment environment, FileFinder fileFinder, GradleResolver gradleResolver, GradleInspectorResolver gradleInspectorResolver,
-        GradleInspectorExtractor gradleInspectorExtractor, GradleInspectorOptions gradleInspectorOptions) {
+    public GradleDetectable(
+        DetectableEnvironment environment,
+        FileFinder fileFinder,
+        GradleResolver gradleResolver,
+        GradleInspectorResolver gradleInspectorResolver,
+        GradleInspectorExtractor gradleInspectorExtractor,
+        GradleInspectorOptions gradleInspectorOptions
+    ) {
         super(environment);
         this.fileFinder = fileFinder;
         this.gradleResolver = gradleResolver;

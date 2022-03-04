@@ -70,8 +70,12 @@ public class YarnWorkspace {
         if (givenDependencyIdString.startsWith(thisWorkspaceName + YarnTransformer.STRING_ID_NAME_VERSION_SEPARATOR)) {
             StringDependencyId thisWorkspaceDependencyId = generateDependencyId();
             if (!givenDependencyId.equals(thisWorkspaceDependencyId)) {
-                logger.warn("Dependency ID {} looks like workspace {}, but expected the Dependency ID to be {}",
-                    givenDependencyId, thisWorkspaceName, thisWorkspaceDependencyId);
+                logger.warn(
+                    "Dependency ID {} looks like workspace {}, but expected the Dependency ID to be {}",
+                    givenDependencyId,
+                    thisWorkspaceName,
+                    thisWorkspaceDependencyId
+                );
             }
             return true;
         }
@@ -81,8 +85,12 @@ public class YarnWorkspace {
     public boolean matches(String name, String version) {
         if (getName().orElse("").equals(name)) {
             if (!version.startsWith(WORKSPACE_VERSION_PREFIX) && !versionMatches(version)) {
-                logger.trace("yarn.lock dependency {} has the same name as a workspace, but the version is {} (vs. {}). Considering them the same anyway.",
-                    name, version, getVersionString());
+                logger.trace(
+                    "yarn.lock dependency {} has the same name as a workspace, but the version is {} (vs. {}). Considering them the same anyway.",
+                    name,
+                    version,
+                    getVersionString()
+                );
             }
             return true;
         }

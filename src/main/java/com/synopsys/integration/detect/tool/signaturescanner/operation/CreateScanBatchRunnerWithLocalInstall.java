@@ -12,8 +12,7 @@ public class CreateScanBatchRunnerWithLocalInstall { //TODO: Should this even ex
     private final ScanPathsUtility scanPathsUtility;
     private final ScanCommandRunner scanCommandRunner;
 
-    public CreateScanBatchRunnerWithLocalInstall(IntEnvironmentVariables intEnvironmentVariables, ScanPathsUtility scanPathsUtility,
-        ScanCommandRunner scanCommandRunner) {
+    public CreateScanBatchRunnerWithLocalInstall(IntEnvironmentVariables intEnvironmentVariables, ScanPathsUtility scanPathsUtility, ScanCommandRunner scanCommandRunner) {
         this.intEnvironmentVariables = intEnvironmentVariables;
         this.scanPathsUtility = scanPathsUtility;
         this.scanCommandRunner = scanCommandRunner;

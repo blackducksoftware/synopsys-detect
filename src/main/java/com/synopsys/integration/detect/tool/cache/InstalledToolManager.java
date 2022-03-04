@@ -8,7 +8,7 @@ public class InstalledToolManager {
 
     private final String jsonFileFormatVersion = "0.1.0";
 
-    private Map<String, String> installedTools = new HashMap<>();
+    private final Map<String, String> installedTools = new HashMap<>();
 
     public InstalledToolData getInstalledToolData() {
         InstalledToolData installedToolData = new InstalledToolData();

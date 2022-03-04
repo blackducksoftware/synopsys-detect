@@ -34,8 +34,14 @@ public class DockerDetectable extends Detectable {
     private ExecutableTarget dockerExe;
     private DockerInspectorInfo dockerInspectorInfo;
 
-    public DockerDetectable(DetectableEnvironment environment, DockerInspectorResolver dockerInspectorResolver, JavaResolver javaResolver, DockerResolver dockerResolver,
-        DockerExtractor dockerExtractor, DockerDetectableOptions dockerDetectableOptions) {
+    public DockerDetectable(
+        DetectableEnvironment environment,
+        DockerInspectorResolver dockerInspectorResolver,
+        JavaResolver javaResolver,
+        DockerResolver dockerResolver,
+        DockerExtractor dockerExtractor,
+        DockerDetectableOptions dockerDetectableOptions
+    ) {
         super(environment);
         this.javaResolver = javaResolver;
         this.dockerResolver = dockerResolver;
@@ -90,7 +96,8 @@ public class DockerDetectable extends Detectable {
         String imageId = dockerDetectableOptions.getSuppliedDockerImageId().orElse("");
         String tar = dockerDetectableOptions.getSuppliedDockerTar().orElse("");
         return dockerExtractor.extract(environment.getDirectory(), extractionEnvironment.getOutputDirectory(), dockerExe, javaExe, image, imageId, tar, dockerInspectorInfo,
-            new DockerProperties(dockerDetectableOptions)); //TODO, doesn't feel right to construct properties here. -jp
+            new DockerProperties(dockerDetectableOptions)
+        ); //TODO, doesn't feel right to construct properties here. -jp
     }
 }
 

@@ -27,8 +27,15 @@ public class AirGapCreator {
     private final DetectFontAirGapCreator detectFontAirGapCreator;
     private final ProjectInspectorAirGapCreator projectInspectorAirGapCreator;
 
-    public AirGapCreator(AirGapPathFinder airGapPathFinder, EventSystem eventSystem, GradleAirGapCreator gradleAirGapCreator, NugetAirGapCreator nugetAirGapCreator, DockerAirGapCreator dockerAirGapCreator,
-        DetectFontAirGapCreator detectFontAirGapCreator, ProjectInspectorAirGapCreator projectInspectorAirGapCreator) {
+    public AirGapCreator(
+        AirGapPathFinder airGapPathFinder,
+        EventSystem eventSystem,
+        GradleAirGapCreator gradleAirGapCreator,
+        NugetAirGapCreator nugetAirGapCreator,
+        DockerAirGapCreator dockerAirGapCreator,
+        DetectFontAirGapCreator detectFontAirGapCreator,
+        ProjectInspectorAirGapCreator projectInspectorAirGapCreator
+    ) {
         this.airGapPathFinder = airGapPathFinder;
         this.eventSystem = eventSystem;
         this.gradleAirGapCreator = gradleAirGapCreator;

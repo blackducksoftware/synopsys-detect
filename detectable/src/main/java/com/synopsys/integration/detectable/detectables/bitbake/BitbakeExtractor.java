@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Optional;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.NotImplementedException;
@@ -48,9 +48,16 @@ public class BitbakeExtractor {
     private final LicenseManifestParser licenseManifestParser;
     private final BitbakeEnvironmentParser bitbakeEnvironmentParser;
 
-    public BitbakeExtractor(DetectableExecutableRunner executableRunner, GraphParserTransformer graphParserTransformer, BitbakeGraphTransformer bitbakeGraphTransformer,
-        BitbakeRecipesParser bitbakeRecipesParser, ToolVersionLogger toolVersionLogger, BuildFileFinder buildFileFinder,
-        LicenseManifestParser licenseManifestParser, BitbakeEnvironmentParser bitbakeEnvironmentParser) {
+    public BitbakeExtractor(
+        DetectableExecutableRunner executableRunner,
+        GraphParserTransformer graphParserTransformer,
+        BitbakeGraphTransformer bitbakeGraphTransformer,
+        BitbakeRecipesParser bitbakeRecipesParser,
+        ToolVersionLogger toolVersionLogger,
+        BuildFileFinder buildFileFinder,
+        LicenseManifestParser licenseManifestParser,
+        BitbakeEnvironmentParser bitbakeEnvironmentParser
+    ) {
         this.executableRunner = executableRunner;
         this.graphParserTransformer = graphParserTransformer;
         this.bitbakeGraphTransformer = bitbakeGraphTransformer;
@@ -100,8 +107,16 @@ public class BitbakeExtractor {
     }
 
     @NotNull
-    private CodeLocation generateCodeLocationForTargetImage(final boolean followSymLinks, final Integer searchDepth, final EnumListFilter<BitbakeDependencyType> dependencyTypeFilter, final BitbakeSession bitbakeSession, final File buildDir,
-        final BitbakeEnvironment bitbakeEnvironment, final ShowRecipesResults showRecipesResults, final String packageName) throws IntegrationException, IOException, ExecutableFailedException {
+    private CodeLocation generateCodeLocationForTargetImage(
+        boolean followSymLinks,
+        Integer searchDepth,
+        EnumListFilter<BitbakeDependencyType> dependencyTypeFilter,
+        BitbakeSession bitbakeSession,
+        File buildDir,
+        BitbakeEnvironment bitbakeEnvironment,
+        ShowRecipesResults showRecipesResults,
+        String packageName
+    ) throws IntegrationException, IOException, ExecutableFailedException {
         Map<String, String> imageRecipes = null;
         if (dependencyTypeFilter.shouldExclude(BitbakeDependencyType.BUILD)) {
             imageRecipes = readImageRecipes(buildDir, packageName, bitbakeEnvironment, followSymLinks, searchDepth);
@@ -122,7 +137,8 @@ public class BitbakeExtractor {
         }
     }
 
-    private BitbakeGraph generateBitbakeGraph(BitbakeSession bitbakeSession,
+    private BitbakeGraph generateBitbakeGraph(
+        BitbakeSession bitbakeSession,
         File buildDir,
         String packageName,
         Set<String> knownLayers,

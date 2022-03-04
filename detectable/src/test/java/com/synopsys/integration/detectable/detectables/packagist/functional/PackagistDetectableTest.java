@@ -23,7 +23,8 @@ public class PackagistDetectableTest extends DetectableFunctionalTest {
 
     @Override
     protected void setup() throws IOException {
-        addFile(Paths.get("composer.lock"),
+        addFile(
+            Paths.get("composer.lock"),
             "{",
             "   \"_readme\": [\"dummy README\"],",
             "   \"hash\": \"3bedbf455f54168900e467a64bbe2b86\",",
@@ -57,7 +58,8 @@ public class PackagistDetectableTest extends DetectableFunctionalTest {
             "}"
         );
 
-        addFile(Paths.get("composer.json"),
+        addFile(
+            Paths.get("composer.json"),
             "{",
             "   \"name\": \"clue/graph-composer\",",
             "   \"version\": \"1.0.0\",",

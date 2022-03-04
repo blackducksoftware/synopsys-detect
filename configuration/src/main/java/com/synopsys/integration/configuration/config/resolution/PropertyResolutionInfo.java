@@ -5,11 +5,11 @@ import org.springframework.util.Assert;
 
 public class PropertyResolutionInfo {
     @NotNull
-    private String source;
+    private final String source;
     @NotNull
-    private String origin;
+    private final String origin;
     @NotNull
-    private String raw;
+    private final String raw;
 
     public PropertyResolutionInfo(@NotNull String source, @NotNull String origin, @NotNull String raw) {
         Assert.notNull(source, "Source cannot be null.");

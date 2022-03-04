@@ -4,8 +4,25 @@
 
 ### New features
 
+* Verified support for Java 16 and 17.
 * Added a feature that allows users to configure [solution_name] to fail when policies of a certain name are vialated.
-  See [detect.policy.check.fail.on.names](properties/configuration/project.md#fail-on-policy-names-with-violations)
+  See [detect.policy.check.fail.on.names](properties/configuration/project.md#fail-on-policy-names-with-violations).
+
+### Changed features
+
+* Added new property detect.bazel.workspace.rules to replace the now-deprecated detect.bazel.dependency.type property.
+
+## Resolved issues
+
+* (IDETECT-3016) Resolved an issue where proxies may block HEAD requests made by [solution_name] when attempting to download the Signature Scanner from Black Duck. Because the
+  criteria that [solution_name] uses to download the Black Duck Signature Scanner is new, the next run will re-download the Signature Scanner.
+
+## Version 7.11.1
+
+### Changed features
+
+* Updated [solution_name] to package Air Gap with the latest Nuget Inspectors: IntegrationNugetInspector:3.1.1, BlackduckNugetInspector:1.1.1, NugetDotnet3Inspector:1.1.1,
+  NugetDotnet5Inspector:1.1.1.
 
 ## Version 7.11.0
 
@@ -556,7 +573,7 @@
 * Added the property detect.binary.scan.file.name.patterns.
 * Added the property detect.detector.search.exclusion.files which accepts a comma-separated list of file names to exclude from the Detector search.
 * Custom arguments for the source command can now be supplied to Detect through the property detect.bitbake.source.arguments which accepts a comma-separated list of arguments. (
-  1614)
+    1614)
 * Added support for the Swift package manager.
 * Added support for GoGradle.
 * Added support for Go Modules.

@@ -21,7 +21,7 @@ public class AirGapPathFinder {
                 return null;
             } else {
                 File jarFile = new File(relativeJarFile).getCanonicalFile();
-                logger.debug("Checking for jar file: " + jarFile.toString());
+                logger.debug("Checking for jar file: " + jarFile);
                 if (jarFile.exists()) {
                     logger.debug("Found detect jar file.");
                     return jarFile;
