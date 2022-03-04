@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectables.bitbake.ShowRecipesResults;
@@ -32,31 +33,20 @@ public class BitbakeRecipesParser { //TODO: Unit test to show how a recipe map i
             if (StringUtils.isBlank(line)) {
                 continue;
             }
-
             if (!started && line.trim().startsWith("=== Available recipes: ===")) {
                 started = true;
             } else if (started) {
-                currentRecipe = parseLine(line, currentRecipe, bitbakeRecipes);
+                currentRecipe = parseLine(line, currentRecipe, bitbakeRecipes, layerNames);
             }
         }
-
-        if (currentRecipe != null) {
-            bitbakeRecipes.put(currentRecipe.getName(), currentRecipe.getLayerNames());
-            if (currentRecipe.getLayerNames() != null) {
-                layerNames.addAll(currentRecipe.getLayerNames());
-            }
-        }
-
+        finishCurrentRecipe(bitbakeRecipes, layerNames, currentRecipe);
         return new ShowRecipesResults(layerNames, bitbakeRecipes);
     }
 
-    private BitbakeRecipe parseLine(String line, BitbakeRecipe currentRecipe, Map<String, List<String>> bitbakeRecipes) {
+    private BitbakeRecipe parseLine(String line, BitbakeRecipe currentRecipe, Map<String, List<String>> bitbakeRecipes, Set<String> layerNames) {
         if (line.contains(":") && !line.startsWith("  ")) {
+            finishCurrentRecipe(bitbakeRecipes, layerNames, currentRecipe);
             // Parse beginning of new component
-            if (currentRecipe != null) {
-                bitbakeRecipes.put(currentRecipe.getName(), currentRecipe.getLayerNames());
-            }
-
             String recipeName = line.replace(":", "").trim();
             return new BitbakeRecipe(recipeName, new ArrayList<>());
         } else if (currentRecipe != null && line.startsWith("  ")) {
@@ -76,6 +66,15 @@ public class BitbakeRecipesParser { //TODO: Unit test to show how a recipe map i
         } else {
             logger.debug(String.format("Failed to parse line '%s'.", line));
             return currentRecipe;
+        }
+    }
+
+    private void finishCurrentRecipe(Map<String, List<String>> bitbakeRecipes, Set<String> layerNames, @Nullable BitbakeRecipe currentRecipe) {
+        if (currentRecipe != null) {
+            bitbakeRecipes.put(currentRecipe.getName(), currentRecipe.getLayerNames());
+            if (currentRecipe.getLayerNames() != null) {
+                layerNames.addAll(currentRecipe.getLayerNames());
+            }
         }
     }
 }
