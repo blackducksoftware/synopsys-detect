@@ -7,7 +7,7 @@
 * Verified support for Java 16 and 17.
 * Added support for vendoring Go Mod dependencies using [detect.go.mod.dependency.types.excluded=VENDORED](properties/detectors/go.md#go-mod-dependency-types-excluded) to exclude *
   test* and *build system* dependencies from Go modules declaring a version prior to `Go 1.16`.
-* Added a feature that allows users to configure [solution_name] to fail when policies of a certain name are vialated.
+* Added a feature that allows users to configure [solution_name] to fail when policies of a certain name are violated.
   See [detect.policy.check.fail.on.names](properties/configuration/project.md#fail-on-policy-names-with-violations)
 
 ### Changed features
