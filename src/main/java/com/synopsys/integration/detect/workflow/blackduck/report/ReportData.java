@@ -160,7 +160,8 @@ public class ReportData {
 
         totalComponents = components.size();
 
-        vulnerabilityRiskNoneCount = totalComponents - getVulnerabilityRiskCriticalCount() - getVulnerabilityRiskHighCount() - getVulnerabilityRiskMediumCount() - getVulnerabilityRiskLowCount();
+        vulnerabilityRiskNoneCount =
+            totalComponents - getVulnerabilityRiskCriticalCount() - getVulnerabilityRiskHighCount() - getVulnerabilityRiskMediumCount() - getVulnerabilityRiskLowCount();
         licenseRiskNoneCount = totalComponents - getLicenseRiskHighCount() - getLicenseRiskMediumCount() - getLicenseRiskLowCount();
         operationalRiskNoneCount = totalComponents - getOperationalRiskHighCount() - getOperationalRiskMediumCount() - getOperationalRiskLowCount();
     }

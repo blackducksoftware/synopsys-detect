@@ -11,7 +11,12 @@ public class DependencyHistory {
     public void clearDependenciesDeeperThan(int dependencyLevel) throws IllegalStateException {
         if (dependencyLevel > dependencyStack.size()) {
             throw new IllegalStateException(
-                String.format("Level of dependency should be less than or equal to %s but was %s. Treating the dependency as though level was %s.", dependencyStack.size(), dependencyLevel, dependencyStack.size()));
+                String.format(
+                    "Level of dependency should be less than or equal to %s but was %s. Treating the dependency as though level was %s.",
+                    dependencyStack.size(),
+                    dependencyLevel,
+                    dependencyStack.size()
+                ));
         }
 
         int levelDelta = (dependencyStack.size() - dependencyLevel);

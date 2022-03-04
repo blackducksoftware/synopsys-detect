@@ -65,7 +65,8 @@ public abstract class ExtendedEnumListPropertyBase<E extends Enum<E>, B extends 
     }
 
     @Override
-    public @NotNull List<DeprecatedValueUsage> checkForDeprecatedValues(List<ExtendedEnumValue<E, B>> value) {
+    @NotNull
+    public List<DeprecatedValueUsage> checkForDeprecatedValues(List<ExtendedEnumValue<E, B>> value) {
         return value.stream()
             .filter(element -> element.getExtendedValue().isPresent())
             .map(element -> element.getExtendedValue().get())

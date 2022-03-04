@@ -50,7 +50,11 @@ public class ApplicableEvaluator extends Evaluator {
             );
             detectorEvaluation.setSearchEnvironment(searchEnvironment);
 
-            DetectorResult searchableResult = detectorRuleSetEvaluator.evaluateSearchable(detectorEvaluationTree.getDetectorRuleSet(), detectorEvaluation.getDetectorRule(), searchEnvironment);
+            DetectorResult searchableResult = detectorRuleSetEvaluator.evaluateSearchable(
+                detectorEvaluationTree.getDetectorRuleSet(),
+                detectorEvaluation.getDetectorRule(),
+                searchEnvironment
+            );
             detectorEvaluation.setSearchable(searchableResult);
 
             if (detectorEvaluation.isSearchable()) {
@@ -63,7 +67,13 @@ public class ApplicableEvaluator extends Evaluator {
                 detectorEvaluation.setDetectable(detectable);
 
                 DetectableResult applicable = detectable.applicable();
-                DetectorResult applicableResult = new DetectorResult(applicable.getPassed(), applicable.toDescription(), applicable.getClass(), applicable.getExplanation(), applicable.getRelevantFiles());
+                DetectorResult applicableResult = new DetectorResult(
+                    applicable.getPassed(),
+                    applicable.toDescription(),
+                    applicable.getClass(),
+                    applicable.getExplanation(),
+                    applicable.getRelevantFiles()
+                );
                 detectorEvaluation.setApplicable(applicableResult);
 
                 if (detectorEvaluation.isApplicable()) {

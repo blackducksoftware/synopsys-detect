@@ -42,7 +42,10 @@ public class DetectFontInstallerTestIT {
     public void testFontInstall() throws Exception {
         Gson gson = new Gson();
         PropertyConfiguration propertyConfiguration = new PropertyConfiguration(Collections.emptyList());
-        DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(new DetectPropertyConfiguration(propertyConfiguration, new SimplePathResolver()), gson);
+        DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(
+            new DetectPropertyConfiguration(propertyConfiguration, new SimplePathResolver()),
+            gson
+        );
         ConnectionFactory connectionFactory = new ConnectionFactory(detectConfigurationFactory.createConnectionDetails());
         ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
         InstalledToolManager installedToolManager = new InstalledToolManager();

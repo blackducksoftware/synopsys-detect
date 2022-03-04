@@ -42,8 +42,10 @@ public class NugetProjectInspectorTest extends DetectableFunctionalTest {
     @NotNull
     @Override
     public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
-        return detectableFactory.createNugetParseDetectable(detectableEnvironment, new NugetInspectorOptions(false, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), null),
-            () -> ExecutableTarget.forFile(new File("inspector")), new ProjectInspectorOptions(null)
+        return detectableFactory.createNugetParseDetectable(detectableEnvironment,
+            new NugetInspectorOptions(false, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), null),
+            () -> ExecutableTarget.forFile(new File("inspector")),
+            new ProjectInspectorOptions(null)
         );
     }
 

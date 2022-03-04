@@ -12,7 +12,12 @@ public class GradleInspectorOptions {
     private final ProxyInfo proxyInfo;
     private final EnumListFilter<GradleConfigurationType> configurationTypeFilter;
 
-    public GradleInspectorOptions(String gradleBuildCommand, GradleInspectorScriptOptions gradleInspectorScriptOptions, ProxyInfo proxyInfo, EnumListFilter<GradleConfigurationType> configurationTypeFilter) {
+    public GradleInspectorOptions(
+        String gradleBuildCommand,
+        GradleInspectorScriptOptions gradleInspectorScriptOptions,
+        ProxyInfo proxyInfo,
+        EnumListFilter<GradleConfigurationType> configurationTypeFilter
+    ) {
         this.gradleBuildCommand = gradleBuildCommand;
         this.gradleInspectorScriptOptions = gradleInspectorScriptOptions;
         this.proxyInfo = proxyInfo;

@@ -25,7 +25,7 @@ public class GoModWhyParserTest {
 
         List<String> lines = FunctionalTestFiles.asListOfStrings("/go/gomodwhy.xout");
         GoModWhyParser goModWhyParser = new GoModWhyParser();
-        
+
         Set<String> actualExclusionSet = goModWhyParser.createModuleExclusionList(lines);
 
         assertEquals(expectedExclusionSet, actualExclusionSet);

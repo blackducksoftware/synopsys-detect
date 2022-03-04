@@ -12,7 +12,14 @@ public class BitbakeDetectableOptions {
     private final boolean followSymLinks;
     private final EnumListFilter<BitbakeDependencyType> bitbakeDependencyTypeFilter;
 
-    public BitbakeDetectableOptions(String buildEnvName, List<String> sourceArguments, List<String> packageNames, Integer searchDepth, boolean followSymLinks, EnumListFilter<BitbakeDependencyType> bitbakeDependencyTypeFilter) {
+    public BitbakeDetectableOptions(
+        String buildEnvName,
+        List<String> sourceArguments,
+        List<String> packageNames,
+        Integer searchDepth,
+        boolean followSymLinks,
+        EnumListFilter<BitbakeDependencyType> bitbakeDependencyTypeFilter
+    ) {
         this.buildEnvName = buildEnvName;
         this.sourceArguments = sourceArguments;
         this.packageNames = packageNames;

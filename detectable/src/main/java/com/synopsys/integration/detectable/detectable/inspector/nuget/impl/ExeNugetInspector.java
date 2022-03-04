@@ -20,7 +20,8 @@ public class ExeNugetInspector implements NugetInspector {
     }
 
     @Override
-    public ExecutableOutput execute(File workingDirectory, File sourcePath, File outputDirectory, NugetInspectorOptions nugetInspectorOptions) throws ExecutableRunnerException, IOException {
+    public ExecutableOutput execute(File workingDirectory, File sourcePath, File outputDirectory, NugetInspectorOptions nugetInspectorOptions)
+        throws ExecutableRunnerException, IOException {
         List<String> arguments = NugetInspectorArguments.fromInspectorOptions(nugetInspectorOptions, sourcePath, outputDirectory);
         return executableRunner.execute(workingDirectory, inspectorExe, arguments);
     }

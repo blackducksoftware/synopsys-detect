@@ -24,7 +24,13 @@ public class MavenPomDetectable extends Detectable {
 
     private ExecutableTarget mavenExe;
 
-    public MavenPomDetectable(DetectableEnvironment environment, FileFinder fileFinder, MavenResolver mavenResolver, MavenCliExtractor mavenCliExtractor, MavenCliExtractorOptions mavenCliExtractorOptions) {
+    public MavenPomDetectable(
+        DetectableEnvironment environment,
+        FileFinder fileFinder,
+        MavenResolver mavenResolver,
+        MavenCliExtractor mavenCliExtractor,
+        MavenCliExtractorOptions mavenCliExtractorOptions
+    ) {
         super(environment);
         this.fileFinder = fileFinder;
         this.mavenResolver = mavenResolver;

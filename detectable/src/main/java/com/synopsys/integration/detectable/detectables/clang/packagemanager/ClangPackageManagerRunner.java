@@ -48,7 +48,12 @@ public class ClangPackageManagerRunner {
         return false;
     }
 
-    public PackageDetailsResult getAllPackages(ClangPackageManager currentPackageManager, File workingDirectory, DetectableExecutableRunner executableRunner, Set<File> dependencyFiles) {
+    public PackageDetailsResult getAllPackages(
+        ClangPackageManager currentPackageManager,
+        File workingDirectory,
+        DetectableExecutableRunner executableRunner,
+        Set<File> dependencyFiles
+    ) {
         Set<PackageDetails> packageDetails = new HashSet<>();
         Set<File> unRecognizedDependencyFiles = new HashSet<>();
         for (File dependencyFile : dependencyFiles) {
@@ -75,7 +80,12 @@ public class ClangPackageManagerRunner {
                 queryPackageOutputToParse = queryPackageResult.getErrorOutput();
             }
             ClangPackageManagerResolver resolver = currentPackageManager.getPackageResolver();
-            List<PackageDetails> packageDetails = resolver.resolvePackages(currentPackageManager.getPackageManagerInfo(), executableRunner, workingDirectory, queryPackageOutputToParse);
+            List<PackageDetails> packageDetails = resolver.resolvePackages(
+                currentPackageManager.getPackageManagerInfo(),
+                executableRunner,
+                workingDirectory,
+                queryPackageOutputToParse
+            );
             dependencyDetails.addAll(packageDetails);
         } catch (NotOwnedByAnyPkgException notOwnedException) {
             logger.debug(String.format("%s is not recognized by the linux package manager (%s)", dependencyFile.getAbsolutePath(), notOwnedException.getMessage()));

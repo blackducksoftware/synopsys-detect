@@ -90,7 +90,12 @@ public class GradleReplacementDetectableTest extends DetectableFunctionalTest {
             ),
             ProxyInfo.NO_PROXY_INFO, EnumListFilter.excludeNone()
         );
-        return detectableFactory.createGradleDetectable(detectableEnvironment, gradleInspectorOptions, () -> new File("gradle-inspector"), (environment) -> ExecutableTarget.forFile(new File("gradle")));
+        return detectableFactory.createGradleDetectable(
+            detectableEnvironment,
+            gradleInspectorOptions,
+            () -> new File("gradle-inspector"),
+            (environment) -> ExecutableTarget.forFile(new File("gradle"))
+        );
     }
 
     @Override

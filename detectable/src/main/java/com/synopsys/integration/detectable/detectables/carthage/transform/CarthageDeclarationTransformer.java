@@ -35,7 +35,12 @@ public class CarthageDeclarationTransformer {
         // The KB does not have mappings for binaries, or resources that are not open source.  It has some mappings, though, for GitHub repos
         boolean isGitHubOrigin = GITHUB_ORIGIN_ID.equals(declaration.getOrigin());
         if (!isGitHubOrigin) {
-            logger.info(String.format("Excluding Carthage declaration %s:%s due to an unsupported origin: %s", declaration.getName(), declaration.getVersion(), declaration.getOrigin()));
+            logger.info(String.format(
+                "Excluding Carthage declaration %s:%s due to an unsupported origin: %s",
+                declaration.getName(),
+                declaration.getVersion(),
+                declaration.getOrigin()
+            ));
         }
         return isGitHubOrigin;
     }

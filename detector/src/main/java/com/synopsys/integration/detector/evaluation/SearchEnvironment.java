@@ -14,7 +14,14 @@ public class SearchEnvironment {
     private final Set<DetectorRule> appliedToParent;
     private final Set<DetectorRule> appliedSoFar;
 
-    public SearchEnvironment(int depth, Predicate<DetectorRule> detectorFilter, boolean forceNestedSearch, boolean followSymLinks, Set<DetectorRule> appliedToParent, Set<DetectorRule> appliedSoFar) {
+    public SearchEnvironment(
+        int depth,
+        Predicate<DetectorRule> detectorFilter,
+        boolean forceNestedSearch,
+        boolean followSymLinks,
+        Set<DetectorRule> appliedToParent,
+        Set<DetectorRule> appliedSoFar
+    ) {
         this.depth = depth;
         this.detectorFilter = detectorFilter;
         this.forceNestedSearch = forceNestedSearch;

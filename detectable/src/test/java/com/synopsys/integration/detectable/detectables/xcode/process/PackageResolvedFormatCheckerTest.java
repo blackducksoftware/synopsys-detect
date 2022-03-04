@@ -17,7 +17,10 @@ class PackageResolvedFormatCheckerTest {
     void compatibilityTest(String knownVersion) {
         PackageResolvedFormatChecker formatChecker = new PackageResolvedFormatChecker();
         PackageResolved packageResolved = new PackageResolved(null, knownVersion);
-        formatChecker.handleVersionCompatibility(packageResolved, (version, knownVersions) -> Assertions.fail(version + " is a known version and should not have failed the check."));
+        formatChecker.handleVersionCompatibility(
+            packageResolved,
+            (version, knownVersions) -> Assertions.fail(version + " is a known version and should not have failed the check.")
+        );
     }
 
     @Test

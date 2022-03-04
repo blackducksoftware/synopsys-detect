@@ -43,8 +43,12 @@ public class PipInspectorTreeParser {
         int unResolvedPackageCount = 0;
         for (String line : pipInspectorOutputAsList) {
             String trimmedLine = StringUtils.trimToEmpty(line);
-            if (StringUtils.isEmpty(trimmedLine) || !trimmedLine.contains(SEPARATOR) || trimmedLine.startsWith(UNKNOWN_REQUIREMENTS_PREFIX) || trimmedLine.startsWith(UNPARSEABLE_REQUIREMENTS_PREFIX) || trimmedLine.startsWith(
-                UNKNOWN_PACKAGE_PREFIX)) {
+            if (StringUtils.isEmpty(trimmedLine)
+                || !trimmedLine.contains(SEPARATOR)
+                || trimmedLine.startsWith(UNKNOWN_REQUIREMENTS_PREFIX)
+                || trimmedLine.startsWith(UNPARSEABLE_REQUIREMENTS_PREFIX)
+                || trimmedLine.startsWith(UNKNOWN_PACKAGE_PREFIX)
+            ) {
                 boolean wasUnresolved = parseErrorsFromLine(trimmedLine);
                 if (wasUnresolved) {
                     unResolvedPackageCount++;

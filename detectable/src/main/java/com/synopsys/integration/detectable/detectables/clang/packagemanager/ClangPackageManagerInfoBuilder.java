@@ -85,6 +85,16 @@ public class ClangPackageManagerInfoBuilder {
     }
 
     public ClangPackageManagerInfo build() {
-        return new ClangPackageManagerInfo(pkgMgrName, pkgMgrCmdString, forges, defaultForge, checkPresenceCommandArgs, checkPresenceCommandOutputExpectedText, pkgMgrGetOwnerCmdArgs, architectureArguments, pkgInfoArgs);
+        return new ClangPackageManagerInfo(
+            pkgMgrName,
+            pkgMgrCmdString,
+            forges,
+            defaultForge,
+            checkPresenceCommandArgs,
+            checkPresenceCommandOutputExpectedText,
+            pkgMgrGetOwnerCmdArgs,
+            architectureArguments,
+            pkgInfoArgs
+        );
     }
 }

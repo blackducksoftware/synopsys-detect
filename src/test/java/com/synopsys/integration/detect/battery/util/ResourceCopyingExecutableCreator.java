@@ -55,7 +55,10 @@ public class ResourceCopyingExecutableCreator extends BatteryExecutableCreator {
         for (String resource : toCopy) {
             File copyingFolder = BatteryFiles.asFile(resource);
             File[] files = copyingFolder.listFiles();
-            Assertions.assertNotNull(files, "When a resource copying executable is used, it should be provided a resource folder. Verify it is a folder and has at least one file: " + resource);
+            Assertions.assertNotNull(
+                files,
+                "When a resource copying executable is used, it should be provided a resource folder. Verify it is a folder and has at least one file: " + resource
+            );
             for (File file : files) {
                 File commandTextFile = new File(executableInfo.getMockDirectory(), "data-" + commandCount.getAndIncrement() + ".dat");
                 if (file.getName().endsWith(".ftl")) {
@@ -75,8 +78,14 @@ public class ResourceCopyingExecutableCreator extends BatteryExecutableCreator {
     @Override
     public File createExecutable(int id, BatteryExecutableInfo executableInfo, AtomicInteger commandCount) throws IOException, TemplateException {
         Map<String, Object> model = new HashMap<>();
-        Assertions.assertNotNull(linuxInfo, "If you have a resource copying executable, you must specify operating system information for both windows and linux but linux information could not be found.");
-        Assertions.assertNotNull(windowsInfo, "If you have a resource copying executable, you must specify operating system information for both windows and linux but windows information could not be found.");
+        Assertions.assertNotNull(
+            linuxInfo,
+            "If you have a resource copying executable, you must specify operating system information for both windows and linux but linux information could not be found."
+        );
+        Assertions.assertNotNull(
+            windowsInfo,
+            "If you have a resource copying executable, you must specify operating system information for both windows and linux but windows information could not be found."
+        );
         if (SystemUtils.IS_OS_WINDOWS) {
             model.put("extractionFolderIndex", windowsInfo.extractionFolderIndex);
             model.put("extractionFolderPrefix", windowsInfo.extractionFolderPrefix);

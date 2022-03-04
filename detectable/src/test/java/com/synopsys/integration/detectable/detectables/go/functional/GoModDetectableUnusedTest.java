@@ -73,7 +73,7 @@ public class GoModDetectableUnusedTest extends DetectableFunctionalTest {
             "# sigs.k8s.io/yaml",
             "(main module does not need module sigs.k8s.io/yaml)"
         );
-        
+
         addExecutableOutput(goModWhyOutput, "go", "mod", "why", "-m", "all");
     }
 

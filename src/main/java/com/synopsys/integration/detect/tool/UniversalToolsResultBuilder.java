@@ -17,7 +17,8 @@ public class UniversalToolsResultBuilder {
     private boolean anyFailed = false;
 
     public void addDetectableToolResult(DetectableToolResult detectableToolResult) {
-        detectableToolResult.getDetectToolProjectInfo().ifPresent(detectToolProjectInfo1 -> addToolNameVersion(detectToolProjectInfo1.getDetectTool(), detectToolProjectInfo1.getSuggestedNameVersion()));
+        detectableToolResult.getDetectToolProjectInfo()
+            .ifPresent(detectToolProjectInfo1 -> addToolNameVersion(detectToolProjectInfo1.getDetectTool(), detectToolProjectInfo1.getSuggestedNameVersion()));
         detectableToolResult.getDockerTar().ifPresent(this::addDockerTargetData);
         detectCodeLocations.addAll(detectableToolResult.getDetectCodeLocations());
         anyFailed = detectableToolResult.isFailure() || anyFailed;

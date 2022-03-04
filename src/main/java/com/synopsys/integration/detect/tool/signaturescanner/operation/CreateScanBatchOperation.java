@@ -29,17 +29,28 @@ public class CreateScanBatchOperation {
         this.codeLocationNameManager = codeLocationNameManager;
     }
 
-    public ScanBatch createScanBatchWithBlackDuck(NameVersion projectNameVersion, List<SignatureScanPath> signatureScanPaths, BlackDuckServerConfig blackDuckServerConfig, @Nullable DockerTargetData dockerTargetData)
+    public ScanBatch createScanBatchWithBlackDuck(
+        NameVersion projectNameVersion,
+        List<SignatureScanPath> signatureScanPaths,
+        BlackDuckServerConfig blackDuckServerConfig,
+        @Nullable DockerTargetData dockerTargetData
+    )
         throws DetectUserFriendlyException {
         return createScanBatch(projectNameVersion, signatureScanPaths, blackDuckServerConfig, dockerTargetData);
     }
 
-    public ScanBatch createScanBatchWithoutBlackDuck(NameVersion projectNameVersion, List<SignatureScanPath> signatureScanPaths, @Nullable DockerTargetData dockerTargetData) throws DetectUserFriendlyException {
+    public ScanBatch createScanBatchWithoutBlackDuck(NameVersion projectNameVersion, List<SignatureScanPath> signatureScanPaths, @Nullable DockerTargetData dockerTargetData)
+        throws DetectUserFriendlyException {
         //when offline, we must still call this with 'null' as a workaround for library issues, so offline scanner must be created with this set to null.
         return createScanBatch(projectNameVersion, signatureScanPaths, null, dockerTargetData);
     }
 
-    private ScanBatch createScanBatch(NameVersion projectNameVersion, List<SignatureScanPath> signatureScanPaths, @Nullable BlackDuckServerConfig blackDuckServerConfig, @Nullable DockerTargetData dockerTargetData)
+    private ScanBatch createScanBatch(
+        NameVersion projectNameVersion,
+        List<SignatureScanPath> signatureScanPaths,
+        @Nullable BlackDuckServerConfig blackDuckServerConfig,
+        @Nullable DockerTargetData dockerTargetData
+    )
         throws DetectUserFriendlyException {
         ScanBatchBuilder scanJobBuilder = new ScanBatchBuilder();
         scanJobBuilder.scanMemoryInMegabytes(signatureScannerOptions.getScanMemory());
@@ -71,7 +82,15 @@ public class CreateScanBatchOperation {
             if (dockerTargetData != null) {
                 dockerTarget = dockerTargetData.getSquashedImage().orElse(dockerTargetData.getProvidedImageTar().orElse(null));
             }
-            String codeLocationName = codeLocationNameManager.createScanCodeLocationName(sourcePath, scanPath.getTargetPath(), dockerTarget, projectName, projectVersionName, prefix, suffix);
+            String codeLocationName = codeLocationNameManager.createScanCodeLocationName(
+                sourcePath,
+                scanPath.getTargetPath(),
+                dockerTarget,
+                projectName,
+                projectVersionName,
+                prefix,
+                suffix
+            );
             scanJobBuilder.addTarget(ScanTarget.createBasicTarget(scanPath.getTargetCanonicalPath(), scanPath.getExclusions(), codeLocationName));
         }
 

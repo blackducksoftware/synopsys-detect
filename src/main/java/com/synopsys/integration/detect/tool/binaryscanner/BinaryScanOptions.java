@@ -15,7 +15,14 @@ public class BinaryScanOptions {
     private final int searchDepth;
     private final boolean followSymLinks;
 
-    public BinaryScanOptions(@Nullable Path singleTargetFilePath, List<String> multipleTargetFileNamePatterns, String codeLocationPrefix, String codeLocationSuffix, int searchDepth, boolean followSymLinks) {
+    public BinaryScanOptions(
+        @Nullable Path singleTargetFilePath,
+        List<String> multipleTargetFileNamePatterns,
+        String codeLocationPrefix,
+        String codeLocationSuffix,
+        int searchDepth,
+        boolean followSymLinks
+    ) {
         this.singleTargetFilePath = singleTargetFilePath;
         this.multipleTargetFileNamePatterns = multipleTargetFileNamePatterns;
         this.codeLocationPrefix = codeLocationPrefix;

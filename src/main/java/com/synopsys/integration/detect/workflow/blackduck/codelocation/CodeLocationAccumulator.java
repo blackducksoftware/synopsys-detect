@@ -13,7 +13,11 @@ public class CodeLocationAccumulator {
     private final Set<String> nonWaitableCodeLocations = new HashSet<>();
 
     public void addWaitableCodeLocation(CodeLocationCreationData<? extends CodeLocationBatchOutput<?>> creationData) {
-        waitableCodeLocationData.add(new AccumulatedCodeLocationData(creationData.getOutput().getExpectedNotificationCount(), creationData.getOutput().getSuccessfulCodeLocationNames(), creationData.getNotificationTaskRange()));
+        waitableCodeLocationData.add(new AccumulatedCodeLocationData(
+            creationData.getOutput().getExpectedNotificationCount(),
+            creationData.getOutput().getSuccessfulCodeLocationNames(),
+            creationData.getNotificationTaskRange()
+        ));
     }
 
     public void addNonWaitableCodeLocation(Set<String> names) {

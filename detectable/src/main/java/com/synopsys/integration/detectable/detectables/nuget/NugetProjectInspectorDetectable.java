@@ -62,7 +62,13 @@ public class NugetProjectInspectorDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
-        return projectInspectorExtractor.extract(projectInspectorOptions, Collections.emptyList(), environment.getDirectory(), extractionEnvironment.getOutputDirectory(), inspector);
+        return projectInspectorExtractor.extract(
+            projectInspectorOptions,
+            Collections.emptyList(),
+            environment.getDirectory(),
+            extractionEnvironment.getOutputDirectory(),
+            inspector
+        );
     }
 
 }

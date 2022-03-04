@@ -21,9 +21,21 @@ public class ConnectionFactory {
             logger = new SilentIntLogger();
         }
         if (ProxyUtil.shouldIgnoreUrl(url, connectionDetails.getIgnoredProxyHostPatterns(), logger)) {
-            return new IntHttpClient(logger, connectionDetails.getGson(), Math.toIntExact(connectionDetails.getTimeout()), connectionDetails.getAlwaysTrust(), ProxyInfo.NO_PROXY_INFO);
+            return new IntHttpClient(
+                logger,
+                connectionDetails.getGson(),
+                Math.toIntExact(connectionDetails.getTimeout()),
+                connectionDetails.getAlwaysTrust(),
+                ProxyInfo.NO_PROXY_INFO
+            );
         } else {
-            return new IntHttpClient(logger, connectionDetails.getGson(), Math.toIntExact(connectionDetails.getTimeout()), connectionDetails.getAlwaysTrust(), connectionDetails.getProxyInformation());
+            return new IntHttpClient(
+                logger,
+                connectionDetails.getGson(),
+                Math.toIntExact(connectionDetails.getTimeout()),
+                connectionDetails.getAlwaysTrust(),
+                connectionDetails.getProxyInformation()
+            );
         }
     }
 

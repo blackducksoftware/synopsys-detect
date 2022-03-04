@@ -155,7 +155,8 @@ public class BatteryContext {
                 }
                 FileUtils.moveFile(commandFile, target);
             } else {
-                throw new RuntimeException("Every battery executable must either specify an override property or a location (for both linux and windows) in the source directory for the executable to go.");
+                throw new RuntimeException(
+                    "Every battery executable must either specify an override property or a location (for both linux and windows) in the source directory for the executable to go.");
             }
         }
         return properties;

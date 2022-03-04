@@ -53,8 +53,14 @@ public class PearRequiredOnlyTest {
         ExternalIdFactory factory = new ExternalIdFactory();
         Map<String, String> dependencyNameVersionMap = new PearListParser().parse(pearList);
         List<PackageDependency> packageDependencies = new PearPackageDependenciesParser().parse(pearPackageDependencies);
-        DependencyGraph dependencyGraph = new PearDependencyGraphTransformer(factory, EnumListFilter.excludeNone()).buildDependencyGraph(dependencyNameVersionMap, packageDependencies);
+        DependencyGraph dependencyGraph = new PearDependencyGraphTransformer(factory, EnumListFilter.excludeNone()).buildDependencyGraph(
+            dependencyNameVersionMap,
+            packageDependencies
+        );
 
-        Assertions.assertTrue(dependencyGraph.hasDependency(factory.createNameVersionExternalId(Forge.PEAR, "Auth_SASL", "1.1.0")), "Must have Auth_SASL even though it was not a required dependency.");
+        Assertions.assertTrue(
+            dependencyGraph.hasDependency(factory.createNameVersionExternalId(Forge.PEAR, "Auth_SASL", "1.1.0")),
+            "Must have Auth_SASL even though it was not a required dependency."
+        );
     }
 }

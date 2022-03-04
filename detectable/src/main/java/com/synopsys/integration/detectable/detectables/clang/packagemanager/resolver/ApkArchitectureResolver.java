@@ -13,7 +13,8 @@ public class ApkArchitectureResolver {
     private Optional<String> architecture = Optional.empty();
     private boolean hasAttemptedResolution = false;
 
-    public Optional<String> resolveArchitecture(ClangPackageManagerInfo currentPackageManager, File workingDirectory, DetectableExecutableRunner executableRunner) throws ExecutableRunnerException {
+    public Optional<String> resolveArchitecture(ClangPackageManagerInfo currentPackageManager, File workingDirectory, DetectableExecutableRunner executableRunner)
+        throws ExecutableRunnerException {
         if (hasAttemptedResolution) {
             return architecture;
         }

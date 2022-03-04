@@ -18,6 +18,10 @@ public class PreferredDetectorDecision extends NameVersionDecision {
 
     @Override
     public void printDescription(Logger logger) {
-        logger.debug(String.format("Using preferred bom tool project info from %s found at depth %d as project info.", detectorProjectInfo.getDetectorType().name(), detectorProjectInfo.getDepth()));
+        logger.debug(String.format(
+            "Using preferred bom tool project info from %s found at depth %d as project info.",
+            detectorProjectInfo.getDetectorType().name(),
+            detectorProjectInfo.getDepth()
+        ));
     }
 }

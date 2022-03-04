@@ -13,7 +13,12 @@ public class BlackDuckConnectivityResult {
     private final BlackDuckServicesFactory blackDuckServicesFactory;
     private final BlackDuckServerConfig blackDuckServerConfig;
 
-    private BlackDuckConnectivityResult(boolean successfullyConnected, String failureReason, BlackDuckServicesFactory blackDuckServicesFactory, BlackDuckServerConfig blackDuckServerConfig) {
+    private BlackDuckConnectivityResult(
+        boolean successfullyConnected,
+        String failureReason,
+        BlackDuckServicesFactory blackDuckServicesFactory,
+        BlackDuckServerConfig blackDuckServerConfig
+    ) {
         this.successfullyConnected = successfullyConnected;
         this.failureReason = failureReason;
         this.blackDuckServicesFactory = blackDuckServicesFactory;

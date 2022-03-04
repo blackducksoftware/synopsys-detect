@@ -63,7 +63,11 @@ public class BlackDuckConnectivityChecker {
                 logger.debug("Group: " + groups.stream().map(UserGroupView::getName).distinct().collect(Collectors.joining(", ")));
             }
         } catch (IntegrationException e) {
-            throw new DetectUserFriendlyException("Could not determine which version of Black Duck detect connected to or which user is connecting.", e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
+            throw new DetectUserFriendlyException(
+                "Could not determine which version of Black Duck detect connected to or which user is connecting.",
+                e,
+                ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY
+            );
         }
 
         return BlackDuckConnectivityResult.success(blackDuckServicesFactory, blackDuckServerConfig);

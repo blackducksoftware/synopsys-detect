@@ -11,7 +11,13 @@ public class SbtResolutionCacheOptions {
     private final int reportDepth;
     private final boolean followSymLinks;
 
-    public SbtResolutionCacheOptions(@Nullable String sbtCommandAdditionalArguments, List<String> includedConfigurations, List<String> excludedConfigurations, int reportDepth, boolean followSymLinks) {
+    public SbtResolutionCacheOptions(
+        @Nullable String sbtCommandAdditionalArguments,
+        List<String> includedConfigurations,
+        List<String> excludedConfigurations,
+        int reportDepth,
+        boolean followSymLinks
+    ) {
         this.sbtCommandAdditionalArguments = sbtCommandAdditionalArguments;
         this.includedConfigurations = includedConfigurations;
         this.excludedConfigurations = excludedConfigurations;

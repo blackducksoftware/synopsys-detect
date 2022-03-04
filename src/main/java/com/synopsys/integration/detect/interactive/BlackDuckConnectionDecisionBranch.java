@@ -25,7 +25,12 @@ public class BlackDuckConnectionDecisionBranch implements DecisionTree {
     private final BlackDuckConnectivityChecker blackDuckConnectivityChecker;
     private final Gson gson;
 
-    public BlackDuckConnectionDecisionBranch(DetectInfo detectInfo, BlackDuckConnectivityChecker blackDuckConnectivityChecker, List<PropertySource> existingPropertySources, Gson gson) {
+    public BlackDuckConnectionDecisionBranch(
+        DetectInfo detectInfo,
+        BlackDuckConnectivityChecker blackDuckConnectivityChecker,
+        List<PropertySource> existingPropertySources,
+        Gson gson
+    ) {
         this.detectInfo = detectInfo;
         this.existingPropertySources = existingPropertySources;
         this.blackDuckConnectivityChecker = blackDuckConnectivityChecker;

@@ -46,7 +46,14 @@ public class MavenComplexOutputTest {
         ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         MavenCodeLocationPackager packager = new MavenCodeLocationPackager(externalIdFactory);
 
-        List<MavenParseResult> results = packager.extractCodeLocations("", getInput(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+        List<MavenParseResult> results = packager.extractCodeLocations(
+            "",
+            getInput(),
+            Collections.emptyList(),
+            Collections.emptyList(),
+            Collections.emptyList(),
+            Collections.emptyList()
+        );
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.MAVEN, results.get(0).getCodeLocation().getDependencyGraph());
         graphAssert.hasRootSize(1);

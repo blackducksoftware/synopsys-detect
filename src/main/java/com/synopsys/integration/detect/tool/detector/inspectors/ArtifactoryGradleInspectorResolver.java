@@ -50,7 +50,11 @@ public class ArtifactoryGradleInspectorResolver implements GradleInspectorResolv
                 File generatedGradleScriptFile = directoryManager.getSharedFile(GRADLE_DIR_NAME, GENERATED_GRADLE_SCRIPT_NAME);
                 GradleInspectorScriptCreator gradleInspectorScriptCreator = new GradleInspectorScriptCreator(configuration);
                 if (airGapPath.isPresent()) {
-                    generatedGradleScriptPath = gradleInspectorScriptCreator.createOfflineGradleInspector(generatedGradleScriptFile, gradleInspectorScriptOptions, airGapPath.get().getCanonicalPath());
+                    generatedGradleScriptPath = gradleInspectorScriptCreator.createOfflineGradleInspector(
+                        generatedGradleScriptFile,
+                        gradleInspectorScriptOptions,
+                        airGapPath.get().getCanonicalPath()
+                    );
                 } else {
                     generatedGradleScriptPath = gradleInspectorScriptCreator.createOnlineGradleInspector(generatedGradleScriptFile, gradleInspectorScriptOptions);
                 }

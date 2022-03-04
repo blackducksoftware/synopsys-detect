@@ -35,7 +35,12 @@ public abstract class BdioUploadOperation { //TODO: Could use Functional Interfa
 
     protected abstract CodeLocationCreationData<UploadBatchOutput> executeUpload(UploadBatch uploadBatch) throws IntegrationException;
 
-    private CodeLocationCreationData<UploadBatchOutput> legacyUpload(BdioResult bdioResult, UploadBatch uploadBatch, BdioUploadService bdioUploadService, Bdio2UploadService bdio2UploadService) throws IntegrationException {
+    private CodeLocationCreationData<UploadBatchOutput> legacyUpload(
+        BdioResult bdioResult,
+        UploadBatch uploadBatch,
+        BdioUploadService bdioUploadService,
+        Bdio2UploadService bdio2UploadService
+    ) throws IntegrationException {
         CodeLocationCreationData<UploadBatchOutput> response;
         logger.debug("Performing legacy BDIO upload.");
         if (bdioResult.isBdio2()) {
@@ -60,7 +65,11 @@ public abstract class BdioUploadOperation { //TODO: Could use Functional Interfa
             if (uploadOutput.getResult() == Result.FAILURE) {
                 logger.error(String.format("Failed to upload code location: %s", uploadOutput.getCodeLocationName()));
                 logger.error(String.format("Reason: %s", uploadOutput.getErrorMessage().orElse("Unknown reason.")));
-                throw new DetectUserFriendlyException("An error occurred uploading a bdio file.", uploadOutput.getException().orElse(null), ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
+                throw new DetectUserFriendlyException(
+                    "An error occurred uploading a bdio file.",
+                    uploadOutput.getException().orElse(null),
+                    ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR
+                );
             }
         }
     }

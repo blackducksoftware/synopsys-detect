@@ -29,7 +29,12 @@ public class CalculateScanPathsOperation {
     private final FileFinder fileFinder;
     private final Predicate<File> fileFilter;
 
-    public CalculateScanPathsOperation(BlackDuckSignatureScannerOptions signatureScannerOptions, DirectoryManager directoryManager, FileFinder fileFinder, Predicate<File> fileFilter) {
+    public CalculateScanPathsOperation(
+        BlackDuckSignatureScannerOptions signatureScannerOptions,
+        DirectoryManager directoryManager,
+        FileFinder fileFinder,
+        Predicate<File> fileFilter
+    ) {
         this.signatureScannerOptions = signatureScannerOptions;
         this.directoryManager = directoryManager;
         this.fileFinder = fileFinder;

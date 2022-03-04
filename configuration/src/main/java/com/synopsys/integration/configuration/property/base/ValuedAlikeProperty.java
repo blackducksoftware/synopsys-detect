@@ -14,7 +14,8 @@ public abstract class ValuedAlikeProperty<V> extends ValuedProperty<V, V> {
     }
 
     @Override
-    public @NotNull V convertValue(V value) {
+    @NotNull
+    public V convertValue(V value) {
         return value;
     }
 }

@@ -7,5 +7,6 @@ import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public interface NugetInspector {
-    ExecutableOutput execute(File workingDirectory, File targetFile, File outputDirectory, NugetInspectorOptions nugetInspectorOptions) throws ExecutableRunnerException, IOException;
+    ExecutableOutput execute(File workingDirectory, File targetFile, File outputDirectory, NugetInspectorOptions nugetInspectorOptions)
+        throws ExecutableRunnerException, IOException;
 }

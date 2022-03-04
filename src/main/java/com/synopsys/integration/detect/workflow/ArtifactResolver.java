@@ -43,7 +43,13 @@ public class ArtifactResolver {
      * @param overrideArtifactPattern The pattern to use when the override version is provided of the full artifact location.
      * @return the location of the artifact
      */
-    public String resolveArtifactLocation(String artifactoryBaseUrl, String repositoryUrl, String propertyKey, @Nullable String overrideVersion, @Nullable String overrideArtifactPattern) throws IntegrationException, IOException {
+    public String resolveArtifactLocation(
+        String artifactoryBaseUrl,
+        String repositoryUrl,
+        String propertyKey,
+        @Nullable String overrideVersion,
+        @Nullable String overrideArtifactPattern
+    ) throws IntegrationException, IOException {
         if (StringUtils.isNotBlank(overrideVersion) && StringUtils.isNotBlank(overrideArtifactPattern)) {
             logger.debug("An override version was provided, will resolve using the given version.");
             String repoUrl = artifactoryBaseUrl + repositoryUrl;

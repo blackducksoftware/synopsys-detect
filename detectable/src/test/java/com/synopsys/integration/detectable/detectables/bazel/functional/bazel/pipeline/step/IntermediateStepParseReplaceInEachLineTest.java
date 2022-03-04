@@ -59,7 +59,10 @@ public class IntermediateStepParseReplaceInEachLineTest {
 
     @Test
     public void testRemoveLeadingAtSignMixedTags() throws IntegrationException, ExecutableFailedException {
-        List<String> input = Arrays.asList("  tags = [\"__SOME_OTHER_TAG__\", \"maven_coordinates=com.company.thing:thing-common-client:2.100.0\"],", "  tags = [\"maven_coordinates=com.google.code.findbugs:jsr305:3.0.2\"],");
+        List<String> input = Arrays.asList(
+            "  tags = [\"__SOME_OTHER_TAG__\", \"maven_coordinates=com.company.thing:thing-common-client:2.100.0\"],",
+            "  tags = [\"maven_coordinates=com.google.code.findbugs:jsr305:3.0.2\"],"
+        );
         IntermediateStep intermediateStep1 = new IntermediateStepParseReplaceInEachLine(".*\"maven_coordinates=", "");
         IntermediateStep intermediateStep2 = new IntermediateStepParseReplaceInEachLine("\".*", "");
         List<String> intermediate = intermediateStep1.process(input);

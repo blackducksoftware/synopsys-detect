@@ -49,7 +49,12 @@ public class PropertyConfigurationHelpContext {
         printKnownCurrentValues(logger, maskedRawPropertyValues.keySet(), maskedRawPropertyValues, additionalNotes);
     }
 
-    public void printKnownCurrentValues(Consumer<String> logger, Set<String> knownPropertyKeys, SortedMap<String, String> maskedRawPropertyValues, Map<String, String> additionalNotes) {
+    public void printKnownCurrentValues(
+        Consumer<String> logger,
+        Set<String> knownPropertyKeys,
+        SortedMap<String, String> maskedRawPropertyValues,
+        Map<String, String> additionalNotes
+    ) {
         logger.accept("");
         logger.accept("Current property values:");
         logger.accept("--property = value [notes]");
