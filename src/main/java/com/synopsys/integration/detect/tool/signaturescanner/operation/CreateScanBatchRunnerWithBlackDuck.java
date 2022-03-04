@@ -14,6 +14,7 @@ import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.http.client.BlackDuckHttpClient;
 import com.synopsys.integration.blackduck.http.client.SignatureScannerClient;
 import com.synopsys.integration.blackduck.keystore.KeyStoreHelper;
+import com.synopsys.integration.blackduck.service.dataservice.BlackDuckRegistrationService;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerLogger;
 import com.synopsys.integration.util.CleanupZipExpander;
 import com.synopsys.integration.util.IntEnvironmentVariables;
@@ -25,11 +26,18 @@ public class CreateScanBatchRunnerWithBlackDuck {
     private final IntEnvironmentVariables intEnvironmentVariables;
     private final OperatingSystemType operatingSystemType;
     private final ExecutorService executorService;
+    private final BlackDuckRegistrationService registrationService;
 
-    public CreateScanBatchRunnerWithBlackDuck(IntEnvironmentVariables intEnvironmentVariables, OperatingSystemType operatingSystemType, ExecutorService executorService) {
+    public CreateScanBatchRunnerWithBlackDuck(
+        IntEnvironmentVariables intEnvironmentVariables,
+        OperatingSystemType operatingSystemType,
+        ExecutorService executorService,
+        BlackDuckRegistrationService registrationService
+    ) {
         this.intEnvironmentVariables = intEnvironmentVariables;
         this.operatingSystemType = operatingSystemType;
         this.executorService = executorService;
+        this.registrationService = registrationService;
     }
 
     public ScanBatchRunner createScanBatchRunner(BlackDuckServerConfig blackDuckServerConfig, File installDirectory) {
@@ -41,9 +49,10 @@ public class CreateScanBatchRunnerWithBlackDuck {
         CleanupZipExpander cleanupZipExpander = new CleanupZipExpander(slf4jIntLogger);
         SignatureScannerClient signatureScannerClient = new SignatureScannerClient(blackDuckHttpClient);
         KeyStoreHelper keyStoreHelper = new KeyStoreHelper(slf4jIntLogger);
-        ScannerZipInstaller scannerZipInstaller = new ScannerZipInstaller(slf4jIntLogger, signatureScannerClient,
+        ScannerZipInstaller scannerZipInstaller = new ScannerZipInstaller(slf4jIntLogger, signatureScannerClient, registrationService,
             cleanupZipExpander, scanPathsUtility, keyStoreHelper,
-            blackDuckServerConfig.getBlackDuckUrl(), operatingSystemType, installDirectory);
+            blackDuckServerConfig.getBlackDuckUrl(), operatingSystemType, installDirectory
+        );
         return ScanBatchRunner.createComplete(intEnvironmentVariables, scanPathsUtility, scanCommandRunner, scannerZipInstaller);
     }
 
