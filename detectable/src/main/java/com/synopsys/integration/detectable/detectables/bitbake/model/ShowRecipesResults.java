@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.bitbake;
+package com.synopsys.integration.detectable.detectables.bitbake.model;
 
 import java.util.List;
 import java.util.Map;
@@ -8,7 +8,7 @@ public class ShowRecipesResults {
     private final Set<String> layerNames;
     private final Map<String, List<String>> recipesWithLayers;
 
-    public ShowRecipesResults(final Set<String> layerNames, Map<String, List<String>> recipesWithLayers) {
+    public ShowRecipesResults(Set<String> layerNames, Map<String, List<String>> recipesWithLayers) {
         this.layerNames = layerNames;
         this.recipesWithLayers = recipesWithLayers;
     }

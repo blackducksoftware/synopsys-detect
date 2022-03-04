@@ -51,13 +51,13 @@ import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.Haske
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeExtractor;
-import com.synopsys.integration.detectable.detectables.bitbake.BuildFileFinder;
+import com.synopsys.integration.detectable.detectables.bitbake.collect.BuildFileFinder;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeEnvironmentParser;
-import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphNodeLabelParser;
-import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParserTransformer;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.LicenseManifestParser;
+import com.synopsys.integration.detectable.detectables.bitbake.transform.BitbakeGraphTransformer;
+import com.synopsys.integration.detectable.detectables.bitbake.transform.GraphParserTransformer;
 import com.synopsys.integration.detectable.detectables.cargo.CargoDetectable;
 import com.synopsys.integration.detectable.detectables.cargo.CargoExtractor;
 import com.synopsys.integration.detectable.detectables.cargo.parse.CargoDependencyLineParser;
@@ -635,7 +635,8 @@ public class DetectableFactory {
             bazelDetectableOptions.getBazelCqueryAdditionalOptions()
         );
         BazelProjectNameGenerator bazelProjectNameGenerator = new BazelProjectNameGenerator();
-        return new BazelExtractor(executableRunner,
+        return new BazelExtractor(
+            executableRunner,
             externalIdFactory,
             bazelWorkspaceFileParser,
             workspaceRuleChooser,

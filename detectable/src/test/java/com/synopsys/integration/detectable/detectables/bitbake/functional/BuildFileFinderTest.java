@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.common.util.finder.SimpleFileFinder;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
-import com.synopsys.integration.detectable.detectables.bitbake.BuildFileFinder;
+import com.synopsys.integration.detectable.detectables.bitbake.collect.BuildFileFinder;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeEnvironment;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 

@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.bitbake;
+package com.synopsys.integration.detectable.detectables.bitbake.collect;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,6 +12,7 @@ import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeEnvironment;
+import com.synopsys.integration.detectable.detectables.bitbake.model.ShowRecipesResults;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeEnvironmentParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
 import com.synopsys.integration.detectable.util.ToolVersionLogger;
@@ -35,6 +36,7 @@ public class BitbakeSession {
     private final ToolVersionLogger toolVersionLogger;
     private final BuildFileFinder buildFileFinder;
     private final BitbakeEnvironmentParser bitbakeEnvironmentParser;
+
     //TODO: Maybe split into a BitbakeRunner and something more like BitbakeCommands. Little overloaded.
     public BitbakeSession(
         DetectableExecutableRunner executableRunner,
@@ -58,9 +60,12 @@ public class BitbakeSession {
         this.bitbakeEnvironmentParser = bitbakeEnvironmentParser;
     }
 
-    public File executeBitbakeForDependencies(File buildDir, String packageName, boolean followSymLinks, Integer searchDepth)
-        throws IOException, IntegrationException, ExecutableFailedException {
-
+    public File executeBitbakeForDependencies(
+        File buildDir,
+        String packageName,
+        boolean followSymLinks,
+        Integer searchDepth
+    ) throws IOException, IntegrationException, ExecutableFailedException {
         String bitbakeCommand = BITBAKE_DEPENDENCIES_COMMAND_BASE + packageName;
         runBitbake(bitbakeCommand);
         return buildFileFinder.findTaskDependsFile(sourceDir, buildDir, followSymLinks, searchDepth);

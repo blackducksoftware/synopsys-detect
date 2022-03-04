@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.bitbake.parse;
+package com.synopsys.integration.detectable.detectables.bitbake.transform;
 
 import java.util.Optional;
 import java.util.Set;
@@ -9,6 +9,7 @@ import com.paypal.digraph.parser.GraphEdge;
 import com.paypal.digraph.parser.GraphNode;
 import com.paypal.digraph.parser.GraphParser;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
+import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphNodeLabelParser;
 
 public class GraphParserTransformer {
     private final GraphNodeLabelParser graphNodeLabelParser;

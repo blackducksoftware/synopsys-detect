@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.bitbake.parse;
+package com.synopsys.integration.detectable.detectables.bitbake.transform;
 
 import java.util.HashMap;
 import java.util.List;
@@ -144,7 +144,7 @@ public class BitbakeGraphTransformer {
         return Optional.ofNullable(externalId);
     }
 
-    private String chooseRecipeLayer(final String dependencyName, @Nullable String dependencyLayer, final List<String> recipeLayerNames) {
+    private String chooseRecipeLayer(String dependencyName, @Nullable String dependencyLayer, List<String> recipeLayerNames) {
         if (dependencyLayer == null) {
             logger.warn(
                 "Did not parse a layer for dependency {} from task-depends.dot; falling back to layer {} (first from show-recipes output)",
