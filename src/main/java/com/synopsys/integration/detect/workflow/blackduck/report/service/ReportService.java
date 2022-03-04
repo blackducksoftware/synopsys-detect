@@ -31,6 +31,7 @@ import com.synopsys.integration.blackduck.api.generated.enumeration.ReportType;
 import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
 import com.synopsys.integration.blackduck.api.generated.view.ComponentPolicyRulesView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentVersionView;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionReportView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
 import com.synopsys.integration.blackduck.api.generated.view.ReportView;
@@ -60,7 +61,15 @@ public class ReportService extends DataService {
     private final HttpUrl blackDuckBaseUrl;
     private final Gson gson;
 
-    public ReportService(Gson gson, HttpUrl blackDuckBaseUrl, BlackDuckApiClient blackDuckApiClient, ApiDiscovery apiDiscovery, IntLogger logger, IntegrationEscapeUtil escapeUtil, long timeoutInMilliseconds) {
+    public ReportService(
+        Gson gson,
+        HttpUrl blackDuckBaseUrl,
+        BlackDuckApiClient blackDuckApiClient,
+        ApiDiscovery apiDiscovery,
+        IntLogger logger,
+        IntegrationEscapeUtil escapeUtil,
+        long timeoutInMilliseconds
+    ) {
         super(blackDuckApiClient, apiDiscovery, logger);
         this.escapeUtil = escapeUtil;
 
@@ -182,7 +191,8 @@ public class ReportService extends DataService {
         return createReportPdfFile(outputDirectory, project, version, document -> PDType1Font.HELVETICA, document -> PDType1Font.HELVETICA_BOLD);
     }
 
-    public File createReportPdfFile(File outputDirectory, ProjectView project, ProjectVersionView version, FontLoader fontLoader, FontLoader boldFontLoader) throws IntegrationException {
+    public File createReportPdfFile(File outputDirectory, ProjectView project, ProjectVersionView version, FontLoader fontLoader, FontLoader boldFontLoader)
+        throws IntegrationException {
         ReportData reportData = getRiskReportData(project, version);
         return createReportPdfFile(outputDirectory, reportData, fontLoader, boldFontLoader);
     }
@@ -258,7 +268,7 @@ public class ReportService extends DataService {
                 HttpUrl reportUrl = startGeneratingBlackDuckNoticesReport(version, reportFormat);
 
                 logger.debug("Waiting for the Notices Report to complete.");
-                ReportView reportInfo = isReportFinishedGenerating(reportUrl);
+                ProjectVersionReportView reportInfo = isReportFinishedGenerating(reportUrl);
 
                 HttpUrl contentUrl = reportInfo.getFirstLink(ReportView.CONTENT_LINK);
                 if (contentUrl == null) {
@@ -302,14 +312,14 @@ public class ReportService extends DataService {
     /**
      * Checks the report URL every 5 seconds until the report has a finished time available, then we know it is done being generated. Throws BlackDuckIntegrationException after 30 minutes if the report has not been generated yet.
      */
-    public ReportView isReportFinishedGenerating(HttpUrl reportUrl) throws InterruptedException, IntegrationException {
+    public ProjectVersionReportView isReportFinishedGenerating(HttpUrl reportUrl) throws InterruptedException, IntegrationException {
         long startTime = System.currentTimeMillis();
         long elapsedTime = 0;
         Date timeFinished = null;
-        ReportView reportInfo = null;
+        ProjectVersionReportView reportInfo = null;
 
         while (timeFinished == null) {
-            reportInfo = blackDuckApiClient.getResponse(reportUrl, ReportView.class);
+            reportInfo = blackDuckApiClient.getResponse(reportUrl, ProjectVersionReportView.class);
             timeFinished = reportInfo.getFinishedAt();
             if (timeFinished != null) {
                 break;
