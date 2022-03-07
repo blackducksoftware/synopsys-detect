@@ -52,6 +52,8 @@ public class BitbakeDependencyGraphTransformer {
                 if (dependencyTypeFilter.shouldInclude(BitbakeDependencyType.BUILD) || !isBuildDependency(imageRecipes, name, version)) {
                     Optional<Dependency> dependency = generateExternalId(name, version, actualLayer.orElse(null), recipeLayerMap).map(Dependency::new);
                     dependency.ifPresent(value -> namesToExternalIds.put(bitbakeNode.getName(), value));
+                } else {
+                    logger.debug("Excluding BUILD dependency: {}:{}", name, version);
                 }
             } else if (name.startsWith(VIRTUAL_PREFIX)) {
                 logger.debug("Virtual component '{}' found. Excluding from graph.", name);
