@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
-import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeEnvironment;
+import com.synopsys.integration.detectable.detectables.bitbake.data.BitbakeEnvironment;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class BuildFileFinder {

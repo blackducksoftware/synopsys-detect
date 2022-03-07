@@ -25,15 +25,15 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableFaile
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.bitbake.collect.BitbakeCommandRunner;
 import com.synopsys.integration.detectable.detectables.bitbake.collect.BuildFileFinder;
-import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeEnvironment;
+import com.synopsys.integration.detectable.detectables.bitbake.data.BitbakeEnvironment;
+import com.synopsys.integration.detectable.detectables.bitbake.data.ShowRecipesResults;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
-import com.synopsys.integration.detectable.detectables.bitbake.model.ShowRecipesResults;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeEnvironmentParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.LicenseManifestParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.PwdOutputParser;
+import com.synopsys.integration.detectable.detectables.bitbake.transform.BitbakeDependencyGraphTransformer;
 import com.synopsys.integration.detectable.detectables.bitbake.transform.BitbakeGraphTransformer;
-import com.synopsys.integration.detectable.detectables.bitbake.transform.GraphParserTransformer;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import com.synopsys.integration.exception.IntegrationException;
@@ -50,8 +50,8 @@ public class BitbakeExtractor {
     private final BitbakeEnvironmentParser bitbakeEnvironmentParser;
     private final BitbakeRecipesParser bitbakeRecipesParser;
     private final LicenseManifestParser licenseManifestParser;
-    private final GraphParserTransformer graphParserTransformer;
     private final BitbakeGraphTransformer bitbakeGraphTransformer;
+    private final BitbakeDependencyGraphTransformer bitbakeDependencyGraphTransformer;
     private final List<String> packageNames;
     private final EnumListFilter<BitbakeDependencyType> dependencyTypeFilter;
 
@@ -63,8 +63,8 @@ public class BitbakeExtractor {
         BitbakeEnvironmentParser bitbakeEnvironmentParser,
         BitbakeRecipesParser bitbakeRecipesParser,
         LicenseManifestParser licenseManifestParser,
-        GraphParserTransformer graphParserTransformer,
         BitbakeGraphTransformer bitbakeGraphTransformer,
+        BitbakeDependencyGraphTransformer bitbakeDependencyGraphTransformer,
         List<String> packageNames,
         EnumListFilter<BitbakeDependencyType> dependencyTypeFilter
     ) {
@@ -75,8 +75,8 @@ public class BitbakeExtractor {
         this.bitbakeEnvironmentParser = bitbakeEnvironmentParser;
         this.bitbakeRecipesParser = bitbakeRecipesParser;
         this.licenseManifestParser = licenseManifestParser;
-        this.graphParserTransformer = graphParserTransformer;
         this.bitbakeGraphTransformer = bitbakeGraphTransformer;
+        this.bitbakeDependencyGraphTransformer = bitbakeDependencyGraphTransformer;
         this.packageNames = packageNames;
         this.dependencyTypeFilter = dependencyTypeFilter;
     }
@@ -167,7 +167,7 @@ public class BitbakeExtractor {
         if (dependencyTypeFilter.shouldExclude(BitbakeDependencyType.BUILD)) {
             imageRecipes = readImageRecipes(buildDirectory, targetPackage, bitbakeEnvironment);
         }
-        DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, showRecipesResults.getRecipesWithLayers(), imageRecipes);
+        DependencyGraph dependencyGraph = bitbakeDependencyGraphTransformer.transform(bitbakeGraph, showRecipesResults.getRecipesWithLayers(), imageRecipes);
         return new CodeLocation(dependencyGraph);
     }
 
@@ -197,6 +197,6 @@ public class BitbakeExtractor {
         }
         InputStream dependsFileInputStream = FileUtils.openInputStream(taskDependsFile);
         GraphParser graphParser = new GraphParser(dependsFileInputStream);
-        return graphParserTransformer.transform(graphParser, knownLayers);
+        return bitbakeGraphTransformer.transform(graphParser, knownLayers);
     }
 }

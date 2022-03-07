@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.bitbake.model;
+package com.synopsys.integration.detectable.detectables.bitbake.data;
 
 import java.util.List;
 import java.util.Map;

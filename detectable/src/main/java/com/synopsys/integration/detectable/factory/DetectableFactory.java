@@ -58,8 +58,8 @@ import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeReci
 import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphNodeLabelParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.LicenseManifestParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.PwdOutputParser;
+import com.synopsys.integration.detectable.detectables.bitbake.transform.BitbakeDependencyGraphTransformer;
 import com.synopsys.integration.detectable.detectables.bitbake.transform.BitbakeGraphTransformer;
-import com.synopsys.integration.detectable.detectables.bitbake.transform.GraphParserTransformer;
 import com.synopsys.integration.detectable.detectables.cargo.CargoDetectable;
 import com.synopsys.integration.detectable.detectables.cargo.CargoExtractor;
 import com.synopsys.integration.detectable.detectables.cargo.parse.CargoDependencyLineParser;
@@ -320,8 +320,8 @@ public class DetectableFactory {
             new BitbakeEnvironmentParser(),
             new BitbakeRecipesParser(),
             new LicenseManifestParser(),
-            new GraphParserTransformer(new GraphNodeLabelParser()),
-            new BitbakeGraphTransformer(externalIdFactory, bitbakeDetectableOptions.getDependencyTypeFilter()),
+            new BitbakeGraphTransformer(new GraphNodeLabelParser()),
+            new BitbakeDependencyGraphTransformer(externalIdFactory, bitbakeDetectableOptions.getDependencyTypeFilter()),
             bitbakeDetectableOptions.getPackageNames(),
             bitbakeDetectableOptions.getDependencyTypeFilter()
         );
