@@ -51,7 +51,6 @@ import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.Haske
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeExtractor;
-import com.synopsys.integration.detectable.detectables.bitbake.BitbakeExtractorV2;
 import com.synopsys.integration.detectable.detectables.bitbake.collect.BitbakeCommandRunner;
 import com.synopsys.integration.detectable.detectables.bitbake.collect.BuildFileFinder;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeEnvironmentParser;
@@ -314,16 +313,6 @@ public class DetectableFactory {
 
     public BitbakeDetectable createBitbakeDetectable(DetectableEnvironment environment, BitbakeDetectableOptions bitbakeDetectableOptions, BashResolver bashResolver) {
         BitbakeExtractor bitbakeExtractor = new BitbakeExtractor(
-            executableRunner,
-            new GraphParserTransformer(new GraphNodeLabelParser()),
-            new BitbakeGraphTransformer(externalIdFactory, bitbakeDetectableOptions.getDependencyTypeFilter()),
-            new BitbakeRecipesParser(),
-            toolVersionLogger,
-            new BuildFileFinder(fileFinder, bitbakeDetectableOptions.isFollowSymLinks(), bitbakeDetectableOptions.getSearchDepth()),
-            new LicenseManifestParser(),
-            new BitbakeEnvironmentParser()
-        );
-        BitbakeExtractorV2 bitbakeExtractorV2 = new BitbakeExtractorV2(
             toolVersionLogger,
             new BitbakeCommandRunner(executableRunner, bitbakeDetectableOptions.getSourceArguments()),
             new BuildFileFinder(fileFinder, bitbakeDetectableOptions.isFollowSymLinks(), bitbakeDetectableOptions.getSearchDepth()),
@@ -336,7 +325,7 @@ public class DetectableFactory {
             bitbakeDetectableOptions.getPackageNames(),
             bitbakeDetectableOptions.getDependencyTypeFilter()
         );
-        return new BitbakeDetectable(environment, fileFinder, bitbakeDetectableOptions, bitbakeExtractor, bitbakeExtractorV2, bashResolver);
+        return new BitbakeDetectable(environment, fileFinder, bitbakeDetectableOptions, bitbakeExtractor, bashResolver);
     }
 
     public CargoDetectable createCargoDetectable(DetectableEnvironment environment) {
