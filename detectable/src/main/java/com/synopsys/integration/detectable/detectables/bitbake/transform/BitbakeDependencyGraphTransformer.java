@@ -25,6 +25,8 @@ public class BitbakeDependencyGraphTransformer {
     private static final String NATIVE_SUFFIX = "-native";
     public static final String VERSION_WITH_EPOCH_PREFIX_REGEX = "^[0-9]+:.*";
     public static final String VIRTUAL_PREFIX = "virtual/";
+    public static final String AUTOINC_REGEX = "AUTOINC\\+[\\w|\\d]*";
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final ExternalIdFactory externalIdFactory;
@@ -102,8 +104,8 @@ public class BitbakeDependencyGraphTransformer {
     private boolean foundInImageRecipes(Map<String, String> imageRecipes, String recipeName, String recipeVersion) {
         if (imageRecipes.containsKey(recipeName)) {
             String imageRecipeVersion = imageRecipes.get(recipeName);
-            String epochlessRecipeVersion = removeEpochPrefix(recipeVersion);
-            if (epochlessRecipeVersion.startsWith(imageRecipeVersion)) {
+            String recipeWithoutEpoch = removeEpochPrefix(recipeVersion);
+            if (recipeWithoutEpoch.startsWith(imageRecipeVersion)) {
                 return true;
             } else {
                 logger.debug("Recipe {}/{} is included in the image, but version {} is not.", recipeName, imageRecipeVersion, recipeVersion);
@@ -113,13 +115,13 @@ public class BitbakeDependencyGraphTransformer {
     }
 
     private String removeEpochPrefix(String recipeVersion) {
-        String epochlessRecipeVersion = recipeVersion;
+        String recipeWithoutEpoch = recipeVersion;
         if (recipeVersion.matches(VERSION_WITH_EPOCH_PREFIX_REGEX)) {
             int colonPos = recipeVersion.indexOf(':');
-            epochlessRecipeVersion = recipeVersion.substring(colonPos + 1);
-            logger.trace("epochlessVersion for {}: {}", recipeVersion, epochlessRecipeVersion);
+            recipeWithoutEpoch = recipeVersion.substring(colonPos + 1);
+            logger.trace("Recipe Version without epoch for {}: {}", recipeVersion, recipeWithoutEpoch);
         }
-        return epochlessRecipeVersion;
+        return recipeWithoutEpoch;
     }
 
     private Optional<ExternalId> generateExternalId(String dependencyName, String dependencyVersion, @Nullable String dependencyLayer, Map<String, List<String>> recipeLayerMap) {
@@ -140,7 +142,7 @@ public class BitbakeDependencyGraphTransformer {
         }
 
         if (externalId != null && externalId.getVersion().contains("AUTOINC")) {
-            externalId.setVersion(externalId.getVersion().replaceFirst("AUTOINC\\+[\\w|\\d]*", "X"));
+            externalId.setVersion(externalId.getVersion().replaceFirst(AUTOINC_REGEX, "X"));
         }
 
         return Optional.ofNullable(externalId);
