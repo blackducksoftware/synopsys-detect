@@ -67,15 +67,15 @@ public class BitbakeDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException, IOException {
-        //        return bitbakeExtractorV2.extract(environment.getDirectory(), bashExe, foundBuildEnvScript);
+        return bitbakeExtractorV2.extract(environment.getDirectory(), bashExe, foundBuildEnvScript);
 
-        return bitbakeExtractor.extract(
-            environment.getDirectory(),
-            foundBuildEnvScript,
-            bitbakeDetectableOptions.getSourceArguments(),
-            bitbakeDetectableOptions.getPackageNames(),
-            bitbakeDetectableOptions.getDependencyTypeFilter(),
-            bashExe
-        );
+        //        return bitbakeExtractor.extract(
+        //            environment.getDirectory(),
+        //            foundBuildEnvScript,
+        //            bitbakeDetectableOptions.getSourceArguments(),
+        //            bitbakeDetectableOptions.getPackageNames(),
+        //            bitbakeDetectableOptions.getDependencyTypeFilter(),
+        //            bashExe
+        //        );
     }
 }

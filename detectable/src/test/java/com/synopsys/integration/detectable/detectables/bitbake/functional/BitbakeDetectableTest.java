@@ -35,14 +35,9 @@ public class BitbakeDetectableTest extends DetectableFunctionalTest {
     protected void setup() throws IOException {
         addFile("oe-init-build-env");
 
-        ExecutableOutput bitbakeGOutput = createStandardOutput(
-            ""
-        );
         addExecutableOutput(
-            bitbakeGOutput,
-            "bash",
-            "-c",
-            "source " + getSourceDirectory().toFile().getCanonicalPath() + File.separator + "oe-init-build-env; " + "bitbake " + "-g " + "core-image-minimal"
+            createStandardOutput(""), // Command generates task-depends.dot
+            createBitbakeCommand("bitbake -g core-image-minimal")
         );
 
         addFile(
@@ -59,6 +54,14 @@ public class BitbakeDetectableTest extends DetectableFunctionalTest {
             "}"
         );
 
+        addExecutableOutput(
+            createStandardOutput(
+                "MACHINE_ARCH=\"something\"",
+                "LICENSE_DIRECTORY=\"some-path\""
+            ),
+            createBitbakeCommand("bitbake --environment")
+        );
+
         ExecutableOutput bitbakeShowRecipesOutput = createStandardOutput(
             "=== Available recipes: ===",
             "acl:",
@@ -72,16 +75,12 @@ public class BitbakeDetectableTest extends DetectableFunctionalTest {
         );
         addExecutableOutput(
             bitbakeShowRecipesOutput,
-            "bash",
-            "-c",
-            "source " + getSourceDirectory().toFile().getCanonicalPath() + File.separator + "oe-init-build-env; " + "bitbake-layers show-recipes"
+            createBitbakeCommand("bitbake-layers show-recipes")
         );
 
         addExecutableOutput(
             createStandardOutput(getSourceDirectory().toFile().getAbsolutePath()),
-            "bash",
-            "-c",
-            "source " + getSourceDirectory().toFile().getCanonicalPath() + File.separator + "oe-init-build-env; " + "pwd"
+            createBitbakeCommand("pwd")
         );
     }
 
@@ -90,7 +89,14 @@ public class BitbakeDetectableTest extends DetectableFunctionalTest {
     public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
         return detectableFactory.createBitbakeDetectable(
             detectableEnvironment,
-            new BitbakeDetectableOptions("oe-init-build-env", new ArrayList<>(), Collections.singletonList("core-image-minimal"), 0, false, EnumListFilter.excludeNone()),
+            new BitbakeDetectableOptions(
+                "oe-init-build-env",
+                new ArrayList<>(),
+                Collections.singletonList("core-image-minimal"),
+                0,
+                false,
+                EnumListFilter.excludeNone()
+            ),
             () -> ExecutableTarget.forCommand("bash")
         );
     }
@@ -116,5 +122,14 @@ public class BitbakeDetectableTest extends DetectableFunctionalTest {
         graphAssert.hasParentChildRelationship(aclExternalId, attrExternalId);
         graphAssert.hasParentChildRelationship(attrExternalId, baseFilesExternalId);
         graphAssert.hasParentChildRelationship(attrExternalId, basePasswdExternalId);
+    }
+
+    private String[] createBitbakeCommand(String command) throws IOException {
+        String sourceCommandPrefix = "source " + getSourceDirectory().toFile().getCanonicalPath() + File.separator + "oe-init-build-env; ";
+        return new String[] {
+            "bash",
+            "-c",
+            sourceCommandPrefix + command
+        };
     }
 }
