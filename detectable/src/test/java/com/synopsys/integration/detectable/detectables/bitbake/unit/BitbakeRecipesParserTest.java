@@ -1,20 +1,19 @@
-package com.synopsys.integration.detectable.detectables.bitbake.functional;
+package com.synopsys.integration.detectable.detectables.bitbake.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detectable.detectables.bitbake.model.ShowRecipesResults;
+import com.synopsys.integration.detectable.detectables.bitbake.data.ShowRecipesResults;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
 
 public class BitbakeRecipesParserTest {
 
-    private List<String> showRecipesOutputLines = Arrays.asList(
+    private final List<String> showRecipesOutputLines = Arrays.asList(
         "### Shell environment set up for builds. ###\n",
         "=== Available recipes: ===\n",
         "a2jmidid:\n",
@@ -28,7 +27,7 @@ public class BitbakeRecipesParserTest {
     );
 
     @Test
-    void test() throws IOException {
+    void test() {
         BitbakeRecipesParser parser = new BitbakeRecipesParser();
         ShowRecipesResults results = parser.parseShowRecipes(showRecipesOutputLines);
         assertEquals(3, results.getLayerNames().size());

@@ -8,8 +8,6 @@ import java.util.Collections;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
@@ -25,7 +23,6 @@ import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 import com.synopsys.integration.executable.ExecutableOutput;
 
 public class BitbakeDetectableTest extends DetectableFunctionalTest {
-    private static final Logger logger = LoggerFactory.getLogger(BitbakeDetectableTest.class);
 
     public BitbakeDetectableTest() throws IOException {
         super("bitbake");
