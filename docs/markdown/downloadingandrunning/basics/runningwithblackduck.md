@@ -27,7 +27,8 @@ and [Black Duck Signature Scanner properties](../../properties/configuration/sig
 ## Offline mode
 
 If you do not have a [blackduck_product_name] instance, or if your network is down, you can still run [solution_name] in offline mode.
-In offline mode, [solution_name] creates the BDIO content and the dry run [blackduck_signature_scan_act] output files without attempting to upload them to [blackduck_product_name].
+In offline mode, [solution_name] writes output files (.bdio files and, when Vulnerability Impact Analysis runs, .bdmu files) to subdirectories
+within the run directory without attempting to upload them to [blackduck_product_name]. You can find the value of the run directory in the [solution_name] log.
 You can run [solution_name] in offline mode using the [offline mode property](../../properties/configuration/blackduck-server.md#offline-mode).
 
 ## BDIO format
