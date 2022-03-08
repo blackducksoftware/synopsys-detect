@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
+import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigKeys;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.builder.BuilderStatus;
 import com.synopsys.integration.log.IntLogger;
@@ -20,7 +21,7 @@ public class BlackDuckParametersExtension implements ParameterResolver {
 
     @Override
     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) {
-        BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = new BlackDuckServerConfigBuilder();
+        BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = new BlackDuckServerConfigBuilder(BlackDuckServerConfigKeys.KEYS.apiToken);
         blackDuckServerConfigBuilder.setProperties(System.getenv().entrySet());
 
         BuilderStatus builderStatus = blackDuckServerConfigBuilder.validateAndGetBuilderStatus();

@@ -2,6 +2,7 @@ package com.synopsys.integration.detect.junitextensions;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -16,6 +17,7 @@ public class BlackDuckTest {
     //optional, but if you want to inject a logger into the factory, name it like this
     private final BufferedIntLogger blackDuckLogger = new BufferedIntLogger();
 
+    @Disabled("This test is an example of how to use the BlackDuckParametersExtension")
     @Test
     public void testBlackDuck(@BlackDuck BlackDuckServicesFactory blackDuckServicesFactory) throws IntegrationException {
         blackDuckServicesFactory
