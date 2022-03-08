@@ -9,6 +9,7 @@
   declaring a version prior to `Go 1.16`.
 * Added a feature that allows users to configure [solution_name] to fail when policies of a certain name are vialated.
   See [detect.policy.check.fail.on.names](properties/configuration/project.md#fail-on-policy-names-with-violations).
+* Added Rapid Compare Mode which enables returning only the differences in policy violations compared to a previous scan.
 
 ### Changed features
 
