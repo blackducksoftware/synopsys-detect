@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.impactanalysis.service;
 
 import org.jetbrains.annotations.Nullable;
@@ -25,7 +18,16 @@ public class ImpactAnalysisOutput extends CodeLocationOutput {
     private final String contentString;
     private final ImpactAnalysisUploadView impactAnalysisUploadView;
 
-    public static ImpactAnalysisOutput FAILURE(NameVersion projectAndVersion, String codeLocationName, String errorMessage, Exception exception, String response, String statusMessage, int statusCode, String contentString) {
+    public static ImpactAnalysisOutput FAILURE(
+        NameVersion projectAndVersion,
+        String codeLocationName,
+        String errorMessage,
+        Exception exception,
+        String response,
+        String statusMessage,
+        int statusCode,
+        String contentString
+    ) {
         return new ImpactAnalysisOutput(Result.FAILURE, projectAndVersion, codeLocationName, errorMessage, exception, response, statusMessage, statusCode, contentString, null);
     }
 
@@ -53,11 +55,32 @@ public class ImpactAnalysisOutput extends CodeLocationOutput {
 
         ImpactAnalysisUploadView impactAnalysisUploadView = gson.fromJson(contentString, ImpactAnalysisUploadView.class);
 
-        return new ImpactAnalysisOutput(result, projectAndVersion, codeLocationName, errorMessage, contentStringException, responseString, statusMessage, statusCode, contentString, impactAnalysisUploadView);
+        return new ImpactAnalysisOutput(
+            result,
+            projectAndVersion,
+            codeLocationName,
+            errorMessage,
+            contentStringException,
+            responseString,
+            statusMessage,
+            statusCode,
+            contentString,
+            impactAnalysisUploadView
+        );
     }
 
-    private ImpactAnalysisOutput(Result result, NameVersion projectAndVersion, String codeLocationName, String errorMessage, Exception exception, String response, String statusMessage, int statusCode, String contentString,
-        ImpactAnalysisUploadView impactAnalysisUploadView) {
+    private ImpactAnalysisOutput(
+        Result result,
+        NameVersion projectAndVersion,
+        String codeLocationName,
+        String errorMessage,
+        Exception exception,
+        String response,
+        String statusMessage,
+        int statusCode,
+        String contentString,
+        ImpactAnalysisUploadView impactAnalysisUploadView
+    ) {
         super(result, projectAndVersion, codeLocationName, 1, errorMessage, exception);
         this.response = response;
         this.statusMessage = statusMessage;

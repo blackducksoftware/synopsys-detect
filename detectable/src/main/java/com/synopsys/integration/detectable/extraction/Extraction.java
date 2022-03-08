@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.extraction;
 
 import java.io.File;
@@ -17,7 +10,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.util.NameVersion;
 
 public class Extraction {
@@ -26,16 +18,23 @@ public class Extraction {
     private final List<File> unrecognizedPaths;
     private final ExtractionResultType result;
 
-    //if your an error you might have one of these filled.
+    // If you're an error you might have one of these filled.
     private final Exception error;
-    //end
 
     private final String description;
     private final String projectVersion;
     private final String projectName;
-    private final Map<ExtractionMetadata, Object> metaData;
+    private final Map<ExtractionMetadata<?>, Object> metaData;
 
-    private Extraction(final Builder builder) {
+    public static Extraction success(CodeLocation codeLocation) {
+        return new Extraction.Builder().success(codeLocation).build();
+    }
+
+    public static Extraction success(List<CodeLocation> codeLocations) {
+        return new Extraction.Builder().success(codeLocations).build();
+    }
+
+    private Extraction(Builder builder) {
         this.codeLocations = builder.codeLocations;
         this.result = builder.result;
         this.error = builder.error;
@@ -52,14 +51,10 @@ public class Extraction {
         }
     }
 
-    public static Extraction fromFailedExecutable(ExecutableFailedException executableRunnerException) {
-        return new Extraction.Builder().exception(executableRunnerException).build();
-    }
-
-    public <T> Optional<T> getMetaData(final ExtractionMetadata<T> extractionMetadata) {
+    public <T> Optional<T> getMetaData(ExtractionMetadata<T> extractionMetadata) {
         if (metaData.containsKey(extractionMetadata)) {
-            final Class<T> clazz = extractionMetadata.getMetadataClass();
-            final Object value = metaData.get(extractionMetadata);
+            Class<T> clazz = extractionMetadata.getMetadataClass();
+            Object value = metaData.get(extractionMetadata);
             if (value != null && clazz.isAssignableFrom(value.getClass())) {
                 return Optional.of(clazz.cast(value));
             }
@@ -113,19 +108,19 @@ public class Extraction {
 
         private String projectVersion;
         private String projectName;
-        private final Map<ExtractionMetadata, Object> metaData = new HashMap<>();
+        private final Map<ExtractionMetadata<?>, Object> metaData = new HashMap<>();
 
-        public Builder projectName(final String projectName) {
+        public Builder projectName(String projectName) {
             this.projectName = projectName;
             return this;
         }
 
-        public Builder projectVersion(final String projectVersion) {
+        public Builder projectVersion(String projectVersion) {
             this.projectVersion = projectVersion;
             return this;
         }
 
-        public Builder nameVersionIfPresent(final Optional<NameVersion> nameVersion) {
+        public Builder nameVersionIfPresent(Optional<NameVersion> nameVersion) {
             if (nameVersion.isPresent()) {
                 this.projectName(nameVersion.get().getName());
                 this.projectVersion(nameVersion.get().getVersion());
@@ -133,23 +128,23 @@ public class Extraction {
             return this;
         }
 
-        public Builder codeLocations(final CodeLocation codeLocation) {
+        public Builder codeLocations(CodeLocation codeLocation) {
             codeLocations.add(codeLocation);
             return this;
         }
 
-        public Builder codeLocations(final List<CodeLocation> codeLocation) {
+        public Builder codeLocations(List<CodeLocation> codeLocation) {
             codeLocations.addAll(codeLocation);
             return this;
         }
 
-        public Builder success(final CodeLocation codeLocation) {
+        public Builder success(CodeLocation codeLocation) {
             this.codeLocations(codeLocation);
             this.success();
             return this;
         }
 
-        public Builder success(final List<CodeLocation> codeLocation) {
+        public Builder success(List<CodeLocation> codeLocation) {
             this.codeLocations(codeLocation);
             this.success();
             return this;
@@ -160,34 +155,34 @@ public class Extraction {
             return this;
         }
 
-        public Builder failure(final String description) {
+        public Builder failure(String description) {
             this.result = ExtractionResultType.FAILURE;
             this.description = description;
             return this;
         }
 
-        public Builder exception(final Exception error) {
+        public Builder exception(Exception error) {
             this.result = ExtractionResultType.EXCEPTION;
             this.error = error;
             return this;
         }
 
-        public <T> Builder metaData(final ExtractionMetadata<T> key, final T value) {
+        public <T> Builder metaData(ExtractionMetadata<T> key, T value) {
             this.metaData.put(key, value);
             return this;
         }
 
-        public Builder relevantFiles(final File... files) {
+        public Builder relevantFiles(File... files) {
             this.relevantFiles.addAll(Arrays.asList(files));
             return this;
         }
 
-        public Builder unrecognizedPaths(final File... files) {
+        public Builder unrecognizedPaths(File... files) {
             this.unrecognizedPaths.addAll(Arrays.asList(files));
             return this;
         }
 
-        public Builder unrecognizedPaths(final Collection<File> files) {
+        public Builder unrecognizedPaths(Collection<File> files) {
             this.unrecognizedPaths.addAll(files);
             return this;
         }

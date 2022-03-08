@@ -1,18 +1,18 @@
 package com.synopsys.integration.detect.lifecycle.shutdown;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.util.ConfigTestUtils;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
-
 
 public class ShutdownDeciderTest {
     @Test
@@ -40,14 +40,14 @@ public class ShutdownDeciderTest {
 
     @Test
     public void shouldPreserveScanIfDryRun() {
-        PropertyConfiguration configuration = ConfigTestUtils.configOf(Pair.of(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN.getProperty().getKey(), "true"));
+        PropertyConfiguration configuration = ConfigTestUtils.configOf(Pair.of(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN.getKey(), "true"));
         CleanupDecision decision = new ShutdownDecider().decideCleanup(configuration, null, null);
         assertTrue(decision.shouldPreserveScan());
     }
 
     @Test
     public void shouldSkipCleanupIfProvidedFalse() {
-        PropertyConfiguration configuration = ConfigTestUtils.configOf(Pair.of(DetectProperties.DETECT_CLEANUP.getProperty().getKey(), "false"));
+        PropertyConfiguration configuration = ConfigTestUtils.configOf(Pair.of(DetectProperties.DETECT_CLEANUP.getKey(), "false"));
         CleanupDecision decision = new ShutdownDecider().decideCleanup(configuration, null, null);
         assertFalse(decision.shouldCleanup());
     }

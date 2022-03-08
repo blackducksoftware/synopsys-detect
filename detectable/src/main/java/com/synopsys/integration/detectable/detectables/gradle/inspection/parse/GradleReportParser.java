@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.gradle.inspection.parse;
 
 import java.io.BufferedReader;
@@ -28,7 +21,7 @@ import com.synopsys.integration.detectable.detectables.gradle.inspection.model.G
 public class GradleReportParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public static final String PROJECT_PATH_PREFIX = "projectPath:";
+    public static final String PROJECT_DIRECTORY_PREFIX = "projectDirectory:";
     public static final String PROJECT_GROUP_PREFIX = "projectGroup:";
     public static final String PROJECT_NAME_PREFIX = "projectName:";
     public static final String PROJECT_VERSION_PREFIX = "projectVersion:";
@@ -39,40 +32,35 @@ public class GradleReportParser {
 
     private final GradleReportConfigurationParser gradleReportConfigurationParser = new GradleReportConfigurationParser();
 
-    public Optional<GradleReport> parseReport(final File reportFile) {
+    public Optional<GradleReport> parseReport(File reportFile) {
         GradleReport gradleReport = new GradleReport();
         boolean processingMetaData = false;
-        final List<String> configurationLines = new ArrayList<>();
-        try (final InputStream dependenciesInputStream = new FileInputStream(reportFile); final BufferedReader reader = new BufferedReader(new InputStreamReader(dependenciesInputStream, StandardCharsets.UTF_8))) {
+        List<String> configurationLines = new ArrayList<>();
+        try (InputStream dependenciesInputStream = new FileInputStream(reportFile);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(dependenciesInputStream, StandardCharsets.UTF_8))) {
             while (reader.ready()) {
-                final String line = reader.readLine();
+                String line = reader.readLine();
                 /*
                   The meta data section will be at the end of the file after all of the "gradle dependencies" output
                  */
                 if (line.startsWith(DETECT_META_DATA_HEADER)) {
                     processingMetaData = true;
-                    continue;
-                }
-                if (line.startsWith(DETECT_META_DATA_FOOTER)) {
+                } else if (line.startsWith(DETECT_META_DATA_FOOTER)) {
                     processingMetaData = false;
-                    continue;
-                }
-                if (processingMetaData) {
+                } else if (processingMetaData) {
                     setGradleReportInfo(gradleReport, line);
-                    continue;
-                }
-
-                if (StringUtils.isBlank(line)) {
-                    parseConfigurationLines(configurationLines, gradleReport);
-                    configurationLines.clear();
                 } else {
-                    configurationLines.add(line);
+                    if (StringUtils.isBlank(line)) {
+                        parseConfigurationLines(configurationLines, gradleReport);
+                        configurationLines.clear();
+                    } else {
+                        configurationLines.add(line);
+                    }
                 }
-
             }
 
             parseConfigurationLines(configurationLines, gradleReport);
-        } catch (final Exception e) {
+        } catch (Exception e) {
             logger.debug(String.format("Failed to read report file: %s", reportFile.getAbsolutePath()), e);
             gradleReport = null;
         }
@@ -81,8 +69,8 @@ public class GradleReportParser {
     }
 
     private void setGradleReportInfo(GradleReport gradleReport, String line) {
-        if (line.startsWith(PROJECT_PATH_PREFIX)) {
-            gradleReport.setProjectSourcePath(line.substring(PROJECT_PATH_PREFIX.length()).trim());
+        if (line.startsWith(PROJECT_DIRECTORY_PREFIX)) {
+            gradleReport.setProjectSourcePath(line.substring(PROJECT_DIRECTORY_PREFIX.length()).trim());
         } else if (line.startsWith(PROJECT_GROUP_PREFIX)) {
             gradleReport.setProjectGroup(line.substring(PROJECT_GROUP_PREFIX.length()).trim());
         } else if (line.startsWith(PROJECT_NAME_PREFIX)) {
@@ -92,16 +80,16 @@ public class GradleReportParser {
         }
     }
 
-    private void parseConfigurationLines(final List<String> configurationLines, final GradleReport gradleReport) {
+    private void parseConfigurationLines(List<String> configurationLines, GradleReport gradleReport) {
         if (configurationLines.size() > 1 && isConfigurationHeader(configurationLines)) {
-            final String header = configurationLines.get(0);
-            final List<String> dependencyTree = configurationLines.stream().skip(1).collect(Collectors.toList());
-            final GradleConfiguration configuration = gradleReportConfigurationParser.parse(header, dependencyTree);
+            String header = configurationLines.get(0);
+            List<String> dependencyTree = configurationLines.stream().skip(1).collect(Collectors.toList());
+            GradleConfiguration configuration = gradleReportConfigurationParser.parse(header, dependencyTree);
             gradleReport.getConfigurations().add(configuration);
         }
     }
 
-    private boolean isConfigurationHeader(final List<String> lines) {
+    private boolean isConfigurationHeader(List<String> lines) {
         if (lines.get(0).contains(" - ")) {
             return true;
         } else {

@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.yarn.parse;
 
 import org.apache.commons.lang3.StringUtils;
@@ -21,8 +14,7 @@ public class YarnLockLineAnalyzer {
         }
         int leadingSpaceCount = countLeadingSpaces(line);
         if ((leadingSpaceCount % SPACES_INDENT_PER_LEVEL) != 0) {
-            logger.warn("Leading space count for '{}' is {}; expected it to be divisible by {}",
-                line, leadingSpaceCount, SPACES_INDENT_PER_LEVEL);
+            logger.warn("Leading space count for '{}' is {}; expected it to be divisible by {}", line, leadingSpaceCount, SPACES_INDENT_PER_LEVEL);
         }
         return leadingSpaceCount / SPACES_INDENT_PER_LEVEL;
     }

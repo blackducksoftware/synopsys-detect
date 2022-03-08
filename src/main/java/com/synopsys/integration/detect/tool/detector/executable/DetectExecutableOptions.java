@@ -1,22 +1,16 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.detector.executable;
 
 import java.nio.file.Path;
 
 public class DetectExecutableOptions {
-    private final boolean isPython3;
     private final Path bashUserPath;
     private final Path bazelUserPath;
     private final Path conanUserPath;
     private final Path condaUserPath;
     private final Path cpanUserPath;
     private final Path cpanmUserPath;
+    private final Path dartPath;
+    private final Path flutterPath;
     private final Path gradleUserPath;
     private final Path mavenUserPath;
     private final Path npmUserPath;
@@ -34,16 +28,40 @@ public class DetectExecutableOptions {
     private final Path sbtUserPath;
     private final Path lernaUserPath;
 
-    public DetectExecutableOptions(boolean isPython3, Path bashUserPath, Path bazelUserPath, Path conanUserPath, Path condaUserPath, Path cpanUserPath, Path cpanmUserPath, Path gradleUserPath, Path mavenUserPath,
-        Path npmUserPath, Path pearUserPath, Path pipUserPath, Path pipenvUserPath, Path pythonUserPath, Path rebarUserPath, Path javaUserPath, Path dockerUserPath,
-        Path dotnetUserPath, Path gitUserPath, Path goUserPath, Path swiftUserPath, Path sbtUserPath, Path lernaUserPath) {
-        this.isPython3 = isPython3;
+    public DetectExecutableOptions(
+        Path bashUserPath,
+        Path bazelUserPath,
+        Path conanUserPath,
+        Path condaUserPath,
+        Path cpanUserPath,
+        Path cpanmUserPath,
+        Path dartPath,
+        Path flutterPath,
+        Path gradleUserPath,
+        Path mavenUserPath,
+        Path npmUserPath,
+        Path pearUserPath,
+        Path pipUserPath,
+        Path pipenvUserPath,
+        Path pythonUserPath,
+        Path rebarUserPath,
+        Path javaUserPath,
+        Path dockerUserPath,
+        Path dotnetUserPath,
+        Path gitUserPath,
+        Path goUserPath,
+        Path swiftUserPath,
+        Path sbtUserPath,
+        Path lernaUserPath
+    ) {
         this.bashUserPath = bashUserPath;
         this.bazelUserPath = bazelUserPath;
         this.conanUserPath = conanUserPath;
         this.condaUserPath = condaUserPath;
         this.cpanUserPath = cpanUserPath;
         this.cpanmUserPath = cpanmUserPath;
+        this.dartPath = dartPath;
+        this.flutterPath = flutterPath;
         this.gradleUserPath = gradleUserPath;
         this.mavenUserPath = mavenUserPath;
         this.npmUserPath = npmUserPath;
@@ -84,6 +102,14 @@ public class DetectExecutableOptions {
 
     public Path getCpanmUserPath() {
         return cpanmUserPath;
+    }
+
+    public Path getDartUserPath() {
+        return dartPath;
+    }
+
+    public Path getFlutterUserPath() {
+        return flutterPath;
     }
 
     public Path getGradleUserPath() {
@@ -140,10 +166,6 @@ public class DetectExecutableOptions {
 
     public Path getLernaUserPath() {
         return lernaUserPath;
-    }
-
-    public boolean isPython3() {
-        return isPython3;
     }
 
     public Path getPipUserPath() {

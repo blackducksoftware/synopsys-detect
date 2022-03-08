@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.conda;
 
 import java.io.File;
@@ -20,19 +13,23 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.conda.parser.CondaListParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import com.synopsys.integration.executable.ExecutableOutput;
 
 public class CondaCliExtractor {
     private final CondaListParser condaListParser;
     private final DetectableExecutableRunner executableRunner;
+    private final ToolVersionLogger toolVersionLogger;
 
-    public CondaCliExtractor(CondaListParser condaListParser, DetectableExecutableRunner executableRunner) {
+    public CondaCliExtractor(CondaListParser condaListParser, DetectableExecutableRunner executableRunner, ToolVersionLogger toolVersionLogger) {
         this.condaListParser = condaListParser;
         this.executableRunner = executableRunner;
+        this.toolVersionLogger = toolVersionLogger;
     }
 
     public Extraction extract(File directory, ExecutableTarget condaExe, File workingDirectory, String condaEnvironmentName) {
         try {
+            toolVersionLogger.log(workingDirectory, condaExe);
             List<String> condaListOptions = new ArrayList<>();
             condaListOptions.add("list");
             if (StringUtils.isNotBlank(condaEnvironmentName)) {

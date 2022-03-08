@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.rebar;
 
 import java.io.File;
@@ -20,19 +13,23 @@ import com.synopsys.integration.detectable.detectable.executable.DetectableExecu
 import com.synopsys.integration.detectable.detectables.rebar.model.RebarParseResult;
 import com.synopsys.integration.detectable.detectables.rebar.parse.Rebar3TreeParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import com.synopsys.integration.executable.Executable;
 
 public class RebarExtractor {
     private final DetectableExecutableRunner executableRunner;
     private final Rebar3TreeParser rebarTreeParser;
+    private final ToolVersionLogger toolVersionLogger;
 
-    public RebarExtractor(DetectableExecutableRunner executableRunner, Rebar3TreeParser rebarTreeParser) {
+    public RebarExtractor(DetectableExecutableRunner executableRunner, Rebar3TreeParser rebarTreeParser, ToolVersionLogger toolVersionLogger) {
         this.executableRunner = executableRunner;
         this.rebarTreeParser = rebarTreeParser;
+        this.toolVersionLogger = toolVersionLogger;
     }
 
     public Extraction extract(File directory, ExecutableTarget rebarExe) {
         try {
+            toolVersionLogger.log(directory, rebarExe);
             List<CodeLocation> codeLocations = new ArrayList<>();
 
             Map<String, String> envVars = new HashMap<>();

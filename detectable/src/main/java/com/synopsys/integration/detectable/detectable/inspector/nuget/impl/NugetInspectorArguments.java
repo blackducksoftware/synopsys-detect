@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectable.inspector.nuget.impl;
 
 import java.io.File;
@@ -28,7 +21,8 @@ public class NugetInspectorArguments {
         List<String> options = new ArrayList<>(Arrays.asList(
             "--target_path=" + sourcePath.getCanonicalPath(),
             "--output_directory=" + outputDirectory.getCanonicalPath(),
-            "--ignore_failure=" + nugetInspectorOptions.isIgnoreFailures()));
+            "--ignore_failure=" + nugetInspectorOptions.isIgnoreFailures()
+        ));
 
         if (!nugetInspectorOptions.getExcludedModules().isEmpty()) {
             options.add("--excluded_modules=" + toCommaSeparatedString(nugetInspectorOptions.getExcludedModules()));

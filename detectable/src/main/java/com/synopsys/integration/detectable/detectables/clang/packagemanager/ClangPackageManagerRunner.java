@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.clang.packagemanager;
 
 import java.io.File;
@@ -26,30 +19,45 @@ import com.synopsys.integration.executable.ExecutableRunnerException;
 public class ClangPackageManagerRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public boolean applies(final ClangPackageManager currentPackageManager, final File workingDirectory, final DetectableExecutableRunner executor) {
-        final ClangPackageManagerInfo packageManagerInfo = currentPackageManager.getPackageManagerInfo();
+    public boolean applies(ClangPackageManager currentPackageManager, File workingDirectory, DetectableExecutableRunner executor) {
+        ClangPackageManagerInfo packageManagerInfo = currentPackageManager.getPackageManagerInfo();
         try {
-            final ExecutableOutput versionOutput = executor.execute(workingDirectory, packageManagerInfo.getPkgMgrName(), packageManagerInfo.getCheckPresenceCommandArgs());
+            ExecutableOutput versionOutput = executor.execute(workingDirectory, packageManagerInfo.getPkgMgrName(), packageManagerInfo.getCheckPresenceCommandArgs());
             logger.debug(String.format("packageStatusOutput: %s", versionOutput.getStandardOutput()));
             if (versionOutput.getStandardOutput().contains(packageManagerInfo.getCheckPresenceCommandOutputExpectedText())) {
                 logger.debug(String.format("Found package manager %s", packageManagerInfo.getPkgMgrName()));
                 return true;
             }
-            logger.debug(String.format("Output of %s %s does not look right; concluding that the %s package manager is not present. The output: %s", packageManagerInfo.getPkgMgrName(), packageManagerInfo.getCheckPresenceCommandArgs(),
-                packageManagerInfo.getPkgMgrName(), versionOutput));
-        } catch (final ExecutableRunnerException e) {
-            logger.debug(String.format("Error executing %s %s; concluding that the %s package manager is not present. The error: %s", packageManagerInfo.getPkgMgrName(), packageManagerInfo.getCheckPresenceCommandArgs(),
-                packageManagerInfo.getPkgMgrName(), e.getMessage()));
+            logger.debug(String.format(
+                "Output of %s %s does not look right; concluding that the %s package manager is not present. The output: %s",
+                packageManagerInfo.getPkgMgrName(),
+                packageManagerInfo.getCheckPresenceCommandArgs(),
+                packageManagerInfo.getPkgMgrName(),
+                versionOutput
+            ));
+        } catch (ExecutableRunnerException e) {
+            logger.debug(String.format(
+                "Error executing %s %s; concluding that the %s package manager is not present. The error: %s",
+                packageManagerInfo.getPkgMgrName(),
+                packageManagerInfo.getCheckPresenceCommandArgs(),
+                packageManagerInfo.getPkgMgrName(),
+                e.getMessage()
+            ));
             return false;
         }
         return false;
     }
 
-    public PackageDetailsResult getAllPackages(final ClangPackageManager currentPackageManager, final File workingDirectory, final DetectableExecutableRunner executableRunner, final Set<File> dependencyFiles) {
-        final Set<PackageDetails> packageDetails = new HashSet<>();
-        final Set<File> unRecognizedDependencyFiles = new HashSet<>();
-        for (final File dependencyFile : dependencyFiles) {
-            final PackageDetailsResult packageDetailsResult = getPackages(currentPackageManager, workingDirectory, executableRunner, dependencyFile);
+    public PackageDetailsResult getAllPackages(
+        ClangPackageManager currentPackageManager,
+        File workingDirectory,
+        DetectableExecutableRunner executableRunner,
+        Set<File> dependencyFiles
+    ) {
+        Set<PackageDetails> packageDetails = new HashSet<>();
+        Set<File> unRecognizedDependencyFiles = new HashSet<>();
+        for (File dependencyFile : dependencyFiles) {
+            PackageDetailsResult packageDetailsResult = getPackages(currentPackageManager, workingDirectory, executableRunner, dependencyFile);
             packageDetails.addAll(packageDetailsResult.getFoundPackages());
             unRecognizedDependencyFiles.addAll(packageDetailsResult.getUnRecognizedDependencyFiles());
         }
@@ -57,27 +65,32 @@ public class ClangPackageManagerRunner {
         return new PackageDetailsResult(packageDetails, unRecognizedDependencyFiles);
     }
 
-    public PackageDetailsResult getPackages(final ClangPackageManager currentPackageManager, final File workingDirectory, final DetectableExecutableRunner executableRunner, final File dependencyFile) {
-        final ClangPackageManagerInfo packageManagerInfo = currentPackageManager.getPackageManagerInfo();
-        final Set<PackageDetails> dependencyDetails = new HashSet<>();
-        final Set<File> unRecognizedDependencyFiles = new HashSet<>();
+    public PackageDetailsResult getPackages(ClangPackageManager currentPackageManager, File workingDirectory, DetectableExecutableRunner executableRunner, File dependencyFile) {
+        ClangPackageManagerInfo packageManagerInfo = currentPackageManager.getPackageManagerInfo();
+        Set<PackageDetails> dependencyDetails = new HashSet<>();
+        Set<File> unRecognizedDependencyFiles = new HashSet<>();
         try {
-            final List<String> fileSpecificGetOwnerArgs = new ArrayList<>(packageManagerInfo.getPkgMgrGetOwnerCmdArgs());
+            List<String> fileSpecificGetOwnerArgs = new ArrayList<>(packageManagerInfo.getPkgMgrGetOwnerCmdArgs());
             fileSpecificGetOwnerArgs.add(dependencyFile.getAbsolutePath());
-            final ExecutableOutput queryPackageResult = executableRunner.execute(workingDirectory, packageManagerInfo.getPkgMgrCmdString(), fileSpecificGetOwnerArgs);
-            final String queryPackageOutputToParse;
+            ExecutableOutput queryPackageResult = executableRunner.execute(workingDirectory, packageManagerInfo.getPkgMgrCmdString(), fileSpecificGetOwnerArgs);
+            String queryPackageOutputToParse;
             if (StringUtils.isNotBlank(queryPackageResult.getStandardOutput())) {
                 queryPackageOutputToParse = queryPackageResult.getStandardOutput();
             } else {
                 queryPackageOutputToParse = queryPackageResult.getErrorOutput();
             }
-            final ClangPackageManagerResolver resolver = currentPackageManager.getPackageResolver();
-            final List<PackageDetails> packageDetails = resolver.resolvePackages(currentPackageManager.getPackageManagerInfo(), executableRunner, workingDirectory, queryPackageOutputToParse);
+            ClangPackageManagerResolver resolver = currentPackageManager.getPackageResolver();
+            List<PackageDetails> packageDetails = resolver.resolvePackages(
+                currentPackageManager.getPackageManagerInfo(),
+                executableRunner,
+                workingDirectory,
+                queryPackageOutputToParse
+            );
             dependencyDetails.addAll(packageDetails);
-        } catch (final NotOwnedByAnyPkgException notOwnedException) {
+        } catch (NotOwnedByAnyPkgException notOwnedException) {
             logger.debug(String.format("%s is not recognized by the linux package manager (%s)", dependencyFile.getAbsolutePath(), notOwnedException.getMessage()));
             unRecognizedDependencyFiles.add(dependencyFile);
-        } catch (final ExecutableRunnerException e) {
+        } catch (ExecutableRunnerException e) {
             logger.debug(String.format("Error with dependency file %s when running %s", dependencyFile.getAbsolutePath(), packageManagerInfo.getPkgMgrCmdString()));
             logger.error(String.format("Error executing %s: %s", packageManagerInfo.getPkgMgrCmdString(), e.getMessage()));
         }

@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect;
 
 import java.io.File;
@@ -40,17 +33,21 @@ import com.synopsys.integration.detect.lifecycle.exit.ExitManager;
 import com.synopsys.integration.detect.lifecycle.exit.ExitOptions;
 import com.synopsys.integration.detect.lifecycle.exit.ExitResult;
 import com.synopsys.integration.detect.lifecycle.run.DetectRun;
+import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.run.singleton.BootSingletons;
 import com.synopsys.integration.detect.lifecycle.shutdown.CleanupUtility;
+import com.synopsys.integration.detect.lifecycle.shutdown.ExceptionUtility;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeManager;
-import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeUtility;
 import com.synopsys.integration.detect.lifecycle.shutdown.ShutdownDecider;
 import com.synopsys.integration.detect.lifecycle.shutdown.ShutdownDecision;
 import com.synopsys.integration.detect.lifecycle.shutdown.ShutdownManager;
+import com.synopsys.integration.detect.tool.cache.InstalledToolData;
+import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
 import com.synopsys.integration.detect.workflow.DetectRunId;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
+import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
 import com.synopsys.integration.detect.workflow.report.ReportListener;
 import com.synopsys.integration.detect.workflow.report.output.FormattedOutputManager;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
@@ -92,12 +89,13 @@ public class Application implements ApplicationRunner {
         EventSystem eventSystem = new EventSystem();
         DetectStatusManager statusManager = new DetectStatusManager(eventSystem);
 
-        ExitCodeUtility exitCodeUtility = new ExitCodeUtility();
-        ExitCodeManager exitCodeManager = new ExitCodeManager(eventSystem, exitCodeUtility);
+        ExceptionUtility exceptionUtility = new ExceptionUtility();
+        ExitCodeManager exitCodeManager = new ExitCodeManager(eventSystem, exceptionUtility);
         ExitManager exitManager = new ExitManager(eventSystem, exitCodeManager, statusManager);
 
         ReportListener.createDefault(eventSystem);
         FormattedOutputManager formattedOutputManager = new FormattedOutputManager(eventSystem);
+        InstalledToolManager installedToolManager = new InstalledToolManager();
 
         //Before boot even begins, we create a new Spring context for Detect to work within.
         logger.debug("Initializing detect.");
@@ -109,18 +107,37 @@ public class Application implements ApplicationRunner {
 
         boolean shouldForceSuccess = false;
 
-        Optional<DetectBootResult> detectBootResultOptional = bootApplication(detectRunId, applicationArguments.getSourceArgs(), eventSystem, exitCodeManager, gson, detectInfo, fileFinder);
+        Optional<DetectBootResult> detectBootResultOptional = bootApplication(
+            detectRunId,
+            applicationArguments.getSourceArgs(),
+            eventSystem,
+            exitCodeManager,
+            gson,
+            detectInfo,
+            fileFinder,
+            installedToolManager,
+            exceptionUtility
+        );
 
         if (detectBootResultOptional.isPresent()) {
             DetectBootResult detectBootResult = detectBootResultOptional.get();
             shouldForceSuccess = detectBootResult.shouldForceSuccess();
 
-            runApplication(eventSystem, exitCodeManager, detectBootResult);
+            runApplication(eventSystem, exitCodeManager, detectBootResult, exceptionUtility);
+
+            detectBootResult.getProductRunData()
+                .filter(ProductRunData::shouldUseBlackDuckProduct)
+                .map(ProductRunData::getBlackDuckRunData)
+                .flatMap(BlackDuckRunData::getPhoneHomeManager)
+                .ifPresent(PhoneHomeManager::phoneHomeOperations);
 
             //Create status output file.
             logger.info("");
             detectBootResult.getDirectoryManager()
                 .ifPresent(directoryManager -> createStatusOutputFile(formattedOutputManager, detectInfo, directoryManager));
+
+            //Create installed tool data file.
+            detectBootResult.getDirectoryManager().ifPresent(directoryManager -> createOrUpdateInstalledToolsFile(installedToolManager, directoryManager.getPermanentDirectory()));
 
             shutdownApplication(detectBootResult, exitCodeManager);
         } else {
@@ -132,8 +149,17 @@ public class Application implements ApplicationRunner {
         exitApplication(exitManager, startTime, shouldForceSuccess);
     }
 
-    private Optional<DetectBootResult> bootApplication(DetectRunId detectRunId, String[] sourceArgs, EventSystem eventSystem, ExitCodeManager exitCodeManager, Gson gson, DetectInfo detectInfo,
-        FileFinder fileFinder) {
+    private Optional<DetectBootResult> bootApplication(
+        DetectRunId detectRunId,
+        String[] sourceArgs,
+        EventSystem eventSystem,
+        ExitCodeManager exitCodeManager,
+        Gson gson,
+        DetectInfo detectInfo,
+        FileFinder fileFinder,
+        InstalledToolManager installedToolManager,
+        ExceptionUtility exceptionUtility
+    ) {
         Optional<DetectBootResult> bootResult = Optional.empty();
         try {
             logger.debug("Detect boot begin.");
@@ -142,24 +168,28 @@ public class Application implements ApplicationRunner {
             List<PropertySource> propertySources = new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironmentSafely(environment, logger::error));
 
             DetectBootFactory detectBootFactory = new DetectBootFactory(detectRunId, detectInfo, gson, eventSystem, fileFinder);
-            DetectBoot detectBoot = new DetectBoot(eventSystem, gson, detectBootFactory, detectArgumentState, propertySources);
+            DetectBoot detectBoot = new DetectBoot(eventSystem, gson, detectBootFactory, detectArgumentState, propertySources, installedToolManager);
 
             bootResult = detectBoot.boot(detectInfo.getDetectVersion());
 
             logger.debug("Detect boot completed.");
         } catch (Exception e) {
             logger.error("Detect boot failed.");
+            logger.error("");
+            exceptionUtility.logException(e);
             exitCodeManager.requestExitCode(e);
+            logger.error("");
+            //TODO- should we return a DetectBootResult.exception(...) here?
         }
         return bootResult;
     }
 
-    private void runApplication(EventSystem eventSystem, ExitCodeManager exitCodeManager, DetectBootResult detectBootResult) {
+    private void runApplication(EventSystem eventSystem, ExitCodeManager exitCodeManager, DetectBootResult detectBootResult, ExceptionUtility exceptionUtility) {
         Optional<BootSingletons> optionalRunContext = detectBootResult.getBootSingletons();
         Optional<ProductRunData> optionalProductRunData = detectBootResult.getProductRunData();
         if (detectBootResult.getBootType() == DetectBootResult.BootType.RUN && optionalProductRunData.isPresent() && optionalRunContext.isPresent()) {
             logger.debug("Detect will attempt to run.");
-            DetectRun detectRun = new DetectRun(exitCodeManager);
+            DetectRun detectRun = new DetectRun(exitCodeManager, exceptionUtility);
             detectRun.run(optionalRunContext.get());
 
         } else {
@@ -181,6 +211,24 @@ public class Application implements ApplicationRunner {
         } catch (Exception e) {
             logger.warn("There was a problem writing the status output file. The detect run was not affected.");
             logger.debug("The problem creating the status file was: ", e);
+        }
+    }
+
+    private void createOrUpdateInstalledToolsFile(InstalledToolManager installedToolManager, File installedToolsDataFileDir) {
+        logger.info("");
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        try {
+            File installedToolsDataFile = new File(installedToolsDataFileDir, InstalledToolManager.INSTALLED_TOOL_FILE_NAME);
+            if (installedToolsDataFile.exists()) {
+                // Read existing file data, pass to InstalledToolManager
+                InstalledToolData existingInstalledToolsData = gson.fromJson(FileUtils.readFileToString(installedToolsDataFile, Charset.defaultCharset()), InstalledToolData.class);
+                installedToolManager.addPreExistingInstallData(existingInstalledToolsData);
+            }
+            String json = gson.toJson(installedToolManager.getInstalledToolData());
+            FileUtils.writeStringToFile(installedToolsDataFile, json, Charset.defaultCharset());
+        } catch (Exception e) {
+            logger.warn("There was a problem writing the installed tools data file. The detect run was not affected.");
+            logger.debug("The problem creating the installed tools data file was: ", e);
         }
     }
 

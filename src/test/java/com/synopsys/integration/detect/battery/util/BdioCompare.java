@@ -1,25 +1,3 @@
-/**
- * synopsys-detect
- *
- * Copyright (c) 2020 Synopsys, Inc.
- *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
 package com.synopsys.integration.detect.battery.util;
 
 import java.util.ArrayList;
@@ -104,7 +82,7 @@ public class BdioCompare {
                     issues.add(new BdioIssue("There was an additional component in the created bdio node " + actualNode.get().toDescription() + "."));
                 } else {
                     throw new BdioCompareException("Something went wrong comparing BDIO. An id was different in " +
-                                                       "actual and in expected but neither actually had the node.");
+                        "actual and in expected but neither actually had the node.");
                 }
             }
         }
@@ -122,7 +100,8 @@ public class BdioCompare {
                     for (String difference : differenceRelated) {
                         if (expectedNode.relatedIds.contains(difference)) {
                             issues.add(new BdioIssue(
-                                "There was a missing relationship (in expected but not actual) in the component " + expectedNode.toDescription() + " to the component " + firstComponent(difference, expected, actual).toDescription() + "."));
+                                "There was a missing relationship (in expected but not actual) in the component " + expectedNode.toDescription() + " to the component "
+                                    + firstComponent(difference, expected, actual).toDescription() + "."));
                         } else if (actualNode.relatedIds.contains(difference)) {
                             issues.add(new BdioIssue(
                                 "There was an additional relationship (in actual but not in expected) in the " +
@@ -130,7 +109,7 @@ public class BdioCompare {
                                     + "."));
                         } else {
                             throw new BdioCompareException("Something went wrong comparing BDIO. An related id was " +
-                                                               "different in actual and in expected BDIO nodes, but neither actually had the relationship.");
+                                "different in actual and in expected BDIO nodes, but neither actually had the relationship.");
                         }
                     }
                 }

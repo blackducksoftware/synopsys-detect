@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectable.codelocation;
 
 import java.io.File;
@@ -18,19 +11,19 @@ public class CodeLocation {
     private final ExternalId externalId;
     private final DependencyGraph dependencyGraph;
 
-    public CodeLocation(final DependencyGraph dependencyGraph) {
+    public CodeLocation(DependencyGraph dependencyGraph) {
         this(dependencyGraph, null, null);
     }
 
-    public CodeLocation(final DependencyGraph dependencyGraph, final File sourcePath) {
+    public CodeLocation(DependencyGraph dependencyGraph, File sourcePath) {
         this(dependencyGraph, null, sourcePath);
     }
 
-    public CodeLocation(final DependencyGraph dependencyGraph, final ExternalId externalId) {
+    public CodeLocation(DependencyGraph dependencyGraph, ExternalId externalId) {
         this(dependencyGraph, externalId, null);
     }
 
-    public CodeLocation(final DependencyGraph dependencyGraph, final ExternalId externalId, final File sourcePath) {
+    public CodeLocation(DependencyGraph dependencyGraph, ExternalId externalId, File sourcePath) {
         this.sourcePath = sourcePath;
         this.externalId = externalId;
         this.dependencyGraph = dependencyGraph;

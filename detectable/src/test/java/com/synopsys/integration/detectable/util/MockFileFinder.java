@@ -1,29 +1,6 @@
-/**
- * detectable
- *
- * Copyright (c) 2020 Synopsys, Inc.
- *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
 package com.synopsys.integration.detectable.util;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -74,7 +51,8 @@ public class MockFileFinder implements FileFinder {
     }
 
     @Override
-    public @NotNull List<File> findFiles(final File directoryToSearch, final Predicate<File> filter, final int depth, final boolean findInsideMatchingDirectories) {
+    @NotNull
+    public List<File> findFiles(File directoryToSearch, Predicate<File> filter, boolean followSymLinks, int depth, boolean findInsideMatchingDirectories) {
         List<File> found = new ArrayList<>();
         for (int i = 0; i <= depth; i++) {
             if (files.containsKey(i)) {
@@ -90,7 +68,7 @@ public class MockFileFinder implements FileFinder {
     }
 
     @Override
-    public List<File> findFiles(final File directoryToSearch, final List<String> filenamePatterns, final int depth, boolean findInsideMatchingDirectories) {
+    public List<File> findFiles(File directoryToSearch, List<String> filenamePatterns, boolean followSymLinks, int depth, boolean findInsideMatchingDirectories) {
         Predicate<File> filter = file -> {
             for (String pattern : filenamePatterns) {
                 WildcardFileFilter wildcardFileFilter = new WildcardFileFilter(pattern);
@@ -101,6 +79,6 @@ public class MockFileFinder implements FileFinder {
             return false;
         };
 
-        return findFiles(directoryToSearch, filter, depth, findInsideMatchingDirectories);
+        return findFiles(directoryToSearch, filter, followSymLinks, depth, findInsideMatchingDirectories);
     }
 }

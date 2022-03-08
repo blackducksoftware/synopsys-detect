@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.blackduck.report.service;
 
 import java.awt.*;
@@ -18,6 +11,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -28,6 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.synopsys.integration.blackduck.api.core.response.UrlMultipleResponses;
 import com.synopsys.integration.blackduck.api.generated.deprecated.view.PolicyStatusView;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionComponentPolicyStatusType;
@@ -35,7 +30,7 @@ import com.synopsys.integration.blackduck.api.generated.enumeration.ReportFormat
 import com.synopsys.integration.blackduck.api.generated.enumeration.ReportType;
 import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
 import com.synopsys.integration.blackduck.api.generated.view.ComponentPolicyRulesView;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentView;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentVersionView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
 import com.synopsys.integration.blackduck.api.generated.view.ReportView;
@@ -65,7 +60,15 @@ public class ReportService extends DataService {
     private final HttpUrl blackDuckBaseUrl;
     private final Gson gson;
 
-    public ReportService(Gson gson, HttpUrl blackDuckBaseUrl, BlackDuckApiClient blackDuckApiClient, ApiDiscovery apiDiscovery, IntLogger logger, IntegrationEscapeUtil escapeUtil, long timeoutInMilliseconds) {
+    public ReportService(
+        Gson gson,
+        HttpUrl blackDuckBaseUrl,
+        BlackDuckApiClient blackDuckApiClient,
+        ApiDiscovery apiDiscovery,
+        IntLogger logger,
+        IntegrationEscapeUtil escapeUtil,
+        long timeoutInMilliseconds
+    ) {
         super(blackDuckApiClient, apiDiscovery, logger);
         this.escapeUtil = escapeUtil;
 
@@ -112,33 +115,32 @@ public class ReportService extends DataService {
     }
 
     public ReportData getRiskReportData(ProjectView project, ProjectVersionView version) throws IntegrationException {
-        HttpUrl originalProjectUrl = project.getHref();
-        HttpUrl originalVersionUrl = version.getHref();
         ReportData reportData = new ReportData();
         reportData.setProjectName(project.getName());
-        reportData.setProjectURL(getReportProjectUrl(originalProjectUrl));
+        reportData.setProjectURL(project.getHref().string());
         reportData.setProjectVersion(version.getVersionName());
-        reportData.setProjectVersionURL(getReportVersionUrl(originalVersionUrl, false));
+        reportData.setProjectVersionURL(getReportVersionUrl(version));
         reportData.setPhase(version.getPhase().toString());
         reportData.setDistribution(version.getDistribution().toString());
         List<BomComponent> components = new ArrayList<>();
         logger.trace("Getting the Report Contents using the Aggregate Bom Rest Server");
-        List<ProjectVersionComponentView> bomEntries;
+        List<ProjectVersionComponentVersionView> bomEntries;
         try {
             bomEntries = blackDuckApiClient.getAllResponses(version.metaComponentsLink());
         } catch (NoSuchElementException e) {
             throw new BlackDuckIntegrationException("BOM could not be read.  This is likely because you lack sufficient permissions.  Please check your permissions.");
         }
 
+        HttpUrl originalVersionUrl = version.getHref();
         boolean policyFailure = false;
-        for (ProjectVersionComponentView ProjectVersionComponentView : bomEntries) {
-            String policyStatus = ProjectVersionComponentView.getApprovalStatus().toString();
+        for (ProjectVersionComponentVersionView projectVersionComponentView : bomEntries) {
+            String policyStatus = projectVersionComponentView.getApprovalStatus().toString();
             if (StringUtils.isBlank(policyStatus)) {
-                HttpUrl componentPolicyStatusURL = null;
-                if (!StringUtils.isBlank(ProjectVersionComponentView.getComponentVersion())) {
-                    componentPolicyStatusURL = getComponentPolicyURL(originalVersionUrl, ProjectVersionComponentView.getComponentVersion());
+                HttpUrl componentPolicyStatusURL;
+                if (!StringUtils.isBlank(projectVersionComponentView.getComponentVersion())) {
+                    componentPolicyStatusURL = getComponentPolicyURL(originalVersionUrl, projectVersionComponentView.getComponentVersion());
                 } else {
-                    componentPolicyStatusURL = getComponentPolicyURL(originalVersionUrl, ProjectVersionComponentView.getComponent());
+                    componentPolicyStatusURL = getComponentPolicyURL(originalVersionUrl, projectVersionComponentView.getComponent());
                 }
                 if (!policyFailure) {
                     // FIXME if we could check if Black Duck has the policy module we could remove a lot of the mess
@@ -152,9 +154,9 @@ public class ReportService extends DataService {
                 }
             }
 
-            BomComponent component = createBomComponentFromBomComponentView(ProjectVersionComponentView);
+            BomComponent component = createBomComponentFromBomComponentView(projectVersionComponentView);
             component.setPolicyStatus(policyStatus);
-            populatePolicyRuleInfo(component, ProjectVersionComponentView);
+            populatePolicyRuleInfo(component, projectVersionComponentView);
             components.add(component);
         }
         reportData.setComponents(components);
@@ -172,23 +174,24 @@ public class ReportService extends DataService {
         }
 
         Date dateOfLatestScan = Collections.max(codeLocations.stream()
-                                                    .map(CodeLocationView::getUpdatedAt)
-                                                    .collect(Collectors.toList()));
+            .map(CodeLocationView::getUpdatedAt)
+            .collect(Collectors.toList()));
 
         return convertDateToLocalDateTime(dateOfLatestScan);
     }
 
     private LocalDateTime convertDateToLocalDateTime(Date date) {
         return date.toInstant()
-                   .atZone(ZoneId.systemDefault())
-                   .toLocalDateTime();
+            .atZone(ZoneId.systemDefault())
+            .toLocalDateTime();
     }
 
     public File createReportPdfFile(File outputDirectory, ProjectView project, ProjectVersionView version) throws IntegrationException {
         return createReportPdfFile(outputDirectory, project, version, document -> PDType1Font.HELVETICA, document -> PDType1Font.HELVETICA_BOLD);
     }
 
-    public File createReportPdfFile(File outputDirectory, ProjectView project, ProjectVersionView version, FontLoader fontLoader, FontLoader boldFontLoader) throws IntegrationException {
+    public File createReportPdfFile(File outputDirectory, ProjectView project, ProjectVersionView version, FontLoader fontLoader, FontLoader boldFontLoader)
+        throws IntegrationException {
         ReportData reportData = getRiskReportData(project, version);
         return createReportPdfFile(outputDirectory, reportData, fontLoader, boldFontLoader);
     }
@@ -214,7 +217,7 @@ public class ReportService extends DataService {
         return new HttpUrl(versionURL.string() + "/" + componentVersionSegments + "/" + "policy-status");
     }
 
-    private BomComponent createBomComponentFromBomComponentView(ProjectVersionComponentView bomEntry) {
+    private BomComponent createBomComponentFromBomComponentView(ProjectVersionComponentVersionView bomEntry) {
         BomComponent component = new BomComponent();
         component.setComponentName(bomEntry.getComponentName());
         component.setComponentURL(bomEntry.getComponent());
@@ -228,7 +231,7 @@ public class ReportService extends DataService {
         return component;
     }
 
-    public void populatePolicyRuleInfo(BomComponent component, ProjectVersionComponentView bomEntry) throws IntegrationException {
+    public void populatePolicyRuleInfo(BomComponent component, ProjectVersionComponentVersionView bomEntry) throws IntegrationException {
         if (bomEntry != null && bomEntry.getApprovalStatus() != null) {
             ProjectVersionComponentPolicyStatusType status = bomEntry.getApprovalStatus();
             if (status == ProjectVersionComponentPolicyStatusType.IN_VIOLATION) {
@@ -243,34 +246,15 @@ public class ReportService extends DataService {
         }
     }
 
-    private String getReportProjectUrl(HttpUrl projectURL) {
-        if (projectURL == null) {
-            return null;
+    private String getReportVersionUrl(ProjectVersionView version) {
+        Optional<UrlMultipleResponses<ProjectVersionComponentVersionView>> bomLink = version.metaComponentsLinkSafely();
+        if (bomLink.isPresent()) {
+            // Return link to the bom (assuming we can get it)
+            return bomLink.get().getUrl().string();
+        } else {
+            // Fallback to the link to the version
+            return version.getHref().string();
         }
-        String projectId = projectURL.string().substring(projectURL.string().lastIndexOf("/") + 1);
-        StringBuilder urlBuilder = new StringBuilder();
-        urlBuilder.append(blackDuckBaseUrl);
-        urlBuilder.append("#");
-        urlBuilder.append("projects/id:");
-        urlBuilder.append(projectId);
-
-        return urlBuilder.toString();
-    }
-
-    private String getReportVersionUrl(HttpUrl versionURL, boolean isComponent) {
-        if (versionURL == null) {
-            return null;
-        }
-        String versionId = versionURL.string().substring(versionURL.string().lastIndexOf("/") + 1);
-        StringBuilder urlBuilder = new StringBuilder();
-        urlBuilder.append(blackDuckBaseUrl);
-        urlBuilder.append("#");
-        urlBuilder.append("versions/id:");
-        urlBuilder.append(versionId);
-        if (!isComponent) {
-            urlBuilder.append("/view:bom");
-        }
-        return urlBuilder.toString();
     }
 
     /**

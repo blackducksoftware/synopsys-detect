@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.detector.executable;
 
 import java.io.File;
@@ -33,10 +26,10 @@ public class DetectExecutableRunner implements DetectableExecutableRunner {
     private final Logger logger;
     private final EventSystem eventSystem;
     private final boolean shouldLogOutput;
-    private ProcessBuilderRunner runner;
-    private ProcessBuilderRunner secretRunner;
+    private final ProcessBuilderRunner runner;
+    private final ProcessBuilderRunner secretRunner;
 
-    private DetectExecutableRunner(Logger logger, final Consumer<String> outputConsumer, final Consumer<String> traceConsumer, EventSystem eventSystem, boolean shouldLogOutput) {
+    private DetectExecutableRunner(Logger logger, Consumer<String> outputConsumer, Consumer<String> traceConsumer, EventSystem eventSystem, boolean shouldLogOutput) {
         this.logger = logger;
         runner = new ProcessBuilderRunner(new Slf4jIntLogger(logger), outputConsumer, traceConsumer);
         secretRunner = new ProcessBuilderRunner(new Slf4jIntLogger(logger), (line) -> {}, line -> {});
@@ -56,36 +49,37 @@ public class DetectExecutableRunner implements DetectableExecutableRunner {
     }
 
     @Override
-    public @NotNull ExecutableOutput execute(final File workingDirectory, final List<String> command) throws ExecutableRunnerException {
+    @NotNull
+    public ExecutableOutput execute(File workingDirectory, List<String> command) throws ExecutableRunnerException {
         return execute(Executable.create(workingDirectory, command));
     }
 
     @NotNull
     @Override
-    public ExecutableOutput execute(final File workingDirectory, final String exeCmd, final String... args) throws ExecutableRunnerException {
+    public ExecutableOutput execute(File workingDirectory, String exeCmd, String... args) throws ExecutableRunnerException {
         return execute(Executable.create(workingDirectory, new HashMap<>(), exeCmd, Arrays.asList(args)));
     }
 
     @NotNull
     @Override
-    public ExecutableOutput execute(final File workingDirectory, final String exeCmd, final List<String> args) throws ExecutableRunnerException {
+    public ExecutableOutput execute(File workingDirectory, String exeCmd, List<String> args) throws ExecutableRunnerException {
         return execute(Executable.create(workingDirectory, new HashMap<>(), exeCmd, args));
     }
 
     @NotNull
     @Override
-    public ExecutableOutput execute(final File workingDirectory, final File exeFile, final String... args) throws ExecutableRunnerException {
+    public ExecutableOutput execute(File workingDirectory, File exeFile, String... args) throws ExecutableRunnerException {
         return execute(Executable.create(workingDirectory, new HashMap<>(), exeFile.getAbsolutePath(), Arrays.asList(args)));
     }
 
     @NotNull
     @Override
-    public ExecutableOutput execute(final File workingDirectory, final File exeFile, final List<String> args) throws ExecutableRunnerException {
+    public ExecutableOutput execute(File workingDirectory, File exeFile, List<String> args) throws ExecutableRunnerException {
         return execute(Executable.create(workingDirectory, new HashMap<>(), exeFile.getAbsolutePath(), args));
     }
 
     @NotNull
-    public ExecutableOutput execute(final Executable executable, boolean outputContainsSecret) throws ExecutableRunnerException {
+    public ExecutableOutput execute(Executable executable, boolean outputContainsSecret) throws ExecutableRunnerException {
         ExecutableRunner targetRunner = runner;
         if (outputContainsSecret) {
             targetRunner = secretRunner;
@@ -109,18 +103,19 @@ public class DetectExecutableRunner implements DetectableExecutableRunner {
 
     @NotNull
     @Override
-    public ExecutableOutput execute(final Executable executable) throws ExecutableRunnerException {
+    public ExecutableOutput execute(Executable executable) throws ExecutableRunnerException {
         return execute(executable, false);
     }
 
     @NotNull
     @Override
-    public ExecutableOutput executeSecretly(final Executable executable) throws ExecutableRunnerException {
+    public ExecutableOutput executeSecretly(Executable executable) throws ExecutableRunnerException {
         return execute(executable, true);
     }
 
     @Override
-    public @NotNull ExecutableOutput executeSuccessfully(final Executable executable) throws ExecutableFailedException {
+    @NotNull
+    public ExecutableOutput executeSuccessfully(Executable executable) throws ExecutableFailedException {
         try {
             ExecutableOutput executableOutput = execute(executable);
             if (executableOutput.getReturnCode() != 0) {

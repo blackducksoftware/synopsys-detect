@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.impactanalysis.service;
 
 import java.util.Set;
@@ -20,15 +13,24 @@ import com.synopsys.integration.util.NameVersion;
 import com.synopsys.integration.util.NoThreadExecutorService;
 
 public class ImpactAnalysisUploadService {
-    public static final BlackDuckPath<BlackDuckResponseResponse> IMPACT_ANALYSIS_PATH = new BlackDuckPath<>("/api/scans/vulnerability-impact", BlackDuckResponseResponse.class, false);
+    public static final BlackDuckPath<BlackDuckResponseResponse> IMPACT_ANALYSIS_PATH = new BlackDuckPath<>(
+        "/api/scans/vulnerability-impact",
+        BlackDuckResponseResponse.class,
+        false
+    );
 
     private final ImpactAnalysisBatchRunner impactAnalysisBatchRunner;
     private final CodeLocationCreationService codeLocationCreationService;
 
     // TODO: Move to BlackDuckServicesFactory in blackduck-common
     public static ImpactAnalysisUploadService create(BlackDuckServicesFactory blackDuckServicesFactory) {
-        ImpactAnalysisBatchRunner impactAnalysisBatchRunner = new ImpactAnalysisBatchRunner(blackDuckServicesFactory.getLogger(), blackDuckServicesFactory.getBlackDuckApiClient(), blackDuckServicesFactory.getApiDiscovery(), new NoThreadExecutorService(),
-            blackDuckServicesFactory.getGson());
+        ImpactAnalysisBatchRunner impactAnalysisBatchRunner = new ImpactAnalysisBatchRunner(
+            blackDuckServicesFactory.getLogger(),
+            blackDuckServicesFactory.getBlackDuckApiClient(),
+            blackDuckServicesFactory.getApiDiscovery(),
+            new NoThreadExecutorService(),
+            blackDuckServicesFactory.getGson()
+        );
         return new ImpactAnalysisUploadService(impactAnalysisBatchRunner, blackDuckServicesFactory.createCodeLocationCreationService());
     }
 
@@ -55,7 +57,8 @@ public class ImpactAnalysisUploadService {
         return uploadImpactAnalysis(impactAnalysisBatch);
     }
 
-    public ImpactAnalysisBatchOutput uploadImpactAnalysisAndWait(ImpactAnalysisCodeLocationCreationRequest uploadRequest, long timeoutInSeconds) throws InterruptedException, IntegrationException {
+    public ImpactAnalysisBatchOutput uploadImpactAnalysisAndWait(ImpactAnalysisCodeLocationCreationRequest uploadRequest, long timeoutInSeconds)
+        throws InterruptedException, IntegrationException {
         return codeLocationCreationService.createCodeLocationsAndWait(uploadRequest, timeoutInSeconds);
     }
 
@@ -69,7 +72,13 @@ public class ImpactAnalysisUploadService {
         return uploadImpactAnalysisAndWait(impactAnalysisBatch, timeoutInSeconds);
     }
 
-    public void waitForImpactAnalysisUpload(NotificationTaskRange notificationTaskRange, NameVersion projectAndVersion, Set<String> codeLocationNames, int expectedNotificationCount, long timeoutInSeconds)
+    public void waitForImpactAnalysisUpload(
+        NotificationTaskRange notificationTaskRange,
+        NameVersion projectAndVersion,
+        Set<String> codeLocationNames,
+        int expectedNotificationCount,
+        long timeoutInSeconds
+    )
         throws InterruptedException, IntegrationException {
         codeLocationCreationService.waitForCodeLocations(notificationTaskRange, projectAndVersion, codeLocationNames, expectedNotificationCount, timeoutInSeconds);
     }

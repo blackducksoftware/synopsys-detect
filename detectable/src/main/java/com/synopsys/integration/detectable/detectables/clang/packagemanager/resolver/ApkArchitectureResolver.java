@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver;
 
 import java.io.File;
@@ -20,7 +13,8 @@ public class ApkArchitectureResolver {
     private Optional<String> architecture = Optional.empty();
     private boolean hasAttemptedResolution = false;
 
-    public Optional<String> resolveArchitecture(ClangPackageManagerInfo currentPackageManager, File workingDirectory, DetectableExecutableRunner executableRunner) throws ExecutableRunnerException {
+    public Optional<String> resolveArchitecture(ClangPackageManagerInfo currentPackageManager, File workingDirectory, DetectableExecutableRunner executableRunner)
+        throws ExecutableRunnerException {
         if (hasAttemptedResolution) {
             return architecture;
         }

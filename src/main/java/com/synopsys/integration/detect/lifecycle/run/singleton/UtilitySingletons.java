@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.lifecycle.run.singleton;
 
 import com.synopsys.integration.bdio.BdioTransformer;
@@ -13,6 +6,7 @@ import com.synopsys.integration.detect.configuration.connection.ConnectionDetail
 import com.synopsys.integration.detect.lifecycle.run.step.utility.OperationWrapper;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
+import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryZipInstaller;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
@@ -23,6 +17,7 @@ public class UtilitySingletons {
     private final ExternalIdFactory externalIdFactory;
     private final ConnectionDetails connectionDetails;
     private final ArtifactResolver artifactResolver;
+    private final ArtifactoryZipInstaller artifactoryZipInstaller;
     private final CodeLocationNameManager codeLocationNameManager;
     private final CreateBdioCodeLocationsFromDetectCodeLocationsOperation createBdioCodeLocationsFromDetectCodeLocationsOperation;
     private final AirGapInspectorPaths airGapInspectorPaths;
@@ -32,11 +27,20 @@ public class UtilitySingletons {
     private final OperationSystem operationSystem;
     private final OperationWrapper operationWrapper;
 
-    public UtilitySingletons(final ExternalIdFactory externalIdFactory, final ConnectionDetails connectionDetails, final ArtifactResolver artifactResolver,
-        final CodeLocationNameManager codeLocationNameManager,
-        final CreateBdioCodeLocationsFromDetectCodeLocationsOperation createBdioCodeLocationsFromDetectCodeLocationsOperation, final AirGapInspectorPaths airGapInspectorPaths, final BdioTransformer bdioTransformer,
-        final DetectExecutableRunner executableRunner, final DetectExecutableResolver detectExecutableResolver, final OperationSystem operationSystem,
-        final OperationWrapper operationWrapper) {
+    public UtilitySingletons(
+        ExternalIdFactory externalIdFactory,
+        ConnectionDetails connectionDetails,
+        ArtifactResolver artifactResolver,
+        CodeLocationNameManager codeLocationNameManager,
+        CreateBdioCodeLocationsFromDetectCodeLocationsOperation createBdioCodeLocationsFromDetectCodeLocationsOperation,
+        AirGapInspectorPaths airGapInspectorPaths,
+        BdioTransformer bdioTransformer,
+        DetectExecutableRunner executableRunner,
+        DetectExecutableResolver detectExecutableResolver,
+        OperationSystem operationSystem,
+        OperationWrapper operationWrapper,
+        ArtifactoryZipInstaller artifactoryZipInstaller
+    ) {
         this.externalIdFactory = externalIdFactory;
         this.connectionDetails = connectionDetails;
         this.artifactResolver = artifactResolver;
@@ -48,6 +52,7 @@ public class UtilitySingletons {
         this.detectExecutableResolver = detectExecutableResolver;
         this.operationSystem = operationSystem;
         this.operationWrapper = operationWrapper;
+        this.artifactoryZipInstaller = artifactoryZipInstaller;
     }
 
     public ExternalIdFactory getExternalIdFactory() {
@@ -92,5 +97,9 @@ public class UtilitySingletons {
 
     public OperationWrapper getOperationWrapper() {
         return operationWrapper;
+    }
+
+    public ArtifactoryZipInstaller getArtifactoryZipInstaller() {
+        return artifactoryZipInstaller;
     }
 }

@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.lifecycle.run.operation;
 
 import java.io.File;
@@ -15,6 +8,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,10 +16,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponentResultView;
+import com.synopsys.integration.blackduck.bdio.model.dependency.ProjectDependency;
 import com.synopsys.integration.blackduck.bdio2.util.Bdio2Factory;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
@@ -37,9 +33,10 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandRunner;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanPathsUtility;
 import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
-import com.synopsys.integration.blackduck.scan.RapidScanService;
+import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.blackduck.service.dataservice.BlackDuckRegistrationService;
 import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.common.util.finder.FileFinder;
@@ -51,6 +48,7 @@ import com.synopsys.integration.detect.configuration.DetectorToolOptions;
 import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.lifecycle.run.DetectFontLoaderFactory;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
@@ -98,8 +96,6 @@ import com.synopsys.integration.detect.tool.signaturescanner.operation.Signature
 import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanOuputResult;
 import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
 import com.synopsys.integration.detect.workflow.bdio.AggregateCodeLocation;
-import com.synopsys.integration.detect.workflow.bdio.AggregateModeDirectOperation;
-import com.synopsys.integration.detect.workflow.bdio.AggregateModeTransitiveOperation;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.bdio.CreateAggregateBdio1FileOperation;
@@ -108,6 +104,8 @@ import com.synopsys.integration.detect.workflow.bdio.CreateAggregateCodeLocation
 import com.synopsys.integration.detect.workflow.bdio.CreateBdio1FilesOperation;
 import com.synopsys.integration.detect.workflow.bdio.CreateBdio2FilesOperation;
 import com.synopsys.integration.detect.workflow.bdio.DetectBdioWriter;
+import com.synopsys.integration.detect.workflow.bdio.aggregation.AggregateModeDirectOperation;
+import com.synopsys.integration.detect.workflow.bdio.aggregation.FullAggregateGraphCreator;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
 import com.synopsys.integration.detect.workflow.blackduck.DetectFontLoader;
 import com.synopsys.integration.detect.workflow.blackduck.bdio.IntelligentPersistentUploadOperation;
@@ -116,17 +114,23 @@ import com.synopsys.integration.detect.workflow.blackduck.bdio.LegacyBdio2Upload
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.AccumulatedCodeLocationData;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationWaitCalculator;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationWaitData;
+import com.synopsys.integration.detect.workflow.blackduck.developer.RapidModeConfigFindOperation;
 import com.synopsys.integration.detect.workflow.blackduck.developer.RapidModeGenerateJsonOperation;
 import com.synopsys.integration.detect.workflow.blackduck.developer.RapidModeLogReportOperation;
-import com.synopsys.integration.detect.workflow.blackduck.developer.RapidModeScanOperation;
+import com.synopsys.integration.detect.workflow.blackduck.developer.RapidModeUploadOperation;
+import com.synopsys.integration.detect.workflow.blackduck.developer.RapidModeWaitOperation;
 import com.synopsys.integration.detect.workflow.blackduck.developer.RapidScanDetectResult;
+import com.synopsys.integration.detect.workflow.blackduck.developer.RapidScanOptions;
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultAggregator;
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultSummary;
+import com.synopsys.integration.detect.workflow.blackduck.developer.blackduck.DetectRapidScanService;
 import com.synopsys.integration.detect.workflow.blackduck.policy.PolicyChecker;
 import com.synopsys.integration.detect.workflow.blackduck.project.AddTagsToProjectOperation;
 import com.synopsys.integration.detect.workflow.blackduck.project.AddUserGroupsToProjectOperation;
 import com.synopsys.integration.detect.workflow.blackduck.project.FindCloneByLatestOperation;
 import com.synopsys.integration.detect.workflow.blackduck.project.FindCloneByNameOperation;
+import com.synopsys.integration.detect.workflow.blackduck.project.FindLicenseUrlOperation;
+import com.synopsys.integration.detect.workflow.blackduck.project.FindProjectGroupOperation;
 import com.synopsys.integration.detect.workflow.blackduck.project.MapToParentOperation;
 import com.synopsys.integration.detect.workflow.blackduck.project.SetApplicationIdOperation;
 import com.synopsys.integration.detect.workflow.blackduck.project.SyncProjectOperation;
@@ -136,6 +140,10 @@ import com.synopsys.integration.detect.workflow.blackduck.project.customfields.C
 import com.synopsys.integration.detect.workflow.blackduck.project.options.CloneFindResult;
 import com.synopsys.integration.detect.workflow.blackduck.project.options.FindCloneOptions;
 import com.synopsys.integration.detect.workflow.blackduck.project.options.ParentProjectMapOptions;
+import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectGroupFindResult;
+import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectGroupOptions;
+import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectVersionLicenseFindResult;
+import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectVersionLicenseOptions;
 import com.synopsys.integration.detect.workflow.blackduck.report.service.ReportService;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationResult;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationEventPublisher;
@@ -198,8 +206,14 @@ public class OperationFactory { //TODO: OperationRunner
 
     //Internal: Operation -> Action
     //Leave OperationSystem but it becomes 'user facing groups of actions or steps'
-    public OperationFactory(DetectDetectableFactory detectDetectableFactory, DetectFontLoaderFactory detectFontLoaderFactory, BootSingletons bootSingletons, UtilitySingletons utilitySingletons, EventSingletons eventSingletons,
-        ExitCodeManager exitCodeManager) {
+    public OperationFactory(
+        DetectDetectableFactory detectDetectableFactory,
+        DetectFontLoaderFactory detectFontLoaderFactory,
+        BootSingletons bootSingletons,
+        UtilitySingletons utilitySingletons,
+        EventSingletons eventSingletons,
+        ExitCodeManager exitCodeManager
+    ) {
         this.detectDetectableFactory = detectDetectableFactory;
         this.detectFontLoaderFactory = detectFontLoaderFactory;
 
@@ -229,60 +243,107 @@ public class OperationFactory { //TODO: OperationRunner
         this.auditLog = new OperationAuditLog(utilitySingletons.getOperationWrapper(), operationSystem);
     }
 
-    public final DetectableToolResult executeDocker() throws DetectUserFriendlyException {
-        return auditLog.namedPublic("Execute Docker", () -> {
+    public final Optional<DetectableTool> checkForDocker() throws OperationException {//TODO: refactor bazel+docker out of detectable
+        return auditLog.namedInternal("Check For Docker", () -> {
             DetectableTool detectableTool = new DetectableTool(detectDetectableFactory::createDockerDetectable,
                 extractionEnvironmentProvider, codeLocationConverter, "DOCKER", DetectTool.DOCKER,
-                statusEventPublisher, exitCodePublisher, operationSystem);
+                statusEventPublisher, exitCodePublisher
+            );
 
-            return detectableTool.execute(directoryManager.getSourceDirectory());
+            if (detectableTool.initializeAndCheckForApplicable(directoryManager.getSourceDirectory())) {
+                return Optional.of(detectableTool);
+            } else {
+                return Optional.empty();
+            }
         });
     }
 
-    public final DetectableToolResult executeBazel() throws DetectUserFriendlyException {
-        return auditLog.namedPublic("Execute Bazel", () -> {
+    public final Optional<DetectableTool> checkForBazel() throws OperationException {//TODO: refactor bazel+docker out of detectable
+        return auditLog.namedInternal("Check For Bazel", () -> {
             DetectableTool detectableTool = new DetectableTool(detectDetectableFactory::createBazelDetectable,
                 extractionEnvironmentProvider, codeLocationConverter, "BAZEL", DetectTool.BAZEL,
-                statusEventPublisher, exitCodePublisher, operationSystem);
-            return detectableTool.execute(directoryManager.getSourceDirectory());
+                statusEventPublisher, exitCodePublisher
+            );
+
+            if (detectableTool.initializeAndCheckForApplicable(directoryManager.getSourceDirectory())) {
+                return Optional.of(detectableTool);
+            } else {
+                return Optional.empty();
+            }
         });
     }
 
-    public final DetectorToolResult executeDetectors() throws DetectUserFriendlyException {
-        return auditLog.namedPublic("Execute Detectors", () -> {
+    public DetectableToolResult executeDocker(DetectableTool detectableTool) throws OperationException {//TODO: refactor bazel+docker out of detectable
+        return auditLog.namedPublic("Execute Docker", "Docker", detectableTool::extract);
+    }
+
+    public DetectableToolResult executeBazel(DetectableTool detectableTool) throws OperationException {//TODO: refactor bazel+docker out of detectable
+        return auditLog.namedPublic("Execute Bazel", "Bazel", detectableTool::extract);
+    }
+
+    public final DetectorToolResult executeDetectors() throws OperationException {
+        return auditLog.namedPublic("Execute Detectors", "Detectors", () -> {
             DetectorToolOptions detectorToolOptions = detectConfigurationFactory.createDetectorToolOptions();
             DetectorRuleFactory detectorRuleFactory = new DetectorRuleFactory();
             DetectorRuleSet detectRuleSet = detectorRuleFactory.createRules(detectDetectableFactory, detectorToolOptions.isBuildless());
-            File sourcePath = directoryManager.getSourceDirectory();
-
-            DetectorTool detectorTool = new DetectorTool(new DetectorFinder(), extractionEnvironmentProvider, eventSystem, codeLocationConverter, new DetectorIssuePublisher(), statusEventPublisher, exitCodePublisher,
-                detectorEventPublisher);
-            return detectorTool.performDetectors(directoryManager.getSourceDirectory(), detectRuleSet, detectConfigurationFactory.createDetectorFinderOptions(sourcePath.toPath()),
-                detectConfigurationFactory.createDetectorEvaluationOptions(), detectorToolOptions.getProjectBomTool(), detectorToolOptions.getRequiredDetectors(), fileFinder);
+            DetectorTool detectorTool = new DetectorTool(
+                new DetectorFinder(),
+                extractionEnvironmentProvider,
+                eventSystem,
+                codeLocationConverter,
+                new DetectorIssuePublisher(),
+                statusEventPublisher,
+                exitCodePublisher,
+                detectorEventPublisher
+            );
+            return detectorTool.performDetectors(directoryManager.getSourceDirectory(), detectRuleSet, detectConfigurationFactory.createDetectorFinderOptions(),
+                detectConfigurationFactory.createDetectorEvaluationOptions(), detectorToolOptions.getProjectBomTool(), detectorToolOptions.getRequiredDetectors(), fileFinder
+            );
         });
     }
 
-    public final void phoneHome(BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
+    public final void phoneHome(BlackDuckRunData blackDuckRunData) throws OperationException {
         auditLog.namedPublic("Phone Home", () -> blackDuckRunData.getPhoneHomeManager().ifPresent(PhoneHomeManager::startPhoneHome));
     }
 
     //Rapid
-    public final List<DeveloperScanComponentResultView> performRapidScan(BlackDuckRunData blackDuckRunData, BdioResult bdioResult) throws DetectUserFriendlyException {
-        return auditLog.namedInternal("Project Name Version Chosen", () -> {
-            RapidScanService rapidScanService = blackDuckRunData.getBlackDuckServicesFactory().createRapidScanService();
-            return new RapidModeScanOperation(rapidScanService, detectConfigurationFactory.findTimeoutInSeconds()).run(bdioResult);
+    public final List<HttpUrl> performRapidUpload(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, @Nullable File rapidScanConfig) throws OperationException {
+        return auditLog.namedInternal("Rapid Upload", () -> {
+            BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+            RapidScanOptions rapidScanOptions = detectConfigurationFactory.createRapidScanOptions();
+            RapidModeUploadOperation operation = new RapidModeUploadOperation(DetectRapidScanService.fromBlackDuckServicesFactory(directoryManager, blackDuckServicesFactory));
+            return operation.run(
+                bdioResult,
+                rapidScanOptions,
+                rapidScanConfig
+            );
         });
     }
 
-    public final RapidScanResultSummary logRapidReport(List<DeveloperScanComponentResultView> scanResults) throws DetectUserFriendlyException {
+    public List<DeveloperScanComponentResultView> waitForRapidResults(BlackDuckRunData blackDuckRunData, List<HttpUrl> rapidScans) throws OperationException {
+        return auditLog.namedInternal("Rapid Wait", () -> {
+            BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+            return new RapidModeWaitOperation(blackDuckServicesFactory.getBlackDuckApiClient()).waitForScans(
+                rapidScans,
+                detectConfigurationFactory.findTimeoutInSeconds(),
+                RapidModeWaitOperation.DEFAULT_WAIT_INTERVAL_IN_SECONDS
+            );
+        });
+    }
+
+    public final RapidScanResultSummary logRapidReport(List<DeveloperScanComponentResultView> scanResults) throws OperationException {
         return auditLog.namedInternal("Print Rapid Mode Results", () -> new RapidModeLogReportOperation(exitCodePublisher, rapidScanResultAggregator).perform(scanResults));
     }
 
-    public final File generateRapidJsonFile(NameVersion projectNameVersion, List<DeveloperScanComponentResultView> scanResults) throws DetectUserFriendlyException {
-        return auditLog.namedPublic("Generate Rapid Json File", () -> new RapidModeGenerateJsonOperation(htmlEscapeDisabledGson, directoryManager).generateJsonFile(projectNameVersion, scanResults));
+    public final File generateRapidJsonFile(NameVersion projectNameVersion, List<DeveloperScanComponentResultView> scanResults) throws OperationException {
+        return auditLog.namedPublic(
+            "Generate Rapid Json File",
+            "RapidScan",
+            () -> new RapidModeGenerateJsonOperation(htmlEscapeDisabledGson, directoryManager).generateJsonFile(projectNameVersion, scanResults)
+        );
     }
 
-    public final void publishRapidResults(File jsonFile, RapidScanResultSummary summary) throws DetectUserFriendlyException {
+    public final void publishRapidResults(File jsonFile, RapidScanResultSummary summary) throws OperationException {
         auditLog.namedInternal("Publish Rapid Results", () -> statusEventPublisher.publishDetectResult(new RapidScanDetectResult(jsonFile.getCanonicalPath(), summary)));
     }
     //End Rapid
@@ -290,23 +351,32 @@ public class OperationFactory { //TODO: OperationRunner
     //Post actions
     //End post actions
 
-    public final AggregateDecisionOperation createAggregateOptionsOperation() throws DetectUserFriendlyException {
+    public final AggregateDecisionOperation createAggregateOptionsOperation() throws OperationException {
         return auditLog.namedInternal("Create Aggregate Options", () -> new AggregateDecisionOperation(detectConfigurationFactory.createAggregateOptions()));
     }
 
-    public final BdioUploadResult uploadBdio1(BlackDuckRunData blackDuckRunData, BdioResult bdioResult) throws DetectUserFriendlyException {
-        return auditLog.namedPublic("Upload Legacy Bdio 1", () -> new LegacyBdio1UploadOperation(blackDuckRunData.getBlackDuckServicesFactory().createBdioUploadService()).uploadBdioFiles(bdioResult));
+    public final BdioUploadResult uploadBdio1(BlackDuckRunData blackDuckRunData, BdioResult bdioResult) throws OperationException {
+        return auditLog.namedPublic(
+            "Upload Legacy Bdio 1",
+            () -> new LegacyBdio1UploadOperation(blackDuckRunData.getBlackDuckServicesFactory().createBdioUploadService()).uploadBdioFiles(bdioResult)
+        );
     }
 
-    public final BdioUploadResult uploadBdio2(BlackDuckRunData blackDuckRunData, BdioResult bdioResult) throws DetectUserFriendlyException {
-        return auditLog.namedPublic("Upload Legacy Bdio 2", () -> new LegacyBdio2UploadOperation(blackDuckRunData.getBlackDuckServicesFactory().createBdio2UploadService()).uploadBdioFiles(bdioResult));
+    public final BdioUploadResult uploadBdio2(BlackDuckRunData blackDuckRunData, BdioResult bdioResult) throws OperationException {
+        return auditLog.namedPublic(
+            "Upload Legacy Bdio 2",
+            () -> new LegacyBdio2UploadOperation(blackDuckRunData.getBlackDuckServicesFactory().createBdio2UploadService()).uploadBdioFiles(bdioResult)
+        );
     }
 
-    public final BdioUploadResult uploadBdioIntelligentPersistent(BlackDuckRunData blackDuckRunData, BdioResult bdioResult) throws DetectUserFriendlyException {
-        return auditLog.namedPublic("Upload Intelligent Persistent Bdio", () -> new IntelligentPersistentUploadOperation(blackDuckRunData.getBlackDuckServicesFactory().createIntelligentPersistenceService()).uploadBdioFiles(bdioResult));
+    public final BdioUploadResult uploadBdioIntelligentPersistent(BlackDuckRunData blackDuckRunData, BdioResult bdioResult) throws OperationException {
+        return auditLog.namedPublic(
+            "Upload Intelligent Persistent Bdio",
+            () -> new IntelligentPersistentUploadOperation(blackDuckRunData.getBlackDuckServicesFactory().createIntelligentPersistenceService()).uploadBdioFiles(bdioResult)
+        );
     }
 
-    public final CodeLocationWaitData calulcateCodeLocationWaitData(List<AccumulatedCodeLocationData> codeLocationCreationDatas) throws DetectUserFriendlyException {
+    public final CodeLocationWaitData calulcateCodeLocationWaitData(List<AccumulatedCodeLocationData> codeLocationCreationDatas) throws OperationException {
         return auditLog.namedInternal("Calculate Code Location Wait Data", () -> new CodeLocationWaitCalculator().calculateWaitData(codeLocationCreationDatas));
     }
 
@@ -314,37 +384,52 @@ public class OperationFactory { //TODO: OperationRunner
         codeLocationEventPublisher.publishCodeLocationsCompleted(codeLocationNames);//TODO: Currently too broad? Add to audit log.
     }
 
-    public final String generateImpactAnalysisCodeLocationName(NameVersion projectNameVersion) throws DetectUserFriendlyException {
+    public final String generateImpactAnalysisCodeLocationName(NameVersion projectNameVersion) throws OperationException {
         return auditLog.namedInternal("Calculate Impact Analysis Code Location Name", () -> {
             ImpactAnalysisNamingOperation impactAnalysisNamingOperation = new ImpactAnalysisNamingOperation(codeLocationNameManager);
-            return impactAnalysisNamingOperation.createCodeLocationName(directoryManager.getSourceDirectory(), projectNameVersion, detectConfigurationFactory.createImpactAnalysisOptions());
+            return impactAnalysisNamingOperation.createCodeLocationName(
+                directoryManager.getSourceDirectory(),
+                projectNameVersion,
+                detectConfigurationFactory.createImpactAnalysisOptions()
+            );
         });
     }
 
-    public final Path generateImpactAnalysisFile(String codeLocationName) throws DetectUserFriendlyException {
-        return auditLog.namedPublic("Generate Impact Analysis File", () -> {
+    public final Path generateImpactAnalysisFile(String codeLocationName) throws OperationException {
+        return auditLog.namedPublic("Generate Impact Analysis File", "ImpactAnalysis", () -> {
             GenerateImpactAnalysisOperation generateImpactAnalysisOperation = new GenerateImpactAnalysisOperation();
-            return generateImpactAnalysisOperation.generateImpactAnalysis(directoryManager.getSourceDirectory(), codeLocationName, directoryManager.getImpactAnalysisOutputDirectory().toPath());
+            return generateImpactAnalysisOperation.generateImpactAnalysis(
+                directoryManager.getSourceDirectory(),
+                codeLocationName,
+                directoryManager.getImpactAnalysisOutputDirectory().toPath()
+            );
         });
     }
 
-    public final CodeLocationCreationData<ImpactAnalysisBatchOutput> uploadImpactAnalysisFile(Path impactAnalysisFile, NameVersion projectNameVersion, String codeLocationName, BlackDuckServicesFactory blackDuckServicesFactory)
-        throws DetectUserFriendlyException {
+    public final CodeLocationCreationData<ImpactAnalysisBatchOutput> uploadImpactAnalysisFile(
+        Path impactAnalysisFile,
+        NameVersion projectNameVersion,
+        String codeLocationName,
+        BlackDuckServicesFactory blackDuckServicesFactory
+    )
+        throws OperationException {
         return auditLog.namedPublic("Upload Impact Analysis File", () -> {
             ImpactAnalysisUploadOperation impactAnalysisUploadOperation = new ImpactAnalysisUploadOperation(ImpactAnalysisUploadService.create(blackDuckServicesFactory));
             return impactAnalysisUploadOperation.uploadImpactAnalysis(impactAnalysisFile, projectNameVersion, codeLocationName);
         });
     }
 
-    public final void mapImpactAnalysisCodeLocations(Path impactAnalysisFile, CodeLocationCreationData<ImpactAnalysisBatchOutput> impactCodeLocationData, ProjectVersionWrapper projectVersionWrapper,
-        BlackDuckServicesFactory blackDuckServicesFactory) throws DetectUserFriendlyException {
+    public final void mapImpactAnalysisCodeLocations(
+        Path impactAnalysisFile, CodeLocationCreationData<ImpactAnalysisBatchOutput> impactCodeLocationData, ProjectVersionWrapper projectVersionWrapper,
+        BlackDuckServicesFactory blackDuckServicesFactory
+    ) throws OperationException {
         auditLog.namedInternal("Map Impact Analysis Code Locations", () -> {
             ImpactAnalysisMapCodeLocationsOperation mapCodeLocationsOperation = new ImpactAnalysisMapCodeLocationsOperation(blackDuckServicesFactory.getBlackDuckApiClient());
             mapCodeLocationsOperation.mapCodeLocations(impactAnalysisFile, impactCodeLocationData, projectVersionWrapper);
         });
     }
 
-    public final NameVersion createProjectDecisionOperation(List<DetectToolProjectInfo> detectToolProjectInfo) throws DetectUserFriendlyException {
+    public final NameVersion createProjectDecisionOperation(List<DetectToolProjectInfo> detectToolProjectInfo) throws OperationException {
         return auditLog.namedInternal("Decide Project Name Version", () -> {
             ProjectNameVersionOptions projectNameVersionOptions = detectConfigurationFactory.createProjectNameVersionOptions(directoryManager.getSourceDirectory().getName());
             ProjectNameVersionDecider projectNameVersionDecider = new ProjectNameVersionDecider(projectNameVersionOptions);
@@ -352,9 +437,13 @@ public class OperationFactory { //TODO: OperationRunner
         });
     }
 
-    public void checkPolicy(BlackDuckRunData blackDuckRunData, ProjectVersionView projectVersionView) throws DetectUserFriendlyException {
+    public void checkPolicy(BlackDuckRunData blackDuckRunData, ProjectVersionView projectVersionView) throws OperationException {
         auditLog.namedPublic("Check for Policy", () -> {
-            PolicyChecker policyChecker = new PolicyChecker(exitCodePublisher, blackDuckRunData.getBlackDuckServicesFactory().getBlackDuckApiClient(), blackDuckRunData.getBlackDuckServicesFactory().createProjectBomService());
+            PolicyChecker policyChecker = new PolicyChecker(
+                exitCodePublisher,
+                blackDuckRunData.getBlackDuckServicesFactory().getBlackDuckApiClient(),
+                blackDuckRunData.getBlackDuckServicesFactory().createProjectBomService()
+            );
             policyChecker.checkPolicy(detectConfigurationFactory.createBlackDuckPostOptions().getSeveritiesToFailPolicyCheck(), projectVersionView);
         });
     }
@@ -363,24 +452,29 @@ public class OperationFactory { //TODO: OperationRunner
         statusEventPublisher.publishDetectResult(report); //TODO Currently too broad.
     }
 
-    public File createRiskReportFile(BlackDuckRunData blackDuckRunData, ProjectVersionWrapper projectVersionWrapper, File reportDirectory) throws DetectUserFriendlyException {
-        return auditLog.namedPublic("Create Risk Report File", () -> {
+    public File createRiskReportFile(BlackDuckRunData blackDuckRunData, ProjectVersionWrapper projectVersionWrapper, File reportDirectory) throws OperationException {
+        return auditLog.namedPublic("Create Risk Report File", "RiskReport", () -> {
             DetectFontLoader detectFontLoader = detectFontLoaderFactory.detectFontLoader();
             ReportService reportService = creatReportService(blackDuckRunData);
-            File createdPdf = reportService.createReportPdfFile(reportDirectory, projectVersionWrapper.getProjectView(), projectVersionWrapper.getProjectVersionView(), detectFontLoader::loadFont,
-                detectFontLoader::loadBoldFont);
+            File createdPdf = reportService.createReportPdfFile(
+                reportDirectory,
+                projectVersionWrapper.getProjectView(),
+                projectVersionWrapper.getProjectVersionView(),
+                detectFontLoader::loadFont,
+                detectFontLoader::loadBoldFont
+            );
             return createdPdf;
         });
     }
 
-    public File createNoticesReportFile(BlackDuckRunData blackDuckRunData, ProjectVersionWrapper projectVersion, File noticesDirectory) throws DetectUserFriendlyException {
-        return auditLog.namedPublic("Create Notices Report File", () -> {
+    public File createNoticesReportFile(BlackDuckRunData blackDuckRunData, ProjectVersionWrapper projectVersion, File noticesDirectory) throws OperationException {
+        return auditLog.namedPublic("Create Notices Report File", "NoticesReport", () -> {
             ReportService reportService = creatReportService(blackDuckRunData);
             return reportService.createNoticesReportFile(noticesDirectory, projectVersion.getProjectView(), projectVersion.getProjectVersionView());
         });
     }
 
-    private ReportService creatReportService(BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
+    private ReportService creatReportService(BlackDuckRunData blackDuckRunData) throws OperationException {
         return auditLog.namedInternal("Create Report Service", () -> {
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
             Gson gson = blackDuckServicesFactory.getGson();
@@ -391,11 +485,12 @@ public class OperationFactory { //TODO: OperationRunner
             IntegrationEscapeUtil integrationEscapeUtil = blackDuckServicesFactory.createIntegrationEscapeUtil();
             long reportServiceTimeout = detectConfigurationFactory.findTimeoutInSeconds() * 1000;
             return new ReportService(gson, blackDuckUrl, blackDuckApiClient,
-                apiDiscovery, reportServiceLogger, integrationEscapeUtil, reportServiceTimeout);
+                apiDiscovery, reportServiceLogger, integrationEscapeUtil, reportServiceTimeout
+            );
         });
     }
 
-    public void publishProjectNameVersionChosen(NameVersion nameVersion) throws DetectUserFriendlyException {
+    public void publishProjectNameVersionChosen(NameVersion nameVersion) throws OperationException {
         auditLog.namedInternal("Project Name Version Chosen", () -> projectEventPublisher.publishProjectNameVersionChosen(nameVersion));
     }
 
@@ -403,128 +498,165 @@ public class OperationFactory { //TODO: OperationRunner
         statusEventPublisher.publishDetectResult(detectResult); //Not in the audit log as it's too broad. Might be good to massage.
     }
 
-    public List<SignatureScanPath> createScanPaths(NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws DetectUserFriendlyException {
-        return auditLog.namedInternal("Calculate Signature Scan Paths",
+    public List<SignatureScanPath> createScanPaths(NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws OperationException {
+        return auditLog.namedInternal(
+            "Calculate Signature Scan Paths",
             () -> {
-                DetectExcludedDirectoryFilter detectExcludedDirectoryFilter = detectConfigurationFactory.createDetectDirectoryFileFilter(directoryManager.getSourceDirectory().toPath());
+                List<String> exclusions = detectConfigurationFactory.collectSignatureScannerDirectoryExclusions();
+                DetectExcludedDirectoryFilter detectExcludedDirectoryFilter = new DetectExcludedDirectoryFilter(exclusions);
                 return new CalculateScanPathsOperation(detectConfigurationFactory.createBlackDuckSignatureScannerOptions(), directoryManager, fileFinder,
-                    detectExcludedDirectoryFilter::isExcluded)
-                           .determinePathsAndExclusions(projectNameVersion, detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getMaxDepth(), dockerTargetData);
-            });
+                    detectExcludedDirectoryFilter::isExcluded
+                )
+                    .determinePathsAndExclusions(projectNameVersion, detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getMaxDepth(), dockerTargetData);
+            }
+        );
     }
 
     public ScanBatch createScanBatchOnline(List<SignatureScanPath> scanPaths, NameVersion projectNameVersion, DockerTargetData dockerTargetData, BlackDuckRunData blackDuckRunData)
-        throws DetectUserFriendlyException {
-        return auditLog.namedPublic("Create Online Signature Scan Batch",
+        throws OperationException {
+        return auditLog.namedPublic("Create Online Signature Scan Batch", "OnlineSigScan",
             () -> new CreateScanBatchOperation(detectConfigurationFactory.createBlackDuckSignatureScannerOptions(), directoryManager, codeLocationNameManager)
-                      .createScanBatchWithBlackDuck(projectNameVersion, scanPaths, blackDuckRunData.getBlackDuckServerConfig(), dockerTargetData));
+                .createScanBatchWithBlackDuck(projectNameVersion, scanPaths, blackDuckRunData.getBlackDuckServerConfig(), dockerTargetData)
+        );
     }
 
     public ScanBatch createScanBatchOffline(List<SignatureScanPath> scanPaths, NameVersion projectNameVersion, DockerTargetData dockerTargetData)
-        throws DetectUserFriendlyException {
-        return auditLog.namedPublic("Create Offline Signature Scan Batch",
+        throws OperationException {
+        return auditLog.namedPublic("Create Offline Signature Scan Batch", "OfflineSigScan",
             () -> new CreateScanBatchOperation(detectConfigurationFactory.createBlackDuckSignatureScannerOptions(), directoryManager, codeLocationNameManager)
-                      .createScanBatchWithoutBlackDuck(projectNameVersion, scanPaths, dockerTargetData));
+                .createScanBatchWithoutBlackDuck(projectNameVersion, scanPaths, dockerTargetData)
+        );
     }
 
-    public File calculateDetectControlledInstallDirectory() throws DetectUserFriendlyException {
+    public File calculateDetectControlledInstallDirectory() throws OperationException {
         return auditLog.namedInternal("Calculate Scanner Install Directory", (OperationWrapper.OperationSupplier<File>) directoryManager::getPermanentDirectory);
     }
 
-    public Optional<File> calculateOfflineLocalScannerInstallPath() throws DetectUserFriendlyException {
-        return auditLog.namedInternal("Calculate Offline Local Scanner Path", () -> detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getOfflineLocalScannerInstallPath().map(Path::toFile));
+    public Optional<File> calculateOnlineLocalScannerInstallPath() throws OperationException {
+        return auditLog.namedInternal(
+            "Calculate Online Local Scanner Path",
+            () -> detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getLocalScannerInstallPath().map(Path::toFile)
+        );
     }
 
-    public Optional<File> calculateOnlineLocalScannerInstallPath() throws DetectUserFriendlyException {
-        return auditLog.namedInternal("Calculate Online Local Scanner Path", () -> detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getOnlineLocalScannerInstallPath().map(Path::toFile));
-    }
-
-    public Optional<String> calculateUserProvidedScannerUrl() throws DetectUserFriendlyException {
-        return auditLog.namedInternal("Calculate User Provided Scanner Url", () -> detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getUserProvidedScannerInstallUrl());
-    }
-
-    public ScanBatchRunner createScanBatchRunnerWithBlackDuck(BlackDuckRunData blackDuckRunData, File installDirectory) throws DetectUserFriendlyException {
+    public ScanBatchRunner createScanBatchRunnerWithBlackDuck(BlackDuckRunData blackDuckRunData, File installDirectory) throws OperationException {
         return auditLog.namedInternal("Create Scan Batch Runner with Black Duck", () -> {
             ExecutorService executorService = Executors.newFixedThreadPool(detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getParallelProcessors());
             IntEnvironmentVariables intEnvironmentVariables = IntEnvironmentVariables.includeSystemEnv();
-            return new CreateScanBatchRunnerWithBlackDuck(intEnvironmentVariables, OperatingSystemType.determineFromSystem(), executorService).createScanBatchRunner(blackDuckRunData.getBlackDuckServerConfig(), installDirectory);
+            return new CreateScanBatchRunnerWithBlackDuck(intEnvironmentVariables, OperatingSystemType.determineFromSystem(), executorService).createScanBatchRunner(
+                blackDuckRunData.getBlackDuckServerConfig(),
+                installDirectory
+            );
         });
     }
 
-    public ScanBatchRunner createScanBatchRunnerFromLocalInstall(File installDirectory) throws DetectUserFriendlyException {
+    public ScanBatchRunner createScanBatchRunnerFromLocalInstall(File installDirectory) throws OperationException {
         return auditLog.namedInternal("Create Scan Batch Runner From Local Install", () -> {
             IntEnvironmentVariables intEnvironmentVariables = IntEnvironmentVariables.includeSystemEnv();
-            ScanPathsUtility scanPathsUtility = new ScanPathsUtility(new Slf4jIntLogger(LoggerFactory.getLogger(ScanPathsUtility.class)), intEnvironmentVariables, OperatingSystemType.determineFromSystem());
-            ScanCommandRunner scanCommandRunner = new ScanCommandRunner(new Slf4jIntLogger(LoggerFactory.getLogger(ScanCommandRunner.class)), intEnvironmentVariables, scanPathsUtility, createExecutorServiceForScanner());
+            ScanPathsUtility scanPathsUtility = new ScanPathsUtility(
+                new Slf4jIntLogger(LoggerFactory.getLogger(ScanPathsUtility.class)),
+                intEnvironmentVariables,
+                OperatingSystemType.determineFromSystem()
+            );
+            ScanCommandRunner scanCommandRunner = new ScanCommandRunner(
+                new Slf4jIntLogger(LoggerFactory.getLogger(ScanCommandRunner.class)),
+                intEnvironmentVariables,
+                scanPathsUtility,
+                createExecutorServiceForScanner()
+            );
             return new CreateScanBatchRunnerWithLocalInstall(intEnvironmentVariables, scanPathsUtility, scanCommandRunner).createScanBatchRunner(installDirectory);
         });
     }
 
-    public ScanBatchRunner createScanBatchRunnerWithCustomUrl(String url, File installDirectory) throws DetectUserFriendlyException {
+    // TODO: Why is this unused? JM-02/2022
+    // Does WithCustomUrl mean a non-blackduck location?
+    public ScanBatchRunner createScanBatchRunnerWithCustomUrl(String url, File installDirectory) throws OperationException {
         return auditLog.namedInternal("Create Scan Batch Runner with Custom URL", () -> {
             IntEnvironmentVariables intEnvironmentVariables = IntEnvironmentVariables.includeSystemEnv();
-            ScanPathsUtility scanPathsUtility = new ScanPathsUtility(new Slf4jIntLogger(LoggerFactory.getLogger(ScanPathsUtility.class)), intEnvironmentVariables, OperatingSystemType.determineFromSystem());
-            ScanCommandRunner scanCommandRunner = new ScanCommandRunner(new Slf4jIntLogger(LoggerFactory.getLogger(ScanCommandRunner.class)), intEnvironmentVariables, scanPathsUtility, createExecutorServiceForScanner());
-            return new CreateScanBatchRunnerWithCustomUrl(intEnvironmentVariables, new SignatureScannerLogger(LoggerFactory.getLogger(ScanCommandRunner.class)), OperatingSystemType.determineFromSystem(), scanPathsUtility, scanCommandRunner)
-                       .createScanBatchRunner(url, connectionDetails, detectInfo, installDirectory);
+            ScanPathsUtility scanPathsUtility = new ScanPathsUtility(
+                new Slf4jIntLogger(LoggerFactory.getLogger(ScanPathsUtility.class)),
+                intEnvironmentVariables,
+                OperatingSystemType.determineFromSystem()
+            );
+            ScanCommandRunner scanCommandRunner = new ScanCommandRunner(
+                new Slf4jIntLogger(LoggerFactory.getLogger(ScanCommandRunner.class)),
+                intEnvironmentVariables,
+                scanPathsUtility,
+                createExecutorServiceForScanner()
+            );
+            BlackDuckServerConfig blackDuckServerConfig = BlackDuckServerConfig.newApiTokenBuilder()
+                .setIntEnvironmentVariables(intEnvironmentVariables)
+                .build();
+            BlackDuckServicesFactory blackDuckServicesFactory = blackDuckServerConfig.createBlackDuckServicesFactory(new Slf4jIntLogger(LoggerFactory.getLogger(
+                BlackDuckServicesFactory.class)));
+            BlackDuckRegistrationService blackDuckRegistrationService = blackDuckServicesFactory.createBlackDuckRegistrationService();
+
+            return new CreateScanBatchRunnerWithCustomUrl(
+                intEnvironmentVariables,
+                new SignatureScannerLogger(LoggerFactory.getLogger(ScanCommandRunner.class)),
+                OperatingSystemType.determineFromSystem(),
+                scanPathsUtility,
+                scanCommandRunner
+            ).createScanBatchRunner(url, connectionDetails, blackDuckRegistrationService, installDirectory);
         });
     }
 
-    public NotificationTaskRange createCodeLocationRange(BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
-        return auditLog.namedInternal("Create Code Location Task Range", () -> blackDuckRunData.getBlackDuckServicesFactory().createCodeLocationCreationService().calculateCodeLocationRange());
+    public NotificationTaskRange createCodeLocationRange(BlackDuckRunData blackDuckRunData) throws OperationException {
+        return auditLog.namedInternal(
+            "Create Code Location Task Range",
+            () -> blackDuckRunData.getBlackDuckServicesFactory().createCodeLocationCreationService().calculateCodeLocationRange()
+        );
     }
 
-    public SignatureScanOuputResult signatureScan(ScanBatch scanBatch, ScanBatchRunner scanBatchRunner) throws DetectUserFriendlyException {
-        return auditLog.namedPublic("Execute Signature Scan CLI", () -> new SignatureScanOperation().performScanActions(scanBatch, scanBatchRunner));
+    public SignatureScanOuputResult signatureScan(ScanBatch scanBatch, ScanBatchRunner scanBatchRunner) throws OperationException {
+        return auditLog.namedPublic("Execute Signature Scan CLI", "SigScan", () -> new SignatureScanOperation().performScanActions(scanBatch, scanBatchRunner));
     }
 
-    public List<SignatureScannerReport> createSignatureScanReport(List<SignatureScanPath> signatureScanPaths, List<ScanCommandOutput> scanCommandOutputList) throws DetectUserFriendlyException {
+    public List<SignatureScannerReport> createSignatureScanReport(List<SignatureScanPath> signatureScanPaths, List<ScanCommandOutput> scanCommandOutputList)
+        throws OperationException {
         return auditLog.namedInternal("Create Signature Scanner Report", () -> new CreateSignatureScanReports().reportResults(signatureScanPaths, scanCommandOutputList));
     }
 
-    public void publishSignatureScanReport(List<SignatureScannerReport> report) throws DetectUserFriendlyException {
+    public void publishSignatureScanReport(List<SignatureScannerReport> report) throws OperationException {
         auditLog.namedInternal("Publish Signature Scan Report", () -> {
             new PublishSignatureScanReports(exitCodePublisher, statusEventPublisher).publishReports(report);
         });
     }
 
-    public Optional<File> calculateNoticesDirectory() throws DetectUserFriendlyException { //TODO Should be a decision in boot
+    public Optional<File> calculateNoticesDirectory() throws OperationException { //TODO Should be a decision in boot
         return auditLog.namedInternal("Decide Notices Report Path", () -> {
-            if (detectConfigurationFactory.createBlackDuckPostOptions().shouldGenerateNoticesReport()) {
-                File customReportLocation = detectConfigurationFactory.createBlackDuckPostOptions().getNoticesReportPath().toFile();
-                if (customReportLocation.exists() && !customReportLocation.getName().equals(".")) { //TODO- is there a better way to avoid writing to default of .?
-                    return Optional.of(customReportLocation);
-                } else {
-                    return Optional.of(directoryManager.getSourceDirectory());
-                }
+            BlackDuckPostOptions postOptions = detectConfigurationFactory.createBlackDuckPostOptions();
+            if (postOptions.shouldGenerateNoticesReport()) {
+                return Optional.of(postOptions.getNoticesReportPath().map(Path::toFile)
+                    .orElse(directoryManager.getSourceDirectory()));
             }
             return Optional.empty();
         });
     }
 
-    public Optional<File> calculateRiskReportFileLocation() throws DetectUserFriendlyException { //TODO Should be a decision in boot
+    public Optional<File> calculateRiskReportFileLocation() throws OperationException { //TODO Should be a decision in boot
         return auditLog.namedInternal("Decide Risk Report Path", () -> {
-            if (detectConfigurationFactory.createBlackDuckPostOptions().shouldGenerateRiskReport()) {
-                File customReportLocation = detectConfigurationFactory.createBlackDuckPostOptions().getRiskReportPdfPath().toFile();
-                if (customReportLocation.exists() && !customReportLocation.getName().equals(".")) { //TODO- is there a better way to avoid writing to default of .?
-                    return Optional.of(customReportLocation);
-                } else {
-                    return Optional.of(directoryManager.getSourceDirectory());
-                }
+            BlackDuckPostOptions postOptions = detectConfigurationFactory.createBlackDuckPostOptions();
+            if (postOptions.shouldGenerateRiskReport()) {
+                return Optional.of(postOptions.getRiskReportPdfPath().map(Path::toFile)
+                    .orElse(directoryManager.getSourceDirectory()));
             }
             return Optional.empty();
         });
     }
 
-    public void waitForCodeLocations(BlackDuckRunData blackDuckRunData, CodeLocationWaitData codeLocationWaitData, NameVersion projectNameVersion) throws DetectUserFriendlyException {
+    public void waitForCodeLocations(BlackDuckRunData blackDuckRunData, CodeLocationWaitData codeLocationWaitData, NameVersion projectNameVersion)
+        throws OperationException {
         auditLog.namedPublic("Wait for Code Locations", () -> {
             //TODO fix this when NotificationTaskRange doesn't include task start time
             //ekerwin - The start time of the task is the earliest time a code location was created.
             // In order to wait the full timeout, we have to not use that start time and instead use now().
             //TODO: Handle the possible null pointer here.
             NotificationTaskRange notificationTaskRange = new NotificationTaskRange(System.currentTimeMillis(), codeLocationWaitData.getNotificationRange().getStartDate(),
-                codeLocationWaitData.getNotificationRange().getEndDate());
-            CodeLocationCreationService codeLocationCreationService = blackDuckRunData.getBlackDuckServicesFactory().createCodeLocationCreationService(); //TODO: Is this the way? - jp
+                codeLocationWaitData.getNotificationRange().getEndDate()
+            );
+            CodeLocationCreationService codeLocationCreationService = blackDuckRunData.getBlackDuckServicesFactory()
+                .createCodeLocationCreationService(); //TODO: Is this the way? - jp
             CodeLocationWaitResult result = codeLocationCreationService.waitForCodeLocations(
                 notificationTaskRange,
                 projectNameVersion,
@@ -533,7 +665,10 @@ public class OperationFactory { //TODO: OperationRunner
                 detectConfigurationFactory.findTimeoutInSeconds()
             );
             if (result.getStatus() == CodeLocationWaitResult.Status.PARTIAL) {
-                throw new DetectUserFriendlyException(result.getErrorMessage().orElse("Timed out waiting for code locations to finish on the Black Duck server."), ExitCodeType.FAILURE_TIMEOUT);
+                throw new DetectUserFriendlyException(
+                    result.getErrorMessage().orElse("Timed out waiting for code locations to finish on the Black Duck server."),
+                    ExitCodeType.FAILURE_TIMEOUT
+                );
             }
         });
     }
@@ -542,55 +677,81 @@ public class OperationFactory { //TODO: OperationRunner
         return detectConfigurationFactory.createBdioOptions();
     }
 
-    public BdioCodeLocationResult createBdioCodeLocationsFromDetectCodeLocations(List<DetectCodeLocation> detectCodeLocations, NameVersion projectNameVersion) throws DetectUserFriendlyException {
+    public BdioCodeLocationResult createBdioCodeLocationsFromDetectCodeLocations(List<DetectCodeLocation> detectCodeLocations, NameVersion projectNameVersion)
+        throws OperationException {
         return auditLog.namedInternal("Create Bdio Code Locations", () -> {
             BdioOptions bdioOptions = detectConfigurationFactory.createBdioOptions();
             return new CreateBdioCodeLocationsFromDetectCodeLocationsOperation(codeLocationNameManager, directoryManager)
-                       .transformDetectCodeLocations(detectCodeLocations, bdioOptions.getProjectCodeLocationPrefix(), bdioOptions.getProjectCodeLocationSuffix(), projectNameVersion);
+                .transformDetectCodeLocations(detectCodeLocations, bdioOptions.getProjectCodeLocationPrefix(), bdioOptions.getProjectCodeLocationSuffix(), projectNameVersion);
         });
     }
 
-    public List<UploadTarget> createBdio1Files(BdioCodeLocationResult bdioCodeLocationResult, NameVersion projectNameVersion) throws DetectUserFriendlyException {
+    public List<UploadTarget> createBdio1Files(BdioCodeLocationResult bdioCodeLocationResult, NameVersion projectNameVersion) throws OperationException {
         return auditLog.namedPublic("Create Bdio 1 Files", () -> {
             DetectBdioWriter detectBdioWriter = new DetectBdioWriter(new SimpleBdioFactory(), detectInfo);
-            return new CreateBdio1FilesOperation(detectBdioWriter, new SimpleBdioFactory()).createBdioFiles(bdioCodeLocationResult, directoryManager.getBdioOutputDirectory(), projectNameVersion);
+            return new CreateBdio1FilesOperation(detectBdioWriter, new SimpleBdioFactory()).createBdioFiles(
+                bdioCodeLocationResult,
+                directoryManager.getBdioOutputDirectory(),
+                projectNameVersion
+            );
         });
     }
 
-    public List<UploadTarget> createBdio2Files(BdioCodeLocationResult bdioCodeLocationResult, NameVersion projectNameVersion) throws DetectUserFriendlyException {
+    public List<UploadTarget> createBdio2Files(BdioCodeLocationResult bdioCodeLocationResult, NameVersion projectNameVersion) throws OperationException {
         return auditLog.namedPublic("Create Bdio 2 Files", () -> {
-            return new CreateBdio2FilesOperation(new Bdio2Factory(), detectInfo).createBdioFiles(bdioCodeLocationResult, directoryManager.getBdioOutputDirectory(), projectNameVersion);
+            return new CreateBdio2FilesOperation(new Bdio2Factory(), detectInfo).createBdioFiles(
+                bdioCodeLocationResult,
+                directoryManager.getBdioOutputDirectory(),
+                projectNameVersion
+            );
         });
     }
 
-    public AggregateCodeLocation createAggregateCodeLocation(DependencyGraph aggregateDependencyGraph, NameVersion projectNameVersion, String aggregateName, String extension) throws DetectUserFriendlyException {
+    public AggregateCodeLocation createAggregateCodeLocation(DependencyGraph aggregateDependencyGraph, NameVersion projectNameVersion, String aggregateName, String extension)
+        throws OperationException {
         return auditLog.namedInternal("Create Aggregate Code Location", () -> new CreateAggregateCodeLocationOperation(new ExternalIdFactory(), codeLocationNameManager)
-                                                                                  .createAggregateCodeLocation(directoryManager.getBdioOutputDirectory(), aggregateDependencyGraph, projectNameVersion, aggregateName, extension));
+            .createAggregateCodeLocation(directoryManager.getBdioOutputDirectory(), aggregateDependencyGraph, projectNameVersion, aggregateName, extension));
     }
 
-    public DependencyGraph aggregateDirect(List<DetectCodeLocation> detectCodeLocations) throws DetectUserFriendlyException {
-        return auditLog.namedPublic("Direct Aggregate", () -> new AggregateModeDirectOperation(new SimpleBdioFactory()).aggregateCodeLocations(directoryManager.getSourceDirectory(), detectCodeLocations));
+    public DependencyGraph aggregateDirect(List<DetectCodeLocation> detectCodeLocations) throws OperationException {
+        return auditLog.namedPublic(
+            "Direct Aggregate",
+            "DirectAggregate",
+            () -> new AggregateModeDirectOperation(new SimpleBdioFactory()).aggregateCodeLocations(detectCodeLocations)
+        );
     }
 
-    public DependencyGraph aggregateTransitive(List<DetectCodeLocation> detectCodeLocations) throws DetectUserFriendlyException {
-        return auditLog.namedPublic("Transitive Aggregate", () -> new AggregateModeTransitiveOperation(new SimpleBdioFactory()).aggregateCodeLocations(directoryManager.getSourceDirectory(), detectCodeLocations));
+    public DependencyGraph aggregateTransitive(List<DetectCodeLocation> detectCodeLocations) throws OperationException {
+        return auditLog.namedPublic("Transitive Aggregate", "TransitiveAggregate",
+            () -> (new FullAggregateGraphCreator(new SimpleBdioFactory())).aggregateCodeLocations(Dependency::new, directoryManager.getSourceDirectory(), detectCodeLocations)
+        );
     }
 
-    public void createAggregateBdio1File(AggregateCodeLocation aggregateCodeLocation) throws DetectUserFriendlyException {
+    public DependencyGraph aggregateSubProject(List<DetectCodeLocation> detectCodeLocations) throws OperationException {
+        return auditLog.namedPublic("SubProject Aggregate", "SubProjectAggregate",
+            () -> (new FullAggregateGraphCreator(new SimpleBdioFactory())).aggregateCodeLocations(
+                ProjectDependency::new,
+                directoryManager.getSourceDirectory(),
+                detectCodeLocations
+            )
+        );
+    }
+
+    public void createAggregateBdio1File(AggregateCodeLocation aggregateCodeLocation) throws OperationException {
         auditLog.namedPublic("Create Aggregate Bdio 1 File", () -> {
             DetectBdioWriter detectBdioWriter = new DetectBdioWriter(new SimpleBdioFactory(), detectInfo);
             new CreateAggregateBdio1FileOperation(new SimpleBdioFactory(), detectBdioWriter).writeAggregateBdio1File(aggregateCodeLocation);
         });
     }
 
-    public void createAggregateBdio2File(AggregateCodeLocation aggregateCodeLocation) throws DetectUserFriendlyException {
+    public void createAggregateBdio2File(AggregateCodeLocation aggregateCodeLocation) throws OperationException {
         auditLog.namedInternal("Create Bdio Code Locations", () -> {
             DetectBdioWriter detectBdioWriter = new DetectBdioWriter(new SimpleBdioFactory(), detectInfo);
-            new CreateAggregateBdio2FileOperation(new Bdio2Factory()).writeAggregateBdio2File(aggregateCodeLocation);
+            new CreateAggregateBdio2FileOperation(new Bdio2Factory(), detectInfo).writeAggregateBdio2File(aggregateCodeLocation);
         });
     }
 
-    private ExecutorService createExecutorServiceForScanner() throws DetectUserFriendlyException {
+    private ExecutorService createExecutorServiceForScanner() throws OperationException {
         return Executors.newFixedThreadPool(detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getParallelProcessors());
     }
 
@@ -602,9 +763,9 @@ public class OperationFactory { //TODO: OperationRunner
         return detectConfigurationFactory.createBinaryScanOptions();
     }
 
-    public Optional<File> searchForBinaryTargets(final List<String> multipleTargetFileNamePatterns, final int searchDepth) throws DetectUserFriendlyException {
+    public Optional<File> searchForBinaryTargets(List<String> multipleTargetFileNamePatterns, int searchDepth, boolean followSymLinks) throws OperationException {
         return auditLog.namedInternal("Binary Search For Targets", () -> {
-            return new BinaryScanFindMultipleTargetsOperation(fileFinder, directoryManager).searchForMultipleTargets(multipleTargetFileNamePatterns, searchDepth);
+            return new BinaryScanFindMultipleTargetsOperation(fileFinder, directoryManager).searchForMultipleTargets(multipleTargetFileNamePatterns, followSymLinks, searchDepth);
         });
     }
 
@@ -624,16 +785,30 @@ public class OperationFactory { //TODO: OperationRunner
         statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.IMPACT_ANALYSIS, StatusType.SUCCESS));
     }
 
-    public CodeLocationCreationData<BinaryScanBatchOutput> uploadBinaryScanFile(final File binaryUpload, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
-        return auditLog.namedPublic("Binary Upload", () -> {
+    public CodeLocationCreationData<BinaryScanBatchOutput> uploadBinaryScanFile(File binaryUpload, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
+        throws OperationException {
+        return auditLog.namedPublic("Binary Upload", "Binary", () -> {
             return new BinaryUploadOperation(statusEventPublisher, codeLocationNameManager, calculateBinaryScanOptions())
-                       .uploadBinaryScanFile(binaryUpload, blackDuckRunData.getBlackDuckServicesFactory().createBinaryScanUploadService(), projectNameVersion);
+                .uploadBinaryScanFile(binaryUpload, blackDuckRunData.getBlackDuckServicesFactory().createBinaryScanUploadService(), projectNameVersion);
         });
     }
 
-    public ProjectVersionWrapper syncProjectVersion(NameVersion projectNameVersion, CloneFindResult cloneFindResult, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
+    public ProjectVersionWrapper syncProjectVersion(
+        NameVersion projectNameVersion,
+        ProjectGroupFindResult projectGroupFindResult,
+        CloneFindResult cloneFindResult,
+        ProjectVersionLicenseFindResult projectVersionLicensesFindResult,
+        BlackDuckRunData blackDuckRunData
+    ) throws OperationException {
         return auditLog.namedInternal("Sync Project", () -> {
-            return new SyncProjectOperation(blackDuckRunData.getBlackDuckServicesFactory().createProjectService()).sync(projectNameVersion, cloneFindResult, detectConfigurationFactory.createDetectProjectServiceOptions());
+            return new SyncProjectOperation(blackDuckRunData.getBlackDuckServicesFactory().createProjectService())
+                .sync(
+                    projectNameVersion,
+                    projectGroupFindResult,
+                    cloneFindResult,
+                    projectVersionLicensesFindResult,
+                    detectConfigurationFactory.createDetectProjectServiceOptions()
+                );
         });
     }
 
@@ -641,10 +816,12 @@ public class OperationFactory { //TODO: OperationRunner
         return detectConfigurationFactory.createParentProjectMapOptions();
     }
 
-    public void mapToParentProject(String parentProjectName, String parentProjectVersionName, ProjectVersionWrapper projectVersion, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
+    public void mapToParentProject(String parentProjectName, String parentProjectVersionName, ProjectVersionWrapper projectVersion, BlackDuckRunData blackDuckRunData)
+        throws OperationException {
         auditLog.namedInternal("Map to Parent Project", () -> {
             new MapToParentOperation(blackDuckRunData.getBlackDuckServicesFactory().getBlackDuckApiClient(), blackDuckRunData.getBlackDuckServicesFactory().createProjectService(),
-                blackDuckRunData.getBlackDuckServicesFactory().createProjectBomService())
+                blackDuckRunData.getBlackDuckServicesFactory().createProjectBomService()
+            )
                 .mapToParentProjectVersion(parentProjectName, parentProjectVersionName, projectVersion);
         });
     }
@@ -653,9 +830,12 @@ public class OperationFactory { //TODO: OperationRunner
         return detectConfigurationFactory.createApplicationId();
     }
 
-    public void setApplicationId(String applicationId, ProjectVersionWrapper projectVersion, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
+    public void setApplicationId(String applicationId, ProjectVersionWrapper projectVersion, BlackDuckRunData blackDuckRunData) throws OperationException {
         auditLog.namedInternal("Sync Project", () -> {
-            new SetApplicationIdOperation(blackDuckRunData.getBlackDuckServicesFactory().createProjectMappingService()).setApplicationId(projectVersion.getProjectView(), applicationId);
+            new SetApplicationIdOperation(blackDuckRunData.getBlackDuckServicesFactory().createProjectMappingService()).setApplicationId(
+                projectVersion.getProjectView(),
+                applicationId
+            );
         });
     }
 
@@ -663,7 +843,8 @@ public class OperationFactory { //TODO: OperationRunner
         return detectConfigurationFactory.createCustomFieldDocument();
     }
 
-    public void updateCustomFields(CustomFieldDocument customFieldDocument, ProjectVersionWrapper projectVersion, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
+    public void updateCustomFields(CustomFieldDocument customFieldDocument, ProjectVersionWrapper projectVersion, BlackDuckRunData blackDuckRunData)
+        throws OperationException {
         auditLog.namedInternal("Update Custom Fields", () -> {
             new UpdateCustomFieldsOperation(blackDuckRunData.getBlackDuckServicesFactory().getBlackDuckApiClient()).updateCustomFields(projectVersion, customFieldDocument);
         });
@@ -677,14 +858,14 @@ public class OperationFactory { //TODO: OperationRunner
         return detectConfigurationFactory.createTags();
     }
 
-    public void addUserGroups(List<String> userGroups, ProjectVersionWrapper projectVersion, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
+    public void addUserGroups(List<String> userGroups, ProjectVersionWrapper projectVersion, BlackDuckRunData blackDuckRunData) throws OperationException {
         auditLog.namedInternal("Add User Groups", () -> {
             new AddUserGroupsToProjectOperation(blackDuckRunData.getBlackDuckServicesFactory().createProjectUsersService())
                 .addUserGroupsToProject(projectVersion, userGroups);
         });
     }
 
-    public void addTags(List<String> tags, ProjectVersionWrapper projectVersion, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
+    public void addTags(List<String> tags, ProjectVersionWrapper projectVersion, BlackDuckRunData blackDuckRunData) throws OperationException {
         auditLog.namedInternal("Add Tags", () -> {
             new AddTagsToProjectOperation(blackDuckRunData.getBlackDuckServicesFactory().createTagService())
                 .addTagsToProject(projectVersion, tags);
@@ -695,9 +876,12 @@ public class OperationFactory { //TODO: OperationRunner
         return detectConfigurationFactory.createShouldUnmapCodeLocations();
     }
 
-    public void unmapCodeLocations(ProjectVersionWrapper projectVersion, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException {
+    public void unmapCodeLocations(ProjectVersionWrapper projectVersion, BlackDuckRunData blackDuckRunData) throws OperationException {
         auditLog.namedInternal("Unmap Code Locations", () -> {
-            new UnmapCodeLocationsOperation(blackDuckRunData.getBlackDuckServicesFactory().getBlackDuckApiClient(), blackDuckRunData.getBlackDuckServicesFactory().createCodeLocationService())
+            new UnmapCodeLocationsOperation(
+                blackDuckRunData.getBlackDuckServicesFactory().getBlackDuckApiClient(),
+                blackDuckRunData.getBlackDuckServicesFactory().createCodeLocationService()
+            )
                 .unmapCodeLocations(projectVersion.getProjectVersionView());
         });
     }
@@ -706,21 +890,55 @@ public class OperationFactory { //TODO: OperationRunner
         return detectConfigurationFactory.createCloneFindOptions();
     }
 
-    public CloneFindResult findLatestProjectVersionCloneUrl(BlackDuckRunData blackDuckRunData, String projectName) throws DetectUserFriendlyException {
+    public ProjectGroupOptions calculateProjectGroupOptions() {
+        return detectConfigurationFactory.createProjectGroupOptions();
+    }
+
+    public ProjectVersionLicenseOptions calculateProjectVersionLicenses() {
+        return detectConfigurationFactory.createProjectVersionLicenseOptions();
+    }
+
+    public CloneFindResult findLatestProjectVersionCloneUrl(BlackDuckRunData blackDuckRunData, String projectName) throws OperationException {
         return auditLog.namedInternal("Find Clone Url By Latest", () -> {
-            return new FindCloneByLatestOperation(blackDuckRunData.getBlackDuckServicesFactory().createProjectService(), blackDuckRunData.getBlackDuckServicesFactory().getBlackDuckApiClient())
-                       .findLatestProjectVersionCloneUrl(projectName);
+            return new FindCloneByLatestOperation(
+                blackDuckRunData.getBlackDuckServicesFactory().createProjectService(),
+                blackDuckRunData.getBlackDuckServicesFactory().getBlackDuckApiClient()
+            )
+                .findLatestProjectVersionCloneUrl(projectName);
         });
     }
 
-    public CloneFindResult findNamedCloneUrl(BlackDuckRunData blackDuckRunData, String projectName, String cloneVersionName) throws DetectUserFriendlyException {
+    public CloneFindResult findNamedCloneUrl(BlackDuckRunData blackDuckRunData, String projectName, String cloneVersionName) throws OperationException {
         return auditLog.namedInternal("Find Clone Url By Name", () -> {
             return new FindCloneByNameOperation(blackDuckRunData.getBlackDuckServicesFactory().createProjectService())
-                       .findNamedCloneUrl(projectName, cloneVersionName);
+                .findNamedCloneUrl(projectName, cloneVersionName);
+        });
+    }
+
+    public HttpUrl findProjectGroup(BlackDuckRunData blackDuckRunData, String projectGroupName) throws OperationException {
+        return auditLog.namedInternal("Find Project Group By Exact Name", () -> {
+            return new FindProjectGroupOperation(
+                blackDuckRunData.getBlackDuckServicesFactory().getBlackDuckApiClient(),
+                blackDuckRunData.getBlackDuckServicesFactory().getApiDiscovery()
+            )
+                .findProjectGroup(projectGroupName);
+        });
+    }
+
+    public String findLicenseUrl(BlackDuckRunData blackDuckRunData, String licenseName) throws OperationException {
+        return auditLog.namedInternal("Find License Urls By Name", "LicenseUrlLookup", () -> {
+            return new FindLicenseUrlOperation(blackDuckRunData.getBlackDuckServicesFactory().createLicenseService())
+                .findLicenseUrl(licenseName);
         });
     }
 
     public void publishDetectorFailure() {
         eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR, "A detector failed."));
+    }
+
+    public Optional<File> findRapidScanConfig() throws OperationException {
+        return auditLog.namedInternal("Find Rapid Scan Config", () -> {
+            return new RapidModeConfigFindOperation(fileFinder).findRapidScanConfig(directoryManager.getSourceDirectory());
+        });
     }
 }

@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.lifecycle.boot.product;
 
 import java.util.concurrent.ExecutorService;
@@ -37,7 +30,12 @@ public class ProductBootFactory {
     public PhoneHomeManager createPhoneHomeManager(BlackDuckServicesFactory blackDuckServicesFactory) {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         BlackDuckPhoneHomeHelper blackDuckPhoneHomeHelper = BlackDuckPhoneHomeHelper.createAsynchronousPhoneHomeHelper(blackDuckServicesFactory, executorService);
-        PhoneHomeManager phoneHomeManager = new OnlinePhoneHomeManager(detectConfigurationFactory.createPhoneHomeOptions().getPassthrough(), detectInfo, eventSystem, blackDuckPhoneHomeHelper);
+        PhoneHomeManager phoneHomeManager = new OnlinePhoneHomeManager(
+            detectConfigurationFactory.createPhoneHomeOptions().getPassthrough(),
+            detectInfo,
+            eventSystem,
+            blackDuckPhoneHomeHelper
+        );
         return phoneHomeManager;
     }
 

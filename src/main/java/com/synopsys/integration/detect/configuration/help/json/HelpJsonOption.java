@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.configuration.help.json;
 
 import java.util.ArrayList;
@@ -12,7 +5,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
-class HelpJsonOption {
+public class HelpJsonOption {
     private String propertyName = "";
     private String propertyKey = "";
     private String propertyType = "";
@@ -28,13 +21,13 @@ class HelpJsonOption {
     private String detailedDescription = "";
     private Boolean deprecated = false;
     private String deprecatedDescription = "";
-    private String deprecatedFailInVersion = "";
     private String deprecatedRemoveInVersion = "";
     private Boolean strictValues = false;
     private Boolean caseSensitiveValues = false;
     private Boolean hasAcceptableValues = false;
     private Boolean isCommaSeparatedList = false;
     private List<String> acceptableValues = new ArrayList<>();
+    private List<HelpJsonOptionDeprecatedValue> deprecatedValues = new ArrayList<>();
     private String example = "";
 
     public String getPropertyName() {
@@ -141,14 +134,6 @@ class HelpJsonOption {
         this.deprecatedDescription = deprecatedDescription;
     }
 
-    public String getDeprecatedFailInVersion() {
-        return deprecatedFailInVersion;
-    }
-
-    public void setDeprecatedFailInVersion(String deprecatedFailInVersion) {
-        this.deprecatedFailInVersion = deprecatedFailInVersion;
-    }
-
     public String getDeprecatedRemoveInVersion() {
         return deprecatedRemoveInVersion;
     }
@@ -203,5 +188,13 @@ class HelpJsonOption {
 
     public void setExample(String example) {
         this.example = example;
+    }
+
+    public List<HelpJsonOptionDeprecatedValue> getDeprecatedValues() {
+        return deprecatedValues;
+    }
+
+    public void setDeprecatedValues(List<HelpJsonOptionDeprecatedValue> deprecatedValues) {
+        this.deprecatedValues = deprecatedValues;
     }
 }

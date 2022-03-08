@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.lifecycle.boot;
 
 import java.io.IOException;
@@ -42,13 +35,18 @@ import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootFactory
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.run.singleton.BootSingletons;
+import com.synopsys.integration.detect.tool.cache.InstalledToolLocator;
+import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableOptions;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
 import com.synopsys.integration.detect.tool.detector.executable.DirectoryExecutableFinder;
 import com.synopsys.integration.detect.tool.detector.executable.SystemPathExecutableFinder;
+import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryZipInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorInstaller;
+import com.synopsys.integration.detect.tool.detector.inspectors.projectinspector.ArtifactoryProjectInspectorInstaller;
+import com.synopsys.integration.detect.tool.detector.inspectors.projectinspector.ProjectInspectorExecutableLocator;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.DetectRunId;
 import com.synopsys.integration.detect.workflow.airgap.AirGapCreator;
@@ -57,6 +55,7 @@ import com.synopsys.integration.detect.workflow.airgap.DetectFontAirGapCreator;
 import com.synopsys.integration.detect.workflow.airgap.DockerAirGapCreator;
 import com.synopsys.integration.detect.workflow.airgap.GradleAirGapCreator;
 import com.synopsys.integration.detect.workflow.airgap.NugetAirGapCreator;
+import com.synopsys.integration.detect.workflow.airgap.ProjectInspectorAirGapCreator;
 import com.synopsys.integration.detect.workflow.blackduck.analytics.AnalyticsConfigurationService;
 import com.synopsys.integration.detect.workflow.blackduck.font.DetectFontInstaller;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
@@ -86,9 +85,32 @@ public class DetectBootFactory {
         this.fileFinder = fileFinder;
     }
 
-    public BootSingletons createRunDependencies(ProductRunData productRunData, PropertyConfiguration detectConfiguration, DetectableOptionFactory detectableOptionFactory, DetectConfigurationFactory detectConfigurationFactory,
-        DirectoryManager directoryManager, Configuration configuration) {
-        return new BootSingletons(productRunData, detectRunId, gson, detectInfo, fileFinder, eventSystem, createDetectorProfiler(), detectConfiguration, detectableOptionFactory, detectConfigurationFactory, directoryManager, configuration);
+    public BootSingletons createRunDependencies(
+        ProductRunData productRunData,
+        PropertyConfiguration detectConfiguration,
+        DetectableOptionFactory detectableOptionFactory,
+        DetectConfigurationFactory detectConfigurationFactory,
+        DirectoryManager directoryManager,
+        Configuration configuration,
+        InstalledToolManager installedToolManager,
+        InstalledToolLocator installedToolLocator
+    ) {
+        return new BootSingletons(
+            productRunData,
+            detectRunId,
+            gson,
+            detectInfo,
+            fileFinder,
+            eventSystem,
+            createDetectorProfiler(),
+            detectConfiguration,
+            detectableOptionFactory,
+            detectConfigurationFactory,
+            directoryManager,
+            configuration,
+            installedToolManager,
+            installedToolLocator
+        );
     }
 
     public Configuration createFreemarkerConfiguration() {
@@ -100,10 +122,10 @@ public class DetectBootFactory {
         return configuration;
     }
 
-    public PathResolver createPathResolver(Boolean resolveTildes) {
+    public PathResolver createPathResolver() {
         PathResolver pathResolver;
 
-        if (detectInfo.getCurrentOs() != OperatingSystemType.WINDOWS && Boolean.TRUE.equals(resolveTildes)) {
+        if (detectInfo.getCurrentOs() != OperatingSystemType.WINDOWS) {
             logger.info("Tilde's will be automatically resolved to USER HOME.");
             pathResolver = new TildeInPathResolver(SystemUtils.USER_HOME);
         } else {
@@ -113,13 +135,23 @@ public class DetectBootFactory {
         return pathResolver;
     }
 
-    public DiagnosticSystem createDiagnosticSystem(boolean isDiagnosticExtended, PropertyConfiguration detectConfiguration, DirectoryManager directoryManager, SortedMap<String, String> maskedRawPropertyValues, Set<String> propertyKeys) {
+    public DiagnosticSystem createDiagnosticSystem(
+        boolean isDiagnosticExtended,
+        PropertyConfiguration detectConfiguration,
+        DirectoryManager directoryManager,
+        SortedMap<String, String> maskedRawPropertyValues,
+        Set<String> propertyKeys
+    ) {
         return new DiagnosticSystem(isDiagnosticExtended, detectConfiguration, detectRunId, detectInfo, directoryManager, eventSystem, maskedRawPropertyValues, propertyKeys);
     }
 
-    public AirGapCreator createAirGapCreator(ConnectionDetails connectionDetails, DetectExecutableOptions detectExecutableOptions, Configuration freemarkerConfiguration) {
+    public AirGapCreator createAirGapCreator(
+        ConnectionDetails connectionDetails, DetectExecutableOptions detectExecutableOptions, Configuration freemarkerConfiguration, InstalledToolManager installedToolManager,
+        InstalledToolLocator installedToolLocator
+    ) {
         ConnectionFactory connectionFactory = new ConnectionFactory(connectionDetails);
         ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
+        ArtifactoryZipInstaller artifactoryZipInstaller = new ArtifactoryZipInstaller(artifactResolver);
 
         DirectoryExecutableFinder directoryExecutableFinder = DirectoryExecutableFinder.forCurrentOperatingSystem(fileFinder);
         SystemPathExecutableFinder systemPathExecutableFinder = new SystemPathExecutableFinder(directoryExecutableFinder);
@@ -128,11 +160,28 @@ public class DetectBootFactory {
         DetectExecutableRunner runner = DetectExecutableRunner.newDebug(eventSystem);
         GradleAirGapCreator gradleAirGapCreator = new GradleAirGapCreator(detectExecutableResolver, runner, freemarkerConfiguration);
 
-        NugetAirGapCreator nugetAirGapCreator = new NugetAirGapCreator(new NugetInspectorInstaller(artifactResolver));
-        DockerAirGapCreator dockerAirGapCreator = new DockerAirGapCreator(new DockerInspectorInstaller(artifactResolver));
-        DetectFontAirGapCreator detectFontAirGapCreator = new DetectFontAirGapCreator(new DetectFontInstaller(artifactResolver));
+        NugetAirGapCreator nugetAirGapCreator = new NugetAirGapCreator(new NugetInspectorInstaller(artifactoryZipInstaller));
 
-        return new AirGapCreator(new AirGapPathFinder(), eventSystem, gradleAirGapCreator, nugetAirGapCreator, dockerAirGapCreator, detectFontAirGapCreator);
+        ProjectInspectorExecutableLocator projectInspectorExecutableLocator = new ProjectInspectorExecutableLocator(detectInfo);
+        ArtifactoryProjectInspectorInstaller projectInspectorInstaller = new ArtifactoryProjectInspectorInstaller(
+            detectInfo,
+            artifactoryZipInstaller,
+            projectInspectorExecutableLocator
+        );
+        ProjectInspectorAirGapCreator projectInspectorAirGapCreator = new ProjectInspectorAirGapCreator(projectInspectorInstaller);
+
+        DockerAirGapCreator dockerAirGapCreator = new DockerAirGapCreator(new DockerInspectorInstaller(artifactResolver));
+        DetectFontAirGapCreator detectFontAirGapCreator = new DetectFontAirGapCreator(new DetectFontInstaller(artifactResolver, installedToolManager, installedToolLocator));
+
+        return new AirGapCreator(
+            new AirGapPathFinder(),
+            eventSystem,
+            gradleAirGapCreator,
+            nugetAirGapCreator,
+            dockerAirGapCreator,
+            detectFontAirGapCreator,
+            projectInspectorAirGapCreator
+        );
     }
 
     public HelpJsonManager createHelpJsonManager() {
@@ -145,7 +194,7 @@ public class DetectBootFactory {
 
     public DetectConfigurationBootManager createDetectConfigurationBootManager(PropertyConfiguration detectConfiguration) {
         PropertyConfigurationHelpContext detectConfigurationReporter = new PropertyConfigurationHelpContext(detectConfiguration);
-        return new DetectConfigurationBootManager(eventSystem, detectInfo, detectConfigurationReporter);
+        return new DetectConfigurationBootManager(eventSystem, detectConfigurationReporter);
     }
 
     private DetectorProfiler createDetectorProfiler() {

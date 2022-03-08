@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver;
 
 import java.io.File;
@@ -28,7 +21,12 @@ public class DpkgPkgDetailsResolver {
     private static final int PKG_INFO_LINE_LABEL_POSITION = 0;
     private static final int PKG_INFO_LINE_VALUE_POSITION = 1;
 
-    public Optional<PackageDetails> resolvePackageDetails(ClangPackageManagerInfo currentPackageManager, DetectableExecutableRunner executableRunner, File workingDirectory, NameArchitecture packageNameArchitecture) {
+    public Optional<PackageDetails> resolvePackageDetails(
+        ClangPackageManagerInfo currentPackageManager,
+        DetectableExecutableRunner executableRunner,
+        File workingDirectory,
+        NameArchitecture packageNameArchitecture
+    ) {
         try {
             List<String> args = new ArrayList<>(currentPackageManager.getPkgInfoArgs().get());
             args.add(constructPackageArg(packageNameArchitecture.getName(), packageNameArchitecture.getArchitecture().orElse(null)));
@@ -60,8 +58,12 @@ public class DpkgPkgDetailsResolver {
             packageVersion = parseNeededValueFromLineIfPresent(packageName, packageInfoOutputLine, "Version", packageVersion);
         }
         if ((packageVersion == null) || (packageArchitecture == null)) {
-            logger.warn("Unable to determine all details for package {} (version: {}; architecture: {}); this package will be omitted from the output",
-                packageName, packageVersion, packageArchitecture);
+            logger.warn(
+                "Unable to determine all details for package {} (version: {}; architecture: {}); this package will be omitted from the output",
+                packageName,
+                packageVersion,
+                packageArchitecture
+            );
             return Optional.empty();
         }
         return Optional.of(new PackageDetails(packageName, packageVersion, packageArchitecture));

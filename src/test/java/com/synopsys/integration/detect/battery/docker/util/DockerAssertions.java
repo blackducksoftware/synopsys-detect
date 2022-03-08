@@ -3,6 +3,7 @@ package com.synopsys.integration.detect.battery.docker.util;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -17,12 +18,12 @@ import com.synopsys.integration.detect.workflow.report.output.FormattedStatusOut
 import com.synopsys.integration.util.NameVersion;
 
 public class DockerAssertions {
-    private DockerDetectResult dockerDetectResult;
+    private final DockerDetectResult dockerDetectResult;
     private final File outputDirectory;
     private final File bdioDirectory;
     private FormattedOutput statusJson = null;
 
-    public DockerAssertions(final DockerTestDirectories testDirectories, final DockerDetectResult dockerDetectResult) {
+    public DockerAssertions(DockerTestDirectories testDirectories, DockerDetectResult dockerDetectResult) {
         this.dockerDetectResult = dockerDetectResult;
         this.outputDirectory = testDirectories.getResultOutputDirectory();
         this.bdioDirectory = testDirectories.getResultBdioDirectory();
@@ -45,7 +46,7 @@ public class DockerAssertions {
     public void successfulDetectorTypeStatusJson(String detectorType) {
         FormattedOutput statusJson = locateStatusJson();
         Optional<FormattedDetectorOutput> detector = statusJson.detectors.stream().filter(it -> it.detectorType.equals(detectorType))
-                                                         .findFirst();
+            .findFirst();
 
         Assertions.assertTrue(detector.isPresent(), "Could not find required detector in status json detector list.");
 
@@ -55,7 +56,7 @@ public class DockerAssertions {
     public void successfulOperationStatusJson(String operationKey) {
         FormattedOutput statusJson = locateStatusJson();
         Optional<FormattedOperationOutput> detector = statusJson.operations.stream().filter(it -> it.descriptionKey.equals(operationKey))
-                                                          .findFirst();
+            .findFirst();
 
         Assertions.assertTrue(detector.isPresent(), "Could not find required operation '" + operationKey + "' in status json detector list.");
 
@@ -65,7 +66,7 @@ public class DockerAssertions {
     public void successfulToolStatusJson(String detectorType) {
         FormattedOutput statusJson = locateStatusJson();
         Optional<FormattedStatusOutput> tool = statusJson.status.stream().filter(it -> it.key.equals(detectorType))
-                                                   .findFirst();
+            .findFirst();
 
         Assertions.assertTrue(tool.isPresent(), "Could not find required detector in status json detector list.");
 
@@ -78,7 +79,7 @@ public class DockerAssertions {
 
         File runs = new File(outputDirectory, "runs");
         File[] runDirectories = runs.listFiles();
-        Assertions.assertNotNull(runDirectories, "Could not find any run directories, looked in: " + runs.toString());
+        Assertions.assertNotNull(runDirectories, "Could not find any run directories, looked in: " + runs);
         Assertions.assertEquals(1, runDirectories.length, "There should be exactly one run directory (from this latest run).");
 
         File run = runDirectories[0];
@@ -104,11 +105,15 @@ public class DockerAssertions {
     public void logContainsPattern(String pattern) {
         Assertions.assertNotNull(pattern);
         Pattern regex = Pattern.compile("(?s).*" + pattern + ".*", Pattern.MULTILINE);
-        Assertions.assertTrue(regex.matcher(dockerDetectResult.getDetectLogs()).matches(), "Expected logs to contain '" + regex.toString() + "' but they did not.");
+        Assertions.assertTrue(regex.matcher(dockerDetectResult.getDetectLogs()).matches(), "Expected logs to contain '" + regex + "' but they did not.");
     }
 
     public void logContains(String thing) {
         Assertions.assertTrue(dockerDetectResult.getDetectLogs().contains(thing), "Expected logs to contain '" + thing + "' but they did not.");
+    }
+
+    public void logDoesNotContain(String thing) {
+        Assertions.assertFalse(dockerDetectResult.getDetectLogs().contains(thing), "Expected logs to NOT contain '" + thing + "' but they did.");
     }
 
     public void successfulOperation(String operationName) {
@@ -129,9 +134,19 @@ public class DockerAssertions {
     }
 
     public void bdioFiles(int bdioCount) {
-        Assertions.assertNotNull(bdioDirectory, "Bdio directory did not exist!");
-        Assertions.assertNotNull(bdioDirectory.listFiles(), "Bdio directory list files was null.");
+        checkBdioDirectory();
         Assertions.assertEquals(bdioCount, Objects.requireNonNull(bdioDirectory.listFiles()).length);
+    }
+
+    public void bdioFileCreated(String requiredBdioFilename) {
+        checkBdioDirectory();
+        Assertions.assertTrue(
+            Arrays.asList(bdioDirectory.listFiles()).stream()
+                .map(File::getName)
+                .filter(requiredBdioFilename::equals)
+                .findAny().isPresent(),
+            String.format("Expected BDIO file %s, but it was not created", requiredBdioFilename)
+        );
     }
 
     public File getOutputDirectory() {
@@ -140,5 +155,10 @@ public class DockerAssertions {
 
     public void resultProducedAtLocation(String location) {
         Assertions.assertTrue(locateStatusJson().results.stream().anyMatch(result -> result.location.equals(location)), "Unable to find result: " + location);
+    }
+
+    private void checkBdioDirectory() {
+        Assertions.assertNotNull(bdioDirectory, "Bdio directory did not exist!");
+        Assertions.assertNotNull(bdioDirectory.listFiles(), "Bdio directory list files was null.");
     }
 }

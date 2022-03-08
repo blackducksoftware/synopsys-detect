@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.lifecycle.run.data;
 
 import java.util.Optional;
@@ -20,7 +13,12 @@ public class BlackDuckRunData {
     private final BlackDuckServicesFactory blackDuckServicesFactory;
     private final BlackduckScanMode scanMode;
 
-    protected BlackDuckRunData(PhoneHomeManager phoneHomeManager, BlackDuckServerConfig blackDuckServerConfig, BlackDuckServicesFactory blackDuckServicesFactory, final BlackduckScanMode scanMode) {
+    protected BlackDuckRunData(
+        PhoneHomeManager phoneHomeManager,
+        BlackDuckServerConfig blackDuckServerConfig,
+        BlackDuckServicesFactory blackDuckServicesFactory,
+        BlackduckScanMode scanMode
+    ) {
         this.phoneHomeManager = phoneHomeManager;
         this.blackDuckServerConfig = blackDuckServerConfig;
         this.blackDuckServicesFactory = blackDuckServicesFactory;
@@ -47,7 +45,12 @@ public class BlackDuckRunData {
         return new BlackDuckRunData(null, null, null, null);
     }
 
-    public static BlackDuckRunData online(BlackduckScanMode scanMode, BlackDuckServicesFactory blackDuckServicesFactory, PhoneHomeManager phoneHomeManager, BlackDuckServerConfig blackDuckServerConfig) {
+    public static BlackDuckRunData online(
+        BlackduckScanMode scanMode,
+        BlackDuckServicesFactory blackDuckServicesFactory,
+        PhoneHomeManager phoneHomeManager,
+        BlackDuckServerConfig blackDuckServerConfig
+    ) {
         return new BlackDuckRunData(phoneHomeManager, blackDuckServerConfig, blackDuckServicesFactory, scanMode);
     }
 

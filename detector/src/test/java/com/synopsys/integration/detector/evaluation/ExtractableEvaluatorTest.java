@@ -92,7 +92,12 @@ public class ExtractableEvaluatorTest {
         Mockito.verify(detectorEvaluatorListener).extractableEnded(detectorEvaluation);
     }
 
-    private DetectorEvaluation createEvaluationMocks(DetectorEvaluationOptions evaluationOptions, DetectorEvaluationTree detectorEvaluationTree, boolean extractable, boolean throwException) throws DetectableException {
+    private DetectorEvaluation createEvaluationMocks(
+        DetectorEvaluationOptions evaluationOptions,
+        DetectorEvaluationTree detectorEvaluationTree,
+        boolean extractable,
+        boolean throwException
+    ) throws DetectableException {
         DetectorEvaluation detectorEvaluation = Mockito.mock(DetectorEvaluation.class);
 
         Detectable detectable = Mockito.mock(Detectable.class);

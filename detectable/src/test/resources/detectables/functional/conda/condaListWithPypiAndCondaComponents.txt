@@ -1,0 +1,20 @@
+[{
+   "base_url": "https://conda.anaconda.org/conda-forge",
+   "build_number": 1,
+   "build_string": "h5dbffcc_1",
+   "channel": "conda-forge",
+   "dist_name": "tk-8.6.11-h5dbffcc_1",
+   "name": "tk",
+   "platform": "osx-64",
+   "version": "8.6.11"
+},
+{
+   "base_url": "https://conda.anaconda.org/pypi",
+   "build_number": 0,
+   "build_string": "pypi_0",
+   "channel": "pypi",
+   "dist_name": "treelite-runtime-2.0.0-pypi_0",
+   "name": "treelite-runtime",
+   "platform": "pypi",
+   "version": "2.0.0"
+}]

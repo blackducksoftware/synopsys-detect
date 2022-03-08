@@ -20,7 +20,8 @@ public class GoGradleDetectableTest extends DetectableFunctionalTest {
 
     @Override
     protected void setup() throws IOException {
-        addFile(Paths.get("gogradle.lock"),
+        addFile(
+            Paths.get("gogradle.lock"),
             "apiVersion: \"0.11.4\"",
             "dependencies:",
             "  build:",

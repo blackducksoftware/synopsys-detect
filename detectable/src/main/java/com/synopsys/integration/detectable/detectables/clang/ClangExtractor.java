@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.clang;
 
 import java.io.File;
@@ -39,9 +32,13 @@ public class ClangExtractor {
     private final CompileCommandDatabaseParser compileCommandDatabaseParser;
     private final ForgeChooser forgeChooser;
 
-    public ClangExtractor(DetectableExecutableRunner executableRunner, DependencyFileDetailGenerator dependencyFileDetailGenerator,
-        ClangPackageDetailsTransformer clangPackageDetailsTransformer, CompileCommandDatabaseParser compileCommandDatabaseParser,
-        ForgeChooser forgeChooser) {
+    public ClangExtractor(
+        DetectableExecutableRunner executableRunner,
+        DependencyFileDetailGenerator dependencyFileDetailGenerator,
+        ClangPackageDetailsTransformer clangPackageDetailsTransformer,
+        CompileCommandDatabaseParser compileCommandDatabaseParser,
+        ForgeChooser forgeChooser
+    ) {
         this.executableRunner = executableRunner;
         this.dependencyFileDetailGenerator = dependencyFileDetailGenerator;
         this.clangPackageDetailsTransformer = clangPackageDetailsTransformer;
@@ -49,8 +46,14 @@ public class ClangExtractor {
         this.forgeChooser = forgeChooser;
     }
 
-    public Extraction extract(ClangPackageManager currentPackageManager, ClangPackageManagerRunner packageManagerRunner, File sourceDirectory, File outputDirectory, File jsonCompilationDatabaseFile,
-        boolean cleanup) {
+    public Extraction extract(
+        ClangPackageManager currentPackageManager,
+        ClangPackageManagerRunner packageManagerRunner,
+        File sourceDirectory,
+        File outputDirectory,
+        File jsonCompilationDatabaseFile,
+        boolean cleanup
+    ) {
         try {
             logger.debug(String.format("Analyzing %s", jsonCompilationDatabaseFile.getAbsolutePath()));
             logger.debug(String.format("extract() called; compileCommandsJsonFilePath: %s", jsonCompilationDatabaseFile.getAbsolutePath()));
@@ -67,13 +70,16 @@ public class ClangExtractor {
 
             logFileCollection("Unrecognized dependency files (all)", results.getUnRecognizedDependencyFiles());
             List<File> unrecognizedIncludeFiles = results.getUnRecognizedDependencyFiles().stream()
-                                                      .filter(file -> !isFileUnderDir(sourceDirectory, file))
-                                                      .collect(Collectors.toList());
-            logFileCollection(String.format("Unrecognized dependency files that are outside the compile_commands.json directory (%s) and will be collected", sourceDirectory), unrecognizedIncludeFiles);
+                .filter(file -> !isFileUnderDir(sourceDirectory, file))
+                .collect(Collectors.toList());
+            logFileCollection(
+                String.format("Unrecognized dependency files that are outside the compile_commands.json directory (%s) and will be collected", sourceDirectory),
+                unrecognizedIncludeFiles
+            );
 
             return new Extraction.Builder()
-                       .unrecognizedPaths(unrecognizedIncludeFiles)
-                       .success(codeLocation).build();
+                .unrecognizedPaths(unrecognizedIncludeFiles)
+                .success(codeLocation).build();
         } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();
         }

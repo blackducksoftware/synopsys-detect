@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.sbt.parse.model;
 
 import java.io.File;
@@ -25,7 +18,7 @@ public class SbtDependencyModule {
         return sourcePath;
     }
 
-    public void setSourcePath(final File sourcePath) {
+    public void setSourcePath(File sourcePath) {
         this.sourcePath = sourcePath;
     }
 
@@ -33,7 +26,7 @@ public class SbtDependencyModule {
         return name;
     }
 
-    public void setName(final String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -41,7 +34,7 @@ public class SbtDependencyModule {
         return version;
     }
 
-    public void setVersion(final String version) {
+    public void setVersion(String version) {
         this.version = version;
     }
 
@@ -49,7 +42,7 @@ public class SbtDependencyModule {
         return org;
     }
 
-    public void setOrg(final String org) {
+    public void setOrg(String org) {
         this.org = org;
     }
 
@@ -57,7 +50,7 @@ public class SbtDependencyModule {
         return graph;
     }
 
-    public void setGraph(final DependencyGraph graph) {
+    public void setGraph(DependencyGraph graph) {
         this.graph = graph;
     }
 
@@ -65,7 +58,7 @@ public class SbtDependencyModule {
         return configuration;
     }
 
-    public void setConfiguration(final String configuration) {
+    public void setConfiguration(String configuration) {
         this.configuration = configuration;
     }
 }

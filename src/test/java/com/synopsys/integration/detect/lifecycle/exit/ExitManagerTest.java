@@ -7,9 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.lifecycle.shutdown.ExceptionUtility;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeManager;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
-import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeUtility;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.status.DetectStatusManager;
 
@@ -19,7 +19,7 @@ public class ExitManagerTest {
         long startTime = System.currentTimeMillis();
         EventSystem eventSystem = new EventSystem();
         DetectStatusManager statusManager = new DetectStatusManager(eventSystem);
-        ExitCodeUtility exitCodeUtility = new ExitCodeUtility();
+        ExceptionUtility exitCodeUtility = new ExceptionUtility();
         ExitCodeManager exitCodeManager = new ExitCodeManager(eventSystem, exitCodeUtility);
         ExitManager exitManager = new ExitManager(eventSystem, exitCodeManager, statusManager);
 
@@ -37,7 +37,7 @@ public class ExitManagerTest {
         long startTime = System.currentTimeMillis();
         EventSystem eventSystem = new EventSystem();
         DetectStatusManager statusManager = new DetectStatusManager(eventSystem);
-        ExitCodeUtility exitCodeUtility = new ExitCodeUtility();
+        ExceptionUtility exitCodeUtility = new ExceptionUtility();
         ExitCodeManager exitCodeManager = new ExitCodeManager(eventSystem, exitCodeUtility);
         exitCodeManager.addExitCodeRequest(new ExitCodeRequest(ExitCodeType.FAILURE_CONFIGURATION, "JUnit failure code."));
         ExitManager exitManager = new ExitManager(eventSystem, exitCodeManager, statusManager);
@@ -56,7 +56,7 @@ public class ExitManagerTest {
         long startTime = System.currentTimeMillis();
         EventSystem eventSystem = new EventSystem();
         DetectStatusManager statusManager = new DetectStatusManager(eventSystem);
-        ExitCodeUtility exitCodeUtility = new ExitCodeUtility();
+        ExceptionUtility exitCodeUtility = new ExceptionUtility();
         ExitCodeManager exitCodeManager = new ExitCodeManager(eventSystem, exitCodeUtility);
         exitCodeManager.addExitCodeRequest(new ExitCodeRequest(ExitCodeType.FAILURE_CONFIGURATION, "JUnit failure code."));
         ExitManager exitManager = new ExitManager(eventSystem, exitCodeManager, statusManager);

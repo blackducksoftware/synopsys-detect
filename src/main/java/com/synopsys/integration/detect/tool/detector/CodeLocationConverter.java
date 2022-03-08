@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.detector;
 
 import java.io.File;
@@ -58,17 +51,20 @@ public class CodeLocationConverter {
                 if (StringUtils.isNotBlank(relativePath)) {
                     externalId = externalIdFactory.createPathExternalId(detectForge, relativePath);
                 } else {// Relativize from the parent.
-                    externalId = externalIdFactory.createPathExternalId(detectForge, FileNameUtils.relativizeParent(detectSourcePath.getAbsolutePath(), sourcePath.getAbsolutePath()));
+                    externalId = externalIdFactory.createPathExternalId(
+                        detectForge,
+                        FileNameUtils.relativizeParent(detectSourcePath.getAbsolutePath(), sourcePath.getAbsolutePath())
+                    );
                 }
 
-                logger.debug("The external id that was created is: " + Arrays.asList(externalId.getExternalIdPieces()).toString());
+                logger.debug("The external id that was created is: " + Arrays.asList(externalId.getExternalIdPieces()));
             } else {
                 externalId = codeLocation.getExternalId().get();
             }
             Optional<String> dockerImageName = extraction.getMetaData(DockerExtractor.DOCKER_IMAGE_NAME_META_DATA);
 
             DetectCodeLocation detectCodeLocation = dockerImageName.map(s -> DetectCodeLocation.forDocker(codeLocation.getDependencyGraph(), sourcePath, externalId, s))
-                                                        .orElseGet(() -> DetectCodeLocation.forCreator(codeLocation.getDependencyGraph(), sourcePath, externalId, overrideName));
+                .orElseGet(() -> DetectCodeLocation.forCreator(codeLocation.getDependencyGraph(), sourcePath, externalId, overrideName));
 
             detectCodeLocations.put(codeLocation, detectCodeLocation);
         }

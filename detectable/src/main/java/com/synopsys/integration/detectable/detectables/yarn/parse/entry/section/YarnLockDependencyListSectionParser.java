@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.yarn.parse.entry.section;
 
 import java.util.List;
@@ -20,8 +13,12 @@ public class YarnLockDependencyListSectionParser implements YarnLockEntrySection
     private final String targetListKey;
     private final boolean dependenciesAreOptional;
 
-    public YarnLockDependencyListSectionParser(YarnLockLineAnalyzer yarnLockLineAnalyzer, YarnLockDependencySpecParser yarnLockDependencySpecParser,
-        String targetListKey, boolean dependenciesAreOptional) {
+    public YarnLockDependencyListSectionParser(
+        YarnLockLineAnalyzer yarnLockLineAnalyzer,
+        YarnLockDependencySpecParser yarnLockDependencySpecParser,
+        String targetListKey,
+        boolean dependenciesAreOptional
+    ) {
         this.yarnLockLineAnalyzer = yarnLockLineAnalyzer;
         this.yarnLockDependencySpecParser = yarnLockDependencySpecParser;
         this.targetListKey = targetListKey;

@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.blackduck;
 
 import java.io.IOException;
@@ -21,7 +14,7 @@ import com.synopsys.integration.detect.workflow.blackduck.font.DetectFontLocator
 
 public class DetectFontLoader {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private DetectFontLocator detectFontLocator;
+    private final DetectFontLocator detectFontLocator;
 
     public DetectFontLoader(DetectFontLocator detectFontLocator) {
         this.detectFontLocator = detectFontLocator;

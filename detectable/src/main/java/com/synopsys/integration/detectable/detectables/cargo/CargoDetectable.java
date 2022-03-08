@@ -1,26 +1,21 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.cargo;
 
 import java.io.File;
-import java.util.Optional;
+import java.io.IOException;
 
+import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
-import com.synopsys.integration.common.util.finder.FileFinder;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.result.CargoLockfileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.synopsys.integration.detectable.util.CycleDetectedException;
 
 @DetectableInfo(language = "Rust", forge = "crates", requirementsMarkdown = "Files: Cargo.lock, Cargo.toml")
 public class CargoDetectable extends Detectable {
@@ -42,17 +37,7 @@ public class CargoDetectable extends Detectable {
     @Override
     public DetectableResult applicable() {
         Requirements requirements = new Requirements(fileFinder, environment);
-        cargoLock = fileFinder.findFile(environment.getDirectory(), CARGO_LOCK_FILENAME);
-        cargoToml = fileFinder.findFile(environment.getDirectory(), CARGO_TOML_FILENAME);
-        if (cargoLock == null && cargoToml == null) {
-            return new FilesNotFoundDetectableResult(CARGO_LOCK_FILENAME, CARGO_TOML_FILENAME);
-        }
-        if (cargoLock != null) {
-            requirements.explainFile(cargoLock);
-        }
-        if (cargoToml != null) {
-            requirements.explainFile(cargoToml);
-        }
+        requirements.eitherFile(CARGO_LOCK_FILENAME, CARGO_TOML_FILENAME, foundLock -> cargoLock = foundLock, foundToml -> cargoToml = foundToml);
         return requirements.result();
     }
 
@@ -65,7 +50,7 @@ public class CargoDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws IOException, CycleDetectedException, DetectableException, MissingExternalIdException {
         return cargoExtractor.extract(cargoLock, cargoToml);
     }
 }

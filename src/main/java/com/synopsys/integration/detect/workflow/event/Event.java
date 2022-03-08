@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.event;
 
 import java.io.File;
@@ -52,5 +45,5 @@ public class Event {
     public static final EventType<ExecutedExecutable> Executable = new EventType<>(ExecutedExecutable.class);
     public static final EventType<UnrecognizedPaths> UnrecognizedPaths = new EventType<>(UnrecognizedPaths.class);
     public static final EventType<SortedMap<String, String>> RawMaskedPropertyValuesCollected = new EventType(SortedMap.class);
-    public static final EventType<Operation> DetectOperation = new EventType(Operation.class);
+    public static final EventType<Collection<Operation>> DetectOperationsComplete = new EventType(Collection.class);
 }

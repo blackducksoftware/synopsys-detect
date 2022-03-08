@@ -1,27 +1,22 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.lerna;
 
 import java.util.List;
 
-public class LernaOptions {
-    private final boolean includePrivatePackages;
-    private List<String> excludedPackages;
-    private List<String> includedPackages;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 
-    public LernaOptions(boolean includePrivatePackages, List<String> excludedPackages, List<String> includedPackages) {
-        this.includePrivatePackages = includePrivatePackages;
+public class LernaOptions {
+    private final EnumListFilter<LernaPackageType> lernaPackageTypeFilter;
+    private final List<String> excludedPackages;
+    private final List<String> includedPackages;
+
+    public LernaOptions(EnumListFilter<LernaPackageType> lernaPackageTypeFilter, List<String> excludedPackages, List<String> includedPackages) {
+        this.lernaPackageTypeFilter = lernaPackageTypeFilter;
         this.excludedPackages = excludedPackages;
         this.includedPackages = includedPackages;
     }
 
-    public boolean shouldIncludePrivatePackages() {
-        return includePrivatePackages;
+    public EnumListFilter<LernaPackageType> getLernaPackageTypeFilter() {
+        return lernaPackageTypeFilter;
     }
 
     public List<String> getExcludedPackages() {

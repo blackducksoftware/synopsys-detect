@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.conan.graph;
 
 import java.util.ArrayList;
@@ -138,10 +131,20 @@ public class ConanNodeBuilder<T> {
         if (forcedRootNode || (path != null)) {
             isRootNode = true;
         }
-        ConanNode<T> node = new ConanNode<>(ref, path, name, version, user, channel,
-            recipeRevision, packageId, packageRevision,
-            requiresRefs, buildRequiresRefs,
-            isRootNode);
+        ConanNode<T> node = new ConanNode<>(
+            ref,
+            path,
+            name,
+            version,
+            user,
+            channel,
+            recipeRevision,
+            packageId,
+            packageRevision,
+            requiresRefs,
+            buildRequiresRefs,
+            isRootNode
+        );
         logger.trace("node: {}", node);
         return Optional.of(node);
     }

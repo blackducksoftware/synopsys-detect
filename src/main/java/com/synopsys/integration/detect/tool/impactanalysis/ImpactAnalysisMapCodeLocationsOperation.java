@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.impactanalysis;
 
 import java.nio.file.Path;
@@ -31,12 +24,13 @@ public class ImpactAnalysisMapCodeLocationsOperation {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final BlackDuckApiClient blackDuckService;
 
-    public ImpactAnalysisMapCodeLocationsOperation(final BlackDuckApiClient blackDuckService) {
+    public ImpactAnalysisMapCodeLocationsOperation(BlackDuckApiClient blackDuckService) {
         this.blackDuckService = blackDuckService;
     }
 
     // TODO: Create a code location mapping service generic enough for all tools.
-    public void mapCodeLocations(Path impactAnalysisPath, CodeLocationCreationData<ImpactAnalysisBatchOutput> codeLocationCreationData, ProjectVersionWrapper projectVersionWrapper) throws IntegrationException {
+    public void mapCodeLocations(Path impactAnalysisPath, CodeLocationCreationData<ImpactAnalysisBatchOutput> codeLocationCreationData, ProjectVersionWrapper projectVersionWrapper)
+        throws IntegrationException {
         for (ImpactAnalysisOutput output : codeLocationCreationData.getOutput().getOutputs()) {
             ImpactAnalysisUploadView impactAnalysisUploadView = output.getImpactAnalysisUploadView();
             ProjectView projectView = projectVersionWrapper.getProjectView();

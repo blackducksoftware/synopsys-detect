@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.bdio;
 
 import java.util.Optional;
@@ -16,11 +9,11 @@ import org.jetbrains.annotations.Nullable;
 public class AggregateDecision {
 
     @Nullable
-    private String aggregateName;
-    private AggregateMode aggregateMode;
-    private boolean uploadEmptyAggregate;
+    private final String aggregateName;
+    private final AggregateMode aggregateMode;
+    private final boolean uploadEmptyAggregate;
 
-    public AggregateDecision(@Nullable final String aggregateName, final AggregateMode aggregateMode, final boolean uploadEmptyAggregate) {
+    public AggregateDecision(@Nullable String aggregateName, AggregateMode aggregateMode, boolean uploadEmptyAggregate) {
         this.aggregateName = aggregateName;
         this.aggregateMode = aggregateMode;
         this.uploadEmptyAggregate = uploadEmptyAggregate;

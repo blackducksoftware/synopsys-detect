@@ -1,25 +1,3 @@
-/**
- * configuration
- *
- * Copyright (c) 2020 Synopsys, Inc.
- *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
 package com.synopsys.integration.configuration.property.types.enumsoft;
 
 import static com.synopsys.integration.configuration.util.ConfigTestUtils.configOf;
@@ -46,8 +24,8 @@ class SoftEnumPropertiesTest {
 
     @Test
     public void testNullableActualValue() throws InvalidPropertyException {
-        final NullableSoftEnumProperty<Example> property = new NullableSoftEnumProperty<>("enum.nullable", Example.class);
-        final PropertyConfiguration config = configOf(Pair.of("enum.nullable", "ANOTHER"));
+        NullableSoftEnumProperty<Example> property = new NullableSoftEnumProperty<>("enum.nullable", Example.class);
+        PropertyConfiguration config = configOf(Pair.of("enum.nullable", "ANOTHER"));
         Assertions.assertEquals(Optional.of(SoftEnumValue.ofEnumValue(Example.ANOTHER)), config.getValue(property));
 
         PropertyTestHelpUtil.assertAllHelpValid(property, Arrays.asList("THING", "ANOTHER", "THIRD"));
@@ -55,8 +33,8 @@ class SoftEnumPropertiesTest {
 
     @Test
     public void testNullableStringValue() throws InvalidPropertyException {
-        final NullableSoftEnumProperty<Example> property = new NullableSoftEnumProperty<>("enum.nullable", Example.class);
-        final PropertyConfiguration config = configOf(Pair.of("enum.nullable", "ANOTHER ONE"));
+        NullableSoftEnumProperty<Example> property = new NullableSoftEnumProperty<>("enum.nullable", Example.class);
+        PropertyConfiguration config = configOf(Pair.of("enum.nullable", "ANOTHER ONE"));
         Assertions.assertEquals(Optional.of(SoftEnumValue.ofSoftValue("ANOTHER ONE")), config.getValue(property));
 
         PropertyTestHelpUtil.assertAllHelpValid(property, Arrays.asList("THING", "ANOTHER", "THIRD"));
@@ -64,8 +42,8 @@ class SoftEnumPropertiesTest {
 
     @Test
     public void testValuedActualValue() throws InvalidPropertyException {
-        final SoftEnumProperty<Example> property = new SoftEnumProperty<>("enum.valued", SoftEnumValue.ofEnumValue(Example.ANOTHER), Example.class);
-        final PropertyConfiguration config = configOf(Pair.of("enum.valued", "THIRD"));
+        SoftEnumProperty<Example> property = new SoftEnumProperty<>("enum.valued", SoftEnumValue.ofEnumValue(Example.ANOTHER), Example.class);
+        PropertyConfiguration config = configOf(Pair.of("enum.valued", "THIRD"));
         Assertions.assertEquals(SoftEnumValue.ofEnumValue(Example.THIRD), config.getValue(property));
 
         PropertyTestHelpUtil.assertAllHelpValid(property, Arrays.asList("THING", "ANOTHER", "THIRD"));
@@ -73,8 +51,8 @@ class SoftEnumPropertiesTest {
 
     @Test
     public void testValuedStringValue() throws InvalidPropertyException {
-        final SoftEnumProperty<Example> property = new SoftEnumProperty<>("enum.valued", SoftEnumValue.ofEnumValue(Example.ANOTHER), Example.class);
-        final PropertyConfiguration config = configOf(Pair.of("enum.valued", "THIRD ONE"));
+        SoftEnumProperty<Example> property = new SoftEnumProperty<>("enum.valued", SoftEnumValue.ofEnumValue(Example.ANOTHER), Example.class);
+        PropertyConfiguration config = configOf(Pair.of("enum.valued", "THIRD ONE"));
         Assertions.assertEquals(SoftEnumValue.ofSoftValue("THIRD ONE"), config.getValue(property));
 
         PropertyTestHelpUtil.assertAllHelpValid(property, Arrays.asList("THING", "ANOTHER", "THIRD"));
@@ -82,9 +60,12 @@ class SoftEnumPropertiesTest {
 
     @Test
     public void testList() throws InvalidPropertyException {
-        final SoftEnumListProperty<Example> property = new SoftEnumListProperty<>("enum.list", Collections.singletonList(SoftEnumValue.ofEnumValue(Example.THIRD)), Example.class);
-        final PropertyConfiguration config = configOf(Pair.of("enum.list", "ANOTHER,THING,test"));
-        Assertions.assertEquals(Arrays.asList(SoftEnumValue.ofEnumValue(Example.ANOTHER), SoftEnumValue.ofEnumValue(Example.THING), SoftEnumValue.ofSoftValue("test")), config.getValue(property));
+        SoftEnumListProperty<Example> property = new SoftEnumListProperty<>("enum.list", Collections.singletonList(SoftEnumValue.ofEnumValue(Example.THIRD)), Example.class);
+        PropertyConfiguration config = configOf(Pair.of("enum.list", "ANOTHER,THING,test"));
+        Assertions.assertEquals(
+            Arrays.asList(SoftEnumValue.ofEnumValue(Example.ANOTHER), SoftEnumValue.ofEnumValue(Example.THING), SoftEnumValue.ofSoftValue("test")),
+            config.getValue(property)
+        );
 
         PropertyTestHelpUtil.assertAllListHelpValid(property);
     }

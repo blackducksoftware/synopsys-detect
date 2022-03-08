@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.detector.inspectors;
 
 import java.io.File;
@@ -36,9 +29,12 @@ public class ArtifactoryGradleInspectorResolver implements GradleInspectorResolv
     private File generatedGradleScriptPath = null;
     private boolean hasResolvedInspector = false;
 
-    public ArtifactoryGradleInspectorResolver(Configuration configuration, GradleInspectorScriptOptions gradleInspectorScriptOptions,
+    public ArtifactoryGradleInspectorResolver(
+        Configuration configuration,
+        GradleInspectorScriptOptions gradleInspectorScriptOptions,
         AirGapInspectorPaths airGapInspectorPaths,
-        DirectoryManager directoryManager) {
+        DirectoryManager directoryManager
+    ) {
         this.configuration = configuration;
         this.gradleInspectorScriptOptions = gradleInspectorScriptOptions;
         this.airGapInspectorPaths = airGapInspectorPaths;
@@ -54,7 +50,11 @@ public class ArtifactoryGradleInspectorResolver implements GradleInspectorResolv
                 File generatedGradleScriptFile = directoryManager.getSharedFile(GRADLE_DIR_NAME, GENERATED_GRADLE_SCRIPT_NAME);
                 GradleInspectorScriptCreator gradleInspectorScriptCreator = new GradleInspectorScriptCreator(configuration);
                 if (airGapPath.isPresent()) {
-                    generatedGradleScriptPath = gradleInspectorScriptCreator.createOfflineGradleInspector(generatedGradleScriptFile, gradleInspectorScriptOptions, airGapPath.get().getCanonicalPath());
+                    generatedGradleScriptPath = gradleInspectorScriptCreator.createOfflineGradleInspector(
+                        generatedGradleScriptFile,
+                        gradleInspectorScriptOptions,
+                        airGapPath.get().getCanonicalPath()
+                    );
                 } else {
                     generatedGradleScriptPath = gradleInspectorScriptCreator.createOnlineGradleInspector(generatedGradleScriptFile, gradleInspectorScriptOptions);
                 }

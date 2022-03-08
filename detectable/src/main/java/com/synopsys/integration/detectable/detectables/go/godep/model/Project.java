@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.go.godep.model;
 
 import java.util.List;
@@ -21,7 +14,7 @@ public class Project {
         return name;
     }
 
-    public void setName(final String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -29,7 +22,7 @@ public class Project {
         return branch;
     }
 
-    public void setBranch(final String branch) {
+    public void setBranch(String branch) {
         this.branch = branch;
     }
 
@@ -37,7 +30,7 @@ public class Project {
         return revision;
     }
 
-    public void setRevision(final String revision) {
+    public void setRevision(String revision) {
         this.revision = revision;
     }
 
@@ -45,7 +38,7 @@ public class Project {
         return version;
     }
 
-    public void setVersion(final String version) {
+    public void setVersion(String version) {
         this.version = version;
     }
 
@@ -53,7 +46,7 @@ public class Project {
         return source;
     }
 
-    public void setSource(final String source) {
+    public void setSource(String source) {
         this.source = source;
     }
 
@@ -61,7 +54,7 @@ public class Project {
         return packages;
     }
 
-    public void setPackages(final List<String> packages) {
+    public void setPackages(List<String> packages) {
         this.packages = packages;
     }
 }

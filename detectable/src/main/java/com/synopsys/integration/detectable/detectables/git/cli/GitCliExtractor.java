@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.git.cli;
 
 import java.io.File;
@@ -33,34 +26,36 @@ public class GitCliExtractor {
 
     private final DetectableExecutableRunner executableRunner;
     private final GitUrlParser gitUrlParser;
+    private final ToolVersionLogger toolVersionLogger;
 
-    public GitCliExtractor(DetectableExecutableRunner executableRunner, GitUrlParser gitUrlParser) {
+    public GitCliExtractor(DetectableExecutableRunner executableRunner, GitUrlParser gitUrlParser, ToolVersionLogger toolVersionLogger) {
         this.executableRunner = executableRunner;
         this.gitUrlParser = gitUrlParser;
+        this.toolVersionLogger = toolVersionLogger;
     }
 
     public Extraction extract(ExecutableTarget gitExecutable, File directory) {
         try {
-            ToolVersionLogger.log(executableRunner, directory, gitExecutable);
+            toolVersionLogger.log(directory, gitExecutable);
             String repoName = getRepoName(gitExecutable, directory);
             String branch = getRepoBranch(gitExecutable, directory);
 
             if ("HEAD".equals(branch)) {
                 logger.info("HEAD is detached for this repo, using heuristics to find Git branch.");
                 branch = getRepoBranchBackup(gitExecutable, directory)
-                             .orElseGet(() -> getCommitHash(gitExecutable, directory));
+                    .orElseGet(() -> getCommitHash(gitExecutable, directory));
             }
 
             return new Extraction.Builder()
-                       .success()
-                       .projectName(repoName)
-                       .projectVersion(branch)
-                       .build();
+                .success()
+                .projectName(repoName)
+                .projectVersion(branch)
+                .build();
         } catch (ExecutableRunnerException | IntegrationException | MalformedURLException e) {
             logger.debug("Failed to extract project info from the git executable.", e);
             return new Extraction.Builder()
-                       .success()
-                       .build();
+                .success()
+                .build();
         }
     }
 

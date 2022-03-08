@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.blackduck.developer.aggregate;
 
 import com.synopsys.integration.log.IntLogger;
@@ -15,8 +8,12 @@ public class RapidScanAggregateResult {
     private final RapidScanComponentGroupDetail securityDetails;
     private final RapidScanComponentGroupDetail licenseDetails;
 
-    public RapidScanAggregateResult(RapidScanResultSummary summary, RapidScanComponentGroupDetail componentDetails, RapidScanComponentGroupDetail securityDetails,
-        RapidScanComponentGroupDetail licenseDetails) {
+    public RapidScanAggregateResult(
+        RapidScanResultSummary summary,
+        RapidScanComponentGroupDetail componentDetails,
+        RapidScanComponentGroupDetail securityDetails,
+        RapidScanComponentGroupDetail licenseDetails
+    ) {
         this.summary = summary;
         this.componentDetails = componentDetails;
         this.securityDetails = securityDetails;

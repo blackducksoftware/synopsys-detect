@@ -1,20 +1,13 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.lifecycle.boot.decision;
 
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 
 public class BlackDuckDecision {
-    private boolean shouldRun;
-    private boolean isOffline;
-    private BlackduckScanMode scanMode;
+    private final boolean shouldRun;
+    private final boolean isOffline;
+    private final BlackduckScanMode scanMode;
 
-    public BlackDuckDecision(final boolean shouldRun, final boolean isOffline, final BlackduckScanMode scanMode) {
+    public BlackDuckDecision(boolean shouldRun, boolean isOffline, BlackduckScanMode scanMode) {
         this.shouldRun = shouldRun;
         this.isOffline = isOffline;
         this.scanMode = scanMode;

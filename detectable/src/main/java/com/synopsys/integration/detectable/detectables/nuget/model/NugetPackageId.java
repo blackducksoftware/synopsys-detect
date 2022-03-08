@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.nuget.model;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
@@ -29,14 +22,14 @@ public class NugetPackageId {
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(Object obj) {
         if (obj == null) {
             return false;
         }
         if (!(obj instanceof NugetPackageId)) {
             return false;
         }
-        final NugetPackageId other = (NugetPackageId) obj;
+        NugetPackageId other = (NugetPackageId) obj;
         if (name == null) {
             if (other.name != null) {
                 return false;

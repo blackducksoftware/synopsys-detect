@@ -1,25 +1,3 @@
-/**
- * synopsys-detect
- *
- * Copyright (c) 2020 Synopsys, Inc.
- *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
 package com.synopsys.integration.detect.tool.binaryscanner;
 
 import java.io.File;
@@ -38,6 +16,7 @@ import org.mockito.Mockito;
 
 import com.synopsys.integration.common.util.finder.SimpleFileFinder;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
 import com.synopsys.integration.detect.lifecycle.run.step.BinaryScanStepRunner;
@@ -46,8 +25,8 @@ import com.synopsys.integration.exception.IntegrationException;
 
 public class BinaryUploadOperationTest {
     @Test
-    public void testShouldFailOnDirectory() throws DetectUserFriendlyException {
-        BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("."), Collections.singletonList(""), "", "", 0);
+    public void testShouldFailOnDirectory() throws OperationException {
+        BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("."), Collections.singletonList(""), "", "", 0, false);
         OperationFactory operationFactory = Mockito.mock(OperationFactory.class);
 
         Mockito.when(operationFactory.calculateBinaryScanOptions()).thenReturn(binaryScanOptions);
@@ -79,9 +58,11 @@ public class BinaryUploadOperationTest {
         Mockito.when(directoryManager.getBinaryOutputDirectory()).thenReturn(rootDirectory);
 
         BinaryScanFindMultipleTargetsOperation multipleTargets = new BinaryScanFindMultipleTargetsOperation(fileFinder, directoryManager);
-        Optional<File> zip = multipleTargets.searchForMultipleTargets(targetPaths, 3);
+        Optional<File> zip = multipleTargets.searchForMultipleTargets(targetPaths, false, 3);
         Assertions.assertTrue(zip.isPresent());
         Assertions.assertTrue(zip.get().isFile());
         Assertions.assertTrue(zip.get().canRead());
+
+        FileUtils.deleteDirectory(rootDirectory);
     }
 }

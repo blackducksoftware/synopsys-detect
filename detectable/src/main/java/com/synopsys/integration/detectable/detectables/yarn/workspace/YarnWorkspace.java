@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.yarn.workspace;
 
 import java.util.Map;
@@ -55,7 +48,12 @@ public class YarnWorkspace {
     }
 
     public StringDependencyId generateDependencyId() {
-        return new StringDependencyId(getName().orElse(null) + YarnTransformer.STRING_ID_NAME_VERSION_SEPARATOR + WORKSPACE_VERSION_PREFIX + workspacePackageJson.getDirRelativePath());
+        return new StringDependencyId(
+            getName().orElse(null)
+                + YarnTransformer.STRING_ID_NAME_VERSION_SEPARATOR
+                + WORKSPACE_VERSION_PREFIX
+                + workspacePackageJson.getDirRelativePath()
+        );
     }
 
     public boolean matches(YarnLockEntry yarnLockEntry) {
@@ -77,8 +75,12 @@ public class YarnWorkspace {
         if (givenDependencyIdString.startsWith(thisWorkspaceName + YarnTransformer.STRING_ID_NAME_VERSION_SEPARATOR)) {
             StringDependencyId thisWorkspaceDependencyId = generateDependencyId();
             if (!givenDependencyId.equals(thisWorkspaceDependencyId)) {
-                logger.warn("Dependency ID {} looks like workspace {}, but expected the Dependency ID to be {}",
-                    givenDependencyId, thisWorkspaceName, thisWorkspaceDependencyId);
+                logger.warn(
+                    "Dependency ID {} looks like workspace {}, but expected the Dependency ID to be {}",
+                    givenDependencyId,
+                    thisWorkspaceName,
+                    thisWorkspaceDependencyId
+                );
             }
             return true;
         }
@@ -88,8 +90,12 @@ public class YarnWorkspace {
     public boolean matches(String name, String version) {
         if (getName().orElse("").equals(name)) {
             if (!version.startsWith(WORKSPACE_VERSION_PREFIX) && !versionMatches(version)) {
-                logger.trace("yarn.lock dependency {} has the same name as a workspace, but the version is {} (vs. {}). Considering them the same anyway.",
-                    name, version, getVersionString());
+                logger.trace(
+                    "yarn.lock dependency {} has the same name as a workspace, but the version is {} (vs. {}). Considering them the same anyway.",
+                    name,
+                    version,
+                    getVersionString()
+                );
             }
             return true;
         }

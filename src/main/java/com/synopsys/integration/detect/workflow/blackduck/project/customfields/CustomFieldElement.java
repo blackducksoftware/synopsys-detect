@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.blackduck.project.customfields;
 
 import java.util.ArrayList;
@@ -18,7 +11,7 @@ public class CustomFieldElement {
         return label;
     }
 
-    public void setLabel(final String label) {
+    public void setLabel(String label) {
         this.label = label;
     }
 
@@ -26,7 +19,7 @@ public class CustomFieldElement {
         return value;
     }
 
-    public void setValue(final List<String> value) {
+    public void setValue(List<String> value) {
         this.value = value;
     }
 }

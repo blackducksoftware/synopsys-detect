@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.interactive;
 
 import static com.synopsys.integration.detect.configuration.DetectProperties.BLACKDUCK_OFFLINE_MODE;
@@ -50,7 +43,12 @@ public class InteractiveModeDecisionTree implements DecisionTree {
 
         Boolean connectToHub = writer.askYesOrNo(SHOULD_CONNECT_TO_BLACKDUCK);
         if (connectToHub) {
-            BlackDuckConnectionDecisionBranch blackDuckConnectionDecisionBranch = new BlackDuckConnectionDecisionBranch(detectInfo, blackDuckConnectivityChecker, existingPropertySources, gson);
+            BlackDuckConnectionDecisionBranch blackDuckConnectionDecisionBranch = new BlackDuckConnectionDecisionBranch(
+                detectInfo,
+                blackDuckConnectivityChecker,
+                existingPropertySources,
+                gson
+            );
             blackDuckConnectionDecisionBranch.traverse(propertySourceBuilder, writer);
 
             Boolean customDetails = writer.askYesOrNo(SHOULD_SET_PROJECT_NAME_VERSION);

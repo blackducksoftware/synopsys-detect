@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.signaturescanner;
 
 import java.util.Optional;
@@ -38,25 +31,32 @@ public class SignatureScannerReport {
         Optional<ScanCommandOutput> optionalOutput = Optional.ofNullable(scanCommandOutput);
         boolean hasOutput = optionalOutput.isPresent();
         Integer exitCode = optionalOutput
-                               .map(ScanCommandOutput::getScanExitCode)
-                               .filter(Optional::isPresent)
-                               .map(Optional::get)
-                               .orElse(null);
+            .map(ScanCommandOutput::getScanExitCode)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .orElse(null);
         Exception exception = optionalOutput
-                                  .map(ScanCommandOutput::getException)
-                                  .filter(Optional::isPresent)
-                                  .map(Optional::get)
-                                  .orElse(null);
+            .map(ScanCommandOutput::getException)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .orElse(null);
         String errorMessage = optionalOutput
-                                  .map(ScanCommandOutput::getErrorMessage)
-                                  .filter(Optional::isPresent)
-                                  .map(Optional::get)
-                                  .orElse(null);
+            .map(ScanCommandOutput::getErrorMessage)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .orElse(null);
 
         return new SignatureScannerReport(signatureScanPath, statusType, exitCode, exception, errorMessage, hasOutput);
     }
 
-    public SignatureScannerReport(SignatureScanPath signatureScanPath, StatusType statusType, @Nullable Integer exitCode, @Nullable Exception exception, @Nullable String errorMessage, boolean hasOutput) {
+    public SignatureScannerReport(
+        SignatureScanPath signatureScanPath,
+        StatusType statusType,
+        @Nullable Integer exitCode,
+        @Nullable Exception exception,
+        @Nullable String errorMessage,
+        boolean hasOutput
+    ) {
         this.signatureScanPath = signatureScanPath;
         this.statusType = statusType;
         this.exitCode = exitCode;

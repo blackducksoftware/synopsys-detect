@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow;
 
 public class ArtifactoryConstants {
@@ -34,7 +27,13 @@ public class ArtifactoryConstants {
     public static final String DOCKER_INSPECTOR_REPO = "bds-integrations-release/com/synopsys/integration/blackduck-docker-inspector";
     public static final String DOCKER_INSPECTOR_PROPERTY = "DOCKER_INSPECTOR_LATEST_9";
     public static final String DOCKER_INSPECTOR_AIR_GAP_PROPERTY = "DOCKER_INSPECTOR_AIR_GAP_LATEST_9";
-    public static final String DOCKER_INSPECTOR_VERSION_OVERRIDE = "/" + ArtifactoryConstants.VERSION_PLACEHOLDER + "/blackduck-docker-inspector-" + ArtifactoryConstants.VERSION_PLACEHOLDER + ".jar";
+    public static final String DOCKER_INSPECTOR_VERSION_OVERRIDE =
+        "/" + ArtifactoryConstants.VERSION_PLACEHOLDER + "/blackduck-docker-inspector-" + ArtifactoryConstants.VERSION_PLACEHOLDER + ".jar";
+
+    public static final String PROJECT_INSPECTOR_REPO = "bds-integrations-release/com/synopsys/integration/synopsys-detect";
+    public static final String PROJECT_INSPECTOR_MAC_PROPERTY = "PROJECT_INSPECTOR_MAC_LATEST_1";
+    public static final String PROJECT_INSPECTOR_LINUX_PROPERTY = "PROJECT_INSPECTOR_LINUX_LATEST_1";
+    public static final String PROJECT_INSPECTOR_WINDOWS_PROPERTY = "PROJECT_INSPECTOR_WINDOWS_LATEST_1";
 
     public static final String FONTS_REPO = "bds-integrations-release/com/synopsys/integration/synopsys-detect";
     public static final String FONTS_PROPERTY = "DETECT_FONT_BUNDLE_LATEST_7";

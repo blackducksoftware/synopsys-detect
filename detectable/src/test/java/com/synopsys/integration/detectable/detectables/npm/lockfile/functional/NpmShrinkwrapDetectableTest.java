@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Assertions;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmLockfileOptions;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
@@ -22,7 +23,8 @@ public class NpmShrinkwrapDetectableTest extends DetectableFunctionalTest {
 
     @Override
     protected void setup() throws IOException {
-        addFile(Paths.get("npm-shrinkwrap.json"),
+        addFile(
+            Paths.get("npm-shrinkwrap.json"),
             "{",
             "   \"name\": \"fec-builder\",",
             "   \"version\": \"1.3.7\",",
@@ -66,7 +68,7 @@ public class NpmShrinkwrapDetectableTest extends DetectableFunctionalTest {
     @NotNull
     @Override
     public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
-        return detectableFactory.createNpmShrinkwrapDetectable(detectableEnvironment, new NpmLockfileOptions(true, true));
+        return detectableFactory.createNpmShrinkwrapDetectable(detectableEnvironment, new NpmLockfileOptions(EnumListFilter.excludeNone()));
     }
 
     @Override
@@ -83,7 +85,12 @@ public class NpmShrinkwrapDetectableTest extends DetectableFunctionalTest {
         graphAssert.hasRootDependency("negotiator", "https://registry.npmjs.org/negotiator/-/negotiator-0.6.1.tgz");
         graphAssert.hasRootDependency("peer-example", "1.0.0");
         graphAssert.hasParentChildRelationship("accepts", "1.3.3", "mime-types", "https://registry.npmjs.org/mime-types/-/mime-types-2.1.13.tgz");
-        graphAssert.hasParentChildRelationship("mime-types", "https://registry.npmjs.org/mime-types/-/mime-types-2.1.13.tgz", "mime-db", "https://registry.npmjs.org/mime-db/-/mime-db-1.25.0.tgz");
+        graphAssert.hasParentChildRelationship(
+            "mime-types",
+            "https://registry.npmjs.org/mime-types/-/mime-types-2.1.13.tgz",
+            "mime-db",
+            "https://registry.npmjs.org/mime-db/-/mime-db-1.25.0.tgz"
+        );
         graphAssert.hasParentChildRelationship("accepts", "1.3.3", "negotiator", "https://registry.npmjs.org/negotiator/-/negotiator-0.6.1.tgz");
 
     }

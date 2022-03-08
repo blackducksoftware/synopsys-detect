@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.detector.executable;
 
 import java.io.File;
@@ -22,8 +15,10 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.BazelR
 import com.synopsys.integration.detectable.detectable.executable.resolver.CondaResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanmResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.DartResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.DockerResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.DotNetResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.FlutterResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GitResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GoResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GradleResolver;
@@ -40,10 +35,10 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.SbtRes
 import com.synopsys.integration.detectable.detectable.executable.resolver.SwiftResolver;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanResolver;
 
-public class DetectExecutableResolver
-    implements JavaResolver, GradleResolver, BashResolver, ConanResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver, BazelResolver,
-                   DockerResolver,
-                   DotNetResolver, GitResolver, SwiftResolver, GoResolver, LernaResolver, SbtResolver {
+public class DetectExecutableResolver implements
+    JavaResolver, GradleResolver, BashResolver, ConanResolver, CondaResolver, CpanmResolver, CpanResolver, DartResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver,
+    PipenvResolver, MavenResolver, NpmResolver, BazelResolver,
+    DockerResolver, DotNetResolver, GitResolver, SwiftResolver, GoResolver, LernaResolver, SbtResolver, FlutterResolver {
 
     private final DirectoryExecutableFinder directoryExecutableFinder;
     private final SystemPathExecutableFinder systemPathExecutableFinder;
@@ -51,8 +46,11 @@ public class DetectExecutableResolver
 
     private final Map<String, File> cachedExecutables = new HashMap<>();
 
-    public DetectExecutableResolver(DirectoryExecutableFinder directoryExecutableFinder, SystemPathExecutableFinder systemPathExecutableFinder,
-        DetectExecutableOptions detectExecutableOptions) {
+    public DetectExecutableResolver(
+        DirectoryExecutableFinder directoryExecutableFinder,
+        SystemPathExecutableFinder systemPathExecutableFinder,
+        DetectExecutableOptions detectExecutableOptions
+    ) {
         this.directoryExecutableFinder = directoryExecutableFinder;
         this.systemPathExecutableFinder = systemPathExecutableFinder;
         this.detectExecutableOptions = detectExecutableOptions;
@@ -100,17 +98,20 @@ public class DetectExecutableResolver
     }
 
     private File resolveCachedSystemExecutable(String cacheKey, String executableName, Path override) throws DetectableException {
-        return resolve(cacheKey,
+        return resolve(
+            cacheKey,
             () -> resolveOverride(override),
             () -> resolveCache(cacheKey),
-            () -> systemPathExecutableFinder.findExecutable(executableName));
+            () -> systemPathExecutableFinder.findExecutable(executableName)
+        );
     }
 
     private File resolveLocalNonCachedExecutable(String localName, String systemName, DetectableEnvironment environment, Path override) throws DetectableException {
         return resolve(/* not cached */ null,
             () -> resolveOverride(override),
             () -> directoryExecutableFinder.findExecutable(localName, environment.getDirectory()),
-            () -> systemPathExecutableFinder.findExecutable(systemName));
+            () -> systemPathExecutableFinder.findExecutable(systemName)
+        );
     }
 
     @Override
@@ -160,7 +161,7 @@ public class DetectExecutableResolver
 
     @Override
     public ExecutableTarget resolvePip() throws DetectableException {
-        return ExecutableTarget.forFile(resolveCachedSystemExecutable(detectExecutableOptions.isPython3() ? "pip3" : "pip", detectExecutableOptions.getPipUserPath()));
+        return ExecutableTarget.forFile(resolveCachedSystemExecutable("pip", detectExecutableOptions.getPipUserPath()));
     }
 
     @Override
@@ -170,7 +171,7 @@ public class DetectExecutableResolver
 
     @Override
     public ExecutableTarget resolvePython() throws DetectableException {
-        return ExecutableTarget.forFile(resolveCachedSystemExecutable(detectExecutableOptions.isPython3() ? "python3" : "python", detectExecutableOptions.getPythonUserPath()));
+        return ExecutableTarget.forFile(resolveCachedSystemExecutable("python", detectExecutableOptions.getPythonUserPath()));
     }
 
     @Override
@@ -221,6 +222,18 @@ public class DetectExecutableResolver
     @Override
     public ExecutableTarget resolveConan(DetectableEnvironment environment) throws DetectableException {
         return ExecutableTarget.forFile(resolveCachedSystemExecutable("conan", detectExecutableOptions.getConanUserPath()));
+    }
+
+    @Override
+    @Nullable
+    public ExecutableTarget resolveDart() throws DetectableException {
+        return ExecutableTarget.forFile(resolveCachedSystemExecutable("dart", detectExecutableOptions.getDartUserPath()));
+    }
+
+    @Override
+    @Nullable
+    public ExecutableTarget resolveFlutter() throws DetectableException {
+        return ExecutableTarget.forFile(resolveCachedSystemExecutable("flutter", detectExecutableOptions.getFlutterUserPath()));
     }
 }
 

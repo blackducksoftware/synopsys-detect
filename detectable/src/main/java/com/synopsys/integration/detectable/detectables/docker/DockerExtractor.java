@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.docker;
 
 import java.io.File;
@@ -76,8 +69,17 @@ public class DockerExtractor {
         this.gson = gson;
     }
 
-    public Extraction extract(File directory, File outputDirectory, ExecutableTarget dockerExe, ExecutableTarget javaExe, String image, String imageId, String tar, DockerInspectorInfo dockerInspectorInfo,
-        DockerProperties dockerProperties) {
+    public Extraction extract(
+        File directory,
+        File outputDirectory,
+        ExecutableTarget dockerExe,
+        ExecutableTarget javaExe,
+        String image,
+        String imageId,
+        String tar,
+        DockerInspectorInfo dockerInspectorInfo,
+        DockerProperties dockerProperties
+    ) {
         try {
             String imageArgument = null;
             String imagePiece = null;
@@ -117,22 +119,27 @@ public class DockerExtractor {
         }
     }
 
-    private void loadDockerImage(File directory, Map<String, String> environmentVariables, ExecutableTarget dockerExe, File imageToImport) throws IOException, ExecutableRunnerException, IntegrationException {
+    private void loadDockerImage(File directory, Map<String, String> environmentVariables, ExecutableTarget dockerExe, File imageToImport)
+        throws IOException, ExecutableRunnerException, IntegrationException {
         List<String> dockerImportArguments = Arrays.asList(
             "load",
             "-i",
-            imageToImport.getCanonicalPath());
+            imageToImport.getCanonicalPath()
+        );
         Executable dockerImportImageExecutable = ExecutableUtils.createFromTarget(directory, environmentVariables, dockerExe, dockerImportArguments);
         ExecutableOutput exeOut = executableRunner.execute(dockerImportImageExecutable);
         if (exeOut.getReturnCode() != 0) {
             throw new IntegrationException(String.format("Command %s %s returned %d: %s",
                 dockerExe.toCommand(), dockerImportArguments,
-                exeOut.getReturnCode(), exeOut.getErrorOutput()));
+                exeOut.getReturnCode(), exeOut.getErrorOutput()
+            ));
         }
     }
 
-    private Extraction executeDocker(File outputDirectory, String imageArgument, String suppliedImagePiece, String dockerTarFilePath, File directory, ExecutableTarget javaExe, ExecutableTarget dockerExe,
-        DockerInspectorInfo dockerInspectorInfo, DockerProperties dockerProperties)
+    private Extraction executeDocker(
+        File outputDirectory, String imageArgument, String suppliedImagePiece, String dockerTarFilePath, File directory, ExecutableTarget javaExe, ExecutableTarget dockerExe,
+        DockerInspectorInfo dockerInspectorInfo, DockerProperties dockerProperties
+    )
         throws IOException, ExecutableRunnerException {
 
         File dockerPropertiesFile = new File(outputDirectory, "application.properties");
@@ -203,7 +210,8 @@ public class DockerExtractor {
             }
         }
 
-        return new Extraction.Builder().failure("No files found matching pattern [" + DEPENDENCIES_PATTERN + "]. Expected docker-inspector to produce file in " + directory.toString());
+        return new Extraction.Builder().failure(
+            "No files found matching pattern [" + DEPENDENCIES_PATTERN + "]. Expected docker-inspector to produce file in " + directory.toString());
     }
 
     public String getImageIdentifierFromOutputDirectoryIfImageIdPresent(File outputDirectory, String suppliedImagePiece, ImageIdentifierType imageIdentifierType) {
@@ -219,7 +227,8 @@ public class DockerExtractor {
                     return imageRepo + ":" + imageTag;
                 }
             } catch (IOException | JsonSyntaxException e) {
-                logger.debug("Failed to parse results file from run of Docker Inspector, thus could not get name of image.  The code location name for this scan will be derived from the passed image ID");
+                logger.debug(
+                    "Failed to parse results file from run of Docker Inspector, thus could not get name of image.  The code location name for this scan will be derived from the passed image ID");
             }
         }
         return suppliedImagePiece;

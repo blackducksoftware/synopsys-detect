@@ -1,10 +1,3 @@
-/*
- * configuration
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.configuration.property.types.path;
 
 import org.apache.commons.lang3.StringUtils;
@@ -16,8 +9,8 @@ import com.synopsys.integration.configuration.parse.ValueParser;
 public class PathValueParser extends ValueParser<PathValue> {
     @NotNull
     @Override
-    public PathValue parse(@NotNull final String value) throws ValueParseException {
-        final String trimmedValue = value.trim();
+    public PathValue parse(@NotNull String value) throws ValueParseException {
+        String trimmedValue = value.trim();
         if (StringUtils.isNotBlank(trimmedValue)) {
             return new PathValue(trimmedValue);
         } else {

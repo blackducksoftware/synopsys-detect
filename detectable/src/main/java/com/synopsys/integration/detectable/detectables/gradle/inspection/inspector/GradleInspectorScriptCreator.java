@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.gradle.inspection.inspector;
 
 import java.io.File;
@@ -38,32 +31,34 @@ public class GradleInspectorScriptCreator {
         this.configuration = configuration;
     }
 
-    public File createOfflineGradleInspector(File templateFile, GradleInspectorScriptOptions scriptOptions, String airGapLibraryPaths) throws DetectableException {
-        return createGradleInspector(templateFile, scriptOptions, airGapLibraryPaths);
+    public File createOfflineGradleInspector(File targetFile, GradleInspectorScriptOptions scriptOptions, String airGapLibraryPaths) throws DetectableException {
+        return createGradleInspector(targetFile, scriptOptions, airGapLibraryPaths);
     }
 
-    public File createOnlineGradleInspector(File templateFile, GradleInspectorScriptOptions scriptOptions) throws DetectableException {
-        return createGradleInspector(templateFile, scriptOptions, null);
+    public File createOnlineGradleInspector(File targetFile, GradleInspectorScriptOptions scriptOptions) throws DetectableException {
+        return createGradleInspector(targetFile, scriptOptions, null);
     }
 
-    private File createGradleInspector(File templateFile, GradleInspectorScriptOptions scriptOptions, String airGapLibraryPaths) throws DetectableException {
+    private File createGradleInspector(File targetFile, GradleInspectorScriptOptions scriptOptions, String airGapLibraryPaths) throws DetectableException {
         logger.debug("Generating the gradle script file.");
         Map<String, String> gradleScriptData = new HashMap<>();
 
         gradleScriptData.put("airGapLibsPath", StringEscapeUtils.escapeJava(Optional.ofNullable(airGapLibraryPaths).orElse("")));
         gradleScriptData.put("excludedProjectNames", toCommaSeparatedString(scriptOptions.getExcludedProjectNames()));
         gradleScriptData.put("includedProjectNames", toCommaSeparatedString(scriptOptions.getIncludedProjectNames()));
+        gradleScriptData.put("excludedProjectPaths", StringEscapeUtils.escapeJava(toCommaSeparatedString(scriptOptions.getExcludedProjectPaths())));
+        gradleScriptData.put("includedProjectPaths", StringEscapeUtils.escapeJava(toCommaSeparatedString(scriptOptions.getIncludedProjectPaths())));
         gradleScriptData.put("excludedConfigurationNames", toCommaSeparatedString(scriptOptions.getExcludedConfigurationNames()));
         gradleScriptData.put("includedConfigurationNames", toCommaSeparatedString(scriptOptions.getIncludedConfigurationNames()));
         gradleScriptData.put("customRepositoryUrl", scriptOptions.getGradleInspectorRepositoryUrl());
 
         try {
-            populateGradleScriptWithData(templateFile, gradleScriptData);
+            populateGradleScriptWithData(targetFile, gradleScriptData);
         } catch (IOException | TemplateException e) {
-            throw new DetectableException("Failed to generate the Gradle Inspector script from the given template file: " + templateFile.toString(), e);
+            throw new DetectableException("Failed to generate the Gradle Inspector script from the given template file: " + targetFile.toString(), e);
         }
-        logger.trace(String.format("Successfully created Gradle Inspector: %s", templateFile.toString()));
-        return templateFile;
+        logger.trace(String.format("Successfully created Gradle Inspector: %s", targetFile.toString()));
+        return targetFile;
     }
 
     private void populateGradleScriptWithData(File targetFile, Map<String, String> gradleScriptData) throws IOException, TemplateException {

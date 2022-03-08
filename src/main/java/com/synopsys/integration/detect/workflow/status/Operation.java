@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.status;
 
 import java.time.Instant;
@@ -12,7 +5,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class Operation {
     public static String formatTimestamp(@Nullable Instant executionTime) {
@@ -22,33 +15,56 @@ public class Operation {
         return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS").withZone(ZoneOffset.UTC).format(executionTime.atOffset(ZoneOffset.UTC));
     }
 
-    private Instant startTime;
+    private final Instant startTime;
     @Nullable
     private Instant endTime;
-    private String name;
+    private final String name;
     private StatusType statusType;
-    private String[] errorMessages;
-    private OperationType operationType;
+    private Exception exception;
+    private final OperationType operationType;
+    @Nullable
+    private final String phoneHomeKey;
 
     public static Operation of(String name) {
-        return new Operation(name, OperationType.PUBLIC);
+        return of(name, null);
+    }
+
+    public static Operation of(String name, @Nullable String phoneHomeKey) {
+        return new Operation(name, OperationType.PUBLIC, phoneHomeKey);
     }
 
     public static Operation silentOf(String name) {
-        return new Operation(name, OperationType.INTERNAL);
+        return silentOf(name, null);
+    }
+
+    public static Operation silentOf(String name, @Nullable String phoneHomeKey) {
+        return new Operation(name, OperationType.INTERNAL, phoneHomeKey);
     }
 
     protected Operation(String name, OperationType type) {
-        this(Instant.now(), type, null, name, StatusType.SUCCESS);
+        this(Instant.now(), type, null, name, StatusType.SUCCESS, null, null);
     }
 
-    protected Operation(Instant startTime, OperationType operationType, @Nullable Instant endTime, String name, StatusType statusType, String... errorMessages) {
+    protected Operation(String name, OperationType type, @Nullable String phoneHomeKey) {
+        this(Instant.now(), type, null, name, StatusType.SUCCESS, phoneHomeKey, null);
+    }
+
+    protected Operation(
+        Instant startTime,
+        OperationType operationType,
+        @Nullable Instant endTime,
+        String name,
+        StatusType statusType,
+        @Nullable String phoneHomeKey,
+        @Nullable Exception exception
+    ) {
         this.startTime = startTime;
         this.operationType = operationType;
         this.endTime = endTime;
         this.name = name;
         this.statusType = statusType;
-        this.errorMessages = errorMessages;
+        this.phoneHomeKey = phoneHomeKey;
+        this.exception = exception;
     }
 
     public void finish() {
@@ -68,9 +84,9 @@ public class Operation {
         finish();
     }
 
-    public void error(String... errorMessages) {
+    public void error(Exception e) {
         this.statusType = StatusType.FAILURE;
-        this.errorMessages = errorMessages;
+        this.exception = e;
         finish();
     }
 
@@ -94,9 +110,11 @@ public class Operation {
         return statusType;
     }
 
-    public String[] getErrorMessages() {
-        return errorMessages;
+    public Optional<String> getPhoneHomeKey() {
+        return Optional.ofNullable(phoneHomeKey);
     }
+
+    public Optional<Exception> getException() {return Optional.ofNullable(exception);}
 
     public OperationType getOperationType() {
         return operationType;

@@ -1,25 +1,3 @@
-/**
- * synopsys-detect
- *
- * Copyright (c) 2020 Synopsys, Inc.
- *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
 package com.synopsys.integration.detect.battery.util;
 
 import java.io.File;
@@ -77,7 +55,10 @@ public class ResourceCopyingExecutableCreator extends BatteryExecutableCreator {
         for (String resource : toCopy) {
             File copyingFolder = BatteryFiles.asFile(resource);
             File[] files = copyingFolder.listFiles();
-            Assertions.assertNotNull(files, "When a resource copying executable is used, it should be provided a resource folder. Verify it is a folder and has at least one file: " + resource);
+            Assertions.assertNotNull(
+                files,
+                "When a resource copying executable is used, it should be provided a resource folder. Verify it is a folder and has at least one file: " + resource
+            );
             for (File file : files) {
                 File commandTextFile = new File(executableInfo.getMockDirectory(), "data-" + commandCount.getAndIncrement() + ".dat");
                 if (file.getName().endsWith(".ftl")) {
@@ -97,8 +78,14 @@ public class ResourceCopyingExecutableCreator extends BatteryExecutableCreator {
     @Override
     public File createExecutable(int id, BatteryExecutableInfo executableInfo, AtomicInteger commandCount) throws IOException, TemplateException {
         Map<String, Object> model = new HashMap<>();
-        Assertions.assertNotNull(linuxInfo, "If you have a resource copying executable, you must specify operating system information for both windows and linux but linux information could not be found.");
-        Assertions.assertNotNull(windowsInfo, "If you have a resource copying executable, you must specify operating system information for both windows and linux but windows information could not be found.");
+        Assertions.assertNotNull(
+            linuxInfo,
+            "If you have a resource copying executable, you must specify operating system information for both windows and linux but linux information could not be found."
+        );
+        Assertions.assertNotNull(
+            windowsInfo,
+            "If you have a resource copying executable, you must specify operating system information for both windows and linux but windows information could not be found."
+        );
         if (SystemUtils.IS_OS_WINDOWS) {
             model.put("extractionFolderIndex", windowsInfo.extractionFolderIndex);
             model.put("extractionFolderPrefix", windowsInfo.extractionFolderPrefix);

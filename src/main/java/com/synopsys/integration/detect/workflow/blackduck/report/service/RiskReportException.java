@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.blackduck.report.service;
 
 public class RiskReportException extends Exception {
@@ -12,19 +5,19 @@ public class RiskReportException extends Exception {
         super();
     }
 
-    public RiskReportException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace) {
+    public RiskReportException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 
-    public RiskReportException(final String message, final Throwable cause) {
+    public RiskReportException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public RiskReportException(final String message) {
+    public RiskReportException(String message) {
         super(message);
     }
 
-    public RiskReportException(final Throwable cause) {
+    public RiskReportException(Throwable cause) {
         super(cause);
     }
 

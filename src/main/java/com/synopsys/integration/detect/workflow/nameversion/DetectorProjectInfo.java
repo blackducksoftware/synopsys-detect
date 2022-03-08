@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.nameversion;
 
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +12,7 @@ public class DetectorProjectInfo {
     @NotNull
     private final NameVersion nameVersion;
 
-    public DetectorProjectInfo(@NotNull final DetectorType detectorType, final int depth, @NotNull final NameVersion nameVersion) {
+    public DetectorProjectInfo(@NotNull DetectorType detectorType, int depth, @NotNull NameVersion nameVersion) {
         this.detectorType = detectorType;
         this.depth = depth;
         this.nameVersion = nameVersion;

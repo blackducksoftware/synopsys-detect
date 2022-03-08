@@ -1,10 +1,3 @@
-/*
- * configuration
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.configuration.property.types.enums;
 
 import java.util.Optional;
@@ -17,11 +10,11 @@ import com.synopsys.integration.configuration.util.EnumPropertyUtils;
 
 public class EnumValueParser<T extends Enum<T>> extends ValueParser<T> {
     private final Class<T> enumClass;
-    private SafeEnumValueParser<T> parser;
+    private final SafeEnumValueParser<T> parser;
 
     public EnumValueParser(@NotNull Class<T> enumClass) {
         this.enumClass = enumClass;
-        this.parser = new SafeEnumValueParser<T>(enumClass);
+        this.parser = new SafeEnumValueParser<>(enumClass);
     }
 
     @NotNull
@@ -31,7 +24,7 @@ public class EnumValueParser<T extends Enum<T>> extends ValueParser<T> {
         if (enumValue.isPresent()) {
             return enumValue.get();
         } else {
-            throw new ValueParseException(value, "enum", "Unable to convert '$value' to one of " + String.join(",", EnumPropertyUtils.getEnumNames(enumClass)));
+            throw new ValueParseException(value, enumClass.getSimpleName(), "Value '" + value + "' must be one of " + String.join(",", EnumPropertyUtils.getEnumNames(enumClass)));
         }
     }
 }

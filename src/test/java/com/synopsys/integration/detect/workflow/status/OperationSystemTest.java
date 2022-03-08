@@ -26,16 +26,8 @@ public class OperationSystemTest {
         statusEventPublisher = new StatusEventPublisher(eventSystem);
         detectIssues = new ArrayList<>();
         detectOperations = new ArrayList<>();
-        eventSystem.registerListener(Event.DetectOperation, this::addOperation);
-        eventSystem.registerListener(Event.Issue, this::addIssue);
-    }
-
-    private void addIssue(DetectIssue issue) {
-        detectIssues.add(issue);
-    }
-
-    private void addOperation(Operation operation) {
-        detectOperations.add(operation);
+        eventSystem.registerListener(Event.DetectOperationsComplete, detectOperations::addAll);
+        eventSystem.registerListener(Event.Issue, detectIssues::add);
     }
 
     @Test
@@ -97,7 +89,7 @@ public class OperationSystemTest {
         OperationSystem operationSystem = new OperationSystem(statusEventPublisher);
         String operationName = "myOperation";
         Operation operation = operationSystem.startOperation(operationName, OperationType.PUBLIC);
-        operation.error("Error");
+        operation.error(new Exception());
         operationSystem.publishOperations();
         Operation publishedOperation = detectOperations.get(0);
         assertOperationWithError(operationName, publishedOperation);
@@ -130,7 +122,7 @@ public class OperationSystemTest {
         OperationSystem operationSystem = new OperationSystem(statusEventPublisher);
         String operationName = "myOperation";
         Operation operation = operationSystem.startOperation(operationName, OperationType.PUBLIC);
-        operation.error("Unit test failure.");
+        operation.error(new Exception());
         operationSystem.publishOperations();
         Operation publishedOperation = detectOperations.get(0);
         assertOperationWithError(operationName, publishedOperation);
@@ -161,6 +153,6 @@ public class OperationSystemTest {
         assertEquals(StatusType.FAILURE, publishedOperation.getStatusType());
         assertNotNull(publishedOperation.getStartTime());
         assertTrue(publishedOperation.getEndTime().isPresent());
-        assertTrue(publishedOperation.getErrorMessages().length > 0);
+        assertNotNull(publishedOperation.getException());
     }
 }

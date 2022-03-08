@@ -1,15 +1,7 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.util.filter;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import com.synopsys.integration.detect.configuration.ExcludeIncludeEnumFilter;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
@@ -24,13 +16,12 @@ import com.synopsys.integration.detect.lifecycle.boot.decision.RunDecision;
  */
 public class DetectToolFilter {
     private final ExcludeIncludeEnumFilter<DetectTool> excludedIncludedFilter;
-    private final Optional<Boolean> impactEnabled;
+    private final boolean impactEnabled;
     private final RunDecision runDecision;
     private final BlackDuckDecision blackDuckDecision;
-    private final List<DetectTool> rapidTools = Collections.singletonList(DetectTool.DETECTOR);
+    private final List<DetectTool> rapidTools = Arrays.asList(DetectTool.DETECTOR, DetectTool.DOCKER);
 
-    public DetectToolFilter(ExcludeIncludeEnumFilter<DetectTool> excludedIncludedFilter, Optional<Boolean> impactEnabled,
-        RunDecision runDecision, BlackDuckDecision blackDuckDecision) {
+    public DetectToolFilter(ExcludeIncludeEnumFilter<DetectTool> excludedIncludedFilter, boolean impactEnabled, RunDecision runDecision, BlackDuckDecision blackDuckDecision) {
         this.excludedIncludedFilter = excludedIncludedFilter;
         this.impactEnabled = impactEnabled;
         this.runDecision = runDecision;
@@ -38,19 +29,15 @@ public class DetectToolFilter {
     }
 
     public boolean shouldInclude(DetectTool detectTool) { //Only turn tools OFF, turning a tool ON prevents the user from being able to turn an undesired tool OFF.
-        if (detectTool == DetectTool.IMPACT_ANALYSIS && impactEnabled.isPresent()) {
-            return impactEnabled.get();
+        if (detectTool == DetectTool.IMPACT_ANALYSIS) {
+            return impactEnabled;
         }
 
-        if (detectTool == DetectTool.DETECTOR) {
-            if (runDecision.isDockerMode()) {
-                return false;
-            }
+        if (detectTool == DetectTool.DETECTOR && runDecision.isDockerMode()) {
+            return false;
         }
-        if (blackDuckDecision.scanMode() == BlackduckScanMode.RAPID) {
-            if (!rapidTools.contains(detectTool)) {
-                return false;
-            }
+        if (blackDuckDecision.scanMode() == BlackduckScanMode.RAPID && !rapidTools.contains(detectTool)) {
+            return false;
         }
         return excludedIncludedFilter.shouldInclude(detectTool);
     }

@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.signaturescanner.operation;
 
 import java.io.File;
@@ -19,8 +12,7 @@ public class CreateScanBatchRunnerWithLocalInstall { //TODO: Should this even ex
     private final ScanPathsUtility scanPathsUtility;
     private final ScanCommandRunner scanCommandRunner;
 
-    public CreateScanBatchRunnerWithLocalInstall(final IntEnvironmentVariables intEnvironmentVariables, final ScanPathsUtility scanPathsUtility,
-        final ScanCommandRunner scanCommandRunner) {
+    public CreateScanBatchRunnerWithLocalInstall(IntEnvironmentVariables intEnvironmentVariables, ScanPathsUtility scanPathsUtility, ScanCommandRunner scanCommandRunner) {
         this.intEnvironmentVariables = intEnvironmentVariables;
         this.scanPathsUtility = scanPathsUtility;
         this.scanCommandRunner = scanCommandRunner;

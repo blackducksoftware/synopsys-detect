@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.signaturescanner.operation;
 
 import java.util.Arrays;
@@ -28,7 +21,7 @@ public class PublishSignatureScanReports {
     private final ExitCodePublisher exitCodePublisher;
     private final StatusEventPublisher statusEventPublisher;
 
-    public PublishSignatureScanReports(final ExitCodePublisher exitCodePublisher, final StatusEventPublisher statusEventPublisher) {
+    public PublishSignatureScanReports(ExitCodePublisher exitCodePublisher, StatusEventPublisher statusEventPublisher) {
         this.exitCodePublisher = exitCodePublisher;
         this.statusEventPublisher = statusEventPublisher;
     }
@@ -40,7 +33,10 @@ public class PublishSignatureScanReports {
             .filter(SignatureScannerReport::isFailure)
             .findAny()
             .ifPresent(report -> {
-                logger.error(String.format("The Signature Scanner encountered an error%s. Please refer to Black Duck documentation or contact support.", report.getExitCode().map(code -> " (" + code + ")").orElse(".")));
+                logger.error(String.format(
+                    "The Signature Scanner encountered an error%s. Please refer to Black Duck documentation or contact support.",
+                    report.getExitCode().map(code -> " (" + code + ")").orElse(".")
+                ));
                 exitCodePublisher.publishExitCode(new ExitCodeRequest(ExitCodeType.FAILURE_SCAN));
             });
     }
@@ -58,8 +54,8 @@ public class PublishSignatureScanReports {
             statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.SIGNATURE_SCANNER, "Black Duck Signature Scanner", Arrays.asList(errorMessage)));
         } else {
             String errorMessage = signatureScannerReport.getErrorMessage()
-                                      .map(message -> String.format("Scanning target %s failed: %s", scanTargetPath, message))
-                                      .orElse(String.format("Scanning target %s failed for an unknown reason.", scanTargetPath));
+                .map(message -> String.format("Scanning target %s failed: %s", scanTargetPath, message))
+                .orElse(String.format("Scanning target %s failed for an unknown reason.", scanTargetPath));
             logger.error(errorMessage);
             signatureScannerReport.getException().ifPresent(exception -> logger.debug(errorMessage, exception));
 

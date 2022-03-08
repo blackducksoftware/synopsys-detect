@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.yarn.parse.entry.section;
 
 import java.util.List;
@@ -75,8 +68,7 @@ public class YarnLockDependencyMetaListSectionParser implements YarnLockEntrySec
         }
         logger.trace("Marking dependency {}:{} optional", origDependency.getName(), origDependency.getVersion());
         entryBuilder.getDependencies().remove(curDependencyName);
-        YarnLockDependency replacementDependency = new YarnLockDependency(origDependency.getName(),
-            origDependency.getVersion(), true);
+        YarnLockDependency replacementDependency = new YarnLockDependency(origDependency.getName(), origDependency.getVersion(), true);
         entryBuilder.getDependencies().put(curDependencyName, replacementDependency);
     }
 

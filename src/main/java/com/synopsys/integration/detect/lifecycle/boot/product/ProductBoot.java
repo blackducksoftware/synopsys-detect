@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.lifecycle.boot.product;
 
 import java.io.IOException;
@@ -36,8 +29,12 @@ public class ProductBoot {
     private final ProductBootFactory productBootFactory;
     private final ProductBootOptions productBootOptions;
 
-    public ProductBoot(BlackDuckConnectivityChecker blackDuckConnectivityChecker, AnalyticsConfigurationService analyticsConfigurationService, ProductBootFactory productBootFactory,
-        ProductBootOptions productBootOptions) {
+    public ProductBoot(
+        BlackDuckConnectivityChecker blackDuckConnectivityChecker,
+        AnalyticsConfigurationService analyticsConfigurationService,
+        ProductBootFactory productBootFactory,
+        ProductBootOptions productBootOptions
+    ) {
         this.blackDuckConnectivityChecker = blackDuckConnectivityChecker;
         this.analyticsConfigurationService = analyticsConfigurationService;
         this.productBootFactory = productBootFactory;
@@ -48,16 +45,23 @@ public class ProductBoot {
         if (!blackDuckDecision.shouldRun()) {
             throw new DetectUserFriendlyException(
                 "Your environment was not sufficiently configured to run Black Duck or Polaris. Please configure your environment for at least one product.  See online help at: https://detect.synopsys.com/doc/",
-                ExitCodeType.FAILURE_CONFIGURATION);
+                ExitCodeType.FAILURE_CONFIGURATION
+            );
 
         }
 
         logger.debug("Detect product boot start.");
 
-        BlackDuckRunData blackDuckRunData = getBlackDuckRunData(blackDuckDecision, productBootFactory, blackDuckConnectivityChecker, productBootOptions, analyticsConfigurationService);
+        BlackDuckRunData blackDuckRunData = getBlackDuckRunData(
+            blackDuckDecision,
+            productBootFactory,
+            blackDuckConnectivityChecker,
+            productBootOptions,
+            analyticsConfigurationService
+        );
 
         if (productBootOptions.isTestConnections()) {
-            logger.debug(String.format("%s is set to 'true' so Detect will not run.", DetectProperties.DETECT_TEST_CONNECTION.getProperty().getName()));
+            logger.debug(String.format("%s is set to 'true' so Detect will not run.", DetectProperties.DETECT_TEST_CONNECTION.getName()));
             return null;
         }
 
@@ -66,9 +70,13 @@ public class ProductBoot {
     }
 
     @Nullable
-    private BlackDuckRunData getBlackDuckRunData(BlackDuckDecision blackDuckDecision, ProductBootFactory productBootFactory, BlackDuckConnectivityChecker blackDuckConnectivityChecker, ProductBootOptions productBootOptions,
-        AnalyticsConfigurationService analyticsConfigurationService) throws DetectUserFriendlyException {
-
+    private BlackDuckRunData getBlackDuckRunData(
+        BlackDuckDecision blackDuckDecision,
+        ProductBootFactory productBootFactory,
+        BlackDuckConnectivityChecker blackDuckConnectivityChecker,
+        ProductBootOptions productBootOptions,
+        AnalyticsConfigurationService analyticsConfigurationService
+    ) throws DetectUserFriendlyException {
         if (!blackDuckDecision.shouldRun()) {
             return null;
         }
@@ -94,10 +102,16 @@ public class ProductBoot {
         } else {
             if (productBootOptions.isIgnoreConnectionFailures()) {
                 logger.info(String.format("Failed to connect to Black Duck: %s", blackDuckConnectivityResult.getFailureReason()));
-                logger.info(String.format("%s is set to 'true' so Detect will simply disable the Black Duck product.", DetectProperties.DETECT_IGNORE_CONNECTION_FAILURES.getProperty().getName()));
+                logger.info(String.format(
+                    "%s is set to 'true' so Detect will simply disable the Black Duck product.",
+                    DetectProperties.DETECT_IGNORE_CONNECTION_FAILURES.getName()
+                ));
                 return null;
             } else {
-                throw new DetectUserFriendlyException("Could not communicate with Black Duck: " + blackDuckConnectivityResult.getFailureReason(), ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
+                throw new DetectUserFriendlyException(
+                    "Could not communicate with Black Duck: " + blackDuckConnectivityResult.getFailureReason(),
+                    ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY
+                );
             }
         }
     }

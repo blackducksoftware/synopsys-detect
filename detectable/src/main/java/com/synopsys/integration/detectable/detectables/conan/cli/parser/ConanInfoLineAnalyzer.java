@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.conan.cli.parser;
 
 import java.util.StringTokenizer;
@@ -28,8 +21,7 @@ public class ConanInfoLineAnalyzer {
         }
         int leadingSpaceCount = countLeadingSpaces(line);
         if ((leadingSpaceCount % 4) != 0) {
-            logger.warn("Leading space count for '{}' is {}; expected it to be divisible by 4",
-                line, leadingSpaceCount);
+            logger.warn("Leading space count for '{}' is {}; expected it to be divisible by 4", line, leadingSpaceCount);
         }
         return countLeadingSpaces(line) / 4;
     }

@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.docker;
 
 import org.slf4j.Logger;
@@ -41,8 +34,14 @@ public class DockerDetectable extends Detectable {
     private ExecutableTarget dockerExe;
     private DockerInspectorInfo dockerInspectorInfo;
 
-    public DockerDetectable(DetectableEnvironment environment, DockerInspectorResolver dockerInspectorResolver, JavaResolver javaResolver, DockerResolver dockerResolver,
-        DockerExtractor dockerExtractor, DockerDetectableOptions dockerDetectableOptions) {
+    public DockerDetectable(
+        DetectableEnvironment environment,
+        DockerInspectorResolver dockerInspectorResolver,
+        JavaResolver javaResolver,
+        DockerResolver dockerResolver,
+        DockerExtractor dockerExtractor,
+        DockerDetectableOptions dockerDetectableOptions
+    ) {
         super(environment);
         this.javaResolver = javaResolver;
         this.dockerResolver = dockerResolver;
@@ -77,7 +76,8 @@ public class DockerDetectable extends Detectable {
             if (dockerDetectableOptions.isDockerPathRequired()) {
                 return new ExecutableNotFoundDetectableResult("docker");
             } else {
-                logger.debug("Docker executable not found, but it has been configured as not-required; proceeding with execution of Docker tool. Running in air-gap mode will not work without a Docker executable.");
+                logger.debug(
+                    "Docker executable not found, but it has been configured as not-required; proceeding with execution of Docker tool. Running in air-gap mode will not work without a Docker executable.");
             }
         } else {
             passedResultBuilder.foundExecutable(dockerExe);
@@ -97,7 +97,8 @@ public class DockerDetectable extends Detectable {
         String imageId = dockerDetectableOptions.getSuppliedDockerImageId().orElse("");
         String tar = dockerDetectableOptions.getSuppliedDockerTar().orElse("");
         return dockerExtractor.extract(environment.getDirectory(), extractionEnvironment.getOutputDirectory(), dockerExe, javaExe, image, imageId, tar, dockerInspectorInfo,
-            new DockerProperties(dockerDetectableOptions)); //TODO, doesn't feel right to construct properties here. -jp
+            new DockerProperties(dockerDetectableOptions)
+        ); //TODO, doesn't feel right to construct properties here. -jp
     }
 }
 

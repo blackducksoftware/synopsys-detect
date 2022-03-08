@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.blackduck.report;
 
 import java.util.List;
@@ -21,9 +14,9 @@ public class BomComponent {
     private String componentVersion;
     private String componentVersionURL;
     private String license;
-    private BomRiskCounts securityRiskCounts = new BomRiskCounts();
-    private BomRiskCounts licenseRiskCounts = new BomRiskCounts();
-    private BomRiskCounts operationalRiskCounts = new BomRiskCounts();
+    private final BomRiskCounts securityRiskCounts = new BomRiskCounts();
+    private final BomRiskCounts licenseRiskCounts = new BomRiskCounts();
+    private final BomRiskCounts operationalRiskCounts = new BomRiskCounts();
 
     public void addSecurityRiskProfile(RiskProfileView securityRiskProfile) {
         addRiskProfile(securityRiskProfile, securityRiskCounts);

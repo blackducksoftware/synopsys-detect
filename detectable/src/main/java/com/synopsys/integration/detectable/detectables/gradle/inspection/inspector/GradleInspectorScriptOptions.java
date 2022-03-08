@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.gradle.inspection.inspector;
 
 import java.util.List;
@@ -13,16 +6,27 @@ import java.util.Optional;
 public class GradleInspectorScriptOptions {
     private final List<String> excludedProjectNames;
     private final List<String> includedProjectNames;
+    private final List<String> excludedProjectPaths;
+    private final List<String> includedProjectPaths;
     private final List<String> excludedConfigurationNames;
     private final List<String> includedConfigurationNames;
     private final String gradleInspectorRepositoryUrl;
     private final String providedOnlineInspectorVersion;
 
-    public GradleInspectorScriptOptions(List<String> excludedProjectNames, List<String> includedProjectNames, List<String> excludedConfigurationNames, List<String> includedConfigurationNames,
+    public GradleInspectorScriptOptions(
+        List<String> excludedProjectNames,
+        List<String> includedProjectNames,
+        List<String> excludedProjectPaths,
+        List<String> includedProjectPaths,
+        List<String> excludedConfigurationNames,
+        List<String> includedConfigurationNames,
         String gradleInspectorRepositoryUrl,
-        String providedOnlineInspectorVersion) {
+        String providedOnlineInspectorVersion
+    ) {
         this.excludedProjectNames = excludedProjectNames;
         this.includedProjectNames = includedProjectNames;
+        this.excludedProjectPaths = excludedProjectPaths;
+        this.includedProjectPaths = includedProjectPaths;
         this.excludedConfigurationNames = excludedConfigurationNames;
         this.includedConfigurationNames = includedConfigurationNames;
         this.gradleInspectorRepositoryUrl = gradleInspectorRepositoryUrl;
@@ -51,5 +55,13 @@ public class GradleInspectorScriptOptions {
 
     public Optional<String> getProvidedOnlineInspectorVersion() {
         return Optional.ofNullable(providedOnlineInspectorVersion);
+    }
+
+    public List<String> getExcludedProjectPaths() {
+        return excludedProjectPaths;
+    }
+
+    public List<String> getIncludedProjectPaths() {
+        return includedProjectPaths;
     }
 }

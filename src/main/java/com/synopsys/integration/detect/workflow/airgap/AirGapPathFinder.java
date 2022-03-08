@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.airgap;
 
 import java.io.File;
@@ -18,6 +11,7 @@ public class AirGapPathFinder {
     public static final String NUGET = "nuget";
     public static final String GRADLE = "gradle";
     public static final String DOCKER = "docker";
+    public static final String PROJECT_INSPECTOR = "project-inspector";
 
     public File findDetectJar() {
         try {
@@ -27,7 +21,7 @@ public class AirGapPathFinder {
                 return null;
             } else {
                 File jarFile = new File(relativeJarFile).getCanonicalFile();
-                logger.debug("Checking for jar file: " + jarFile.toString());
+                logger.debug("Checking for jar file: " + jarFile);
                 if (jarFile.exists()) {
                     logger.debug("Found detect jar file.");
                     return jarFile;

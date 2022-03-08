@@ -1,10 +1,3 @@
-/*
- * detector
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detector.base;
 
 import java.io.File;
@@ -25,7 +18,13 @@ public class DetectorEvaluationTree {
     private final List<DetectorEvaluation> orderedEvaluations;
     private final Set<DetectorEvaluationTree> children;
 
-    public DetectorEvaluationTree(final File directory, final int depthFromRoot, final DetectorRuleSet detectorRuleSet, final List<DetectorEvaluation> orderedEvaluations, final Set<DetectorEvaluationTree> children) {
+    public DetectorEvaluationTree(
+        File directory,
+        int depthFromRoot,
+        DetectorRuleSet detectorRuleSet,
+        List<DetectorEvaluation> orderedEvaluations,
+        Set<DetectorEvaluationTree> children
+    ) {
         this.directory = directory;
         this.depthFromRoot = depthFromRoot;
         this.orderedEvaluations = orderedEvaluations;
@@ -34,9 +33,9 @@ public class DetectorEvaluationTree {
     }
 
     public List<DetectorEvaluationTree> asFlatList() {
-        final List<DetectorEvaluationTree> evaluationTrees = new ArrayList<>();
+        List<DetectorEvaluationTree> evaluationTrees = new ArrayList<>();
         evaluationTrees.add(this);
-        for (final DetectorEvaluationTree detectorEvaluationTree : children) {
+        for (DetectorEvaluationTree detectorEvaluationTree : children) {
             evaluationTrees.addAll(detectorEvaluationTree.asFlatList());
         }
         return evaluationTrees;
@@ -44,9 +43,9 @@ public class DetectorEvaluationTree {
 
     public List<DetectorEvaluation> allDescendentEvaluations() {
         return asFlatList()
-                   .stream()
-                   .flatMap(it -> it.getOrderedEvaluations().stream())
-                   .collect(Collectors.toList());
+            .stream()
+            .flatMap(it -> it.getOrderedEvaluations().stream())
+            .collect(Collectors.toList());
     }
 
     public File getDirectory() {
@@ -61,10 +60,10 @@ public class DetectorEvaluationTree {
         return orderedEvaluations;
     }
 
-    public Optional<DetectorEvaluation> getEvaluation(final DetectorRule rule) {
+    public Optional<DetectorEvaluation> getEvaluation(DetectorRule rule) {
         return orderedEvaluations.stream()
-                   .filter(detectorEvaluation1 -> detectorEvaluation1.getDetectorRule().equals(rule))
-                   .findFirst();
+            .filter(detectorEvaluation1 -> detectorEvaluation1.getDetectorRule().equals(rule))
+            .findFirst();
     }
 
     public Set<DetectorEvaluationTree> getChildren() {

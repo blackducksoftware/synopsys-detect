@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.pear.parse;
 
 import java.util.ArrayList;
@@ -19,12 +12,12 @@ import com.synopsys.integration.exception.IntegrationException;
 public class PearPackageDependenciesParser {
     private static final String START_TOKEN = "=========";
 
-    public List<PackageDependency> parse(final List<String> packageDependenciesLines) throws IntegrationException {
-        final List<PackageDependency> packageDependencies = new ArrayList<>();
+    public List<PackageDependency> parse(List<String> packageDependenciesLines) throws IntegrationException {
+        List<PackageDependency> packageDependencies = new ArrayList<>();
 
         boolean started = false;
-        for (final String rawLine : packageDependenciesLines) {
-            final String line = rawLine.trim();
+        for (String rawLine : packageDependenciesLines) {
+            String line = rawLine.trim();
 
             if (!started) {
                 started = line.startsWith(START_TOKEN);
@@ -33,18 +26,18 @@ public class PearPackageDependenciesParser {
                 continue;
             }
 
-            final String[] entry = line.split(" +");
+            String[] entry = line.split(" +");
             if (entry.length < 3) {
                 throw new IntegrationException("Unable to parse package-dependencies");
             }
 
-            final boolean required = BooleanUtils.toBoolean(entry[0]);
-            final String type = entry[1].trim();
-            final String[] namePieces = entry[2].split("/");
-            final String name = namePieces[namePieces.length - 1].trim();
+            boolean required = BooleanUtils.toBoolean(entry[0]);
+            String type = entry[1].trim();
+            String[] namePieces = entry[2].split("/");
+            String name = namePieces[namePieces.length - 1].trim();
 
             if ("Package".equalsIgnoreCase(type)) {
-                final PackageDependency packageDependency = new PackageDependency(name, required);
+                PackageDependency packageDependency = new PackageDependency(name, required);
                 packageDependencies.add(packageDependency);
             }
         }

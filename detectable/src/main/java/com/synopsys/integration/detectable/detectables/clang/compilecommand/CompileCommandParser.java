@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.clang.compilecommand;
 
 import java.util.List;
@@ -25,9 +18,9 @@ public class CompileCommandParser {
     }
 
     public List<String> parseCommand(CompileCommand compileCommand, Map<String, String> optionOverrides) {
-        String commandString = compileCommand.command;
+        String commandString = compileCommand.getCommand();
         if (StringUtils.isBlank(commandString)) {
-            commandString = String.join(" ", compileCommand.arguments);
+            commandString = String.join(" ", compileCommand.getArguments());
         }
         List<String> options = commandParser.parseCommandString(commandString);
 

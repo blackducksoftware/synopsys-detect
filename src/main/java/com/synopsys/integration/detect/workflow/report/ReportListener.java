@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.report;
 
 import java.util.Map;
@@ -34,12 +27,24 @@ public class ReportListener {
     private final ExtractionLogger extractionLogger;
 
     public static ReportListener createDefault(EventSystem eventSystem) {
-        return new ReportListener(eventSystem, new PreparationSummaryReporter(), new ExtractionSummaryReporter(), new SearchSummaryReporter(), new DetectorIssuePublisher(), new ExtractionLogger());
+        return new ReportListener(
+            eventSystem,
+            new PreparationSummaryReporter(),
+            new ExtractionSummaryReporter(),
+            new SearchSummaryReporter(),
+            new DetectorIssuePublisher(),
+            new ExtractionLogger()
+        );
     }
 
-    public ReportListener(EventSystem eventSystem,
-        PreparationSummaryReporter preparationSummaryReporter, ExtractionSummaryReporter extractionSummaryReporter, SearchSummaryReporter searchSummaryReporter, DetectorIssuePublisher detectorIssuePublisher,
-        ExtractionLogger extractionLogger) {
+    public ReportListener(
+        EventSystem eventSystem,
+        PreparationSummaryReporter preparationSummaryReporter,
+        ExtractionSummaryReporter extractionSummaryReporter,
+        SearchSummaryReporter searchSummaryReporter,
+        DetectorIssuePublisher detectorIssuePublisher,
+        ExtractionLogger extractionLogger
+    ) {
         this.eventSystem = eventSystem;
         this.preparationSummaryReporter = preparationSummaryReporter;
         this.extractionSummaryReporter = extractionSummaryReporter;
@@ -89,7 +94,13 @@ public class ReportListener {
 
     public void codeLocationsCompleted(Map<DetectCodeLocation, String> codeLocationNameMap) {
         if (detectorToolResult != null && detectorToolResult.getRootDetectorEvaluationTree().isPresent()) {
-            extractionSummaryReporter.writeSummary(debugLogWriter, detectorToolResult.getRootDetectorEvaluationTree().get(), detectorToolResult.getCodeLocationMap(), codeLocationNameMap, false);
+            extractionSummaryReporter.writeSummary(
+                debugLogWriter,
+                detectorToolResult.getRootDetectorEvaluationTree().get(),
+                detectorToolResult.getCodeLocationMap(),
+                codeLocationNameMap,
+                false
+            );
         }
     }
 }

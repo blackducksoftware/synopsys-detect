@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver;
 
 import java.io.File;
@@ -30,8 +23,12 @@ public class ApkPackageManagerResolver implements ClangPackageManagerResolver {
     }
 
     @Override
-    public List<PackageDetails> resolvePackages(ClangPackageManagerInfo currentPackageManager, DetectableExecutableRunner executableRunner,
-        File workingDirectory, String queryPackageOutput) throws ExecutableRunnerException, NotOwnedByAnyPkgException {
+    public List<PackageDetails> resolvePackages(
+        ClangPackageManagerInfo currentPackageManager,
+        DetectableExecutableRunner executableRunner,
+        File workingDirectory,
+        String queryPackageOutput
+    ) throws ExecutableRunnerException, NotOwnedByAnyPkgException {
         isValid(queryPackageOutput);
         Optional<String> architecture = architectureResolver.resolveArchitecture(currentPackageManager, workingDirectory, executableRunner);
         List<PackageDetails> packageDetailsList = new ArrayList<>();

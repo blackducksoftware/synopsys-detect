@@ -1,18 +1,9 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.signaturescanner.operation;
 
 import java.io.File;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatch;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchBuilder;
@@ -32,24 +23,34 @@ public class CreateScanBatchOperation {
     private final DirectoryManager directoryManager;
     private final CodeLocationNameManager codeLocationNameManager;
 
-    public CreateScanBatchOperation(final BlackDuckSignatureScannerOptions signatureScannerOptions, final DirectoryManager directoryManager,
-        final CodeLocationNameManager codeLocationNameManager) {
+    public CreateScanBatchOperation(BlackDuckSignatureScannerOptions signatureScannerOptions, DirectoryManager directoryManager, CodeLocationNameManager codeLocationNameManager) {
         this.signatureScannerOptions = signatureScannerOptions;
         this.directoryManager = directoryManager;
         this.codeLocationNameManager = codeLocationNameManager;
     }
 
-    public ScanBatch createScanBatchWithBlackDuck(NameVersion projectNameVersion, List<SignatureScanPath> signatureScanPaths, BlackDuckServerConfig blackDuckServerConfig, @Nullable DockerTargetData dockerTargetData)
+    public ScanBatch createScanBatchWithBlackDuck(
+        NameVersion projectNameVersion,
+        List<SignatureScanPath> signatureScanPaths,
+        BlackDuckServerConfig blackDuckServerConfig,
+        @Nullable DockerTargetData dockerTargetData
+    )
         throws DetectUserFriendlyException {
         return createScanBatch(projectNameVersion, signatureScanPaths, blackDuckServerConfig, dockerTargetData);
     }
 
-    public ScanBatch createScanBatchWithoutBlackDuck(NameVersion projectNameVersion, List<SignatureScanPath> signatureScanPaths, @Nullable DockerTargetData dockerTargetData) throws DetectUserFriendlyException {
+    public ScanBatch createScanBatchWithoutBlackDuck(NameVersion projectNameVersion, List<SignatureScanPath> signatureScanPaths, @Nullable DockerTargetData dockerTargetData)
+        throws DetectUserFriendlyException {
         //when offline, we must still call this with 'null' as a workaround for library issues, so offline scanner must be created with this set to null.
         return createScanBatch(projectNameVersion, signatureScanPaths, null, dockerTargetData);
     }
 
-    private ScanBatch createScanBatch(NameVersion projectNameVersion, List<SignatureScanPath> signatureScanPaths, @Nullable BlackDuckServerConfig blackDuckServerConfig, @Nullable DockerTargetData dockerTargetData)
+    private ScanBatch createScanBatch(
+        NameVersion projectNameVersion,
+        List<SignatureScanPath> signatureScanPaths,
+        @Nullable BlackDuckServerConfig blackDuckServerConfig,
+        @Nullable DockerTargetData dockerTargetData
+    )
         throws DetectUserFriendlyException {
         ScanBatchBuilder scanJobBuilder = new ScanBatchBuilder();
         scanJobBuilder.scanMemoryInMegabytes(signatureScannerOptions.getScanMemory());
@@ -81,7 +82,15 @@ public class CreateScanBatchOperation {
             if (dockerTargetData != null) {
                 dockerTarget = dockerTargetData.getSquashedImage().orElse(dockerTargetData.getProvidedImageTar().orElse(null));
             }
-            String codeLocationName = codeLocationNameManager.createScanCodeLocationName(sourcePath, scanPath.getTargetPath(), dockerTarget, projectName, projectVersionName, prefix, suffix);
+            String codeLocationName = codeLocationNameManager.createScanCodeLocationName(
+                sourcePath,
+                scanPath.getTargetPath(),
+                dockerTarget,
+                projectName,
+                projectVersionName,
+                prefix,
+                suffix
+            );
             scanJobBuilder.addTarget(ScanTarget.createBasicTarget(scanPath.getTargetCanonicalPath(), scanPath.getExclusions(), codeLocationName));
         }
 

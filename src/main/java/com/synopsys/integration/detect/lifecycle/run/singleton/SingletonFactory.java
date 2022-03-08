@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.lifecycle.run.singleton;
 
 import com.google.gson.Gson;
@@ -16,13 +9,13 @@ import com.synopsys.integration.detect.configuration.DetectUserFriendlyException
 import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
 import com.synopsys.integration.detect.lifecycle.run.step.utility.OperationWrapper;
-import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeManager;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.tool.detector.DetectorEventPublisher;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
 import com.synopsys.integration.detect.tool.detector.executable.DirectoryExecutableFinder;
 import com.synopsys.integration.detect.tool.detector.executable.SystemPathExecutableFinder;
+import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryZipInstaller;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detect.workflow.airgap.AirGapPathFinder;
@@ -51,26 +44,46 @@ public class SingletonFactory {
         this.detectConfigurationFactory = bootSingletons.getDetectConfigurationFactory();
     }
 
-    public UtilitySingletons createUtilitySingletons(EventSingletons eventSingletons, ExitCodeManager exitCodeManager) throws DetectUserFriendlyException {
+    public UtilitySingletons createUtilitySingletons(EventSingletons eventSingletons) throws DetectUserFriendlyException {
         ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         ConnectionDetails connectionDetails = detectConfigurationFactory.createConnectionDetails();
         ConnectionFactory connectionFactory = new ConnectionFactory(connectionDetails);
         ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
+        ArtifactoryZipInstaller artifactoryZipInstaller = new ArtifactoryZipInstaller(artifactResolver);
         AirGapPathFinder airGapPathFinder = new AirGapPathFinder();
         CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(detectConfigurationFactory.createCodeLocationOverride());
         CodeLocationNameManager codeLocationNameManager = new CodeLocationNameManager(codeLocationNameGenerator);
-        CreateBdioCodeLocationsFromDetectCodeLocationsOperation createBdioCodeLocationsFromDetectCodeLocationsOperation = new CreateBdioCodeLocationsFromDetectCodeLocationsOperation(codeLocationNameManager, directoryManager);
-        AirGapInspectorPaths airGapInspectorPaths = new AirGapInspectorPaths(airGapPathFinder, detectConfigurationFactory.createAirGapOptions());
+        CreateBdioCodeLocationsFromDetectCodeLocationsOperation createBdioCodeLocationsFromDetectCodeLocationsOperation = new CreateBdioCodeLocationsFromDetectCodeLocationsOperation(
+            codeLocationNameManager,
+            directoryManager
+        );
+        AirGapInspectorPaths airGapInspectorPaths = new AirGapInspectorPaths(airGapPathFinder);
         BdioTransformer bdioTransformer = new BdioTransformer();
         DetectExecutableRunner executableRunner = DetectExecutableRunner.newDebug(eventSystem);
         DirectoryExecutableFinder directoryExecutableFinder = DirectoryExecutableFinder.forCurrentOperatingSystem(fileFinder);
         SystemPathExecutableFinder systemExecutableFinder = new SystemPathExecutableFinder(directoryExecutableFinder);
-        DetectExecutableResolver detectExecutableResolver = new DetectExecutableResolver(directoryExecutableFinder, systemExecutableFinder, detectConfigurationFactory.createDetectExecutableOptions());
+        DetectExecutableResolver detectExecutableResolver = new DetectExecutableResolver(
+            directoryExecutableFinder,
+            systemExecutableFinder,
+            detectConfigurationFactory.createDetectExecutableOptions()
+        );
         OperationSystem operationSystem = new OperationSystem(eventSingletons.getStatusEventPublisher());
-        OperationWrapper operationWrapper = new OperationWrapper(exitCodeManager);
+        OperationWrapper operationWrapper = new OperationWrapper();
 
-        return new UtilitySingletons(externalIdFactory, connectionDetails, artifactResolver, codeLocationNameManager, createBdioCodeLocationsFromDetectCodeLocationsOperation, airGapInspectorPaths, bdioTransformer,
-            executableRunner, detectExecutableResolver, operationSystem, operationWrapper);
+        return new UtilitySingletons(
+            externalIdFactory,
+            connectionDetails,
+            artifactResolver,
+            codeLocationNameManager,
+            createBdioCodeLocationsFromDetectCodeLocationsOperation,
+            airGapInspectorPaths,
+            bdioTransformer,
+            executableRunner,
+            detectExecutableResolver,
+            operationSystem,
+            operationWrapper,
+            artifactoryZipInstaller
+        );
     }
 
     public EventSingletons createEventSingletons() {

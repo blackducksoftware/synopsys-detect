@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.impactanalysis.service;
 
 import java.io.File;
@@ -49,8 +42,22 @@ public class ImpactAnalysisCallable implements Callable<ImpactAnalysisOutput> {
                 return ImpactAnalysisOutput.FROM_RESPONSE(gson, projectAndVersion, codeLocationName, response);
             }
         } catch (BlackDuckApiException apiException) {
-            String errorMessage = String.format("Failed to upload impact analysis file: %s; Black Duck response: %s [Black Duck error code: %s]", impactAnalysis.getImpactAnalysisPath().toAbsolutePath(), apiException.getMessage(), apiException.getBlackDuckErrorCode());
-            return ImpactAnalysisOutput.FAILURE(projectAndVersion, codeLocationName, errorMessage, apiException, apiException.getBlackDuckErrorCode(), apiException.getMessage(), apiException.getOriginalIntegrationRestException().getHttpStatusCode(), apiException.getOriginalIntegrationRestException().getHttpResponseContent());
+            String errorMessage = String.format(
+                "Failed to upload impact analysis file: %s; Black Duck response: %s [Black Duck error code: %s]",
+                impactAnalysis.getImpactAnalysisPath().toAbsolutePath(),
+                apiException.getMessage(),
+                apiException.getBlackDuckErrorCode()
+            );
+            return ImpactAnalysisOutput.FAILURE(
+                projectAndVersion,
+                codeLocationName,
+                errorMessage,
+                apiException,
+                apiException.getBlackDuckErrorCode(),
+                apiException.getMessage(),
+                apiException.getOriginalIntegrationRestException().getHttpStatusCode(),
+                apiException.getOriginalIntegrationRestException().getHttpResponseContent()
+            );
         } catch (Exception e) {
             String errorMessage = String.format("Failed to upload impact analysis file: %s because %s", impactAnalysis.getImpactAnalysisPath().toAbsolutePath(), e.getMessage());
             return ImpactAnalysisOutput.FAILURE(projectAndVersion, codeLocationName, errorMessage, e, null, null, 0, null);
@@ -64,13 +71,13 @@ public class ImpactAnalysisCallable implements Callable<ImpactAnalysisOutput> {
         HttpUrl url = apiDiscovery.getUrl(ImpactAnalysisUploadService.IMPACT_ANALYSIS_PATH);
 
         return new BlackDuckRequestBuilder()
-                   .postMultipart(fileMap, new HashMap<>())
-                   // ejk - at least against 2021.4.1, Black Duck won't handle
-                   // an Accept application/json, so we have to explicitly
-                   // accept anything
-                   // (IDETECT-2664 sorry for no link. Security.)
-                   .addHeader(HttpHeaders.ACCEPT, "*/*")
-                   .buildBlackDuckResponseRequest(url);
+            .postMultipart(fileMap, new HashMap<>())
+            // ejk - at least against 2021.4.1, Black Duck won't handle
+            // an Accept application/json, so we have to explicitly
+            // accept anything
+            // (IDETECT-2664 sorry for no link. Security.)
+            .addHeader(HttpHeaders.ACCEPT, "*/*")
+            .buildBlackDuckResponseRequest(url);
     }
 
 }

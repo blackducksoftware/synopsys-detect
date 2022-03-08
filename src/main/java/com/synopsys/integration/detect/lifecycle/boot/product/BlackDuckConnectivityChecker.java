@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.lifecycle.boot.product;
 
 import java.util.List;
@@ -70,7 +63,11 @@ public class BlackDuckConnectivityChecker {
                 logger.debug("Group: " + groups.stream().map(UserGroupView::getName).distinct().collect(Collectors.joining(", ")));
             }
         } catch (IntegrationException e) {
-            throw new DetectUserFriendlyException("Could not determine which version of Black Duck detect connected to or which user is connecting.", e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
+            throw new DetectUserFriendlyException(
+                "Could not determine which version of Black Duck detect connected to or which user is connecting.",
+                e,
+                ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY
+            );
         }
 
         return BlackDuckConnectivityResult.success(blackDuckServicesFactory, blackDuckServerConfig);

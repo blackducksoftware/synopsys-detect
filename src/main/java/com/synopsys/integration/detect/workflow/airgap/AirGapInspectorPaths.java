@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.airgap;
 
 import java.io.File;
@@ -19,30 +12,35 @@ import org.slf4j.LoggerFactory;
 public class AirGapInspectorPaths {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    @Nullable
     private final Path dockerInspectorAirGapPath;
+    @Nullable
     private final Path nugetInspectorAirGapPath;
+    @Nullable
     private final Path gradleInspectorAirGapPath;
+    @Nullable
+    private final Path projectInspectorAirGapPath;
+
     @Nullable
     private final Path fontsAirGapPath;
 
-    public AirGapInspectorPaths(AirGapPathFinder pathFinder, AirGapOptions airGapOptions) {
+    public AirGapInspectorPaths(AirGapPathFinder pathFinder) {
         File detectJar = pathFinder.findDetectJar();
-        dockerInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, airGapOptions.getDockerInspectorPathOverride().orElse(null), AirGapPathFinder.DOCKER);
-        gradleInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, airGapOptions.getGradleInspectorPathOverride().orElse(null), AirGapPathFinder.GRADLE);
-        nugetInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, airGapOptions.getNugetInspectorPathOverride().orElse(null), AirGapPathFinder.NUGET);
+        dockerInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, AirGapPathFinder.DOCKER);
+        gradleInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, AirGapPathFinder.GRADLE);
+        nugetInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, AirGapPathFinder.NUGET);
+        projectInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, AirGapPathFinder.PROJECT_INSPECTOR);
         fontsAirGapPath = determineFontsAirGapPath(detectJar, pathFinder);
     }
 
-    private Path determineInspectorAirGapPath(File detectJar, AirGapPathFinder airGapPathFinder, Path inspectorLocationProperty, String inspectorName) {
-        if (inspectorLocationProperty == null && detectJar != null) {
-            try {
-                return airGapPathFinder.createRelativePackagedInspectorsFile(detectJar.getParentFile(), inspectorName).toPath();
-            } catch (Exception e) {
-                logger.debug(String.format("Exception encountered when guessing air gap path for %s, returning the detect property instead", inspectorName));
-                logger.debug(e.getMessage());
-            }
+    private Path determineInspectorAirGapPath(File detectJar, AirGapPathFinder airGapPathFinder, String inspectorName) {
+        try {
+            return airGapPathFinder.createRelativePackagedInspectorsFile(detectJar.getParentFile(), inspectorName).toPath();
+        } catch (Exception e) {
+            logger.debug(String.format("Exception encountered when guessing air gap path for %s", inspectorName));
+            logger.debug(e.getMessage());
+            return null;
         }
-        return inspectorLocationProperty;
     }
 
     private Path determineFontsAirGapPath(File detectJar, AirGapPathFinder airGapPathFinder) {
@@ -69,6 +67,10 @@ public class AirGapInspectorPaths {
         return Optional.ofNullable(gradleInspectorAirGapPath);
     }
 
+    public Optional<Path> getProjectInspectorAirGapPath() {
+        return Optional.ofNullable(projectInspectorAirGapPath);
+    }
+
     public Optional<File> getNugetInspectorAirGapFile() {
         return getNugetInspectorAirGapPath().map(Path::toFile).filter(File::exists);
     }
@@ -79,6 +81,10 @@ public class AirGapInspectorPaths {
 
     public Optional<File> getGradleInspectorAirGapFile() {
         return getGradleInspectorAirGapPath().map(Path::toFile).filter(File::exists);
+    }
+
+    public Optional<File> getProjectInspectorAirGapFile() {
+        return getProjectInspectorAirGapPath().map(Path::toFile).filter(File::exists);
     }
 
     public Optional<Path> getFontsAirGapPath() {

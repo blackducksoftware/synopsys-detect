@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.sbt;
 
 import java.util.ArrayList;
@@ -51,9 +44,15 @@ public class SbtDetectable extends Detectable {
     private ExecutableTarget sbt;
     private boolean foundPlugin;
 
-    public SbtDetectable(DetectableEnvironment environment, FileFinder fileFinder, SbtResolutionCacheExtractor sbtResolutionCacheExtractor,
-        SbtResolutionCacheOptions sbtResolutionCacheOptions, SbtResolver sbtResolver, SbtDotExtractor sbtPluginExtractor,
-        SbtPluginFinder sbtPluginFinder) {
+    public SbtDetectable(
+        DetectableEnvironment environment,
+        FileFinder fileFinder,
+        SbtResolutionCacheExtractor sbtResolutionCacheExtractor,
+        SbtResolutionCacheOptions sbtResolutionCacheOptions,
+        SbtResolver sbtResolver,
+        SbtDotExtractor sbtPluginExtractor,
+        SbtPluginFinder sbtPluginFinder
+    ) {
         super(environment);
         this.fileFinder = fileFinder;
         this.sbtResolutionCacheExtractor = sbtResolutionCacheExtractor;
@@ -105,8 +104,8 @@ public class SbtDetectable extends Detectable {
         if (sbt != null && foundPlugin) {
             if (sbtResolutionCacheOptions.getExcludedConfigurations().size() > 0 || sbtResolutionCacheOptions.getIncludedConfigurations().size() > 0) {
                 return new Extraction.Builder().failure(
-                    "Included and excluded SBT configurations can not be used when an sbt plugin is used for dependency resolution. They can still be used when not using a dependency plugin, either remove the plugin or do not provide the properties.")
-                           .build();
+                        "Included and excluded SBT configurations can not be used when an sbt plugin is used for dependency resolution. They can still be used when not using a dependency plugin, either remove the plugin or do not provide the properties.")
+                    .build();
             }
             return sbtPluginExtractor.extract(environment.getDirectory(), sbt, sbtResolutionCacheOptions.getSbtCommandAdditionalArguments());
         } else {

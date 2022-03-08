@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Assertions;
 
 import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentView;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentVersionView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
@@ -51,7 +51,7 @@ public class BlackDuckAssertions {
         List<CodeLocationView> codeLocations = blackDuckApiClient.getAllResponses(optionalProjectVersionWrapper.get().getProjectVersionView().metaCodelocationsLink());
         assertEquals(0, codeLocations.size());
 
-        List<ProjectVersionComponentView> bomComponents = projectBomService.getComponentsForProjectVersion(optionalProjectVersionWrapper.get().getProjectVersionView());
+        List<ProjectVersionComponentVersionView> bomComponents = projectBomService.getComponentsForProjectVersion(optionalProjectVersionWrapper.get().getProjectVersionView());
         assertEquals(0, bomComponents.size());
 
         return optionalProjectVersionWrapper.get();
@@ -81,7 +81,8 @@ public class BlackDuckAssertions {
 
         SetAssertionUtil.assertSetDifferences(createdCodeLocationNames, codeLocationNames,
             expectedMissing -> Assertions.fail(String.format("Expected code location %s but could not find it!", expectedMissing)),
-            extraActual -> Assertions.fail(String.format("An additional code location %s was found but was not expected!", extraActual)));
+            extraActual -> Assertions.fail(String.format("An additional code location %s was found but was not expected!", extraActual))
+        );
     }
 
     public void hasCodeLocations(String... codeLocationNames) throws IntegrationException {
@@ -94,7 +95,8 @@ public class BlackDuckAssertions {
 
         SetAssertionUtil.assertSetDifferences(createdCodeLocationNames, codeLocationNames,
             expectedMissing -> Assertions.fail(String.format("Expected code location %s but could not find it!", expectedMissing)),
-            extraActual -> {/* no-op, extra code locations fine, only checking it HAS the given. */});
+            extraActual -> {/* no-op, extra code locations fine, only checking it HAS the given. */}
+        );
     }
 
     public void hasComponents(String... componentNames) throws IntegrationException {
@@ -102,11 +104,11 @@ public class BlackDuckAssertions {
     }
 
     public void hasComponents(Set<String> componentNames) throws IntegrationException {
-        List<ProjectVersionComponentView> bomComponents = projectBomService.getComponentsForProjectVersion(retrieveProjectVersionWrapper().getProjectVersionView());
+        List<ProjectVersionComponentVersionView> bomComponents = projectBomService.getComponentsForProjectVersion(retrieveProjectVersionWrapper().getProjectVersionView());
         componentNames.forEach(componentName -> {
-            Optional<ProjectVersionComponentView> blackDuckCommonComponent = bomComponents.stream()
-                                                                                 .filter(ProjectVersionComponentView -> componentName.equals(ProjectVersionComponentView.getComponentName()))
-                                                                                 .findFirst();
+            Optional<ProjectVersionComponentVersionView> blackDuckCommonComponent = bomComponents.stream()
+                .filter(ProjectVersionComponentView -> componentName.equals(ProjectVersionComponentView.getComponentName()))
+                .findFirst();
             assertTrue(blackDuckCommonComponent.isPresent());
         });
     }

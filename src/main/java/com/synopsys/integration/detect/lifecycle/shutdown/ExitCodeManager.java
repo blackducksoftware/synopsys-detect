@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.lifecycle.shutdown;
 
 import java.util.ArrayList;
@@ -16,34 +9,30 @@ import com.synopsys.integration.detect.workflow.event.EventSystem;
 
 public class ExitCodeManager {
     private final List<ExitCodeRequest> exitCodeRequests = new ArrayList<>();
-    private final ExitCodeUtility exitCodeUtility;
+    private final ExceptionUtility exceptionUtility;
 
-    public ExitCodeManager(final EventSystem eventSystem, final ExitCodeUtility exitCodeUtility) {
-        this.exitCodeUtility = exitCodeUtility;
+    public ExitCodeManager(EventSystem eventSystem, ExceptionUtility exitCodeUtility) {
+        this.exceptionUtility = exitCodeUtility;
         eventSystem.registerListener(Event.ExitCode, this::addExitCodeRequest);
     }
 
-    public void requestExitCode(final Exception e) {
-        requestExitCode(exitCodeUtility.getExitCodeFromExceptionDetails(e));
+    public void requestExitCode(Exception e) {
+        requestExitCode(exceptionUtility.getExitCodeFromException(e));
     }
 
-    public void requestExitCode(final ExitCodeType exitCodeType) {
+    public void requestExitCode(ExitCodeType exitCodeType) {
         exitCodeRequests.add(new ExitCodeRequest(exitCodeType));
     }
 
-    public void addExitCodeRequest(final ExitCodeRequest request) {
+    public void addExitCodeRequest(ExitCodeRequest request) {
         exitCodeRequests.add(request);
     }
 
     public ExitCodeType getWinningExitCode() {
         ExitCodeType winningExitCodeType = ExitCodeType.SUCCESS;
-        for (final ExitCodeRequest exitCodeRequest : exitCodeRequests) {
+        for (ExitCodeRequest exitCodeRequest : exitCodeRequests) {
             winningExitCodeType = ExitCodeType.getWinningExitCodeType(winningExitCodeType, exitCodeRequest.getExitCodeType());
         }
         return winningExitCodeType;
-    }
-
-    public ExitCodeType getExitCodeFromExceptionDetails(final Exception e) {
-        return exitCodeUtility.getExitCodeFromExceptionDetails(e);
     }
 }

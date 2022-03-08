@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.lifecycle.boot;
 
 import java.io.File;
@@ -97,8 +90,8 @@ public class DetectBootResult {
     @NotNull
     public Boolean shouldForceSuccess() {
         return getDetectConfiguration()
-                   .map(configuration -> configuration.getValueOrDefault(DetectProperties.DETECT_FORCE_SUCCESS.getProperty()))
-                   .orElse(Boolean.FALSE);
+            .map(configuration -> configuration.getValueOrDefault(DetectProperties.DETECT_FORCE_SUCCESS))
+            .orElse(Boolean.FALSE);
     }
 
     public enum BootType {
@@ -107,7 +100,13 @@ public class DetectBootResult {
         EXCEPTION
     }
 
-    public static DetectBootResult run(BootSingletons bootSingletons, PropertyConfiguration detectConfiguration, ProductRunData productRunData, DirectoryManager directoryManager, @Nullable DiagnosticSystem diagnosticSystem) {
+    public static DetectBootResult run(
+        BootSingletons bootSingletons,
+        PropertyConfiguration detectConfiguration,
+        ProductRunData productRunData,
+        DirectoryManager directoryManager,
+        @Nullable DiagnosticSystem diagnosticSystem
+    ) {
         return new DetectBootResult(BootType.RUN, detectConfiguration, directoryManager, null, diagnosticSystem, productRunData, bootSingletons, null);
     }
 
@@ -127,7 +126,12 @@ public class DetectBootResult {
         return new DetectBootResult(BootType.EXCEPTION, detectConfiguration, null, null, null, null, null, exception);
     }
 
-    public static DetectBootResult exception(Exception exception, PropertyConfiguration detectConfiguration, DirectoryManager directoryManager, @Nullable DiagnosticSystem diagnosticSystem) {
+    public static DetectBootResult exception(
+        Exception exception,
+        PropertyConfiguration detectConfiguration,
+        DirectoryManager directoryManager,
+        @Nullable DiagnosticSystem diagnosticSystem
+    ) {
         return new DetectBootResult(BootType.EXCEPTION, detectConfiguration, directoryManager, null, diagnosticSystem, null, null, exception);
     }
 

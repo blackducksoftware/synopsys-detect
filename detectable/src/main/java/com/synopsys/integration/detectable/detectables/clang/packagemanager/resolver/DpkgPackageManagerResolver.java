@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver;
 
 import java.io.File;
@@ -31,7 +24,12 @@ public class DpkgPackageManagerResolver implements ClangPackageManagerResolver {
     }
 
     @Override
-    public List<PackageDetails> resolvePackages(ClangPackageManagerInfo currentPackageManager, DetectableExecutableRunner executableRunner, File workingDirectory, String ownershipQueryOutput)
+    public List<PackageDetails> resolvePackages(
+        ClangPackageManagerInfo currentPackageManager,
+        DetectableExecutableRunner executableRunner,
+        File workingDirectory,
+        String ownershipQueryOutput
+    )
         throws NotOwnedByAnyPkgException {
         List<PackageDetails> packageDetailsList = new ArrayList<>();
         String[] packageLines = ownershipQueryOutput.split("\n");
@@ -42,7 +40,11 @@ public class DpkgPackageManagerResolver implements ClangPackageManagerResolver {
             }
 
             NameArchitecture packageNameArchitecture = parsePackageNameArchitecture(packageLine);
-            logger.debug("File ownership query results: package name: {}, arch: {}", packageNameArchitecture.getName(), packageNameArchitecture.getArchitecture().orElse("<absent>"));
+            logger.debug(
+                "File ownership query results: package name: {}, arch: {}",
+                packageNameArchitecture.getName(),
+                packageNameArchitecture.getArchitecture().orElse("<absent>")
+            );
             Optional<PackageDetails> pkg = versionResolver.resolvePackageDetails(currentPackageManager, executableRunner, workingDirectory, packageNameArchitecture);
             if (pkg.isPresent()) {
                 logger.debug("Adding package: {}", pkg.get());

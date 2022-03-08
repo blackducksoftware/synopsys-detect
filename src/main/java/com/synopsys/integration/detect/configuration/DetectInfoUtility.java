@@ -1,20 +1,15 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.configuration;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.regex.Pattern;
+import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.util.OperatingSystemType;
 import com.synopsys.integration.util.ResourceUtil;
 
@@ -27,10 +22,16 @@ public class DetectInfoUtility {
 
     public DetectInfo createDetectInfo() {
         String versionText = findDetectVersionFromResources();
-        int majorVersion = parseMajorVersion(versionText);
         OperatingSystemType os = findOperatingSystemType();
-        logger.debug("You seem to be running in a " + os + " operating system.");
-        return new DetectInfo(versionText, majorVersion, os);
+        logger.debug(String.format("You seem to be running in a %s operating system.", os));
+        logger.debug(String.format("You seem to be using %s architecture.", StringUtils.join(findArchitectures(), ", ")));
+        return new DetectInfo(versionText, os);
+    }
+
+    public List<String> findArchitectures() {
+        return Bds.of(System.getProperty("os.arch"), System.getenv("PROCESSOR_ARCHITECTURE"), System.getenv("PROCESSOR_ARCHITEW6432"))
+            .filter(StringUtils::isNotBlank)
+            .toList();
     }
 
     public String findDetectVersionFromResources() {
@@ -52,9 +53,5 @@ public class DetectInfoUtility {
 
         logger.warn("Your operating system is not supported. Linux will be assumed.");
         return OperatingSystemType.LINUX;
-    }
-
-    public int parseMajorVersion(String detectVersionText) {
-        return Integer.parseInt(detectVersionText.split(Pattern.quote("."))[0]);
     }
 }

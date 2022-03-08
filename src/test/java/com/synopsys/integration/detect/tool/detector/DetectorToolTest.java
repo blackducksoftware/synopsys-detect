@@ -1,25 +1,3 @@
-/**
- * synopsys-detect
- *
- * Copyright (c) 2020 Synopsys, Inc.
- *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
 package com.synopsys.integration.detect.tool.detector;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -40,7 +18,9 @@ import org.mockito.Mockito;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.common.util.finder.SimpleFileFinder;
-import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumValue;
+import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumCollection;
+import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumList;
+import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumValue;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.ExcludeIncludeEnumFilter;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
@@ -52,6 +32,7 @@ import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectable;
@@ -61,7 +42,6 @@ import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.finder.DetectorFinder;
-import com.synopsys.integration.detector.finder.DetectorFinderDirectoryListException;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
 import com.synopsys.integration.detector.result.DetectorResult;
 import com.synopsys.integration.detector.rule.DetectorRule;
@@ -82,7 +62,16 @@ public class DetectorToolTest {
         ExitCodePublisher exitCodePublisher = Mockito.mock(ExitCodePublisher.class);
         DetectorEventPublisher detectorEventPublisher = Mockito.mock(DetectorEventPublisher.class);
 
-        DetectorTool tool = new DetectorTool(detectorFinder, extractionEnvironmentProvider, eventSystem, codeLocationConverter, detectorIssuePublisher, statusEventPublisher, exitCodePublisher, detectorEventPublisher);
+        DetectorTool tool = new DetectorTool(
+            detectorFinder,
+            extractionEnvironmentProvider,
+            eventSystem,
+            codeLocationConverter,
+            detectorIssuePublisher,
+            statusEventPublisher,
+            exitCodePublisher,
+            detectorEventPublisher
+        );
 
         File directory = new File(".");
         DetectorRuleSet detectorRuleSet = Mockito.mock(DetectorRuleSet.class);
@@ -96,7 +85,7 @@ public class DetectorToolTest {
     }
 
     @Test
-    public void testSuccess() throws DetectUserFriendlyException, DetectorFinderDirectoryListException, DetectableException {
+    public void testSuccess() throws DetectableException, ExecutableFailedException {
         Extraction extraction = createSuccessExtraction();
         DetectableResult extractionResult = new PassedDetectableResult();
         String projectBomTool = DetectorType.GO_MOD.name();
@@ -112,7 +101,7 @@ public class DetectorToolTest {
     }
 
     @Test
-    public void testPreferredDetectorMissingSuccess() throws DetectUserFriendlyException, DetectorFinderDirectoryListException, DetectableException {
+    public void testPreferredDetectorMissingSuccess() throws DetectableException, ExecutableFailedException {
         Extraction extraction = createSuccessExtraction();
         DetectableResult extractionResult = new PassedDetectableResult();
         String projectBomTool = "testBomTool";
@@ -128,7 +117,7 @@ public class DetectorToolTest {
     }
 
     @Test
-    public void testExtractionFailed() throws DetectUserFriendlyException, DetectorFinderDirectoryListException, DetectableException {
+    public void testExtractionFailed() throws DetectableException, ExecutableFailedException {
         Extraction extraction = createFailExtraction();
         DetectableResult extractionResult = new PassedDetectableResult();
         String projectBomTool = DetectorType.GO_MOD.name();
@@ -143,7 +132,7 @@ public class DetectorToolTest {
     }
 
     @Test
-    public void testExtractionException() throws DetectUserFriendlyException, DetectorFinderDirectoryListException, DetectableException {
+    public void testExtractionException() throws DetectableException, ExecutableFailedException {
         Extraction extraction = createExceptionExtraction();
         DetectableResult extractionResult = new PassedDetectableResult();
         String projectBomTool = DetectorType.GO_MOD.name();
@@ -165,7 +154,8 @@ public class DetectorToolTest {
         }
     }
 
-    private DetectorToolResult executeToolTest(Extraction extraction, DetectableResult extractionResult, String projectBomTool) throws DetectUserFriendlyException, DetectorFinderDirectoryListException, DetectableException {
+    private DetectorToolResult executeToolTest(Extraction extraction, DetectableResult extractionResult, String projectBomTool)
+        throws DetectableException, ExecutableFailedException {
         ExtractionEnvironmentProvider extractionEnvironmentProvider = Mockito.mock(ExtractionEnvironmentProvider.class);
         DetectorFinder detectorFinder = Mockito.mock(DetectorFinder.class);
         EventSystem eventSystem = Mockito.mock(EventSystem.class);
@@ -175,7 +165,16 @@ public class DetectorToolTest {
         ExitCodePublisher exitCodePublisher = Mockito.mock(ExitCodePublisher.class);
         DetectorEventPublisher detectorEventPublisher = Mockito.mock(DetectorEventPublisher.class);
 
-        DetectorTool tool = new DetectorTool(detectorFinder, extractionEnvironmentProvider, eventSystem, codeLocationConverter, detectorIssuePublisher, statusEventPublisher, exitCodePublisher, detectorEventPublisher);
+        DetectorTool tool = new DetectorTool(
+            detectorFinder,
+            extractionEnvironmentProvider,
+            eventSystem,
+            codeLocationConverter,
+            detectorIssuePublisher,
+            statusEventPublisher,
+            exitCodePublisher,
+            detectorEventPublisher
+        );
         File directory = new File(".");
         GoModCliDetectable detectable = createDetectable(extraction, extractionResult);
         DetectorRule<GoModCliDetectable> rule = createRule(detectable);
@@ -189,7 +188,7 @@ public class DetectorToolTest {
         return tool.performDetectors(directory, detectorRuleSet, detectorFinderOptions, evaluationOptions, projectBomTool, new ArrayList<>(), new SimpleFileFinder());
     }
 
-    private GoModCliDetectable createDetectable(Extraction extraction, DetectableResult extractionResult) throws DetectableException {
+    private GoModCliDetectable createDetectable(Extraction extraction, DetectableResult extractionResult) throws DetectableException, ExecutableFailedException {
         File relevantFile = new File("go.mod");
         List<File> relevantFiles = Collections.singletonList(relevantFile);
         GoModCliDetectable detectable = Mockito.mock(GoModCliDetectable.class);
@@ -206,29 +205,29 @@ public class DetectorToolTest {
         CodeLocation codeLocation = new CodeLocation(dependencyGraph, relevantFile);
         Extraction.Builder builder = new Extraction.Builder();
         return builder.relevantFiles(relevantFile)
-                   .codeLocations(codeLocation)
-                   .projectName("test-project")
-                   .projectVersion("1.0")
-                   .unrecognizedPaths(Collections.emptyList());
+            .codeLocations(codeLocation)
+            .projectName("test-project")
+            .projectVersion("1.0")
+            .unrecognizedPaths(Collections.emptyList());
 
     }
 
     private Extraction createSuccessExtraction() {
         return createExtractionBuilder()
-                   .success()
-                   .build();
+            .success()
+            .build();
     }
 
     private Extraction createFailExtraction() {
         return createExtractionBuilder()
-                   .failure("JUnit extraction failure")
-                   .build();
+            .failure("JUnit extraction failure")
+            .build();
     }
 
     private Extraction createExceptionExtraction() {
         return createExtractionBuilder()
-                   .exception(new RuntimeException("JUnit Extraction Exception"))
-                   .build();
+            .exception(new RuntimeException("JUnit Extraction Exception"))
+            .build();
     }
 
     private DetectorRule<GoModCliDetectable> createRule(GoModCliDetectable detectable) {
@@ -244,23 +243,35 @@ public class DetectorToolTest {
 
     private DetectorFinderOptions createFinderOptions() {
         Predicate<File> fileFilter = f -> true;
-        int maximumDepth = 10;
-        return new DetectorFinderOptions(fileFilter, maximumDepth);
+        final int maximumDepth = 10;
+        return new DetectorFinderOptions(fileFilter, maximumDepth, false);
     }
 
     private DetectorEvaluationOptions createEvaluationOptions() {
-        List<FilterableEnumValue<DetectorType>> excluded = Collections.emptyList();
-        List<FilterableEnumValue<DetectorType>> included = Collections.singletonList(FilterableEnumValue.value(DetectorType.GO_MOD));
-        ExcludeIncludeEnumFilter detectorFilter = new ExcludeIncludeEnumFilter(excluded, included);
+        AllNoneEnumCollection<DetectorType> excluded = new AllNoneEnumList<>(Collections.emptyList(), DetectorType.class);
+        AllNoneEnumCollection<DetectorType> included = new AllNoneEnumList<>(Collections.singletonList(ExtendedEnumValue.ofBaseValue(DetectorType.GO_MOD)), DetectorType.class);
+        ExcludeIncludeEnumFilter<DetectorType> detectorFilter = new ExcludeIncludeEnumFilter<>(excluded, included);
 
-        return new DetectorEvaluationOptions(false, (rule -> detectorFilter.shouldInclude(rule.getDetectorType())));
+        return new DetectorEvaluationOptions(false, false, (rule -> detectorFilter.shouldInclude(rule.getDetectorType())));
 
     }
 
-    private DetectorEvaluationTree createEvaluationTree(Extraction extraction, DetectableResult extractionResult, File directory, DetectorRule<GoModCliDetectable> rule, DetectorRuleSet detectorRuleSet) {
+    private DetectorEvaluationTree createEvaluationTree(
+        Extraction extraction,
+        DetectableResult extractionResult,
+        File directory,
+        DetectorRule<GoModCliDetectable> rule,
+        DetectorRuleSet detectorRuleSet
+    ) {
         DetectorEvaluation detectorEvaluation = new DetectorEvaluation(rule);
 
-        DetectorResult extractableResult = new DetectorResult(extractionResult.getPassed(), extractionResult.toDescription(), extractionResult.getClass(), Collections.emptyList(), Collections.emptyList());
+        DetectorResult extractableResult = new DetectorResult(
+            extractionResult.getPassed(),
+            extractionResult.toDescription(),
+            extractionResult.getClass(),
+            Collections.emptyList(),
+            Collections.emptyList()
+        );
         detectorEvaluation.setExtractable(extractableResult);
         detectorEvaluation.setExtraction(extraction);
         detectorEvaluation.setApplicable(new DetectorResult(true, "", Collections.emptyList(), Collections.emptyList()));

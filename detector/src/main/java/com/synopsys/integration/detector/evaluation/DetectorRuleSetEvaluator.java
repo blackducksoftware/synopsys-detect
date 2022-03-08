@@ -1,10 +1,3 @@
-/*
- * detector
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detector.evaluation;
 
 import java.util.Set;
@@ -22,26 +15,26 @@ import com.synopsys.integration.detector.rule.DetectorRule;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
 
 public class DetectorRuleSetEvaluator {
-    public DetectorResult evaluateSearchable(final DetectorRuleSet detectorRuleSet, final DetectorRule detectorRule, final SearchEnvironment environment) {
+    public DetectorResult evaluateSearchable(DetectorRuleSet detectorRuleSet, DetectorRule detectorRule, SearchEnvironment environment) {
         if (!environment.getDetectorFilter().test(detectorRule)) {
             return new ExcludedDetectorResult();
         }
 
-        final int maxDepth = detectorRule.getMaxDepth();
+        int maxDepth = detectorRule.getMaxDepth();
         if (environment.getDepth() > maxDepth) {
             return new MaxDepthExceededDetectorResult(environment.getDepth(), maxDepth);
         }
 
-        final Set<DetectorRule> yieldTo = environment.getAppliedSoFar().stream()
-                                              .filter(it -> detectorRuleSet.getYieldsTo(detectorRule).contains(it))
-                                              .collect(Collectors.toSet());
+        Set<DetectorRule> yieldTo = environment.getAppliedSoFar().stream()
+            .filter(it -> detectorRuleSet.getYieldsTo(detectorRule).contains(it))
+            .collect(Collectors.toSet());
 
         if (yieldTo.size() > 0) {
             return new YieldedDetectorResult(yieldTo.stream().map(DetectorRule::getName).collect(Collectors.toSet()));
         }
 
-        final boolean nestable = detectorRule.isNestable();
-        final boolean selfNestable = detectorRule.isSelfNestable();
+        boolean nestable = detectorRule.isNestable();
+        boolean selfNestable = detectorRule.isSelfNestable();
         if (environment.isForceNestedSearch()) {
             return new ForcedNestedPassedDetectorResult();
         } else if (nestable) {

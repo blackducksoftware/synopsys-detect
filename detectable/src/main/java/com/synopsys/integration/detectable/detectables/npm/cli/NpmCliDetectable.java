@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.npm.cli;
 
 import java.io.File;
@@ -22,7 +15,7 @@ import com.synopsys.integration.detectable.detectable.result.NpmNodeModulesNotFo
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Node JS", forge = "npmjs", requirementsMarkdown = "Files: node_modules, package.json. <br /><br /> Executable: npm.")
+@DetectableInfo(language = "Node JS", forge = "npmjs", requirementsMarkdown = "Files: node_modules, package.json. Executable: npm.")
 public class NpmCliDetectable extends Detectable {
     public static final String NODE_MODULES = "node_modules";
     public static final String PACKAGE_JSON = "package.json";
@@ -35,7 +28,13 @@ public class NpmCliDetectable extends Detectable {
     private File packageJson;
     private ExecutableTarget npmExe;
 
-    public NpmCliDetectable(DetectableEnvironment environment, FileFinder fileFinder, NpmResolver npmResolver, NpmCliExtractor npmCliExtractor, NpmCliExtractorOptions npmCliExtractorOptions) {
+    public NpmCliDetectable(
+        DetectableEnvironment environment,
+        FileFinder fileFinder,
+        NpmResolver npmResolver,
+        NpmCliExtractor npmCliExtractor,
+        NpmCliExtractorOptions npmCliExtractorOptions
+    ) {
         super(environment);
         this.fileFinder = fileFinder;
         this.npmResolver = npmResolver;
@@ -70,8 +69,6 @@ public class NpmCliDetectable extends Detectable {
             environment.getDirectory(),
             npmExe,
             npmCliExtractorOptions.getNpmArguments().orElse(null),
-            npmCliExtractorOptions.shouldIncludeDevDependencies(),
-            npmCliExtractorOptions.shouldIncludePeerDependencies(),
             packageJson
         );
     }

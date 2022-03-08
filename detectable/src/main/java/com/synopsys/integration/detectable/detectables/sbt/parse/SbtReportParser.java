@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.sbt.parse;
 
 import java.util.List;
@@ -31,44 +24,44 @@ public class SbtReportParser {
     private static final String CALLER_NODE_KEY = "caller";
     private static final String CALLER_REVISION_NODE_KEY = "callerrev";
 
-    public SbtReport parseReportFromXml(final Document xmlReport) {
-        final Node ivyReport = XmlUtil.getNode(IVY_REPORT_NODE_KEY, xmlReport);
-        final Node infoNode = XmlUtil.getNode(INFO_NODE_KEY, ivyReport);
-        final Node dependenciesNode = XmlUtil.getNode(DEPENDENCIES_NODE_KEY, ivyReport);
-        final List<Node> xmlModules = XmlUtil.getNodeList(MODULE_NODE_KEY, dependenciesNode);
+    public SbtReport parseReportFromXml(Document xmlReport) {
+        Node ivyReport = XmlUtil.getNode(IVY_REPORT_NODE_KEY, xmlReport);
+        Node infoNode = XmlUtil.getNode(INFO_NODE_KEY, ivyReport);
+        Node dependenciesNode = XmlUtil.getNode(DEPENDENCIES_NODE_KEY, ivyReport);
+        List<Node> xmlModules = XmlUtil.getNodeList(MODULE_NODE_KEY, dependenciesNode);
 
-        final String organisation = XmlUtil.getAttribute(ORGANISATION_NODE_KEY, infoNode);
-        final String module = XmlUtil.getAttribute(MODULE_NODE_KEY, infoNode);
-        final String revision = XmlUtil.getAttribute(REVISION_NODE_KEY, infoNode);
-        final String configuration = XmlUtil.getAttribute(CONFIGURATION_NODE_KEY, infoNode);
-        final List<SbtModule> dependencies = xmlModules.stream().map(this::createModule).collect(Collectors.toList());
+        String organisation = XmlUtil.getAttribute(ORGANISATION_NODE_KEY, infoNode);
+        String module = XmlUtil.getAttribute(MODULE_NODE_KEY, infoNode);
+        String revision = XmlUtil.getAttribute(REVISION_NODE_KEY, infoNode);
+        String configuration = XmlUtil.getAttribute(CONFIGURATION_NODE_KEY, infoNode);
+        List<SbtModule> dependencies = xmlModules.stream().map(this::createModule).collect(Collectors.toList());
 
         return new SbtReport(organisation, module, revision, configuration, dependencies);
     }
 
-    private SbtModule createModule(final Node xmlModule) {
-        final List<Node> xmlRevisions = XmlUtil.getNodeList(REVISION_NODE_KEY, xmlModule);
+    private SbtModule createModule(Node xmlModule) {
+        List<Node> xmlRevisions = XmlUtil.getNodeList(REVISION_NODE_KEY, xmlModule);
 
-        final String name = XmlUtil.getAttribute(NAME_NODE_KEY, xmlModule);
-        final String organisation = XmlUtil.getAttribute(ORGANISATION_NODE_KEY, xmlModule);
-        final List<SbtRevision> revisions = xmlRevisions.stream().map(this::createRevision).collect(Collectors.toList());
+        String name = XmlUtil.getAttribute(NAME_NODE_KEY, xmlModule);
+        String organisation = XmlUtil.getAttribute(ORGANISATION_NODE_KEY, xmlModule);
+        List<SbtRevision> revisions = xmlRevisions.stream().map(this::createRevision).collect(Collectors.toList());
 
         return new SbtModule(organisation, name, revisions);
     }
 
-    private SbtRevision createRevision(final Node xmlRevision) {
-        final List<Node> xmlCallers = XmlUtil.getNodeList(CALLER_NODE_KEY, xmlRevision);
+    private SbtRevision createRevision(Node xmlRevision) {
+        List<Node> xmlCallers = XmlUtil.getNodeList(CALLER_NODE_KEY, xmlRevision);
 
-        final String name = XmlUtil.getAttribute(NAME_NODE_KEY, xmlRevision);
-        final List<SbtCaller> callers = xmlCallers.stream().map(this::createCaller).collect(Collectors.toList());
+        String name = XmlUtil.getAttribute(NAME_NODE_KEY, xmlRevision);
+        List<SbtCaller> callers = xmlCallers.stream().map(this::createCaller).collect(Collectors.toList());
 
         return new SbtRevision(name, callers);
     }
 
-    private SbtCaller createCaller(final Node xmlCaller) {
-        final String organisation = XmlUtil.getAttribute(ORGANISATION_NODE_KEY, xmlCaller);
-        final String name = XmlUtil.getAttribute(NAME_NODE_KEY, xmlCaller);
-        final String revision = XmlUtil.getAttribute(CALLER_REVISION_NODE_KEY, xmlCaller);
+    private SbtCaller createCaller(Node xmlCaller) {
+        String organisation = XmlUtil.getAttribute(ORGANISATION_NODE_KEY, xmlCaller);
+        String name = XmlUtil.getAttribute(NAME_NODE_KEY, xmlCaller);
+        String revision = XmlUtil.getAttribute(CALLER_REVISION_NODE_KEY, xmlCaller);
 
         return new SbtCaller(organisation, name, revision);
     }

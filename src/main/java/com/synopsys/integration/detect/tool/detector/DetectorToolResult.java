@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.detector;
 
 import java.io.File;
@@ -36,9 +29,14 @@ public class DetectorToolResult {
     private final DetectorEvaluationTree rootDetectorEvaluationTree;
     private final Map<CodeLocation, DetectCodeLocation> codeLocationMap;
 
-    public DetectorToolResult(@Nullable NameVersion bomToolProjectNameVersion, List<DetectCodeLocation> bomToolCodeLocations, Set<DetectorType> applicableDetectorTypes,
-        Set<DetectorType> failedDetectorTypes, @Nullable DetectorEvaluationTree rootDetectorEvaluationTree,
-        Map<CodeLocation, DetectCodeLocation> codeLocationMap) {
+    public DetectorToolResult(
+        @Nullable NameVersion bomToolProjectNameVersion,
+        List<DetectCodeLocation> bomToolCodeLocations,
+        Set<DetectorType> applicableDetectorTypes,
+        Set<DetectorType> failedDetectorTypes,
+        @Nullable DetectorEvaluationTree rootDetectorEvaluationTree,
+        Map<CodeLocation, DetectCodeLocation> codeLocationMap
+    ) {
         this.bomToolProjectNameVersion = bomToolProjectNameVersion;
         this.bomToolCodeLocations = bomToolCodeLocations;
         this.applicableDetectorTypes = applicableDetectorTypes;

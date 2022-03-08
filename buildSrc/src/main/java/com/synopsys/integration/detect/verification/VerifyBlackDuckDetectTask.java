@@ -1,11 +1,6 @@
-/*
- * buildSrc
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.verification;
+
+import static com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView.COMPONENTS_LINK;
 
 import java.util.List;
 import java.util.Set;
@@ -14,8 +9,9 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.tasks.TaskAction;
 
-import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentView;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
+import com.synopsys.integration.blackduck.api.core.response.LinkMultipleResponses;
+import com.synopsys.integration.blackduck.api.core.response.UrlMultipleResponses;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentVersionView;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
@@ -28,7 +24,7 @@ import com.synopsys.integration.log.PrintStreamIntLogger;
 public class VerifyBlackDuckDetectTask extends DefaultTask {
     @TaskAction
     public void verifyBlackDuckAction() throws IntegrationException {
-        BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = BlackDuckServerConfig.newBuilder();
+        BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = BlackDuckServerConfig.newApiTokenBuilder();
         Set<String> environmentKeys = blackDuckServerConfigBuilder.getEnvironmentVariableKeys();
         environmentKeys.forEach(it -> {
             String value = System.getenv().get(it);
@@ -43,7 +39,10 @@ public class VerifyBlackDuckDetectTask extends DefaultTask {
         ProjectService projectService = blackDuckServicesFactory.createProjectService();
 
         ProjectVersionWrapper projectVersionWrapper = projectService.getProjectVersion(getProject().getName(), getProject().getVersion().toString()).get();
-        List<ProjectVersionComponentView> bomComponents = blackDuckService.getAllResponses(projectVersionWrapper.getProjectVersionView().metaComponentsLink());
+        // TODO: ProjectVersionView::metaComponentsLink appears to return the incorrect type. I had to manually construct the correct COMPONENTS_LINK. -JM 07/2021
+        LinkMultipleResponses<ProjectVersionComponentVersionView> linkMultipleResponses = new LinkMultipleResponses<>(COMPONENTS_LINK, ProjectVersionComponentVersionView.class);
+        UrlMultipleResponses<ProjectVersionComponentVersionView> urlMultipleResponses = projectVersionWrapper.getProjectVersionView().metaMultipleResponses(linkMultipleResponses);
+        List<ProjectVersionComponentVersionView> bomComponents = blackDuckService.getAllResponses(urlMultipleResponses);
         if (bomComponents.isEmpty()) {
             throw new GradleException("No bom components were found for ${project.name} - ${version}");
         }

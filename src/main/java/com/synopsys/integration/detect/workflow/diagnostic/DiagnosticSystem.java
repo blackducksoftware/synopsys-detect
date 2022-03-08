@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.diagnostic;
 
 import java.io.File;
@@ -38,8 +31,16 @@ public class DiagnosticSystem {
     private final DirectoryManager directoryManager;
     private final EventSystem eventSystem;
 
-    public DiagnosticSystem(boolean isExtendedMode, PropertyConfiguration propertyConfiguration, DetectRunId detectRunId, DetectInfo detectInfo, DirectoryManager directoryManager, EventSystem eventSystem,
-        SortedMap<String, String> maskedRawPropertyValues, Set<String> propertyKeys) {
+    public DiagnosticSystem(
+        boolean isExtendedMode,
+        PropertyConfiguration propertyConfiguration,
+        DetectRunId detectRunId,
+        DetectInfo detectInfo,
+        DirectoryManager directoryManager,
+        EventSystem eventSystem,
+        SortedMap<String, String> maskedRawPropertyValues,
+        Set<String> propertyKeys
+    ) {
         this.propertyConfiguration = propertyConfiguration;
         this.detectRunId = detectRunId;
         this.detectInfo = detectInfo;
@@ -56,7 +57,8 @@ public class DiagnosticSystem {
         System.out.println("A zip file will be created with logs and relevant Detect output files.");
         System.out.println("It is generally not recommended to leave diagnostic mode on as you must manually clean up the zip.");
         if (!isExtendedMode) {
-            System.out.println("Additional relevant files such as lock files can be collected automatically in extended diagnostics (--detect.diagnostic.extended=true) but will not be in this run.");
+            System.out.println(
+                "Additional relevant files such as lock files can be collected automatically in extended diagnostics (--detect.diagnostic.extended=true) but will not be in this run.");
         }
         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         System.out.println();
@@ -77,7 +79,7 @@ public class DiagnosticSystem {
 
         diagnosticReportHandler.configurationsReport(detectInfo, propertyConfiguration, maskedRawPropertyValues, propertyKeys);
 
-        logger.info("Diagnostics is ready.");
+        logger.info("Diagnostics system is ready (extended mode: {}).", isExtendedMode);
     }
 
     public Map<String, String> getAdditionalDockerProperties() {

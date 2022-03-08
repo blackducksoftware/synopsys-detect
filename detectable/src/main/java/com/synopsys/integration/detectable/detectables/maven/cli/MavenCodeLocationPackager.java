@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.maven.cli;
 
 import java.io.File;
@@ -55,7 +48,14 @@ public class MavenCodeLocationPackager {
     }
 
     // mavenOutput should be the full output of mvn dependency:tree (no scope applied); scope filtering is now done by this method
-    public List<MavenParseResult> extractCodeLocations(String sourcePath, List<String> mavenOutput, List<String> excludedScopes, List<String> includedScopes, List<String> excludedModules, List<String> includedModules) {
+    public List<MavenParseResult> extractCodeLocations(
+        String sourcePath,
+        List<String> mavenOutput,
+        List<String> excludedScopes,
+        List<String> includedScopes,
+        List<String> excludedModules,
+        List<String> includedModules
+    ) {
         ExcludedIncludedWildcardFilter modulesFilter = ExcludedIncludedWildcardFilter.fromCollections(excludedModules, includedModules);
         ExcludedIncludedWildcardFilter scopeFilter = ExcludedIncludedWildcardFilter.fromCollections(excludedScopes, includedScopes);
         codeLocations = new ArrayList<>();
@@ -145,15 +145,23 @@ public class MavenCodeLocationPackager {
         if (level == 1) {
             // a direct dependency, clear the stack and add this as a potential parent for the next line
             if (scopeFilter.shouldInclude(dependency.scope)) {
-                logger.trace(String
-                                 .format("Level 1 component %s:%s:%s:%s is in scope; adding it to hierarchy root", dependency.getExternalId().getGroup(), dependency.getExternalId().getName(), dependency.getExternalId().getVersion(),
-                                     dependency.scope));
+                logger.trace(String.format(
+                    "Level 1 component %s:%s:%s:%s is in scope; adding it to hierarchy root",
+                    dependency.getExternalId().getGroup(),
+                    dependency.getExternalId().getName(),
+                    dependency.getExternalId().getVersion(),
+                    dependency.scope
+                ));
                 currentGraph.addChildToRoot(dependency);
                 inOutOfScopeTree = false;
             } else {
-                logger.trace(String.format("Level 1 component %s:%s:%s:%s is a top-level out-of-scope component; entering non-scoped tree", dependency.getExternalId().getGroup(), dependency.getExternalId().getName(),
+                logger.trace(String.format(
+                    "Level 1 component %s:%s:%s:%s is a top-level out-of-scope component; entering non-scoped tree",
+                    dependency.getExternalId().getGroup(),
+                    dependency.getExternalId().getName(),
                     dependency.getExternalId().getVersion(),
-                    dependency.scope));
+                    dependency.scope
+                ));
                 inOutOfScopeTree = true;
             }
             dependencyParentStack.clear();
@@ -193,17 +201,31 @@ public class MavenCodeLocationPackager {
         }
     }
 
-    private void addDependencyIfInScope(MutableDependencyGraph currentGraph, List<Dependency> orphans, ExcludedIncludedWildcardFilter scopeFilter, boolean inOutOfScopeTree, Dependency parent,
-        ScopedDependency dependency) {
+    private void addDependencyIfInScope(
+        MutableDependencyGraph currentGraph,
+        List<Dependency> orphans,
+        ExcludedIncludedWildcardFilter scopeFilter,
+        boolean inOutOfScopeTree,
+        Dependency parent,
+        ScopedDependency dependency
+    ) {
         if (scopeFilter.shouldInclude(dependency.scope)) {
             if (inOutOfScopeTree) {
                 logger.trace(
-                    String.format("component %s:%s:%s:%s is in scope but in a nonScope tree; adding it to orphans", dependency.getExternalId().getGroup(), dependency.getExternalId().getName(), dependency.getExternalId().getVersion(),
-                        dependency.scope));
+                    String.format("component %s:%s:%s:%s is in scope but in a nonScope tree; adding it to orphans",
+                        dependency.getExternalId().getGroup(),
+                        dependency.getExternalId().getName(),
+                        dependency.getExternalId().getVersion(),
+                        dependency.scope
+                    ));
                 orphans.add(dependency);
             } else {
-                logger.trace(String.format("component %s:%s:%s:%s is in scope and in an in-scope tree; adding it to hierarchy", dependency.getExternalId().getGroup(), dependency.getExternalId().getName(),
-                    dependency.getExternalId().getVersion(), dependency.scope));
+                logger.trace(String.format("component %s:%s:%s:%s is in scope and in an in-scope tree; adding it to hierarchy",
+                    dependency.getExternalId().getGroup(),
+                    dependency.getExternalId().getName(),
+                    dependency.getExternalId().getVersion(),
+                    dependency.scope
+                ));
                 currentGraph.addParentWithChild(parent, dependency);
             }
         }
@@ -292,7 +314,7 @@ public class MavenCodeLocationPackager {
 
         // Does not have content or this a line about download information
         return !StringUtils.isBlank(trimmedLine) && !trimmedLine.contains("Downloaded") && !trimmedLine.contains(
-                "Downloading");
+            "Downloading");
     }
 
     public String trimLogLevel(String line) {

@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.nuget;
 
 import java.io.File;
@@ -12,13 +5,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.PassedResultBuilder;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.explanation.FoundInspector;
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspector;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
@@ -41,8 +34,13 @@ public class NugetSolutionDetectable extends Detectable {
     private NugetInspector inspector;
     private List<File> solutionFiles = new ArrayList<>();
 
-    public NugetSolutionDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final NugetInspectorResolver nugetInspectorManager, final NugetInspectorExtractor nugetInspectorExtractor,
-        final NugetInspectorOptions nugetInspectorOptions) {
+    public NugetSolutionDetectable(
+        DetectableEnvironment environment,
+        FileFinder fileFinder,
+        NugetInspectorResolver nugetInspectorManager,
+        NugetInspectorExtractor nugetInspectorExtractor,
+        NugetInspectorOptions nugetInspectorOptions
+    ) {
         super(environment);
         this.fileFinder = fileFinder;
         this.nugetInspectorExtractor = nugetInspectorExtractor;
@@ -75,8 +73,8 @@ public class NugetSolutionDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        final File outputDirectory = extractionEnvironment.getOutputDirectory();
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
+        File outputDirectory = extractionEnvironment.getOutputDirectory();
         return nugetInspectorExtractor.extract(solutionFiles, outputDirectory, inspector, nugetInspectorOptions);
     }
 

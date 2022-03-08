@@ -1,10 +1,3 @@
-/*
- * configuration
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.configuration.source;
 
 import java.util.ArrayList;
@@ -27,17 +20,20 @@ import org.springframework.core.env.ConfigurablePropertyResolver;
 import com.synopsys.integration.common.util.Bds;
 
 public class SpringConfigurationPropertySource implements PropertySource {
-    private String name;
-    private IterableConfigurationPropertySource propertySource;
+    private final String name;
+    private final IterableConfigurationPropertySource propertySource;
     private final ConfigurablePropertyResolver configurablePropertyResolver;
 
-    public SpringConfigurationPropertySource(final String name, final IterableConfigurationPropertySource propertySource, ConfigurablePropertyResolver configurablePropertyResolver) {
+    public SpringConfigurationPropertySource(String name, IterableConfigurationPropertySource propertySource, ConfigurablePropertyResolver configurablePropertyResolver) {
         this.name = name;
         this.propertySource = propertySource;
         this.configurablePropertyResolver = configurablePropertyResolver;
     }
 
-    public static List<SpringConfigurationPropertySource> fromConfigurableEnvironmentSafely(ConfigurableEnvironment configurableEnvironment, BiConsumer<String, Exception> unknownConsumer) {
+    public static List<SpringConfigurationPropertySource> fromConfigurableEnvironmentSafely(
+        ConfigurableEnvironment configurableEnvironment,
+        BiConsumer<String, Exception> unknownConsumer
+    ) {
         try {
             return new ArrayList<>(fromConfigurableEnvironment(configurableEnvironment, false));
         } catch (RuntimeException e) {
@@ -60,7 +56,9 @@ public class SpringConfigurationPropertySource implements PropertySource {
                     return null;
                 } else {
                     throw new RuntimeException(
-                        new UnknownSpringConfigurationException("Unknown spring configuration type. We may be unable to find property information from it correctly. Likely a new configuration property source should be tested against. "));
+                        new UnknownSpringConfigurationException(
+                            "Unknown spring configuration type. We may be unable to find property information from it correctly. Likely a new configuration property source should be tested against. "
+                        ));
                 }
             }
         }).filterNotNull().toList();
@@ -68,7 +66,11 @@ public class SpringConfigurationPropertySource implements PropertySource {
     }
 
     // TODO - this should return an Optional
-    private static SpringConfigurationPropertySource getPropertySource(ConfigurableEnvironment configurableEnvironment, boolean ignoreUnknown, ConfigurationPropertySource configurationPropertySource) {
+    private static SpringConfigurationPropertySource getPropertySource(
+        ConfigurableEnvironment configurableEnvironment,
+        boolean ignoreUnknown,
+        ConfigurationPropertySource configurationPropertySource
+    ) {
         Object underlying = configurationPropertySource.getUnderlyingSource();
         if (org.springframework.core.env.PropertySource.class.isAssignableFrom(underlying.getClass())) {
             org.springframework.core.env.PropertySource springSource = (org.springframework.core.env.PropertySource) underlying;
@@ -78,7 +80,8 @@ public class SpringConfigurationPropertySource implements PropertySource {
                 return null;
             } else {
                 throw new RuntimeException(
-                    new UnknownSpringConfigurationException("Unknown underlying spring configuration source. We may be unable to determine where a property originated. Likely a new property source type should be tested against."));
+                    new UnknownSpringConfigurationException(
+                        "Unknown underlying spring configuration source. We may be unable to determine where a property originated. Likely a new property source type should be tested against."));
             }
         }
     }
@@ -97,7 +100,7 @@ public class SpringConfigurationPropertySource implements PropertySource {
     }
 
     @Override
-    public Boolean hasKey(final String key) {
+    public Boolean hasKey(String key) {
         Optional<ConfigurationPropertyName> configurationPropertyName = toConfigurationName(key);
         return configurationPropertyName.filter(propertyName -> propertySource.getConfigurationProperty(propertyName) != null).isPresent();
     }
@@ -111,17 +114,17 @@ public class SpringConfigurationPropertySource implements PropertySource {
     //Spring resolves configuration properties using a configurable property resolver (resolves --prop=${VAR} replaces VAR from an environment variable of the same name.)
     //The value provided from the configurable property itself or the property source is not resolved, so we have to get the final value from a resolver.
     //Theoretically, this resolver should be bound to the property source, but this current method at least gets the final resolved value. - jp
-    public String getValue(final String key) {
+    public String getValue(String key) {
         return toConfigurationProperty(key)
-                   .map(ConfigurationProperty::getName)
-                   .map(ConfigurationPropertyName::toString)
-                   .map(configurablePropertyResolver::getProperty)
-                   .map(Object::toString)
-                   .orElse(null);
+            .map(ConfigurationProperty::getName)
+            .map(ConfigurationPropertyName::toString)
+            .map(configurablePropertyResolver::getProperty)
+            .map(Object::toString)
+            .orElse(null);
     }
 
     @Override
-    public String getOrigin(final String key) {
+    public String getOrigin(String key) {
         return toConfigurationProperty(key).map(ConfigurationProperty::getOrigin).map(Object::toString).orElse(null);
     }
 

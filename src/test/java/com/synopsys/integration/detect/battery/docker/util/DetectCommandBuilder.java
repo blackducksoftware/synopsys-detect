@@ -8,10 +8,10 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.detect.battery.docker.integration.BlackDuckAssertions;
 import com.synopsys.integration.detect.battery.docker.integration.BlackDuckTestConnection;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.util.NameVersion;
 
@@ -43,12 +43,12 @@ public class DetectCommandBuilder {
         return this;
     }
 
-    public DetectCommandBuilder property(DetectProperty<?> property, String value) {
-        property(property.getProperty().getKey(), value);
+    public DetectCommandBuilder property(Property property, String value) {
+        property(property.getKey(), value);
         return this;
     }
 
-    public DetectCommandBuilder connectToBlackDuck(final String blackduckUrl, final String apiToken, final boolean trustCert) {
+    public DetectCommandBuilder connectToBlackDuck(String blackduckUrl, String apiToken, boolean trustCert) {
         property(DetectProperties.BLACKDUCK_URL, blackduckUrl);
         property(DetectProperties.BLACKDUCK_API_TOKEN, apiToken);
         property(DetectProperties.BLACKDUCK_TRUST_CERT, trustCert ? "true" : "false");
@@ -57,7 +57,7 @@ public class DetectCommandBuilder {
 
     public DetectCommandBuilder defaults() {
         property(DetectProperties.DETECT_CLEANUP, "false");
-        property(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION, "DEBUG");
+        property(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION, "DEBUG"); //Needed to assert on operations in the logs.
         return this;
     }
 
@@ -92,10 +92,13 @@ public class DetectCommandBuilder {
         return this;
     }
 
-    public DetectCommandBuilder defaultDirectories(DetectDockerTestBuilder test) throws IOException {
+    public DetectCommandBuilder defaultDirectories(DetectDockerTestRunner test) throws IOException {
         property(DetectProperties.DETECT_BDIO_OUTPUT_PATH, test.directories().bdioBinding());
         property(DetectProperties.DETECT_OUTPUT_PATH, test.directories().detectOutputPathBinding());
-        property(DetectProperties.DETECT_TOOLS_OUTPUT_PATH, test.directories().sharedToolsBinding());
         return this;
+    }
+
+    public void debug() {
+        property(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION, "TRACE");
     }
 }

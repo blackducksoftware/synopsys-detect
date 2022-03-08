@@ -1,10 +1,3 @@
-/*
- * buildSrc
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.docs.markdown;
 
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +9,7 @@ class MarkdownOutputModel extends CommonTemplateMarkupOutputModel<MarkdownOutput
     /**
      * A least one of the parameters must be non-{@code null}!
      */
-    protected MarkdownOutputModel(@NotNull final String plainTextContent, @NotNull final String markupContent) {
+    protected MarkdownOutputModel(@NotNull String plainTextContent, @NotNull String markupContent) {
         super(plainTextContent, markupContent);
     }
 

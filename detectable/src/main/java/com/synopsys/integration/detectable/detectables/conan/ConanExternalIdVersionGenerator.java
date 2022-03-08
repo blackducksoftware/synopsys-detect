@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.conan;
 
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -15,25 +8,29 @@ public class ConanExternalIdVersionGenerator {
     public static String generateExternalIdVersionString(ConanNode<String> node, boolean preferLongFormExternalIds) throws DetectableException {
         String externalIdVersion;
         if (hasValue(node.getRecipeRevision().orElse(null)) &&
-                hasValue(node.getPackageRevision().orElse(null)) &&
-                preferLongFormExternalIds) {
+            hasValue(node.getPackageRevision().orElse(null)) &&
+            preferLongFormExternalIds) {
             // generate long form
             // <name>/<version>@<user>/<channel>#<recipe_revision>:<package_id>#<package_revision>
-            externalIdVersion = String.format("%s@%s/%s#%s:%s#%s",
+            externalIdVersion = String.format(
+                "%s@%s/%s#%s:%s#%s",
                 node.getVersion().orElseThrow(() -> new DetectableException(String.format("Missing dependency version: %s", node))),
                 node.getUser().orElse("_"),
                 node.getChannel().orElse("_"),
                 node.getRecipeRevision().get(),
                 node.getPackageId().orElse("0"),
-                node.getPackageRevision().get());
+                node.getPackageRevision().get()
+            );
         } else {
             // generate short form
             // <name>/<version>@<user>/<channel>#<recipe_revision>
-            externalIdVersion = String.format("%s@%s/%s#%s",
+            externalIdVersion = String.format(
+                "%s@%s/%s#%s",
                 node.getVersion().orElseThrow(() -> new DetectableException(String.format("Missing dependency version: %s", node))),
                 node.getUser().orElse("_"),
                 node.getChannel().orElse("_"),
-                node.getRecipeRevision().orElse("0"));
+                node.getRecipeRevision().orElse("0")
+            );
         }
         return externalIdVersion;
     }

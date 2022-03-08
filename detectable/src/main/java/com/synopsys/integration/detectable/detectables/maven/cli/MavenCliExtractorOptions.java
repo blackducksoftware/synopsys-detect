@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.maven.cli;
 
 import java.util.List;
@@ -17,7 +10,13 @@ public class MavenCliExtractorOptions {
     private final List<String> mavenExcludedModules;
     private final List<String> mavenIncludedModules;
 
-    public MavenCliExtractorOptions(String mavenBuildCommand, List<String> mavenExcludedScopes, List<String> mavenIncludedScopes, List<String> mavenExcludedModules, List<String> mavenIncludedModules) {
+    public MavenCliExtractorOptions(
+        String mavenBuildCommand,
+        List<String> mavenExcludedScopes,
+        List<String> mavenIncludedScopes,
+        List<String> mavenExcludedModules,
+        List<String> mavenIncludedModules
+    ) {
         this.mavenBuildCommand = mavenBuildCommand;
         this.mavenExcludedScopes = mavenExcludedScopes;
         this.mavenIncludedScopes = mavenIncludedScopes;

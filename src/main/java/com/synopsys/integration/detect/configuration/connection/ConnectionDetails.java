@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.configuration.connection;
 
 import java.util.List;
@@ -22,7 +15,13 @@ public class ConnectionDetails {
     private final Long timeout;
     private final Boolean alwaysTrust;
 
-    public ConnectionDetails(@NotNull Gson gson, @NotNull ProxyInfo proxyInformation, @NotNull List<Pattern> ignoredProxyHostPatterns, @NotNull Long timeout, @NotNull Boolean alwaysTrust) {
+    public ConnectionDetails(
+        @NotNull Gson gson,
+        @NotNull ProxyInfo proxyInformation,
+        @NotNull List<Pattern> ignoredProxyHostPatterns,
+        @NotNull Long timeout,
+        @NotNull Boolean alwaysTrust
+    ) {
         this.gson = gson;
         this.proxyInformation = proxyInformation;
         this.ignoredProxyHostPatterns = ignoredProxyHostPatterns;

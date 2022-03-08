@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.swift;
 
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
@@ -21,31 +14,31 @@ public class SwiftPackageTransformer {
 
     private final ExternalIdFactory externalIdFactory;
 
-    public SwiftPackageTransformer(final ExternalIdFactory externalIdFactory) {
+    public SwiftPackageTransformer(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public CodeLocation transform(final SwiftPackage rootSwiftPackage) {
-        final MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
-        for (final SwiftPackage swiftPackageDependency : rootSwiftPackage.getDependencies()) {
-            final Dependency dependency = convertToDependency(dependencyGraph, swiftPackageDependency);
+    public CodeLocation transform(SwiftPackage rootSwiftPackage) {
+        MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
+        for (SwiftPackage swiftPackageDependency : rootSwiftPackage.getDependencies()) {
+            Dependency dependency = convertToDependency(dependencyGraph, swiftPackageDependency);
             dependencyGraph.addChildToRoot(dependency);
         }
 
         return new CodeLocation(dependencyGraph);
     }
 
-    private Dependency convertToDependency(final MutableDependencyGraph dependencyGraph, final SwiftPackage swiftPackage) {
-        final ExternalId externalId;
+    private Dependency convertToDependency(MutableDependencyGraph dependencyGraph, SwiftPackage swiftPackage) {
+        ExternalId externalId;
         if ("unspecified".equals(swiftPackage.getVersion())) {
             externalId = externalIdFactory.createModuleNamesExternalId(SWIFT_FORGE, swiftPackage.getName());
         } else {
             externalId = externalIdFactory.createNameVersionExternalId(SWIFT_FORGE, swiftPackage.getName(), swiftPackage.getVersion());
         }
-        final Dependency dependency = new Dependency(externalId);
+        Dependency dependency = new Dependency(externalId);
 
-        for (final SwiftPackage swiftPackageDependency : swiftPackage.getDependencies()) {
-            final Dependency childDependency = convertToDependency(dependencyGraph, swiftPackageDependency);
+        for (SwiftPackage swiftPackageDependency : swiftPackage.getDependencies()) {
+            Dependency childDependency = convertToDependency(dependencyGraph, swiftPackageDependency);
             dependencyGraph.addParentWithChild(dependency, childDependency);
         }
 

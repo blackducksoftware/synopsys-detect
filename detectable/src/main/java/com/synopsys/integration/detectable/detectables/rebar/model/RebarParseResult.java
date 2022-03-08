@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.rebar.model;
 
 import java.util.Optional;
@@ -16,12 +9,12 @@ public class RebarParseResult {
     private final Optional<NameVersion> projectNameVersion;
     private final CodeLocation codeLocation;
 
-    public RebarParseResult(final NameVersion projectNameVersion, final CodeLocation codeLocation) {
+    public RebarParseResult(NameVersion projectNameVersion, CodeLocation codeLocation) {
         this.projectNameVersion = Optional.of(projectNameVersion);
         this.codeLocation = codeLocation;
     }
 
-    public RebarParseResult(final CodeLocation codeLocation) {
+    public RebarParseResult(CodeLocation codeLocation) {
         this.projectNameVersion = Optional.empty();
         this.codeLocation = codeLocation;
     }

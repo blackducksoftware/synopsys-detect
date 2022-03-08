@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.clang;
 
 import java.util.Collections;
@@ -46,7 +39,7 @@ public class ForgeChooser {
     @NotNull
     private String generateNamesString(List<Forge> forges) {
         return forges.stream()
-                   .map(Forge::getName)
-                   .collect(Collectors.joining(" "));
+            .map(Forge::getName)
+            .collect(Collectors.joining(" "));
     }
 }

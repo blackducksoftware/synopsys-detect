@@ -1,10 +1,3 @@
-/*
- * buildSrc
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.docs;
 
 import java.io.File;
@@ -13,8 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -22,10 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
@@ -45,14 +34,13 @@ import com.synopsys.integration.detect.docs.pages.DetectorsPage;
 import com.synopsys.integration.detect.docs.pages.ExitCodePage;
 import com.synopsys.integration.detect.docs.pages.SimplePropertyTablePage;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.log.IntLogger;
-import com.synopsys.integration.log.Slf4jIntLogger;
 
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 public class GenerateDocsTask extends DefaultTask {
-    private final IntLogger logger = new Slf4jIntLogger(this.getLogger());
+    private static final String DITAMAP_TEMPLATE_FILENAME = "ditamap.ftl";
+    private static final String DITAMAP_OUTPUT_FILENAME = "detect.ditamap";
 
     @TaskAction
     public void generateDocs() throws IOException, TemplateException, IntegrationException {
@@ -60,58 +48,40 @@ public class GenerateDocsTask extends DefaultTask {
         File file = new File("synopsys-detect-" + project.getVersion() + "-help.json");
         Reader reader = new FileReader(file);
         HelpJsonData helpJson = new Gson().fromJson(reader, HelpJsonData.class);
-
-        File outputDir = project.file("docs/generated");
-        File advancedDir = new File(outputDir, "advanced");
-        File troubleshootingDir = new File(advancedDir, "troubleshooting");
+        File docsDir = project.file("docs");
+        File sourceMarkdownDir = new File(docsDir, "markdown");
+        File outputDir = project.file("docs/generated"); // TODO use new File(docsDir, "generated")
+        File runningDir = new File(outputDir, "downloadingandrunning");
+        File troubleshootingDir = new File(outputDir, "troubleshooting");
 
         FileUtils.deleteDirectory(outputDir);
         troubleshootingDir.mkdirs();
 
+        // Metadata that Zoomin needs
+        FileUtils.copyFileToDirectory(new File(docsDir, "custom.properties"), outputDir);
+        FileUtils.copyFileToDirectory(new File(docsDir, "integrations-classification.xml"), outputDir);
+
         TemplateProvider templateProvider = new TemplateProvider(project.file("docs/templates"), project.getVersion().toString());
 
-        createFromFreemarker(templateProvider, troubleshootingDir, "exit-codes", new ExitCodePage(helpJson.getExitCodes()));
+        // Prepare ditamap files
+        createFromFreemarker(templateProvider, DITAMAP_TEMPLATE_FILENAME, new File(outputDir, DITAMAP_OUTPUT_FILENAME));
+        FileUtils.copyFileToDirectory(new File(docsDir, "topics.ditamap"), outputDir);
+        FileUtils.copyFileToDirectory(new File(docsDir, "keywords.ditamap"), outputDir);
 
-        createFromFreemarker(templateProvider, advancedDir, "status-file", new DetectorStatusCodes(helpJson.getDetectorStatusCodes()));
-
+        FileUtils.copyDirectory(sourceMarkdownDir, outputDir);
+        createMarkdownFromFreemarker(templateProvider, troubleshootingDir, "exit-codes", new ExitCodePage(helpJson.getExitCodes()));
+        createMarkdownFromFreemarker(templateProvider, runningDir, "status-file", new DetectorStatusCodes(helpJson.getDetectorStatusCodes()));
         handleDetectors(templateProvider, outputDir, helpJson);
         handleProperties(templateProvider, outputDir, helpJson);
-        handleContent(outputDir, templateProvider);
+        createFromFreemarker(templateProvider, "downloadlocations.ftl", new File(runningDir, "downloadlocations.md"));
     }
 
-    private void handleContent(File outputDir, TemplateProvider templateProvider) throws IOException, TemplateException {
-        Project project = getProject();
-        File templatesDir = new File(project.getProjectDir(), "docs/templates");
-        File contentDir = new File(templatesDir, "content");
-
-        // TODO: Not sure this method of tree walking actually works.
-        try (Stream<Path> paths = Files.walk(contentDir.toPath())) {
-            List<Path> foundFreemarkerFiles = paths.filter(it -> FilenameUtils.isExtension(it.getFileName().toString(), "ftl"))
-                                                        .collect(Collectors.toList());
-
-            for (Path foundFreemarkerFilePath : foundFreemarkerFiles) {
-                createContentMarkdownFromTemplate(templatesDir, contentDir, foundFreemarkerFilePath.toFile(), outputDir, templateProvider);
-            }
-        }
-    }
-
-    private void createContentMarkdownFromTemplate(File templatesDir, File contentDir, File templateFile, File baseOutputDir, TemplateProvider templateProvider) throws IOException, TemplateException {
-        String helpContentTemplateRelativePath = templatesDir.toPath().relativize(templateFile.toPath()).toString(); // TODO: Verify this is the correct substitution.
-        File outputFile = deriveOutputFileForContentTemplate(contentDir, templateFile, baseOutputDir);
-        logger.alwaysLog(String.format("Generating markdown from template file: %s --> %s", helpContentTemplateRelativePath, outputFile.getCanonicalPath()));
-        createFromFreemarker(templateProvider, helpContentTemplateRelativePath, outputFile, new HashMap<String, String>());
-    }
-
-    private File deriveOutputFileForContentTemplate(File contentDir, File helpContentTemplateFile, File baseOutputDir) {
-        String templateSubDir = contentDir.toPath().relativize(helpContentTemplateFile.toPath().getParent()).toString(); // TODO: Verify this is the correct substitution.
-        File outputDir = new File(baseOutputDir, templateSubDir);
-        String outputFileName = String.format("%s.md", FilenameUtils.removeExtension(helpContentTemplateFile.getName()));
-
-        return new File(outputDir, outputFileName);
-    }
-
-    private void createFromFreemarker(TemplateProvider templateProvider, File outputDir, String templateName, Object data) throws IOException, TemplateException {
+    private void createMarkdownFromFreemarker(TemplateProvider templateProvider, File outputDir, String templateName, Object data) throws IOException, TemplateException {
         createFromFreemarker(templateProvider, String.format("%s.ftl", templateName), new File(outputDir, String.format("%s.md", templateName)), data);
+    }
+
+    private void createFromFreemarker(TemplateProvider templateProvider, String templateRelativePath, File to) throws IOException, TemplateException {
+        createFromFreemarker(templateProvider, templateRelativePath, to, new HashMap<String, String>(0));
     }
 
     private void createFromFreemarker(TemplateProvider templateProvider, String templateRelativePath, File to, Object data) throws IOException, TemplateException {
@@ -125,16 +95,16 @@ public class GenerateDocsTask extends DefaultTask {
     private void handleDetectors(TemplateProvider templateProvider, File baseOutputDir, HelpJsonData helpJson) throws IOException, TemplateException {
         File outputDir = new File(baseOutputDir, "components");
         List<Detector> build = helpJson.getBuildDetectors().stream()
-                                         .map(Detector::new)
-                                         .sorted(Comparator.comparing(Detector::getDetectorType).thenComparing(Detector::getDetectorName))
-                                         .collect(Collectors.toList());
+            .map(Detector::new)
+            .sorted(Comparator.comparing(Detector::getDetectorType).thenComparing(Detector::getDetectorName))
+            .collect(Collectors.toList());
 
         List<Detector> buildless = helpJson.getBuildlessDetectors().stream()
-                                             .map(Detector::new)
-                                             .sorted(Comparator.comparing(Detector::getDetectorType).thenComparing(Detector::getDetectorName))
-                                             .collect(Collectors.toList());
+            .map(Detector::new)
+            .sorted(Comparator.comparing(Detector::getDetectorType).thenComparing(Detector::getDetectorName))
+            .collect(Collectors.toList());
 
-        createFromFreemarker(templateProvider, outputDir, "detectors", new DetectorsPage(buildless, build));
+        createMarkdownFromFreemarker(templateProvider, outputDir, "detectors", new DetectorsPage(buildless, build));
     }
 
     private String encodePropertyLocation(String propertyName) {
@@ -162,36 +132,40 @@ public class GenerateDocsTask extends DefaultTask {
         return encoded.toString().toLowerCase();
     }
 
+    private String makeLinkSafe(String linkText) {
+        return linkText.replace(" ", "-");
+    }
+
     private void handleProperties(TemplateProvider templateProvider, File outputDir, HelpJsonData helpJson) throws IntegrationException, IOException, TemplateException {
         Map<String, String> superGroups = createSuperGroupLookup(helpJson);
 
         // example: superGroup/key
         Map<String, String> groupLocations = superGroups.entrySet().stream()
-                                                       .collect(Collectors.toMap(Map.Entry::getKey, it -> String.format("%s/%s", it.getValue(), it.getKey()).toLowerCase()));
+            .collect(Collectors.toMap(Map.Entry::getKey, it -> String.format("%s/%s", it.getValue(), it.getKey()).toLowerCase()));
 
         // Updating the location on all the json options so that a new object with only 1 new property did not have to be created (and then populated) from the existing.
         for (HelpJsonOption helpJsonOption : helpJson.getOptions()) {
-            String groupLocation = getGroupLocation(groupLocations, helpJsonOption.getGroup());
+            String groupLocation = getGroupLocation(groupLocations, makeLinkSafe(helpJsonOption.getGroup()));
             String encodedPropertyLocation = encodePropertyLocation(helpJsonOption.getPropertyName());
-            helpJsonOption.setLocation(String.format("%s/#%s", groupLocation, encodedPropertyLocation)); //ex: superGroup/key/#property_name
+            helpJsonOption.setLocation(String.format("%s.md#%s", groupLocation, encodedPropertyLocation)); //ex: superGroup/key/#property_name
         }
 
         Map<String, List<HelpJsonOption>> groupedOptions = helpJson.getOptions().stream()
-                                                                     .collect(Collectors.groupingBy(HelpJsonOption::getGroup));
+            .collect(Collectors.groupingBy(o -> makeLinkSafe(o.getGroup())));
 
         List<SplitGroup> splitGroupOptions = new ArrayList<>();
         for (Map.Entry<String, List<HelpJsonOption>> group : groupedOptions.entrySet()) {
             List<HelpJsonOption> deprecated = group.getValue().stream()
-                                                        .filter(HelpJsonOption::getDeprecated)
-                                                        .collect(Collectors.toList());
+                .filter(HelpJsonOption::getDeprecated)
+                .collect(Collectors.toList());
 
             List<HelpJsonOption> simple = group.getValue().stream()
-                                                    .filter(helpJsonObject -> !deprecated.contains(helpJsonObject) && (StringUtils.isBlank(helpJsonObject.getCategory()) || "simple".equals(helpJsonObject.getCategory())))
-                                                    .collect(Collectors.toList());
+                .filter(helpJsonObject -> !deprecated.contains(helpJsonObject) && (StringUtils.isBlank(helpJsonObject.getCategory()) || "simple".equals(helpJsonObject.getCategory())))
+                .collect(Collectors.toList());
 
             List<HelpJsonOption> advanced = group.getValue().stream()
-                                                      .filter(it -> !simple.contains(it) && !deprecated.contains(it))
-                                                      .collect(Collectors.toList());
+                .filter(it -> !simple.contains(it) && !deprecated.contains(it))
+                .collect(Collectors.toList());
 
             String superGroupName = getOrThrow(superGroups, group.getKey(), String.format("Missing super group: %s", group.getKey()));
             String groupLocation = getGroupLocation(groupLocations, group.getKey());
@@ -233,18 +207,18 @@ public class GenerateDocsTask extends DefaultTask {
             deprecatedPropertyTableData.add(deprecatedPropertyTableGroup);
         }
 
-        createFromFreemarker(templateProvider, propertiesFolder, "basic-properties", new SimplePropertyTablePage(simplePropertyTableData));
-        createFromFreemarker(templateProvider, propertiesFolder, "deprecated-properties", new DeprecatedPropertyTablePage(deprecatedPropertyTableData));
-        createFromFreemarker(templateProvider, propertiesFolder, "all-properties", new AdvancedPropertyTablePage(splitGroupOptions));
+        createMarkdownFromFreemarker(templateProvider, propertiesFolder, "basic-properties", new SimplePropertyTablePage(simplePropertyTableData));
+        createMarkdownFromFreemarker(templateProvider, propertiesFolder, "deprecated-properties", new DeprecatedPropertyTablePage(deprecatedPropertyTableData));
+        createMarkdownFromFreemarker(templateProvider, propertiesFolder, "all-properties", new AdvancedPropertyTablePage(splitGroupOptions));
     }
 
     private String getGroupLocation(Map<String, String> groupLocationMap, String group) throws IntegrationException {
-        return getOrThrow(groupLocationMap, group, String.format("Missing group location: %s", group));
+        return getOrThrow(groupLocationMap, makeLinkSafe(group), String.format("Missing group location: %s", group));
     }
 
     private <K, V> V getOrThrow(Map<K, V> map, K key, String missingMessage) throws IntegrationException {
         return Optional.ofNullable(map.get(key))
-                   .orElseThrow(() -> new IntegrationException(missingMessage));
+            .orElseThrow(() -> new IntegrationException(missingMessage));
     }
 
     // Technically each key has exactly 1 super key (but this is not enforced in the json) so here we check that assumption and return the mapping.
@@ -254,6 +228,7 @@ public class GenerateDocsTask extends DefaultTask {
         Map<String, String> lookup = new HashMap<>();
 
         helpJson.getOptions().forEach(option -> {
+            String optionGroup = makeLinkSafe(option.getGroup());
             final String defaultSuperGroup = "Configuration";
             String rawSuperGroup = option.getSuperGroup();
             String superGroup;
@@ -263,14 +238,15 @@ public class GenerateDocsTask extends DefaultTask {
                 superGroup = rawSuperGroup;
             }
 
-            if (lookup.containsKey(option.getGroup()) && !superGroup.equals(lookup.get(option.getGroup()))) {
-                throw new RuntimeException(String.format("The created detect help JSON had a key '%s' whose super key '%s' did not match a different options super key in the same key '%s'.",
-                    option.getGroup(),
+            if (lookup.containsKey(optionGroup) && !superGroup.equals(lookup.get(optionGroup))) {
+                throw new RuntimeException(String.format(
+                    "The created detect help JSON had a key '%s' whose super key '%s' did not match a different options super key in the same key '%s'.",
+                    optionGroup,
                     superGroup,
-                    lookup.get(option.getGroup())
+                    lookup.get(optionGroup)
                 ));
-            } else if (!lookup.containsKey(option.getGroup())) {
-                lookup.put(option.getGroup(), superGroup);
+            } else if (!lookup.containsKey(optionGroup)) {
+                lookup.put(optionGroup, superGroup);
             }
         });
 

@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.detector.inspectors.nuget.runtime;
 
 import java.util.List;
@@ -18,17 +11,17 @@ public class DotNetRuntimeManager {
     private final DotNetRuntimeParser runtimeParser;
     private List<String> availableRuntimes = null;
 
-    public DotNetRuntimeManager(final DotNetRuntimeFinder runtimeFinder, final DotNetRuntimeParser runtimeParser) {
+    public DotNetRuntimeManager(DotNetRuntimeFinder runtimeFinder, DotNetRuntimeParser runtimeParser) {
         this.runtimeFinder = runtimeFinder;
         this.runtimeParser = runtimeParser;
     }
 
-    public boolean isRuntimeAvailable(final Integer... versionTokens) throws DetectableException {
-        final String versionSearchString = StringUtils.join(versionTokens, ".");
+    public boolean isRuntimeAvailable(Integer... versionTokens) throws DetectableException {
+        String versionSearchString = StringUtils.join(versionTokens, ".");
         return isRuntimeAvailable(versionSearchString);
     }
 
-    public boolean isRuntimeAvailable(final String version) throws DetectableException {
+    public boolean isRuntimeAvailable(String version) throws DetectableException {
         if (availableRuntimes == null) {
             availableRuntimes = runtimeFinder.listAvailableRuntimes();
         }

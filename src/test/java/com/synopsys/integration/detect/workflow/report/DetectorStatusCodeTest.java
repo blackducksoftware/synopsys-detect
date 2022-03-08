@@ -23,30 +23,36 @@ public class DetectorStatusCodeTest {
 
     @Test
     public void ensureDetectableResultsPresentInStatusLookup() {
-        Set<? extends Class<?>> classes = getClasses("detectable/src/main/java/com/synopsys/integration/detectable/detectable/result", "com.synopsys.integration.detectable.detectable.result");
+        Set<? extends Class<?>> classes = getClasses(
+            "detectable/src/main/java/com/synopsys/integration/detectable/detectable/result",
+            "com.synopsys.integration.detectable.detectable.result"
+        );
         classes.remove(DetectableResult.class);//Need to remove the base class as it shouldn't be mapped.
         assertAllPresent(classes);
     }
 
     private void assertAllPresent(Set<? extends Class<?>> classes) {
         Assertions.assertTrue(classes.size() > 5, "Should have at least found a few result classes.");
-        classes.forEach(it -> Assertions.assertNotNull(DetectorResultStatusCodeLookup.standardLookup.getStatusCode(it), "Expected " + it.getSimpleName() + " to be in the lookup."));
+        classes.forEach(it -> Assertions.assertNotNull(
+            DetectorResultStatusCodeLookup.standardLookup.getStatusCode(it),
+            "Expected " + it.getSimpleName() + " to be in the lookup."
+        ));
     }
 
     Set<? extends Class<?>> getClasses(String directory, String packageName) {
         return Bds.of(new File(directory).listFiles())
-                   .filter(it -> !it.isDirectory())
-                   .map(File::getName)
-                   .map(it -> it.replace(".java", ""))
-                   .map(it -> {
-                       try {
-                           return Class.forName(packageName + "." + it);
-                       } catch (ClassNotFoundException e) {
-                           return null;
-                       }
-                   })
-                   .filter(Objects::nonNull)
-                   .toSet();
+            .filter(it -> !it.isDirectory())
+            .map(File::getName)
+            .map(it -> it.replace(".java", ""))
+            .map(it -> {
+                try {
+                    return Class.forName(packageName + "." + it);
+                } catch (ClassNotFoundException e) {
+                    return null;
+                }
+            })
+            .filter(Objects::nonNull)
+            .toSet();
     }
 
 }

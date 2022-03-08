@@ -2,7 +2,7 @@
 # ${groupName}
 
 <#list simple as option>
-##${option.propertyName}
+## ${option.propertyName}
 ```<#noautoesc>
 <#if option.hasAcceptableValues>
 --${option.propertyKey}=${option.acceptableValues?join(",")} 
@@ -30,12 +30,11 @@ ${option.detailedDescription!""}
 |Acceptable Values|Any|
 </#if>
 |Strict|${option.strictValues?then("Yes", "No")}|
-|Example|${option.example!""}|
-
+<#if option.example?has_content>|Example|<#noautoesc>`${option.example!""}`</#noautoesc>|${'\n'}</#if><#if option.deprecatedValues?has_content>|Deprecated Values|<#list option.deprecatedValues as deprecatedValue> <p>${deprecatedValue.value}: ${deprecatedValue.reason}</p></#list>|</#if>
 </#list> 
 
 <#list advanced as option>
-##${option.propertyName} (Advanced)
+## ${option.propertyName} (Advanced)
 ```<#noautoesc>
 <#if option.hasAcceptableValues>
 --${option.propertyKey}=${option.acceptableValues?join(",")} 
@@ -63,13 +62,12 @@ ${option.detailedDescription!""}
 |Acceptable Values|Any|
 </#if>
 |Strict|${option.strictValues?then("Yes", "No")}|
-|Example|${option.example!""}|
-
+    <#if option.example?has_content>|Example|<#noautoesc>`${option.example!""}`</#noautoesc>|${'\n'}</#if><#if option.deprecatedValues?has_content>|Deprecated Values|<#list option.deprecatedValues as deprecatedValue> <p>${deprecatedValue.value}: ${deprecatedValue.reason}</p></#list>|</#if>
 </#list> 
 
 
 <#list deprecated as option>
-##${option.propertyName} (Deprecated) 
+## ${option.propertyName} (Deprecated) 
 ```<#noautoesc>
 <#if option.hasAcceptableValues>
 --${option.propertyKey}=${option.acceptableValues?join(",")} 
@@ -84,7 +82,7 @@ ${option.description}
 
 ${option.detailedDescription!""}
 
-**DEPRECATED: ${option.deprecatedDescription!"This property is deprecated."} It will cause failure in ${option.deprecatedFailInVersion} and be removed in ${option.deprecatedRemoveInVersion}.**
+**DEPRECATED: ${option.deprecatedDescription!"This property is deprecated."} It will be removed in ${option.deprecatedRemoveInVersion}.**
 
 |Details||
 |---|---|
@@ -99,5 +97,5 @@ ${option.detailedDescription!""}
 |Acceptable Values|Any|
 </#if>
 |Strict|${option.strictValues?then("Yes", "No")}|
-
+    <#if option.example?has_content>|Example|<#noautoesc>`${option.example!""}`</#noautoesc>|${'\n'}</#if><#if option.deprecatedValues?has_content>|Deprecated Values|<#list option.deprecatedValues as deprecatedValue> <p>${deprecatedValue.value}: ${deprecatedValue.reason}</p></#list>|</#if>
 </#list> 

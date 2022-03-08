@@ -17,6 +17,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectableOptions;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
@@ -37,9 +38,15 @@ public class BitbakeDetectableTest extends DetectableFunctionalTest {
         ExecutableOutput bitbakeGOutput = createStandardOutput(
             ""
         );
-        addExecutableOutput(bitbakeGOutput, "bash", "-c", "source " + getSourceDirectory().toFile().getCanonicalPath() + File.separator + "oe-init-build-env; " + "bitbake " + "-g " + "core-image-minimal");
+        addExecutableOutput(
+            bitbakeGOutput,
+            "bash",
+            "-c",
+            "source " + getSourceDirectory().toFile().getCanonicalPath() + File.separator + "oe-init-build-env; " + "bitbake " + "-g " + "core-image-minimal"
+        );
 
-        addFile(Paths.get("task-depends.dot"),
+        addFile(
+            Paths.get("task-depends.dot"),
             "digraph depends {",
             "\"acl.do_build\" [label = \"acl do_build\\n:2.2.52-r0\\n/home/bit/poky/meta/recipes-support/attr/acl_2.2.52.bb\"]",
             "\"acl.do_build\" -> \"acl.do_package_qa\"",
@@ -63,7 +70,12 @@ public class BitbakeDetectableTest extends DetectableFunctionalTest {
             "base-passwd:",
             "  meta                 3.5.29"
         );
-        addExecutableOutput(bitbakeShowRecipesOutput, "bash", "-c", "source " + getSourceDirectory().toFile().getCanonicalPath() + File.separator + "oe-init-build-env; " + "bitbake-layers show-recipes");
+        addExecutableOutput(
+            bitbakeShowRecipesOutput,
+            "bash",
+            "-c",
+            "source " + getSourceDirectory().toFile().getCanonicalPath() + File.separator + "oe-init-build-env; " + "bitbake-layers show-recipes"
+        );
     }
 
     @NotNull
@@ -71,7 +83,7 @@ public class BitbakeDetectableTest extends DetectableFunctionalTest {
     public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
         return detectableFactory.createBitbakeDetectable(
             detectableEnvironment,
-            new BitbakeDetectableOptions("oe-init-build-env", new ArrayList<>(), Collections.singletonList("core-image-minimal"), 0),
+            new BitbakeDetectableOptions("oe-init-build-env", new ArrayList<>(), Collections.singletonList("core-image-minimal"), 0, false, EnumListFilter.excludeNone()),
             () -> ExecutableTarget.forCommand("bash")
         );
     }

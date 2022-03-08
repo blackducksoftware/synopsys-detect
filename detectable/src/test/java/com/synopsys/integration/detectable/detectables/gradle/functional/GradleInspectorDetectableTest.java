@@ -1,25 +1,3 @@
-/**
- * detectable
- *
- * Copyright (c) 2020 Synopsys, Inc.
- *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
 package com.synopsys.integration.detectable.detectables.gradle.functional;
 
 import java.io.File;
@@ -37,6 +15,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorOptions;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptOptions;
 import com.synopsys.integration.detectable.extraction.Extraction;
@@ -53,7 +32,8 @@ public class GradleInspectorDetectableTest extends DetectableFunctionalTest {
 
     @Override
     protected void setup() throws IOException {
-        addFile(Paths.get("build.gradle"),
+        addFile(
+            Paths.get("build.gradle"),
             "buildscript {",
             "    repositories {",
             "        jcenter()",
@@ -75,11 +55,18 @@ public class GradleInspectorDetectableTest extends DetectableFunctionalTest {
         );
 
         ExecutableOutput gradleDependenciesOutput = createStandardOutput("");
-        addExecutableOutput(gradleDependenciesOutput, new File("gradle").getCanonicalPath(), "gatherDependencies", "--init-script=gradle-inspector", "-DGRADLEEXTRACTIONDIR=" + getOutputDirectory().toFile().getCanonicalPath(), "--info");
+        addExecutableOutput(
+            gradleDependenciesOutput,
+            new File("gradle").getCanonicalPath(),
+            "gatherDependencies",
+            "--init-script=gradle-inspector",
+            "-DGRADLEEXTRACTIONDIR=" + getOutputDirectory().toFile().getCanonicalPath(),
+            "--info"
+        );
 
         addOutputFile(Paths.get("rootProjectMetadata.txt"), Arrays.asList(
             "DETECT META DATA START",
-            "rootProjectPath:/Users/ekerwin/Documents/source/integration/hub-detect",
+            "rootProjectDirectory:/Users/ekerwin/Documents/source/integration/hub-detect",
             "rootProjectGroup:com.blackducksoftware.integration",
             "rootProjectName:hub-detect",
             "rootProjectVersion:2.0.0-SNAPSHOT",
@@ -106,9 +93,25 @@ public class GradleInspectorDetectableTest extends DetectableFunctionalTest {
     @Override
     public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
 
-        GradleInspectorOptions gradleInspectorOptions = new GradleInspectorOptions("", new GradleInspectorScriptOptions(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), "", ""),
-            ProxyInfo.NO_PROXY_INFO);
-        return detectableFactory.createGradleDetectable(detectableEnvironment, gradleInspectorOptions, () -> new File("gradle-inspector"), (environment) -> ExecutableTarget.forFile(new File("gradle")));
+        GradleInspectorOptions gradleInspectorOptions = new GradleInspectorOptions("",
+            new GradleInspectorScriptOptions(
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                "",
+                ""
+            ),
+            ProxyInfo.NO_PROXY_INFO, EnumListFilter.excludeNone()
+        );
+        return detectableFactory.createGradleDetectable(
+            detectableEnvironment,
+            gradleInspectorOptions,
+            () -> new File("gradle-inspector"),
+            (environment) -> ExecutableTarget.forFile(new File("gradle"))
+        );
     }
 
     @Override

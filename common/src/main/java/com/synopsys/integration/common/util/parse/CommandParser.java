@@ -1,10 +1,3 @@
-/*
- * common
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.common.util.parse;
 
 import java.util.ArrayList;
@@ -46,8 +39,8 @@ public class CommandParser {
 
     private String restoreWhitespace(String givenString) {
         String newString = givenString
-                               .replace(ENCODED_SPACE_CHAR, SPACE_CHAR_AS_STRING)
-                               .replace(ENCODED_TAB_CHAR, TAB_CHAR_AS_STRING);
+            .replace(ENCODED_SPACE_CHAR, SPACE_CHAR_AS_STRING)
+            .replace(ENCODED_TAB_CHAR, TAB_CHAR_AS_STRING);
         logger.trace(String.format("restoreWhitespace() changed %s to %s", givenString, newString));
         return newString;
     }
@@ -71,8 +64,8 @@ public class CommandParser {
     private void processQuotedChar(ParserState parserState, char c, StringBuilder newString) {
         // Currently inside a quoted substring
         if ((!parserState.isLastCharEscapeChar() && (c == SINGLE_QUOTE_CHAR) && (parserState.getQuoteType() == QuoteType.SINGLE)) ||
-                (!parserState.isLastCharEscapeChar() && (c == DOUBLE_QUOTE_CHAR) && (parserState.getQuoteType() == QuoteType.DOUBLE)) ||
-                (parserState.isLastCharEscapeChar() && (c == DOUBLE_QUOTE_CHAR) && parserState.getQuoteType() == QuoteType.ESCAPED_DOUBLE)) {
+            (!parserState.isLastCharEscapeChar() && (c == DOUBLE_QUOTE_CHAR) && (parserState.getQuoteType() == QuoteType.DOUBLE)) ||
+            (parserState.isLastCharEscapeChar() && (c == DOUBLE_QUOTE_CHAR) && parserState.getQuoteType() == QuoteType.ESCAPED_DOUBLE)) {
             // Close quote
             parserState.setQuoteType(QuoteType.NONE);
             newString.append(c);

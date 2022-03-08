@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.blackduck.project;
 
 import java.util.List;
@@ -14,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentView;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentVersionView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.http.BlackDuckRequestBuilder;
 import com.synopsys.integration.blackduck.http.BlackDuckRequestFilter;
@@ -30,8 +23,8 @@ import com.synopsys.integration.exception.IntegrationException;
 public class MapToParentOperation {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final BlackDuckApiClient blackDuckService;
-    private ProjectService projectService;
-    private ProjectBomService projectBomService;
+    private final ProjectService projectService;
+    private final ProjectBomService projectBomService;
 
     public MapToParentOperation(BlackDuckApiClient blackDuckService, ProjectService projectService, ProjectBomService projectBomService) {
         this.blackDuckService = blackDuckService;
@@ -54,16 +47,16 @@ public class MapToParentOperation {
                 ProjectVersionView parentProjectVersionView = parentWrapper.get().getProjectVersionView();
 
                 BlackDuckRequestFilter filter = BlackDuckRequestFilter.createFilterWithSingleValue("bomComponentSource", "custom_project");
-                BlackDuckMultipleRequest<ProjectVersionComponentView> spec = new BlackDuckRequestBuilder()
-                                                                                 .commonGet()
-                                                                                 .addBlackDuckFilter(filter)
-                                                                                 .buildBlackDuckRequest(parentProjectVersionView.metaComponentsLink());
+                BlackDuckMultipleRequest<ProjectVersionComponentVersionView> spec = new BlackDuckRequestBuilder()
+                    .commonGet()
+                    .addBlackDuckFilter(filter)
+                    .buildBlackDuckRequest(parentProjectVersionView.metaComponentsLink());
 
-                List<ProjectVersionComponentView> components = blackDuckService.getAllResponses(spec);
-                Optional<ProjectVersionComponentView> existingProjectComponent = components.stream()
-                                                                                     .filter(component -> component.getComponentName().equals(projectName))
-                                                                                     .filter(component -> component.getComponentVersionName().equals(projectVersionName))
-                                                                                     .findFirst();
+                List<ProjectVersionComponentVersionView> components = blackDuckService.getAllResponses(spec);
+                Optional<ProjectVersionComponentVersionView> existingProjectComponent = components.stream()
+                    .filter(component -> component.getComponentName().equals(projectName))
+                    .filter(component -> component.getComponentVersionName().equals(projectVersionName))
+                    .findFirst();
                 if (existingProjectComponent.isPresent()) {
                     logger.debug("This project already exists on the parent so it will not be added to the parent again.");
                 } else {

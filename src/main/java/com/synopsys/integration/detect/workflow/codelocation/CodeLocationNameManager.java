@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.codelocation;
 
 import java.io.File;
@@ -31,7 +24,14 @@ public class CodeLocationNameManager {
         return aggregateCodeLocationName;
     }
 
-    public String createCodeLocationName(DetectCodeLocation detectCodeLocation, File detectSourcePath, String projectName, String projectVersionName, String prefix, String suffix) {
+    public String createCodeLocationName(
+        DetectCodeLocation detectCodeLocation,
+        File detectSourcePath,
+        String projectName,
+        String projectVersionName,
+        String prefix,
+        String suffix
+    ) {
         String codeLocationName;
         if (codeLocationNameGenerator.useCodeLocationOverride()) {
             if (detectCodeLocation.getDockerImageName().isPresent()) {
@@ -42,15 +42,38 @@ public class CodeLocationNameManager {
         } else {
             if (detectCodeLocation.getDockerImageName().isPresent()) {
                 String dockerImage = detectCodeLocation.getDockerImageName().get();
-                codeLocationName = codeLocationNameGenerator.createDockerCodeLocationName(detectCodeLocation.getSourcePath(), projectName, projectVersionName, dockerImage, prefix, suffix);
+                codeLocationName = codeLocationNameGenerator.createDockerCodeLocationName(
+                    detectCodeLocation.getSourcePath(),
+                    projectName,
+                    projectVersionName,
+                    dockerImage,
+                    prefix,
+                    suffix
+                );
             } else {
-                codeLocationName = codeLocationNameGenerator.createBomCodeLocationName(detectSourcePath, detectCodeLocation.getSourcePath(), projectName, projectVersionName, detectCodeLocation, prefix, suffix);
+                codeLocationName = codeLocationNameGenerator.createBomCodeLocationName(
+                    detectSourcePath,
+                    detectCodeLocation.getSourcePath(),
+                    projectName,
+                    projectVersionName,
+                    detectCodeLocation,
+                    prefix,
+                    suffix
+                );
             }
         }
         return codeLocationName;
     }
 
-    public String createScanCodeLocationName(File sourcePath, File scanTargetPath, @Nullable File dockerTar, String projectName, String projectVersionName, String prefix, String suffix) {
+    public String createScanCodeLocationName(
+        File sourcePath,
+        File scanTargetPath,
+        @Nullable File dockerTar,
+        String projectName,
+        String projectVersionName,
+        String prefix,
+        String suffix
+    ) {
         String scanCodeLocationName;
         if (codeLocationNameGenerator.useCodeLocationOverride()) {
             scanCodeLocationName = codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.SCAN);

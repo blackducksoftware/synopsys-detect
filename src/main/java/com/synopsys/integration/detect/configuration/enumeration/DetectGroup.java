@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.configuration.enumeration;
 
 import java.util.Optional;
@@ -48,6 +41,7 @@ public enum DetectGroup implements Group {
     CONAN("conan", DETECTORS),
     CONDA("conda", DETECTORS),
     CPAN("cpan", DETECTORS),
+    DART("dart", DETECTORS),
     DOCKER("docker", DETECTORS),
     GO("go", DETECTORS),
     GRADLE("gradle", DETECTORS),
@@ -59,6 +53,7 @@ public enum DetectGroup implements Group {
     PACKAGIST("packagist", DETECTORS),
     PEAR("pear", DETECTORS),
     PIP("pip", DETECTORS),
+    PNPM("pnpm", DETECTORS),
     PYTHON("python", DETECTORS),
     RUBY("ruby", DETECTORS),
     SBT("sbt", DETECTORS),

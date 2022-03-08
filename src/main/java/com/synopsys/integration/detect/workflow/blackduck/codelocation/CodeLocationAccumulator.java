@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.blackduck.codelocation;
 
 import java.util.ArrayList;
@@ -20,7 +13,11 @@ public class CodeLocationAccumulator {
     private final Set<String> nonWaitableCodeLocations = new HashSet<>();
 
     public void addWaitableCodeLocation(CodeLocationCreationData<? extends CodeLocationBatchOutput<?>> creationData) {
-        waitableCodeLocationData.add(new AccumulatedCodeLocationData(creationData.getOutput().getExpectedNotificationCount(), creationData.getOutput().getSuccessfulCodeLocationNames(), creationData.getNotificationTaskRange()));
+        waitableCodeLocationData.add(new AccumulatedCodeLocationData(
+            creationData.getOutput().getExpectedNotificationCount(),
+            creationData.getOutput().getSuccessfulCodeLocationNames(),
+            creationData.getNotificationTaskRange()
+        ));
     }
 
     public void addNonWaitableCodeLocation(Set<String> names) {

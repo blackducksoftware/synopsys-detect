@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.conan.lockfile.parser;
 
 import java.util.ArrayList;
@@ -41,13 +34,12 @@ public class ConanLockfileParser {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public ConanDetectableResult generateCodeLocationFromConanLockfileContents(String conanLockfileContents,
-        boolean includeBuildDependencies, boolean preferLongFormExternalIds) throws DetectableException {
+    public ConanDetectableResult generateCodeLocationFromConanLockfileContents(String conanLockfileContents) throws DetectableException {
         logger.trace("Parsing conan lockfile contents:\n{}", conanLockfileContents);
         Map<Integer, ConanNode<Integer>> indexedNodeMap = generateIndexedNodeMap(conanLockfileContents);
         // The lockfile references nodes by (integer) index; generator needs nodes referenced by names (component references)
         Map<String, ConanNode<String>> namedNodeMap = convertToNamedNodeMap(indexedNodeMap);
-        return conanCodeLocationGenerator.generateCodeLocationFromNodeMap(externalIdFactory, includeBuildDependencies, preferLongFormExternalIds, namedNodeMap);
+        return conanCodeLocationGenerator.generateCodeLocationFromNodeMap(externalIdFactory, namedNodeMap);
     }
 
     private Map<Integer, ConanNode<Integer>> generateIndexedNodeMap(String conanLockfileContents) {
@@ -63,7 +55,8 @@ public class ConanLockfileParser {
             logger.trace("{}: {}:{}#{}", entry.getKey(),
                 entry.getValue().getRef().orElse("?"),
                 entry.getValue().getPackageId().orElse("?"),
-                entry.getValue().getPackageRevision().orElse("?"));
+                entry.getValue().getPackageRevision().orElse("?")
+            );
             ConanLockfileNode lockfileNode = entry.getValue();
             Optional<ConanNode<Integer>> conanNode = generateConanNode(entry.getKey(), lockfileNode);
             conanNode.ifPresent(node -> graphNodes.put(entry.getKey(), node));

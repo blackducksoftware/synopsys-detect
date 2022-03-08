@@ -38,7 +38,8 @@ initscript {
     }
 }
 
-ExcludedIncludedFilter projectFilter = ExcludedIncludedWildcardFilter.fromCommaSeparatedStrings('${excludedProjectNames}', '${includedProjectNames}')
+ExcludedIncludedFilter projectNameFilter = ExcludedIncludedWildcardFilter.fromCommaSeparatedStrings('${excludedProjectNames}', '${includedProjectNames}')
+ExcludedIncludedFilter projectPathFilter = ExcludedIncludedWildcardFilter.fromCommaSeparatedStrings('${excludedProjectPaths}', '${includedProjectPaths}')
 gradle.allprojects {
     // add a new task to each project to start the process of getting the dependencies
     task gatherDependencies(type: DefaultTask) {
@@ -59,7 +60,7 @@ gradle.allprojects {
             doFirst {
                 generateRootProjectMetaData(project, outputDirectoryPath)
 
-                if(projectFilter.shouldInclude(project.name)) {
+                if(projectNameFilter.shouldInclude(project.name) && projectPathFilter.shouldInclude(project.path)) {
                     def dependencyTask = project.tasks.getByName('dependencies')
                     File projectOutputFile = findProjectOutputFile(project, outputDirectoryPath)
                     File projectFile = createProjectOutputFile(projectOutputFile)
@@ -84,7 +85,7 @@ gradle.allprojects {
             }
 
             doLast {
-                if(projectFilter.shouldInclude(project.name)) {
+                if(projectNameFilter.shouldInclude(project.name) && projectPathFilter.shouldInclude(project.path)) {
                     File projectFile = findProjectOutputFile(project, outputDirectoryPath)
                     appendProjectMetadata(project, projectFile)
                 }
@@ -109,13 +110,15 @@ def generateRootProjectMetaData(Project project, String outputDirectoryPath) {
      */
     if (project.name.equals(rootProject.name)) {
         File rootOutputFile = new File(outputDirectory, 'rootProjectMetadata.txt');
-        String rootProjectPath = rootProject.getProjectDir().getCanonicalPath()
+        String rootProjectDirectory = rootProject.getProjectDir().getCanonicalPath()
+        String rootProjectPath = rootProject.path.toString()
         String rootProjectGroup = rootProject.group.toString()
         String rootProjectName = rootProject.name.toString()
         String rootProjectVersionName = rootProject.version.toString()
 
         def rootProjectMetadataPieces = []
         rootProjectMetadataPieces.add('DETECT META DATA START')
+        rootProjectMetadataPieces.add("rootProjectDirectory:${rootProjectDirectory}")
         rootProjectMetadataPieces.add("rootProjectPath:${rootProjectPath}")
         rootProjectMetadataPieces.add("rootProjectGroup:${rootProjectGroup}")
         rootProjectMetadataPieces.add("rootProjectName:${rootProjectName}")
@@ -127,7 +130,7 @@ def generateRootProjectMetaData(Project project, String outputDirectoryPath) {
 
 def findProjectOutputFile(Project project, String outputDirectoryPath) {
     File outputDirectory = createTaskOutputDirectory(outputDirectoryPath)
-    String name = project.name.toString()
+    String name = project.toString()
 
     String nameForFile = new IntegrationEscapeUtil().replaceWithUnderscore(name)
     File outputFile = new File(outputDirectory, "${nameForFile}_dependencyGraph.txt")
@@ -156,21 +159,25 @@ def appendProjectMetadata(Project project, File projectOutputFile) {
     String rootProjectGroup = rootProject.group.toString()
     String rootProjectName = rootProject.name.toString()
     String rootProjectVersionName = rootProject.version.toString()
+    String rootProjectPath = rootProject.path.toString()
     String group = project.group.toString()
     String name = project.name.toString()
     String version = project.version.toString()
+    String path = project.path.toString()
 
     def metaDataPieces = []
     metaDataPieces.add('')
     metaDataPieces.add('DETECT META DATA START')
-    metaDataPieces.add("rootProjectPath:${rootProject.getProjectDir().getCanonicalPath()}")
+    metaDataPieces.add("rootProjectDirectory:${rootProject.getProjectDir().getCanonicalPath()}")
     metaDataPieces.add("rootProjectGroup:${rootProjectGroup}")
+    metaDataPieces.add("rootProjectPath:${rootProjectPath}")
     metaDataPieces.add("rootProjectName:${rootProjectName}")
     metaDataPieces.add("rootProjectVersion:${rootProjectVersionName}")
-    metaDataPieces.add("projectPath:${project.getProjectDir().getCanonicalPath()}")
+    metaDataPieces.add("projectDirectory:${project.getProjectDir().getCanonicalPath()}")
     metaDataPieces.add("projectGroup:${group}")
     metaDataPieces.add("projectName:${name}")
     metaDataPieces.add("projectVersion:${version}")
+    metaDataPieces.add("projectPath:${path}")
     metaDataPieces.add('DETECT META DATA END')
     metaDataPieces.add('')
 

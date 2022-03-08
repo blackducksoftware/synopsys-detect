@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.binaryscanner;
 
 import java.io.File;
@@ -44,11 +37,21 @@ public class BinaryUploadOperation {
         this.statusEventPublisher = statusEventPublisher;
     }
 
-    public CodeLocationCreationData<BinaryScanBatchOutput> uploadBinaryScanFile(File binaryScanFile, BinaryScanUploadService binaryScanUploadService, NameVersion projectNameVersion)
+    public CodeLocationCreationData<BinaryScanBatchOutput> uploadBinaryScanFile(
+        File binaryScanFile,
+        BinaryScanUploadService binaryScanUploadService,
+        NameVersion projectNameVersion
+    )
         throws DetectUserFriendlyException {
         String prefix = binaryScanOptions.getCodeLocationPrefix();
         String suffix = binaryScanOptions.getCodeLocationSuffix();
-        String codeLocationName = codeLocationNameManager.createBinaryScanCodeLocationName(binaryScanFile, projectNameVersion.getName(), projectNameVersion.getVersion(), prefix, suffix);
+        String codeLocationName = codeLocationNameManager.createBinaryScanCodeLocationName(
+            binaryScanFile,
+            projectNameVersion.getName(),
+            projectNameVersion.getVersion(),
+            prefix,
+            suffix
+        );
         try {
             logger.info("Preparing to upload binary scan file: " + binaryScanFile.getAbsolutePath());
             BinaryScan binaryScan = new BinaryScan(binaryScanFile, projectNameVersion.getName(), projectNameVersion.getVersion(), codeLocationName);
@@ -77,9 +80,11 @@ public class BinaryUploadOperation {
                 // multi-line html with the message embedded (that mess up the log).
                 // cleanResponse() attempts to produce something reasonable to log in either case
                 String cleanedBlackDuckResponse = cleanResponse(binaryScanOutput.getResponse());
-                String uploadErrorMessage = String.format("Error when uploading binary scan: %s (Black Duck response: %s)",
+                String uploadErrorMessage = String.format(
+                    "Error when uploading binary scan: %s (Black Duck response: %s)",
                     binaryScanOutput.getErrorMessage().orElse(binaryScanOutput.getStatusMessage()),
-                    cleanedBlackDuckResponse);
+                    cleanedBlackDuckResponse
+                );
                 logger.error(uploadErrorMessage);
                 throw new BlackDuckIntegrationException(uploadErrorMessage);
             }

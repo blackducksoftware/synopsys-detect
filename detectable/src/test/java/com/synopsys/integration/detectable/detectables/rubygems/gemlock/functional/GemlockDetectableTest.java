@@ -21,7 +21,8 @@ public class GemlockDetectableTest extends DetectableFunctionalTest {
 
     @Override
     public void setup() throws IOException {
-        addFile(Paths.get("Gemfile.lock"),
+        addFile(
+            Paths.get("Gemfile.lock"),
             "GEM",
             "  remote:https://rubygems.org/",
             "  specs:",
@@ -46,16 +47,17 @@ public class GemlockDetectableTest extends DetectableFunctionalTest {
             "  cocoapods-keys",
             "",
             "BUNDLED WITH",
-            "  1.14.6");
+            "  1.14.6"
+        );
     }
 
     @Override
-    public Detectable create(@NotNull final DetectableEnvironment detectableEnvironment) {
+    public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
         return detectableFactory.createGemlockDetectable(detectableEnvironment);
     }
 
     @Override
-    public void assertExtraction(@NotNull final Extraction extraction) {
+    public void assertExtraction(@NotNull Extraction extraction) {
         Assertions.assertNotEquals(0, extraction.getCodeLocations().size(), "A code location should have been generated.");
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.RUBYGEMS, extraction.getCodeLocations().get(0).getDependencyGraph());

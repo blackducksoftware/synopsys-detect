@@ -1,19 +1,12 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.cran;
 
 import java.io.File;
 
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
-import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
@@ -28,7 +21,7 @@ public class PackratLockDetectable extends Detectable {
 
     private File packratLockFile;
 
-    public PackratLockDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final PackratLockExtractor packratLockExtractor) {
+    public PackratLockDetectable(DetectableEnvironment environment, FileFinder fileFinder, PackratLockExtractor packratLockExtractor) {
         super(environment);
         this.fileFinder = fileFinder;
         this.packratLockExtractor = packratLockExtractor;
@@ -47,7 +40,7 @@ public class PackratLockDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         return packratLockExtractor.extract(environment.getDirectory(), packratLockFile);
     }
 

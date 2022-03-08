@@ -1,10 +1,3 @@
-/*
- * detector
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detector.rule;
 
 import com.synopsys.integration.detectable.Detectable;
@@ -23,8 +16,16 @@ public class DetectorRule<T extends Detectable> {
     private final String name;
     private final boolean nestInvisible;
 
-    public DetectorRule(DetectableCreatable detectableCreatable, Class<T> detectableClass, int maxDepth, boolean nestable, boolean selfNestable, DetectorType detectorType, String name,
-        boolean nestInvisible) {
+    public DetectorRule(
+        DetectableCreatable detectableCreatable,
+        Class<T> detectableClass,
+        int maxDepth,
+        boolean nestable,
+        boolean selfNestable,
+        DetectorType detectorType,
+        String name,
+        boolean nestInvisible
+    ) {
         this.detectableCreatable = detectableCreatable;
         this.detectableClass = detectableClass;
         this.maxDepth = maxDepth;

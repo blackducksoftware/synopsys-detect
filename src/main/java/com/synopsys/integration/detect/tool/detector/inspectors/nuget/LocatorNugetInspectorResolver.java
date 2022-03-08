@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.detector.inspectors.nuget;
 
 import java.io.File;
@@ -28,6 +21,7 @@ import com.synopsys.integration.detectable.detectable.inspector.nuget.impl.ExeNu
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.OperatingSystemType;
 
+//TODO: Consider refactoring to be easier to follow. This could just be DetectNugetInspectorResolver. The locators could be installers, consider an executable locator for that code.
 public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
     private static final String INTEGRATION_NUGET_INSPECTOR_NAME = "IntegrationNugetInspector";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -43,9 +37,15 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
     private boolean hasResolvedInspector;
     private NugetInspector resolvedNugetInspector;
 
-    public LocatorNugetInspectorResolver(DetectExecutableResolver executableResolver, DetectableExecutableRunner executableRunner, DetectInfo detectInfo,
-        FileFinder fileFinder, List<String> packagesRepoUrl, NugetInspectorLocator nugetInspectorLocator,
-        DotNetRuntimeManager dotNetRuntimeManager) {
+    public LocatorNugetInspectorResolver(
+        DetectExecutableResolver executableResolver,
+        DetectableExecutableRunner executableRunner,
+        DetectInfo detectInfo,
+        FileFinder fileFinder,
+        List<String> packagesRepoUrl,
+        NugetInspectorLocator nugetInspectorLocator,
+        DotNetRuntimeManager dotNetRuntimeManager
+    ) {
         this.executableResolver = executableResolver;
         this.executableRunner = executableRunner;
         this.detectInfo = detectInfo;
@@ -119,11 +119,11 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
         logger.debug("Searching for: " + inspectorName);
         File toolsFolder = new File(nupkgFolder, "tools");
         logger.debug("Searching in: " + toolsFolder.getAbsolutePath());
-        File foundExecutable = fileFinder.findFiles(toolsFolder, inspectorName, 3)
-                                   .stream()
-                                   .findFirst()
-                                   .filter(File::exists)
-                                   .orElseThrow(() -> new DetectableException(String.format("Unable to find nuget inspector, looking for %s in %s", inspectorName, toolsFolder.toString())));
+        File foundExecutable = fileFinder.findFiles(toolsFolder, inspectorName, false, 3)
+            .stream()
+            .findFirst()
+            .filter(File::exists)
+            .orElseThrow(() -> new DetectableException(String.format("Unable to find nuget inspector, looking for %s in %s", inspectorName, toolsFolder)));
         String inspectorExecutable = foundExecutable.getAbsolutePath();
         logger.debug("Found nuget inspector: {}", inspectorExecutable);
         return inspectorInitializer.apply(inspectorExecutable);

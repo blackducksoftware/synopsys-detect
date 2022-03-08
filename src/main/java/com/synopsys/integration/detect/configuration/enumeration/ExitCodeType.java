@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.configuration.enumeration;
 
 public enum ExitCodeType {
@@ -17,16 +10,22 @@ public enum ExitCodeType {
     FAILURE_SCAN(6, "Detect was unable to run the signature scanner against your source. Check your configuration."),
     FAILURE_CONFIGURATION(7, "Detect was unable to start due to issues with it's configuration. Check and fix your configuration."),
     FAILURE_DETECTOR_REQUIRED(9, "Detect did not run all of the required detectors. Fix detector issues or disable required detectors."),
-    FAILURE_BLACKDUCK_VERSION_NOT_SUPPORTED(10, "Detect attempted an operation that was not supported by your version of Black Duck. Ensure your Black Duck is compatible with this version of detect."),
-    FAILURE_BLACKDUCK_FEATURE_ERROR(11, "Detect encountered an error while attempting an operation on Black Duck. Ensure your Black Duck is compatible with this version of detect."),
+    FAILURE_BLACKDUCK_VERSION_NOT_SUPPORTED(
+        10,
+        "Detect attempted an operation that was not supported by your version of Black Duck. Ensure your Black Duck is compatible with this version of detect."
+    ),
+    FAILURE_BLACKDUCK_FEATURE_ERROR(
+        11,
+        "Detect encountered an error while attempting an operation on Black Duck. Ensure your Black Duck is compatible with this version of detect."
+    ),
     FAILURE_POLARIS_CONNECTIVITY(12, "Detect was unable to connect to Polaris. Check your configuration and connection."),
     FAILURE_GENERAL_ERROR(99, "Detect encountered a known error, details of the error are provided."),
     FAILURE_UNKNOWN_ERROR(100, "Detect encountered an unknown error.");
 
-    private int exitCode;
-    private String description;
+    private final int exitCode;
+    private final String description;
 
-    private ExitCodeType(final int exitCode, String description) {
+    ExitCodeType(int exitCode, String description) {
         this.exitCode = exitCode;
         this.description = description;
     }
@@ -34,7 +33,7 @@ public enum ExitCodeType {
     /**
      * A failure always beats a success and a failure with a lower exit code beats a failure with a higher exit code.
      */
-    public static ExitCodeType getWinningExitCodeType(final ExitCodeType first, final ExitCodeType second) {
+    public static ExitCodeType getWinningExitCodeType(ExitCodeType first, ExitCodeType second) {
         if (first.isSuccess()) {
             return second;
         } else if (second.isSuccess()) {

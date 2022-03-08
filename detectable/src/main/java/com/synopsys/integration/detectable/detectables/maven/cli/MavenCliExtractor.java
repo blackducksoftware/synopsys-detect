@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.maven.cli;
 
 import java.io.File;
@@ -29,19 +22,26 @@ public class MavenCliExtractor {
     private final DetectableExecutableRunner executableRunner;
     private final MavenCodeLocationPackager mavenCodeLocationPackager;
     private final CommandParser commandParser;
+    private final ToolVersionLogger toolVersionLogger;
 
-    public MavenCliExtractor(DetectableExecutableRunner executableRunner, MavenCodeLocationPackager mavenCodeLocationPackager, CommandParser commandParser) {
+    public MavenCliExtractor(
+        DetectableExecutableRunner executableRunner,
+        MavenCodeLocationPackager mavenCodeLocationPackager,
+        CommandParser commandParser,
+        ToolVersionLogger toolVersionLogger
+    ) {
         this.executableRunner = executableRunner;
         this.mavenCodeLocationPackager = mavenCodeLocationPackager;
         this.commandParser = commandParser;
+        this.toolVersionLogger = toolVersionLogger;
     }
 
     //TODO: Limit 'extractors' to 'execute' and 'read', delegate all other work.
     public Extraction extract(File directory, ExecutableTarget mavenExe, MavenCliExtractorOptions mavenCliExtractorOptions) throws ExecutableFailedException {
-        ToolVersionLogger.log(executableRunner, directory, mavenExe);
+        toolVersionLogger.log(directory, mavenExe);
         List<String> commandArguments = commandParser.parseCommandString(mavenCliExtractorOptions.getMavenBuildCommand().orElse("")).stream()
-                                            .filter(arg -> !arg.equals("dependency:tree"))
-                                            .collect(Collectors.toList());
+            .filter(arg -> !arg.equals("dependency:tree"))
+            .collect(Collectors.toList());
 
         commandArguments.add("dependency:tree");
         commandArguments.add("-T1"); // Force maven to use a single thread to ensure the tree output is in the correct order.
@@ -53,14 +53,21 @@ public class MavenCliExtractor {
         List<String> includedScopes = mavenCliExtractorOptions.getMavenIncludedScopes();
         List<String> excludedModules = mavenCliExtractorOptions.getMavenExcludedModules();
         List<String> includedModules = mavenCliExtractorOptions.getMavenIncludedModules();
-        List<MavenParseResult> mavenResults = mavenCodeLocationPackager.extractCodeLocations(directory.toString(), mavenOutput, excludedScopes, includedScopes, excludedModules, includedModules);
+        List<MavenParseResult> mavenResults = mavenCodeLocationPackager.extractCodeLocations(
+            directory.toString(),
+            mavenOutput,
+            excludedScopes,
+            includedScopes,
+            excludedModules,
+            includedModules
+        );
 
         List<CodeLocation> codeLocations = Bds.of(mavenResults)
-                                               .map(MavenParseResult::getCodeLocation)
-                                               .toList();
+            .map(MavenParseResult::getCodeLocation)
+            .toList();
 
         Optional<MavenParseResult> firstWithName = Bds.of(mavenResults)
-                                                       .firstFiltered(it -> StringUtils.isNotBlank(it.getProjectName()));
+            .firstFiltered(it -> StringUtils.isNotBlank(it.getProjectName()));
 
         Extraction.Builder builder = new Extraction.Builder().success(codeLocations);
         if (firstWithName.isPresent()) {

@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.report.util;
 
 import java.io.File;
@@ -22,31 +15,31 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
 
 public class ObjectPrinter {
-    private static Logger logger = LoggerFactory.getLogger(ObjectPrinter.class);
+    private static final Logger logger = LoggerFactory.getLogger(ObjectPrinter.class);
 
-    public static void printObjectPrivate(final ReportWriter writer, final Object guy) {
-        final Map<String, String> fieldMap = new HashMap<>();
+    public static void printObjectPrivate(ReportWriter writer, Object guy) {
+        Map<String, String> fieldMap = new HashMap<>();
         populateObjectPrivate(null, guy, fieldMap);
         fieldMap.forEach((key, value) -> writer.writeLine(key + ": " + value));
     }
 
-    public static void populateObjectPrivate(final String prefix, final Object guy, final Map<String, String> fieldMap) {
-        for (final Field field : guy.getClass().getDeclaredFields()) {
+    public static void populateObjectPrivate(String prefix, Object guy, Map<String, String> fieldMap) {
+        for (Field field : guy.getClass().getDeclaredFields()) {
             populateField(field, prefix, guy, fieldMap);
         }
     }
 
-    public static void populateObject(final String prefix, final Object guy, final Map<String, String> fieldMap) {
-        for (final Field field : guy.getClass().getFields()) {
+    public static void populateObject(String prefix, Object guy, Map<String, String> fieldMap) {
+        for (Field field : guy.getClass().getFields()) {
             populateField(field, prefix, guy, fieldMap);
         }
     }
 
-    public static void populateField(final Field field, final String prefix, final Object guy, final Map<String, String> fieldMap) {
+    public static void populateField(Field field, String prefix, Object guy, Map<String, String> fieldMap) {
         if (java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
             return; // don't print static fields.
         }
-        final String name = field.getName();
+        String name = field.getName();
         String value = "unknown";
         Object obj = null;
         try {
@@ -54,7 +47,7 @@ public class ObjectPrinter {
                 field.setAccessible(true);
             }
             obj = field.get(guy);
-        } catch (final Exception e) {
+        } catch (Exception e) {
             logger.debug("Exception", e);
         }
         boolean shouldPrintObjectsFields = false;
@@ -80,14 +73,14 @@ public class ObjectPrinter {
 
     }
 
-    public static boolean shouldRecursivelyPrintType(final Class<?> clazz) {
+    public static boolean shouldRecursivelyPrintType(Class<?> clazz) {
         return !NON_NESTED_TYPES.contains(clazz);
     }
 
     private static final Set<Class<?>> NON_NESTED_TYPES = getNonNestedTypes();
 
     private static Set<Class<?>> getNonNestedTypes() {
-        final Set<Class<?>> ret = new HashSet<>();
+        Set<Class<?>> ret = new HashSet<>();
         ret.add(File.class);
         ret.add(String.class);
         ret.add(Boolean.class);

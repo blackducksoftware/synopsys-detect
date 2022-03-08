@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.conan.graph;
 
 import java.util.List;
@@ -29,11 +22,20 @@ public class ConanNode<T> extends Stringable {
     private final List<T> buildRequiresRefs;
     private final boolean rootNode;
 
-    public ConanNode(String ref, String path, String name, String version, String user, String channel,
-        String recipeRevision, String packageId, String packageRevision,
+    public ConanNode(
+        String ref,
+        String path,
+        String name,
+        String version,
+        String user,
+        String channel,
+        String recipeRevision,
+        String packageId,
+        String packageRevision,
         List<T> requiresRefs,
         List<T> buildRequiresRefs,
-        boolean rootNode) {
+        boolean rootNode
+    ) {
         this.ref = ref;
         this.path = path;
         this.name = name;

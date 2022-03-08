@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.impactanalysis.service;
 
 import java.util.HashMap;
@@ -16,7 +9,7 @@ import com.synopsys.integration.blackduck.api.core.response.LinkSingleResponse;
 import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
 
 public class ImpactAnalysisUploadView extends BlackDuckView {
-    public static final Map<String, LinkBlackDuckResponse<?>> links = new HashMap<>();
+    protected static final Map<String, LinkBlackDuckResponse<?>> links = new HashMap<>();
 
     public static final String CODE_LOCATION_LINK = "codelocation";
     public static final String SCAN_BOM_ENTRIES_LINK = "scan-bom-entries";

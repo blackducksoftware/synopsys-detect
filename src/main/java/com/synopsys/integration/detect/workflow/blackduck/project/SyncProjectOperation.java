@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.blackduck.project;
 
 import java.util.List;
@@ -20,7 +13,9 @@ import com.synopsys.integration.blackduck.service.model.ProjectSyncModel;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.workflow.blackduck.project.options.CloneFindResult;
+import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectGroupFindResult;
 import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectSyncOptions;
+import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectVersionLicenseFindResult;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
@@ -33,13 +28,31 @@ public class SyncProjectOperation {
         this.projectService = projectService;
     }
 
-    public ProjectVersionWrapper sync(NameVersion projectNameVersion, CloneFindResult cloneFindResult, ProjectSyncOptions projectSyncOptions) throws DetectUserFriendlyException, IntegrationException {
-        ProjectSyncModel projectSyncModel = createProjectSyncModel(projectNameVersion, cloneFindResult, projectSyncOptions);
+    public ProjectVersionWrapper sync(
+        NameVersion projectNameVersion,
+        ProjectGroupFindResult projectGroupFindResult,
+        CloneFindResult cloneFindResult,
+        ProjectVersionLicenseFindResult projectVersionLicensesFindResult,
+        ProjectSyncOptions projectSyncOptions
+    ) throws DetectUserFriendlyException, IntegrationException {
+        ProjectSyncModel projectSyncModel = createProjectSyncModel(
+            projectNameVersion,
+            projectGroupFindResult,
+            cloneFindResult,
+            projectVersionLicensesFindResult,
+            projectSyncOptions
+        );
         boolean forceUpdate = projectSyncOptions.isForceProjectVersionUpdate();
         return projectService.syncProjectAndVersion(projectSyncModel, forceUpdate);
     }
 
-    public ProjectSyncModel createProjectSyncModel(NameVersion projectNameVersion, CloneFindResult cloneFindResult, ProjectSyncOptions projectSyncOptions) throws DetectUserFriendlyException {
+    public ProjectSyncModel createProjectSyncModel(
+        NameVersion projectNameVersion,
+        ProjectGroupFindResult projectGroupFindResult,
+        CloneFindResult cloneFindResult,
+        ProjectVersionLicenseFindResult projectVersionLicensesFindResult,
+        ProjectSyncOptions projectSyncOptions
+    ) {
         ProjectSyncModel projectSyncModel = ProjectSyncModel.createWithDefaults(projectNameVersion.getName(), projectNameVersion.getVersion());
 
         // TODO: Handle a boolean property not being set in detect configuration - ie need to determine if this property actually exists in the ConfigurableEnvironment - just omit this one?
@@ -64,9 +77,7 @@ public class SyncProjectOperation {
         }
 
         List<ProjectCloneCategoriesType> cloneCategories = projectSyncOptions.getCloneCategories();
-        if (!cloneCategories.isEmpty()) {
-            projectSyncModel.setCloneCategories(cloneCategories);
-        }
+        projectSyncModel.setCloneCategories(cloneCategories);
 
         String nickname = projectSyncOptions.getProjectVersionNickname();
         if (StringUtils.isNotBlank(nickname)) {
@@ -74,9 +85,16 @@ public class SyncProjectOperation {
         }
 
         if (cloneFindResult.getCloneUrl().isPresent()) {
-            logger.debug("Cloning project version from release url: " + cloneFindResult.getCloneUrl().get());
+            logger.debug("Cloning project version from release url: {}", cloneFindResult.getCloneUrl().get());
             projectSyncModel.setCloneFromReleaseUrl(cloneFindResult.getCloneUrl().get().string());
         }
+
+        projectGroupFindResult.getProjectGroup().ifPresent(projectGroupUrl -> {
+            logger.debug("Setting project group to url: {}", projectGroupUrl);
+            projectSyncModel.setProjectGroup(projectGroupUrl.string());
+        });
+
+        projectVersionLicensesFindResult.getLicenseUrl().ifPresent(projectSyncModel::setVersionLicenseUrl);
 
         return projectSyncModel;
     }

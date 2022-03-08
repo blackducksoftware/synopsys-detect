@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.status;
 
 import java.util.Arrays;
@@ -37,6 +30,10 @@ public class DetectIssue {
     }
 
     public static void publish(EventSystem eventSystem, DetectIssueType type, String title, String... messages) {
-        eventSystem.publishEvent(Event.Issue, new DetectIssue(type, title, Arrays.asList(messages)));
+        publish(eventSystem, type, title, Arrays.asList(messages));
+    }
+
+    public static void publish(EventSystem eventSystem, DetectIssueType type, String title, List<String> messages) {
+        eventSystem.publishEvent(Event.Issue, new DetectIssue(type, title, messages));
     }
 }

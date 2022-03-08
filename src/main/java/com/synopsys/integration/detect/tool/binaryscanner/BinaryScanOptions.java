@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool.binaryscanner;
 
 import java.nio.file.Path;
@@ -20,13 +13,22 @@ public class BinaryScanOptions {
     private final String codeLocationPrefix;
     private final String codeLocationSuffix;
     private final int searchDepth;
+    private final boolean followSymLinks;
 
-    public BinaryScanOptions(@Nullable Path singleTargetFilePath, List<String> multipleTargetFileNamePatterns, String codeLocationPrefix, String codeLocationSuffix, int searchDepth) {
+    public BinaryScanOptions(
+        @Nullable Path singleTargetFilePath,
+        List<String> multipleTargetFileNamePatterns,
+        String codeLocationPrefix,
+        String codeLocationSuffix,
+        int searchDepth,
+        boolean followSymLinks
+    ) {
         this.singleTargetFilePath = singleTargetFilePath;
         this.multipleTargetFileNamePatterns = multipleTargetFileNamePatterns;
         this.codeLocationPrefix = codeLocationPrefix;
         this.codeLocationSuffix = codeLocationSuffix;
         this.searchDepth = searchDepth;
+        this.followSymLinks = followSymLinks;
     }
 
     public List<String> getMultipleTargetFileNamePatterns() {
@@ -47,5 +49,9 @@ public class BinaryScanOptions {
 
     public int getSearchDepth() {
         return searchDepth;
+    }
+
+    public boolean isFollowSymLinks() {
+        return followSymLinks;
     }
 }

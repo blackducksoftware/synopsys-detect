@@ -1,10 +1,3 @@
-/*
- * detector
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detector.evaluation;
 
 import java.util.HashSet;
@@ -22,7 +15,7 @@ import com.synopsys.integration.detector.result.DetectorResult;
 import com.synopsys.integration.detector.rule.DetectorRule;
 
 public class ApplicableEvaluator extends Evaluator {
-    private Logger logger = LoggerFactory.getLogger(ApplicableEvaluator.class);
+    private final Logger logger = LoggerFactory.getLogger(ApplicableEvaluator.class);
     private final DetectorRuleSetEvaluator detectorRuleSetEvaluator = new DetectorRuleSetEvaluator();
 
     public ApplicableEvaluator(DetectorEvaluationOptions evaluationOptions) {
@@ -31,7 +24,7 @@ public class ApplicableEvaluator extends Evaluator {
 
     @Override
     protected DetectorEvaluationTree performEvaluation(DetectorEvaluationTree rootEvaluation) {
-        logger.info("Searching for detectors. This may take a while.");
+        logger.info("Evaluating detectors. This may take a while.");
         searchAndApplicableEvaluation(rootEvaluation, new HashSet<>());
         return rootEvaluation;
     }
@@ -47,10 +40,21 @@ public class ApplicableEvaluator extends Evaluator {
             DetectorRule detectorRule = detectorEvaluation.getDetectorRule();
             logger.trace("Evaluating detector: {}", detectorRule.getDescriptiveName());
 
-            SearchEnvironment searchEnvironment = new SearchEnvironment(detectorEvaluationTree.getDepthFromRoot(), getEvaluationOptions().getDetectorFilter(), getEvaluationOptions().isForceNested(), appliedInParent, appliedSoFar);
+            SearchEnvironment searchEnvironment = new SearchEnvironment(
+                detectorEvaluationTree.getDepthFromRoot(),
+                getEvaluationOptions().getDetectorFilter(),
+                getEvaluationOptions().isForceNested(),
+                getEvaluationOptions().isFollowSymLinks(),
+                appliedInParent,
+                appliedSoFar
+            );
             detectorEvaluation.setSearchEnvironment(searchEnvironment);
 
-            DetectorResult searchableResult = detectorRuleSetEvaluator.evaluateSearchable(detectorEvaluationTree.getDetectorRuleSet(), detectorEvaluation.getDetectorRule(), searchEnvironment);
+            DetectorResult searchableResult = detectorRuleSetEvaluator.evaluateSearchable(
+                detectorEvaluationTree.getDetectorRuleSet(),
+                detectorEvaluation.getDetectorRule(),
+                searchEnvironment
+            );
             detectorEvaluation.setSearchable(searchableResult);
 
             if (detectorEvaluation.isSearchable()) {
@@ -63,7 +67,13 @@ public class ApplicableEvaluator extends Evaluator {
                 detectorEvaluation.setDetectable(detectable);
 
                 DetectableResult applicable = detectable.applicable();
-                DetectorResult applicableResult = new DetectorResult(applicable.getPassed(), applicable.toDescription(), applicable.getClass(), applicable.getExplanation(), applicable.getRelevantFiles());
+                DetectorResult applicableResult = new DetectorResult(
+                    applicable.getPassed(),
+                    applicable.toDescription(),
+                    applicable.getClass(),
+                    applicable.getExplanation(),
+                    applicable.getRelevantFiles()
+                );
                 detectorEvaluation.setApplicable(applicableResult);
 
                 if (detectorEvaluation.isApplicable()) {

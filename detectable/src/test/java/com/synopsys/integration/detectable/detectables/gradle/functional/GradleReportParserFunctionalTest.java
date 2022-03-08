@@ -1,25 +1,3 @@
-/**
- * detectable
- *
- * Copyright (c) 2020 Synopsys, Inc.
- *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
 package com.synopsys.integration.detectable.detectables.gradle.functional;
 
 import java.io.File;
@@ -35,49 +13,49 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleConfigurationType;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleReport;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportParser;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportTransformer;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
+import com.synopsys.integration.detectable.util.graph.GraphAssert;
 import com.synopsys.integration.detectable.util.graph.MavenGraphAssert;
 
 @UnitTest
 public class GradleReportParserFunctionalTest {
 
     @Test
-    void extractCodeLocationTest() {
+    void extractCodeLocationTest() throws JSONException {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS); //Does not work on windows due to path issues.
 
-        final GradleReportParser gradleReportParser = new GradleReportParser();
-        final Optional<GradleReport> gradleReport = gradleReportParser.parseReport(FunctionalTestFiles.asFile("/gradle/dependencyGraph.txt"));
+        GradleReportParser gradleReportParser = new GradleReportParser();
+        Optional<GradleReport> gradleReport = gradleReportParser.parseReport(FunctionalTestFiles.asFile("/gradle/dependencyGraph.txt"));
         Assertions.assertTrue(gradleReport.isPresent());
-        final GradleReportTransformer transformer = new GradleReportTransformer(new ExternalIdFactory());
-        final CodeLocation codeLocation = transformer.transform(gradleReport.get());
+        GradleReportTransformer transformer = new GradleReportTransformer(new ExternalIdFactory(), EnumListFilter.excludeNone());
+        CodeLocation codeLocation = transformer.transform(gradleReport.get());
         Assertions.assertNotNull(codeLocation);
 
         Assertions.assertEquals("hub-detect", gradleReport.get().getProjectName());
         Assertions.assertEquals("2.0.0-SNAPSHOT", gradleReport.get().getProjectVersionName());
 
-        final String actual = new Gson().toJson(codeLocation);
+        String actual = new Gson().toJson(codeLocation);
 
-        try {
-            JSONAssert.assertEquals(FunctionalTestFiles.asString("/gradle/dependencyGraph-expected.json"), actual, false);
-        } catch (final JSONException e) {
-            throw new RuntimeException(e);
-        }
+        JSONAssert.assertEquals(FunctionalTestFiles.asString("/gradle/dependencyGraph-expected.json"), actual, false);
     }
 
     @Test
     void complexTest() {
-        final Optional<CodeLocation> codeLocation = buildCodeLocation("/gradle/parse-tests/complex_dependencyGraph.txt");
+        Optional<CodeLocation> codeLocation = buildCodeLocation("/gradle/complex_dependencyGraph.txt", true);
         Assertions.assertTrue(codeLocation.isPresent());
-        final DependencyGraph graph = codeLocation.get().getDependencyGraph();
+        DependencyGraph graph = codeLocation.get().getDependencyGraph();
 
-        final MavenGraphAssert graphAssert = new MavenGraphAssert(graph);
+        MavenGraphAssert graphAssert = new MavenGraphAssert(graph);
         graphAssert.hasDependency("non-project:with-nested:1.0.0");
         graphAssert.hasDependency("solo:component:4.12");
         graphAssert.hasDependency("some.group:child:2.2.2");
@@ -97,24 +75,45 @@ public class GradleReportParserFunctionalTest {
         graphAssert.hasRootDependency("some.group:parent:5.0.0");
         graphAssert.hasRootDependency("terminal:child:6.2.3");
 
-        final ExternalId parent = graphAssert.hasDependency("some.group:parent:5.0.0");
-        final ExternalId child = graphAssert.hasDependency("some.group:child:2.2.2");
+        ExternalId parent = graphAssert.hasDependency("some.group:parent:5.0.0");
+        ExternalId child = graphAssert.hasDependency("some.group:child:2.2.2");
         graphAssert.hasParentChildRelationship(parent, child);
     }
 
-    private Optional<CodeLocation> buildCodeLocation(final String resource) {
-        final File file = FunctionalTestFiles.asFile(resource);
-        final GradleReportParser gradleReportParser = new GradleReportParser();
-        final GradleReportTransformer gradleReportTransformer = new GradleReportTransformer(new ExternalIdFactory());
+    private Optional<CodeLocation> buildCodeLocation(String resource, boolean includeUnresolvedConfigurations) {
+        File file = FunctionalTestFiles.asFile(resource);
+        GradleReportParser gradleReportParser = new GradleReportParser();
+        EnumListFilter<GradleConfigurationType> enumListFilter = EnumListFilter.excludeNone();
+        if (!includeUnresolvedConfigurations) {
+            enumListFilter = EnumListFilter.fromExcluded(GradleConfigurationType.UNRESOLVED);
+        }
+        GradleReportTransformer gradleReportTransformer = new GradleReportTransformer(new ExternalIdFactory(), enumListFilter);
 
         return gradleReportParser.parseReport(file)
-                   .map(gradleReportTransformer::transform);
+            .map(gradleReportTransformer::transform);
     }
 
     @Test
     void testImplementationsGraph() {
-        final Optional<CodeLocation> codeLocation = buildCodeLocation("/gradle/gradle_implementations_dependencyGraph.txt");
+        Optional<CodeLocation> codeLocation = buildCodeLocation("/gradle/gradle_implementations_dependencyGraph.txt", true);
         Assertions.assertTrue(codeLocation.isPresent());
+
+        DependencyGraph dependencyGraph = codeLocation.get().getDependencyGraph();
+        GraphAssert graphAssert = new GraphAssert(Forge.MAVEN, dependencyGraph);
+        graphAssert.hasRootSize(7);
+
+        System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(codeLocation.get()));
+    }
+
+    @Test
+    void testUnresolvedConfigurations() {
+        Optional<CodeLocation> codeLocation = buildCodeLocation("/gradle/gradle_implementations_dependencyGraph.txt", false);
+        Assertions.assertTrue(codeLocation.isPresent());
+
+        DependencyGraph dependencyGraph = codeLocation.get().getDependencyGraph();
+        GraphAssert graphAssert = new GraphAssert(Forge.MAVEN, dependencyGraph);
+        graphAssert.hasRootSize(0);
+
         System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(codeLocation.get()));
     }
 }

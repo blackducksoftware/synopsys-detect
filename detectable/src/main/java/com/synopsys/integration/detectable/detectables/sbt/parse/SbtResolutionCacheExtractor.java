@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.sbt.parse;
 
 import java.io.File;
@@ -25,8 +18,8 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.common.util.finder.FileFinder;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.sbt.parse.model.SbtDependencyModule;
 import com.synopsys.integration.detectable.detectables.sbt.parse.model.SbtProject;
 import com.synopsys.integration.detectable.detectables.sbt.parse.model.SbtReport;
@@ -58,7 +51,7 @@ public class SbtResolutionCacheExtractor {
             List<String> excluded = sbtResolutionCacheOptions.getExcludedConfigurations();
             int depth = sbtResolutionCacheOptions.getReportDepth();
 
-            SbtProject project = extractProject(directory, depth, included, excluded);
+            SbtProject project = extractProject(directory, sbtResolutionCacheOptions.isFollowSymLinks(), depth, included, excluded);
 
             List<CodeLocation> codeLocations = new ArrayList<>();
 
@@ -90,8 +83,9 @@ public class SbtResolutionCacheExtractor {
         }
     }
 
-    private SbtProject extractProject(File path, int depth, List<String> included, List<String> excluded) throws IOException, SAXException, ParserConfigurationException {
-        List<SbtDependencyModule> rawModules = extractModules(path, depth, included, excluded);
+    private SbtProject extractProject(File path, boolean followSymLinks, int depth, List<String> included, List<String> excluded)
+        throws IOException, SAXException, ParserConfigurationException {
+        List<SbtDependencyModule> rawModules = extractModules(path, followSymLinks, depth, included, excluded);
         List<SbtDependencyModule> modules = rawModules.stream().filter(it -> it.getGraph() != null).collect(Collectors.toList());
         int skipped = rawModules.size() - modules.size();
         if (skipped > 0) {
@@ -135,9 +129,15 @@ public class SbtResolutionCacheExtractor {
         return version;
     }
 
-    private List<SbtDependencyModule> extractModules(File path, int depth, List<String> included, List<String> excluded) throws IOException, SAXException, ParserConfigurationException {
-        List<File> sbtFiles = fileFinder.findFiles(path, BUILD_SBT_FILENAME, depth);
-        List<File> resolutionCaches = fileFinder.findFiles(path, RESOLUTION_CACHE_DIRECTORY, depth); // TODO: ensure this does what the old method did. findDirectoriesContainingDirectoriesToDepth
+    private List<SbtDependencyModule> extractModules(File path, boolean followSymLinks, int depth, List<String> included, List<String> excluded)
+        throws IOException, SAXException, ParserConfigurationException {
+        List<File> sbtFiles = fileFinder.findFiles(path, BUILD_SBT_FILENAME, followSymLinks, depth);
+        List<File> resolutionCaches = fileFinder.findFiles(
+            path,
+            RESOLUTION_CACHE_DIRECTORY,
+            followSymLinks,
+            depth
+        ); // TODO: ensure this does what the old method did. findDirectoriesContainingDirectoriesToDepth
 
         logger.debug(String.format("Found %s build.sbt files.", sbtFiles.size()));
         logger.debug(String.format("Found %s resolution caches.", resolutionCaches.size()));
@@ -223,7 +223,8 @@ public class SbtResolutionCacheExtractor {
         return modules;
     }
 
-    private List<SbtDependencyModule> makeModuleAggregate(List<File> reportFiles, List<String> include, List<String> exclude) throws SAXException, IOException, ParserConfigurationException {
+    private List<SbtDependencyModule> makeModuleAggregate(List<File> reportFiles, List<String> include, List<String> exclude)
+        throws SAXException, IOException, ParserConfigurationException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
 

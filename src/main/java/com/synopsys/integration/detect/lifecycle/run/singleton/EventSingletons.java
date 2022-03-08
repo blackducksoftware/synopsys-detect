@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.lifecycle.run.singleton;
 
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
@@ -20,8 +13,13 @@ public class EventSingletons {
     private final CodeLocationEventPublisher codeLocationEventPublisher;
     private final ProjectEventPublisher projectEventPublisher;
 
-    public EventSingletons(final StatusEventPublisher statusEventPublisher, final ExitCodePublisher exitCodePublisher, final DetectorEventPublisher detectorEventPublisher,
-        final CodeLocationEventPublisher codeLocationEventPublisher, final ProjectEventPublisher projectEventPublisher) {
+    public EventSingletons(
+        StatusEventPublisher statusEventPublisher,
+        ExitCodePublisher exitCodePublisher,
+        DetectorEventPublisher detectorEventPublisher,
+        CodeLocationEventPublisher codeLocationEventPublisher,
+        ProjectEventPublisher projectEventPublisher
+    ) {
         this.statusEventPublisher = statusEventPublisher;
         this.exitCodePublisher = exitCodePublisher;
         this.detectorEventPublisher = detectorEventPublisher;

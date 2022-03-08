@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.yarn;
 
 import java.io.File;
@@ -54,8 +47,7 @@ public class YarnLockExtractor {
             YarnWorkspaces workspaceData = collectWorkspaceData(projectDir);
             ExcludedIncludedWildcardFilter workspacesFilter = deriveExcludedIncludedWildcardFilter();
 
-            YarnResult yarnResult = yarnPackager.generateCodeLocation(rootPackageJson, workspaceData, yarnLock, new ArrayList<>(),
-                yarnLockOptions.useProductionOnly(), workspacesFilter);
+            YarnResult yarnResult = yarnPackager.generateCodeLocation(rootPackageJson, workspaceData, yarnLock, new ArrayList<>(), workspacesFilter);
 
             Optional<Exception> yarnException = yarnResult.getException();
             if (yarnException.isPresent()) {
@@ -63,10 +55,10 @@ public class YarnLockExtractor {
             }
 
             return new Extraction.Builder()
-                       .projectName(yarnResult.getProjectName())
-                       .projectVersion(yarnResult.getProjectVersionName())
-                       .success(yarnResult.getCodeLocations())
-                       .build();
+                .projectName(yarnResult.getProjectName())
+                .projectVersion(yarnResult.getProjectVersionName())
+                .success(yarnResult.getCodeLocations())
+                .build();
         } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
@@ -83,7 +75,10 @@ public class YarnLockExtractor {
         if (yarnLockOptions.getExcludedWorkspaceNamePatterns().isEmpty() && yarnLockOptions.getIncludedWorkspaceNamePatterns().isEmpty()) {
             workspacesFilter = null; // Include all
         } else {
-            workspacesFilter = ExcludedIncludedWildcardFilter.fromCollections(yarnLockOptions.getExcludedWorkspaceNamePatterns(), yarnLockOptions.getIncludedWorkspaceNamePatterns());
+            workspacesFilter = ExcludedIncludedWildcardFilter.fromCollections(
+                yarnLockOptions.getExcludedWorkspaceNamePatterns(),
+                yarnLockOptions.getIncludedWorkspaceNamePatterns()
+            );
         }
         return workspacesFilter;
     }

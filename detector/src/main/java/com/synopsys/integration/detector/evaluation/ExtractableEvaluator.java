@@ -1,10 +1,3 @@
-/*
- * detector
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detector.evaluation;
 
 import java.util.function.Function;
@@ -50,8 +43,13 @@ public class ExtractableEvaluator extends Evaluator {
 
                 DetectableResult detectableExtractableResult = getDetectableExtractableResult(detectorEvaluation);
 
-                DetectorResult extractableResult = new DetectorResult(detectableExtractableResult.getPassed(), detectableExtractableResult.toDescription(), detectableExtractableResult.getClass(),
-                    detectableExtractableResult.getExplanation(), detectableExtractableResult.getRelevantFiles());
+                DetectorResult extractableResult = new DetectorResult(
+                    detectableExtractableResult.getPassed(),
+                    detectableExtractableResult.toDescription(),
+                    detectableExtractableResult.getClass(),
+                    detectableExtractableResult.getExplanation(),
+                    detectableExtractableResult.getRelevantFiles()
+                );
                 detectorEvaluation.setExtractable(extractableResult);
                 if (detectorEvaluation.isExtractable()) {
                     logger.trace("Extractable passed. Done evaluating for now.");

@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.file;
 
 import java.io.File;
@@ -41,23 +34,23 @@ public class DetectFileUtils {
         }
     }
 
-    public static String tryExtractFinalPieceFromCanonicalPath(final File file) {
+    public static String tryExtractFinalPieceFromCanonicalPath(File file) {
         return extractFinalPieceFromPath(tryGetCanonicalPath(file));
     }
 
-    public static String extractFinalPieceFromPath(final String path) {
+    public static String extractFinalPieceFromPath(String path) {
         if (path == null || path.length() == 0) {
             return "";
         }
-        final String normalizedPath = FilenameUtils.normalizeNoEndSeparator(path, true);
+        String normalizedPath = FilenameUtils.normalizeNoEndSeparator(path, true);
         return normalizedPath.substring(normalizedPath.lastIndexOf('/') + 1);
     }
 
-    public static File writeToFile(final File file, final String contents) throws IOException {
+    public static File writeToFile(File file, String contents) throws IOException {
         return writeToFile(file, contents, true);
     }
 
-    private static File writeToFile(final File file, final String contents, final boolean overwrite) throws IOException {
+    private static File writeToFile(File file, String contents, boolean overwrite) throws IOException {
         if (file == null) {
             return null;
         }

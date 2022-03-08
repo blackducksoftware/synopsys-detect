@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.lifecycle.shutdown;
 
 import java.io.File;
@@ -20,22 +13,13 @@ import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 public class ShutdownManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private CleanupUtility cleanupUtility;
+    private final CleanupUtility cleanupUtility;
 
-    public ShutdownManager(final CleanupUtility cleanupUtility) {
+    public ShutdownManager(CleanupUtility cleanupUtility) {
         this.cleanupUtility = cleanupUtility;
     }
 
     public void shutdown(DetectBootResult detectBootResult, ShutdownDecision shutdownDecision) {
-        if (shutdownDecision.getPhoneHomeManager() != null) {
-            try {
-                logger.debug("Ending phone home.");
-                shutdownDecision.getPhoneHomeManager().endPhoneHome();
-            } catch (Exception e) {
-                logger.debug(String.format("Error trying to end the phone home task: %s", e.getMessage()));
-            }
-        }
-
         if (shutdownDecision.getDiagnosticSystem() != null) {
             shutdownDecision.getDiagnosticSystem().finish();
         }
@@ -50,6 +34,15 @@ public class ShutdownManager {
             }
         } else {
             logger.info("Skipping cleanup, it is disabled.");
+        }
+
+        if (shutdownDecision.getPhoneHomeManager() != null) {
+            try {
+                logger.debug("Ending phone home.");
+                shutdownDecision.getPhoneHomeManager().endPhoneHome();
+            } catch (Exception e) {
+                logger.debug(String.format("Error trying to end the phone home task: %s", e.getMessage()));
+            }
         }
     }
 

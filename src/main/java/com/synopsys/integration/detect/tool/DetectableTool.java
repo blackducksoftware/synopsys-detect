@@ -1,13 +1,7 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.tool;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +10,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.JsonSyntaxException;
+import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
@@ -25,7 +21,6 @@ import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
 import com.synopsys.integration.detect.tool.detector.extraction.ExtractionEnvironmentProvider;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.project.DetectToolProjectInfo;
-import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detect.workflow.status.StatusType;
@@ -38,12 +33,14 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExceptionDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.synopsys.integration.detectable.util.CycleDetectedException;
 import com.synopsys.integration.detector.base.DetectableCreatable;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 import com.synopsys.integration.util.NameVersion;
 
 public class DetectableTool {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final DetectableCreatable detectableCreatable;
+    private final DetectableCreatable<?> detectableCreatable;
     private final ExtractionEnvironmentProvider extractionEnvironmentProvider;
     private final CodeLocationConverter codeLocationConverter;
     private final String name;
@@ -51,8 +48,19 @@ public class DetectableTool {
     private final StatusEventPublisher statusEventPublisher;
     private final ExitCodePublisher exitCodePublisher;
 
-    public DetectableTool(DetectableCreatable detectableCreatable, ExtractionEnvironmentProvider extractionEnvironmentProvider, CodeLocationConverter codeLocationConverter,
-        String name, DetectTool detectTool, StatusEventPublisher statusEventPublisher, ExitCodePublisher exitCodePublisher, OperationSystem operationSystem) {
+    //TODO: Move docker/bazel out of detectable and drop this notion of a detctable tool. Will simplify this logic and make this unneccessary.
+    private Detectable detectable;
+    private File sourcePath;
+
+    public DetectableTool(
+        DetectableCreatable<?> detectableCreatable,
+        ExtractionEnvironmentProvider extractionEnvironmentProvider,
+        CodeLocationConverter codeLocationConverter,
+        String name,
+        DetectTool detectTool,
+        StatusEventPublisher statusEventPublisher,
+        ExitCodePublisher exitCodePublisher
+    ) {
         this.codeLocationConverter = codeLocationConverter;
         this.name = name;
         this.detectableCreatable = detectableCreatable;
@@ -62,23 +70,24 @@ public class DetectableTool {
         this.exitCodePublisher = exitCodePublisher;
     }
 
-    public DetectableToolResult execute(File sourcePath) { //TODO: Caller publishes result.
+    public boolean initializeAndCheckForApplicable(File sourcePath) { //TODO: Move docker/bazel out of detectable and drop this notion of a detctable tool. Will simplify this logic and make this unneccessary.
         logger.trace("Starting a detectable tool.");
+        this.sourcePath = sourcePath;
 
         DetectableEnvironment detectableEnvironment = new DetectableEnvironment(sourcePath);
-        Detectable detectable = detectableCreatable.createDetectable(detectableEnvironment);
-
-        //TODO: Replicate? logger.info(String.format("Initializing %s.", detectable.getDescriptiveName()));
-
+        detectable = detectableCreatable.createDetectable(detectableEnvironment);
         DetectableResult applicable = detectable.applicable();
 
         if (!applicable.getPassed()) {
             logger.debug("Was not applicable.");
-            return DetectableToolResult.skip();
+            return false;
         }
 
         logger.debug("Applicable passed.");
+        return true;
+    }
 
+    public DetectableToolResult extract() { //TODO: Move docker/bazel out of detectable and drop this notion of a detctable tool. Will simplify this logic and make this unneccessary.
         DetectableResult extractable;
         try {
             extractable = detectable.extractable();
@@ -87,7 +96,7 @@ public class DetectableTool {
         }
 
         if (!extractable.getPassed()) {
-            logger.error("Was not extractable: " + extractable.toDescription());
+            logger.error(String.format("Was not extractable: %s", extractable.toDescription()));
             statusEventPublisher.publishStatusSummary(new Status(name, StatusType.FAILURE));
             exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_GENERAL_ERROR, extractable.toDescription());
             return DetectableToolResult.failed(extractable);
@@ -99,8 +108,8 @@ public class DetectableTool {
         Extraction extraction;
         try {
             extraction = detectable.extract(extractionEnvironment);
-        } catch (ExecutableFailedException e) {
-            extraction = Extraction.fromFailedExecutable(e);
+        } catch (ExecutableFailedException | ExecutableRunnerException | JsonSyntaxException | IOException | CycleDetectedException | DetectableException | MissingExternalIdException e) {
+            extraction = new Extraction.Builder().exception(e).build();
         }
 
         if (!extraction.isSuccess()) {

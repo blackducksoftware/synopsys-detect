@@ -1,10 +1,3 @@
-/*
- * configuration
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.configuration.property.types.enumextended;
 
 import java.util.ArrayList;
@@ -24,7 +17,7 @@ class ExtendedEnumValueParser<E extends Enum<E>, B extends Enum<B>> extends Valu
     private final SafeEnumValueParser<E> extendedParser;
     private final SafeEnumValueParser<B> baseParser;
 
-    public ExtendedEnumValueParser(@NotNull final Class<E> enumClassE, @NotNull final Class<B> enumClassB) {
+    public ExtendedEnumValueParser(@NotNull Class<E> enumClassE, @NotNull Class<B> enumClassB) {
         this.enumClassE = enumClassE;
         this.enumClassB = enumClassB;
         this.extendedParser = new SafeEnumValueParser<>(enumClassE);
@@ -33,20 +26,20 @@ class ExtendedEnumValueParser<E extends Enum<E>, B extends Enum<B>> extends Valu
 
     @Override
     @NotNull
-    public ExtendedEnumValue<E, B> parse(@NotNull final String value) throws ValueParseException {
-        final Optional<E> eValue = extendedParser.parse(value);
+    public ExtendedEnumValue<E, B> parse(@NotNull String value) throws ValueParseException {
+        Optional<E> eValue = extendedParser.parse(value);
         if (eValue.isPresent()) {
             return ExtendedEnumValue.ofExtendedValue(eValue.get());
         }
-        final Optional<B> bValue = baseParser.parse(value);
+        Optional<B> bValue = baseParser.parse(value);
         if (bValue.isPresent()) {
             return ExtendedEnumValue.ofBaseValue(bValue.get());
         }
-        final List<String> combinedOptions = new ArrayList<>();
+        List<String> combinedOptions = new ArrayList<>();
         combinedOptions.addAll(EnumPropertyUtils.getEnumNames(enumClassE));
         combinedOptions.addAll(EnumPropertyUtils.getEnumNames(enumClassB));
-        final String optionText = String.join(",", combinedOptions);
-        throw new ValueParseException(value, "either enum", "Value was must be one of " + optionText);
+        String optionText = String.join(",", combinedOptions);
+        throw new ValueParseException(value, enumClassE.getSimpleName() + " or " + enumClassB.getSimpleName(), "Value was must be one of " + optionText);
     }
 }
 

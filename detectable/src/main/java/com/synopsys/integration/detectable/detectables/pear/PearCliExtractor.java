@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.pear;
 
 import java.io.File;
@@ -43,8 +36,14 @@ public class PearCliExtractor {
     private final PearPackageDependenciesParser pearPackageDependenciesParser;
     private final PearListParser pearListParser;
 
-    public PearCliExtractor(ExternalIdFactory externalIdFactory, DetectableExecutableRunner executableRunner, PearDependencyGraphTransformer pearDependencyGraphTransformer, PearPackageXmlParser pearPackageXmlParser,
-        PearPackageDependenciesParser pearPackageDependenciesParser, PearListParser pearListParser) {
+    public PearCliExtractor(
+        ExternalIdFactory externalIdFactory,
+        DetectableExecutableRunner executableRunner,
+        PearDependencyGraphTransformer pearDependencyGraphTransformer,
+        PearPackageXmlParser pearPackageXmlParser,
+        PearPackageDependenciesParser pearPackageDependenciesParser,
+        PearListParser pearListParser
+    ) {
         this.externalIdFactory = externalIdFactory;
         this.executableRunner = executableRunner;
         this.pearDependencyGraphTransformer = pearDependencyGraphTransformer;
@@ -53,15 +52,20 @@ public class PearCliExtractor {
         this.pearListParser = pearListParser;
     }
 
-    public Extraction extract(ExecutableTarget pearExe, File packageXmlFile, File workingDirectory, boolean onlyGatherRequired) {
+    public Extraction extract(ExecutableTarget pearExe, File packageXmlFile, File workingDirectory) {
         try {
             ExecutableOutput pearListOutput = executableRunner.execute(ExecutableUtils.createFromTarget(workingDirectory, pearExe, "list"));
-            ExecutableOutput packageDependenciesOutput = executableRunner.execute(ExecutableUtils.createFromTarget(workingDirectory, pearExe, "package-dependencies", PACKAGE_XML_FILENAME));
+            ExecutableOutput packageDependenciesOutput = executableRunner.execute(ExecutableUtils.createFromTarget(
+                workingDirectory,
+                pearExe,
+                "package-dependencies",
+                PACKAGE_XML_FILENAME
+            ));
             assertValidExecutableOutput(pearListOutput, packageDependenciesOutput);
 
             Map<String, String> dependencyNameVersionMap = pearListParser.parse(pearListOutput.getStandardOutputAsList());
             List<PackageDependency> packageDependencies = pearPackageDependenciesParser.parse(packageDependenciesOutput.getStandardOutputAsList());
-            DependencyGraph dependencyGraph = pearDependencyGraphTransformer.buildDependencyGraph(dependencyNameVersionMap, packageDependencies, onlyGatherRequired);
+            DependencyGraph dependencyGraph = pearDependencyGraphTransformer.buildDependencyGraph(dependencyNameVersionMap, packageDependencies);
 
             try (InputStream packageXmlInputStream = new FileInputStream(packageXmlFile)) {
                 NameVersion projectNameVersion = pearPackageXmlParser.parse(packageXmlInputStream);
@@ -70,10 +74,10 @@ public class PearCliExtractor {
                 CodeLocation detectCodeLocation = new CodeLocation(dependencyGraph, externalId);
 
                 return new Extraction.Builder()
-                           .success(detectCodeLocation)
-                           .projectName(projectNameVersion.getName())
-                           .projectVersion(projectNameVersion.getVersion())
-                           .build();
+                    .success(detectCodeLocation)
+                    .projectName(projectNameVersion.getName())
+                    .projectVersion(projectNameVersion.getVersion())
+                    .build();
             }
         } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();

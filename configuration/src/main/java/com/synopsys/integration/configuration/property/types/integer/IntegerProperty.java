@@ -1,20 +1,18 @@
-/*
- * configuration
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.configuration.property.types.integer;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.configuration.property.base.ValuedProperty;
+import com.synopsys.integration.configuration.property.PropertyBuilder;
+import com.synopsys.integration.configuration.property.base.ValuedAlikeProperty;
 
-public class IntegerProperty extends ValuedProperty<Integer> {
-    public IntegerProperty(@NotNull final String key, @NotNull Integer defaultValue) {
+public class IntegerProperty extends ValuedAlikeProperty<Integer> {
+    public IntegerProperty(@NotNull String key, @NotNull Integer defaultValue) {
         super(key, new IntegerValueParser(), defaultValue);
+    }
+
+    public static PropertyBuilder<IntegerProperty> newBuilder(@NotNull String key, @NotNull Integer defaultValue) {
+        return new PropertyBuilder<IntegerProperty>().setCreator(() -> new IntegerProperty(key, defaultValue));
     }
 
     @Nullable

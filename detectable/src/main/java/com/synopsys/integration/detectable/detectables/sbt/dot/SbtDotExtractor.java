@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.sbt.dot;
 
 import java.io.File;
@@ -38,9 +31,14 @@ public class SbtDotExtractor {
     private final SbtDotGraphNodeParser graphNodeParser;
     private final SbtCommandArgumentGenerator sbtCommandArgumentGenerator;
 
-    public SbtDotExtractor(DetectableExecutableRunner executableRunner, SbtDotOutputParser sbtDotOutputParser, SbtRootNodeFinder sbtRootNodeFinder,
-        SbtGraphParserTransformer sbtGraphParserTransformer, SbtDotGraphNodeParser graphNodeParser,
-        SbtCommandArgumentGenerator sbtCommandArgumentGenerator) {
+    public SbtDotExtractor(
+        DetectableExecutableRunner executableRunner,
+        SbtDotOutputParser sbtDotOutputParser,
+        SbtRootNodeFinder sbtRootNodeFinder,
+        SbtGraphParserTransformer sbtGraphParserTransformer,
+        SbtDotGraphNodeParser graphNodeParser,
+        SbtCommandArgumentGenerator sbtCommandArgumentGenerator
+    ) {
         this.executableRunner = executableRunner;
         this.sbtDotOutputParser = sbtDotOutputParser;
         this.sbtRootNodeFinder = sbtRootNodeFinder;
@@ -79,9 +77,7 @@ public class SbtDotExtractor {
                 }
             }
             return extraction.success().build();
-        } catch (ExecutableFailedException e) {
-            return Extraction.fromFailedExecutable(e);
-        } catch (IOException | DetectableException e) {
+        } catch (IOException | DetectableException | ExecutableFailedException e) {
             return new Extraction.Builder().exception(e).build();
         }
     }

@@ -34,7 +34,7 @@ public class BlackDuckTestConnection {
         String blackduckUrl = System.getenv().get(BLACKDUCK_URL);
         String blackduckApiToken = System.getenv().get(BLACKDUCK_API_TOKEN);
 
-        BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = BlackDuckServerConfig.newBuilder();
+        BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = BlackDuckServerConfig.newApiTokenBuilder();
         blackDuckServerConfigBuilder.setProperties(System.getenv().entrySet());
         blackDuckServerConfigBuilder.setUrl(blackduckUrl);
         blackDuckServerConfigBuilder.setApiToken(blackduckApiToken);
@@ -49,8 +49,15 @@ public class BlackDuckTestConnection {
         HttpUrl blackDuckUrl = blackDuckServicesFactory.getBlackDuckHttpClient().getBlackDuckUrl();
         IntegrationEscapeUtil integrationEscapeUtil = blackDuckServicesFactory.createIntegrationEscapeUtil();
         long reportServiceTimeout = 120 * 1000;
-        return new ReportService(blackDuckServicesFactory.getGson(), blackDuckUrl, blackDuckServicesFactory.getBlackDuckApiClient(), blackDuckServicesFactory.getApiDiscovery(), new BufferedIntLogger(), integrationEscapeUtil,
-            reportServiceTimeout);
+        return new ReportService(
+            blackDuckServicesFactory.getGson(),
+            blackDuckUrl,
+            blackDuckServicesFactory.getBlackDuckApiClient(),
+            blackDuckServicesFactory.getApiDiscovery(),
+            new BufferedIntLogger(),
+            integrationEscapeUtil,
+            reportServiceTimeout
+        );
     }
 
     public String getBlackduckUrl() {
@@ -61,8 +68,12 @@ public class BlackDuckTestConnection {
         return blackduckApiToken;
     }
 
+    public BlackDuckAssertions projectVersionAssertions(NameVersion projectNameVersion) {
+        return new BlackDuckAssertions(blackDuckServicesFactory, projectNameVersion);
+    }
+
     public BlackDuckAssertions projectVersionAssertions(String projectName, String projectVersion) {
-        return new BlackDuckAssertions(blackDuckServicesFactory, new NameVersion(projectName, projectVersion));
+        return projectVersionAssertions(new NameVersion(projectName, projectVersion));
     }
 
     public boolean trustCert() {

@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.clang.packagemanager;
 
 import java.util.List;
@@ -22,9 +15,18 @@ public class ClangPackageManagerInfo {
     private final List<String> pkgMgrGetOwnerCmdArgs;
     private final List<String> pkgArchitectureArgs;
     private final List<String> pkgInfoArgs;
-    
-    public ClangPackageManagerInfo(String pkgMgrName, String pkgMgrCmdString, List<Forge> possibleForges, Forge defaultForge, List<String> checkPresenceCommandArgs,
-        String checkPresenceCommandOutputExpectedText, List<String> pkgMgrGetOwnerCmdArgs, List<String> pkgArchitectureArgs, List<String> pkgInfoArgs) {
+
+    public ClangPackageManagerInfo(
+        String pkgMgrName,
+        String pkgMgrCmdString,
+        List<Forge> possibleForges,
+        Forge defaultForge,
+        List<String> checkPresenceCommandArgs,
+        String checkPresenceCommandOutputExpectedText,
+        List<String> pkgMgrGetOwnerCmdArgs,
+        List<String> pkgArchitectureArgs,
+        List<String> pkgInfoArgs
+    ) {
         this.pkgMgrName = pkgMgrName;
         this.pkgMgrCmdString = pkgMgrCmdString;
         this.possibleForges = possibleForges;

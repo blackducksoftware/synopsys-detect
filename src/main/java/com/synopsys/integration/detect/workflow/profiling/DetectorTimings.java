@@ -1,10 +1,3 @@
-/*
- * synopsys-detect
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detect.workflow.profiling;
 
 import java.util.List;
@@ -19,9 +12,12 @@ public class DetectorTimings {
     private final List<Timing<DetectorEvaluation>> extractableTimings;
     private final List<Timing<DetectorEvaluation>> extractionTimings;
 
-    public DetectorTimings(Map<DetectorType, Long> aggregateTimings, List<Timing<DetectorEvaluation>> applicableTimings,
+    public DetectorTimings(
+        Map<DetectorType, Long> aggregateTimings,
+        List<Timing<DetectorEvaluation>> applicableTimings,
         List<Timing<DetectorEvaluation>> extractableTimings,
-        List<Timing<DetectorEvaluation>> extractionTimings) {
+        List<Timing<DetectorEvaluation>> extractionTimings
+    ) {
         this.aggregateTimings = aggregateTimings;
         this.applicableTimings = applicableTimings;
         this.extractableTimings = extractableTimings;

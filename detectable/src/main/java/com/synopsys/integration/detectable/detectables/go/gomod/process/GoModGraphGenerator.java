@@ -1,10 +1,3 @@
-/*
- * detectable
- *
- * Copyright (c) 2021 Synopsys, Inc.
- *
- * Use subject to the terms and conditions of the Synopsys End User Software License and Maintenance Agreement. All rights reserved worldwide.
- */
 package com.synopsys.integration.detectable.detectables.go.gomod.process;
 
 import java.util.HashSet;
@@ -34,26 +27,31 @@ public class GoModGraphGenerator {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public CodeLocation generateGraph(GoListModule projectModule, GoRelationshipManager goRelationshipManager, GoVersionManager goVersionManager) {
+    public CodeLocation generateGraph(GoListModule projectModule, GoRelationshipManager goRelationshipManager, GoModDependencyManager goModDependencyManager) {
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
         String moduleName = projectModule.getPath();
         if (goRelationshipManager.hasRelationshipsFor(moduleName)) {
             goRelationshipManager.getRelationshipsFor(moduleName).stream()
                 .map(relationship -> relationship.getChild().getName())
-                .forEach(childName -> addModuleToGraph(childName, null, graph, goRelationshipManager, goVersionManager));
+                .forEach(childName -> addModuleToGraph(childName, null, graph, goRelationshipManager, goModDependencyManager));
         }
 
         return new CodeLocation(graph, externalIdFactory.createNameVersionExternalId(Forge.GOLANG, projectModule.getPath(), projectModule.getVersion()));
     }
 
-    private void addModuleToGraph(String moduleName, @Nullable Dependency parent, MutableDependencyGraph graph, GoRelationshipManager goRelationshipManager, GoVersionManager goVersionManager) {
-        if (parent == null && goRelationshipManager.isNotUsedByMainModule(moduleName)) {
+    private void addModuleToGraph(
+        String moduleName,
+        @Nullable Dependency parent,
+        MutableDependencyGraph graph,
+        GoRelationshipManager goRelationshipManager,
+        GoModDependencyManager goModDependencyManager
+    ) {
+        if (goRelationshipManager.isNotUsedByMainModule(moduleName)) {
             logger.debug("Excluding module '{}' because it is not used by the main module.", moduleName);
             return;
         }
 
-        String moduleVersion = goVersionManager.getVersionForModule(moduleName).orElse(null);
-        Dependency dependency = convertToDependency(moduleName, moduleVersion);
+        Dependency dependency = goModDependencyManager.getDependencyForModule(moduleName);
         if (parent != null) {
             graph.addChildWithParent(dependency, parent);
         } else {
@@ -64,12 +62,8 @@ public class GoModGraphGenerator {
             fullyGraphedModules.add(moduleName);
             List<GoGraphRelationship> projectRelationships = goRelationshipManager.getRelationshipsFor(moduleName);
             for (GoGraphRelationship projectRelationship : projectRelationships) {
-                addModuleToGraph(projectRelationship.getChild().getName(), dependency, graph, goRelationshipManager, goVersionManager);
+                addModuleToGraph(projectRelationship.getChild().getName(), dependency, graph, goRelationshipManager, goModDependencyManager);
             }
         }
-    }
-
-    private Dependency convertToDependency(String moduleName, @Nullable String moduleVersion) {
-        return new Dependency(moduleName, moduleVersion, externalIdFactory.createNameVersionExternalId(Forge.GOLANG, moduleName, moduleVersion));
     }
 }
