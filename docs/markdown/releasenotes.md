@@ -5,6 +5,7 @@
 ### New features
 
 * Verified support for Java 16 and 17.
+* Added new properties detect.gradle.excluded.project.paths and detect.gradle.included.project.paths to allow filtering on paths which gradle guarantees to be unique.
 * Added support for vendoring Go Mod dependencies using [detect.go.mod.dependency.types.excluded=VENDORED](properties/detectors/go.md#go-mod-dependency-types-excluded) to exclude *test* and *build system* dependencies from Go modules
   declaring a version prior to `Go 1.16`.
 * Added Rapid Compare Mode which enables returning only the differences in policy violations compared to a previous scan.
