@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detectable.detectables.bitbake.model.GraphNodeLabelDetails;
+import com.synopsys.integration.detectable.detectables.bitbake.data.GraphNodeLabelDetails;
 
 // Example of a GraphNode label value:
 // acl-native do_compile\n:2.3.1-r0\nvirtual:native:/workdir/poky/meta/recipes-support/attr/acl_2.3.1.bb

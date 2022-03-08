@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.bitbake.parse;
+package com.synopsys.integration.detectable.detectables.bitbake.transform;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,16 +21,18 @@ import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDependency
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeNode;
 
-public class BitbakeGraphTransformer {
+public class BitbakeDependencyGraphTransformer {
     private static final String NATIVE_SUFFIX = "-native";
     public static final String VERSION_WITH_EPOCH_PREFIX_REGEX = "^[0-9]+:.*";
     public static final String VIRTUAL_PREFIX = "virtual/";
+    public static final String AUTOINC_REGEX = "AUTOINC\\+[\\w|\\d]*";
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final ExternalIdFactory externalIdFactory;
     private final EnumListFilter<BitbakeDependencyType> dependencyTypeFilter;
 
-    public BitbakeGraphTransformer(ExternalIdFactory externalIdFactory, EnumListFilter<BitbakeDependencyType> dependencyTypeFilter) {
+    public BitbakeDependencyGraphTransformer(ExternalIdFactory externalIdFactory, EnumListFilter<BitbakeDependencyType> dependencyTypeFilter) {
         this.externalIdFactory = externalIdFactory;
         this.dependencyTypeFilter = dependencyTypeFilter;
     }
@@ -52,6 +54,8 @@ public class BitbakeGraphTransformer {
                 if (dependencyTypeFilter.shouldInclude(BitbakeDependencyType.BUILD) || !isBuildDependency(imageRecipes, name, version)) {
                     Optional<Dependency> dependency = generateExternalId(name, version, actualLayer.orElse(null), recipeLayerMap).map(Dependency::new);
                     dependency.ifPresent(value -> namesToExternalIds.put(bitbakeNode.getName(), value));
+                } else {
+                    logger.debug("Excluding BUILD dependency: {}:{}", name, version);
                 }
             } else if (name.startsWith(VIRTUAL_PREFIX)) {
                 logger.debug("Virtual component '{}' found. Excluding from graph.", name);
@@ -100,8 +104,8 @@ public class BitbakeGraphTransformer {
     private boolean foundInImageRecipes(Map<String, String> imageRecipes, String recipeName, String recipeVersion) {
         if (imageRecipes.containsKey(recipeName)) {
             String imageRecipeVersion = imageRecipes.get(recipeName);
-            String epochlessRecipeVersion = removeEpochPrefix(recipeVersion);
-            if (epochlessRecipeVersion.startsWith(imageRecipeVersion)) {
+            String recipeWithoutEpoch = removeEpochPrefix(recipeVersion);
+            if (recipeWithoutEpoch.startsWith(imageRecipeVersion)) {
                 return true;
             } else {
                 logger.debug("Recipe {}/{} is included in the image, but version {} is not.", recipeName, imageRecipeVersion, recipeVersion);
@@ -111,13 +115,13 @@ public class BitbakeGraphTransformer {
     }
 
     private String removeEpochPrefix(String recipeVersion) {
-        String epochlessRecipeVersion = recipeVersion;
+        String recipeWithoutEpoch = recipeVersion;
         if (recipeVersion.matches(VERSION_WITH_EPOCH_PREFIX_REGEX)) {
             int colonPos = recipeVersion.indexOf(':');
-            epochlessRecipeVersion = recipeVersion.substring(colonPos + 1);
-            logger.trace("epochlessVersion for {}: {}", recipeVersion, epochlessRecipeVersion);
+            recipeWithoutEpoch = recipeVersion.substring(colonPos + 1);
+            logger.trace("Recipe Version without epoch for {}: {}", recipeVersion, recipeWithoutEpoch);
         }
-        return epochlessRecipeVersion;
+        return recipeWithoutEpoch;
     }
 
     private Optional<ExternalId> generateExternalId(String dependencyName, String dependencyVersion, @Nullable String dependencyLayer, Map<String, List<String>> recipeLayerMap) {
@@ -138,13 +142,13 @@ public class BitbakeGraphTransformer {
         }
 
         if (externalId != null && externalId.getVersion().contains("AUTOINC")) {
-            externalId.setVersion(externalId.getVersion().replaceFirst("AUTOINC\\+[\\w|\\d]*", "X"));
+            externalId.setVersion(externalId.getVersion().replaceFirst(AUTOINC_REGEX, "X"));
         }
 
         return Optional.ofNullable(externalId);
     }
 
-    private String chooseRecipeLayer(final String dependencyName, @Nullable String dependencyLayer, final List<String> recipeLayerNames) {
+    private String chooseRecipeLayer(String dependencyName, @Nullable String dependencyLayer, List<String> recipeLayerNames) {
         if (dependencyLayer == null) {
             logger.warn(
                 "Did not parse a layer for dependency {} from task-depends.dot; falling back to layer {} (first from show-recipes output)",

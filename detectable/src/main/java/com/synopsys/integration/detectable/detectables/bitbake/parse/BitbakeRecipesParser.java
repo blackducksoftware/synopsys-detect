@@ -11,8 +11,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detectable.detectables.bitbake.ShowRecipesResults;
-import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeRecipe;
+import com.synopsys.integration.detectable.detectables.bitbake.data.BitbakeRecipe;
+import com.synopsys.integration.detectable.detectables.bitbake.data.ShowRecipesResults;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
 
