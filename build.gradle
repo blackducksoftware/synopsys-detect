@@ -3,7 +3,7 @@ import com.synopsys.integration.detect.verification.VerifyBlackDuckDetectTask
 
 buildscript {
     ext {
-        springBootVersion = '2.4.13'
+        springBootVersion = '2.6.4'
         blackDuckCommonVersion = '61.1.0'
         junitPlatformCustomTestTags = 'docker, battery'
         javaTargetCompatibility = 8
