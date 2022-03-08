@@ -8,7 +8,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -89,30 +88,54 @@ public class BitbakeExtractor {
         ShowRecipesResults showRecipesResults = executeBitbakeForRecipeLayerCatalog(sourceDirectory, bashExecutable, buildEnvironmentFile);
 
         List<CodeLocation> codeLocations = packageNames.stream()
-            .map(targetPackage -> {
-                try {
-                    return generateCodeLocationForTargetPackage(
-                        sourceDirectory,
-                        bashExecutable,
-                        buildEnvironmentFile,
-                        buildDirectory,
-                        targetPackage,
-                        showRecipesResults,
-                        bitbakeEnvironment
-                    );
-                } catch (ExecutableFailedException | IntegrationException | IOException e) {
-                    logger.error("Failed to extract a Code Location while running Bitbake against package '{}': {}", targetPackage, e.getMessage());
-                    logger.debug(e.getMessage(), e);
-                    return null;
-                }
-            })
-            .filter(Objects::nonNull)
+            .map(targetPackage -> generateCodeLocationForTargetPackage(
+                targetPackage,
+                sourceDirectory,
+                bashExecutable,
+                buildEnvironmentFile,
+                buildDirectory,
+                showRecipesResults,
+                bitbakeEnvironment
+            ))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
             .collect(Collectors.toList());
 
         if (codeLocations.isEmpty()) {
             return Extraction.failure("No Code Locations were generated during extraction");
         } else {
             return Extraction.success(codeLocations);
+        }
+    }
+
+    private Optional<CodeLocation> generateCodeLocationForTargetPackage(
+        String targetPackage,
+        File sourceDirectory,
+        ExecutableTarget bashExecutable,
+        File buildEnvironmentFile,
+        File buildDirectory,
+        ShowRecipesResults showRecipesResults,
+        BitbakeEnvironment bitbakeEnvironment
+    ) {
+        try {
+            BitbakeGraph bitbakeGraph = generateBitbakeGraph(
+                sourceDirectory,
+                bashExecutable,
+                buildEnvironmentFile,
+                buildDirectory,
+                targetPackage,
+                showRecipesResults.getLayerNames()
+            );
+            Map<String, String> imageRecipes = null;
+            if (dependencyTypeFilter.shouldExclude(BitbakeDependencyType.BUILD)) {
+                imageRecipes = readImageRecipes(buildDirectory, targetPackage, bitbakeEnvironment);
+            }
+            DependencyGraph dependencyGraph = bitbakeDependencyGraphTransformer.transform(bitbakeGraph, showRecipesResults.getRecipesWithLayers(), imageRecipes);
+            return Optional.of(new CodeLocation(dependencyGraph));
+        } catch (ExecutableFailedException | IntegrationException | IOException e) {
+            logger.error("Failed to extract a Code Location while running Bitbake against package '{}': {}", targetPackage, e.getMessage());
+            logger.debug(e.getMessage(), e);
+            return Optional.empty();
         }
     }
 
@@ -151,24 +174,6 @@ public class BitbakeExtractor {
         throws ExecutableFailedException, IOException {
         List<String> showRecipesOutput = bitbakeCommandRunner.runBitbakeLayersShowRecipes(sourceDirectory, bashExecutable, buildEnvironmentFile);
         return bitbakeRecipesParser.parseShowRecipes(showRecipesOutput);
-    }
-
-    private CodeLocation generateCodeLocationForTargetPackage(
-        File sourceDirectory,
-        ExecutableTarget bashExecutable,
-        File buildEnvironmentFile,
-        File buildDirectory,
-        String targetPackage,
-        ShowRecipesResults showRecipesResults,
-        BitbakeEnvironment bitbakeEnvironment
-    ) throws ExecutableFailedException, IntegrationException, IOException {
-        BitbakeGraph bitbakeGraph = generateBitbakeGraph(sourceDirectory, bashExecutable, buildEnvironmentFile, buildDirectory, targetPackage, showRecipesResults.getLayerNames());
-        Map<String, String> imageRecipes = null;
-        if (dependencyTypeFilter.shouldExclude(BitbakeDependencyType.BUILD)) {
-            imageRecipes = readImageRecipes(buildDirectory, targetPackage, bitbakeEnvironment);
-        }
-        DependencyGraph dependencyGraph = bitbakeDependencyGraphTransformer.transform(bitbakeGraph, showRecipesResults.getRecipesWithLayers(), imageRecipes);
-        return new CodeLocation(dependencyGraph);
     }
 
     private Map<String, String> readImageRecipes(File buildDirectory, String targetImageName, BitbakeEnvironment bitbakeEnvironment) throws IntegrationException, IOException {
