@@ -47,6 +47,11 @@ class BuildFileFinderTest {
     void testFindingBasedOnLicenseDir() {
         File buildDir = FunctionalTestFiles.asFile("/bitbake/builddir_env");
         File licenseDir = FunctionalTestFiles.asFile("/bitbake/builddir_env/envprovidedpath/licenses");
+        File lastModifiedManifestFile = new File(licenseDir, "targetimage-last-modified-architecture/license.manifest");
+        File wrongManifestFile = new File(licenseDir, "targetimage-wrong-architecture/license.manifest");
+        long currentTime = System.currentTimeMillis();
+        assertTrue(lastModifiedManifestFile.setLastModified(currentTime), "The test needs to be able to set the last modified.");
+        assertTrue(wrongManifestFile.setLastModified(currentTime - 1000), "The test needs to be able to set the last modified.");
         BitbakeEnvironment bitbakeEnvironment = new BitbakeEnvironment(null, licenseDir.getAbsolutePath()); // This test adds license directory
 
         Optional<File> licensesManifestFile = finder.findLicenseManifestFile(buildDir, "targetimage", bitbakeEnvironment);
