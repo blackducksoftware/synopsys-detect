@@ -62,7 +62,11 @@ class YarnTransformerTest {
     void testExcludeDevDependencies() throws MissingExternalIdException {
         YarnLockResult yarnLockResult = buildTestYarnLockResult(noWorkspaces, noWorkspaces, false);
 
-        List<CodeLocation> codeLocations = createTransformer(YarnDependencyType.NON_PRODUCTION).generateCodeLocations(yarnLockResult, new ArrayList<>(0), ExcludedIncludedWildcardFilter.EMPTY);
+        List<CodeLocation> codeLocations = createTransformer(YarnDependencyType.NON_PRODUCTION).generateCodeLocations(
+            yarnLockResult,
+            new ArrayList<>(0),
+            ExcludedIncludedWildcardFilter.EMPTY
+        );
 
         assertEquals(1, codeLocations.size());
         CodeLocation codeLocation = codeLocations.get(0);

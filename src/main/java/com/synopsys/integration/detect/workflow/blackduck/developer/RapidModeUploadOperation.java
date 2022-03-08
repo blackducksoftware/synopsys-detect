@@ -23,14 +23,15 @@ public class RapidModeUploadOperation {
         this.rapidScanService = rapidScanService;
     }
 
-    public List<HttpUrl> run(BdioResult bdioResult, @Nullable File rapidScanConfig) throws IntegrationException, IOException {
+    public List<HttpUrl> run(BdioResult bdioResult, RapidScanOptions rapidScanOptions, @Nullable File rapidScanConfig)
+        throws IntegrationException, IOException {
         logger.info("Begin Rapid Mode Scan");
         UploadBatch uploadBatch = new UploadBatch();
         for (UploadTarget uploadTarget : bdioResult.getUploadTargets()) {
             logger.debug(String.format("Uploading %s", uploadTarget.getUploadFile().getName()));
             uploadBatch.addUploadTarget(uploadTarget);
         }
-        List<HttpUrl> results = rapidScanService.performUpload(uploadBatch, rapidScanConfig);
+        List<HttpUrl> results = rapidScanService.performUpload(uploadBatch, rapidScanOptions, rapidScanConfig);
         logger.debug("Rapid scan url count: {}", results.size());
         return results;
     }

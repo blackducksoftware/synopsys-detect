@@ -26,7 +26,12 @@ public class RpmPackageManagerResolver implements ClangPackageManagerResolver {
     }
 
     @Override
-    public List<PackageDetails> resolvePackages(ClangPackageManagerInfo currentPackageManager, DetectableExecutableRunner executableRunner, File workingDirectory, String queryPackageOutput)
+    public List<PackageDetails> resolvePackages(
+        ClangPackageManagerInfo currentPackageManager,
+        DetectableExecutableRunner executableRunner,
+        File workingDirectory,
+        String queryPackageOutput
+    )
         throws ExecutableRunnerException, NotOwnedByAnyPkgException {
         List<PackageDetails> packageDetailsList = new ArrayList<>();
         String[] packageLines = queryPackageOutput.split("\n");

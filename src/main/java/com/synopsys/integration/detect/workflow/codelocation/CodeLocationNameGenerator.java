@@ -23,7 +23,15 @@ public class CodeLocationNameGenerator {
         this.codeLocationNameOverride = codeLocationNameOverride;
     }
 
-    public String createBomCodeLocationName(File detectSourcePath, File sourcePath, String projectName, String projectVersionName, DetectCodeLocation detectCodeLocation, @Nullable String prefix, @Nullable String suffix) {
+    public String createBomCodeLocationName(
+        File detectSourcePath,
+        File sourcePath,
+        String projectName,
+        String projectVersionName,
+        DetectCodeLocation detectCodeLocation,
+        @Nullable String prefix,
+        @Nullable String suffix
+    ) {
         String canonicalDetectSourcePath = DetectFileUtils.tryGetCanonicalPath(detectSourcePath);
         String canonicalSourcePath = DetectFileUtils.tryGetCanonicalPath(sourcePath);
         String pathPiece = FileNameUtils.relativize(canonicalDetectSourcePath, canonicalSourcePath);
@@ -46,7 +54,14 @@ public class CodeLocationNameGenerator {
         return createCodeLocationName(prefix, bomCodeLocationNamePieces, suffix, bomCodeLocationEndPieces);
     }
 
-    public String createDockerCodeLocationName(File sourcePath, String projectName, String projectVersionName, String dockerImage, @Nullable String prefix, @Nullable String suffix) {
+    public String createDockerCodeLocationName(
+        File sourcePath,
+        String projectName,
+        String projectVersionName,
+        String dockerImage,
+        @Nullable String prefix,
+        @Nullable String suffix
+    ) {
         String canonicalSourcePath = DetectFileUtils.tryGetCanonicalPath(sourcePath);
         String finalSourcePathPiece = DetectFileUtils.extractFinalPieceFromPath(canonicalSourcePath);
         String codeLocationTypeString = CodeLocationNameType.DOCKER.toString().toLowerCase();
@@ -68,7 +83,14 @@ public class CodeLocationNameGenerator {
         return createCodeLocationName(prefix, fileCodeLocationNamePieces, suffix, fileCodeLocationEndPieces);
     }
 
-    public String createScanCodeLocationName(File sourcePath, File scanTargetPath, String projectName, String projectVersionName, @Nullable String prefix, @Nullable String suffix) {
+    public String createScanCodeLocationName(
+        File sourcePath,
+        File scanTargetPath,
+        String projectName,
+        String projectVersionName,
+        @Nullable String prefix,
+        @Nullable String suffix
+    ) {
         String pathPiece = cleanScanTargetPath(scanTargetPath, sourcePath);
         String codeLocationTypeString = CodeLocationNameType.SCAN.toString().toLowerCase();
 

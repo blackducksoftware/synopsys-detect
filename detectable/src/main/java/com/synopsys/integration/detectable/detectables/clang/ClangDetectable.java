@@ -74,7 +74,14 @@ public class ClangDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
-        return clangExtractor.extract(selectedPackageManager, packageManagerRunner, environment.getDirectory(), extractionEnvironment.getOutputDirectory(), jsonCompilationDatabaseFile, options.isCleanup());
+        return clangExtractor.extract(
+            selectedPackageManager,
+            packageManagerRunner,
+            environment.getDirectory(),
+            extractionEnvironment.getOutputDirectory(),
+            jsonCompilationDatabaseFile,
+            options.isCleanup()
+        );
     }
 
     private ClangPackageManager findPkgMgr(File workingDirectory) {

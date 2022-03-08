@@ -30,7 +30,10 @@ public class SpringConfigurationPropertySource implements PropertySource {
         this.configurablePropertyResolver = configurablePropertyResolver;
     }
 
-    public static List<SpringConfigurationPropertySource> fromConfigurableEnvironmentSafely(ConfigurableEnvironment configurableEnvironment, BiConsumer<String, Exception> unknownConsumer) {
+    public static List<SpringConfigurationPropertySource> fromConfigurableEnvironmentSafely(
+        ConfigurableEnvironment configurableEnvironment,
+        BiConsumer<String, Exception> unknownConsumer
+    ) {
         try {
             return new ArrayList<>(fromConfigurableEnvironment(configurableEnvironment, false));
         } catch (RuntimeException e) {
@@ -53,7 +56,9 @@ public class SpringConfigurationPropertySource implements PropertySource {
                     return null;
                 } else {
                     throw new RuntimeException(
-                        new UnknownSpringConfigurationException("Unknown spring configuration type. We may be unable to find property information from it correctly. Likely a new configuration property source should be tested against. "));
+                        new UnknownSpringConfigurationException(
+                            "Unknown spring configuration type. We may be unable to find property information from it correctly. Likely a new configuration property source should be tested against. "
+                        ));
                 }
             }
         }).filterNotNull().toList();
@@ -61,7 +66,11 @@ public class SpringConfigurationPropertySource implements PropertySource {
     }
 
     // TODO - this should return an Optional
-    private static SpringConfigurationPropertySource getPropertySource(ConfigurableEnvironment configurableEnvironment, boolean ignoreUnknown, ConfigurationPropertySource configurationPropertySource) {
+    private static SpringConfigurationPropertySource getPropertySource(
+        ConfigurableEnvironment configurableEnvironment,
+        boolean ignoreUnknown,
+        ConfigurationPropertySource configurationPropertySource
+    ) {
         Object underlying = configurationPropertySource.getUnderlyingSource();
         if (org.springframework.core.env.PropertySource.class.isAssignableFrom(underlying.getClass())) {
             org.springframework.core.env.PropertySource springSource = (org.springframework.core.env.PropertySource) underlying;
@@ -71,7 +80,8 @@ public class SpringConfigurationPropertySource implements PropertySource {
                 return null;
             } else {
                 throw new RuntimeException(
-                    new UnknownSpringConfigurationException("Unknown underlying spring configuration source. We may be unable to determine where a property originated. Likely a new property source type should be tested against."));
+                    new UnknownSpringConfigurationException(
+                        "Unknown underlying spring configuration source. We may be unable to determine where a property originated. Likely a new property source type should be tested against."));
             }
         }
     }

@@ -10,7 +10,13 @@ public class MavenCliExtractorOptions {
     private final List<String> mavenExcludedModules;
     private final List<String> mavenIncludedModules;
 
-    public MavenCliExtractorOptions(String mavenBuildCommand, List<String> mavenExcludedScopes, List<String> mavenIncludedScopes, List<String> mavenExcludedModules, List<String> mavenIncludedModules) {
+    public MavenCliExtractorOptions(
+        String mavenBuildCommand,
+        List<String> mavenExcludedScopes,
+        List<String> mavenIncludedScopes,
+        List<String> mavenExcludedModules,
+        List<String> mavenIncludedModules
+    ) {
         this.mavenBuildCommand = mavenBuildCommand;
         this.mavenExcludedScopes = mavenExcludedScopes;
         this.mavenIncludedScopes = mavenIncludedScopes;

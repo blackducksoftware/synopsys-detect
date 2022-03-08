@@ -16,6 +16,7 @@ import org.mockito.Mockito;
 
 import com.synopsys.integration.common.util.finder.SimpleFileFinder;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
 import com.synopsys.integration.detect.lifecycle.run.step.BinaryScanStepRunner;
@@ -24,7 +25,7 @@ import com.synopsys.integration.exception.IntegrationException;
 
 public class BinaryUploadOperationTest {
     @Test
-    public void testShouldFailOnDirectory() throws DetectUserFriendlyException {
+    public void testShouldFailOnDirectory() throws OperationException {
         BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("."), Collections.singletonList(""), "", "", 0, false);
         OperationFactory operationFactory = Mockito.mock(OperationFactory.class);
 

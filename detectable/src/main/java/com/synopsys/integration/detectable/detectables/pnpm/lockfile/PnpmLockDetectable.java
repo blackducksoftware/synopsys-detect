@@ -42,7 +42,10 @@ public class PnpmLockDetectable extends Detectable {
     public DetectableResult applicable() {
         Requirements requirements = new Requirements(fileFinder, environment);
         pnpmLockYaml = requirements.file(PNPM_LOCK_YAML_FILENAME);
-        packageJson = requirements.optionalFile(PACKAGE_JSON, () -> logger.warn("Pnpm applied but it could not find a package.json so project name and version may not be determined."));
+        packageJson = requirements.optionalFile(
+            PACKAGE_JSON,
+            () -> logger.warn("Pnpm applied but it could not find a package.json so project name and version may not be determined.")
+        );
         return requirements.result();
     }
 
@@ -53,7 +56,10 @@ public class PnpmLockDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
-        PnpmLinkedPackageResolver linkedPackageResolver = new PnpmLinkedPackageResolver(pnpmLockYaml.getParentFile(), packageJsonFiles); // we are assuming parent of the lock file we are parsing is the project root
+        PnpmLinkedPackageResolver linkedPackageResolver = new PnpmLinkedPackageResolver(
+            pnpmLockYaml.getParentFile(),
+            packageJsonFiles
+        ); // we are assuming parent of the lock file we are parsing is the project root
         return pnpmExtractor.extract(pnpmLockYaml, packageJson, linkedPackageResolver);
     }
 }

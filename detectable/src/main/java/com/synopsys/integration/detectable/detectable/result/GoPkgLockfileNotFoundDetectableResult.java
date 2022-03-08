@@ -9,6 +9,9 @@ public class GoPkgLockfileNotFoundDetectableResult extends FailedDetectableResul
 
     @Override
     public String toDescription() {
-        return String.format("A Gopkg.toml was located in %s, but the Gopkg.lock file was NOT located. Please run 'go dep init' and 'go dep ensure' in that location and try again.", directoryPath);
+        return String.format(
+            "A Gopkg.toml was located in %s, but the Gopkg.lock file was NOT located. Please run 'go dep init' and 'go dep ensure' in that location and try again.",
+            directoryPath
+        );
     }
 }

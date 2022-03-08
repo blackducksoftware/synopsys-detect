@@ -80,7 +80,12 @@ public class PipEnvDetectableTest extends DetectableFunctionalTest {
     @Override
     public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
         PipenvDetectableOptions pipenvDetectableOptions = new PipenvDetectableOptions("simple", "1", false);
-        return detectableFactory.createPipenvDetectable(detectableEnvironment, pipenvDetectableOptions, () -> ExecutableTarget.forCommand(PYTHON_CMD), () -> ExecutableTarget.forCommand(PIPENV_CMD));
+        return detectableFactory.createPipenvDetectable(
+            detectableEnvironment,
+            pipenvDetectableOptions,
+            () -> ExecutableTarget.forCommand(PYTHON_CMD),
+            () -> ExecutableTarget.forCommand(PIPENV_CMD)
+        );
     }
 
     @Override

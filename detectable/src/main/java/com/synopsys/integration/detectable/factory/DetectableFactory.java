@@ -64,9 +64,10 @@ import com.synopsys.integration.detectable.detectables.cargo.parse.CargoDependen
 import com.synopsys.integration.detectable.detectables.cargo.parse.CargoTomlParser;
 import com.synopsys.integration.detectable.detectables.cargo.transform.CargoLockPackageDataTransformer;
 import com.synopsys.integration.detectable.detectables.cargo.transform.CargoLockPackageTransformer;
-import com.synopsys.integration.detectable.detectables.carthage.CartfileResolvedDependencyDeclarationParser;
 import com.synopsys.integration.detectable.detectables.carthage.CarthageDetectable;
 import com.synopsys.integration.detectable.detectables.carthage.CarthageExtractor;
+import com.synopsys.integration.detectable.detectables.carthage.parse.CartfileResolvedParser;
+import com.synopsys.integration.detectable.detectables.carthage.transform.CarthageDeclarationTransformer;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOptions;
 import com.synopsys.integration.detectable.detectables.clang.ClangExtractor;
@@ -140,10 +141,11 @@ import com.synopsys.integration.detectable.detectables.go.gogradle.GoGradleLockP
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectable;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliExtractor;
-import com.synopsys.integration.detectable.detectables.go.gomod.GoModCommandExecutor;
+import com.synopsys.integration.detectable.detectables.go.gomod.GoModCommandRunner;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoGraphParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoListParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoModWhyParser;
+import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoVersionParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.process.GoModGraphGenerator;
 import com.synopsys.integration.detectable.detectables.go.vendor.GoVendorDetectable;
 import com.synopsys.integration.detectable.detectables.go.vendor.GoVendorExtractor;
@@ -331,11 +333,22 @@ public class DetectableFactory {
     }
 
     public CarthageDetectable createCarthageDetectable(DetectableEnvironment environment) {
-        return new CarthageDetectable(environment, fileFinder, carthageExtractor());
+        CartfileResolvedParser cartfileResolvedParser = new CartfileResolvedParser();
+        CarthageDeclarationTransformer carthageDeclarationTransformer = new CarthageDeclarationTransformer();
+        CarthageExtractor carthageExtractor = new CarthageExtractor(cartfileResolvedParser, carthageDeclarationTransformer);
+        return new CarthageDetectable(environment, fileFinder, carthageExtractor);
     }
 
     public ClangDetectable createClangDetectable(DetectableEnvironment environment, ClangDetectableOptions clangDetectableOptions) {
-        return new ClangDetectable(environment, executableRunner, fileFinder, clangPackageManagerFactory().createPackageManagers(), clangExtractor(), clangDetectableOptions, clangPackageManagerRunner());
+        return new ClangDetectable(
+            environment,
+            executableRunner,
+            fileFinder,
+            clangPackageManagerFactory().createPackageManagers(),
+            clangExtractor(),
+            clangDetectableOptions,
+            clangPackageManagerRunner()
+        );
     }
 
     public ComposerLockDetectable createComposerDetectable(DetectableEnvironment environment, ComposerLockDetectableOptions composerLockDetectableOptions) {
@@ -356,7 +369,12 @@ public class DetectableFactory {
         return new DartPubSpecLockDetectable(environment, fileFinder, pubSpecExtractor());
     }
 
-    public DartPubDepDetectable createDartPubDepDetectable(DetectableEnvironment environment, DartPubDepsDetectableOptions dartPubDepsDetectableOptions, DartResolver dartResolver, FlutterResolver flutterResolver) {
+    public DartPubDepDetectable createDartPubDepDetectable(
+        DetectableEnvironment environment,
+        DartPubDepsDetectableOptions dartPubDepsDetectableOptions,
+        DartResolver dartResolver,
+        FlutterResolver flutterResolver
+    ) {
         return new DartPubDepDetectable(environment, fileFinder, pubDepsExtractor(), dartPubDepsDetectableOptions, dartResolver, flutterResolver);
     }
 
@@ -372,8 +390,8 @@ public class DetectableFactory {
         return new GitParseDetectable(environment, fileFinder, gitParseExtractor());
     }
 
-    public GoModCliDetectable createGoModCliDetectable(DetectableEnvironment environment, GoResolver goResolver, GoModCliDetectableOptions goModCliDetectableOptions) {
-        return new GoModCliDetectable(environment, fileFinder, goResolver, goModCliExtractor(), goModCliDetectableOptions);
+    public GoModCliDetectable createGoModCliDetectable(DetectableEnvironment environment, GoResolver goResolver, GoModCliDetectableOptions options) {
+        return new GoModCliDetectable(environment, fileFinder, goResolver, goModCliExtractor(options));
     }
 
     public GoDepLockDetectable createGoLockDetectable(DetectableEnvironment environment) {
@@ -392,11 +410,20 @@ public class DetectableFactory {
         return new GoGradleDetectable(environment, fileFinder, goGradleExtractor());
     }
 
-    public GradleDetectable createGradleDetectable(DetectableEnvironment environment, GradleInspectorOptions gradleInspectorOptions, GradleInspectorResolver gradleInspectorResolver, GradleResolver gradleResolver) {
+    public GradleDetectable createGradleDetectable(
+        DetectableEnvironment environment,
+        GradleInspectorOptions gradleInspectorOptions,
+        GradleInspectorResolver gradleInspectorResolver,
+        GradleResolver gradleResolver
+    ) {
         return new GradleDetectable(environment, fileFinder, gradleResolver, gradleInspectorResolver, gradleInspectorExtractor(gradleInspectorOptions), gradleInspectorOptions);
     }
 
-    public GradleProjectInspectorDetectable createMavenGradleInspectorDetectable(DetectableEnvironment detectableEnvironment, ProjectInspectorResolver projectInspectorResolver, ProjectInspectorOptions projectInspectorOptions) {
+    public GradleProjectInspectorDetectable createMavenGradleInspectorDetectable(
+        DetectableEnvironment detectableEnvironment,
+        ProjectInspectorResolver projectInspectorResolver,
+        ProjectInspectorOptions projectInspectorOptions
+    ) {
         return new GradleProjectInspectorDetectable(detectableEnvironment, fileFinder, projectInspectorResolver, projectInspectorExtractor(), projectInspectorOptions);
     }
 
@@ -415,7 +442,11 @@ public class DetectableFactory {
         return new MavenPomDetectable(environment, fileFinder, mavenResolver, mavenCliExtractor(), mavenCliExtractorOptions);
     }
 
-    public MavenPomWrapperDetectable createMavenPomWrapperDetectable(DetectableEnvironment environment, MavenResolver mavenResolver, MavenCliExtractorOptions mavenCliExtractorOptions) {
+    public MavenPomWrapperDetectable createMavenPomWrapperDetectable(
+        DetectableEnvironment environment,
+        MavenResolver mavenResolver,
+        MavenCliExtractorOptions mavenCliExtractorOptions
+    ) {
         return new MavenPomWrapperDetectable(environment, fileFinder, mavenResolver, mavenCliExtractor(), mavenCliExtractorOptions);
     }
 
@@ -427,7 +458,14 @@ public class DetectableFactory {
         DetectableEnvironment detectableEnvironment, ProjectInspectorResolver projectInspectorResolver, MavenParseOptions mavenParseOptions,
         ProjectInspectorOptions projectInspectorOptions
     ) {
-        return new MavenProjectInspectorDetectable(detectableEnvironment, fileFinder, projectInspectorResolver, projectInspectorExtractor(), mavenParseOptions, projectInspectorOptions);
+        return new MavenProjectInspectorDetectable(
+            detectableEnvironment,
+            fileFinder,
+            projectInspectorResolver,
+            projectInspectorExtractor(),
+            mavenParseOptions,
+            projectInspectorOptions
+        );
     }
 
     public ConanLockfileDetectable createConanLockfileDetectable(DetectableEnvironment environment, ConanLockfileExtractorOptions conanLockfileExtractorOptions) {
@@ -448,7 +486,11 @@ public class DetectableFactory {
         return new NpmPackageLockDetectable(environment, fileFinder, npmLockfileExtractor(npmLockfileOptions));
     }
 
-    public NugetProjectDetectable createNugetProjectDetectable(DetectableEnvironment environment, NugetInspectorOptions nugetInspectorOptions, NugetInspectorResolver nugetInspectorResolver) {
+    public NugetProjectDetectable createNugetProjectDetectable(
+        DetectableEnvironment environment,
+        NugetInspectorOptions nugetInspectorOptions,
+        NugetInspectorResolver nugetInspectorResolver
+    ) {
         return new NugetProjectDetectable(environment, fileFinder, nugetInspectorOptions, nugetInspectorResolver, nugetInspectorExtractor());
     }
 
@@ -461,7 +503,11 @@ public class DetectableFactory {
         return new NpmPackageJsonParseDetectable(environment, fileFinder, packageJsonExtractor);
     }
 
-    public NugetSolutionDetectable createNugetSolutionDetectable(DetectableEnvironment environment, NugetInspectorOptions nugetInspectorOptions, NugetInspectorResolver nugetInspectorResolver) {
+    public NugetSolutionDetectable createNugetSolutionDetectable(
+        DetectableEnvironment environment,
+        NugetInspectorOptions nugetInspectorOptions,
+        NugetInspectorResolver nugetInspectorResolver
+    ) {
         return new NugetSolutionDetectable(environment, fileFinder, nugetInspectorResolver, nugetInspectorExtractor(), nugetInspectorOptions);
     }
 
@@ -481,11 +527,23 @@ public class DetectableFactory {
         PearPackageXmlParser pearPackageXmlParser = new PearPackageXmlParser();
         PearPackageDependenciesParser pearPackageDependenciesParser = new PearPackageDependenciesParser();
         PearListParser pearListParser = new PearListParser();
-        PearCliExtractor pearCliExtractor = new PearCliExtractor(externalIdFactory, executableRunner, pearDependencyGraphTransformer, pearPackageXmlParser, pearPackageDependenciesParser, pearListParser);
+        PearCliExtractor pearCliExtractor = new PearCliExtractor(
+            externalIdFactory,
+            executableRunner,
+            pearDependencyGraphTransformer,
+            pearPackageXmlParser,
+            pearPackageDependenciesParser,
+            pearListParser
+        );
         return new PearCliDetectable(environment, fileFinder, pearResolver, pearCliExtractor);
     }
 
-    public PipenvDetectable createPipenvDetectable(DetectableEnvironment environment, PipenvDetectableOptions pipenvDetectableOptions, PythonResolver pythonResolver, PipenvResolver pipenvResolver) {
+    public PipenvDetectable createPipenvDetectable(
+        DetectableEnvironment environment,
+        PipenvDetectableOptions pipenvDetectableOptions,
+        PythonResolver pythonResolver,
+        PipenvResolver pipenvResolver
+    ) {
         return new PipenvDetectable(environment, pipenvDetectableOptions, fileFinder, pythonResolver, pipenvResolver, pipenvExtractor());
     }
 
@@ -528,9 +586,22 @@ public class DetectableFactory {
         return new YarnLockDetectable(environment, fileFinder, yarnLockExtractor(yarnLockOptions));
     }
 
-    public LernaDetectable createLernaDetectable(DetectableEnvironment environment, LernaResolver lernaResolver, NpmLockfileOptions npmLockfileOptions, LernaOptions lernaOptions, YarnLockOptions yarnLockOptions) {
+    public LernaDetectable createLernaDetectable(
+        DetectableEnvironment environment,
+        LernaResolver lernaResolver,
+        NpmLockfileOptions npmLockfileOptions,
+        LernaOptions lernaOptions,
+        YarnLockOptions yarnLockOptions
+    ) {
         LernaPackageDiscoverer lernaPackageDiscoverer = new LernaPackageDiscoverer(executableRunner, gson, lernaOptions.getExcludedPackages(), lernaOptions.getIncludedPackages());
-        LernaPackager lernaPackager = new LernaPackager(fileFinder, packageJsonReader(), yarnLockParser(), npmLockfilePackager(npmLockfileOptions), yarnPackager(yarnLockOptions), lernaOptions.getLernaPackageTypeFilter());
+        LernaPackager lernaPackager = new LernaPackager(
+            fileFinder,
+            packageJsonReader(),
+            yarnLockParser(),
+            npmLockfilePackager(npmLockfileOptions),
+            yarnPackager(yarnLockOptions),
+            lernaOptions.getLernaPackageTypeFilter()
+        );
         LernaExtractor lernaExtractor = new LernaExtractor(lernaPackageDiscoverer, lernaPackager);
         return new LernaDetectable(environment, fileFinder, lernaResolver, lernaExtractor);
     }
@@ -559,10 +630,21 @@ public class DetectableFactory {
         WorkspaceRuleChooser workspaceRuleChooser = new WorkspaceRuleChooser();
         BazelWorkspaceFileParser bazelWorkspaceFileParser = new BazelWorkspaceFileParser();
         HaskellCabalLibraryJsonProtoParser haskellCabalLibraryJsonProtoParser = new HaskellCabalLibraryJsonProtoParser(gson);
-        BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor(bazelDetectableOptions.getTargetName().orElse(null), bazelDetectableOptions.getBazelCqueryAdditionalOptions());
+        BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor(
+            bazelDetectableOptions.getTargetName().orElse(null),
+            bazelDetectableOptions.getBazelCqueryAdditionalOptions()
+        );
         BazelProjectNameGenerator bazelProjectNameGenerator = new BazelProjectNameGenerator();
-        return new BazelExtractor(executableRunner, externalIdFactory, bazelWorkspaceFileParser, workspaceRuleChooser, toolVersionLogger, haskellCabalLibraryJsonProtoParser,
-            bazelDetectableOptions.getTargetName().orElse(null), bazelDetectableOptions.getWorkspaceRulesFromDeprecatedProperty(), bazelDetectableOptions.getWorkspaceRulesFromProperty(), bazelVariableSubstitutor,
+        return new BazelExtractor(executableRunner,
+            externalIdFactory,
+            bazelWorkspaceFileParser,
+            workspaceRuleChooser,
+            toolVersionLogger,
+            haskellCabalLibraryJsonProtoParser,
+            bazelDetectableOptions.getTargetName().orElse(null),
+            bazelDetectableOptions.getWorkspaceRulesFromDeprecatedProperty(),
+            bazelDetectableOptions.getWorkspaceRulesFromProperty(),
+            bazelVariableSubstitutor,
             bazelProjectNameGenerator
         );
     }
@@ -577,10 +659,6 @@ public class DetectableFactory {
 
     private DependencyFileDetailGenerator dependencyFileDetailGenerator() {
         return new DependencyFileDetailGenerator(filePathGenerator());
-    }
-
-    private CarthageExtractor carthageExtractor() {
-        return new CarthageExtractor(new CartfileResolvedDependencyDeclarationParser());
     }
 
     private ClangPackageDetailsTransformer clangPackageDetailsTransformer() {
@@ -673,28 +751,23 @@ public class DetectableFactory {
         return new GoDepExtractor(goLockParser());
     }
 
-    private GoModWhyParser goModWhyParser() {
-        return new GoModWhyParser();
-    }
-
-    private GoModCommandExecutor goModCommandExecutor() {
-        return new GoModCommandExecutor(executableRunner);
-    }
-
-    private GoModGraphGenerator goModGraphGraphGenerator() {
-        return new GoModGraphGenerator(externalIdFactory);
-    }
-
-    private GoListParser goListParser() {
-        return new GoListParser(gson);
-    }
-
-    private GoGraphParser goGraphParser() {
-        return new GoGraphParser();
-    }
-
-    private GoModCliExtractor goModCliExtractor() {
-        return new GoModCliExtractor(goModCommandExecutor(), goListParser(), goGraphParser(), goModWhyParser(), goModGraphGraphGenerator(), externalIdFactory);
+    private GoModCliExtractor goModCliExtractor(GoModCliDetectableOptions options) {
+        GoModCommandRunner goModCommandRunner = new GoModCommandRunner(executableRunner);
+        GoListParser goListParser = new GoListParser(gson);
+        GoGraphParser goGraphParser = new GoGraphParser();
+        GoModWhyParser goModWhyParser = new GoModWhyParser();
+        GoVersionParser goVersionParser = new GoVersionParser();
+        GoModGraphGenerator goModGraphGenerator = new GoModGraphGenerator(externalIdFactory);
+        return new GoModCliExtractor(
+            goModCommandRunner,
+            goListParser,
+            goGraphParser,
+            goModWhyParser,
+            goVersionParser,
+            goModGraphGenerator,
+            externalIdFactory,
+            options.getExcludedDependencyTypes()
+        );
     }
 
     private GoVndrExtractor goVndrExtractor() {
@@ -859,7 +932,14 @@ public class DetectableFactory {
     }
 
     private SbtDotExtractor sbtDotExtractor() {
-        return new SbtDotExtractor(executableRunner, sbtDotOutputParser(), sbtProjectMatcher(), sbtGraphParserTransformer(), sbtDotGraphNodeParser(), new SbtCommandArgumentGenerator());
+        return new SbtDotExtractor(
+            executableRunner,
+            sbtDotOutputParser(),
+            sbtProjectMatcher(),
+            sbtGraphParserTransformer(),
+            sbtDotGraphNodeParser(),
+            new SbtCommandArgumentGenerator()
+        );
     }
 
     private SbtDotOutputParser sbtDotOutputParser() {

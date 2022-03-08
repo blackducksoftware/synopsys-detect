@@ -13,7 +13,12 @@ import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 public class ProductDecider {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public BlackDuckDecision decideBlackDuck(BlackDuckConnectionDetails blackDuckConnectionDetails, BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, BlackduckScanMode scanMode, BdioOptions bdioOptions) {
+    public BlackDuckDecision decideBlackDuck(
+        BlackDuckConnectionDetails blackDuckConnectionDetails,
+        BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions,
+        BlackduckScanMode scanMode,
+        BdioOptions bdioOptions
+    ) {
         boolean offline = blackDuckConnectionDetails.getOffline();
         Optional<String> blackDuckUrl = blackDuckConnectionDetails.getBlackDuckUrl();
         if (scanMode == BlackduckScanMode.RAPID && !bdioOptions.isBdio2Enabled()) {

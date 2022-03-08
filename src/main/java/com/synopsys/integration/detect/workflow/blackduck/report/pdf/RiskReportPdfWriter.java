@@ -119,7 +119,15 @@ public class RiskReportPdfWriter {
         PDRectangle rectangle = pdfManager.writeWrappedLink(5, height, 280, reportData.getProjectName(), reportData.getProjectURL(), font, 18);
         String dash = " - ";
         rectangle = pdfManager.writeText(5 + rectangle.getUpperRightX(), height, dash, font, 18, Color.BLACK);
-        rectangle = pdfManager.writeWrappedLink(5 + rectangle.getUpperRightX(), height, 280 - rectangle.getWidth(), reportData.getProjectVersion(), reportData.getProjectVersionURL(), font, 18);
+        rectangle = pdfManager.writeWrappedLink(
+            5 + rectangle.getUpperRightX(),
+            height,
+            280 - rectangle.getWidth(),
+            reportData.getProjectVersion(),
+            reportData.getProjectVersionURL(),
+            font,
+            18
+        );
 
         String projectAttributesString = "Phase:  " + reportData.getPhase() + "    |    Distribution:  " + reportData.getDistribution();
         rectangle = pdfManager.writeWrappedText(5, rectangle.getLowerLeftY() - 40, 300, projectAttributesString, font, fontSize, textColor);
@@ -131,20 +139,35 @@ public class RiskReportPdfWriter {
         float center = pageWidth / 2;
 
         float height = startingHeight - 40;
-        writeSummaryTable(center - 180, height, "Security Risk", reportData.getVulnerabilityRiskCriticalCount(), reportData.getVulnerabilityRiskHighCount(), reportData.getVulnerabilityRiskMediumCount(),
-            reportData.getVulnerabilityRiskLowCount(), reportData.getVulnerabilityRiskNoneCount(), reportData.getTotalComponents()
+        writeSummaryTable(center - 180,
+            height,
+            "Security Risk",
+            reportData.getVulnerabilityRiskCriticalCount(),
+            reportData.getVulnerabilityRiskHighCount(),
+            reportData.getVulnerabilityRiskMediumCount(),
+            reportData.getVulnerabilityRiskLowCount(),
+            reportData.getVulnerabilityRiskNoneCount(),
+            reportData.getTotalComponents()
         );
         writeSummaryTable(center, height, "License Risk", -1, reportData.getLicenseRiskHighCount(), reportData.getLicenseRiskMediumCount(), reportData.getLicenseRiskLowCount(),
             reportData.getLicenseRiskNoneCount(), reportData.getTotalComponents()
         );
-        PDRectangle rectangle = writeSummaryTable(center + 180, height, "Operational Risk", -1, reportData.getOperationalRiskHighCount(), reportData.getOperationalRiskMediumCount(),
-            reportData.getOperationalRiskLowCount(), reportData.getOperationalRiskNoneCount(), reportData.getTotalComponents()
+        PDRectangle rectangle = writeSummaryTable(center + 180,
+            height,
+            "Operational Risk",
+            -1,
+            reportData.getOperationalRiskHighCount(),
+            reportData.getOperationalRiskMediumCount(),
+            reportData.getOperationalRiskLowCount(),
+            reportData.getOperationalRiskNoneCount(),
+            reportData.getTotalComponents()
         );
         logger.trace("Finished writing the summary tables.");
         return rectangle;
     }
 
-    private PDRectangle writeSummaryTable(float centerX, float y, String title, int criticalCount, int highCount, int mediumCount, int lowCount, int noneCount, int totalCount) throws IOException {
+    private PDRectangle writeSummaryTable(float centerX, float y, String title, int criticalCount, int highCount, int mediumCount, int lowCount, int noneCount, int totalCount)
+        throws IOException {
         PDRectangle rectangle = pdfManager.writeTextCentered(centerX, y, title, boldFont, 14, Color.BLACK);
 
         if (criticalCount >= 0) {

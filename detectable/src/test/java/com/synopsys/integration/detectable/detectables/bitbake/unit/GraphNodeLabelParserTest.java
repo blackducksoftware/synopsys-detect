@@ -1,8 +1,10 @@
 package com.synopsys.integration.detectable.detectables.bitbake.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -19,9 +21,10 @@ public class GraphNodeLabelParserTest {
         Set<String> knownLayers = new HashSet<>();
         knownLayers.add("meta");
 
-        String version = parser.parseVersionFromLabel(labelValue);
+        Optional<String> version = parser.parseVersionFromLabel(labelValue);
 
-        assertEquals("2.3.1-r0", version);
+        assertTrue(version.isPresent());
+        assertEquals("2.3.1-r0", version.get());
     }
 
     @Test
@@ -31,8 +34,9 @@ public class GraphNodeLabelParserTest {
         Set<String> knownLayers = new HashSet<>();
         knownLayers.add("meta");
 
-        String layer = parser.parseLayerFromLabel(labelValue, knownLayers);
+        Optional<String> layer = parser.parseLayerFromLabel(labelValue, knownLayers);
 
-        assertEquals("meta", layer);
+        assertTrue(layer.isPresent());
+        assertEquals("meta", layer.get());
     }
 }

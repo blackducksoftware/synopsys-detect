@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -70,12 +71,8 @@ public class Requirements {
         explainFile(file);
     }
 
-    public File file(String filename) {
-        return file(environment.getDirectory(), filename);
-    }
-
     public File directory(String filename) { //We don't include directory in a relevant file.
-        return file(environment.getDirectory(), filename, false);
+        return file(environment.getDirectory(), filename, false, () -> new FileNotFoundDetectableResult(filename));
     }
 
     public Optional<File> optionalFile(String filename) {
@@ -106,15 +103,25 @@ public class Requirements {
         return file;
     }
 
-    public File file(File directory, String filename) {
-        return file(directory, filename, true);
+    public File file(String filename) {
+        return file(environment.getDirectory(), filename);
     }
 
-    public File file(File directory, String filename, boolean isRelevant) {
-        //Only difference between Optional File and Required File is Required populate failure, so if optional 'is not met' we can capture that by setting failure.
-        return optionalFile(directory, filename, () -> {
-            failure = new FileNotFoundDetectableResult(filename);
-        }, isRelevant);
+    public File file(String filename, FailedResultCreator createMissingResult) {
+        return file(environment.getDirectory(), filename, createMissingResult);
+    }
+
+    public File file(File directory, String filename) {
+        return file(directory, filename, true, () -> new FileNotFoundDetectableResult(filename));
+    }
+
+    public File file(File directory, String filename, FailedResultCreator createMissingResult) {
+        return file(directory, filename, true, createMissingResult);
+    }
+
+    public File file(File directory, String filename, boolean isRelevant, FailedResultCreator createMissingResult) {
+        // The only difference between Optional File and Required File is Required populate failure, so if optional 'is not met' we can capture that by setting failure.
+        return optionalFile(directory, filename, () -> failure = createMissingResult.createFailedResult(), isRelevant);
     }
 
     private boolean isAlreadyFailed() {
@@ -172,7 +179,7 @@ public class Requirements {
     public void anyFileMatchesPatterns(List<String> patterns) {
         List<File> anyFiles = fileFinder.findFiles(environment.getDirectory(), patterns);
 
-        if (anyFiles.size() > 0) {
+        if (CollectionUtils.isNotEmpty(anyFiles)) {
             anyFiles.forEach(foundFile -> explanations.add(new FoundFile(foundFile)));
         } else {
             failure = new FilesNotFoundDetectableResult(patterns);

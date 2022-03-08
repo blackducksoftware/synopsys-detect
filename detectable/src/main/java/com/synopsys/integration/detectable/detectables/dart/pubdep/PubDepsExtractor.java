@@ -29,14 +29,25 @@ public class PubDepsExtractor {
     private PubSpecYamlNameVersionParser nameVersionParser;
     private final ToolVersionLogger toolVersionLogger;
 
-    public PubDepsExtractor(DetectableExecutableRunner executableRunner, PubDepsParser pubDepsParser, PubSpecYamlNameVersionParser nameVersionParser, ToolVersionLogger toolVersionLogger) {
+    public PubDepsExtractor(
+        DetectableExecutableRunner executableRunner,
+        PubDepsParser pubDepsParser,
+        PubSpecYamlNameVersionParser nameVersionParser,
+        ToolVersionLogger toolVersionLogger
+    ) {
         this.executableRunner = executableRunner;
         this.pubDepsParser = pubDepsParser;
         this.nameVersionParser = nameVersionParser;
         this.toolVersionLogger = toolVersionLogger;
     }
 
-    public Extraction extract(File directory, @Nullable ExecutableTarget dartExe, @Nullable ExecutableTarget flutterExe, DartPubDepsDetectableOptions dartPubDepsDetectableOptions, File pubSpecYamlFile) {
+    public Extraction extract(
+        File directory,
+        @Nullable ExecutableTarget dartExe,
+        @Nullable ExecutableTarget flutterExe,
+        DartPubDepsDetectableOptions dartPubDepsDetectableOptions,
+        File pubSpecYamlFile
+    ) {
         try {
             toolVersionLogger.log(directory, dartExe);
             toolVersionLogger.log(directory, flutterExe);

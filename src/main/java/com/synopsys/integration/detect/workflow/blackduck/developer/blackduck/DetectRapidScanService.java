@@ -14,6 +14,7 @@ import com.synopsys.integration.blackduck.bdio2.util.Bdio2ContentExtractor;
 import com.synopsys.integration.blackduck.codelocation.upload.UploadBatch;
 import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.detect.workflow.blackduck.developer.RapidScanOptions;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.HttpUrl;
@@ -48,11 +49,11 @@ public class DetectRapidScanService {
         return new DetectRapidScanService(bdio2FileUploadService, directoryManager);
     }
 
-    public List<HttpUrl> performUpload(UploadBatch uploadBatch, @Nullable File rapidScanConfig) throws IntegrationException, IOException {
+    public List<HttpUrl> performUpload(UploadBatch uploadBatch, RapidScanOptions rapidScanOptions, @Nullable File rapidScanConfig) throws IntegrationException, IOException {
         List<HttpUrl> allScanUrls = new LinkedList<>();
 
         for (UploadTarget uploadTarget : uploadBatch.getUploadTargets()) {
-            HttpUrl url = bdio2FileUploadService.uploadFile(directoryManager.getRapidOutputDirectory(), uploadTarget, rapidScanConfig);
+            HttpUrl url = bdio2FileUploadService.uploadFile(directoryManager.getRapidOutputDirectory(), uploadTarget, rapidScanOptions, rapidScanConfig);
             logger.info("Uploaded Rapid Scan: {}", url);
             allScanUrls.add(url);
         }

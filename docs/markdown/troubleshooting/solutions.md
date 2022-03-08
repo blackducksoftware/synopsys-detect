@@ -45,23 +45,6 @@ will run the appropriate detector(s).
 
 See [detector search depth](../properties/configuration/paths.md#detector-search-depth) for more details.
 
-## Docker Inspector error fails after logging: "The [blackduck_product_name] url must be specified"
-
-### Symptom
-
-When running a version of [solution_name] prior to [solution_name] version 5.6.0, the [solution_name] Status block reports DOCKER: FAILURE, and the following error appears in the Docker Inspector log:
-Docker Inspector error: Error inspecting image: The [blackduck_product_name] url must be specified. Either an API token or a username/password must be specified.
-
-### Possible cause
-
-[solution_name] 5.5.1 and earlier have a bug that prevent them from working with Docker Inspector 8.2.0 and newer. The fix is in [solution_name] 5.6.0.
-
-### Solution
-
-There are two possible solutions:
-1. Upgrade to [solution_name] 5.6.0 or newer, or:
-1. Configure [solution_name] to use Docker Inspector 8.1.6 with the argument: --detect.docker.inspector.version=8.1.6
-
 ## [solution_name] fails and a TRACE log shows an HTTP response from [blackduck_product_name] of "402 Payment Required" or "502 Bad Gateway"
 
 ### Symptom

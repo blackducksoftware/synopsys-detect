@@ -12,13 +12,23 @@
 
 * Discovers dependencies of go language (GoLang) projects.
 * Attempts to run on your project if a go.mod file is found in your source directory.
-* Requires that the *go* executable is on the PATH or the executable path is set with [detect.go.path](../properties/detectors/go.md#go-executable).
+* Requires the *go* executable to be on the PATH or the executable path to be set with [detect.go.path](../properties/detectors/go.md#go-executable).
 * Runs *go list -m* and *go mod graph*, and parses the output of both to discover dependencies.
-* Runs *go mod why* to remove unused components in a build environment. Use [detect.go.mod.dependency.types.excluded](../properties/detectors/go.md#go-mod-dependency-types-excluded) to disable this step.
+* Runs *go mod why* to remove unused Go modules such as dependencies required by the build system or tests.
 
-### NOTE:
+### Excluding Test and Build System dependencies
 
-Today, [solution_name] will run *go mod why* to remove unused components from the BOM. This may result in a low number of detected dependencies. This behavior can be controlled with
+[solution_name] can run additional Go commands to filter out *test* and *build system* dependencies from the BOM.
+
+Use [detect.go.mod.dependency.types.excluded=VENDORED](../properties/detectors/go.md#go-mod-dependency-types-excluded) to exclude the most dependencies. This will instruct [solution_name] to execute `go mod why -vendor` to generate a list
+of modules to exclude.
+
+Use the VENDORED option because running `go mod why` without the `-vendor` flag results in *test* and *build system* dependencies being included in the BOM from Go modules declaring a version prior to `Go 1.16`. See
+the [go mod why documentation](https://go.dev/ref/mod#go-mod-why) for additional details.
+
+#### Note on current exclusion behavior:
+
+Now, [solution_name] runs *go mod why* by default to remove unused components from the BOM. This may result in a low number of detected dependencies. This behavior can be controlled with
 the [detect.go.mod.dependency.types.excluded](../properties/detectors/go.md#go-mod-dependency-types-excluded)
 property.
 

@@ -75,7 +75,10 @@ public class YarnLockExtractor {
         if (yarnLockOptions.getExcludedWorkspaceNamePatterns().isEmpty() && yarnLockOptions.getIncludedWorkspaceNamePatterns().isEmpty()) {
             workspacesFilter = null; // Include all
         } else {
-            workspacesFilter = ExcludedIncludedWildcardFilter.fromCollections(yarnLockOptions.getExcludedWorkspaceNamePatterns(), yarnLockOptions.getIncludedWorkspaceNamePatterns());
+            workspacesFilter = ExcludedIncludedWildcardFilter.fromCollections(
+                yarnLockOptions.getExcludedWorkspaceNamePatterns(),
+                yarnLockOptions.getIncludedWorkspaceNamePatterns()
+            );
         }
         return workspacesFilter;
     }

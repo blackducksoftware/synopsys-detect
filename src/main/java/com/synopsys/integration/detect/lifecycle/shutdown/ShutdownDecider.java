@@ -23,7 +23,11 @@ public class ShutdownDecider {
             .flatMap(BlackDuckRunData::getPhoneHomeManager)
             .orElse(null);
 
-        CleanupDecision cleanupDecision = decideCleanup(detectBootResult.getDetectConfiguration().orElse(null), detectBootResult.getProductRunData().orElse(null), detectBootResult.getAirGapZip().orElse(null));
+        CleanupDecision cleanupDecision = decideCleanup(
+            detectBootResult.getDetectConfiguration().orElse(null),
+            detectBootResult.getProductRunData().orElse(null),
+            detectBootResult.getAirGapZip().orElse(null)
+        );
         return new ShutdownDecision(phoneHomeManager, diagnosticSystem, cleanupDecision);
     }
 

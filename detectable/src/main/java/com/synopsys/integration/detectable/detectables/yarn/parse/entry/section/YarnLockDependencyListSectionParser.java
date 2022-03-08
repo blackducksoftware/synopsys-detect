@@ -13,7 +13,12 @@ public class YarnLockDependencyListSectionParser implements YarnLockEntrySection
     private final String targetListKey;
     private final boolean dependenciesAreOptional;
 
-    public YarnLockDependencyListSectionParser(YarnLockLineAnalyzer yarnLockLineAnalyzer, YarnLockDependencySpecParser yarnLockDependencySpecParser, String targetListKey, boolean dependenciesAreOptional) {
+    public YarnLockDependencyListSectionParser(
+        YarnLockLineAnalyzer yarnLockLineAnalyzer,
+        YarnLockDependencySpecParser yarnLockDependencySpecParser,
+        String targetListKey,
+        boolean dependenciesAreOptional
+    ) {
         this.yarnLockLineAnalyzer = yarnLockLineAnalyzer;
         this.yarnLockDependencySpecParser = yarnLockDependencySpecParser;
         this.targetListKey = targetListKey;

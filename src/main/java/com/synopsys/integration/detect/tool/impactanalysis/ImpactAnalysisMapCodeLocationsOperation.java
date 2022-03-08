@@ -29,7 +29,8 @@ public class ImpactAnalysisMapCodeLocationsOperation {
     }
 
     // TODO: Create a code location mapping service generic enough for all tools.
-    public void mapCodeLocations(Path impactAnalysisPath, CodeLocationCreationData<ImpactAnalysisBatchOutput> codeLocationCreationData, ProjectVersionWrapper projectVersionWrapper) throws IntegrationException {
+    public void mapCodeLocations(Path impactAnalysisPath, CodeLocationCreationData<ImpactAnalysisBatchOutput> codeLocationCreationData, ProjectVersionWrapper projectVersionWrapper)
+        throws IntegrationException {
         for (ImpactAnalysisOutput output : codeLocationCreationData.getOutput().getOutputs()) {
             ImpactAnalysisUploadView impactAnalysisUploadView = output.getImpactAnalysisUploadView();
             ProjectView projectView = projectVersionWrapper.getProjectView();

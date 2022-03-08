@@ -93,6 +93,13 @@ public class GradleDetectable extends Detectable {
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
         String gradleCommand = gradleInspectorOptions.getGradleBuildCommand().orElse(null);
-        return gradleInspectorExtractor.extract(environment.getDirectory(), gradleExe, gradleCommand, gradleInspectorOptions.getproxyInfo(), gradleInspector, extractionEnvironment.getOutputDirectory());
+        return gradleInspectorExtractor.extract(
+            environment.getDirectory(),
+            gradleExe,
+            gradleCommand,
+            gradleInspectorOptions.getproxyInfo(),
+            gradleInspector,
+            extractionEnvironment.getOutputDirectory()
+        );
     }
 }

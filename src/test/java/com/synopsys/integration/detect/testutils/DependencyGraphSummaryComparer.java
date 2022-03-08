@@ -26,10 +26,12 @@ public class DependencyGraphSummaryComparer {
         isEqual = isEqual && left.dependencySummaries.keySet().equals(right.dependencySummaries.keySet());
 
         Set<BdioId> leftRelationshipIds = left.externalDataIdRelationships.keySet();
-        Set<BdioId> leftExistingRelationshipsIds = leftRelationshipIds.stream().filter(key -> left.externalDataIdRelationships.get(key) != null && left.externalDataIdRelationships.get(key).size() > 0).collect(Collectors.toSet());
+        Set<BdioId> leftExistingRelationshipsIds = leftRelationshipIds.stream()
+            .filter(key -> left.externalDataIdRelationships.get(key) != null && left.externalDataIdRelationships.get(key).size() > 0).collect(Collectors.toSet());
 
         Set<BdioId> rightRelationshipIds = right.externalDataIdRelationships.keySet();
-        Set<BdioId> rightExistingRelationshipsIds = rightRelationshipIds.stream().filter(key -> right.externalDataIdRelationships.get(key) != null && right.externalDataIdRelationships.get(key).size() > 0).collect(Collectors.toSet());
+        Set<BdioId> rightExistingRelationshipsIds = rightRelationshipIds.stream()
+            .filter(key -> right.externalDataIdRelationships.get(key) != null && right.externalDataIdRelationships.get(key).size() > 0).collect(Collectors.toSet());
 
         isEqual = isEqual && leftExistingRelationshipsIds.equals(rightExistingRelationshipsIds);
 

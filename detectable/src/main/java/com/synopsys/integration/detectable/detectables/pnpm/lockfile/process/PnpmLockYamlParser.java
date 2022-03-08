@@ -32,7 +32,8 @@ public class PnpmLockYamlParser {
         this.pnpmTransformer = pnpmTransformer;
     }
 
-    public List<CodeLocation> parse(File pnpmLockYamlFile, @Nullable NameVersion projectNameVersion, PnpmLinkedPackageResolver linkedPackageResolver) throws IOException, IntegrationException {
+    public List<CodeLocation> parse(File pnpmLockYamlFile, @Nullable NameVersion projectNameVersion, PnpmLinkedPackageResolver linkedPackageResolver)
+        throws IOException, IntegrationException {
         PnpmLockYaml pnpmLockYaml = parseYamlFile(pnpmLockYamlFile);
         List<CodeLocation> codeLocationsFromImports = createCodeLocationsFromImports(pnpmLockYamlFile.getParentFile(), pnpmLockYaml, linkedPackageResolver, projectNameVersion);
         if (codeLocationsFromImports.isEmpty()) {
@@ -41,12 +42,22 @@ public class PnpmLockYamlParser {
         return codeLocationsFromImports;
     }
 
-    private List<CodeLocation> createCodeLocationsFromRoot(File sourcePath, PnpmLockYaml pnpmLockYaml, @Nullable NameVersion projectNameVersion, PnpmLinkedPackageResolver linkedPackageResolver) throws IntegrationException {
+    private List<CodeLocation> createCodeLocationsFromRoot(
+        File sourcePath,
+        PnpmLockYaml pnpmLockYaml,
+        @Nullable NameVersion projectNameVersion,
+        PnpmLinkedPackageResolver linkedPackageResolver
+    ) throws IntegrationException {
         CodeLocation codeLocation = pnpmTransformer.generateCodeLocation(sourcePath, pnpmLockYaml, projectNameVersion, linkedPackageResolver);
         return Collections.singletonList(codeLocation);
     }
 
-    private List<CodeLocation> createCodeLocationsFromImports(File sourcePath, PnpmLockYaml pnpmLockYaml, PnpmLinkedPackageResolver linkedPackageResolver, @Nullable NameVersion projectNameVersion) throws IntegrationException {
+    private List<CodeLocation> createCodeLocationsFromImports(
+        File sourcePath,
+        PnpmLockYaml pnpmLockYaml,
+        PnpmLinkedPackageResolver linkedPackageResolver,
+        @Nullable NameVersion projectNameVersion
+    ) throws IntegrationException {
         if (MapUtils.isEmpty(pnpmLockYaml.importers)) {
             return Collections.emptyList();
         }
@@ -63,13 +74,24 @@ public class PnpmLockYamlParser {
             }
             File generatedSourcePath = generateCodeLocationSourcePath(sourcePath, reportingProjectPackagePath);
 
-            codeLocations.add(pnpmTransformer.generateCodeLocation(generatedSourcePath, projectPackage, reportingProjectPackagePath, extractedNameVersion, pnpmLockYaml.packages, linkedPackageResolver));
+            codeLocations.add(pnpmTransformer.generateCodeLocation(
+                generatedSourcePath,
+                projectPackage,
+                reportingProjectPackagePath,
+                extractedNameVersion,
+                pnpmLockYaml.packages,
+                linkedPackageResolver
+            ));
         }
 
         return codeLocations;
     }
 
-    private NameVersion extractProjectInfo(Map.Entry<String, PnpmProjectPackage> projectPackageInfo, PnpmLinkedPackageResolver linkedPackageResolver, @Nullable NameVersion projectNameVersion) {
+    private NameVersion extractProjectInfo(
+        Map.Entry<String, PnpmProjectPackage> projectPackageInfo,
+        PnpmLinkedPackageResolver linkedPackageResolver,
+        @Nullable NameVersion projectNameVersion
+    ) {
         if (isNodeRoot.evaluate(projectPackageInfo.getKey()) && projectNameVersion != null && projectNameVersion.getName() != null) {
             // resolve "." package to project root
             return projectNameVersion;

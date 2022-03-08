@@ -35,10 +35,19 @@ public class CreateAggregateBdio2FileOperation {
         String detectVersion = detectInfo.getDetectVersion();
         SpdxCreator detectCreator = SpdxCreator.createToolSpdxCreator("Detect", detectVersion);
 
-        BdioMetadata bdioMetadata = bdio2Factory.createBdioMetadata(aggregateCodeLocation.getCodeLocationName(), ZonedDateTime.now(), new Product.Builder().name(detectCreator.getIdentifier()).build());
+        BdioMetadata bdioMetadata = bdio2Factory.createBdioMetadata(
+            aggregateCodeLocation.getCodeLocationName(),
+            ZonedDateTime.now(),
+            new Product.Builder().name(detectCreator.getIdentifier()).build()
+        );
         bdioMetadata.scanType(Bdio.ScanType.PACKAGE_MANAGER);
 
-        Project project = bdio2Factory.createProject(aggregateCodeLocation.getProjectExternalId(), aggregateCodeLocation.getProjectNameVersion().getName(), aggregateCodeLocation.getProjectNameVersion().getVersion(), true);
+        Project project = bdio2Factory.createProject(
+            aggregateCodeLocation.getProjectExternalId(),
+            aggregateCodeLocation.getProjectNameVersion().getName(),
+            aggregateCodeLocation.getProjectNameVersion().getVersion(),
+            true
+        );
         Bdio2Document bdio2Document = bdio2Factory.createBdio2Document(bdioMetadata, project, aggregateCodeLocation.getAggregateDependencyGraph());
 
         Bdio2Writer bdio2Writer = new Bdio2Writer();

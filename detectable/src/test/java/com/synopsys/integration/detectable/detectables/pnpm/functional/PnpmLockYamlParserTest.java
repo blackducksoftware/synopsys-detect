@@ -32,7 +32,10 @@ public class PnpmLockYamlParserTest {
         File pnpmLockYaml = FunctionalTestFiles.asFile("/pnpm/pnpm-lock.yaml");
         EnumListFilter<PnpmDependencyType> dependencyTypeFilter = EnumListFilter.excludeNone();
         PnpmLockYamlParser pnpmLockYamlParser = new PnpmLockYamlParser(new PnpmYamlTransformer(new ExternalIdFactory(), dependencyTypeFilter));
-        PnpmLinkedPackageResolver pnpmLinkedPackageResolver = new PnpmLinkedPackageResolver(FunctionalTestFiles.asFile("/pnpm"), new PackageJsonFiles(new PackageJsonReader(new Gson())));
+        PnpmLinkedPackageResolver pnpmLinkedPackageResolver = new PnpmLinkedPackageResolver(
+            FunctionalTestFiles.asFile("/pnpm"),
+            new PackageJsonFiles(new PackageJsonReader(new Gson()))
+        );
 
         List<CodeLocation> codeLocations = pnpmLockYamlParser.parse(pnpmLockYaml, new NameVersion("project", "version"), pnpmLinkedPackageResolver);
         Assertions.assertEquals(2, codeLocations.size());
@@ -64,7 +67,11 @@ public class PnpmLockYamlParserTest {
         Assertions.assertAll(collect.entrySet().stream()
             .map(codeLocationGrouping -> () -> {
                 int numberOfCodeLocations = codeLocationGrouping.getValue().size();
-                Assertions.assertEquals(1, numberOfCodeLocations, String.format("Expected unique code locations paths. But found %d with that same path of %s", numberOfCodeLocations, codeLocationGrouping.getKey()));
+                Assertions.assertEquals(
+                    1,
+                    numberOfCodeLocations,
+                    String.format("Expected unique code locations paths. But found %d with that same path of %s", numberOfCodeLocations, codeLocationGrouping.getKey())
+                );
             }));
     }
 }

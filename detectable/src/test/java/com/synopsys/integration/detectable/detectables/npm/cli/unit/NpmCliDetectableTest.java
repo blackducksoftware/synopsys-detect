@@ -25,7 +25,13 @@ public class NpmCliDetectableTest {
         DetectableEnvironment environment = MockDetectableEnvironment.empty();
         FileFinder fileFinder = MockFileFinder.withFileNamed("package.json");
 
-        NpmCliDetectable detectable = new NpmCliDetectable(environment, fileFinder, npmResolver, npmCliExtractor, new NpmCliExtractorOptions(EnumListFilter.fromExcluded(NpmDependencyType.DEV, NpmDependencyType.PEER), ""));
+        NpmCliDetectable detectable = new NpmCliDetectable(
+            environment,
+            fileFinder,
+            npmResolver,
+            npmCliExtractor,
+            new NpmCliExtractorOptions(EnumListFilter.fromExcluded(NpmDependencyType.DEV, NpmDependencyType.PEER), "")
+        );
 
         assertTrue(detectable.applicable().getPassed());
     }

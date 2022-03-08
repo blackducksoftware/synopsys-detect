@@ -30,7 +30,10 @@ public class NpmWithoutRequiresExcludesTest {
         resolvedDependencies.add(new NpmDependency("example", "1.0.0", true, true));
         NpmProject npmProject = new NpmProject(Strings.EMPTY, Strings.EMPTY, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), resolvedDependencies);
 
-        NpmLockfileGraphTransformer graphTransformer = new NpmLockfileGraphTransformer(ExternalIdCreator.sharedFactory, EnumListFilter.fromExcluded(NpmDependencyType.DEV, NpmDependencyType.PEER));
+        NpmLockfileGraphTransformer graphTransformer = new NpmLockfileGraphTransformer(
+            ExternalIdCreator.sharedFactory,
+            EnumListFilter.fromExcluded(NpmDependencyType.DEV, NpmDependencyType.PEER)
+        );
         MutableDependencyGraph graph = graphTransformer.transform(packageLock, npmProject, Collections.emptyList());
 
         GraphAssert graphAssert = new GraphAssert(Forge.NPMJS, graph);

@@ -79,7 +79,8 @@ public class CodeLocationNameGeneratorTest {
     public void testBomCodeLocationNameOversized() {
         final String projectNameStart = "really really ";
         final String projectName =
-            projectNameStart + "really really really really really really really really really really really really really really really really really really really really really really really really really really long projectName";
+            projectNameStart
+                + "really really really really really really really really really really really really really really really really really really really really really really really really really really long projectName";
         final String expected = projectName + "/projectVersion/child/group/name/version npm/bom";
         // = path/externalId tool/type
 
@@ -135,7 +136,15 @@ public class CodeLocationNameGeneratorTest {
         externalId.setPath("externalIdPath");
         Mockito.when(detectCodeLocation.getExternalId()).thenReturn(externalId);
 
-        String actual = codeLocationNameGenerator.createBomCodeLocationName(new File("/tmp/aaa"), new File("/tmp/aaa/bbb"), "projectName", "projectVersion", detectCodeLocation, "testPrefix", "testSuffix");
+        String actual = codeLocationNameGenerator.createBomCodeLocationName(
+            new File("/tmp/aaa"),
+            new File("/tmp/aaa/bbb"),
+            "projectName",
+            "projectVersion",
+            detectCodeLocation,
+            "testPrefix",
+            "testSuffix"
+        );
         assertEquals("testPrefix/projectName/projectVersion/bbb/externalIdPath/testSuffix detect/bom", actual);
     }
 

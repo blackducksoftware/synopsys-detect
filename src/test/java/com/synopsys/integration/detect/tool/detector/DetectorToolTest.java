@@ -62,7 +62,16 @@ public class DetectorToolTest {
         ExitCodePublisher exitCodePublisher = Mockito.mock(ExitCodePublisher.class);
         DetectorEventPublisher detectorEventPublisher = Mockito.mock(DetectorEventPublisher.class);
 
-        DetectorTool tool = new DetectorTool(detectorFinder, extractionEnvironmentProvider, eventSystem, codeLocationConverter, detectorIssuePublisher, statusEventPublisher, exitCodePublisher, detectorEventPublisher);
+        DetectorTool tool = new DetectorTool(
+            detectorFinder,
+            extractionEnvironmentProvider,
+            eventSystem,
+            codeLocationConverter,
+            detectorIssuePublisher,
+            statusEventPublisher,
+            exitCodePublisher,
+            detectorEventPublisher
+        );
 
         File directory = new File(".");
         DetectorRuleSet detectorRuleSet = Mockito.mock(DetectorRuleSet.class);
@@ -145,7 +154,8 @@ public class DetectorToolTest {
         }
     }
 
-    private DetectorToolResult executeToolTest(Extraction extraction, DetectableResult extractionResult, String projectBomTool) throws DetectableException, ExecutableFailedException {
+    private DetectorToolResult executeToolTest(Extraction extraction, DetectableResult extractionResult, String projectBomTool)
+        throws DetectableException, ExecutableFailedException {
         ExtractionEnvironmentProvider extractionEnvironmentProvider = Mockito.mock(ExtractionEnvironmentProvider.class);
         DetectorFinder detectorFinder = Mockito.mock(DetectorFinder.class);
         EventSystem eventSystem = Mockito.mock(EventSystem.class);
@@ -155,7 +165,16 @@ public class DetectorToolTest {
         ExitCodePublisher exitCodePublisher = Mockito.mock(ExitCodePublisher.class);
         DetectorEventPublisher detectorEventPublisher = Mockito.mock(DetectorEventPublisher.class);
 
-        DetectorTool tool = new DetectorTool(detectorFinder, extractionEnvironmentProvider, eventSystem, codeLocationConverter, detectorIssuePublisher, statusEventPublisher, exitCodePublisher, detectorEventPublisher);
+        DetectorTool tool = new DetectorTool(
+            detectorFinder,
+            extractionEnvironmentProvider,
+            eventSystem,
+            codeLocationConverter,
+            detectorIssuePublisher,
+            statusEventPublisher,
+            exitCodePublisher,
+            detectorEventPublisher
+        );
         File directory = new File(".");
         GoModCliDetectable detectable = createDetectable(extraction, extractionResult);
         DetectorRule<GoModCliDetectable> rule = createRule(detectable);
@@ -237,10 +256,22 @@ public class DetectorToolTest {
 
     }
 
-    private DetectorEvaluationTree createEvaluationTree(Extraction extraction, DetectableResult extractionResult, File directory, DetectorRule<GoModCliDetectable> rule, DetectorRuleSet detectorRuleSet) {
+    private DetectorEvaluationTree createEvaluationTree(
+        Extraction extraction,
+        DetectableResult extractionResult,
+        File directory,
+        DetectorRule<GoModCliDetectable> rule,
+        DetectorRuleSet detectorRuleSet
+    ) {
         DetectorEvaluation detectorEvaluation = new DetectorEvaluation(rule);
 
-        DetectorResult extractableResult = new DetectorResult(extractionResult.getPassed(), extractionResult.toDescription(), extractionResult.getClass(), Collections.emptyList(), Collections.emptyList());
+        DetectorResult extractableResult = new DetectorResult(
+            extractionResult.getPassed(),
+            extractionResult.toDescription(),
+            extractionResult.getClass(),
+            Collections.emptyList(),
+            Collections.emptyList()
+        );
         detectorEvaluation.setExtractable(extractableResult);
         detectorEvaluation.setExtraction(extraction);
         detectorEvaluation.setApplicable(new DetectorResult(true, "", Collections.emptyList(), Collections.emptyList()));

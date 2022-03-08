@@ -83,7 +83,8 @@ public class SbtResolutionCacheExtractor {
         }
     }
 
-    private SbtProject extractProject(File path, boolean followSymLinks, int depth, List<String> included, List<String> excluded) throws IOException, SAXException, ParserConfigurationException {
+    private SbtProject extractProject(File path, boolean followSymLinks, int depth, List<String> included, List<String> excluded)
+        throws IOException, SAXException, ParserConfigurationException {
         List<SbtDependencyModule> rawModules = extractModules(path, followSymLinks, depth, included, excluded);
         List<SbtDependencyModule> modules = rawModules.stream().filter(it -> it.getGraph() != null).collect(Collectors.toList());
         int skipped = rawModules.size() - modules.size();
@@ -128,9 +129,15 @@ public class SbtResolutionCacheExtractor {
         return version;
     }
 
-    private List<SbtDependencyModule> extractModules(File path, boolean followSymLinks, int depth, List<String> included, List<String> excluded) throws IOException, SAXException, ParserConfigurationException {
+    private List<SbtDependencyModule> extractModules(File path, boolean followSymLinks, int depth, List<String> included, List<String> excluded)
+        throws IOException, SAXException, ParserConfigurationException {
         List<File> sbtFiles = fileFinder.findFiles(path, BUILD_SBT_FILENAME, followSymLinks, depth);
-        List<File> resolutionCaches = fileFinder.findFiles(path, RESOLUTION_CACHE_DIRECTORY, followSymLinks, depth); // TODO: ensure this does what the old method did. findDirectoriesContainingDirectoriesToDepth
+        List<File> resolutionCaches = fileFinder.findFiles(
+            path,
+            RESOLUTION_CACHE_DIRECTORY,
+            followSymLinks,
+            depth
+        ); // TODO: ensure this does what the old method did. findDirectoriesContainingDirectoriesToDepth
 
         logger.debug(String.format("Found %s build.sbt files.", sbtFiles.size()));
         logger.debug(String.format("Found %s resolution caches.", resolutionCaches.size()));
@@ -216,7 +223,8 @@ public class SbtResolutionCacheExtractor {
         return modules;
     }
 
-    private List<SbtDependencyModule> makeModuleAggregate(List<File> reportFiles, List<String> include, List<String> exclude) throws SAXException, IOException, ParserConfigurationException {
+    private List<SbtDependencyModule> makeModuleAggregate(List<File> reportFiles, List<String> include, List<String> exclude)
+        throws SAXException, IOException, ParserConfigurationException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
 

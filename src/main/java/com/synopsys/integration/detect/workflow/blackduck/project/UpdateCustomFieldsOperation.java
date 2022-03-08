@@ -25,7 +25,10 @@ import com.synopsys.integration.exception.IntegrationException;
 public class UpdateCustomFieldsOperation {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     public static final LinkMultipleResponses<CustomFieldView> CUSTOM_FIELDS_LINK = new LinkMultipleResponses<>("custom-fields", CustomFieldView.class);
-    public static final LinkMultipleResponses<CustomFieldOptionView> CUSTOM_FIELDS_OPTION_LIST_LINK = new LinkMultipleResponses<>("custom-field-option-list", CustomFieldOptionView.class);
+    public static final LinkMultipleResponses<CustomFieldOptionView> CUSTOM_FIELDS_OPTION_LIST_LINK = new LinkMultipleResponses<>(
+        "custom-field-option-list",
+        CustomFieldOptionView.class
+    );
     private final BlackDuckApiClient blackDuckService;
 
     public UpdateCustomFieldsOperation(BlackDuckApiClient blackDuckService) {
@@ -47,7 +50,11 @@ public class UpdateCustomFieldsOperation {
         logger.info("Successfully updated (" + (customFieldDocument.getVersion().size() + customFieldDocument.getProject().size()) + ") custom fields.");
     }
 
-    private List<CustomFieldOperation> determineOperations(CustomFieldDocument customFieldDocument, ProjectVersionWrapper projectVersionWrapper, BlackDuckApiClient blackDuckService) throws DetectUserFriendlyException {
+    private List<CustomFieldOperation> determineOperations(
+        CustomFieldDocument customFieldDocument,
+        ProjectVersionWrapper projectVersionWrapper,
+        BlackDuckApiClient blackDuckService
+    ) throws DetectUserFriendlyException {
         List<CustomFieldView> projectFields = retrieveCustomFields(projectVersionWrapper.getProjectView(), blackDuckService);
         List<CustomFieldView> versionFields = retrieveCustomFields(projectVersionWrapper.getProjectVersionView(), blackDuckService);
         List<CustomFieldOperation> projectOperations = pairOperationFromViews(customFieldDocument.getProject(), projectFields, "project", blackDuckService);
@@ -66,12 +73,21 @@ public class UpdateCustomFieldsOperation {
             try {
                 blackDuckService.put(fieldView);
             } catch (IntegrationException e) {
-                throw new DetectUserFriendlyException(String.format("Unable to update custom field label with name '%s'", operation.customField.getLabel()), e, ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
+                throw new DetectUserFriendlyException(
+                    String.format("Unable to update custom field label with name '%s'", operation.customField.getLabel()),
+                    e,
+                    ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR
+                );
             }
         }
     }
 
-    private List<CustomFieldOperation> pairOperationFromViews(List<CustomFieldElement> elements, List<CustomFieldView> views, String targetName, BlackDuckApiClient blackDuckService)
+    private List<CustomFieldOperation> pairOperationFromViews(
+        List<CustomFieldElement> elements,
+        List<CustomFieldView> views,
+        String targetName,
+        BlackDuckApiClient blackDuckService
+    )
         throws DetectUserFriendlyException {
         List<CustomFieldOperation> operations = new ArrayList<>();
         for (CustomFieldElement element : elements) {
@@ -80,7 +96,11 @@ public class UpdateCustomFieldsOperation {
                 .findFirst();
 
             if (!fieldView.isPresent()) {
-                throw new DetectUserFriendlyException(String.format("Unable to find custom field view with label '%s' on the %s. Ensure it exists.", element.getLabel(), targetName), ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
+                throw new DetectUserFriendlyException(String.format(
+                    "Unable to find custom field view with label '%s' on the %s. Ensure it exists.",
+                    element.getLabel(),
+                    targetName
+                ), ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
             }
 
             List<String> values = new ArrayList<>();

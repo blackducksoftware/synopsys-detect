@@ -9,7 +9,12 @@ public class ParentStack<T> {
     public void clearDeeperThan(int dependencyLevel) throws IllegalStateException {
         if (dependencyLevel > stack.size()) {
             throw new IllegalStateException(
-                String.format("Level of dependency should be less than or equal to %s but was %s. Treating it as though level was %s.", stack.size(), dependencyLevel, stack.size()));
+                String.format(
+                    "Level of dependency should be less than or equal to %s but was %s. Treating it as though level was %s.",
+                    stack.size(),
+                    dependencyLevel,
+                    stack.size()
+                ));
         }
 
         int levelDelta = (stack.size() - dependencyLevel);

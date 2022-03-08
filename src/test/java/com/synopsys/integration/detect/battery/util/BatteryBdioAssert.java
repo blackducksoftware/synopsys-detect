@@ -32,7 +32,10 @@ public class BatteryBdioAssert {
 
         File expectedBdioFolder = BatteryFiles.asFile("/" + resourcePrefix + "/bdio");
         File[] expectedBdioFiles = expectedBdioFolder.listFiles();
-        Assertions.assertTrue(expectedBdioFiles != null && expectedBdioFiles.length > 0, "Expected bdio resource files could not be found: " + expectedBdioFolder.getCanonicalPath());
+        Assertions.assertTrue(
+            expectedBdioFiles != null && expectedBdioFiles.length > 0,
+            "Expected bdio resource files could not be found: " + expectedBdioFolder.getCanonicalPath()
+        );
         Assertions.assertEquals(expectedBdioFiles.length, bdio.length, "Detect did not create the expected number of bdio files.");
 
         List<File> actualByName = Arrays.stream(bdio).sorted(Comparator.comparing(File::getName)).collect(Collectors.toList());
