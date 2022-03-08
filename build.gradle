@@ -17,9 +17,6 @@ buildscript {
     }
 }
 
-//TODO Remove this when the Spock dependency, Spock 2.0, is officially released. Upgrade to a Spring Boot version that depends on Groovy 3.0.0 and Spock 2.0 by default.
-ext['groovy.version'] = '3.0.0'
-
 group = 'com.synopsys.integration'
 version = '7.12.0-SIGQA8-SNAPSHOT'
 
@@ -62,7 +59,7 @@ allprojects {
     dependencies {
         implementation "org.slf4j:slf4j-api:1.7.30"
         implementation "org.apache.commons:commons-lang3:3.10" /* this could be managed by blackduck common */
-        implementation 'org.jetbrains:annotations:19.0.0'
+        implementation 'org.jetbrains:annotations:20.1.0'
         implementation 'net.minidev:json-smart:2.4.7'
         implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.3'
 
