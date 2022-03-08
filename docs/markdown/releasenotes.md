@@ -18,7 +18,7 @@
 * For Go Mod projects, successfully executing `go version` is now required. Unsuccessful attempts now results in a run failure.
 * The property *detect.go.mod.dependency.types.excluded* now only accepts a single value rather than a list of values.
 
-## Resolved issues
+### Resolved issues
 
 * (IDETECT-3016) Resolved an issue where proxies may block HEAD requests made by [solution_name] when attempting to download the Signature Scanner from Black Duck. Because the
   criteria that [solution_name] uses to download the Black Duck Signature Scanner is new, the next run will re-download the Signature Scanner.
