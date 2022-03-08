@@ -10,12 +10,6 @@ import com.synopsys.integration.detectable.detectable.executable.DetectableExecu
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 
 public class BitbakeCommandRunner {
-    public static final String BITBAKE_ENVIRONMENT_COMMAND = "bitbake --environment";
-    public static final String BITBAKE_LAYERS_SHOW_RECIPES_COMMAND = "bitbake-layers show-recipes";
-    public static final String BITBAKE_DEPENDENCIES_COMMAND_BASE = "bitbake -g ";
-    public static final String BITBAKE_VERSION_COMMAND = "bitbake --version";
-    public static final String GET_WORKING_DIR_COMMAND = "pwd";
-
     private final DetectableExecutableRunner executableRunner;
     private final List<String> sourceArguments;
 
@@ -25,23 +19,23 @@ public class BitbakeCommandRunner {
     }
 
     public List<String> runBitbakeGraph(File directory, ExecutableTarget bashExecutable, File buildEnvScript, String packageName) throws ExecutableFailedException, IOException {
-        return runBitbakeCommand(directory, bashExecutable, buildEnvScript, BITBAKE_DEPENDENCIES_COMMAND_BASE + packageName);
+        return runBitbakeCommand(directory, bashExecutable, buildEnvScript, "bitbake -g " + packageName);
     }
 
     public List<String> runBitbakeVersion(File directory, ExecutableTarget bashExecutable, File buildEnvScript) throws ExecutableFailedException, IOException {
-        return runBitbakeCommand(directory, bashExecutable, buildEnvScript, BITBAKE_VERSION_COMMAND);
+        return runBitbakeCommand(directory, bashExecutable, buildEnvScript, "bitbake --version");
     }
 
     public List<String> runPwdCommand(File directory, ExecutableTarget bashExecutable, File buildEnvScript) throws ExecutableFailedException, IOException {
-        return runBitbakeCommand(directory, bashExecutable, buildEnvScript, GET_WORKING_DIR_COMMAND);
+        return runBitbakeCommand(directory, bashExecutable, buildEnvScript, "pwd");
     }
 
     public List<String> runBitbakeEnvironment(File directory, ExecutableTarget bashExecutable, File buildEnvScript) throws ExecutableFailedException, IOException {
-        return runBitbakeCommand(directory, bashExecutable, buildEnvScript, BITBAKE_ENVIRONMENT_COMMAND);
+        return runBitbakeCommand(directory, bashExecutable, buildEnvScript, "bitbake --environment");
     }
 
     public List<String> runBitbakeLayersShowRecipes(File directory, ExecutableTarget bashExecutable, File buildEnvScript) throws ExecutableFailedException, IOException {
-        return runBitbakeCommand(directory, bashExecutable, buildEnvScript, BITBAKE_LAYERS_SHOW_RECIPES_COMMAND);
+        return runBitbakeCommand(directory, bashExecutable, buildEnvScript, "bitbake-layers show-recipes");
     }
 
     private List<String> runBitbakeCommand(File directory, ExecutableTarget bashExecutable, File buildEnvScript, String bitbakeCommand)
