@@ -165,7 +165,7 @@ public class BitbakeExtractor {
             List<String> bitbakeEnvironmentOutput = bitbakeCommandRunner.runBitbakeEnvironment(sourceDirectory, bashExecutable, buildEnvironmentFile);
             return bitbakeEnvironmentParser.parseArchitecture(bitbakeEnvironmentOutput);
         } catch (ExecutableFailedException | IOException e) {
-            logger.warn("Unable to get bitbake environment due to error executing {}: {}", BitbakeCommandRunner.BITBAKE_ENVIRONMENT_COMMAND, e.getMessage());
+            logger.warn("Unable to get bitbake environment due to error executing {}: {}", "bitbake --environment", e.getMessage());
             return new BitbakeEnvironment(null, null);
         }
     }
