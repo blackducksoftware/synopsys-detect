@@ -1198,6 +1198,16 @@ public class DetectProperties {
             .setGroups(DetectGroup.PROJECT, DetectGroup.GLOBAL, DetectGroup.PROJECT_SETTING, DetectGroup.POLICY)
             .build();
 
+    public static final StringListProperty DETECT_POLICY_CHECK_FAIL_ON_NAMES =
+        StringListProperty.newBuilder("detect.policy.check.fail.on.names", Collections.emptyList())
+            .setInfo("Fail on Policy Names with Violations", DetectPropertyFromVersion.VERSION_7_12_0)
+            .setHelp(
+                "A comma-separated list of policy names with a non-zero number of violations that will fail Detect.",
+                "If left unset, Detect will not fail due to violated policies of a certain name. This property does not change the behavior of detect.policy.check.fail.on.severities."
+            )
+            .setGroups(DetectGroup.PROJECT, DetectGroup.GLOBAL, DetectGroup.PROJECT_SETTING, DetectGroup.POLICY)
+            .build();
+
     public static final NullableStringProperty DETECT_PROJECT_APPLICATION_ID =
         NullableStringProperty.newBuilder("detect.project.application.id")
             .setInfo("Application ID", DetectPropertyFromVersion.VERSION_5_2_0)

@@ -2,7 +2,9 @@ package com.synopsys.integration.detect.workflow.blackduck.policy;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +14,7 @@ import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersi
 import com.synopsys.integration.blackduck.api.generated.view.ComponentPolicyRulesView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentVersionView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
+import com.synopsys.integration.blackduck.api.manual.temporary.response.PolicySummaryView;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.dataservice.ProjectBomService;
 import com.synopsys.integration.blackduck.service.model.PolicyStatusDescription;
@@ -24,24 +27,51 @@ public class PolicyChecker {
     private final Logger logger = LoggerFactory.getLogger(PolicyChecker.class);
 
     private final ExitCodePublisher exitCodePublisher;
-    private final BlackDuckApiClient blackDuckService;
+    private final BlackDuckApiClient blackDuckApiClient;
     private final ProjectBomService projectBomService;
 
-    public PolicyChecker(ExitCodePublisher exitCodePublisher, BlackDuckApiClient blackDuckService, ProjectBomService projectBomService) {
+    public PolicyChecker(ExitCodePublisher exitCodePublisher, BlackDuckApiClient blackDuckApiClient, ProjectBomService projectBomService) {
         this.exitCodePublisher = exitCodePublisher;
-        this.blackDuckService = blackDuckService;
+        this.blackDuckApiClient = blackDuckApiClient;
         this.projectBomService = projectBomService;
     }
 
-    public void checkPolicy(List<PolicyRuleSeverityType> policySeverities, ProjectVersionView projectVersionView) throws IntegrationException {
-        Optional<PolicyStatusDescription> policyStatusDescription = fetchPolicyStatusDescription(projectVersionView);
+    public void checkPolicyByName(List<String> policyNamesToFailPolicyCheck, ProjectVersionView projectVersionView) throws IntegrationException {
+        Optional<List<PolicySummaryView>> activePolicyRulesOptional = projectBomService.getActivePoliciesForVersion(projectVersionView);
 
-        if (policyStatusDescription.isPresent()) {
-            logger.info(policyStatusDescription.get().getPolicyStatusMessage());
+        if (activePolicyRulesOptional.isPresent()) {
+            List<PolicySummaryView> activePolicyRules = activePolicyRulesOptional.get();
 
-            if (arePolicySeveritiesViolated(policyStatusDescription.get(), policySeverities)) {
+            List<String> violatedPolicyNames = activePolicyRules.stream()
+                .filter(rule -> ProjectVersionComponentPolicyStatusType.IN_VIOLATION.equals(rule.getStatus()))
+                .map(PolicySummaryView::getName)
+                .filter(policyNamesToFailPolicyCheck::contains)
+                .collect(Collectors.toList());
+
+            if (CollectionUtils.isNotEmpty(violatedPolicyNames)) {
                 fetchAndLogPolicyViolations(projectVersionView);
-                exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_POLICY_VIOLATION, policyStatusDescription.get().getPolicyStatusMessage());
+                String violationReason = StringUtils.join(violatedPolicyNames, ", ");
+                exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_POLICY_VIOLATION, "Violated policy by names: " + violationReason);
+            }
+
+        } else {
+            String availableLinks = StringUtils.join(projectVersionView.getAvailableLinks(), ", ");
+            logger.warn(String.format("It is not possible to check the active policy rules for this project/version. The active-policy-rules link must be present. The available links are: %s", availableLinks));
+        }
+    }
+
+    public void checkPolicyBySeverity(List<PolicyRuleSeverityType> policySeverities, ProjectVersionView projectVersionView) throws IntegrationException {
+        Optional<PolicyStatusDescription> policyStatusDescriptionOptional = fetchPolicyStatusDescription(projectVersionView);
+
+        if (policyStatusDescriptionOptional.isPresent()) {
+            PolicyStatusDescription policyStatusDescription = policyStatusDescriptionOptional.get();
+            logger.info(policyStatusDescription.getPolicyStatusMessage());
+
+            boolean policySeveritiesAreViolated = arePolicySeveritiesViolated(policyStatusDescription, policySeverities);
+
+            if (policySeveritiesAreViolated) {
+                fetchAndLogPolicyViolations(projectVersionView);
+                exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_POLICY_VIOLATION, policyStatusDescription.getPolicyStatusMessage());
             }
         } else {
             String availableLinks = StringUtils.join(projectVersionView.getAvailableLinks(), ", ");
@@ -52,14 +82,14 @@ public class PolicyChecker {
         }
     }
 
-    public Optional<PolicyStatusDescription> fetchPolicyStatusDescription(ProjectVersionView version) throws IntegrationException {
+    private Optional<PolicyStatusDescription> fetchPolicyStatusDescription(ProjectVersionView version) throws IntegrationException {
         return Bdo.of(projectBomService.getPolicyStatusForVersion(version))
             .peek(policyStatus -> logger.info(String.format("Policy Status: %s", policyStatus.getOverallStatus().name())))
             .map(PolicyStatusDescription::new)
             .toOptional();
     }
 
-    public void fetchAndLogPolicyViolations(ProjectVersionView projectVersionView) throws IntegrationException {
+    private void fetchAndLogPolicyViolations(ProjectVersionView projectVersionView) throws IntegrationException {
         logger.info("Searching BOM for components in violation of policy rules.");
 
         List<ProjectVersionComponentVersionView> bomComponents = projectBomService.getComponentsForProjectVersion(projectVersionView);
@@ -68,7 +98,7 @@ public class PolicyChecker {
                 continue;
             }
 
-            for (ComponentPolicyRulesView componentPolicyRulesView : blackDuckService.getAllResponses(projectVersionComponentView.metaPolicyRulesLink())) {
+            for (ComponentPolicyRulesView componentPolicyRulesView : blackDuckApiClient.getAllResponses(projectVersionComponentView.metaPolicyRulesLink())) {
                 String componentId = projectVersionComponentView.getComponentName();
                 if (StringUtils.isNotBlank(projectVersionComponentView.getComponentVersionName())) {
                     componentId += ":" + projectVersionComponentView.getComponentVersionName();
