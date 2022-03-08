@@ -24,8 +24,7 @@ The inspector defines the custom task 'gatherDependencies' with the help of a Gr
 ExcludedIncludedWildcardFilter, and IntegrationEscapeUtil that come from https://github.com/blackducksoftware/integration-common. Filtering (including/excluding projects and configurations) is performed by the Gradle/Groovy code to control
 the output of the `dependencies` Gradle task invoked by the 'gradlew gatherDependencies' command.
 
-The init-detect.gradle script configures each project with the custom 'gatherDependencies' task, which will invoke the 'dependencies' Gradle task on each project. This ensures the same output as previous versions is produced. The inspector
-consumes the output of `gradlew gatherDependencies` task.
+The init-detect.gradle script configures each project with the custom 'gatherDependencies' task, which invokes the 'dependencies' Gradle task on each project. This ensures the same output is produced as previous versions. The inspector consumes the output of `gradlew gatherDependencies` task.
 
 ### Running the Gradle inspector with a proxy
 
