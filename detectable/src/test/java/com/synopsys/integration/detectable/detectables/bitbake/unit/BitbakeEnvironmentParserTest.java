@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeEnvironment;
+import com.synopsys.integration.detectable.detectables.bitbake.data.BitbakeEnvironment;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeEnvironmentParser;
 
 public class BitbakeEnvironmentParserTest {

@@ -2,14 +2,13 @@ package com.synopsys.integration.detectable.detectables.bitbake.functional;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
@@ -18,6 +17,7 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
+import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDependencyType;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectableOptions;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
@@ -25,7 +25,6 @@ import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 import com.synopsys.integration.executable.ExecutableOutput;
 
 public class BitbakeDetectableTest extends DetectableFunctionalTest {
-    private static final Logger logger = LoggerFactory.getLogger(BitbakeDetectableTest.class);
 
     public BitbakeDetectableTest() throws IOException {
         super("bitbake");
@@ -35,14 +34,9 @@ public class BitbakeDetectableTest extends DetectableFunctionalTest {
     protected void setup() throws IOException {
         addFile("oe-init-build-env");
 
-        ExecutableOutput bitbakeGOutput = createStandardOutput(
-            ""
-        );
         addExecutableOutput(
-            bitbakeGOutput,
-            "bash",
-            "-c",
-            "source " + getSourceDirectory().toFile().getCanonicalPath() + File.separator + "oe-init-build-env; " + "bitbake " + "-g " + "core-image-minimal"
+            createStandardOutput(""), // Command generates task-depends.dot
+            createBitbakeCommand("bitbake -g core-image-minimal")
         );
 
         addFile(
@@ -72,9 +66,40 @@ public class BitbakeDetectableTest extends DetectableFunctionalTest {
         );
         addExecutableOutput(
             bitbakeShowRecipesOutput,
-            "bash",
-            "-c",
-            "source " + getSourceDirectory().toFile().getCanonicalPath() + File.separator + "oe-init-build-env; " + "bitbake-layers show-recipes"
+            createBitbakeCommand("bitbake-layers show-recipes")
+        );
+
+        addExecutableOutput(
+            createStandardOutput(getSourceDirectory().toFile().getAbsolutePath()),
+            createBitbakeCommand("pwd")
+        );
+
+        Path licensesDirectory = Paths.get("licenses/");
+        Path licenseManifest = Paths.get(licensesDirectory.toString(), "core-image-minimal-some-arch/license.manifest");
+        addFile(
+            licenseManifest,
+            "PACKAGE NAME: libattr",
+            "PACKAGE VERSION: 2.4.47",
+            "RECIPE NAME: attr",
+            "LICENSE: LGPLv2.1+",
+            "",
+            "PACKAGE NAME: base-files",
+            "PACKAGE VERSION: 3.0.14",
+            "RECIPE NAME: base-files",
+            "LICENSE: GPLv2",
+            "",
+            "PACKAGE NAME: base-passwd",
+            "PACKAGE VERSION: 3.5.29",
+            "RECIPE NAME: base-passwd",
+            "LICENSE: GPLv2"
+        );
+
+        addExecutableOutput(
+            createStandardOutput(
+                "MACHINE_ARCH=\"not-using\"",
+                "LICENSE_DIRECTORY=\"" + licenseManifest.toAbsolutePath() + "\""
+            ),
+            createBitbakeCommand("bitbake --environment")
         );
     }
 
@@ -83,7 +108,14 @@ public class BitbakeDetectableTest extends DetectableFunctionalTest {
     public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
         return detectableFactory.createBitbakeDetectable(
             detectableEnvironment,
-            new BitbakeDetectableOptions("oe-init-build-env", new ArrayList<>(), Collections.singletonList("core-image-minimal"), 0, false, EnumListFilter.excludeNone()),
+            new BitbakeDetectableOptions(
+                "oe-init-build-env",
+                new ArrayList<>(),
+                Collections.singletonList("core-image-minimal"),
+                0,
+                false,
+                EnumListFilter.fromExcluded(BitbakeDependencyType.BUILD)
+            ),
             () -> ExecutableTarget.forCommand("bash")
         );
     }
@@ -94,20 +126,27 @@ public class BitbakeDetectableTest extends DetectableFunctionalTest {
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.YOCTO, extraction.getCodeLocations().get(0).getDependencyGraph());
 
-        graphAssert.hasRootSize(4);
-
         ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         ExternalId aclExternalId = externalIdFactory.createYoctoExternalId("meta", "acl", "2.2.52-r0");
         ExternalId attrExternalId = externalIdFactory.createYoctoExternalId("meta", "attr", "2.4.47-r0");
         ExternalId baseFilesExternalId = externalIdFactory.createYoctoExternalId("meta", "base-files", "3.0.14-r89");
         ExternalId basePasswdExternalId = externalIdFactory.createYoctoExternalId("meta", "base-passwd", "3.5.29-r0");
 
-        graphAssert.hasRootDependency(aclExternalId);
+        graphAssert.hasNoDependency(aclExternalId);
         graphAssert.hasRootDependency(attrExternalId);
         graphAssert.hasRootDependency(baseFilesExternalId);
         graphAssert.hasRootDependency(basePasswdExternalId);
-        graphAssert.hasParentChildRelationship(aclExternalId, attrExternalId);
         graphAssert.hasParentChildRelationship(attrExternalId, baseFilesExternalId);
         graphAssert.hasParentChildRelationship(attrExternalId, basePasswdExternalId);
+        graphAssert.hasRootSize(3);
+    }
+
+    private String[] createBitbakeCommand(String command) throws IOException {
+        String sourceCommandPrefix = "source " + getSourceDirectory().toFile().getCanonicalPath() + File.separator + "oe-init-build-env; ";
+        return new String[] {
+            "bash",
+            "-c",
+            sourceCommandPrefix + command
+        };
     }
 }

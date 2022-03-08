@@ -10,16 +10,13 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphNodeLabelParser;
-import com.synopsys.integration.exception.IntegrationException;
 
 public class GraphNodeLabelParserTest {
 
     @Test
-    void testVersion() throws IntegrationException {
+    void testVersion() {
         String labelValue = "acl-native do_compile\\n:2.3.1-r0\\nvirtual:native:/workdir/poky/meta/recipes-support/attr/acl_2.3.1.bb";
         GraphNodeLabelParser parser = new GraphNodeLabelParser();
-        Set<String> knownLayers = new HashSet<>();
-        knownLayers.add("meta");
 
         Optional<String> version = parser.parseVersionFromLabel(labelValue);
 
@@ -28,14 +25,14 @@ public class GraphNodeLabelParserTest {
     }
 
     @Test
-    void testLayer() throws IntegrationException {
+    void testLayer() {
         String labelValue = "acl-native do_compile\\n:2.3.1-r0\\nvirtual:native:/workdir/poky/meta/recipes-support/attr/acl_2.3.1.bb";
         GraphNodeLabelParser parser = new GraphNodeLabelParser();
         Set<String> knownLayers = new HashSet<>();
         knownLayers.add("meta");
 
         Optional<String> layer = parser.parseLayerFromLabel(labelValue, knownLayers);
-
+        
         assertTrue(layer.isPresent());
         assertEquals("meta", layer.get());
     }

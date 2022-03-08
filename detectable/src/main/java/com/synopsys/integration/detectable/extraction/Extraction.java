@@ -26,6 +26,10 @@ public class Extraction {
     private final String projectName;
     private final Map<ExtractionMetadata<?>, Object> metaData;
 
+    public static Extraction failure(String description) {
+        return new Extraction.Builder().failure(description).build();
+    }
+
     public static Extraction success(CodeLocation codeLocation) {
         return new Extraction.Builder().success(codeLocation).build();
     }
