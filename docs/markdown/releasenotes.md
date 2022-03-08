@@ -5,9 +5,9 @@
 ### New features
 
 * Verified support for Java 16 and 17.
-* Added support for vendoring Go Mod dependencies using [detect.go.mod.dependency.types.excluded=VENDORED](properties/detectors/go.md#go-mod-dependency-types-excluded) to exclude *test* and *build system* dependencies from Go modules
-  declaring a version prior to `Go 1.16`.
-* Added a feature that allows users to configure [solution_name] to fail when policies of a certain name are vialated.
+* Added support for vendoring Go Mod dependencies using [detect.go.mod.dependency.types.excluded=VENDORED](properties/detectors/go.md#go-mod-dependency-types-excluded) to exclude *
+  test* and *build system* dependencies from Go modules declaring a version prior to `Go 1.16`.
+* Added a feature that allows users to configure [solution_name] to fail when policies of a certain name are violated.
   See [detect.policy.check.fail.on.names](properties/configuration/project.md#fail-on-policy-names-with-violations).
 * Added Rapid Compare Mode which enables returning only the differences in policy violations compared to a previous scan.
 
@@ -19,7 +19,8 @@
 
 ## Resolved issues
 
-* (IDETECT-3016) Resolved an issue where proxies may block HEAD requests made by [solution_name] when attempting to download the Signature Scanner from Black Duck. Because the criteria that [solution_name] uses to download the Black Duck Signature Scanner is new, the next run will re-download the Signature Scanner.
+* (IDETECT-3016) Resolved an issue where proxies may block HEAD requests made by [solution_name] when attempting to download the Signature Scanner from Black Duck. Because the
+  criteria that [solution_name] uses to download the Black Duck Signature Scanner is new, the next run will re-download the Signature Scanner.
 * (IDETECT-3165) Resolved an issue that could cause the Bitbake detector to fail with error `Graph Node recipe ... does not correspond to any known layer`.
 
 ## Version 7.11.1
