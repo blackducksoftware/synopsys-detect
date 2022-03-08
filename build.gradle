@@ -35,6 +35,11 @@ resources.mkdirs()
 versionFile.delete()
 versionFile << version
 
+// By default, starting in 2.5.0, spring boot creates an extra "plain" .jar that we don't want
+jar {
+    enabled = false
+}
+
 def createArtifactName() {
     return "${buildDir}/libs/${project.name}-${version}.jar"
 }
