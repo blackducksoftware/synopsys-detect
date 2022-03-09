@@ -1,6 +1,7 @@
 package com.synopsys.integration.configuration.property.types.enumallnone.property;
 
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -26,10 +27,14 @@ public class AllNoneEnumListProperty<B extends Enum<B>> extends ExtendedEnumList
 
     public static <B extends Enum<B>> PropertyBuilder<AllNoneEnumListProperty<B>> newBuilder(
         @NotNull String key,
-        List<ExtendedEnumValue<AllNoneEnum, B>> defaultValue,
+        List<B> values,
         @NotNull Class<B> eClass
     ) {
-        return new PropertyBuilder<AllNoneEnumListProperty<B>>().setCreator(() -> new AllNoneEnumListProperty<>(key, defaultValue, eClass));
+        List<ExtendedEnumValue<AllNoneEnum, B>> extendedEnumValues = new LinkedList<>();
+        for (B value : values) {
+            extendedEnumValues.add(ExtendedEnumValue.ofBaseValue(value));
+        }
+        return new PropertyBuilder<AllNoneEnumListProperty<B>>().setCreator(() -> new AllNoneEnumListProperty<>(key, extendedEnumValues, eClass));
     }
 
     public static <B extends Enum<B>> PropertyBuilder<AllNoneEnumListProperty<B>> newBuilder(@NotNull String key, @NotNull AllNoneEnum allValue, @NotNull Class<B> eClass) {
