@@ -8,7 +8,7 @@ import com.synopsys.integration.detectable.detectables.xcode.model.PackageResolv
 public class PackageResolvedFormatChecker {
     protected static final String[] KNOWN_FILE_FORMAT_VERSIONS = { "1" };
 
-    public void handleVersionCompatibility(PackageResolved packageResolved, BiConsumer<String, String[]> unknownVersionHandler) {
+    public void checkForVersionCompatibility(PackageResolved packageResolved, BiConsumer<String, String[]> unknownVersionHandler) {
         String fileFormatVersion = packageResolved.getFileFormatVersion();
         if (isVersionUnknown(fileFormatVersion)) {
             unknownVersionHandler.accept(fileFormatVersion, KNOWN_FILE_FORMAT_VERSIONS);

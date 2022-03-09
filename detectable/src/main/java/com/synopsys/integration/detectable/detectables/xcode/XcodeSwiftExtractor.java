@@ -41,7 +41,7 @@ public class XcodeSwiftExtractor {
             return new Extraction.Builder().success(emptyCodeLocation).build();
         }
 
-        packageResolvedFormatChecker.handleVersionCompatibility(
+        packageResolvedFormatChecker.checkForVersionCompatibility(
             packageResolved,
             (fileFormatVersion, knownVersions) -> logger.warn(String.format(
                 "The format version of Package.resolved (%s) is unknown to Detect, but will attempt to parse anyway. Known format versions are (%s).",
