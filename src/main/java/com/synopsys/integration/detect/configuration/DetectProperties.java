@@ -1248,6 +1248,7 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
+    //TODO- change default of this property to ALL in 8.0.0
     public static final AllNoneEnumListProperty<ProjectCloneCategoriesType> DETECT_PROJECT_CLONE_CATEGORIES =
         AllNoneEnumListProperty.newBuilder(
                 "detect.project.clone.categories",
