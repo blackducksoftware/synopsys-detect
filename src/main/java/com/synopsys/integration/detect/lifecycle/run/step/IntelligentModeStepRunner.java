@@ -163,8 +163,11 @@ public class IntelligentModeStepRunner {
 
     private void checkPolicy(ProjectVersionView projectVersionView, BlackDuckRunData blackDuckRunData) throws OperationException {
         logger.info("Checking to see if Detect should check policy for violations.");
-        if (operationFactory.createBlackDuckPostOptions().shouldPerformPolicyCheck()) {
-            operationFactory.checkPolicy(blackDuckRunData, projectVersionView);
+        if (operationFactory.createBlackDuckPostOptions().shouldPerformSeverityPolicyCheck()) {
+            operationFactory.checkPolicyBySeverity(blackDuckRunData, projectVersionView);
+        }
+        if (operationFactory.createBlackDuckPostOptions().shouldPerformNamePolicyCheck()) {
+            operationFactory.checkPolicyByName(blackDuckRunData, projectVersionView);
         }
     }
 

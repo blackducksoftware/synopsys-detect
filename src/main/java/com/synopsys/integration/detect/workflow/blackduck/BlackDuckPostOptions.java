@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
@@ -16,6 +17,7 @@ public class BlackDuckPostOptions {
     private final @Nullable Path riskReportPdfPath;
     private final @Nullable Path noticesReportPath;
     private final List<PolicyRuleSeverityType> severitiesToFailPolicyCheck;
+    private final List<String> policyNamesToFailPolicyCheck;
 
     public BlackDuckPostOptions(
         boolean waitForResults,
@@ -23,7 +25,8 @@ public class BlackDuckPostOptions {
         boolean generateNoticesReport,
         @Nullable Path riskReportPdfPath,
         @Nullable Path noticesReportPath,
-        List<PolicyRuleSeverityType> severitiesToFailPolicyCheck
+        List<PolicyRuleSeverityType> severitiesToFailPolicyCheck,
+        List<String> policyNamesToFailPolicyCheck
     ) {
         this.waitForResults = waitForResults;
         this.generateRiskReport = generateRiskReport;
@@ -31,10 +34,11 @@ public class BlackDuckPostOptions {
         this.riskReportPdfPath = riskReportPdfPath;
         this.noticesReportPath = noticesReportPath;
         this.severitiesToFailPolicyCheck = severitiesToFailPolicyCheck;
+        this.policyNamesToFailPolicyCheck = policyNamesToFailPolicyCheck;
     }
 
     public boolean shouldWaitForResults() {
-        return waitForResults || shouldGenerateAnyReport() || shouldPerformPolicyCheck();
+        return waitForResults || shouldGenerateAnyReport() || shouldPerformAnyPolicyCheck();
     }
 
     public boolean shouldGenerateRiskReport() {
@@ -49,8 +53,16 @@ public class BlackDuckPostOptions {
         return shouldGenerateNoticesReport() || shouldGenerateRiskReport();
     }
 
-    public boolean shouldPerformPolicyCheck() {
-        return severitiesToFailPolicyCheck.size() > 0;
+    public boolean shouldPerformSeverityPolicyCheck() {
+        return CollectionUtils.isNotEmpty(getSeveritiesToFailPolicyCheck());
+    }
+
+    public boolean shouldPerformNamePolicyCheck() {
+        return CollectionUtils.isNotEmpty(getPolicyNamesToFailPolicyCheck());
+    }
+
+    public boolean shouldPerformAnyPolicyCheck() {
+        return shouldPerformSeverityPolicyCheck() || shouldPerformNamePolicyCheck();
     }
 
     public Optional<Path> getRiskReportPdfPath() {
@@ -65,4 +77,7 @@ public class BlackDuckPostOptions {
         return severitiesToFailPolicyCheck;
     }
 
+    public List<String> getPolicyNamesToFailPolicyCheck() {
+        return policyNamesToFailPolicyCheck;
+    }
 }

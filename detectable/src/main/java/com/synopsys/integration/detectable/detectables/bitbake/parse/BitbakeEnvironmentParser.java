@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeEnvironment;
+import com.synopsys.integration.detectable.detectables.bitbake.data.BitbakeEnvironment;
 
 public class BitbakeEnvironmentParser {
     private static final String ARCHITECTURE_VARIABLE_NAME = "MACHINE_ARCH";

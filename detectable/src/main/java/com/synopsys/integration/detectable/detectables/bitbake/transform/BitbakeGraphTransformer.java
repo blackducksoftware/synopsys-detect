@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.bitbake.parse;
+package com.synopsys.integration.detectable.detectables.bitbake.transform;
 
 import java.util.Optional;
 import java.util.Set;
@@ -9,16 +9,16 @@ import com.paypal.digraph.parser.GraphEdge;
 import com.paypal.digraph.parser.GraphNode;
 import com.paypal.digraph.parser.GraphParser;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
-import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphNodeLabelParser;
 
-public class GraphParserTransformer {
+public class BitbakeGraphTransformer {
     private final GraphNodeLabelParser graphNodeLabelParser;
 
-    public GraphParserTransformer(GraphNodeLabelParser graphNodeLabelParser) {
+    public BitbakeGraphTransformer(GraphNodeLabelParser graphNodeLabelParser) {
         this.graphNodeLabelParser = graphNodeLabelParser;
     }
 
-    public BitbakeGraph transform(GraphParser graphParser, Set<String> layerNames) throws IntegrationException {
+    public BitbakeGraph transform(GraphParser graphParser, Set<String> layerNames) {
         BitbakeGraph bitbakeGraph = new BitbakeGraph();
 
         for (GraphNode graphNode : graphParser.getNodes().values()) {
@@ -43,19 +43,19 @@ public class GraphParserTransformer {
         return nodeIdPieces[0].replace("\"", "");
     }
 
-    private Optional<String> parseVersionFromNode(GraphNode graphNode) throws IntegrationException {
+    private Optional<String> parseVersionFromNode(GraphNode graphNode) {
         Optional<String> labelValue = getLabelAttribute(graphNode);
         if (labelValue.isPresent()) {
-            return Optional.of(graphNodeLabelParser.parseVersionFromLabel(labelValue.get()));
+            return graphNodeLabelParser.parseVersionFromLabel(labelValue.get());
         } else {
             return Optional.empty();
         }
     }
 
-    private Optional<String> parseLayerFromNode(GraphNode graphNode, Set<String> knownLayerNames) throws IntegrationException {
+    private Optional<String> parseLayerFromNode(GraphNode graphNode, Set<String> knownLayerNames) {
         Optional<String> labelAttribute = getLabelAttribute(graphNode);
         if (labelAttribute.isPresent()) {
-            return Optional.of(graphNodeLabelParser.parseLayerFromLabel(labelAttribute.get(), knownLayerNames));
+            return graphNodeLabelParser.parseLayerFromLabel(labelAttribute.get(), knownLayerNames);
         } else {
             return Optional.empty();
         }

@@ -1,83 +1,101 @@
 package com.synopsys.integration.detectable.detectables.bitbake.unit;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.paypal.digraph.parser.GraphEdge;
+import com.paypal.digraph.parser.GraphNode;
+import com.paypal.digraph.parser.GraphParser;
 import com.synopsys.integration.detectable.annotations.UnitTest;
-import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
-import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
-import com.synopsys.integration.detectable.util.graph.GraphAssert;
-import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
+import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphNodeLabelParser;
+import com.synopsys.integration.detectable.detectables.bitbake.transform.BitbakeGraphTransformer;
+import com.synopsys.integration.exception.IntegrationException;
 
 @UnitTest
 public class BitbakeGraphTransformerTest {
     @Test
-    public void parentHasChild() {
-        ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        BitbakeGraph bitbakeGraph = new BitbakeGraph();
-        bitbakeGraph.addNode("example", "1:75-r50", "meta");
-        bitbakeGraph.addNode("foobar", "12", "meta");
-        bitbakeGraph.addChild("example", "foobar");
+    public void parsedVersionFromLabel() {
+        HashMap<String, GraphEdge> edges = new HashMap<>();
+        HashMap<String, GraphNode> nodes = new HashMap<>();
 
-        Map<String, List<String>> recipeToLayerMap = new HashMap<>();
-        recipeToLayerMap.put("example", Arrays.asList("meta"));
-        recipeToLayerMap.put("foobar", Arrays.asList("meta"));
+        addNode("name", "name\\n:version\\n/some/meta/path/to.bb", nodes);
+        Set<String> knownLayers = new HashSet<>(Arrays.asList("aaa", "meta", "bbb"));
+        BitbakeGraph bitbakeGraph = buildGraph(nodes, edges, knownLayers);
 
-        BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory(), EnumListFilter.excludeNone());
-
-        DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeToLayerMap, null);
-
-        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.YOCTO, dependencyGraph);
-
-        ExternalId example = graphAssert.hasDependency(externalIdFactory.createYoctoExternalId("meta", "example", "1:75-r50"));
-        ExternalId foobar = graphAssert.hasDependency(externalIdFactory.createYoctoExternalId("meta", "foobar", "12"));
-        graphAssert.hasParentChildRelationship(example, foobar);
+        assertEquals(1, bitbakeGraph.getNodes().size());
+        assertTrue(bitbakeGraph.getNodes().get(0).getVersion().isPresent());
+        assertEquals("version", bitbakeGraph.getNodes().get(0).getVersion().get());
+        assertTrue(bitbakeGraph.getNodes().get(0).getLayer().isPresent());
+        assertEquals("meta", bitbakeGraph.getNodes().get(0).getLayer().get());
     }
 
     @Test
-    public void ignoredNoVersionRelationship() {
-        ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        BitbakeGraph bitbakeGraph = new BitbakeGraph();
-        bitbakeGraph.addNode("example", "75", "meta");
-        bitbakeGraph.addNode("foobar", null, "meta");
-        bitbakeGraph.addChild("example", "foobar");
+    public void parsedRelationship() throws IntegrationException {
+        HashMap<String, GraphEdge> edges = new HashMap<>();
+        HashMap<String, GraphNode> nodes = new HashMap<>();
 
-        Map<String, List<String>> recipeToLayerMap = new HashMap<>();
-        recipeToLayerMap.put("example", Arrays.asList("meta"));
-        recipeToLayerMap.put("foobar", Arrays.asList("meta"));
+        addNode("parent", "name\\n:parent.version\\n/some/meta/path/to.bb", nodes);
+        addNode("child", "name\\n:child.version\\n/some/meta/path/to.bb", nodes);
+        addEdge("edge1", "parent", "child", nodes, edges);
+        Set<String> knownLayers = new HashSet<>(Arrays.asList("aaa", "meta", "bbb"));
+        BitbakeGraph bitbakeGraph = buildGraph(nodes, edges, knownLayers);
 
-        BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory(), EnumListFilter.excludeNone());
-        DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeToLayerMap, null);
-
-        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.YOCTO, dependencyGraph);
-        graphAssert.hasRootSize(1);
-        ExternalId externalId = graphAssert.hasDependency(externalIdFactory.createYoctoExternalId("meta", "example", "75"));
-        graphAssert.hasRelationshipCount(externalId, 0);
+        assertEquals(2, bitbakeGraph.getNodes().size());
+        assertEquals(1, bitbakeGraph.getNodes().get(0).getChildren().size());
+        assertTrue(bitbakeGraph.getNodes().get(0).getChildren().contains("child"), "Parent node children must contain child");
     }
 
     @Test
-    public void ignoredNoVersion() {
-        ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        BitbakeGraph bitbakeGraph = new BitbakeGraph();
-        bitbakeGraph.addNode("example", null, "meta");
+    public void removedQuotesFromName() throws IntegrationException {
+        HashMap<String, GraphEdge> edges = new HashMap<>();
+        HashMap<String, GraphNode> nodes = new HashMap<>();
 
-        Map<String, List<String>> recipeToLayerMap = new HashMap<>();
-        recipeToLayerMap.put("example", Arrays.asList("meta"));
+        addNode("quotes\"removed", "example\\n:example\\n/example/meta/some.bb", nodes);
+        Set<String> knownLayers = new HashSet<>(Arrays.asList("aaa", "meta", "bbb"));
+        BitbakeGraph bitbakeGraph = buildGraph(nodes, edges, knownLayers);
 
-        BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory(), EnumListFilter.excludeNone());
-        DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeToLayerMap, null);
-
-        GraphAssert graphAssert = new GraphAssert(Forge.YOCTO, dependencyGraph);
-        graphAssert.hasNoDependency(externalIdFactory.createYoctoExternalId("meta", "example", null));
-        graphAssert.hasRootSize(0);
+        assertEquals(1, bitbakeGraph.getNodes().size());
+        assertEquals("quotesremoved", bitbakeGraph.getNodes().get(0).getName());
     }
+
+    private BitbakeGraph buildGraph(HashMap<String, GraphNode> nodes, HashMap<String, GraphEdge> edges, Set<String> knownLayers) {
+        BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new GraphNodeLabelParser());
+        return bitbakeGraphTransformer.transform(mockParser(nodes, edges), knownLayers);
+    }
+
+    private GraphParser mockParser(HashMap<String, GraphNode> nodeMap, HashMap<String, GraphEdge> edgeMap) {
+        GraphParser parser = Mockito.mock(GraphParser.class);
+        Mockito.when(parser.getNodes()).thenReturn(nodeMap);
+        Mockito.when(parser.getEdges()).thenReturn(edgeMap);
+        return parser;
+    }
+
+    private void addNode(String id, String labelValue, HashMap<String, GraphNode> nodeMap) {
+        GraphNode graphNode = new GraphNode(id);
+        graphNode.setAttribute("label", labelValue);
+        nodeMap.put(id, graphNode);
+    }
+
+    private void addEdge(String edgeId, String nodeName1, String nodeName2, HashMap<String, GraphNode> nodeMap, HashMap<String, GraphEdge> edgeMap) throws IntegrationException {
+        GraphNode node1 = nodeMap.values().stream()
+            .filter(it -> it.getId().equals(nodeName1))
+            .findFirst()
+            .orElseThrow(() -> new IntegrationException("Failed to find Node " + nodeName1 + " in the graph to be able to add an Edge to " + nodeName2));
+        GraphNode node2 = nodeMap.values().stream()
+            .filter(it -> it.getId().equals(nodeName2))
+            .findFirst()
+            .orElseThrow(() -> new IntegrationException("Failed to find Node " + nodeName2 + " in the graph to be able to add an Edge to " + nodeName1));
+        GraphEdge edge = new GraphEdge(edgeId, node1, node2);
+        edgeMap.put(edgeId, edge);
+    }
+
 }

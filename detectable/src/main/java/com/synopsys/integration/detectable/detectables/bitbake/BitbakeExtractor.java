@@ -5,16 +5,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.NotImplementedException;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,132 +20,164 @@ import com.paypal.digraph.parser.GraphParser;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
-import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeEnvironment;
+import com.synopsys.integration.detectable.detectables.bitbake.collect.BitbakeCommandRunner;
+import com.synopsys.integration.detectable.detectables.bitbake.collect.BuildFileFinder;
+import com.synopsys.integration.detectable.detectables.bitbake.data.BitbakeEnvironment;
+import com.synopsys.integration.detectable.detectables.bitbake.data.ShowRecipesResults;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeEnvironmentParser;
-import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
-import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParserTransformer;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.LicenseManifestParser;
+import com.synopsys.integration.detectable.detectables.bitbake.parse.PwdOutputParser;
+import com.synopsys.integration.detectable.detectables.bitbake.transform.BitbakeDependencyGraphTransformer;
+import com.synopsys.integration.detectable.detectables.bitbake.transform.BitbakeGraphTransformer;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class BitbakeExtractor {
+    public static final String DEFAULT_BUILD_DIR_NAME = "build";
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final DetectableExecutableRunner executableRunner;
-    private final GraphParserTransformer graphParserTransformer;
-    private final BitbakeGraphTransformer bitbakeGraphTransformer;
-    private final BitbakeRecipesParser bitbakeRecipesParser;
     private final ToolVersionLogger toolVersionLogger;
+    private final BitbakeCommandRunner bitbakeCommandRunner;
     private final BuildFileFinder buildFileFinder;
-    private final LicenseManifestParser licenseManifestParser;
+    private final PwdOutputParser pwdOutputParser;
     private final BitbakeEnvironmentParser bitbakeEnvironmentParser;
+    private final BitbakeRecipesParser bitbakeRecipesParser;
+    private final LicenseManifestParser licenseManifestParser;
+    private final BitbakeGraphTransformer bitbakeGraphTransformer;
+    private final BitbakeDependencyGraphTransformer bitbakeDependencyGraphTransformer;
+    private final List<String> packageNames;
+    private final EnumListFilter<BitbakeDependencyType> dependencyTypeFilter;
 
     public BitbakeExtractor(
-        DetectableExecutableRunner executableRunner,
-        GraphParserTransformer graphParserTransformer,
-        BitbakeGraphTransformer bitbakeGraphTransformer,
-        BitbakeRecipesParser bitbakeRecipesParser,
         ToolVersionLogger toolVersionLogger,
+        BitbakeCommandRunner bitbakeCommandRunner,
         BuildFileFinder buildFileFinder,
+        PwdOutputParser pwdOutputParser,
+        BitbakeEnvironmentParser bitbakeEnvironmentParser,
+        BitbakeRecipesParser bitbakeRecipesParser,
         LicenseManifestParser licenseManifestParser,
-        BitbakeEnvironmentParser bitbakeEnvironmentParser
-    ) {
-        this.executableRunner = executableRunner;
-        this.graphParserTransformer = graphParserTransformer;
-        this.bitbakeGraphTransformer = bitbakeGraphTransformer;
-        this.bitbakeRecipesParser = bitbakeRecipesParser;
-        this.toolVersionLogger = toolVersionLogger;
-        this.buildFileFinder = buildFileFinder;
-        this.licenseManifestParser = licenseManifestParser;
-        this.bitbakeEnvironmentParser = bitbakeEnvironmentParser;
-    }
-
-    public Extraction extract(
-        File sourceDirectory,
-        File buildEnvScript,
-        List<String> sourceArguments,
+        BitbakeGraphTransformer bitbakeGraphTransformer,
+        BitbakeDependencyGraphTransformer bitbakeDependencyGraphTransformer,
         List<String> packageNames,
-        boolean followSymLinks,
-        Integer searchDepth,
-        EnumListFilter<BitbakeDependencyType> dependencyTypeFilter,
-        ExecutableTarget bash
-    ) throws ExecutableFailedException, IOException {
-        List<CodeLocation> codeLocations = new ArrayList<>();
-        BitbakeSession bitbakeSession = new BitbakeSession(
-            executableRunner,
-            bitbakeRecipesParser,
-            sourceDirectory,
-            buildEnvScript,
-            sourceArguments,
-            bash,
-            toolVersionLogger,
-            buildFileFinder,
-            bitbakeEnvironmentParser
-        );
-        bitbakeSession.logBitbakeVersion();
-        File buildDir = bitbakeSession.determineBuildDir();
-        BitbakeEnvironment bitbakeEnvironment = bitbakeSession.executeBitbakeForEnvironment();
-        ShowRecipesResults showRecipesResults = bitbakeSession.executeBitbakeForRecipeLayerCatalog();
-        for (String targetImage : packageNames) {
-            try {
-                codeLocations.add(generateCodeLocationForTargetImage(
-                    followSymLinks,
-                    searchDepth,
-                    dependencyTypeFilter,
-                    bitbakeSession,
-                    buildDir,
-                    bitbakeEnvironment,
-                    showRecipesResults,
-                    targetImage
-                ));
-            } catch (IOException | IntegrationException | NotImplementedException | ExecutableFailedException e) {
-                logger.error(String.format("Failed to extract a Code Location while running Bitbake against package '%s': %s", targetImage, e.getMessage()));
-                logger.debug(e.getMessage(), e);
-            }
-        }
-        Extraction extraction;
+        EnumListFilter<BitbakeDependencyType> dependencyTypeFilter
+    ) {
+        this.toolVersionLogger = toolVersionLogger;
+        this.bitbakeCommandRunner = bitbakeCommandRunner;
+        this.buildFileFinder = buildFileFinder;
+        this.pwdOutputParser = pwdOutputParser;
+        this.bitbakeEnvironmentParser = bitbakeEnvironmentParser;
+        this.bitbakeRecipesParser = bitbakeRecipesParser;
+        this.licenseManifestParser = licenseManifestParser;
+        this.bitbakeGraphTransformer = bitbakeGraphTransformer;
+        this.bitbakeDependencyGraphTransformer = bitbakeDependencyGraphTransformer;
+        this.packageNames = packageNames;
+        this.dependencyTypeFilter = dependencyTypeFilter;
+    }
+
+    public Extraction extract(File sourceDirectory, ExecutableTarget bashExecutable, File buildEnvironmentFile) throws ExecutableFailedException, IOException {
+        toolVersionLogger.log(() -> bitbakeCommandRunner.runBitbakeVersion(sourceDirectory, bashExecutable, buildEnvironmentFile));
+
+        File buildDirectory = determineBuildDirectory(sourceDirectory, bashExecutable, buildEnvironmentFile);
+        BitbakeEnvironment bitbakeEnvironment = executeBitbakeForEnvironment(sourceDirectory, bashExecutable, buildEnvironmentFile);
+        ShowRecipesResults showRecipesResults = executeBitbakeForRecipeLayerCatalog(sourceDirectory, bashExecutable, buildEnvironmentFile);
+
+        List<CodeLocation> codeLocations = packageNames.stream()
+            .map(targetPackage -> generateCodeLocationForTargetPackage(
+                targetPackage,
+                sourceDirectory,
+                bashExecutable,
+                buildEnvironmentFile,
+                buildDirectory,
+                showRecipesResults,
+                bitbakeEnvironment
+            ))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .collect(Collectors.toList());
+
         if (codeLocations.isEmpty()) {
-            extraction = new Extraction.Builder()
-                .failure("No Code Locations were generated during extraction")
-                .build();
-
+            return Extraction.failure("No Code Locations were generated during extraction");
         } else {
-            extraction = new Extraction.Builder()
-                .success(codeLocations)
-                .build();
+            return Extraction.success(codeLocations);
         }
-        return extraction;
     }
 
-    @NotNull
-    private CodeLocation generateCodeLocationForTargetImage(
-        boolean followSymLinks,
-        Integer searchDepth,
-        EnumListFilter<BitbakeDependencyType> dependencyTypeFilter,
-        BitbakeSession bitbakeSession,
-        File buildDir,
-        BitbakeEnvironment bitbakeEnvironment,
+    private Optional<CodeLocation> generateCodeLocationForTargetPackage(
+        String targetPackage,
+        File sourceDirectory,
+        ExecutableTarget bashExecutable,
+        File buildEnvironmentFile,
+        File buildDirectory,
         ShowRecipesResults showRecipesResults,
-        String packageName
-    ) throws IntegrationException, IOException, ExecutableFailedException {
-        Map<String, String> imageRecipes = null;
-        if (dependencyTypeFilter.shouldExclude(BitbakeDependencyType.BUILD)) {
-            imageRecipes = readImageRecipes(buildDir, packageName, bitbakeEnvironment, followSymLinks, searchDepth);
+        BitbakeEnvironment bitbakeEnvironment
+    ) {
+        try {
+            BitbakeGraph bitbakeGraph = generateBitbakeGraph(
+                sourceDirectory,
+                bashExecutable,
+                buildEnvironmentFile,
+                buildDirectory,
+                targetPackage,
+                showRecipesResults.getLayerNames()
+            );
+            Map<String, String> imageRecipes = null;
+            if (dependencyTypeFilter.shouldExclude(BitbakeDependencyType.BUILD)) {
+                imageRecipes = readImageRecipes(buildDirectory, targetPackage, bitbakeEnvironment);
+            }
+            DependencyGraph dependencyGraph = bitbakeDependencyGraphTransformer.transform(bitbakeGraph, showRecipesResults.getRecipesWithLayers(), imageRecipes);
+            return Optional.of(new CodeLocation(dependencyGraph));
+        } catch (ExecutableFailedException | IntegrationException | IOException e) {
+            logger.error("Failed to extract a Code Location while running Bitbake against package '{}': {}", targetPackage, e.getMessage());
+            logger.debug(e.getMessage(), e);
+            return Optional.empty();
         }
-        BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, buildDir, packageName, showRecipesResults.getLayerNames(), followSymLinks, searchDepth);
-        DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, showRecipesResults.getRecipesWithLayers(), imageRecipes);
-        return new CodeLocation(dependencyGraph);
     }
 
-    private Map<String, String> readImageRecipes(File buildDir, String targetImageName, BitbakeEnvironment bitbakeEnvironment, boolean followSymLinks, int searchDepth)
-        throws IntegrationException, IOException {
-        Optional<File> licenseManifestFile = buildFileFinder.findLicenseManifestFile(buildDir, targetImageName, bitbakeEnvironment, followSymLinks, searchDepth);
+    private File determineBuildDirectory(File sourceDirectory, ExecutableTarget bashExecutable, File buildEnvironmentFile) {
+        File fallbackBuildDir = new File(sourceDirectory, DEFAULT_BUILD_DIR_NAME);
+        File derivedBuildDirectory;
+        try {
+            List<String> pwdOutput = bitbakeCommandRunner.runPwdCommand(sourceDirectory, bashExecutable, buildEnvironmentFile);
+            derivedBuildDirectory = pwdOutputParser.deriveBuildDirectory(pwdOutput);
+        } catch (ExecutableFailedException | IOException e) {
+
+            logger.warn("Unable to determine build directory location due to error: {}; ; using {} for build dir", e.getMessage(), fallbackBuildDir.getAbsolutePath());
+            return fallbackBuildDir;
+        }
+
+        if (derivedBuildDirectory.isDirectory()) {
+            logger.debug("Derived build dir: {}", derivedBuildDirectory.getAbsolutePath());
+            return derivedBuildDirectory;
+        } else {
+            logger.warn("Derived build dir {} is not a directory; using {} for build dir", derivedBuildDirectory.getAbsolutePath(), fallbackBuildDir.getAbsolutePath());
+            return fallbackBuildDir;
+        }
+    }
+
+    private BitbakeEnvironment executeBitbakeForEnvironment(File sourceDirectory, ExecutableTarget bashExecutable, File buildEnvironmentFile) {
+        try {
+            List<String> bitbakeEnvironmentOutput = bitbakeCommandRunner.runBitbakeEnvironment(sourceDirectory, bashExecutable, buildEnvironmentFile);
+            return bitbakeEnvironmentParser.parseArchitecture(bitbakeEnvironmentOutput);
+        } catch (ExecutableFailedException | IOException e) {
+            logger.warn("Unable to get bitbake environment due to error executing {}: {}", "bitbake --environment", e.getMessage());
+            return new BitbakeEnvironment(null, null);
+        }
+    }
+
+    private ShowRecipesResults executeBitbakeForRecipeLayerCatalog(File sourceDirectory, ExecutableTarget bashExecutable, File buildEnvironmentFile)
+        throws ExecutableFailedException, IOException {
+        List<String> showRecipesOutput = bitbakeCommandRunner.runBitbakeLayersShowRecipes(sourceDirectory, bashExecutable, buildEnvironmentFile);
+        return bitbakeRecipesParser.parseShowRecipes(showRecipesOutput);
+    }
+
+    private Map<String, String> readImageRecipes(File buildDirectory, String targetImageName, BitbakeEnvironment bitbakeEnvironment) throws IntegrationException, IOException {
+        Optional<File> licenseManifestFile = buildFileFinder.findLicenseManifestFile(buildDirectory, targetImageName, bitbakeEnvironment);
         if (licenseManifestFile.isPresent()) {
             List<String> licenseManifestLines = FileUtils.readLines(licenseManifestFile.get(), StandardCharsets.UTF_8);
             return licenseManifestParser.collectImageRecipes(licenseManifestLines);
@@ -158,19 +188,20 @@ public class BitbakeExtractor {
     }
 
     private BitbakeGraph generateBitbakeGraph(
-        BitbakeSession bitbakeSession,
-        File buildDir,
-        String packageName,
-        Set<String> knownLayers,
-        boolean followSymLinks,
-        Integer searchDepth
+        File sourceDirectory,
+        ExecutableTarget bashExecutable,
+        File buildEnvironmentFile,
+        File buildDirectory,
+        String targetPackage,
+        Set<String> knownLayers
     ) throws IOException, IntegrationException, ExecutableFailedException {
-        File taskDependsFile = bitbakeSession.executeBitbakeForDependencies(buildDir, packageName, followSymLinks, searchDepth);
+        bitbakeCommandRunner.runBitbakeGraph(sourceDirectory, bashExecutable, buildEnvironmentFile, targetPackage);
+        File taskDependsFile = buildFileFinder.findTaskDependsFile(sourceDirectory, buildDirectory);
         if (logger.isTraceEnabled()) {
             logger.trace(FileUtils.readFileToString(taskDependsFile, Charset.defaultCharset()));
         }
         InputStream dependsFileInputStream = FileUtils.openInputStream(taskDependsFile);
         GraphParser graphParser = new GraphParser(dependsFileInputStream);
-        return graphParserTransformer.transform(graphParser, knownLayers);
+        return bitbakeGraphTransformer.transform(graphParser, knownLayers);
     }
 }

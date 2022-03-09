@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.bitbake.model;
+package com.synopsys.integration.detectable.detectables.bitbake.data;
 
 import java.util.Optional;
 
@@ -8,7 +8,7 @@ public class BitbakeEnvironment extends Stringable {
     private final String machineArch;
     private final String licensesDirPath;
 
-    public BitbakeEnvironment(final String machineArch, final String licensesDirPath) {
+    public BitbakeEnvironment(String machineArch, String licensesDirPath) {
         this.machineArch = machineArch;
         this.licensesDirPath = licensesDirPath;
     }
