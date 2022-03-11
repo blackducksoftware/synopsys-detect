@@ -29,6 +29,19 @@ class BazelBattery {
     }
 
     @Test
+    void bazelMavenInstallComplexCoordinates() {
+        DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("bazel-maven-install-complex", "bazel/maven-install-complex");
+        test.withToolsValue("BAZEL");
+        test.property("detect.bazel.target", "//tests/integration:ArtifactExclusionsTest");
+        test.property("detect.bazel.workspace.rules", "MAVEN_INSTALL");
+        test.executableFromResourceFiles(DetectProperties.DETECT_BAZEL_PATH, BAZEL_MAVEN_INSTALL_OUTPUT_RESOURCE);
+        test.sourceDirectoryNamed("bazel-maven-install-complex");
+        test.sourceFileNamed("WORKSPACE");
+        test.expectBdioResources();
+        test.run();
+    }
+
+    @Test
     void bazelHaskellCabalLibrary() {
         DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("bazel-haskell-cabal-library", "bazel/haskell-cabal-library");
         test.withToolsValue("BAZEL");
