@@ -1,5 +1,15 @@
 # Release notes
 
+## Version 7.13.0
+
+### New features
+
+### Changed features
+
+### Resolved issues
+
+* (IDETECT-3184) Resolved an issue that prevented matches for Bazel maven_install components with complex (>3 parts) maven_coordinates values.
+
 ## Version 7.12.0
 
 ### New features
