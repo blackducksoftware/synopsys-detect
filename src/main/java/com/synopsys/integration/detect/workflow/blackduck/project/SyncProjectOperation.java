@@ -51,7 +51,7 @@ public class SyncProjectOperation {
         } catch (BlackDuckApiException e) {
             if (projectSyncOptions.getCloneCategories().contains(ProjectCloneCategoriesType.DEEP_LICENSE)) {
                 String message = "Attempt to create or update project failed.  If you are using a Black Duck earlier than 2022.2.0, this may be because you passed DEEP_LICENSE as a project clone category, either explicitly or by passing ALL.";
-                throw new IntegrationException(message);
+                throw new IntegrationException(message, e);
             }
             throw e;
         }
