@@ -16,9 +16,9 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.detectables.xcode.model.PackageResolved;
-import com.synopsys.integration.detectable.detectables.xcode.model.PackageState;
-import com.synopsys.integration.detectable.detectables.xcode.model.ResolvedPackage;
+import com.synopsys.integration.detectable.detectables.xcode.data.PackageResolved;
+import com.synopsys.integration.detectable.detectables.xcode.data.PackageState;
+import com.synopsys.integration.detectable.detectables.xcode.data.ResolvedPackage;
 
 public class PackageResolvedTransformer {
     private static final String[] REPO_SUFFIX_TO_STRIP = { ".git" };

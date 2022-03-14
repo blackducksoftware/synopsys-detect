@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import com.synopsys.integration.detectable.detectables.xcode.model.PackageResolved;
+import com.synopsys.integration.detectable.detectables.xcode.data.PackageResolved;
 
 class PackageResolvedFormatCheckerTest {
 
