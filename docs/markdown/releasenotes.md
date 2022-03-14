@@ -14,6 +14,7 @@
 
 ### Changed features
 
+* Changed default value of detect.project.clone.categories from ALL to COMPONENT_DATA, CUSTOM_FIELD_DATA, LICENSE_TERM_FULFILLMENT, VERSION_SETTINGS, VULN_DATA.  This avoids the automatic setting of the clone category DEEP_LICENSE introduced in Black Duck 2022.2.0. Users of [solution_name] 7.12.0 that wish to pass DEEP_LICENSE or ALL as a value detect.project.clone.categories must be using Black Duck 2022.2.0 or later.
 * Added new property detect.bazel.workspace.rules to replace the now-deprecated detect.bazel.dependency.type property.
 * For Go Mod projects, successfully executing `go version` is now required. Unsuccessful attempts now results in a run failure.
 * The property *detect.go.mod.dependency.types.excluded* now only accepts a single value rather than a list of values.
