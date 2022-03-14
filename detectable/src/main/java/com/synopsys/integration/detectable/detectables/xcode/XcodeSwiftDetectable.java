@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.function.BiConsumer;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
@@ -18,13 +19,11 @@ import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 @DetectableInfo(language = "Swift", forge = "GITHUB", requirementsMarkdown = "Directory: *.xcodeproj, Files: Package.resolved")
 public class XcodeSwiftDetectable extends Detectable {
     private static final String PACKAGE_RESOLVED_FILENAME = "Package.resolved";
-    private static final Path PACKAGE_RESOLVED_PARENT_PATH = Paths.get("project.xcworkspace/xcshareddata/swiftpm");
-    private static final String XCODE_PROJECT_PATTERN = "*.xcodeproj";
 
     private final FileFinder fileFinder;
     private final XcodeSwiftExtractor xcodeProjectExtractor;
 
-    private File foundXcodeProjectFile;
+    private File foundCodeLocationFile;
     private File foundPackageResolvedFile;
 
     public XcodeSwiftDetectable(DetectableEnvironment environment, FileFinder fileFinder, XcodeSwiftExtractor xcodeProjectExtractor) {
@@ -35,15 +34,37 @@ public class XcodeSwiftDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        Requirements requirements = new Requirements(fileFinder, environment);
-        foundXcodeProjectFile = requirements.directory(XCODE_PROJECT_PATTERN);
-
-        if (requirements.isCurrentlyMet()) {
-            File swiftPMDirectory = foundXcodeProjectFile.toPath().resolve(PACKAGE_RESOLVED_PARENT_PATH).toFile();
-            foundPackageResolvedFile = requirements.file(swiftPMDirectory, PACKAGE_RESOLVED_FILENAME);
+        Requirements xcodeWorkspaceRequirements = createRequirements("*.xcworkspace", Paths.get("xcshareddata/swiftpm"), (foundDirectory, foundPackageResolved) -> {
+            foundCodeLocationFile = foundDirectory;
+            foundPackageResolvedFile = foundPackageResolved;
+        });
+        if (xcodeWorkspaceRequirements.isCurrentlyMet()) {
+            return xcodeWorkspaceRequirements.result();
         }
 
-        return requirements.result();
+        Requirements xcodeProjectRequirements = createRequirements("*.xcodeproj", Paths.get("project.xcworkspace/xcshareddata/swiftpm"), (foundDirectory, foundPackageResolved) -> {
+            foundCodeLocationFile = foundDirectory;
+            foundPackageResolvedFile = foundPackageResolved;
+        });
+        if (xcodeProjectRequirements.isCurrentlyMet()) {
+            return xcodeProjectRequirements.result();
+        }
+
+        // TODO: Would like to say "Could not find xcode workspace or xcode project" maybe with combined DetectableResults???
+        return xcodeProjectRequirements.result(); // TODO: Maybe DetectableResultJoiner::joinForSuccess should exist? If either result.isPassed() == true return new DetectableResult(passed = true)
+    }
+
+    private Requirements createRequirements(String directoryPattern, Path packageResolvedRelativePath, BiConsumer<File, File> foundPackageResolvedConsumer) {
+        Requirements requirements = new Requirements(fileFinder, environment);
+        File foundDirectory = requirements.directory(directoryPattern);
+
+        if (requirements.isCurrentlyMet()) {
+            File swiftPMDirectory = foundDirectory.toPath().resolve(packageResolvedRelativePath).toFile();
+            File foundPackageResolved = requirements.file(swiftPMDirectory, PACKAGE_RESOLVED_FILENAME);
+            foundPackageResolvedConsumer.accept(foundDirectory, foundPackageResolved);
+        }
+
+        return requirements;
     }
 
     @Override
@@ -53,7 +74,7 @@ public class XcodeSwiftDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws FileNotFoundException {
-        return xcodeProjectExtractor.extract(foundPackageResolvedFile, foundXcodeProjectFile);
+        return xcodeProjectExtractor.extract(foundPackageResolvedFile, foundCodeLocationFile);
     }
 
 }
