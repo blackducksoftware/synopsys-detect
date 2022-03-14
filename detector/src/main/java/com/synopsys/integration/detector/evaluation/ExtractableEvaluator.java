@@ -32,7 +32,6 @@ public class ExtractableEvaluator extends Evaluator {
     }
 
     public void extractableEvaluation(DetectorEvaluationTree detectorEvaluationTree) {
-        logger.debug("Starting detector preparation.");
         logger.trace("Determining extractable detectors in the directory: {}", detectorEvaluationTree.getDirectory());
         for (DetectorEvaluation detectorEvaluation : detectorEvaluationTree.getOrderedEvaluations()) {
             if (detectorEvaluation.isSearchable() && detectorEvaluation.isApplicable()) {
