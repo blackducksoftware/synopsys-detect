@@ -3,7 +3,7 @@ package com.synopsys.integration.detectable.detectables.xcode.process;
 import java.util.Arrays;
 import java.util.function.BiConsumer;
 
-import com.synopsys.integration.detectable.detectables.xcode.model.PackageResolved;
+import com.synopsys.integration.detectable.detectables.xcode.data.PackageResolved;
 
 public class PackageResolvedFormatChecker {
     protected static final String[] KNOWN_FILE_FORMAT_VERSIONS = { "1" };
