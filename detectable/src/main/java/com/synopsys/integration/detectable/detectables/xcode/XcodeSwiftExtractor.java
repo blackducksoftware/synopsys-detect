@@ -30,14 +30,14 @@ public class XcodeSwiftExtractor {
         this.packageResolvedTransformer = packageResolvedTransformer;
     }
 
-    public Extraction extract(File foundPackageResolvedFile, File foundXcodeProjectFile) throws FileNotFoundException {
+    public Extraction extract(File foundPackageResolvedFile, File foundCodeLocationFile) throws FileNotFoundException {
         FileReader fileReader = new FileReader(foundPackageResolvedFile);
         PackageResolved packageResolved = gson.fromJson(fileReader, PackageResolved.class);
 
         if (packageResolved == null) {
             // There are no dependencies to extract.
             DependencyGraph dependencyGraph = new MutableMapDependencyGraph();
-            CodeLocation emptyCodeLocation = new CodeLocation(dependencyGraph, foundXcodeProjectFile);
+            CodeLocation emptyCodeLocation = new CodeLocation(dependencyGraph, foundCodeLocationFile);
             return new Extraction.Builder().success(emptyCodeLocation).build();
         }
 
