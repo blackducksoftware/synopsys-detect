@@ -13,7 +13,7 @@ import com.synopsys.integration.detectable.detectables.xcode.data.PackageResolve
 import com.synopsys.integration.detectable.detectables.xcode.data.PackageState;
 import com.synopsys.integration.detectable.detectables.xcode.data.ResolvedObject;
 import com.synopsys.integration.detectable.detectables.xcode.data.ResolvedPackage;
-import com.synopsys.integration.detectable.detectables.xcode.process.PackageResolvedTransformer;
+import com.synopsys.integration.detectable.detectables.xcode.transform.PackageResolvedTransformer;
 import com.synopsys.integration.detectable.util.graph.GraphAssert;
 
 class PackageResolvedTransformerTest {

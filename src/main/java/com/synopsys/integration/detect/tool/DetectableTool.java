@@ -6,9 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
 import com.google.gson.JsonSyntaxException;
 import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
@@ -108,7 +111,7 @@ public class DetectableTool {
         Extraction extraction;
         try {
             extraction = detectable.extract(extractionEnvironment);
-        } catch (ExecutableFailedException | ExecutableRunnerException | JsonSyntaxException | IOException | CycleDetectedException | DetectableException | MissingExternalIdException e) {
+        } catch (ExecutableFailedException | ExecutableRunnerException | JsonSyntaxException | IOException | CycleDetectedException | DetectableException | MissingExternalIdException | ParserConfigurationException | SAXException e) {
             extraction = new Extraction.Builder().exception(e).build();
         }
 

@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.xcode.process;
+package com.synopsys.integration.detectable.detectables.xcode.transform;
 
 import java.net.MalformedURLException;
 import java.net.URL;

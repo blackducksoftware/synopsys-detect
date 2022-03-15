@@ -2,6 +2,7 @@ package com.synopsys.integration.detectable.detectable;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -36,9 +37,36 @@ public class Requirements {
         this.environment = environment;
     }
 
+    public void anyFile(SearchPattern... searchPatterns) {
+        List<String> failedSearchPatterns = new LinkedList<>();
+        for (SearchPattern searchPattern : searchPatterns) {
+            File file = fileFinder.findFile(searchPattern.getSearchDirectory(), searchPattern.getFilePattern());
+            if (file != null) {
+                explainFile(file);
+                searchPattern.getFileConsumer().accept(file);
+            } else {
+                failedSearchPatterns.add(searchPattern.getFilePattern());
+            }
+        }
+        if (CollectionUtils.isNotEmpty(failedSearchPatterns)) {
+            failure = new FilesNotFoundDetectableResult(failedSearchPatterns);
+        }
+    }
+
     public void eitherFile(String primaryPattern, String secondaryPattern, Consumer<File> primaryConsumer, Consumer<File> secondaryConsumer) {
-        File primary = fileFinder.findFile(environment.getDirectory(), primaryPattern);
-        File secondary = fileFinder.findFile(environment.getDirectory(), secondaryPattern);
+        eitherFile(primaryPattern, environment.getDirectory(), secondaryPattern, environment.getDirectory(), primaryConsumer, secondaryConsumer);
+    }
+
+    public void eitherFile(
+        String primaryPattern,
+        File primaryDirectory,
+        String secondaryPattern,
+        File secondaryDirectory,
+        Consumer<File> primaryConsumer,
+        Consumer<File> secondaryConsumer
+    ) {
+        File primary = fileFinder.findFile(primaryDirectory, primaryPattern);
+        File secondary = fileFinder.findFile(secondaryDirectory, secondaryPattern);
         if (primary == null && secondary == null) {
             failure = new FilesNotFoundDetectableResult(primaryPattern, secondaryPattern);
         }
@@ -124,7 +152,7 @@ public class Requirements {
         return optionalFile(directory, filename, () -> failure = createMissingResult.createFailedResult(), isRelevant);
     }
 
-    private boolean isAlreadyFailed() {
+    public boolean isAlreadyFailed() {
         return failure != null;
     }
 
