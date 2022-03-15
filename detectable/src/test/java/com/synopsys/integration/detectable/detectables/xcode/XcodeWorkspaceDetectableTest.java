@@ -39,8 +39,8 @@ import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
 @DisabledOnOs(WINDOWS) //TODO: Can't cleanup the temp file on windows. May need to close resources?
-public class XcodeSwiftDetectableTest extends DetectableFunctionalTest {
-    public XcodeSwiftDetectableTest() throws IOException {
+public class XcodeWorkspaceDetectableTest extends DetectableFunctionalTest {
+    public XcodeWorkspaceDetectableTest() throws IOException {
         super("Xcode - Package.resolved");
     }
 

@@ -55,7 +55,8 @@ import com.synopsys.integration.detectable.detectables.rubygems.gemlock.GemlockD
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectable;
 import com.synopsys.integration.detectable.detectables.sbt.SbtDetectable;
 import com.synopsys.integration.detectable.detectables.swift.SwiftCliDetectable;
-import com.synopsys.integration.detectable.detectables.xcode.XcodeSwiftDetectable;
+import com.synopsys.integration.detectable.detectables.xcode.XcodeProjectDetectable;
+import com.synopsys.integration.detectable.detectables.xcode.XcodeWorkspaceDetectable;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
 import com.synopsys.integration.detectable.factory.DetectableFactory;
 
@@ -315,7 +316,11 @@ public class DetectDetectableFactory {
         return detectableFactory.createMavenGradleInspectorDetectable(detectableEnvironment, projectInspectorResolver, detectableOptionFactory.createProjectInspectorOptions());
     }
 
-    public XcodeSwiftDetectable createXcodeSwiftDetectable(DetectableEnvironment environment) {
+    public XcodeWorkspaceDetectable createXcodeSwiftDetectable(DetectableEnvironment environment) {
         return detectableFactory.createXcodeSwiftDetectable(environment);
+    }
+
+    public XcodeProjectDetectable createXcodeProjectDetectable(DetectableEnvironment environment) {
+        return detectableFactory.createXcodeProjectDetectable(environment);
     }
 }

@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.xcode.process;
+package com.synopsys.integration.detectable.detectables.xcode.parse;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
