@@ -15,6 +15,7 @@ Enable this feature by adding [--detect.blackduck.scan.mode=RAPID](../properties
  * Rapid Scan does not support ```detect.policy.check.fail.on.severities```
     * [solution_name] will fail with FAILURE_POLICY_VIOLATION if any component violates Black Duck polices with a CRITICAL or BLOCKER severity. 
     * See the Black Duck documentation for a list of policy conditions that are supported by Rapid Scan. 
+ * Rapid Scan does not support ```detect.policy.check.fail.on.names```
  * Rapid Scan cannot create a Risk or Notices report.
  * Rapid Scan will not create a Project or Version on Black Duck.
  * Rapid Scan requires that bdio2 is enabled.
