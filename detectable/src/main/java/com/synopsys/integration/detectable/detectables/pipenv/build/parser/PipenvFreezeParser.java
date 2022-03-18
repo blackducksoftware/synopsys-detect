@@ -1,10 +1,10 @@
-package com.synopsys.integration.detectable.detectables.pipenv.parser;
+package com.synopsys.integration.detectable.detectables.pipenv.build.parser;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.synopsys.integration.detectable.detectables.pipenv.model.PipFreeze;
-import com.synopsys.integration.detectable.detectables.pipenv.model.PipFreezeEntry;
+import com.synopsys.integration.detectable.detectables.pipenv.build.model.PipFreeze;
+import com.synopsys.integration.detectable.detectables.pipenv.build.model.PipFreezeEntry;
 
 public class PipenvFreezeParser {
     private static final String VERSION_SEPARATOR = "==";

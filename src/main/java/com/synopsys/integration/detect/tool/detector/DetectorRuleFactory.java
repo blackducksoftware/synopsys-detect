@@ -38,7 +38,8 @@ import com.synopsys.integration.detectable.detectables.nuget.NugetSolutionDetect
 import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDetectable;
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectable;
 import com.synopsys.integration.detectable.detectables.pip.inspector.PipInspectorDetectable;
-import com.synopsys.integration.detectable.detectables.pipenv.PipenvDetectable;
+import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvDetectable;
+import com.synopsys.integration.detectable.detectables.pipenv.parse.PipfileLockDetectable;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockDetectable;
 import com.synopsys.integration.detectable.detectables.poetry.PoetryDetectable;
 import com.synopsys.integration.detectable.detectables.rebar.RebarDetectable;
@@ -143,9 +144,12 @@ public class DetectorRuleFactory {
         ruleSet.addDetector(DetectorType.PACKAGIST, "Composer", ComposerLockDetectable.class, detectableFactory::createComposerDetectable).defaults().build();
 
         DetectorRule<?> pipEnv = ruleSet.addDetector(DetectorType.PIP, "Pip Env", PipenvDetectable.class, detectableFactory::createPipenvDetectable).defaults().build();
+        DetectorRule<?> pipfileLock = ruleSet.addDetector(DetectorType.PIP, "Pipfile Lock", PipfileLockDetectable.class, detectableFactory::createPipfileLockDetectable).defaults()
+            .build();
         DetectorRule<?> pipInspector = ruleSet.addDetector(DetectorType.PIP, "Pip Inspector", PipInspectorDetectable.class, detectableFactory::createPipInspectorDetectable)
             .defaults().build();
         DetectorRule<?> poetry = ruleSet.addDetector(DetectorType.POETRY, "Poetry", PoetryDetectable.class, detectableFactory::createPoetryDetectable).defaults().build();
+        //TODO- where should pipfile lock fit into pip detector hierarchy?
         ruleSet.yield(pipInspector).to(pipEnv);
         ruleSet.yield(poetry).to(pipEnv);
 
