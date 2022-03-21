@@ -17,12 +17,12 @@ import com.synopsys.integration.detectable.extraction.Extraction;
 public class PipfileLockExtractor {
     private final Gson gson;
     private final PipfileLockParser pipfileLockParser;
-    private final PipfileLockTransformer pipfileLockTransformer;
+    private final PipfileLockDependencyTransformer pipfileLockTransformer;
 
     public PipfileLockExtractor(
         Gson gson,
         PipfileLockParser pipfileLockParser,
-        PipfileLockTransformer pipfileLockTransformer
+        PipfileLockDependencyTransformer pipfileLockTransformer
     ) {
         this.gson = gson;
         this.pipfileLockParser = pipfileLockParser;

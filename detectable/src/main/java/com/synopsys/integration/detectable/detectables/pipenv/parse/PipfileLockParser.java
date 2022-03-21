@@ -22,7 +22,11 @@ public class PipfileLockParser {
 
     private List<PipfileLockDependency> parseDependencyInfo(Map<String, PipfileLockDependencyEntry> dependencyEntries) {
         return dependencyEntries.entrySet().stream()
-            .map(entry -> new PipfileLockDependency(entry.getKey(), entry.getValue().version))
+            .map(entry -> new PipfileLockDependency(entry.getKey(), parseRawVersion(entry.getValue().version)))
             .collect(Collectors.toList());
+    }
+
+    private String parseRawVersion(String rawVersion) {
+        return rawVersion.replace("==", "");
     }
 }
