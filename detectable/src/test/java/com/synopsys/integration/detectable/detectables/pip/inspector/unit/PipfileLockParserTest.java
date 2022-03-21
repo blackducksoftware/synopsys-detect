@@ -23,13 +23,16 @@ public class PipfileLockParserTest {
 
         Assertions.assertEquals(3, dependencies.size());
         Assertions.assertTrue(containsDependency(dependencies, "comp1", "1.0"));
-        Assertions.assertTrue(containsDependency(dependencies, "comp2", "2.0"));
+        Assertions.assertTrue(containsDependency(dependencies, "comp2", null));
         Assertions.assertTrue(containsDependency(dependencies, "comp3", "3.0"));
     }
 
     private boolean containsDependency(List<PipfileLockDependency> pipfileLockDependencies, String name, String version) {
         return pipfileLockDependencies.stream()
-            .anyMatch(dependency -> dependency.getName().equals(name) && dependency.getVersion().equals(version));
+            .anyMatch(dependency ->
+                dependency.getName().equals(name) &&
+                    ((dependency.getVersion() == null && version == null) || dependency.getVersion().equals(version))
+            );
     }
 
     @Test
@@ -40,7 +43,7 @@ public class PipfileLockParserTest {
 
         Assertions.assertEquals(2, dependencies.size());
         Assertions.assertTrue(containsDependency(dependencies, "comp1", "1.0"));
-        Assertions.assertTrue(containsDependency(dependencies, "comp2", "2.0"));
+        Assertions.assertTrue(containsDependency(dependencies, "comp2", null));
         Assertions.assertFalse(containsDependency(dependencies, "comp3", "3.0"));
     }
 
@@ -49,7 +52,7 @@ public class PipfileLockParserTest {
 
         Map<String, PipfileLockDependencyEntry> dependencies = new HashMap<>();
         dependencies.put("comp1", createEntry("==1.0"));
-        dependencies.put("comp2", createEntry("==2.0"));
+        dependencies.put("comp2", createEntry(null));
         pipfileLock.dependencies = dependencies;
 
         Map<String, PipfileLockDependencyEntry> devDependencies = new HashMap<>();

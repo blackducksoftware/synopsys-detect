@@ -194,6 +194,8 @@ public class DetectorRuleFactory {
         ruleSet.addDetector(DetectorType.MAVEN, "Maven Project Inspector", MavenProjectInspectorDetectable.class, detectableFactory::createMavenProjectInspectorDetectable)
             .defaults().build();
 
+        ruleSet.addDetector(DetectorType.PIP, "Pipfile Lock", PipfileLockDetectable.class, detectableFactory::createPipfileLockDetectable).defaults().build();
+
         ruleSet.addDetector(DetectorType.POETRY, "Poetry", PoetryDetectable.class, detectableFactory::createPoetryDetectable).defaults().build();
 
         DetectorRule<?> yarnLock = ruleSet.addDetector(DetectorType.YARN, "Yarn Lock", YarnLockDetectable.class, detectableFactory::createYarnLockDetectable).defaults().build();

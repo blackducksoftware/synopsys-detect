@@ -45,7 +45,7 @@ public class PipfileLockDetectable extends Detectable {
         requirements.eitherFile(
             PIPFILE_FILENAME,
             PIPFILE_LOCK_FILENAME,
-            null,
+            pipfile -> {},
             pipfileLock -> this.pipfileLock = pipfileLock
         );
         return requirements.result();

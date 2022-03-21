@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.pipenv.parse.model.PipfileLock;
 import com.synopsys.integration.detectable.detectables.pipenv.parse.model.PipfileLockDependency;
@@ -26,7 +28,10 @@ public class PipfileLockParser {
             .collect(Collectors.toList());
     }
 
-    private String parseRawVersion(String rawVersion) {
+    private String parseRawVersion(@Nullable String rawVersion) {
+        if (rawVersion == null) {
+            return null;
+        }
         return rawVersion.replace("==", "");
     }
 }
