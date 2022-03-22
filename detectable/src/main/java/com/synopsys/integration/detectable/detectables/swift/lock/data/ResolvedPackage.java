@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.xcode.data;
+package com.synopsys.integration.detectable.detectables.swift.lock.data;
 
 import com.google.gson.annotations.SerializedName;
 

@@ -1,9 +1,9 @@
-package com.synopsys.integration.detectable.detectables.xcode.parse;
+package com.synopsys.integration.detectable.detectables.swift.lock.parse;
 
 import java.util.Optional;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.detectable.detectables.xcode.data.PackageResolved;
+import com.synopsys.integration.detectable.detectables.swift.lock.data.PackageResolved;
 
 public class PackageResolvedParser {
     private final Gson gson;

@@ -9,10 +9,10 @@ import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.detectables.xcode.data.PackageResolved;
-import com.synopsys.integration.detectable.detectables.xcode.data.PackageState;
-import com.synopsys.integration.detectable.detectables.xcode.data.ResolvedObject;
-import com.synopsys.integration.detectable.detectables.xcode.data.ResolvedPackage;
+import com.synopsys.integration.detectable.detectables.swift.lock.data.PackageResolved;
+import com.synopsys.integration.detectable.detectables.swift.lock.data.PackageState;
+import com.synopsys.integration.detectable.detectables.swift.lock.data.ResolvedObject;
+import com.synopsys.integration.detectable.detectables.swift.lock.data.ResolvedPackage;
 import com.synopsys.integration.detectable.detectables.xcode.transform.PackageResolvedTransformer;
 import com.synopsys.integration.detectable.util.graph.GraphAssert;
 
