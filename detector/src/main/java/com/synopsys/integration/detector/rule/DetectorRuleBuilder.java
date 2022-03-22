@@ -46,7 +46,7 @@ public class DetectorRuleBuilder<T extends Detectable> {
         return this;
     }
 
-    public DetectorRuleBuilder isSelfNestable(boolean selfNestable) {
+    public DetectorRuleBuilder isSelfNestable(boolean selfNestable) { // TODO: Is equivalent to nestableByDetectorType? To Detectable or Detector Type?
         this.selfNestable = selfNestable;
         return this;
     }

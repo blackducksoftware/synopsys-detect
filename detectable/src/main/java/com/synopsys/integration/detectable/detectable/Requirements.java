@@ -11,6 +11,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
@@ -38,18 +39,17 @@ public class Requirements {
     }
 
     public void anyFile(SearchPattern... searchPatterns) {
-        List<String> failedSearchPatterns = new LinkedList<>();
+        List<SearchPattern> foundSearchPatterns = new LinkedList<>();
         for (SearchPattern searchPattern : searchPatterns) {
             File file = fileFinder.findFile(searchPattern.getSearchDirectory(), searchPattern.getFilePattern());
             if (file != null) {
                 explainFile(file);
                 searchPattern.getFileConsumer().accept(file);
-            } else {
-                failedSearchPatterns.add(searchPattern.getFilePattern());
+                foundSearchPatterns.add(searchPattern);
             }
         }
-        if (CollectionUtils.isNotEmpty(failedSearchPatterns)) {
-            failure = new FilesNotFoundDetectableResult(failedSearchPatterns);
+        if (CollectionUtils.isEmpty(foundSearchPatterns)) {
+            failure = new FilesNotFoundDetectableResult(Bds.of(searchPatterns).map(SearchPattern::getFilePattern).toList());
         }
     }
 
