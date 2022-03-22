@@ -1,14 +1,13 @@
 dependencies {
-    api 'com.synopsys.integration:integration-common:25.3.3'
-
     implementation project(':common')
+
+    implementation 'com.synopsys.integration:integration-bdio'
+    implementation 'com.synopsys.integration:integration-rest'
 
     implementation 'org.tomlj:tomlj:1.0.0'
     implementation 'com.moandjiezana.toml:toml4j:0.7.2'
     implementation 'com.paypal.digraph:digraph-parser:1.0'
     implementation 'org.freemarker:freemarker:2.3.26-incubating'
-    implementation 'com.synopsys.integration:integration-bdio:22.1.8'
-    implementation 'com.synopsys.integration:integration-rest:10.3.3'
 
     testImplementation 'org.skyscreamer:jsonassert:1.5.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'

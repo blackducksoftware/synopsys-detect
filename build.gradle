@@ -1,10 +1,12 @@
 import com.synopsys.integration.detect.battery.UpdateBatteryTask
 import com.synopsys.integration.detect.verification.VerifyBlackDuckDetectTask
 
+
 buildscript {
+    apply from: 'shared-version.properties'
     ext {
-        springBootVersion = '2.6.4'
-        blackDuckCommonVersion = '61.2.2'
+        springBootVersion = gradle.ext.springBootVersion
+        blackDuckCommonVersion = gradle.ext.blackDuckCommonVersion
         junitPlatformCustomTestTags = 'docker, battery'
         javaTargetCompatibility = 8
         javaSourceCompatibility = 8
@@ -57,7 +59,7 @@ subprojects {
 
 allprojects {
     dependencies {
-	implementation "com.google.guava:guava:31.1-jre"
+        implementation "com.google.guava:guava:31.1-jre"
         implementation "org.slf4j:slf4j-api:1.7.30"
         implementation "org.apache.commons:commons-lang3:3.10" /* this could be managed by blackduck common */
         implementation 'org.jetbrains:annotations:20.1.0'
