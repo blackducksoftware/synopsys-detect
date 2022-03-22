@@ -1,9 +1,9 @@
-package com.synopsys.integration.detectable.detectables.swift;
+package com.synopsys.integration.detectable.detectables.swift.cli;
 
 import java.util.List;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.detectable.detectables.swift.model.SwiftPackage;
+import com.synopsys.integration.detectable.detectables.swift.cli.model.SwiftPackage;
 
 public class SwiftCliParser {
     private final Gson gson;

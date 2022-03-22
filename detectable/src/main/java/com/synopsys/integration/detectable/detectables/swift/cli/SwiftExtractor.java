@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.swift;
+package com.synopsys.integration.detectable.detectables.swift.cli;
 
 import java.io.File;
 
@@ -7,7 +7,7 @@ import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
-import com.synopsys.integration.detectable.detectables.swift.model.SwiftPackage;
+import com.synopsys.integration.detectable.detectables.swift.cli.model.SwiftPackage;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import com.synopsys.integration.executable.ExecutableOutput;
