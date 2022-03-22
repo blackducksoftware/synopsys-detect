@@ -20,8 +20,8 @@ public class Extraction {
 
     // If you're an error you might have one of these filled.
     private final Exception error;
-
     private final String description;
+
     private final String projectVersion;
     private final String projectName;
     private final Map<ExtractionMetadata<?>, Object> metaData;

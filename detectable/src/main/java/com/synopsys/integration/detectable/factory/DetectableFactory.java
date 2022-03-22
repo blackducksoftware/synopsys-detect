@@ -250,16 +250,16 @@ import com.synopsys.integration.detectable.detectables.sbt.dot.SbtPluginFinder;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtRootNodeFinder;
 import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheExtractor;
 import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheOptions;
-import com.synopsys.integration.detectable.detectables.swift.SwiftCliDetectable;
-import com.synopsys.integration.detectable.detectables.swift.SwiftCliParser;
-import com.synopsys.integration.detectable.detectables.swift.SwiftExtractor;
-import com.synopsys.integration.detectable.detectables.swift.SwiftPackageTransformer;
-import com.synopsys.integration.detectable.detectables.xcode.XcodePackageResolvedExtractor;
+import com.synopsys.integration.detectable.detectables.swift.cli.SwiftCliDetectable;
+import com.synopsys.integration.detectable.detectables.swift.cli.SwiftCliParser;
+import com.synopsys.integration.detectable.detectables.swift.cli.SwiftExtractor;
+import com.synopsys.integration.detectable.detectables.swift.cli.SwiftPackageTransformer;
+import com.synopsys.integration.detectable.detectables.swift.lock.PackageResolvedExtractor;
+import com.synopsys.integration.detectable.detectables.swift.lock.parse.PackageResolvedFormatChecker;
+import com.synopsys.integration.detectable.detectables.swift.lock.parse.PackageResolvedParser;
 import com.synopsys.integration.detectable.detectables.xcode.XcodeProjectDetectable;
 import com.synopsys.integration.detectable.detectables.xcode.XcodeWorkspaceDetectable;
 import com.synopsys.integration.detectable.detectables.xcode.XcodeWorkspaceExtractor;
-import com.synopsys.integration.detectable.detectables.xcode.parse.PackageResolvedFormatChecker;
-import com.synopsys.integration.detectable.detectables.xcode.parse.PackageResolvedParser;
 import com.synopsys.integration.detectable.detectables.xcode.parse.XcodeWorkspaceFormatChecker;
 import com.synopsys.integration.detectable.detectables.xcode.parse.XcodeWorkspaceParser;
 import com.synopsys.integration.detectable.detectables.xcode.transform.PackageResolvedTransformer;
@@ -620,19 +620,19 @@ public class DetectableFactory {
         PackageResolvedFormatChecker packageResolvedFormatChecker = new PackageResolvedFormatChecker();
         PackageResolvedParser packageResolvedParser = new PackageResolvedParser(gson);
         PackageResolvedTransformer packageResolvedTransformer = new PackageResolvedTransformer(externalIdFactory);
-        XcodePackageResolvedExtractor xcodePackageResolvedExtractor = new XcodePackageResolvedExtractor(
+        PackageResolvedExtractor packageResolvedExtractor = new PackageResolvedExtractor(
             packageResolvedParser,
             packageResolvedFormatChecker,
             packageResolvedTransformer
         );
-        return new XcodeProjectDetectable(environment, fileFinder, xcodePackageResolvedExtractor);
+        return new XcodeProjectDetectable(environment, fileFinder, packageResolvedExtractor);
     }
 
-    public XcodeWorkspaceDetectable createXcodeSwiftDetectable(DetectableEnvironment environment) {
+    public XcodeWorkspaceDetectable createXcodeWorkspaceDetectable(DetectableEnvironment environment) {
         PackageResolvedFormatChecker packageResolvedFormatChecker = new PackageResolvedFormatChecker();
         PackageResolvedParser packageResolvedParser = new PackageResolvedParser(gson);
         PackageResolvedTransformer packageResolvedTransformer = new PackageResolvedTransformer(externalIdFactory);
-        XcodePackageResolvedExtractor xcodePackageResolvedExtractor = new XcodePackageResolvedExtractor(
+        PackageResolvedExtractor packageResolvedExtractor = new PackageResolvedExtractor(
             packageResolvedParser,
             packageResolvedFormatChecker,
             packageResolvedTransformer
@@ -640,9 +640,9 @@ public class DetectableFactory {
 
         XcodeWorkspaceParser xcodeWorkspaceParser = new XcodeWorkspaceParser();
         XcodeWorkspaceFormatChecker xcodeWorkspaceFormatChecker = new XcodeWorkspaceFormatChecker();
-        XcodeWorkspaceExtractor xcodeWorkspaceExtractor = new XcodeWorkspaceExtractor(xcodeWorkspaceParser, xcodeWorkspaceFormatChecker, xcodePackageResolvedExtractor, fileFinder);
+        XcodeWorkspaceExtractor xcodeWorkspaceExtractor = new XcodeWorkspaceExtractor(xcodeWorkspaceParser, xcodeWorkspaceFormatChecker, packageResolvedExtractor, fileFinder);
 
-        return new XcodeWorkspaceDetectable(environment, fileFinder, xcodePackageResolvedExtractor, xcodeWorkspaceExtractor);
+        return new XcodeWorkspaceDetectable(environment, fileFinder, packageResolvedExtractor, xcodeWorkspaceExtractor);
     }
 
     //#endregion

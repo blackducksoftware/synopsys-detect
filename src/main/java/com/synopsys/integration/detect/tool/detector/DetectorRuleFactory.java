@@ -45,8 +45,9 @@ import com.synopsys.integration.detectable.detectables.rebar.RebarDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemlock.GemlockDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectable;
 import com.synopsys.integration.detectable.detectables.sbt.SbtDetectable;
-import com.synopsys.integration.detectable.detectables.swift.SwiftCliDetectable;
-import com.synopsys.integration.detectable.detectables.xcode.XcodeSwiftDetectable;
+import com.synopsys.integration.detectable.detectables.swift.cli.SwiftCliDetectable;
+import com.synopsys.integration.detectable.detectables.xcode.XcodeProjectDetectable;
+import com.synopsys.integration.detectable.detectables.xcode.XcodeWorkspaceDetectable;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.rule.DetectorRule;
@@ -74,7 +75,12 @@ public class DetectorRuleFactory {
         ruleSet.addDetector(DetectorType.BITBAKE, "Bitbake", BitbakeDetectable.class, detectableFactory::createBitbakeDetectable).defaults().build();
 
         ruleSet.addDetector(DetectorType.COCOAPODS, "Pod Lock", PodlockDetectable.class, detectableFactory::createPodLockDetectable).defaults().build();
-        ruleSet.addDetector(DetectorType.XCODE, "Xcode Swift", XcodeSwiftDetectable.class, detectableFactory::createXcodeSwiftDetectable).defaults().selfNestable().build();
+
+        // TODO: Review Xcode nesting
+        // TODO: Add SwiftPackageResolvedDetectable
+        ruleSet.addDetector(DetectorType.XCODE, "Xcode Workspace", XcodeWorkspaceDetectable.class, detectableFactory::createXcodeWorkspaceDetectable).defaults().selfNestable()
+            .build();
+        ruleSet.addDetector(DetectorType.XCODE, "Xcode Project", XcodeProjectDetectable.class, detectableFactory::createXcodeProjectDetectable).defaults().selfNestable().build();
 
         DetectorRule<?> conanCliRule = ruleSet.addDetector(DetectorType.CONAN, "Conan CLI", ConanCliDetectable.class, detectableFactory::createConanCliDetectable).defaults()
             .build();
@@ -170,7 +176,12 @@ public class DetectorRuleFactory {
         ruleSet.addDetector(DetectorType.CARTHAGE, "Carthage", CarthageDetectable.class, detectableFactory::createCarthageDetectable).defaults().build();
 
         ruleSet.addDetector(DetectorType.COCOAPODS, "Pod Lock", PodlockDetectable.class, detectableFactory::createPodLockDetectable).defaults().build();
-        ruleSet.addDetector(DetectorType.XCODE, "Xcode Swift", XcodeSwiftDetectable.class, detectableFactory::createXcodeSwiftDetectable).defaults().selfNestable().build();
+
+        // TODO: Review nesting
+        // TODO: Add SwiftPackageResolvedDetectable
+        ruleSet.addDetector(DetectorType.XCODE, "Xcode Workspace", XcodeWorkspaceDetectable.class, detectableFactory::createXcodeWorkspaceDetectable).defaults().selfNestable()
+            .build();
+        ruleSet.addDetector(DetectorType.XCODE, "Xcode Project", XcodeProjectDetectable.class, detectableFactory::createXcodeProjectDetectable).defaults().selfNestable().build();
 
         ruleSet.addDetector(DetectorType.PACKAGIST, "Packrat Lock", PackratLockDetectable.class, detectableFactory::createPackratLockDetectable).defaults().build();
 
