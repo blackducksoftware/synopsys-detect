@@ -28,33 +28,21 @@ import java.nio.file.Paths;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
-// TODO: Run this test. Thinking about 1 Extraction
-public class XcodeWorkspaceDetectableTest extends DetectableFunctionalTest {
-    public XcodeWorkspaceDetectableTest() throws IOException {
+public class XcodeProjectDetectableTest extends DetectableFunctionalTest {
+    public XcodeProjectDetectableTest() throws IOException {
         super("Xcode Workspace - Package.resolved & ");
     }
 
     @Override
     public void setup() throws IOException {
-        // Using the same file to simplify assertions
-        String packageResolvedResourcePath = "/xcode/Package.resolved";
-
-        // Within the workspace directory
-        addFileFromResources(Paths.get("jake-test.xcworkspace/xcshareddata/swiftpm/Package.resolved"), packageResolvedResourcePath);
-
-        // Defined in workspace data file
-        addFileFromResources(Paths.get("project/MyLibrary/Package.resolved"), packageResolvedResourcePath);
-        addFileFromResources(Paths.get("project/jakem-test.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"), packageResolvedResourcePath);
-
+        addFileFromResources(Paths.get("jake-test.xcworkspace/xcshareddata/swiftpm/Package.resolved"), "/xcode/Package.resolved");
         addFile(
             Paths.get("jake-test.xcworkspace/contents.xcworkspacedata"),
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
@@ -64,7 +52,7 @@ public class XcodeWorkspaceDetectableTest extends DetectableFunctionalTest {
             "      location = \"group:project/MyLibrary\">",
             "   </FileRef>",
             "   <FileRef",
-            "      location = \"group:project/jakem-test.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved\">",
+            "      location = \"group:project/jakem-test.xcodeproj\">",
             "   </FileRef>",
             "</Workspace>"
         );
@@ -78,20 +66,9 @@ public class XcodeWorkspaceDetectableTest extends DetectableFunctionalTest {
 
     @Override
     public void assertExtraction(@NotNull Extraction extraction) {
-        Assertions.assertEquals(3, extraction.getCodeLocations().size(), "Expected 1 code location from local and 2 defined in the workspace data file.");
+        Assertions.assertNotEquals(0, extraction.getCodeLocations().size(), "A code location should have been generated.");
 
-        CodeLocation localCodeLocation = extraction.getCodeLocations().get(0);
-        assertPackageResolvedGraph(localCodeLocation.getDependencyGraph());
-
-        CodeLocation directoryCodeLocation = extraction.getCodeLocations().get(1);
-        assertPackageResolvedGraph(directoryCodeLocation.getDependencyGraph());
-
-        CodeLocation projectCodeLocation = extraction.getCodeLocations().get(2);
-        assertPackageResolvedGraph(projectCodeLocation.getDependencyGraph());
-    }
-
-    private void assertPackageResolvedGraph(DependencyGraph packageResolvedDependencyGraph) {
-        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.GITHUB, packageResolvedDependencyGraph);
+        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.GITHUB, extraction.getCodeLocations().get(0).getDependencyGraph());
         graphAssert.hasRootDependency("apple/swift-argument-parser", "1.0.1");
         graphAssert.hasRootDependency("auth0/Auth0.swift", "1.35.0");
         graphAssert.hasRootDependency("mac-cain13/R.swift.Library", "5.4.0");
