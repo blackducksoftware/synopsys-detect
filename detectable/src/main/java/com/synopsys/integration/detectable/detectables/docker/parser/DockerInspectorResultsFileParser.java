@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.synopsys.integration.detectable.detectables.docker.model.DockerImageInfo;
+import com.synopsys.integration.detectable.detectables.docker.model.DockerInspectorResults;
 
 public class DockerInspectorResultsFileParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -17,9 +17,9 @@ public class DockerInspectorResultsFileParser {
         this.gson = gson;
     }
 
-    public Optional<DockerImageInfo> parse(String resultsFileContents) {
+    public Optional<DockerInspectorResults> parse(String resultsFileContents) {
         try {
-            DockerImageInfo results = gson.fromJson(resultsFileContents, DockerImageInfo.class);
+            DockerInspectorResults results = gson.fromJson(resultsFileContents, DockerInspectorResults.class);
             return Optional.of(results);
         } catch (JsonSyntaxException e) {
             logger.warn("Failed to parse results file from run of Docker Inspector; results file contents: {}", resultsFileContents);

@@ -31,7 +31,7 @@ import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
-import com.synopsys.integration.detectable.detectables.docker.model.DockerImageInfo;
+import com.synopsys.integration.detectable.detectables.docker.model.DockerInspectorResults;
 import com.synopsys.integration.detectable.detectables.docker.parser.DockerInspectorResultsFileParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionMetadata;
@@ -43,8 +43,6 @@ import com.synopsys.integration.executable.ExecutableRunnerException;
 public class DockerExtractor {
     public static final ExtractionMetadata<File> DOCKER_TAR_META_DATA = new ExtractionMetadata<>("dockerTar", File.class);
     public static final ExtractionMetadata<String> DOCKER_IMAGE_NAME_META_DATA = new ExtractionMetadata<>("dockerImage", String.class);
-    // TODO remove this
-    public static final ExtractionMetadata<String> DOCKER_IMAGE_ID_META_DATA = new ExtractionMetadata<>("dockerImageId", String.class);
     public static final ExtractionMetadata<File> SQUASHED_IMAGE_META_DATA = new ExtractionMetadata<>("squashedImage", File.class);
     public static final ExtractionMetadata<File> CONTAINER_FILESYSTEM_META_DATA = new ExtractionMetadata<>("containerFilesystem", File.class);
 
@@ -187,13 +185,13 @@ public class DockerExtractor {
         }
 
         Extraction.Builder extractionBuilder = findCodeLocations(outputDirectory, directory);
-        Optional<DockerImageInfo> dockerResults = Optional.empty();
+        Optional<DockerInspectorResults> dockerResults = Optional.empty();
         File producedResultFile = fileFinder.findFile(outputDirectory, RESULTS_FILENAME_PATTERN);
         if (producedResultFile != null) {
             String resultsFileContents = FileUtils.readFileToString(producedResultFile, StandardCharsets.UTF_8);
             dockerResults = dockerInspectorResultsFileParser.parse(resultsFileContents);
         }
-        String imageIdentifier = imageIdentifierGenerator.deriveImageIdentifier(imageIdentifierType, suppliedImagePiece, dockerResults.orElse(null));
+        String imageIdentifier = imageIdentifierGenerator.generate(imageIdentifierType, suppliedImagePiece, dockerResults.orElse(null));
         // The value of DOCKER_IMAGE_NAME_META_DATA is built into the codelocation name, so changing how its value is derived is likely to
         // change how codelocation names are generated. Currently either an image repo, repo:tag, or tarfile path gets written there.
         // It's tempting to always store the image repo:tag in that field, but that would change code location naming with consequences for users.

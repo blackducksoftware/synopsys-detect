@@ -27,7 +27,7 @@ import com.synopsys.integration.detectable.detectables.docker.DockerExtractor;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorInfo;
 import com.synopsys.integration.detectable.detectables.docker.DockerProperties;
 import com.synopsys.integration.detectable.detectables.docker.ImageIdentifierGenerator;
-import com.synopsys.integration.detectable.detectables.docker.model.DockerImageInfo;
+import com.synopsys.integration.detectable.detectables.docker.model.DockerInspectorResults;
 import com.synopsys.integration.detectable.detectables.docker.parser.DockerInspectorResultsFileParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.executable.Executable;
@@ -165,7 +165,7 @@ public class DockerExtractorTest {
         ExternalIdFactory externalIdFactory = Mockito.mock(ExternalIdFactory.class);
         Gson gson = new Gson();
         DockerInspectorResultsFileParser dockerInspectorResultsFileParser = Mockito.mock(DockerInspectorResultsFileParser.class);
-        DockerImageInfo dockerInspectorResults = new DockerImageInfo("returnedimage", "returnedtag", "returned message");
+        DockerInspectorResults dockerInspectorResults = new DockerInspectorResults("returnedimage", "returnedtag", "returned message");
         Mockito.when(dockerInspectorResultsFileParser.parse(Mockito.anyString())).thenReturn(Optional.of(dockerInspectorResults));
         ImageIdentifierGenerator imageIdentifierGenerator = new ImageIdentifierGenerator();
 

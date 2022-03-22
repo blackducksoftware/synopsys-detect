@@ -1,12 +1,11 @@
 package com.synopsys.integration.detectable.detectables.docker.model;
 
-// TODO rename this class to DockerInspectorResults
-public class DockerImageInfo {
+public class DockerInspectorResults {
     private final String imageRepo;
     private final String imageTag;
     private final String message;
 
-    public DockerImageInfo(String imageRepo, String imageTag, String message) {
+    public DockerInspectorResults(String imageRepo, String imageTag, String message) {
         this.imageRepo = imageRepo;
         this.imageTag = imageTag;
         this.message = message;

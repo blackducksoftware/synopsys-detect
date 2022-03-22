@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detectable.detectables.docker.ImageIdentifierGenerator;
 import com.synopsys.integration.detectable.detectables.docker.ImageIdentifierType;
-import com.synopsys.integration.detectable.detectables.docker.model.DockerImageInfo;
+import com.synopsys.integration.detectable.detectables.docker.model.DockerInspectorResults;
 
 public class ImageIdentifierGeneratorTest {
     private static ImageIdentifierGenerator generator;
@@ -19,25 +19,25 @@ public class ImageIdentifierGeneratorTest {
 
     @Test
     void testImageName() {
-        DockerImageInfo dockerImageInfo = new DockerImageInfo("returnedrepo", "returnedtag", "success");
-        assertEquals("suppliedrepo:suppliedtag", generator.deriveImageIdentifier(ImageIdentifierType.IMAGE_NAME, "suppliedrepo:suppliedtag", dockerImageInfo));
+        DockerInspectorResults dockerInspectorResults = new DockerInspectorResults("returnedrepo", "returnedtag", "success");
+        assertEquals("suppliedrepo:suppliedtag", generator.generate(ImageIdentifierType.IMAGE_NAME, "suppliedrepo:suppliedtag", dockerInspectorResults));
     }
 
     @Test
     void testImageId() {
-        DockerImageInfo dockerImageInfo = new DockerImageInfo("returnedrepo", "returnedtag", "success");
-        assertEquals("returnedrepo:returnedtag", generator.deriveImageIdentifier(ImageIdentifierType.IMAGE_ID, "suppliedrepo:suppliedtag", dockerImageInfo));
+        DockerInspectorResults dockerInspectorResults = new DockerInspectorResults("returnedrepo", "returnedtag", "success");
+        assertEquals("returnedrepo:returnedtag", generator.generate(ImageIdentifierType.IMAGE_ID, "suppliedrepo:suppliedtag", dockerInspectorResults));
     }
 
     @Test
     void testMissingReturnedRepo() {
-        DockerImageInfo dockerImageInfo = new DockerImageInfo(null, "returnedtag", "success");
-        assertEquals("suppliedrepo:suppliedtag", generator.deriveImageIdentifier(ImageIdentifierType.IMAGE_ID, "suppliedrepo:suppliedtag", dockerImageInfo));
+        DockerInspectorResults dockerInspectorResults = new DockerInspectorResults(null, "returnedtag", "success");
+        assertEquals("suppliedrepo:suppliedtag", generator.generate(ImageIdentifierType.IMAGE_ID, "suppliedrepo:suppliedtag", dockerInspectorResults));
     }
 
     @Test
     void testMissingReturnedTag() {
-        DockerImageInfo dockerImageInfo = new DockerImageInfo("returnedrepo", null, "success");
-        assertEquals("suppliedrepo:suppliedtag", generator.deriveImageIdentifier(ImageIdentifierType.IMAGE_ID, "suppliedrepo:suppliedtag", dockerImageInfo));
+        DockerInspectorResults dockerInspectorResults = new DockerInspectorResults("returnedrepo", null, "success");
+        assertEquals("suppliedrepo:suppliedtag", generator.generate(ImageIdentifierType.IMAGE_ID, "suppliedrepo:suppliedtag", dockerInspectorResults));
     }
 }
