@@ -14,9 +14,9 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.builder.LazyBuilderMissingExternalIdHandler;
 import com.synopsys.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
+import com.synopsys.integration.bdio.graph.builder.LazyId;
 import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.dependencyid.StringDependencyId;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
@@ -35,7 +35,7 @@ public class YarnTransformer {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     public static final String STRING_ID_NAME_VERSION_SEPARATOR = "@";
     private final ExternalIdFactory externalIdFactory;
-    private final Set<StringDependencyId> unMatchedDependencies = new HashSet<>();
+    private final Set<LazyId> unMatchedDependencies = new HashSet<>();
     private final EnumListFilter<YarnDependencyType> yarnDependencyTypeFilter;
 
     public YarnTransformer(ExternalIdFactory externalIdFactory, EnumListFilter<YarnDependencyType> yarnDependencyTypeFilter) {
@@ -70,7 +70,7 @@ public class YarnTransformer {
         addRootNodesToGraph(graphBuilder, projectOrWorkspacePackageJson, yarnLockResult.getWorkspaceData());
         for (YarnLockEntry entry : yarnLockResult.getYarnLock().getEntries()) {
             for (YarnLockEntryId entryId : entry.getIds()) {
-                StringDependencyId id = generateComponentDependencyId(entryId.getName(), entryId.getVersion());
+                LazyId id = generateComponentDependencyId(entryId.getName(), entryId.getVersion());
                 graphBuilder.setDependencyInfo(id, entryId.getName(), entry.getVersion(), generateComponentExternalId(entryId.getName(), entry.getVersion()));
                 addYarnLockDependenciesToGraph(yarnLockResult, graphBuilder, entry, id);
             }
@@ -78,15 +78,15 @@ public class YarnTransformer {
         return graphBuilder.build(getLazyBuilderHandler(externalDependencies));
     }
 
-    private void addYarnLockDependenciesToGraph(YarnLockResult yarnLockResult, LazyExternalIdDependencyGraphBuilder graphBuilder, YarnLockEntry entry, StringDependencyId id) {
+    private void addYarnLockDependenciesToGraph(YarnLockResult yarnLockResult, LazyExternalIdDependencyGraphBuilder graphBuilder, YarnLockEntry entry, LazyId id) {
         for (YarnLockDependency dependency : entry.getDependencies()) {
             if (!isWorkspace(yarnLockResult.getWorkspaceData(), dependency)) {
-                StringDependencyId stringDependencyId = generateComponentDependencyId(dependency.getName(), dependency.getVersion());
+                LazyId stringDependencyId = generateComponentDependencyId(dependency.getName(), dependency.getVersion());
 
                 if (yarnDependencyTypeFilter.shouldInclude(YarnDependencyType.NON_PRODUCTION) || !dependency.isOptional()) {
                     graphBuilder.addChildWithParent(stringDependencyId, id);
                 } else {
-                    logger.trace("Excluding optional dependency: {}", stringDependencyId.getValue());
+                    logger.trace("Excluding optional dependency: {}", stringDependencyId);
                 }
             }
         }
@@ -105,12 +105,11 @@ public class YarnTransformer {
                 return externalId.get();
             } else {
                 ExternalId lazilyGeneratedExternalId;
-                StringDependencyId stringDependencyId = (StringDependencyId) dependencyId;
-                if (!unMatchedDependencies.contains(stringDependencyId)) {
-                    logger.warn("Unable to find standard NPM package identification details for '{}' in the yarn.lock file", stringDependencyId.getValue());
-                    unMatchedDependencies.add(stringDependencyId);
+                if (!unMatchedDependencies.contains(dependencyId)) {
+                    logger.warn("Unable to find standard NPM package identification details for '{}' in the yarn.lock file", dependencyId);
+                    unMatchedDependencies.add(dependencyId);
                 }
-                lazilyGeneratedExternalId = generateComponentExternalId(stringDependencyId);
+                lazilyGeneratedExternalId = generateComponentExternalId(dependencyId);
                 return lazilyGeneratedExternalId;
             }
         };
@@ -133,22 +132,22 @@ public class YarnTransformer {
             if (dependencyWorkspace.isPresent()) {
                 logger.trace("Omitting dependency {}/{} because it's a workspace", rootDependency.getKey(), rootDependency.getValue());
             } else {
-                StringDependencyId stringDependencyId = generateComponentDependencyId(rootDependency.getKey(), rootDependency.getValue());
+                LazyId stringDependencyId = generateComponentDependencyId(rootDependency.getKey(), rootDependency.getValue());
                 logger.debug("Adding root dependency to graph: stringDependencyId: {}", stringDependencyId);
                 graphBuilder.addChildToRoot(stringDependencyId);
             }
         }
     }
 
-    private StringDependencyId generateComponentDependencyId(String name, String version) {
-        return new StringDependencyId(name + STRING_ID_NAME_VERSION_SEPARATOR + version);
+    private LazyId generateComponentDependencyId(String name, String version) {
+        return LazyId.fromString(name + STRING_ID_NAME_VERSION_SEPARATOR + version);
     }
 
     private ExternalId generateComponentExternalId(String name, String version) {
         return externalIdFactory.createNameVersionExternalId(Forge.NPMJS, name, version);
     }
 
-    private ExternalId generateComponentExternalId(StringDependencyId dependencyId) {
-        return externalIdFactory.createNameVersionExternalId(Forge.NPMJS, dependencyId.getValue());
+    private ExternalId generateComponentExternalId(LazyId dependencyId) {
+        return externalIdFactory.createNameVersionExternalId(Forge.NPMJS, dependencyId.toString());
     }
 }

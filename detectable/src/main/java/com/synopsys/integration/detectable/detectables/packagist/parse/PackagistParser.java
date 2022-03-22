@@ -12,9 +12,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
+import com.synopsys.integration.bdio.graph.builder.LazyId;
 import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.dependencyid.NameDependencyId;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
@@ -48,14 +48,14 @@ public class PackagistParser {
 
         models.forEach(it -> {
             ExternalId id = externalIdFactory.createNameVersionExternalId(Forge.PACKAGIST, it.getNameVersion().getName(), it.getNameVersion().getVersion());
-            NameDependencyId dependencyId = new NameDependencyId(it.getNameVersion().getName());
+            LazyId dependencyId = LazyId.fromName(it.getNameVersion().getName());
             builder.setDependencyInfo(dependencyId, it.getNameVersion().getName(), it.getNameVersion().getVersion(), id);
             if (isRootPackage(it.getNameVersion(), rootPackages)) {
                 builder.addChildToRoot(dependencyId);
             }
             it.getDependencies().forEach(child -> {
                 if (existsInPackages(child, models)) {
-                    NameDependencyId childId = new NameDependencyId(child.getName());
+                    LazyId childId = LazyId.fromName(child.getName());
                     builder.addChildWithParent(childId, dependencyId);
                 } else {
                     logger.warn("Dependency was not found in packages list but found a require that used it: " + child.getName());

@@ -4,12 +4,11 @@ import java.util.List;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
+import com.synopsys.integration.bdio.graph.builder.LazyId;
 import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.dependency.DependencyFactory;
-import com.synopsys.integration.bdio.model.dependencyid.NameDependencyId;
-import com.synopsys.integration.bdio.model.dependencyid.NameVersionDependencyId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectables.cargo.model.CargoLockPackage;
@@ -26,19 +25,21 @@ public class CargoLockPackageTransformer {
 
         LazyExternalIdDependencyGraphBuilder graph = new LazyExternalIdDependencyGraphBuilder();
         lockPackages.forEach(lockPackage -> {
-            NameVersionDependencyId parentId = new NameVersionDependencyId(lockPackage.getPackageNameVersion().getName(), lockPackage.getPackageNameVersion().getVersion());
-            Dependency parentDependency = dependencyFactory.createNameVersionDependency(Forge.CRATES, parentId.getName(), parentId.getVersion());
+            String parentName = lockPackage.getPackageNameVersion().getName();
+            String parentVersion = lockPackage.getPackageNameVersion().getVersion();
+            LazyId parentId = LazyId.fromNameAndVersion(parentName, parentVersion);
+            Dependency parentDependency = dependencyFactory.createNameVersionDependency(Forge.CRATES, parentName, parentVersion);
 
             graph.addChildToRoot(parentId);
             graph.setDependencyInfo(parentId, parentDependency.getName(), parentDependency.getVersion(), parentDependency.getExternalId());
-            graph.setDependencyAsAlias(parentId, new NameDependencyId(parentId.getName()));
+            graph.setDependencyAsAlias(parentId, LazyId.fromName(parentName));
 
             lockPackage.getDependencies().forEach(childPackage -> {
                 if (childPackage.getVersion().isPresent()) {
-                    NameVersionDependencyId childId = new NameVersionDependencyId(childPackage.getName(), childPackage.getVersion().get());
+                    LazyId childId = LazyId.fromNameAndVersion(childPackage.getName(), childPackage.getVersion().get());
                     graph.addChildWithParent(childId, parentId);
                 } else {
-                    NameDependencyId childId = new NameDependencyId(childPackage.getName());
+                    LazyId childId = LazyId.fromName(childPackage.getName());
                     graph.addChildWithParent(childId, parentId);
                 }
             });

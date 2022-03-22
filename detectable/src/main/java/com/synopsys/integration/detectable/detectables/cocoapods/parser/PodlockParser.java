@@ -16,10 +16,9 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
+import com.synopsys.integration.bdio.graph.builder.LazyId;
 import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.dependencyid.DependencyId;
-import com.synopsys.integration.bdio.model.dependencyid.NameDependencyId;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.cocoapods.model.Pod;
@@ -42,7 +41,7 @@ public class PodlockParser {
         YAMLMapper mapper = new YAMLMapper();
         PodfileLock podfileLock = mapper.readValue(podLockText, PodfileLock.class);
 
-        Map<DependencyId, Forge> forgeOverrides = createForgeOverrideMap(podfileLock);
+        Map<LazyId, Forge> forgeOverrides = createForgeOverrideMap(podfileLock);
 
         List<String> knownPods = determineAllPodNames(podfileLock);
         for (Pod pod : podfileLock.getPods()) {
@@ -53,7 +52,7 @@ public class PodlockParser {
         for (Pod dependency : podfileLock.getDependencies()) {
             logger.trace(String.format("Processing pod dependency from pod lock file %s", dependency.getName()));
             String podText = dependency.getName();
-            Optional<DependencyId> dependencyId = parseDependencyId(podText);
+            Optional<LazyId> dependencyId = parseDependencyId(podText);
             dependencyId.ifPresent(lazyBuilder::addChildToRoot);
         }
         logger.trace("Attempting to build the dependency graph.");
@@ -65,12 +64,12 @@ public class PodlockParser {
     /*
      * Create an override map because GitHub has better KB support so we should override COCOAPODS forge when we know where it is from.
      */
-    private Map<DependencyId, Forge> createForgeOverrideMap(PodfileLock podfileLock) {
-        Map<DependencyId, Forge> forgeOverrideMap = new HashMap<>();
+    private Map<LazyId, Forge> createForgeOverrideMap(PodfileLock podfileLock) {
+        Map<LazyId, Forge> forgeOverrideMap = new HashMap<>();
         if (null != podfileLock.getExternalSources()) {
             List<PodSource> podSources = podfileLock.getExternalSources().getSources();
             for (PodSource podSource : podSources) {
-                Optional<DependencyId> dependencyId = parseDependencyId(podSource.getName());
+                Optional<LazyId> dependencyId = parseDependencyId(podSource.getName());
                 if (dependencyId.isPresent()) {
                     if (null != podSource.getGit() && podSource.getGit().contains("github")) {
                         forgeOverrideMap.put(dependencyId.get(), Forge.COCOAPODS);
@@ -84,7 +83,7 @@ public class PodlockParser {
         return forgeOverrideMap;
     }
 
-    private Forge getForge(DependencyId dependencyId, Map<DependencyId, Forge> forgeOverrides) {
+    private Forge getForge(LazyId dependencyId, Map<LazyId, Forge> forgeOverrides) {
         if (forgeOverrides.containsKey(dependencyId)) {
             return forgeOverrides.get(dependencyId);
         }
@@ -101,13 +100,13 @@ public class PodlockParser {
             .collect(Collectors.toList());
     }
 
-    private void processPod(Pod pod, Map<DependencyId, Forge> forgeOverrides, LazyExternalIdDependencyGraphBuilder lazyBuilder, List<String> knownPods) {
+    private void processPod(Pod pod, Map<LazyId, Forge> forgeOverrides, LazyExternalIdDependencyGraphBuilder lazyBuilder, List<String> knownPods) {
         String podText = pod.getName();
-        Optional<DependencyId> dependencyIdMaybe = parseDependencyId(podText);
+        Optional<LazyId> dependencyIdMaybe = parseDependencyId(podText);
         String name = parseCorrectPodName(podText).orElse(null);
         String version = parseVersion(podText).orElse(null);
         if (dependencyIdMaybe.isPresent()) {
-            DependencyId dependencyId = dependencyIdMaybe.get();
+            LazyId dependencyId = dependencyIdMaybe.get();
 
             Forge forge = getForge(dependencyId, forgeOverrides);
             ExternalId externalId = externalIdFactory.createNameVersionExternalId(forge, name, version);
@@ -116,7 +115,7 @@ public class PodlockParser {
 
             for (String child : pod.getDependencies()) {
                 logger.trace(String.format("Processing pod dependency %s", child));
-                Optional<DependencyId> childId = parseDependencyId(child);
+                Optional<LazyId> childId = parseDependencyId(child);
                 Optional<String> childName = parseRawPodName(child);
                 if (childId.isPresent() && childName.isPresent() && !dependencyId.equals(childId.get())) {
                     //Some transitives may appear but are not actually present in the pod list.
@@ -155,10 +154,10 @@ public class PodlockParser {
         return Optional.empty();
     }
 
-    private Optional<DependencyId> parseDependencyId(String podText) {
+    private Optional<LazyId> parseDependencyId(String podText) {
         Optional<String> name = parseCorrectPodName(podText);
 
-        return name.map(NameDependencyId::new);
+        return name.map(LazyId::fromName);
     }
 
     private Optional<String> parseVersion(String podText) {
