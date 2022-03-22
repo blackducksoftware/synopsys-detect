@@ -1,52 +1,52 @@
-package com.synopsys.integration.detectable.detectables.swift;
+package com.synopsys.integration.detectable.detectables.swift.lock;
+
+import java.io.File;
+import java.io.IOException;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
-import com.synopsys.integration.detectable.detectable.executable.resolver.SwiftResolver;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
+import com.synopsys.integration.detectable.detectable.result.PackageResolvedNotFoundDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Swift", forge = "Swift.org", requirementsMarkdown = "File: Package.swift. Executables: swift.")
-public class SwiftCliDetectable extends Detectable {
-    private static final String PACKAGE_SWIFT_FILENAME = "Package.swift";
+@DetectableInfo(language = "Swift", forge = "Swift.org", requirementsMarkdown = "File: Package.swift, Package.resolved")
+public class SwiftPackageResolvedDetectable extends Detectable {
+    public static final String PACKAGE_RESOLVED_FILENAME = "Package.resolved";
 
     private final FileFinder fileFinder;
-    private final SwiftExtractor swiftExtractor;
-    private final SwiftResolver swiftResolver;
+    private final PackageResolvedExtractor packageResolvedExtractor;
 
-    private ExecutableTarget swiftExecutable;
+    private File foundPackageResolvedFile;
 
-    public SwiftCliDetectable(DetectableEnvironment environment, FileFinder fileFinder, SwiftExtractor swiftExtractor, SwiftResolver swiftResolver) {
+    public SwiftPackageResolvedDetectable(DetectableEnvironment environment, FileFinder fileFinder, PackageResolvedExtractor packageResolvedExtractor) {
         super(environment);
         this.fileFinder = fileFinder;
-        this.swiftExtractor = swiftExtractor;
-        this.swiftResolver = swiftResolver;
+        this.packageResolvedExtractor = packageResolvedExtractor;
     }
 
     @Override
     public DetectableResult applicable() {
         Requirements requirements = new Requirements(fileFinder, environment);
-        requirements.file(PACKAGE_SWIFT_FILENAME);
+        requirements.file("Package.swift");
         return requirements.result();
     }
 
     @Override
     public DetectableResult extractable() throws DetectableException {
         Requirements requirements = new Requirements(fileFinder, environment);
-        swiftExecutable = requirements.executable(swiftResolver::resolveSwift, "swift");
+        foundPackageResolvedFile = requirements.file(PACKAGE_RESOLVED_FILENAME, () -> new PackageResolvedNotFoundDetectableResult(environment.getDirectory().getAbsolutePath()));
         return requirements.result();
     }
 
     @Override
-    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
-        return swiftExtractor.extract(environment.getDirectory(), swiftExecutable);
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException, IOException {
+        return packageResolvedExtractor.extract(foundPackageResolvedFile, environment.getDirectory());
     }
 
 }
