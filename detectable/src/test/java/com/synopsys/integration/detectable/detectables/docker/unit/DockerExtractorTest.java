@@ -6,9 +6,9 @@ import static org.junit.jupiter.api.condition.OS.WINDOWS;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -26,7 +26,9 @@ import com.synopsys.integration.detectable.detectable.executable.DetectableExecu
 import com.synopsys.integration.detectable.detectables.docker.DockerExtractor;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorInfo;
 import com.synopsys.integration.detectable.detectables.docker.DockerProperties;
-import com.synopsys.integration.detectable.detectables.docker.ImageIdentifierType;
+import com.synopsys.integration.detectable.detectables.docker.ImageIdentifierGenerator;
+import com.synopsys.integration.detectable.detectables.docker.model.DockerImageInfo;
+import com.synopsys.integration.detectable.detectables.docker.parser.DockerInspectorResultsFileParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.executable.Executable;
 import com.synopsys.integration.executable.ExecutableRunnerException;
@@ -35,12 +37,14 @@ public class DockerExtractorTest {
     private static File fakeContainerFileSystemFile;
     private static File fakeSquashedImageFile;
     private static File fakeDockerTarFile;
+    private static File fakeResultsFile;
 
     @BeforeAll
     public static void setup() throws IOException {
         fakeContainerFileSystemFile = Files.createTempFile("DockerExtractorTest", "_containerfilesystem.tar.gz").toFile();
         fakeSquashedImageFile = Files.createTempFile("DockerExtractorTest", "_squashedimage.tar.gz").toFile();
         fakeDockerTarFile = Files.createTempFile("DockerExtractorTest", "_testDockerTarfile.tar").toFile();
+        fakeResultsFile = Files.createTempFile("DockerExtractorTest", "_results.json").toFile();
     }
 
     @AfterAll
@@ -58,7 +62,7 @@ public class DockerExtractorTest {
         String tar = null;
         DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
 
-        Extraction extraction = extract(image, imageId, tar, fakeContainerFileSystemFile, null, executableRunner);
+        Extraction extraction = extract(image, imageId, tar, fakeContainerFileSystemFile, null, fakeResultsFile, executableRunner);
 
         assertEquals("ubuntu:latest", extraction.getMetaData(DockerExtractor.DOCKER_IMAGE_NAME_META_DATA).get());
         assertTrue(extraction.getMetaData(DockerExtractor.CONTAINER_FILESYSTEM_META_DATA).get().getName().endsWith("_containerfilesystem.tar.gz"));
@@ -84,7 +88,7 @@ public class DockerExtractorTest {
         String tar = null;
         DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
 
-        Extraction extraction = extract(image, imageId, tar, fakeContainerFileSystemFile, fakeSquashedImageFile, executableRunner);
+        Extraction extraction = extract(image, imageId, tar, fakeContainerFileSystemFile, fakeSquashedImageFile, fakeResultsFile, executableRunner);
 
         assertEquals("ubuntu:latest", extraction.getMetaData(DockerExtractor.DOCKER_IMAGE_NAME_META_DATA).get());
         assertTrue(extraction.getMetaData(DockerExtractor.SQUASHED_IMAGE_META_DATA).get().getName().endsWith("_squashedimage.tar.gz"));
@@ -110,7 +114,7 @@ public class DockerExtractorTest {
         String tar = fakeDockerTarFile.getAbsolutePath();
         DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
 
-        Extraction extraction = extract(image, imageId, tar, fakeContainerFileSystemFile, null, executableRunner);
+        Extraction extraction = extract(image, imageId, tar, fakeContainerFileSystemFile, null, fakeResultsFile, executableRunner);
 
         assertTrue(extraction.getMetaData(DockerExtractor.DOCKER_IMAGE_NAME_META_DATA).get().endsWith("testDockerTarfile.tar"));
         assertTrue(extraction.getMetaData(DockerExtractor.CONTAINER_FILESYSTEM_META_DATA).get().getName().endsWith("_containerfilesystem.tar.gz"));
@@ -137,7 +141,7 @@ public class DockerExtractorTest {
         String tar = fakeDockerTarFile.getAbsolutePath();
         DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
 
-        Extraction extraction = extract(image, imageId, tar, null, null, executableRunner);
+        Extraction extraction = extract(image, imageId, tar, null, null, fakeResultsFile, executableRunner);
 
         // No returned .tar.gz: scan given docker tar instead
         assertTrue(extraction.getMetaData(DockerExtractor.DOCKER_IMAGE_NAME_META_DATA).get().endsWith("testDockerTarfile.tar"));
@@ -156,46 +160,16 @@ public class DockerExtractorTest {
         assertTrue(command.get(4).endsWith("testDockerTarfile.tar"));
     }
 
-    @Test
-    @DisabledOnOs(WINDOWS)
-    public void testGetImageIdentifierFromOutputDirectoryIfImageIdPresent() throws URISyntaxException {
-        String testString = "test";
-        String imageIdArgument = "--docker.image.id=";
-        String imageName = "ubuntu:latest";
-        File outputDirectoryWithPopulatedResultsFile = new File(DockerExtractorTest.class.getClassLoader()
-            .getSystemResource("detectables/functional/docker/unit/outputDirectoryWithPopulatedResultsFile").toURI());
-        File outputDirectoryWithNonPopulatedResultsFile = new File(DockerExtractorTest.class.getClassLoader()
-            .getSystemResource("detectables/functional/docker/unit/outputDirectoryWithNonPopulatedResultsFile").toURI());
-
-        DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
-        FileFinder fileFinder = Mockito.mock(FileFinder.class);
-        Mockito.when(fileFinder.findFile(outputDirectoryWithPopulatedResultsFile, DockerExtractor.RESULTS_FILENAME_PATTERN))
-            .thenReturn(new File(outputDirectoryWithPopulatedResultsFile, "results.json"));
-        Mockito.when(fileFinder.findFile(outputDirectoryWithNonPopulatedResultsFile, DockerExtractor.RESULTS_FILENAME_PATTERN))
-            .thenReturn(new File(outputDirectoryWithNonPopulatedResultsFile, "results.json"));
-
-        DockerExtractor dockerExtractor = getMockDockerExtractor(executableRunner, fileFinder);
-
-        assertEquals(
-            imageName,
-            dockerExtractor.getImageIdentifierFromOutputDirectoryIfImageIdPresent(outputDirectoryWithPopulatedResultsFile, testString, ImageIdentifierType.IMAGE_ID)
-        );
-        assertEquals(
-            testString,
-            dockerExtractor.getImageIdentifierFromOutputDirectoryIfImageIdPresent(outputDirectoryWithPopulatedResultsFile, testString, ImageIdentifierType.IMAGE_NAME)
-        );
-        assertEquals(
-            testString,
-            dockerExtractor.getImageIdentifierFromOutputDirectoryIfImageIdPresent(outputDirectoryWithNonPopulatedResultsFile, testString, ImageIdentifierType.IMAGE_ID)
-        );
-    }
-
     private DockerExtractor getMockDockerExtractor(DetectableExecutableRunner executableRunner, FileFinder fileFinder) {
         BdioTransformer bdioTransformer = Mockito.mock(BdioTransformer.class);
         ExternalIdFactory externalIdFactory = Mockito.mock(ExternalIdFactory.class);
         Gson gson = new Gson();
+        DockerInspectorResultsFileParser dockerInspectorResultsFileParser = Mockito.mock(DockerInspectorResultsFileParser.class);
+        DockerImageInfo dockerInspectorResults = new DockerImageInfo("returnedimage", "returnedtag", "returned message");
+        Mockito.when(dockerInspectorResultsFileParser.parse(Mockito.anyString())).thenReturn(Optional.of(dockerInspectorResults));
+        ImageIdentifierGenerator imageIdentifierGenerator = new ImageIdentifierGenerator();
 
-        return new DockerExtractor(fileFinder, executableRunner, bdioTransformer, externalIdFactory, gson);
+        return new DockerExtractor(fileFinder, executableRunner, bdioTransformer, externalIdFactory, gson, dockerInspectorResultsFileParser, imageIdentifierGenerator);
     }
 
     private Extraction extract(
@@ -204,6 +178,7 @@ public class DockerExtractorTest {
         String tar,
         File returnedContainerFileSystemFile,
         File returnedSquashedImageFile,
+        File resultsFile,
         DetectableExecutableRunner executableRunner
     ) {
         FileFinder fileFinder = Mockito.mock(FileFinder.class);
@@ -217,6 +192,7 @@ public class DockerExtractorTest {
         DockerInspectorInfo dockerInspectorInfo = Mockito.mock(DockerInspectorInfo.class);
         Mockito.when(fileFinder.findFile(outputDirectory, DockerExtractor.CONTAINER_FILESYSTEM_FILENAME_PATTERN)).thenReturn(returnedContainerFileSystemFile);
         Mockito.when(fileFinder.findFile(outputDirectory, DockerExtractor.SQUASHED_IMAGE_FILENAME_PATTERN)).thenReturn(returnedSquashedImageFile);
+        Mockito.when(fileFinder.findFile(outputDirectory, DockerExtractor.RESULTS_FILENAME_PATTERN)).thenReturn(resultsFile);
         Mockito.when(dockerInspectorInfo.getDockerInspectorJar()).thenReturn(new File("fake/test/dockerinspector.jar"));
 
         return dockerExtractor.extract(directory, outputDirectory, bashExe, javaExe, image, imageId, tar, dockerInspectorInfo, Mockito.mock(DockerProperties.class));
