@@ -115,7 +115,7 @@ public class DetectableTool {
         if (!extraction.isSuccess()) {
             logger.error("Extraction was not success.");
             statusEventPublisher.publishStatusSummary(new Status(name, StatusType.FAILURE));
-            exitCodePublisher.publishExitCode(new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, extractable.toDescription()));
+            exitCodePublisher.publishExitCode(new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, extraction.getDescription()));
             return DetectableToolResult.failed();
         } else {
             logger.debug("Extraction success.");
