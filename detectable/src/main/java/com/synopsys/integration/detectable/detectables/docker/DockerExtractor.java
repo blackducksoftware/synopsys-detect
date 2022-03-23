@@ -174,15 +174,12 @@ public class DockerExtractor {
             importTars(dockerInspectorInfo.getAirGapInspectorImageTarFiles(), outputDirectory, environmentVariables, dockerExe);
         }
         Executable dockerExecutable = ExecutableUtils.createFromTarget(outputDirectory, environmentVariables, javaExe, dockerArguments);
-        ExecutableOutput executableOutput = executableRunner.execute(dockerExecutable);
+        executableRunner.execute(dockerExecutable);
         Optional<DockerInspectorResults> dockerResults = Optional.empty();
         File producedResultFile = fileFinder.findFile(outputDirectory, RESULTS_FILENAME_PATTERN);
         if (producedResultFile != null) {
             String resultsFileContents = FileUtils.readFileToString(producedResultFile, StandardCharsets.UTF_8);
             dockerResults = dockerInspectorResultsFileParser.parse(resultsFileContents);
-            if (executableOutput.getReturnCode() != 0) {
-                logger.error("Docker Inspector error: {}", dockerResults.get().getMessage());
-            }
         }
 
         File producedSquashedImageFile = fileFinder.findFile(outputDirectory, SQUASHED_IMAGE_FILENAME_PATTERN);
@@ -239,11 +236,11 @@ public class DockerExtractor {
             }
         }
         logger.error("Docker Inspector returned no BDIO files");
-        String dockerInspectorMsgSuffice = "";
-        if (StringUtils.isNotBlank(dockerInspectorMessage)) {
-            dockerInspectorMsgSuffice = "; Docker Inspector message: " + dockerInspectorMessage;
-        }
+        String dockerInspectorMsgSuffix = Optional.ofNullable(dockerInspectorMessage)
+            .filter(StringUtils::isNotBlank)
+            .map(s -> "; Docker Inspector message: " + s)
+            .orElse("");
         return new Extraction.Builder().failure(
-            "No files found matching pattern [" + DEPENDENCIES_PATTERN + "]. Expected docker-inspector to produce file in " + directory.toString() + dockerInspectorMessage);
+            "No files found matching pattern [" + DEPENDENCIES_PATTERN + "]. Expected docker-inspector to produce file in " + directory.toString() + dockerInspectorMsgSuffix);
     }
 }
