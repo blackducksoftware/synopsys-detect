@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Optional;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,7 @@ import com.synopsys.integration.detectable.detectables.docker.model.DockerInspec
 import com.synopsys.integration.detectable.detectables.docker.parser.DockerInspectorResultsFileParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.executable.Executable;
+import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class DockerExtractorTest {
@@ -60,7 +62,7 @@ public class DockerExtractorTest {
         final String image = "ubuntu:latest";
         String imageId = null;
         String tar = null;
-        DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
+        DetectableExecutableRunner executableRunner = getDetectableExecutableRunner();
 
         Extraction extraction = extract(image, imageId, tar, fakeContainerFileSystemFile, null, fakeResultsFile, executableRunner);
 
@@ -86,7 +88,7 @@ public class DockerExtractorTest {
         final String image = "ubuntu:latest";
         String imageId = null;
         String tar = null;
-        DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
+        DetectableExecutableRunner executableRunner = getDetectableExecutableRunner();
 
         Extraction extraction = extract(image, imageId, tar, fakeContainerFileSystemFile, fakeSquashedImageFile, fakeResultsFile, executableRunner);
 
@@ -112,7 +114,7 @@ public class DockerExtractorTest {
         String image = null;
         String imageId = null;
         String tar = fakeDockerTarFile.getAbsolutePath();
-        DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
+        DetectableExecutableRunner executableRunner = getDetectableExecutableRunner();
 
         Extraction extraction = extract(image, imageId, tar, fakeContainerFileSystemFile, null, fakeResultsFile, executableRunner);
 
@@ -139,7 +141,7 @@ public class DockerExtractorTest {
         String image = null;
         String imageId = null;
         String tar = fakeDockerTarFile.getAbsolutePath();
-        DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
+        DetectableExecutableRunner executableRunner = getDetectableExecutableRunner();
 
         Extraction extraction = extract(image, imageId, tar, null, null, fakeResultsFile, executableRunner);
 
@@ -158,6 +160,15 @@ public class DockerExtractorTest {
         assertTrue(command.get(3).endsWith("/application.properties"));
         assertTrue(command.get(4).startsWith("--docker.tar="));
         assertTrue(command.get(4).endsWith("testDockerTarfile.tar"));
+    }
+
+    @NotNull
+    private DetectableExecutableRunner getDetectableExecutableRunner() throws ExecutableRunnerException {
+        DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
+        ExecutableOutput executableOutput = Mockito.mock(ExecutableOutput.class);
+        Mockito.when(executableOutput.getReturnCode()).thenReturn(0);
+        Mockito.when(executableRunner.execute(Mockito.any(Executable.class))).thenReturn(executableOutput);
+        return executableRunner;
     }
 
     private DockerExtractor getMockDockerExtractor(DetectableExecutableRunner executableRunner, FileFinder fileFinder) {
