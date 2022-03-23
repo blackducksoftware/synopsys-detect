@@ -63,9 +63,11 @@ public class DetectStatusLogger {
             logger.info("");
 
             Predicate<DetectIssue> detectorsFilter = issue -> issue.getType() == DetectIssueType.DETECTOR;
+            Predicate<DetectIssue> detectableToolsFilter = issue -> issue.getType() == DetectIssueType.DETECTABLE_TOOL;
             Predicate<DetectIssue> exceptionsFilter = issue -> issue.getType() == DetectIssueType.EXCEPTION;
             Predicate<DetectIssue> deprecationsFilter = issue -> issue.getType() == DetectIssueType.DEPRECATION;
             logIssuesInGroup(logger, "DETECTORS:", detectorsFilter, detectIssues);
+            logIssuesInGroup(logger, "DETECTABLE TOOLS:", detectableToolsFilter, detectIssues);
             logIssuesInGroup(logger, "EXCEPTIONS:", exceptionsFilter, detectIssues);
             logIssuesInGroup(logger, "DEPRECATIONS:", deprecationsFilter, detectIssues);
         }
