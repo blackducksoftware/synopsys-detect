@@ -23,20 +23,17 @@ public class PipfileLockDetectable extends Detectable {
 
     private final FileFinder fileFinder;
     private final PipfileLockExtractor pipenvLockExtractor;
-    private final PipfileLockDetectableOptions pipfileLockDetectableOptions;
 
     private File pipfileLock;
 
     public PipfileLockDetectable(
         DetectableEnvironment environment,
         FileFinder fileFinder,
-        PipfileLockExtractor pipenvLockExtractor,
-        PipfileLockDetectableOptions pipfileLockDetectableOptions
+        PipfileLockExtractor pipenvLockExtractor
     ) {
         super(environment);
         this.fileFinder = fileFinder;
         this.pipenvLockExtractor = pipenvLockExtractor;
-        this.pipfileLockDetectableOptions = pipfileLockDetectableOptions;
     }
 
     @Override
@@ -61,6 +58,6 @@ public class PipfileLockDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException, IOException {
-        return pipenvLockExtractor.extract(pipfileLock, pipfileLockDetectableOptions);
+        return pipenvLockExtractor.extract(pipfileLock);
     }
 }

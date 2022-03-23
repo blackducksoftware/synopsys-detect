@@ -561,7 +561,10 @@ public class DetectableFactory {
         DetectableEnvironment environment,
         PipfileLockDetectableOptions pipfileLockDetectableOptions
     ) {
-        return new PipfileLockDetectable(environment, fileFinder, pipfileLockExtractor(), pipfileLockDetectableOptions);
+        PipfileLockParser parser = new PipfileLockParser(pipfileLockDetectableOptions.getDependencyTypeFilter());
+        PipfileLockDependencyTransformer pipfileLockDependencyTransformer = new PipfileLockDependencyTransformer();
+        PipfileLockExtractor pipfileLockExtractor = new PipfileLockExtractor(gson, parser, pipfileLockDependencyTransformer);
+        return new PipfileLockDetectable(environment, fileFinder, pipfileLockExtractor);
     }
 
     public PipInspectorDetectable createPipInspectorDetectable(
@@ -900,12 +903,6 @@ public class DetectableFactory {
     private PipenvExtractor pipenvExtractor() {
         return new PipenvExtractor(executableRunner, pipenvTransformer(), pipenvFreezeParser(), pipenvJsonGraphParser());
     }
-
-    private PipfileLockExtractor pipfileLockExtractor() {return new PipfileLockExtractor(gson, pipfileLockParser(), pipfileLockTransformer());}
-
-    private PipfileLockParser pipfileLockParser() {return new PipfileLockParser();}
-
-    private PipfileLockDependencyTransformer pipfileLockTransformer() {return new PipfileLockDependencyTransformer();}
 
     private PipInspectorTreeParser pipInspectorTreeParser() {
         return new PipInspectorTreeParser(externalIdFactory);
