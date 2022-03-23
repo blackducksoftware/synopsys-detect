@@ -9,7 +9,7 @@ import com.synopsys.integration.detectable.detectables.docker.ImageIdentifierGen
 import com.synopsys.integration.detectable.detectables.docker.ImageIdentifierType;
 import com.synopsys.integration.detectable.detectables.docker.model.DockerInspectorResults;
 
-public class ImageIdentifierGeneratorTest {
+class ImageIdentifierGeneratorTest {
     private static ImageIdentifierGenerator generator;
 
     @BeforeAll
