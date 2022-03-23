@@ -14,6 +14,7 @@ import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -173,7 +174,16 @@ public class DockerExtractor {
             importTars(dockerInspectorInfo.getAirGapInspectorImageTarFiles(), outputDirectory, environmentVariables, dockerExe);
         }
         Executable dockerExecutable = ExecutableUtils.createFromTarget(outputDirectory, environmentVariables, javaExe, dockerArguments);
-        executableRunner.execute(dockerExecutable);
+        ExecutableOutput executableOutput = executableRunner.execute(dockerExecutable);
+        Optional<DockerInspectorResults> dockerResults = Optional.empty();
+        File producedResultFile = fileFinder.findFile(outputDirectory, RESULTS_FILENAME_PATTERN);
+        if (producedResultFile != null) {
+            String resultsFileContents = FileUtils.readFileToString(producedResultFile, StandardCharsets.UTF_8);
+            dockerResults = dockerInspectorResultsFileParser.parse(resultsFileContents);
+            if (executableOutput.getReturnCode() != 0) {
+                logger.error("Docker Inspector error: {}", dockerResults.get().getMessage());
+            }
+        }
 
         File producedSquashedImageFile = fileFinder.findFile(outputDirectory, SQUASHED_IMAGE_FILENAME_PATTERN);
         if (producedSquashedImageFile != null) {
@@ -184,13 +194,7 @@ public class DockerExtractor {
             logger.debug("Returning container filesystem: {}", producedContainerFileSystemFile.getAbsolutePath());
         }
 
-        Extraction.Builder extractionBuilder = findCodeLocations(outputDirectory, directory);
-        Optional<DockerInspectorResults> dockerResults = Optional.empty();
-        File producedResultFile = fileFinder.findFile(outputDirectory, RESULTS_FILENAME_PATTERN);
-        if (producedResultFile != null) {
-            String resultsFileContents = FileUtils.readFileToString(producedResultFile, StandardCharsets.UTF_8);
-            dockerResults = dockerInspectorResultsFileParser.parse(resultsFileContents);
-        }
+        Extraction.Builder extractionBuilder = findCodeLocations(outputDirectory, directory, dockerResults.map(DockerInspectorResults::getMessage).orElse(null));
         String imageIdentifier = imageIdentifierGenerator.generate(imageIdentifierType, suppliedImagePiece, dockerResults.orElse(null));
         // The value of DOCKER_IMAGE_NAME_META_DATA is built into the codelocation name, so changing how its value is derived is likely to
         // change how codelocation names are generated. Currently either an image repo, repo:tag, or tarfile path gets written there.
@@ -207,7 +211,7 @@ public class DockerExtractor {
         return extractionBuilder.build();
     }
 
-    private Extraction.Builder findCodeLocations(File directoryToSearch, File directory) {
+    private Extraction.Builder findCodeLocations(File directoryToSearch, File directory, @Nullable String dockerInspectorMessage) {
         File bdioFile = fileFinder.findFile(directoryToSearch, DEPENDENCIES_PATTERN);
         if (bdioFile != null) {
             SimpleBdioDocument simpleBdioDocument = null;
@@ -234,8 +238,12 @@ public class DockerExtractor {
                 return new Extraction.Builder().success(detectCodeLocation).projectName(projectName).projectVersion(projectVersionName);
             }
         }
-
+        logger.error("Docker Inspector returned no BDIO files");
+        String dockerInspectorMsgSuffice = "";
+        if (StringUtils.isNotBlank(dockerInspectorMessage)) {
+            dockerInspectorMsgSuffice = "; Docker Inspector message: " + dockerInspectorMessage;
+        }
         return new Extraction.Builder().failure(
-            "No files found matching pattern [" + DEPENDENCIES_PATTERN + "]. Expected docker-inspector to produce file in " + directory.toString());
+            "No files found matching pattern [" + DEPENDENCIES_PATTERN + "]. Expected docker-inspector to produce file in " + directory.toString() + dockerInspectorMessage);
     }
 }
