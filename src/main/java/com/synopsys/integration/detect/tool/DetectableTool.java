@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -119,13 +120,7 @@ public class DetectableTool {
 
         if (!extraction.isSuccess()) {
             logger.error("Extraction was not success.");
-            List<String> errorMessages = new LinkedList<>();
-            if (StringUtils.isNotBlank(extraction.getDescription())) {
-                errorMessages.add(extraction.getDescription());
-            }
-            if (extraction.getError() != null && StringUtils.isNotBlank(extraction.getError().getMessage())) {
-                errorMessages.add(extraction.getError().getMessage());
-            }
+            List<String> errorMessages = collectErrorMessages(extraction);
             statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.DETECTABLE_TOOL, "Detectable Tool Issue", errorMessages));
             statusEventPublisher.publishStatusSummary(new Status(name, StatusType.FAILURE));
             exitCodePublisher.publishExitCode(new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, extraction.getDescription()));
@@ -149,5 +144,17 @@ public class DetectableTool {
         logger.debug("Tool finished.");
 
         return DetectableToolResult.success(detectCodeLocations, projectInfo, dockerTargetData);
+    }
+
+    @NotNull
+    private List<String> collectErrorMessages(Extraction extraction) {
+        List<String> errorMessages = new LinkedList<>();
+        if (StringUtils.isNotBlank(extraction.getDescription())) {
+            errorMessages.add(extraction.getDescription());
+        }
+        if (extraction.getError() != null && StringUtils.isNotBlank(extraction.getError().getMessage())) {
+            errorMessages.add(extraction.getError().getMessage());
+        }
+        return errorMessages;
     }
 }
