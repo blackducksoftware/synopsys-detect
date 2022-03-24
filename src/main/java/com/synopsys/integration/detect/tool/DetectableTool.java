@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -118,7 +119,14 @@ public class DetectableTool {
 
         if (!extraction.isSuccess()) {
             logger.error("Extraction was not success.");
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.DETECTABLE_TOOL, "Detectable Tool Issue", Arrays.asList(extraction.getDescription())));
+            List<String> errorMessages = new LinkedList<>();
+            if (StringUtils.isNotBlank(extraction.getDescription())) {
+                errorMessages.add(extraction.getDescription());
+            }
+            if (extraction.getError() != null && StringUtils.isNotBlank(extraction.getError().getMessage())) {
+                errorMessages.add(extraction.getError().getMessage());
+            }
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.DETECTABLE_TOOL, "Detectable Tool Issue", errorMessages));
             statusEventPublisher.publishStatusSummary(new Status(name, StatusType.FAILURE));
             exitCodePublisher.publishExitCode(new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, extraction.getDescription()));
             return DetectableToolResult.failed();

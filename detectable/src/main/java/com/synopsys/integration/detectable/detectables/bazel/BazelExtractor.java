@@ -73,17 +73,21 @@ public class BazelExtractor {
         this.bazelProjectNameGenerator = bazelProjectNameGenerator;
     }
 
-    public Extraction extract(ExecutableTarget bazelExe, File workspaceDir, File workspaceFile) throws DetectableException, ExecutableFailedException {
-        toolVersionLogger.log(workspaceDir, bazelExe, "version");
-        BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
-        Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor, externalIdFactory, haskellCabalLibraryJsonProtoParser);
-        Set<WorkspaceRule> workspaceRulesFromFile = parseWorkspaceRulesFromFile(workspaceFile);
-        Set<WorkspaceRule> workspaceRulesToQuery = workspaceRuleChooser.choose(workspaceRulesFromFile, workspaceRulesFromDeprecatedProperty, workspaceRulesFromProperty);
-        CodeLocation codeLocation = generateCodelocation(pipelines, workspaceRulesToQuery);
-        return buildResults(codeLocation, bazelProjectNameGenerator.generateFromBazelTarget(bazelTarget));
+    public Extraction extract(ExecutableTarget bazelExe, File workspaceDir, File workspaceFile) {
+        try {
+            toolVersionLogger.log(workspaceDir, bazelExe, "version");
+            BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
+            Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor, externalIdFactory, haskellCabalLibraryJsonProtoParser);
+            Set<WorkspaceRule> workspaceRulesFromFile = parseWorkspaceRulesFromFile(workspaceFile);
+            Set<WorkspaceRule> workspaceRulesToQuery = workspaceRuleChooser.choose(workspaceRulesFromFile, workspaceRulesFromDeprecatedProperty, workspaceRulesFromProperty);
+            CodeLocation codeLocation = generateCodelocation(pipelines, workspaceRulesToQuery);
+            return buildResults(codeLocation, bazelProjectNameGenerator.generateFromBazelTarget(bazelTarget));
+        } catch (Exception e) {
+            return new Extraction.Builder().exception(e).build();
+        }
     }
 
-    private Set<WorkspaceRule> parseWorkspaceRulesFromFile(final File workspaceFile) {
+    private Set<WorkspaceRule> parseWorkspaceRulesFromFile(File workspaceFile) {
         List<String> workspaceFileLines;
         try {
             workspaceFileLines = FileUtils.readLines(workspaceFile, StandardCharsets.UTF_8);
