@@ -219,10 +219,11 @@ import com.synopsys.integration.detectable.detectables.pipenv.build.parser.PipEn
 import com.synopsys.integration.detectable.detectables.pipenv.build.parser.PipenvFreezeParser;
 import com.synopsys.integration.detectable.detectables.pipenv.build.parser.PipenvTransformer;
 import com.synopsys.integration.detectable.detectables.pipenv.parse.PipfileLockDependencyTransformer;
+import com.synopsys.integration.detectable.detectables.pipenv.parse.PipfileLockDependencyVersionParser;
 import com.synopsys.integration.detectable.detectables.pipenv.parse.PipfileLockDetectable;
 import com.synopsys.integration.detectable.detectables.pipenv.parse.PipfileLockDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pipenv.parse.PipfileLockExtractor;
-import com.synopsys.integration.detectable.detectables.pipenv.parse.PipfileLockParser;
+import com.synopsys.integration.detectable.detectables.pipenv.parse.PipfileLockTransformer;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockDetectable;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockExtractor;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockOptions;
@@ -561,9 +562,10 @@ public class DetectableFactory {
         DetectableEnvironment environment,
         PipfileLockDetectableOptions pipfileLockDetectableOptions
     ) {
-        PipfileLockParser parser = new PipfileLockParser(pipfileLockDetectableOptions.getDependencyTypeFilter());
+        PipfileLockDependencyVersionParser dependencyVersionParser = new PipfileLockDependencyVersionParser();
+        PipfileLockTransformer pipfileLockTransformer = new PipfileLockTransformer(dependencyVersionParser, pipfileLockDetectableOptions.getDependencyTypeFilter());
         PipfileLockDependencyTransformer pipfileLockDependencyTransformer = new PipfileLockDependencyTransformer();
-        PipfileLockExtractor pipfileLockExtractor = new PipfileLockExtractor(gson, parser, pipfileLockDependencyTransformer);
+        PipfileLockExtractor pipfileLockExtractor = new PipfileLockExtractor(gson, pipfileLockTransformer, pipfileLockDependencyTransformer);
         return new PipfileLockDetectable(environment, fileFinder, pipfileLockExtractor);
     }
 

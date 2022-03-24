@@ -9,7 +9,8 @@ import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.pipenv.parse.PipenvDependencyType;
-import com.synopsys.integration.detectable.detectables.pipenv.parse.PipfileLockParser;
+import com.synopsys.integration.detectable.detectables.pipenv.parse.PipfileLockDependencyVersionParser;
+import com.synopsys.integration.detectable.detectables.pipenv.parse.PipfileLockTransformer;
 import com.synopsys.integration.detectable.detectables.pipenv.parse.data.PipfileLock;
 import com.synopsys.integration.detectable.detectables.pipenv.parse.data.PipfileLockDependencyEntry;
 import com.synopsys.integration.detectable.detectables.pipenv.parse.model.PipfileLockDependency;
@@ -18,8 +19,9 @@ public class PipfileLockParserTest {
     @Test
     public void testParse() {
         PipfileLock pipfileLock = pipfileLock();
-        PipfileLockParser parser = new PipfileLockParser(EnumListFilter.excludeNone());
-        List<PipfileLockDependency> dependencies = parser.parse(pipfileLock);
+        PipfileLockDependencyVersionParser dependencyVersionParser = new PipfileLockDependencyVersionParser();
+        PipfileLockTransformer parser = new PipfileLockTransformer(dependencyVersionParser, EnumListFilter.excludeNone());
+        List<PipfileLockDependency> dependencies = parser.transform(pipfileLock);
 
         Assertions.assertEquals(3, dependencies.size());
         Assertions.assertTrue(containsDependency(dependencies, "comp1", "1.0"));
@@ -38,8 +40,9 @@ public class PipfileLockParserTest {
     @Test
     public void testExcludeDevelopDependencies() {
         PipfileLock pipfileLock = pipfileLock();
-        PipfileLockParser parser = new PipfileLockParser(EnumListFilter.fromExcluded(PipenvDependencyType.DEV));
-        List<PipfileLockDependency> dependencies = parser.parse(pipfileLock);
+        PipfileLockDependencyVersionParser dependencyVersionParser = new PipfileLockDependencyVersionParser();
+        PipfileLockTransformer parser = new PipfileLockTransformer(dependencyVersionParser, EnumListFilter.fromExcluded(PipenvDependencyType.DEV));
+        List<PipfileLockDependency> dependencies = parser.transform(pipfileLock);
 
         Assertions.assertEquals(2, dependencies.size());
         Assertions.assertTrue(containsDependency(dependencies, "comp1", "1.0"));
@@ -61,7 +64,7 @@ public class PipfileLockParserTest {
 
         return pipfileLock;
     }
-    
+
     private PipfileLockDependencyEntry createEntry(String version) {
         PipfileLockDependencyEntry entry = new PipfileLockDependencyEntry();
         entry.version = version;

@@ -16,24 +16,24 @@ import com.synopsys.integration.detectable.extraction.Extraction;
 
 public class PipfileLockExtractor {
     private final Gson gson;
-    private final PipfileLockParser pipfileLockParser;
-    private final PipfileLockDependencyTransformer pipfileLockTransformer;
+    private final PipfileLockTransformer pipfileLockTransformer;
+    private final PipfileLockDependencyTransformer pipfileLockDependencyTransformer;
 
     public PipfileLockExtractor(
         Gson gson,
-        PipfileLockParser pipfileLockParser,
+        PipfileLockTransformer pipfileLockParser,
         PipfileLockDependencyTransformer pipfileLockTransformer
     ) {
         this.gson = gson;
-        this.pipfileLockParser = pipfileLockParser;
-        this.pipfileLockTransformer = pipfileLockTransformer;
+        this.pipfileLockTransformer = pipfileLockParser;
+        this.pipfileLockDependencyTransformer = pipfileLockTransformer;
     }
 
     public Extraction extract(File pipfileLockFile) throws IOException {
         String pipfileLockText = FileUtils.readFileToString(pipfileLockFile, StandardCharsets.UTF_8);
         PipfileLock pipfileLock = gson.fromJson(pipfileLockText, PipfileLock.class);
-        List<PipfileLockDependency> dependencies = pipfileLockParser.parse(pipfileLock);
-        DependencyGraph dependencyGraph = pipfileLockTransformer.transform(dependencies);
+        List<PipfileLockDependency> dependencies = pipfileLockTransformer.transform(pipfileLock);
+        DependencyGraph dependencyGraph = pipfileLockDependencyTransformer.transform(dependencies);
         CodeLocation codeLocation = new CodeLocation(dependencyGraph);
         // No project info - hoping git can help with that.
         return Extraction.success(codeLocation);

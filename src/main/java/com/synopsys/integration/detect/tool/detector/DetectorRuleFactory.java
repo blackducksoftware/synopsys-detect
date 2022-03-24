@@ -152,7 +152,6 @@ public class DetectorRuleFactory {
 
         ruleSet.yield(pipInspector).to(pipEnv);
         ruleSet.yield(poetry).to(pipEnv);
-        ruleSet.yield(pipfileLock).to(poetry);
         ruleSet.yield(pipfileLock).to(pipEnv);
         ruleSet.yield(pipfileLock).to(pipInspector);
 
