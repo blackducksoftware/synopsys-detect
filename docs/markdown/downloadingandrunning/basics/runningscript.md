@@ -30,7 +30,7 @@ See [Quoting and escaping shell script arguments](../../scripts/script-escaping-
 ### To run a specific version of [solution_name]:
 
 ````
-export DETECT_LATEST_RELEASE_VERSION={[solution_name] version}
+export DETECT_LATEST_RELEASE_VERSION={Synopsys Detect version}
 bash <(curl -s -L https://detect.synopsys.com/detect7.sh)
 ````
 
@@ -70,7 +70,7 @@ See [Quoting and escaping shell script arguments](../../scripts/script-escaping-
 ### To run a specific version of [solution_name]:
 
 ````
-set DETECT_LATEST_RELEASE_VERSION={[solution_name] version}
+set DETECT_LATEST_RELEASE_VERSION={Synopsys Detect version}
 powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect"
 ````
 
