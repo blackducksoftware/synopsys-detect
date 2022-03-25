@@ -18,8 +18,8 @@ import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
 import com.synopsys.integration.detect.tool.signaturescanner.ScanBatchRunnerUserResult;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScanPath;
+import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerCodeLocationResult;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerReport;
-import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerToolResult;
 import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanOuputResult;
 import com.synopsys.integration.util.NameVersion;
 
@@ -32,7 +32,7 @@ public class SignatureScanStepRunner {
         this.operationFactory = operationFactory;
     }
 
-    public SignatureScannerToolResult runSignatureScannerOnline(BlackDuckRunData blackDuckRunData, NameVersion projectNameVersion, DockerTargetData dockerTargetData)
+    public SignatureScannerCodeLocationResult runSignatureScannerOnline(BlackDuckRunData blackDuckRunData, NameVersion projectNameVersion, DockerTargetData dockerTargetData)
         throws DetectUserFriendlyException, OperationException {
         ScanBatchRunner scanBatchRunner = resolveOnlineScanBatchRunner(blackDuckRunData);
 
@@ -40,9 +40,9 @@ public class SignatureScanStepRunner {
         ScanBatch scanBatch = operationFactory.createScanBatchOnline(scanPaths, projectNameVersion, dockerTargetData, blackDuckRunData);
 
         NotificationTaskRange notificationTaskRange = operationFactory.createCodeLocationRange(blackDuckRunData);
-        SignatureScanOuputResult scanOuputResult = executeScan(scanBatch, scanBatchRunner, scanPaths);
+        List<SignatureScannerReport> reports = executeScan(scanBatch, scanBatchRunner, scanPaths);
 
-        return SignatureScannerToolResult.createOnlineResult(notificationTaskRange, scanOuputResult.getScanBatchOutput());
+        return operationFactory.calculateWaitableSignatureScannerCodeLocations(notificationTaskRange, reports);
     }
 
     public void runSignatureScannerOffline(NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws DetectUserFriendlyException, OperationException {
@@ -54,13 +54,13 @@ public class SignatureScanStepRunner {
         executeScan(scanBatch, scanBatchRunner, scanPaths);
     }
 
-    private SignatureScanOuputResult executeScan(ScanBatch scanBatch, ScanBatchRunner scanBatchRunner, List<SignatureScanPath> scanPaths) throws OperationException {
+    private List<SignatureScannerReport> executeScan(ScanBatch scanBatch, ScanBatchRunner scanBatchRunner, List<SignatureScanPath> scanPaths) throws OperationException {
         SignatureScanOuputResult scanOuputResult = operationFactory.signatureScan(scanBatch, scanBatchRunner);
 
-        List<SignatureScannerReport> reports = operationFactory.createSignatureScanReport(scanPaths, scanOuputResult.getScanCommandOutputs());
+        List<SignatureScannerReport> reports = operationFactory.createSignatureScanReport(scanPaths, scanOuputResult.getScanBatchOutput().getOutputs());
         operationFactory.publishSignatureScanReport(reports);
 
-        return scanOuputResult;
+        return reports;
     }
 
     private ScanBatchRunner resolveOfflineScanBatchRunner() throws DetectUserFriendlyException, OperationException {
