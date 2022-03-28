@@ -4,58 +4,33 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.blackduck.codelocation.Result;
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
-import com.synopsys.integration.detect.workflow.status.StatusType;
+import com.synopsys.integration.detect.tool.signaturescanner.enums.SignatureScanStatusType;
 
 public class SignatureScannerReport {
     private final SignatureScanPath signatureScanPath;
-    private final StatusType statusType;
+    private final SignatureScanStatusType statusType;
     @Nullable
     private final Integer exitCode;
     @Nullable
     private final Exception exception;
     @Nullable
     private final String errorMessage;
+    @Nullable
     private final boolean hasOutput;
-
-    public static SignatureScannerReport create(SignatureScanPath signatureScanPath, @Nullable ScanCommandOutput scanCommandOutput) {
-        StatusType statusType;
-
-        if (scanCommandOutput == null || Result.FAILURE.equals(scanCommandOutput.getResult())) {
-            statusType = StatusType.FAILURE;
-        } else {
-            statusType = StatusType.SUCCESS;
-        }
-
-        Optional<ScanCommandOutput> optionalOutput = Optional.ofNullable(scanCommandOutput);
-        boolean hasOutput = optionalOutput.isPresent();
-        Integer exitCode = optionalOutput
-            .map(ScanCommandOutput::getScanExitCode)
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .orElse(null);
-        Exception exception = optionalOutput
-            .map(ScanCommandOutput::getException)
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .orElse(null);
-        String errorMessage = optionalOutput
-            .map(ScanCommandOutput::getErrorMessage)
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .orElse(null);
-
-        return new SignatureScannerReport(signatureScanPath, statusType, exitCode, exception, errorMessage, hasOutput);
-    }
+    @Nullable
+    private final String codeLocationName;
+    @Nullable
+    private final Integer expectedNotificationCount;
 
     public SignatureScannerReport(
         SignatureScanPath signatureScanPath,
-        StatusType statusType,
+        SignatureScanStatusType statusType,
         @Nullable Integer exitCode,
         @Nullable Exception exception,
         @Nullable String errorMessage,
-        boolean hasOutput
+        boolean hasOutput,
+        @Nullable String codeLocationName,
+        @Nullable Integer expectedNotificationCount
     ) {
         this.signatureScanPath = signatureScanPath;
         this.statusType = statusType;
@@ -63,22 +38,28 @@ public class SignatureScannerReport {
         this.exception = exception;
         this.errorMessage = errorMessage;
         this.hasOutput = hasOutput;
+        this.codeLocationName = codeLocationName;
+        this.expectedNotificationCount = expectedNotificationCount;
     }
 
     public SignatureScanPath getSignatureScanPath() {
         return signatureScanPath;
     }
 
-    public StatusType getStatusType() {
+    public SignatureScanStatusType getStatusType() {
         return statusType;
     }
 
     public boolean isSuccessful() {
-        return StatusType.SUCCESS.equals(statusType);
+        return SignatureScanStatusType.SUCCESS.equals(statusType);
     }
 
     public boolean isFailure() {
-        return StatusType.FAILURE.equals(statusType);
+        return SignatureScanStatusType.FAILURE.equals(statusType);
+    }
+
+    public boolean isSkipped() {
+        return SignatureScanStatusType.SKIPPED.equals(statusType);
     }
 
     public Optional<Integer> getExitCode() {
@@ -95,5 +76,13 @@ public class SignatureScannerReport {
 
     public boolean hasOutput() {
         return hasOutput;
+    }
+
+    public Optional<String> getCodeLocationName() {
+        return Optional.ofNullable(codeLocationName);
+    }
+
+    public Optional<Integer> getExpectedNotificationCount() {
+        return Optional.ofNullable(expectedNotificationCount);
     }
 }

@@ -84,9 +84,11 @@ import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisUploadO
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisBatchOutput;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisUploadService;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScanPath;
+import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerCodeLocationResult;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerLogger;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerReport;
 import com.synopsys.integration.detect.tool.signaturescanner.operation.CalculateScanPathsOperation;
+import com.synopsys.integration.detect.tool.signaturescanner.operation.CalculateWaitableSignatureScanCodeLocations;
 import com.synopsys.integration.detect.tool.signaturescanner.operation.CreateScanBatchOperation;
 import com.synopsys.integration.detect.tool.signaturescanner.operation.CreateScanBatchRunnerWithBlackDuck;
 import com.synopsys.integration.detect.tool.signaturescanner.operation.CreateScanBatchRunnerWithCustomUrl;
@@ -112,9 +114,9 @@ import com.synopsys.integration.detect.workflow.blackduck.DetectFontLoader;
 import com.synopsys.integration.detect.workflow.blackduck.bdio.IntelligentPersistentUploadOperation;
 import com.synopsys.integration.detect.workflow.blackduck.bdio.LegacyBdio1UploadOperation;
 import com.synopsys.integration.detect.workflow.blackduck.bdio.LegacyBdio2UploadOperation;
-import com.synopsys.integration.detect.workflow.blackduck.codelocation.AccumulatedCodeLocationData;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationWaitCalculator;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationWaitData;
+import com.synopsys.integration.detect.workflow.blackduck.codelocation.WaitableCodeLocationData;
 import com.synopsys.integration.detect.workflow.blackduck.developer.RapidModeConfigFindOperation;
 import com.synopsys.integration.detect.workflow.blackduck.developer.RapidModeGenerateJsonOperation;
 import com.synopsys.integration.detect.workflow.blackduck.developer.RapidModeLogReportOperation;
@@ -377,7 +379,7 @@ public class OperationFactory { //TODO: OperationRunner
         );
     }
 
-    public final CodeLocationWaitData calulcateCodeLocationWaitData(List<AccumulatedCodeLocationData> codeLocationCreationDatas) throws OperationException {
+    public final CodeLocationWaitData calulcateCodeLocationWaitData(List<WaitableCodeLocationData> codeLocationCreationDatas) throws OperationException {
         return auditLog.namedInternal("Calculate Code Location Wait Data", () -> new CodeLocationWaitCalculator().calculateWaitData(codeLocationCreationDatas));
     }
 
@@ -630,12 +632,21 @@ public class OperationFactory { //TODO: OperationRunner
 
     public List<SignatureScannerReport> createSignatureScanReport(List<SignatureScanPath> signatureScanPaths, List<ScanCommandOutput> scanCommandOutputList)
         throws OperationException {
-        return auditLog.namedInternal("Create Signature Scanner Report", () -> new CreateSignatureScanReports().reportResults(signatureScanPaths, scanCommandOutputList));
+        return auditLog.namedInternal("Create Signature Scanner Report", () -> new CreateSignatureScanReports().createReports(signatureScanPaths, scanCommandOutputList));
     }
 
     public void publishSignatureScanReport(List<SignatureScannerReport> report) throws OperationException {
         auditLog.namedInternal("Publish Signature Scan Report", () -> {
-            new PublishSignatureScanReports(exitCodePublisher, statusEventPublisher).publishReports(report);
+            Boolean treatSkippedAsFailure = detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getTreatSkippedScansAsSuccess();
+            new PublishSignatureScanReports(exitCodePublisher, statusEventPublisher, treatSkippedAsFailure).publishReports(report);
+        });
+    }
+
+    public SignatureScannerCodeLocationResult calculateWaitableSignatureScannerCodeLocations(NotificationTaskRange notificationTaskRange, List<SignatureScannerReport> reports)
+        throws OperationException {
+
+        return auditLog.namedInternal("Calculate Signature Scanner Waitable Code Locations", () -> {
+            return new CalculateWaitableSignatureScanCodeLocations().calculateWaitableCodeLocations(notificationTaskRange, reports);
         });
     }
 

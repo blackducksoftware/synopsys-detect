@@ -376,6 +376,7 @@ public class DetectConfigurationFactory {
         String additionalArguments = detectConfiguration.getNullableValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS);
         Path localScannerInstallPath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH);
         Integer maxDepth = detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_SEARCH_DEPTH);
+        Boolean treatSkippedScansAsSuccess = detectConfiguration.getValue(DetectProperties.DETECT_FORCE_SUCCESS_ON_SKIP);
 
         return new BlackDuckSignatureScannerOptions(
             signatureScannerPaths,
@@ -393,7 +394,8 @@ public class DetectConfigurationFactory {
             findIndividualFileMatching(),
             licenseSearch,
             copyrightSearch,
-            followSymLinks
+            followSymLinks,
+            treatSkippedScansAsSuccess
         );
     }
 
@@ -406,7 +408,15 @@ public class DetectConfigurationFactory {
         List<PolicyRuleSeverityType> severitiesToFailPolicyCheck = detectConfiguration.getValue(DetectProperties.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES).representedValues();
         List<String> policyNamesToFailPolicyCheck = detectConfiguration.getValue(DetectProperties.DETECT_POLICY_CHECK_FAIL_ON_NAMES);
 
-        return new BlackDuckPostOptions(waitForResults, runRiskReport, runNoticesReport, riskReportPdfPath, noticesReportPath, severitiesToFailPolicyCheck, policyNamesToFailPolicyCheck);
+        return new BlackDuckPostOptions(
+            waitForResults,
+            runRiskReport,
+            runNoticesReport,
+            riskReportPdfPath,
+            noticesReportPath,
+            severitiesToFailPolicyCheck,
+            policyNamesToFailPolicyCheck
+        );
     }
 
     public BinaryScanOptions createBinaryScanOptions() {
