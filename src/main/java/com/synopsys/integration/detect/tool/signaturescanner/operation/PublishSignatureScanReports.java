@@ -64,7 +64,7 @@ public class PublishSignatureScanReports {
         if (signatureScannerReport.isSkipped()) {
             statusEventPublisher.publishIssue(new DetectIssue(
                 DetectIssueType.SIGNATURE_SCANNER,
-                "Scanning target %s was never scanned by the BlackDuck CLI.",
+                String.format("Scanning target %s was never scanned by the BlackDuck CLI.", scanTargetPath),
                 Arrays.asList("The minimum scan interval was not met and this scan was skipped by the BlackDuck CLI.")
             ));
         } else if (!signatureScannerReport.hasOutput()) {
