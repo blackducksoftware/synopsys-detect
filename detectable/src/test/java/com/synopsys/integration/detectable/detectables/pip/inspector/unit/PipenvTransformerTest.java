@@ -11,12 +11,12 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectables.pipenv.model.PipFreeze;
-import com.synopsys.integration.detectable.detectables.pipenv.model.PipFreezeEntry;
-import com.synopsys.integration.detectable.detectables.pipenv.model.PipenvGraph;
-import com.synopsys.integration.detectable.detectables.pipenv.model.PipenvGraphDependency;
-import com.synopsys.integration.detectable.detectables.pipenv.model.PipenvGraphEntry;
-import com.synopsys.integration.detectable.detectables.pipenv.parser.PipenvTransformer;
+import com.synopsys.integration.detectable.detectables.pipenv.build.model.PipFreeze;
+import com.synopsys.integration.detectable.detectables.pipenv.build.model.PipFreezeEntry;
+import com.synopsys.integration.detectable.detectables.pipenv.build.model.PipenvGraph;
+import com.synopsys.integration.detectable.detectables.pipenv.build.model.PipenvGraphDependency;
+import com.synopsys.integration.detectable.detectables.pipenv.build.model.PipenvGraphEntry;
+import com.synopsys.integration.detectable.detectables.pipenv.build.parser.PipenvTransformer;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
 @UnitTest

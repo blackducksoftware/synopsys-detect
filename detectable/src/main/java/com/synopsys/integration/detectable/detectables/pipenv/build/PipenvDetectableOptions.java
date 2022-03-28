@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.pipenv;
+package com.synopsys.integration.detectable.detectables.pipenv.build;
 
 import java.util.Optional;
 
