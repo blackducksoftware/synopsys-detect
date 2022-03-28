@@ -44,7 +44,9 @@ import com.synopsys.integration.detectable.detectables.packagist.PackagistDepend
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pear.PearDependencyType;
 import com.synopsys.integration.detectable.detectables.pip.inspector.PipInspectorDetectableOptions;
-import com.synopsys.integration.detectable.detectables.pipenv.PipenvDetectableOptions;
+import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvDetectableOptions;
+import com.synopsys.integration.detectable.detectables.pipenv.parse.PipenvDependencyType;
+import com.synopsys.integration.detectable.detectables.pipenv.parse.PipfileLockDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockOptions;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyTypeV2;
@@ -208,7 +210,8 @@ public class DetectableOptionFactory {
         }
 
         String onlineInspectorVersion = detectConfiguration.getNullableValue(DetectProperties.DETECT_GRADLE_INSPECTOR_VERSION);
-        GradleInspectorScriptOptions scriptOptions = new GradleInspectorScriptOptions(excludedProjectNames,
+        GradleInspectorScriptOptions scriptOptions = new GradleInspectorScriptOptions(
+            excludedProjectNames,
             includedProjectNames,
             excludedProjectPaths,
             includedProjectPaths,
@@ -334,6 +337,12 @@ public class DetectableOptionFactory {
         String pipProjectVersionName = detectConfiguration.getNullableValue(DetectProperties.DETECT_PIP_PROJECT_VERSION_NAME);
         Boolean pipProjectTreeOnly = detectConfiguration.getValue(DetectProperties.DETECT_PIP_ONLY_PROJECT_TREE);
         return new PipenvDetectableOptions(pipProjectName, pipProjectVersionName, pipProjectTreeOnly);
+    }
+
+    public PipfileLockDetectableOptions createPipfileLockDetectableOptions() {
+        Set<PipenvDependencyType> excludedDependencyTypes = detectConfiguration.getValue(DetectProperties.DETECT_PIPENV_DEPENDENCY_TYPES_EXCLUDED).representedValueSet();
+        EnumListFilter<PipenvDependencyType> dependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
+        return new PipfileLockDetectableOptions(dependencyTypeFilter);
     }
 
     public PipInspectorDetectableOptions createPipInspectorDetectableOptions() {

@@ -11,7 +11,7 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
-import com.synopsys.integration.detectable.detectables.pipenv.PipenvDetectableOptions;
+import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvDetectableOptions;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;

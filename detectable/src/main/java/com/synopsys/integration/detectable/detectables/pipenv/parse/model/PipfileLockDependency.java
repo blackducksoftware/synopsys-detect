@@ -1,10 +1,10 @@
-package com.synopsys.integration.detectable.detectables.pipenv.model;
+package com.synopsys.integration.detectable.detectables.pipenv.parse.model;
 
-public class PipFreezeEntry {
+public class PipfileLockDependency {
     private final String name;
     private final String version;
 
-    public PipFreezeEntry(String name, String version) {
+    public PipfileLockDependency(String name, String version) {
         this.name = name;
         this.version = version;
     }

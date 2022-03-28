@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.pipenv.parser;
+package com.synopsys.integration.detectable.detectables.pipenv.build.parser;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -9,8 +9,8 @@ import org.jetbrains.annotations.NotNull;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.synopsys.integration.detectable.detectables.pipenv.model.PipenvGraph;
-import com.synopsys.integration.detectable.detectables.pipenv.model.PipenvGraphEntry;
+import com.synopsys.integration.detectable.detectables.pipenv.build.model.PipenvGraph;
+import com.synopsys.integration.detectable.detectables.pipenv.build.model.PipenvGraphEntry;
 
 public class PipEnvJsonGraphParser {
     private static final Type PIPENV_GRAPH_ENTRY_TYPE = new TypeToken<List<PipenvGraphEntry>>() {}.getType();

@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.pipenv;
+package com.synopsys.integration.detectable.detectables.pipenv.build;
 
 import java.io.File;
 import java.util.Arrays;
@@ -10,11 +10,11 @@ import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
-import com.synopsys.integration.detectable.detectables.pipenv.model.PipFreeze;
-import com.synopsys.integration.detectable.detectables.pipenv.model.PipenvGraph;
-import com.synopsys.integration.detectable.detectables.pipenv.parser.PipEnvJsonGraphParser;
-import com.synopsys.integration.detectable.detectables.pipenv.parser.PipenvFreezeParser;
-import com.synopsys.integration.detectable.detectables.pipenv.parser.PipenvTransformer;
+import com.synopsys.integration.detectable.detectables.pipenv.build.model.PipFreeze;
+import com.synopsys.integration.detectable.detectables.pipenv.build.model.PipenvGraph;
+import com.synopsys.integration.detectable.detectables.pipenv.build.parser.PipEnvJsonGraphParser;
+import com.synopsys.integration.detectable.detectables.pipenv.build.parser.PipenvFreezeParser;
+import com.synopsys.integration.detectable.detectables.pipenv.build.parser.PipenvTransformer;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunnerException;

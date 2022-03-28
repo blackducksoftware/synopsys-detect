@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.pipenv.model;
+package com.synopsys.integration.detectable.detectables.pipenv.build.model;
 
 import java.util.List;
 
