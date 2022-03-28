@@ -1,5 +1,11 @@
 # Release notes
 
+## Version 7.12.1
+
+## Changed Features
+
+* By default, when a Signature Scan is skipped [solution_name] will treat the run as a success and will not wait for those skipped scans. If the property detect.force.success.on.skip is set to false, [solution_name] will instead return exit code 13 when a scan is skipped.
+
 ## Version 7.12.0
 
 ### New features
