@@ -4,7 +4,7 @@
 
 ## Changed Features
 
-* When a Signature Scan is skipped due to the minimum scan interval on Black Duck not being met, [solution_name] by default will treat the run as a success and will not wait for those skipped scans. If the property detect.force.success.on.skip is set to false, [solution_name] will instead return exit code 13 when a scan is skipped.
+* When signature scanning is skipped due to the minimum scan interval on Black Duck not being met, [solution_name] by default will treat the run as a success and will not wait for the skipped scan(s). If the property detect.force.success.on.skip is set to false, [solution_name] will instead return exit code 13 when one or more signature scans were skipped.
 
 ## Version 7.12.0
 
