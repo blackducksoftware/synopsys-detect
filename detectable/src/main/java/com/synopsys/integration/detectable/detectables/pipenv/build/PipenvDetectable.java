@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.pipenv;
+package com.synopsys.integration.detectable.detectables.pipenv.build;
 
 import java.io.File;
 
@@ -80,7 +80,8 @@ public class PipenvDetectable extends Detectable {
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         //TODO: Handle null better.
-        return pipenvExtractor.extract(environment.getDirectory(),
+        return pipenvExtractor.extract(
+            environment.getDirectory(),
             pythonExe,
             pipenvExe,
             setupFile,
