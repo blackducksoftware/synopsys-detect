@@ -57,7 +57,7 @@ public class DockerExtractorTest {
 
     @Test
     @DisabledOnOs(WINDOWS)
-    public void testExtractImageReturningContainerFileSystem() throws ExecutableRunnerException {
+    public void testExtractImageReturningContainerFileSystem() throws ExecutableRunnerException, IOException {
 
         final String image = "ubuntu:latest";
         String imageId = null;
@@ -83,7 +83,7 @@ public class DockerExtractorTest {
 
     @Test
     @DisabledOnOs(WINDOWS)
-    public void testExtractImageReturningSquashedImage() throws ExecutableRunnerException {
+    public void testExtractImageReturningSquashedImage() throws ExecutableRunnerException, IOException {
 
         final String image = "ubuntu:latest";
         String imageId = null;
@@ -109,7 +109,7 @@ public class DockerExtractorTest {
 
     @Test
     @DisabledOnOs(WINDOWS)
-    public void testExtractTarReturningContainerFileSystem() throws ExecutableRunnerException {
+    public void testExtractTarReturningContainerFileSystem() throws ExecutableRunnerException, IOException {
 
         String image = null;
         String imageId = null;
@@ -136,7 +136,7 @@ public class DockerExtractorTest {
 
     @Test
     @DisabledOnOs(WINDOWS)
-    public void testExtractTarReturningOriginalTar() throws ExecutableRunnerException {
+    public void testExtractTarReturningOriginalTar() throws ExecutableRunnerException, IOException {
 
         String image = null;
         String imageId = null;
@@ -191,7 +191,7 @@ public class DockerExtractorTest {
         File returnedSquashedImageFile,
         File resultsFile,
         DetectableExecutableRunner executableRunner
-    ) {
+    ) throws IOException, ExecutableRunnerException {
         FileFinder fileFinder = Mockito.mock(FileFinder.class);
         DockerExtractor dockerExtractor = getMockDockerExtractor(executableRunner, fileFinder);
 

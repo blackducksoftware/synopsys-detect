@@ -73,18 +73,14 @@ public class BazelExtractor {
         this.bazelProjectNameGenerator = bazelProjectNameGenerator;
     }
 
-    public Extraction extract(ExecutableTarget bazelExe, File workspaceDir, File workspaceFile) {
-        try {
-            toolVersionLogger.log(workspaceDir, bazelExe, "version");
-            BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
-            Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor, externalIdFactory, haskellCabalLibraryJsonProtoParser);
-            Set<WorkspaceRule> workspaceRulesFromFile = parseWorkspaceRulesFromFile(workspaceFile);
-            Set<WorkspaceRule> workspaceRulesToQuery = workspaceRuleChooser.choose(workspaceRulesFromFile, workspaceRulesFromDeprecatedProperty, workspaceRulesFromProperty);
-            CodeLocation codeLocation = generateCodelocation(pipelines, workspaceRulesToQuery);
-            return buildResults(codeLocation, bazelProjectNameGenerator.generateFromBazelTarget(bazelTarget));
-        } catch (Exception e) {
-            return new Extraction.Builder().exception(e).build();
-        }
+    public Extraction extract(ExecutableTarget bazelExe, File workspaceDir, File workspaceFile) throws ExecutableFailedException, DetectableException {
+        toolVersionLogger.log(workspaceDir, bazelExe, "version");
+        BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
+        Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor, externalIdFactory, haskellCabalLibraryJsonProtoParser);
+        Set<WorkspaceRule> workspaceRulesFromFile = parseWorkspaceRulesFromFile(workspaceFile);
+        Set<WorkspaceRule> workspaceRulesToQuery = workspaceRuleChooser.choose(workspaceRulesFromFile, workspaceRulesFromDeprecatedProperty, workspaceRulesFromProperty);
+        CodeLocation codeLocation = generateCodelocation(pipelines, workspaceRulesToQuery);
+        return buildResults(codeLocation, bazelProjectNameGenerator.generateFromBazelTarget(bazelTarget));
     }
 
     private Set<WorkspaceRule> parseWorkspaceRulesFromFile(File workspaceFile) {

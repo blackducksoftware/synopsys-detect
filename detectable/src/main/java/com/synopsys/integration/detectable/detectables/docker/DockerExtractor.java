@@ -90,33 +90,29 @@ public class DockerExtractor {
         String tar,
         DockerInspectorInfo dockerInspectorInfo,
         DockerProperties dockerProperties
-    ) {
-        try {
-            String imageArgument = null;
-            String imagePiece = null;
-            ImageIdentifierType imageIdentifierType = ImageIdentifierType.IMAGE_NAME;
-            if (StringUtils.isNotBlank(tar)) {
-                File dockerTarFile = new File(tar);
-                imageArgument = String.format("--docker.tar=%s", dockerTarFile.getCanonicalPath());
-                imagePiece = dockerTarFile.getName();
-                imageIdentifierType = ImageIdentifierType.TAR;
-            } else if (StringUtils.isNotBlank(image)) {
-                imagePiece = image;
-                imageArgument = String.format("--docker.image=%s", image);
-                imageIdentifierType = ImageIdentifierType.IMAGE_NAME;
-            } else if (StringUtils.isNotBlank(imageId)) {
-                imagePiece = imageId;
-                imageArgument = String.format("--docker.image.id=%s", imageId);
-                imageIdentifierType = ImageIdentifierType.IMAGE_ID;
-            }
+    ) throws IOException, ExecutableRunnerException {
+        String imageArgument = null;
+        String imagePiece = null;
+        ImageIdentifierType imageIdentifierType = ImageIdentifierType.IMAGE_NAME;
+        if (StringUtils.isNotBlank(tar)) {
+            File dockerTarFile = new File(tar);
+            imageArgument = String.format("--docker.tar=%s", dockerTarFile.getCanonicalPath());
+            imagePiece = dockerTarFile.getName();
+            imageIdentifierType = ImageIdentifierType.TAR;
+        } else if (StringUtils.isNotBlank(image)) {
+            imagePiece = image;
+            imageArgument = String.format("--docker.image=%s", image);
+            imageIdentifierType = ImageIdentifierType.IMAGE_NAME;
+        } else if (StringUtils.isNotBlank(imageId)) {
+            imagePiece = imageId;
+            imageArgument = String.format("--docker.image.id=%s", imageId);
+            imageIdentifierType = ImageIdentifierType.IMAGE_ID;
+        }
 
-            if (StringUtils.isBlank(imageArgument) || StringUtils.isBlank(imagePiece)) {
-                return new Extraction.Builder().failure("No docker image found.").build();
-            } else {
-                return executeDocker(outputDirectory, imageIdentifierType, imageArgument, imagePiece, tar, directory, javaExe, dockerExe, dockerInspectorInfo, dockerProperties);
-            }
-        } catch (Exception e) {
-            return new Extraction.Builder().exception(e).build();
+        if (StringUtils.isBlank(imageArgument) || StringUtils.isBlank(imagePiece)) {
+            return new Extraction.Builder().failure("No docker image found.").build();
+        } else {
+            return executeDocker(outputDirectory, imageIdentifierType, imageArgument, imagePiece, tar, directory, javaExe, dockerExe, dockerInspectorInfo, dockerProperties);
         }
     }
 
