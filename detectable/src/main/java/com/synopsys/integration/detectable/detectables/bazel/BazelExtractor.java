@@ -73,7 +73,7 @@ public class BazelExtractor {
         this.bazelProjectNameGenerator = bazelProjectNameGenerator;
     }
 
-    public Extraction extract(ExecutableTarget bazelExe, File workspaceDir, File workspaceFile) throws DetectableException, ExecutableFailedException {
+    public Extraction extract(ExecutableTarget bazelExe, File workspaceDir, File workspaceFile) throws ExecutableFailedException, DetectableException {
         toolVersionLogger.log(workspaceDir, bazelExe, "version");
         BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
         Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor, externalIdFactory, haskellCabalLibraryJsonProtoParser);
@@ -83,7 +83,7 @@ public class BazelExtractor {
         return buildResults(codeLocation, bazelProjectNameGenerator.generateFromBazelTarget(bazelTarget));
     }
 
-    private Set<WorkspaceRule> parseWorkspaceRulesFromFile(final File workspaceFile) {
+    private Set<WorkspaceRule> parseWorkspaceRulesFromFile(File workspaceFile) {
         List<String> workspaceFileLines;
         try {
             workspaceFileLines = FileUtils.readLines(workspaceFile, StandardCharsets.UTF_8);

@@ -130,7 +130,7 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
         return airGapInspectorImageTarfiles;
     }
 
-    private DockerInspectorInfo findProvidedJar(@NotNull Path providedJarPath) {
+    private DockerInspectorInfo findProvidedJar(@NotNull Path providedJarPath) throws IntegrationException {
         File providedJar = null;
 
         logger.debug(String.format("Using user-provided docker inspector jar path: %s", providedJarPath));
@@ -138,6 +138,8 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
         if (providedJarCandidate.isFile()) {
             logger.debug(String.format("Found user-specified jar: %s", providedJarCandidate.getAbsolutePath()));
             providedJar = providedJarCandidate;
+        } else {
+            throw new IntegrationException(String.format("Provided Docker Inspector path (%s) does not exist or is not a file", providedJarCandidate.getAbsolutePath()));
         }
 
         return new DockerInspectorInfo(providedJar);
