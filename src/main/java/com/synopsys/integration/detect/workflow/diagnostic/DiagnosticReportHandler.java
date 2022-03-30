@@ -3,7 +3,6 @@ package com.synopsys.integration.detect.workflow.diagnostic;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.SortedMap;
 
 import org.slf4j.Logger;
@@ -150,13 +149,12 @@ public class DiagnosticReportHandler {
     public void configurationsReport(
         DetectInfo detectInfo,
         PropertyConfiguration propertyConfiguration,
-        SortedMap<String, String> maskedRawPropertyValues,
-        Set<String> propertyKeys
+        SortedMap<String, String> maskedRawPropertyValues
     ) {
         try {
             ReportWriter profileWriter = getReportWriter(ReportTypes.CONFIGURATION);
             ConfigurationReporter reporter = new ConfigurationReporter();
-            reporter.writeReport(profileWriter, detectInfo, propertyConfiguration, maskedRawPropertyValues, propertyKeys);
+            reporter.writeReport(profileWriter, detectInfo, propertyConfiguration, maskedRawPropertyValues);
         } catch (Exception e) {
             logger.error("Failed to write profiling report.", e);
         }

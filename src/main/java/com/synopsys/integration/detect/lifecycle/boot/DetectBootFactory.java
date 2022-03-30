@@ -2,7 +2,6 @@ package com.synopsys.integration.detect.lifecycle.boot;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 import java.util.SortedMap;
 
 import org.apache.commons.lang3.SystemUtils;
@@ -139,10 +138,9 @@ public class DetectBootFactory {
         boolean isDiagnosticExtended,
         PropertyConfiguration detectConfiguration,
         DirectoryManager directoryManager,
-        SortedMap<String, String> maskedRawPropertyValues,
-        Set<String> propertyKeys
+        SortedMap<String, String> maskedRawPropertyValues
     ) {
-        return new DiagnosticSystem(isDiagnosticExtended, detectConfiguration, detectRunId, detectInfo, directoryManager, eventSystem, maskedRawPropertyValues, propertyKeys);
+        return new DiagnosticSystem(isDiagnosticExtended, detectConfiguration, detectRunId, detectInfo, directoryManager, eventSystem, maskedRawPropertyValues);
     }
 
     public AirGapCreator createAirGapCreator(

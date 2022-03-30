@@ -192,14 +192,15 @@ public class PropertyConfiguration {
         Map<String, String> rawMap = new HashMap<>();
         for (Property property : properties) {
             String rawKey = property.getKey();
-            getRaw(property).ifPresent(rawValue -> rawMap.put(rawKey, maskValue(rawKey, rawValue, shouldMask)));
             if (property instanceof PassthroughProperty) {
                 getRaw((PassthroughProperty) property).entrySet()
                     .forEach(passThrough -> {
-                            String fullPassThroughKey = String.format("%s.%s", rawKey, passThrough.getKey()); //TODO- do we want the "full" name?
+                            String fullPassThroughKey = String.format("%s.%s", rawKey, passThrough.getKey());
                             rawMap.put(fullPassThroughKey, maskValue(fullPassThroughKey, passThrough.getValue(), shouldMask));
                         }
                     );
+            } else {
+                getRaw(property).ifPresent(rawValue -> rawMap.put(rawKey, maskValue(rawKey, rawValue, shouldMask)));
             }
         }
         return rawMap;
@@ -255,7 +256,7 @@ public class PropertyConfiguration {
     private void assertPropertyNotNull(Property property, @NotNull String message) {
         Assert.notNull(property, message);
     }
-    
+
     private PropertyResolution resolveFromCache(@NotNull String key) {
         Assert.notNull(key, "Cannot resolve a null key.");
         if (!resolutionCache.containsKey(key)) {

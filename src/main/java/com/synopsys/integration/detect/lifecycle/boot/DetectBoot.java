@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -116,7 +115,6 @@ public class DetectBoot {
         PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);
 
         SortedMap<String, String> maskedRawPropertyValues = collectMaskedRawPropertyValues(propertyConfiguration);
-        Set<String> propertyKeys = new HashSet<>(DetectProperties.allProperties().getPropertyKeys());
 
         publishCollectedPropertyValues(maskedRawPropertyValues);
 
@@ -124,7 +122,7 @@ public class DetectBoot {
 
         DetectConfigurationBootManager detectConfigurationBootManager = detectBootFactory.createDetectConfigurationBootManager(propertyConfiguration);
         DeprecationResult deprecationResult = detectConfigurationBootManager.createDeprecationNotesAndPublishEvents(propertyConfiguration);
-        detectConfigurationBootManager.printConfiguration(maskedRawPropertyValues, propertyKeys, deprecationResult.getAdditionalNotes());
+        detectConfigurationBootManager.printConfiguration(maskedRawPropertyValues, deprecationResult.getAdditionalNotes());
 
         Optional<DetectUserFriendlyException> possiblePropertyParseError = detectConfigurationBootManager.validateForPropertyParseErrors();
         if (possiblePropertyParseError.isPresent()) {
@@ -148,8 +146,7 @@ public class DetectBoot {
                 diagnosticDecision.isExtended(),
                 propertyConfiguration,
                 directoryManager,
-                maskedRawPropertyValues,
-                propertyKeys
+                maskedRawPropertyValues
             );
         }
 
@@ -214,7 +211,8 @@ public class DetectBoot {
         }
 
         BootSingletons bootSingletons = detectBootFactory
-            .createRunDependencies(productRunData,
+            .createRunDependencies(
+                productRunData,
                 propertyConfiguration,
                 detectableOptionFactory,
                 detectConfigurationFactory,

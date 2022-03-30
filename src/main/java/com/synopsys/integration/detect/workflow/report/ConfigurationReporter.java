@@ -1,7 +1,6 @@
 package com.synopsys.integration.detect.workflow.report;
 
 import java.util.HashMap;
-import java.util.Set;
 import java.util.SortedMap;
 
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
@@ -14,8 +13,7 @@ public class ConfigurationReporter {
         ReportWriter writer,
         DetectInfo detectInfo,
         PropertyConfiguration propertyConfiguration,
-        SortedMap<String, String> maskedRawPropertyValues,
-        Set<String> propertyKeys
+        SortedMap<String, String> maskedRawPropertyValues
     ) throws IllegalAccessException {
         writer.writeSeparator();
         writer.writeLine("Detect Info");
@@ -26,7 +24,7 @@ public class ConfigurationReporter {
         writer.writeLine("Detect Configuration");
         writer.writeSeparator();
         PropertyConfigurationHelpContext helpContext = new PropertyConfigurationHelpContext(propertyConfiguration);
-        helpContext.printKnownCurrentValues(writer::writeLine, propertyKeys, maskedRawPropertyValues, new HashMap<>());
+        helpContext.printKnownCurrentValues(writer::writeLine, maskedRawPropertyValues, new HashMap<>());
         writer.writeSeparator();
     }
 }
