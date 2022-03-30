@@ -34,7 +34,6 @@ public class FullAggregateGraphCreator {
     public DependencyGraph aggregateCodeLocations(ProjectNodeCreator projectDependencyCreator, File sourcePath, List<DetectCodeLocation> codeLocations)
         throws DetectUserFriendlyException {
         MutableDependencyGraph aggregateDependencyGraph = simpleBdioFactory.createMutableDependencyGraph();
-        DependencyGraphCombiner dependencyGraphCombiner = new DependencyGraphCombiner();
 
         for (DetectCodeLocation detectCodeLocation : codeLocations) {
             Dependency codeLocationDependency = createAggregateNode(projectDependencyCreator, sourcePath, detectCodeLocation);
@@ -43,10 +42,13 @@ public class FullAggregateGraphCreator {
                 if (codeLocationDependency instanceof ProjectDependency) {
                     // When we remove the transitive option on 8.0.0, we shouldn't have to create fake project nodes requiring instanceof
                     MutableDependencyGraph properGraph = new MutableMapDependencyGraph((ProjectDependency) codeLocationDependency);
-                    dependencyGraphCombiner.addGraphAsChildrenToRoot(properGraph, dependencyGraph);
-                    dependencyGraphCombiner.addGraphAsChildrenToRoot(aggregateDependencyGraph, properGraph);
+                    properGraph.addGraphAsChildrenToRoot(dependencyGraph);
+                    aggregateDependencyGraph.addGraphAsChildrenToRoot(properGraph);
                 } else {
                     aggregateDependencyGraph.addChildrenToRoot(codeLocationDependency);
+                    // Need dependencyGraphCombiner to just copy the root dependencies
+                    // copying the graph will not give the desired result since we DO NOT want these to appear as subprojects in blackduck
+                    DependencyGraphCombiner dependencyGraphCombiner = new DependencyGraphCombiner();
                     dependencyGraphCombiner.copyRootDependenciesToParent(aggregateDependencyGraph, detectCodeLocation.getDependencyGraph(), codeLocationDependency);
                 }
             } else {
