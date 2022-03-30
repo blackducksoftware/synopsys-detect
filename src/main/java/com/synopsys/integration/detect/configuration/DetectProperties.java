@@ -519,12 +519,12 @@ public class DetectProperties {
             .setGroups(DetectGroup.DART, DetectGroup.GLOBAL)
             .build();
 
-    public static final NoneEnumListProperty<PipenvDependencyType> DETECT_PIPENV_DEPENDENCY_TYPES_EXCLUDED =
-        NoneEnumListProperty.newBuilder("detect.pipenv.dependency.types.excluded", NoneEnum.NONE, PipenvDependencyType.class)
-            .setInfo("Pipenv Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_13_0)
+    public static final NoneEnumListProperty<PipenvDependencyType> DETECT_PIPFILE_DEPENDENCY_TYPES_EXCLUDED =
+        NoneEnumListProperty.newBuilder("detect.pipfile.dependency.types.excluded", NoneEnum.NONE, PipenvDependencyType.class)
+            .setInfo("Pipfile Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_13_0)
             .setHelp(
                 "A comma-separated list of dependency types that will be excluded.",
-                "If DEV is excluded, the Pipfile Lock Detector will exclude 'develop' dependencies when parsing the Pipfile.lock."
+                "If DEV is excluded, the Pipfile Lock Detector will exclude 'develop' dependencies when parsing the Pipfile.lock file."
             )
             .setExample(PipenvDependencyType.DEV.name())
             .setGroups(DetectGroup.PIP, DetectGroup.DETECTOR, DetectGroup.GLOBAL)
