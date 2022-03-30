@@ -1,7 +1,8 @@
 buildscript {
+    apply from: '../shared-version.properties'
     ext {
-        springBootVersion = '2.4.3'
-        blackDuckCommonVersion = '61.1.0'
+        springBootVersion = gradle.ext.springBootVersion
+        blackDuckCommonVersion = gradle.ext.blackDuckCommonVersion
     }
 
     apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-repositories.gradle', to: buildscript

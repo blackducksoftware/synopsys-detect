@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.bdio.model.dependencyid.StringDependencyId;
+import com.synopsys.integration.bdio.graph.builder.LazyId;
 
 public class ReplacedGradleGav implements GradleGavId {
     private final String group;
@@ -34,10 +34,10 @@ public class ReplacedGradleGav implements GradleGavId {
     }
 
     @Override
-    public StringDependencyId toDependencyId() {
+    public LazyId toDependencyId() {
         String id = String.format("%s:%s%s", getGroup(), getArtifact(), getVersion()
             .map(it -> ":" + it)
             .orElse(""));
-        return new StringDependencyId(id);
+        return LazyId.fromString(id);
     }
 }
