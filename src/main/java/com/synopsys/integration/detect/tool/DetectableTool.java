@@ -3,10 +3,13 @@ package com.synopsys.integration.detect.tool;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +24,8 @@ import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
 import com.synopsys.integration.detect.tool.detector.extraction.ExtractionEnvironmentProvider;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.project.DetectToolProjectInfo;
+import com.synopsys.integration.detect.workflow.status.DetectIssue;
+import com.synopsys.integration.detect.workflow.status.DetectIssueType;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detect.workflow.status.StatusType;
@@ -97,6 +102,7 @@ public class DetectableTool {
 
         if (!extractable.getPassed()) {
             logger.error(String.format("Was not extractable: %s", extractable.toDescription()));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.DETECTABLE_TOOL, "Detectable Tool Issue", Arrays.asList(extractable.toDescription())));
             statusEventPublisher.publishStatusSummary(new Status(name, StatusType.FAILURE));
             exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_GENERAL_ERROR, extractable.toDescription());
             return DetectableToolResult.failed(extractable);
@@ -114,8 +120,10 @@ public class DetectableTool {
 
         if (!extraction.isSuccess()) {
             logger.error("Extraction was not success.");
+            List<String> errorMessages = collectErrorMessages(extraction);
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.DETECTABLE_TOOL, "Detectable Tool Issue", errorMessages));
             statusEventPublisher.publishStatusSummary(new Status(name, StatusType.FAILURE));
-            exitCodePublisher.publishExitCode(new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, extractable.toDescription()));
+            exitCodePublisher.publishExitCode(new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, extraction.getDescription()));
             return DetectableToolResult.failed();
         } else {
             logger.debug("Extraction success.");
@@ -136,5 +144,17 @@ public class DetectableTool {
         logger.debug("Tool finished.");
 
         return DetectableToolResult.success(detectCodeLocations, projectInfo, dockerTargetData);
+    }
+
+    @NotNull
+    private List<String> collectErrorMessages(Extraction extraction) {
+        List<String> errorMessages = new LinkedList<>();
+        if (StringUtils.isNotBlank(extraction.getDescription())) {
+            errorMessages.add(extraction.getDescription());
+        }
+        if (extraction.getError() != null && StringUtils.isNotBlank(extraction.getError().getMessage())) {
+            errorMessages.add(extraction.getError().getMessage());
+        }
+        return errorMessages;
     }
 }

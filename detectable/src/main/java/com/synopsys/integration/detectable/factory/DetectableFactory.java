@@ -126,6 +126,8 @@ import com.synopsys.integration.detectable.detectables.docker.DockerDetectable;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectableOptions;
 import com.synopsys.integration.detectable.detectables.docker.DockerExtractor;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
+import com.synopsys.integration.detectable.detectables.docker.ImageIdentifierGenerator;
+import com.synopsys.integration.detectable.detectables.docker.parser.DockerInspectorResultsFileParser;
 import com.synopsys.integration.detectable.detectables.git.GitDetectable;
 import com.synopsys.integration.detectable.detectables.git.GitParseDetectable;
 import com.synopsys.integration.detectable.detectables.git.cli.GitCliExtractor;
@@ -1029,7 +1031,15 @@ public class DetectableFactory {
     }
 
     private DockerExtractor dockerExtractor() {
-        return new DockerExtractor(fileFinder, executableRunner, new BdioTransformer(), new ExternalIdFactory(), gson);
+        return new DockerExtractor(
+            fileFinder,
+            executableRunner,
+            new BdioTransformer(),
+            new ExternalIdFactory(),
+            gson,
+            new DockerInspectorResultsFileParser(gson),
+            new ImageIdentifierGenerator()
+        );
     }
 
     private GoGradleLockParser goGradleLockParser() {
