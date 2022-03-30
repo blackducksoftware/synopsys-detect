@@ -12,8 +12,11 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraphCombiner;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
+import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
+import com.synopsys.integration.bdio.model.dependency.ProjectDependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
@@ -31,11 +34,25 @@ public class FullAggregateGraphCreator {
     public DependencyGraph aggregateCodeLocations(ProjectNodeCreator projectDependencyCreator, File sourcePath, List<DetectCodeLocation> codeLocations)
         throws DetectUserFriendlyException {
         MutableDependencyGraph aggregateDependencyGraph = simpleBdioFactory.createMutableDependencyGraph();
+        DependencyGraphCombiner dependencyGraphCombiner = new DependencyGraphCombiner();
 
         for (DetectCodeLocation detectCodeLocation : codeLocations) {
             Dependency codeLocationDependency = createAggregateNode(projectDependencyCreator, sourcePath, detectCodeLocation);
-            aggregateDependencyGraph.addChildrenToRoot(codeLocationDependency);
-            aggregateDependencyGraph.addGraphAsChildrenToParent(codeLocationDependency, detectCodeLocation.getDependencyGraph());
+            DependencyGraph dependencyGraph = detectCodeLocation.getDependencyGraph();
+            if (dependencyGraph.isRootProjectPlaceholder()) {
+                if (codeLocationDependency instanceof ProjectDependency) {
+                    // When we remove the transitive option on 8.0.0, we shouldn't have to create fake project nodes requiring instanceof
+                    MutableDependencyGraph properGraph = new MutableMapDependencyGraph((ProjectDependency) codeLocationDependency);
+                    dependencyGraphCombiner.addGraphAsChildrenToRoot(properGraph, dependencyGraph);
+                    dependencyGraphCombiner.addGraphAsChildrenToRoot(aggregateDependencyGraph, properGraph);
+                } else {
+                    aggregateDependencyGraph.addChildrenToRoot(codeLocationDependency);
+                    dependencyGraphCombiner.copyRootDependenciesToParent(aggregateDependencyGraph, detectCodeLocation.getDependencyGraph(), codeLocationDependency);
+                }
+            } else {
+                // This should be all we have to do post 8.0.0
+                aggregateDependencyGraph.addGraphAsChildrenToRoot(dependencyGraph);
+            }
         }
 
         return aggregateDependencyGraph;

@@ -739,7 +739,11 @@ public class OperationFactory { //TODO: OperationRunner
 
     public DependencyGraph aggregateTransitive(List<DetectCodeLocation> detectCodeLocations) throws OperationException {
         return auditLog.namedPublic("Transitive Aggregate", "TransitiveAggregate",
-            () -> (new FullAggregateGraphCreator(new SimpleBdioFactory())).aggregateCodeLocations(Dependency::new, directoryManager.getSourceDirectory(), detectCodeLocations)
+            () -> (new FullAggregateGraphCreator(new SimpleBdioFactory())).aggregateCodeLocations(
+                Dependency::new,
+                directoryManager.getSourceDirectory(),
+                detectCodeLocations
+            )
         );
     }
 

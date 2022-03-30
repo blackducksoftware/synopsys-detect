@@ -54,7 +54,7 @@ class BdioAggregationTest {
         FullAggregateGraphCreator fullAggregateGraphCreator = new FullAggregateGraphCreator(new SimpleBdioFactory());
 
         DependencyGraph aggregatedGraph = fullAggregateGraphCreator.aggregateCodeLocations(
-            (name, version, externalId) -> new Dependency(name, version, externalId),
+            Dependency::new,
             sourceDir,
             inputCodelocations
         );
@@ -66,8 +66,8 @@ class BdioAggregationTest {
 
         Dependency subProjectOne = aggregatedGraph.getDependency(genProjectExternalId("basic-multiproject", "subprojectone", "unspecified"));
         Set<Dependency> subProjectOneDependencies = aggregatedGraph.getChildrenForParent(subProjectOne);
-        assertTrue(subProjectOneDependencies.contains(genComponentDependency("junit", "junit", "4.12")));
-        assertTrue(subProjectOneDependencies.contains(genComponentDependency("joda-time", "joda-time", "2.2")));
+        assertTrue(subProjectOneDependencies.contains(Dependency.FACTORY.createMavenDependency("junit", "junit", "4.12")));
+        assertTrue(subProjectOneDependencies.contains(Dependency.FACTORY.createMavenDependency("joda-time", "joda-time", "2.2")));
 
         assertFalse(subProjectOne instanceof ProjectDependency);
     }
@@ -89,8 +89,8 @@ class BdioAggregationTest {
 
         Dependency subProjectOne = aggregatedGraph.getDependency(genProjectExternalId("basic-multiproject", "subprojectone", "unspecified"));
         Set<Dependency> subProjectOneDependencies = aggregatedGraph.getChildrenForParent(subProjectOne);
-        assertTrue(subProjectOneDependencies.contains(genComponentDependency("junit", "junit", "4.12")));
-        assertTrue(subProjectOneDependencies.contains(genComponentDependency("joda-time", "joda-time", "2.2")));
+        assertTrue(subProjectOneDependencies.contains(Dependency.FACTORY.createMavenDependency("junit", "junit", "4.12")));
+        assertTrue(subProjectOneDependencies.contains(Dependency.FACTORY.createMavenDependency("joda-time", "joda-time", "2.2")));
 
         assertTrue(subProjectOne instanceof ProjectDependency);
     }
@@ -100,8 +100,8 @@ class BdioAggregationTest {
         DependencyGraph aggregatedGraph = new AggregateModeDirectOperation(new SimpleBdioFactory()).aggregateCodeLocations(inputCodelocations);
 
         assertEquals(2, aggregatedGraph.getRootDependencies().size());
-        assertTrue(aggregatedGraph.getRootDependencies().contains(genComponentDependency("junit", "junit", "4.12")));
-        assertTrue(aggregatedGraph.getRootDependencies().contains(genComponentDependency("joda-time", "joda-time", "2.2")));
+        assertTrue(aggregatedGraph.getRootDependencies().contains(Dependency.FACTORY.createMavenDependency("junit", "junit", "4.12")));
+        assertTrue(aggregatedGraph.getRootDependencies().contains(Dependency.FACTORY.createMavenDependency("joda-time", "joda-time", "2.2")));
     }
 
     @NotNull
@@ -135,21 +135,6 @@ class BdioAggregationTest {
         String[] moduleNamesArray = new String[moduleNames.size()];
         moduleNames.toArray(moduleNamesArray);
         extId.setModuleNames(moduleNamesArray);
-        return extId;
-    }
-
-    @NotNull
-    private Dependency genComponentDependency(String group, String artifact, String version) {
-        ExternalId extId = genComponentExternalId(group, artifact, version);
-        return new Dependency(artifact, version, extId);
-    }
-
-    @NotNull
-    private ExternalId genComponentExternalId(String group, String artifact, String version) {
-        ExternalId extId = new ExternalId(Forge.MAVEN);
-        extId.setGroup(group);
-        extId.setName(artifact);
-        extId.setVersion(version);
         return extId;
     }
 }
