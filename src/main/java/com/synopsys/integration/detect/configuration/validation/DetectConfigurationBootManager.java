@@ -3,6 +3,7 @@ package com.synopsys.integration.detect.configuration.validation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,6 +26,8 @@ import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectIssueType;
 
 public class DetectConfigurationBootManager {
+    private static final String[] DETECT_PASSTHROUGH_PREFIXES = { DetectProperties.DOCKER_PASSTHROUGH.getKey() };
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final EventSystem eventSystem;
     private final PropertyConfigurationHelpContext detectConfigurationReporter;
@@ -91,7 +94,21 @@ public class DetectConfigurationBootManager {
     }
 
     public void printConfiguration(SortedMap<String, String> maskedRawPropertyValues, Set<String> propertyKeys, Map<String, String> additionalNotes) {
+        Set<String> passThroughKeys = determinePassthroughKeys(maskedRawPropertyValues.keySet());
+        propertyKeys.addAll(passThroughKeys);
         detectConfigurationReporter.printKnownCurrentValues(logger::info, propertyKeys, maskedRawPropertyValues, additionalNotes);
+    }
+
+    private Set<String> determinePassthroughKeys(Set<String> maskedRawPropertyKeys) {
+        Set<String> passthroughKeys = new HashSet<>();
+        for (String passthroughPrefix : DETECT_PASSTHROUGH_PREFIXES) {
+            for (String maskedRawPropertyKey : maskedRawPropertyKeys) {
+                if (maskedRawPropertyKey.startsWith(passthroughPrefix)) {
+                    passthroughKeys.add(maskedRawPropertyKey);
+                }
+            }
+        }
+        return passthroughKeys;
     }
 
     // Check for options that are just plain bad, ie giving a detector type we don't know about.
