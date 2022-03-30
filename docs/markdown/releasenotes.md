@@ -9,6 +9,7 @@
 ### Resolved issues
 
 * (IDETECT-3184) Resolved an issue that prevented matches for Bazel maven_install components with complex (>3 parts) maven_coordinates values.
+* (IDETECT-3207) Resolved an issue that prevented Bazel and Docker Tool issues from being reported in the issues section of the [solution_name] log and status file.
 
 ## Version 7.12.0
 
