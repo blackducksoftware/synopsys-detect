@@ -8,8 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectable.result.FailedDetectableResult;
 import com.synopsys.integration.util.NameVersion;
 
 public class Extraction {
@@ -27,6 +31,18 @@ public class Extraction {
     private final Map<ExtractionMetadata<?>, Object> metaData;
 
     public static Extraction failure(String description) {
+        return new Extraction.Builder().failure(description).build();
+    }
+
+    public static Extraction failure(FailedDetectableResult... failedDetectableResults) {
+        return failure(Arrays.asList(failedDetectableResults));
+    }
+
+    public static Extraction failure(List<FailedDetectableResult> failedDetectableResults) {
+        List<String> failureDescriptions = failedDetectableResults.stream()
+            .map(FailedDetectableResult::toDescription)
+            .collect(Collectors.toList());
+        String description = StringUtils.joinWith(". In addition, ", failureDescriptions);
         return new Extraction.Builder().failure(description).build();
     }
 
@@ -177,13 +193,16 @@ public class Extraction {
         }
 
         public Builder relevantFiles(File... files) {
-            this.relevantFiles.addAll(Arrays.asList(files));
+            return this.relevantFiles(Arrays.asList(files));
+        }
+
+        public Builder relevantFiles(Collection<File> files) {
+            this.relevantFiles.addAll(files);
             return this;
         }
 
         public Builder unrecognizedPaths(File... files) {
-            this.unrecognizedPaths.addAll(Arrays.asList(files));
-            return this;
+            return this.unrecognizedPaths(Arrays.asList(files));
         }
 
         public Builder unrecognizedPaths(Collection<File> files) {

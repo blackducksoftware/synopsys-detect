@@ -8,10 +8,12 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PackageResolvedNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectables.swift.lock.model.PackageResolvedResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
@@ -46,7 +48,10 @@ public class SwiftPackageResolvedDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException, IOException {
-        return packageResolvedExtractor.extract(foundPackageResolvedFile, environment.getDirectory());
+        PackageResolvedResult result = packageResolvedExtractor.extract(foundPackageResolvedFile);
+        return result.getFailedDetectableResult()
+            .map(Extraction::failure)
+            .orElse(Extraction.success(new CodeLocation(result.getDependencyGraph(), environment.getDirectory())));
     }
 
 }

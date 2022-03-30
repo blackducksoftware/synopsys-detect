@@ -7,14 +7,11 @@ import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.swift.lock.data.PackageResolved;
+import com.synopsys.integration.detectable.detectables.swift.lock.model.PackageResolvedResult;
 import com.synopsys.integration.detectable.detectables.swift.lock.parse.PackageResolvedFormatChecker;
 import com.synopsys.integration.detectable.detectables.swift.lock.parse.PackageResolvedParser;
 import com.synopsys.integration.detectable.detectables.xcode.transform.PackageResolvedTransformer;
-import com.synopsys.integration.detectable.extraction.Extraction;
 
 public class PackageResolvedExtractor {
     private final PackageResolvedParser packageResolvedParser;
@@ -31,23 +28,13 @@ public class PackageResolvedExtractor {
         this.packageResolvedTransformer = packageResolvedTransformer;
     }
 
-    public Extraction extract(File foundPackageResolvedFile, File foundCodeLocationFile) throws IOException {
+    public PackageResolvedResult extract(File foundPackageResolvedFile) throws IOException {
         String packageResolvedContents = FileUtils.readFileToString(foundPackageResolvedFile, Charset.defaultCharset());
         Optional<PackageResolved> packageResolved = packageResolvedParser.parsePackageResolved(packageResolvedContents);
         packageResolved.ifPresent(packageResolvedFormatChecker::checkForVersionCompatibility);
-
-        if (!packageResolved.isPresent()) {
-            // There are no dependencies to extract.
-            DependencyGraph dependencyGraph = new MutableMapDependencyGraph();
-            CodeLocation emptyCodeLocation = new CodeLocation(dependencyGraph, foundCodeLocationFile);
-            return new Extraction.Builder().success(emptyCodeLocation).build();
-        }
-
-        DependencyGraph dependencyGraph = packageResolvedTransformer.transform(packageResolved.get());
-        CodeLocation codeLocation = new CodeLocation(dependencyGraph);
-
-        return new Extraction.Builder()
-            .success(codeLocation)
-            .build();
+        return packageResolved
+            .map(packageResolvedTransformer::transform)
+            .map(PackageResolvedResult::withGraph)
+            .orElse(PackageResolvedResult.empty());
     }
 }
