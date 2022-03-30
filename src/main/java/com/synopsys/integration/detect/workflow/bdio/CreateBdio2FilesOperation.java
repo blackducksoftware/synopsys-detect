@@ -8,6 +8,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +20,7 @@ import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.SpdxCreator;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.blackduck.bdio2.model.Bdio2Document;
+import com.synopsys.integration.blackduck.bdio2.model.ProjectInfo;
 import com.synopsys.integration.blackduck.bdio2.util.Bdio2Factory;
 import com.synopsys.integration.blackduck.bdio2.util.Bdio2Writer;
 import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
@@ -51,8 +53,14 @@ public class CreateBdio2FilesOperation {
             // Bdio 2
             String detectVersion = detectInfo.getDetectVersion();
             SpdxCreator detectCreator = SpdxCreator.createToolSpdxCreator("Detect", detectVersion);
-
-            BdioMetadata bdioMetadata = bdio2Factory.createBdioMetadata(codeLocationName, ZonedDateTime.now(), new Product.Builder().name(detectCreator.getIdentifier()).build());
+            String group = StringUtils.defaultIfBlank(bdioCodeLocation.getDetectCodeLocation().getExternalId().getGroup(), null);
+            ProjectInfo projectInfo = ProjectInfo.nameVersionGroup(projectNameVersion, group);
+            BdioMetadata bdioMetadata = bdio2Factory.createBdioMetadata(
+                codeLocationName,
+                projectInfo,
+                ZonedDateTime.now(),
+                new Product.Builder().name(detectCreator.getIdentifier()).build()
+            );
             bdioMetadata.scanType(Bdio.ScanType.PACKAGE_MANAGER);
 
             Project bdio2Project = bdio2Factory.createProject(externalId, projectNameVersion.getName(), projectNameVersion.getVersion(), true);

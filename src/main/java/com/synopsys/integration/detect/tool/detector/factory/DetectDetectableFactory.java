@@ -47,7 +47,8 @@ import com.synopsys.integration.detectable.detectables.nuget.NugetSolutionDetect
 import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDetectable;
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectable;
 import com.synopsys.integration.detectable.detectables.pip.inspector.PipInspectorDetectable;
-import com.synopsys.integration.detectable.detectables.pipenv.PipenvDetectable;
+import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvDetectable;
+import com.synopsys.integration.detectable.detectables.pipenv.parse.PipfileLockDetectable;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockDetectable;
 import com.synopsys.integration.detectable.detectables.poetry.PoetryDetectable;
 import com.synopsys.integration.detectable.detectables.rebar.RebarDetectable;
@@ -244,6 +245,10 @@ public class DetectDetectableFactory {
 
     public PipenvDetectable createPipenvDetectable(DetectableEnvironment environment) {
         return detectableFactory.createPipenvDetectable(environment, detectableOptionFactory.createPipenvDetectableOptions(), detectExecutableResolver, detectExecutableResolver);
+    }
+
+    public PipfileLockDetectable createPipfileLockDetectable(DetectableEnvironment environment) {
+        return detectableFactory.createPipfileLockDetectable(environment, detectableOptionFactory.createPipfileLockDetectableOptions());
     }
 
     public PipInspectorDetectable createPipInspectorDetectable(DetectableEnvironment environment) {

@@ -17,12 +17,12 @@ import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
+import com.synopsys.integration.bdio.model.dependency.ProjectDependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponentResultView;
-import com.synopsys.integration.blackduck.bdio.model.dependency.ProjectDependency;
 import com.synopsys.integration.blackduck.bdio2.util.Bdio2Factory;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
@@ -739,7 +739,11 @@ public class OperationFactory { //TODO: OperationRunner
 
     public DependencyGraph aggregateTransitive(List<DetectCodeLocation> detectCodeLocations) throws OperationException {
         return auditLog.namedPublic("Transitive Aggregate", "TransitiveAggregate",
-            () -> (new FullAggregateGraphCreator(new SimpleBdioFactory())).aggregateCodeLocations(Dependency::new, directoryManager.getSourceDirectory(), detectCodeLocations)
+            () -> (new FullAggregateGraphCreator(new SimpleBdioFactory())).aggregateCodeLocations(
+                Dependency::new,
+                directoryManager.getSourceDirectory(),
+                detectCodeLocations
+            )
         );
     }
 

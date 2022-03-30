@@ -20,6 +20,7 @@ public enum DetectorStatusCode {
     NOT_SELF_NESTABLE("Nestable but this detector already applied in a parent directory."),
     NPM_NODE_MODULES_NOT_FOUND("A package.json was located in the target project, but the node_modules folder was NOT located."),
     PASSED("Detector passed."),
+    PIPFILE_LOCK_NOT_FOUND("A Pipfile was located in the target project, but a Pipfile.lock was NOT located."),
     POETRY_LOCKFILE_NOT_FOUND("A pyproject.toml was located in the target project, but the Poetry.lock file was NOT located."),
     PROPERTY_INSUFFICIENT("The properties are insufficient to run."),
     PUBSPEC_LOCK_NOT_FOUND("A pubspec.yaml file was found, but a pubspec.lock file was NOT found."),
@@ -29,7 +30,7 @@ public enum DetectorStatusCode {
     WRONG_OPERATING_SYSTEM_RESULT("Cannot run on the used operating system."),
     YIELDED("Yielded to other detectors.");
 
-    private String description;
+    private final String description;
 
     DetectorStatusCode(String description) {
         this.description = description;

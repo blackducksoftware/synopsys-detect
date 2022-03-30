@@ -61,6 +61,7 @@ import com.synopsys.integration.detectable.detectables.lerna.LernaPackageType;
 import com.synopsys.integration.detectable.detectables.npm.NpmDependencyType;
 import com.synopsys.integration.detectable.detectables.packagist.PackagistDependencyType;
 import com.synopsys.integration.detectable.detectables.pear.PearDependencyType;
+import com.synopsys.integration.detectable.detectables.pipenv.parse.PipenvDependencyType;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyTypeV2;
 import com.synopsys.integration.detectable.detectables.rubygems.GemspecDependencyType;
@@ -516,6 +517,17 @@ public class DetectProperties {
             .setInfo("flutter Executable", DetectPropertyFromVersion.VERSION_7_5_0)
             .setHelp("The path to the flutter executable.")
             .setGroups(DetectGroup.DART, DetectGroup.GLOBAL)
+            .build();
+
+    public static final NoneEnumListProperty<PipenvDependencyType> DETECT_PIPFILE_DEPENDENCY_TYPES_EXCLUDED =
+        NoneEnumListProperty.newBuilder("detect.pipfile.dependency.types.excluded", NoneEnum.NONE, PipenvDependencyType.class)
+            .setInfo("Pipfile Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_13_0)
+            .setHelp(
+                "A comma-separated list of dependency types that will be excluded.",
+                "If DEV is excluded, the Pipfile Lock Detector will exclude 'develop' dependencies when parsing the Pipfile.lock file."
+            )
+            .setExample(PipenvDependencyType.DEV.name())
+            .setGroups(DetectGroup.PIP, DetectGroup.DETECTOR, DetectGroup.GLOBAL)
             .build();
 
     public static final NoneEnumListProperty<DartPubDependencyType> DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED =

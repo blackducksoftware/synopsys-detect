@@ -1,5 +1,7 @@
 package com.synopsys.integration.detectable.detectables.docker;
 
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +21,7 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 import com.synopsys.integration.detectable.detectable.result.PropertyInsufficientDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 //TODO: Violates Detectable contract. Take folder -> give project data. This does not take a folder.
 @DetectableInfo(language = "N/A", forge = "Derived from the Linux distribution", requirementsMarkdown = "Access to a Docker Engine. See <a href='https://blackducksoftware.github.io/blackduck-docker-inspector/latest/overview/'>Docker Inspector documentation</a> for details.")
@@ -92,7 +95,7 @@ public class DockerDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws IOException, ExecutableRunnerException {
         String image = dockerDetectableOptions.getSuppliedDockerImage().orElse("");
         String imageId = dockerDetectableOptions.getSuppliedDockerImageId().orElse("");
         String tar = dockerDetectableOptions.getSuppliedDockerTar().orElse("");

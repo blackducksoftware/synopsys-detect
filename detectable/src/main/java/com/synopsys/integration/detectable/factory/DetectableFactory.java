@@ -126,6 +126,8 @@ import com.synopsys.integration.detectable.detectables.docker.DockerDetectable;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectableOptions;
 import com.synopsys.integration.detectable.detectables.docker.DockerExtractor;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
+import com.synopsys.integration.detectable.detectables.docker.ImageIdentifierGenerator;
+import com.synopsys.integration.detectable.detectables.docker.parser.DockerInspectorResultsFileParser;
 import com.synopsys.integration.detectable.detectables.git.GitDetectable;
 import com.synopsys.integration.detectable.detectables.git.GitParseDetectable;
 import com.synopsys.integration.detectable.detectables.git.cli.GitCliExtractor;
@@ -212,12 +214,18 @@ import com.synopsys.integration.detectable.detectables.pip.inspector.PipInspecto
 import com.synopsys.integration.detectable.detectables.pip.inspector.PipInspectorDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pip.inspector.PipInspectorExtractor;
 import com.synopsys.integration.detectable.detectables.pip.inspector.parser.PipInspectorTreeParser;
-import com.synopsys.integration.detectable.detectables.pipenv.PipenvDetectable;
-import com.synopsys.integration.detectable.detectables.pipenv.PipenvDetectableOptions;
-import com.synopsys.integration.detectable.detectables.pipenv.PipenvExtractor;
-import com.synopsys.integration.detectable.detectables.pipenv.parser.PipEnvJsonGraphParser;
-import com.synopsys.integration.detectable.detectables.pipenv.parser.PipenvFreezeParser;
-import com.synopsys.integration.detectable.detectables.pipenv.parser.PipenvTransformer;
+import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvDetectable;
+import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvDetectableOptions;
+import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvExtractor;
+import com.synopsys.integration.detectable.detectables.pipenv.build.parser.PipEnvJsonGraphParser;
+import com.synopsys.integration.detectable.detectables.pipenv.build.parser.PipenvFreezeParser;
+import com.synopsys.integration.detectable.detectables.pipenv.build.parser.PipenvTransformer;
+import com.synopsys.integration.detectable.detectables.pipenv.parse.PipfileLockDependencyTransformer;
+import com.synopsys.integration.detectable.detectables.pipenv.parse.PipfileLockDependencyVersionParser;
+import com.synopsys.integration.detectable.detectables.pipenv.parse.PipfileLockDetectable;
+import com.synopsys.integration.detectable.detectables.pipenv.parse.PipfileLockDetectableOptions;
+import com.synopsys.integration.detectable.detectables.pipenv.parse.PipfileLockExtractor;
+import com.synopsys.integration.detectable.detectables.pipenv.parse.PipfileLockTransformer;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockDetectable;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockExtractor;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockOptions;
@@ -555,6 +563,17 @@ public class DetectableFactory {
         PipenvResolver pipenvResolver
     ) {
         return new PipenvDetectable(environment, pipenvDetectableOptions, fileFinder, pythonResolver, pipenvResolver, pipenvExtractor());
+    }
+
+    public PipfileLockDetectable createPipfileLockDetectable(
+        DetectableEnvironment environment,
+        PipfileLockDetectableOptions pipfileLockDetectableOptions
+    ) {
+        PipfileLockDependencyVersionParser dependencyVersionParser = new PipfileLockDependencyVersionParser();
+        PipfileLockTransformer pipfileLockTransformer = new PipfileLockTransformer(dependencyVersionParser, pipfileLockDetectableOptions.getDependencyTypeFilter());
+        PipfileLockDependencyTransformer pipfileLockDependencyTransformer = new PipfileLockDependencyTransformer();
+        PipfileLockExtractor pipfileLockExtractor = new PipfileLockExtractor(gson, pipfileLockTransformer, pipfileLockDependencyTransformer);
+        return new PipfileLockDetectable(environment, fileFinder, pipfileLockExtractor);
     }
 
     public PipInspectorDetectable createPipInspectorDetectable(
@@ -1030,7 +1049,15 @@ public class DetectableFactory {
     }
 
     private DockerExtractor dockerExtractor() {
-        return new DockerExtractor(fileFinder, executableRunner, new BdioTransformer(), new ExternalIdFactory(), gson);
+        return new DockerExtractor(
+            fileFinder,
+            executableRunner,
+            new BdioTransformer(),
+            new ExternalIdFactory(),
+            gson,
+            new DockerInspectorResultsFileParser(gson),
+            new ImageIdentifierGenerator()
+        );
     }
 
     private GoGradleLockParser goGradleLockParser() {
