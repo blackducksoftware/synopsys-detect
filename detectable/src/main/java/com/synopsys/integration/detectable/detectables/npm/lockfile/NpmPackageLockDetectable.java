@@ -37,7 +37,10 @@ public class NpmPackageLockDetectable extends Detectable {
     public DetectableResult applicable() {
         Requirements requirements = new Requirements(fileFinder, environment);
         lockfile = requirements.file(PACKAGE_LOCK_JSON);
-        packageJson = requirements.optionalFile(PACKAGE_JSON, () -> logger.warn("Npm applied but it could not find a package.json so dependencies may not be entirely accurate."));
+        packageJson = requirements.optionalFile(
+            PACKAGE_JSON,
+            () -> logger.warn("Npm Package Lock applied but no package.json was found; dependency type filtering (if applied) may not be entirely accurate.")
+        );
         return requirements.result();
     }
 
