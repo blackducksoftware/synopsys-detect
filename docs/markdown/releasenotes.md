@@ -4,6 +4,8 @@
 
 ### New features
 
+* Added support for a buildless Pipenv detector that parses the Pipfile.lock file (see [python support page](packagemgrs/python.md) for more details).
+
 ### Changed features
 
 ### Resolved issues

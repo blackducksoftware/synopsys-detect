@@ -1,4 +1,6 @@
-# Ivy support
+# Ivy (Ant) support
+
+[solution_name] supports an Ivy detector to extract dependency information for projects that use Ivy, a common dependency manager for Ant projects.
 
 [solution_name] runs the Ivy detector if it finds a ivy.xml file in your project.
 

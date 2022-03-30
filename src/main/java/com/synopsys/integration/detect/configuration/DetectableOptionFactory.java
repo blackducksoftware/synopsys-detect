@@ -340,7 +340,7 @@ public class DetectableOptionFactory {
     }
 
     public PipfileLockDetectableOptions createPipfileLockDetectableOptions() {
-        Set<PipenvDependencyType> excludedDependencyTypes = detectConfiguration.getValue(DetectProperties.DETECT_PIPENV_DEPENDENCY_TYPES_EXCLUDED).representedValueSet();
+        Set<PipenvDependencyType> excludedDependencyTypes = detectConfiguration.getValue(DetectProperties.DETECT_PIPFILE_DEPENDENCY_TYPES_EXCLUDED).representedValueSet();
         EnumListFilter<PipenvDependencyType> dependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
         return new PipfileLockDetectableOptions(dependencyTypeFilter);
     }

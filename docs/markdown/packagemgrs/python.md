@@ -4,6 +4,7 @@
 
 * Pip detector
 * Pipenv detector
+* Pipfile lock detector
 * Poetry detector
 
 ## The Pip detector
@@ -57,6 +58,18 @@ The Pipenv detector also requires Python and Pipenv executables:
 The Pipenv detector runs `pipenv run pip freeze` and `pipenv graph --bare --json-tree` and derives dependency information from the output. The dependency hierarchy is derived from the output of `pipenv graph --bare --json-tree`. The output of `pipenv run pip freeze` is used to improve the accuracy of dependency versions.
 
 To troubleshoot of the Pipenv detector, start by running `pipenv graph --bare --json-tree`, and making sure that the output looks correct since this is the basis from which [solution_name] constructs the BDIO. If the output of `pipenv graph --bare --json-tree` does not look correct, make sure the packages (dependencies) are installed into the Pipenv virtual environment (`pipenv install`).
+
+## Pipfile lock detector
+
+The Pipfile lock detector discovers dependencies of Python projects.
+
+The Pipfile lock detector attempts to run on your project if either of the following is true AND neither of the Pip or Pipenv detectors apply:
+
+1. A Pipfile.lock file is found.
+2. A Pipfile file is found.
+
+The Pipfile lock detector parses the Pipfile.lock file for dependency information. If the detector discovers a Pipfile file but not a Pipfile.lock file, it will prompt the user to generate a Pipfile.lock file by running `pipenv lock` and then run [solution_name] again.
+Pipfile.lock dependencies can be filtered using the [detect.pipenv.dependency.types.excluded](../properties/detectors/pip.md#pipfile-dependency-types-excluded) property.
 
 ## Poetry detector
 
