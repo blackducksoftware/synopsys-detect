@@ -2,48 +2,49 @@ package com.synopsys.integration.detectable.util;
 
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.dependency.DependencyFactory;
 
 public class DependencyCreator {
-    public static DependencyFactory sharedFactory = new DependencyFactory(ExternalIdCreator.sharedFactory);
-
-    public static Dependency path(final Forge forge, final String path) {
-        return sharedFactory.createPathDependency(forge, path);
+    private DependencyCreator() {
+        // Hiding constructor
     }
 
-    public static Dependency moduleNames(final Forge forge, final String... moduleNames) {
-        return sharedFactory.createModuleNamesDependency(forge, moduleNames);
+    public static Dependency path(Forge forge, String path) {
+        return Dependency.FACTORY.createPathDependency(forge, path);
     }
 
-    public static Dependency nameVersion(final Forge forge, final String name, final String version) {
-        return sharedFactory.createNameVersionDependency(forge, name, version);
+    public static Dependency moduleNames(Forge forge, String... moduleNames) {
+        return Dependency.FACTORY.createModuleNamesDependency(forge, moduleNames);
     }
 
-    public static Dependency nameVersion(final Forge forge, final String name) {
-        return sharedFactory.createNameVersionDependency(forge, name);
+    public static Dependency nameVersion(Forge forge, String name, String version) {
+        return Dependency.FACTORY.createNameVersionDependency(forge, name, version);
     }
 
-    public static Dependency yocto(final String layer, final String name, final String version) {
-        return sharedFactory.createYoctoDependency(layer, name, version);
+    public static Dependency nameVersion(Forge forge, String name) {
+        return Dependency.FACTORY.createNameVersionDependency(forge, name);
     }
 
-    public static Dependency yocto(final String layer, final String name) {
-        return sharedFactory.createYoctoDependency(layer, name);
+    public static Dependency yocto(String layer, String name, String version) {
+        return Dependency.FACTORY.createYoctoDependency(layer, name, version);
     }
 
-    public static Dependency maven(final String group, final String name, final String version) {
-        return sharedFactory.createMavenDependency(group, name, version);
+    public static Dependency yocto(String layer, String name) {
+        return Dependency.FACTORY.createYoctoDependency(layer, name);
     }
 
-    public static Dependency maven(final String group, final String name) {
-        return sharedFactory.createMavenDependency(group, name);
+    public static Dependency maven(String group, String name, String version) {
+        return Dependency.FACTORY.createMavenDependency(group, name, version);
     }
 
-    public static Dependency architecture(final Forge forge, final String name, final String version, final String architecture) {
-        return sharedFactory.createArchitectureDependency(forge, name, version, architecture);
+    public static Dependency maven(String group, String name) {
+        return Dependency.FACTORY.createMavenDependency(group, name);
     }
 
-    public static Dependency architecture(final Forge forge, final String name, final String architecture) {
-        return sharedFactory.createArchitectureDependency(forge, name, architecture);
+    public static Dependency architecture(Forge forge, String name, String version, String architecture) {
+        return Dependency.FACTORY.createArchitectureDependency(forge, name, version, architecture);
+    }
+
+    public static Dependency architecture(Forge forge, String name, String architecture) {
+        return Dependency.FACTORY.createArchitectureDependency(forge, name, architecture);
     }
 }
