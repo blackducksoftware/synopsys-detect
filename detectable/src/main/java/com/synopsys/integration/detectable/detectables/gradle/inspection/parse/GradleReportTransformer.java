@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
+import com.synopsys.integration.bdio.model.dependency.ProjectDependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
@@ -33,7 +34,13 @@ public class GradleReportTransformer {
     }
 
     public CodeLocation transform(GradleReport gradleReport) {
-        MutableDependencyGraph graph = new MutableMapDependencyGraph();
+        ProjectDependency projectDependency = new ProjectDependency(Dependency.FACTORY.createMavenDependency(
+            gradleReport.getProjectGroup(),
+            gradleReport.getProjectName(),
+            gradleReport.getProjectVersionName()
+        ));
+        // isRootProjectPlaceholder = true for now. I think eventually (8.0.0) we could change how the graph is built to use this node instead.
+        MutableDependencyGraph graph = new MutableMapDependencyGraph(projectDependency, true);
 
         for (GradleConfiguration configuration : gradleReport.getConfigurations()) {
             if (configuration.isResolved() || configurationTypeFilter.shouldInclude(GradleConfigurationType.UNRESOLVED)) {
