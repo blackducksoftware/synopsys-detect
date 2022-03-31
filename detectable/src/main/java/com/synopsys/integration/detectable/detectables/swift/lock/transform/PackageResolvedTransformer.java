@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.xcode.transform;
+package com.synopsys.integration.detectable.detectables.swift.lock.transform;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -22,10 +22,6 @@ public class PackageResolvedTransformer {
     private static final String[] REPO_SUFFIX_TO_STRIP = { ".git" };
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    public PackageResolvedTransformer() {
-
-    }
 
     public DependencyGraph transform(PackageResolved packageResolved) {
         MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();

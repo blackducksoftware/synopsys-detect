@@ -11,7 +11,7 @@ import com.synopsys.integration.detectable.detectables.swift.lock.data.PackageRe
 import com.synopsys.integration.detectable.detectables.swift.lock.model.PackageResolvedResult;
 import com.synopsys.integration.detectable.detectables.swift.lock.parse.PackageResolvedFormatChecker;
 import com.synopsys.integration.detectable.detectables.swift.lock.parse.PackageResolvedParser;
-import com.synopsys.integration.detectable.detectables.xcode.transform.PackageResolvedTransformer;
+import com.synopsys.integration.detectable.detectables.swift.lock.transform.PackageResolvedTransformer;
 
 public class PackageResolvedExtractor {
     private final PackageResolvedParser packageResolvedParser;

@@ -266,12 +266,12 @@ import com.synopsys.integration.detectable.detectables.swift.lock.PackageResolve
 import com.synopsys.integration.detectable.detectables.swift.lock.SwiftPackageResolvedDetectable;
 import com.synopsys.integration.detectable.detectables.swift.lock.parse.PackageResolvedFormatChecker;
 import com.synopsys.integration.detectable.detectables.swift.lock.parse.PackageResolvedParser;
+import com.synopsys.integration.detectable.detectables.swift.lock.transform.PackageResolvedTransformer;
 import com.synopsys.integration.detectable.detectables.xcode.XcodeProjectDetectable;
 import com.synopsys.integration.detectable.detectables.xcode.XcodeWorkspaceDetectable;
 import com.synopsys.integration.detectable.detectables.xcode.XcodeWorkspaceExtractor;
 import com.synopsys.integration.detectable.detectables.xcode.parse.XcodeWorkspaceFormatChecker;
 import com.synopsys.integration.detectable.detectables.xcode.parse.XcodeWorkspaceParser;
-import com.synopsys.integration.detectable.detectables.xcode.transform.PackageResolvedTransformer;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockExtractor;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;

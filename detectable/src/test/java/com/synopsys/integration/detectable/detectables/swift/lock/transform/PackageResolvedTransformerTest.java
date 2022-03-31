@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.xcode.transform;
+package com.synopsys.integration.detectable.detectables.swift.lock.transform;
 
 import java.util.Collections;
 import java.util.List;
