@@ -21,7 +21,7 @@ public class PackageResolvedResult {
         return new PackageResolvedResult(new MutableMapDependencyGraph(), null);
     }
 
-    public static PackageResolvedResult withGraph(DependencyGraph dependencyGraph) {
+    public static PackageResolvedResult success(DependencyGraph dependencyGraph) {
         return new PackageResolvedResult(dependencyGraph, null);
     }
 

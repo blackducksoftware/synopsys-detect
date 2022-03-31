@@ -34,7 +34,7 @@ public class PackageResolvedExtractor {
         packageResolved.ifPresent(packageResolvedFormatChecker::checkForVersionCompatibility);
         return packageResolved
             .map(packageResolvedTransformer::transform)
-            .map(PackageResolvedResult::withGraph)
+            .map(PackageResolvedResult::success)
             .orElse(PackageResolvedResult.empty());
     }
 }

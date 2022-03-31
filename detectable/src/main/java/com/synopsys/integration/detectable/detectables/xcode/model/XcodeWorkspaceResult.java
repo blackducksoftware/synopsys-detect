@@ -19,7 +19,7 @@ public class XcodeWorkspaceResult {
         return new XcodeWorkspaceResult(null, failedDetectableResults);
     }
 
-    public static XcodeWorkspaceResult fromGraphs(List<DependencyGraph> dependencyGraphs) {
+    public static XcodeWorkspaceResult success(List<DependencyGraph> dependencyGraphs) {
         MutableMapDependencyGraph xcodeWorkspaceGraph = new MutableMapDependencyGraph();
         dependencyGraphs.forEach(xcodeWorkspaceGraph::addGraphAsChildrenToRoot);
         return new XcodeWorkspaceResult(xcodeWorkspaceGraph, Collections.emptyList());

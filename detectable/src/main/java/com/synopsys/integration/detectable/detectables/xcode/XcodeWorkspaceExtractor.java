@@ -88,7 +88,7 @@ public class XcodeWorkspaceExtractor {
             return XcodeWorkspaceResult.failure(failedDetectableResults);
         }
 
-        return XcodeWorkspaceResult.fromGraphs(packageResolvedResults.stream()
+        return XcodeWorkspaceResult.success(packageResolvedResults.stream()
             .map(PackageResolvedResult::getDependencyGraph)
             .collect(Collectors.toList())
         );
