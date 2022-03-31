@@ -53,6 +53,10 @@ public class Requirements {
         }
     }
 
+    public void eitherFile(String primaryPattern, String secondaryPattern) {
+        eitherFile(primaryPattern, environment.getDirectory(), secondaryPattern, environment.getDirectory(), primary -> {}, secondary -> {});
+    }
+
     public void eitherFile(String primaryPattern, String secondaryPattern, Consumer<File> primaryConsumer, Consumer<File> secondaryConsumer) {
         eitherFile(primaryPattern, environment.getDirectory(), secondaryPattern, environment.getDirectory(), primaryConsumer, secondaryConsumer);
     }

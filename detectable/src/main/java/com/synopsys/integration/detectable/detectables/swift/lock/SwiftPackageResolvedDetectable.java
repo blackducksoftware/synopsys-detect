@@ -19,6 +19,7 @@ import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 @DetectableInfo(language = "Swift", forge = "Swift.org", requirementsMarkdown = "File: Package.swift, Package.resolved")
 public class SwiftPackageResolvedDetectable extends Detectable {
+    public static final String PACKAGE_SWIFT_FILENAME = "Package.swift";
     public static final String PACKAGE_RESOLVED_FILENAME = "Package.resolved";
 
     private final FileFinder fileFinder;
@@ -35,7 +36,7 @@ public class SwiftPackageResolvedDetectable extends Detectable {
     @Override
     public DetectableResult applicable() {
         Requirements requirements = new Requirements(fileFinder, environment);
-        requirements.file("Package.swift");
+        requirements.eitherFile(PACKAGE_SWIFT_FILENAME, PACKAGE_RESOLVED_FILENAME);
         return requirements.result();
     }
 

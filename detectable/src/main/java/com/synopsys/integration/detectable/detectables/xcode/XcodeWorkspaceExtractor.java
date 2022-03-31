@@ -55,11 +55,11 @@ public class XcodeWorkspaceExtractor {
 
         List<PackageResolvedResult> packageResolvedResults = new LinkedList<>();
         for (XcodeFileReference fileReference : xcodeWorkspace.getFileReferences()) {
-            File workspaceSubprojectDirectory = workspaceDirectory.toPath().resolve(fileReference.getRelativeLocation()).toFile();
-            if (!workspaceSubprojectDirectory.exists()) {
+            File workspaceDefinedDirectory = workspaceDirectory.getParentFile().toPath().resolve(fileReference.getRelativeLocation()).toFile();
+            if (!workspaceDefinedDirectory.exists()) {
                 logger.warn(
                     "Failed to find subproject '{}' as defined in the workspace at '{}'",
-                    workspaceSubprojectDirectory,
+                    workspaceDefinedDirectory,
                     workspaceDataFile.getParentFile().getAbsolutePath()
                 );
                 continue;
@@ -67,12 +67,11 @@ public class XcodeWorkspaceExtractor {
 
             switch (fileReference.getFileReferenceType()) {
                 case DIRECTORY:
-                    File projectDirectory = workspaceDirectory.toPath().resolve(fileReference.getRelativeLocation()).toFile();
-                    PackageResolvedResult swiftProjectResult = extractStandalonePackageResolved(workspaceDirectory, projectDirectory);
+                    PackageResolvedResult swiftProjectResult = extractStandalonePackageResolved(workspaceDirectory, workspaceDefinedDirectory);
                     packageResolvedResults.add(swiftProjectResult);
                     break;
                 case XCODE_PROJECT:
-                    PackageResolvedResult xcodeProjectResult = extractFromXcodeProject(workspaceDirectory);
+                    PackageResolvedResult xcodeProjectResult = extractFromXcodeProject(workspaceDirectory, workspaceDefinedDirectory);
                     packageResolvedResults.add(xcodeProjectResult);
                     break;
                 default:
@@ -111,8 +110,8 @@ public class XcodeWorkspaceExtractor {
         }
     }
 
-    private PackageResolvedResult extractFromXcodeProject(File workspaceDirectory) throws IOException {
-        File searchDirectory = new File(workspaceDirectory, XcodeProjectDetectable.PACKAGE_RESOLVED_RELATIVE_PATH);
+    private PackageResolvedResult extractFromXcodeProject(File workspaceDirectory, File projectDirectory) throws IOException {
+        File searchDirectory = new File(projectDirectory, XcodeProjectDetectable.PACKAGE_RESOLVED_RELATIVE_PATH);
         File packageResolved = fileFinder.findFile(searchDirectory, SwiftPackageResolvedDetectable.PACKAGE_RESOLVED_FILENAME);
         if (packageResolved != null) {
             return packageResolvedExtractor.extract(packageResolved);

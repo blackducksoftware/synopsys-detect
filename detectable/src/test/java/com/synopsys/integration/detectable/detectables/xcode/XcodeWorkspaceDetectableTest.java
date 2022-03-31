@@ -22,13 +22,14 @@
  */
 package com.synopsys.integration.detectable.detectables.xcode;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.Assertions;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
@@ -37,23 +38,80 @@ import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
-// TODO: Run this test. Thinking about 1 Extraction
 public class XcodeWorkspaceDetectableTest extends DetectableFunctionalTest {
     public XcodeWorkspaceDetectableTest() throws IOException {
-        super("Xcode Workspace - Package.resolved & ");
+        super("XcodeWorkspace");
     }
 
     @Override
     public void setup() throws IOException {
-        // Using the same file to simplify assertions
-        String packageResolvedResourcePath = "/xcode/Package.resolved";
-
         // Within the workspace directory
-        addFileFromResources(Paths.get("jake-test.xcworkspace/xcshareddata/swiftpm/Package.resolved"), packageResolvedResourcePath);
+        addFile(
+            Paths.get("jake-test.xcworkspace/xcshareddata/swiftpm/Package.resolved"),
+            "{",
+            "  \"object\": {",
+            "    \"pins\": [",
+            "      {",
+            "        \"package\": \"swift-argument-parser\",",
+            "        \"repositoryURL\": \"https://github.com/apple/swift-argument-parser.git\",",
+            "        \"state\": {",
+            "          \"branch\": null,",
+            "          \"revision\": \"d2930e8fcf9c33162b9fcc1d522bc975e2d4179b\",",
+            "          \"version\": \"1.0.1\"",
+            "        }",
+            "      },",
+            "      {",
+            "        \"package\": \"BadUrl\",",
+            "        \"repositoryURL\": \"invalid/url\",",
+            "        \"state\": {",
+            "          \"branch\": null,",
+            "          \"revision\": \"something123\",",
+            "          \"version\": \"1.2.3\"",
+            "        }",
+            "      }",
+            "    ]",
+            "  }",
+            "}"
+        );
 
         // Defined in workspace data file
-        addFileFromResources(Paths.get("project/MyLibrary/Package.resolved"), packageResolvedResourcePath);
-        addFileFromResources(Paths.get("project/jakem-test.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"), packageResolvedResourcePath);
+        Path projectDirectory = addDirectory(Paths.get("project"));
+        addFile(
+            projectDirectory.resolve("MyLibrary/Package.resolved"),
+            "{",
+            "  \"object\": {",
+            "    \"pins\": [",
+            "      {",
+            "        \"package\": \"Auth0\",",
+            "        \"repositoryURL\": \"https://github.com/auth0/Auth0.swift.git\",",
+            "        \"state\": {",
+            "          \"branch\": null,",
+            "          \"revision\": \"8e8a6b0337a27a3342beb72b5407141fdd4a7860\",",
+            "          \"version\": \"1.35.0\"",
+            "        }",
+            "      }",
+            "    ]",
+            "  }",
+            "}"
+        );
+        addFile(
+            projectDirectory.resolve("jakem-test.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"),
+            "{",
+            "  \"object\": {",
+            "    \"pins\": [",
+            "      {",
+            "        \"package\": \"R.swift.Library\",",
+            "        \"repositoryURL\": \"https://github.com/mac-cain13/R.swift.Library\",",
+            "        \"state\": {",
+            "          \"branch\": null,",
+            "          \"revision\": \"8998cfe77f4fce79ee6dfab0c88a7d551659d8fb\",",
+            "          \"version\": \"5.4.0\"",
+            "        }",
+            "      }",
+            "    ]",
+            "  }",
+            "}"
+        );
 
         addFile(
             Paths.get("jake-test.xcworkspace/contents.xcworkspacedata"),
@@ -64,7 +122,7 @@ public class XcodeWorkspaceDetectableTest extends DetectableFunctionalTest {
             "      location = \"group:project/MyLibrary\">",
             "   </FileRef>",
             "   <FileRef",
-            "      location = \"group:project/jakem-test.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved\">",
+            "      location = \"group:project/jakem-test.xcodeproj\">",
             "   </FileRef>",
             "</Workspace>"
         );
@@ -78,20 +136,11 @@ public class XcodeWorkspaceDetectableTest extends DetectableFunctionalTest {
 
     @Override
     public void assertExtraction(@NotNull Extraction extraction) {
-        Assertions.assertEquals(3, extraction.getCodeLocations().size(), "Expected 1 code location from local and 2 defined in the workspace data file.");
+        assertEquals(1, extraction.getCodeLocations().size(), "Expected 1 code location from local and 2 defined in the workspace data file.");
 
         CodeLocation localCodeLocation = extraction.getCodeLocations().get(0);
-        assertPackageResolvedGraph(localCodeLocation.getDependencyGraph());
 
-        CodeLocation directoryCodeLocation = extraction.getCodeLocations().get(1);
-        assertPackageResolvedGraph(directoryCodeLocation.getDependencyGraph());
-
-        CodeLocation projectCodeLocation = extraction.getCodeLocations().get(2);
-        assertPackageResolvedGraph(projectCodeLocation.getDependencyGraph());
-    }
-
-    private void assertPackageResolvedGraph(DependencyGraph packageResolvedDependencyGraph) {
-        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.GITHUB, packageResolvedDependencyGraph);
+        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.GITHUB, localCodeLocation.getDependencyGraph());
         graphAssert.hasRootDependency("apple/swift-argument-parser", "1.0.1");
         graphAssert.hasRootDependency("auth0/Auth0.swift", "1.35.0");
         graphAssert.hasRootDependency("mac-cain13/R.swift.Library", "5.4.0");
@@ -99,4 +148,5 @@ public class XcodeWorkspaceDetectableTest extends DetectableFunctionalTest {
         graphAssert.hasNoDependency("invalid/url", "1.2.3");
         graphAssert.hasRootSize(3);
     }
+
 }

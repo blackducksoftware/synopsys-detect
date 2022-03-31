@@ -14,8 +14,6 @@ import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.swift.lock.data.PackageResolved;
 import com.synopsys.integration.detectable.detectables.swift.lock.data.PackageState;
 import com.synopsys.integration.detectable.detectables.swift.lock.data.ResolvedPackage;
@@ -25,10 +23,8 @@ public class PackageResolvedTransformer {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final ExternalIdFactory externalIdFactory;
+    public PackageResolvedTransformer() {
 
-    public PackageResolvedTransformer(ExternalIdFactory externalIdFactory) {
-        this.externalIdFactory = externalIdFactory;
     }
 
     public DependencyGraph transform(PackageResolved packageResolved) {
@@ -49,8 +45,7 @@ public class PackageResolvedTransformer {
         try {
             String name = extractPackageName(repositoryURL);
             String version = packageState.getVersion();
-            ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.GITHUB, name, version);
-            return Optional.of(new Dependency(name, version, externalId));
+            return Optional.of(Dependency.FACTORY.createNameVersionDependency(Forge.GITHUB, name, version));
         } catch (MalformedURLException exception) {
             logger.warn(String.format("Package '%s' has a malformed url. It cannot be added to the graph.", resolvedPackage.getPackageName()));
             logger.debug(String.format(

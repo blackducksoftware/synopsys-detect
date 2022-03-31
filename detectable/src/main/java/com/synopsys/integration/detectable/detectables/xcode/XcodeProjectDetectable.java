@@ -56,7 +56,7 @@ public class XcodeProjectDetectable extends Detectable {
         PackageResolvedResult result = packageResolvedExtractor.extract(foundPackageResolvedFile);
         return result.getFailedDetectableResult()
             .map(Extraction::failure)
-            .orElse(Extraction.success(new CodeLocation(result.getDependencyGraph(), environment.getDirectory())));
+            .orElse(Extraction.success(new CodeLocation(result.getDependencyGraph(), foundCodeLocationFile)));
     }
 
 }
