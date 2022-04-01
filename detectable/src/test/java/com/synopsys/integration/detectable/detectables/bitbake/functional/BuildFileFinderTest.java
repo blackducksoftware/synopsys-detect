@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.util.Optional;
 
+import org.apache.commons.lang3.SystemUtils;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -45,6 +47,8 @@ class BuildFileFinderTest {
 
     @Test
     void testFindingBasedOnLicenseDir() {
+        Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
+        
         File buildDir = FunctionalTestFiles.asFile("/bitbake/builddir_env");
         File licenseDir = FunctionalTestFiles.asFile("/bitbake/builddir_env/envprovidedpath/licenses");
         File lastModifiedManifestFile = new File(licenseDir, "targetimage-last-modified-architecture/license.manifest");
