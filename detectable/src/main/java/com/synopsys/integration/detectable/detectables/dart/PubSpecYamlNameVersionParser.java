@@ -1,9 +1,5 @@
 package com.synopsys.integration.detectable.detectables.dart;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,12 +9,7 @@ public class PubSpecYamlNameVersionParser {
     private static final String NAME_KEY = "name:";
     private static final String VERSION_KEY = "version:";
 
-    public Optional<NameVersion> parseNameVersion(File pubSpecYamlFile) throws IOException {
-        if (pubSpecYamlFile == null) {
-            return Optional.empty();
-        }
-
-        List<String> pubSpecYamlLines = Files.readAllLines(pubSpecYamlFile.toPath(), StandardCharsets.UTF_8);
+    public Optional<NameVersion> parseNameVersion(List<String> pubSpecYamlLines) {
         String name = null;
         String version = null;
         for (String line : pubSpecYamlLines) {
