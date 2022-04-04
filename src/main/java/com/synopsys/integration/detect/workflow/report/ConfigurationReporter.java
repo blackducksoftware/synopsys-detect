@@ -24,7 +24,7 @@ public class ConfigurationReporter {
         writer.writeLine("Detect Configuration");
         writer.writeSeparator();
         PropertyConfigurationHelpContext helpContext = new PropertyConfigurationHelpContext(propertyConfiguration);
-        helpContext.printKnownCurrentValues(writer::writeLine, maskedRawPropertyValues, new HashMap<>());
+        helpContext.printCurrentValues(writer::writeLine, maskedRawPropertyValues, new HashMap<>());
         writer.writeSeparator();
     }
 }

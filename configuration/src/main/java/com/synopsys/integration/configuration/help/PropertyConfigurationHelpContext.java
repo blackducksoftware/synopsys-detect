@@ -45,11 +45,7 @@ public class PropertyConfigurationHelpContext {
         this.propertyConfiguration = propertyConfiguration;
     }
 
-    public void printCurrentValues(Consumer<String> logger, SortedMap<String, String> maskedRawPropertyValues, Map<String, String> additionalNotes) {
-        printKnownCurrentValues(logger, maskedRawPropertyValues, additionalNotes);
-    }
-
-    public void printKnownCurrentValues(
+    public void printCurrentValues(
         Consumer<String> logger,
         SortedMap<String, String> maskedRawPropertyValues,
         Map<String, String> additionalNotes

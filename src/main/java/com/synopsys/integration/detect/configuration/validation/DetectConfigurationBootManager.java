@@ -24,8 +24,6 @@ import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectIssueType;
 
 public class DetectConfigurationBootManager {
-    private static final String[] DETECT_PASSTHROUGH_PREFIXES = { DetectProperties.DOCKER_PASSTHROUGH.getKey() };
-
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final EventSystem eventSystem;
     private final PropertyConfigurationHelpContext detectConfigurationReporter;
@@ -92,7 +90,7 @@ public class DetectConfigurationBootManager {
     }
 
     public void printConfiguration(SortedMap<String, String> maskedRawPropertyValues, Map<String, String> additionalNotes) {
-        detectConfigurationReporter.printKnownCurrentValues(logger::info, maskedRawPropertyValues, additionalNotes);
+        detectConfigurationReporter.printCurrentValues(logger::info, maskedRawPropertyValues, additionalNotes);
     }
 
     // Check for options that are just plain bad, ie giving a detector type we don't know about.
