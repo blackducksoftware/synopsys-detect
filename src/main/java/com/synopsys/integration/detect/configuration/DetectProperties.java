@@ -715,6 +715,15 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
+    public static final BooleanProperty DETECT_FORCE_SUCCESS_ON_SKIP =
+        BooleanProperty.newBuilder("detect.force.success.on.skip", true)
+            .setInfo("Force Success On Skip", DetectPropertyFromVersion.VERSION_7_12_1)
+            .setHelp(
+                "If true, Detect will always exit with code 0 when a scan of any type is skipped. Typically this happens when the Black Duck minimum scan interval timer has not been met.")
+            .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
+            .setCategory(DetectCategory.Advanced)
+            .build();
+
     public static final NullablePathProperty DETECT_GIT_PATH =
         NullablePathProperty.newBuilder("detect.git.path")
             .setInfo("Git Executable", DetectPropertyFromVersion.VERSION_5_5_0)

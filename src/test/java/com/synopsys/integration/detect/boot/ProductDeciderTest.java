@@ -210,7 +210,9 @@ class ProductDeciderTest {
     }
 
     private BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions(Path offlineScannerInstallPath, String userProvidedScannerInstallUrl) {
-        return new BlackDuckSignatureScannerOptions(Bds.listOf(), Bds.listOf(), null, 1024, 1, false, null, false, null, null, null, 1, null, false, false, true);
+        return new BlackDuckSignatureScannerOptions(Bds.listOf(), Bds.listOf(), null, 1024, 1, false, null, false, null, null, null, 1, null, false, false, true,
+            true
+        );
     }
 
     private BlackDuckConnectionDetails blackDuckConnectionDetails(boolean offline, String blackduckUrl) {

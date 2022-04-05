@@ -8,12 +8,12 @@ import java.util.Set;
 import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 
 public class CodeLocationWaitCalculator {
-    public CodeLocationWaitData calculateWaitData(List<AccumulatedCodeLocationData> codeLocationCreationDatas) {
+    public CodeLocationWaitData calculateWaitData(List<WaitableCodeLocationData> codeLocationCreationDatas) {
         int expectedNotificationCount = 0;
         NotificationTaskRange notificationRange = null;
         Set<String> codeLocationNames = new HashSet<>();
 
-        for (AccumulatedCodeLocationData codeLocationCreationData : codeLocationCreationDatas) {
+        for (WaitableCodeLocationData codeLocationCreationData : codeLocationCreationDatas) {
             expectedNotificationCount += codeLocationCreationData.getExpectedNotificationCount();
             codeLocationNames.addAll(codeLocationCreationData.getSuccessfulCodeLocationNames());
 

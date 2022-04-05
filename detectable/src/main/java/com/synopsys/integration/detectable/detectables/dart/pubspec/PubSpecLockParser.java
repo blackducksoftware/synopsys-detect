@@ -9,16 +9,16 @@ import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.util.DependencyCreator;
 
 public class PubSpecLockParser {
     private final ExternalIdFactory externalIdFactory;
 
-    private static String PACKAGES_SECTION_HEADER = "packages:";
-    private static String DESCRIPTION_SECTION_HEADER = "description:";
-    private static String NAME_LINE_KEY = "name:";
-    private static String VERSION_LINE_KEY = "version:";
+    private static final String PACKAGES_SECTION_HEADER = "packages:";
+    private static final String DESCRIPTION_SECTION_HEADER = "description:";
+    private static final String NAME_LINE_KEY = "name:";
+    private static final String VERSION_LINE_KEY = "version:";
 
     public PubSpecLockParser(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
@@ -47,7 +47,7 @@ public class PubSpecLockParser {
             } else if (inPackages && trimmedLine.startsWith(VERSION_LINE_KEY)) {
                 Optional<String> dependencyVersion = parseValueFromLine(trimmedLine, VERSION_LINE_KEY);
                 if (dependencyName.isPresent() && dependencyVersion.isPresent()) {
-                    dependencyGraph.addChildToRoot(createDependency(dependencyName.get(), dependencyVersion.get()));
+                    dependencyGraph.addChildToRoot(DependencyCreator.nameVersion(Forge.DART, dependencyName.get(), dependencyVersion.get()));
                     // After process dependency, reset name and version variables
                     dependencyName = Optional.empty();
                 }
@@ -55,10 +55,6 @@ public class PubSpecLockParser {
         }
 
         return dependencyGraph;
-    }
-
-    private Dependency createDependency(String dependencyName, String dependencyVersion) {
-        return new Dependency(dependencyName, dependencyVersion, externalIdFactory.createNameVersionExternalId(Forge.DART, dependencyName, dependencyVersion));
     }
 
     private Optional<String> parseValueFromLine(String line, String keyToken) {

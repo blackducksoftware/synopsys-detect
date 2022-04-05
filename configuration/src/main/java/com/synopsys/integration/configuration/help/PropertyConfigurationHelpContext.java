@@ -45,13 +45,8 @@ public class PropertyConfigurationHelpContext {
         this.propertyConfiguration = propertyConfiguration;
     }
 
-    public void printCurrentValues(Consumer<String> logger, SortedMap<String, String> maskedRawPropertyValues, Map<String, String> additionalNotes) {
-        printKnownCurrentValues(logger, maskedRawPropertyValues.keySet(), maskedRawPropertyValues, additionalNotes);
-    }
-
-    public void printKnownCurrentValues(
+    public void printCurrentValues(
         Consumer<String> logger,
-        Set<String> knownPropertyKeys,
         SortedMap<String, String> maskedRawPropertyValues,
         Map<String, String> additionalNotes
     ) {
@@ -61,7 +56,6 @@ public class PropertyConfigurationHelpContext {
         logger.accept(StringUtils.repeat("-", 60));
 
         maskedRawPropertyValues.entrySet().stream()
-            .filter(rawPropertyValue -> knownPropertyKeys.contains(rawPropertyValue.getKey()))
             .forEach(rawPropertyValue -> {
                 String rawMaskedValue = maskedRawPropertyValues.get(rawPropertyValue.getKey());
                 String sourceName = propertyConfiguration.getPropertySource(rawPropertyValue.getKey()).orElse("unknown");
