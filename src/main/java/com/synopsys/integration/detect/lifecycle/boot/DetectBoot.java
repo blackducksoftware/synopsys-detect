@@ -190,7 +190,11 @@ public class DetectBoot {
             );
             RunDecision runDecision = new RunDecision(detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE); //TODO: Move to proper decision home. -jp
             DetectToolFilter detectToolFilter = detectConfigurationFactory.createToolFilter(runDecision, blackDuckDecision);
-            checkToolsAgainstTargetType(runDecision, detectToolFilter);
+            oneRequiresTheOther(
+                runDecision.isDockerMode(),
+                detectToolFilter.shouldInclude(DetectTool.DOCKER),
+                "Detect target type is set to IMAGE, but the DOCKER tool is excluded"
+            );
 
             logger.debug("Decided what products will be run. Starting product boot.");
 
@@ -209,6 +213,11 @@ public class DetectBoot {
         try {
             ProxyInfo detectableProxyInfo = detectConfigurationFactory.createBlackDuckProxyInfo();
             detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem, pathResolver, detectableProxyInfo);
+            oneRequiresTheOther(
+                detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE,
+                detectableOptionFactory.createDockerDetectableOptions().hasDockerImageOrTar(),
+                "Detect target type is set to IMAGE, but no docker image was specified"
+            );
         } catch (DetectUserFriendlyException e) {
             return Optional.of(DetectBootResult.exception(e, propertyConfiguration, directoryManager, diagnosticSystem));
         }
@@ -227,10 +236,10 @@ public class DetectBoot {
         return Optional.of(DetectBootResult.run(bootSingletons, propertyConfiguration, productRunData, directoryManager, diagnosticSystem));
     }
 
-    private void checkToolsAgainstTargetType(RunDecision runDecision, DetectToolFilter detectToolFilter) throws DetectUserFriendlyException {
-        if (runDecision.isDockerMode() && !detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
+    private void oneRequiresTheOther(boolean firstCondition, boolean secondCondition, String errorMessageIfNot) throws DetectUserFriendlyException {
+        if (firstCondition && !secondCondition) {
             throw new DetectUserFriendlyException(
-                "Invalid configuration: Detect target type is set to IMAGE, but the DOCKER tool is excluded",
+                "Invalid configuration: " + errorMessageIfNot,
                 ExitCodeType.FAILURE_CONFIGURATION
             );
         }
