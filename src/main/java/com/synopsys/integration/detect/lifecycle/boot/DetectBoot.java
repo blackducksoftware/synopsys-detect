@@ -28,6 +28,8 @@ import com.synopsys.integration.detect.configuration.DetectUserFriendlyException
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
+import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
 import com.synopsys.integration.detect.configuration.help.json.HelpJsonManager;
 import com.synopsys.integration.detect.configuration.help.print.HelpPrinter;
@@ -188,6 +190,7 @@ public class DetectBoot {
             );
             RunDecision runDecision = new RunDecision(detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE); //TODO: Move to proper decision home. -jp
             DetectToolFilter detectToolFilter = detectConfigurationFactory.createToolFilter(runDecision, blackDuckDecision);
+            checkToolsAgainstTargetType(runDecision, detectToolFilter);
 
             logger.debug("Decided what products will be run. Starting product boot.");
 
@@ -222,6 +225,15 @@ public class DetectBoot {
                 installedToolLocator
             );
         return Optional.of(DetectBootResult.run(bootSingletons, propertyConfiguration, productRunData, directoryManager, diagnosticSystem));
+    }
+
+    private void checkToolsAgainstTargetType(RunDecision runDecision, DetectToolFilter detectToolFilter) throws DetectUserFriendlyException {
+        if (runDecision.isDockerMode() && !detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
+            throw new DetectUserFriendlyException(
+                "Invalid configuration: Detect target type is set to IMAGE, but the DOCKER tool is excluded",
+                ExitCodeType.FAILURE_CONFIGURATION
+            );
+        }
     }
 
     private SortedMap<String, String> collectMaskedRawPropertyValues(PropertyConfiguration propertyConfiguration) throws IllegalAccessException {
