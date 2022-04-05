@@ -191,9 +191,9 @@ public class DetectBoot {
             RunDecision runDecision = new RunDecision(detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE); //TODO: Move to proper decision home. -jp
             DetectToolFilter detectToolFilter = detectConfigurationFactory.createToolFilter(runDecision, blackDuckDecision);
             oneRequiresTheOther(
-                runDecision.isDockerMode(),
+                detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE,
                 detectToolFilter.shouldInclude(DetectTool.DOCKER),
-                "Detect target type is set to IMAGE, but the DOCKER tool is excluded"
+                "Detect target type is set to IMAGE, but the DOCKER tool was excluded."
             );
 
             logger.debug("Decided what products will be run. Starting product boot.");
@@ -216,7 +216,7 @@ public class DetectBoot {
             oneRequiresTheOther(
                 detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE,
                 detectableOptionFactory.createDockerDetectableOptions().hasDockerImageOrTar(),
-                "Detect target type is set to IMAGE, but no docker image was specified"
+                "Detect target type is set to IMAGE, but no docker image was specified."
             );
         } catch (DetectUserFriendlyException e) {
             return Optional.of(DetectBootResult.exception(e, propertyConfiguration, directoryManager, diagnosticSystem));
