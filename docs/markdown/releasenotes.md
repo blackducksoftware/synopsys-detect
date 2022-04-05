@@ -5,6 +5,7 @@
 ### New features
 
 * Added support for a buildless Pipenv detector that parses the Pipfile.lock file (see [python support page](packagemgrs/python.md) for more details).
+* [solution_name] now includes pass-through properties when logging configuration at the beginning of a run.
 
 ### Changed features
 
