@@ -28,7 +28,7 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation "org.freemarker:freemarker:2.3.26-incubating"
+    implementation "org.freemarker:freemarker:2.3.31"
     implementation("com.synopsys.integration:common-gradle-plugin:${managedCgpVersion}") {
         exclude group: 'org.springframework', module: 'spring-core'
     }
