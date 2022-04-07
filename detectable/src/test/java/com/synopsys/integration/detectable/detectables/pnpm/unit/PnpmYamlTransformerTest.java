@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
@@ -34,7 +33,7 @@ public class PnpmYamlTransformerTest {
 
     private PnpmYamlTransformer createTransformer(PnpmDependencyType... excludedDependencyTypes) {
         EnumListFilter<PnpmDependencyType> dependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
-        return new PnpmYamlTransformer(new ExternalIdFactory(), dependencyTypeFilter);
+        return new PnpmYamlTransformer(dependencyTypeFilter);
     }
 
     @Test

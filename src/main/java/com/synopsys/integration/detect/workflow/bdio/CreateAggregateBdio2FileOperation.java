@@ -1,5 +1,6 @@
 package com.synopsys.integration.detect.workflow.bdio;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -11,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.bdio2.Bdio;
 import com.blackducksoftware.bdio2.BdioMetadata;
-import com.blackducksoftware.bdio2.model.Project;
 import com.blackducksoftware.common.value.Product;
 import com.synopsys.integration.bdio.model.SpdxCreator;
 import com.synopsys.integration.blackduck.bdio2.model.Bdio2Document;
@@ -47,19 +47,16 @@ public class CreateAggregateBdio2FileOperation {
         );
         bdioMetadata.scanType(Bdio.ScanType.PACKAGE_MANAGER);
 
-        Project project = bdio2Factory.createProject(
-            aggregateCodeLocation.getProjectExternalId(),
-            aggregateCodeLocation.getProjectNameVersion().getName(),
-            aggregateCodeLocation.getProjectNameVersion().getVersion(),
-            true
-        );
-        Bdio2Document bdio2Document = bdio2Factory.createBdio2Document(bdioMetadata, project, aggregateCodeLocation.getAggregateDependencyGraph());
+        Bdio2Document bdio2Document = bdio2Factory.createBdio2Document(bdioMetadata, aggregateCodeLocation.getAggregateDependencyGraph());
+        writeDocument(aggregateCodeLocation.getAggregateFile(), bdio2Document);
+    }
 
+    private void writeDocument(File aggregateFile, Bdio2Document bdio2Document) throws DetectUserFriendlyException {
         Bdio2Writer bdio2Writer = new Bdio2Writer();
         try {
-            OutputStream outputStream = new FileOutputStream(aggregateCodeLocation.getAggregateFile());
+            OutputStream outputStream = new FileOutputStream(aggregateFile);
             bdio2Writer.writeBdioDocument(outputStream, bdio2Document);
-            logger.debug(String.format("BDIO Generated: %s", aggregateCodeLocation.getAggregateFile().getAbsolutePath()));
+            logger.debug(String.format("BDIO Generated: %s", aggregateFile.getAbsolutePath()));
         } catch (IOException e) {
             throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }

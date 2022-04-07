@@ -7,9 +7,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.graph.DependencyGraphCombiner;
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.detectable.detectables.sbt.parse.model.SbtAggregate;
 import com.synopsys.integration.detectable.detectables.sbt.parse.model.SbtDependencyModule;
 
@@ -26,15 +24,13 @@ public class SbtModuleAggregator {
             aggregated.setVersion(aggregate.getVersion());
             aggregated.setOrg(aggregate.getOrg());
 
-            MutableDependencyGraph graph = new MutableMapDependencyGraph();
+            BasicDependencyGraph graph = new BasicDependencyGraph();
             aggregated.setGraph(graph);
-
-            DependencyGraphCombiner combiner = new DependencyGraphCombiner();
 
             modules.forEach(module -> {
                 if (moduleEqualsAggregate(module, aggregate)) {
                     logger.debug("Combining '" + module.getName() + "' with '" + aggregate.getName() + "'");
-                    combiner.addGraphAsChildrenToRoot(graph, module.getGraph());
+                    graph.copyGraphToRoot((BasicDependencyGraph) module.getGraph());
                 }
             });
 

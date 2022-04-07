@@ -9,7 +9,10 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraphUtil;
+import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
 import com.synopsys.integration.bdio.model.SimpleBdioDocument;
+import com.synopsys.integration.bdio.model.dependency.ProjectDependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
@@ -36,15 +39,11 @@ public class CreateBdio1FilesOperation {
             String codeLocationName = bdioCodeLocation.getCodeLocationName();
             ExternalId externalId = bdioCodeLocation.getDetectCodeLocation().getExternalId();
             DependencyGraph dependencyGraph = bdioCodeLocation.getDetectCodeLocation().getDependencyGraph();
+            ProjectDependencyGraph projectDependencyGraph = new ProjectDependencyGraph(new ProjectDependency(externalId));
+            DependencyGraphUtil.copyRootDependencies(projectDependencyGraph, dependencyGraph);
 
             File bdioOutputFile = new File(outputDirectory, bdioCodeLocation.getBdioName() + ".jsonld");
-            SimpleBdioDocument simpleBdioDocument = simpleBdioFactory.createSimpleBdioDocument(
-                codeLocationName,
-                projectNameVersion.getName(),
-                projectNameVersion.getVersion(),
-                externalId,
-                dependencyGraph
-            );
+            SimpleBdioDocument simpleBdioDocument = simpleBdioFactory.createPopulatedBdioDocument(codeLocationName, projectDependencyGraph);
 
             detectBdioWriter.writeBdioFile(bdioOutputFile, simpleBdioDocument);
             uploadTargets.add(UploadTarget.createDefault(projectNameVersion, codeLocationName, bdioOutputFile));

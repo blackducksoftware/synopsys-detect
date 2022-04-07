@@ -25,6 +25,7 @@ import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.BdioId;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.SimpleBdioDocument;
+import com.synopsys.integration.bdio.model.dependency.ProjectDependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.common.util.finder.FileFinder;
@@ -216,8 +217,6 @@ public class DockerExtractor {
             }
 
             if (simpleBdioDocument != null) {
-                DependencyGraph dependencyGraph = bdioTransformer.transformToDependencyGraph(simpleBdioDocument.getProject(), simpleBdioDocument.getComponents());
-
                 String projectName = simpleBdioDocument.getProject().name;
                 String projectVersionName = simpleBdioDocument.getProject().version;
 
@@ -225,6 +224,14 @@ public class DockerExtractor {
                 Forge dockerForge = new Forge(BdioId.BDIO_ID_SEPARATOR, simpleBdioDocument.getProject().bdioExternalIdentifier.forge);
                 String externalIdPath = simpleBdioDocument.getProject().bdioExternalIdentifier.externalId;
                 ExternalId projectExternalId = externalIdFactory.createPathExternalId(dockerForge, externalIdPath);
+
+                ProjectDependency projectDependency = new ProjectDependency(projectName, projectVersionName, projectExternalId);
+
+                DependencyGraph dependencyGraph = bdioTransformer.transformToDependencyGraph(
+                    projectDependency,
+                    simpleBdioDocument.getProject(),
+                    simpleBdioDocument.getComponents()
+                );
 
                 CodeLocation detectCodeLocation = new CodeLocation(dependencyGraph, projectExternalId);
 

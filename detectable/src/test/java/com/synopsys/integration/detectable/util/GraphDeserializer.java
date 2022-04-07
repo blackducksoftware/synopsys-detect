@@ -9,8 +9,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
@@ -23,7 +23,7 @@ public class GraphDeserializer {
     static Map<String, Forge> knownForges = Forge.getKnownForges();
 
     public static DependencyGraph deserialize(String text) {
-        MutableMapDependencyGraph graph = new MutableMapDependencyGraph();
+        DependencyGraph graph = new BasicDependencyGraph();
         //three sections
         List<String> lines = Arrays.asList(text.split("\n"));
         int currentLineIndex = 0;
@@ -77,7 +77,10 @@ public class GraphDeserializer {
     }
 
     private static ExternalId externalIdFromString(Forge forge, List<String> text) {
-        String[] pieces = text.stream().map(it -> unescape(it)).collect(Collectors.toList()).toArray(ArrayUtils.EMPTY_STRING_ARRAY);
+        String[] pieces = text.stream()
+            .map(GraphDeserializer::unescape)
+            .collect(Collectors.toList())
+            .toArray(ArrayUtils.EMPTY_STRING_ARRAY);
         return externalIdFactory.createModuleNamesExternalId(forge, pieces);
     }
 }

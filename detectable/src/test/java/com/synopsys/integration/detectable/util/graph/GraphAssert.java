@@ -1,9 +1,12 @@
 package com.synopsys.integration.detectable.util.graph;
 
-import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
+import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
@@ -23,7 +26,10 @@ public class GraphAssert {
     }
 
     public ExternalId hasRootDependency(ExternalId externalId, String message) {
-        Assertions.assertTrue(graph.getRootDependencyExternalIds().contains(externalId), message);
+        boolean hasRootDependency = graph.getRootDependencies().stream()
+            .map(Dependency::getExternalId)
+            .anyMatch(externalId::equals);
+        assertTrue(hasRootDependency, message);
         return externalId;
     }
 
@@ -32,7 +38,7 @@ public class GraphAssert {
     }
 
     public ExternalId hasDependency(ExternalId externalId, String message) {
-        Assertions.assertTrue(graph.hasDependency(externalId), message);
+        assertTrue(graph.hasDependency(externalId), message);
         return externalId;
     }
 
@@ -41,7 +47,7 @@ public class GraphAssert {
     }
 
     public ExternalId hasNoDependency(ExternalId externalId, String message) {
-        Assertions.assertFalse(graph.hasDependency(externalId), message);
+        assertFalse(graph.hasDependency(externalId), message);
         return externalId;
     }
 
@@ -50,7 +56,7 @@ public class GraphAssert {
     }
 
     public ExternalId hasParentChildRelationship(ExternalId parent, ExternalId child, String message) {
-        Assertions.assertTrue(graph.getChildrenExternalIdsForParent(parent).contains(child), message);
+        assertTrue(graph.getChildrenExternalIdsForParent(parent).contains(child), message);
         return child;
     }
 
@@ -59,7 +65,7 @@ public class GraphAssert {
     }
 
     public void hasRelationshipCount(ExternalId parent, int count, String message) {
-        Assertions.assertEquals(count, graph.getChildrenExternalIdsForParent(parent).size(), message);
+        assertEquals(count, graph.getChildrenExternalIdsForParent(parent).size(), message);
     }
 
     public void hasRootSize(int size) {
@@ -67,7 +73,7 @@ public class GraphAssert {
     }
 
     public void hasRootSize(int size, String message) {
-        Assertions.assertEquals(size, graph.getRootDependencies().size(), message);
+        assertEquals(size, graph.getRootDependencies().size(), message);
     }
 
 }

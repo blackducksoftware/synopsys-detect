@@ -10,8 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
@@ -46,7 +46,7 @@ public class ProjectInspectorParser {
         module.dependencies.forEach(dependency -> lookup.computeIfAbsent(dependency.id, (missingId) -> convertProjectInspectorDependency(dependency)));
 
         //and add them to the graph
-        MutableDependencyGraph mutableDependencyGraph = new MutableMapDependencyGraph();
+        DependencyGraph mutableDependencyGraph = new BasicDependencyGraph();
         module.dependencies.forEach(moduleDependency -> {
             Dependency dependency = lookup.get(moduleDependency.id);
             moduleDependency.includedBy.forEach(parent -> {

@@ -2,9 +2,8 @@ package com.synopsys.integration.detectable.detectables.pipenv.parse;
 
 import java.util.List;
 
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.dependency.DependencyFactory;
@@ -16,7 +15,7 @@ public class PipfileLockDependencyTransformer {
     private final DependencyFactory dependencyFactory = new DependencyFactory(externalIdFactory);
 
     public DependencyGraph transform(List<PipfileLockDependency> dependencies) {
-        MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
+        DependencyGraph dependencyGraph = new BasicDependencyGraph();
         dependencies.stream()
             .map(this::createDependency)
             .forEach(dependencyGraph::addChildToRoot);

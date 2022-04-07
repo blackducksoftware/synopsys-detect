@@ -9,8 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.xcode.model.PackageResolved;
 import com.synopsys.integration.detectable.detectables.xcode.process.PackageResolvedFormatChecker;
@@ -36,7 +36,7 @@ public class XcodeSwiftExtractor {
 
         if (packageResolved == null) {
             // There are no dependencies to extract.
-            DependencyGraph dependencyGraph = new MutableMapDependencyGraph();
+            DependencyGraph dependencyGraph = new BasicDependencyGraph();
             CodeLocation emptyCodeLocation = new CodeLocation(dependencyGraph, foundXcodeProjectFile);
             return new Extraction.Builder().success(emptyCodeLocation).build();
         }

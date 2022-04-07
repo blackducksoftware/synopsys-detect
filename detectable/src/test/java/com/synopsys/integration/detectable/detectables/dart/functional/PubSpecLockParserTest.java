@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.dart.pubspec.PubSpecLockParser;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
@@ -36,7 +35,7 @@ public class PubSpecLockParserTest {
             "    version: \"1.1.0\""
         );
 
-        PubSpecLockParser pubSpecLockParser = new PubSpecLockParser(new ExternalIdFactory());
+        PubSpecLockParser pubSpecLockParser = new PubSpecLockParser();
 
         DependencyGraph dependencyGraph = pubSpecLockParser.parse(pubSpecLockLines);
 

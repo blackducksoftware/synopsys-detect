@@ -7,8 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
@@ -37,7 +37,7 @@ public class PipInspectorTreeParser {
     public Optional<NameVersionCodeLocation> parse(List<String> pipInspectorOutputAsList, String sourcePath) {
         NameVersionCodeLocation parseResult = null;
 
-        MutableDependencyGraph graph = new MutableMapDependencyGraph();
+        DependencyGraph graph = new BasicDependencyGraph();
         DependencyHistory history = new DependencyHistory();
         Dependency project = null;
         int unResolvedPackageCount = 0;
@@ -80,7 +80,7 @@ public class PipInspectorTreeParser {
         }
     }
 
-    private Dependency addDependencyToGraph(MutableDependencyGraph graph, DependencyHistory history, Dependency project, Dependency currentDependency) {
+    private Dependency addDependencyToGraph(DependencyGraph graph, DependencyHistory history, Dependency project, Dependency currentDependency) {
         if (project == null) {
             project = currentDependency;
         } else if (project.equals(history.getLastDependency())) {

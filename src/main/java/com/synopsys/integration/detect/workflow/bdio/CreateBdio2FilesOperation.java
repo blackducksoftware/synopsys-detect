@@ -14,10 +14,12 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.bdio2.Bdio;
 import com.blackducksoftware.bdio2.BdioMetadata;
-import com.blackducksoftware.bdio2.model.Project;
 import com.blackducksoftware.common.value.Product;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraphUtil;
+import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
 import com.synopsys.integration.bdio.model.SpdxCreator;
+import com.synopsys.integration.bdio.model.dependency.ProjectDependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.blackduck.bdio2.model.Bdio2Document;
 import com.synopsys.integration.blackduck.bdio2.model.ProjectInfo;
@@ -63,8 +65,15 @@ public class CreateBdio2FilesOperation {
             );
             bdioMetadata.scanType(Bdio.ScanType.PACKAGE_MANAGER);
 
-            Project bdio2Project = bdio2Factory.createProject(externalId, projectNameVersion.getName(), projectNameVersion.getVersion(), true);
-            Bdio2Document bdio2Document = bdio2Factory.createBdio2Document(bdioMetadata, bdio2Project, dependencyGraph);
+            ProjectDependencyGraph projectDependencyGraph;
+            if (dependencyGraph instanceof ProjectDependencyGraph) {
+                // TODO: In 8.0.0 all CodeLocations should have a ProjectDependencyGraph instead of DependencyGraph and ExternalId JM-04/2022
+                projectDependencyGraph = (ProjectDependencyGraph) dependencyGraph;
+            } else {
+                projectDependencyGraph = new ProjectDependencyGraph(new ProjectDependency(externalId));
+                DependencyGraphUtil.copyRootDependencies(projectDependencyGraph, dependencyGraph);
+            }
+            Bdio2Document bdio2Document = bdio2Factory.createBdio2Document(bdioMetadata, projectDependencyGraph);
 
             Bdio2Writer bdio2Writer = new Bdio2Writer();
             File bdio2OutputFile = new File(outputDirectory, bdioCodeLocation.getBdioName() + ".bdio");

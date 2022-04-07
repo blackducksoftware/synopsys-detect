@@ -12,7 +12,8 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
@@ -44,7 +45,7 @@ public class ConanCodeLocationGenerator {
         }
         ConanGraphNode rootGraphNode = new ConanGraphNode(rootNode.get());
         populateGraphUnderNode(rootGraphNode, nodes);
-        MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
+        DependencyGraph dependencyGraph = new BasicDependencyGraph();
         CodeLocation codeLocation = generateCodeLocationFromConanGraph(externalIdFactory, dependencyGraph, rootGraphNode);
         return new ConanDetectableResult(
             rootGraphNode.getConanNode().getName().orElse(null),
@@ -69,7 +70,7 @@ public class ConanCodeLocationGenerator {
     }
 
     @NotNull
-    private CodeLocation generateCodeLocationFromConanGraph(ExternalIdFactory externalIdFactory, MutableMapDependencyGraph dependencyGraph, ConanGraphNode rootNode)
+    private CodeLocation generateCodeLocationFromConanGraph(ExternalIdFactory externalIdFactory, DependencyGraph dependencyGraph, ConanGraphNode rootNode)
         throws DetectableException {
         addNodeChildrenUnderNode(externalIdFactory, dependencyGraph, 0, rootNode, null);
         return new CodeLocation(dependencyGraph);
@@ -77,7 +78,7 @@ public class ConanCodeLocationGenerator {
 
     private void addNodeChildrenUnderNode(
         ExternalIdFactory externalIdFactory,
-        MutableMapDependencyGraph dependencyGraph,
+        DependencyGraph dependencyGraph,
         int depth,
         ConanGraphNode currentNode,
         Dependency currentDep

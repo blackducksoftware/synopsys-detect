@@ -40,7 +40,7 @@ public class NpmDevExclusionTest {
         ExternalIdFactory externalIdFactory = new ExternalIdFactory();
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        NpmLockfileGraphTransformer graphTransformer = new NpmLockfileGraphTransformer(externalIdFactory, EnumListFilter.fromExcluded(excludedTypes));
+        NpmLockfileGraphTransformer graphTransformer = new NpmLockfileGraphTransformer(EnumListFilter.fromExcluded(excludedTypes));
         NpmLockFileProjectIdTransformer projectIdTransformer = new NpmLockFileProjectIdTransformer(gson, externalIdFactory);
         return new NpmLockfilePackager(gson, externalIdFactory, projectIdTransformer, graphTransformer);
     }
