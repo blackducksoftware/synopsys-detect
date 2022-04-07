@@ -15,7 +15,6 @@ import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraphUtil;
 import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.dependency.ProjectDependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
@@ -33,17 +32,13 @@ public class FullAggregateGraphCreator {
             Dependency codeLocationDependency = createAggregateNode(projectDependencyCreator, sourcePath, detectCodeLocation);
             DependencyGraph dependencyGraph = detectCodeLocation.getDependencyGraph();
             if (dependencyGraph instanceof ProjectDependencyGraph) {
-                if (codeLocationDependency instanceof ProjectDependency) {
-                    // When we remove the transitive option on 8.0.0, we shouldn't have to create fake project nodes requiring instanceof
-                    ProjectDependencyGraph properGraph = new ProjectDependencyGraph((ProjectDependency) codeLocationDependency);
-                    properGraph.copyGraphToRoot((ProjectDependencyGraph) dependencyGraph);
-                    aggregateDependencyGraph.copyGraphToRoot(properGraph);
-                } else {
-                    aggregateDependencyGraph.addChildrenToRoot(codeLocationDependency);
-                    // Need dependencyGraphCombiner to just copy the root dependencies
-                    // copying the graph will not give the desired result since we DO NOT want these to appear as subprojects in blackduck
-                    DependencyGraphUtil.copyRootDependenciesToParent(aggregateDependencyGraph, codeLocationDependency, detectCodeLocation.getDependencyGraph());
-                }
+                aggregateDependencyGraph.addChildrenToRoot(codeLocationDependency);
+                // Need dependencyGraphCombiner to just copy the root dependencies
+                // copying the graph will not give the desired result since we DO NOT want these to appear as subprojects in blackduck
+                DependencyGraphUtil.copyRootDependenciesToParent(aggregateDependencyGraph, codeLocationDependency, detectCodeLocation.getDependencyGraph());
+
+                // TODO: Ideally this is what we would do, but to preserve existing node-naming behavior, will continue to use new "aggregate" project node.
+                //  aggregateDependencyGraph.copyGraphToRoot((ProjectDependencyGraph) dependencyGraph);
             } else if (dependencyGraph instanceof BasicDependencyGraph) {
                 // This should be all we have to do post 8.0.0
                 aggregateDependencyGraph.copyGraphToRoot((BasicDependencyGraph) dependencyGraph);
