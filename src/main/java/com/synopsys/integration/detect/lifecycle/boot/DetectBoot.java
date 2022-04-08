@@ -85,7 +85,7 @@ public class DetectBoot {
         this.installedToolManager = installedToolManager;
     }
 
-    public Optional<DetectBootResult> boot(String detectVersion) throws IOException, IllegalAccessException {
+    public Optional<DetectBootResult> boot(String detectVersion, String detectBuildDate) throws IOException, IllegalAccessException {
         if (detectArgumentState.isHelp() || detectArgumentState.isDeprecatedHelp() || detectArgumentState.isVerboseHelp()) {
             HelpPrinter helpPrinter = new HelpPrinter();
             helpPrinter.printAppropriateHelpMessage(
@@ -131,6 +131,7 @@ public class DetectBoot {
             return Optional.of(DetectBootResult.exception(possiblePropertyParseError.get(), propertyConfiguration));
         }
 
+        logger.info("Detect build date: {}", detectBuildDate);
         logger.debug("Initializing Detect.");
 
         Configuration freemarkerConfiguration = detectBootFactory.createFreemarkerConfiguration();

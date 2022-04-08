@@ -55,7 +55,7 @@ public class FormattedOutputManagerTest {
         );
         eventSystem.publishEvent(Event.DetectorsComplete, detectorToolResult);
 
-        DetectInfo detectInfo = new DetectInfo("", null);
+        DetectInfo detectInfo = new DetectInfo("", null, "");
         FormattedOutput formattedOutput = formattedOutputManager.createFormattedOutput(detectInfo);
         FormattedDetectorOutput detectorOutput = formattedOutput.detectors.get(0);
 
