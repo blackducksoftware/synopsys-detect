@@ -1,26 +1,25 @@
-package com.synopsys.integration.detectable.detectables.xcode.process;
+package com.synopsys.integration.detectable.detectables.swift.lock.parse;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import com.synopsys.integration.detectable.detectables.xcode.model.PackageResolved;
+import com.synopsys.integration.detectable.detectables.swift.lock.data.PackageResolved;
 
 class PackageResolvedFormatCheckerTest {
-
     @ParameterizedTest
     @MethodSource("knownFileFormats")
     void compatibilityTest(String knownVersion) {
         PackageResolvedFormatChecker formatChecker = new PackageResolvedFormatChecker();
         PackageResolved packageResolved = new PackageResolved(null, knownVersion);
-        formatChecker.checkForVersionCompatibility(
-            packageResolved,
-            (version, knownVersions) -> Assertions.fail(version + " is a known version and should not have failed the check.")
-        );
+
+        assertTrue(formatChecker.checkForVersionCompatibility(packageResolved));
     }
 
     @Test
@@ -28,7 +27,8 @@ class PackageResolvedFormatCheckerTest {
         PackageResolvedFormatChecker formatChecker = new PackageResolvedFormatChecker();
         String unknownVersion = "some unknown version";
         PackageResolved packageResolved = new PackageResolved(null, unknownVersion);
-        formatChecker.checkForVersionCompatibility(packageResolved, (version, knownVersions) -> Assertions.assertEquals(unknownVersion, version));
+        
+        assertFalse(formatChecker.checkForVersionCompatibility(packageResolved));
     }
 
     public static Stream<String> knownFileFormats() {

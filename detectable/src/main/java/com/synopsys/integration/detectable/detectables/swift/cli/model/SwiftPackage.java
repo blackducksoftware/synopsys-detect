@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.swift.model;
+package com.synopsys.integration.detectable.detectables.swift.cli.model;
 
 import java.util.ArrayList;
 import java.util.List;

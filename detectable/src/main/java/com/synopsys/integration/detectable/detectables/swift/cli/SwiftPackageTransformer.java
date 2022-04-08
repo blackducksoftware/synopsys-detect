@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.swift;
+package com.synopsys.integration.detectable.detectables.swift.cli;
 
 import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
@@ -7,7 +7,7 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectables.swift.model.SwiftPackage;
+import com.synopsys.integration.detectable.detectables.swift.cli.model.SwiftPackage;
 
 public class SwiftPackageTransformer {
     public static final Forge SWIFT_FORGE = Forge.COCOAPODS;
