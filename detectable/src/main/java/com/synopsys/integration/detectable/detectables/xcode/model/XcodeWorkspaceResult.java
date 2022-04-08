@@ -6,32 +6,31 @@ import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.detectable.detectable.result.FailedDetectableResult;
 
 public class XcodeWorkspaceResult {
     @Nullable
-    private final DependencyGraph dependencyGraph;
+    private final BasicDependencyGraph dependencyGraph;
     private final List<FailedDetectableResult> failedDetectableResults;
 
     public static XcodeWorkspaceResult failure(List<FailedDetectableResult> failedDetectableResults) {
         return new XcodeWorkspaceResult(null, failedDetectableResults);
     }
 
-    public static XcodeWorkspaceResult success(List<DependencyGraph> dependencyGraphs) {
-        MutableMapDependencyGraph xcodeWorkspaceGraph = new MutableMapDependencyGraph();
-        dependencyGraphs.forEach(xcodeWorkspaceGraph::addGraphAsChildrenToRoot);
+    public static XcodeWorkspaceResult success(List<BasicDependencyGraph> dependencyGraphs) {
+        BasicDependencyGraph xcodeWorkspaceGraph = new BasicDependencyGraph();
+        dependencyGraphs.forEach(xcodeWorkspaceGraph::copyGraphToRoot);
         return new XcodeWorkspaceResult(xcodeWorkspaceGraph, Collections.emptyList());
     }
 
-    private XcodeWorkspaceResult(@Nullable DependencyGraph dependencyGraph, List<FailedDetectableResult> failedDetectableResults) {
+    private XcodeWorkspaceResult(@Nullable BasicDependencyGraph dependencyGraph, List<FailedDetectableResult> failedDetectableResults) {
         this.dependencyGraph = dependencyGraph;
         this.failedDetectableResults = failedDetectableResults;
     }
 
     @Nullable
-    public DependencyGraph getDependencyGraph() {
+    public BasicDependencyGraph getDependencyGraph() {
         return dependencyGraph;
     }
 

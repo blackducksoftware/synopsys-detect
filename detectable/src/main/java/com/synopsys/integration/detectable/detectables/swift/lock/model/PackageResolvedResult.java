@@ -4,33 +4,32 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.detectable.detectable.result.FailedDetectableResult;
 
 public class PackageResolvedResult {
-    private final DependencyGraph dependencyGraph;
+    private final BasicDependencyGraph dependencyGraph;
     @Nullable
     private final FailedDetectableResult failedDetectableResult;
 
     public static PackageResolvedResult failure(FailedDetectableResult failedDetectableResult) {
-        return new PackageResolvedResult(new MutableMapDependencyGraph(), failedDetectableResult);
+        return new PackageResolvedResult(new BasicDependencyGraph(), failedDetectableResult);
     }
 
     public static PackageResolvedResult empty() {
-        return new PackageResolvedResult(new MutableMapDependencyGraph(), null);
+        return new PackageResolvedResult(new BasicDependencyGraph(), null);
     }
 
-    public static PackageResolvedResult success(DependencyGraph dependencyGraph) {
+    public static PackageResolvedResult success(BasicDependencyGraph dependencyGraph) {
         return new PackageResolvedResult(dependencyGraph, null);
     }
 
-    private PackageResolvedResult(DependencyGraph dependencyGraph, @Nullable FailedDetectableResult failedDetectableResult) {
+    private PackageResolvedResult(BasicDependencyGraph dependencyGraph, @Nullable FailedDetectableResult failedDetectableResult) {
         this.dependencyGraph = dependencyGraph;
         this.failedDetectableResult = failedDetectableResult;
     }
 
-    public DependencyGraph getDependencyGraph() {
+    public BasicDependencyGraph getDependencyGraph() {
         return dependencyGraph;
     }
 

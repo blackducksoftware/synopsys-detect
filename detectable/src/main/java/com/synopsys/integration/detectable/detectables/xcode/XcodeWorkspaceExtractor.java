@@ -104,7 +104,7 @@ public class XcodeWorkspaceExtractor {
             if (swiftFile != null) {
                 failedDetectableResult = new PackageResolvedNotFoundDetectableResult(projectDirectory.getAbsolutePath());
             } else {
-                failedDetectableResult = new MissingExpectedPackageResolved(projectDirectory, workspaceDirectory);
+                failedDetectableResult = new MissingFromXcodeWorkspacePackageResolved(projectDirectory, workspaceDirectory);
             }
             return PackageResolvedResult.failure(failedDetectableResult);
         }
@@ -116,6 +116,6 @@ public class XcodeWorkspaceExtractor {
         if (packageResolved != null) {
             return packageResolvedExtractor.extract(packageResolved);
         }
-        return PackageResolvedResult.failure(new MissingExpectedPackageResolved(searchDirectory, workspaceDirectory));
+        return PackageResolvedResult.failure(new MissingFromXcodeWorkspacePackageResolved(searchDirectory, workspaceDirectory));
     }
 }

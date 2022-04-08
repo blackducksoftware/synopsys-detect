@@ -9,7 +9,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.SAXException;
 
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
@@ -87,12 +88,12 @@ public class XcodeWorkspaceDetectable extends Detectable {
             }
         }
 
-        MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
+        DependencyGraph dependencyGraph = new BasicDependencyGraph();
         if (xcodeWorkspaceResult != null && xcodeWorkspaceResult.getDependencyGraph() != null) {
-            dependencyGraph.addGraphAsChildrenToRoot(xcodeWorkspaceResult.getDependencyGraph());
+            dependencyGraph.copyGraphToRoot(xcodeWorkspaceResult.getDependencyGraph());
         }
         if (localResult != null) {
-            dependencyGraph.addGraphAsChildrenToRoot(localResult.getDependencyGraph());
+            dependencyGraph.copyGraphToRoot(localResult.getDependencyGraph());
         }
 
         return Extraction.success(new CodeLocation(dependencyGraph, environment.getDirectory()));
