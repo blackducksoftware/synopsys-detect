@@ -23,8 +23,8 @@ public class DetectInfoUtility {
 
     public DetectInfo createDetectInfo() {
         List<String> detectVersionFileContents = readDetectVersionFile();
-        String versionText = parseValueromVersionFileContents(detectVersionFileContents, "version");
-        String buildDateText = parseValueromVersionFileContents(detectVersionFileContents, "builddate");
+        String versionText = parseValueFromVersionFileContents(detectVersionFileContents, "version");
+        String buildDateText = parseValueFromVersionFileContents(detectVersionFileContents, "builddate");
         OperatingSystemType os = findOperatingSystemType();
         logger.debug(String.format("You seem to be running in a %s operating system.", os));
         logger.debug(String.format("You seem to be using %s architecture.", StringUtils.join(findArchitectures(), ", ")));
@@ -46,7 +46,7 @@ public class DetectInfoUtility {
         }
     }
 
-    public String parseValueromVersionFileContents(List<String> versionFileContents, String variableName) {
+    public String parseValueFromVersionFileContents(List<String> versionFileContents, String variableName) {
         return versionFileContents.stream()
             .filter(s -> s.startsWith(variableName + "="))
             .map(s -> StringUtils.removeStart(s, variableName + "="))
