@@ -79,25 +79,40 @@ public class DetectorRuleFactory {
         ruleSet.addDetector(DetectorType.COCOAPODS, "Pod Lock", PodlockDetectable.class, detectableFactory::createPodLockDetectable).defaults().build();
 
         // TODO: Review Xcode/Swift nesting
-        DetectorRule swiftCli = ruleSet.addDetector(DetectorType.SWIFT, "Swift", SwiftCliDetectable.class, detectableFactory::createSwiftCliDetectable).defaults().build();
-        DetectorRule swiftPackageResolved = ruleSet.addDetector(
-                DetectorType.SWIFT,
-                "Swift Package Resolved",
-                SwiftPackageResolvedDetectable.class,
-                detectableFactory::createSwiftPackageResolvedDetectable
-            ).defaults()
-            .selfNestable()
-            .build();
-        DetectorRule xcodeProject = ruleSet.addDetector(DetectorType.XCODE, "Xcode Project", XcodeProjectDetectable.class, detectableFactory::createXcodeProjectDetectable)
-            .defaults().selfNestable().build();
-        DetectorRule xcodeWorkspace = ruleSet.addDetector(DetectorType.XCODE, "Xcode Workspace", XcodeWorkspaceDetectable.class, detectableFactory::createXcodeWorkspaceDetectable)
-            .defaults().selfNestable()
-            .build();
+        DetectorRule<?> xcodeProject = ruleSet.addDetector(
+            DetectorType.XCODE,
+            "Xcode Project",
+            XcodeProjectDetectable.class,
+            detectableFactory::createXcodeProjectDetectable
+        ).defaults().build();
 
-        // ruleSet.yield(swiftCli).to(swiftPackageResolved); // TODO: Should we? Package resolved is a "lock" file, but the CLI gives relationships
-        ruleSet.yield(swiftPackageResolved).to(xcodeProject); // TODO: Xcode projects contain the matching file at a deeper depth
-        ruleSet.yield(swiftPackageResolved).to(xcodeWorkspace);  // TODO: Xcode workspaces contain the matching file at a deeper depth
-        ruleSet.yield(xcodeProject).to(xcodeWorkspace); // TODO: An Xcode Project is likely part of the existing workspace
+        DetectorRule<?> xcodeWorkspace = ruleSet.addDetector(
+            DetectorType.XCODE,
+            "Xcode Workspace",
+            XcodeWorkspaceDetectable.class,
+            detectableFactory::createXcodeWorkspaceDetectable
+        ).defaults().build();
+
+        DetectorRule<?> swiftCli = ruleSet.addDetector(
+            DetectorType.SWIFT,
+            "Swift CLI",
+            SwiftCliDetectable.class,
+            detectableFactory::createSwiftCliDetectable
+        ).defaults().build();
+
+        DetectorRule<?> swiftPackageResolved = ruleSet.addDetector(
+            DetectorType.SWIFT,
+            "Swift Package Resolved",
+            SwiftPackageResolvedDetectable.class,
+            detectableFactory::createSwiftPackageResolvedDetectable
+        ).defaults().build();
+
+        ruleSet.yield(swiftPackageResolved).to(swiftCli);
+        // ruleSet.yield(swiftPackageResolved).to(xcodeProject);
+
+        ruleSet.yield(swiftCli).to(xcodeWorkspace);
+        ruleSet.yield(swiftPackageResolved).to(xcodeWorkspace);
+        ruleSet.yield(xcodeProject).to(xcodeWorkspace);
 
         DetectorRule<?> conanCliRule = ruleSet.addDetector(DetectorType.CONAN, "Conan CLI", ConanCliDetectable.class, detectableFactory::createConanCliDetectable).defaults()
             .build();
@@ -211,7 +226,7 @@ public class DetectorRuleFactory {
         DetectorRule xcodeWorkspace = ruleSet.addDetector(DetectorType.XCODE, "Xcode Workspace", XcodeWorkspaceDetectable.class, detectableFactory::createXcodeWorkspaceDetectable)
             .defaults().selfNestable()
             .build();
-        
+
         ruleSet.yield(swiftPackageResolved).to(xcodeProject); // TODO: Xcode projects contain the matching file at a deeper depth
         ruleSet.yield(swiftPackageResolved).to(xcodeWorkspace);  // TODO: Xcode workspaces contain the matching file at a deeper depth
         ruleSet.yield(xcodeProject).to(xcodeWorkspace); // TODO: An Xcode Project is likely part of the existing workspace

@@ -5,10 +5,11 @@ import java.util.Optional;
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.detectable.detectable.result.FailedDetectableResult;
 
 public class PackageResolvedResult {
-    private final BasicDependencyGraph dependencyGraph;
+    private final DependencyGraph dependencyGraph;
     @Nullable
     private final FailedDetectableResult failedDetectableResult;
 
@@ -24,12 +25,12 @@ public class PackageResolvedResult {
         return new PackageResolvedResult(dependencyGraph, null);
     }
 
-    private PackageResolvedResult(BasicDependencyGraph dependencyGraph, @Nullable FailedDetectableResult failedDetectableResult) {
+    private PackageResolvedResult(DependencyGraph dependencyGraph, @Nullable FailedDetectableResult failedDetectableResult) {
         this.dependencyGraph = dependencyGraph;
         this.failedDetectableResult = failedDetectableResult;
     }
 
-    public BasicDependencyGraph getDependencyGraph() {
+    public DependencyGraph getDependencyGraph() {
         return dependencyGraph;
     }
 

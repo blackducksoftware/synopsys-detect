@@ -21,6 +21,7 @@ import com.synopsys.integration.detectable.detectable.result.MaxDepthExceededDet
 import com.synopsys.integration.detectable.detectable.result.NotNestableDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.NotSelfNestableDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.NpmNodeModulesNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.PackageResolvedNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PipfileLockNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PoetryLockfileNotFoundDetectableResult;
@@ -38,6 +39,7 @@ import com.synopsys.integration.detector.result.NotSelfNestableDetectorResult;
 import com.synopsys.integration.detector.result.PassedDetectorResult;
 import com.synopsys.integration.detector.result.YieldedDetectorResult;
 
+// TODO: Why does this class exist? Why isn't the exit code encoded in the Result class? JM-04/2022
 public class DetectorResultStatusCodeLookup {
 
     public static DetectorResultStatusCodeLookup standardLookup = new DetectorResultStatusCodeLookup();
@@ -83,6 +85,7 @@ public class DetectorResultStatusCodeLookup {
         map.put(SbtMissingPluginDetectableResult.class, DetectorStatusCode.SBT_PLUGIN_MISSING);
         map.put(WrongOperatingSystemResult.class, DetectorStatusCode.WRONG_OPERATING_SYSTEM_RESULT);
         map.put(YieldedDetectorResult.class, DetectorStatusCode.YIELDED);
+        map.put(PackageResolvedNotFoundDetectableResult.class, DetectorStatusCode.EXCLUDED);
 
         return map;
     }
