@@ -2,7 +2,7 @@
 
 ## Related properties
 
-[Detector properties](https://community.synopsys.com/s/document-item?bundleId=integrations-detect&topicId=properties%2Fdetectors%2Fmaven.html)
+[Detector properties](../properties/detectors/maven.md)
 
 ## Overview
 

@@ -2,7 +2,7 @@
 
 ## Related properties
 
-[Detector properties](https://community.synopsys.com/s/document-item?bundleId=integrations-detect&topicId=properties%2Fdetectors%2Fnpm.html)
+[Detector properties](../properties/detectors/npm.md)
 
 ## Overview
 

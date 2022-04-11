@@ -2,7 +2,7 @@
 
 ## Related properties
 
-[Detector properties](https://community.synopsys.com/s/document-item?bundleId=integrations-detect&topicId=properties%2Fdetectors%2Fbitbake.html)
+[Detector properties](../properties/detectors/bitbake.md)
 
 ## Requirements
 

@@ -2,9 +2,7 @@
 
 ## Related properties
 
-[Detector properties](https://community.synopsys.com/s/document-item?bundleId=integrations-detect&topicId=properties%2Fdetectors%2Fsbt.html)
-
-[Path properties](https://community.synopsys.com/s/document-item?bundleId=integrations-detect&topicId=properties%2Fconfiguration%2Fpaths.html)
+[Detector properties](../properties/detectors/sbt.md)
 
 ## Overview
 
