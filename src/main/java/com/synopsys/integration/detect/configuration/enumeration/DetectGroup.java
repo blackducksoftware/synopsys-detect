@@ -57,6 +57,7 @@ public enum DetectGroup implements Group {
     PYTHON("python", DETECTORS),
     RUBY("ruby", DETECTORS),
     SBT("sbt", DETECTORS),
+    SWIFT("swift", DETECTORS),
     YARN("yarn", DETECTORS),
 
     //Additional groups (should not be used as a primary group

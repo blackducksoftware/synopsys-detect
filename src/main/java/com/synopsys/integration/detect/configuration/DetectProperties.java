@@ -1208,7 +1208,7 @@ public class DetectProperties {
         NullablePathProperty.newBuilder("detect.swift.path")
             .setInfo("Swift Executable", DetectPropertyFromVersion.VERSION_6_0_0)
             .setHelp("Path of the swift executable.")
-            .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .setGroups(DetectGroup.SWIFT, DetectGroup.GLOBAL)
             .build();
 
     public static final AllNoneEnumListProperty<PolicyRuleSeverityType> DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES =
@@ -1504,7 +1504,7 @@ public class DetectProperties {
             .setInfo("Sbt Executable", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("Path to the Sbt executable.", "If set, Detect will use the given Sbt executable instead of searching for one.")
             .setExample("C:\\Program Files (x86)\\sbt\\bin\\sbt.bat")
-            .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .setGroups(DetectGroup.SBT, DetectGroup.GLOBAL)
             .build();
 
     public static final NullableStringProperty DETECT_SBT_ARGUMENTS =
