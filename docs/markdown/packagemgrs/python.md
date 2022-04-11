@@ -1,5 +1,11 @@
 # Python support
 
+## Related properties
+
+[Detector properties](../properties/detectors/python.md)
+
+## Overview
+
 [solution_name] has three detectors for Python:
 
 * Pip detector

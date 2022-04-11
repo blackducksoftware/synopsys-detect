@@ -1,5 +1,7 @@
 # Cargo support
 
+## Overview
+
 [solution_name] runs the Cargo detector if it finds either of the following files in your project:
 
 * Cargo.toml

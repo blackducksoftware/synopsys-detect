@@ -1,4 +1,11 @@
 # Swift support
+
+## Related properties
+
+[Detector properties](../properties/detectors/swift.md)
+
+## Overview
+
 [solution_name] has two detectors for Swift:
 
 * Xcode Swift detector

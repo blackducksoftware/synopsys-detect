@@ -1,5 +1,11 @@
 # Conan support
 
+## Related properties
+
+[Detector properties](../properties/detectors/conan.md)
+
+## Overview
+
 [solution_name] has two detectors for Conan:
 
 * Conan Lockfile detector
