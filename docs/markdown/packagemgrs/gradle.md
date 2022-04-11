@@ -1,5 +1,11 @@
 # Gradle support
 
+## Related properties
+
+[Detector properties](https://community.synopsys.com/s/document-item?bundleId=integrations-detect&topicId=properties%2Fdetectors%2Fgradle.html)
+
+## Overview
+
 [solution_name] has two detectors for Gradle:
 
 * Gradle inspector detector

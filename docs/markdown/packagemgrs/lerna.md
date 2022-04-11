@@ -1,5 +1,11 @@
 # Lerna support
 
+## Related properties
+
+[Detector properties](https://community.synopsys.com/s/document-item?bundleId=integrations-detect&topicId=properties%2Fdetectors%2Flerna.html)
+
+## Overview
+
 The Lerna detector will register in the presence of a lerna.json file.
 
 It will then execute a lerna command to retrieve all the packages defined in the project.

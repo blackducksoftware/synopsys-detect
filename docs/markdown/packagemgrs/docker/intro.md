@@ -1,5 +1,11 @@
 # Docker image support
 
+## Related properties
+
+[Detector properties](https://community.synopsys.com/s/document-item?bundleId=integrations-detect&topicId=properties%2Fdetectors%2Fdocker.html)
+
+## Overview
+
 On Linux, Mac, and Windows 10 Enterprise, [solution_name] can invoke Docker Inspector to inspect Linux Docker images to discover packages installed by the Linux package manager.
 For simple use cases, add ```--detect.docker.image={repo}:{tag}```, ```--detect.docker.tar={path to an image archive}```,
 ```--detect.docker.image.id={image id}```,

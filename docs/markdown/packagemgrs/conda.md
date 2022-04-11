@@ -1,5 +1,11 @@
 # Conda Support
 
+## Related properties
+
+[Detector properties](https://community.synopsys.com/s/document-item?bundleId=integrations-detect&topicId=properties%2Fdetectors%2Fconda.html)
+
+## Overview
+
 The Conda detector discovers dependencies of python projects utilizing the Conda package and environment manager.
 
 [solution_name] runs the Conda detector if an environment.yml file is found in your project.

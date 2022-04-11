@@ -1,5 +1,11 @@
 # GoLang support
 
+## Related properties
+
+[Detector properties](https://community.synopsys.com/s/document-item?bundleId=integrations-detect&topicId=properties%2Fdetectors%2Fgo.html)
+
+## Overview
+
 [solution_name] has four detectors for GoLang:
 
 * Go Mod Cli (GO_MOD) detector (recommended)

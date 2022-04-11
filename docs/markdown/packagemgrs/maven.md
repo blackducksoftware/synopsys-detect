@@ -1,5 +1,11 @@
 # Maven support
 
+## Related properties
+
+[Detector properties](https://community.synopsys.com/s/document-item?bundleId=integrations-detect&topicId=properties%2Fdetectors%2Fmaven.html)
+
+## Overview
+
 [solution_name] has two detectors for Maven:
 
 * Maven Pom detector

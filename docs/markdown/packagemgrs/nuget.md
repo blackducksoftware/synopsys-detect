@@ -1,5 +1,11 @@
 # NuGet support
 
+## Related properties
+
+[Detector properties](https://community.synopsys.com/s/document-item?bundleId=integrations-detect&topicId=properties%2Fdetectors%2Fnuget.html)
+
+## Overview
+
 The NuGet detectors can discover dependencies of NuGet projects.
 
 ## Overview

@@ -1,5 +1,11 @@
 # Yarn support
 
+## Related properties
+
+[Detector properties](https://community.synopsys.com/s/document-item?bundleId=integrations-detect&topicId=properties%2Fdetectors%2Fyarn.html)
+
+## Overview
+
 [solution_name] runs the Yarn detector if it finds both of the following files in your project:
 
 * yarn.lock

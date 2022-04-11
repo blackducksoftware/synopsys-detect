@@ -1,5 +1,11 @@
 # Bazel support
 
+## Related properties
+
+[Detector properties](https://community.synopsys.com/s/document-item?bundleId=integrations-detect&topicId=properties%2Fdetectors%2Fbazel.html)
+
+## Overview
+
 [solution_name] provides very limited support for Bazel projects.
 
 [solution_name] supports dependencies specified in *maven_jar*, *maven_install*, and *haskell_cabal_library* workspace rules only.

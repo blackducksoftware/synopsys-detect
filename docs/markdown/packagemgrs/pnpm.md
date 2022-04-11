@@ -1,5 +1,11 @@
 # pnpm support
 
+## Related properties
+
+[Detector properties](https://community.synopsys.com/s/document-item?bundleId=integrations-detect&topicId=properties%2Fdetectors%2Fpnpm.html)
+
+## Overview
+
 [solution_name] runs the pnpm detector if it finds a pnpm-lock.yaml file in your project, and parses the file to obtain information on your project's dependencies.
 
 To specify which types of dependencies you want [solution_name] to exclude from the BOM (Dev and Optional dependencies) use the detect.pnpm.dependency.types.excluded property.

@@ -1,5 +1,13 @@
 # SBT support
 
+## Related properties
+
+[Detector properties](https://community.synopsys.com/s/document-item?bundleId=integrations-detect&topicId=properties%2Fdetectors%2Fsbt.html)
+
+[Path properties](https://community.synopsys.com/s/document-item?bundleId=integrations-detect&topicId=properties%2Fconfiguration%2Fpaths.html)
+
+## Overview
+
 [solution_name] runs the dependecyDot task when it finds the following in your project
 
 * build.sbt

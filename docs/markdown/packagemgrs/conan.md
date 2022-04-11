@@ -1,5 +1,11 @@
 # Conan support
 
+## Related properties
+
+[Detector properties](https://community.synopsys.com/s/document-item?bundleId=integrations-detect&topicId=properties%2Fdetectors%2Fconan.html)
+
+## Overview
+
 [solution_name] has two detectors for Conan:
 
 * Conan Lockfile detector

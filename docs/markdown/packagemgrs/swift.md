@@ -1,4 +1,11 @@
 # Swift support
+
+## Related properties
+
+[Path properties](https://community.synopsys.com/s/document-item?bundleId=integrations-detect&topicId=properties%2Fconfiguration%2Fpaths.html)
+
+## Overview
+
 [solution_name] has two detectors for Swift:
 
 * Xcode Swift detector
