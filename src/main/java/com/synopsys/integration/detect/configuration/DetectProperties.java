@@ -1756,7 +1756,8 @@ public class DetectProperties {
         EnumProperty.newBuilder("detect.bom.aggregate.remediation.mode", AggregateMode.TRANSITIVE, AggregateMode.class)
             .setInfo("BDIO Aggregate Remediation Mode", DetectPropertyFromVersion.VERSION_6_1_0)
             .setHelp(
-                "If an aggregate BDIO file is being generated and this property is set to DIRECT, the aggregate BDIO file will exclude code location nodes " +
+                "If an aggregate BDIO file is being generated (that is, property detect.bom.aggregate.name has been set) " +
+                    "and this property is set to DIRECT, the aggregate BDIO file will exclude code location nodes " +
                     "from the top layer of the dependency tree to preserve the correct identification of direct dependencies in the resulting Black Duck BOM. " +
                     "When this property is set to TRANSITIVE (the default), component source information is preserved by including code location nodes at the " +
                     "top of the dependency tree, but all components will appear as TRANSITIVE in the BOM. " +
