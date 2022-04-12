@@ -5,27 +5,20 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.util.DependencyCreator;
 
 public class PubSpecLockParser {
-    private final ExternalIdFactory externalIdFactory;
 
     private static final String PACKAGES_SECTION_HEADER = "packages:";
     private static final String DESCRIPTION_SECTION_HEADER = "description:";
     private static final String NAME_LINE_KEY = "name:";
     private static final String VERSION_LINE_KEY = "version:";
 
-    public PubSpecLockParser(ExternalIdFactory externalIdFactory) {
-        this.externalIdFactory = externalIdFactory;
-    }
-
     public DependencyGraph parse(List<String> pubSpecLockLines) {
-        MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
+        DependencyGraph dependencyGraph = new BasicDependencyGraph();
 
         //TODO- do we even need these booleans? will there be cases we run into name and version keys that we don't want to read/don't correspond to a dependency?
         boolean inPackages = false;

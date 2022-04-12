@@ -1,5 +1,11 @@
 # Dart Support
 
+## Related properties
+
+[Detector properties](../properties/detectors/dart.md)
+
+## Overview
+
 [solution_name] has two detectors for Dart:
 
 * Dart Pub Spec Lock detector

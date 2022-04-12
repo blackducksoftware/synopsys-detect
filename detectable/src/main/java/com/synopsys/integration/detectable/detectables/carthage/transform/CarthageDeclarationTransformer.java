@@ -5,23 +5,19 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.dependency.DependencyFactory;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.carthage.model.CarthageDeclaration;
 
 public class CarthageDeclarationTransformer {
     private static final String GITHUB_ORIGIN_ID = "github";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final DependencyFactory dependencyFactory = new DependencyFactory(new ExternalIdFactory());
 
     public DependencyGraph transform(List<CarthageDeclaration> carthageDeclarations) {
-        MutableDependencyGraph graph = new MutableMapDependencyGraph();
+        DependencyGraph graph = new BasicDependencyGraph();
         carthageDeclarations.stream()
             .filter(this::isGitHubOrigin)
             .map(this::createGitHubDependencyFromDeclaration)
@@ -47,7 +43,7 @@ public class CarthageDeclarationTransformer {
 
     private Dependency createGitHubDependencyFromDeclaration(CarthageDeclaration declaration) {
         // Because the dependency is hosted on GitHub, we must use the github forge in order for KB to match it
-        return dependencyFactory.createNameVersionDependency(Forge.GITHUB, declaration.getName(), declaration.getVersion());
+        return Dependency.FACTORY.createNameVersionDependency(Forge.GITHUB, declaration.getName(), declaration.getVersion());
     }
 
 }

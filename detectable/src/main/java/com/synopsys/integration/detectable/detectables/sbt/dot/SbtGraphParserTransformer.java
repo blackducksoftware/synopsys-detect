@@ -7,9 +7,8 @@ import org.slf4j.LoggerFactory;
 
 import com.paypal.digraph.parser.GraphEdge;
 import com.paypal.digraph.parser.GraphParser;
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 
 public class SbtGraphParserTransformer {
@@ -21,7 +20,7 @@ public class SbtGraphParserTransformer {
     }
 
     public DependencyGraph transformDotToGraph(GraphParser graphParser, String projectNodeId) {
-        MutableDependencyGraph graph = new MutableMapDependencyGraph();
+        DependencyGraph graph = new BasicDependencyGraph();
 
         for (GraphEdge graphEdge : graphParser.getEdges().values()) {
             Dependency parent = sbtDotGraphNodeParser.nodeToDependency(graphEdge.getNode1().getId());
@@ -37,7 +36,7 @@ public class SbtGraphParserTransformer {
     }
 
     public DependencyGraph transformDotToGraph(GraphParser graphParser, Set<String> projectNodeIds) {
-        MutableDependencyGraph graph = new MutableMapDependencyGraph();
+        DependencyGraph graph = new BasicDependencyGraph();
 
         for (GraphEdge graphEdge : graphParser.getEdges().values()) {
             Dependency parent = sbtDotGraphNodeParser.nodeToDependency(graphEdge.getNode1().getId());

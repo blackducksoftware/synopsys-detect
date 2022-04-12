@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.dart.pubdep.PubDepsParser;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
@@ -16,7 +15,7 @@ public class PubDepsParserTest {
     public void test() {
         List<String> pubDepsLines = FunctionalTestFiles.asListOfStrings("/dart/pubDeps.txt");
 
-        PubDepsParser pubDepsParser = new PubDepsParser(new ExternalIdFactory());
+        PubDepsParser pubDepsParser = new PubDepsParser();
 
         DependencyGraph dependencyGraph = pubDepsParser.parse(pubDepsLines);
 

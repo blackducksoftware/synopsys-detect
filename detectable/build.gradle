@@ -7,7 +7,6 @@ dependencies {
     implementation 'org.tomlj:tomlj:1.0.0'
     implementation 'com.moandjiezana.toml:toml4j:0.7.2'
     implementation 'com.paypal.digraph:digraph-parser:1.0'
-    implementation 'org.freemarker:freemarker:2.3.26-incubating'
 
     testImplementation 'org.skyscreamer:jsonassert:1.5.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'

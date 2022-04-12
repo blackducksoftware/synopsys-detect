@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDepsDetectableOptions;
@@ -33,7 +32,7 @@ public class PubDepsExtractorTest {
     private void testGracefulFailure(ExecutableOutput mockExecutableOutput) throws ExecutableRunnerException {
         DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
         Mockito.when(executableRunner.execute(Mockito.any())).thenReturn(mockExecutableOutput);
-        PubDepsExtractor extractor = new PubDepsExtractor(executableRunner, new PubDepsParser(new ExternalIdFactory()), null, new ToolVersionLogger(executableRunner));
+        PubDepsExtractor extractor = new PubDepsExtractor(executableRunner, new PubDepsParser(), null, new ToolVersionLogger(executableRunner));
         Extraction extraction = extractor.extract(null, null, null, new DartPubDepsDetectableOptions(EnumListFilter.excludeNone()), null);
 
         Assertions.assertFalse(extraction.isSuccess() && null == extraction.getError());

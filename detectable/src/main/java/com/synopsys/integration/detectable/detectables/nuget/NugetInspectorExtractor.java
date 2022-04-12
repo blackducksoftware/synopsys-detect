@@ -15,8 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.graph.DependencyGraphCombiner;
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -56,14 +55,14 @@ public class NugetInspectorExtractor {
                 .collect(Collectors.toList());
 
             Map<File, CodeLocation> codeLocationsBySource = new HashMap<>();
-            DependencyGraphCombiner combiner = new DependencyGraphCombiner();
 
             codeLocations.forEach(codeLocation -> {
                 File sourcePathFile = codeLocation.getSourcePath().orElse(null);
                 if (codeLocationsBySource.containsKey(sourcePathFile)) {
                     logger.debug("Combined code location for: " + sourcePathFile);
                     CodeLocation destination = codeLocationsBySource.get(sourcePathFile);
-                    combiner.addGraphAsChildrenToRoot((MutableDependencyGraph) destination.getDependencyGraph(), codeLocation.getDependencyGraph());
+                    // TODO: I don't like this casting, perhaps this doesn't have to happen here in 8.0.0. JM-04/2022
+                    destination.getDependencyGraph().copyGraphToRoot((BasicDependencyGraph) codeLocation.getDependencyGraph());
                 } else {
                     codeLocationsBySource.put(sourcePathFile, codeLocation);
                 }

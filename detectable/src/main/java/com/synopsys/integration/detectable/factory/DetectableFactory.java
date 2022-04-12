@@ -335,7 +335,7 @@ public class DetectableFactory {
             new BitbakeRecipesParser(),
             new LicenseManifestParser(),
             new BitbakeGraphTransformer(new GraphNodeLabelParser()),
-            new BitbakeDependencyGraphTransformer(externalIdFactory, bitbakeDetectableOptions.getDependencyTypeFilter()),
+            new BitbakeDependencyGraphTransformer(bitbakeDetectableOptions.getDependencyTypeFilter()),
             bitbakeDetectableOptions.getPackageNames(),
             bitbakeDetectableOptions.getDependencyTypeFilter()
         );
@@ -385,7 +385,10 @@ public class DetectableFactory {
     }
 
     public DartPubSpecLockDetectable createDartPubSpecLockDetectable(DetectableEnvironment environment) {
-        return new DartPubSpecLockDetectable(environment, fileFinder, pubSpecExtractor());
+        PubSpecLockParser pubSpecLockParser = new PubSpecLockParser();
+        PubSpecYamlNameVersionParser pubSpecYamlNameVersionParser = new PubSpecYamlNameVersionParser();
+        PubSpecExtractor pubSpecExtractor = new PubSpecExtractor(pubSpecLockParser, pubSpecYamlNameVersionParser);
+        return new DartPubSpecLockDetectable(environment, fileFinder, pubSpecExtractor);
     }
 
     public DartPubDepDetectable createDartPubDepDetectable(
@@ -394,7 +397,10 @@ public class DetectableFactory {
         DartResolver dartResolver,
         FlutterResolver flutterResolver
     ) {
-        return new DartPubDepDetectable(environment, fileFinder, pubDepsExtractor(), dartPubDepsDetectableOptions, dartResolver, flutterResolver);
+        PubDepsParser pubDepsParser = new PubDepsParser();
+        PubSpecYamlNameVersionParser pubSpecYamlNameVersionParser = new PubSpecYamlNameVersionParser();
+        PubDepsExtractor pubDepsExtractor = new PubDepsExtractor(executableRunner, pubDepsParser, pubSpecYamlNameVersionParser, toolVersionLogger);
+        return new DartPubDepDetectable(environment, fileFinder, pubDepsExtractor, dartPubDepsDetectableOptions, dartResolver, flutterResolver);
     }
 
     public GemlockDetectable createGemlockDetectable(DetectableEnvironment environment) {
@@ -414,7 +420,9 @@ public class DetectableFactory {
     }
 
     public GoDepLockDetectable createGoLockDetectable(DetectableEnvironment environment) {
-        return new GoDepLockDetectable(environment, fileFinder, goDepExtractor());
+        GoLockParser goLockParser = new GoLockParser();
+        GoDepExtractor goDepExtractor = new GoDepExtractor(goLockParser);
+        return new GoDepLockDetectable(environment, fileFinder, goDepExtractor);
     }
 
     public GoVndrDetectable createGoVndrDetectable(DetectableEnvironment environment) {
@@ -448,7 +456,7 @@ public class DetectableFactory {
 
     public GemspecParseDetectable createGemspecParseDetectable(DetectableEnvironment environment, GemspecParseDetectableOptions gemspecOptions) {
         GemspecLineParser gemspecLineParser = new GemspecLineParser();
-        GemspecParser gemspecParser = new GemspecParser(externalIdFactory, gemspecLineParser, gemspecOptions.getDependencyTypeFilter());
+        GemspecParser gemspecParser = new GemspecParser(gemspecLineParser, gemspecOptions.getDependencyTypeFilter());
         GemspecParseExtractor gemspecParseExtractor = new GemspecParseExtractor(gemspecParser);
         return new GemspecParseDetectable(environment, fileFinder, gemspecParseExtractor);
     }
@@ -586,7 +594,7 @@ public class DetectableFactory {
     }
 
     public PnpmLockDetectable createPnpmLockDetectable(DetectableEnvironment environment, PnpmLockOptions pnpmLockOptions) {
-        PnpmYamlTransformer pnpmYamlTransformer = new PnpmYamlTransformer(externalIdFactory, pnpmLockOptions.getDependencyTypeFilter());
+        PnpmYamlTransformer pnpmYamlTransformer = new PnpmYamlTransformer(pnpmLockOptions.getDependencyTypeFilter());
         PnpmLockYamlParser pnpmLockYamlParser = new PnpmLockYamlParser(pnpmYamlTransformer);
         PnpmLockExtractor pnpmLockExtractor = new PnpmLockExtractor(pnpmLockYamlParser, packageJsonFiles());
         return new PnpmLockDetectable(environment, fileFinder, pnpmLockExtractor, packageJsonFiles());
@@ -785,14 +793,6 @@ public class DetectableFactory {
         return new GitCliExtractor(executableRunner, gitUrlParser(), toolVersionLogger);
     }
 
-    private GoLockParser goLockParser() {
-        return new GoLockParser(externalIdFactory);
-    }
-
-    private GoDepExtractor goDepExtractor() {
-        return new GoDepExtractor(goLockParser());
-    }
-
     private GoModCliExtractor goModCliExtractor(GoModCliDetectableOptions options) {
         GoModCommandRunner goModCommandRunner = new GoModCommandRunner(executableRunner);
         GoListParser goListParser = new GoListParser(gson);
@@ -825,7 +825,7 @@ public class DetectableFactory {
     }
 
     private GradleReportTransformer gradleReportTransformer(GradleInspectorOptions gradleInspectorOptions) {
-        return new GradleReportTransformer(externalIdFactory, gradleInspectorOptions.getConfigurationTypeFilter());
+        return new GradleReportTransformer(gradleInspectorOptions.getConfigurationTypeFilter());
     }
 
     private GradleRootMetadataParser gradleRootMetadataParser() {
@@ -841,7 +841,7 @@ public class DetectableFactory {
     }
 
     private Rebar3TreeParser rebar3TreeParser() {
-        return new Rebar3TreeParser(externalIdFactory);
+        return new Rebar3TreeParser();
     }
 
     private RebarExtractor rebarExtractor() {
@@ -881,7 +881,7 @@ public class DetectableFactory {
     }
 
     private NpmLockfilePackager npmLockfilePackager(NpmLockfileOptions npmLockfileOptions) {
-        NpmLockfileGraphTransformer npmLockfileGraphTransformer = new NpmLockfileGraphTransformer(externalIdFactory, npmLockfileOptions.getNpmDependencyTypeFilter());
+        NpmLockfileGraphTransformer npmLockfileGraphTransformer = new NpmLockfileGraphTransformer(npmLockfileOptions.getNpmDependencyTypeFilter());
         return new NpmLockfilePackager(gson, externalIdFactory, npmLockFileProjectIdTransformer(), npmLockfileGraphTransformer);
     }
 
@@ -935,26 +935,6 @@ public class DetectableFactory {
 
     private PoetryExtractor poetryExtractor() {
         return new PoetryExtractor(new PoetryLockParser());
-    }
-
-    private PubSpecExtractor pubSpecExtractor() {
-        return new PubSpecExtractor(pubSpecLockParser(), pubSpecYamlNameVersionParser());
-    }
-
-    private PubSpecLockParser pubSpecLockParser() {
-        return new PubSpecLockParser(externalIdFactory);
-    }
-
-    private PubDepsExtractor pubDepsExtractor() {
-        return new PubDepsExtractor(executableRunner, pubDepsParser(), pubSpecYamlNameVersionParser(), toolVersionLogger);
-    }
-
-    private PubDepsParser pubDepsParser() {
-        return new PubDepsParser(externalIdFactory);
-    }
-
-    private PubSpecYamlNameVersionParser pubSpecYamlNameVersionParser() {
-        return new PubSpecYamlNameVersionParser();
     }
 
     private ToolPoetrySectionParser toolPoetrySectionParser() {
@@ -1076,7 +1056,7 @@ public class DetectableFactory {
     }
 
     private MavenParseExtractor mavenParseExtractor() {
-        return new MavenParseExtractor(externalIdFactory, saxParser());
+        return new MavenParseExtractor(saxParser());
     }
 
     private SwiftCliParser swiftCliParser() {

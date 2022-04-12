@@ -1,5 +1,9 @@
 # BitBake support
 
+## Related properties
+
+[Detector properties](../properties/detectors/bitbake.md)
+
 ## Requirements
 
 The BitBake detector will run if it finds a BitBake build environment setup script (which defaults to *oe-init-build-env*, but can be configured

@@ -4,9 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
@@ -34,7 +33,7 @@ public class PearDependencyGraphTransformer {
                 return new Dependency(dependencyName, dependencyVersion, externalId);
             }).collect(Collectors.toList());
 
-        MutableDependencyGraph mutableDependencyGraph = new MutableMapDependencyGraph();
+        DependencyGraph mutableDependencyGraph = new BasicDependencyGraph();
         mutableDependencyGraph.addChildrenToRoot(dependencies);
 
         return mutableDependencyGraph;
