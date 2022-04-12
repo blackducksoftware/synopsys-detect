@@ -85,8 +85,8 @@ public class GradleReportTransformer {
     }
 
     private void addGavToGraph(GradleGav gav, DependencyHistory history, MutableDependencyGraph graph) {
-        ExternalId externalId = externalIdFactory.createMavenExternalId(gav.getName(), gav.getGroup(), gav.getVersion());
-        Dependency currentDependency = new Dependency(gav.getGroup(), gav.getVersion(), externalId);
+        ExternalId externalId = externalIdFactory.createMavenExternalId(gav.getGroup(), gav.getName(), gav.getVersion());
+        Dependency currentDependency = new Dependency(gav.getName(), gav.getVersion(), externalId);
 
         if (history.isEmpty()) {
             graph.addChildToRoot(currentDependency);
