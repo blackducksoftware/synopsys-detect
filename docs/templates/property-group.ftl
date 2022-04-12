@@ -82,7 +82,7 @@ ${option.description}
 
 ${option.detailedDescription!""}
 
-**DEPRECATED: ${option.deprecatedDescription!"This property is deprecated."} It will be removed in ${option.deprecatedRemoveInVersion}.**
+**DEPRECATED: ${option.deprecatedDescription!"This property is deprecated."} This property will be removed in ${option.deprecatedRemoveInVersion}.**
 
 |Details||
 |---|---|
