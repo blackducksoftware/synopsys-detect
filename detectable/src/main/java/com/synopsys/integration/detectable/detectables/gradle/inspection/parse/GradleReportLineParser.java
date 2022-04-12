@@ -34,10 +34,10 @@ public class GradleReportLineParser {
                 )); //All project lines: +--- org.springframework.boot:spring-boot-starter-activemq (n)
                 return GradleTreeNode.newUnknown(level);
             } else {
-                String name = gav.get(0);
-                String group = gav.get(1);
+                String group = gav.get(0);
+                String name = gav.get(1);
                 String version = gav.get(2);
-                return GradleTreeNode.newGav(level, name, group, version);
+                return GradleTreeNode.newGav(level, group, name, version);
             }
         }
     }

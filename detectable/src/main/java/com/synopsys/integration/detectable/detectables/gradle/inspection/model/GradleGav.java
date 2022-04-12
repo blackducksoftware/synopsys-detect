@@ -7,9 +7,9 @@ public class GradleGav implements GradleGavId {
     private final String group;
     private final String version;
 
-    public GradleGav(String name, String group, String version) {
-        this.name = name;
+    public GradleGav(String group, String name, String version) {
         this.group = group;
+        this.name = name;
         this.version = version;
     }
 
@@ -27,6 +27,6 @@ public class GradleGav implements GradleGavId {
 
     @Override
     public LazyId toDependencyId() {
-        return LazyId.fromString(String.format("%s:%s:%s", getName(), getGroup(), getVersion()));
+        return LazyId.fromString(String.format("%s:%s:%s", getGroup(), getName(), getVersion()));
     }
 }

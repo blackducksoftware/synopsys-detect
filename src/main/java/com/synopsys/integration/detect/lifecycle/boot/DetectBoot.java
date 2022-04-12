@@ -28,6 +28,8 @@ import com.synopsys.integration.detect.configuration.DetectUserFriendlyException
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
+import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
 import com.synopsys.integration.detect.configuration.help.json.HelpJsonManager;
 import com.synopsys.integration.detect.configuration.help.print.HelpPrinter;
@@ -83,7 +85,7 @@ public class DetectBoot {
         this.installedToolManager = installedToolManager;
     }
 
-    public Optional<DetectBootResult> boot(String detectVersion) throws IOException, IllegalAccessException {
+    public Optional<DetectBootResult> boot(String detectVersion, String detectBuildDate) throws IOException, IllegalAccessException {
         if (detectArgumentState.isHelp() || detectArgumentState.isDeprecatedHelp() || detectArgumentState.isVerboseHelp()) {
             HelpPrinter helpPrinter = new HelpPrinter();
             helpPrinter.printAppropriateHelpMessage(
@@ -129,6 +131,7 @@ public class DetectBoot {
             return Optional.of(DetectBootResult.exception(possiblePropertyParseError.get(), propertyConfiguration));
         }
 
+        logger.info("Detect build date: {}", detectBuildDate);
         logger.debug("Initializing Detect.");
 
         Configuration freemarkerConfiguration = detectBootFactory.createFreemarkerConfiguration();
@@ -188,6 +191,11 @@ public class DetectBoot {
             );
             RunDecision runDecision = new RunDecision(detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE); //TODO: Move to proper decision home. -jp
             DetectToolFilter detectToolFilter = detectConfigurationFactory.createToolFilter(runDecision, blackDuckDecision);
+            oneRequiresTheOther(
+                detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE,
+                detectToolFilter.shouldInclude(DetectTool.DOCKER),
+                "Detect target type is set to IMAGE, but the DOCKER tool was excluded."
+            );
 
             logger.debug("Decided what products will be run. Starting product boot.");
 
@@ -206,6 +214,11 @@ public class DetectBoot {
         try {
             ProxyInfo detectableProxyInfo = detectConfigurationFactory.createBlackDuckProxyInfo();
             detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem, pathResolver, detectableProxyInfo);
+            oneRequiresTheOther(
+                detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE,
+                detectableOptionFactory.createDockerDetectableOptions().hasDockerImageOrTar(),
+                "Detect target type is set to IMAGE, but no docker image was specified."
+            );
         } catch (DetectUserFriendlyException e) {
             return Optional.of(DetectBootResult.exception(e, propertyConfiguration, directoryManager, diagnosticSystem));
         }
@@ -222,6 +235,15 @@ public class DetectBoot {
                 installedToolLocator
             );
         return Optional.of(DetectBootResult.run(bootSingletons, propertyConfiguration, productRunData, directoryManager, diagnosticSystem));
+    }
+
+    private void oneRequiresTheOther(boolean firstCondition, boolean secondCondition, String errorMessageIfNot) throws DetectUserFriendlyException {
+        if (firstCondition && !secondCondition) {
+            throw new DetectUserFriendlyException(
+                "Invalid configuration: " + errorMessageIfNot,
+                ExitCodeType.FAILURE_CONFIGURATION
+            );
+        }
     }
 
     private SortedMap<String, String> collectMaskedRawPropertyValues(PropertyConfiguration propertyConfiguration) throws IllegalAccessException {

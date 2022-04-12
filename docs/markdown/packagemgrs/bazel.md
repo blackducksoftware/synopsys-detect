@@ -1,5 +1,11 @@
 # Bazel support
 
+## Related properties
+
+[Detector properties](../properties/detectors/bazel.md)
+
+## Overview
+
 [solution_name] provides very limited support for Bazel projects.
 
 [solution_name] supports dependencies specified in *maven_jar*, *maven_install*, and *haskell_cabal_library* workspace rules only.

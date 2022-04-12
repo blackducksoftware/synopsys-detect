@@ -1,5 +1,11 @@
 # SBT support
 
+## Related properties
+
+[Detector properties](../properties/detectors/sbt.md)
+
+## Overview
+
 [solution_name] runs the dependecyDot task when it finds the following in your project
 
 * build.sbt

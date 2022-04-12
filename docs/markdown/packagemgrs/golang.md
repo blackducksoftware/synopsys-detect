@@ -1,5 +1,11 @@
 # GoLang support
 
+## Related properties
+
+[Detector properties](../properties/detectors/go.md)
+
+## Overview
+
 [solution_name] has four detectors for GoLang:
 
 * Go Mod Cli (GO_MOD) detector (recommended)

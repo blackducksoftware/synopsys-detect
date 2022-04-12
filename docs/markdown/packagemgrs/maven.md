@@ -1,5 +1,11 @@
 # Maven support
 
+## Related properties
+
+[Detector properties](../properties/detectors/maven.md)
+
+## Overview
+
 [solution_name] has two detectors for Maven:
 
 * Maven Pom detector

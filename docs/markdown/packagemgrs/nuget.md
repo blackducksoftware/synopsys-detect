@@ -1,5 +1,11 @@
 # NuGet support
 
+## Related properties
+
+[Detector properties](../properties/detectors/nuget.md)
+
+## Overview
+
 The NuGet detectors can discover dependencies of NuGet projects.
 
 ## Overview

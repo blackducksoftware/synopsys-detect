@@ -43,8 +43,8 @@ public class GradleTreeNode extends Stringable {
         return new GradleTreeNode(NodeType.PROJECT, level, null, "");
     }
 
-    public static GradleTreeNode newGav(int level, String name, String group, String version) {
-        return new GradleTreeNode(NodeType.GAV, level, new GradleGav(name, group, version), null);
+    public static GradleTreeNode newGav(int level, String group, String name, String version) {
+        return new GradleTreeNode(NodeType.GAV, level, new GradleGav(group, name, version), null);
     }
 
     public static GradleTreeNode newUnknown(int level) {

@@ -5,10 +5,12 @@ import com.synopsys.integration.util.OperatingSystemType;
 public class DetectInfo {
     private final OperatingSystemType currentOs;
     private final String detectVersion;
+    private final String buildDateString;
 
-    public DetectInfo(String detectVersionText, OperatingSystemType currentOs) {
+    public DetectInfo(String detectVersionText, OperatingSystemType currentOs, String buildDateString) {
         this.detectVersion = detectVersionText;
         this.currentOs = currentOs;
+        this.buildDateString = buildDateString;
     }
 
     public String getDetectVersion() {
@@ -19,4 +21,7 @@ public class DetectInfo {
         return currentOs;
     }
 
+    public String getBuildDateString() {
+        return buildDateString;
+    }
 }
