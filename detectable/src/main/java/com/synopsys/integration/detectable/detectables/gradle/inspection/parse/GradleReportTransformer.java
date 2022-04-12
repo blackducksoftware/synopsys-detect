@@ -30,7 +30,7 @@ public class GradleReportTransformer {
     }
 
     public CodeLocation transform(GradleReport gradleReport) {
-        DependencyGraph graph = new BasicDependencyGraph() {};
+        DependencyGraph graph = new BasicDependencyGraph();
 
         for (GradleConfiguration configuration : gradleReport.getConfigurations()) {
             if (configuration.isResolved() || configurationTypeFilter.shouldInclude(GradleConfigurationType.UNRESOLVED)) {
@@ -75,9 +75,9 @@ public class GradleReportTransformer {
     }
 
     private void addGavToGraph(GradleGav gav, DependencyHistory history, DependencyGraph graph) {
-        Dependency currentDependency = Dependency.FACTORY.createMavenDependency(gav.getGroup(),gav.getName(), gav.getVersion());
+        Dependency currentDependency = Dependency.FACTORY.createMavenDependency(gav.getGroup(), gav.getName(), gav.getVersion());
         if (history.isEmpty()) {
-            graph.addChildToRoot(currentDependency);
+            graph.addDirectDependency(currentDependency);
         } else {
             graph.addChildWithParents(currentDependency, history.getLastDependency());
         }

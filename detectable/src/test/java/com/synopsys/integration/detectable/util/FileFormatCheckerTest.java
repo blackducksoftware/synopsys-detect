@@ -1,6 +1,7 @@
 package com.synopsys.integration.detectable.util;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
@@ -28,8 +29,8 @@ class FileFormatCheckerTest {
         };
         TestClass testClass = () -> knownVersion;
 
-        assertFalse(formatChecker.checkForVersionCompatibility(knownVersion));
-        assertFalse(formatChecker.checkForVersionCompatibility(testClass::getVersion));
+        assertTrue(formatChecker.checkForVersionCompatibility(knownVersion));
+        assertTrue(formatChecker.checkForVersionCompatibility(testClass::getVersion));
     }
 
     @Test
@@ -42,7 +43,7 @@ class FileFormatCheckerTest {
             }
         };
         TestClass testClass = () -> unknownVersion;
-        
+
         assertFalse(formatChecker.checkForVersionCompatibility(unknownVersion));
         assertFalse(formatChecker.checkForVersionCompatibility(testClass::getVersion));
     }

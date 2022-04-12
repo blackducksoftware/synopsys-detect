@@ -29,7 +29,7 @@ public class PackageResolvedTransformer {
             .map(this::convertToDependency)
             .filter(Optional::isPresent)
             .map(Optional::get)
-            .forEach(dependencyGraph::addChildToRoot);
+            .forEach(dependencyGraph::addDirectDependency);
 
         return dependencyGraph;
     }
