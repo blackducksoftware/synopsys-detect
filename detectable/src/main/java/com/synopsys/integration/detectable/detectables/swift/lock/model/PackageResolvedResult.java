@@ -21,7 +21,7 @@ public class PackageResolvedResult {
         return new PackageResolvedResult(new BasicDependencyGraph(), null);
     }
 
-    public static PackageResolvedResult success(BasicDependencyGraph dependencyGraph) {
+    public static PackageResolvedResult success(DependencyGraph dependencyGraph) {
         return new PackageResolvedResult(dependencyGraph, null);
     }
 
