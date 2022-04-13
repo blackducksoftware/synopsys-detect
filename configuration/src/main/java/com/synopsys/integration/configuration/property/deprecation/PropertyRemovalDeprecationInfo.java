@@ -15,7 +15,7 @@ public class PropertyRemovalDeprecationInfo {
     public PropertyRemovalDeprecationInfo(@NotNull String description, @NotNull ProductMajorVersion removeInVersion) {
         this.description = description;
         this.removeInVersion = removeInVersion;
-        this.deprecationText = getDescription() + " It will be removed in " + getRemoveInVersion().getDisplayValue() + ".";
+        this.deprecationText = getDescription() + " This property will be removed in " + getRemoveInVersion().getDisplayValue() + ".";
     }
 
     @NotNull

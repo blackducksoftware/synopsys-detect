@@ -1755,7 +1755,7 @@ public class DetectProperties {
     //#region Deprecated Properties
     // username/password ==> api token
     public static final String BDIO1_DEPRECATION_MESSAGE = "This property is being removed, along with the option to generate BDIO in BDIO1 format. In the future, BDIO2 format will be the only option.";
-    public static final String AGGREGATION_MODE_DEPRECATION_MESSAGE = "This property is being removed, along with the ability to set the aggregation mode. Detect will only operate in SUBPROJECT aggregation mode to more accurately report the dependency graph.";
+    public static final String AGGREGATION_MODE_DEPRECATION_MESSAGE = "This property is being removed, along with the ability to set the aggregation mode. In the future, Detect will always operate in SUBPROJECT aggregation mode (regardless of how it is configured) to more accurately report the dependency graph.";
     public static final String BAZEL_DEPENDENCY_TYPE_DEPRECATION_MESSAGE = "This property is being removed. Please use property 'detect.bazel.workspace.rules' instead.";
 
     public static final AllNoneEnumListProperty<WorkspaceRule> DETECT_BAZEL_DEPENDENCY_RULE =
@@ -1775,7 +1775,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced)
             .setDeprecated(
-                "This property is being removed, use detect.bdio.file.name to control the name of the bdio file Detect generates, currently it works the same as this property. In the future, Detect will only operate in SUBPROJECT aggregation mode and the new property will not control aggregation, only the file name.",
+                "This property is being removed. Use detect.bdio.file.name to control the name of the bdio file Detect generates. Currently detect.bdio.file.name has the same effects as this property. In the future, Detect will always operate in SUBPROJECT aggregation mode regardless of how it is configured; detect.bdio.file.name will only control the BDIO file name.",
                 DetectMajorVersion.EIGHT
             )
             .build();
@@ -1785,7 +1785,8 @@ public class DetectProperties {
         EnumProperty.newBuilder("detect.bom.aggregate.remediation.mode", AggregateMode.TRANSITIVE, AggregateMode.class)
             .setInfo("BDIO Aggregate Remediation Mode", DetectPropertyFromVersion.VERSION_6_1_0)
             .setHelp(
-                "If an aggregate BDIO file is being generated and this property is set to DIRECT, the aggregate BDIO file will exclude code location nodes " +
+                "If an aggregate BDIO file is being generated (that is, property detect.bom.aggregate.name has been set) " +
+                    "and this property is set to DIRECT, the aggregate BDIO file will exclude code location nodes " +
                     "from the top layer of the dependency tree to preserve the correct identification of direct dependencies in the resulting Black Duck BOM. " +
                     "When this property is set to TRANSITIVE (the default), component source information is preserved by including code location nodes at the " +
                     "top of the dependency tree, but all components will appear as TRANSITIVE in the BOM. " +
