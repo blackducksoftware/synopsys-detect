@@ -1,5 +1,11 @@
 # Yarn support
 
+## Related properties
+
+[Detector properties](../properties/detectors/yarn.md)
+
+## Overview
+
 [solution_name] runs the Yarn detector if it finds both of the following files in your project:
 
 * yarn.lock

@@ -98,9 +98,9 @@ class BdioAggregationTest {
     void testDirectMode() throws DetectUserFriendlyException {
         DependencyGraph aggregatedGraph = new AggregateModeDirectOperation().aggregateCodeLocations(inputCodelocations);
 
-        assertEquals(2, aggregatedGraph.getRootDependencies().size());
-        assertTrue(aggregatedGraph.getRootDependencies().contains(Dependency.FACTORY.createMavenDependency("junit", "junit", "4.12")));
-        assertTrue(aggregatedGraph.getRootDependencies().contains(Dependency.FACTORY.createMavenDependency("joda-time", "joda-time", "2.2")));
+        assertEquals(2, aggregatedGraph.getDirectDependencies().size());
+        assertTrue(aggregatedGraph.getDirectDependencies().contains(Dependency.FACTORY.createMavenDependency("junit", "junit", "4.12")));
+        assertTrue(aggregatedGraph.getDirectDependencies().contains(Dependency.FACTORY.createMavenDependency("joda-time", "joda-time", "2.2")));
     }
 
     @NotNull

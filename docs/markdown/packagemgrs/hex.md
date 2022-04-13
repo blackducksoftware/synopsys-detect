@@ -1,5 +1,11 @@
 # Erlang/Hex/Rebar support
 
+## Related properties
+
+[Detector properties](../properties/detectors/hex.md)
+
+## Overview
+
 The Rebar detector discovers dependencies of Erlang projects that use the Hex package manager.
 
 The Rebar detector runs if [solution_name] finds a *rebar.config* file in your project.

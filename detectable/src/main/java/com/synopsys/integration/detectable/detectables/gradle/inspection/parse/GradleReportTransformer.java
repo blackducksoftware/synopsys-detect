@@ -75,7 +75,7 @@ public class GradleReportTransformer {
     }
 
     private void addGavToGraph(GradleGav gav, DependencyHistory history, DependencyGraph graph) {
-        Dependency currentDependency = Dependency.FACTORY.createMavenDependency(gav.getGroup(), gav.getVersion());
+        Dependency currentDependency = Dependency.FACTORY.createMavenDependency(gav.getGroup(),gav.getName(), gav.getVersion());
         if (history.isEmpty()) {
             graph.addChildToRoot(currentDependency);
         } else {

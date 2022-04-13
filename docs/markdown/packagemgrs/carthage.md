@@ -1,5 +1,7 @@
 # Carthage support
 
+## Overview
+
 [solution_name] runs the Carthage detector if it finds either of the following files in your project:
 
 * Cartfile

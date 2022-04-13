@@ -170,7 +170,7 @@ public class Application implements ApplicationRunner {
             DetectBootFactory detectBootFactory = new DetectBootFactory(detectRunId, detectInfo, gson, eventSystem, fileFinder);
             DetectBoot detectBoot = new DetectBoot(eventSystem, gson, detectBootFactory, detectArgumentState, propertySources, installedToolManager);
 
-            bootResult = detectBoot.boot(detectInfo.getDetectVersion());
+            bootResult = detectBoot.boot(detectInfo.getDetectVersion(), detectInfo.getBuildDateString());
 
             logger.debug("Detect boot completed.");
         } catch (Exception e) {

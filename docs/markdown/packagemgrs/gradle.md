@@ -1,5 +1,11 @@
 # Gradle support
 
+## Related properties
+
+[Detector properties](../properties/detectors/gradle.md)
+
+## Overview
+
 [solution_name] has two detectors for Gradle:
 
 * Gradle inspector detector

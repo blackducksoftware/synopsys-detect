@@ -1237,7 +1237,7 @@ public class DetectProperties {
         NullablePathProperty.newBuilder("detect.swift.path")
             .setInfo("Swift Executable", DetectPropertyFromVersion.VERSION_6_0_0)
             .setHelp("Path of the swift executable.")
-            .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .setGroups(DetectGroup.SWIFT, DetectGroup.GLOBAL)
             .build();
 
     public static final AllNoneEnumListProperty<PolicyRuleSeverityType> DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES =
@@ -1533,7 +1533,7 @@ public class DetectProperties {
             .setInfo("Sbt Executable", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("Path to the Sbt executable.", "If set, Detect will use the given Sbt executable instead of searching for one.")
             .setExample("C:\\Program Files (x86)\\sbt\\bin\\sbt.bat")
-            .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .setGroups(DetectGroup.SBT, DetectGroup.GLOBAL)
             .build();
 
     public static final NullableStringProperty DETECT_SBT_ARGUMENTS =
@@ -1602,7 +1602,7 @@ public class DetectProperties {
             .setInfo("Detect Target", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp(
                 "Informs detect of what is being scanned which allows improved user experience when scanning different types of targets.",
-                "Changes the behaviour of detect to better suite what is being scanned. For example, when IMAGE is selected, detect will not pick a source directory, will automatically disable the DETECTOR tool and run BINARY/SIGNATURE SCAN on the provided image."
+                "Changes the behaviour of detect to better suite what is being scanned. For example, when IMAGE is selected and the DOCKER tool applies and has not been excluded, detect will not pick a source directory, will automatically disable the DETECTOR tool and run BINARY/SIGNATURE SCAN on the provided image."
             )
             .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Simple)
@@ -1755,7 +1755,7 @@ public class DetectProperties {
     //#region Deprecated Properties
     // username/password ==> api token
     public static final String BDIO1_DEPRECATION_MESSAGE = "This property is being removed, along with the option to generate BDIO in BDIO1 format. In the future, BDIO2 format will be the only option.";
-    public static final String AGGREGATION_MODE_DEPRECATION_MESSAGE = "This property is being removed, along with the ability to set the aggregation mode. Detect will only operate in SUBPROJECT aggregation mode to more accurately report the dependency graph.";
+    public static final String AGGREGATION_MODE_DEPRECATION_MESSAGE = "This property is being removed, along with the ability to set the aggregation mode. In the future, Detect will always operate in SUBPROJECT aggregation mode (regardless of how it is configured) to more accurately report the dependency graph.";
     public static final String BAZEL_DEPENDENCY_TYPE_DEPRECATION_MESSAGE = "This property is being removed. Please use property 'detect.bazel.workspace.rules' instead.";
 
     public static final AllNoneEnumListProperty<WorkspaceRule> DETECT_BAZEL_DEPENDENCY_RULE =
@@ -1775,7 +1775,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced)
             .setDeprecated(
-                "This property is being removed, use detect.bdio.file.name to control the name of the bdio file Detect generates, currently it works the same as this property. In the future, Detect will only operate in SUBPROJECT aggregation mode and the new property will not control aggregation, only the file name.",
+                "This property is being removed. Use detect.bdio.file.name to control the name of the bdio file Detect generates. Currently detect.bdio.file.name has the same effects as this property. In the future, Detect will always operate in SUBPROJECT aggregation mode regardless of how it is configured; detect.bdio.file.name will only control the BDIO file name.",
                 DetectMajorVersion.EIGHT
             )
             .build();
@@ -1785,7 +1785,8 @@ public class DetectProperties {
         EnumProperty.newBuilder("detect.bom.aggregate.remediation.mode", AggregateMode.TRANSITIVE, AggregateMode.class)
             .setInfo("BDIO Aggregate Remediation Mode", DetectPropertyFromVersion.VERSION_6_1_0)
             .setHelp(
-                "If an aggregate BDIO file is being generated and this property is set to DIRECT, the aggregate BDIO file will exclude code location nodes " +
+                "If an aggregate BDIO file is being generated (that is, property detect.bom.aggregate.name has been set) " +
+                    "and this property is set to DIRECT, the aggregate BDIO file will exclude code location nodes " +
                     "from the top layer of the dependency tree to preserve the correct identification of direct dependencies in the resulting Black Duck BOM. " +
                     "When this property is set to TRANSITIVE (the default), component source information is preserved by including code location nodes at the " +
                     "top of the dependency tree, but all components will appear as TRANSITIVE in the BOM. " +

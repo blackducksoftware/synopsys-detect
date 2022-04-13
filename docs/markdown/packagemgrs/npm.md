@@ -1,5 +1,11 @@
 # npm support
 
+## Related properties
+
+[Detector properties](../properties/detectors/npm.md)
+
+## Overview
+
 [solution_name] has the following npm detectors:
 
 * npm package lock detector

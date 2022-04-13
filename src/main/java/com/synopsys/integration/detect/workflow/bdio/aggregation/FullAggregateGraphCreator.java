@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraphUtil;
-import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
@@ -30,21 +29,9 @@ public class FullAggregateGraphCreator {
 
         for (DetectCodeLocation detectCodeLocation : codeLocations) {
             Dependency codeLocationDependency = createAggregateNode(projectDependencyCreator, sourcePath, detectCodeLocation);
-            DependencyGraph dependencyGraph = detectCodeLocation.getDependencyGraph();
-            if (dependencyGraph instanceof ProjectDependencyGraph) {
-                aggregateDependencyGraph.addChildrenToRoot(codeLocationDependency);
-                // Need dependencyGraphCombiner to just copy the root dependencies
-                // copying the graph will not give the desired result since we DO NOT want these to appear as subprojects in blackduck
-                DependencyGraphUtil.copyRootDependenciesToParent(aggregateDependencyGraph, codeLocationDependency, detectCodeLocation.getDependencyGraph());
-
-                // TODO: Ideally this is what we would do, but to preserve existing node-naming behavior, will continue to use new "aggregate" project node.
-                //  aggregateDependencyGraph.copyGraphToRoot((ProjectDependencyGraph) dependencyGraph);
-            } else if (dependencyGraph instanceof BasicDependencyGraph) {
-                // This should be all we have to do post 8.0.0
-                aggregateDependencyGraph.copyGraphToRoot((BasicDependencyGraph) dependencyGraph);
-            } else {
-                throw new UnsupportedOperationException(String.format("Cannot aggregate graph of unknown type %s", dependencyGraph.getClass()));
-            }
+            DependencyGraph sourceGraph = detectCodeLocation.getDependencyGraph();
+            aggregateDependencyGraph.addDirectDependency(codeLocationDependency);
+            DependencyGraphUtil.copyDependenciesToParent(aggregateDependencyGraph, codeLocationDependency, sourceGraph, sourceGraph::getDirectDependencies);
         }
 
         return aggregateDependencyGraph;
