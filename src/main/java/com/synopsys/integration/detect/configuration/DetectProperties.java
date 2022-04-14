@@ -688,13 +688,6 @@ public class DetectProperties {
             .setGroups(DetectGroup.DOCKER, DetectGroup.SOURCE_PATH)
             .build();
 
-    public static final NullablePathProperty DETECT_DOTNET_PATH =
-        NullablePathProperty.newBuilder("detect.dotnet.path")
-            .setInfo("dotnet Executable", DetectPropertyFromVersion.VERSION_4_4_0)
-            .setHelp("The path to the dotnet executable.")
-            .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL)
-            .build();
-
     public static final AllNoneEnumListProperty<DetectorType> DETECT_EXCLUDED_DETECTOR_TYPES =
         AllNoneEnumListProperty.newBuilder("detect.excluded.detector.types", emptyList(), DetectorType.class)
             .setInfo("Detector Types Excluded", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -1956,6 +1949,18 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .setDeprecated(
                 "This property is being removed. The version of the NuGet inspector downloaded is always the latest. To continue to control which NuGet inspector is used, switch to Air Gap.",
+                DetectMajorVersion.EIGHT
+            )
+            .build();
+
+    @Deprecated
+    public static final NullablePathProperty DETECT_DOTNET_PATH =
+        NullablePathProperty.newBuilder("detect.dotnet.path")
+            .setInfo("dotnet Executable", DetectPropertyFromVersion.VERSION_4_4_0)
+            .setHelp("The path to the dotnet executable.")
+            .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL)
+            .setDeprecated(
+                "This property is being removed. The NuGet inspector is now a self contained executable and no longer requires dotnet to run.",
                 DetectMajorVersion.EIGHT
             )
             .build();
