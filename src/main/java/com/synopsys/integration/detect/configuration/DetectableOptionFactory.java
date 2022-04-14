@@ -9,10 +9,8 @@ import java.util.Set;
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
-import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetLocatorOptions;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
-import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
@@ -39,6 +37,7 @@ import com.synopsys.integration.detectable.detectables.npm.NpmDependencyType;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliExtractorOptions;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmLockfileOptions;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.NpmPackageJsonParseDetectableOptions;
+import com.synopsys.integration.detectable.detectables.nuget.NugetInspectorOptions;
 import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDetectableOptions;
 import com.synopsys.integration.detectable.detectables.packagist.PackagistDependencyType;
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectableOptions;
@@ -435,12 +434,6 @@ public class DetectableOptionFactory {
         List<String> packagesRepoUrl = detectConfiguration.getValue(DetectProperties.DETECT_NUGET_PACKAGES_REPO_URL);
         Path nugetConfigPath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_NUGET_CONFIG_PATH);
         return new NugetInspectorOptions(ignoreFailures, excludedModules, includedModules, packagesRepoUrl, nugetConfigPath);
-    }
-
-    public NugetLocatorOptions createNugetInstallerOptions() {
-        List<String> packagesRepoUrl = detectConfiguration.getValue(DetectProperties.DETECT_NUGET_PACKAGES_REPO_URL);
-        String nugetInspectorVersion = detectConfiguration.getNullableValue(DetectProperties.DETECT_NUGET_INSPECTOR_VERSION);
-        return new NugetLocatorOptions(packagesRepoUrl, nugetInspectorVersion);
     }
 
     private boolean getFollowSymLinks() {

@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectable.inspector.nuget;
+package com.synopsys.integration.detectable.detectables.nuget;
 
 import java.nio.file.Path;
 import java.util.List;

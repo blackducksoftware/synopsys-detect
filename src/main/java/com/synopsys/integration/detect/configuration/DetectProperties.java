@@ -1090,14 +1090,6 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
-    public static final NullableStringProperty DETECT_NUGET_INSPECTOR_VERSION =
-        NullableStringProperty.newBuilder("detect.nuget.inspector.version")
-            .setInfo("Nuget Inspector Version", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("Version of the Nuget Inspector. By default Detect will run the latest version that is compatible with the Detect version.")
-            .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced)
-            .build();
-
     public static final StringListProperty DETECT_NUGET_PACKAGES_REPO_URL =
         StringListProperty.newBuilder("detect.nuget.packages.repo.url", singletonList("https://api.nuget.org/v3/index.json"))
             .setInfo("Nuget Packages Repository URL", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -1953,6 +1945,19 @@ public class DetectProperties {
             )
             .setGroups(DetectGroup.PNPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_PNPM_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
+            .build();
+
+    @Deprecated
+    public static final NullableStringProperty DETECT_NUGET_INSPECTOR_VERSION =
+        NullableStringProperty.newBuilder("detect.nuget.inspector.version")
+            .setInfo("Nuget Inspector Version", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("Version of the Nuget Inspector. By default Detect will run the latest version that is compatible with the Detect version.")
+            .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(
+                "This property is being removed. The version of the NuGet inspector downloaded is always the latest. To continue to control which NuGet inspector is used, switch to Air Gap.",
+                DetectMajorVersion.EIGHT
+            )
             .build();
 
     // TODO: Revise in 8.0.0

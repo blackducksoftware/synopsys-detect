@@ -2,6 +2,8 @@ package com.synopsys.integration.detectable.detectable.explanation;
 
 import java.io.File;
 
+import com.synopsys.integration.detectable.ExecutableTarget;
+
 public class FoundInspector extends Explanation {
     private final String inspectorDescription;
 
@@ -11,6 +13,10 @@ public class FoundInspector extends Explanation {
 
     public FoundInspector(String description) {
         this.inspectorDescription = description;
+    }
+
+    public FoundInspector(ExecutableTarget executableTarget) {
+        this.inspectorDescription = executableTarget.toCommand();
     }
 
     @Override
