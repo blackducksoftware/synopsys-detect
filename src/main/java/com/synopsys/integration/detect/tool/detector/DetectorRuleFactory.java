@@ -155,7 +155,7 @@ public class DetectorRuleFactory {
         ruleSet.yield(yarnLock).to(lernaDetectable);
         ruleSet.yield(pnpmLock).to(lernaDetectable);
 
-        ruleSet.yield(npmShrinkwrap).to(npmPackageLock);
+        ruleSet.yield(npmPackageLock).to(npmShrinkwrap);
         ruleSet.yield(npmCli).to(npmPackageLock);
         ruleSet.yield(npmCli).to(npmShrinkwrap);
 
@@ -267,7 +267,7 @@ public class DetectorRuleFactory {
         ).defaults().build();
         DetectorRule<?> pnpmLock = ruleSet.addDetector(DetectorType.PNPM, "Pnpm Lock", PnpmLockDetectable.class, detectableFactory::createPnpmLockDetectable).defaults().build();
 
-        ruleSet.yield(npmShrinkwrap).to(npmPackageLock);
+        ruleSet.yield(npmPackageLock).to(npmShrinkwrap);
         ruleSet.yield(npmPackageJsonParse).to(npmPackageLock);
         ruleSet.yield(npmPackageJsonParse).to(npmShrinkwrap);
 
