@@ -97,14 +97,14 @@ public class DetectorRuleFactory {
             "Swift CLI",
             SwiftCliDetectable.class,
             detectableFactory::createSwiftCliDetectable
-        ).defaults().notNestableBeneath(DetectorType.XCODE).build();
+        ).defaults().nestableExceptTo(DetectorType.XCODE).build();
 
         DetectorRule<?> swiftPackageResolved = ruleSet.addDetector(
             DetectorType.SWIFT,
             "Swift Package Resolved",
             SwiftPackageResolvedDetectable.class,
             detectableFactory::createSwiftPackageResolvedDetectable
-        ).defaults().notNestableBeneath(DetectorType.XCODE).build();
+        ).defaults().nestableExceptTo(DetectorType.XCODE).build();
 
         ruleSet.yield(swiftPackageResolved).to(swiftCli);
         ruleSet.yield(xcodeProject).to(xcodeWorkspace);
