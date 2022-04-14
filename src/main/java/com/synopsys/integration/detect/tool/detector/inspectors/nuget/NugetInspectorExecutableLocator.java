@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.tool.detector.inspectors.projectinspector;
+package com.synopsys.integration.detect.tool.detector.inspectors.nuget;
 
 import java.io.File;
 
@@ -11,11 +11,11 @@ import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.util.OperatingSystemType;
 
-public class ProjectInspectorExecutableLocator {
+public class NugetInspectorExecutableLocator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectInfo detectInfo;
 
-    public ProjectInspectorExecutableLocator(DetectInfo detectInfo) {
+    public NugetInspectorExecutableLocator(DetectInfo detectInfo) {
         this.detectInfo = detectInfo;
     }
 
@@ -27,23 +27,20 @@ public class ProjectInspectorExecutableLocator {
     @NotNull
     public String determineExecutableNameFromOS() {
         if (detectInfo.getCurrentOs() == OperatingSystemType.WINDOWS) {
-            return "project-inspector.exe";
+            return "detect-nuget-inspector.exe";
         } else {
-            return "project-inspector";
+            return "detect-nuget-inspector";
         }
     }
 
     @Nullable
     public File findExecutable(File extractedZip, String executableName) throws DetectableException {
         logger.debug("Looking for '" + executableName + "' in " + extractedZip.toString());
-        File bin = new File(extractedZip, "bin");
-        File executable = new File(bin, executableName);
+        File executable = new File(extractedZip, executableName);
         if (executable.exists()) {
             logger.debug("Found it: " + executable);
-            if (!executable.canExecute()) {
-                if (!executable.setExecutable(true)) {
-                    throw new DetectableException("Unable to set project inspector to executable: " + executable);
-                }
+            if (!executable.canExecute() && !executable.setExecutable(true)) {
+                throw new DetectableException("Unable to set project inspector to executable: " + executable);
             }
             return executable;
         } else {

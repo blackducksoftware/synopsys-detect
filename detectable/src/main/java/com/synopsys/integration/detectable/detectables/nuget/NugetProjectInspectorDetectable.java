@@ -13,7 +13,6 @@ import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectable.inspector.ProjectInspectorResolver;
-import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorExtractor;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorOptions;

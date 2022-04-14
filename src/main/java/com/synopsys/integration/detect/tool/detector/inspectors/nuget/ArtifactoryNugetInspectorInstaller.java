@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.tool.detector.inspectors.projectinspector;
+package com.synopsys.integration.detect.tool.detector.inspectors.nuget;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,35 +13,35 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.OperatingSystemType;
 
-public class ArtifactoryProjectInspectorInstaller {
+public class ArtifactoryNugetInspectorInstaller {
     private final DetectInfo detectInfo;
     private final ArtifactoryZipInstaller artifactoryZipInstaller;
-    private final ProjectInspectorExecutableLocator projectInspectorExecutableLocator;
+    private final NugetInspectorExecutableLocator executableLocator;
 
-    public ArtifactoryProjectInspectorInstaller(
+    public ArtifactoryNugetInspectorInstaller(
         DetectInfo detectInfo,
-        ArtifactoryZipInstaller artifactoryZipInstaller, ProjectInspectorExecutableLocator projectInspectorExecutableLocator
+        ArtifactoryZipInstaller artifactoryZipInstaller, NugetInspectorExecutableLocator executableLocator
     ) {
         this.detectInfo = detectInfo;
         this.artifactoryZipInstaller = artifactoryZipInstaller;
-        this.projectInspectorExecutableLocator = projectInspectorExecutableLocator;
+        this.executableLocator = executableLocator;
     }
 
     @Nullable
     public File install(File directory) throws DetectableException {
         if (detectInfo.getCurrentOs() == OperatingSystemType.WINDOWS) {
-            return install(directory, ArtifactoryConstants.PROJECT_INSPECTOR_WINDOWS_PROPERTY);
+            return install(directory, ArtifactoryConstants.NUGET_INSPECTOR_WINDOWS_PROPERTY);
         } else if (detectInfo.getCurrentOs() == OperatingSystemType.MAC) {
-            return install(directory, ArtifactoryConstants.PROJECT_INSPECTOR_MAC_PROPERTY);
+            return install(directory, ArtifactoryConstants.NUGET_INSPECTOR_MAC_PROPERTY);
         } else {
-            return install(directory, ArtifactoryConstants.PROJECT_INSPECTOR_LINUX_PROPERTY);
+            return install(directory, ArtifactoryConstants.NUGET_INSPECTOR_LINUX_PROPERTY);
         }
     }
 
     @Nullable
     public File install(File installDirectory, String property) throws DetectableException {
         File extractedZip = downloadZip(property, installDirectory);
-        return projectInspectorExecutableLocator.findExecutable(extractedZip);
+        return executableLocator.findExecutable(extractedZip);
     }
 
     @NotNull //Returns location of extracted zip or throws
@@ -51,7 +51,7 @@ public class ArtifactoryProjectInspectorInstaller {
                 installDirectory,
                 ".zip",
                 ArtifactoryConstants.ARTIFACTORY_URL,
-                ArtifactoryConstants.PROJECT_INSPECTOR_PROPERTY_REPO,
+                ArtifactoryConstants.NUGET_INSPECTOR_PROPERTY_REPO,
                 property
             );
         } catch (IntegrationException | IOException e) {

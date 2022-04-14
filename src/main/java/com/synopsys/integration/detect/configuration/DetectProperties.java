@@ -708,14 +708,6 @@ public class DetectProperties {
             .setGroups(DetectGroup.DOCKER, DetectGroup.SOURCE_PATH)
             .build();
 
-    // TODO: Should go away with new nuget inspector
-    public static final NullablePathProperty DETECT_DOTNET_PATH =
-        NullablePathProperty.newBuilder("detect.dotnet.path")
-            .setInfo("dotnet Executable", DetectPropertyFromVersion.VERSION_4_4_0)
-            .setHelp("The path to the dotnet executable.")
-            .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL)
-            .build();
-
     // TODO: Excluding ALL detector types doesn't make sense. Exclude the Detector tool instead. Change to NoneEnumListProperty, change default to NONE
     public static final AllNoneEnumListProperty<DetectorType> DETECT_EXCLUDED_DETECTOR_TYPES =
         AllNoneEnumListProperty.newBuilder("detect.excluded.detector.types", emptyList(), DetectorType.class)
@@ -1116,14 +1108,6 @@ public class DetectProperties {
                 "The names of the projects in a solution to include (overrides exclude). Detect will include all projects with names that include any of the given regex patterns. To match a full project name (for example: 'BaGet.Core'), use a regular expression that matches only the full name ('^BaGet.Core$')")
             .setExample("^BaGet.Core$,^BaGet.Core.Tests$")
             .setGroups(DetectGroup.NUGET, DetectGroup.SOURCE_SCAN)
-            .setCategory(DetectCategory.Advanced)
-            .build();
-
-    public static final NullableStringProperty DETECT_NUGET_INSPECTOR_VERSION =
-        NullableStringProperty.newBuilder("detect.nuget.inspector.version")
-            .setInfo("Nuget Inspector Version", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("Version of the Nuget Inspector. By default Detect will run the latest version that is compatible with the Detect version.")
-            .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced)
             .build();
 
@@ -1982,6 +1966,31 @@ public class DetectProperties {
             )
             .setGroups(DetectGroup.PNPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_PNPM_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
+            .build();
+
+    @Deprecated
+    public static final NullableStringProperty DETECT_NUGET_INSPECTOR_VERSION =
+        NullableStringProperty.newBuilder("detect.nuget.inspector.version")
+            .setInfo("Nuget Inspector Version", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("Version of the Nuget Inspector. By default Detect will run the latest version that is compatible with the Detect version.")
+            .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(
+                "This property is being removed. The version of the NuGet inspector downloaded is always the latest. To continue to control which NuGet inspector is used, switch to Air Gap.",
+                DetectMajorVersion.EIGHT
+            )
+            .build();
+
+    @Deprecated
+    public static final NullablePathProperty DETECT_DOTNET_PATH =
+        NullablePathProperty.newBuilder("detect.dotnet.path")
+            .setInfo("dotnet Executable", DetectPropertyFromVersion.VERSION_4_4_0)
+            .setHelp("The path to the dotnet executable.")
+            .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL)
+            .setDeprecated(
+                "This property is being removed. The NuGet inspector is now a self contained executable and no longer requires dotnet to run.",
+                DetectMajorVersion.EIGHT
+            )
             .build();
 
     // TODO: Revise in 8.0.0

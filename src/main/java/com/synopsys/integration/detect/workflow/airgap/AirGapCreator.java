@@ -22,7 +22,7 @@ public class AirGapCreator {
     private final AirGapPathFinder airGapPathFinder;
     private final EventSystem eventSystem;
     private final GradleAirGapCreator gradleAirGapCreator;
-    private final NugetAirGapCreator nugetAirGapCreator;
+    private final NugetInspectorAirGapCreator nugetAirGapCreator;
     private final DockerAirGapCreator dockerAirGapCreator;
     private final DetectFontAirGapCreator detectFontAirGapCreator;
     private final ProjectInspectorAirGapCreator projectInspectorAirGapCreator;
@@ -31,7 +31,7 @@ public class AirGapCreator {
         AirGapPathFinder airGapPathFinder,
         EventSystem eventSystem,
         GradleAirGapCreator gradleAirGapCreator,
-        NugetAirGapCreator nugetAirGapCreator,
+        NugetInspectorAirGapCreator nugetAirGapCreator,
         DockerAirGapCreator dockerAirGapCreator,
         DetectFontAirGapCreator detectFontAirGapCreator,
         ProjectInspectorAirGapCreator projectInspectorAirGapCreator
@@ -121,7 +121,7 @@ public class AirGapCreator {
 
         logger.info("Installing nuget dependencies.");
         File nugetFolder = airGapPathFinder.createRelativePackagedInspectorsFile(zipFolder, AirGapPathFinder.NUGET);
-        nugetAirGapCreator.installNugetDependencies(nugetFolder);
+        nugetAirGapCreator.installDependencies(nugetFolder);
 
         logger.info(ReportConstants.RUN_SEPARATOR);
 

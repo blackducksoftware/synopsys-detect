@@ -8,12 +8,11 @@ import java.util.List;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.PassedResultBuilder;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.explanation.FoundInspector;
-import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspector;
-import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
@@ -31,7 +30,7 @@ public class NugetSolutionDetectable extends Detectable {
     private final NugetInspectorExtractor nugetInspectorExtractor;
 
     private final NugetInspectorOptions nugetInspectorOptions;
-    private NugetInspector inspector;
+    private ExecutableTarget inspector;
     private List<File> solutionFiles = new ArrayList<>();
 
     public NugetSolutionDetectable(
@@ -69,7 +68,7 @@ public class NugetSolutionDetectable extends Detectable {
             return new InspectorNotFoundDetectableResult("nuget");
         }
 
-        return new PassedDetectableResult(new FoundInspector(inspector.getClass().getSimpleName())); //TODO: Inspector should describe itself.
+        return new PassedDetectableResult(new FoundInspector(inspector)); //TODO: Inspector should describe itself.
     }
 
     @Override

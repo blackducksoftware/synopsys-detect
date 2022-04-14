@@ -43,7 +43,8 @@ import com.synopsys.integration.detect.tool.detector.executable.DirectoryExecuta
 import com.synopsys.integration.detect.tool.detector.executable.SystemPathExecutableFinder;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryZipInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
-import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorInstaller;
+import com.synopsys.integration.detect.tool.detector.inspectors.nuget.ArtifactoryNugetInspectorInstaller;
+import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorExecutableLocator;
 import com.synopsys.integration.detect.tool.detector.inspectors.projectinspector.ArtifactoryProjectInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.projectinspector.ProjectInspectorExecutableLocator;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
@@ -53,7 +54,7 @@ import com.synopsys.integration.detect.workflow.airgap.AirGapPathFinder;
 import com.synopsys.integration.detect.workflow.airgap.DetectFontAirGapCreator;
 import com.synopsys.integration.detect.workflow.airgap.DockerAirGapCreator;
 import com.synopsys.integration.detect.workflow.airgap.GradleAirGapCreator;
-import com.synopsys.integration.detect.workflow.airgap.NugetAirGapCreator;
+import com.synopsys.integration.detect.workflow.airgap.NugetInspectorAirGapCreator;
 import com.synopsys.integration.detect.workflow.airgap.ProjectInspectorAirGapCreator;
 import com.synopsys.integration.detect.workflow.blackduck.analytics.AnalyticsConfigurationService;
 import com.synopsys.integration.detect.workflow.blackduck.font.DetectFontInstaller;
@@ -158,7 +159,11 @@ public class DetectBootFactory {
         DetectExecutableRunner runner = DetectExecutableRunner.newDebug(eventSystem);
         GradleAirGapCreator gradleAirGapCreator = new GradleAirGapCreator(detectExecutableResolver, runner, freemarkerConfiguration);
 
-        NugetAirGapCreator nugetAirGapCreator = new NugetAirGapCreator(new NugetInspectorInstaller(artifactoryZipInstaller));
+        NugetInspectorAirGapCreator nugetAirGapCreator = new NugetInspectorAirGapCreator(new ArtifactoryNugetInspectorInstaller(
+            detectInfo,
+            artifactoryZipInstaller,
+            new NugetInspectorExecutableLocator(detectInfo)
+        ));
 
         ProjectInspectorExecutableLocator projectInspectorExecutableLocator = new ProjectInspectorExecutableLocator(detectInfo);
         ArtifactoryProjectInspectorInstaller projectInspectorInstaller = new ArtifactoryProjectInspectorInstaller(

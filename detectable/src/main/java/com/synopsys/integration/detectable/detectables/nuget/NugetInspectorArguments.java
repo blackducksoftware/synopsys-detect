@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectable.inspector.nuget.impl;
+package com.synopsys.integration.detectable.detectables.nuget;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,8 +9,6 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 
 public class NugetInspectorArguments {
     private static final Logger logger = LoggerFactory.getLogger(NugetInspectorArguments.class);
