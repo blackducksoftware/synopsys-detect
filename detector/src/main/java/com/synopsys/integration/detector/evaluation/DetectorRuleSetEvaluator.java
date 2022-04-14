@@ -1,12 +1,15 @@
 package com.synopsys.integration.detector.evaluation;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.result.DetectorResult;
 import com.synopsys.integration.detector.result.ExcludedDetectorResult;
 import com.synopsys.integration.detector.result.ForcedNestedPassedDetectorResult;
 import com.synopsys.integration.detector.result.MaxDepthExceededDetectorResult;
+import com.synopsys.integration.detector.result.NotNestableBeneathDetectorResult;
 import com.synopsys.integration.detector.result.NotNestableDetectorResult;
 import com.synopsys.integration.detector.result.NotSelfNestableDetectorResult;
 import com.synopsys.integration.detector.result.PassedDetectorResult;
@@ -35,11 +38,21 @@ public class DetectorRuleSetEvaluator {
 
         boolean nestable = detectorRule.isNestable();
         boolean selfNestable = detectorRule.isSelfNestable();
+        Set<DetectorType> notNestableBeneath = detectorRule.getNotNestableBeneath();
         if (environment.isForceNestedSearch()) {
             return new ForcedNestedPassedDetectorResult();
         } else if (nestable) {
             if (!selfNestable && environment.getAppliedToParent().stream().anyMatch(parentApplied -> parentApplied.equals(detectorRule))) {
                 return new NotSelfNestableDetectorResult();
+            }
+            if (notNestableBeneath.size() > 0) {
+                Optional<DetectorType> notNestableBeneathType = environment.getAppliedSoFar().stream()
+                    .map(DetectorRule::getDetectorType)
+                    .filter(notNestableBeneath::contains)
+                    .findAny();
+                if (notNestableBeneathType.isPresent()) {
+                    return new NotNestableBeneathDetectorResult(notNestableBeneathType.get());
+                }
             }
         } else if (environment.getAppliedToParent().stream().anyMatch(it -> !it.isNestInvisible())) {
             return new NotNestableDetectorResult();
