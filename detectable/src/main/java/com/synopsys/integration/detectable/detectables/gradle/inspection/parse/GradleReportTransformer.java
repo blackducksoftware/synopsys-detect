@@ -7,12 +7,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.dependency.ProjectDependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.util.DependencyHistory;
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
@@ -25,22 +23,14 @@ import com.synopsys.integration.detectable.detectables.gradle.inspection.model.G
 //An example transform that uses our "Dependency History" class and is closer to the original Gradle implementation
 public class GradleReportTransformer {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final ExternalIdFactory externalIdFactory;
     private final EnumListFilter<GradleConfigurationType> configurationTypeFilter;
 
-    public GradleReportTransformer(ExternalIdFactory externalIdFactory, EnumListFilter<GradleConfigurationType> configurationTypeFilter) {
-        this.externalIdFactory = externalIdFactory;
+    public GradleReportTransformer(EnumListFilter<GradleConfigurationType> configurationTypeFilter) {
         this.configurationTypeFilter = configurationTypeFilter;
     }
 
     public CodeLocation transform(GradleReport gradleReport) {
-        ProjectDependency projectDependency = new ProjectDependency(Dependency.FACTORY.createMavenDependency(
-            gradleReport.getProjectGroup(),
-            gradleReport.getProjectName(),
-            gradleReport.getProjectVersionName()
-        ));
-        // isRootProjectPlaceholder = true for now. I think eventually (8.0.0) we could change how the graph is built to use this node instead.
-        MutableDependencyGraph graph = new MutableMapDependencyGraph(projectDependency, true);
+        DependencyGraph graph = new BasicDependencyGraph();
 
         for (GradleConfiguration configuration : gradleReport.getConfigurations()) {
             if (configuration.isResolved() || configurationTypeFilter.shouldInclude(GradleConfigurationType.UNRESOLVED)) {
@@ -51,7 +41,7 @@ public class GradleReportTransformer {
             }
         }
 
-        ExternalId projectId = externalIdFactory.createMavenExternalId(gradleReport.getProjectGroup(), gradleReport.getProjectName(), gradleReport.getProjectVersionName());
+        ExternalId projectId = ExternalId.FACTORY.createMavenExternalId(gradleReport.getProjectGroup(), gradleReport.getProjectName(), gradleReport.getProjectVersionName());
         if (StringUtils.isNotBlank(gradleReport.getProjectSourcePath())) {
             return new CodeLocation(graph, projectId, new File(gradleReport.getProjectSourcePath()));
         } else {
@@ -59,7 +49,7 @@ public class GradleReportTransformer {
         }
     }
 
-    private void addConfigurationToGraph(MutableDependencyGraph graph, GradleConfiguration configuration) {
+    private void addConfigurationToGraph(DependencyGraph graph, GradleConfiguration configuration) {
         DependencyHistory history = new DependencyHistory();
 
         TreeNodeSkipper treeNodeSkipper = new TreeNodeSkipper();
@@ -84,12 +74,10 @@ public class GradleReportTransformer {
         }
     }
 
-    private void addGavToGraph(GradleGav gav, DependencyHistory history, MutableDependencyGraph graph) {
-        ExternalId externalId = externalIdFactory.createMavenExternalId(gav.getGroup(), gav.getName(), gav.getVersion());
-        Dependency currentDependency = new Dependency(gav.getName(), gav.getVersion(), externalId);
-
+    private void addGavToGraph(GradleGav gav, DependencyHistory history, DependencyGraph graph) {
+        Dependency currentDependency = Dependency.FACTORY.createMavenDependency(gav.getGroup(), gav.getName(), gav.getVersion());
         if (history.isEmpty()) {
-            graph.addChildToRoot(currentDependency);
+            graph.addDirectDependency(currentDependency);
         } else {
             graph.addChildWithParents(currentDependency, history.getLastDependency());
         }

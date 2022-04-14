@@ -6,12 +6,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.util.DependencyHistory;
 import com.synopsys.integration.detectable.detectables.rebar.model.RebarParseResult;
@@ -28,14 +26,8 @@ public class Rebar3TreeParser {
     private static final String OUTER_LEVEL_PREFIX = "   ";
     private static final String PROJECT_IDENTIFIER = "(project app)";
 
-    private final ExternalIdFactory externalIdFactory;
-
-    public Rebar3TreeParser(ExternalIdFactory externalIdFactory) {
-        this.externalIdFactory = externalIdFactory;
-    }
-
     public RebarParseResult parseRebarTreeOutput(List<String> dependencyTreeOutput) {
-        MutableDependencyGraph graph = new MutableMapDependencyGraph();
+        DependencyGraph graph = new BasicDependencyGraph();
         DependencyHistory history = new DependencyHistory();
         Dependency project = null;
 
@@ -78,9 +70,7 @@ public class Rebar3TreeParser {
         String nameVersionLine = reduceLineToNameVersion(line);
         String name = nameVersionLine.substring(0, nameVersionLine.lastIndexOf(HORIZONTAL_SEPARATOR_CHARACTER));
         String version = nameVersionLine.substring(nameVersionLine.lastIndexOf(HORIZONTAL_SEPARATOR_CHARACTER) + 1);
-        ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.HEX, name, version);
-
-        return new Dependency(name, version, externalId);
+        return Dependency.FACTORY.createNameVersionDependency(Forge.HEX, name, version);
     }
 
     public String reduceLineToNameVersion(String line) {

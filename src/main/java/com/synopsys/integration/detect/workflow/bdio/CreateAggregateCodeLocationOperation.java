@@ -3,7 +3,10 @@ package com.synopsys.integration.detect.workflow.bdio;
 import java.io.File;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraphUtil;
+import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
+import com.synopsys.integration.bdio.model.dependency.ProjectDependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
@@ -32,6 +35,10 @@ public class CreateAggregateCodeLocationOperation {
         String fileName = new IntegrationEscapeUtil().replaceWithUnderscore(aggregateName) + extension;
         File aggregateBdioFile = new File(bdioOutputDirectory, fileName);
 
-        return new AggregateCodeLocation(aggregateBdioFile, codeLocationName, projectNameVersion, projectExternalId, aggregateDependencyGraph);
+        // TODO: Stop-gap measure to avoid changes propagating. Shouldn't be a problem in 8.0.0 JM-04/2022
+        ProjectDependencyGraph projectDependencyGraph = new ProjectDependencyGraph(new ProjectDependency(projectExternalId));
+        DependencyGraphUtil.copyRootDependencies(projectDependencyGraph, aggregateDependencyGraph);
+
+        return new AggregateCodeLocation(aggregateBdioFile, codeLocationName, projectNameVersion, projectExternalId, projectDependencyGraph);
     }
 }

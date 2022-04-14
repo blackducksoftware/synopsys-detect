@@ -11,9 +11,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
@@ -41,7 +40,7 @@ public class MavenCodeLocationPackager {
     private boolean parsingProjectSection;
     private int level;
     private boolean inOutOfScopeTree = false;
-    private MutableDependencyGraph currentGraph = null;
+    private DependencyGraph currentGraph = null;
 
     public MavenCodeLocationPackager(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
@@ -62,7 +61,7 @@ public class MavenCodeLocationPackager {
         currentMavenProject = null;
         dependencyParentStack = new Stack<>();
         parsingProjectSection = false;
-        currentGraph = new MutableMapDependencyGraph();
+        currentGraph = new BasicDependencyGraph();
 
         level = 0;
         for (String currentLine : mavenOutput) {
@@ -126,7 +125,7 @@ public class MavenCodeLocationPackager {
 
     private void initializeCurrentMavenProject(ExcludedIncludedWildcardFilter modulesFilter, String sourcePath, String line) {
         // this is the first line of a new code location, the following lines will be the tree of dependencies for this code location
-        currentGraph = new MutableMapDependencyGraph();
+        currentGraph = new BasicDependencyGraph();
         MavenParseResult mavenProject = createMavenParseResult(sourcePath, line, currentGraph);
         if (null != mavenProject && modulesFilter.shouldInclude(mavenProject.getProjectName())) {
             logger.trace(String.format("Project: %s", mavenProject.getProjectName()));
@@ -188,7 +187,7 @@ public class MavenCodeLocationPackager {
         }
     }
 
-    private void addOrphansToGraph(MutableDependencyGraph graph, List<Dependency> orphans) {
+    private void addOrphansToGraph(DependencyGraph graph, List<Dependency> orphans) {
         logger.trace(String.format("# orphans: %d", orphans.size()));
         if (orphans.size() > 0) {
             Dependency orphanListParent = createOrphanListParentDependency();
@@ -202,7 +201,7 @@ public class MavenCodeLocationPackager {
     }
 
     private void addDependencyIfInScope(
-        MutableDependencyGraph currentGraph,
+        DependencyGraph currentGraph,
         List<Dependency> orphans,
         ExcludedIncludedWildcardFilter scopeFilter,
         boolean inOutOfScopeTree,
@@ -212,7 +211,8 @@ public class MavenCodeLocationPackager {
         if (scopeFilter.shouldInclude(dependency.scope)) {
             if (inOutOfScopeTree) {
                 logger.trace(
-                    String.format("component %s:%s:%s:%s is in scope but in a nonScope tree; adding it to orphans",
+                    String.format(
+                        "component %s:%s:%s:%s is in scope but in a nonScope tree; adding it to orphans",
                         dependency.getExternalId().getGroup(),
                         dependency.getExternalId().getName(),
                         dependency.getExternalId().getVersion(),
@@ -220,7 +220,8 @@ public class MavenCodeLocationPackager {
                     ));
                 orphans.add(dependency);
             } else {
-                logger.trace(String.format("component %s:%s:%s:%s is in scope and in an in-scope tree; adding it to hierarchy",
+                logger.trace(String.format(
+                    "component %s:%s:%s:%s is in scope and in an in-scope tree; adding it to hierarchy",
                     dependency.getExternalId().getGroup(),
                     dependency.getExternalId().getName(),
                     dependency.getExternalId().getVersion(),

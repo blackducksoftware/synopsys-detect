@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.SimpleBdioFactory;
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
@@ -29,9 +29,11 @@ public class ClangPackageDetailsTransformer {
         List<Dependency> dependencies = packages.parallelStream()
             .flatMap(pkg -> toDependency(dependencyForges, pkg).stream())
             .collect(Collectors.toList());
-        logger.trace("Generated : " + dependencies.size() + " dependencies.");
+        logger.trace("Generated : {} dependencies.", dependencies.size());
 
-        MutableDependencyGraph dependencyGraph = populateGraph(dependencies);
+        DependencyGraph dependencyGraph = new BasicDependencyGraph();
+        dependencyGraph.addChildrenToRoot(dependencies);
+
         return new CodeLocation(dependencyGraph);
     }
 
@@ -56,13 +58,5 @@ public class ClangPackageDetailsTransformer {
             dependencies.add(dep);
         }
         return dependencies;
-    }
-
-    private MutableDependencyGraph populateGraph(List<Dependency> bdioComponents) {
-        MutableDependencyGraph dependencyGraph = new SimpleBdioFactory().createMutableDependencyGraph();
-        for (Dependency bdioComponent : bdioComponents) {
-            dependencyGraph.addChildToRoot(bdioComponent);
-        }
-        return dependencyGraph;
     }
 }

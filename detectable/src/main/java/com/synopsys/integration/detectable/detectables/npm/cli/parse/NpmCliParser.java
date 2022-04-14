@@ -13,8 +13,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
@@ -52,7 +52,7 @@ public class NpmCliParser {
 
     public NpmPackagerResult convertNpmJsonFileToCodeLocation(String npmLsOutput, PackageJson packageJson) {
         JsonObject npmJson = JsonParser.parseString(npmLsOutput).getAsJsonObject();
-        MutableDependencyGraph graph = new MutableMapDependencyGraph();
+        DependencyGraph graph = new BasicDependencyGraph();
 
         JsonElement projectNameElement = npmJson.getAsJsonPrimitive(JSON_NAME);
         JsonElement projectVersionElement = npmJson.getAsJsonPrimitive(JSON_VERSION);
@@ -75,7 +75,7 @@ public class NpmCliParser {
 
     }
 
-    private void populateChildren(MutableDependencyGraph graph, Dependency parentDependency, JsonObject parentNodeChildren, boolean isRootDependency, PackageJson packageJson) {
+    private void populateChildren(DependencyGraph graph, Dependency parentDependency, JsonObject parentNodeChildren, boolean isRootDependency, PackageJson packageJson) {
         if (parentNodeChildren == null) {
             return;
         }
@@ -100,7 +100,7 @@ public class NpmCliParser {
 
     private void processChild(
         Entry<String, JsonElement> elementEntry,
-        MutableDependencyGraph graph,
+        DependencyGraph graph,
         Dependency parentDependency,
         boolean isRootDependency,
         PackageJson packageJson

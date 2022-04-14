@@ -7,7 +7,7 @@ import java.util.Optional;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
@@ -45,7 +45,7 @@ public class NpmLockfilePackager {
         NpmDependencyConverter dependencyConverter = new NpmDependencyConverter(externalIdFactory);
         NpmProject project = dependencyConverter.convertLockFile(packageLock, packageJson);
 
-        MutableDependencyGraph dependencyGraph = graphTransformer.transform(packageLock, project, externalDependencies);
+        DependencyGraph dependencyGraph = graphTransformer.transform(packageLock, project, externalDependencies);
         ExternalId projectId = projectIdTransformer.transform(packageJson, packageLock);
         CodeLocation codeLocation = new CodeLocation(dependencyGraph, projectId);
         return new NpmPackagerResult(projectId.getName(), projectId.getVersion(), codeLocation);

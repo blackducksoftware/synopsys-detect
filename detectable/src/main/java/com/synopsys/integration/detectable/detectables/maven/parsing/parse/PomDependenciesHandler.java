@@ -13,13 +13,11 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
 public class PomDependenciesHandler extends DefaultHandler {
     private static final Set<String> ONLY_DEPENDENCIES = new HashSet<>(Collections.singletonList("dependency"));
     private static final Set<String> WITH_PLUGINS = new HashSet<>(Arrays.asList("dependency", "plugin"));
 
-    private final ExternalIdFactory externalIdFactory;
     private final boolean includePluginDependencies;
 
     private boolean parsingDependency;
@@ -33,8 +31,7 @@ public class PomDependenciesHandler extends DefaultHandler {
 
     private final List<Dependency> dependencies = new ArrayList<>();
 
-    public PomDependenciesHandler(ExternalIdFactory externalIdFactory, boolean includePluginDependencies) {
-        this.externalIdFactory = externalIdFactory;
+    public PomDependenciesHandler(boolean includePluginDependencies) {
         this.includePluginDependencies = includePluginDependencies;
     }
 
@@ -58,7 +55,7 @@ public class PomDependenciesHandler extends DefaultHandler {
         if (isDependencyQName(qName)) {
             parsingDependency = false;
 
-            ExternalId externalId = externalIdFactory.createMavenExternalId(group, artifact, version);
+            ExternalId externalId = ExternalId.FACTORY.createMavenExternalId(group, artifact, version);
             dependencies.add(new Dependency(artifact, version, externalId));
         } else {
             parsingNothingImportant();

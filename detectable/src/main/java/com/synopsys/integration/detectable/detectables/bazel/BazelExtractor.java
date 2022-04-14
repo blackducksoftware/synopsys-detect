@@ -16,8 +16,8 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.ExecutableTarget;
@@ -117,18 +117,9 @@ public class BazelExtractor {
             logger.debug("Dependencies discovered for rule {}: {}}", workspaceRule, ruleDependencies);
             aggregatedDependencies.addAll(ruleDependencies);
         }
-        return createCodeLocation(aggregatedDependencies);
-    }
 
-    private CodeLocation createCodeLocation(List<Dependency> dependencies) {
-        MutableDependencyGraph dependencyGraph = createDependencyGraph(dependencies);
+        DependencyGraph dependencyGraph = new BasicDependencyGraph();
+        dependencyGraph.addChildrenToRoot(aggregatedDependencies);
         return new CodeLocation(dependencyGraph);
-    }
-
-    @NotNull
-    private MutableDependencyGraph createDependencyGraph(List<Dependency> dependencies) {
-        MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
-        dependencies.forEach(dependencyGraph::addChildToRoot);
-        return dependencyGraph;
     }
 }

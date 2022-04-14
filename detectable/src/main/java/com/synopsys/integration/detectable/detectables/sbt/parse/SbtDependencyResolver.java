@@ -3,8 +3,7 @@ package com.synopsys.integration.detectable.detectables.sbt.parse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
@@ -21,8 +20,8 @@ public class SbtDependencyResolver {
 
     public SbtDependencyModule resolveReport(SbtReport report) {
         ExternalId rootId = externalIdFactory.createMavenExternalId(report.getOrganisation(), report.getModule(), report.getRevision());
-        logger.debug("Created external id: " + rootId.toString());
-        MutableDependencyGraph graph = new MutableMapDependencyGraph();
+        logger.debug("Created external id: {}", rootId);
+        BasicDependencyGraph graph = new BasicDependencyGraph();
 
         logger.debug("Dependencies found: " + report.getDependencies().size());
 

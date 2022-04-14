@@ -3,6 +3,7 @@ package com.synopsys.integration.detect.configuration.enumeration;
 public enum DefaultDetectorSearchExcludedDirectories {
     BIN("bin"),
     BUILD("build"),
+    DOT_BUILD(".build"),
     DOT_GRADLE(".gradle"),
     NODE_MODULES("node_modules"),
     OUT("out"),

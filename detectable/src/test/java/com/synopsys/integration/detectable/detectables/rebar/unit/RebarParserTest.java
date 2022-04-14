@@ -22,7 +22,7 @@ public class RebarParserTest {
     @BeforeAll
     static void setup() {
         externalIdFactory = new ExternalIdFactory();
-        rebar3TreeParser = new Rebar3TreeParser(externalIdFactory);
+        rebar3TreeParser = new Rebar3TreeParser();
     }
 
     @Test

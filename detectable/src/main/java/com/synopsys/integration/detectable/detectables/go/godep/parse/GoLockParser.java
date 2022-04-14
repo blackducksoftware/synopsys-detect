@@ -6,25 +6,16 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 
 import com.moandjiezana.toml.Toml;
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.go.godep.model.GoLock;
 import com.synopsys.integration.detectable.detectables.go.godep.model.Project;
 
 public class GoLockParser {
-    private final ExternalIdFactory externalIdFactory;
-
-    public GoLockParser(ExternalIdFactory externalIdFactory) {
-        this.externalIdFactory = externalIdFactory;
-    }
-
     public DependencyGraph parseDepLock(InputStream depLockInputStream) {
-        MutableDependencyGraph graph = new MutableMapDependencyGraph();
+        DependencyGraph graph = new BasicDependencyGraph();
         GoLock goLock = new Toml().read(depLockInputStream).to(GoLock.class);
         if (goLock.projects != null) {
             for (Project project : goLock.projects) {
@@ -55,8 +46,7 @@ public class GoLockParser {
     }
 
     private Dependency createGoDependency(String name, String version) {
-        ExternalId dependencyExternalId = externalIdFactory.createNameVersionExternalId(Forge.GOLANG, name, version);
-        return new Dependency(name, version, dependencyExternalId);
+        return Dependency.FACTORY.createNameVersionDependency(Forge.GOLANG, name, version);
     }
 
 }

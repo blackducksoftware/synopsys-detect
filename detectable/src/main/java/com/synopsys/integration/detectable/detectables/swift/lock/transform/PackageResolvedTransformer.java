@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.xcode.process;
+package com.synopsys.integration.detectable.detectables.swift.lock.transform;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -9,36 +9,27 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.detectables.xcode.model.PackageResolved;
-import com.synopsys.integration.detectable.detectables.xcode.model.PackageState;
-import com.synopsys.integration.detectable.detectables.xcode.model.ResolvedPackage;
+import com.synopsys.integration.detectable.detectables.swift.lock.data.PackageResolved;
+import com.synopsys.integration.detectable.detectables.swift.lock.data.PackageState;
+import com.synopsys.integration.detectable.detectables.swift.lock.data.ResolvedPackage;
 
 public class PackageResolvedTransformer {
     private static final String[] REPO_SUFFIX_TO_STRIP = { ".git" };
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final ExternalIdFactory externalIdFactory;
-
-    public PackageResolvedTransformer(ExternalIdFactory externalIdFactory) {
-        this.externalIdFactory = externalIdFactory;
-    }
-
     public DependencyGraph transform(PackageResolved packageResolved) {
-        MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
+        DependencyGraph dependencyGraph = new BasicDependencyGraph();
         packageResolved.getResolvedObject().getPackages().stream()
             .filter(Objects::nonNull)
             .map(this::convertToDependency)
             .filter(Optional::isPresent)
             .map(Optional::get)
-            .forEach(dependencyGraph::addChildToRoot);
+            .forEach(dependencyGraph::addDirectDependency);
 
         return dependencyGraph;
     }
@@ -49,8 +40,7 @@ public class PackageResolvedTransformer {
         try {
             String name = extractPackageName(repositoryURL);
             String version = packageState.getVersion();
-            ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.GITHUB, name, version);
-            return Optional.of(new Dependency(name, version, externalId));
+            return Optional.of(Dependency.FACTORY.createNameVersionDependency(Forge.GITHUB, name, version));
         } catch (MalformedURLException exception) {
             logger.warn(String.format("Package '%s' has a malformed url. It cannot be added to the graph.", resolvedPackage.getPackageName()));
             logger.debug(String.format(

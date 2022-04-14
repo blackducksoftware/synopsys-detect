@@ -22,14 +22,12 @@
  */
 package com.synopsys.integration.detectable.detectables.xcode;
 
-import static org.junit.jupiter.api.condition.OS.WINDOWS;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.nio.file.Paths;
 
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.condition.DisabledOnOs;
 
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Detectable;
@@ -38,26 +36,25 @@ import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
-@DisabledOnOs(WINDOWS) //TODO: Can't cleanup the temp file on windows. May need to close resources?
-public class XcodeSwiftDetectableTest extends DetectableFunctionalTest {
-    public XcodeSwiftDetectableTest() throws IOException {
-        super("Xcode - Package.resolved");
+public class XcodeProjectDetectableTest extends DetectableFunctionalTest {
+    public XcodeProjectDetectableTest() throws IOException {
+        super("XcodeProject");
     }
 
     @Override
     public void setup() throws IOException {
-        addFileFromResources(Paths.get("jake-test.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"), "/xcode/Package.resolved");
+        addFileFromResources(Paths.get("jakem-test.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"), "/xcode/Package.resolved");
     }
 
     @NotNull
     @Override
     public Detectable create(@NotNull DetectableEnvironment environment) {
-        return detectableFactory.createXcodeSwiftDetectable(environment);
+        return detectableFactory.createXcodeProjectDetectable(environment);
     }
 
     @Override
     public void assertExtraction(@NotNull Extraction extraction) {
-        Assertions.assertNotEquals(0, extraction.getCodeLocations().size(), "A code location should have been generated.");
+        assertEquals(1, extraction.getCodeLocations().size(), "Expected only one code location.");
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.GITHUB, extraction.getCodeLocations().get(0).getDependencyGraph());
         graphAssert.hasRootDependency("apple/swift-argument-parser", "1.0.1");

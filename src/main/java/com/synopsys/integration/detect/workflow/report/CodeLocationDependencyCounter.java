@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 
@@ -39,7 +41,10 @@ public class CodeLocationDependencyCounter {
     }
 
     private int countCodeLocationDependencies(DetectCodeLocation codeLocation) {
-        return countDependencies(new ArrayList<>(), codeLocation.getDependencyGraph().getRootDependencyExternalIds(), codeLocation.getDependencyGraph());
+        Set<ExternalId> rootDependencies = codeLocation.getDependencyGraph().getRootDependencies().stream()
+            .map(Dependency::getExternalId)
+            .collect(Collectors.toSet());
+        return countDependencies(new ArrayList<>(), rootDependencies, codeLocation.getDependencyGraph());
     }
 
     private int countDependencies(List<ExternalId> processed, Set<ExternalId> remaining, DependencyGraph graph) {

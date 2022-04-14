@@ -11,7 +11,8 @@ import javax.xml.parsers.SAXParser;
 
 import org.xml.sax.SAXException;
 
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
@@ -36,7 +37,7 @@ public class IvyParseExtractor {
             saxParser.parse(ivyXmlInputStream, ivyDependenciesHandler);
             List<Dependency> dependencies = ivyDependenciesHandler.getDependencies();
 
-            MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
+            DependencyGraph dependencyGraph = new BasicDependencyGraph();
             dependencyGraph.addChildrenToRoot(dependencies);
 
             CodeLocation codeLocation = new CodeLocation(dependencyGraph);

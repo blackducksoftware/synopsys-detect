@@ -13,22 +13,16 @@ import org.tomlj.TomlArray;
 import org.tomlj.TomlParseResult;
 import org.tomlj.TomlTable;
 
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
 public class PoetryLockParser {
-
     private static final String NAME_KEY = "name";
     private static final String VERSION_KEY = "version";
     private static final String DEPENDENCIES_KEY = "dependencies";
     private static final String PACKAGE_KEY = "package";
-
-    private final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
 
     private final Map<String, Dependency> packageMap = new HashMap<>();
 
@@ -39,11 +33,11 @@ public class PoetryLockParser {
             return parseDependencies(lockPackages);
         }
 
-        return new MutableMapDependencyGraph();
+        return new BasicDependencyGraph();
     }
 
     private DependencyGraph parseDependencies(TomlArray lockPackages) {
-        MutableDependencyGraph graph = new MutableMapDependencyGraph();
+        DependencyGraph graph = new BasicDependencyGraph();
 
         Set<String> rootPackages = determineRootPackages(lockPackages);
 
@@ -80,7 +74,7 @@ public class PoetryLockParser {
                 String projectName = lockPackage.getString(NAME_KEY);
                 String projectVersion = lockPackage.getString(VERSION_KEY);
 
-                packageMap.put(projectName, createPoetryDependency(projectName, projectVersion));
+                packageMap.put(projectName, Dependency.FACTORY.createNameVersionDependency(Forge.PYPI, projectName, projectVersion));
                 rootPackages.add(projectName);
 
                 if (lockPackage.getTable(DEPENDENCIES_KEY) != null) {
@@ -104,10 +98,5 @@ public class PoetryLockParser {
             dependencies.add(key.get(0));
         }
         return dependencies;
-    }
-
-    private Dependency createPoetryDependency(String name, String version) {
-        ExternalId dependencyExternalId = externalIdFactory.createNameVersionExternalId(Forge.PYPI, name, version);
-        return new Dependency(name, version, dependencyExternalId);
     }
 }
