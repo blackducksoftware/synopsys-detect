@@ -28,8 +28,6 @@ public class ProjectInspectorExecutableLocator {
     public String determineExecutableNameFromOS() {
         if (detectInfo.getCurrentOs() == OperatingSystemType.WINDOWS) {
             return "project-inspector.exe";
-        } else if (detectInfo.getCurrentOs() == OperatingSystemType.MAC) {
-            return "project-inspector";
         } else {
             return "project-inspector";
         }

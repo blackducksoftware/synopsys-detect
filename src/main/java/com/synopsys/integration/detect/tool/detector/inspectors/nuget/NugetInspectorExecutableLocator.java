@@ -28,8 +28,6 @@ public class NugetInspectorExecutableLocator {
     public String determineExecutableNameFromOS() {
         if (detectInfo.getCurrentOs() == OperatingSystemType.WINDOWS) {
             return "detect-nuget-inspector.exe";
-        } else if (detectInfo.getCurrentOs() == OperatingSystemType.MAC) {
-            return "detect-nuget-inspector";
         } else {
             return "detect-nuget-inspector";
         }
