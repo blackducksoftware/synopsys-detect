@@ -60,9 +60,10 @@ public class DependencyGraphSummarizer {
             }
         }
 
-        for (ExternalId externalId : graph.getRootDependencyExternalIds()) {
-            graphSummary.rootExternalDataIds.add(externalId.createBdioId());
-        }
+        graph.getRootDependencies().stream()
+            .map(Dependency::getExternalId)
+            .map(ExternalId::createBdioId)
+            .forEach(graphSummary.rootExternalDataIds::add);
 
         return graphSummary;
     }

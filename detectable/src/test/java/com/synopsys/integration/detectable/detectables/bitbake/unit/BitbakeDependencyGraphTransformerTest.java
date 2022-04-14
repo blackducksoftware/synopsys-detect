@@ -32,7 +32,7 @@ public class BitbakeDependencyGraphTransformerTest {
         recipeToLayerMap.put("example", Collections.singletonList("meta"));
         recipeToLayerMap.put("foobar", Collections.singletonList("meta"));
 
-        BitbakeDependencyGraphTransformer bitbakeDependencyGraphTransformer = new BitbakeDependencyGraphTransformer(new ExternalIdFactory(), EnumListFilter.excludeNone());
+        BitbakeDependencyGraphTransformer bitbakeDependencyGraphTransformer = new BitbakeDependencyGraphTransformer(EnumListFilter.excludeNone());
 
         DependencyGraph dependencyGraph = bitbakeDependencyGraphTransformer.transform(bitbakeGraph, recipeToLayerMap, null);
 
@@ -55,7 +55,7 @@ public class BitbakeDependencyGraphTransformerTest {
         recipeToLayerMap.put("example", Collections.singletonList("meta"));
         recipeToLayerMap.put("foobar", Collections.singletonList("meta"));
 
-        BitbakeDependencyGraphTransformer bitbakeDependencyGraphTransformer = new BitbakeDependencyGraphTransformer(new ExternalIdFactory(), EnumListFilter.excludeNone());
+        BitbakeDependencyGraphTransformer bitbakeDependencyGraphTransformer = new BitbakeDependencyGraphTransformer(EnumListFilter.excludeNone());
         DependencyGraph dependencyGraph = bitbakeDependencyGraphTransformer.transform(bitbakeGraph, recipeToLayerMap, null);
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.YOCTO, dependencyGraph);
@@ -73,7 +73,7 @@ public class BitbakeDependencyGraphTransformerTest {
         Map<String, List<String>> recipeToLayerMap = new HashMap<>();
         recipeToLayerMap.put("example", Collections.singletonList("meta"));
 
-        BitbakeDependencyGraphTransformer bitbakeDependencyGraphTransformer = new BitbakeDependencyGraphTransformer(new ExternalIdFactory(), EnumListFilter.excludeNone());
+        BitbakeDependencyGraphTransformer bitbakeDependencyGraphTransformer = new BitbakeDependencyGraphTransformer(EnumListFilter.excludeNone());
         DependencyGraph dependencyGraph = bitbakeDependencyGraphTransformer.transform(bitbakeGraph, recipeToLayerMap, null);
 
         GraphAssert graphAssert = new GraphAssert(Forge.YOCTO, dependencyGraph);

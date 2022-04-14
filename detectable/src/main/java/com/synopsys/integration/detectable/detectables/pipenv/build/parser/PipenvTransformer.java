@@ -3,7 +3,8 @@ package com.synopsys.integration.detectable.detectables.pipenv.build.parser;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
@@ -23,7 +24,7 @@ public class PipenvTransformer {
     }
 
     public CodeLocation transform(String projectName, String projectVersionName, PipFreeze pipFreeze, PipenvGraph pipenvGraph, boolean includeOnlyProjectTree) {
-        MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
+        DependencyGraph dependencyGraph = new BasicDependencyGraph();
 
         for (PipenvGraphEntry entry : pipenvGraph.getEntries()) {
             Dependency entryDependency = nameVersionToDependency(entry.getName(), entry.getVersion(), pipFreeze);
@@ -40,7 +41,7 @@ public class PipenvTransformer {
         return new CodeLocation(dependencyGraph, projectExternalId);
     }
 
-    private List<Dependency> addDependenciesToGraph(List<PipenvGraphDependency> graphDependencies, MutableMapDependencyGraph graph, PipFreeze pipFreeze) {
+    private List<Dependency> addDependenciesToGraph(List<PipenvGraphDependency> graphDependencies, DependencyGraph graph, PipFreeze pipFreeze) {
         List<Dependency> dependencies = new ArrayList<>();
         for (PipenvGraphDependency graphDependency : graphDependencies) {
             Dependency dependency = nameVersionToDependency(graphDependency.getName(), graphDependency.getInstalledVersion(), pipFreeze);

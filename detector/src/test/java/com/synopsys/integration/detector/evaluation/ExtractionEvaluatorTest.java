@@ -8,8 +8,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.xml.sax.SAXException;
 
 import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.detectable.Detectable;
@@ -31,7 +34,8 @@ import com.synopsys.integration.executable.ExecutableRunnerException;
 public class ExtractionEvaluatorTest {
     @Test
     public void testEvaluationSuccess()
-        throws DetectableException, ExecutableFailedException, IOException, CycleDetectedException, MissingExternalIdException, ExecutableRunnerException {
+        throws DetectableException, ExecutableFailedException, IOException, CycleDetectedException, MissingExternalIdException, ExecutableRunnerException,
+        ParserConfigurationException, SAXException {
         DetectorEvaluationOptions evaluationOptions = Mockito.mock(DetectorEvaluationOptions.class);
         ExtractionEvaluator evaluator = new ExtractionEvaluator(evaluationOptions);
         DetectorEvaluationTree detectorEvaluationTree = Mockito.mock(DetectorEvaluationTree.class);
@@ -51,7 +55,8 @@ public class ExtractionEvaluatorTest {
 
     @Test
     public void testEvaluationDiscoveryExtractionPerformed()
-        throws DetectableException, ExecutableFailedException, IOException, CycleDetectedException, MissingExternalIdException, ExecutableRunnerException {
+        throws DetectableException, ExecutableFailedException, IOException, CycleDetectedException, MissingExternalIdException, ExecutableRunnerException,
+        ParserConfigurationException, SAXException {
         DetectorEvaluationOptions evaluationOptions = Mockito.mock(DetectorEvaluationOptions.class);
         ExtractionEvaluator evaluator = new ExtractionEvaluator(evaluationOptions);
         DetectorEvaluationTree detectorEvaluationTree = Mockito.mock(DetectorEvaluationTree.class);
@@ -71,7 +76,8 @@ public class ExtractionEvaluatorTest {
 
     @Test
     public void testEvaluationException()
-        throws DetectableException, ExecutableFailedException, IOException, CycleDetectedException, MissingExternalIdException, ExecutableRunnerException {
+        throws DetectableException, ExecutableFailedException, IOException, CycleDetectedException, MissingExternalIdException, ExecutableRunnerException,
+        ParserConfigurationException, SAXException {
         DetectorEvaluationOptions evaluationOptions = Mockito.mock(DetectorEvaluationOptions.class);
         ExtractionEvaluator evaluator = new ExtractionEvaluator(evaluationOptions);
         DetectorEvaluationTree detectorEvaluationTree = Mockito.mock(DetectorEvaluationTree.class);
@@ -95,7 +101,8 @@ public class ExtractionEvaluatorTest {
         boolean extractionExists,
         boolean throwException
     )
-        throws DetectableException, ExecutableFailedException, IOException, CycleDetectedException, MissingExternalIdException, ExecutableRunnerException {
+        throws DetectableException, ExecutableFailedException, IOException, CycleDetectedException, MissingExternalIdException, ExecutableRunnerException,
+        ParserConfigurationException, SAXException {
         ExtractionEnvironment extractionEnvironment = Mockito.mock(ExtractionEnvironment.class);
         DetectorEvaluation detectorEvaluation = Mockito.mock(DetectorEvaluation.class);
 

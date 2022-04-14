@@ -744,13 +744,13 @@ public class OperationFactory { //TODO: OperationRunner
         return auditLog.namedPublic(
             "Direct Aggregate",
             "DirectAggregate",
-            () -> new AggregateModeDirectOperation(new SimpleBdioFactory()).aggregateCodeLocations(detectCodeLocations)
+            () -> new AggregateModeDirectOperation().aggregateCodeLocations(detectCodeLocations)
         );
     }
 
     public DependencyGraph aggregateTransitive(List<DetectCodeLocation> detectCodeLocations) throws OperationException {
         return auditLog.namedPublic("Transitive Aggregate", "TransitiveAggregate",
-            () -> (new FullAggregateGraphCreator(new SimpleBdioFactory())).aggregateCodeLocations(
+            () -> (new FullAggregateGraphCreator()).aggregateCodeLocations(
                 Dependency::new,
                 directoryManager.getSourceDirectory(),
                 detectCodeLocations
@@ -760,7 +760,7 @@ public class OperationFactory { //TODO: OperationRunner
 
     public DependencyGraph aggregateSubProject(List<DetectCodeLocation> detectCodeLocations) throws OperationException {
         return auditLog.namedPublic("SubProject Aggregate", "SubProjectAggregate",
-            () -> (new FullAggregateGraphCreator(new SimpleBdioFactory())).aggregateCodeLocations(
+            () -> (new FullAggregateGraphCreator()).aggregateCodeLocations(
                 ProjectDependency::new,
                 directoryManager.getSourceDirectory(),
                 detectCodeLocations

@@ -56,7 +56,7 @@ public class NugetInspectorParser {
             projectVersionName = nugetContainer.version;
             List<CodeLocation> codeLocations = new ArrayList<>();
             for (NugetContainer container : nugetContainer.children) {
-                NugetDependencyNodeBuilder builder = new NugetDependencyNodeBuilder(externalIdFactory);
+                NugetDependencyNodeBuilder builder = new NugetDependencyNodeBuilder();
                 builder.addPackageSets(container.packages);
                 DependencyGraph children = builder.createDependencyGraph(container.dependencies);
                 if (StringUtils.isBlank(projectVersionName)) {
@@ -74,7 +74,7 @@ public class NugetInspectorParser {
         } else if (NugetContainerType.PROJECT == nugetContainer.type) {
             projectName = nugetContainer.name;
             projectVersionName = nugetContainer.version;
-            NugetDependencyNodeBuilder builder = new NugetDependencyNodeBuilder(externalIdFactory);
+            NugetDependencyNodeBuilder builder = new NugetDependencyNodeBuilder();
             builder.addPackageSets(nugetContainer.packages);
             DependencyGraph children = builder.createDependencyGraph(nugetContainer.dependencies);
 

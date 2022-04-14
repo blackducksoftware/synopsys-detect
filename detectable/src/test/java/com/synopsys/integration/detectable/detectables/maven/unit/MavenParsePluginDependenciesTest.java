@@ -18,7 +18,6 @@ import javax.xml.parsers.SAXParserFactory;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseExtractor;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseOptions;
 import com.synopsys.integration.detectable.extraction.Extraction;
@@ -83,7 +82,7 @@ public class MavenParsePluginDependenciesTest {
 
     @Test
     public void testIncludingPluginDependencies() throws Exception {
-        MavenParseExtractor pomXmlParser = new MavenParseExtractor(new ExternalIdFactory(), SAXParserFactory.newInstance().newSAXParser());
+        MavenParseExtractor pomXmlParser = new MavenParseExtractor(SAXParserFactory.newInstance().newSAXParser());
         Extraction extraction = pomXmlParser.extract(getInput(), new MavenParseOptions(true, true));
         DependencyGraph dependencyGraph = extraction.getCodeLocations().get(0).getDependencyGraph();
 

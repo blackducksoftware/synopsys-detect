@@ -2,14 +2,14 @@ package com.synopsys.integration.detectable.detectables.sbt.parse.model;
 
 import java.io.File;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 
 public class SbtDependencyModule {
     private File sourcePath;
     private String name;
     private String version;
     private String org;
-    private DependencyGraph graph;
+    private BasicDependencyGraph graph;
 
     // if this is from a specific configuration
     private String configuration = null;
@@ -46,11 +46,11 @@ public class SbtDependencyModule {
         this.org = org;
     }
 
-    public DependencyGraph getGraph() {
+    public BasicDependencyGraph getGraph() {
         return graph;
     }
 
-    public void setGraph(DependencyGraph graph) {
+    public void setGraph(BasicDependencyGraph graph) {
         this.graph = graph;
     }
 

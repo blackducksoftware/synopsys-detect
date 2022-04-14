@@ -15,11 +15,8 @@ public class CreateAggregateBdio1FileOperation {
     }
 
     public void writeAggregateBdio1File(AggregateCodeLocation aggregateCodeLocation) throws DetectUserFriendlyException {
-        SimpleBdioDocument aggregateBdioDocument = simpleBdioFactory.createSimpleBdioDocument(
+        SimpleBdioDocument aggregateBdioDocument = simpleBdioFactory.createPopulatedBdioDocument(
             aggregateCodeLocation.getCodeLocationName(),
-            aggregateCodeLocation.getProjectNameVersion().getName(),
-            aggregateCodeLocation.getProjectNameVersion().getVersion(),
-            aggregateCodeLocation.getProjectExternalId(),
             aggregateCodeLocation.getAggregateDependencyGraph()
         );
         detectBdioWriter.writeBdioFile(aggregateCodeLocation.getAggregateFile(), aggregateBdioDocument);

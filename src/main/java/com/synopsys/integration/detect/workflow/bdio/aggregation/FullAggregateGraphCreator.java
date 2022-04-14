@@ -10,51 +10,25 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.SimpleBdioFactory;
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.DependencyGraphCombiner;
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraphUtil;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.dependency.ProjectDependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.codelocation.FileNameUtils;
 
 public class FullAggregateGraphCreator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final SimpleBdioFactory simpleBdioFactory;
 
-    public FullAggregateGraphCreator(SimpleBdioFactory simpleBdioFactory) {
-        this.simpleBdioFactory = simpleBdioFactory;
-    }
-
-    public DependencyGraph aggregateCodeLocations(ProjectNodeCreator projectDependencyCreator, File sourcePath, List<DetectCodeLocation> codeLocations)
-        throws DetectUserFriendlyException {
-        MutableDependencyGraph aggregateDependencyGraph = simpleBdioFactory.createMutableDependencyGraph();
+    public DependencyGraph aggregateCodeLocations(ProjectNodeCreator projectDependencyCreator, File sourcePath, List<DetectCodeLocation> codeLocations) {
+        DependencyGraph aggregateDependencyGraph = new BasicDependencyGraph();
 
         for (DetectCodeLocation detectCodeLocation : codeLocations) {
             Dependency codeLocationDependency = createAggregateNode(projectDependencyCreator, sourcePath, detectCodeLocation);
-            DependencyGraph dependencyGraph = detectCodeLocation.getDependencyGraph();
-            if (dependencyGraph.isRootProjectPlaceholder()) {
-                if (codeLocationDependency instanceof ProjectDependency) {
-                    // When we remove the transitive option on 8.0.0, we shouldn't have to create fake project nodes requiring instanceof
-                    MutableDependencyGraph properGraph = new MutableMapDependencyGraph((ProjectDependency) codeLocationDependency);
-                    properGraph.addGraphAsChildrenToRoot(dependencyGraph);
-                    aggregateDependencyGraph.addGraphAsChildrenToRoot(properGraph);
-                } else {
-                    aggregateDependencyGraph.addChildrenToRoot(codeLocationDependency);
-                    // Need dependencyGraphCombiner to just copy the root dependencies
-                    // copying the graph will not give the desired result since we DO NOT want these to appear as subprojects in blackduck
-                    DependencyGraphCombiner dependencyGraphCombiner = new DependencyGraphCombiner();
-                    dependencyGraphCombiner.copyRootDependenciesToParent(aggregateDependencyGraph, detectCodeLocation.getDependencyGraph(), codeLocationDependency);
-                }
-            } else {
-                // This should be all we have to do post 8.0.0
-                aggregateDependencyGraph.addGraphAsChildrenToRoot(dependencyGraph);
-            }
+            aggregateDependencyGraph.addDirectDependency(codeLocationDependency);
+            DependencyGraphUtil.copyDirectDependenciesToParent(aggregateDependencyGraph, codeLocationDependency, detectCodeLocation.getDependencyGraph());
         }
 
         return aggregateDependencyGraph;

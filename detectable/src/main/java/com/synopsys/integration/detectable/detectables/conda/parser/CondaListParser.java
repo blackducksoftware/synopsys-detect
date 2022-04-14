@@ -6,9 +6,8 @@ import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.detectable.detectables.conda.model.CondaInfo;
 import com.synopsys.integration.detectable.detectables.conda.model.CondaListElement;
 
@@ -28,11 +27,10 @@ public class CondaListParser {
         CondaInfo condaInfo = gson.fromJson(infoJsonText, CondaInfo.class);
         String platform = condaInfo.platform;
 
-        MutableDependencyGraph graph = new MutableMapDependencyGraph();
-
-        for (CondaListElement condaListElement : condaList) {
-            graph.addChildToRoot(dependencyCreator.createFromCondaListElement(condaListElement, platform));
-        }
+        DependencyGraph graph = new BasicDependencyGraph();
+        condaList.stream()
+            .map(condaListElement -> dependencyCreator.createFromCondaListElement(condaListElement, platform))
+            .forEach(graph::addChildToRoot);
 
         return graph;
     }

@@ -46,7 +46,7 @@ public class DetectorRuleSetEvaluator {
                 return new NotSelfNestableDetectorResult();
             }
             if (notNestableBeneath.size() > 0) {
-                Optional<DetectorType> notNestableBeneathType = environment.getAppliedSoFar().stream()
+                Optional<DetectorType> notNestableBeneathType = environment.getAppliedToParent().stream()
                     .map(DetectorRule::getDetectorType)
                     .filter(notNestableBeneath::contains)
                     .findAny();

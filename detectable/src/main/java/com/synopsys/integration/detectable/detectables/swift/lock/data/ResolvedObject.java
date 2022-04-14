@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.xcode.model;
+package com.synopsys.integration.detectable.detectables.swift.lock.data;
 
 import java.util.List;
 

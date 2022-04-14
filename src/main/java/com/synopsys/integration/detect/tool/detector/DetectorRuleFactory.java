@@ -46,8 +46,10 @@ import com.synopsys.integration.detectable.detectables.rebar.RebarDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemlock.GemlockDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectable;
 import com.synopsys.integration.detectable.detectables.sbt.SbtDetectable;
-import com.synopsys.integration.detectable.detectables.swift.SwiftCliDetectable;
-import com.synopsys.integration.detectable.detectables.xcode.XcodeSwiftDetectable;
+import com.synopsys.integration.detectable.detectables.swift.cli.SwiftCliDetectable;
+import com.synopsys.integration.detectable.detectables.swift.lock.SwiftPackageResolvedDetectable;
+import com.synopsys.integration.detectable.detectables.xcode.XcodeProjectDetectable;
+import com.synopsys.integration.detectable.detectables.xcode.XcodeWorkspaceDetectable;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.rule.DetectorRule;
@@ -75,7 +77,37 @@ public class DetectorRuleFactory {
         ruleSet.addDetector(DetectorType.BITBAKE, "Bitbake", BitbakeDetectable.class, detectableFactory::createBitbakeDetectable).defaults().build();
 
         ruleSet.addDetector(DetectorType.COCOAPODS, "Pod Lock", PodlockDetectable.class, detectableFactory::createPodLockDetectable).defaults().build();
-        ruleSet.addDetector(DetectorType.XCODE, "Xcode Swift", XcodeSwiftDetectable.class, detectableFactory::createXcodeSwiftDetectable).defaults().selfNestable().build();
+
+        DetectorRule<?> xcodeProject = ruleSet.addDetector(
+            DetectorType.XCODE,
+            "Xcode Project",
+            XcodeProjectDetectable.class,
+            detectableFactory::createXcodeProjectDetectable
+        ).defaults().build();
+
+        DetectorRule<?> xcodeWorkspace = ruleSet.addDetector(
+            DetectorType.XCODE,
+            "Xcode Workspace",
+            XcodeWorkspaceDetectable.class,
+            detectableFactory::createXcodeWorkspaceDetectable
+        ).defaults().build();
+
+        DetectorRule<?> swiftCli = ruleSet.addDetector(
+            DetectorType.SWIFT,
+            "Swift CLI",
+            SwiftCliDetectable.class,
+            detectableFactory::createSwiftCliDetectable
+        ).defaults().nestableExceptTo(DetectorType.XCODE).build();
+
+        DetectorRule<?> swiftPackageResolved = ruleSet.addDetector(
+            DetectorType.SWIFT,
+            "Swift Package Resolved",
+            SwiftPackageResolvedDetectable.class,
+            detectableFactory::createSwiftPackageResolvedDetectable
+        ).defaults().nestableExceptTo(DetectorType.XCODE).build();
+
+        ruleSet.yield(swiftPackageResolved).to(swiftCli);
+        ruleSet.yield(xcodeProject).to(xcodeWorkspace);
 
         DetectorRule<?> conanCliRule = ruleSet.addDetector(DetectorType.CONAN, "Conan CLI", ConanCliDetectable.class, detectableFactory::createConanCliDetectable).defaults()
             .build();
@@ -123,7 +155,7 @@ public class DetectorRuleFactory {
         ruleSet.yield(yarnLock).to(lernaDetectable);
         ruleSet.yield(pnpmLock).to(lernaDetectable);
 
-        ruleSet.yield(npmShrinkwrap).to(npmPackageLock);
+        ruleSet.yield(npmPackageLock).to(npmShrinkwrap);
         ruleSet.yield(npmCli).to(npmPackageLock);
         ruleSet.yield(npmCli).to(npmShrinkwrap);
 
@@ -161,8 +193,6 @@ public class DetectorRuleFactory {
 
         ruleSet.addDetector(DetectorType.CLANG, "Clang", ClangDetectable.class, detectableFactory::createClangDetectable).defaults().build();
 
-        ruleSet.addDetector(DetectorType.SWIFT, "Swift", SwiftCliDetectable.class, detectableFactory::createSwiftCliDetectable).defaults().build();
-
         ruleSet.addDetector(DetectorType.GIT, "Git", GitDetectable.class, detectableFactory::createGitDetectable).defaults().build();
 
         return ruleSet.build();
@@ -176,7 +206,29 @@ public class DetectorRuleFactory {
         ruleSet.addDetector(DetectorType.CARTHAGE, "Carthage", CarthageDetectable.class, detectableFactory::createCarthageDetectable).defaults().build();
 
         ruleSet.addDetector(DetectorType.COCOAPODS, "Pod Lock", PodlockDetectable.class, detectableFactory::createPodLockDetectable).defaults().build();
-        ruleSet.addDetector(DetectorType.XCODE, "Xcode Swift", XcodeSwiftDetectable.class, detectableFactory::createXcodeSwiftDetectable).defaults().selfNestable().build();
+
+        DetectorRule<?> xcodeProject = ruleSet.addDetector(
+            DetectorType.XCODE,
+            "Xcode Project",
+            XcodeProjectDetectable.class,
+            detectableFactory::createXcodeProjectDetectable
+        ).defaults().build();
+
+        DetectorRule<?> xcodeWorkspace = ruleSet.addDetector(
+            DetectorType.XCODE,
+            "Xcode Workspace",
+            XcodeWorkspaceDetectable.class,
+            detectableFactory::createXcodeWorkspaceDetectable
+        ).defaults().build();
+
+        ruleSet.addDetector(
+            DetectorType.SWIFT,
+            "Swift Package Resolved",
+            SwiftPackageResolvedDetectable.class,
+            detectableFactory::createSwiftPackageResolvedDetectable
+        ).defaults().notNestableBeneath(DetectorType.XCODE).build();
+
+        ruleSet.yield(xcodeProject).to(xcodeWorkspace);
 
         ruleSet.addDetector(DetectorType.PACKAGIST, "Packrat Lock", PackratLockDetectable.class, detectableFactory::createPackratLockDetectable).defaults().build();
 
@@ -215,7 +267,7 @@ public class DetectorRuleFactory {
         ).defaults().build();
         DetectorRule<?> pnpmLock = ruleSet.addDetector(DetectorType.PNPM, "Pnpm Lock", PnpmLockDetectable.class, detectableFactory::createPnpmLockDetectable).defaults().build();
 
-        ruleSet.yield(npmShrinkwrap).to(npmPackageLock);
+        ruleSet.yield(npmPackageLock).to(npmShrinkwrap);
         ruleSet.yield(npmPackageJsonParse).to(npmPackageLock);
         ruleSet.yield(npmPackageJsonParse).to(npmShrinkwrap);
 

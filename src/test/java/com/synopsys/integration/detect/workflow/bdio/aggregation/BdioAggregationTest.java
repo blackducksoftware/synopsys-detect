@@ -20,7 +20,6 @@ import org.junit.jupiter.api.Test;
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.BdioReader;
 import com.synopsys.integration.bdio.BdioTransformer;
-import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.SimpleBdioDocument;
@@ -50,8 +49,8 @@ class BdioAggregationTest {
     }
 
     @Test
-    void testTransitiveMode() throws DetectUserFriendlyException {
-        FullAggregateGraphCreator fullAggregateGraphCreator = new FullAggregateGraphCreator(new SimpleBdioFactory());
+    void testTransitiveMode() {
+        FullAggregateGraphCreator fullAggregateGraphCreator = new FullAggregateGraphCreator();
 
         DependencyGraph aggregatedGraph = fullAggregateGraphCreator.aggregateCodeLocations(
             Dependency::new,
@@ -73,8 +72,8 @@ class BdioAggregationTest {
     }
 
     @Test
-    void testSubProjectMode() throws DetectUserFriendlyException {
-        FullAggregateGraphCreator fullAggregateGraphCreator = new FullAggregateGraphCreator(new SimpleBdioFactory());
+    void testSubProjectMode() {
+        FullAggregateGraphCreator fullAggregateGraphCreator = new FullAggregateGraphCreator();
 
         DependencyGraph aggregatedGraph = fullAggregateGraphCreator.aggregateCodeLocations(
             ProjectDependency::new,
@@ -97,11 +96,11 @@ class BdioAggregationTest {
 
     @Test
     void testDirectMode() throws DetectUserFriendlyException {
-        DependencyGraph aggregatedGraph = new AggregateModeDirectOperation(new SimpleBdioFactory()).aggregateCodeLocations(inputCodelocations);
+        DependencyGraph aggregatedGraph = new AggregateModeDirectOperation().aggregateCodeLocations(inputCodelocations);
 
-        assertEquals(2, aggregatedGraph.getRootDependencies().size());
-        assertTrue(aggregatedGraph.getRootDependencies().contains(Dependency.FACTORY.createMavenDependency("junit", "junit", "4.12")));
-        assertTrue(aggregatedGraph.getRootDependencies().contains(Dependency.FACTORY.createMavenDependency("joda-time", "joda-time", "2.2")));
+        assertEquals(2, aggregatedGraph.getDirectDependencies().size());
+        assertTrue(aggregatedGraph.getDirectDependencies().contains(Dependency.FACTORY.createMavenDependency("junit", "junit", "4.12")));
+        assertTrue(aggregatedGraph.getDirectDependencies().contains(Dependency.FACTORY.createMavenDependency("joda-time", "joda-time", "2.2")));
     }
 
     @NotNull
@@ -114,8 +113,10 @@ class BdioAggregationTest {
             try (InputStream bdioInputStream = new FileInputStream(bdioFile); BdioReader bdioReader = new BdioReader(gson, bdioInputStream)) {
                 simpleBdioDocument = bdioReader.readSimpleBdioDocument();
             }
-            DependencyGraph dependencyGraph = bdioTransformer.transformToDependencyGraph(simpleBdioDocument.getProject(), simpleBdioDocument.getComponents());
+
             ExternalId externalId = simpleBdioDocument.getProject().bdioExternalIdentifier.externalIdMetaData;
+            ProjectDependency projectDependency = new ProjectDependency(externalId);
+            DependencyGraph dependencyGraph = bdioTransformer.transformToDependencyGraph(projectDependency, simpleBdioDocument.getProject(), simpleBdioDocument.getComponents());
             DetectCodeLocation detectCodeLocation = DetectCodeLocation.forCreator(dependencyGraph, sourceDir, externalId, "testcreator");
             inputCodelocations.add(detectCodeLocation);
         }

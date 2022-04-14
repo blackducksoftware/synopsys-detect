@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.xcode;
+package com.synopsys.integration.detectable.detectables.swift.lock.transform;
 
 import java.util.Collections;
 import java.util.List;
@@ -8,16 +8,13 @@ import org.junit.jupiter.api.Test;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.detectables.xcode.model.PackageResolved;
-import com.synopsys.integration.detectable.detectables.xcode.model.PackageState;
-import com.synopsys.integration.detectable.detectables.xcode.model.ResolvedObject;
-import com.synopsys.integration.detectable.detectables.xcode.model.ResolvedPackage;
-import com.synopsys.integration.detectable.detectables.xcode.process.PackageResolvedTransformer;
+import com.synopsys.integration.detectable.detectables.swift.lock.data.PackageResolved;
+import com.synopsys.integration.detectable.detectables.swift.lock.data.PackageState;
+import com.synopsys.integration.detectable.detectables.swift.lock.data.ResolvedObject;
+import com.synopsys.integration.detectable.detectables.swift.lock.data.ResolvedPackage;
 import com.synopsys.integration.detectable.util.graph.GraphAssert;
 
 class PackageResolvedTransformerTest {
-    private final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
 
     @Test
     void testHttpsWithGit() {
@@ -28,11 +25,11 @@ class PackageResolvedTransformerTest {
         );
         PackageResolved packageResolved = createPackageResolved(swiftCollectionsPackage);
 
-        PackageResolvedTransformer transformer = new PackageResolvedTransformer(externalIdFactory);
+        PackageResolvedTransformer transformer = new PackageResolvedTransformer();
         DependencyGraph dependencyGraph = transformer.transform(packageResolved);
         GraphAssert graphAssert = new GraphAssert(Forge.GITHUB, dependencyGraph);
 
-        ExternalId swiftCollections = externalIdFactory.createNameVersionExternalId(Forge.GITHUB, "apple/swift-collections", "1.0.1");
+        ExternalId swiftCollections = ExternalId.FACTORY.createNameVersionExternalId(Forge.GITHUB, "apple/swift-collections", "1.0.1");
         graphAssert.hasRootDependency(swiftCollections);
         graphAssert.hasRootSize(1);
     }
@@ -46,11 +43,11 @@ class PackageResolvedTransformerTest {
         );
         PackageResolved packageResolved = createPackageResolved(auth0Package);
 
-        PackageResolvedTransformer transformer = new PackageResolvedTransformer(externalIdFactory);
+        PackageResolvedTransformer transformer = new PackageResolvedTransformer();
         DependencyGraph dependencyGraph = transformer.transform(packageResolved);
         GraphAssert graphAssert = new GraphAssert(Forge.GITHUB, dependencyGraph);
 
-        ExternalId auth0 = externalIdFactory.createNameVersionExternalId(Forge.GITHUB, "auth0/Auth0.swift", "1.35.0");
+        ExternalId auth0 = ExternalId.FACTORY.createNameVersionExternalId(Forge.GITHUB, "auth0/Auth0.swift", "1.35.0");
         graphAssert.hasRootDependency(auth0);
         graphAssert.hasRootSize(1);
     }
@@ -63,7 +60,7 @@ class PackageResolvedTransformerTest {
             new PackageState(null, "revision", "version")
         );
 
-        PackageResolvedTransformer transformer = new PackageResolvedTransformer(externalIdFactory);
+        PackageResolvedTransformer transformer = new PackageResolvedTransformer();
         PackageResolved packageResolved = createPackageResolved(malformedUrlPackage);
 
         DependencyGraph dependencyGraph = transformer.transform(packageResolved);
@@ -79,13 +76,13 @@ class PackageResolvedTransformerTest {
             new PackageState(null, "8998cfe77f4fce79ee6dfab0c88a7d551659d8fb", "5.4.0")
         );
 
-        PackageResolvedTransformer transformer = new PackageResolvedTransformer(externalIdFactory);
+        PackageResolvedTransformer transformer = new PackageResolvedTransformer();
         PackageResolved packageResolved = createPackageResolved(rSwiftLibraryPackage);
 
         DependencyGraph dependencyGraph = transformer.transform(packageResolved);
         GraphAssert graphAssert = new GraphAssert(Forge.GITHUB, dependencyGraph);
 
-        ExternalId rSwiftLibrary = externalIdFactory.createNameVersionExternalId(Forge.GITHUB, "mac-cain13/R.swift.Library", "5.4.0");
+        ExternalId rSwiftLibrary = ExternalId.FACTORY.createNameVersionExternalId(Forge.GITHUB, "mac-cain13/R.swift.Library", "5.4.0");
         graphAssert.hasRootDependency(rSwiftLibrary);
         graphAssert.hasRootSize(1);
     }
@@ -98,13 +95,13 @@ class PackageResolvedTransformerTest {
             new PackageState(null, "5d66f7ba25daf4f94100e7022febf3c75e37a6c7", "1.4.2")
         );
 
-        PackageResolvedTransformer transformer = new PackageResolvedTransformer(externalIdFactory);
+        PackageResolvedTransformer transformer = new PackageResolvedTransformer();
         PackageResolved packageResolved = createPackageResolved(swiftLogPackage);
 
         DependencyGraph dependencyGraph = transformer.transform(packageResolved);
         GraphAssert graphAssert = new GraphAssert(Forge.GITHUB, dependencyGraph);
 
-        ExternalId swiftLog = externalIdFactory.createNameVersionExternalId(Forge.GITHUB, "apple/swift-log", "1.4.2");
+        ExternalId swiftLog = ExternalId.FACTORY.createNameVersionExternalId(Forge.GITHUB, "apple/swift-log", "1.4.2");
         graphAssert.hasRootDependency(swiftLog);
         graphAssert.hasRootSize(1);
     }

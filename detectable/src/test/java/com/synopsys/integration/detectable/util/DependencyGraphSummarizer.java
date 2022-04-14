@@ -12,6 +12,7 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.util.NameVersion;
 
+// TODO: Only used by an unused class. Also is duplicate class JM-04/2022
 public class DependencyGraphSummarizer {
     private final Gson gson;
 
@@ -60,9 +61,10 @@ public class DependencyGraphSummarizer {
             }
         }
 
-        for (ExternalId externalId : graph.getRootDependencyExternalIds()) {
-            graphSummary.rootExternalDataIds.add(externalId.createBdioId());
-        }
+        graph.getRootDependencies().stream()
+            .map(Dependency::getExternalId)
+            .map(ExternalId::createBdioId)
+            .forEach(graphSummary.rootExternalDataIds::add);
 
         return graphSummary;
     }
