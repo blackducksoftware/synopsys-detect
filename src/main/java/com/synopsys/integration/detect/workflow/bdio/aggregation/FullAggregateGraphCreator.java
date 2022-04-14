@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraphUtil;
-import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
@@ -28,8 +27,8 @@ public class FullAggregateGraphCreator {
 
         for (DetectCodeLocation detectCodeLocation : codeLocations) {
             Dependency codeLocationDependency = createAggregateNode(projectDependencyCreator, sourcePath, detectCodeLocation);
-            DependencyGraph projectDependencyGraph = new ProjectDependencyGraph(codeLocationDependency);
-            DependencyGraphUtil.copyDirectDependencies(projectDependencyGraph, detectCodeLocation.getDependencyGraph());
+            aggregateDependencyGraph.addDirectDependency(codeLocationDependency);
+            DependencyGraphUtil.copyDirectDependenciesToParent(aggregateDependencyGraph, codeLocationDependency, detectCodeLocation.getDependencyGraph());
         }
 
         return aggregateDependencyGraph;

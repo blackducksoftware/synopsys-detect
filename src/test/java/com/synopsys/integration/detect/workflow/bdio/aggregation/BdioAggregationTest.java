@@ -49,7 +49,7 @@ class BdioAggregationTest {
     }
 
     @Test
-    void testTransitiveMode() throws DetectUserFriendlyException {
+    void testTransitiveMode() {
         FullAggregateGraphCreator fullAggregateGraphCreator = new FullAggregateGraphCreator();
 
         DependencyGraph aggregatedGraph = fullAggregateGraphCreator.aggregateCodeLocations(
@@ -72,7 +72,7 @@ class BdioAggregationTest {
     }
 
     @Test
-    void testSubProjectMode() throws DetectUserFriendlyException {
+    void testSubProjectMode() {
         FullAggregateGraphCreator fullAggregateGraphCreator = new FullAggregateGraphCreator();
 
         DependencyGraph aggregatedGraph = fullAggregateGraphCreator.aggregateCodeLocations(
