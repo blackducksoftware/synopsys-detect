@@ -81,7 +81,7 @@ public class BatteryContext {
 
     public void checkAndCleanupBatteryDirectory() {
         if (StringUtils.isBlank(System.getenv().get(ENVIRONMENT_VARIABLE_BATTERY_TESTS_PATH))) {
-            logger.info("The environment variable {} not set. Cleaning up battery directory.", ENVIRONMENT_VARIABLE_BATTERY_TESTS_PATH);
+            logger.info("Cleaning up the battery directory (assuming it is temporary because the environment variable {} was not set)", ENVIRONMENT_VARIABLE_BATTERY_TESTS_PATH);
             FileUtils.deleteQuietly(batteryDirectory);
         }
     }
