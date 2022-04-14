@@ -34,6 +34,7 @@ import com.synopsys.integration.detector.result.ExcludedDetectorResult;
 import com.synopsys.integration.detector.result.FailedDetectorResult;
 import com.synopsys.integration.detector.result.ForcedNestedPassedDetectorResult;
 import com.synopsys.integration.detector.result.MaxDepthExceededDetectorResult;
+import com.synopsys.integration.detector.result.NotNestableBeneathDetectorResult;
 import com.synopsys.integration.detector.result.NotNestableDetectorResult;
 import com.synopsys.integration.detector.result.NotSelfNestableDetectorResult;
 import com.synopsys.integration.detector.result.PassedDetectorResult;
@@ -70,6 +71,7 @@ public class DetectorResultStatusCodeLookup {
         map.put(InspectorNotFoundDetectableResult.class, DetectorStatusCode.INSPECTOR_NOT_FOUND);
         map.put(MaxDepthExceededDetectorResult.class, DetectorStatusCode.MAX_DEPTH_EXCEEDED);
         map.put(MaxDepthExceededDetectableResult.class, DetectorStatusCode.MAX_DEPTH_EXCEEDED);
+        map.put(NotNestableBeneathDetectorResult.class, DetectorStatusCode.NOT_NESTABLE);
         map.put(NotNestableDetectorResult.class, DetectorStatusCode.NOT_NESTABLE);
         map.put(NotNestableDetectableResult.class, DetectorStatusCode.NOT_NESTABLE);
         map.put(NotSelfNestableDetectorResult.class, DetectorStatusCode.NOT_SELF_NESTABLE);

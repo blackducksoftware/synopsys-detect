@@ -57,6 +57,8 @@ public class BatteryBdioAssert {
 
             BdioCompare compare = new BdioCompare();
             List<BdioCompare.BdioIssue> issues = compare.compare(expectedJsonArray, actualJsonArray);
+            
+            logger.info("Bdio file " + expectedByName.get(i).getName() + " had " + actualJson.length() + " components.");
 
             if (issues.size() > 0) {
                 logger.error("=================");

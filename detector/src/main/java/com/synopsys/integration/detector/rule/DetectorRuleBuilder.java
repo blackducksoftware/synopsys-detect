@@ -1,5 +1,9 @@
 package com.synopsys.integration.detector.rule;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detector.base.DetectableCreatable;
 import com.synopsys.integration.detector.base.DetectorType;
@@ -11,6 +15,7 @@ public class DetectorRuleBuilder<T extends Detectable> {
     private boolean nestable;
     private boolean selfNestable = false;
     private boolean nestInvisible = false;
+    private final Set<DetectorType> notNestableBeneath = new HashSet<>();
 
     private final String name;
     private final DetectorType detectorType;
@@ -80,8 +85,17 @@ public class DetectorRuleBuilder<T extends Detectable> {
         return isSelfNestable(false);
     }
 
+    public DetectorRuleBuilder notNestableBeneath(DetectorType... detectorType) {
+        notNestableBeneath.addAll(Arrays.asList(detectorType));
+        return this;
+    }
+
+    public DetectorRuleBuilder nestableExceptTo(DetectorType... detectorType) {
+        return nestable().notNestableBeneath(detectorType);
+    }
+
     public DetectorRule build() {
-        DetectorRule rule = new DetectorRule(detectableCreatable, detectableClass, maxDepth, nestable, selfNestable, detectorType, name, nestInvisible);
+        DetectorRule rule = new DetectorRule(detectableCreatable, detectableClass, maxDepth, nestable, selfNestable, detectorType, name, nestInvisible, notNestableBeneath);
         if (detectorRuleSetBuilder != null) {
             detectorRuleSetBuilder.add(rule);
         }

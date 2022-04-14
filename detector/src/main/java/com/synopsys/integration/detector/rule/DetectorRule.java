@@ -1,5 +1,7 @@
 package com.synopsys.integration.detector.rule;
 
+import java.util.Set;
+
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detector.base.DetectableCreatable;
@@ -15,6 +17,7 @@ public class DetectorRule<T extends Detectable> {
     private final DetectorType detectorType;
     private final String name;
     private final boolean nestInvisible;
+    private final Set<DetectorType> notNestableBeneath;
 
     public DetectorRule(
         DetectableCreatable detectableCreatable,
@@ -24,7 +27,8 @@ public class DetectorRule<T extends Detectable> {
         boolean selfNestable,
         DetectorType detectorType,
         String name,
-        boolean nestInvisible
+        boolean nestInvisible,
+        Set<DetectorType> notNestableBeneath
     ) {
         this.detectableCreatable = detectableCreatable;
         this.detectableClass = detectableClass;
@@ -34,6 +38,7 @@ public class DetectorRule<T extends Detectable> {
         this.detectorType = detectorType;
         this.name = name;
         this.nestInvisible = nestInvisible;
+        this.notNestableBeneath = notNestableBeneath;
     }
 
     public DetectableCreatable getDetectableCreatable() {
@@ -74,5 +79,9 @@ public class DetectorRule<T extends Detectable> {
 
     public Class<T> getDetectableClass() {
         return detectableClass;
+    }
+
+    public Set<DetectorType> getNotNestableBeneath() {
+        return notNestableBeneath;
     }
 }
