@@ -46,7 +46,7 @@ public class OnlineNugetInspectorResolver implements NugetInspectorResolver {
             try {
                 inspectorFile = installer.install(installDirectory);
             } catch (DetectableException e) {
-                logger.debug("Unable to install the detect nuget inspector from Artifactory.");
+                logger.debug("Unable to install the detect nuget inspector from Artifactory.", e);
             }
 
             if (inspectorFile == null) {
