@@ -68,7 +68,7 @@ public class NugetSolutionDetectable extends Detectable {
             return new InspectorNotFoundDetectableResult("nuget");
         }
 
-        return new PassedDetectableResult(new FoundInspector(inspector.getClass().getSimpleName())); //TODO: Inspector should describe itself.
+        return new PassedDetectableResult(new FoundInspector(inspector)); //TODO: Inspector should describe itself.
     }
 
     @Override
