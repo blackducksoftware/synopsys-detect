@@ -41,10 +41,8 @@ public class NugetInspectorExecutableLocator {
         File executable = new File(extractedZip, executableName);
         if (executable.exists()) {
             logger.debug("Found it: " + executable);
-            if (!executable.canExecute()) {
-                if (!executable.setExecutable(true)) {
-                    throw new DetectableException("Unable to set project inspector to executable: " + executable);
-                }
+            if (!executable.canExecute() && !executable.setExecutable(true)) {
+                throw new DetectableException("Unable to set project inspector to executable: " + executable);
             }
             return executable;
         } else {
