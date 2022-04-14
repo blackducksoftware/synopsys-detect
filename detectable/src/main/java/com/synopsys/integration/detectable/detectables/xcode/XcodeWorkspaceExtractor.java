@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -17,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.result.FailedDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PackageResolvedNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectables.swift.cli.SwiftCliDetectable;
@@ -53,7 +52,8 @@ public class XcodeWorkspaceExtractor {
         XcodeWorkspace xcodeWorkspace = xcodeWorkspaceParser.parse(workspaceFileContents);
         xcodeWorkspaceFormatChecker.checkForVersionCompatibility(xcodeWorkspace);
 
-        List<PackageResolvedResult> packageResolvedResults = new LinkedList<>();
+        List<CodeLocation> codeLocations = new LinkedList<>();
+        List<FailedDetectableResult> failedDetectableResults = new LinkedList<>();
         for (XcodeFileReference fileReference : xcodeWorkspace.getFileReferences()) {
             File workspaceDefinedDirectory = workspaceDirectory.getParentFile().toPath().resolve(fileReference.getRelativeLocation()).toFile();
             if (!workspaceDefinedDirectory.exists()) {
@@ -68,32 +68,25 @@ public class XcodeWorkspaceExtractor {
             switch (fileReference.getFileReferenceType()) {
                 case DIRECTORY:
                     PackageResolvedResult swiftProjectResult = extractStandalonePackageResolved(workspaceDirectory, workspaceDefinedDirectory);
-                    packageResolvedResults.add(swiftProjectResult);
+                    swiftProjectResult.getFailedDetectableResult()
+                        .ifPresent(failedDetectableResults::add);
+                    codeLocations.add(new CodeLocation(swiftProjectResult.getDependencyGraph(), workspaceDefinedDirectory));
                     break;
                 case XCODE_PROJECT:
                     PackageResolvedResult xcodeProjectResult = extractFromXcodeProject(workspaceDirectory, workspaceDefinedDirectory);
-                    packageResolvedResults.add(xcodeProjectResult);
+                    xcodeProjectResult.getFailedDetectableResult()
+                        .ifPresent(failedDetectableResults::add);
+                    codeLocations.add(new CodeLocation(xcodeProjectResult.getDependencyGraph(), workspaceDefinedDirectory));
                     break;
                 default:
                     throw new UnsupportedOperationException(String.format("Unrecognized FileReferenceType: %s", fileReference.getFileReferenceType()));
             }
         }
 
-        List<FailedDetectableResult> failedDetectableResults = packageResolvedResults.stream()
-            .map(PackageResolvedResult::getFailedDetectableResult)
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .collect(Collectors.toList());
         if (CollectionUtils.isNotEmpty(failedDetectableResults)) {
             return XcodeWorkspaceResult.failure(failedDetectableResults);
         }
-
-        return XcodeWorkspaceResult.success(
-            packageResolvedResults.stream()
-                .map(PackageResolvedResult::getDependencyGraph)
-                .collect(Collectors.toList()),
-            workspaceDirectory.toPath()
-        );
+        return XcodeWorkspaceResult.success(codeLocations);
     }
 
     private PackageResolvedResult extractStandalonePackageResolved(File workspaceDirectory, File projectDirectory) throws IOException {
@@ -106,7 +99,7 @@ public class XcodeWorkspaceExtractor {
             if (swiftFile != null) {
                 failedDetectableResult = new PackageResolvedNotFoundDetectableResult(projectDirectory.getAbsolutePath());
             } else {
-                failedDetectableResult = new MissingExpectedPackageResolved(projectDirectory, workspaceDirectory);
+                failedDetectableResult = new MissingFromXcodeWorkspacePackageResolved(projectDirectory, workspaceDirectory);
             }
             return PackageResolvedResult.failure(failedDetectableResult);
         }
@@ -118,6 +111,6 @@ public class XcodeWorkspaceExtractor {
         if (packageResolved != null) {
             return packageResolvedExtractor.extract(packageResolved);
         }
-        return PackageResolvedResult.failure(new MissingExpectedPackageResolved(searchDirectory, workspaceDirectory));
+        return PackageResolvedResult.failure(new MissingFromXcodeWorkspacePackageResolved(searchDirectory, workspaceDirectory));
     }
 }

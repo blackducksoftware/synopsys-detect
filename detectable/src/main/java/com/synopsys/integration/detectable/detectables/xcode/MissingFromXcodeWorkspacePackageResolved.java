@@ -5,11 +5,11 @@ import java.io.File;
 import com.synopsys.integration.detectable.detectable.result.FailedDetectableResult;
 import com.synopsys.integration.detectable.detectables.swift.lock.SwiftPackageResolvedDetectable;
 
-public class MissingExpectedPackageResolved extends FailedDetectableResult {
+public class MissingFromXcodeWorkspacePackageResolved extends FailedDetectableResult {
     private final File searchDirectory;
     private final File workspaceDirectory;
 
-    public MissingExpectedPackageResolved(File searchDirectory, File workspaceDirectory) {
+    public MissingFromXcodeWorkspacePackageResolved(File searchDirectory, File workspaceDirectory) {
         this.searchDirectory = searchDirectory;
         this.workspaceDirectory = workspaceDirectory;
     }

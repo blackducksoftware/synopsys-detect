@@ -14,22 +14,85 @@
     "prefix": "com.blackducksoftware.integration"
   },
   "dependencyGraph": {
-    "rootDependency": {
-      "name": "hub-detect",
-      "version": "2.0.0-SNAPSHOT",
-      "externalId": {
+    "directDependencies": [
+      {
         "forge": {
           "name": "maven",
           "separator": ":"
         },
         "pieces": [
-          "hub-detect",
-          "2.0.0-SNAPSHOT"
+          "groovy-all",
+          "2.4.7"
+        ],
+        "prefix": "org.codehaus.groovy"
+      },
+      {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "spring-boot-starter",
+          "1.4.3.RELEASE"
+        ],
+        "prefix": "org.springframework.boot"
+      },
+      {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "spring-boot-starter-test",
+          "1.4.3.RELEASE"
+        ],
+        "prefix": "org.springframework.boot"
+      },
+      {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "hub-common",
+          "11.0.0-SNAPSHOT"
         ],
         "prefix": "com.blackducksoftware.integration"
+      },
+      {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "artifactory-papi",
+          "4.14.0"
+        ],
+        "prefix": "org.artifactory"
+      },
+      {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "spring-web",
+          "4.3.5.RELEASE"
+        ],
+        "prefix": "org.springframework"
+      },
+      {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "pieces": [
+          "commons-compress",
+          "1.13"
+        ],
+        "prefix": "org.apache.commons"
       }
-    },
-    "isRootProjectPlaceholder": true,
+    ],
     "dependencies": {
       "{\"forge\":\"maven\",\"pieces\":[\"spring-beans\",\"4.3.5.RELEASE\"],\"prefix\":\"org.springframework\",\"suffix\":null}": {
         "name": "spring-beans",
@@ -1683,85 +1746,6 @@
           "prefix": "org.json"
         }
       ],
-      "{\"forge\":\"maven\",\"pieces\":[\"hub-detect\",\"2.0.0-SNAPSHOT\"],\"prefix\":\"com.blackducksoftware.integration\",\"suffix\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "pieces": [
-            "groovy-all",
-            "2.4.7"
-          ],
-          "prefix": "org.codehaus.groovy"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "pieces": [
-            "spring-boot-starter",
-            "1.4.3.RELEASE"
-          ],
-          "prefix": "org.springframework.boot"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "pieces": [
-            "spring-boot-starter-test",
-            "1.4.3.RELEASE"
-          ],
-          "prefix": "org.springframework.boot"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "pieces": [
-            "hub-common",
-            "11.0.0-SNAPSHOT"
-          ],
-          "prefix": "com.blackducksoftware.integration"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "pieces": [
-            "artifactory-papi",
-            "4.14.0"
-          ],
-          "prefix": "org.artifactory"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "pieces": [
-            "spring-web",
-            "4.3.5.RELEASE"
-          ],
-          "prefix": "org.springframework"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "pieces": [
-            "commons-compress",
-            "1.13"
-          ],
-          "prefix": "org.apache.commons"
-        }
-      ],
       "{\"forge\":\"maven\",\"pieces\":[\"junit\",\"4.12\"],\"prefix\":\"junit\",\"suffix\":null}": [
         {
           "forge": {
@@ -1878,7 +1862,6 @@
           "prefix": "org.springframework"
         }
       ]
-    },
-    "dependencyGraphCombiner": {}
+    }
   }
 }

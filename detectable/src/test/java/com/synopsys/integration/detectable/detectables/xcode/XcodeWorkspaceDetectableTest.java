@@ -136,17 +136,24 @@ public class XcodeWorkspaceDetectableTest extends DetectableFunctionalTest {
 
     @Override
     public void assertExtraction(@NotNull Extraction extraction) {
-        assertEquals(1, extraction.getCodeLocations().size(), "Expected 1 code location from local and 2 defined in the workspace data file.");
+        assertEquals(3, extraction.getCodeLocations().size(), "Expected 1 code location from local and 2 defined in the workspace data file.");
+        NameVersionGraphAssert graphAssert;
 
-        CodeLocation localCodeLocation = extraction.getCodeLocations().get(0);
-
-        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.GITHUB, localCodeLocation.getDependencyGraph());
+        CodeLocation workspaceLocalCodeLocation = extraction.getCodeLocations().get(0);
+        graphAssert = new NameVersionGraphAssert(Forge.GITHUB, workspaceLocalCodeLocation.getDependencyGraph());
         graphAssert.hasRootDependency("apple/swift-argument-parser", "1.0.1");
-        graphAssert.hasRootDependency("auth0/Auth0.swift", "1.35.0");
-        graphAssert.hasRootDependency("mac-cain13/R.swift.Library", "5.4.0");
-
         graphAssert.hasNoDependency("invalid/url", "1.2.3");
-        graphAssert.hasRootSize(3);
+        graphAssert.hasRootSize(1);
+
+        CodeLocation myLibraryCodeLocation = extraction.getCodeLocations().get(1);
+        graphAssert = new NameVersionGraphAssert(Forge.GITHUB, myLibraryCodeLocation.getDependencyGraph());
+        graphAssert.hasRootDependency("auth0/Auth0.swift", "1.35.0");
+        graphAssert.hasRootSize(1);
+
+        CodeLocation xcodeProjectCodeLocation = extraction.getCodeLocations().get(2);
+        graphAssert = new NameVersionGraphAssert(Forge.GITHUB, xcodeProjectCodeLocation.getDependencyGraph());
+        graphAssert.hasRootDependency("mac-cain13/R.swift.Library", "5.4.0");
+        graphAssert.hasRootSize(1);
     }
 
 }

@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.github.jsonldjava.shaded.com.google.common.collect.Sets;
-import com.synopsys.integration.detectable.detectables.swift.SwiftCliDetectable;
-import com.synopsys.integration.detectable.detectables.xcode.XcodeSwiftDetectable;
+import com.synopsys.integration.detectable.detectables.swift.cli.SwiftCliDetectable;
+import com.synopsys.integration.detectable.detectables.xcode.XcodeProjectDetectable;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.result.DetectorResult;
 import com.synopsys.integration.detector.result.NotNestableBeneathDetectorResult;
@@ -48,12 +48,12 @@ public class DetectorRuleSetEvaluatorTest {
     public void nestableExcept() {
         DetectorRuleSetBuilder ruleSet = new DetectorRuleSetBuilder();
 
-        DetectorRule xcode = ruleSet.addDetector(DetectorType.XCODE, "Xcode", XcodeSwiftDetectable.class, (e) -> null).defaults().build();
+        DetectorRule xcode = ruleSet.addDetector(DetectorType.XCODE, "Xcode", XcodeProjectDetectable.class, (e) -> null).defaults().build();
         DetectorRule swift = ruleSet.addDetector(DetectorType.SWIFT, "Swift", SwiftCliDetectable.class, (e) -> null).defaults().nestableExceptTo(DetectorType.XCODE).build();
 
         //XCODE applied at depth 0, we are now scanning a folder at depth 2.
-        Set<DetectorRule> appliedToParent = Sets.newHashSet();
-        Set<DetectorRule> appliedSoFar = Sets.newHashSet(xcode);
+        Set<DetectorRule> appliedToParent = Sets.newHashSet(xcode);
+        Set<DetectorRule> appliedSoFar = Sets.newHashSet();
         SearchEnvironment searchEnvironment = new SearchEnvironment(2, (d) -> true, false, false, appliedToParent, appliedSoFar);
         DetectorResult result = new DetectorRuleSetEvaluator().evaluateSearchable(ruleSet.build(), swift, searchEnvironment);
 

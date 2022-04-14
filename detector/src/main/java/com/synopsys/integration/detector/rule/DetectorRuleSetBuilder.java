@@ -40,9 +40,13 @@ public class DetectorRuleSetBuilder {
         boolean atLeastOneRuleAdded = true;
 
         while (orderedRules.size() < rules.size() && atLeastOneRuleAdded) {
-            List<DetectorRule> satisfiedRules = rules.stream()
+            List<DetectorRule> remainingRules = rules.stream()
                 .filter(rule -> !orderedRules.contains(rule))
+                .collect(Collectors.toList());
+
+            List<DetectorRule> satisfiedRules = remainingRules.stream()
                 .filter(rule -> yieldSatisfied(rule, orderedRules, yieldsToRules))
+                .filter(rule -> nestableBeneathSatisfied(rule, remainingRules))
                 .collect(Collectors.toList());
 
             atLeastOneRuleAdded = satisfiedRules.size() > 0;
@@ -54,6 +58,14 @@ public class DetectorRuleSetBuilder {
         }
 
         return new DetectorRuleSet(orderedRules, yieldsToRules);
+    }
+
+    private boolean nestableBeneathSatisfied(DetectorRule rule, List<DetectorRule> remainingRules) {
+        boolean somethingNotNestableRemains = remainingRules.stream()
+            .map(DetectorRule::getDetectorType)
+            .anyMatch(type -> rule.getNotNestableBeneath().contains(type));
+
+        return !somethingNotNestableRemains;
     }
 
     private Map<DetectorRule, Set<DetectorRule>> buildYield() {

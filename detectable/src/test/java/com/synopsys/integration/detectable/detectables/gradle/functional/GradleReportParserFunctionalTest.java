@@ -2,10 +2,8 @@ package com.synopsys.integration.detectable.detectables.gradle.functional;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.Optional;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.json.JSONException;
 import org.junit.jupiter.api.Assertions;
@@ -45,10 +43,7 @@ public class GradleReportParserFunctionalTest {
         Assertions.assertEquals("hub-detect", gradleReport.get().getProjectName());
         Assertions.assertEquals("2.0.0-SNAPSHOT", gradleReport.get().getProjectVersionName());
 
-        File file = new File("/Users/jakem/IdeaProjects/synopsys-detect/detectable/src/test/resources/detectables/functional/gradle/dependencyGraph-expected.json");
         String actual = new GsonBuilder().setPrettyPrinting().create().toJson(codeLocation);
-        FileUtils.writeStringToFile(file, actual, Charset.defaultCharset());
-
         JSONAssert.assertEquals(FunctionalTestFiles.asString("/gradle/dependencyGraph-expected.json"), actual, false);
     }
 

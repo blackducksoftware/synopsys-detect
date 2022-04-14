@@ -1,16 +1,11 @@
 package com.synopsys.integration.detectable.detectables.swift.lock.model;
 
-import static com.synopsys.integration.detectable.detectables.swift.cli.SwiftPackageTransformer.SWIFT_FORGE;
-
-import java.nio.file.Path;
 import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
-import com.synopsys.integration.bdio.model.dependency.ProjectDependency;
 import com.synopsys.integration.detectable.detectable.result.FailedDetectableResult;
 
 public class PackageResolvedResult {
@@ -24,12 +19,6 @@ public class PackageResolvedResult {
 
     public static PackageResolvedResult empty() {
         return new PackageResolvedResult(new BasicDependencyGraph(), null);
-    }
-
-    public static PackageResolvedResult success(BasicDependencyGraph dependencyGraph, Path discoveryLocation) {
-        DependencyGraph locatedDependencyGraph = new ProjectDependencyGraph(new ProjectDependency(SWIFT_FORGE, discoveryLocation));
-        locatedDependencyGraph.copyGraphToRoot(dependencyGraph);
-        return success(locatedDependencyGraph);
     }
 
     public static PackageResolvedResult success(DependencyGraph dependencyGraph) {

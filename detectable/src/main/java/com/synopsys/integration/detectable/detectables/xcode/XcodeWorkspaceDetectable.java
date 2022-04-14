@@ -2,6 +2,8 @@ package com.synopsys.integration.detectable.detectables.xcode;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -9,7 +11,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.SAXException;
 
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
@@ -70,32 +71,27 @@ public class XcodeWorkspaceDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws IOException, ParserConfigurationException, SAXException {
-        PackageResolvedResult localResult = null;
+        List<CodeLocation> codeLocations = new LinkedList<>();
+
         if (foundPackageResolvedFile != null) {
-            localResult = packageResolvedExtractor.extract(foundPackageResolvedFile);
+            PackageResolvedResult localResult = packageResolvedExtractor.extract(foundPackageResolvedFile);
             Optional<FailedDetectableResult> failedDetectableResult = localResult.getFailedDetectableResult();
             if (failedDetectableResult.isPresent()) {
                 return Extraction.failure(failedDetectableResult.get());
             }
+
+            codeLocations.add(new CodeLocation(localResult.getDependencyGraph(), environment.getDirectory()));
         }
 
-        XcodeWorkspaceResult xcodeWorkspaceResult = null;
         if (foundWorkspaceDataFile != null) {
-            xcodeWorkspaceResult = xcodeWorkspaceExtractor.extract(foundWorkspaceDataFile, workspaceDirectory);
+            XcodeWorkspaceResult xcodeWorkspaceResult = xcodeWorkspaceExtractor.extract(foundWorkspaceDataFile, workspaceDirectory);
             if (xcodeWorkspaceResult.isFailure()) {
                 return Extraction.failure(xcodeWorkspaceResult.getFailedDetectableResults());
             }
+            codeLocations.addAll(xcodeWorkspaceResult.getCodeLocations());
         }
 
-        MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
-        if (xcodeWorkspaceResult != null && xcodeWorkspaceResult.getDependencyGraph() != null) {
-            dependencyGraph.addGraphAsChildrenToRoot(xcodeWorkspaceResult.getDependencyGraph());
-        }
-        if (localResult != null) {
-            dependencyGraph.addGraphAsChildrenToRoot(localResult.getDependencyGraph());
-        }
-
-        return Extraction.success(new CodeLocation(dependencyGraph, environment.getDirectory()));
+        return Extraction.success(codeLocations);
     }
 
 }
