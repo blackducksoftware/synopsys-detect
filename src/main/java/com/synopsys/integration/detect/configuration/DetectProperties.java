@@ -50,6 +50,7 @@ import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.RapidCompareMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndividualFileMatchingMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
+import com.synopsys.integration.detect.workflow.DummyAccuracyEnum;
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDependencyType;
@@ -167,6 +168,19 @@ public class DetectProperties {
             .setHelp("URL of the Black Duck server.")
             .setExample("https://blackduck.mydomain.com")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT)
+            .build();
+
+    //TODO- in 8.0.0, enum type will change to DetectorType, default value will change
+    public static final AllNoneEnumListProperty<DummyAccuracyEnum> DETECT_ACCURACY_REQUIRED =
+        AllNoneEnumListProperty.newBuilder("detect.accuracy.required", AllNoneEnum.ALL, DummyAccuracyEnum.class)
+            .setInfo("Detector Accuracy Requirements", DetectPropertyFromVersion.VERSION_7_13_0)
+            .setHelp(
+                "Required accuracy for a successful run of Detect.",
+                "Various detectors produce dependency graphs with varying levels of accuracy, either due to circumstances at runtime, the limitations of the detector, or even limitations of the package manager.  Use this property to specify what detector types Detect should enforce accuracy requirements on (ie. when set to NONE, Detect will not fail if only low-accuracy detectors succeed in producing results).  In 8.0.0, Detect will support supplying specific detector types."
+            )
+            .setGroups(DetectGroup.DETECTOR, DetectGroup.GLOBAL)
+            .setExample("ALL,NONE")
+            .setCategory(DetectCategory.Advanced)
             .build();
 
     public static final IntegerProperty DETECT_PARALLEL_PROCESSORS =
@@ -446,14 +460,6 @@ public class DetectProperties {
             .setHelp(
                 "If set to true, the signature scanner will, if supported by your Black Duck version, upload source code to Black Duck. Corresponding Signature Scanner CLI Argument: --upload-source.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .build();
-
-    // TODO: Outta here!
-    public static final BooleanProperty DETECT_BUILDLESS =
-        BooleanProperty.newBuilder("detect.detector.buildless", false)
-            .setInfo("Buildless Mode", DetectPropertyFromVersion.VERSION_5_4_0)
-            .setHelp("If set to true, only Detector's capable of running without a build will be run.")
-            .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
             .build();
 
     public static final BooleanProperty DETECT_CLEANUP =
@@ -1800,6 +1806,18 @@ public class DetectProperties {
             .setHelp("The version of BDIO files to generate.", "If set to false, BDIO version 1 will be generated. If set to true, BDIO version 2 will be generated.")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .setDeprecated(BDIO1_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT)
+            .build();
+
+    @Deprecated
+    public static final BooleanProperty DETECT_BUILDLESS =
+        BooleanProperty.newBuilder("detect.detector.buildless", false)
+            .setInfo("Buildless Mode", DetectPropertyFromVersion.VERSION_5_4_0)
+            .setHelp("If set to true, only Detector's capable of running without a build will be run.")
+            .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
+            .setDeprecated(
+                "This is property is being replaced by detect.accuracy.required.  To run in Buildless Mode, set detect.accuracy.required=NONE.",
+                DetectMajorVersion.EIGHT
+            )
             .build();
 
     @Deprecated
