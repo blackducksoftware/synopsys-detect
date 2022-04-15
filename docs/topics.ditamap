@@ -177,6 +177,7 @@
       <topicref href="packagemgrs/docker/runningonwindows.md" format="markdown"/>
     </topicref>
 
+    <topicref href="packagemgrs/git.md" format="markdown"/>
     <topicref href="packagemgrs/golang.md" format="markdown"/>
     <topicref href="packagemgrs/gradle.md" format="markdown"/>
     <topicref href="packagemgrs/hex.md" format="markdown"/>
