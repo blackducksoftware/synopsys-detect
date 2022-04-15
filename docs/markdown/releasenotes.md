@@ -8,6 +8,7 @@
 * [solution_name] now includes pass-through properties when logging configuration at the beginning of a run.
 
 ### Changed features
+* Deprecated property detect.detector.buildless, to be replaced with detect.accuracy.required. See [property description](properties/configuration/detector.md#detector-accuracy-requirements-advanced) for more details.
 
 ### Resolved issues
 
