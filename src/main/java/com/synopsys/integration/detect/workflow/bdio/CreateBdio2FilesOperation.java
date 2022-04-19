@@ -1,5 +1,7 @@
 package com.synopsys.integration.detect.workflow.bdio;
 
+import static com.synopsys.integration.detect.tool.detector.CodeLocationConverter.DETECT_FORGE;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -70,7 +72,12 @@ public class CreateBdio2FilesOperation {
                 // TODO: In 8.0.0 all CodeLocations should have a ProjectDependencyGraph instead of DependencyGraph and ExternalId JM-04/2022
                 projectDependencyGraph = (ProjectDependencyGraph) dependencyGraph;
             } else {
-                projectDependencyGraph = new ProjectDependencyGraph(new ProjectDependency(externalId));
+                // Attempt to build a ProjectDependencyGraph with good project info
+                ExternalId projectExternalId = externalId;
+                if (externalId.getForge().equals(DETECT_FORGE)) {
+                    projectExternalId = ExternalId.FACTORY.createNameVersionExternalId(DETECT_FORGE, projectNameVersion.getName(), projectNameVersion.getVersion());
+                }
+                projectDependencyGraph = new ProjectDependencyGraph(new ProjectDependency(projectExternalId));
                 DependencyGraphUtil.copyRootDependencies(projectDependencyGraph, dependencyGraph);
             }
             Bdio2Document bdio2Document = bdio2Factory.createBdio2Document(bdioMetadata, projectDependencyGraph);
