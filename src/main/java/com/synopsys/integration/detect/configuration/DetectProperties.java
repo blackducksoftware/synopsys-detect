@@ -902,7 +902,7 @@ public class DetectProperties {
             .setHelp("Enables you to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN)
             .build();
-    
+
     public static final BooleanProperty DETECT_IMPACT_ANALYSIS_ENABLED =
         BooleanProperty.newBuilder("detect.impact.analysis.enabled", false)
             .setInfo("Vulnerability Impact Analysis Enabled", DetectPropertyFromVersion.VERSION_6_5_0)
@@ -1730,7 +1730,7 @@ public class DetectProperties {
                 "Controls how rapid scan evaluates policy rules",
                 "Set the compare mode of rapid scan. ALL evaluates all RAPID or FULL policies. BOM_COMPARE_STRICT will only show policy violations not present in an existing project version BOM. BOM_COMPARE depends on the type of policy rule modes and behaves like ALL if the policy rule is only RAPID but like BOM_COMPARE_STRICT when the policy rule is RAPID and FULL. See the Black Duck documentation for complete details."
             )
-            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK)
+            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced)
             .build();
 
