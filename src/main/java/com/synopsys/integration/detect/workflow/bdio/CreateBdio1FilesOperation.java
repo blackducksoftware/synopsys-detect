@@ -1,5 +1,7 @@
 package com.synopsys.integration.detect.workflow.bdio;
 
+import static com.synopsys.integration.detect.tool.detector.CodeLocationConverter.DETECT_FORGE;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +41,11 @@ public class CreateBdio1FilesOperation {
             String codeLocationName = bdioCodeLocation.getCodeLocationName();
             ExternalId externalId = bdioCodeLocation.getDetectCodeLocation().getExternalId();
             DependencyGraph dependencyGraph = bdioCodeLocation.getDetectCodeLocation().getDependencyGraph();
-            ProjectDependencyGraph projectDependencyGraph = new ProjectDependencyGraph(new ProjectDependency(externalId));
+            ExternalId projectExternalId = externalId;
+            if (externalId.getForge().equals(DETECT_FORGE)) {
+                projectExternalId = ExternalId.FACTORY.createNameVersionExternalId(DETECT_FORGE, projectNameVersion.getName(), projectNameVersion.getVersion());
+            }
+            ProjectDependencyGraph projectDependencyGraph = new ProjectDependencyGraph(new ProjectDependency(projectExternalId));
             DependencyGraphUtil.copyRootDependencies(projectDependencyGraph, dependencyGraph);
 
             File bdioOutputFile = new File(outputDirectory, bdioCodeLocation.getBdioName() + ".jsonld");
