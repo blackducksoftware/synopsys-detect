@@ -478,7 +478,7 @@ public class DetectConfigurationFactory {
         List<DetectorType> requiredDetectors = detectConfiguration.getValue(DetectProperties.DETECT_REQUIRED_DETECTOR_TYPES);
         boolean buildless = detectConfiguration.getValue(DetectProperties.DETECT_BUILDLESS);
         AllNoneEnumList<DummyAccuracyEnum> accuracyRequired = detectConfiguration.getValue(DetectProperties.DETECT_ACCURACY_REQUIRED);
-        if (accuracyRequired.containsNone()) {
+        if (accuracyRequired.containsNone() && !detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_BUILDLESS)) {
             buildless = true;
         }
         return new DetectorToolOptions(projectBomTool, requiredDetectors, buildless);
