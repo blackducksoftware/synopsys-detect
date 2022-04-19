@@ -17,15 +17,16 @@ public class RootPruningGraphUtil {
     //IE given [Root1 -> Child -> Root2, Root2] returns [Root1 -> Child -> Root2] where Root2 is no longer a root.
     public static DependencyGraph prune(DependencyGraph original) throws CycleDetectedException {
         DependencyGraph destination = new BasicDependencyGraph();
-        for (Dependency rootDependency : original.getRootDependencies()) {
-            if (!isDependencyInGraph(rootDependency, original.getRootDependencies(), original)) {
-                destination.addChildToRoot(rootDependency);
+        for (Dependency rootDependency : original.getDirectDependencies()) {
+            if (!isDependencyInGraph(rootDependency, original.getDirectDependencies(), original)) {
+                destination.addDirectDependency(rootDependency);
             }
             copyDescendants(rootDependency, singletonSet(rootDependency), destination, original);
         }
         return destination;
     }
 
+    // TODO: May be able to utilize DependencyGraphUtil -JM-04/2022
     private static void copyDescendants(Dependency parent, Set<Dependency> ancestors, DependencyGraph destination, DependencyGraph original) throws CycleDetectedException {
         Set<Dependency> children = original.getChildrenForParent(parent);
         for (Dependency child : children) {
