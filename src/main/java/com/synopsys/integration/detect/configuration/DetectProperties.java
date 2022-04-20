@@ -668,22 +668,13 @@ public class DetectProperties {
             .setExample("9.1.1")
             .build();
 
-    // TODO: Remove in 8.0.0. This is never really used, could have been a bad sign if it wasn't there.
+    // The docker exe is only used in air gap mode to load image tarfiles (from the air gap files) for docker inspector
     public static final NullablePathProperty DETECT_DOCKER_PATH =
         NullablePathProperty.newBuilder("detect.docker.path")
             .setInfo("Docker Executable", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("Path to the docker executable (used to load image inspector Docker images in order to run the Docker Inspector in air gap mode).")
             .setExample("/usr/local/bin/docker")
             .setGroups(DetectGroup.DOCKER, DetectGroup.GLOBAL)
-            .build();
-
-    // TODO: Remove in 8.0.0. Maybe get rid of this? Docker Inspector doesn't require Docker executable
-    public static final BooleanProperty DETECT_DOCKER_PATH_REQUIRED =
-        BooleanProperty.newBuilder("detect.docker.path.required", false)
-            .setInfo("Run Without Docker in Path", DetectPropertyFromVersion.VERSION_4_0_0)
-            .setHelp("If set to true, Detect will attempt to run the Docker Inspector only if it finds a docker client executable.")
-            .setGroups(DetectGroup.DOCKER, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced)
             .build();
 
     public static final NullableStringProperty DETECT_DOCKER_PLATFORM_TOP_LAYER_ID =
@@ -1739,10 +1730,22 @@ public class DetectProperties {
 
     //#region Deprecated Properties
     // username/password ==> api token
-    public static final String BDIO1_DEPRECATION_MESSAGE = "This property is being removed, along with the option to generate BDIO in BDIO1 format. In the future, BDIO2 format will be the only option.";
-    public static final String AGGREGATION_MODE_DEPRECATION_MESSAGE = "This property is being removed, along with the ability to set the aggregation mode. In the future, Detect will always operate in SUBPROJECT aggregation mode (regardless of how it is configured) to more accurately report the dependency graph.";
-    public static final String BAZEL_DEPENDENCY_TYPE_DEPRECATION_MESSAGE = "This property is being removed. Please use property 'detect.bazel.workspace.rules' instead.";
+    private static final String BDIO1_DEPRECATION_MESSAGE = "This property is being removed, along with the option to generate BDIO in BDIO1 format. In the future, BDIO2 format will be the only option.";
+    private static final String AGGREGATION_MODE_DEPRECATION_MESSAGE = "This property is being removed, along with the ability to set the aggregation mode. In the future, Detect will always operate in SUBPROJECT aggregation mode (regardless of how it is configured) to more accurately report the dependency graph.";
+    private static final String BAZEL_DEPENDENCY_TYPE_DEPRECATION_MESSAGE = "This property is being removed. Please use property 'detect.bazel.workspace.rules' instead.";
+    private static final String DETECT_DOCKER_PATH_REQUIRED_DEPRECATION_MESSAGE = "This property is being removed. A docker executable is only required when running the Docker tool in air gap mode.";
 
+    @Deprecated
+    public static final BooleanProperty DETECT_DOCKER_PATH_REQUIRED =
+        BooleanProperty.newBuilder("detect.docker.path.required", false)
+            .setInfo("Run Without Docker in Path", DetectPropertyFromVersion.VERSION_4_0_0)
+            .setHelp("If set to true, Detect will attempt to run the Docker Inspector only if it finds a docker client executable.")
+            .setGroups(DetectGroup.DOCKER, DetectGroup.GLOBAL)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(DETECT_DOCKER_PATH_REQUIRED_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT)
+            .build();
+
+    @Deprecated
     public static final AllNoneEnumListProperty<WorkspaceRule> DETECT_BAZEL_DEPENDENCY_RULE =
         AllNoneEnumListProperty.newBuilder("detect.bazel.dependency.type", emptyList(), WorkspaceRule.class)
             .setInfo("Bazel workspace external dependency rule", DetectPropertyFromVersion.VERSION_6_0_0)
