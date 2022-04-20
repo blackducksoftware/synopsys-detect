@@ -32,15 +32,14 @@ The source code for Docker Inspector is located at [GitHub](https://github.com/b
 
 ## NuGet Inspector
 
-The NuGet inspector is available as an independent executable for Windows or as a dotnet application for all dotnet supported operating systems.
+The NuGet inspector is available as an independent executable for Windows, Linux and Mac.
 
-If you are online, then Synopsys Artifactory is used to download the applicable NuGet package which is then unzipped and the runtime files are located.
+If you are online, then Synopsys Artifactory is used to download the applicable NuGet inspector which is then unzipped and the runtime files are located.
 If you are offline, the air gap inspector runtime files are located at the provided path.
 
 In both cases, the located executable is run which communicates with NuGet and the dotnet build system.
 
-The source code for the NuGet executable inspector is located at [GitHub](https://github.com/blackducksoftware/integration-nuget-inspector).
-The source code for the NuGet dotnet inspector is located at [GitHub](https://github.com/blackducksoftware/blackduck-nuget-inspector).
+The source code for the NuGet inspector is located at [GitHub](https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/detect-nuget-inspector/).
 
 ## Python Inspector
 
