@@ -352,10 +352,11 @@ public class DetectProperties {
         NullableStringProperty.newBuilder("detect.blackduck.signature.scanner.arguments")
             .setInfo("Signature Scanner Arguments", DetectPropertyFromVersion.VERSION_4_2_0)
             .setHelp(
-                "Additional arguments to use when running the Black Duck signature scanner.",
-                "For example: Suppose you are running in bash on Linux and want to use the signature scanner's ability to read a list of directories to exclude from a file (using the signature scanner --exclude-from option). You tell the signature scanner read excluded directories from a file named excludes.txt in your home directory with: --detect.blackduck.signature.scanner.arguments='--exclude-from \\${HOME}/excludes.txt'"
+                "A space-separated list of additional arguments to use when running the Black Duck signature scanner.",
+                "For example: Suppose you are running in bash on Linux and want to use the signature scanner's ability to read a list of directories to exclude from a file (using the signature scanner --exclude-from option). You tell the signature scanner read excluded directories from a file named excludes.txt in the current working directory with: --detect.blackduck.signature.scanner.arguments='--exclude-from ./excludes.txt'"
             )
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL)
+            .setExample("--exclude-from ./excludes.txt")
             .build();
 
     // TODO: JP don't like it
