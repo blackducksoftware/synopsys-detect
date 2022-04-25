@@ -83,14 +83,14 @@ public class DetectorRuleFactory {
             "Xcode Project",
             XcodeProjectDetectable.class,
             detectableFactory::createXcodeProjectDetectable
-        ).defaults().build();
+        ).defaults().notSelfTypeNestable().build();
 
         DetectorRule<?> xcodeWorkspace = ruleSet.addDetector(
             DetectorType.XCODE,
             "Xcode Workspace",
             XcodeWorkspaceDetectable.class,
             detectableFactory::createXcodeWorkspaceDetectable
-        ).defaults().build();
+        ).defaults().notSelfTypeNestable().build();
 
         DetectorRule<?> swiftCli = ruleSet.addDetector(
             DetectorType.SWIFT,
