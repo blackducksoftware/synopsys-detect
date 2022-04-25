@@ -207,28 +207,12 @@ public class DetectorRuleFactory {
 
         ruleSet.addDetector(DetectorType.COCOAPODS, "Pod Lock", PodlockDetectable.class, detectableFactory::createPodLockDetectable).defaults().build();
 
-        DetectorRule<?> xcodeProject = ruleSet.addDetector(
-            DetectorType.XCODE,
-            "Xcode Project",
-            XcodeProjectDetectable.class,
-            detectableFactory::createXcodeProjectDetectable
-        ).defaults().build();
-
-        DetectorRule<?> xcodeWorkspace = ruleSet.addDetector(
-            DetectorType.XCODE,
-            "Xcode Workspace",
-            XcodeWorkspaceDetectable.class,
-            detectableFactory::createXcodeWorkspaceDetectable
-        ).defaults().build();
-
         ruleSet.addDetector(
             DetectorType.SWIFT,
             "Swift Package Resolved",
             SwiftPackageResolvedDetectable.class,
             detectableFactory::createSwiftPackageResolvedDetectable
         ).defaults().notNestableBeneath(DetectorType.XCODE).build();
-
-        ruleSet.yield(xcodeProject).to(xcodeWorkspace);
 
         ruleSet.addDetector(DetectorType.PACKAGIST, "Packrat Lock", PackratLockDetectable.class, detectableFactory::createPackratLockDetectable).defaults().build();
 
