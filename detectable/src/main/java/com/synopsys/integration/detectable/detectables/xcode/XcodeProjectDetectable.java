@@ -3,6 +3,9 @@ package com.synopsys.integration.detectable.detectables.xcode;
 import java.io.File;
 import java.io.IOException;
 
+import org.jetbrains.annotations.Nullable;
+
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
@@ -24,6 +27,7 @@ public class XcodeProjectDetectable extends Detectable {
     private final PackageResolvedExtractor packageResolvedExtractor;
 
     private File foundCodeLocationFile;
+    @Nullable
     private File foundPackageResolvedFile;
 
     public XcodeProjectDetectable(DetectableEnvironment environment, FileFinder fileFinder, PackageResolvedExtractor packageResolvedExtractor) {
@@ -43,12 +47,16 @@ public class XcodeProjectDetectable extends Detectable {
     public DetectableResult extractable() {
         Requirements requirements = new Requirements(fileFinder, environment);
         File swiftPMDirectory = new File(foundCodeLocationFile, PACKAGE_RESOLVED_RELATIVE_PATH);
-        foundPackageResolvedFile = requirements.file(swiftPMDirectory, SwiftPackageResolvedDetectable.PACKAGE_RESOLVED_FILENAME);
+        foundPackageResolvedFile = requirements.optionalFile(swiftPMDirectory, SwiftPackageResolvedDetectable.PACKAGE_RESOLVED_FILENAME, () -> {/* no-op */});
         return requirements.result();
     }
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws IOException {
+        if (foundPackageResolvedFile == null) {
+            return Extraction.success(new CodeLocation(new BasicDependencyGraph(), foundCodeLocationFile));
+        }
+
         PackageResolvedResult result = packageResolvedExtractor.extract(foundPackageResolvedFile);
         return result.getFailedDetectableResult()
             .map(Extraction::failure)
