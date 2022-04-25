@@ -10,7 +10,6 @@ import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectables.swift.lock.PackageResolvedExtractor;
 import com.synopsys.integration.detectable.detectables.swift.lock.SwiftPackageResolvedDetectable;
 import com.synopsys.integration.detectable.detectables.swift.lock.model.PackageResolvedResult;
@@ -37,18 +36,15 @@ public class XcodeProjectDetectable extends Detectable {
     public DetectableResult applicable() {
         Requirements requirements = new Requirements(fileFinder, environment);
         foundCodeLocationFile = requirements.directory("*.xcodeproj");
-
-        if (requirements.isCurrentlyMet()) {
-            File swiftPMDirectory = new File(foundCodeLocationFile, PACKAGE_RESOLVED_RELATIVE_PATH);
-            foundPackageResolvedFile = requirements.file(swiftPMDirectory, SwiftPackageResolvedDetectable.PACKAGE_RESOLVED_FILENAME);
-        }
-
         return requirements.result();
     }
 
     @Override
     public DetectableResult extractable() {
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        File swiftPMDirectory = new File(foundCodeLocationFile, PACKAGE_RESOLVED_RELATIVE_PATH);
+        foundPackageResolvedFile = requirements.file(swiftPMDirectory, SwiftPackageResolvedDetectable.PACKAGE_RESOLVED_FILENAME);
+        return requirements.result();
     }
 
     @Override
