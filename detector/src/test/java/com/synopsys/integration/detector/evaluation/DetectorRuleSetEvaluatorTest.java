@@ -37,6 +37,7 @@ public class DetectorRuleSetEvaluatorTest {
         Mockito.when(environment.getAppliedSoFar()).thenReturn(appliedSoFar);
         Mockito.when(detectorRule.isNestable()).thenReturn(true);
         Mockito.when(environment.isForceNestedSearch()).thenReturn(false);
+        Mockito.when(detectorRule.getDetectorType()).thenReturn(DetectorType.GRADLE);
 
         DetectorRuleSetEvaluator evaluator = new DetectorRuleSetEvaluator();
         DetectorResult result = evaluator.evaluateSearchable(detectorRuleSet, detectorRule, environment);
