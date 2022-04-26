@@ -36,7 +36,7 @@ public class PublishSignatureScanReports {
             .findAny()
             .ifPresent(report -> {
                 logger.error(String.format(
-                    "The Signature Scanner encountered an error%s. The Signature Scanner log may contain relevant information.",
+                    "The Signature Scanner reported an error%s. The Signature Scanner log may contain relevant information.",
                     report.getExitCode().map(code -> " (" + code + ")").orElse(".")
                 ));
                 exitCodePublisher.publishExitCode(new ExitCodeRequest(ExitCodeType.FAILURE_SCAN));
