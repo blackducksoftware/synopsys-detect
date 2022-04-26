@@ -8,8 +8,6 @@
 
 The NuGet detectors can discover dependencies of NuGet projects.
 
-## Overview
-
 There are two Nuget detectors: the NuGet solution detector, and the NuGet project detector. Both detectors run the Detect Nuget Inspector, a platform dependent self-contained executable. The currently supported platforms are Windows, Linux and Mac.
 
 The NuGet detectors do not work with mono.
