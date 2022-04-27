@@ -20,7 +20,7 @@ buildscript {
 }
 
 group = 'com.synopsys.integration'
-version = '7.13.0-SIGQA16-SNAPSHOT'
+version = '8.0.0-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
@@ -65,10 +65,10 @@ allprojects {
         implementation 'org.jetbrains:annotations:20.1.0'
         implementation 'net.minidev:json-smart:2.4.7'
         implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.2'
-	implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2.2'
+        implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2.2'
 
         implementation 'org.freemarker:freemarker:2.3.31'
-	implementation 'org.apache.httpcomponents:httpclient-osgi:4.5.13'
+        implementation 'org.apache.httpcomponents:httpclient-osgi:4.5.13'
 
         testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
         testImplementation 'org.mockito:mockito-core:2.+'
