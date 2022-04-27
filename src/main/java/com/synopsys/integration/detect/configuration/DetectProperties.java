@@ -176,7 +176,7 @@ public class DetectProperties {
             .setInfo("Detector Accuracy Requirements", DetectPropertyFromVersion.VERSION_7_13_0)
             .setHelp(
                 "Required accuracy for a successful run of Detect.",
-                "Various detectors produce dependency graphs with varying levels of accuracy, either due to circumstances at runtime, the limitations of the detector, or even limitations of the package manager.  Use this property to specify what detector types Detect should enforce accuracy requirements on (ie. when set to NONE, Detect will not fail if only low-accuracy detectors succeed in producing results).  In 8.0.0, Detect will support supplying specific detector types."
+                "Various detectors produce dependency graphs with varying levels of accuracy, either due to circumstances at runtime, the limitations of the detector, or even limitations of the package manager.  Use this property to specify what detector types Detect should enforce accuracy requirements on (ie. when set to NONE, Detect will not fail if only low-accuracy detectors succeed in producing results).  In 8.0.0, Detect will support supplying specific detector types. To run in the equivalent of Detect 7's \"buildless mode\", set this property to NONE"
             )
             .setGroups(DetectGroup.DETECTOR, DetectGroup.GLOBAL)
             .setExample("ALL,NONE")
