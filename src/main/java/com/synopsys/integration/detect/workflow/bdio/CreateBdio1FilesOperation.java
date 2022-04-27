@@ -1,7 +1,5 @@
 package com.synopsys.integration.detect.workflow.bdio;
 
-import static com.synopsys.integration.detect.tool.detector.CodeLocationConverter.DETECT_FORGE;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,24 +41,20 @@ public class CreateBdio1FilesOperation {
         List<UploadTarget> uploadTargets = new ArrayList<>();
         for (BdioCodeLocation bdioCodeLocation : bdioCodeLocationResult.getBdioCodeLocations()) {
             String codeLocationName = bdioCodeLocation.getCodeLocationName();
-            ExternalId externalId = bdioCodeLocation.getDetectCodeLocation().getExternalId();
+            ExternalId detectCodeLocationExternalId = bdioCodeLocation.getDetectCodeLocation().getExternalId();
             DependencyGraph dependencyGraph = bdioCodeLocation.getDetectCodeLocation().getDependencyGraph();
 
-            ProjectDependencyGraph projectDependencyGraph = new ProjectDependencyGraph(new ProjectDependency(externalId));
+            ProjectDependencyGraph projectDependencyGraph = new ProjectDependencyGraph(new ProjectDependency(detectCodeLocationExternalId));
             DependencyGraphUtil.copyRootDependencies(projectDependencyGraph, dependencyGraph);
 
             File bdioOutputFile = new File(outputDirectory, bdioCodeLocation.getBdioName() + ".jsonld");
 
-            ExternalId projectExternalId = externalId;
-            if (externalId.getForge().equals(DETECT_FORGE)) {
-                projectExternalId = ExternalId.FACTORY.createNameVersionExternalId(DETECT_FORGE, projectNameVersion.getName(), projectNameVersion.getVersion());
-            }
             BdioNodeFactory bdioNodeFactory = new BdioNodeFactory(new BdioPropertyHelper());
             BdioProject bdioProject = bdioNodeFactory.createProject(
                 projectNameVersion.getName(),
                 projectNameVersion.getVersion(),
-                projectExternalId.createBdioId(),
-                projectExternalId
+                detectCodeLocationExternalId.createBdioId(),
+                detectCodeLocationExternalId
             );
 
             BdioBillOfMaterials billOfMaterials = bdioNodeFactory.createBillOfMaterials(codeLocationName, bdioProject.name, bdioProject.version);
