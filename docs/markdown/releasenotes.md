@@ -4,8 +4,9 @@
 
 ### New features
 
-* Added support for a buildless Pipenv detector that parses the Pipfile.lock file (see [python support page](packagemgrs/python.md) for more details).
+* Added support for a buildless Pipenv detector that parses the Pipfile.lock file (see the [python support page](packagemgrs/python.md) for more details).
 * [solution_name] now includes pass-through properties when logging configuration at the beginning of a run.
+* Added support for Xcode Workspaces (see the [swift support page](packagemgrs/swift.md) for more details).
 
 ### Changed features
 * Nuget Inspector is now shipped as a self-contained executable and has no runtime requirements. 

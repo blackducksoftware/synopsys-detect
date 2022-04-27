@@ -1,11 +1,12 @@
 package com.synopsys.integration.detect.workflow.bdio;
 
+import static com.synopsys.integration.detect.tool.detector.CodeLocationConverter.DETECT_FORGE;
+
 import java.io.File;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraphUtil;
 import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.ProjectDependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
@@ -29,7 +30,7 @@ public class CreateAggregateCodeLocationOperation {
         String aggregateName,
         String extension
     ) {
-        ExternalId projectExternalId = externalIdFactory.createNameVersionExternalId(new Forge("/", "DETECT"), projectNameVersion.getName(), projectNameVersion.getVersion());
+        ExternalId projectExternalId = externalIdFactory.createNameVersionExternalId(DETECT_FORGE, projectNameVersion.getName(), projectNameVersion.getVersion());
         String codeLocationName = codeLocationNameManager.createAggregateCodeLocationName(projectNameVersion);
 
         String fileName = new IntegrationEscapeUtil().replaceWithUnderscore(aggregateName) + extension;

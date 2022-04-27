@@ -51,6 +51,10 @@ public class NugetInspectorParser {
         String projectName = "";
         String projectVersionName = "";
 
+        if (nugetContainer == null) {
+            return Optional.empty();
+        }
+
         if (NugetContainerType.SOLUTION == nugetContainer.type) {
             projectName = nugetContainer.name;
             projectVersionName = nugetContainer.version;

@@ -474,14 +474,13 @@ public class OperationFactory { //TODO: OperationRunner
         return auditLog.namedPublic("Create Risk Report File", "RiskReport", () -> {
             DetectFontLoader detectFontLoader = detectFontLoaderFactory.detectFontLoader();
             ReportService reportService = creatReportService(blackDuckRunData);
-            File createdPdf = reportService.createReportPdfFile(
+            return reportService.createReportPdfFile(
                 reportDirectory,
                 projectVersionWrapper.getProjectView(),
                 projectVersionWrapper.getProjectVersionView(),
                 detectFontLoader::loadFont,
                 detectFontLoader::loadBoldFont
             );
-            return createdPdf;
         });
     }
 
@@ -777,7 +776,6 @@ public class OperationFactory { //TODO: OperationRunner
 
     public void createAggregateBdio2File(AggregateCodeLocation aggregateCodeLocation) throws OperationException {
         auditLog.namedInternal("Create Bdio Code Locations", () -> {
-            DetectBdioWriter detectBdioWriter = new DetectBdioWriter(new SimpleBdioFactory(), detectInfo);
             new CreateAggregateBdio2FileOperation(new Bdio2Factory(), detectInfo).writeAggregateBdio2File(aggregateCodeLocation);
         });
     }
